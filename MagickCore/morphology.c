@@ -2656,7 +2656,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         */
         k = &kernel->values[ kernel->height-1 ];
         k_pixels = p;
-        if ( (image->sync == MagickFalse) || (image->matte == MagickFalse) )
+        if ( (image->channel_mask != DefaultChannels) || (image->matte == MagickFalse) )
           { /* No 'Sync' involved.
             ** Convolution is simple greyscale channel operation
             */
@@ -2880,7 +2880,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
-            if ( (image->sync == MagickFalse) ||
+            if ( (image->channel_mask != DefaultChannels) ||
                  (image->matte == MagickFalse) )
               { /* No 'Sync' involved.
                 ** Convolution is simple greyscale channel operation
@@ -4091,7 +4091,6 @@ MagickPrivate Image *MorphologyApply(const Image *image,
             (void) FormatLocaleFile(stderr,
               "\n%s: Difference with original image",CommandOptionToMnemonic(
               MagickMorphologyOptions, method) );
-          curr_image->sync=MagickFalse;
           (void) CompositeImage(curr_image,DifferenceCompositeOp,image,0,0,
             exception);
           break;
@@ -4100,7 +4099,6 @@ MagickPrivate Image *MorphologyApply(const Image *image,
             (void) FormatLocaleFile(stderr,
               "\n%s: Difference of Dilate and Erode",CommandOptionToMnemonic(
               MagickMorphologyOptions, method) );
-          curr_image->sync=MagickFalse;
           (void) CompositeImage(curr_image,DifferenceCompositeOp,save_image,0,
             0,exception);
           save_image = DestroyImage(save_image); /* finished with save image */
@@ -4138,7 +4136,6 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           if ( verbose == MagickTrue )
             (void) FormatLocaleFile(stderr, " (compose \"%s\")",
                  CommandOptionToMnemonic(MagickComposeOptions, rslt_compose) );
-          rslt_image->sync=MagickFalse;
           (void) CompositeImage(rslt_image, rslt_compose, curr_image, 0, 0,
             exception);
           curr_image = DestroyImage(curr_image);

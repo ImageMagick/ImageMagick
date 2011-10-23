@@ -3143,7 +3143,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
 
   Quantum
     *pixels,
-    virtual_pixel[MaxPixelChannels];
+    virtual_pixel[CompositePixelChannel];
 
   RectangleInfo
     region;

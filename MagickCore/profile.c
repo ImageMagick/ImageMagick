@@ -5777,6 +5777,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
         cmsSetLogErrorHandler(CMSExceptionHandler);
         cms_exception.image=image;
         cms_exception.exception=exception;
+        (void) cms_exception;
         source_profile=cmsOpenProfileFromMemTHR(&cms_exception,
           GetStringInfoDatum(profile),(cmsUInt32Number)
           GetStringInfoLength(profile));

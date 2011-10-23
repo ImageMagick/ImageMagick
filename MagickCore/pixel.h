@@ -58,6 +58,7 @@ typedef enum
   IndexPixelChannel = 4,
   MaskPixelChannel = 5,
   IntensityPixelChannel = MaxPixelChannels,
+  CompositePixelChannel = MaxPixelChannels,
   SyncPixelChannel = MaxPixelChannels+1
 } PixelChannel;
 

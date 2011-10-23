@@ -4194,7 +4194,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             target;
 
           Quantum
-            virtual_pixel[MaxPixelChannels];
+            virtual_pixel[CompositePixelChannel];
 
           (void) GetOneCacheViewVirtualPixel(image_view,x,y,virtual_pixel,
             exception);
@@ -4317,7 +4317,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             target;
 
           Quantum
-            virtual_pixel[MaxPixelChannels];
+            virtual_pixel[CompositePixelChannel];
 
           (void) GetOneCacheViewVirtualPixel(image_view,x,y,virtual_pixel,
             exception);

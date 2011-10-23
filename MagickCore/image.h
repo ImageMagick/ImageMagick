@@ -285,9 +285,6 @@ struct _Image
     number_meta_channels,
     metacontent_extent;
 
-  MagickBooleanType
-    sync;
-
   ChannelType
     channel_mask;
 

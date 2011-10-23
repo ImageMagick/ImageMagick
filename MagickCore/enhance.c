@@ -116,7 +116,7 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image,
     i;
 
   log_mean=log(0.5);
-  if (image->sync != MagickFalse)
+  if (image->channel_mask == DefaultChannels)
     {
       /*
         Apply gamma correction equally across all given channels.
@@ -1483,11 +1483,11 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
     progress;
 
   MagickRealType
-    black[MaxPixelChannels],
+    black[CompositePixelChannel],
     *equalize_map,
     *histogram,
     *map,
-    white[MaxPixelChannels];
+    white[CompositePixelChannel];
 
   register ssize_t
     i;

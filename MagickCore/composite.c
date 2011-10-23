@@ -342,7 +342,7 @@ static inline void CompositeDarken(const Image *image,const PixelInfo *p,
     Darken is equivalent to a 'Minimum' method OR a greyscale version of a
     binary 'Or' OR the 'Intersection' of pixel sets.
   */
-  if (image->sync == MagickFalse)
+  if (image->channel_mask != DefaultChannels)
     {
       /*
         Handle channels as separate grayscale channels.
@@ -382,7 +382,7 @@ static inline void CompositeDarkenIntensity(const Image *image,
     If 'Sync' flag select whole pixel based on alpha weighted intensity.
     Otherwise use intensity only, but restrict copy according to channel.
   */
-  if (image->sync == MagickFalse)
+  if (image->channel_mask != DefaultChannels)
     {
       MagickBooleanType
         from_p;
@@ -427,7 +427,7 @@ static inline void CompositeDifference(const Image *image,const PixelInfo *p,
 
   Sa=QuantumScale*p->alpha;  /* simplify and speed up equations */
   Da=QuantumScale*q->alpha;
-  if (image->sync == MagickFalse)
+  if (image->channel_mask != DefaultChannels)
     {
       /*
         Handle channels as separate grayscale channels.
@@ -485,7 +485,7 @@ static inline void CompositeDivide(const Image *image,const PixelInfo *p,
 
   Sa=QuantumScale*p->alpha;  /* simplify and speed up equations */
   Da=QuantumScale*q->alpha;
-  if (image->sync == MagickFalse)
+  if (image->channel_mask != DefaultChannels)
     {
       /*
         Handle channels as separate grayscale channels.
@@ -537,7 +537,7 @@ static inline void CompositeExclusion(const Image *image,const PixelInfo *p,
 
   Sa=QuantumScale*p->alpha;  /* simplify and speed up equations */
   Da=QuantumScale*q->alpha;
-  if (image->sync == MagickFalse)
+  if (image->channel_mask != DefaultChannels)
     {
       /*
         Handle channels as separate grayscale channels.
@@ -691,7 +691,7 @@ static inline void CompositeLighten(const Image *image,const PixelInfo *p,
     Lighten is also equvalent to a 'Maximum' method OR a greyscale version of a
     binary 'And' OR the 'Union' of pixel sets.
   */
-  if (image->sync == MagickFalse)
+  if (image->channel_mask != DefaultChannels)
     {
       /*
         Handle channels as separate grayscale channels
@@ -731,7 +731,7 @@ static inline void CompositeLightenIntensity(const Image *image,
     If 'Sync' flag select whole pixel based on alpha weighted intensity.
     Otherwise use Intenisty only, but restrict copy according to channel.
   */
-  if (image->sync == MagickFalse)
+  if (image->channel_mask != DefaultChannels)
     {
       MagickBooleanType
         from_p;
@@ -891,7 +891,7 @@ static inline void CompositeMathematics(const Image *image,const PixelInfo *p,
 
   Sa=QuantumScale*p->alpha; /* ??? - AT */
   Da=QuantumScale*q->alpha;
-  if (image->sync == MagickFalse)
+  if (image->channel_mask != DefaultChannels)
     {
       /*
         Handle channels as separate grayscale channels.
@@ -945,7 +945,7 @@ static inline void CompositePlus(const Image *image,const PixelInfo *p,
     The CompositePixelInfoPlus() function is defined in
     "composite-private.h" so it can also be used for Image Blending.
   */
-  if (image->sync == MagickFalse)
+  if (image->channel_mask != DefaultChannels)
     {
       /*
         Handle channels as separate grayscale channels.
@@ -988,7 +988,7 @@ static inline void CompositeMinus(const Image *image,const PixelInfo *p,
 
   Sa=QuantumScale*p->alpha;  /* simplify and speed up equations */
   Da=QuantumScale*q->alpha;
-  if (image->sync == MagickFalse)
+  if (image->channel_mask != DefaultChannels)
     {
       /*
         Handle channels as separate grayscale channels.
@@ -1036,7 +1036,7 @@ static inline void CompositeModulusAdd(const Image *image,const PixelInfo *p,
     gamma,
     Sa;
 
-  if (image->sync == MagickFalse)
+  if (image->channel_mask != DefaultChannels)
     {
       /*
         Handle channels as separate grayscale channels.
@@ -1086,7 +1086,7 @@ static inline void CompositeModulusSubtract(const Image *image,
     gamma,
     Sa;
 
-  if (image->sync == MagickFalse)
+  if (image->channel_mask != DefaultChannels)
     {
       /*
         Handle channels as separate grayscale channels,
@@ -1132,7 +1132,7 @@ static inline void CompositeMultiply(const Image *image,const PixelInfo *p,
 
   Sa=QuantumScale*p->alpha;  /* simplify and speed up equations */
   Da=QuantumScale*q->alpha;
-  if (image->sync == MagickFalse)
+  if (image->channel_mask != DefaultChannels)
     {
       /*
         Handle channels as separate grayscale channels.
@@ -1290,7 +1290,7 @@ static inline void CompositeScreen(const Image *image,const PixelInfo *p,
 
   Sa=QuantumScale*p->alpha;  /* simplify and speed up equations */
   Da=QuantumScale*q->alpha;
-  if (image->sync == MagickFalse)
+  if (image->channel_mask != DefaultChannels)
     {
       /*
         Handle channels as separate grayscale channels.

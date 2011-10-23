@@ -3758,7 +3758,7 @@ static MagickBooleanType XColorEditImage(Display *display,
               target;
 
             Quantum
-              virtual_pixel[MaxPixelChannels];
+              virtual_pixel[CompositePixelChannel];
 
             /*
               Update color information using replace algorithm.
@@ -10120,7 +10120,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
               target;
 
             Quantum
-              virtual_pixel[MaxPixelChannels];
+              virtual_pixel[CompositePixelChannel];
 
             /*
               Update matte information using replace algorithm.
@@ -13245,7 +13245,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         pixel;
 
       Quantum
-        virtual_pixel[MaxPixelChannels];
+        virtual_pixel[CompositePixelChannel];
 
       register int
         j;
