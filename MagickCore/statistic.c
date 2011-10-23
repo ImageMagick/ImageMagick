@@ -131,7 +131,7 @@
 typedef struct _PixelChannels
 {
   MagickRealType
-    channel[MaxPixelChannels];
+    channel[CompositePixelChannel];
 } PixelChannels;
 
 static PixelChannels **DestroyPixelThreadSet(PixelChannels **pixels)
@@ -1163,8 +1163,8 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
   if (channel_statistics == (ChannelStatistics *) NULL)
     return(MagickFalse);
   area=0;
-  channel_statistics[MaxPixelChannels].mean=0.0;
-  channel_statistics[MaxPixelChannels].standard_deviation=0.0;
+  channel_statistics[CompositePixelChannel].mean=0.0;
+  channel_statistics[CompositePixelChannel].standard_deviation=0.0;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     PixelTrait
@@ -1175,17 +1175,17 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
       continue;
     if ((traits & UpdatePixelTrait) == 0)
       continue;
-    channel_statistics[MaxPixelChannels].mean+=channel_statistics[i].mean;
-    channel_statistics[MaxPixelChannels].standard_deviation+=
+    channel_statistics[CompositePixelChannel].mean+=channel_statistics[i].mean;
+    channel_statistics[CompositePixelChannel].standard_deviation+=
       channel_statistics[i].variance-channel_statistics[i].mean*
       channel_statistics[i].mean;
     area++;
   }
-  channel_statistics[MaxPixelChannels].mean/=area;
-  channel_statistics[MaxPixelChannels].standard_deviation=
-    sqrt(channel_statistics[MaxPixelChannels].standard_deviation/area);
-  *mean=channel_statistics[MaxPixelChannels].mean;
-  *standard_deviation=channel_statistics[MaxPixelChannels].standard_deviation;
+  channel_statistics[CompositePixelChannel].mean/=area;
+  channel_statistics[CompositePixelChannel].standard_deviation=
+    sqrt(channel_statistics[CompositePixelChannel].standard_deviation/area);
+  *mean=channel_statistics[CompositePixelChannel].mean;
+  *standard_deviation=channel_statistics[CompositePixelChannel].standard_deviation;
   channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
     channel_statistics);
   return(MagickTrue);
@@ -1584,41 +1584,41 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   }
   for (i=0; i < (ssize_t) MaxPixelChannels; i++)
   {
-    channel_statistics[MaxPixelChannels].depth=(size_t) MagickMax((double)
-      channel_statistics[MaxPixelChannels].depth,(double)
+    channel_statistics[CompositePixelChannel].depth=(size_t) MagickMax((double)
+      channel_statistics[CompositePixelChannel].depth,(double)
       channel_statistics[i].depth);
-    channel_statistics[MaxPixelChannels].minima=MagickMin(
-      channel_statistics[MaxPixelChannels].minima,
+    channel_statistics[CompositePixelChannel].minima=MagickMin(
+      channel_statistics[CompositePixelChannel].minima,
       channel_statistics[i].minima);
-    channel_statistics[MaxPixelChannels].maxima=MagickMax(
-      channel_statistics[MaxPixelChannels].maxima,
+    channel_statistics[CompositePixelChannel].maxima=MagickMax(
+      channel_statistics[CompositePixelChannel].maxima,
       channel_statistics[i].maxima);
-    channel_statistics[MaxPixelChannels].sum+=channel_statistics[i].sum;
-    channel_statistics[MaxPixelChannels].sum_squared+=
+    channel_statistics[CompositePixelChannel].sum+=channel_statistics[i].sum;
+    channel_statistics[CompositePixelChannel].sum_squared+=
       channel_statistics[i].sum_squared;
-    channel_statistics[MaxPixelChannels].sum_cubed+=
+    channel_statistics[CompositePixelChannel].sum_cubed+=
       channel_statistics[i].sum_cubed;
-    channel_statistics[MaxPixelChannels].sum_fourth_power+=
+    channel_statistics[CompositePixelChannel].sum_fourth_power+=
       channel_statistics[i].sum_fourth_power;
-    channel_statistics[MaxPixelChannels].mean+=channel_statistics[i].mean;
-    channel_statistics[MaxPixelChannels].variance+=
+    channel_statistics[CompositePixelChannel].mean+=channel_statistics[i].mean;
+    channel_statistics[CompositePixelChannel].variance+=
       channel_statistics[i].variance-channel_statistics[i].mean*
       channel_statistics[i].mean;
-    channel_statistics[MaxPixelChannels].standard_deviation+=
+    channel_statistics[CompositePixelChannel].standard_deviation+=
       channel_statistics[i].variance-channel_statistics[i].mean*
       channel_statistics[i].mean;
   }
   channels=GetImageChannels(image);
-  channel_statistics[MaxPixelChannels].sum/=channels;
-  channel_statistics[MaxPixelChannels].sum_squared/=channels;
-  channel_statistics[MaxPixelChannels].sum_cubed/=channels;
-  channel_statistics[MaxPixelChannels].sum_fourth_power/=channels;
-  channel_statistics[MaxPixelChannels].mean/=channels;
-  channel_statistics[MaxPixelChannels].variance/=channels;
-  channel_statistics[MaxPixelChannels].standard_deviation=
-    sqrt(channel_statistics[MaxPixelChannels].standard_deviation/channels);
-  channel_statistics[MaxPixelChannels].kurtosis/=channels;
-  channel_statistics[MaxPixelChannels].skewness/=channels;
+  channel_statistics[CompositePixelChannel].sum/=channels;
+  channel_statistics[CompositePixelChannel].sum_squared/=channels;
+  channel_statistics[CompositePixelChannel].sum_cubed/=channels;
+  channel_statistics[CompositePixelChannel].sum_fourth_power/=channels;
+  channel_statistics[CompositePixelChannel].mean/=channels;
+  channel_statistics[CompositePixelChannel].variance/=channels;
+  channel_statistics[CompositePixelChannel].standard_deviation=
+    sqrt(channel_statistics[CompositePixelChannel].standard_deviation/channels);
+  channel_statistics[CompositePixelChannel].kurtosis/=channels;
+  channel_statistics[CompositePixelChannel].skewness/=channels;
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
   {
     if (channel_statistics[i].standard_deviation == 0.0)

@@ -1224,7 +1224,7 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
     progress;
 
   MagickRealType
-    levels[MaxPixelChannels];
+    levels[CompositePixelChannel];
 
   register ssize_t
     i;

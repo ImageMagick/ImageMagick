@@ -484,7 +484,7 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
     annotate_pixmap;
 
   Quantum
-    virtual_pixel[MaxPixelChannels];
+    virtual_pixel[CompositePixelChannel];
 
   unsigned int
     depth,
@@ -2327,7 +2327,7 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
     matte;
 
   Quantum
-    virtual_pixel[MaxPixelChannels];
+    virtual_pixel[CompositePixelChannel];
 
   Pixmap
     draw_pixmap;

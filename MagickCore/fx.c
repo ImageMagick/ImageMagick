@@ -4684,7 +4684,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
       for (x=0; (x < (ssize_t) watermark->columns) && (j < (ssize_t) depth); x++)
       {
         Quantum
-          virtual_pixel[MaxPixelChannels];
+          virtual_pixel[CompositePixelChannel];
 
         (void) GetOneCacheViewVirtualPixel(watermark_view,x,y,virtual_pixel,
           exception);

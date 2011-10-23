@@ -3573,7 +3573,6 @@ MagickExport void InitializePixelChannelMap(Image *image)
     SetPixelChannelMapChannel(image,(PixelChannel) i,(PixelChannel) i);
     SetPixelChannelMapTraits(image,(PixelChannel) i,UndefinedPixelTrait);
   }
-  image->sync=MagickTrue;
   image->number_channels=4;
   if (0 && image->colorspace == GRAYColorspace)
     image->number_channels=2;
@@ -5102,8 +5101,8 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *image,
     distance,
     scale;
 
-  fuzz=MagickMax(image->fuzz,(MagickRealType) MagickSQ1_2)*
-    MagickMax(image->fuzz,(MagickRealType) MagickSQ1_2);
+  fuzz=MagickMax(image->fuzz,(MagickRealType) MagickSQ1_2)*MagickMax(
+    image->fuzz,(MagickRealType) MagickSQ1_2);
   scale=1.0;
   distance=0.0;
   if (image->matte != MagickFalse)
@@ -5173,13 +5172,13 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *image,
 %  colors is less than the specified distance in a linear three (or four)
 %  dimensional color space.
 %
-%  This implements the equivalent of...
-%    fuzz < sqrt( color_distance^2 * u.a*v.a  + alpha_distance^2 )
+%  This implements the equivalent of:
+%    fuzz < sqrt(color_distance^2 * u.a*v.a  + alpha_distance^2)
 %
 %  Which produces a multi-dimensional cone for that colorspace along the
 %  transparency vector.
 %
-%  For example for an RGB
+%  For example for an RGB:
 %    color_distance^2  = ( (u.r-v.r)^2 + (u.g-v.g)^2 + (u.b-v.b)^2 ) / 3
 %
 %  See http://www.imagemagick.org/Usage/bugs/fuzz_distance/
@@ -5216,14 +5215,14 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
   if ((p->fuzz == 0.0) && (q->fuzz == 0.0))
     return(IsPixelInfoEquivalent(p,q));
   if (p->fuzz == 0.0)
-    fuzz=MagickMax(q->fuzz,(MagickRealType) MagickSQ1_2)*
-      MagickMax(q->fuzz,(MagickRealType) MagickSQ1_2);
+    fuzz=MagickMax(q->fuzz,(MagickRealType) MagickSQ1_2)*MagickMax(q->fuzz,
+      (MagickRealType) MagickSQ1_2);
   else if (q->fuzz == 0.0)
-    fuzz=MagickMax(p->fuzz,(MagickRealType) MagickSQ1_2)*
-      MagickMax(p->fuzz,(MagickRealType) MagickSQ1_2);
+    fuzz=MagickMax(p->fuzz,(MagickRealType) MagickSQ1_2)*MagickMax(p->fuzz,
+      (MagickRealType) MagickSQ1_2);
   else
-    fuzz=MagickMax(p->fuzz,(MagickRealType) MagickSQ1_2)*
-      MagickMax(q->fuzz,(MagickRealType) MagickSQ1_2);
+    fuzz=MagickMax(p->fuzz,(MagickRealType) MagickSQ1_2)*MagickMax(q->fuzz,
+      (MagickRealType) MagickSQ1_2);
   scale=1.0;
   distance=0.0;
   if ((p->matte != MagickFalse) || (q->matte != MagickFalse))
@@ -5238,7 +5237,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
         return(MagickFalse);
       /*
         Generate a alpha scaling factor to generate a 4D cone on colorspace.
-        Note that if one color is transparent, distance has no color component.
+        If one color is transparent, distance has no color component.
       */
       if (p->matte != MagickFalse)
         scale=(QuantumScale*p->alpha);
@@ -5268,10 +5267,10 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
   if ((p->colorspace == HSLColorspace) || (p->colorspace == HSBColorspace) ||
       (p->colorspace == HWBColorspace))
     {
-      /* This calculates a arc distance for hue
-         Really if should be a vector angle of 'S'/'W' length
-         with 'L'/'B' forming appropriate cones.
-         In other words this is a hack - Anthony
+      /*
+        This calculates a arc distance for hue-- it should be a vector angle
+        of 'S'/'W' length with 'L'/'B' forming appropriate cones.  In other
+        words this is a hack - Anthony.
       */
       if (fabs((double) pixel) > (QuantumRange/2))
         pixel-=QuantumRange;
@@ -5324,7 +5323,6 @@ MagickExport void SetPixelChannelMap(Image *image,
   register ssize_t
     i;
 
-  image->sync=channel_mask == DefaultChannels ? MagickTrue : MagickFalse;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
     SetPixelChannelMapTraits(image,(PixelChannel) i,
       GetChannelBit(channel_mask,i) != 0 ? UpdatePixelTrait : CopyPixelTrait);
@@ -5345,8 +5343,8 @@ MagickExport void SetPixelChannelMap(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetPixelChannelMask() sets the pixel channel mask from the specified
-%  channel mask.
+%  SetPixelChannelMask() sets the pixel channel mask from the specified channel
+%  mask.
 %
 %  The format of the SetPixelChannelMask method is:
 %

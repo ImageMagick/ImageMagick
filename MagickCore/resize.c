@@ -2806,7 +2806,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   MagickRealType
     alpha,
     gamma,
-    pixel[MaxPixelChannels],
+    pixel[CompositePixelChannel],
     *scale_scanline,
     *scanline,
     *x_vector,

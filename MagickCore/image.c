@@ -826,7 +826,6 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->magick_columns=image->magick_columns;
   clone_image->magick_rows=image->magick_rows;
   clone_image->type=image->type;
-  clone_image->sync=image->sync;
   clone_image->channel_mask=image->channel_mask;
   clone_image->channel_map=ClonePixelChannelMap(image->channel_map);
   (void) CopyMagickString(clone_image->magick_filename,image->magick_filename,
