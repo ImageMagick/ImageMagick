@@ -43,6 +43,7 @@ typedef enum
 
 typedef enum
 {
+  UndefinedPixelChannel = 0,
   RedPixelChannel = 0,
   CyanPixelChannel = 0,
   GrayPixelChannel = 0,
