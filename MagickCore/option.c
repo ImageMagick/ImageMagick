@@ -1198,6 +1198,8 @@ static const OptionInfo
     { "Module", MagickModuleOptions, UndefinedOptionFlag, MagickFalse },
     { "Noise", MagickNoiseOptions, UndefinedOptionFlag, MagickFalse },
     { "Orientation", MagickOrientationOptions, UndefinedOptionFlag, MagickFalse },
+    { "PixelChannel", MagickPixelChannelOptions, UndefinedOptionFlag, MagickFalse },
+    { "PixelTrait", MagickPixelTraitOptions, UndefinedOptionFlag, MagickFalse },
     { "Policy", MagickPolicyOptions, UndefinedOptionFlag, MagickFalse },
     { "PolicyDomain", MagickPolicyDomainOptions, UndefinedOptionFlag, MagickFalse },
     { "PolicyRights", MagickPolicyRightsOptions, UndefinedOptionFlag, MagickFalse },
@@ -1233,6 +1235,7 @@ static const OptionInfo
     { "Locale", LocaleEvent, UndefinedOptionFlag, MagickFalse },
     { "Module", ModuleEvent, UndefinedOptionFlag, MagickFalse },
     { "None", NoEvents, UndefinedOptionFlag, MagickFalse },
+    { "Pixel", PixelEvent, UndefinedOptionFlag, MagickFalse },
     { "Policy", PolicyEvent, UndefinedOptionFlag, MagickFalse },
     { "Resource", ResourceEvent, UndefinedOptionFlag, MagickFalse },
     { "Trace", TraceEvent, UndefinedOptionFlag, MagickFalse },
@@ -1330,6 +1333,36 @@ static const OptionInfo
     { "RightBottom", RightBottomOrientation, UndefinedOptionFlag, MagickFalse },
     { "LeftBottom", LeftBottomOrientation, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedOrientation, UndefinedOptionFlag, MagickFalse }
+  },
+  PixelChannelOptions[] =
+  {
+    { "Undefined", UndefinedPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Alpha", AlphaPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Black", BlackPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Blue", BluePixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Cb", CbPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Composite", CompositePixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Cr", CrPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Cyan", CyanPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Gray", GrayPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Green", GreenPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Index", IndexPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Intensity", IntensityPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Magenta", MagentaPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Mask", MaskPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Red", RedPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Sync", SyncPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Y", YPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Yellow", YellowPixelChannel, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, UndefinedPixelChannel, UndefinedOptionFlag, MagickFalse }
+  },
+  PixelTraitOptions[] =
+  {
+    { "Undefined", UndefinedPixelTrait, UndefinedOptionFlag, MagickTrue },
+    { "Blend", BlendPixelTrait, UndefinedOptionFlag, MagickFalse },
+    { "Copy", CopyPixelTrait, UndefinedOptionFlag, MagickFalse },
+    { "Update", UpdatePixelTrait, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, UndefinedPixelTrait, UndefinedOptionFlag, MagickFalse }
   },
   PolicyDomainOptions[] =
   {
@@ -1818,6 +1851,8 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickMorphologyOptions: return(MorphologyOptions);
     case MagickNoiseOptions: return(NoiseOptions);
     case MagickOrientationOptions: return(OrientationOptions);
+    case MagickPixelChannelOptions: return(PixelChannelOptions);
+    case MagickPixelTraitOptions: return(PixelTraitOptions);
     case MagickPolicyDomainOptions: return(PolicyDomainOptions);
     case MagickPolicyRightsOptions: return(PolicyRightsOptions);
     case MagickPreviewOptions: return(PreviewOptions);

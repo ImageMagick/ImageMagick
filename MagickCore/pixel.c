@@ -3560,6 +3560,84 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
 %    o image: the image.
 %
 */
+
+static void LogPixelChannels(const Image *image)
+{
+  register ssize_t
+    i;
+
+  (void) LogMagickEvent(PixelEvent,GetMagickModule(),"%s[%.20g]",
+    image->filename,(double) image->number_channels);
+  for (i=0; i < (ssize_t) image->number_channels; i++)
+  {
+    char
+      traits[MaxTextExtent];
+
+    const char
+      *channel;
+
+    switch (image->channel_map[i].channel)
+    {
+      case RedPixelChannel:
+      {
+        channel="red";
+        if (image->colorspace == CMYKColorspace)
+          channel="cyan";
+        if (image->colorspace == GRAYColorspace)
+          channel="gray";
+        break;
+      }
+      case GreenPixelChannel:
+      {
+        channel="green";
+        if (image->colorspace == CMYKColorspace)
+          channel="magenta";
+        break;
+      }
+      case BluePixelChannel:
+      {
+        channel="blue";
+        if (image->colorspace == CMYKColorspace)
+          channel="yellow";
+        break;
+      }
+      case BlackPixelChannel:
+      {
+        channel="black";
+        if (image->storage_class == PseudoClass)
+          channel="index";
+        break;
+      }
+      case AlphaPixelChannel:
+      {
+        channel="alpha";
+        break;
+      }
+      case MaskPixelChannel:
+      {
+        channel="mask";
+        break;
+      }
+      default:
+      {
+        channel="undefined";
+      }
+    }
+    *traits='\0';
+    if ((image->channel_map[i].traits & UpdatePixelTrait) != 0)
+      (void) ConcatenateMagickString(traits,"update,",MaxTextExtent);
+    if ((image->channel_map[i].traits & BlendPixelTrait) != 0)
+      (void) ConcatenateMagickString(traits,"blend,",MaxTextExtent);
+    if ((image->channel_map[i].traits & CopyPixelTrait) != 0)
+      (void) ConcatenateMagickString(traits,"copy,",MaxTextExtent);
+    if (*traits == '\0')
+      (void) ConcatenateMagickString(traits,"undefined,",MaxTextExtent);
+    traits[strlen(traits)-1]='\0';
+    (void) LogMagickEvent(PixelEvent,GetMagickModule(),"  %.20g: %s (%s)",
+      (double) i,channel,traits);
+  }
+}
+
 MagickExport void InitializePixelChannelMap(Image *image)
 {
   PixelChannel
@@ -3568,6 +3646,8 @@ MagickExport void InitializePixelChannelMap(Image *image)
   register ssize_t
     i;
 
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   for (i=0; i < (ssize_t) MaxPixelChannels; i++)
   {
     SetPixelChannelMapChannel(image,(PixelChannel) i,(PixelChannel) i);
@@ -3605,6 +3685,8 @@ MagickExport void InitializePixelChannelMap(Image *image)
   image->number_channels+=image->number_meta_channels;
   for ( ; i < (ssize_t) image->number_channels; i++)
     SetPixelChannelMapTraits(image,(PixelChannel) i,CopyPixelTrait);
+  if (image->debug != MagickFalse)
+    LogPixelChannels(image);
   (void) SetPixelChannelMask(image,image->channel_mask);
 }
 
@@ -5330,6 +5412,8 @@ MagickExport void SetPixelChannelMap(Image *image,
     SetPixelChannelMapTraits(image,(PixelChannel) i,UndefinedPixelTrait);
   if (image->storage_class == PseudoClass)
     SetPixelChannelMapTraits(image,IndexPixelChannel,CopyPixelTrait);
+  if (image->debug != MagickFalse)
+    LogPixelChannels(image);
 }
 
 /*

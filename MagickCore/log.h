@@ -47,12 +47,13 @@ typedef enum
   ImageEvent = 0x00200,
   LocaleEvent = 0x00400,
   ModuleEvent = 0x00800,
-  PolicyEvent = 0x01000,
-  ResourceEvent = 0x02000,
-  TransformEvent = 0x04000,
-  UserEvent = 0x09000,
-  WandEvent = 0x10000,
-  X11Event = 0x20000,
+  PixelEvent = 0x01000,
+  PolicyEvent = 0x02000,
+  ResourceEvent = 0x04000,
+  TransformEvent = 0x08000,
+  UserEvent = 0x10000,
+  WandEvent = 0x20000,
+  X11Event = 0x40000,
   AllEvents = 0x7fffffff
 } LogEventType;
 
