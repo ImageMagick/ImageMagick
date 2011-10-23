@@ -166,15 +166,14 @@ static inline double MagickMax(const double x,const double y)
      Dca = Dc*Da     normalized Dest color divided by Dest alpha
      Dc' = Dca'/Da'  the desired color value for this channel.
   
-   Da' in in the follow formula as 'gamma'  The resulting alpla value.
+   Da' (alpha result) is stored as 'gamma' in the functions.
   
-   Most functions use a blending mode of over (X=1,Y=1,Z=1)
-   this results in the following optimizations...
-     gamma = Sa+Da-Sa*Da;
-     gamma = 1 - QuantiumScale*alpha * QuantiumScale*beta;
-     opacity = QuantiumScale*alpha*beta;  // over blend, optimized 1-Gamma
-  
-   The above SVG definitions also definate that Mathematical Composition
+   The compose functions defined is just simplifications of the above
+   formula on a case by case bases.
+
+
+
+   The above SVG definitions also defines that Mathematical Composition
    methods should use a 'Over' blending mode for Alpha Channel.
    It however was not applied for composition modes of 'Plus', 'Minus',
    the modulus versions of 'Add' and 'Subtract'.
@@ -246,8 +245,7 @@ static inline void CompositeClear(const PixelInfo *q,PixelInfo *composite)
   composite->red=0.0;
   composite->green=0.0;
   composite->blue=0.0;
-  if (q->colorspace == CMYKColorspace)
-    composite->black=0.0;
+  composite->black=1.0;
 }
 
 static MagickRealType ColorBurn(const MagickRealType Sca,
