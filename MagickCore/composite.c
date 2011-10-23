@@ -680,7 +680,7 @@ static inline void CompositeIn(const PixelInfo *p,const PixelInfo *q,
     composite->black=gamma*In(p->black,Sa,q->black,Da);
 #else
   /* Simplified to a multiply of the Alpha Channel */
-  composite=p;
+  *composite=*p; /* structure copy */
   composite->alpha=QuantumScale*p->alpha*q->alpha;
 #endif
 }
@@ -1205,7 +1205,7 @@ static inline void CompositeOut(const PixelInfo *p,const PixelInfo *q,
     composite->black=gamma*Out(p->black,Sa,q->black,Da);
 #else
   /* Simplified to a negated multiply of the Alpha Channel */
-  composite=p;
+  *composite=*p; /* structure copy */
   composite->alpha=p->alpha*(1.0-QuantumScale*q->alpha);
 #endif
 }
