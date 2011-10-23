@@ -248,10 +248,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info == (DrawInfo *) NULL)
     return(clone_info);
   exception=AcquireExceptionInfo();
-  if (clone_info->primitive != (char *) NULL)
-    (void) CloneString(&clone_info->primitive,draw_info->primitive);
-  if (draw_info->geometry != (char *) NULL)
-    (void) CloneString(&clone_info->geometry,draw_info->geometry);
+  (void) CloneString(&clone_info->primitive,draw_info->primitive);
+  (void) CloneString(&clone_info->geometry,draw_info->geometry);
   clone_info->viewbox=draw_info->viewbox;
   clone_info->affine=draw_info->affine;
   clone_info->gravity=draw_info->gravity;
@@ -273,31 +271,24 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info->dash_offset=draw_info->dash_offset;
   clone_info->decorate=draw_info->decorate;
   clone_info->compose=draw_info->compose;
-  if (draw_info->text != (char *) NULL)
-    (void) CloneString(&clone_info->text,draw_info->text);
-  if (draw_info->font != (char *) NULL)
-    (void) CloneString(&clone_info->font,draw_info->font);
-  if (draw_info->metrics != (char *) NULL)
-    (void) CloneString(&clone_info->metrics,draw_info->metrics);
-  if (draw_info->family != (char *) NULL)
-    (void) CloneString(&clone_info->family,draw_info->family);
+  (void) CloneString(&clone_info->text,draw_info->text);
+  (void) CloneString(&clone_info->font,draw_info->font);
+  (void) CloneString(&clone_info->metrics,draw_info->metrics);
+  (void) CloneString(&clone_info->family,draw_info->family);
   clone_info->style=draw_info->style;
   clone_info->stretch=draw_info->stretch;
   clone_info->weight=draw_info->weight;
-  if (draw_info->encoding != (char *) NULL)
-    (void) CloneString(&clone_info->encoding,draw_info->encoding);
+  (void) CloneString(&clone_info->encoding,draw_info->encoding);
   clone_info->pointsize=draw_info->pointsize;
   clone_info->kerning=draw_info->kerning;
   clone_info->interline_spacing=draw_info->interline_spacing;
   clone_info->interword_spacing=draw_info->interword_spacing;
   clone_info->direction=draw_info->direction;
-  if (draw_info->density != (char *) NULL)
-    (void) CloneString(&clone_info->density,draw_info->density);
+  (void) CloneString(&clone_info->density,draw_info->density);
   clone_info->align=draw_info->align;
   clone_info->undercolor=draw_info->undercolor;
   clone_info->border_color=draw_info->border_color;
-  if (draw_info->server_name != (char *) NULL)
-    (void) CloneString(&clone_info->server_name,draw_info->server_name);
+  (void) CloneString(&clone_info->server_name,draw_info->server_name);
   if (draw_info->dash_pattern != (double *) NULL)
     {
       register ssize_t
@@ -328,8 +319,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
         draw_info->gradient.stops,(size_t) number_stops*
         sizeof(*clone_info->gradient.stops));
     }
-  if (draw_info->clip_mask != (char *) NULL)
-    (void) CloneString(&clone_info->clip_mask,draw_info->clip_mask);
+  (void) CloneString(&clone_info->clip_mask,draw_info->clip_mask);
   clone_info->bounds=draw_info->bounds;
   clone_info->clip_units=draw_info->clip_units;
   clone_info->render=draw_info->render;
@@ -4798,7 +4788,6 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
       if (option != (const char *) NULL)
         draw_info->interline_spacing=InterpretLocaleValue(option,
           (char **) NULL);
-      draw_info->direction=UndefinedDirection;
       option=GetImageOption(image_info,"interword-spacing");
       if (option != (const char *) NULL)
         draw_info->interword_spacing=InterpretLocaleValue(option,
@@ -4807,6 +4796,8 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
       if (option != (const char *) NULL)
         draw_info->direction=(DirectionType) ParseCommandOption(
           MagickDirectionOptions,MagickFalse,option);
+      else
+        draw_info->direction=UndefinedDirection;
       option=GetImageOption(image_info,"fill");
       if (option != (const char *) NULL)
         (void) QueryColorCompliance(option,AllCompliance,&draw_info->fill,
