@@ -653,6 +653,11 @@
 #define MAGICKCORE_HAVE_PTHREAD 1
 #endif
 
+/* Have PTHREAD_PRIO_INHERIT. */
+#ifndef MAGICKCORE_HAVE_PTHREAD_PRIO_INHERIT
+#define MAGICKCORE_HAVE_PTHREAD_PRIO_INHERIT 1
+#endif
+
 /* Define to 1 if you have the `pwrite' function. */
 #ifndef MAGICKCORE_HAVE_PWRITE
 #define MAGICKCORE_HAVE_PWRITE 1
