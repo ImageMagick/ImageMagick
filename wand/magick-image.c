@@ -9554,10 +9554,10 @@ WandExport MagickBooleanType MagickSetImageClipMask(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(clip_mask != (MagickWand *) NULL);
   assert(clip_mask->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if (clip_mask->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",clip_mask->name);
   if (clip_mask->images == (Image *) NULL)
-    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+    ThrowWandException(WandError,"ContainsNoImages",clip_mask->name);
   return(SetImageClipMask(wand->images,clip_mask->images));
 }
 
