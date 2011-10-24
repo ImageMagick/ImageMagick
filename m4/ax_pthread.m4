@@ -33,6 +33,10 @@
 #   has a nonstandard name, defines PTHREAD_CREATE_JOINABLE to that name
 #   (e.g. PTHREAD_CREATE_UNDETACHED on AIX).
 #
+#   Also HAVE_PTHREAD_PRIO_INHERIT is defined if pthread is found and the
+#   PTHREAD_PRIO_INHERIT symbol is defined when compiling with
+#   PTHREAD_CFLAGS.
+#
 #   ACTION-IF-FOUND is a list of shell commands to run if a threads library
 #   is found, and ACTION-IF-NOT-FOUND is a list of commands to run it if it
 #   is not found. If ACTION-IF-FOUND is not specified, the default action
@@ -45,9 +49,12 @@
 #   Alejandro Forero Cuervo to the autoconf macro repository. We are also
 #   grateful for the helpful feedback of numerous users.
 #
+#   Updated for Autoconf 2.68 by Daniel Richard G.
+#
 # LICENSE
 #
 #   Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
+#   Copyright (c) 2011 Daniel Richard G. <skunk@iSKUNK.ORG>
 #
 #   This program is free software: you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -75,13 +82,12 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 11
+#serial 16
 
 AU_ALIAS([ACX_PTHREAD], [AX_PTHREAD])
 AC_DEFUN([AX_PTHREAD], [
 AC_REQUIRE([AC_CANONICAL_HOST])
-AC_LANG_SAVE
-AC_LANG_C
+AC_LANG_PUSH([C])
 ax_pthread_ok=no
 
 # We used to check for pthread.h first, but this fails if pthread.h
@@ -153,9 +159,9 @@ case "${host_cpu}-${host_os}" in
         ax_pthread_flags="-pthreads pthread -mt -pthread $ax_pthread_flags"
         ;;
 
-	*-darwin*)
-	ax_pthread_flags="-pthread $ax_pthread_flags"
-	;;
+        *-darwin*)
+        ax_pthread_flags="-pthread $ax_pthread_flags"
+        ;;
 esac
 
 if test x"$ax_pthread_ok" = xno; then
@@ -171,12 +177,12 @@ for flag in $ax_pthread_flags; do
                 PTHREAD_CFLAGS="$flag"
                 ;;
 
-		pthread-config)
-		AC_CHECK_PROG(ax_pthread_config, pthread-config, yes, no)
-		if test x"$ax_pthread_config" = xno; then continue; fi
-		PTHREAD_CFLAGS="`pthread-config --cflags`"
-		PTHREAD_LIBS="`pthread-config --ldflags` `pthread-config --libs`"
-		;;
+                pthread-config)
+                AC_CHECK_PROG(ax_pthread_config, pthread-config, yes, no)
+                if test x"$ax_pthread_config" = xno; then continue; fi
+                PTHREAD_CFLAGS="`pthread-config --cflags`"
+                PTHREAD_LIBS="`pthread-config --ldflags` `pthread-config --libs`"
+                ;;
 
                 *)
                 AC_MSG_CHECKING([for the pthreads library -l$flag])
@@ -198,16 +204,17 @@ for flag in $ax_pthread_flags; do
         # pthread_cleanup_push because it is one of the few pthread
         # functions on Solaris that doesn't have a non-functional libc stub.
         # We try pthread_create on general principles.
-        AC_TRY_LINK([#include <pthread.h>
-		     static void routine(void* a) {a=0;}
-		     static void* start_routine(void* a) {return a;}],
-                    [pthread_t th; pthread_attr_t attr;
-                     pthread_create(&th,0,start_routine,0);
-                     pthread_join(th, 0);
-                     pthread_attr_init(&attr);
-                     pthread_cleanup_push(routine, 0);
-                     pthread_cleanup_pop(0); ],
-                    [ax_pthread_ok=yes])
+        AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <pthread.h>
+                        static void routine(void *a) { a = 0; }
+                        static void *start_routine(void *a) { return a; }],
+                       [pthread_t th; pthread_attr_t attr;
+                        pthread_create(&th, 0, start_routine, 0);
+                        pthread_join(th, 0);
+                        pthread_attr_init(&attr);
+                        pthread_cleanup_push(routine, 0);
+                        pthread_cleanup_pop(0) /* ; */])],
+                [ax_pthread_ok=yes],
+                [])
 
         LIBS="$save_LIBS"
         CFLAGS="$save_CFLAGS"
@@ -230,12 +237,14 @@ if test "x$ax_pthread_ok" = xyes; then
         CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
 
         # Detect AIX lossage: JOINABLE attribute is called UNDETACHED.
-	AC_MSG_CHECKING([for joinable pthread attribute])
-	attr_name=unknown
-	for attr in PTHREAD_CREATE_JOINABLE PTHREAD_CREATE_UNDETACHED; do
-	    AC_TRY_LINK([#include <pthread.h>], [int attr=$attr; return attr;],
-                        [attr_name=$attr; break])
-	done
+        AC_MSG_CHECKING([for joinable pthread attribute])
+        attr_name=unknown
+        for attr in PTHREAD_CREATE_JOINABLE PTHREAD_CREATE_UNDETACHED; do
+            AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <pthread.h>],
+                           [int attr = $attr; return attr /* ; */])],
+                [attr_name=$attr; break],
+                [])
+        done
         AC_MSG_RESULT($attr_name)
         if test "$attr_name" != PTHREAD_CREATE_JOINABLE; then
             AC_DEFINE_UNQUOTED(PTHREAD_CREATE_JOINABLE, $attr_name,
@@ -254,15 +263,25 @@ if test "x$ax_pthread_ok" = xyes; then
             PTHREAD_CFLAGS="$flag $PTHREAD_CFLAGS"
         fi
 
+        AC_CACHE_CHECK([for PTHREAD_PRIO_INHERIT],
+            ax_cv_PTHREAD_PRIO_INHERIT, [
+                AC_LINK_IFELSE([
+                    AC_LANG_PROGRAM([[#include <pthread.h>]], [[int i = PTHREAD_PRIO_INHERIT;]])],
+                    [ax_cv_PTHREAD_PRIO_INHERIT=yes],
+                    [ax_cv_PTHREAD_PRIO_INHERIT=no])
+            ])
+        AS_IF([test "x$ax_cv_PTHREAD_PRIO_INHERIT" = "xyes"],
+            AC_DEFINE([HAVE_PTHREAD_PRIO_INHERIT], 1, [Have PTHREAD_PRIO_INHERIT.]))
+
         LIBS="$save_LIBS"
         CFLAGS="$save_CFLAGS"
 
         # More AIX lossage: must compile with xlc_r or cc_r
-	if test x"$GCC" != xyes; then
+        if test x"$GCC" != xyes; then
           AC_CHECK_PROGS(PTHREAD_CC, xlc_r cc_r, ${CC})
         else
           PTHREAD_CC=$CC
-	fi
+        fi
 else
         PTHREAD_CC="$CC"
 fi
@@ -279,5 +298,5 @@ else
         ax_pthread_ok=no
         $2
 fi
-AC_LANG_RESTORE
+AC_LANG_POP
 ])dnl AX_PTHREAD
