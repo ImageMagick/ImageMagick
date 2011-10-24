@@ -152,6 +152,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert AVS raster image to pixel packets.
     */
+    image->matte=MagickTrue;
     image->columns=width;
     image->rows=height;
     image->depth=8;
@@ -178,8 +179,6 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         SetPixelRed(image,ScaleCharToQuantum(*p++),q);
         SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
         SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
-        if (GetPixelAlpha(image,q) != OpaqueAlpha)
-          image->matte=MagickTrue;
         q+=GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
