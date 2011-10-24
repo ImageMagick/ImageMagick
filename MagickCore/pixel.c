@@ -3640,6 +3640,64 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
 %    o image: the image.
 %
 */
+
+MagickExport void PendInitializePixelChannelMap(Image *image)
+{
+  register ssize_t
+    i;
+
+  size_t
+    n;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  for (i=0; i < (ssize_t) MaxPixelChannels; i++)
+  {
+    SetPixelChannelMapChannel(image,(PixelChannel) i,(PixelTrait) 0);
+    SetPixelChannelMapTraits(image,(PixelChannel) i,UndefinedPixelTrait);
+  }
+  n=0;
+  SetPixelChannelMapChannel(image,RedPixelChannel,(PixelTrait) n++);
+  SetPixelChannelMapTraits(image,RedPixelChannel,(PixelTrait)
+    (UpdatePixelTrait | BlendPixelTrait));
+  SetPixelChannelMapChannel(image,GreenPixelChannel,(PixelTrait) n++);
+  SetPixelChannelMapTraits(image,GreenPixelChannel,(PixelTrait)
+    (UpdatePixelTrait | BlendPixelTrait));
+  SetPixelChannelMapChannel(image,BluePixelChannel,(PixelTrait) n++);
+  SetPixelChannelMapTraits(image,BluePixelChannel,(PixelTrait)
+    (UpdatePixelTrait | BlendPixelTrait));
+  if (image->colorspace == GRAYColorspace)
+    {
+      n=0;
+      SetPixelChannelMapChannel(image,RedPixelChannel,(PixelTrait) n);
+      SetPixelChannelMapChannel(image,GreenPixelChannel,(PixelTrait) n);
+      SetPixelChannelMapChannel(image,BluePixelChannel,(PixelTrait) n++);
+    }
+  if (image->colorspace == CMYKColorspace)
+    {
+      SetPixelChannelMapChannel(image,BlackPixelChannel,(PixelTrait) n++);
+      SetPixelChannelMapTraits(image,BlackPixelChannel,(PixelTrait)
+        (UpdatePixelTrait | BlendPixelTrait));
+    }
+  if (image->storage_class == PseudoClass)
+    {
+      SetPixelChannelMapChannel(image,IndexPixelChannel,(PixelTrait) n++);
+      SetPixelChannelMapTraits(image,IndexPixelChannel,CopyPixelTrait);
+    }
+  if (image->matte != MagickFalse)
+    {
+      SetPixelChannelMapChannel(image,AlphaPixelChannel,(PixelTrait) n++);
+      SetPixelChannelMapTraits(image,AlphaPixelChannel,CopyPixelTrait);
+    }
+  n+=image->number_meta_channels;
+  for ( ; i < (ssize_t) n; i++)
+    SetPixelChannelMapTraits(image,(PixelChannel) i,CopyPixelTrait);
+  image->number_channels=n;
+  if (image->debug != MagickFalse)
+    LogPixelChannels(image);
+  (void) SetPixelChannelMask(image,image->channel_mask);
+}
+
 MagickExport void InitializePixelChannelMap(Image *image)
 {
   PixelChannel
