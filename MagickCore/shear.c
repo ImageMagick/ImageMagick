@@ -1480,7 +1480,8 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  background=image->background_color;
+  GetPixelInfo(image,&background);
+  SetPixelInfoPacket(image,&image->background_color,&background);
   /*
     X shear image.
   */
@@ -1695,7 +1696,8 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  background=image->background_color;
+  GetPixelInfo(image,&background);
+  SetPixelInfoPacket(image,&image->background_color,&background);
   /*
     Y Shear image.
   */
