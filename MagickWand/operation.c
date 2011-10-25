@@ -1588,7 +1588,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
   quantize_info=AcquireQuantizeInfo(image_info);
   SetGeometryInfo(&geometry_info);
   GetPixelInfo(*image,&fill);
-  SetPixelInfoPacket(*image,&(*image)->background_color,&fill);
+  fill=(*image)->background_color;
   channel=image_info->channel;
   format=GetImageOption(image_info,"format");
 

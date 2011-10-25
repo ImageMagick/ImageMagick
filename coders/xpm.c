@@ -737,7 +737,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
     /*
       Define XPM color.
     */
-    SetPixelInfoPacket(image,picon->colormap+i,&pixel);
+    pixel=picon->colormap[i];
     pixel.colorspace=RGBColorspace;
     pixel.depth=8;
     pixel.alpha=(MagickRealType) OpaqueAlpha;
@@ -973,7 +973,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
     /*
       Define XPM color.
     */
-    SetPixelInfoPacket(image,image->colormap+i,&pixel);
+    pixel=image->colormap[i];
     pixel.colorspace=RGBColorspace;
     pixel.depth=8;
     pixel.alpha=(MagickRealType) OpaqueAlpha;

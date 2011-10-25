@@ -257,7 +257,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
       }
       for (i=0; i < (ssize_t) node_info->number_unique; i++)
       {
-        SetPixelInfoPacket(image,&node_info->list[i],&target);
+        target=node_info->list[i];
         if (IsPixelInfoEquivalent(&pixel,&target) != MagickFalse)
           break;
       }
@@ -725,7 +725,7 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
         break;
       for (i=0; i < (ssize_t) node_info->number_unique; i++)
       {
-        SetPixelInfoPacket(image,&node_info->list[i],&target);
+        target=node_info->list[i];
         if (IsPixelInfoEquivalent(&pixel,&target) != MagickFalse)
           break;
       }
@@ -885,7 +885,7 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
         break;
       for (i=0; i < (ssize_t) node_info->number_unique; i++)
       {
-        SetPixelInfoPacket(image,&node_info->list[i],&target);
+        target=node_info->list[i];
         if (IsPixelInfoEquivalent(&pixel,&target) != MagickFalse)
           break;
       }
@@ -1134,7 +1134,7 @@ MagickExport size_t GetNumberColors(const Image *image,FILE *file,
   status=MagickTrue;
   for (i=0; i < (ssize_t) number_colors; i++)
   {
-    SetPixelInfoPacket(image,p,&pixel);
+    pixel=(*p);
     (void) CopyMagickString(tuple,"(",MaxTextExtent);
     ConcatenateColorComponent(&pixel,RedPixelChannel,X11Compliance,tuple);
     (void) ConcatenateMagickString(tuple,",",MaxTextExtent);

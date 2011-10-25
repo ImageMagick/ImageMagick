@@ -2311,8 +2311,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       */
       validity = 1.0;
 
-      GetPixelInfo(distort_image,&invalid);
-      SetPixelInfoPacket(distort_image,&distort_image->matte_color,&invalid);
+      invalid=distort_image->matte_color;
       if (distort_image->colorspace == CMYKColorspace)
         ConvertRGBToCMYK(&invalid);   /* what about other color spaces? */
       for (i=0; i < (ssize_t) distort_image->columns; i++)
