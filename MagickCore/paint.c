@@ -138,7 +138,6 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     status;
 
   PixelInfo
-    fill,
     pixel;
 
   PixelInfo
@@ -202,7 +201,6 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   s=segment_stack;
   PushSegmentStack(y,x,x,1);
   PushSegmentStack(y+1,x,x,-1);
-  GetPixelInfo(image,&fill);
   GetPixelInfo(image,&pixel);
   image_view=AcquireCacheView(image);
   floodplane_view=AcquireCacheView(floodplane_image);
@@ -335,17 +333,16 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
       if (GetPixelAlpha(floodplane_image,p) != OpaqueAlpha)
         {
           (void) GetFillColor(draw_info,x,y,&fill_color,exception);
-          SetPixelInfoPacket(image,&fill_color,&fill);
           if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelRed(image,ClampToQuantum(fill.red),q);
+            SetPixelRed(image,ClampToQuantum(fill_color.red),q);
           if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelGreen(image,ClampToQuantum(fill.green),q);
+            SetPixelGreen(image,ClampToQuantum(fill_color.green),q);
           if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelBlue(image,ClampToQuantum(fill.blue),q);
+            SetPixelBlue(image,ClampToQuantum(fill_color.blue),q);
           if ((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelBlack(image,ClampToQuantum(fill.black),q);
+            SetPixelBlack(image,ClampToQuantum(fill_color.black),q);
           if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelAlpha(image,ClampToQuantum(fill.alpha),q);
+            SetPixelAlpha(image,ClampToQuantum(fill_color.alpha),q);
         }
       p+=GetPixelChannels(floodplane_image);
       q+=GetPixelChannels(image);
@@ -456,9 +453,9 @@ MagickExport MagickBooleanType GradientImage(Image *image,
     sizeof(*gradient->stops));
   for (i=0; i < (ssize_t) gradient->number_stops; i++)
     GetPixelInfo(image,&gradient->stops[i].color);
-  SetPixelInfoPacket(image,start_color,&gradient->stops[0].color);
+  gradient->stops[0].color=(*start_color);
   gradient->stops[0].offset=0.0;
-  SetPixelInfoPacket(image,stop_color,&gradient->stops[1].color);
+  gradient->stops[1].color=(*stop_color);
   gradient->stops[1].offset=1.0;
   /*
     Draw a gradient on the image.

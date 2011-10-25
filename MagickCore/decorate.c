@@ -185,7 +185,6 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 
   PixelInfo
     accentuate,
-    border,
     highlight,
     interior,
     matte,
@@ -241,39 +240,39 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   /*
     Initialize 3D effects color.
   */
-  GetPixelInfo(frame_image,&interior);
-  SetPixelInfoPacket(frame_image,&image->border_color,&interior);
-  GetPixelInfo(frame_image,&matte);
-  matte.colorspace=RGBColorspace;
-  SetPixelInfoPacket(frame_image,&image->matte_color,&matte);
-  GetPixelInfo(frame_image,&border);
-  border.colorspace=RGBColorspace;
-  SetPixelInfoPacket(frame_image,&image->border_color,&border);
-  GetPixelInfo(frame_image,&accentuate);
+  interior=image->border_color;
+  matte=image->matte_color;
+  accentuate=matte;
   accentuate.red=(MagickRealType) (QuantumScale*((QuantumRange-
     AccentuateModulate)*matte.red+(QuantumRange*AccentuateModulate)));
   accentuate.green=(MagickRealType) (QuantumScale*((QuantumRange-
     AccentuateModulate)*matte.green+(QuantumRange*AccentuateModulate)));
   accentuate.blue=(MagickRealType) (QuantumScale*((QuantumRange-
     AccentuateModulate)*matte.blue+(QuantumRange*AccentuateModulate)));
+  accentuate.black=(MagickRealType) (QuantumScale*((QuantumRange-
+    AccentuateModulate)*matte.black+(QuantumRange*AccentuateModulate)));
   accentuate.alpha=matte.alpha;
-  GetPixelInfo(frame_image,&highlight);
+  highlight=matte;
   highlight.red=(MagickRealType) (QuantumScale*((QuantumRange-
     HighlightModulate)*matte.red+(QuantumRange*HighlightModulate)));
   highlight.green=(MagickRealType) (QuantumScale*((QuantumRange-
     HighlightModulate)*matte.green+(QuantumRange*HighlightModulate)));
   highlight.blue=(MagickRealType) (QuantumScale*((QuantumRange-
     HighlightModulate)*matte.blue+(QuantumRange*HighlightModulate)));
+  highlight.black=(MagickRealType) (QuantumScale*((QuantumRange-
+    HighlightModulate)*matte.black+(QuantumRange*HighlightModulate)));
   highlight.alpha=matte.alpha;
-  GetPixelInfo(frame_image,&shadow);
+  shadow=matte;
   shadow.red=QuantumScale*matte.red*ShadowModulate;
   shadow.green=QuantumScale*matte.green*ShadowModulate;
   shadow.blue=QuantumScale*matte.blue*ShadowModulate;
+  shadow.black=QuantumScale*matte.black*ShadowModulate;
   shadow.alpha=matte.alpha;
-  GetPixelInfo(frame_image,&trough);
+  trough=matte;
   trough.red=QuantumScale*matte.red*TroughModulate;
   trough.green=QuantumScale*matte.green*TroughModulate;
   trough.blue=QuantumScale*matte.blue*TroughModulate;
+  trough.black=QuantumScale*matte.black*TroughModulate;
   trough.alpha=matte.alpha;
   status=MagickTrue;
   progress=0;

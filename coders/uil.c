@@ -174,11 +174,11 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
     status,
     transparent;
 
-  PixelInfo
-    pixel;
-
   MagickSizeType
     number_pixels;
+
+  PixelInfo
+    pixel;
 
   register const Quantum
     *p;
@@ -303,7 +303,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
     /*
       Define UIL color.
     */
-    SetPixelInfoPacket(image,image->colormap+i,&pixel);
+    pixel=image->colormap[i];
     pixel.colorspace=RGBColorspace;
     pixel.depth=8;
     pixel.alpha=(MagickRealType) OpaqueAlpha;

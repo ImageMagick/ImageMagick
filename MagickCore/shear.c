@@ -1476,16 +1476,15 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
   ssize_t
     y;
 
+  /*
+    X shear image.
+  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  GetPixelInfo(image,&background);
-  SetPixelInfoPacket(image,&image->background_color,&background);
-  /*
-    X shear image.
-  */
   status=MagickTrue;
+  background=image->background_color;
   progress=0;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1692,17 +1691,16 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
   ssize_t
     x;
 
+  /*
+    Y Shear image.
+  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  GetPixelInfo(image,&background);
-  SetPixelInfoPacket(image,&image->background_color,&background);
-  /*
-    Y Shear image.
-  */
   status=MagickTrue;
   progress=0;
+  background=image->background_color;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress, status)
