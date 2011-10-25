@@ -2464,17 +2464,17 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
   if (child != (XMLTreeInfo *) NULL)
     {
       if (CurrentContext->fill.alpha != OpaqueAlpha)
-        pixel.matte=CurrentContext->fill.alpha != OpaqueAlpha ? MagickTrue :
-          MagickFalse;
-      pixel=CurrentContext->fill;
+        pixel.matte=CurrentContext->fill.alpha != OpaqueAlpha ?
+          MagickTrue : MagickFalse;
+      SetPixelInfoPacket(wand->image,&CurrentContext->fill,&pixel);
       GetColorTuple(&pixel,MagickTrue,value);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"fill-alpha",0);
   if (child != (XMLTreeInfo *) NULL)
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%g",(double) QuantumScale*
-        CurrentContext->fill.alpha);
+      (void) FormatLocaleString(value,MaxTextExtent,"%g",
+        (double) QuantumScale*CurrentContext->fill.alpha);
       (void) SetXMLTreeContent(child,value);
     }
   child=AddChildToXMLTree(xml_info,"fill-rule",0);
@@ -2532,7 +2532,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
       if (CurrentContext->stroke.alpha != OpaqueAlpha)
         pixel.matte=CurrentContext->stroke.alpha != OpaqueAlpha ?
           MagickTrue : MagickFalse;
-      pixel=CurrentContext->stroke;
+      SetPixelInfoPacket(wand->image,&CurrentContext->stroke,&pixel);
       GetColorTuple(&pixel,MagickTrue,value);
       (void) SetXMLTreeContent(child,value);
     }
@@ -2625,7 +2625,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
       if (CurrentContext->undercolor.alpha != OpaqueAlpha)
         pixel.matte=CurrentContext->undercolor.alpha != OpaqueAlpha ?
           MagickTrue : MagickFalse;
-      pixel=CurrentContext->undercolor;
+      SetPixelInfoPacket(wand->image,&CurrentContext->undercolor,&pixel);
       GetColorTuple(&pixel,MagickTrue,value);
       (void) SetXMLTreeContent(child,value);
     }

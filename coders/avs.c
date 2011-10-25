@@ -141,6 +141,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read AVS X image.
   */
+  image->matte=MagickTrue;
   width=ReadBlobMSBLong(image);
   height=ReadBlobMSBLong(image);
   if (EOFBlob(image) != MagickFalse)
@@ -152,7 +153,6 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert AVS raster image to pixel packets.
     */
-    image->matte=MagickTrue;
     image->columns=width;
     image->rows=height;
     image->depth=8;
