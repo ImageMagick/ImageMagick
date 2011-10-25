@@ -335,7 +335,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
       if (GetPixelAlpha(floodplane_image,p) != OpaqueAlpha)
         {
           (void) GetFillColor(draw_info,x,y,&fill_color,exception);
-          SetPixelInfoPacket(image,&fill_color,&fill);
+          fill=fill_color;
           if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
             SetPixelRed(image,ClampToQuantum(fill.red),q);
           if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
@@ -456,9 +456,9 @@ MagickExport MagickBooleanType GradientImage(Image *image,
     sizeof(*gradient->stops));
   for (i=0; i < (ssize_t) gradient->number_stops; i++)
     GetPixelInfo(image,&gradient->stops[i].color);
-  SetPixelInfoPacket(image,start_color,&gradient->stops[0].color);
+  gradient->stops[0].color=(*start_color);
   gradient->stops[0].offset=0.0;
-  SetPixelInfoPacket(image,stop_color,&gradient->stops[1].color);
+  gradient->stops[1].color=(*stop_color);
   gradient->stops[1].offset=1.0;
   /*
     Draw a gradient on the image.

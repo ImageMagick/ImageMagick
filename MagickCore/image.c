@@ -2433,9 +2433,6 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       PixelInfo
         background;
 
-      PixelInfo
-        pixel;
-
       ssize_t
         y;
 
@@ -2446,9 +2443,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         break;
       if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         break;
-      GetPixelInfo(image,&background);
-      SetPixelInfoPacket(image,&image->background_color,&background);
-      SetPacketPixelInfo(image,&background,&pixel);
+      background=image->background_color;
       image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(dynamic,4) shared(status)
@@ -2506,8 +2501,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           /*
             Reset all color channels to background color.
           */
-          GetPixelInfo(image,&background);
-          SetPixelInfoPacket(image,&(image->background_color),&background);
+          background=image->background_color;
           (void) LevelImageColors(image,&background,&background,MagickTrue,
             exception);
         }
@@ -2589,9 +2583,6 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   PixelInfo
     background;
 
-  PixelInfo
-    pixel;
-
   ssize_t
     y;
 
@@ -2604,13 +2595,11 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   if (image->background_color.alpha != OpaqueAlpha)
     image->matte=MagickTrue;
   GetPixelInfo(image,&background);
-  SetPixelInfoPacket(image,&image->background_color,&background);
-  SetPacketPixelInfo(image,&background,&pixel);
+  background=image->background_color;
   /*
     Set image background color.
   */
   status=MagickTrue;
-  pixel.black=0;
   image_view=AcquireCacheView(image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
