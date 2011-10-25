@@ -525,19 +525,6 @@ static inline void SetPixelInfo(const Image *image,const Quantum *pixel,
       pixel[image->channel_map[IndexPixelChannel].channel];
 }
 
-static inline void SetPixelInfoPacket(const Image *image,
-  const PixelInfo *pixel,PixelInfo *pixel_info)
-{
-  pixel_info->red=(MagickRealType) pixel->red;
-  pixel_info->green=(MagickRealType) pixel->green;
-  pixel_info->blue=(MagickRealType) pixel->blue;
-  pixel_info->alpha=(MagickRealType) pixel->alpha;
-  if (image->colorspace == CMYKColorspace)
-    pixel_info->black=(MagickRealType) pixel->black;
-  if (image->storage_class == PseudoClass)
-    pixel_info->index=(MagickRealType) pixel->index;
-}
-
 static inline void SetPixelMagenta(const Image *image,const Quantum magenta,
   Quantum *pixel)
 {

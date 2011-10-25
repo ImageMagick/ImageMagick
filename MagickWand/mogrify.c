@@ -678,7 +678,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
   quantize_info=AcquireQuantizeInfo(mogrify_info);
   SetGeometryInfo(&geometry_info);
   GetPixelInfo(*image,&fill);
-  SetPixelInfoPacket(*image,&(*image)->background_color,&fill);
+  fill=(*image)->background_color;
   attenuate=1.0;
   compose=(*image)->compose;
   interpolate_method=UndefinedInterpolatePixel;

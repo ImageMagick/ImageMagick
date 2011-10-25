@@ -647,7 +647,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           p=image->colormap;
           for (i=0; i < (ssize_t) image->colors; i++)
           {
-            SetPixelInfoPacket(image,p,&pixel);
+            pixel=(*p);
             (void) CopyMagickString(tuple,"(",MaxTextExtent);
             ConcatenateColorComponent(&pixel,RedPixelChannel,X11Compliance,
               tuple);
