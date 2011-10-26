@@ -1101,6 +1101,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
     if (status == MagickFalse)
       {
+        quantum_info=DestroyQuantumInfo(quantum_info);
         TIFFClose(tiff);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
@@ -1656,6 +1657,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     }
     SetQuantumImageType(image,quantum_type);
   next_tiff_frame:
+    quantum_info=DestroyQuantumInfo(quantum_info);
     if ((photometric == PHOTOMETRIC_LOGL) ||
         (photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
@@ -1701,7 +1703,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (status == MagickFalse)
           break;
       }
-    quantum_info=DestroyQuantumInfo(quantum_info);
   } while (status == MagickTrue);
   (void) TIFFSetWarningHandler(warning_handler);
   (void) TIFFSetErrorHandler(error_handler);
