@@ -1300,6 +1300,16 @@
 #define MAGICKCORE_PACKAGE_VERSION "6.7.3-2"
 #endif
 
+/* Define if you have PANGOCAIRO library */
+#ifndef MAGICKCORE_PANGOCAIRO_DELEGATE
+#define MAGICKCORE_PANGOCAIRO_DELEGATE 1
+#endif
+
+/* Define if you have PANGO library */
+#ifndef MAGICKCORE_PANGO_DELEGATE
+#define MAGICKCORE_PANGO_DELEGATE 1
+#endif
+
 /* Define if you have PNG library */
 #ifndef MAGICKCORE_PNG_DELEGATE
 #define MAGICKCORE_PNG_DELEGATE 1
