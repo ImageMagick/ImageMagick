@@ -553,6 +553,39 @@ static ConvolveInfo *GetConvolveInfo(const Image *image,const char *name,
       convolve_info=DestroyConvolveInfo(convolve_info);
       return((ConvolveInfo *) NULL);
     }
+  if (image->debug != MagickFalse)
+    {
+      char
+        attribute[MaxTextExtent];
+
+      size_t
+        length;
+
+      clGetDeviceInfo(convolve_info->devices[0],CL_DEVICE_NAME,
+        sizeof(attribute),attribute,&length);
+      (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),"Name: %s",
+        attribute);
+      clGetDeviceInfo(convolve_info->devices[0],CL_DEVICE_VENDOR,
+        sizeof(attribute),attribute,&length);
+      (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),"Vendor: %s",
+        attribute);
+      clGetDeviceInfo(convolve_info->devices[0],CL_DEVICE_VERSION,
+        sizeof(attribute),attribute,&length);
+      (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),
+        "Driver Version: %s",attribute);
+      clGetDeviceInfo(convolve_info->devices[0],CL_DEVICE_PROFILE,
+        sizeof(attribute),attribute,&length);
+      (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),"Profile: %s",
+        attribute);
+      clGetDeviceInfo(convolve_info->devices[0],CL_DRIVER_VERSION,
+        sizeof(attribute),attribute,&length);
+      (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),"Driver: %s",
+        attribute);
+      clGetDeviceInfo(convolve_info->devices[0],CL_DEVICE_EXTENSIONS,
+        sizeof(attribute),attribute,&length);
+      (void) LogMagickEvent(AccelerateEvent,GetMagickModule(),"Extensions: %s",
+        attribute);
+    }
   /*
     Create OpenCL command queue.
   */
