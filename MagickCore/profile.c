@@ -5760,7 +5760,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
           return(MagickTrue);
         }
 #if !defined(MAGICKCORE_LCMS_DELEGATE)
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
+      (void) ThrowMagickException(exception,GetMagickModule(),
         MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn",
         "`%s' (LCMS)",image->filename);
 #else
