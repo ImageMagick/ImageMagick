@@ -135,6 +135,7 @@ MAGICK_CODER_SRCS = \
 	coders/null.c \
 	coders/otb.c \
 	coders/palm.c \
+	coders/pango.c \
 	coders/pattern.c \
 	coders/pcd.c \
 	coders/pcl.c \
@@ -252,6 +253,7 @@ coders_LTLIBRARIES = \
 	coders/null.la \
 	coders/otb.la \
 	coders/palm.la \
+	coders/pango.la \
 	coders/pattern.la \
 	coders/pcd.la \
 	coders/pcl.la \
@@ -689,6 +691,12 @@ coders_palm_la_SOURCES     = coders/palm.c
 coders_palm_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_palm_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_palm_la_LIBADD      = $(MAGICKCORE_LIBS)
+
+# PANGO coder module
+coders_pango_la_SOURCES     = coders/pango.c
+coders_pango_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS) $(PANGO_CFLAGS)
+coders_pango_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_pango_la_LIBADD      = $(MAGICKCORE_LIBS) $(PANGO LIBS)
 
 # Pattern module
 coders_pattern_la_SOURCES   = coders/pattern.c

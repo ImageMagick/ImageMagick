@@ -753,6 +753,12 @@ RSVG_CFLAGS
 PNG_LIBS
 PNG_DELEGATE_FALSE
 PNG_DELEGATE_TRUE
+PANGOCAIRO_DELEGATE_FALSE
+PANGOCAIRO_DELEGATE_TRUE
+PANGO_DELEGATE_FALSE
+PANGO_DELEGATE_TRUE
+PANGO_LIBS
+PANGO_CFLAGS
 OPENEXR_DELEGATE_FALSE
 OPENEXR_DELEGATE_TRUE
 OPENEXR_LIBS
@@ -1137,6 +1143,7 @@ with_lcms2
 with_lqr
 with_lzma
 with_openexr
+with_pango
 with_png
 with_rsvg
 with_tiff
@@ -1170,6 +1177,8 @@ LQR_CFLAGS
 LQR_LIBS
 OPENEXR_CFLAGS
 OPENEXR_LIBS
+PANGO_CFLAGS
+PANGO_LIBS
 RSVG_CFLAGS
 RSVG_LIBS
 CAIRO_SVG_CFLAGS
@@ -1889,6 +1898,7 @@ Optional Packages:
   --without-lqr           disable Liquid Rescale support
   --without-lzma          disable LZMA support
   --without-openexr       disable OpenEXR support
+  --without-pango         disable PANGO support
   --without-png           disable PNG support
   --without-rsvg          disable RSVG support
   --without-tiff          disable TIFF support
@@ -1928,6 +1938,9 @@ Some influential environment variables:
               C compiler flags for OPENEXR, overriding pkg-config
   OPENEXR_LIBS
               linker flags for OPENEXR, overriding pkg-config
+  PANGO_CFLAGS
+              C compiler flags for PANGO, overriding pkg-config
+  PANGO_LIBS  linker flags for PANGO, overriding pkg-config
   RSVG_CFLAGS C compiler flags for RSVG, overriding pkg-config
   RSVG_LIBS   linker flags for RSVG, overriding pkg-config
   CAIRO_SVG_CFLAGS
@@ -3583,7 +3596,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5721
+MAGICK_SVN_REVISION=5750
 
 
 
@@ -30212,6 +30225,208 @@ fi
 
 
 #
+# Check for PANGO delegate library.
+#
+
+# Check whether --with-pango was given.
+if test "${with_pango+set}" = set; then :
+  withval=$with_pango; with_pango=$withval
+else
+  with_pango=$have_x
+fi
+
+
+if test "$with_pango" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-pango=$with_pango "
+fi
+
+have_pango='no'
+have_pangocqiro='no'
+PANGO_CFLAGS=""
+PANGO_LIBS=""
+PANGO_PKG=""
+if test "x$with_pango" = "xyes"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
+$as_echo "-------------------------------------------------------------" >&6; }
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for PANGO" >&5
+$as_echo_n "checking for PANGO... " >&6; }
+
+if test -n "$PANGO_CFLAGS"; then
+    pkg_cv_PANGO_CFLAGS="$PANGO_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pango") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_PANGO_CFLAGS=`$PKG_CONFIG --cflags "pango" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$PANGO_LIBS"; then
+    pkg_cv_PANGO_LIBS="$PANGO_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pango") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_PANGO_LIBS=`$PKG_CONFIG --libs "pango" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "pango" 2>&1`
+        else
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --print-errors "pango" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$PANGO_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                have_pango=no
+elif test $pkg_failed = untried; then
+	have_pango=no
+else
+	PANGO_CFLAGS=$pkg_cv_PANGO_CFLAGS
+	PANGO_LIBS=$pkg_cv_PANGO_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_pango=yes
+fi
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for PANGO" >&5
+$as_echo_n "checking for PANGO... " >&6; }
+
+if test -n "$PANGO_CFLAGS"; then
+    pkg_cv_PANGO_CFLAGS="$PANGO_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangopangocairo\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pangopangocairo") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_PANGO_CFLAGS=`$PKG_CONFIG --cflags "pangopangocairo" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$PANGO_LIBS"; then
+    pkg_cv_PANGO_LIBS="$PANGO_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangopangocairo\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pangopangocairo") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_PANGO_LIBS=`$PKG_CONFIG --libs "pangopangocairo" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "pangopangocairo" 2>&1`
+        else
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --print-errors "pangopangocairo" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$PANGO_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                have_pangocairo=no
+elif test $pkg_failed = untried; then
+	have_pangocairo=no
+else
+	PANGO_CFLAGS=$pkg_cv_PANGO_CFLAGS
+	PANGO_LIBS=$pkg_cv_PANGO_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_pangocairo=yes
+fi
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+fi
+
+if test "$have_pango" = 'yes'; then
+
+$as_echo "#define PANGO_DELEGATE 1" >>confdefs.h
+
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$PANGO_CFLAGS $CPPFLAGS"
+    fi
+fi
+
+if test "$have_pangocairo" = 'yes'; then
+
+$as_echo "#define PANGOCAIRO_DELEGATE 1" >>confdefs.h
+
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$PANGOCAIRO_SVG_CFLAGS $CPPFLAGS"
+    fi
+fi
+
+ if test "$have_pango" = 'yes'; then
+  PANGO_DELEGATE_TRUE=
+  PANGO_DELEGATE_FALSE='#'
+else
+  PANGO_DELEGATE_TRUE='#'
+  PANGO_DELEGATE_FALSE=
+fi
+
+ if test "$have_pangocairo" = 'yes'; then
+  PANGOCAIRO_DELEGATE_TRUE=
+  PANGOCAIRO_DELEGATE_FALSE='#'
+else
+  PANGOCAIRO_DELEGATE_TRUE='#'
+  PANGOCAIRO_DELEGATE_FALSE=
+fi
+
+
+
+
+
+#
 # Check for PNG delegate library.
 #
 
@@ -34759,7 +34974,7 @@ fi
 if test "$with_modules" != 'no'; then
     MAGICK_DEP_LIBS="$LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JPEG_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $CCMALLOC_LIBS $EFENCE_LIBS $UMEM_LIBS $GOMP_LIBS $CL_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $CCMALLOC_LIBS $EFENCE_LIBS $UMEM_LIBS $GOMP_LIBS $CL_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $CCMALLOC_LIBS $EFENCE_LIBS $UMEM_LIBS $GOMP_LIBS $CL_LIBS $THREAD_LIBS"
 fi
 
 
@@ -35104,6 +35319,14 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${OPENEXR_DELEGATE_TRUE}" && test -z "${OPENEXR_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"OPENEXR_DELEGATE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${PANGO_DELEGATE_TRUE}" && test -z "${PANGO_DELEGATE_FALSE}"; then
+  as_fn_error $? "conditional \"PANGO_DELEGATE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${PANGOCAIRO_DELEGATE_TRUE}" && test -z "${PANGOCAIRO_DELEGATE_FALSE}"; then
+  as_fn_error $? "conditional \"PANGOCAIRO_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${PNG_DELEGATE_TRUE}" && test -z "${PNG_DELEGATE_FALSE}"; then
@@ -37882,6 +38105,7 @@ LZMA              --with-lzma=$with_lzma		$have_lzma
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
 PERL              --with-perl=$with_perl		$have_perl
+PANGO             --with-pango=$with_pango		$have_pango
 PNG               --with-png=$with_png		$have_png
 RSVG              --with-rsvg=$with_rsvg		$have_rsvg
 TIFF              --with-tiff=$with_tiff		$have_tiff
@@ -37957,6 +38181,7 @@ LZMA              --with-lzma=$with_lzma		$have_lzma
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
 PERL              --with-perl=$with_perl		$have_perl
+PANGO             --with-pango=$with_pango		$have_pango
 PNG               --with-png=$with_png		$have_png
 RSVG              --with-rsvg=$with_rsvg		$have_rsvg
 TIFF              --with-tiff=$with_tiff		$have_tiff

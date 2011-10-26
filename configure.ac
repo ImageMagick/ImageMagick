@@ -2415,6 +2415,53 @@ AC_SUBST(OPENEXR_LIBS)
 dnl ===========================================================================
 
 #
+# Check for PANGO delegate library.
+#
+AC_ARG_WITH([pango],
+    [AC_HELP_STRING([--without-pango],
+                    [disable PANGO support])],
+    [with_pango=$withval],
+    [with_pango=$have_x])
+
+if test "$with_pango" != 'yes'; then
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-pango=$with_pango "
+fi
+
+have_pango='no'
+have_pangocqiro='no'
+PANGO_CFLAGS=""
+PANGO_LIBS=""
+PANGO_PKG=""
+if test "x$with_pango" = "xyes"; then
+    AC_MSG_RESULT([-------------------------------------------------------------])
+    PKG_CHECK_MODULES(PANGO, pango, have_pango=yes, have_pango=no)
+    AC_MSG_RESULT([])
+    PKG_CHECK_MODULES(PANGO, pangopangocairo, have_pangocairo=yes, have_pangocairo=no)
+    AC_MSG_RESULT([])
+fi
+
+if test "$have_pango" = 'yes'; then
+    AC_DEFINE(PANGO_DELEGATE,1,Define if you have PANGO library)
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$PANGO_CFLAGS $CPPFLAGS"
+    fi
+fi
+
+if test "$have_pangocairo" = 'yes'; then
+    AC_DEFINE(PANGOCAIRO_DELEGATE,1,Define if you have PANGOCAIRO library)
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$PANGOCAIRO_SVG_CFLAGS $CPPFLAGS"
+    fi
+fi
+
+AM_CONDITIONAL(PANGO_DELEGATE, test "$have_pango" = 'yes')
+AM_CONDITIONAL(PANGOCAIRO_DELEGATE, test "$have_pangocairo" = 'yes')
+AC_SUBST(PANGO_CFLAGS)
+AC_SUBST(PANGO_LIBS)
+
+dnl ===========================================================================
+
+#
 # Check for PNG delegate library.
 #
 AC_ARG_WITH(png,
@@ -3587,7 +3634,7 @@ AC_SUBST(MAGICK_LTDLDEPS)
 if test "$with_modules" != 'no'; then
     MAGICK_DEP_LIBS="$LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JPEG_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $CCMALLOC_LIBS $EFENCE_LIBS $UMEM_LIBS $GOMP_LIBS $CL_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $CCMALLOC_LIBS $EFENCE_LIBS $UMEM_LIBS $GOMP_LIBS $CL_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $CCMALLOC_LIBS $EFENCE_LIBS $UMEM_LIBS $GOMP_LIBS $CL_LIBS $THREAD_LIBS"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -3708,6 +3755,7 @@ LZMA              --with-lzma=$with_lzma		$have_lzma
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
 PERL              --with-perl=$with_perl		$have_perl
+PANGO             --with-pango=$with_pango		$have_pango
 PNG               --with-png=$with_png		$have_png
 RSVG              --with-rsvg=$with_rsvg		$have_rsvg
 TIFF              --with-tiff=$with_tiff		$have_tiff
