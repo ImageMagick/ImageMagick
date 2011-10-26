@@ -33,9 +33,9 @@ extern "C" {
 
 typedef enum
 {
-  UndefinedEvents,
+  UndefinedEvents = 0x000000,
   NoEvents = 0x00000,
-  TraceEvent = 0x00001,
+  AccelerateEvent = 0x00001,
   AnnotateEvent = 0x00002,
   BlobEvent = 0x00004,
   CacheEvent = 0x00008,
@@ -50,10 +50,11 @@ typedef enum
   PixelEvent = 0x01000,
   PolicyEvent = 0x02000,
   ResourceEvent = 0x04000,
-  TransformEvent = 0x08000,
-  UserEvent = 0x10000,
-  WandEvent = 0x20000,
-  X11Event = 0x40000,
+  TraceEvent = 0x08000,
+  TransformEvent = 0x10000,
+  UserEvent = 0x20000,
+  WandEvent = 0x40000,
+  X11Event = 0x80000,
   AllEvents = 0x7fffffff
 } LogEventType;
 
