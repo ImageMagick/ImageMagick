@@ -1226,6 +1226,7 @@ static const OptionInfo
     { "Undefined", UndefinedEvents, UndefinedOptionFlag, MagickTrue },
     { "All", (AllEvents &~ TraceEvent), UndefinedOptionFlag, MagickFalse },
     { "Annotate", AnnotateEvent, UndefinedOptionFlag, MagickFalse },
+    { "Accelerate", AccelerateEvent, UndefinedOptionFlag, MagickFalse },
     { "Blob", BlobEvent, UndefinedOptionFlag, MagickFalse },
     { "Cache", CacheEvent, UndefinedOptionFlag, MagickFalse },
     { "Coder", CoderEvent, UndefinedOptionFlag, MagickFalse },
