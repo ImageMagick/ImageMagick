@@ -1087,6 +1087,8 @@ with_threads
 enable_openmp
 enable_opencl
 enable_largefile
+with_includedir_arch
+with_configdir_arch
 enable_shared
 enable_static
 with_pic
@@ -1851,6 +1853,8 @@ Optional Packages:
   --with-dmalloc          use dmalloc, as in
 			  http://www.dmalloc.com/dmalloc.tar.gz
   --without-threads       disable threads support
+  --includedir-arch=DIR   ARCH specific include directory
+  --configdir-arch=DIR    ARCH specific config directory
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
   --with-sysroot=DIR Search for dependent libraries within DIR
@@ -9710,6 +9714,43 @@ fi
         LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGEFILE_SOURCE=1"
     fi
 fi
+
+
+
+#
+# ARCH specific include directory
+#
+
+# Check whether --with-includedir-arch was given.
+if test "${with_includedir_arch+set}" = set; then :
+  withval=$with_includedir_arch; includedir_arch=$withval
+else
+  includedir_arch=$INCLUDE_DIR
+fi
+
+
+
+cat >>confdefs.h <<_ACEOF
+#define INCLUDEDIR_ARCH "$includedir_arch"
+_ACEOF
+
+
+#
+# ARCH specific configuration directory
+#
+
+# Check whether --with-configdir-arch was given.
+if test "${with_configdir_arch+set}" = set; then :
+  withval=$with_configdir_arch; configdir_arch=$withval
+else
+  configdir_arch="${LIB_DIR}/${PACKAGE_NAME}-${PACKAGE_VERSION}"
+fi
+
+
+
+cat >>confdefs.h <<_ACEOF
+#define CONFIGDIR_ARCH "$configdir_arch"
+_ACEOF
 
 
 #
