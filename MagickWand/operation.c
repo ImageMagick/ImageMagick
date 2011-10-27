@@ -1416,15 +1416,12 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
         }
       if (LocaleCompare("type",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              image_info->type=UndefinedType;
-              (void) SetImageOption(image_info,option,"undefined");
-              break;
-            }
-          image_info->type=(ImageType) ParseCommandOption(MagickTypeOptions,
-            MagickFalse,argv[1]);
-          (void) SetImageOption(image_info,option,argv[1]);
+          (void) SetImageOption(image_info,option,
+               IfSetOption ? argv[1] : (char) NULL);
+          image_info->type=UndefinedType;
+          if (IfSetOption)
+            image_info->type=(ImageType) ParseCommandOption(MagickTypeOptions,
+                 MagickFalse,argv[1]);
           break;
         }
       break;
@@ -1433,25 +1430,23 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
     {
       if (LocaleCompare("undercolor",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              (void) DeleteImageOption(image_info,option);
-              break;
-            }
-          (void) SetImageOption(image_info,option,argv[1]);
+          (void) SetImageOption(image_info,option,
+               IfSetOption ? argv[1] : (char) NULL);
+          (void) QueryColorCompliance(argv[1],AllCompliance,
+               draw_info->undercolor,exception);
           break;
         }
       if (LocaleCompare("units",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              image_info->units=UndefinedResolution;
-              (void) SetImageOption(image_info,option,"undefined");
-              break;
-            }
-          image_info->units=(ResolutionType) ParseCommandOption(
-            MagickResolutionOptions,MagickFalse,argv[1]);
-          (void) SetImageOption(image_info,option,argv[1]);
+          /* Set in images via SyncImageSettings() */
+          /* Should this effect draw_info X and Y resolution? */
+          /* FUTURE: this probably should be part of the density setting */
+          (void) SetImageOption(image_info,option,
+               IfSetOption ? argv[1] : (char) NULL);
+          image_info->units=UndefinedResolution;
+          if (IfSetOption)
+             image_info->units=(ResolutionType) ParseCommandOption(
+                  MagickResolutionOptions,MagickFalse,argv[1]);
           break;
         }
       break;
@@ -1460,43 +1455,57 @@ WandExport MagickBooleanType ApplySettingsOption(ImageInfo *image_info,
     {
       if (LocaleCompare("verbose",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              image_info->verbose=MagickFalse;
-              break;
-            }
-          image_info->verbose=MagickTrue;
-          image_info->ping=MagickFalse;
+          /* FUTURE: Also an image artifact, set in Simple Operators.
+             But artifact is only used in verbose output.
+          */
+          image_info->verbose= IfSetOption ? MagickTrue : MagickFalse;
+          image_info->ping=MagickFalse; /* verbose can't be a ping */
           break;
         }
       if (LocaleCompare("view",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              if (image_info->view != (char *) NULL)
-                image_info->view=DestroyString(image_info->view);
-              break;
-            }
-          (void) CloneString(&image_info->view,argv[1]);
+          /* FUTURE: Convert from image_info to Option
+             Only used by coder FPX
+          */
+          (void) CloneString(&image_info->view,
+               IfSetOption ? argv[1] : (char) NULL);
           break;
         }
       if (LocaleCompare("virtual-pixel",option) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              image_info->virtual_pixel_method=UndefinedVirtualPixelMethod;
-              (void) SetImageOption(image_info,option,"undefined");
-              break;
-            }
+          /* Also used as a 'image' option deep in image structure */
+          const char
+            *value = IfSetOption ? argv[1] : "undefined";
+
+          (void) SetImageOption(image_info,option,value);
           image_info->virtual_pixel_method=(VirtualPixelMethod)
-            ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,argv[1]);
-          (void) SetImageOption(image_info,option,argv[1]);
+            ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,value);
           break;
         }
       break;
     }
     case 'w':
     {
+      if (LocaleCompare("weight",argv[0]+1) == 0)
+        {
+          /* FUTURE: relative weights not sensical due to first assignment!
+             Also just what is actually using font 'weight' ???
+          */
+          draw_info->weight=StringToUnsignedLong(argv[1]);
+          if (LocaleCompare(argv[1],"all") == 0)
+            draw_info->weight=0;
+          if (LocaleCompare(argv[1],"bold") == 0)
+            draw_info->weight=700;
+          if (LocaleCompare(argv[1],"bolder") == 0)
+            if (draw_info->weight <= 800)
+              draw_info->weight+=100;
+          if (LocaleCompare(argv[1],"lighter") == 0)
+            if (draw_info->weight >= 100)
+              draw_info->weight-=100;
+          if (LocaleCompare(argv[1],"normal") == 0)
+            draw_info->weight=400;
+          break;
+        }
       if (LocaleCompare("white-point",option) == 0)
         {
           if (*argv[0] == '+')
@@ -3527,16 +3536,8 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
         }
       if (LocaleCompare("type",argv[0]+1) == 0)
         {
-          ImageType
-            type;
-
+          /* Note that "type" setting should have already been defined */
           (void) SyncImageSettings(image_info,*image,exception);
-          if (*argv[0] == '+')
-            type=UndefinedType;
-          else
-            type=(ImageType) ParseCommandOption(MagickTypeOptions,MagickFalse,
-              argv[1]);
-          (*image)->type=UndefinedType;
           (void) SetImageType(*image,type,exception);
           break;
         }
@@ -3544,12 +3545,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
     }
     case 'u':
     {
-      if (LocaleCompare("undercolor",argv[0]+1) == 0)
-        {
-          (void) QueryColorCompliance(argv[1],AllCompliance,&draw_info->undercolor,
-            exception);
-          break;
-        }
       if (LocaleCompare("unique",argv[0]+1) == 0)
         {
           if (*argv[0] == '+')
@@ -3563,18 +3558,12 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
         }
       if (LocaleCompare("unique-colors",argv[0]+1) == 0)
         {
-          /*
-            Unique image colors.
-          */
           (void) SyncImageSettings(image_info,*image,exception);
           new_image=UniqueImageColors(*image,exception);
           break;
         }
       if (LocaleCompare("unsharp",argv[0]+1) == 0)
         {
-          /*
-            Unsharp mask image.
-          */
           (void) SyncImageSettings(image_info,*image,exception);
           flags=ParseGeometry(argv[1],&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -3594,7 +3583,7 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
       if (LocaleCompare("verbose",argv[0]+1) == 0)
         {
           (void) SetImageArtifact(*image,argv[0]+1,
-            *argv[0] == '+' ? "false" : "true");
+                 *argv[0] == '+' ? "false" : "true");
           break;
         }
       if (LocaleCompare("vignette",argv[0]+1) == 0)
@@ -3617,15 +3606,8 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
         }
       if (LocaleCompare("virtual-pixel",argv[0]+1) == 0)
         {
-          if (*argv[0] == '+')
-            {
-              (void) SetImageVirtualPixelMethod(*image,
-                UndefinedVirtualPixelMethod);
-              break;
-            }
-          (void) SetImageVirtualPixelMethod(*image,(VirtualPixelMethod)
-            ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,
-            argv[1]));
+          /* setting already defined in image_info structure */
+          SetImageVirtualPixelMethod(*image, image_info->virtual_pixel_method);
           break;
         }
       break;
@@ -3634,9 +3616,6 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
     {
       if (LocaleCompare("wave",argv[0]+1) == 0)
         {
-          /*
-            Wave image.
-          */
           (void) SyncImageSettings(image_info,*image,exception);
           flags=ParseGeometry(argv[1],&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -3645,28 +3624,8 @@ MagickExport MagickBooleanType ApplyImageOperator(MagickWand *wand,
             geometry_info.sigma,interpolate_method,exception);
           break;
         }
-      if (LocaleCompare("weight",argv[0]+1) == 0)
-        {
-          draw_info->weight=StringToUnsignedLong(argv[1]);
-          if (LocaleCompare(argv[1],"all") == 0)
-            draw_info->weight=0;
-          if (LocaleCompare(argv[1],"bold") == 0)
-            draw_info->weight=700;
-          if (LocaleCompare(argv[1],"bolder") == 0)
-            if (draw_info->weight <= 800)
-              draw_info->weight+=100;
-          if (LocaleCompare(argv[1],"lighter") == 0)
-            if (draw_info->weight >= 100)
-              draw_info->weight-=100;
-          if (LocaleCompare(argv[1],"normal") == 0)
-            draw_info->weight=400;
-          break;
-        }
       if (LocaleCompare("white-threshold",argv[0]+1) == 0)
         {
-          /*
-            White threshold image.
-          */
           (void) SyncImageSettings(image_info,*image,exception);
           (void) WhiteThresholdImage(*image,argv[1],exception);
           break;
