@@ -19,7 +19,7 @@ AC_PREREQ(2.67)
 m4_define([magick_major_version], [6])
 m4_define([magick_minor_version], [7])
 m4_define([magick_micro_version], [3])
-m4_define([magick_patchlevel_version], [2])
+m4_define([magick_patchlevel_version], [3])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
 m4_define([magick_svn_revision], esyscmd([sh -c "svnversion | sed -r 's/([0-9]+).*/\1/'"]))
@@ -2428,7 +2428,7 @@ if test "$with_pango" != 'yes'; then
 fi
 
 have_pango='no'
-have_pangocqiro='no'
+have_pangoft2='no'
 PANGO_CFLAGS=""
 PANGO_LIBS=""
 PANGO_PKG=""
@@ -2436,7 +2436,7 @@ if test "x$with_pango" = "xyes"; then
     AC_MSG_RESULT([-------------------------------------------------------------])
     PKG_CHECK_MODULES(PANGO, pango, have_pango=yes, have_pango=no)
     AC_MSG_RESULT([])
-    PKG_CHECK_MODULES(PANGO, pangopangocairo, have_pangocairo=yes, have_pangocairo=no)
+    PKG_CHECK_MODULES(PANGO, pangoft2, have_pangoft2=yes, have_pangoft2=no)
     AC_MSG_RESULT([])
 fi
 
@@ -2447,15 +2447,15 @@ if test "$have_pango" = 'yes'; then
     fi
 fi
 
-if test "$have_pangocairo" = 'yes'; then
-    AC_DEFINE(PANGOCAIRO_DELEGATE,1,Define if you have PANGOCAIRO library)
+if test "$have_pangoft2" = 'yes'; then
+    AC_DEFINE(PANGOFT2_DELEGATE,1,Define if you have PANGOFT2 library)
     if test "$with_modules" = 'no'; then
-        CPPFLAGS="$PANGOCAIRO_SVG_CFLAGS $CPPFLAGS"
+        CPPFLAGS="$PANGOFT2_CFLAGS $CPPFLAGS"
     fi
 fi
 
 AM_CONDITIONAL(PANGO_DELEGATE, test "$have_pango" = 'yes')
-AM_CONDITIONAL(PANGOCAIRO_DELEGATE, test "$have_pangocairo" = 'yes')
+AM_CONDITIONAL(PANGOFT2_DELEGATE, test "$have_pangoft2" = 'yes')
 AC_SUBST(PANGO_CFLAGS)
 AC_SUBST(PANGO_LIBS)
 
