@@ -1,7 +1,8 @@
 2011-11-02  6.7.3-3 Cristy  <quetzlzacatenango@image...>
   * Fix small memory leak in the TIFF coder.
   * Support -debug accelerate option.
-  * Support -with-includedir-arch and -with-configdir-arch configure option.
+  * Support -includedir-arch and -configdir-arch configure option (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19720).
 
 2011-11-01  6.7.3-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.3-2, SVN revision 5718
