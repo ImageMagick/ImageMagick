@@ -15,13 +15,12 @@
   <configure name="CONFIGURE" value="@CONFIGURE_ARGS@"/>
   <configure name="PREFIX" value="@PREFIX_DIR@"/>
   <configure name="EXEC-PREFIX" value="@EXEC_PREFIX_DIR@"/>
+  <configure name="INCLUDE_PATH" value="@INCLUDE_PATH@"/>
   <configure name="CONFIGURE_PATH" value="@CONFIGURE_PATH@"/>
   <configure name="SHARE_PATH" value="@SHARE_PATH@"/>
   <configure name="DOCUMENTATION_PATH" value="@DOCUMENTATION_PATH@"/>
   <configure name="EXECUTABLE_PATH" value="@EXECUTABLE_PATH@"/>
   <configure name="LIBRARY_PATH" value="@LIBRARY_PATH@"/>
-  <configure name="INCLUDEDIR_ARCH" value="@INCLUDEDIR_ARCH@"/>
-  <configure name="CONFIGDIR_ARCH" value="@CONFIGDIR_ARCH@"/>
   <configure name="CODER_PATH" value="@CODER_PATH@"/>
   <configure name="FILTER_PATH" value="@FILTER_PATH@"/>
   <configure name="CC" value="@CC@"/>
