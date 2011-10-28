@@ -670,10 +670,6 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
   (void) AppendValueToLinkedList(paths,ConstantString(
     MAGICKCORE_CONFIGURE_PATH));
 #endif
-#if defined(MAGICKCORE_CONFIGDIR_ARCH)
-  (void) AppendValueToLinkedList(paths,ConstantString(
-    MAGICKCORE_CONFIGDIR_ARCH));
-#endif
 #if defined(MAGICKCORE_DOCUMENTATION_PATH)
   (void) AppendValueToLinkedList(paths,ConstantString(
     MAGICKCORE_DOCUMENTATION_PATH));

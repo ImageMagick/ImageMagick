@@ -15,7 +15,7 @@
 #  Makefile for building the MagickCore API.
 # 
 
-magickincdir = $(topincludedir)/magick
+magickincdir = $(INCLUDE_PATH)/magick
 
 # Headers which are installed
 magickinc_HEADERS = \

@@ -42,11 +42,6 @@
 #define MAGICKCORE_CODER_RELATIVE_PATH "ImageMagick-6.7.3/modules-Q16/coders"
 #endif
 
-/* ARCH specific config directory */
-#ifndef MAGICKCORE_CONFIGDIR_ARCH
-#define MAGICKCORE_CONFIGDIR_ARCH "/usr/local/lib/ImageMagick-6.7.3"
-#endif
-
 /* Directory where architecture-dependent configuration files live. */
 #ifndef MAGICKCORE_CONFIGURE_PATH
 #define MAGICKCORE_CONFIGURE_PATH "/usr/local/etc/ImageMagick/"
@@ -1170,9 +1165,9 @@
 /* Define if you have umem memory allocation library */
 /* #undef HasUMEM */
 
-/* ARCH specific include directory */
-#ifndef MAGICKCORE_INCLUDEDIR_ARCH
-#define MAGICKCORE_INCLUDEDIR_ARCH "/usr/local/include"
+/* Directory where ImageMagick headers live. */
+#ifndef MAGICKCORE_INCLUDE_PATH
+#define MAGICKCORE_INCLUDE_PATH "/usr/local/include/ImageMagick/"
 #endif
 
 /* ImageMagick is formally installed under prefix */

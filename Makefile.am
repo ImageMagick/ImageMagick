@@ -17,8 +17,6 @@
 #  Top-Level Makefile for building ImageMagick.
 #
 
-topincludedir = @includedir@/ImageMagick
-
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 
 ACLOCAL_AMFLAGS = -I m4
