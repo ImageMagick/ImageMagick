@@ -66,21 +66,13 @@
 #include <pango/pango.h>
 #endif
 
-/*
-  Forward declarations.
-*/
-#if defined(MAGICKCORE_PANGO_DELEGATE)
-static MagickBooleanType
-  WritePANGOImage(const ImageInfo *,Image *);
-#endif
-
 #if defined(MAGICKCORE_PANGO_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d P A N G O I m a g e                                                 %
+%   R e a d P A N G O I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %

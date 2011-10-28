@@ -624,6 +624,9 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
 MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
   ExceptionInfo *exception)
 {
+#define MagickCoreDLL  "CORE_RL_MagickCore_.dll"
+#define MagickCoreDebugDLL  "CORE_DB_MagickCore_.dll"
+
   char
     path[MaxTextExtent];
 
@@ -667,8 +670,7 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
   }
 #if defined(MAGICKCORE_INSTALLED_SUPPORT)
 #if defined(MAGICKCORE_SHARE_PATH)
-  (void) AppendValueToLinkedList(paths,ConstantString(
-    MAGICKCORE_SHARE_PATH));
+  (void) AppendValueToLinkedList(paths,ConstantString(MAGICKCORE_SHARE_PATH));
 #endif
 #if defined(MAGICKCORE_CONFIGURE_PATH)
   (void) AppendValueToLinkedList(paths,ConstantString(
@@ -777,8 +779,8 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
     char
       module_path[MaxTextExtent];
 
-    if ((NTGetModulePath("CORE_RL_magick_.dll",module_path) != MagickFalse) ||
-        (NTGetModulePath("CORE_DB_magick_.dll",module_path) != MagickFalse))
+    if ((NTGetModulePath(MagickCoreDLL,module_path) != MagickFalse) ||
+        (NTGetModulePath(MagickCoreDebugDLL,module_path) != MagickFalse))
       {
         char
           *element;
