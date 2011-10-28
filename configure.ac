@@ -398,7 +398,7 @@ AC_ARG_WITH([sharedir-arch],
     [AC_HELP_STRING([--sharedir-arch=DIR],
                     [ARCH specific config directory])],
                     [sharedir_arch=$withval],
-                    [sharedir_arch="${LIB_DIR}/${PACKAGE_NAME}-${PACKAGE_VERSION}"])
+                    [sharedir_arch="${DATA_DIR}"])
 
 eval "eval SHAREDIR_ARCH=$sharedir_arch"
 AC_SUBST(SHAREDIR_ARCH)
