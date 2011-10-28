@@ -39,40 +39,38 @@
 /*
   Include declarations.
 */
-#include "MagickCore/studio.h"
-#include "MagickCore/blob.h"
-#include "MagickCore/blob-private.h"
-#include "MagickCore/client.h"
-#include "MagickCore/display.h"
-#include "MagickCore/exception.h"
-#include "MagickCore/exception-private.h"
-#include "MagickCore/image.h"
-#include "MagickCore/image-private.h"
-#include "MagickCore/list.h"
-#include "MagickCore/magick.h"
-#include "MagickCore/monitor.h"
-#include "MagickCore/monitor-private.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/option.h"
-#include "MagickCore/pixel-accessor.h"
-#include "MagickCore/quantum-private.h"
-#include "MagickCore/static.h"
-#include "MagickCore/string_.h"
-#include "MagickCore/module.h"
-#include "MagickCore/utility.h"
-#include "MagickCore/xwindow.h"
-#include "MagickCore/xwindow-private.h"
-#if defined(MAGICKCORE_PANGO_DELEGATE)
+#include "magick/studio.h"
+#include "magick/annotate.h"
+#include "magick/blob.h"
+#include "magick/blob-private.h"
+#include "magick/composite-private.h"
+#include "magick/draw.h"
+#include "magick/draw-private.h"
+#include "magick/exception.h"
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/image-private.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/module.h"
+#include "magick/memory_.h"
+#include "magick/option.h"
+#include "magick/property.h"
+#include "magick/quantum-private.h"
+#include "magick/static.h"
+#include "magick/string_.h"
+#if defined(MAGICKCORE_PANGOFT2_DELEGATE)
 #include <pango/pango.h>
+#include <pango/pangoft2.h>
 #endif
 
-#if defined(MAGICKCORE_PANGO_DELEGATE)
+#if defined(MAGICKCORE_PANGOFT2_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d P A N G O I m a g e                                                 %
+%   R e a d P A N G O I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -95,7 +93,141 @@
 static Image *ReadPANGOImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  return((Image *) NULL);
+  char
+    *caption,
+    *property;
+
+  DrawInfo
+    *draw_info;
+
+  FT_Bitmap
+    *canvas;
+
+  Image
+    *image;
+
+  PangoContext
+    *context;
+
+  PangoFontDescription
+    *description;
+
+  PangoFontMap
+    *fontmap;
+
+  PangoLayout
+    *layout;
+
+  PixelPacket
+    fill_color;
+
+  register PixelPacket
+    *q;
+
+  register unsigned char
+    *p;
+
+  ssize_t
+    y;
+
+  /*
+    Initialize Image structure.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  if (image_info->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  image=AcquireImage(image_info);
+  if ((image->columns == 0) || (image->rows == 0))
+    ThrowReaderException(OptionError,"MustSpecifyImageSize");
+  (void) ResetImagePage(image,"0x0+0+0");
+  if (SetImageBackgroundColor(image) == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
+  /*
+    Get context.
+  */
+  fontmap=(PangoFontMap *) pango_ft2_font_map_new();
+  pango_ft2_font_map_set_resolution((PangoFT2FontMap *) fontmap,
+    image->x_resolution,image->y_resolution);
+  pango_ft2_font_map_set_default_substitute((PangoFT2FontMap *) fontmap,NULL,
+    NULL,NULL);
+  context=pango_font_map_create_context(fontmap);
+  /*
+    Create canvas.
+  */
+  canvas=(FT_Bitmap *) AcquireMagickMemory(sizeof(*canvas));
+  if (canvas == (FT_Bitmap *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+  canvas->width=image->columns;
+  canvas->pitch=(canvas->width+3) & ~3;
+  canvas->rows=image->rows;
+  canvas->buffer=(unsigned char *) AcquireQuantumMemory(canvas->pitch,
+    canvas->rows*sizeof(*canvas->buffer));
+  if (canvas->buffer == (unsigned char *) NULL)
+    {
+      canvas=(FT_Bitmap *) RelinquishMagickMemory(canvas);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  canvas->num_grays=256;
+  canvas->pixel_mode=ft_pixel_mode_grays;
+  ResetMagickMemory(canvas->buffer,0x00,canvas->pitch*canvas->rows);
+  /*
+    Render caption.
+  */
+  layout=pango_layout_new(context);
+  description=pango_font_description_from_string("Arial,20");
+  pango_layout_set_font_description(layout,description);
+  pango_font_description_free(description);
+  property=InterpretImageProperties(image_info,image,image_info->filename);
+  (void) SetImageProperty(image,"caption",property);
+  property=DestroyString(property);
+  caption=ConstantString(GetImageProperty(image,"caption"));
+  pango_layout_set_text(layout,caption,-1);
+  pango_layout_context_changed(layout);
+  /* wrapping: pango_layout_set_width(layout,72*image->columns); */
+  pango_ft2_render_layout(canvas,layout,0,0);
+  /*
+    Convert caption to image.
+  */
+  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  p=canvas->buffer;
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register ssize_t
+      x;
+
+    q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      MagickRealType
+        fill_opacity;
+
+      (void) GetFillColor(draw_info,x,y,&fill_color);
+      fill_opacity=QuantumRange-(*p)/canvas->num_grays*(QuantumRange-
+        fill_color.opacity);
+      if (draw_info->text_antialias == MagickFalse)
+        fill_opacity=fill_opacity >= 0.5 ? 1.0 : 0.0;
+      MagickCompositeOver(&fill_color,fill_opacity,q,q->opacity,q);
+      p++;
+      q++;
+    }
+  }
+  /*
+    Relinquish resources.
+  */
+  draw_info=DestroyDrawInfo(draw_info);
+  canvas->buffer=(unsigned char *) RelinquishMagickMemory(canvas->buffer);
+  canvas=(FT_Bitmap *) RelinquishMagickMemory(canvas);
+  caption=DestroyString(caption);
+  return(GetFirstImageInList(image));
 }
 #endif
 
@@ -128,7 +260,7 @@ ModuleExport size_t RegisterPANGOImage(void)
     *entry;
 
   entry=SetMagickInfo("PANGO");
-#if defined(MAGICKCORE_PANGO_DELEGATE)
+#if defined(MAGICKCORE_PANGOFT2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadPANGOImage;
 #endif
   entry->description=ConstantString("Pango Markup Language");
