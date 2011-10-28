@@ -20,6 +20,8 @@
   <configure name="DOCUMENTATION_PATH" value="@DOCUMENTATION_PATH@"/>
   <configure name="EXECUTABLE_PATH" value="@EXECUTABLE_PATH@"/>
   <configure name="LIBRARY_PATH" value="@LIBRARY_PATH@"/>
+  <configure name="INCLUDEDIR_ARCH" value="@INCLUDEDIR_ARCH@"/>
+  <configure name="CONFIGDIR_ARCH" value="@CONFIGDIR_ARCH@"/>
   <configure name="CODER_PATH" value="@CODER_PATH@"/>
   <configure name="FILTER_PATH" value="@FILTER_PATH@"/>
   <configure name="CC" value="@CC@"/>

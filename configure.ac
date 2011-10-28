@@ -389,6 +389,8 @@ AC_ARG_WITH([includedir-arch],
                     [includedir_arch=$INCLUDE_DIR])
 
 AC_DEFINE_UNQUOTED(INCLUDEDIR_ARCH,"$includedir_arch",[ARCH specific include directory])
+INCLUDEDIR_ARCH="$includedir_arch"
+AC_SUBST(INCLUDEDIR_ARCH)
 
 #
 # ARCH specific configuration directory
@@ -400,6 +402,8 @@ AC_ARG_WITH([configdir-arch],
                     [configdir_arch="${LIB_DIR}/${PACKAGE_NAME}-${PACKAGE_VERSION}"])
 
 AC_DEFINE_UNQUOTED(CONFIGDIR_ARCH,"$configdir_arch",[ARCH specific config directory])
+CONFIGDIR_ARCH="$configdir_arch"
+AC_SUBST(CONFIGDIR_ARCH)
 
 # Enable support for threads
 AC_ARG_WITH([threads],
