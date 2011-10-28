@@ -918,7 +918,7 @@ PTHREAD_CFLAGS
 PTHREAD_LIBS
 PTHREAD_CC
 ax_pthread_config
-CONFIGDIR_ARCH
+SHAREDIR_ARCH
 INCLUDEDIR_ARCH
 WinPathScript
 USING_CL_FALSE
@@ -1087,7 +1087,7 @@ with_dmalloc
 enable_bounds_checking
 enable_osx_universal_binary
 with_includedir_arch
-with_configdir_arch
+with_sharedir_arch
 with_threads
 enable_openmp
 enable_opencl
@@ -1856,7 +1856,7 @@ Optional Packages:
   --with-dmalloc          use dmalloc, as in
 			  http://www.dmalloc.com/dmalloc.tar.gz
   --includedir-arch=DIR   ARCH specific include directory
-  --configdir-arch=DIR    ARCH specific config directory
+  --sharedir-arch=DIR     ARCH specific config directory
   --without-threads       disable threads support
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
@@ -8275,15 +8275,15 @@ eval "eval INCLUDEDIR_ARCH=$includedir_arch"
 # ARCH specific configuration directory
 #
 
-# Check whether --with-configdir-arch was given.
-if test "${with_configdir_arch+set}" = set; then :
-  withval=$with_configdir_arch; configdir_arch=$withval
+# Check whether --with-sharedir-arch was given.
+if test "${with_sharedir_arch+set}" = set; then :
+  withval=$with_sharedir_arch; sharedir_arch=$withval
 else
-  configdir_arch="${LIB_DIR}/${PACKAGE_NAME}-${PACKAGE_VERSION}"
+  sharedir_arch="${LIB_DIR}/${PACKAGE_NAME}-${PACKAGE_VERSION}"
 fi
 
 
-eval "eval CONFIGDIR_ARCH=$configdir_arch"
+eval "eval SHAREDIR_ARCH=$sharedir_arch"
 
 
 # Enable support for threads
@@ -32049,7 +32049,7 @@ cat >>confdefs.h <<_ACEOF
 #define SHARE_RELATIVE_PATH "$SHARE_RELATIVE_PATH"
 _ACEOF
 
-SHARE_PATH="${DATA_DIR}/${SHARE_RELATIVE_PATH}"
+SHARE_PATH="${SHAREDIR_ARCH}/${SHARE_RELATIVE_PATH}"
 DEFINE_SHARE_PATH="${DATA_DIR}/${SHARE_RELATIVE_PATH}/"
 case "${build_os}" in
   mingw* )
