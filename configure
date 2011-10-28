@@ -1083,6 +1083,8 @@ with_gnu_ld
 with_dmalloc
 enable_bounds_checking
 enable_osx_universal_binary
+with_includedir_arch
+with_configdir_arch
 with_threads
 enable_openmp
 enable_opencl
@@ -1850,6 +1852,8 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-dmalloc          use dmalloc, as in
 			  http://www.dmalloc.com/dmalloc.tar.gz
+  --includedir-arch=DIR   ARCH specific include directory
+  --configdir-arch=DIR    ARCH specific config directory
   --without-threads       disable threads support
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
@@ -3596,7 +3600,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5750
+MAGICK_SVN_REVISION=5778
 
 
 
@@ -8248,6 +8252,42 @@ Please re-run configure with these options:
   fi
   ;;
 esac
+
+#
+# ARCH specific include directory
+#
+
+# Check whether --with-includedir-arch was given.
+if test "${with_includedir_arch+set}" = set; then :
+  withval=$with_includedir_arch; includedir_arch=$withval
+else
+  includedir_arch=$INCLUDE_DIR
+fi
+
+
+
+cat >>confdefs.h <<_ACEOF
+#define INCLUDEDIR_ARCH "$includedir_arch"
+_ACEOF
+
+
+#
+# ARCH specific configuration directory
+#
+
+# Check whether --with-configdir-arch was given.
+if test "${with_configdir_arch+set}" = set; then :
+  withval=$with_configdir_arch; configdir_arch=$withval
+else
+  configdir_arch="${LIB_DIR}/${PACKAGE_NAME}-${PACKAGE_VERSION}"
+fi
+
+
+
+cat >>confdefs.h <<_ACEOF
+#define CONFIGDIR_ARCH "$configdir_arch"
+_ACEOF
+
 
 # Enable support for threads
 

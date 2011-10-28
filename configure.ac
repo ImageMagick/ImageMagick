@@ -379,6 +379,28 @@ Please re-run configure with these options:
   ;;
 esac
 
+#
+# ARCH specific include directory
+#
+AC_ARG_WITH([includedir-arch],
+    [AC_HELP_STRING([--includedir-arch=DIR],
+                    [ARCH specific include directory])],
+                    [includedir_arch=$withval],
+                    [includedir_arch=$INCLUDE_DIR])
+
+AC_DEFINE_UNQUOTED(INCLUDEDIR_ARCH,"$includedir_arch",[ARCH specific include directory])
+
+#
+# ARCH specific configuration directory
+#
+AC_ARG_WITH([configdir-arch],
+    [AC_HELP_STRING([--configdir-arch=DIR],
+                    [ARCH specific config directory])],
+                    [configdir_arch=$withval],
+                    [configdir_arch="${LIB_DIR}/${PACKAGE_NAME}-${PACKAGE_VERSION}"])
+
+AC_DEFINE_UNQUOTED(CONFIGDIR_ARCH,"$configdir_arch",[ARCH specific config directory])
+
 # Enable support for threads
 AC_ARG_WITH([threads],
     [AC_HELP_STRING([--without-threads], [disable threads support])],
