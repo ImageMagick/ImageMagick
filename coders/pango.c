@@ -218,6 +218,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
 
       (void) GetFillColor(draw_info,x,y,&fill_color,exception);
       fill_opacity=(*p)*fill_color.alpha/canvas->num_grays;
+      if (draw_info->text_antialias == MagickFalse)
+        fill_opacity=fill_opacity >= 0.5 ? 1.0 : 0.0;
       CompositePixelOver(image,&fill_color,fill_opacity,q,
          GetPixelAlpha(image,q),q);
       p++;
