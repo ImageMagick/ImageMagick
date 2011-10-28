@@ -27,9 +27,6 @@
 /* Subdirectory of lib where coder modules are installed */
 #undef CODER_RELATIVE_PATH
 
-/* ARCH specific config directory */
-#undef CONFIGDIR_ARCH
-
 /* Directory where architecture-dependent configuration files live. */
 #undef CONFIGURE_PATH
 
@@ -766,9 +763,6 @@
 
 /* Define if you have umem memory allocation library */
 #undef HasUMEM
-
-/* ARCH specific include directory */
-#undef INCLUDEDIR_ARCH
 
 /* ImageMagick is formally installed under prefix */
 #undef INSTALLED_SUPPORT

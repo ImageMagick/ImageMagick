@@ -696,7 +696,7 @@ coders_palm_la_LIBADD      = $(MAGICKCORE_LIBS)
 coders_pango_la_SOURCES     = coders/pango.c
 coders_pango_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS) $(PANGO_CFLAGS)
 coders_pango_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_pango_la_LIBADD      = $(MAGICKCORE_LIBS) $(PANGO LIBS)
+coders_pango_la_LIBADD      = $(MAGICKCORE_LIBS) $(PANGO_LIBS)
 
 # Pattern module
 coders_pattern_la_SOURCES   = coders/pattern.c

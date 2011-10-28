@@ -1087,8 +1087,6 @@ with_threads
 enable_openmp
 enable_opencl
 enable_largefile
-with_includedir_arch
-with_configdir_arch
 enable_shared
 enable_static
 with_pic
@@ -1853,8 +1851,6 @@ Optional Packages:
   --with-dmalloc          use dmalloc, as in
 			  http://www.dmalloc.com/dmalloc.tar.gz
   --without-threads       disable threads support
-  --includedir-arch=DIR   ARCH specific include directory
-  --configdir-arch=DIR    ARCH specific config directory
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
   --with-sysroot=DIR Search for dependent libraries within DIR
@@ -9716,46 +9712,6 @@ fi
 fi
 
 
-
-#
-# ARCH specific include directory
-#
-
-# Check whether --with-includedir-arch was given.
-if test "${with_includedir_arch+set}" = set; then :
-  withval=$with_includedir_arch; includedir_arch=$withval
-else
-  includedir_arch=$INCLUDE_DIR
-fi
-
-
-
-cat >>confdefs.h <<_ACEOF
-#define INCLUDEDIR_ARCH "$includedir_arch"
-_ACEOF
-
-
-#
-# ARCH specific configuration directory
-#
-
-# Check whether --with-configdir-arch was given.
-if test "${with_configdir_arch+set}" = set; then :
-  withval=$with_configdir_arch; configdir_arch=$withval
-else
-  configdir_arch="${LIB_DIR}/${PACKAGE_NAME}-${PACKAGE_VERSION}"
-fi
-
-
-
-cat >>confdefs.h <<_ACEOF
-#define CONFIGDIR_ARCH "$configdir_arch"
-_ACEOF
-
-
-#
-# Configure libtool & libltdl
-#
 # Configure libtool
 enable_dlopen=yes
 
@@ -30298,75 +30254,6 @@ if test -n "$PANGO_CFLAGS"; then
     pkg_cv_PANGO_CFLAGS="$PANGO_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "pango") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_PANGO_CFLAGS=`$PKG_CONFIG --cflags "pango" 2>/dev/null`
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$PANGO_LIBS"; then
-    pkg_cv_PANGO_LIBS="$PANGO_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "pango") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_PANGO_LIBS=`$PKG_CONFIG --libs "pango" 2>/dev/null`
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        PANGO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "pango" 2>&1`
-        else
-	        PANGO_PKG_ERRORS=`$PKG_CONFIG --print-errors "pango" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$PANGO_PKG_ERRORS" >&5
-
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-                have_pango=no
-elif test $pkg_failed = untried; then
-	have_pango=no
-else
-	PANGO_CFLAGS=$pkg_cv_PANGO_CFLAGS
-	PANGO_LIBS=$pkg_cv_PANGO_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-	have_pango=yes
-fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for PANGO" >&5
-$as_echo_n "checking for PANGO... " >&6; }
-
-if test -n "$PANGO_CFLAGS"; then
-    pkg_cv_PANGO_CFLAGS="$PANGO_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangoft2\""; } >&5
   ($PKG_CONFIG --exists --print-errors "pangoft2") 2>&5
   ac_status=$?
@@ -30424,6 +30311,75 @@ else
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 	have_pangoft2=yes
+fi
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for PANGO" >&5
+$as_echo_n "checking for PANGO... " >&6; }
+
+if test -n "$PANGO_CFLAGS"; then
+    pkg_cv_PANGO_CFLAGS="$PANGO_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pango") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_PANGO_CFLAGS=`$PKG_CONFIG --cflags "pango" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$PANGO_LIBS"; then
+    pkg_cv_PANGO_LIBS="$PANGO_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pango") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_PANGO_LIBS=`$PKG_CONFIG --libs "pango" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "pango" 2>&1`
+        else
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --print-errors "pango" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$PANGO_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                have_pango=no
+elif test $pkg_failed = untried; then
+	have_pango=no
+else
+	PANGO_CFLAGS=$pkg_cv_PANGO_CFLAGS
+	PANGO_LIBS=$pkg_cv_PANGO_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_pango=yes
 fi
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
