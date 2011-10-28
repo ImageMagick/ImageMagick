@@ -395,7 +395,7 @@ AC_ARG_WITH([sharedir-arch],
     [AC_HELP_STRING([--sharedir-arch=DIR],
                     [ARCH specific config directory])],
                     [sharedir_arch=$withval],
-                    [sharedir_arch="${LIB_DIR}/${PACKAGE_NAME}-${PACKAGE_VERSION}"])
+                    [sharedir_arch="${DATA_DIR}"])
 
 eval "eval SHAREDIR_ARCH=$sharedir_arch"
 SHAREDIR_ARCH="$sharedir_arch"
@@ -2968,7 +2968,7 @@ AC_SUBST(CONFIGURE_PATH)
 # Subdirectory to place architecture-independent configuration files
 SHARE_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}"
 AC_DEFINE_UNQUOTED(SHARE_RELATIVE_PATH,"$SHARE_RELATIVE_PATH",Subdirectory of lib where architecture-independent configuration files live.)
-SHARE_PATH="${SHAREDIR-ARCH}/${SHARE_RELATIVE_PATH}"
+SHARE_PATH="${SHAREDIR_ARCH}/${SHARE_RELATIVE_PATH}"
 DEFINE_SHARE_PATH="${DATA_DIR}/${SHARE_RELATIVE_PATH}/"
 case "${build_os}" in
   mingw* )
