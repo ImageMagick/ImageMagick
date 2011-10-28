@@ -2364,6 +2364,7 @@ ILBMEncodeDelegate = @ILBMEncodeDelegate@
 INCLTDL = @INCLTDL@
 INCLUDEDIR_ARCH = @INCLUDEDIR_ARCH@
 INCLUDE_DIR = @INCLUDE_DIR@
+INCLUDE_PATH = @INCLUDE_PATH@
 INFO_DIR = @INFO_DIR@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -2635,7 +2636,6 @@ top_srcdir = @top_srcdir@
 type_include_files = @type_include_files@
 windows_font_dir = @windows_font_dir@
 xml2_config = @xml2_config@
-topincludedir = @includedir@/ImageMagick
 
 # -I$(srcdir) is needed for user that built libltdl with a sub-Automake
 # (not as a sub-package!) using 'nostdinc':
@@ -3827,7 +3827,7 @@ coders_yuv_la_SOURCES = coders/yuv.c
 coders_yuv_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_yuv_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_yuv_la_LIBADD = $(MAGICKCORE_LIBS)
-magickincdir = $(topincludedir)/magick
+magickincdir = $(INCLUDE_PATH)/magick
 
 # Headers which are installed
 magickinc_HEADERS = \
@@ -4249,7 +4249,7 @@ filters_analyze_la_SOURCES = filters/analyze.c
 filters_analyze_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 filters_analyze_la_LDFLAGS = $(MODULECOMMONFLAGS)
 filters_analyze_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
-wandincdir = $(topincludedir)/wand
+wandincdir = $(INCLUDE_PATH)/wand
 WAND_SOURCES = \
 	wand/MagickWand.h \
 	wand/animate.c \
@@ -4510,12 +4510,12 @@ Magick___lib_libMagick___la_SOURCES = \
 	Magick++/lib/Magick++/Thread.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
-magickpptopincdir = $(topincludedir)
+magickpptopincdir = $(INCLUDE_PATH)
 magickpptopinc_HEADERS = $(MAGICKPP_TOP_INCHEADERS)
 MAGICKPP_TOP_INCHEADERS_OPT = \
   Magick++/lib/Magick++.h
 
-magickppincdir = $(topincludedir)/Magick++
+magickppincdir = $(INCLUDE_PATH)/Magick++
 magickppinc_HEADERS = $(MAGICKPP_INCHEADERS)
 MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/Blob.h \

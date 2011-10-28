@@ -728,6 +728,7 @@ FILTER_PATH
 CODER_PATH
 LIBRARY_PATH
 EXECUTABLE_PATH
+INCLUDE_PATH
 PERLMAINCC
 XML_LIBS
 XML_DELEGATE_FALSE
@@ -3602,7 +3603,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5778
+MAGICK_SVN_REVISION=5784
 
 
 
@@ -8267,12 +8268,7 @@ else
 fi
 
 
-
-cat >>confdefs.h <<_ACEOF
-#define INCLUDEDIR_ARCH "$includedir_arch"
-_ACEOF
-
-INCLUDEDIR_ARCH="$includedir_arch"
+eval "eval INCLUDEDIR_ARCH=$includedir_arch"
 
 
 #
@@ -8287,12 +8283,7 @@ else
 fi
 
 
-
-cat >>confdefs.h <<_ACEOF
-#define CONFIGDIR_ARCH "$configdir_arch"
-_ACEOF
-
-CONFIGDIR_ARCH="$configdir_arch"
+eval "eval CONFIGDIR_ARCH=$configdir_arch"
 
 
 # Enable support for threads
@@ -31915,6 +31906,22 @@ fi
 # Configure install Paths
 #
 
+# Path to ImageMagick header files
+INCLUDE_RELATIVE_PATH="ImageMagick"
+INCLUDE_PATH="${INCLUDEDIR_ARCH}/${INCLUDE_RELATIVE_PATH}"
+DEFINE_INCLUDE_PATH="${INCLUDEDIR_ARCH}/${INCLUDE_RELATIVE_PATH}/"
+case "${build_os}" in
+  mingw* )
+    DEFINE_INCLUDE_PATH=`$WinPathScript "$DEFINE_INCLUDE_PATH" 1`
+    ;;
+esac
+
+cat >>confdefs.h <<_ACEOF
+#define INCLUDE_PATH "$DEFINE_INCLUDE_PATH"
+_ACEOF
+
+
+
 # Subdirectory under lib to place ImageMagick lib files
 LIBRARY_RELATIVE_PATH="${PACKAGE_NAME}-${PACKAGE_VERSION}"
 
@@ -32014,7 +32021,7 @@ _ACEOF
 
 
 
-# Subdirectory to place ImageMagick configuration files
+# Subdirectory to place architecture-dependent configuration files
 CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}"
 
 cat >>confdefs.h <<_ACEOF
@@ -32035,7 +32042,7 @@ _ACEOF
 
 
 
-# Subdirectory to place ImageMagick configuration files
+# Subdirectory to place architecture-independent configuration files
 SHARE_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}"
 
 cat >>confdefs.h <<_ACEOF

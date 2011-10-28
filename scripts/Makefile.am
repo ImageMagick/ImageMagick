@@ -5,7 +5,7 @@
 #
 
 if  WITH_MAGICK_PLUS_PLUS
-magickppincdir = $(topincludedir)/Magick++
+magickppincdir = $(INCLUDE_PATH)/Magick++
 
 MAGICKPP_LIBS = Magick++/lib/libMagick++.la
 
@@ -117,7 +117,7 @@ Magick___lib_libMagick___la_SOURCES = \
 	Magick++/lib/Magick++/Thread.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
-magickpptopincdir = $(topincludedir)
+magickpptopincdir = $(INCLUDE_PATH)
 magickpptopinc_HEADERS = \
 	Magick++/lib/Magick++.h
 

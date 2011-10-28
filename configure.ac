@@ -388,8 +388,7 @@ AC_ARG_WITH([includedir-arch],
                     [includedir_arch=$withval],
                     [includedir_arch=$INCLUDE_DIR])
 
-AC_DEFINE_UNQUOTED(INCLUDEDIR_ARCH,"$includedir_arch",[ARCH specific include directory])
-INCLUDEDIR_ARCH="$includedir_arch"
+eval "eval INCLUDEDIR_ARCH=$includedir_arch"
 AC_SUBST(INCLUDEDIR_ARCH)
 
 #
@@ -401,8 +400,7 @@ AC_ARG_WITH([configdir-arch],
                     [configdir_arch=$withval],
                     [configdir_arch="${LIB_DIR}/${PACKAGE_NAME}-${PACKAGE_VERSION}"])
 
-AC_DEFINE_UNQUOTED(CONFIGDIR_ARCH,"$configdir_arch",[ARCH specific config directory])
-CONFIGDIR_ARCH="$configdir_arch"
+eval "eval CONFIGDIR_ARCH=$configdir_arch"
 AC_SUBST(CONFIGDIR_ARCH)
 
 # Enable support for threads
@@ -2879,6 +2877,18 @@ AC_SUBST(PERLMAINCC)
 # Configure install Paths
 #
 
+# Path to ImageMagick header files
+INCLUDE_RELATIVE_PATH="ImageMagick"
+INCLUDE_PATH="${INCLUDEDIR_ARCH}/${INCLUDE_RELATIVE_PATH}"
+DEFINE_INCLUDE_PATH="${INCLUDEDIR_ARCH}/${INCLUDE_RELATIVE_PATH}/"
+case "${build_os}" in
+  mingw* )
+    DEFINE_INCLUDE_PATH=`$WinPathScript "$DEFINE_INCLUDE_PATH" 1`
+    ;;
+esac
+AC_DEFINE_UNQUOTED(INCLUDE_PATH,"$DEFINE_INCLUDE_PATH",Directory where ImageMagick headers live.)
+AC_SUBST(INCLUDE_PATH)
+
 # Subdirectory under lib to place ImageMagick lib files
 LIBRARY_RELATIVE_PATH="${PACKAGE_NAME}-${PACKAGE_VERSION}"
 AC_DEFINE_UNQUOTED(LIBRARY_RELATIVE_PATH,"$LIBRARY_RELATIVE_PATH",Subdirectory of lib where ImageMagick architecture dependent files are installed)
@@ -2946,7 +2956,7 @@ esac
 AC_DEFINE_UNQUOTED(DOCUMENTATION_PATH,"$DEFINE_DOCUMENTATION_PATH",Directory where ImageMagick documents live.)
 AC_SUBST(DOCUMENTATION_PATH)
 
-# Subdirectory to place ImageMagick configuration files
+# Subdirectory to place architecture-dependent configuration files
 CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}"
 AC_DEFINE_UNQUOTED(CONFIGURE_RELATIVE_PATH,"$CONFIGURE_RELATIVE_PATH",Subdirectory of lib where architecture-dependent configuration files live.)
 CONFIGURE_PATH="${SYSCONF_DIR}/${CONFIGURE_RELATIVE_PATH}/"
@@ -2959,7 +2969,7 @@ esac
 AC_DEFINE_UNQUOTED(CONFIGURE_PATH,"$DEFINE_CONFIGURE_PATH",Directory where architecture-dependent configuration files live.)
 AC_SUBST(CONFIGURE_PATH)
 
-# Subdirectory to place ImageMagick configuration files
+# Subdirectory to place architecture-independent configuration files
 SHARE_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}"
 AC_DEFINE_UNQUOTED(SHARE_RELATIVE_PATH,"$SHARE_RELATIVE_PATH",Subdirectory of lib where architecture-independent configuration files live.)
 SHARE_PATH="${DATA_DIR}/${SHARE_RELATIVE_PATH}"
