@@ -917,6 +917,8 @@ PTHREAD_CFLAGS
 PTHREAD_LIBS
 PTHREAD_CC
 ax_pthread_config
+CONFIGDIR_ARCH
+INCLUDEDIR_ARCH
 WinPathScript
 USING_CL_FALSE
 USING_CL_TRUE
@@ -8270,6 +8272,8 @@ cat >>confdefs.h <<_ACEOF
 #define INCLUDEDIR_ARCH "$includedir_arch"
 _ACEOF
 
+INCLUDEDIR_ARCH="$includedir_arch"
+
 
 #
 # ARCH specific configuration directory
@@ -8287,6 +8291,8 @@ fi
 cat >>confdefs.h <<_ACEOF
 #define CONFIGDIR_ARCH "$configdir_arch"
 _ACEOF
+
+CONFIGDIR_ARCH="$configdir_arch"
 
 
 # Enable support for threads

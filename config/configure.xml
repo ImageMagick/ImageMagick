@@ -20,6 +20,8 @@
   <configure name="DOCUMENTATION_PATH" value="/usr/local/share/doc/ImageMagick/"/>
   <configure name="EXECUTABLE_PATH" value="/usr/local/bin"/>
   <configure name="LIBRARY_PATH" value="/usr/local/lib/ImageMagick-6.7.3"/>
+  <configure name="INCLUDEDIR_ARCH" value="/usr/local/include"/>
+  <configure name="CONFIGDIR_ARCH" value="/usr/local/lib/ImageMagick-6.7.3"/>
   <configure name="CODER_PATH" value="/usr/local/lib/ImageMagick-6.7.3/modules-Q16/coders"/>
   <configure name="FILTER_PATH" value="/usr/local/lib/ImageMagick-6.7.3/modules-Q16/filters"/>
   <configure name="CC" value="gcc -std=gnu99 -std=gnu99"/>
