@@ -1059,8 +1059,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if ((jpeg_info.saw_JFIF_marker != 0) && (jpeg_info.X_density != 1) &&
       (jpeg_info.Y_density != 1))
     {
-      image->x_resolution=(double) jpeg_info.X_density;
-      image->y_resolution=(double) jpeg_info.Y_density;
+      image->resolution.x=(double) jpeg_info.X_density;
+      image->resolution.y=(double) jpeg_info.Y_density;
       units=(size_t) jpeg_info.density_unit;
     }
   if (units == 1)
@@ -1879,16 +1879,16 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   jpeg_info.density_unit=(UINT8) 1;
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Image resolution: %.20g,%.20g",floor(image->x_resolution+0.5),
-      floor(image->y_resolution+0.5));
-  if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
+      "Image resolution: %.20g,%.20g",floor(image->resolution.x+0.5),
+      floor(image->resolution.y+0.5));
+  if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
     {
       /*
         Set image resolution.
       */
       jpeg_info.write_JFIF_header=MagickTrue;
-      jpeg_info.X_density=(UINT16) floor(image->x_resolution+0.5);
-      jpeg_info.Y_density=(UINT16) floor(image->y_resolution+0.5);
+      jpeg_info.X_density=(UINT16) floor(image->resolution.x+0.5);
+      jpeg_info.Y_density=(UINT16) floor(image->resolution.y+0.5);
       if (image->units == PixelsPerInchResolution)
         jpeg_info.density_unit=(UINT8) 1;
       if (image->units == PixelsPerCentimeterResolution)

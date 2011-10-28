@@ -136,13 +136,13 @@ Magick___lib_libMagick___la_SOURCES = \
 	Magick++/lib/Magick++/Thread.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
-magickpptopincdir = $(topincludedir)
+magickpptopincdir = $(INCLUDE_PATH)
 magickpptopinc_HEADERS = $(MAGICKPP_TOP_INCHEADERS)
 
 MAGICKPP_TOP_INCHEADERS_OPT = \
   Magick++/lib/Magick++.h
 
-magickppincdir = $(topincludedir)/Magick++
+magickppincdir = $(INCLUDE_PATH)/Magick++
 
 magickppinc_HEADERS = $(MAGICKPP_INCHEADERS)
 

@@ -5236,8 +5236,8 @@ WandExport MagickBooleanType MagickGetImageResolution(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  *x=wand->images->x_resolution;
-  *y=wand->images->y_resolution;
+  *x=wand->images->resolution.x;
+  *y=wand->images->resolution.y;
   return(MagickTrue);
 }
 
@@ -9897,8 +9897,8 @@ WandExport MagickBooleanType MagickSetImageResolution(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  wand->images->x_resolution=x_resolution;
-  wand->images->y_resolution=y_resolution;
+  wand->images->resolution.x=x_resolution;
+  wand->images->resolution.y=y_resolution;
   return(MagickTrue);
 }
 

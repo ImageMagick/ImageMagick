@@ -2979,21 +2979,21 @@ void Magick::Image::density ( const Geometry &density_ )
   options()->density( density_ );
   if ( density_.isValid() )
     {
-      image()->x_resolution = density_.width();
+      image()->resolution.x = density_.width();
       if ( density_.height() != 0 )
         {
-          image()->y_resolution = density_.height();
+          image()->resolution.y = density_.height();
         }
       else
         {
-          image()->y_resolution = density_.width();
+          image()->resolution.y = density_.width();
         }
     }
   else
     {
       // Reset to default
-      image()->x_resolution = 0;
-      image()->y_resolution = 0;
+      image()->resolution.x = 0;
+      image()->resolution.y = 0;
     }
 }
 Magick::Geometry Magick::Image::density ( void ) const
@@ -3003,11 +3003,11 @@ Magick::Geometry Magick::Image::density ( void ) const
       ssize_t x_resolution=72;
       ssize_t y_resolution=72;
 
-      if (constImage()->x_resolution > 0.0)
-        x_resolution=static_cast<ssize_t>(constImage()->x_resolution + 0.5);
+      if (constImage()->resolution.x > 0.0)
+        x_resolution=static_cast<ssize_t>(constImage()->resolution.x + 0.5);
 
-      if (constImage()->y_resolution > 0.0)
-        y_resolution=static_cast<ssize_t>(constImage()->y_resolution + 0.5);
+      if (constImage()->resolution.y > 0.0)
+        y_resolution=static_cast<ssize_t>(constImage()->resolution.y + 0.5);
 
       return Geometry(x_resolution,y_resolution);
     }
@@ -4114,11 +4114,11 @@ std::string Magick::Image::x11Display ( void ) const
 
 double Magick::Image::xResolution ( void ) const
 {
-  return constImage()->x_resolution;
+  return constImage()->resolution.x;
 }
 double Magick::Image::yResolution ( void ) const
 {
-  return constImage()->y_resolution;
+  return constImage()->resolution.y;
 }
 
 // Copy Constructor

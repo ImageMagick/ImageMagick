@@ -206,8 +206,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   image->colormap[1].red=QuantumRange;
   image->colormap[1].green=QuantumRange;
   image->colormap[1].blue=QuantumRange;
-  image->x_resolution=300;
-  image->y_resolution=300;
+  image->resolution.x=300;
+  image->resolution.y=300;
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);

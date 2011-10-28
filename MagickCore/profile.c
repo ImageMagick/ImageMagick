@@ -6360,9 +6360,9 @@ static MagickBooleanType GetProfilesFromResourceBlock(Image *image,
           Resolution.
         */
         p=ReadResourceShort(p,&resolution)+6;
-        image->x_resolution=(double) resolution;
+        image->resolution.x=(double) resolution;
         p=ReadResourceShort(p,&resolution)+6;
-        image->y_resolution=(double) resolution;
+        image->resolution.y=(double) resolution;
         break;
       }
       case 0x0404:
@@ -6719,14 +6719,14 @@ MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
         case 0x011a:
         {
           (void) WriteProfileLong(endian,(size_t)
-            (image->x_resolution+0.5),p);
+            (image->resolution.x+0.5),p);
           (void) WriteProfileLong(endian,1UL,p+4);
           break;
         }
         case 0x011b:
         {
           (void) WriteProfileLong(endian,(size_t)
-            (image->y_resolution+0.5),p);
+            (image->resolution.y+0.5),p);
           (void) WriteProfileLong(endian,1UL,p+4);
           break;
         }

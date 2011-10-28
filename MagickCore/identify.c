@@ -393,13 +393,13 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         (image->magick_rows != image->rows))
       (void) FormatLocaleFile(file,"  Base geometry: %.20gx%.20g\n",(double)
         image->magick_columns,(double) image->magick_rows);
-  if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
+  if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
     {
-      (void) FormatLocaleFile(file,"  Resolution: %gx%g\n",image->x_resolution,
-        image->y_resolution);
+      (void) FormatLocaleFile(file,"  Resolution: %gx%g\n",image->resolution.x,
+        image->resolution.y);
       (void) FormatLocaleFile(file,"  Print size: %gx%g\n",(double)
-        image->columns/image->x_resolution,(double) image->rows/
-        image->y_resolution);
+        image->columns/image->resolution.x,(double) image->rows/
+        image->resolution.y);
     }
   (void) FormatLocaleFile(file,"  Units: %s\n",CommandOptionToMnemonic(
     MagickResolutionOptions,(ssize_t) image->units));

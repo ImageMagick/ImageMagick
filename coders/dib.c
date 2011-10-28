@@ -632,8 +632,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Initialize image structure.
   */
   image->units=PixelsPerCentimeterResolution;
-  image->x_resolution=(double) dib_info.x_pixels/100.0;
-  image->y_resolution=(double) dib_info.y_pixels/100.0;
+  image->resolution.x=(double) dib_info.x_pixels/100.0;
+  image->resolution.y=(double) dib_info.y_pixels/100.0;
   /*
     Convert DIB raster image to pixel packets.
   */
@@ -1048,14 +1048,14 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
     case UndefinedResolution:
     case PixelsPerInchResolution:
     {
-      dib_info.x_pixels=(size_t) (100.0*image->x_resolution/2.54);
-      dib_info.y_pixels=(size_t) (100.0*image->y_resolution/2.54);
+      dib_info.x_pixels=(size_t) (100.0*image->resolution.x/2.54);
+      dib_info.y_pixels=(size_t) (100.0*image->resolution.y/2.54);
       break;
     }
     case PixelsPerCentimeterResolution:
     {
-      dib_info.x_pixels=(size_t) (100.0*image->x_resolution);
-      dib_info.y_pixels=(size_t) (100.0*image->y_resolution);
+      dib_info.x_pixels=(size_t) (100.0*image->resolution.x);
+      dib_info.y_pixels=(size_t) (100.0*image->resolution.y);
       break;
     }
   }

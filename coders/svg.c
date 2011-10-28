@@ -2729,8 +2729,8 @@ static void SVGSetImageSize(int *width,int *height,gpointer context)
     *image;
 
   image=(Image *) context;
-  *width=(int) (*width*image->x_resolution/72.0);
-  *height=(int) (*height*image->y_resolution/72.0);
+  *width=(int) (*width*image->resolution.x/72.0);
+  *height=(int) (*height*image->resolution.y/72.0);
 }
 #endif
 
@@ -2836,9 +2836,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       rsvg_handle_set_base_uri(svg_handle,image_info->filename);
       rsvg_handle_set_size_callback(svg_handle,SVGSetImageSize,image,NULL);
-      if ((image->x_resolution != 72.0) && (image->y_resolution != 72.0))
-        rsvg_handle_set_dpi_x_y(svg_handle,image->x_resolution,
-          image->y_resolution);
+      if ((image->resolution.x != 72.0) && (image->resolution.y != 72.0))
+        rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,
+          image->resolution.y);
       while ((n=ReadBlob(image,MaxTextExtent,message)) != 0)
       {
         error=(GError *) NULL;

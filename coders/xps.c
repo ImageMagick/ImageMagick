@@ -181,7 +181,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   delta.x=DefaultResolution;
   delta.y=DefaultResolution;
-  if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
+  if ((image->resolution.x == 0.0) || (image->resolution.y == 0.0))
     {
       GeometryInfo
         geometry_info;
@@ -190,13 +190,13 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         flags;
 
       flags=ParseGeometry(PSDensityGeometry,&geometry_info);
-      image->x_resolution=geometry_info.rho;
-      image->y_resolution=geometry_info.sigma;
+      image->resolution.x=geometry_info.rho;
+      image->resolution.y=geometry_info.sigma;
       if ((flags & SigmaValue) == 0)
-        image->y_resolution=image->x_resolution;
+        image->resolution.y=image->resolution.x;
     }
   (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",
-    image->x_resolution,image->y_resolution);
+    image->resolution.x,image->resolution.y);
   /*
     Determine page geometry from the XPS media box.
   */
@@ -283,8 +283,8 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
-  page.width=(size_t) floor(page.width*image->y_resolution/delta.x+0.5);
-  page.height=(size_t) floor(page.height*image->y_resolution/delta.y+
+  page.width=(size_t) floor(page.width*image->resolution.y/delta.x+0.5);
+  page.height=(size_t) floor(page.height*image->resolution.y/delta.y+
     0.5);
   (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
     page.width,(double) page.height);

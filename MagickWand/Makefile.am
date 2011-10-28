@@ -15,7 +15,7 @@
 #  Makefile for building MagickWand API.
 #
 
-MagickWandincdir = $(topincludedir)/MagickWand
+MagickWandincdir = $(INCLUDE_PATH)/MagickWand
 
 MAGICKWAND_SOURCES = \
 	MagickWand/MagickWand.h \

@@ -479,15 +479,15 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
 
       y_resolution=DefaultResolution;
       x_resolution=DefaultResolution;
-      if (image->y_resolution > 0)
+      if (image->resolution.y > 0)
         {
-          y_resolution=image->y_resolution;
+          y_resolution=image->resolution.y;
           if (image->units == PixelsPerCentimeterResolution)
             y_resolution*=CENTIMETERS_INCH;
         }
-      if (image->x_resolution > 0)
+      if (image->resolution.x > 0)
         {
-          x_resolution=image->x_resolution;
+          x_resolution=image->resolution.x;
           if (image->units == PixelsPerCentimeterResolution)
             x_resolution*=CENTIMETERS_INCH;
         }
@@ -526,22 +526,22 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
         {
           flags=ParseMetaGeometry(geometry,&sans,&sans,&image->columns,
             &image->rows);
-          if (image->x_resolution != 0.0)
-            image->columns=(size_t) floor((image->columns*image->x_resolution)+
+          if (image->resolution.x != 0.0)
+            image->columns=(size_t) floor((image->columns*image->resolution.x)+
               0.5);
-          if (image->y_resolution != 0.0)
-            image->rows=(size_t) floor((image->rows*image->y_resolution)+0.5);
+          if (image->resolution.y != 0.0)
+            image->rows=(size_t) floor((image->rows*image->resolution.y)+0.5);
         }
       else
         {
           *p='\0';
           flags=ParseMetaGeometry(geometry,&sans,&sans,&image->columns,
             &image->rows);
-          if (image->x_resolution != 0.0)
-            image->columns=(size_t) floor(((image->columns*image->x_resolution)/
+          if (image->resolution.x != 0.0)
+            image->columns=(size_t) floor(((image->columns*image->resolution.x)/
               DefaultResolution)+0.5);
-          if (image->y_resolution != 0.0)
-            image->rows=(size_t) floor(((image->rows*image->y_resolution)/
+          if (image->resolution.y != 0.0)
+            image->rows=(size_t) floor(((image->rows*image->resolution.y)/
               DefaultResolution)+0.5);
         }
       geometry=DestroyString(geometry);

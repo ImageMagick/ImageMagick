@@ -134,13 +134,6 @@ typedef enum
   RepeatSpread
 } SpreadMethod;
 
-typedef struct _PointInfo
-{ 
-  double
-    x,
-    y;
-} PointInfo;
-
 typedef struct _StopInfo
 {
   PixelInfo

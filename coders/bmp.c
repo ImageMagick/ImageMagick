@@ -929,8 +929,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Initialize image structure.
     */
-    image->x_resolution=(double) bmp_info.x_pixels/100.0;
-    image->y_resolution=(double) bmp_info.y_pixels/100.0;
+    image->resolution.x=(double) bmp_info.x_pixels/100.0;
+    image->resolution.y=(double) bmp_info.y_pixels/100.0;
     image->units=PixelsPerCentimeterResolution;
     /*
       Convert BMP raster image to pixel packets.
@@ -1611,14 +1611,14 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
       case UndefinedResolution:
       case PixelsPerInchResolution:
       {
-        bmp_info.x_pixels=(unsigned int) (100.0*image->x_resolution/2.54);
-        bmp_info.y_pixels=(unsigned int) (100.0*image->y_resolution/2.54);
+        bmp_info.x_pixels=(unsigned int) (100.0*image->resolution.x/2.54);
+        bmp_info.y_pixels=(unsigned int) (100.0*image->resolution.y/2.54);
         break;
       }
       case PixelsPerCentimeterResolution:
       {
-        bmp_info.x_pixels=(unsigned int) (100.0*image->x_resolution);
-        bmp_info.y_pixels=(unsigned int) (100.0*image->y_resolution);
+        bmp_info.x_pixels=(unsigned int) (100.0*image->resolution.x);
+        bmp_info.y_pixels=(unsigned int) (100.0*image->resolution.y);
         break;
       }
     }

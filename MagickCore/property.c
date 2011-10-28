@@ -138,8 +138,8 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
   image->directory=(char *) NULL;
   (void) CloneString(&image->geometry,clone_image->geometry);
   image->offset=clone_image->offset;
-  image->x_resolution=clone_image->x_resolution;
-  image->y_resolution=clone_image->y_resolution;
+  image->resolution.x=clone_image->resolution.x;
+  image->resolution.y=clone_image->resolution.y;
   image->page=clone_image->page;
   image->tile_offset=clone_image->tile_offset;
   image->extract_info=clone_image->extract_info;
@@ -2453,7 +2453,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
       if (LocaleNCompare("xresolution",property,11) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%g",
-            image->x_resolution);
+            image->resolution.x);
           break;
         }
       break;
@@ -2463,7 +2463,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
       if (LocaleNCompare("yresolution",property,11) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%g",
-            image->y_resolution);
+            image->resolution.y);
           break;
         }
       break;
@@ -2920,14 +2920,14 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       }
       case 'x': /* Image horizontal resolution (density).  */
       {
-        q+=FormatLocaleString(q,extent,"%g %s",image->x_resolution,
+        q+=FormatLocaleString(q,extent,"%g %s",image->resolution.x,
           CommandOptionToMnemonic(MagickResolutionOptions,(ssize_t)
             image->units));
         break;
       }
       case 'y': /* Image vertical resolution (density)  */
       {
-        q+=FormatLocaleString(q,extent,"%g %s",image->y_resolution,
+        q+=FormatLocaleString(q,extent,"%g %s",image->resolution.y,
           CommandOptionToMnemonic(MagickResolutionOptions,(ssize_t)
           image->units));
         break;
@@ -3283,10 +3283,10 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
             geometry_info;
 
           flags=ParseGeometry(value,&geometry_info);
-          image->x_resolution=geometry_info.rho;
-          image->y_resolution=geometry_info.sigma;
+          image->resolution.x=geometry_info.rho;
+          image->resolution.y=geometry_info.sigma;
           if ((flags & SigmaValue) == 0)
-            image->y_resolution=image->x_resolution;
+            image->resolution.y=image->resolution.x;
         }
       if (LocaleCompare(property,"depth") == 0)
         {

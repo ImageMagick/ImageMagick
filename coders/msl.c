@@ -5351,11 +5351,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         if (msl_info->image[n]->units == PixelsPerCentimeterResolution)
           factor=2.54;
         width=(size_t) (x_resolution*msl_info->image[n]->columns/
-          (factor*(msl_info->image[n]->x_resolution == 0.0 ? DefaultResolution :
-          msl_info->image[n]->x_resolution))+0.5);
+          (factor*(msl_info->image[n]->resolution.x == 0.0 ? DefaultResolution :
+          msl_info->image[n]->resolution.x))+0.5);
         height=(size_t) (y_resolution*msl_info->image[n]->rows/
-          (factor*(msl_info->image[n]->y_resolution == 0.0 ? DefaultResolution :
-          msl_info->image[n]->y_resolution))+0.5);
+          (factor*(msl_info->image[n]->resolution.y == 0.0 ? DefaultResolution :
+          msl_info->image[n]->resolution.y))+0.5);
         resample_image=ResizeImage(msl_info->image[n],width,height,
           msl_info->image[n]->filter,msl_info->image[n]->blur,
           msl_info->exception);
@@ -6094,11 +6094,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               if (LocaleCompare(keyword,"density") == 0)
                 {
                   flags=ParseGeometry(value,&geometry_info);
-                  msl_info->image[n]->x_resolution=geometry_info.rho;
-                  msl_info->image[n]->y_resolution=geometry_info.sigma;
+                  msl_info->image[n]->resolution.x=geometry_info.rho;
+                  msl_info->image[n]->resolution.y=geometry_info.sigma;
                   if ((flags & SigmaValue) == 0)
-                    msl_info->image[n]->y_resolution=
-                      msl_info->image[n]->x_resolution;
+                    msl_info->image[n]->resolution.y=
+                      msl_info->image[n]->resolution.x;
                   break;
                 }
               (void) SetMSLAttributes(msl_info,keyword,value);

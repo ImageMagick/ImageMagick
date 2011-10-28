@@ -886,8 +886,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   flags=0;
   image->columns=1UL*(frame.right-frame.left);
   image->rows=1UL*(frame.bottom-frame.top);
-  image->x_resolution=DefaultResolution;
-  image->y_resolution=DefaultResolution;
+  image->resolution.x=DefaultResolution;
+  image->resolution.y=DefaultResolution;
   image->units=UndefinedResolution;
   /*
     Interpret PICT opcodes.
@@ -963,8 +963,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             ReadRectangle(image,frame);
             ReadPixmap(pixmap);
             image->depth=1UL*pixmap.component_size;
-            image->x_resolution=1.0*pixmap.horizontal_resolution;
-            image->y_resolution=1.0*pixmap.vertical_resolution;
+            image->resolution.x=1.0*pixmap.horizontal_resolution;
+            image->resolution.y=1.0*pixmap.vertical_resolution;
             image->units=PixelsPerInchResolution;
             (void) ReadBlobMSBLong(image);
             flags=1L*ReadBlobMSBShort(image);
@@ -1077,8 +1077,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 tile_image->depth=1UL*pixmap.component_size;
                 tile_image->matte=pixmap.component_count == 4 ?
                   MagickTrue : MagickFalse;
-                tile_image->x_resolution=(double) pixmap.horizontal_resolution;
-                tile_image->y_resolution=(double) pixmap.vertical_resolution;
+                tile_image->resolution.x=(double) pixmap.horizontal_resolution;
+                tile_image->resolution.y=(double) pixmap.vertical_resolution;
                 tile_image->units=PixelsPerInchResolution;
                 if (tile_image->matte != MagickFalse)
                   image->matte=tile_image->matte;
@@ -1633,9 +1633,9 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   pixmap.table=0;
   pixmap.reserved=0;
   transfer_mode=0;
-  x_resolution=image->x_resolution != 0.0 ? image->x_resolution :
+  x_resolution=image->resolution.x != 0.0 ? image->resolution.x :
     DefaultResolution;
-  y_resolution=image->y_resolution != 0.0 ? image->y_resolution :
+  y_resolution=image->resolution.y != 0.0 ? image->resolution.y :
     DefaultResolution;
   storage_class=image->storage_class;
   if (image_info->compression == JPEGCompression)

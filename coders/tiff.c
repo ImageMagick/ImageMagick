@@ -366,7 +366,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   length=WriteLSBLong(file,(size_t) (strip_offset-8));
   length=fwrite("\050\001\003\000\001\000\000\000\002\000\000\000",1,12,file);
   length=fwrite("\000\000\000\000",1,4,file);
-  length=WriteLSBLong(file,(long) image->x_resolution);
+  length=WriteLSBLong(file,(long) image->resolution.x);
   length=WriteLSBLong(file,1);
   for (length=0; (c=ReadBlobByte(image)) != EOF; length++)
     (void) fputc(c,file);
@@ -1001,12 +1001,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
       &samples_per_pixel);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);
-    x_resolution=(float) image->x_resolution;
-    y_resolution=(float) image->y_resolution;
+    x_resolution=(float) image->resolution.x;
+    y_resolution=(float) image->resolution.y;
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_XRESOLUTION,&x_resolution);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_YRESOLUTION,&y_resolution);
-    image->x_resolution=x_resolution;
-    image->y_resolution=y_resolution;
+    image->resolution.x=x_resolution;
+    image->resolution.y=y_resolution;
     x_position=(float) image->page.x/x_resolution;
     y_position=(float) image->page.y/y_resolution;
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_XPOSITION,&x_position);
@@ -3006,7 +3006,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     option=GetImageOption(image_info,"tiff:tile-geometry");
     if (option == (const char *) NULL)
       (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
-    if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
+    if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
       {
         unsigned short
           units;
@@ -3020,17 +3020,17 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if (image->units == PixelsPerCentimeterResolution)
           units=RESUNIT_CENTIMETER;
         (void) TIFFSetField(tiff,TIFFTAG_RESOLUTIONUNIT,(uint16) units);
-        (void) TIFFSetField(tiff,TIFFTAG_XRESOLUTION,image->x_resolution);
-        (void) TIFFSetField(tiff,TIFFTAG_YRESOLUTION,image->y_resolution);
+        (void) TIFFSetField(tiff,TIFFTAG_XRESOLUTION,image->resolution.x);
+        (void) TIFFSetField(tiff,TIFFTAG_YRESOLUTION,image->resolution.y);
         if ((image->page.x != 0) || (image->page.y != 0))
           {
             /*
               Set image position.
             */
             (void) TIFFSetField(tiff,TIFFTAG_XPOSITION,(float) image->page.x/
-              image->x_resolution);
+              image->resolution.x);
             (void) TIFFSetField(tiff,TIFFTAG_YPOSITION,(float) image->page.y/
-              image->y_resolution);
+              image->resolution.y);
           }
       }
     if (image->chromaticity.white_point.x != 0.0)

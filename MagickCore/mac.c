@@ -1299,8 +1299,8 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
       break;
     }
   }
-  image->x_resolution=(picture_info.hRes) >> 16;
-  image->y_resolution=(picture_info.vRes) >> 16;
+  image->resolution.x=(picture_info.hRes) >> 16;
+  image->resolution.y=(picture_info.vRes) >> 16;
   image->units=PixelsPerInchResolution;
   image->columns=picture_info.sourceRect.right-picture_info.sourceRect.left;
   image->rows=picture_info.sourceRect.bottom-picture_info.sourceRect.top;
