@@ -8279,7 +8279,7 @@ eval "eval INCLUDEDIR_ARCH=$includedir_arch"
 if test "${with_sharedir_arch+set}" = set; then :
   withval=$with_sharedir_arch; sharedir_arch=$withval
 else
-  sharedir_arch="${LIB_DIR}/${PACKAGE_NAME}-${PACKAGE_VERSION}"
+  sharedir_arch="${DATA_DIR}"
 fi
 
 
