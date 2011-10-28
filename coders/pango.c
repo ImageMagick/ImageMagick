@@ -122,6 +122,9 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   PangoLayout
     *layout;
 
+  PangoRectangle
+    extent;
+
   PixelInfo
     fill_color;
 
@@ -145,14 +148,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AcquireImage(image_info,exception);
-  if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"MustSpecifyImageSize");
   (void) ResetImagePage(image,"0x0+0+0");
-  if (SetImageBackgroundColor(image,exception) == MagickFalse)
-    {
-      image=DestroyImageList(image);
-      return((Image *) NULL);
-    }
   /*
     Get context.
   */
@@ -162,6 +158,30 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   pango_ft2_font_map_set_default_substitute((PangoFT2FontMap *) fontmap,NULL,
     NULL,NULL);
   context=pango_font_map_create_context(fontmap);
+  /*
+    Render caption.
+  */
+  layout=pango_layout_new(context);
+  description=pango_font_description_from_string("Arial,20");
+  pango_layout_set_font_description(layout,description);
+  pango_font_description_free(description);
+  property=InterpretImageProperties(image_info,image,image_info->filename,
+    exception);
+  (void) SetImageProperty(image,"caption",property,exception);
+  property=DestroyString(property);
+  caption=ConstantString(GetImageProperty(image,"caption",exception));
+  pango_layout_set_text(layout,caption,-1);
+  pango_layout_context_changed(layout);
+  if (image->columns == 0)
+    {
+      pango_layout_get_pixel_extents(layout,NULL,&extent);
+      image->columns=extent.x+extent.width;
+    }
+  if (image->rows == 0)
+    {
+      pango_layout_get_pixel_extents(layout,NULL,&extent);
+      image->rows=extent.y+extent.height;
+    }
   /*
     Create canvas.
   */
@@ -181,25 +201,19 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   canvas->num_grays=256;
   canvas->pixel_mode=ft_pixel_mode_grays;
   ResetMagickMemory(canvas->buffer,0x00,canvas->pitch*canvas->rows);
-  /*
-    Render caption.
-  */
-  layout=pango_layout_new(context);
-  description=pango_font_description_from_string("Arial,20");
-  pango_layout_set_font_description(layout,description);
-  pango_font_description_free(description);
-  property=InterpretImageProperties(image_info,image,image_info->filename,
-    exception);
-  (void) SetImageProperty(image,"caption",property,exception);
-  property=DestroyString(property);
-  caption=ConstantString(GetImageProperty(image,"caption",exception));
-  pango_layout_set_text(layout,caption,-1);
-  pango_layout_context_changed(layout);
   /* wrapping: pango_layout_set_width(layout,72*image->columns); */
   pango_ft2_render_layout(canvas,layout,0,0);
   /*
     Convert caption to image.
   */
+  if (SetImageBackgroundColor(image,exception) == MagickFalse)
+    {
+      canvas->buffer=(unsigned char *) RelinquishMagickMemory(canvas->buffer);
+      canvas=(FT_Bitmap *) RelinquishMagickMemory(canvas);
+      caption=DestroyString(caption);
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   GetPixelInfo(image,&fill_color);
   p=canvas->buffer;
@@ -225,6 +239,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
       p++;
       q+=GetPixelChannels(image);
     }
+    for ( ; x < (ssize_t) ((canvas->width+3) & ~3); x++)
+      p++;
   }
   /*
     Relinquish resources.
