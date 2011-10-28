@@ -2443,14 +2443,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       */
       (void) png_get_pHYs(ping,ping_info,&x_resolution,&y_resolution,
         &unit_type);
-      image->x_resolution=(double) x_resolution;
-      image->y_resolution=(double) y_resolution;
+      image->resolution.x=(double) x_resolution;
+      image->resolution.y=(double) y_resolution;
 
       if (unit_type == PNG_RESOLUTION_METER)
         {
           image->units=PixelsPerCentimeterResolution;
-          image->x_resolution=(double) x_resolution/100.0;
-          image->y_resolution=(double) y_resolution/100.0;
+          image->resolution.x=(double) x_resolution/100.0;
+          image->resolution.y=(double) y_resolution/100.0;
         }
 
       if (logging != MagickFalse)
@@ -4274,13 +4274,13 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (length > 8)
           {
-            image->x_resolution=(double) mng_get_long(p);
-            image->y_resolution=(double) mng_get_long(&p[4]);
+            image->resolution.x=(double) mng_get_long(p);
+            image->resolution.y=(double) mng_get_long(&p[4]);
             if ((int) p[8] == PNG_RESOLUTION_METER)
               {
                 image->units=PixelsPerCentimeterResolution;
-                image->x_resolution=image->x_resolution/100.0f;
-                image->y_resolution=image->y_resolution/100.0f;
+                image->resolution.x=image->resolution.x/100.0f;
+                image->resolution.y=image->resolution.y/100.0f;
               }
           }
 
@@ -8990,7 +8990,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_pHYs_SUPPORTED)
   if (ping_exclude_pHYs == MagickFalse)
   {
-  if ((image->x_resolution != 0) && (image->y_resolution != 0) &&
+  if ((image->resolution.x != 0) && (image->resolution.y != 0) &&
       (!mng_info->write_mng || !mng_info->equal_physs))
     {
       if (logging != MagickFalse)
@@ -9001,23 +9001,23 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         {
           ping_pHYs_unit_type=PNG_RESOLUTION_METER;
           ping_pHYs_x_resolution=
-             (png_uint_32) ((100.0*image->x_resolution+0.5)/2.54);
+             (png_uint_32) ((100.0*image->resolution.x+0.5)/2.54);
           ping_pHYs_y_resolution=
-             (png_uint_32) ((100.0*image->y_resolution+0.5)/2.54);
+             (png_uint_32) ((100.0*image->resolution.y+0.5)/2.54);
         }
 
       else if (image->units == PixelsPerCentimeterResolution)
         {
           ping_pHYs_unit_type=PNG_RESOLUTION_METER;
-          ping_pHYs_x_resolution=(png_uint_32) (100.0*image->x_resolution+0.5);
-          ping_pHYs_y_resolution=(png_uint_32) (100.0*image->y_resolution+0.5);
+          ping_pHYs_x_resolution=(png_uint_32) (100.0*image->resolution.x+0.5);
+          ping_pHYs_y_resolution=(png_uint_32) (100.0*image->resolution.y+0.5);
         }
 
       else
         {
           ping_pHYs_unit_type=PNG_RESOLUTION_UNKNOWN;
-          ping_pHYs_x_resolution=(png_uint_32) image->x_resolution;
-          ping_pHYs_y_resolution=(png_uint_32) image->y_resolution;
+          ping_pHYs_x_resolution=(png_uint_32) image->resolution.x;
+          ping_pHYs_y_resolution=(png_uint_32) image->resolution.y;
         }
 
       if (logging != MagickFalse)
@@ -11926,7 +11926,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
         }
     }
 
-  if (image->x_resolution && image->y_resolution && !mng_info->equal_physs)
+  if (image->resolution.x && image->resolution.y && !mng_info->equal_physs)
     {
       /*
          Write JNG pHYs chunk
@@ -11937,10 +11937,10 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
       if (image->units == PixelsPerInchResolution)
         {
           PNGLong(chunk+4,(png_uint_32)
-            (image->x_resolution*100.0/2.54+0.5));
+            (image->resolution.x*100.0/2.54+0.5));
 
           PNGLong(chunk+8,(png_uint_32)
-            (image->y_resolution*100.0/2.54+0.5));
+            (image->resolution.y*100.0/2.54+0.5));
 
           chunk[12]=1;
         }
@@ -11950,18 +11950,18 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           if (image->units == PixelsPerCentimeterResolution)
             {
               PNGLong(chunk+4,(png_uint_32)
-                (image->x_resolution*100.0+0.5));
+                (image->resolution.x*100.0+0.5));
 
               PNGLong(chunk+8,(png_uint_32)
-                (image->y_resolution*100.0+0.5));
+                (image->resolution.y*100.0+0.5));
 
               chunk[12]=1;
             }
 
           else
             {
-              PNGLong(chunk+4,(png_uint_32) (image->x_resolution+0.5));
-              PNGLong(chunk+8,(png_uint_32) (image->y_resolution+0.5));
+              PNGLong(chunk+4,(png_uint_32) (image->resolution.x+0.5));
+              PNGLong(chunk+8,(png_uint_32) (image->resolution.y+0.5));
               chunk[12]=0;
             }
         }
@@ -12500,8 +12500,8 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
               mng_info->equal_srgbs=MagickFalse;
 
             if ((next_image->units != next_image->next->units) ||
-                (next_image->x_resolution != next_image->next->x_resolution) ||
-                (next_image->y_resolution != next_image->next->y_resolution))
+                (next_image->resolution.x != next_image->next->resolution.x) ||
+                (next_image->resolution.y != next_image->next->resolution.y))
               mng_info->equal_physs=MagickFalse;
 
             if (mng_info->equal_chrms)
@@ -12775,7 +12775,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
              mng_info->have_write_global_chrm=MagickTrue;
            }
        }
-     if (image->x_resolution && image->y_resolution && mng_info->equal_physs)
+     if (image->resolution.x && image->resolution.y && mng_info->equal_physs)
        {
          /*
             Write MNG pHYs chunk
@@ -12787,10 +12787,10 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
          if (image->units == PixelsPerInchResolution)
            {
              PNGLong(chunk+4,(png_uint_32)
-               (image->x_resolution*100.0/2.54+0.5));
+               (image->resolution.x*100.0/2.54+0.5));
 
              PNGLong(chunk+8,(png_uint_32)
-               (image->y_resolution*100.0/2.54+0.5));
+               (image->resolution.y*100.0/2.54+0.5));
 
              chunk[12]=1;
            }
@@ -12800,18 +12800,18 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
              if (image->units == PixelsPerCentimeterResolution)
                {
                  PNGLong(chunk+4,(png_uint_32)
-                   (image->x_resolution*100.0+0.5));
+                   (image->resolution.x*100.0+0.5));
 
                  PNGLong(chunk+8,(png_uint_32)
-                   (image->y_resolution*100.0+0.5));
+                   (image->resolution.y*100.0+0.5));
 
                  chunk[12]=1;
                }
 
              else
                {
-                 PNGLong(chunk+4,(png_uint_32) (image->x_resolution+0.5));
-                 PNGLong(chunk+8,(png_uint_32) (image->y_resolution+0.5));
+                 PNGLong(chunk+4,(png_uint_32) (image->resolution.x+0.5));
+                 PNGLong(chunk+8,(png_uint_32) (image->resolution.y+0.5));
                  chunk[12]=0;
                }
            }

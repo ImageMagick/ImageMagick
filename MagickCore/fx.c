@@ -1756,9 +1756,9 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           (LocaleCompare(symbol,"image.standard_deviation") == 0))
         return(FxChannelStatistics(fx_info,image,channel,symbol+6,exception));
       if (LocaleCompare(symbol,"image.resolution.x") == 0)
-        return(image->x_resolution);
+        return(image->resolution.x);
       if (LocaleCompare(symbol,"image.resolution.y") == 0)
-        return(image->y_resolution);
+        return(image->resolution.y);
       if (LocaleCompare(symbol,"intensity") == 0)
         return(QuantumScale*GetPixelInfoIntensity(&pixel));
       if (LocaleCompare(symbol,"i") == 0)
@@ -1840,9 +1840,9 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
     case 'r':
     {
       if (LocaleCompare(symbol,"resolution.x") == 0)
-        return(image->x_resolution);
+        return(image->resolution.x);
       if (LocaleCompare(symbol,"resolution.y") == 0)
-        return(image->y_resolution);
+        return(image->resolution.y);
       if (LocaleCompare(symbol,"r") == 0)
         return(QuantumScale*pixel.red);
       break;

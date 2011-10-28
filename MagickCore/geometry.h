@@ -117,6 +117,13 @@ typedef struct _OffsetInfo
     y;
 } OffsetInfo;
 
+typedef struct _PointInfo
+{
+  double
+    x,
+    y;
+} PointInfo;
+
 typedef struct _RectangleInfo
 {
   size_t

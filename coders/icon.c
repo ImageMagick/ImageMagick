@@ -976,14 +976,14 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           case UndefinedResolution:
           case PixelsPerInchResolution:
           {
-            icon_info.x_pixels=(size_t) (100.0*next->x_resolution/2.54);
-            icon_info.y_pixels=(size_t) (100.0*next->y_resolution/2.54);
+            icon_info.x_pixels=(size_t) (100.0*next->resolution.x/2.54);
+            icon_info.y_pixels=(size_t) (100.0*next->resolution.y/2.54);
             break;
           }
           case PixelsPerCentimeterResolution:
           {
-            icon_info.x_pixels=(size_t) (100.0*next->x_resolution);
-            icon_info.y_pixels=(size_t) (100.0*next->y_resolution);
+            icon_info.x_pixels=(size_t) (100.0*next->resolution.x);
+            icon_info.y_pixels=(size_t) (100.0*next->resolution.y);
             break;
           }
         }

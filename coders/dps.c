@@ -218,8 +218,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   screen=ScreenOfDisplay(display,visual_info->screen);
   pixels_per_point=XDPSPixelsPerPoint(screen);
-  if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
-    pixels_per_point=MagickMin(image->x_resolution,image->y_resolution)/
+  if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
+    pixels_per_point=MagickMin(image->resolution.x,image->resolution.y)/
       DefaultResolution;
   status=XDPSCreatePixmapForEPSF((DPSContext) NULL,screen,
     GetBlobFileHandle(image),visual_info->depth,pixels_per_point,&pixmap,

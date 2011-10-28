@@ -185,8 +185,8 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
     exception);
   (void) QueryColorCompliance(TransparentColor,AllCompliance,
     &image->transparent_color,exception);
-  image->x_resolution=DefaultResolution;
-  image->y_resolution=DefaultResolution;
+  image->resolution.x=DefaultResolution;
+  image->resolution.y=DefaultResolution;
   image->units=PixelsPerInchResolution;
   GetTimerInfo(&image->timer);
   image->ping=MagickFalse;
@@ -242,10 +242,10 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
         geometry_info;
 
       flags=ParseGeometry(image_info->density,&geometry_info);
-      image->x_resolution=geometry_info.rho;
-      image->y_resolution=geometry_info.sigma;
+      image->resolution.x=geometry_info.rho;
+      image->resolution.y=geometry_info.sigma;
       if ((flags & SigmaValue) == 0)
-        image->y_resolution=image->x_resolution;
+        image->resolution.y=image->resolution.x;
     }
   if (image_info->page != (char *) NULL)
     {
@@ -4167,10 +4167,10 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
         geometry_info;
 
       flags=ParseGeometry(option,&geometry_info);
-      image->x_resolution=geometry_info.rho;
-      image->y_resolution=geometry_info.sigma;
+      image->resolution.x=geometry_info.rho;
+      image->resolution.y=geometry_info.sigma;
       if ((flags & SigmaValue) == 0)
-        image->y_resolution=image->x_resolution;
+        image->resolution.y=image->resolution.x;
     }
   option=GetImageOption(image_info,"depth");
   if (option != (const char *) NULL)
@@ -4286,8 +4286,8 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
           {
             if (units == PixelsPerCentimeterResolution)
               {
-                image->x_resolution/=2.54;
-                image->y_resolution/=2.54;
+                image->resolution.x/=2.54;
+                image->resolution.y/=2.54;
               }
             break;
           }
@@ -4295,10 +4295,10 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
           {
             if (units == PixelsPerInchResolution)
               {
-                image->x_resolution=(double) ((size_t) (100.0*2.54*
-                  image->x_resolution+0.5))/100.0;
-                image->y_resolution=(double) ((size_t) (100.0*2.54*
-                  image->y_resolution+0.5))/100.0;
+                image->resolution.x=(double) ((size_t) (100.0*2.54*
+                  image->resolution.x+0.5))/100.0;
+                image->resolution.y=(double) ((size_t) (100.0*2.54*
+                  image->resolution.y+0.5))/100.0;
               }
             break;
           }

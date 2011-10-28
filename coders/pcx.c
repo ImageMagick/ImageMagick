@@ -347,8 +347,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     image->depth=pcx_info.bits_per_pixel <= 8 ? 8U : MAGICKCORE_QUANTUM_DEPTH;
     image->units=PixelsPerInchResolution;
-    image->x_resolution=(double) pcx_info.horizontal_resolution;
-    image->y_resolution=(double) pcx_info.vertical_resolution;
+    image->resolution.x=(double) pcx_info.horizontal_resolution;
+    image->resolution.y=(double) pcx_info.vertical_resolution;
     image->colors=16;
     pcx_colormap=(unsigned char *) AcquireQuantumMemory(256UL,
       3*sizeof(*pcx_colormap));
@@ -922,16 +922,16 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
       case PixelsPerInchResolution:
       default:
       {
-        pcx_info.horizontal_resolution=(unsigned short) image->x_resolution;
-        pcx_info.vertical_resolution=(unsigned short) image->y_resolution;
+        pcx_info.horizontal_resolution=(unsigned short) image->resolution.x;
+        pcx_info.vertical_resolution=(unsigned short) image->resolution.y;
         break;
       }
       case PixelsPerCentimeterResolution:
       {
         pcx_info.horizontal_resolution=(unsigned short)
-          (2.54*image->x_resolution+0.5);
+          (2.54*image->resolution.x+0.5);
         pcx_info.vertical_resolution=(unsigned short)
-          (2.54*image->y_resolution+0.5);
+          (2.54*image->resolution.y+0.5);
         break;
       }
     }

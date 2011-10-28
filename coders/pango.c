@@ -107,9 +107,6 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   Image
     *image;
 
-  MagickBooleanType
-    status;
-
   PangoContext
     *context;
 
@@ -154,7 +151,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   */
   fontmap=(PangoFontMap *) pango_ft2_font_map_new();
   pango_ft2_font_map_set_resolution((PangoFT2FontMap *) fontmap,
-    image->x_resolution,image->y_resolution);
+    image->resolution.x,image->resolution.y);
   pango_ft2_font_map_set_default_substitute((PangoFT2FontMap *) fontmap,NULL,
     NULL,NULL);
   context=pango_font_map_create_context(fontmap);
@@ -162,7 +159,11 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     Render caption.
   */
   layout=pango_layout_new(context);
-  description=pango_font_description_from_string("Arial,20");
+  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  description=pango_font_description_from_string(draw_info->font ==
+    (char *) NULL ? "helvetica" : draw_info->font);
+  pango_font_description_set_size(description,PANGO_SCALE*
+    draw_info->pointsize);
   pango_layout_set_font_description(layout,description);
   pango_font_description_free(description);
   property=InterpretImageProperties(image_info,image,image_info->filename,
@@ -172,12 +173,18 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   caption=ConstantString(GetImageProperty(image,"caption",exception));
   pango_layout_set_text(layout,caption,-1);
   pango_layout_context_changed(layout);
-  if (image->columns == 0)
+  if (image->columns != 0)
+    pango_layout_set_width(layout,(PANGO_SCALE*image->columns*
+      image->resolution.x+36.0)/72.0);
+  else
     {
       pango_layout_get_pixel_extents(layout,NULL,&extent);
       image->columns=extent.x+extent.width;
     }
-  if (image->rows == 0)
+  if (image->rows != 0)
+    pango_layout_set_height(layout,(PANGO_SCALE*image->columns*
+      image->resolution.x+36.0)/72.0);
+  else
     {
       pango_layout_get_pixel_extents(layout,NULL,&extent);
       image->rows=extent.y+extent.height;
@@ -187,7 +194,10 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   */
   canvas=(FT_Bitmap *) AcquireMagickMemory(sizeof(*canvas));
   if (canvas == (FT_Bitmap *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      draw_info=DestroyDrawInfo(draw_info);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   canvas->width=image->columns;
   canvas->pitch=(canvas->width+3) & ~3;
   canvas->rows=image->rows;
@@ -195,26 +205,26 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     canvas->rows*sizeof(*canvas->buffer));
   if (canvas->buffer == (unsigned char *) NULL)
     {
+      draw_info=DestroyDrawInfo(draw_info);
       canvas=(FT_Bitmap *) RelinquishMagickMemory(canvas);
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   canvas->num_grays=256;
   canvas->pixel_mode=ft_pixel_mode_grays;
   ResetMagickMemory(canvas->buffer,0x00,canvas->pitch*canvas->rows);
-  /* wrapping: pango_layout_set_width(layout,72*image->columns); */
   pango_ft2_render_layout(canvas,layout,0,0);
   /*
     Convert caption to image.
   */
   if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
+      draw_info=DestroyDrawInfo(draw_info);
       canvas->buffer=(unsigned char *) RelinquishMagickMemory(canvas->buffer);
       canvas=(FT_Bitmap *) RelinquishMagickMemory(canvas);
       caption=DestroyString(caption);
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   GetPixelInfo(image,&fill_color);
   p=canvas->buffer;
   for (y=0; y < (ssize_t) image->rows; y++)

@@ -200,7 +200,7 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   */
   delta.x=DefaultResolution;
   delta.y=DefaultResolution;
-  if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
+  if ((image->resolution.x == 0.0) || (image->resolution.y == 0.0))
     {
       GeometryInfo
         geometry_info;
@@ -209,10 +209,10 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
         flags;
 
       flags=ParseGeometry(PSDensityGeometry,&geometry_info);
-      image->x_resolution=geometry_info.rho;
-      image->y_resolution=geometry_info.sigma;
+      image->resolution.x=geometry_info.rho;
+      image->resolution.y=geometry_info.sigma;
       if ((flags & SigmaValue) == 0)
-        image->y_resolution=image->x_resolution;
+        image->resolution.y=image->resolution.x;
     }
   page.width=612;
   page.height=792;
@@ -223,9 +223,9 @@ static Image *ReadTEXTImage(const ImageInfo *image_info,Image *image,
   /*
     Initialize Image structure.
   */
-  image->columns=(size_t) floor((((double) page.width*image->x_resolution)/
+  image->columns=(size_t) floor((((double) page.width*image->resolution.x)/
     delta.x)+0.5);
-  image->rows=(size_t) floor((((double) page.height*image->y_resolution)/
+  image->rows=(size_t) floor((((double) page.height*image->resolution.y)/
     delta.y)+0.5);
   image->page.x=0;
   image->page.y=0;

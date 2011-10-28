@@ -201,9 +201,8 @@ struct _Image
   ssize_t
     offset;
 
-  double
-    x_resolution,   /* image resolution/density */
-    y_resolution;
+  PointInfo
+    resolution;     /* image resolution/density */
 
   RectangleInfo
     page,           /* virtual canvas size and offset of image */

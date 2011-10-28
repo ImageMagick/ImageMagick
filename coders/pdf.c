@@ -397,13 +397,13 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   delta.x=DefaultResolution;
   delta.y=DefaultResolution;
-  if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
+  if ((image->resolution.x == 0.0) || (image->resolution.y == 0.0))
     {
       flags=ParseGeometry(PSDensityGeometry,&geometry_info);
-      image->x_resolution=geometry_info.rho;
-      image->y_resolution=geometry_info.sigma;
+      image->resolution.x=geometry_info.rho;
+      image->resolution.y=geometry_info.sigma;
       if ((flags & SigmaValue) == 0)
-        image->y_resolution=image->x_resolution;
+        image->resolution.y=image->resolution.x;
     }
   /*
     Determine page geometry from the PDF media box.
@@ -585,19 +585,19 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->density != (char *) NULL)
     {
       flags=ParseGeometry(image_info->density,&geometry_info);
-      image->x_resolution=geometry_info.rho;
-      image->y_resolution=geometry_info.sigma;
+      image->resolution.x=geometry_info.rho;
+      image->resolution.y=geometry_info.sigma;
       if ((flags & SigmaValue) == 0)
-        image->y_resolution=image->x_resolution;
+        image->resolution.y=image->resolution.x;
     }
-  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",image->x_resolution,
-    image->y_resolution);
+  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",image->resolution.x,
+    image->resolution.y);
   if (image_info->page != (char *) NULL)
     {
       (void) ParseAbsoluteGeometry(image_info->page,&page);
-      page.width=(size_t) floor((double) (page.width*image->x_resolution/
+      page.width=(size_t) floor((double) (page.width*image->resolution.x/
         delta.x)+0.5);
-      page.height=(size_t) floor((double) (page.height*image->y_resolution/
+      page.height=(size_t) floor((double) (page.height*image->resolution.y/
         delta.y)+0.5);
       (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
         page.width,(double) page.height);
@@ -1263,8 +1263,8 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     */
     delta.x=DefaultResolution;
     delta.y=DefaultResolution;
-    resolution.x=image->x_resolution;
-    resolution.y=image->y_resolution;
+    resolution.x=image->resolution.x;
+    resolution.y=image->resolution.y;
     if ((resolution.x == 0.0) || (resolution.y == 0.0))
       {
         flags=ParseGeometry(PSDensityGeometry,&geometry_info);

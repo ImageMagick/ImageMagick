@@ -925,10 +925,10 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 if (LocaleCompare(keyword,"resolution") == 0)
                   {
                     flags=ParseGeometry(options,&geometry_info);
-                    image->x_resolution=geometry_info.rho;
-                    image->y_resolution=geometry_info.sigma;
+                    image->resolution.x=geometry_info.rho;
+                    image->resolution.y=geometry_info.sigma;
                     if ((flags & SigmaValue) == 0)
-                      image->y_resolution=image->x_resolution;
+                      image->resolution.y=image->resolution.x;
                     break;
                   }
                 if (LocaleCompare(keyword,"rows") == 0)
@@ -1988,10 +1988,10 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           CommandOptionToMnemonic(MagickResolutionOptions,image->units));
         (void) WriteBlobString(image,buffer);
       }
-    if ((image->x_resolution != 0) || (image->y_resolution != 0))
+    if ((image->resolution.x != 0) || (image->resolution.y != 0))
       {
         (void) FormatLocaleString(buffer,MaxTextExtent,
-          "resolution=%gx%g\n",image->x_resolution,image->y_resolution);
+          "resolution=%gx%g\n",image->resolution.x,image->resolution.y);
         (void) WriteBlobString(image,buffer);
       }
     if ((image->page.width != 0) || (image->page.height != 0))

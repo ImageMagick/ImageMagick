@@ -494,8 +494,8 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image,
     */
     delta.x=DefaultResolution;
     delta.y=DefaultResolution;
-    resolution.x=image->x_resolution;
-    resolution.y=image->y_resolution;
+    resolution.x=image->resolution.x;
+    resolution.y=image->resolution.y;
     if ((resolution.x == 0.0) || (resolution.y == 0.0))
       {
         flags=ParseGeometry(PSDensityGeometry,&geometry_info);

@@ -505,8 +505,8 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
   while (runlength < 11)
    InputBit(bit);
   do { InputBit(bit); } while ((int) bit == 0);
-  image->x_resolution=204.0;
-  image->y_resolution=196.0;
+  image->resolution.x=204.0;
+  image->resolution.y=196.0;
   image->units=PixelsPerInchResolution;
   image_view=AcquireCacheView(image);
   for (y=0; ((y < (ssize_t) image->rows) && (null_lines < 3)); )

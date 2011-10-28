@@ -1021,8 +1021,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               if(BitmapHeader1.HorzRes && BitmapHeader1.VertRes)
                 {
                   image->units=PixelsPerCentimeterResolution;
-                  image->x_resolution=BitmapHeader1.HorzRes/470.0;
-                  image->y_resolution=BitmapHeader1.VertRes/470.0;
+                  image->resolution.x=BitmapHeader1.HorzRes/470.0;
+                  image->resolution.y=BitmapHeader1.VertRes/470.0;
                 }
               image->columns=BitmapHeader1.Width;
               image->rows=BitmapHeader1.Heigth;
@@ -1077,8 +1077,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               image->page.y=(int) (BitmapHeader2.LowLeftX/470.0);
               if(BitmapHeader2.HorzRes && BitmapHeader2.VertRes)
                 {
-                  image->x_resolution=BitmapHeader2.HorzRes/470.0;
-                  image->y_resolution=BitmapHeader2.VertRes/470.0;
+                  image->resolution.x=BitmapHeader2.HorzRes/470.0;
+                  image->resolution.y=BitmapHeader2.VertRes/470.0;
                 }
               image->columns=BitmapHeader2.Width;
               image->rows=BitmapHeader2.Heigth;

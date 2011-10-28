@@ -450,15 +450,15 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
           Resolution info.
         */
         p=PushShortPixel(MSBEndian,p,&resolution);
-        image->x_resolution=(double) resolution;
-        (void) FormatLocaleString(value,MaxTextExtent,"%g",image->x_resolution);
+        image->resolution.x=(double) resolution;
+        (void) FormatLocaleString(value,MaxTextExtent,"%g",image->resolution.x);
         (void) SetImageProperty(image,"tiff:XResolution",value,exception);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&resolution);
-        image->y_resolution=(double) resolution;
-        (void) FormatLocaleString(value,MaxTextExtent,"%g",image->y_resolution);
+        image->resolution.y=(double) resolution;
+        (void) FormatLocaleString(value,MaxTextExtent,"%g",image->resolution.y);
         (void) SetImageProperty(image,"tiff:YResolution",value,exception);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
@@ -1929,13 +1929,13 @@ static void WriteResolutionResourceBlock(Image *image)
   unsigned short
     units;
 
-  x_resolution=65536.0*image->x_resolution+0.5;
-  y_resolution=65536.0*image->y_resolution+0.5;
+  x_resolution=65536.0*image->resolution.x+0.5;
+  y_resolution=65536.0*image->resolution.y+0.5;
   units=1;
   if (image->units == PixelsPerCentimeterResolution)
     {
-      x_resolution=2.54*65536.0*image->x_resolution*0.5;
-      y_resolution=2.54*65536.0*image->y_resolution+0.5;
+      x_resolution=2.54*65536.0*image->resolution.x*0.5;
+      y_resolution=2.54*65536.0*image->resolution.y+0.5;
       units=2;
     }
   (void) WriteBlob(image,4,(const unsigned char *) "8BIM");

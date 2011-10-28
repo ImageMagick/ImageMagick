@@ -1357,10 +1357,10 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           for ( ; image; image=image->next)
           {
             flags=ParseGeometry(SvPV(sval,na),&geometry_info);
-            image->x_resolution=geometry_info.rho;
-            image->y_resolution=geometry_info.sigma;
+            image->resolution.x=geometry_info.rho;
+            image->resolution.y=geometry_info.sigma;
             if ((flags & SigmaValue) == 0)
-              image->y_resolution=image->x_resolution;
+              image->resolution.y=image->resolution.x;
           }
           break;
         }
@@ -2125,8 +2125,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
                 {
                   if (units == PixelsPerCentimeterResolution)
                     {
-                      image->x_resolution*=2.54;
-                      image->y_resolution*=2.54;
+                      image->resolution.x*=2.54;
+                      image->resolution.y*=2.54;
                     }
                   break;
                 }
@@ -2134,8 +2134,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
                 {
                   if (units == PixelsPerInchResolution)
                     {
-                      image->x_resolution/=2.54;
-                      image->y_resolution/=2.54;
+                      image->resolution.x/=2.54;
+                      image->resolution.y/=2.54;
                     }
                   break;
                 }
@@ -4552,7 +4552,7 @@ Get(ref,...)
               if (image == (Image *) NULL)
                 break;
               (void) FormatLocaleString(geometry,MaxTextExtent,"%.15gx%.15g",
-                image->x_resolution,image->y_resolution);
+                image->resolution.x,image->resolution.y);
               s=newSVpv(geometry,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
@@ -5411,7 +5411,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"x-resolution") == 0)
             {
               if (image != (Image *) NULL)
-                s=newSVnv(image->x_resolution);
+                s=newSVnv(image->resolution.x);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -5425,7 +5425,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"y-resolution") == 0)
             {
               if (image != (Image *) NULL)
-                s=newSVnv(image->y_resolution);
+                s=newSVnv(image->resolution.y);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -9650,16 +9650,16 @@ Mogrify(ref,...)
           if (attribute_flag[5] != 0)
             argument_list[5].real_reference=1.0;
           width=(size_t) (geometry_info.rho*image->columns/
-            (image->x_resolution == 0.0 ? 72.0 : image->x_resolution)+0.5);
+            (image->resolution.x == 0.0 ? 72.0 : image->resolution.x)+0.5);
           height=(size_t) (geometry_info.sigma*image->rows/
-            (image->y_resolution == 0.0 ? 72.0 : image->y_resolution)+0.5);
+            (image->resolution.y == 0.0 ? 72.0 : image->resolution.y)+0.5);
           image=ResizeImage(image,width,height,(FilterTypes)
             argument_list[3].integer_reference,argument_list[5].real_reference,
             exception);
           if (image != (Image *) NULL)
             {
-              image->x_resolution=geometry_info.rho;
-              image->y_resolution=geometry_info.sigma;
+              image->resolution.x=geometry_info.rho;
+              image->resolution.y=geometry_info.sigma;
             }
           break;
         }
