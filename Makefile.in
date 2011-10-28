@@ -857,7 +857,8 @@ coders_palm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_palm_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_palm_la_rpath = -rpath $(codersdir)
-coders_pango_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(PANGO LIBS)
+coders_pango_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+	$(am__DEPENDENCIES_1)
 am_coders_pango_la_OBJECTS = coders/coders_pango_la-pango.lo
 coders_pango_la_OBJECTS = $(am_coders_pango_la_OBJECTS)
 coders_pango_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -3493,7 +3494,7 @@ coders_palm_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_pango_la_SOURCES = coders/pango.c
 coders_pango_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS) $(PANGO_CFLAGS)
 coders_pango_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_pango_la_LIBADD = $(MAGICKCORE_LIBS) $(PANGO LIBS)
+coders_pango_la_LIBADD = $(MAGICKCORE_LIBS) $(PANGO_LIBS)
 
 # Pattern module
 coders_pattern_la_SOURCES = coders/pattern.c
