@@ -128,8 +128,6 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
     bits+=8; \
     p++; \
   } \
-  if (EOFBlob(image) != MagickFalse) \
-    break; \
 }
 
   typedef struct PCDTable
