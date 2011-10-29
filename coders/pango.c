@@ -60,6 +60,8 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
+#include "MagickCore/utility.h"
 #if defined(MAGICKCORE_PANGOFT2_DELEGATE)
 #include <pango/pango.h>
 #include <pango/pangoft2.h>
@@ -91,12 +93,30 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static void PangoSubstitute(FcPattern *pattern,void *context)
+{
+  const char
+    *option;
+
+  option=(const char *) context;
+  if (option == (const char *) NULL)
+    return;
+  FcPatternDel(pattern,FC_HINTING);
+  FcPatternAddBool(pattern, FC_HINTING,LocaleCompare(option,"none") != 0);
+  FcPatternDel(pattern,FC_AUTOHINT);
+  FcPatternAddBool(pattern,FC_AUTOHINT,LocaleCompare(option,"auto") == 0);
+}
+
 static Image *ReadPANGOImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
     *caption,
     *property;
+
+  const char
+    *option;
 
   DrawInfo
     *draw_info;
@@ -107,6 +127,9 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   Image
     *image;
 
+  PangoAlignment
+    align;
+
   PangoContext
     *context;
 
@@ -116,6 +139,9 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   PangoFontMap
     *fontmap;
 
+  PangoGravity
+    gravity;
+
   PangoLayout
     *layout;
 
@@ -124,6 +150,9 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
 
   PixelInfo
     fill_color;
+
+  RectangleInfo
+    page;
 
   register Quantum
     *q;
@@ -152,18 +181,88 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   fontmap=(PangoFontMap *) pango_ft2_font_map_new();
   pango_ft2_font_map_set_resolution((PangoFT2FontMap *) fontmap,
     image->resolution.x,image->resolution.y);
-  pango_ft2_font_map_set_default_substitute((PangoFT2FontMap *) fontmap,NULL,
-    NULL,NULL);
+  option=GetImageOption(image_info,"pango:hinting");
+  pango_ft2_font_map_set_default_substitute((PangoFT2FontMap *) fontmap,
+    PangoSubstitute,(char *) option,NULL);
   context=pango_font_map_create_context(fontmap);
+  option=GetImageOption(image_info,"pango:language");
+  if (option != (const char *) NULL)
+    pango_context_set_language(context,pango_language_from_string(option));
+  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  pango_context_set_base_dir(context,draw_info->direction ==
+    RightToLeftDirection ? PANGO_DIRECTION_RTL : PANGO_DIRECTION_LTR);
+  switch (draw_info->gravity)
+  {
+    case NorthGravity: gravity=PANGO_GRAVITY_NORTH; break;
+    case WestGravity: gravity=PANGO_GRAVITY_WEST; break;
+    case EastGravity: gravity=PANGO_GRAVITY_EAST; break;
+    case SouthGravity: gravity=PANGO_GRAVITY_SOUTH; break;
+    default: gravity=PANGO_GRAVITY_AUTO; break;
+  }
+  pango_context_set_base_gravity(context,gravity);
+  option=GetImageOption(image_info,"pango:gravity-hint");
+  if (option != (const char *) NULL)
+    {
+      if (LocaleCompare(option,"line") == 0)
+        pango_context_set_gravity_hint(context,PANGO_GRAVITY_HINT_LINE);
+      if (LocaleCompare(option,"natural") == 0)
+        pango_context_set_gravity_hint(context,PANGO_GRAVITY_HINT_NATURAL);
+      if (LocaleCompare(option,"strong") == 0)
+        pango_context_set_gravity_hint(context,PANGO_GRAVITY_HINT_STRONG);
+    }
   /*
-    Render caption.
+    Configure layout.
   */
   layout=pango_layout_new(context);
-  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  option=GetImageOption(image_info,"pango:auto-dir");
+  if (option != (const char *) NULL)
+    pango_layout_set_auto_dir(layout,1);
+  option=GetImageOption(image_info,"pango:ellipsize");
+  if (option != (const char *) NULL)
+    {
+      if (LocaleCompare(option,"end") == 0)
+        pango_layout_set_ellipsize(layout,PANGO_ELLIPSIZE_END);
+      if (LocaleCompare(option,"middle") == 0)
+        pango_layout_set_ellipsize(layout,PANGO_ELLIPSIZE_MIDDLE);
+      if (LocaleCompare(option,"none") == 0)
+        pango_layout_set_ellipsize(layout,PANGO_ELLIPSIZE_NONE);
+      if (LocaleCompare(option,"start") == 0)
+        pango_layout_set_ellipsize(layout,PANGO_ELLIPSIZE_START);
+    }
+  option=GetImageOption(image_info,"pango:justify");
+  if ((option != (const char *) NULL) && (IsMagickTrue(option) != MagickFalse))
+    pango_layout_set_justify(layout,1);
+  option=GetImageOption(image_info,"pango:single-paragraph");
+  if ((option != (const char *) NULL) && (IsMagickTrue(option) != MagickFalse))
+    pango_layout_set_single_paragraph_mode(layout,1);
+  option=GetImageOption(image_info,"pango:wrap");
+  if (option != (const char *) NULL)
+    {
+      if (LocaleCompare(option,"char") == 0)
+        pango_layout_set_wrap(layout,PANGO_WRAP_CHAR);
+      if (LocaleCompare(option,"word") == 0)
+        pango_layout_set_wrap(layout,PANGO_WRAP_WORD);
+      if (LocaleCompare(option,"word-char") == 0)
+        pango_layout_set_wrap(layout,PANGO_WRAP_WORD_CHAR);
+    }
+  option=GetImageOption(image_info,"pango:indent");
+  if (option != (const char *) NULL)
+    pango_layout_set_indent(layout,(StringToLong(option)*image->resolution.x*
+      PANGO_SCALE+36)/72);
+  switch (draw_info->align)
+  {
+    case CenterAlign: align=PANGO_ALIGN_CENTER; break;
+    case RightAlign: align=PANGO_ALIGN_RIGHT; break;
+    case LeftAlign:
+    default: align=PANGO_ALIGN_LEFT; break;
+  }
+  if ((align != PANGO_ALIGN_CENTER) &&
+      (draw_info->direction == RightToLeftDirection))
+    align=PANGO_ALIGN_LEFT+PANGO_ALIGN_RIGHT-align;
+  pango_layout_set_alignment(layout,align);
   description=pango_font_description_from_string(draw_info->font ==
     (char *) NULL ? "helvetica" : draw_info->font);
-  pango_font_description_set_size(description,PANGO_SCALE*
-    draw_info->pointsize);
+  pango_font_description_set_size(description,PANGO_SCALE*draw_info->pointsize);
   pango_layout_set_font_description(layout,description);
   pango_font_description_free(description);
   property=InterpretImageProperties(image_info,image,image_info->filename,
@@ -171,23 +270,40 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   (void) SetImageProperty(image,"caption",property,exception);
   property=DestroyString(property);
   caption=ConstantString(GetImageProperty(image,"caption",exception));
-  pango_layout_set_text(layout,caption,-1);
-  pango_layout_context_changed(layout);
-  if (image->columns != 0)
-    pango_layout_set_width(layout,(PANGO_SCALE*image->columns*
-      image->resolution.x+36.0)/72.0);
+  /*
+    Render caption.
+  */
+  option=GetImageOption(image_info,"pango:markup");
+  if ((option != (const char *) NULL) && (IsMagickTrue(option) != MagickFalse))
+    pango_layout_set_markup(layout,caption,-1);
   else
+    pango_layout_set_text(layout,caption,-1);
+  pango_layout_context_changed(layout);
+  page.x=0;
+  page.y=0;
+  if (image_info->page != (char *) NULL)
+    (void) ParseAbsoluteGeometry(image_info->page,&page);
+  if (image->columns == 0)
     {
       pango_layout_get_pixel_extents(layout,NULL,&extent);
       image->columns=extent.x+extent.width;
     }
-  if (image->rows != 0)
-    pango_layout_set_height(layout,(PANGO_SCALE*image->columns*
-      image->resolution.x+36.0)/72.0);
   else
+    {
+      image->columns-=2*page.x;
+      pango_layout_set_width(layout,(PANGO_SCALE*image->columns*
+        image->resolution.x+36.0)/72.0);
+    }
+  if (image->rows == 0)
     {
       pango_layout_get_pixel_extents(layout,NULL,&extent);
       image->rows=extent.y+extent.height;
+    }
+  else
+    {
+      image->rows-=2*page.y;
+      pango_layout_set_height(layout,(PANGO_SCALE*image->rows*
+        image->resolution.y+36.0)/72.0);
     }
   /*
     Create canvas.
@@ -216,6 +332,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   /*
     Convert caption to image.
   */
+  image->columns+=2*page.x;
+  image->rows+=2*page.y;
   if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
       draw_info=DestroyDrawInfo(draw_info);
@@ -227,7 +345,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     }
   GetPixelInfo(image,&fill_color);
   p=canvas->buffer;
-  for (y=0; y < (ssize_t) image->rows; y++)
+  for (y=page.y; y < (ssize_t) (image->rows-page.y); y++)
   {
     register ssize_t
       x;
@@ -235,7 +353,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
-    for (x=0; x < (ssize_t) image->columns; x++)
+    q+=page.x*GetPixelChannels(image);
+    for (x=page.x; x < (ssize_t) (image->columns-page.x); x++)
     {
       MagickRealType
         fill_opacity;
@@ -245,7 +364,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
       if (draw_info->text_antialias == MagickFalse)
         fill_opacity=fill_opacity >= 0.5 ? 1.0 : 0.0;
       CompositePixelOver(image,&fill_color,fill_opacity,q,
-         GetPixelAlpha(image,q),q);
+        GetPixelAlpha(image,q),q);
       p++;
       q+=GetPixelChannels(image);
     }
