@@ -112,7 +112,7 @@ static MagickBooleanType
 static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
   unsigned char *chroma1,unsigned char *chroma2)
 {
-#define IsSync  ((sum & 0xffffff00UL) == 0xfffffe00UL)
+#define IsSync(sum)  ((sum & 0xffffff00UL) == 0xfffffe00UL)
 #define PCDGetBits(n) \
 {  \
   sum=(sum << n) & 0xffffffff; \
@@ -231,7 +231,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
     PCDGetBits(16);
   while ((sum & 0x00fff000UL) != 0x00fff000UL)
     PCDGetBits(8);
-  while (IsSync == 0)
+  while (IsSync(sum) == 0)
     PCDGetBits(1);
   /*
     Recover the Huffman encoded luminance and chrominance deltas.
@@ -243,7 +243,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
   q=luma;
   for ( ; ; )
   {
-    if (IsSync != 0)
+    if (IsSync(sum) != 0)
       {
         /*
           Determine plane and row number.
@@ -298,7 +298,7 @@ static MagickBooleanType DecodeImage(Image *image,unsigned char *luma,
           CorruptImageWarning,"SkipToSyncByte","`%s'",image->filename);
         while ((sum & 0x00fff000) != 0x00fff000)
           PCDGetBits(8);
-        while (IsSync == 0)
+        while (IsSync(sum) == 0)
           PCDGetBits(1);
         continue;
       }
@@ -544,7 +544,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,3*0x800,header);
   overview=LocaleNCompare((char *) header,"PCD_OPA",7) == 0;
   if ((count == 0) ||
-      ((LocaleNCompare((char *) header+0x800,"PCD",3) != 0) && !overview))
+      ((LocaleNCompare((char *) header+0x800,"PCD",3) != 0) && (overview == 0)))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   rotate=header[0x0e02] & 0x03;
   number_images=(header[10] << 8) | header[11];
@@ -568,7 +568,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (image_info->number_scenes != 0)
     scene=(size_t) MagickMin(image_info->scene,6);
-  if (overview)
+  if (overview != 0)
     scene=1;
   /*
     Initialize image structure.
@@ -607,7 +607,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Advance to image data.
   */
   offset=93;
-  if (overview)
+  if (overview != 0)
     offset=2;
   else
     if (scene == 2)
@@ -617,7 +617,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         offset=1;
   for (i=0; i < (ssize_t) (offset*0x800); i++)
     (void) ReadBlobByte(image);
-  if (overview)
+  if (overview != 0)
     {
       Image
         *overview_image;
