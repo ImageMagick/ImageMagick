@@ -609,7 +609,11 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
   tdir_t
     directory;
 
+#if defined(TIFF_VERSION_BIG)
+  uint64
+#else
   uint32
+#endif
     offset;
 
   void
@@ -658,6 +662,17 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
           (void) FormatLocaleString(value,MaxTextExtent,"%d",longy);
         break;
       }
+#if defined(TIFF_VERSION_BIG)
+      case TIFF_LONG8:
+      {
+        uint64
+          longy;
+
+        if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans) != 0)
+          (void) FormatLocaleString(value,MaxTextExtent,"%ld",longy);
+        break;
+      }
+#endif
       case TIFF_RATIONAL:
       case TIFF_SRATIONAL:
       case TIFF_FLOAT:
