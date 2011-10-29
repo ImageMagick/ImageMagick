@@ -65,6 +65,7 @@
 #if defined(MAGICKCORE_PANGOFT2_DELEGATE)
 #include <pango/pango.h>
 #include <pango/pangoft2.h>
+#include <pango/pango-features.h>
 #endif
 
 #if defined(MAGICKCORE_PANGOFT2_DELEGATE)
@@ -407,14 +408,24 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
 */
 ModuleExport size_t RegisterPANGOImage(void)
 {
+  char
+    version[MaxTextExtent];
+
   MagickInfo
     *entry;
 
+  *version='\0';
+#if defined(PANGO_VERSION_STRING)
+  (void) FormatLocaleString(version,MaxTextExtent,"(Pangoft2 %s)",
+    PANGO_VERSION_STRING);
+#endif
   entry=SetMagickInfo("PANGO");
 #if defined(MAGICKCORE_PANGOFT2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadPANGOImage;
 #endif
   entry->description=ConstantString("Pango Markup Language");
+  if (*version != '\0')
+    entry->version=ConstantString(version);
   entry->adjoin=MagickFalse;
   entry->module=ConstantString("PANGO");
   (void) RegisterMagickInfo(entry);
