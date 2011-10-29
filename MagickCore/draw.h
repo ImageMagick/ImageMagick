@@ -309,12 +309,6 @@ typedef struct _DrawInfo
   ElementReference
     element_reference;
 
-  MagickBooleanType
-    debug;
-
-  size_t
-    signature;
-
   double
     kerning,
     interword_spacing,
@@ -322,6 +316,13 @@ typedef struct _DrawInfo
 
   DirectionType
     direction;
+
+  MagickBooleanType
+
+    debug;
+
+  size_t
+    signature;
 } DrawInfo;
 
 typedef struct _PrimitiveInfo
