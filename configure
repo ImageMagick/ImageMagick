@@ -3603,7 +3603,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5784
+MAGICK_SVN_REVISION=5802
 
 
 
@@ -30420,6 +30420,22 @@ $as_echo "yes" >&6; }
 fi
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
+    ac_fn_c_check_header_mongrel "$LINENO" "pango.h" "ac_cv_header_pango_h" "$ac_includes_default"
+if test "x$ac_cv_header_pango_h" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+
+    ac_fn_c_check_header_mongrel "$LINENO" "pango-features.h" "ac_cv_header_pango_features_h" "$ac_includes_default"
+if test "x$ac_cv_header_pango_features_h" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+
 fi
 
 if test "$have_pango" = 'yes'; then

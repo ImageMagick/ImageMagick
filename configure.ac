@@ -2459,6 +2459,8 @@ if test "x$with_pango" = "xyes"; then
     AC_MSG_RESULT([])
     PKG_CHECK_MODULES(PANGO, pango, have_pango=yes, have_pango=no)
     AC_MSG_RESULT([])
+    AC_CHECK_HEADER(pango.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_HEADER(pango-features.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
 fi
 
 if test "$have_pango" = 'yes'; then
