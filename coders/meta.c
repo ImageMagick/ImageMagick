@@ -1742,7 +1742,7 @@ iptc_find:
         info_length++;
         tag_length|=(long) c;
       }
-    if (tag_length > length)
+    if (tag_length > (length+1))
       break;
     p+=tag_length;
     length-=tag_length;
