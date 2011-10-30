@@ -3603,7 +3603,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5802
+MAGICK_SVN_REVISION=5819
 
 
 
@@ -30282,6 +30282,8 @@ PANGO_PKG=""
 if test "x$with_pango" = "xyes"; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PANGO support " >&5
+$as_echo_n "checking for PANGO support ... " >&6; }
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PANGO" >&5
@@ -30291,12 +30293,12 @@ if test -n "$PANGO_CFLAGS"; then
     pkg_cv_PANGO_CFLAGS="$PANGO_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangoft2\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "pangoft2") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangoft2 >= 1.15.1\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pangoft2 >= 1.15.1") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_PANGO_CFLAGS=`$PKG_CONFIG --cflags "pangoft2" 2>/dev/null`
+  pkg_cv_PANGO_CFLAGS=`$PKG_CONFIG --cflags "pangoft2 >= 1.15.1" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -30307,12 +30309,12 @@ if test -n "$PANGO_LIBS"; then
     pkg_cv_PANGO_LIBS="$PANGO_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangoft2\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "pangoft2") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangoft2 >= 1.15.1\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pangoft2 >= 1.15.1") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_PANGO_LIBS=`$PKG_CONFIG --libs "pangoft2" 2>/dev/null`
+  pkg_cv_PANGO_LIBS=`$PKG_CONFIG --libs "pangoft2 >= 1.15.1" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -30330,9 +30332,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        PANGO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "pangoft2" 2>&1`
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "pangoft2 >= 1.15.1" 2>&1`
         else
-	        PANGO_PKG_ERRORS=`$PKG_CONFIG --print-errors "pangoft2" 2>&1`
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --print-errors "pangoft2 >= 1.15.1" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$PANGO_PKG_ERRORS" >&5
@@ -30360,12 +30362,12 @@ if test -n "$PANGO_CFLAGS"; then
     pkg_cv_PANGO_CFLAGS="$PANGO_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "pango") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango >= 1.15.1\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pango >= 1.15.1") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_PANGO_CFLAGS=`$PKG_CONFIG --cflags "pango" 2>/dev/null`
+  pkg_cv_PANGO_CFLAGS=`$PKG_CONFIG --cflags "pango >= 1.15.1" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -30376,12 +30378,12 @@ if test -n "$PANGO_LIBS"; then
     pkg_cv_PANGO_LIBS="$PANGO_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "pango") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango >= 1.15.1\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pango >= 1.15.1") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_PANGO_LIBS=`$PKG_CONFIG --libs "pango" 2>/dev/null`
+  pkg_cv_PANGO_LIBS=`$PKG_CONFIG --libs "pango >= 1.15.1" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -30399,9 +30401,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        PANGO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "pango" 2>&1`
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "pango >= 1.15.1" 2>&1`
         else
-	        PANGO_PKG_ERRORS=`$PKG_CONFIG --print-errors "pango" 2>&1`
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --print-errors "pango >= 1.15.1" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$PANGO_PKG_ERRORS" >&5
@@ -30420,22 +30422,6 @@ $as_echo "yes" >&6; }
 fi
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
-    ac_fn_c_check_header_mongrel "$LINENO" "pango.h" "ac_cv_header_pango_h" "$ac_includes_default"
-if test "x$ac_cv_header_pango_h" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-
-    ac_fn_c_check_header_mongrel "$LINENO" "pango-features.h" "ac_cv_header_pango_features_h" "$ac_includes_default"
-if test "x$ac_cv_header_pango_features_h" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-
 fi
 
 if test "$have_pango" = 'yes'; then
