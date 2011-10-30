@@ -3,7 +3,7 @@
   * Support -debug accelerate option.
   * Support -includedir-arch and -sharedir-arch configure option (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19720).
-  * Support Pango coder (e.g. convert pango:@text/test-mixed.txt x:).
+  * Use Pango to improve the caption coder.
 
 2011-11-01  6.7.3-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.3-2, SVN revision 5718
