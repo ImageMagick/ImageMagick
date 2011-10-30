@@ -1,4 +1,7 @@
 2011-11-02  6.7.3-3 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.3-3, SVN revision 5820
+
+2011-11-02  6.7.3-3 Cristy  <quetzlzacatenango@image...>
   * Fix small memory leak in the TIFF coder.
   * Support -debug accelerate option.
   * Support -includedir-arch and -sharedir-arch configure option (reference
