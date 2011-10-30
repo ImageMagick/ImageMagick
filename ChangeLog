@@ -1,5 +1,5 @@
 2011-11-02  6.7.3-3 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.3-3, SVN revision 5820
+  * New version 6.7.3-3, SVN revision 5822
 
 2011-11-02  6.7.3-3 Cristy  <quetzlzacatenango@image...>
   * Fix small memory leak in the TIFF coder.
