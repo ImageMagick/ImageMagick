@@ -64,6 +64,7 @@
 #if defined(MAGICKCORE_PANGOFT2_DELEGATE)
 #include <pango/pango.h>
 #include <pango/pangoft2.h>
+#include <pango/pango-features.h>
 #endif
 
 /*
