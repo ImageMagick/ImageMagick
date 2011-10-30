@@ -1719,27 +1719,32 @@ iptc_find:
     info_length++;
     if ((c & 0x80) != 0)
       {
+        /*
+          Long format.
+        */
+        tag_length=0;
         for (i=0; i < 4; i++)
         {
-          buffer[i]=(*p++);
+          tag_length<<=8;
+          tag_length|=(*p++);
           length--;
           if (length == 0)
             break;
           info_length++;
         }
-        tag_length=(((size_t) buffer[0]) << 24) |
-          (((size_t) buffer[1]) << 16) |
-          (((size_t) buffer[2]) << 8) | (((size_t) buffer[3])); 
       }
     else
       {
-        tag_length=(size_t) (c << 8);
+        /*
+          Short format.
+        */
+        tag_length=((long) c) << 8;
         c=(*p++);
         length--;
         if (length == 0)
           break;
         info_length++;
-        tag_length|=c;
+        tag_length|=(long) c;
       }
     if (tag_length > (length+1))
       break;
