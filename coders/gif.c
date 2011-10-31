@@ -1548,7 +1548,6 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
     }
   (void) WriteBlobLSBShort(image,(unsigned short) page.width);
   (void) WriteBlobLSBShort(image,(unsigned short) page.height);
-
   /*
     Write images to file.
   */
