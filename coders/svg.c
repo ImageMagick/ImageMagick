@@ -3340,7 +3340,7 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     */
     fitting_options=at_fitting_opts_new();
     output_options=at_output_opts_new();
-    type=GetImageType(image,&image->exception);
+    type=GetImageType(image,exception);
     number_planes=3;
     if ((type == BilevelType) || (type == GrayscaleType))
       number_planes=1;
@@ -3348,7 +3348,7 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
     i=0;
     for (y=0; y < (ssize_t) image->rows; y++)
     {
-      p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
+      p=GetVirtualPixels(image,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
