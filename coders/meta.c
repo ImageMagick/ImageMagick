@@ -1604,9 +1604,6 @@ static size_t GetIPTCStream(unsigned char **info,size_t length)
     extent,
     info_length;
 
-  unsigned char
-    buffer[4] = { '\0', '\0', '\0', '\0' };
-
   unsigned int
     marker;
 
