@@ -162,7 +162,10 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201212010090s jen@seo lowprofilelinks -->
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div  class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
@@ -201,7 +204,7 @@
   <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
+   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingreviewz.com">Web Hosting Reviews</a><!-- 2012040100030 Soft Tec-->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
@@ -230,20 +233,20 @@
 
 <p>Use this command:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert wizard.png -define jp2:cblkwidth=64 -define jp2:cblkheight=32  \ <br/>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert wizard.png -define jp2:cblkwidth=64 -define jp2:cblkheight=32  \ <br/>
   -define jp2:nomct -define jp2:numrlvls=4 -define jp2:rate=0.015625 wizard.jpc</span></p>
 <p>Here we convert a giga-byte TIFF image to JPEG-2000 with a reduced memory footprint:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert frame-00038.tif -define jp2:tilewidth=256 -define jp2:tileheight=256 frame-00038.jp2</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert frame-00038.tif -define jp2:tilewidth=256 -define jp2:tileheight=256 frame-00038.jp2</span></p>
 <p>Here is a lossy example using the full gamut of JP2 options:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert input.tif -define numrlvls=7 -define jp2:tilewidth=1024
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert input.tif -define numrlvls=7 -define jp2:tilewidth=1024
 -define jp2:tileheight=1024 \<br />-define jp2:rate=0.02348 -define
 jp2:prg=rpcl -define jp2:mode=int -define jp2:prcwidth=16383 \<br />-define
 jp2:prcheight=16383 -define jp2:cblkwidth=64 -define jp2:cblkheight=64
 -define jp2:sop output.jp2</span></p>
 <p>Here is the same example with lossless encoding:</p>
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert input.tif -define numrlvls=6 -define jp2:tilewidth=1024
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert input.tif -define numrlvls=6 -define jp2:tilewidth=1024
 -define jp2:tileheight=1024 \<br />-define jp2:rate=1.0 -define jp2:lazy
 -define jp2:prg=rlcp -define jp2:ilyrrates=\<br />'0.015625,0.01858,0.0221,0.025,0.03125,0.03716,0.04419,0.05,0.0625,
 0.075,0.088,0.1,0.125,0.15,0.18,0.21,0.25,0.3,0.35,0.4,0.5,0.6,0.7,0.84'

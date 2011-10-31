@@ -161,7 +161,10 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201212010090s jen@seo lowprofilelinks -->
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div  class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
@@ -200,7 +203,7 @@
   <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Photo Sharing Websites" href="http://www.zoofoo.com">Photo Sharing Websites</a><!-- 2012050100150 dancu@dans...-->
+   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingreviewz.com">Web Hosting Reviews</a><!-- 2012040100030 Soft Tec-->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
@@ -307,7 +310,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.7.3-2 2011-10-22 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.7.3-3 2011-10-22 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
@@ -441,7 +444,7 @@
 
 <p>To determine the current setting of these limits, use this command:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list resource</span></p><pre class="text">
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -list resource</span></p><pre class="text">
 File         Area       Memory          Map         Disk    Thread         Time
 -------------------------------------------------------------------------------
  768     1.0386GB    3.8692GiB    7.7384GiB    unlimited         4    unlimited
@@ -511,11 +514,11 @@ File         Area       Memory          Map         Disk    Thread         Time
 
 <p>If you are dealing with large images, make sure the pixel cache is written to a disk area with plenty of free space.  Under Unix, this is typically <kbd>/tmp</kbd> and for Windows, <kbd>c:/temp</kbd>.  You can tell ImageMagick to write the pixel cache to an alternate location with the MAGICK_TEMPORARY_PATH environment variable.  For example,</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export MAGICK_TEMPORARY_PATH=/data/magick</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>export MAGICK_TEMPORARY_PATH=/data/magick</span></p>
 
 <p>If you plan on processing the same image many times, consider the MPC format.  Reading a MPC image has near-zero overhead because its in the native pixel cache format eliminating the need for decoding the image pixels.  Here is an example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.tif image.mpc</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.mpc -crop 100x100+0+0 +repage 1.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.mpc -crop 100x100+100+0 +repage 2.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.mpc -crop 100x100+200+0 +repage 3.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.tif image.mpc</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert image.mpc -crop 100x100+0+0 +repage 1.png</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert image.mpc -crop 100x100+100+0 +repage 2.png</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert image.mpc -crop 100x100+200+0 +repage 3.png</span></p>
 <p>MPC is ideal for web sites.  It reduces the overhead of reading and writing an image.  We use it exclusively at our <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">online image studio</a>.</p>
 </div>
 
@@ -601,19 +604,19 @@ image=ReadStream(image_info,&amp;StreamPixels,exception);
 <div class="doc-section">
 <p>ImageMagick can read, process, or write mega-, giga-, or tera-pixel image sizes.  An image width or height can range from 1 to 2 giga-pixels on a 32 bit OS and up to 9 exa-pixels on a 64-bit OS.  Note, that some image formats have restrictions on image size.  For example, Photoshop images are limited to 300,000 pixels for width or height.  Here we resize an image to a quarter million pixels square:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize 250000x250000 logo.miff</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize 250000x250000 logo.miff</span></p>
 <p>For large images, ImageMagick will likely create a pixel cache on disk.  Make sure you have plenty of temporary disk space.  If your default temporary disk partition is too small, tell ImageMagick to use another partition with plenty of free space.  For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp logo:  \ <br/>     -resize 250000x250000 logo.miff</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp logo:  \ <br/>     -resize 250000x250000 logo.miff</span></p>
 <p>To ensure large images do not consume all the memory on your system, force the image pixels to memory-mapped disk with resource limits:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp -limit memory 16mb  \ <br/>     logo: -resize 250000x250000 logo.miff</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp -limit memory 16mb  \ <br/>     logo: -resize 250000x250000 logo.miff</span></p>
 <p>Here we force all image pixels to disk:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp -limit area 0  \ <br/>     logo: -resize 250000x250000 logo.miff</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp -limit area 0  \ <br/>     logo: -resize 250000x250000 logo.miff</span></p>
 <p>Caching pixels to disk is about 1000 times slower than memory.  Expect long run times when processing large images on disk with ImageMagick.  You can monitor progress with this command:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -monitor -define registry:temporary-path=/data/tmp -limit area 0  \ <br/>     logo: -resize 250000x250000 logo.miff</span></p></div>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -monitor -define registry:temporary-path=/data/tmp -limit area 0  \ <br/>     logo: -resize 250000x250000 logo.miff</span></p></div>
 
 <h2><a id="threads"></a>Threads of Execution</h2>
 <div class="doc-section">
@@ -759,10 +762,10 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
 
 <p>First verify that your version of ImageMagick includes support for the OpenCL feature:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Features: OpenMP OpenCL</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -version</span><span class='crtout'>Features: OpenMP OpenCL</span></p>
 <p>If so, run this command to realize a significant speed-up for image convolution:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1'  \ <br/> convolve.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png -convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1'  \ <br/> convolve.png</span></p>
 <p>If an accelerator is not available or if the accelerator fails to respond, ImageMagick reverts to the non-accelerated convolution algorithm.</p>
 
 <p>Here is an example OpenCL kernel that convolves an image:</p>
@@ -1244,7 +1247,7 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
 
 <p>To invoke the custom coder from the command line, use these commands:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: logo.mgk</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>display logo.mgk</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: logo.mgk</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>display logo.mgk</span></p>
 <p>We provide the <a href="ftp://ftp.imagemagick.org/pub/ImageMagick/kits/MagickCoderKit-1.0.0.tar.gz">Magick Coder Kit</a> to help you get started writing your own custom coder.</p>
 
 </div>
@@ -1459,7 +1462,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
 
 <p>To invoke the custom filter from the command line, use this command:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -process "analyze" -verbose info:</span><span class='crtout'>Image: logo: <br/>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -process "analyze" -verbose info:</span><span class='crtout'>Image: logo: <br/>
     Format: LOGO (ImageMagick Logo)  <br/>
     Class: PseudoClass  <br/>
     Geometry: 640x480  <br/>

@@ -161,7 +161,10 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201212010090s jen@seo lowprofilelinks -->
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div  class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
@@ -200,7 +203,7 @@
   <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Günstige Turbolader" href="http://www.autoteile-carparts.de/">Günstige Turbolader</a><!-- 20111101000030 -->
+   <a rel="follow" title="Sponsor: Notebook Reparatur" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur</a><!-- 2012020100300 atlas.multimedia-->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
@@ -240,10 +243,10 @@ the <a href="../www/download.html">PerlMagick</a> distribution corresponding to 
 (e.g., PerlMagick 6.73 for
 ImageMagick 6.7.3) and unpack it as shown below:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar xvfz PerlMagick-6.73.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd PerlMagick</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvfz PerlMagick-6.73.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd PerlMagick</span></p>
 <p>Next, edit <kbd>Makefile.PL</kbd> and change LIBS and INC to include the appropriate path information to the required <kbd>MagickCore</kbd> library. You may need paths to JPEG, PNG, TIFF, etc.  delegates if they were included with your installed version of ImageMagick. Build and install it like this:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>perl Makefile.PL</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make install</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>perl Makefile.PL</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make install</span></p>
 <p>For Unix, you typically need to be <kbd>root</kbd> to install the software. There are ways around this. Consult the Perl manual pages for more information.</p>
 
 <p><b>Windows XP / Windows 2000</b></p>
@@ -252,17 +255,17 @@ ImageMagick 6.7.3) and unpack it as shown below:</p>
 
 <p>Next, type</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd PerlMagick</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>perl Makefile.nt</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>nmake</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>nmake install</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd PerlMagick</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>perl Makefile.nt</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>nmake</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>nmake install</span></p>
 <p>See the <a href="http://www.dylanbeattie.net/magick/">PerlMagick Windows HowTo</a> page for further installation instructions.</p>
 
 <p><b>Running the Regression Tests</b></p>
 
 <p>To verify a correct installation, type</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make test</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>make test</span></p>
 <p>Use <kbd>nmake test</kbd> under Windows. There are a few demonstration scripts available to exercise many of the functions PerlMagick can perform. Type</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd demo</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd demo</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span></p>
 <p>You are now ready to utilize the PerlMagick methods from within your Perl scripts.</p>
 
 </div>
@@ -308,7 +311,7 @@ ImageMagick 6.7.3) and unpack it as shown below:</p>
 
 <p>Some of the PerlMagick methods require external programs such as <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>. This may require an explicit path in your PATH environment variable to work properly. For example (in Unix),</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>$ENV{PATH}='/../bin:/usr/bin:/usr/local/bin';</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>$ENV{PATH}='/../bin:/usr/bin:/usr/local/bin';</span></p>
 <div style="margin: auto;">
 <h2><a id="example"></a>Example Script</h2>
 </div>

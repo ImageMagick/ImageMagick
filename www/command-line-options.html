@@ -165,7 +165,10 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201212010090s jen@seo lowprofilelinks -->
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div  class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
@@ -279,7 +282,7 @@ strings, such as '<kbd>%d</kbd>' or '<kbd>%03d</kbd>', are familiar to those
 who have used the standard <kbd>printf()</kbd>' C-library function. As an
 example, the command</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: rose: -morph 15 my%02dmorph.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: rose: -morph 15 my%02dmorph.jpg</span></p>
 <p>will create a sequence of 17 images (the two given plus 15 more created by
 <a href="#morph">-morph</a>), named: my00morph.jpg, my01morph.jpg,
 my02morph.jpg, ..., my16morph.jpg.  </p>
@@ -637,7 +640,7 @@ href="#auto-orient" >-auto-orient</a> operator will do nothing. </p>
 
 <p>Repeat the entire command for the given number of <em class="arg">iterations</em> and report the user-time and elapsed time. For instance, consider the following command and its output.  Modify the benchmark with the -duration to run the benchmark for a fixed number of seconds and -concurrent to run the benchmark in parallel (requires the OpenMP feature).</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize 1000% -bench 5 logo.png</span><span class='crtout'>Performance: 5i 0.875657ips 6.880u 0:05.710</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize 1000% -bench 5 logo.png</span><span class='crtout'>Performance: 5i 0.875657ips 6.880u 0:05.710</span></p>
 <p>In this example, 5 iterations were completed at 0.875657 iterations per second, using 6.88 seconds of the user's allotted time, for a total elapsed time of 5.71 seconds.</p>
 
 <div style="margin: auto;">
@@ -1081,7 +1084,7 @@ class="arg">geometry</em> and <a href="#gravity">-gravity</a> settings. </p>
 
 <p>For example, in the command</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -clip -negate cockatoo.tif negated.tif</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -clip -negate cockatoo.tif negated.tif</span></p>
 <p>only the pixels within the clipping path are negated.</p>
 
 <p>The <a href="#clip">-clip</a> feature requires the XML library. If the XML library is not present, the option is ignored.</p>
@@ -1403,7 +1406,7 @@ CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
 <p>This option can be thought of as the inverse to <a href="#separate">-separate</a>, so long as the channel settings are the same. Thus, in the following example, the final image should be a copy of the original.
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert original.png -channel RGB -separate sepimage.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert sepimage-0.png sepimage-1.png sepimage-2.png -channel RGB \ <br/> -combine imagecopy.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert original.png -channel RGB -separate sepimage.png</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert sepimage-0.png sepimage-1.png sepimage-2.png -channel RGB \ <br/> -combine imagecopy.png</span></p>
 <div style="margin: auto;">
   <h4><a id="comment"></a>-comment <em class="arg">string</em></h4>
 </div>
@@ -1523,7 +1526,7 @@ PNG format, by specifying <kbd>Zip</kbd> compression.</p>
 
 <p>For a more pronounced effect you can repeat the option:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -contrast -contrast rose_c2.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert rose: -contrast -contrast rose_c2.png</span></p>
 <div style="margin: auto;">
   <h4><a id="contrast-stretch"></a>-contrast-stretch <em class="arg">black-point</em><br />-contrast-stretch <em class="arg">black-point</em>{x<em class="arg">white-point</em>}{<em class="arg">%</em>}}</h4>
 </div>
@@ -1638,12 +1641,12 @@ colormap entry is shifted.</p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>enable debug printout.</td><td style='text-align:right;'></td></tr></table>
 
-<p>The <kbd>events</kbd> parameter specifies which events are to be logged. It can be either <kbd>None</kbd>, <kbd>All</kbd>, <kbd>Trace</kbd>, or a comma-separated list consisting of one or more of the following domains: <kbd>Annotate</kbd>, <kbd>Blob</kbd>, <kbd>Cache</kbd>, <kbd>Coder</kbd>, <kbd>Configure</kbd>, <kbd>Deprecate</kbd>, <kbd>Exception</kbd>, <kbd>Locale</kbd>, <kbd>Render</kbd>, <kbd>Resource</kbd>, <kbd>Security</kbd>, <kbd>TemporaryFile</kbd>, <kbd>Transform</kbd>, <kbd>X11</kbd>, or <kbd>User</kbd>. </p>
+<p>The <kbd>events</kbd> parameter specifies which events are to be logged. It can be either <kbd>None</kbd>, <kbd>All</kbd>, <kbd>Trace</kbd>, or a comma-separated list consisting of one or more of the following domains: <kbd>Accelerate</kbd>, <kbd>Annotate</kbd>, <kbd>Blob</kbd>, <kbd>Cache</kbd>, <kbd>Coder</kbd>, <kbd>Configure</kbd>, <kbd>Deprecate</kbd>, <kbd>Exception</kbd>, <kbd>Locale</kbd>, <kbd>Render</kbd>, <kbd>Resource</kbd>, <kbd>Security</kbd>, <kbd>TemporaryFile</kbd>, <kbd>Transform</kbd>, <kbd>X11</kbd>, or <kbd>User</kbd>. </p>
 
 
 <p>For example, to log cache and blob events, use.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -debug "Cache,Blob" rose: rose.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -debug "Cache,Blob" rose: rose.png</span></p>
 <p>The <kbd>User</kbd> domain is normally empty, but developers can log user events in their private copy of ImageMagick.</p>
 
 <p>To print the complete list of debug methods, use <a href="#list">-list debug</a>.</p>
@@ -1873,7 +1876,7 @@ available:</p>
 <p>For example, to create a postscript file that will render only the black
 pixels of a bilevel image, use:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert bilevel.tif -define ps:imagemask eps3:stencil.ps</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert bilevel.tif -define ps:imagemask eps3:stencil.ps</span></p>
 <p>Set attributes of the image registry by prefixing the value with
 <kbd>registry:</kbd>.  For example, to set a temporary path to put work files,
 use:</p>
@@ -2396,7 +2399,7 @@ perspective distortion of the built-in "rose:" image. Note how spaces were
 used to group the 4 sets of coordinate pairs, to make it easier to read and
 understand.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>
 convert rose:  -virtual-pixel black \<br/>
      -distort Perspective '0,0,0,0  0,45,0,45  69,0,60,10  69,45,60,35' \<br/>
      rose_3d_rotated.gif</span></p>
@@ -2420,7 +2423,7 @@ produce a higher quality image.  For example you can use
 a '<kbd>perspective</kbd>' distortion to view a infinitely tiled 'plane' all
 the way to the horizon. </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>
 convert -size 90x90 pattern:checkerboard -normalize -virtual-pixel tile \<br/>
      -distort perspective  '0,0,5,45  89,0,45,46  0,89,0,89  89,89,89,89' \<br/>
      checks_tiled.jpg</span></p>
@@ -2852,7 +2855,7 @@ multi-value version of evaluate. </p>
 display.  If the aspect ratio of the input image isn't exactly 4:3, then the
 image is centered on an 800x600 black canvas: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert input.jpg -resize 800x600 -background black -compose Copy \ <br />  -gravity center -extent 800x600 -quality 92 output.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert input.jpg -resize 800x600 -background black -compose Copy \ <br />  -gravity center -extent 800x600 -quality 92 output.jpg</span></p>
 
 
 <p>See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument.</p>
@@ -2865,13 +2868,13 @@ image is centered on an 800x600 black canvas: </p>
 
 <p>This option is most useful for extracting a subregion of a very large raw image.  Note that these two commands are equivalent:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 -extract 640x480+1280+960 \ <br/> image.rgb image.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 'image.rgb[640x480+1280+960]' \ <br/> image.rgb image.png</span></p><p>If you omit the offsets, as in</p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 16000x16000 -depth 8 -extract 640x480+1280+960 \ <br/> image.rgb image.png</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert -size 16000x16000 -depth 8 'image.rgb[640x480+1280+960]' \ <br/> image.rgb image.png</span></p><p>If you omit the offsets, as in</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 -extract 640x480 \ <br/> image.rgb image.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 16000x16000 -depth 8 -extract 640x480 \ <br/> image.rgb image.png</span></p>
 <p>the image is <em>resized</em> to the specified dimensions instead,
 equivalent to:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 -resize 640x480 image.rgb image.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 16000x16000 -depth 8 -resize 640x480 image.rgb image.png</span></p>
 <p>See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument.</p>
 
 <div style="margin: auto;">
@@ -2904,17 +2907,17 @@ equivalent to:</p>
 
 <p>The magnitude and phase component images must be specified using image formats that do not limit the color or compress the image. Thus, MIFF, TIF, PFM, EXR and PNG are the recommended image formats to use. All of these formats, except PNG support multi-frame images. So for example,</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -fft fft_image.miff</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png -fft fft_image.miff</span></p>
 <p>generates a magnitude image as <kbd>fft_image.miff[0]</kbd> and a phase image as <kbd>fft_image.miff[1]</kbd>. Similarly,</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -fft fft_image.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png -fft fft_image.png</span></p>
 <p>generates a magnitude image as <kbd>fft_image-0.png</kbd> and a phase image as <kbd>fft_image-1.png</kbd>. If you prefer this representation, then you can force any of the other formats to produce two output images by including <a href="#adjoin">+adjoin</a> following -fft in the command line.</p>
 
 <p>The input image can be any size, but if not square and even-dimensioned, it is padded automagically to the larger of the width or height of the input image and to an even number of pixels. The padding will occur at the bottom and/or right sides of the input image. The resulting output magnitude and phase images is square at this size. The kind of padding relies on the <a href="#virtual-pixel">-virtual-pixel</a> setting.</p>
 
 <p>Both output components will have dynamic ranges that fit within [0,&nbsp;<em class="QR">QuantumRange</em>], so that HDRI need not be enabled. Phase values nominally range from 0 to 2*&pi;, but for non-HDRI compilations of ImageMagick, the phase image is scaled to span the full dynamic range. The magnitude image is not scaled and thus generally will contain very small values. As such, the image normally will appear totally black. In order to view any detail, the magnitude image typically is enhanced with a log function into what is usually called the spectrum. A log function is used to enhance the darker values more in comparison to the lighter values. This can be done, for example, as follows:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert fft_image.miff[0] -contrast-stretch 0 \ <br />
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert fft_image.miff[0] -contrast-stretch 0 \ <br />
                 -evaluate log 1000 fft_image_spectrum.png</span></p>
 <p>where the <a href="#contrast-stretch">-contrast-stretch</a> 0 is used to  scale the image to full dynamic range, first. The argument to the <a href="#evaluate">-evaluate</a> log typically is specified between 100 and 10,000, depending upon the amount of detail that one wants to bring out in the spectrum. Larger values produce more visible detail. Too much detail, however, may hide the important features.</p>
 
@@ -3070,12 +3073,12 @@ href="#set" >-set</a>):-</p>
 
 <p>For example, to get a 8 lobe Bessel windowed Bessel filter:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -filter bessel \ <br/>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png -filter bessel \ <br/>
           -set filter:window=bessel -set filter:lobes=8 \ <br/>
           -resize 150%   image.jpg</span></p>
 <p>Or a raw un-windowed Sinc filter with 4 lobes:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -set filter:filter=sinc -set filter:lobes=4 \ <br/>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png -set filter:filter=sinc -set filter:lobes=4 \ <br/>
           -resize 150%   image.jpg</span></p>
 <p>Note that the use of expert options (except for 'blur' with simple resize
 filters, and 'verbose' for viewing the internal filter selection), are
@@ -3407,7 +3410,7 @@ is useful if the image is of a known gamma but not set as an image attribute
 (e.g. PNG images).  Write the "file gamma" which is the reciprocal of the
 display gamma; e.g., if your image is sRGB and you want to write a PNG gAMA
 chunk, use
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert input.png +gamma .45455 output.png</span></p>(0.45455 is 1/2.2)</p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert input.png +gamma .45455 output.png</span></p>(0.45455 is 1/2.2)</p>
 
 <p>Note that gamma adjustments are also available via the <a href="#level">-level</a> operator.</p>
 
@@ -3473,7 +3476,7 @@ installation.</p>
 
 <p>If a <a href="#gravity">-gravity</a> setting occurs before another option or setting having a <em class="arg">geometry</em> argument that specifies an offset, the offset is usually applied to the point within the image suggested by the <a href="#gravity">-gravity</a> argument.  Thus, in the following command, for example, suppose the file <kbd>image.png</kbd> has dimensions 200x100. The offset specified by the argument to <a href="#region">-region</a> is (&minus;40,+20). The argument to <a href="#gravity">-gravity</a> is <kbd>Center</kbd>, which suggests the midpoint of the image, at the point (100,50). The offset (&minus;40,20) is applied to that point, giving (100&minus;40,50+20)=(60,70), so the specified 10x10&nbsp;region is located at that point. (In addition, the <a href="#gravity">-gravity</a> affects the region itself, which is <em>centered</em> at the pixel coordinate&nbsp;(60,70). (See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument.)</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -gravity Center -region 10x10-40+20 \ <br/> -negate output.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png -gravity Center -region 10x10-40+20 \ <br/> -negate output.png</span></p>
 <p>When used as an option to <a href="../www/composite.html">composite</a>, <a href="#gravity">-gravity</a> gives the direction that the image gravitates within the composite.</p>
 
 <p>When used as an option to <a href="../www/montage.html">montage</a>, <a href="#gravity">-gravity</a> gives the direction that an image gravitates within a tile. The default gravity is <kbd>Center</kbd> for this purpose.</p>
@@ -3497,7 +3500,7 @@ dimensions.  Create it with the <kbd>HALD:</kbd> prefix (e.g. HALD:8).  You
 can apply any color transformation to the Hald image and then use this option
 to apply the transform to the image. </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png hald.png -hald-clut transform.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png hald.png -hald-clut transform.png</span></p>
 <p>This option provides a convenient method for you to use Gimp or Photoshop
 to make color corrections to the Hald CLUT image and subsequently apply them
 to multiple images using an ImageMagick script. </p>
@@ -3566,10 +3569,10 @@ image histogram, and others.</p>
 
 <p>For example, depending upon the image format used to store the result of the <a href="#fft">-fft</a>, one would use either</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert fft_image.miff -ift fft_image_ift.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert fft_image.miff -ift fft_image_ift.png</span></p>
 <p>or</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert fft_image-0.png fft_image-1.png -ift fft_image_ift.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert fft_image-0.png fft_image-1.png -ift fft_image_ift.png</span></p>
 
 <p>The resulting image may need to be cropped due to padding introduced when the original image, prior to the <a href="#fft">-fft</a> or <a href="#fft">+fft</a>, was not square or even dimensioned. Any padding is at the right and/or bottom sides of the image.</p>
 
@@ -4112,7 +4115,7 @@ color (+ form). </p>
 
 <p>Use <a href="#list">-list resource</a> to list the current limits. For example, our system shows these limits:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list resource</span><span class='crtout'></span></p><pre class="text">
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -list resource</span><span class='crtout'></span></p><pre class="text">
   File         Area       Memory          Map         Disk   Thread         Time
   ------------------------------------------------------------------------------
    768     12.404GB    8.6642GiB    23.104GiB  18.446744EB        8    unlimited
@@ -4213,7 +4216,7 @@ normalization of mathematical images. </p>
 list</kbd>" to get a complete listing of all the "<kbd>-list</kbd>" arguments
 available:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list list</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -list list</span></p>
 <div style="margin: auto;">
   <h4><a id="log"></a>-log <em class="arg">string</em></h4>
 </div>
@@ -4243,7 +4246,7 @@ characters:</p>
 
 <p>For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -debug coders -log "%u %m:%l %e" in.gif out.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -debug coders -log "%u %m:%l %e" in.gif out.png</span></p>
 <p>The default behavior is to print all of the components.</p>
 
 <div style="margin: auto;">
@@ -4471,7 +4474,7 @@ class="arg">option:modulate:colorspace</kbd>' to specify which colorspace to
 modulate.  Choose from <kbd>HSB</kbd>, <kbd>HSL</kbd> (the default), or
 <kbd>HWB</kbd>.  For example,</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -set option:modulate:colorspace hsb -modulate 120,90 modulate.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png -set option:modulate:colorspace hsb -modulate 120,90 modulate.png</span></p>
 
 <div style="margin: auto;">
   <h4><a id="monitor"></a>-monitor</h4>
@@ -4904,10 +4907,10 @@ orientation</a> option.</p>
 
 <p>For example, to extract the Exif data (which is stored in JPEG files in the <em class="arg">APP1</em> profile), use.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert cockatoo.jpg profile.exif</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert cockatoo.jpg profile.exif</span></p>
 <p>It is important to note that results may depend on whether or not the original image already has an included profile. Also, keep in mind that <a href="#profile">-profile</a> is an "operator" (as opposed to a "setting") and therefore a conversion is made each time it is encountered, in order, in the command-line. For instance, in the following example, if the original image is CMYK with profile, a CMYK-CMYK-RGB conversion results.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert CMYK.tif -profile "CMYK.icc" -profile "RGB.icc" RGB.tiff</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert CMYK.tif -profile "CMYK.icc" -profile "RGB.icc" RGB.tiff</span></p>
 <p>Furthermore, since ICC profiles are not necessarily symmetric, extra conversion steps can yield unwanted results.
 CMYK profiles are often very asymmetric since they involve 3&minus;&gt;4 and 4&minus;&gt;3 channel mapping.
 </p>
@@ -5148,7 +5151,7 @@ directly assign virtual canvas meta-data. </p>
 
 <p>Many image processing algorithms assume your image is in a linear-light coding.  If your image is gamma-corrected, you can remove the nonlinear gamma correction, apply the transform, then restore it like this:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert portrait.jpg -gamma .45455 -resize 25% -gamma 2.2  \ <br/> -quality 92 passport.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert portrait.jpg -gamma .45455 -resize 25% -gamma 2.2  \ <br/> -quality 92 passport.jpg</span></p>
 <div style="margin: auto;">
   <h4><a id="respect-parentheses"></a>-respect-parentheses</h4>
 </div>
@@ -5333,11 +5336,11 @@ using the options <a href="#comment" >-comment</a>, <a href="#label"
 a global 'artifact' which are automatically assigned (and any <a href="../www/escape.html" >Format Percent
 Escapes</a> expanded) to images as they are read in.  For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set comment 'Rose is a rose is a rose is a rose' rose.png</span><span class='crtout'>identify -format %c rose.png</span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>Rose is a rose is a rose is a rose</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert rose: -set comment 'Rose is a rose is a rose is a rose' rose.png</span><span class='crtout'>identify -format %c rose.png</span><span class="crtprompt"> $ </span><span class='crtin'>Rose is a rose is a rose is a rose</span></p>
 <p>The set value can also make use of <a href="../www/escape.html" >Format and Print Image
 Properties</a> in the defined value.  For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set origsize '%wx%h' -resize 50% \</span><span class='crtout'>        -format 'Old size = %[origsize]  New size = %wx%h' info:</span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>Old size = 70x46  New size = 35x23</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert rose: -set origsize '%wx%h' -resize 50% \</span><span class='crtout'>        -format 'Old size = %[origsize]  New size = %wx%h' info:</span><span class="crtprompt"> $ </span><span class='crtin'>Old size = 70x46  New size = 35x23</span></p>
 <p>Other well known 'properties' that are availible include:
 '<kbd>date:create</kbd>' and '<kbd>date:modify</kbd>' and
 '<kbd>signature</kbd>'. </p>
@@ -5352,12 +5355,12 @@ attribute. </p>
 <p>This option can also associate a colorspace or profile with your image.
 For example,</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.psd -set profile ISOcoated_v2_eci.icc image-icc.psd</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.psd -set profile ISOcoated_v2_eci.icc image-icc.psd</span></p>
 <p>Some 'properties' must be defined in a specific way to be used. For
 example only 'properties' prefixed with "<kbd>filename:</kbd>" can be used to
 modify the output filename of an image. For example</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set filename:mysize '%wx%h' 'rose_%[filename:mysize].png'</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert rose: -set filename:mysize '%wx%h' 'rose_%[filename:mysize].png'</span></p>
 <p>If the setting value is prefixed with "<kbd>option:</kbd>" the setting will
 be saved as a global "Artifact" exactly as if it was set using the <a
 href="#define" >-define</a> option. As such settings are global in scope, they
@@ -5365,7 +5368,7 @@ can be used to pass 'attributes' and 'properties' of one specific image,
 in a way that allows you to use them in a completely different image, even if
 the original image has long since been modified or destroyed. For example: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose:  -set option:rosesize '%wx%h' -delete 0 \</span><span class='crtout'>        label:'%[rosesize]'   label_size_of_rose.gif</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert rose:  -set option:rosesize '%wx%h' -delete 0 \</span><span class='crtout'>        label:'%[rosesize]'   label_size_of_rose.gif</span></p>
 <p>Note that <a href="../www/escape.html" >Format Percent Escapes</a> will only match
 a 'artifact' if the given <em class="arg">key</em> does not match an existing
 'attribute' or 'property'.  </p>
@@ -5378,7 +5381,7 @@ previously-formatted ancillary chunks into the output PNG file, using
 the commandline option as shown below or by setting the profile via a
 programming interface:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -set profile PNG-chunk-x:&lt;filename&gt; out.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert in.png -set profile PNG-chunk-x:&lt;filename&gt; out.png</span></p>
 <p>where <em>x</em> is a location flag and
 <em class="arg">filename</em> is a file containing the chunk
 name in the first 4 bytes, then a colon (":"), followed by the chunk data.
@@ -5391,7 +5394,7 @@ of the same type, then add a short unique string after the "x" to prevent
 subsequent profiles from overwriting the preceding ones, e.g.,</p>
 
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -set profile PNG-chunk-b01:file01 / <br/>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert in.png -set profile PNG-chunk-b01:file01 / <br/>
             -profile PNG-chunk-b02:file02 out.png</span></p>
 <p>&nbsp;</p>
 
@@ -5451,10 +5454,10 @@ id="shared-memory"></a>-shared-memory</h4>
 
 <p>The horizontal shear is performed before the vertical part. This is important to note, since horizontal and vertical shears do not <em>commute</em>, i.e., the order matters in a sequence of shears. For example, the following two commands are not equivalent.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -shear 20x0 -shear 0x60 logo-sheared.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -shear 0x60 -shear 20x0 logo-sheared.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -shear 20x0 -shear 0x60 logo-sheared.png</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -shear 0x60 -shear 20x0 logo-sheared.png</span></p>
 <p>The first of the two commands above is equivalent to the following, except for the amount of empty space created; the command that follows generates a smaller image, and so is a better choice in terms of time and space.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -shear 20x60 logo-sheared.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -shear 20x60 logo-sheared.png</span></p>
 <div style="margin: auto;">
   <h4><a id="sigmoidal-contrast"></a>-sigmoidal-contrast <em class="arg">contrast</em>x<em class="arg">mid-point</em></h4>
 </div>
@@ -5829,11 +5832,11 @@ the last two images in the sequence.</p>
 
 <p> The following would force pixels with red values above 50% to have 100% red values, while those at or below 50% red would be set to 0 in the red channel. The green, blue, and alpha channels (if present) would be unchanged. </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -channel red -threshold 50% out.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert in.png -channel red -threshold 50% out.png</span></p>
 <p>As (possibly) impractical but instructive examples, the following would generate an all-black and an all-white image with the same dimensions as the input image.</p>
 
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -threshold 100% black.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -threshold -1 white.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert in.png -threshold 100% black.png</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert in.png -threshold -1 white.png</span></p>
 <p>Note that the values of the transparency channel is treated as 'matte'
 values (0 is opaque) and not as 'alpha' values (0 is transparent).</p>
 
@@ -5915,7 +5918,7 @@ values (0 is opaque) and not as 'alpha' values (0 is transparent).</p>
 
 <p>This option applies the transformation matrix from a previous <a href="#affine">-affine</a> option.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg</span></p>
 
 <p>This operator has been now been superseded by the  <a
 href="#distort">-distort</a> '<kbd>AffineProjection</kbd>' method. </p>
@@ -6025,7 +6028,7 @@ single pixel transparent 'missed' image is returned, in the same way as when a
 
 <p>Normally, when a format supports different subformats such as grayscale and truecolor, the encoder will try to choose an efficient subformat. The <a href="#type">-type</a> option can be used to overrride this behavior. For example, to prevent a JPEG from being written in grayscale format even though only gray pixels are present, use.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert bird.png -type TrueColor bird.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert bird.png -type TrueColor bird.jpg</span></p>
 <p>Similarly, use <a href="#type">-type TrueColorMatte</a> to force the encoder to write an alpha channel even though the image is opaque, if the output format supports transparency.</p>
 
 <p>Use <a href="#type">-type optimize</a> to ensure the image is written in the smallest possible file size.</p>
