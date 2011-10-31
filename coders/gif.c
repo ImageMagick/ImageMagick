@@ -1528,9 +1528,13 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
     Determine image bounding box.
   */
   page.width=image->columns;
+  if (image->page.width > page.width)
+    page.width=image->page.width;
   page.height=image->rows;
-  page.x=0;
-  page.y=0;
+  if (image->page.height > page.height)
+    page.height=image->page.height;
+  page.x=image->page.x;
+  page.y=image->page.y;
   if (write_info->adjoin != MagickFalse)
     for (next_image=image; next_image != (Image *) NULL; )
     {
@@ -1542,12 +1546,9 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
         page.height=next_image->page.height+page.y;
       next_image=GetNextImageInList(next_image);
     }
-  page.x=image->page.x;
-  page.y=image->page.y;
-  if ((image->page.width != 0) && (image->page.height != 0))
-    page=image->page;
   (void) WriteBlobLSBShort(image,(unsigned short) page.width);
   (void) WriteBlobLSBShort(image,(unsigned short) page.height);
+
   /*
     Write images to file.
   */

@@ -1,3 +1,7 @@
+2011-11-02  6.7.3-4 Glenn Randers-Pehrson <glennrp@image...>
+  * Ensure that the GIF encoder writes a large enough logical screen (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19734).
+
 2011-11-02  6.7.3-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.3-3, SVN revision 5825
 
