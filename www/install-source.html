@@ -161,7 +161,10 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201212010090s jen@seo lowprofilelinks -->
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div  class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
@@ -223,7 +226,7 @@
 <div class="doc-section">
 <p>Chances are, ImageMagick is already installed on your computer if you are using some flavor of Unix, but that it is not installed if you are using some form of Windows.  In either case, you can type the following to find out.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -version</span></p>
 <p>If the <a href="../www/identify.html">identify</a> program executes and identifies itself as ImageMagick, you may not need to install ImageMagick from source unless you want to add support for additional image formats or upgrade to a newer version.  You also have the option of installing a pre-compiled <a href="../www/binary-releases.html">binary release</a>.  However, if you still want to install from source, choose a platform, <a href="#unix">Unix</a> or <a href="#windows">Windows</a>.  Before installing from source, you may want to review recent <a href="../www/changelog.html">changes</a> to the ImageMagick distribution.</p>
 </div>
 
@@ -234,22 +237,22 @@
 
 <p>Unpack the distribution with this command:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar xvfz ImageMagick.tar.gz</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvfz ImageMagick.tar.gz</span></p>
 <p>Next configure and compile ImageMagick:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd ImageMagick-6.7.3</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>./configure</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.3</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span></p>
 <p>If ImageMagick configured and compiled without complaint, you are ready to install it on your system.  Administrator privileges are required to install.  To install, type</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo make install</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>sudo make install</span></p>
 <p>You may need to configure the dynamic linker run-time bindings:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>sudo ldconfig /usr/local/lib</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>sudo ldconfig /usr/local/lib</span></p>
 <p>Finally, verify the ImageMagick install worked properly, type</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>/usr/local/bin/convert logo: logo.gif</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>/usr/local/bin/convert logo: logo.gif</span></p>
 <p>For a more comprehensive test, run the ImageMagick validation suite. Ghostscript is a prerequisite, otherwise the EPS, PS, and PDF tests will fail.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make check</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>make check</span></p>
 <p>Congratulations, you have a working ImageMagick distribution and you are ready to use ImageMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="../www/api.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
 
 <p>The above instructions will satisfy a great number of ImageMagick users, but we suspect a few will have additional questions or problems to consider.  For example, what does one do if ImageMagick fails to configure or compile?  Or what if you don't have administrator privileges and what if you don't want to install ImageMagick in the default <kbd>/../usr/local</kbd> folder?  You will find the answer to these questions, and more, in <a href="../www/advanced-unix-installation.html">Advanced Unix Source Installation</a>.</p>
@@ -265,7 +268,7 @@
 
 <p>You can unpack the distribution with <a href="http://www.winzip.com">WinZip</a> or type the following from any MS-DOS Command Prompt window:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>unzip ImageMagick-windows.zip</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>unzip ImageMagick-windows.zip</span></p>
 <p>Next, launch your Visual Studio IDE and choose <kbd>Open->Project</kbd>.  Select the configure workspace from the <kbd>ImageMagick-6.7.3/VisualMagick/configure</kbd> folder and press Open.  Choose <kbd>Build->Build Solution</kbd>
 to compile the program and on completion run the program.</p>
 
@@ -275,10 +278,10 @@ to compile the program and on completion run the program.</p>
 
 <p>To verify ImageMagick is working properly, launch a MS-DOS Command Prompt window and type</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd ImageMagick-6.7.3</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: image.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.3</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert logo: image.jpg</span></p>
 <p>For a more comprehensive test, run the ImageMagick validation suite:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>validate</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>validate</span></p>
 <p>Congratulations, you have a working ImageMagick distribution under Windows and you are ready to use ImageMagick to <a href="http://www.imagemagick.org/Usage/">convert, compose, or edit</a> your images or perhaps you'll want to use one of the <a href="../www/api.html">Application Program Interfaces</a> for C, C++, Perl, and others.</p>
 
 <p>The above instructions will satisfy a great number of ImageMagick users, but we suspect a few will have additional questions or problems to consider.  For example, what does one do if ImageMagick fails to configure or compile?  Or what if you want to install ImageMagick in a place other than the <kbd>ImageMagick-6.7.3/VisualMagick/bin</kbd> folder?  Or perhaps you want to build and install the <a href="../www/ImageMagickObject.html">ImageMagickObject</a> COM+ component.  You will find the answer to these questions, and more, in <a href="../www/advanced-windows-installation.html">Advanced Windows Source Installation</a>.</p>

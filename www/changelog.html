@@ -161,7 +161,10 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201212010090s jen@seo lowprofilelinks -->
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div  class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
@@ -200,7 +203,7 @@
   <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
+   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingreviewz.com">Web Hosting Reviews</a><!-- 2012040100030 Soft Tec-->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
@@ -216,12 +219,19 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-11-01  6.7.3-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> New version 6.7.3-2.</dd>
+<dl><dt>2011-11-02  6.7.3-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.3-3, SVN revision 5825</dd>
+<dt>2011-11-02  6.7.3-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fix small memory leak in the TIFF coder.</dd>
+  <dd> Support -debug accelerate option.</dd>
+  <dd> Support -includedir-arch and -sharedir-arch configure option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19720).</dd>
+  <dd> Use Pango to improve the caption coder.</dd>
+<dt>2011-11-01  6.7.3-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.3-2, SVN revision 5718</dd>
 <dt>2011-11-01  6.7.3-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Support Ghostscript under 64-bit Windows (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19659).</dd>
   <dd> Correct affine translation for certain SVG files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19664).</dd>
-  <dd> -evaluate-sequence multiply no longer hangs (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19549).</dd>
+  <dd> -evaluate-sequence multiply no longer hangs ereference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19549).</dd>
 <dt>2011-10-15  6.7.3-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.3-1.</dd>
 <dt>2011-10-15  6.7.3-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -1009,8 +1019,10 @@
   <dd> Fix "Minus", "ModulusAdd", and "ModulusSubtract" to follow    normal SVG 'Over' blending specifications, (see next for override)    Note that this does NOT include the "Plus" composition method which has    SVG definition for it to use a 'Plus' blending rather than 'Over' blending.</dd>
 </dd>
   <dd> By default mathematical compositions work as per SVG definition. That is    the results are synchronized with 'Over' alpha-blending (except "Plus"    which uses 'plus' alpha-blending).</dd>
-    By removing the default 'sync' flag from the -channel setting however    Break this inter-channel synchronization and do the mathematical operations    only on the individual channels as specified by the -channel setting.    That is do 'channel' math rather than 'SVG' composition.</dd>
-    With this change you can then use mathematical composition methods on    individual channels or even with the alpha channel of images.</dd>
+</dd>
+  <dd> By removing the default 'sync' flag from the -channel setting however    Break this inter-channel synchronization and do the mathematical operations    only on the individual channels as specified by the -channel setting.    That is do 'channel' math rather than 'SVG' composition.</dd>
+</dd>
+  <dd> With this change you can then use mathematical composition methods on    individual channels or even with the alpha channel of images.</dd>
 <dt>2010-04-28  6.6.1-6 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Special case handling in Barrel distortion (pixel at image center)</dd>
   <dd> Calculation of image for Barrel distortion (pixel vs image coords)</dd>
@@ -1223,7 +1235,8 @@
 <dt>2009-10-06  6.5.6-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Declare the  MagickCore method SpliceImage() in Magick++/Include.h.</dd>
     QueueCacheViewAuthenticPixels() for the CopyComposite optimization.<dt>2009-10-04  6.5.6-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Use GetCacheViewAuthenticPixels() rather than    QueueCacheViewAuthenticPixels() for the CopyComposite optimization.</dd>
+  <dd> Use GetCacheViewAuthenticPixels() rather than</dd>
+  <dd> QueueCacheViewAuthenticPixels() for the CopyComposite optimization.</dd>
 <dt>2009-10-03  6.5.6-8 Nick Wellnhofer &lt;wellnhofer@aevum...&gt;</dt>
   <dd> Add missing libraries to the LIBADD entries in coders/Makefile.am,    filters/Makefile.am and wand/Makefile.am.</dd>
   <dd> Use LIBS rather than LDFLAGS in configure.ac for the Freetype delegate    library.</dd>
@@ -1487,8 +1500,8 @@
 <dt>2009-03-25  6.5.0-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Fix assertion in IntegralRotateImage (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13410).</dd>
 <dt>2009-03-24  6.5.0-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Referenced counted blob was incremented incorrectly in CloneImage().</dd>
-    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13410).<dt>2009-03-23  6.5.0-6 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
+  <dd> Referenced counted blob incremented incorrectly in CloneImage() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13410).</dd>
+<dt>2009-03-23  6.5.0-6 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
   <dd> Assertion failure reading PSD image (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13397).</dd>
 <dt>2009-03-21  6.5.0-5 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
   <dd> Change -selective-blur to use gaussian kernel.</dd>

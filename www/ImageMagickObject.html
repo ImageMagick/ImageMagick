@@ -162,7 +162,10 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201212010090s jen@seo lowprofilelinks -->
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div  class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
@@ -201,7 +204,7 @@
   <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Photo Sharing Websites" href="http://www.zoofoo.com">Photo Sharing Websites</a><!-- 2012050100150 dancu@dans...-->
+   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingreviewz.com">Web Hosting Reviews</a><!-- 2012040100030 Soft Tec-->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
@@ -236,7 +239,7 @@
 
 <p>To execute the sample program from the Windows Command Shell, type:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cscript SimpleTest.vbs</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cscript SimpleTest.vbs</span></p>
 <p>Since the ImageMagick utility command line parsers are incorporated within ImageMagickObject, please refer to the <a href="../www/command-line-tools.html">command-line tools</a> discussion to learn how to use it. The sample VBS scripts show how the object should be called and used and have lots of comments.</p>
 
 <p>C++ programmers should have a look at the <kbd>MagickCMD.cpp</kbd> command line utility for an example of how to call the object from C++.  The object requires a variable size list of BSTR's to emulate the command line argc, argv style calling conventions of the COM component which is more complex in C++ then in VBS or VB.</p>
@@ -252,15 +255,15 @@
 
 <p>Once the VisualStaticMT project has been built, build the ImageMagickObject with this procedure:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd  ImageMagick/contrib/win32/ATL7/ImageMagickObject</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>BuildImageMagickObject release</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd  ImageMagick/contrib/win32/ATL7/ImageMagickObject</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>BuildImageMagickObject release</span></p>
 <p>Here, we assume that the VisualStaticMT project has been built using the release setting for an optimized build. If the debug setting was used for a debug build, specify the argument <kbd>debug</kbd>; instead.</p>
 
 <p>To register the DLL as a COM+ server, type</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>regsvr32 /c /s ImageMagickObject.dll</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>regsvr32 /c /s ImageMagickObject.dll</span></p>
 <p>To unregister the DLL, type</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>regsvr32 /u /s ImageMagickObject.dll</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>regsvr32 /u /s ImageMagickObject.dll</span></p>
 <p>Use MagickCMD to exercise ImageMagickObject to verify that it is working properly.</p>
 
 </div>
