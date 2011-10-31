@@ -551,7 +551,7 @@ MagickExport void *ImageToHBITMAP(Image *image,ExceptionInfo *exception)
         *message;
 
       message=GetExceptionMessage(errno);
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
+      (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",message);
       message=DestroyString(message);
       return(NULL);
@@ -584,7 +584,7 @@ MagickExport void *ImageToHBITMAP(Image *image,ExceptionInfo *exception)
         *message;
 
       message=GetExceptionMessage(errno);
-      (void) ThrowMagickException(&image->exception,GetMagickModule(),
+      (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",message);
       message=DestroyString(message);
     }
