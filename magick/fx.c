@@ -2694,6 +2694,12 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
     case 'N':
     case 'n':
     {
+      if (LocaleNCompare(expression,"not",3) == 0)
+        {
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,beta,
+            exception);
+          return((MagickRealType) (alpha < MagickEpsilon));
+        }
       if (LocaleCompare(expression,"n") == 0)
         return(FxGetSymbol(fx_info,channel,x,y,expression,exception));
       break;
