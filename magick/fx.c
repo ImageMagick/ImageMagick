@@ -2560,6 +2560,13 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
     case 'G':
     case 'g':
     {
+      if (LocaleNCompare(expression,"gauss",5) == 0)
+        {
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
+            exception);
+          gamma=exp((double) (-alpha*alpha/2.0))/sqrt(2.0*MagickPI);
+          return((MagickRealType) gamma);
+        }
       if (LocaleCompare(expression,"g") == 0)
         return(FxGetSymbol(fx_info,channel,x,y,expression,exception));
       break;
@@ -2778,6 +2785,12 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           return((MagickRealType) sqrt((double) alpha));
         }
+      if (LocaleNCompare(expression,"squish",6) == 0)
+        {
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+6,beta,
+            exception);
+          return((MagickRealType) (1.0/(1.0+exp((double) (4.0*alpha)))));
+        }
       if (LocaleCompare(expression,"s") == 0)
         return(FxGetSymbol(fx_info,channel,x,y,expression,exception));
       break;
@@ -2828,6 +2841,15 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
     case 'W':
     case 'w':
     {
+      if (LocaleNCompare(expression,"while",5) == 0)
+        {
+          do
+          {
+            alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
+              exception);
+          } while (fabs((double) alpha) >= MagickEpsilon);
+          return((MagickRealType) *beta);
+        }
       if (LocaleCompare(expression,"w") == 0)
         return(FxGetSymbol(fx_info,channel,x,y,expression,exception));
       break;
