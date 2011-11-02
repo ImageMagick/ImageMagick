@@ -2606,7 +2606,8 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
 
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,beta,
             exception);
-          gcd=FxGCD((MagickOffsetType) alpha,(MagickOffsetType) *beta);
+          gcd=FxGCD((MagickOffsetType) (alpha+0.5),(MagickOffsetType)
+            (*beta+0.5));
           return((MagickRealType) gcd);
         }
       if (LocaleCompare(expression,"g") == 0)
