@@ -1287,7 +1287,7 @@
 
 /* Define to the full name and version of this package. */
 #ifndef MAGICKCORE_PACKAGE_STRING
-#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.7.3-3"
+#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.7.3-4"
 #endif
 
 /* Define to the one symbol short name of this package. */
@@ -1302,7 +1302,7 @@
 
 /* Define to the version of this package. */
 #ifndef MAGICKCORE_PACKAGE_VERSION
-#define MAGICKCORE_PACKAGE_VERSION "6.7.3-3"
+#define MAGICKCORE_PACKAGE_VERSION "6.7.3-4"
 #endif
 
 /* Define if you have PANGOFT2 library */
@@ -1481,7 +1481,7 @@
 
 /* Version number of package */
 #ifndef MAGICKCORE_VERSION
-#define MAGICKCORE_VERSION "6.7.3-3"
+#define MAGICKCORE_VERSION "6.7.3-4"
 #endif
 
 /* Define if you have WEBP library */
