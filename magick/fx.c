@@ -1271,6 +1271,13 @@ static MagickRealType
   FxEvaluateSubexpression(FxInfo *,const ChannelType,const ssize_t,
     const ssize_t,const char *,MagickRealType *,ExceptionInfo *);
 
+static MagickOffsetType FxGCD(MagickOffsetType alpha,MagickOffsetType beta)
+{
+  if (beta != 0)
+    return(FxGCD(beta,alpha % beta));
+  return(alpha);
+}
+
 static inline MagickRealType FxMax(FxInfo *fx_info,const ChannelType channel,
   const ssize_t x,const ssize_t y,const char *expression,
   ExceptionInfo *exception)
@@ -2566,6 +2573,17 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           gamma=exp((double) (-alpha*alpha/2.0))/sqrt(2.0*MagickPI);
           return((MagickRealType) gamma);
+        }
+      if (LocaleNCompare(expression,"gcd",3) == 0)
+        {
+          MagickOffsetType
+            gcd;
+
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,beta,
+            exception);
+          gcd=FxGCD((MagickOffsetType) (alpha+0.5),(MagickOffsetType)
+            (*beta+0.5));
+          return((MagickRealType) gcd);
         }
       if (LocaleCompare(expression,"g") == 0)
         return(FxGetSymbol(fx_info,channel,x,y,expression,exception));
