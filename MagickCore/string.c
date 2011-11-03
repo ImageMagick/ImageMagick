@@ -3,24 +3,24 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                  sssss   ttttt  rrrr   iiiii  n   n   gggg                  %
-%                  ss        t    r   r    i    nn  n  g                      %
-%                   sss      t    rrrr     i    n n n  g ggg                  %
-%                     ss     t    r r      i    n  nn  g   g                  %
-%                  sssss     t    r  r   iiiii  n   n   gggg                  %
+%                  SSSSS   TTTTT  RRRR   IIIII  N   N   GGGG                  %
+%                  SS        T    R   R    I    NN  N  G                      %
+%                   SSS      T    RRRR     I    N N N  G GGG                  %
+%                     SS     T    R R      I    N  NN  G   G                  %
+%                  SSSSS     T    R  R   IIIII  N   N   GGGG                  %
 %                                                                             %
 %                                                                             %
-%                        MagickCore string methods                            %
+%                        MagickCore String Methods                            %
 %                                                                             %
-%                             software design                                 %
-%                               john cristy                                   %
-%                               august 2003                                   %
+%                             Software Design                                 %
+%                               John Cristy                                   %
+%                               August 2003                                   %
 %                                                                             %
 %                                                                             %
-%  copyright 1999-2011 imagemagick studio llc, a non-profit organization      %
+%  Copyright 1999-2011 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
-%  you may not use this file except in compliance with the license.  you may  %
+%  You may not use this file except in compliance with the license.  You may  %
 %  obtain a copy of the license at                                            %
 %                                                                             %
 %    http://www.imagemagick.org/script/license.php                            %
@@ -28,7 +28,7 @@
 %  unless required by applicable law or agreed to in writing, software        %
 %  distributed under the license is distributed on an "as is" basis,          %
 %  without warranties or conditions of any kind, either express or implied.   %
-%  see the license for the specific language governing permissions and        %
+%  See the license for the specific language governing permissions and        %
 %  limitations under the license.                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

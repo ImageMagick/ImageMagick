@@ -557,7 +557,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
 
           limit=MagickResourceInfinity;
           if (LocaleCompare("unlimited",arg) != 0)
-            limit=(MagickSizeType) SiPrefixToDouble(arg,100.0);
+            limit=(MagickSizeType) InterpretLocaleInterval(arg,100.0);
           (void) SetMagickResourceLimit(MemoryResource,limit);
           (void) SetMagickResourceLimit(MapResource,2*limit);
           break;
@@ -832,7 +832,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           */
           if (IfSetOption)
             {
-              image_info->fuzz=SiPrefixToDouble(arg,(double) QuantumRange+1.0);
+              image_info->fuzz=InterpretLocaleInterval(arg,(double) QuantumRange+1.0);
               (void) SetImageOption(image_info,option,arg);
               break;
             }
@@ -965,7 +965,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
             MagickFalse,arg);
           limit=MagickResourceInfinity;
           if (LocaleCompare("unlimited",argv[2]) != 0)
-            limit=(MagickSizeType) SiPrefixToDouble(argv[2],100.0);
+            limit=(MagickSizeType) InterpretLocaleInterval(argv[2],100.0);
           (void) SetMagickResourceLimit(type,limit);
           break;
         }
@@ -2115,7 +2115,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           if (*argv[0] == '+')
             threshold=40.0*QuantumRange/100.0;
           else
-            threshold=SiPrefixToDouble(args[0],QuantumRange);
+            threshold=InterpretLocaleInterval(args[0],QuantumRange);
           new_image=DeskewImage(*image,threshold,exception);
           break;
         }
@@ -2276,7 +2276,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           (void) SyncImageSettings(image_info,*image,exception);
           op=(MagickEvaluateOperator) ParseCommandOption(
             MagickEvaluateOptions,MagickFalse,args[0]);
-          constant=SiPrefixToDouble(argv[2],QuantumRange);
+          constant=InterpretLocaleInterval(argv[2],QuantumRange);
           (void) EvaluateImage(*image,op,constant,exception);
           break;
         }
@@ -3218,7 +3218,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
             threshold;
 
           (void) SyncImageSettings(image_info,*image,exception);
-          threshold=SiPrefixToDouble(args[0],QuantumRange);
+          threshold=InterpretLocaleInterval(args[0],QuantumRange);
           new_image=SepiaToneImage(*image,threshold,exception);
           break;
         }
@@ -3354,7 +3354,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
             threshold;
 
           (void) SyncImageSettings(image_info,*image,exception);
-          threshold=SiPrefixToDouble(args[0],QuantumRange);
+          threshold=InterpretLocaleInterval(args[0],QuantumRange);
           (void) SolarizeImage(*image,threshold,exception);
           break;
         }
@@ -3433,7 +3433,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           if (*argv[0] == '+')
             threshold=(double) QuantumRange/2;
           else
-            threshold=SiPrefixToDouble(args[0],QuantumRange);
+            threshold=InterpretLocaleInterval(args[0],QuantumRange);
           (void) BilevelImage(*image,threshold,exception);
           break;
         }
