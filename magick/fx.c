@@ -192,60 +192,6 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
     Force right-to-left associativity for unary negation.
   */
   (void) SubstituteString(&fx_info->expression,"-","-1.0*");
-  if ((strstr(fx_info->expression,"e+") != (char *) NULL) ||
-      (strstr(fx_info->expression,"e-") != (char *) NULL))
-    {
-      /*
-        Convert scientific notation.
-      */
-      (void) SubstituteString(&fx_info->expression,"0e+","0**10^");
-      (void) SubstituteString(&fx_info->expression,"1e+","1**10^");
-      (void) SubstituteString(&fx_info->expression,"2e+","2**10^");
-      (void) SubstituteString(&fx_info->expression,"3e+","3**10^");
-      (void) SubstituteString(&fx_info->expression,"4e+","4**10^");
-      (void) SubstituteString(&fx_info->expression,"5e+","5**10^");
-      (void) SubstituteString(&fx_info->expression,"6e+","6**10^");
-      (void) SubstituteString(&fx_info->expression,"7e+","7**10^");
-      (void) SubstituteString(&fx_info->expression,"8e+","8**10^");
-      (void) SubstituteString(&fx_info->expression,"9e+","9**10^");
-      (void) SubstituteString(&fx_info->expression,"0e-1.0*","0**10^-");
-      (void) SubstituteString(&fx_info->expression,"1e-1.0*","1**10^-");
-      (void) SubstituteString(&fx_info->expression,"2e-1.0*","2**10^-");
-      (void) SubstituteString(&fx_info->expression,"3e-1.0*","3**10^-");
-      (void) SubstituteString(&fx_info->expression,"4e-1.0*","4**10^-");
-      (void) SubstituteString(&fx_info->expression,"5e-1.0*","5**10^-");
-      (void) SubstituteString(&fx_info->expression,"6e-1.0*","6**10^-");
-      (void) SubstituteString(&fx_info->expression,"7e-1.0*","7**10^-");
-      (void) SubstituteString(&fx_info->expression,"8e-1.0*","8**10^-");
-      (void) SubstituteString(&fx_info->expression,"9e-1.0*","9**10^-");
-    }
-  if ((strstr(fx_info->expression,"E+") != (char *) NULL) ||
-      (strstr(fx_info->expression,"E-") != (char *) NULL))
-    {
-      /*
-        Convert scientific notation.
-      */
-      (void) SubstituteString(&fx_info->expression,"0E+","0**10^");
-      (void) SubstituteString(&fx_info->expression,"1E+","1**10^");
-      (void) SubstituteString(&fx_info->expression,"2E+","2**10^");
-      (void) SubstituteString(&fx_info->expression,"3E+","3**10^");
-      (void) SubstituteString(&fx_info->expression,"4E+","4**10^");
-      (void) SubstituteString(&fx_info->expression,"5E+","5**10^");
-      (void) SubstituteString(&fx_info->expression,"6E+","6**10^");
-      (void) SubstituteString(&fx_info->expression,"7E+","7**10^");
-      (void) SubstituteString(&fx_info->expression,"8E+","8**10^");
-      (void) SubstituteString(&fx_info->expression,"9E+","9**10^");
-      (void) SubstituteString(&fx_info->expression,"0E-1.0*","0**10^-");
-      (void) SubstituteString(&fx_info->expression,"1E-1.0*","1**10^-");
-      (void) SubstituteString(&fx_info->expression,"2E-1.0*","2**10^-");
-      (void) SubstituteString(&fx_info->expression,"3E-1.0*","3**10^-");
-      (void) SubstituteString(&fx_info->expression,"4E-1.0*","4**10^-");
-      (void) SubstituteString(&fx_info->expression,"5E-1.0*","5**10^-");
-      (void) SubstituteString(&fx_info->expression,"6E-1.0*","6**10^-");
-      (void) SubstituteString(&fx_info->expression,"7E-1.0*","7**10^-");
-      (void) SubstituteString(&fx_info->expression,"8E-1.0*","8**10^-");
-      (void) SubstituteString(&fx_info->expression,"9E-1.0*","9**10^-");
-    }
   /*
     Convert complex to simple operators.
   */
@@ -1971,6 +1917,16 @@ static const char *FxOperatorPrecedence(const char *expression,
             break;
           }
         break;
+      }
+      case 'E':
+      case 'e':
+      {
+        if ((LocaleNCompare(expression,"E+",2) == 0) ||
+            (LocaleNCompare(expression,"E-",2) == 0))
+          {
+            expression+=2;  /* scientific notation */
+            break;
+          }
       }
       case 'J':
       case 'j':
