@@ -22,7 +22,8 @@
 extern "C" {
 #endif
 
-static inline double InterpretLocaleInterval(const char *string,const double interval)
+static inline double InterpretLocaleInterval(const char *string,
+  const double interval)
 {
   char
     *q;
