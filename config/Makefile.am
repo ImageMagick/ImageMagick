@@ -18,10 +18,15 @@
 # (share/ImageMagick-version)
 configsharedir = $(SHARE_PATH)
 configshare_DATA = \
-	config/configure.xml \
 	config/english.xml \
 	config/francais.xml \
 	config/locale.xml
+
+# Where architecture-independent configuration files get installed
+# (share/arch/ImageMagick-version)
+configsharearchdir = $(SHAREARCH_PATH)
+configsharearch_DATA = \
+  config/configure.xml 
 
 # Where architecture-dependent configuration files get installed
 # (share/ImageMagick-version)

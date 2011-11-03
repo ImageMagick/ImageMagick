@@ -1356,6 +1356,17 @@
 #endif
 
 /* Directory where architecture-independent configuration files live. */
+#ifndef MAGICKCORE_SHAREARCH_PATH
+#define MAGICKCORE_SHAREARCH_PATH "/usr/local/share/ImageMagick-6.7.3/"
+#endif
+
+/* Subdirectory of lib where architecture-independent configuration files
+   live. */
+#ifndef MAGICKCORE_SHAREARCH_RELATIVE_PATH
+#define MAGICKCORE_SHAREARCH_RELATIVE_PATH "ImageMagick-6.7.3"
+#endif
+
+/* Directory where architecture-independent configuration files live. */
 #ifndef MAGICKCORE_SHARE_PATH
 #define MAGICKCORE_SHARE_PATH "/usr/local/share/ImageMagick-6.7.3/"
 #endif

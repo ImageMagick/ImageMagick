@@ -343,10 +343,11 @@ am__installdirs = "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" \
 	"$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" \
 	"$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" \
-	"$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" \
-	"$(DESTDIR)$(includedir)" "$(DESTDIR)$(ltdlincludedir)" \
-	"$(DESTDIR)$(magickincdir)" "$(DESTDIR)$(magickppincdir)" \
-	"$(DESTDIR)$(magickpptopincdir)" "$(DESTDIR)$(wandincdir)"
+	"$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" \
+	"$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(includedir)" \
+	"$(DESTDIR)$(ltdlincludedir)" "$(DESTDIR)$(magickincdir)" \
+	"$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)" \
+	"$(DESTDIR)$(wandincdir)"
 LTLIBRARIES = $(coders_LTLIBRARIES) $(filters_LTLIBRARIES) \
 	$(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
 Magick___lib_libMagick___la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
@@ -2160,8 +2161,8 @@ DIST_SOURCES = $(Magick___lib_libMagick___la_SOURCES) \
 man1dir = $(mandir)/man1
 NROFF = nroff
 MANS = $(man_MANS)
-DATA = $(configlib_DATA) $(configshare_DATA) $(doc_DATA) \
-	$(pkgconfig_DATA)
+DATA = $(configlib_DATA) $(configshare_DATA) $(configsharearch_DATA) \
+	$(doc_DATA) $(pkgconfig_DATA)
 am__include_HEADERS_DIST = ltdl/ltdl.h
 am__ltdlinclude_HEADERS_DIST = ltdl/libltdl/lt_system.h \
 	ltdl/libltdl/lt_error.h ltdl/libltdl/lt_dlloader.h
@@ -2350,7 +2351,7 @@ HTMLDecodeDelegate = @HTMLDecodeDelegate@
 ILBMDecodeDelegate = @ILBMDecodeDelegate@
 ILBMEncodeDelegate = @ILBMEncodeDelegate@
 INCLTDL = @INCLTDL@
-INCLUDEDIR_ARCH = @INCLUDEDIR_ARCH@
+INCLUDEARCH_DIR = @INCLUDEARCH_DIR@
 INCLUDE_DIR = @INCLUDE_DIR@
 INCLUDE_PATH = @INCLUDE_PATH@
 INFO_DIR = @INFO_DIR@
@@ -2511,7 +2512,8 @@ SBIN_DIR = @SBIN_DIR@
 SCANDecodeDelegate = @SCANDecodeDelegate@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
-SHAREDIR_ARCH = @SHAREDIR_ARCH@
+SHAREARCH_DIR = @SHAREARCH_DIR@
+SHAREARCH_PATH = @SHAREARCH_PATH@
 SHAREDSTATE_DIR = @SHAREDSTATE_DIR@
 SHARE_PATH = @SHARE_PATH@
 SHELL = @SHELL@
@@ -2752,10 +2754,16 @@ M4_EXTRA_DIST = \
 # (share/ImageMagick-version)
 configsharedir = $(SHARE_PATH)
 configshare_DATA = \
-	config/configure.xml \
 	config/english.xml \
 	config/francais.xml \
 	config/locale.xml
+
+
+# Where architecture-independent configuration files get installed
+# (share/arch/ImageMagick-version)
+configsharearchdir = $(SHAREARCH_PATH)
+configsharearch_DATA = \
+  config/configure.xml 
 
 
 # Where architecture-dependent configuration files get installed
@@ -10604,6 +10612,26 @@ uninstall-configshareDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(configsharedir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(configsharedir)" && rm -f $$files
+install-configsharearchDATA: $(configsharearch_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(configsharearchdir)" || $(MKDIR_P) "$(DESTDIR)$(configsharearchdir)"
+	@list='$(configsharearch_DATA)'; test -n "$(configsharearchdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(configsharearchdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(configsharearchdir)" || exit $$?; \
+	done
+
+uninstall-configsharearchDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(configsharearch_DATA)'; test -n "$(configsharearchdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(configsharearchdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(configsharearchdir)" && rm -f $$files
 install-docDATA: $(doc_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(docdir)" || $(MKDIR_P) "$(DESTDIR)$(docdir)"
@@ -11148,7 +11176,7 @@ all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA) \
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs:
-	for dir in "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(ltdlincludedir)" "$(DESTDIR)$(magickincdir)" "$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)" "$(DESTDIR)$(wandincdir)"; do \
+	for dir in "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" "$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(ltdlincludedir)" "$(DESTDIR)$(magickincdir)" "$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)" "$(DESTDIR)$(wandincdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -11232,11 +11260,12 @@ info: info-am
 info-am:
 
 install-data-am: install-codersLTLIBRARIES install-configlibDATA \
-	install-configshareDATA install-data-local install-docDATA \
-	install-filtersLTLIBRARIES install-includeHEADERS \
-	install-ltdlincludeHEADERS install-magickincHEADERS \
-	install-magickppincHEADERS install-magickpptopincHEADERS \
-	install-man install-pkgconfigDATA install-wandincHEADERS
+	install-configshareDATA install-configsharearchDATA \
+	install-data-local install-docDATA install-filtersLTLIBRARIES \
+	install-includeHEADERS install-ltdlincludeHEADERS \
+	install-magickincHEADERS install-magickppincHEADERS \
+	install-magickpptopincHEADERS install-man \
+	install-pkgconfigDATA install-wandincHEADERS
 
 install-dvi: install-dvi-am
 
@@ -11288,12 +11317,13 @@ ps-am:
 
 uninstall-am: uninstall-binPROGRAMS uninstall-binSCRIPTS \
 	uninstall-codersLTLIBRARIES uninstall-configlibDATA \
-	uninstall-configshareDATA uninstall-docDATA \
-	uninstall-filtersLTLIBRARIES uninstall-includeHEADERS \
-	uninstall-libLTLIBRARIES uninstall-local \
-	uninstall-ltdlincludeHEADERS uninstall-magickincHEADERS \
-	uninstall-magickppincHEADERS uninstall-magickpptopincHEADERS \
-	uninstall-man uninstall-pkgconfigDATA uninstall-wandincHEADERS
+	uninstall-configshareDATA uninstall-configsharearchDATA \
+	uninstall-docDATA uninstall-filtersLTLIBRARIES \
+	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
+	uninstall-local uninstall-ltdlincludeHEADERS \
+	uninstall-magickincHEADERS uninstall-magickppincHEADERS \
+	uninstall-magickpptopincHEADERS uninstall-man \
+	uninstall-pkgconfigDATA uninstall-wandincHEADERS
 
 uninstall-man: uninstall-man1
 
@@ -11312,9 +11342,10 @@ uninstall-man: uninstall-man1
 	distcleancheck distdir distuninstallcheck dvi dvi-am html \
 	html-am info info-am install install-am install-binPROGRAMS \
 	install-binSCRIPTS install-codersLTLIBRARIES \
-	install-configlibDATA install-configshareDATA install-data \
-	install-data-am install-data-local install-docDATA install-dvi \
-	install-dvi-am install-exec install-exec-am install-exec-local \
+	install-configlibDATA install-configshareDATA \
+	install-configsharearchDATA install-data install-data-am \
+	install-data-local install-docDATA install-dvi install-dvi-am \
+	install-exec install-exec-am install-exec-local \
 	install-filtersLTLIBRARIES install-html install-html-am \
 	install-includeHEADERS install-info install-info-am \
 	install-libLTLIBRARIES install-ltdlincludeHEADERS \
@@ -11328,13 +11359,13 @@ uninstall-man: uninstall-man1
 	pdf pdf-am ps ps-am recheck recheck-html tags uninstall \
 	uninstall-am uninstall-binPROGRAMS uninstall-binSCRIPTS \
 	uninstall-codersLTLIBRARIES uninstall-configlibDATA \
-	uninstall-configshareDATA uninstall-docDATA \
-	uninstall-filtersLTLIBRARIES uninstall-includeHEADERS \
-	uninstall-libLTLIBRARIES uninstall-local \
-	uninstall-ltdlincludeHEADERS uninstall-magickincHEADERS \
-	uninstall-magickppincHEADERS uninstall-magickpptopincHEADERS \
-	uninstall-man uninstall-man1 uninstall-pkgconfigDATA \
-	uninstall-wandincHEADERS
+	uninstall-configshareDATA uninstall-configsharearchDATA \
+	uninstall-docDATA uninstall-filtersLTLIBRARIES \
+	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
+	uninstall-local uninstall-ltdlincludeHEADERS \
+	uninstall-magickincHEADERS uninstall-magickppincHEADERS \
+	uninstall-magickpptopincHEADERS uninstall-man uninstall-man1 \
+	uninstall-pkgconfigDATA uninstall-wandincHEADERS
 
 
 # We need the following in order to create an <argz.h> when the system

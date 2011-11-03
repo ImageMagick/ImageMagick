@@ -721,6 +721,7 @@ BrowseDelegate
 BZIPDelegate
 BlenderDecodeDelegate
 AutotraceDecodeDelegate
+SHAREARCH_PATH
 SHARE_PATH
 CONFIGURE_PATH
 DOCUMENTATION_PATH
@@ -918,8 +919,8 @@ PTHREAD_CFLAGS
 PTHREAD_LIBS
 PTHREAD_CC
 ax_pthread_config
-SHAREDIR_ARCH
-INCLUDEDIR_ARCH
+SHAREARCH_DIR
+INCLUDEARCH_DIR
 WinPathScript
 USING_CL_FALSE
 USING_CL_TRUE
@@ -1086,8 +1087,8 @@ with_gnu_ld
 with_dmalloc
 enable_bounds_checking
 enable_osx_universal_binary
-with_includedir_arch
-with_sharedir_arch
+with_includearch_dir
+with_sharearch_dir
 with_threads
 enable_openmp
 enable_opencl
@@ -1855,8 +1856,8 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-dmalloc          use dmalloc, as in
 			  http://www.dmalloc.com/dmalloc.tar.gz
-  --includedir-arch=DIR   ARCH specific include directory
-  --sharedir-arch=DIR     ARCH specific config directory
+  --includearch-dir=DIR   ARCH specific include directory
+  --sharearch-dir=DIR     ARCH specific config directory
   --without-threads       disable threads support
   --with-pic              try to use only PIC/non-PIC objects [default=use
                           both]
@@ -3603,7 +3604,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5835
+MAGICK_SVN_REVISION=5846
 
 
 
@@ -8260,30 +8261,30 @@ esac
 # ARCH specific include directory
 #
 
-# Check whether --with-includedir-arch was given.
-if test "${with_includedir_arch+set}" = set; then :
-  withval=$with_includedir_arch; includedir_arch=$withval
+# Check whether --with-includearch-dir was given.
+if test "${with_includearch_dir+set}" = set; then :
+  withval=$with_includearch_dir; includearch_dir=$withval
 else
-  includedir_arch=$INCLUDE_DIR
+  includearch_dir=$INCLUDE_DIR
 fi
 
 
-eval "eval INCLUDEDIR_ARCH=$includedir_arch"
+eval "eval INCLUDEARCH_DIR=$includearch_dir"
 
 
 #
 # ARCH specific configuration directory
 #
 
-# Check whether --with-sharedir-arch was given.
-if test "${with_sharedir_arch+set}" = set; then :
-  withval=$with_sharedir_arch; sharedir_arch=$withval
+# Check whether --with-sharearch-dir was given.
+if test "${with_sharearch_dir+set}" = set; then :
+  withval=$with_sharearch_dir; sharearch_dir=$withval
 else
-  sharedir_arch="${DATA_DIR}"
+  sharearch_dir="${DATA_DIR}"
 fi
 
 
-eval "eval SHAREDIR_ARCH=$sharedir_arch"
+eval "eval SHAREARCH_DIR=$sharearch_dir"
 
 
 # Enable support for threads
@@ -31910,8 +31911,8 @@ fi
 
 # Path to ImageMagick header files
 INCLUDE_RELATIVE_PATH="ImageMagick"
-INCLUDE_PATH="${INCLUDEDIR_ARCH}/${INCLUDE_RELATIVE_PATH}"
-DEFINE_INCLUDE_PATH="${INCLUDEDIR_ARCH}/${INCLUDE_RELATIVE_PATH}/"
+INCLUDE_PATH="${INCLUDEARCH_DIR}/${INCLUDE_RELATIVE_PATH}"
+DEFINE_INCLUDE_PATH="${INCLUDEARCH_DIR}/${INCLUDE_RELATIVE_PATH}/"
 case "${build_os}" in
   mingw* )
     DEFINE_INCLUDE_PATH=`$WinPathScript "$DEFINE_INCLUDE_PATH" 1`
@@ -32051,7 +32052,7 @@ cat >>confdefs.h <<_ACEOF
 #define SHARE_RELATIVE_PATH "$SHARE_RELATIVE_PATH"
 _ACEOF
 
-SHARE_PATH="${SHAREDIR_ARCH}/${SHARE_RELATIVE_PATH}"
+SHARE_PATH="${DATA_DIR}/${SHARE_RELATIVE_PATH}"
 DEFINE_SHARE_PATH="${DATA_DIR}/${SHARE_RELATIVE_PATH}/"
 case "${build_os}" in
   mingw* )
@@ -32061,6 +32062,27 @@ esac
 
 cat >>confdefs.h <<_ACEOF
 #define SHARE_PATH "$DEFINE_SHARE_PATH"
+_ACEOF
+
+
+
+# Subdirectory to place architecture-independent configuration files
+SHAREARCH_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}"
+
+cat >>confdefs.h <<_ACEOF
+#define SHAREARCH_RELATIVE_PATH "$SHAREARCH_RELATIVE_PATH"
+_ACEOF
+
+SHAREARCH_PATH="${DATA_DIR}/${SHAREARCH_RELATIVE_PATH}"
+DEFINE_SHAREARCH_PATH="${DATA_DIR}/${SHAREARCH_RELATIVE_PATH}/"
+case "${build_os}" in
+  mingw* )
+    DEFINE_SHAREARCH_PATH=`$WinPathScript "$DEFINE_SHAREARCH_PATH" 1`
+    ;;
+esac
+
+cat >>confdefs.h <<_ACEOF
+#define SHAREARCH_PATH "$DEFINE_SHAREARCH_PATH"
 _ACEOF
 
 

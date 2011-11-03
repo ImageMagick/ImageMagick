@@ -4397,7 +4397,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       &image->exception);
   option=GetImageOption(image_info,"bias");
   if (option != (const char *) NULL)
-    image->bias=SiPrefixToDouble(option,QuantumRange);
+    image->bias=InterpretLocaleInterval(option,QuantumRange);
   option=GetImageOption(image_info,"black-point-compensation");
   if (option != (const char *) NULL)
     image->black_point_compensation=(MagickBooleanType) ParseCommandOption(
@@ -4457,7 +4457,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       MagickFalse,option);
   option=GetImageOption(image_info,"fuzz");
   if (option != (const char *) NULL)
-    image->fuzz=SiPrefixToDouble(option,(double) QuantumRange+1.0);
+    image->fuzz=InterpretLocaleInterval(option,(double) QuantumRange+1.0);
   option=GetImageOption(image_info,"gravity");
   if (option != (const char *) NULL)
     image->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,

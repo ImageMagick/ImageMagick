@@ -382,26 +382,26 @@ esac
 #
 # ARCH specific include directory
 #
-AC_ARG_WITH([includedir-arch],
-    [AC_HELP_STRING([--includedir-arch=DIR],
+AC_ARG_WITH([includearch-dir],
+    [AC_HELP_STRING([--includearch-dir=DIR],
                     [ARCH specific include directory])],
-                    [includedir_arch=$withval],
-                    [includedir_arch=$INCLUDE_DIR])
+                    [includearch_dir=$withval],
+                    [includearch_dir=$INCLUDE_DIR])
 
-eval "eval INCLUDEDIR_ARCH=$includedir_arch"
-AC_SUBST(INCLUDEDIR_ARCH)
+eval "eval INCLUDEARCH_DIR=$includearch_dir"
+AC_SUBST(INCLUDEARCH_DIR)
 
 #
 # ARCH specific configuration directory
 #
-AC_ARG_WITH([sharedir-arch],
-    [AC_HELP_STRING([--sharedir-arch=DIR],
+AC_ARG_WITH([sharearch-dir],
+    [AC_HELP_STRING([--sharearch-dir=DIR],
                     [ARCH specific config directory])],
-                    [sharedir_arch=$withval],
-                    [sharedir_arch="${DATA_DIR}"])
+                    [sharearch_dir=$withval],
+                    [sharearch_dir="${DATA_DIR}"])
 
-eval "eval SHAREDIR_ARCH=$sharedir_arch"
-AC_SUBST(SHAREDIR_ARCH)
+eval "eval SHAREARCH_DIR=$sharearch_dir"
+AC_SUBST(SHAREARCH_DIR)
 
 # Enable support for threads
 AC_ARG_WITH([threads],
@@ -2880,8 +2880,8 @@ AC_SUBST(PERLMAINCC)
 
 # Path to ImageMagick header files
 INCLUDE_RELATIVE_PATH="ImageMagick"
-INCLUDE_PATH="${INCLUDEDIR_ARCH}/${INCLUDE_RELATIVE_PATH}"
-DEFINE_INCLUDE_PATH="${INCLUDEDIR_ARCH}/${INCLUDE_RELATIVE_PATH}/"
+INCLUDE_PATH="${INCLUDEARCH_DIR}/${INCLUDE_RELATIVE_PATH}"
+DEFINE_INCLUDE_PATH="${INCLUDEARCH_DIR}/${INCLUDE_RELATIVE_PATH}/"
 case "${build_os}" in
   mingw* )
     DEFINE_INCLUDE_PATH=`$WinPathScript "$DEFINE_INCLUDE_PATH" 1`
@@ -2973,7 +2973,7 @@ AC_SUBST(CONFIGURE_PATH)
 # Subdirectory to place architecture-independent configuration files
 SHARE_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}"
 AC_DEFINE_UNQUOTED(SHARE_RELATIVE_PATH,"$SHARE_RELATIVE_PATH",Subdirectory of lib where architecture-independent configuration files live.)
-SHARE_PATH="${SHAREDIR_ARCH}/${SHARE_RELATIVE_PATH}"
+SHARE_PATH="${DATA_DIR}/${SHARE_RELATIVE_PATH}"
 DEFINE_SHARE_PATH="${DATA_DIR}/${SHARE_RELATIVE_PATH}/"
 case "${build_os}" in
   mingw* )
@@ -2982,6 +2982,19 @@ case "${build_os}" in
 esac
 AC_DEFINE_UNQUOTED(SHARE_PATH,"$DEFINE_SHARE_PATH",Directory where architecture-independent configuration files live.)
 AC_SUBST(SHARE_PATH)
+
+# Subdirectory to place architecture-independent configuration files
+SHAREARCH_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}"
+AC_DEFINE_UNQUOTED(SHAREARCH_RELATIVE_PATH,"$SHAREARCH_RELATIVE_PATH",Subdirectory of lib where architecture-independent configuration files live.)
+SHAREARCH_PATH="${DATA_DIR}/${SHAREARCH_RELATIVE_PATH}"
+DEFINE_SHAREARCH_PATH="${DATA_DIR}/${SHAREARCH_RELATIVE_PATH}/"
+case "${build_os}" in
+  mingw* )
+    DEFINE_SHAREARCH_PATH=`$WinPathScript "$DEFINE_SHAREARCH_PATH" 1`
+    ;;
+esac
+AC_DEFINE_UNQUOTED(SHAREARCH_PATH,"$DEFINE_SHAREARCH_PATH",Directory where architecture-independent configuration files live.)
+AC_SUBST(SHAREARCH_PATH)
 
 #
 # program_transform_name is formed for use in a Makefile, so create a

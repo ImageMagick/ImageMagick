@@ -895,6 +895,13 @@
 #undef SELECT_TYPE_ARG5
 
 /* Directory where architecture-independent configuration files live. */
+#undef SHAREARCH_PATH
+
+/* Subdirectory of lib where architecture-independent configuration files
+   live. */
+#undef SHAREARCH_RELATIVE_PATH
+
+/* Directory where architecture-independent configuration files live. */
 #undef SHARE_PATH
 
 /* Subdirectory of lib where architecture-independent configuration files

@@ -666,6 +666,10 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
 #if defined(MAGICKCORE_SHARE_PATH)
   (void) AppendValueToLinkedList(paths,ConstantString(MAGICKCORE_SHARE_PATH));
 #endif
+#if defined(MAGICKCORE_SHAREARCH_PATH)
+  (void) AppendValueToLinkedList(paths,ConstantString(
+    MAGICKCORE_SHAREARCH_PATH));
+#endif
 #if defined(MAGICKCORE_CONFIGURE_PATH)
   (void) AppendValueToLinkedList(paths,ConstantString(
     MAGICKCORE_CONFIGURE_PATH));
