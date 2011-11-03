@@ -3513,7 +3513,7 @@ static MagickBooleanType XColorEditImage(Display *display,
               break;
             if (entry != 5)
               {
-                (*image)->fuzz=SiPrefixToDouble(FuzzMenu[entry],(double)
+                (*image)->fuzz=InterpretLocaleInterval(FuzzMenu[entry],(double)
                   QuantumRange+1.0);
                 break;
               }
@@ -3523,7 +3523,7 @@ static MagickBooleanType XColorEditImage(Display *display,
             if (*fuzz == '\0')
               break;
             (void) ConcatenateMagickString(fuzz,"%",MaxTextExtent);
-            (*image)->fuzz=SiPrefixToDouble(fuzz,(double) QuantumRange+1.0);
+            (*image)->fuzz=InterpretLocaleInterval(fuzz,(double) QuantumRange+1.0);
             break;
           }
           case ColorEditUndoCommand:
@@ -7667,7 +7667,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) XDialogWidget(display,windows,"Trim","Enter fuzz factor:",fuzz);
       if (*fuzz == '\0')
         break;
-      (*image)->fuzz=SiPrefixToDouble(fuzz,(double) QuantumRange+1.0);
+      (*image)->fuzz=InterpretLocaleInterval(fuzz,(double) QuantumRange+1.0);
       /*
         Trim image.
       */
@@ -8237,7 +8237,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      threshold=SiPrefixToDouble(factor,QuantumRange);
+      threshold=InterpretLocaleInterval(factor,QuantumRange);
       (void) BilevelImage(*image,threshold);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
@@ -8436,7 +8436,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      threshold=SiPrefixToDouble(factor,QuantumRange);
+      threshold=InterpretLocaleInterval(factor,QuantumRange);
       sepia_image=SepiaToneImage(*image,threshold,&(*image)->exception);
       if (sepia_image != (Image *) NULL)
         {
@@ -8471,7 +8471,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      threshold=SiPrefixToDouble(factor,QuantumRange);
+      threshold=InterpretLocaleInterval(factor,QuantumRange);
       (void) SolarizeImage(*image,threshold);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
@@ -9767,7 +9767,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
               break;
             if (entry != 5)
               {
-                (*image)->fuzz=SiPrefixToDouble(FuzzMenu[entry],(double)
+                (*image)->fuzz=InterpretLocaleInterval(FuzzMenu[entry],(double)
                   QuantumRange+1.0);
                 break;
               }
@@ -9777,7 +9777,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
             if (*fuzz == '\0')
               break;
             (void) ConcatenateMagickString(fuzz,"%",MaxTextExtent);
-            (*image)->fuzz=SiPrefixToDouble(fuzz,(double) QuantumRange+1.0);
+            (*image)->fuzz=InterpretLocaleInterval(fuzz,(double) QuantumRange+1.0);
             break;
           }
           case MatteEditValueCommand:

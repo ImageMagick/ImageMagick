@@ -1307,7 +1307,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if (*option == '+')
               threshold=40.0*QuantumRange/100.0;
             else
-              threshold=SiPrefixToDouble(argv[i+1],QuantumRange);
+              threshold=InterpretLocaleInterval(argv[i+1],QuantumRange);
             mogrify_image=DeskewImage(*image,threshold,exception);
             break;
           }
@@ -1506,7 +1506,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             op=(MagickEvaluateOperator) ParseCommandOption(MagickEvaluateOptions,
               MagickFalse,argv[i+1]);
-            constant=SiPrefixToDouble(argv[i+2],QuantumRange);
+            constant=InterpretLocaleInterval(argv[i+2],QuantumRange);
             (void) EvaluateImageChannel(*image,channel,op,constant,exception);
             break;
           }
@@ -2614,7 +2614,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Sepia-tone image.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            threshold=SiPrefixToDouble(argv[i+1],QuantumRange);
+            threshold=InterpretLocaleInterval(argv[i+1],QuantumRange);
             mogrify_image=SepiaToneImage(*image,threshold,exception);
             break;
           }
@@ -2776,7 +2776,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               threshold;
 
             (void) SyncImageSettings(mogrify_info,*image);
-            threshold=SiPrefixToDouble(argv[i+1],QuantumRange);
+            threshold=InterpretLocaleInterval(argv[i+1],QuantumRange);
             (void) SolarizeImage(*image,threshold);
             InheritException(exception,&(*image)->exception);
             break;
@@ -2922,7 +2922,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if (*option == '+')
               threshold=(double) QuantumRange/2;
             else
-              threshold=SiPrefixToDouble(argv[i+1],QuantumRange);
+              threshold=InterpretLocaleInterval(argv[i+1],QuantumRange);
             (void) BilevelImageChannel(*image,channel,threshold);
             InheritException(exception,&(*image)->exception);
             break;
@@ -6255,7 +6255,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
 
             limit=MagickResourceInfinity;
             if (LocaleCompare("unlimited",argv[i+1]) != 0)
-              limit=(MagickSizeType) SiPrefixToDouble(argv[i+1],100.0);
+              limit=(MagickSizeType) InterpretLocaleInterval(argv[i+1],100.0);
             (void) SetMagickResourceLimit(MemoryResource,limit);
             (void) SetMagickResourceLimit(MapResource,2*limit);
             break;
@@ -6538,7 +6538,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
                 (void) SetImageOption(image_info,option+1,"0");
                 break;
               }
-            image_info->fuzz=SiPrefixToDouble(argv[i+1],(double) QuantumRange+
+            image_info->fuzz=InterpretLocaleInterval(argv[i+1],(double) QuantumRange+
               1.0);
             (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
@@ -6666,7 +6666,7 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
               MagickFalse,argv[i+1]);
             limit=MagickResourceInfinity;
             if (LocaleCompare("unlimited",argv[i+2]) != 0)
-              limit=(MagickSizeType) SiPrefixToDouble(argv[i+2],100.0);
+              limit=(MagickSizeType) InterpretLocaleInterval(argv[i+2],100.0);
             (void) SetMagickResourceLimit(type,limit);
             break;
           }

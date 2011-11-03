@@ -8,7 +8,7 @@
 2011-11-02  6.7.3-3 Cristy  <quetzlzacatenango@image...>
   * Fix small memory leak in the TIFF coder.
   * Support -debug accelerate option.
-  * Support -includedir-arch and -sharedir-arch configure option (reference
+  * Support -includearch-dir and -sharearch-dir configure option (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19720).
   * Use Pango to improve the caption coder.
 

@@ -7889,7 +7889,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
 
           limit=MagickResourceInfinity;
           if (LocaleCompare(value,"unlimited") != 0)
-            limit=(MagickSizeType) SiPrefixToDouble(value,100.0);
+            limit=(MagickSizeType) InterpretLocaleInterval(value,100.0);
           (void) SetMagickResourceLimit(AreaResource,limit);
           break;
         }
@@ -7919,7 +7919,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
         {
           if (image == (Image *) NULL)
             break;
-          image->bias=SiPrefixToDouble(value,QuantumRange);
+          image->bias=InterpretLocaleInterval(value,QuantumRange);
           break;
         }
       if (LocaleCompare(keyword,"blue-primary") == 0)

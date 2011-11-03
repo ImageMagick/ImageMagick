@@ -3292,7 +3292,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         }
       if (LocaleCompare(property,"bias") == 0)
         {
-          image->bias=SiPrefixToDouble(value,QuantumRange);
+          image->bias=InterpretLocaleInterval(value,QuantumRange);
           break;
         }
       status=AddValueToSplayTree((SplayTreeInfo *) image->properties,

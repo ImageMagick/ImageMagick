@@ -876,23 +876,84 @@ static MagickBooleanType InitializeLocaleList(ExceptionInfo *exception)
 MagickExport double InterpretLocaleValue(const char *restrict string,
   char **restrict sentinal)
 {
+  char
+    *q;
+
   double
     value;
 
-#if defined(MAGICKCORE_HAVE_STRTOD_L)
-  {
-    locale_t
-      locale;
+  static const double
+    SIPrefixes['z'-'E'+1] =
+    {
+      ['y'-'E'] = (-24.0),
+      ['z'-'E'] = (-21.0),
+      ['a'-'E'] = (-18.0),
+      ['f'-'E'] = (-15.0),
+      ['p'-'E'] = (-12.0),
+      ['n'-'E'] = (-9.0),
+      ['u'-'E'] = (-6.0),
+      ['m'-'E'] = (-3.0),
+      ['c'-'E'] = (-2.0),
+      ['d'-'E'] = (-1.0),
+      ['h'-'E'] = 2.0,
+      ['k'-'E'] = 3.0,
+      ['K'-'E'] = 3.0,
+      ['M'-'E'] = 6.0,
+      ['G'-'E'] = 9.0,
+      ['T'-'E'] = 12.0,
+      ['P'-'E'] = 15.0,
+      ['E'-'E'] = 18.0,
+      ['Z'-'E'] = 21.0,
+      ['Y'-'E'] = 24.0
+    };
 
-    locale=AcquireCLocale();
-    if (locale == (locale_t) NULL)
-      value=strtod(string,sentinal);
-    else
-      value=strtod_l(string,sentinal,locale);
-  }
+  if ((*string == '0') && ((string[1] | 0x20)=='x'))
+    value=(double) strtoul(string,&q,16);
+  else
+    {
+#if defined(MAGICKCORE_HAVE_STRTOD_L)
+      locale_t
+        locale;
+
+      locale=AcquireCLocale();
+      if (locale == (locale_t) NULL)
+        value=strtod(string,&q);
+      else
+        value=strtod_l(string,&q,locale);
 #else
-  value=strtod(string,sentinal);
+      value=strtod(string,&q);
 #endif
+    }
+  if (q != string)
+    {
+      if ((*q >= 'E') && (*q <= 'z'))
+        {
+          double
+            e;
+
+          e=SIPrefixes[*q-'E'];
+          if (e >= MagickEpsilon)
+            {
+              if (q[1] == 'i')
+                {
+                  value*=pow(2.0,e/0.3);
+                  q+=2;
+                }
+              else
+                {
+                  value*=pow(10.0,e);
+                  q++;
+                }
+            }
+        }
+      if (*q == 'B')
+        {
+          value*=8.0;
+          q++;
+        }
+    }
+  if (sentinal != (char **) NULL)
+    *sentinal=q;
   return(value);
 }
 
