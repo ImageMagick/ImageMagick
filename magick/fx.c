@@ -1224,30 +1224,6 @@ static MagickOffsetType FxGCD(MagickOffsetType alpha,MagickOffsetType beta)
   return(alpha);
 }
 
-static inline MagickRealType FxMax(FxInfo *fx_info,const ChannelType channel,
-  const ssize_t x,const ssize_t y,const char *expression,
-  ExceptionInfo *exception)
-{
-  MagickRealType
-    alpha,
-    beta;
-
-  alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression,&beta,exception);
-  return((MagickRealType) MagickMax((double) alpha,(double) beta));
-}
-
-static inline MagickRealType FxMin(FxInfo *fx_info,ChannelType channel,
-  const ssize_t x,const ssize_t y,const char *expression,
-  ExceptionInfo *exception)
-{
-  MagickRealType
-    alpha,
-    beta;
-
-  alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression,&beta,exception);
-  return((MagickRealType) MagickMin((double) alpha,(double) beta));
-}
-
 static inline const char *FxSubexpression(const char *expression,
   ExceptionInfo *exception)
 {
@@ -2656,16 +2632,25 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
       if (LocaleNCompare(expression,"maxima",6) == 0)
         break;
       if (LocaleNCompare(expression,"max",3) == 0)
-        return(FxMax(fx_info,channel,x,y,expression+3,exception));
+        {
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,beta,
+            exception);
+          return(alpha > *beta ? alpha : *beta);
+        }
       if (LocaleNCompare(expression,"minima",6) == 0)
         break;
       if (LocaleNCompare(expression,"min",3) == 0)
-        return(FxMin(fx_info,channel,x,y,expression+3,exception));
+        {
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,beta,
+            exception);
+          return(alpha < *beta ? alpha : *beta);
+        }
       if (LocaleNCompare(expression,"mod",3) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,beta,
             exception);
-          return((MagickRealType) fmod((double) alpha,(double) *beta));
+          gamma=alpha-floor((double) (alpha/(*beta)))*(*beta);
+          return(gamma);
         }
       if (LocaleCompare(expression,"m") == 0)
         return(FxGetSymbol(fx_info,channel,x,y,expression,exception));
