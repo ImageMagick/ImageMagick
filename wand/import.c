@@ -944,7 +944,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowImportException(OptionError,"MissingArgument",option);
-            value=InterpretLocaleValue(argv[i],&p);
+            value=StringToDouble(argv[i],&p);
             (void) value;
             if ((p == argv[i]) && (LocaleCompare("unlimited",argv[i]) != 0))
               ThrowImportInvalidArgumentException(option,argv[i]);

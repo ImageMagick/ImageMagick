@@ -372,10 +372,10 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
       MagickQuantumFormatOptions,MagickFalse,option);
   option=GetImageOption(image_info,"quantum:minimum");
   if (option != (char *) NULL)
-    quantum_info->minimum=InterpretLocaleValue(option,(char **) NULL);
+    quantum_info->minimum=StringToDouble(option,(char **) NULL);
   option=GetImageOption(image_info,"quantum:maximum");
   if (option != (char *) NULL)
-    quantum_info->maximum=InterpretLocaleValue(option,(char **) NULL);
+    quantum_info->maximum=StringToDouble(option,(char **) NULL);
   if ((quantum_info->minimum == 0.0) && (quantum_info->maximum == 0.0))
     quantum_info->scale=0.0;
   else
@@ -389,7 +389,7 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
         quantum_info->minimum);
   option=GetImageOption(image_info,"quantum:scale");
   if (option != (char *) NULL)
-    quantum_info->scale=InterpretLocaleValue(option,(char **) NULL);
+    quantum_info->scale=StringToDouble(option,(char **) NULL);
   option=GetImageOption(image_info,"quantum:polarity");
   if (option != (char *) NULL)
     quantum_info->min_is_white=LocaleCompare(option,"min-is-white") == 0 ?

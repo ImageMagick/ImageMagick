@@ -2442,7 +2442,7 @@ static void TIFFSetEXIFProperties(TIFF *tiff,Image *image)
         float
           rational;
 
-        rational=InterpretLocaleValue(value,(char **) NULL);
+        rational=StringToDouble(value,(char **) NULL);
         (void) TIFFSetField(tiff,exif_info[i].tag,rational);
         break;
       }

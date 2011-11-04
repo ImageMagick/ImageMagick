@@ -922,7 +922,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   /* User Sigma Override - no support change */
   artifact=GetImageArtifact(image,"filter:sigma");
   if (artifact != (const char *) NULL)
-    sigma=InterpretLocaleValue(artifact,(char **) NULL);
+    sigma=StringToDouble(artifact,(char **) NULL);
   /* Define coefficents for Gaussian */
   if ( GaussianFilter ) {
     resize_filter->coefficient[0]=1.0/(2.0*sigma*sigma);
@@ -933,7 +933,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   /* Blur Override */
   artifact=GetImageArtifact(image,"filter:blur");
   if (artifact != (const char *) NULL)
-    resize_filter->blur *= InterpretLocaleValue(artifact,(char **) NULL);
+    resize_filter->blur *= StringToDouble(artifact,(char **) NULL);
   if (resize_filter->blur < MagickEpsilon)
     resize_filter->blur=(MagickRealType) MagickEpsilon;
 
@@ -960,7 +960,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   /* expert override of the support setting */
   artifact=GetImageArtifact(image,"filter:support");
   if (artifact != (const char *) NULL)
-    resize_filter->support=fabs(InterpretLocaleValue(artifact,(char **) NULL));
+    resize_filter->support=fabs(StringToDouble(artifact,(char **) NULL));
   /*
     Scale windowing function separately to the support 'clipping'
     window that calling operator is planning to actually use. (Expert
@@ -969,7 +969,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   resize_filter->window_support=resize_filter->support; /* default */
   artifact=GetImageArtifact(image,"filter:win-support");
   if (artifact != (const char *) NULL)
-    resize_filter->window_support=fabs(InterpretLocaleValue(artifact,(char **) NULL));
+    resize_filter->window_support=fabs(StringToDouble(artifact,(char **) NULL));
   /*
     Adjust window function scaling to match windowing support for
     weighting function.  This avoids a division on every filter call.
@@ -994,18 +994,18 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       artifact=GetImageArtifact(image,"filter:b");
       if (artifact != (const char *) NULL)
         {
-          B=InterpretLocaleValue(artifact,(char **) NULL);
+          B=StringToDouble(artifact,(char **) NULL);
           C=(1.0-B)/2.0; /* Calculate C to get a Keys cubic filter. */
           artifact=GetImageArtifact(image,"filter:c"); /* user C override */
           if (artifact != (const char *) NULL)
-            C=InterpretLocaleValue(artifact,(char **) NULL);
+            C=StringToDouble(artifact,(char **) NULL);
         }
       else
         {
           artifact=GetImageArtifact(image,"filter:c");
           if (artifact != (const char *) NULL)
             {
-              C=InterpretLocaleValue(artifact,(char **) NULL);
+              C=StringToDouble(artifact,(char **) NULL);
               B=1.0-2.0*C; /* Calculate B to get a Keys cubic filter. */
             }
         }

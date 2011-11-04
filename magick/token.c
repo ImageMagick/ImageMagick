@@ -229,7 +229,7 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
         char
           *q;
 
-        value=InterpretLocaleValue(p,&q);
+        value=StringToDouble(p,&q);
         (void) value;
         if ((p != q) && (*p != ','))
           {

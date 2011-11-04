@@ -780,22 +780,22 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                         *p;
 
                       p=value;
-                      draw_info->affine.sx=InterpretLocaleValue(p,&p);
+                      draw_info->affine.sx=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.rx=InterpretLocaleValue(p,&p);
+                      draw_info->affine.rx=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.ry=InterpretLocaleValue(p,&p);
+                      draw_info->affine.ry=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.sy=InterpretLocaleValue(p,&p);
+                      draw_info->affine.sy=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.tx=InterpretLocaleValue(p,&p);
+                      draw_info->affine.tx=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.ty=InterpretLocaleValue(p,&p);
+                      draw_info->affine.ty=StringToDouble(p,&p);
                       break;
                     }
                   if (LocaleCompare(keyword,"align") == 0)
@@ -900,7 +900,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"pointsize") == 0)
                     {
-                      draw_info->pointsize=InterpretLocaleValue(value,
+                      draw_info->pointsize=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -913,7 +913,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"rotate") == 0)
                     {
-                      angle=InterpretLocaleValue(value,(char **) NULL);
+                      angle=StringToDouble(value,(char **) NULL);
                       affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
                       affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
                       affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
@@ -938,14 +938,14 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"skewX") == 0)
                     {
-                      angle=InterpretLocaleValue(value,(char **) NULL);
+                      angle=StringToDouble(value,(char **) NULL);
                       affine.ry=tan(DegreesToRadians(fmod((double) angle,
                         360.0)));
                       break;
                     }
                   if (LocaleCompare(keyword,"skewY") == 0)
                     {
-                      angle=InterpretLocaleValue(value,(char **) NULL);
+                      angle=StringToDouble(value,(char **) NULL);
                       affine.rx=tan(DegreesToRadians(fmod((double) angle,
                         360.0)));
                       break;
@@ -1200,7 +1200,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"radius") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -1451,7 +1451,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             {
               if (LocaleCompare(keyword, "radius") == 0)
               {
-                radius = InterpretLocaleValue(value,(char **) NULL);
+                radius = StringToDouble(value,(char **) NULL);
                 break;
               }
               ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -1650,7 +1650,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"fuzz") == 0)
                     {
-                      msl_info->image[n]->fuzz=InterpretLocaleValue(value,
+                      msl_info->image[n]->fuzz=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -1958,7 +1958,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"rotate") == 0)
                     {
                       rotate_image=RotateImage(composite_image,
-                        InterpretLocaleValue(value,(char **) NULL),&exception);
+                        StringToDouble(value,(char **) NULL),&exception);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -2369,22 +2369,22 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                         *p;
 
                       p=value;
-                      draw_info->affine.sx=InterpretLocaleValue(p,&p);
+                      draw_info->affine.sx=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.rx=InterpretLocaleValue(p,&p);
+                      draw_info->affine.rx=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.ry=InterpretLocaleValue(p,&p);
+                      draw_info->affine.ry=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.sy=InterpretLocaleValue(p,&p);
+                      draw_info->affine.sy=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.tx=InterpretLocaleValue(p,&p);
+                      draw_info->affine.tx=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.ty=InterpretLocaleValue(p,&p);
+                      draw_info->affine.ty=StringToDouble(p,&p);
                       break;
                     }
                   if (LocaleCompare(keyword,"align") == 0)
@@ -2494,7 +2494,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"pointsize") == 0)
                     {
-                      draw_info->pointsize=InterpretLocaleValue(value,
+                      draw_info->pointsize=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -2507,7 +2507,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"rotate") == 0)
                     {
-                      angle=InterpretLocaleValue(value,(char **) NULL);
+                      angle=StringToDouble(value,(char **) NULL);
                       affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
                       affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
                       affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
@@ -2532,13 +2532,13 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"skewX") == 0)
                     {
-                      angle=InterpretLocaleValue(value,(char **) NULL);
+                      angle=StringToDouble(value,(char **) NULL);
                       affine.ry=cos(DegreesToRadians(fmod(angle,360.0)));
                       break;
                     }
                   if (LocaleCompare(keyword,"skewY") == 0)
                     {
-                      angle=InterpretLocaleValue(value,(char **) NULL);
+                      angle=StringToDouble(value,(char **) NULL);
                       affine.rx=cos(DegreesToRadians(fmod(angle,360.0)));
                       break;
                     }
@@ -2718,7 +2718,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"radius") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -2784,7 +2784,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"radius") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -3159,7 +3159,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"blue") == 0)
                     {
-                      pixel.blue=InterpretLocaleValue(value,(char **) NULL);
+                      pixel.blue=StringToDouble(value,(char **) NULL);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -3192,7 +3192,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"green") == 0)
                     {
-                      pixel.green=InterpretLocaleValue(value,(char **) NULL);
+                      pixel.green=StringToDouble(value,(char **) NULL);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -3204,7 +3204,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"red") == 0)
                     {
-                      pixel.red=InterpretLocaleValue(value,(char **) NULL);
+                      pixel.red=StringToDouble(value,(char **) NULL);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -3398,7 +3398,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"amount") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -3468,7 +3468,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             {
               if (LocaleCompare(keyword,"black") == 0)
               {
-                levelBlack = InterpretLocaleValue(value,(char **) NULL);
+                levelBlack = StringToDouble(value,(char **) NULL);
                 break;
               }
               ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -3479,7 +3479,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             {
               if (LocaleCompare(keyword,"gamma") == 0)
               {
-                levelGamma = InterpretLocaleValue(value,(char **) NULL);
+                levelGamma = StringToDouble(value,(char **) NULL);
                 break;
               }
               ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -3490,7 +3490,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             {
               if (LocaleCompare(keyword,"white") == 0)
               {
-                levelWhite = InterpretLocaleValue(value,(char **) NULL);
+                levelWhite = StringToDouble(value,(char **) NULL);
                 break;
               }
               ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -3682,7 +3682,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"fuzz") == 0)
                     {
-                      msl_info->image[n]->fuzz=InterpretLocaleValue(value,
+                      msl_info->image[n]->fuzz=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -3712,7 +3712,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"opacity") == 0)
                     {
-                      opacity=InterpretLocaleValue(value,(char **) NULL);
+                      opacity=StringToDouble(value,(char **) NULL);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -3806,7 +3806,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"radius") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -3895,13 +3895,13 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"blackness") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
                   if (LocaleCompare(keyword,"brightness") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -3926,7 +3926,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"hue") == 0)
                     {
-                      geometry_info.xi=InterpretLocaleValue(value,
+                      geometry_info.xi=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -3939,7 +3939,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"lightness") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -3952,7 +3952,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"saturation") == 0)
                     {
-                      geometry_info.sigma=InterpretLocaleValue(value,
+                      geometry_info.sigma=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -3965,7 +3965,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"whiteness") == 0)
                     {
-                      geometry_info.sigma=InterpretLocaleValue(value,
+                      geometry_info.sigma=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -4153,7 +4153,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"radius") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -4229,7 +4229,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"fuzz") == 0)
                     {
-                      msl_info->image[n]->fuzz=InterpretLocaleValue(value,
+                      msl_info->image[n]->fuzz=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -4532,22 +4532,22 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                         *p;
 
                       p=value;
-                      draw_info->affine.sx=InterpretLocaleValue(p,&p);
+                      draw_info->affine.sx=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.rx=InterpretLocaleValue(p,&p);
+                      draw_info->affine.rx=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.ry=InterpretLocaleValue(p,&p);
+                      draw_info->affine.ry=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.sy=InterpretLocaleValue(p,&p);
+                      draw_info->affine.sy=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.tx=InterpretLocaleValue(p,&p);
+                      draw_info->affine.tx=StringToDouble(p,&p);
                       if (*p ==',')
                         p++;
-                      draw_info->affine.ty=InterpretLocaleValue(p,&p);
+                      draw_info->affine.ty=StringToDouble(p,&p);
                       break;
                     }
                   if (LocaleCompare(keyword,"align") == 0)
@@ -4652,7 +4652,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"pointsize") == 0)
                     {
-                      draw_info->pointsize=InterpretLocaleValue(value,
+                      draw_info->pointsize=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -4665,7 +4665,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"rotate") == 0)
                     {
-                      angle=InterpretLocaleValue(value,(char **) NULL);
+                      angle=StringToDouble(value,(char **) NULL);
                       affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
                       affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
                       affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
@@ -4690,13 +4690,13 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"skewX") == 0)
                     {
-                      angle=InterpretLocaleValue(value,(char **) NULL);
+                      angle=StringToDouble(value,(char **) NULL);
                       affine.ry=cos(DegreesToRadians(fmod(angle,360.0)));
                       break;
                     }
                   if (LocaleCompare(keyword,"skewY") == 0)
                     {
-                      angle=InterpretLocaleValue(value,(char **) NULL);
+                      angle=StringToDouble(value,(char **) NULL);
                       affine.rx=cos(DegreesToRadians(fmod(angle,360.0)));
                       break;
                     }
@@ -5041,7 +5041,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"radius") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -5220,7 +5220,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           {
             if (LocaleCompare(keyword,"blur") == 0)
               {
-                msl_info->image[n]->blur=InterpretLocaleValue(value,
+                msl_info->image[n]->blur=StringToDouble(value,
                         (char **) NULL);
                 break;
               }
@@ -5250,7 +5250,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           {
             if (LocaleCompare(keyword,"x-resolution") == 0)
               {
-                x_resolution=InterpretLocaleValue(value,(char **) NULL);
+                x_resolution=StringToDouble(value,(char **) NULL);
                 break;
               }
             ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -5261,7 +5261,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           {
             if (LocaleCompare(keyword,"y-resolution") == 0)
               {
-                y_resolution=InterpretLocaleValue(value,(char **) NULL);
+                y_resolution=StringToDouble(value,(char **) NULL);
                 break;
               }
             ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -5381,7 +5381,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"support") == 0)
                     {
-                      blur=InterpretLocaleValue(value,(char **) NULL);
+                      blur=StringToDouble(value,(char **) NULL);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -5602,7 +5602,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"degrees") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -5665,7 +5665,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           {
           if (LocaleCompare(keyword,"degrees") == 0)
             {
-            degrees = InterpretLocaleValue(value,(char **) NULL);
+            degrees = StringToDouble(value,(char **) NULL);
             break;
             }
           ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -5887,7 +5887,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"cluster-threshold") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -5924,7 +5924,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"smoothing-threshold") == 0)
                     {
-                      geometry_info.sigma=InterpretLocaleValue(value,
+                      geometry_info.sigma=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -6132,7 +6132,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"azimuth") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -6145,7 +6145,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"elevation") == 0)
                     {
-                      geometry_info.sigma=InterpretLocaleValue(value,
+                      geometry_info.sigma=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -6257,7 +6257,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"x") == 0)
                     {
-                      geometry_info.xi=InterpretLocaleValue(value,
+                      geometry_info.xi=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -6322,7 +6322,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             {
               if (LocaleCompare(keyword, "radius") == 0)
               {
-                radius = InterpretLocaleValue(value,(char **) NULL);
+                radius = StringToDouble(value,(char **) NULL);
                 break;
               }
               ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -6505,7 +6505,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"x") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -6610,7 +6610,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"threshold") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -6671,7 +6671,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"radius") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -6919,7 +6919,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"degrees") == 0)
                     {
-                      geometry_info.rho=InterpretLocaleValue(value,
+                      geometry_info.rho=StringToDouble(value,
                         (char **) NULL);
                       break;
                     }
@@ -7073,7 +7073,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           {
           if (LocaleCompare(keyword,"threshold") == 0)
             {
-            threshold = InterpretLocaleValue(value,(char **) NULL);
+            threshold = StringToDouble(value,(char **) NULL);
             break;
             }
           ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
@@ -7889,7 +7889,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
 
           limit=MagickResourceInfinity;
           if (LocaleCompare(value,"unlimited") != 0)
-            limit=(MagickSizeType) InterpretLocaleInterval(value,100.0);
+            limit=(MagickSizeType) StringToDoubleInterval(value,100.0);
           (void) SetMagickResourceLimit(AreaResource,limit);
           break;
         }
@@ -7919,7 +7919,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
         {
           if (image == (Image *) NULL)
             break;
-          image->bias=InterpretLocaleInterval(value,QuantumRange);
+          image->bias=StringToDoubleInterval(value,QuantumRange);
           break;
         }
       if (LocaleCompare(keyword,"blue-primary") == 0)
@@ -8022,8 +8022,8 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
     {
       if (LocaleCompare(keyword,"pointsize") == 0)
         {
-          image_info->pointsize=InterpretLocaleValue(value,(char **) NULL);
-          draw_info->pointsize=InterpretLocaleValue(value,(char **) NULL);
+          image_info->pointsize=StringToDouble(value,(char **) NULL);
+          draw_info->pointsize=StringToDouble(value,(char **) NULL);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);

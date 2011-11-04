@@ -747,7 +747,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"gamma") == 0)
                   {
-                    image->gamma=InterpretLocaleValue(options,(char **) NULL);
+                    image->gamma=StringToDouble(options,(char **) NULL);
                     break;
                   }
                 if (LocaleCompare(keyword,"gravity") == 0)
@@ -1018,7 +1018,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"version") == 0)
                   {
-                    version=InterpretLocaleValue(options,(char **) NULL);
+                    version=StringToDouble(options,(char **) NULL);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);
