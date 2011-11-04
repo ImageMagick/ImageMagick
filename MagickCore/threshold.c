@@ -1273,7 +1273,7 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
       GetMagickToken(p,&p,token);
       if (*token == ',')
         GetMagickToken(p,&p,token);
-      levels[i]=InterpretLocaleValue(token,(char **) NULL);
+      levels[i]=StringToDouble(token,(char **) NULL);
     }
   for (i=0; i < MaxPixelChannels; i++)
     if (fabs(levels[i]) >= 1)

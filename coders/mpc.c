@@ -444,7 +444,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"error") == 0)
                   {
-                    image->error.mean_error_per_pixel=InterpretLocaleValue(
+                    image->error.mean_error_per_pixel=StringToDouble(
                       options,(char **) NULL);
                     break;
                   }
@@ -456,7 +456,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"gamma") == 0)
                   {
-                    image->gamma=InterpretLocaleValue(options,(char **) NULL);
+                    image->gamma=StringToDouble(options,(char **) NULL);
                     break;
                   }
                 if (LocaleCompare(keyword,"green-primary") == 0)
@@ -512,12 +512,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (LocaleCompare(keyword,"maximum-error") == 0)
                   {
                     image->error.normalized_maximum_error=
-                      InterpretLocaleValue(options,(char **) NULL);
+                      StringToDouble(options,(char **) NULL);
                     break;
                   }
                 if (LocaleCompare(keyword,"mean-error") == 0)
                   {
-                    image->error.normalized_mean_error=InterpretLocaleValue(
+                    image->error.normalized_mean_error=StringToDouble(
                       options,(char **) NULL);
                     break;
                   }

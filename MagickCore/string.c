@@ -1311,6 +1311,101 @@ MagickExport const char *GetStringInfoPath(const StringInfo *string_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   I n t e r p r e t S i P r e f i x V a l u e                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InterpretSiPrefixValue() converts the initial portion of the string to a
+%  double representation.  It also recognizes SI prefixes (e.g. B, KB, MiB,
+%  etc.).
+%
+%  The format of the InterpretSiPrefixValue method is:
+%
+%      double InterpretSiPrefixValue(const char *value,char **sentinal)
+%
+%  A description of each parameter follows:
+%
+%    o value: the string value.
+%
+%    o sentinal:  if sentinal is not NULL, return a pointer to the character
+%      after the last character used in the conversion.
+%
+*/
+MagickExport double InterpretSiPrefixValue(const char *restrict string,
+  char **restrict sentinal)
+{
+  char
+    *q;
+
+  double
+    value;
+
+  static const double
+    SIPrefixes['z'-'E'+1] =
+    {
+      ['y'-'E'] = (-24.0),
+      ['z'-'E'] = (-21.0),
+      ['a'-'E'] = (-18.0),
+      ['f'-'E'] = (-15.0),
+      ['p'-'E'] = (-12.0),
+      ['n'-'E'] = (-9.0),
+      ['u'-'E'] = (-6.0),
+      ['m'-'E'] = (-3.0),
+      ['c'-'E'] = (-2.0),
+      ['d'-'E'] = (-1.0),
+      ['h'-'E'] = 2.0,
+      ['k'-'E'] = 3.0,
+      ['K'-'E'] = 3.0,
+      ['M'-'E'] = 6.0,
+      ['G'-'E'] = 9.0,
+      ['T'-'E'] = 12.0,
+      ['P'-'E'] = 15.0,
+      ['E'-'E'] = 18.0,
+      ['Z'-'E'] = 21.0,
+      ['Y'-'E'] = 24.0
+    };
+
+  value=InterpretLocaleValue(string,&q);
+  if (q != string)
+    {
+      if ((*q >= 'E') && (*q <= 'z'))
+        {
+          double
+            e;
+
+          e=SIPrefixes[*q-'E'];
+          if (e >= MagickEpsilon)
+            {
+              if (q[1] == 'i')
+                {
+                  value*=pow(2.0,e/0.3);
+                  q+=2;
+                }
+              else
+                {
+                  value*=pow(10.0,e);
+                  q++;
+                }
+            }
+        }
+      if (*q == 'B')
+        {
+          value*=8.0;
+          q++;
+        }
+    }
+  if (sentinal != (char **) NULL)
+    *sentinal=q;
+  return(value);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   L o c a l e C o m p a r e                                                 %
 %                                                                             %
 %                                                                             %
