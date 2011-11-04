@@ -22,7 +22,15 @@
 extern "C" {
 #endif
 
-static inline double InterpretLocaleInterval(const char *string,
+#include <MagickCore/locale_.h>
+
+static inline double StringToDouble(const char *restrict string,
+  char **restrict sentinal)
+{
+  return(InterpretLocaleValue(string,sentinal));
+}
+
+static inline double StringToDoubleInterval(const char *string,
   const double interval)
 {
   char
@@ -31,26 +39,23 @@ static inline double InterpretLocaleInterval(const char *string,
   double
     value;
 
-  /*
-    Interpret string with International System of Units (SI) unit prefix.
-  */
-  value=InterpretLocaleValue(string,&q);
+  value=InterpretSiPrefixValue(string,&q);
   if (*q == '%')
     value*=interval/100.0;
   return(value);
 }
 
-static inline int StringToInteger(const char *value)
+static inline int StringToInteger(const char *restrict value)
 {
   return((int) strtol(value,(char **) NULL,10));
 }
 
-static inline long StringToLong(const char *value)
+static inline long StringToLong(const char *restrict value)
 {
   return(strtol(value,(char **) NULL,10));
 }
 
-static inline unsigned long StringToUnsignedLong(const char *value)
+static inline unsigned long StringToUnsignedLong(const char *restrict value)
 {
   return(strtoul(value,(char **) NULL,10));
 }

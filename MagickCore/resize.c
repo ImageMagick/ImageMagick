@@ -932,7 +932,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   }
   artifact=GetImageArtifact(image,"filter:sigma");
   if (artifact != (const char *) NULL)
-    sigma=InterpretLocaleValue(artifact,(char **) NULL);  /* override sigma */
+    sigma=StringToDouble(artifact,(char **) NULL);  /* override sigma */
   if (GaussianFilter)
     {
       /*
@@ -944,17 +944,19 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     }
   artifact=GetImageArtifact(image,"filter:blur");
   if (artifact != (const char *) NULL)
-    resize_filter->blur*=InterpretLocaleValue(artifact,
-      (char **) NULL);  /* override blur */
+    resize_filter->blur*=StringToDouble(artifact,(char **) NULL);  /* override blur */
   if (resize_filter->blur < MagickEpsilon)
     resize_filter->blur=(MagickRealType) MagickEpsilon;
   artifact=GetImageArtifact(image,"filter:lobes");
   if (artifact != (const char *) NULL)
     {
+      ssize_t
+        lobes;
+
       /*
         Override lobes.
       */
-      ssize_t lobes=(ssize_t) StringToLong(artifact);
+      lobes=(ssize_t) StringToLong(artifact);
       if (lobes < 1)
         lobes=1;
       resize_filter->support=(MagickRealType) lobes;
@@ -971,7 +973,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     }
   artifact=GetImageArtifact(image,"filter:support");
   if (artifact != (const char *) NULL)
-    resize_filter->support=fabs(InterpretLocaleValue(artifact,
+    resize_filter->support=fabs(StringToDouble(artifact,
       (char **) NULL)); /* override support */
   /*
     Scale windowing function separately to the support 'clipping' window that
@@ -980,7 +982,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   resize_filter->window_support=resize_filter->support; /* default */
   artifact=GetImageArtifact(image,"filter:win-support");
   if (artifact != (const char *) NULL)
-    resize_filter->window_support=fabs(InterpretLocaleValue(artifact,
+    resize_filter->window_support=fabs(StringToDouble(artifact,
       (char **) NULL));
   /*
     Adjust window function scaling to match windowing support for weighting
@@ -1005,18 +1007,18 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
       artifact=GetImageArtifact(image,"filter:b");
       if (artifact != (const char *) NULL)
         {
-          B=InterpretLocaleValue(artifact,(char **) NULL);
+          B=StringToDouble(artifact,(char **) NULL);
           C=(1.0-B)/2.0; /* Calculate C to get a Keys cubic filter. */
           artifact=GetImageArtifact(image,"filter:c"); /* user C override */
           if (artifact != (const char *) NULL)
-            C=InterpretLocaleValue(artifact,(char **) NULL);
+            C=StringToDouble(artifact,(char **) NULL);
         }
       else
         {
           artifact=GetImageArtifact(image,"filter:c");
           if (artifact != (const char *) NULL)
             {
-              C=InterpretLocaleValue(artifact,(char **) NULL);
+              C=StringToDouble(artifact,(char **) NULL);
               B=1.0-2.0*C; /* Calculate B to get a Keys cubic filter. */
             }
         }

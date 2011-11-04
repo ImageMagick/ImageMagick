@@ -265,7 +265,7 @@ static Image *SparseColorOption(const Image *image,
       error = MagickTrue;
       break;
     }
-    sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
+    sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
     /* Y coordinate */
     token[0]=','; while ( token[0] == ',' ) GetMagickToken(p,&p,token);
     if ( token[0] == '\0' ) break;
@@ -276,7 +276,7 @@ static Image *SparseColorOption(const Image *image,
       error = MagickTrue;
       break;
     }
-    sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
+    sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
     /* color values for this control point */
 #if 0
     if ( (color_from_image ) {
@@ -314,7 +314,7 @@ static Image *SparseColorOption(const Image *image,
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
+          sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
@@ -322,7 +322,7 @@ static Image *SparseColorOption(const Image *image,
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
+          sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
@@ -330,7 +330,7 @@ static Image *SparseColorOption(const Image *image,
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
+          sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
@@ -339,7 +339,7 @@ static Image *SparseColorOption(const Image *image,
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
+          sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
         if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
@@ -348,7 +348,7 @@ static Image *SparseColorOption(const Image *image,
           while ( token[0] == ',' ) GetMagickToken(p,&p,token);
           if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
             break;
-          sparse_arguments[x++]=InterpretLocaleValue(token,(char **) NULL);
+          sparse_arguments[x++]=StringToDouble(token,(char **) NULL);
           token[0] = ','; /* used this token - get another */
         }
       }
@@ -557,7 +557,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
 
           limit=MagickResourceInfinity;
           if (LocaleCompare("unlimited",arg) != 0)
-            limit=(MagickSizeType) InterpretLocaleInterval(arg,100.0);
+            limit=(MagickSizeType) StringToDoubleInterval(arg,100.0);
           (void) SetMagickResourceLimit(MemoryResource,limit);
           (void) SetMagickResourceLimit(MapResource,2*limit);
           break;
@@ -832,7 +832,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           */
           if (IfSetOption)
             {
-              image_info->fuzz=InterpretLocaleInterval(arg,(double) QuantumRange+1.0);
+              image_info->fuzz=StringToDoubleInterval(arg,(double) QuantumRange+1.0);
               (void) SetImageOption(image_info,option,arg);
               break;
             }
@@ -901,7 +901,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
 
           value = IfSetOption ? arg : "0"; /* undefined? */
           (void) SetImageOption(image_info,option, value);
-          draw_info->interline_spacing=InterpretLocaleValue(value,
+          draw_info->interline_spacing=StringToDouble(value,
                (char **) NULL);
           break;
         }
@@ -922,7 +922,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
 
           value = IfSetOption ? arg : "0"; /* undefined? */
           (void) SetImageOption(image_info,option, value);
-          draw_info->interword_spacing=InterpretLocaleValue(value,
+          draw_info->interword_spacing=StringToDouble(value,
                (char **) NULL);
           break;
         }
@@ -937,7 +937,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
 
           value = IfSetOption ? arg : "0"; /* undefined? */
           (void) SetImageOption(image_info,option, value);
-          draw_info->kerning=InterpretLocaleValue(value,(char **) NULL);
+          draw_info->kerning=StringToDouble(value,(char **) NULL);
           break;
         }
       break;
@@ -965,7 +965,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
             MagickFalse,arg);
           limit=MagickResourceInfinity;
           if (LocaleCompare("unlimited",argv[2]) != 0)
-            limit=(MagickSizeType) InterpretLocaleInterval(argv[2],100.0);
+            limit=(MagickSizeType) StringToDoubleInterval(argv[2],100.0);
           (void) SetMagickResourceLimit(type,limit);
           break;
         }
@@ -1181,7 +1181,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
             value=12.0;
 
           if (IfSetOption)
-            InterpretLocaleValue(arg,(char **) NULL);
+            StringToDouble(arg,(char **) NULL);
           image_info->pointsize=draw_info->pointsize=value;
           break;
         }
@@ -1334,7 +1334,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           const char
             *value = IfSetOption ? arg : "1.0";
           (void) SetImageOption(image_info,option,value);
-          draw_info->stroke_width=InterpretLocaleValue(value,(char **) NULL);
+          draw_info->stroke_width=StringToDouble(value,(char **) NULL);
           break;
         }
       if (LocaleCompare("style",option) == 0)
@@ -2115,7 +2115,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           if (*argv[0] == '+')
             threshold=40.0*QuantumRange/100.0;
           else
-            threshold=InterpretLocaleInterval(args[0],QuantumRange);
+            threshold=StringToDoubleInterval(args[0],QuantumRange);
           new_image=DeskewImage(*image,threshold,exception);
           break;
         }
@@ -2200,7 +2200,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
             GetMagickToken(p,&p,token);
             if (*token == ',')
               GetMagickToken(p,&p,token);
-            arguments[x]=InterpretLocaleValue(token,(char **) NULL);
+            arguments[x]=StringToDouble(token,(char **) NULL);
           }
           args=DestroyString(args);
           new_image=DistortImage(*image,method,number_arguments,arguments,
@@ -2276,7 +2276,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           (void) SyncImageSettings(image_info,*image,exception);
           op=(MagickEvaluateOperator) ParseCommandOption(
             MagickEvaluateOptions,MagickFalse,args[0]);
-          constant=InterpretLocaleInterval(argv[2],QuantumRange);
+          constant=StringToDoubleInterval(argv[2],QuantumRange);
           (void) EvaluateImage(*image,op,constant,exception);
           break;
         }
@@ -2418,7 +2418,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
             GetMagickToken(p,&p,token);
             if (*token == ',')
               GetMagickToken(p,&p,token);
-            parameters[x]=InterpretLocaleValue(token,(char **) NULL);
+            parameters[x]=StringToDouble(token,(char **) NULL);
           }
           arguments=DestroyString(arguments);
           (void) FunctionImage(*image,function,number_parameters,parameters,
@@ -2434,9 +2434,9 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
         {
           (void) SyncImageSettings(image_info,*image,exception);
           if (*argv[0] == '+')
-            (*image)->gamma=InterpretLocaleValue(args[0],(char **) NULL);
+            (*image)->gamma=StringToDouble(args[0],(char **) NULL);
           else
-            (void) GammaImage(*image,InterpretLocaleValue(args[0],
+            (void) GammaImage(*image,StringToDouble(args[0],
               (char **) NULL),exception);
           break;
         }
@@ -2678,7 +2678,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
         }
       if (LocaleCompare("linewidth",option) == 0)
         {
-          draw_info->stroke_width=InterpretLocaleValue(args[0],
+          draw_info->stroke_width=StringToDouble(args[0],
             (char **) NULL);
           break;
         }
@@ -3218,7 +3218,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
             threshold;
 
           (void) SyncImageSettings(image_info,*image,exception);
-          threshold=InterpretLocaleInterval(args[0],QuantumRange);
+          threshold=StringToDoubleInterval(args[0],QuantumRange);
           new_image=SepiaToneImage(*image,threshold,exception);
           break;
         }
@@ -3354,7 +3354,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
             threshold;
 
           (void) SyncImageSettings(image_info,*image,exception);
-          threshold=InterpretLocaleInterval(args[0],QuantumRange);
+          threshold=StringToDoubleInterval(args[0],QuantumRange);
           (void) SolarizeImage(*image,threshold,exception);
           break;
         }
@@ -3433,7 +3433,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           if (*argv[0] == '+')
             threshold=(double) QuantumRange/2;
           else
-            threshold=InterpretLocaleInterval(args[0],QuantumRange);
+            threshold=StringToDoubleInterval(args[0],QuantumRange);
           (void) BilevelImage(*image,threshold,exception);
           break;
         }

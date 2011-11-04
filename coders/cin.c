@@ -1078,12 +1078,12 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   cin.origination.x_pitch=0.0f;
   value=GetCINProperty(image_info,image,"dpx:origination.x_pitch",exception);
   if (value != (const char *) NULL)
-    cin.origination.x_pitch=InterpretLocaleValue(value,(char **) NULL);
+    cin.origination.x_pitch=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,cin.origination.x_pitch);
   cin.origination.y_pitch=0.0f;
   value=GetCINProperty(image_info,image,"dpx:origination.y_pitch",exception);
   if (value != (const char *) NULL)
-    cin.origination.y_pitch=InterpretLocaleValue(value,(char **) NULL);
+    cin.origination.y_pitch=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,cin.origination.y_pitch);
   cin.origination.gamma=image->gamma;
   offset+=WriteBlobFloat(image,cin.origination.gamma);
@@ -1131,7 +1131,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   cin.film.frame_rate=0.0f;
   value=GetCINProperty(image_info,image,"dpx:film.frame_rate",exception);
   if (value != (const char *) NULL)
-    cin.film.frame_rate=InterpretLocaleValue(value,(char **) NULL);
+    cin.film.frame_rate=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,cin.film.frame_rate);
   value=GetCINProperty(image_info,image,"dpx:film.frame_id",exception);
   if (value != (const char *) NULL)
