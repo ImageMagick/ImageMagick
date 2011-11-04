@@ -2468,6 +2468,12 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
                (double) alpha);
           return(0.0);
         }
+      if (LocaleNCompare(expression,"drc",3) == 0)
+        {
+          alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,beta,
+            exception);
+          return((MagickRealType) (alpha/(*beta*(alpha-1.0)+1.0)));
+        }
       break;
     }
     case 'E':
