@@ -329,7 +329,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
       kernel->values[i] = nan; /* do not include this value in kernel */
     }
     else {
-      kernel->values[i] = InterpretLocaleValue(token,(char **) NULL);
+      kernel->values[i] = StringToDouble(token,(char **) NULL);
       ( kernel->values[i] < 0)
           ?  ( kernel->negative_range += kernel->values[i] )
           :  ( kernel->positive_range += kernel->values[i] );

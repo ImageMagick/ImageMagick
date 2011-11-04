@@ -302,7 +302,7 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(keyword,"gamma") == 0)
                 {
-                  image->gamma=InterpretLocaleValue(value,(char **) NULL);
+                  image->gamma=StringToDouble(value,(char **) NULL);
                   break;
                 }
               (void) FormatLocaleString(tag,MaxTextExtent,"hdr:%s",keyword);

@@ -1737,6 +1737,7 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
   distortion=0.0;
   status=GetImageDistortion(similarity_image,reference,metric,&distortion,
     exception);
+  (void) status;
   similarity_image=DestroyImage(similarity_image);
   return(distortion);
 }

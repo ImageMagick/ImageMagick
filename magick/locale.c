@@ -882,31 +882,6 @@ MagickExport double InterpretLocaleValue(const char *restrict string,
   double
     value;
 
-  static const double
-    SIPrefixes['z'-'E'+1] =
-    {
-      ['y'-'E'] = (-24.0),
-      ['z'-'E'] = (-21.0),
-      ['a'-'E'] = (-18.0),
-      ['f'-'E'] = (-15.0),
-      ['p'-'E'] = (-12.0),
-      ['n'-'E'] = (-9.0),
-      ['u'-'E'] = (-6.0),
-      ['m'-'E'] = (-3.0),
-      ['c'-'E'] = (-2.0),
-      ['d'-'E'] = (-1.0),
-      ['h'-'E'] = 2.0,
-      ['k'-'E'] = 3.0,
-      ['K'-'E'] = 3.0,
-      ['M'-'E'] = 6.0,
-      ['G'-'E'] = 9.0,
-      ['T'-'E'] = 12.0,
-      ['P'-'E'] = 15.0,
-      ['E'-'E'] = 18.0,
-      ['Z'-'E'] = 21.0,
-      ['Y'-'E'] = 24.0
-    };
-
   if ((*string == '0') && ((string[1] | 0x20)=='x'))
     value=(double) strtoul(string,&q,16);
   else
@@ -923,34 +898,6 @@ MagickExport double InterpretLocaleValue(const char *restrict string,
 #else
       value=strtod(string,&q);
 #endif
-    }
-  if (q != string)
-    {
-      if ((*q >= 'E') && (*q <= 'z'))
-        {
-          double
-            e;
-
-          e=SIPrefixes[*q-'E'];
-          if (e >= MagickEpsilon)
-            {
-              if (q[1] == 'i')
-                {
-                  value*=pow(2.0,e/0.3);
-                  q+=2;
-                }
-              else
-                {
-                  value*=pow(10.0,e);
-                  q++;
-                }
-            }
-        }
-      if (*q == 'B')
-        {
-          value*=8.0;
-          q++;
-        }
     }
   if (sentinal != (char **) NULL)
     *sentinal=q;
