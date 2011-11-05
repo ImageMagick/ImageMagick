@@ -192,9 +192,6 @@
   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
 </div>
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Deals" href="http://www.webhostingdeals.org">Web Hosting Deals</a><!-- 201111010270 chee.hoa darin -->
-</div>
-<div  class="sponsor">
   <a rel="follow" title="Sponsor: Autos part" href="http://www.pkwteile.de/autoteile">Autos part</a><!-- 201112010090s jr@pkwte... -->
 </div>
 <div  class="sponsor">
@@ -204,13 +201,10 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
-</div>
-<div  class="sponsor">
-   <a rel="follow" title="Sponsor: Photo Sharing Websites" href="http://www.zoofoo.com">Photo Sharing Websites</a><!-- 2012050100150 dancu@dans...-->
-</div>
-<div  class="sponsor">
    <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Computer Wallpaper" href="http://www.free-computer-wallpapers.com">Computer Wallpaper</a><!-- 2012030100150 webinvasion1@y...-->
 </div>
 </div>
 </div>
@@ -333,7 +327,7 @@ system: positive <em class="arg">x</em> and <em class="arg">y</em> directions
 are rightward and downward, resp.; positive rotation is clockwise.</p>
 
 <p> If the translation coefficients <em class="arg">t<sub>x</sub></em> and <em
-class="arg">t<sub>y</sub></em> are omotted they default to 0,0. Therefore,
+class="arg">t<sub>y</sub></em> are omitted they default to 0,0. Therefore,
 four parameters suffice for rotation and scaling without translation.</p>
 
 <p>Scaling by the factors <em class="arg">s<sub>x</sub></em> and <em
@@ -600,7 +594,7 @@ and then performs the appropriate 90 degree rotation on the image to orient
 the image, for correct viewing. </p>
 
 <p>This EXIF profile setting is usually set using a gravity sensor in digital
-camara, however photos taken directly downward or upward may not have an
+camera, however photos taken directly downward or upward may not have an
 appropriate value.  Also images that have been orientation 'corrected' without
 reseting this setting, may be 'corrected' again resulting in a incorrect
 result.  If the EXIF profile was previously stripped, the  <a
@@ -726,11 +720,11 @@ integer.  If not given, or set to zero, IM will calculate the largest possible
 radius that will provide meaningful results for the Gaussian distribution.
 </p>
 
-<p>The larger the <em class="arg" >Radius</em> the radius the slower the
+<p>The larger the <em class="arg" >Radius</em> the slower the
 operation is. However too small a <em class="arg" >Radius</em>, and sever
 aliasing effects may result.  As a guideline, <em class="arg" >Radius</em>
 should be at least twice the <em class="arg" >Sigma</em> value, though three
-times will produce a more accurite result. </p>
+times will produce a more accurate result. </p>
 
 <p>This option differs from <a href="#gaussian-blur">-gaussian-blur</a> simply
 by taking advantage of the separability properties of the distribution.  Here
@@ -754,7 +748,7 @@ mapping. </p>
 
 <p>The ellipse is weighted with sigma set to the given <em class="arg"
 >Width</em> and <em class="arg" >Height</em>. The <em class="arg" >Height</em>
-defaults to the <em class="arg" >Width</em> for a normal circular Guassian
+defaults to the <em class="arg" >Width</em> for a normal circular Gaussian
 weighting.  The <em class="arg" >Angle</em> will rotate the ellipse from
 horizontal clock-wise.  </p>
 
@@ -866,7 +860,7 @@ class="arg">@</em>, the image caption is read from a file titled by the
 remaining characters in the string.  Comments read in from a file are literal;
 no embedded formatting characters are recognized.</p>
 
-<p>Caption meta-data ais not visible on the image itself. To do that use the
+<p>Caption meta-data is not visible on the image itself. To do that use the
 <a href="#annotate">-annotate</a> or <a href="#draw">-draw</a> options
 instead.</p>
 
@@ -974,7 +968,7 @@ channel</a>.</p>
 <p>By default, ImageMagick sets <a href="#channel">-channel</a> to the value
 '<kbd>RGBK,sync</kbd>', which specifies that operators act on all color
 channels except the transparency channel, and that all the color channels are
-to be modified in exactly the same way, with a understanding of transprancy
+to be modified in exactly the same way, with an understanding of transparency
 (depending on the operation being applied).  The 'plus' form <a
 href="#channel" >+channel</a> will reset the value back to this default. </p>
 
@@ -1069,7 +1063,7 @@ offsets so as to remove a single edge from an image.  Compare this to <a
 href="#shave" >-shave</a> which removes equal numbers of pixels from oppisite
 sides of the image.  </p>
 
-<p>Using <a href="#chop">-chop</a> will effectivally undo the results of a <a
+<p>Using <a href="#chop">-chop</a> effectively undoes the results of a <a
 href="#splice">-splice</a> that was given the same <em
 class="arg">geometry</em> and <a href="#gravity">-gravity</a> settings. </p>
 
@@ -1717,6 +1711,16 @@ is case-dependent.</p>
 available:</p>
 
 <dl>
+
+<dt>compose:args=<em class="arg">arguments</em></dt>
+<dd>Sets certain compose argument values when using convert ... -compose ... -composite. See <a href="http://www.imagemagick.org/www/compose.html">Image Composition</a></dd>
+
+<dt>distort:scale=<em class="arg">value</em></dt>
+   <dd>Sets the output scaling factor for use with <a href="#distort">-distort</a></dd>
+
+<dt>distort:viewport=WxH+X+Y</dt>
+   <dd>Sets the viewport for use with <a href="#distort">-distort</a></dd>
+
 <dt>dcm:display-range=reset</dt>
 <dd>Set the display range to the minimum and maximum pixel values for the
     DCM image format.</dd>
@@ -1871,6 +1875,21 @@ available:</p>
     If <a href="#depth">-depth</a> 32 is included, the result is
     double precision floating point format.</dd>
 
+<dt>showkernel=1</em></dt>
+   <dd>Outputs (to 'standard error') all the information about a generated <a href="#morphology">-morphology</a> kernel.</dd>
+
+<dt>tiff:quantum:polarity=min-is-black
+<br />
+tiff:quantum:polarity=min-is-white</dt>
+   <dd>Toggles the photometric interpretation</dd>
+
+<dt>tiff:rows-per-strip=<em class="arg">value</em></dt>
+   <dd>Sets the number of rows per strip</dd>
+
+<dt>tiff:tile-geometry=<em class="arg">WxH</em></dt>
+   <dd>Sets the tile size for pyramid tiffs. Requires the suffix PTIF: before the outputname</dd>
+
+
 </dl>
 
 <p>For example, to create a postscript file that will render only the black
@@ -2005,7 +2024,7 @@ the  <em class="arg">scale</em> bounds.  In other words each pixel can lookup
 any other nearby pixel, producing complex 2 dimensional displacements, rather
 than a simple 1 dimensional vector displacements. </p>
 
-<p>Alteratively rather than supplying two separate images, as of IM v6.4.4-0,
+<p>Alternatively rather than supplying two separate images, as of IM v6.4.4-0,
 you can use the 'red' channel of the overlay image to specify the horizontal
 or X displacement, and the 'green' channel for the vertical or Y displacement.
 </p>
@@ -2139,7 +2158,7 @@ class="arg">method</em> being used. </p>
        distortions. <br/>
 
        More than 3 sets given control point pairs (12 numbers) is least
-       squares fitted to best match a lineary affine distortion. If only 2
+       squares fitted to best match a linear affine distortion. If only 2
        control point pairs (8 numbers) are given a two point image translation
        rotation and scaling is performed, without any possible  shearing,
        flipping or changes in aspect ratio to the resulting image. If only one
@@ -2171,7 +2190,7 @@ class="arg">method</em> being used. </p>
        alternative methods of defining this distortion, with ImageMagick doing
        the calculations needed to generate the required coefficients. You can
        see the internally generated coefficients, by using a <a
-       href="#verbose" >-verbose</a> setting with those other varients.  </td>
+       href="#verbose" >-verbose</a> setting with those other variants.  </td>
 
   </tr>
 
@@ -2186,13 +2205,13 @@ class="arg">method</em> being used. </p>
 
        The '<kbd>BilinearForward</kbd>' is used to map rectangles to any
        quadrilateral, while the '<kbd>BilinearReverse</kbd>' form maps any
-       quadrilateral to a rectangle, while preserving the straigth line edges
+       quadrilateral to a rectangle, while preserving the straight line edges
        in each case.  <br/>
 
        Note that '<kbd>BilinearForward</kbd>' can generate invalid pixels
        which will be colored using the <a href="#mattecolor" >-mattecolor</a>
-       color setting.  Also if the quadraterial becomes 'flipped' the image
-       may dissappear. <br/>
+       color setting.  Also if the quadrilateral becomes 'flipped' the image
+       may disappear. <br/>
 
        There are future plans to produce a true Bilinear distortion that will
        attempt to map any quadrilateral to any other quadrilateral, while
@@ -2207,7 +2226,7 @@ class="arg">method</em> being used. </p>
        Perspective distort the images, using a list of 4 or more sets of
        control points (as defined below).  More that 4 sets (16 numbers) of
        control points provide least squares fitting for more accurate
-       distortions (for the purposes of image registration and panarama
+       distortions (for the purposes of image registration and panorama
        effects).  Less than 4 sets will fall back to a '<kbd>Affine</kbd>'
        linear distortion.  <br/>
 
@@ -2223,7 +2242,7 @@ class="arg">method</em> being used. </p>
        Do a '<kbd>Perspective</kbd>' distortion biased on a set of 8
        pre-calculated coefficients. You can get these coefficients by looking
        at the <a href="#verbose" >-verbose</a> output of a
-       '<kbd>Prespective</kbd>' distortion, or by calculating them yourself.
+       '<kbd>Perspective</kbd>' distortion, or by calculating them yourself.
        If the last two perspective scaling coefficients are zero, the
        remaining 6 represents a transposed 'Affine Matrix'. </td>
 
@@ -2312,7 +2331,7 @@ class="arg">method</em> being used. </p>
     <td valign="top">
        Given the four coefficients (A,B,C,D) as defined by <a
        href="http://wiki.panotools.org/Lens_correction_model" >Helmut
-       Dersch</a>, perform a barrell or pin-cushion distortion appropriate to
+       Dersch</a>, perform a barrel or pin-cushion distortion appropriate to
        correct radial lens distortions.  That is in photographs, make straight
        lines straight again. <br/>
 
@@ -2336,7 +2355,7 @@ class="arg">method</em> being used. </p>
   <tr valign="top">
     <td valign="top"><kbd>BarrelInverse</kbd></td>
     <td valign="top">
-       This is very simular to '<kbd>Barrel</kbd>' with the same set of
+       This is very similar to '<kbd>Barrel</kbd>' with the same set of
        arguments, and argument handling.  However it uses the inverse
        of the radial polynomial,
        so that it forms the function <br/>
@@ -2363,7 +2382,7 @@ class="arg">method</em> being used. </p>
 
        The distortion has been likened to 'taffy pulling' using nails, or
        pins' stuck in a block of 'jelly' which is then moved to the new
-       position, distorting te surface of the jelly. <br/>
+       position, distorting the surface of the jelly. <br/>
 
        Internally it is equivalent to generating a displacement map (see <a
        href="#displace" >-displace</a>) for source image color look-up using
@@ -2407,7 +2426,7 @@ convert rose:  -virtual-pixel black \<br/>
 a distortion, the distortion method is 'least squares' fitted to produce the
 best result for all the coordinate pairs given. If less than the ideal number
 of points are given, the distort will generally fall back to a simpler form of
-distortion that can handles the smaller number of coordinates (usally a linear
+distortion that can handles the smaller number of coordinates (usually a linear
 '<kbd>Affine</kbd>' distortion). </p>
 
 <p>By using more coordinates you can make use of image registration tool to
@@ -3337,7 +3356,7 @@ of values.</p>
    -function <kbd>ArcSin</kbd> <em class="arg">width</em>,[<em class="arg">center</em>,[<em class="arg">range</em>,[<em class="arg">bias</em>]]]
 </p>
 
-<p>with all values given in terms of noramlize color values (0.0 for black,
+<p>with all values given in terms of normalized color values (0.0 for black,
 1.0 for white). Defaulting to values covering the full range from 0.0 to 1.0
 for bout input (<em class="arg">width</em>), and output (<em
 class="arg">width</em>) values. '<code>1.0,0.5,1.0,0.5</code>' </p>
@@ -3439,7 +3458,7 @@ radius that will provide meaningful results for the Gaussian distribution.
 operation is. However too small a <em class="arg" >Radius</em>, and sever
 aliasing effects may result.  As a guideline, <em class="arg" >Radius</em>
 should be at least twice the <em class="arg" >Sigma</em> value, though three
-times will produce a more accurite result. </p>
+times will produce a more accurate result. </p>
 
 <p>This differs from the faster <a href="#blur">-blur</a> operator in that a
 full 2-dimensional convolution is used to generate the weighted average of the
@@ -3470,7 +3489,7 @@ pixels which are outside the image proper are blurred into the final result.
 list of <a href="#gravity">-gravity</a> settings available in your ImageMagick
 installation.</p>
 
-<p>The direction you choose specifies where to position text or subimages. For example, a gravity of <kbd>Center</kbd> forces the text to be centered within the image. By default, the image gravity is <kbd>NorthWest</kbd>. See <a href="#draw">-draw</a> for more details about graphic primitives.  Only the text primitive of <a href="#draw">-draw</a> affected by the <a href="#gravity">-gravity</a> option.</p>
+<p>The direction you choose specifies where to position text or subimages. For example, a gravity of <kbd>Center</kbd> forces the text to be centered within the image. By default, the image gravity is <kbd>NorthWest</kbd>. See <a href="#draw">-draw</a> for more details about graphic primitives.  Only the text primitive of <a href="#draw">-draw</a> is affected by the <a href="#gravity">-gravity</a> option.</p>
 
 <p>The <a href="#gravity">-gravity</a> option is also used in concert with the <a href="#geometry">-geometry</a> setting and other settings or options that take <em class="arg">geometry</em> as an argument, such as the <a href="#crop">-crop</a> option. </p>
 
@@ -3512,7 +3531,7 @@ href="#channel" >-channel</a> setting effected, nor can it adjust or modify an
 images transparency or alpha/matte channel.</p>
 
 <p>See also <a href="#clut" >-clut</a> which provides color value replacement
-of the individual color channels, usally involving a simplier gray-scale
+of the individual color channels, usually involving a simpler gray-scale
 image. E.g:  gray-scale to color replacement, or modification by a histogram
 mapping. </p>
 
@@ -3756,7 +3775,7 @@ sensitive to those small variations. </p>
 
 <p>This is commonly used to threshold images with an uneven background.  It is
 based on the assumption that average color of the small window is the
-the local background color, from which to separate the forground color. </p>
+the local background color, from which to separate the foreground color. </p>
 
 
 <div style="margin: auto;">
@@ -3863,7 +3882,7 @@ animation, or a fully-'coalesced' animation sequence. </p>
   </tr>
 
   <tr><td></td>
-    <td>This usally used as one of the final 'image layering' operations
+    <td>This usually used as one of the final 'image layering' operations
         overlaying all the prepared image layers into a final image. </td>
   </tr>
 
@@ -3886,14 +3905,14 @@ animation, or a fully-'coalesced' animation sequence. </p>
 
   <tr><td></td><td>Caution is advised when handling image layers with
         negative offsets as few image file formats handle them correctly.
-        Following this operation methd with <a href="#repage" >+repage</a>
+        Following this operation method with <a href="#repage" >+repage</a>
         will remove the layer offset, and create a image in which all the
         overlaid image positions relative to each other is preserved, though
-        not nessaraily exactly where you specified them.
+        not necessarily exactly where you specified them.
         </td>
   </tr>
 
-  <tr><td></td><td>See also 'trim-bounds' below whcih is closely related but
+  <tr><td></td><td>See also 'trim-bounds' below which is closely related but
         without  doing the'flatten' to merge the images together. </td>
   </tr>
 
@@ -3994,7 +4013,7 @@ animation, or a fully-'coalesced' animation sequence. </p>
 
   <tr><td></td><td>In a GIF animation, such images are usually frames which
         provide partial intermediary updates between the frames that are
-        actually displayed to users.  These frames are usally added for
+        actually displayed to users.  These frames are usually added for
         improved frame optimization in GIF animations. </td>
   </tr>
 
@@ -4155,7 +4174,7 @@ color (+ form). </p>
 
 <p>This is very similar to <a href="#contrast-stretch" >-contrast-stretch</a>,
 and uses a 'histogram bin' to determine the range of color values that needs to
-be stretched.  However it then stretchs those colors using the <a
+be stretched.  However it then stretches those colors using the <a
 href="#level" >-level</a> operator.</p>
 
 <p>As such while the initial determination may have 'binning' round off
@@ -4395,7 +4414,7 @@ name. </p>
 with the <a href="#fuzz" >-fuzz</a> factor (ignore pixels which
 only changed by a small amount).  Use '<kbd>PAE</kbd>' to find the
 size of the <a href="#fuzz" >-fuzz</a> factor needed to make all pixels
-'similar', while '<kbd>MAE</kbd>' dtermines the factor needed
+'similar', while '<kbd>MAE</kbd>' determines the factor needed
 for about half the pixels to be similar. </p>
 
 <p>The '<kbd>MEPP</kbd>' metric returns three different metrics
@@ -4496,7 +4515,7 @@ modulate.  Choose from <kbd>HSB</kbd>, <kbd>HSL</kbd> (the default), or
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>morphs an image sequence.</td><td style='text-align:right;'></td></tr></table>
 
 <p>Both the image pixels and size are linearly interpolated to give the
-appearance of a meta-morphosis from one image to the next, over all the images
+appearance of a metamorphosis from one image to the next, over all the images
 in the current image list. The added images are the equivalent of a <a
 href="#blend">-blend</a> composition. The <em class="arg">frames</em>
 argument determine how many images to interpolate between each image. </p>
@@ -4576,8 +4595,8 @@ pixels which are outside the image proper are blurred into the final result.
 
 <p>To print a complete list of noises, use the <a href="#list">-list noise</a> option.</p>
 
-<p>Also see the <a href="#evaluate">-evaluate</a> noise functions that allos
-the use of a controlling value to specify teh amount of noise that should be
+<p>Also see the <a href="#evaluate">-evaluate</a> noise functions that allows
+the use of a controlling value to specify the amount of noise that should be
 added to an image. </p>
 
 
@@ -4645,7 +4664,7 @@ This could be used with <em class="arg" >level</em> to do the equivalent of <a
 href="#posterize" >-posterize</a> to reduce an image to basic primary colors.
 </p>
 
-<p>The <kbd>checks</kbd> pattern produces a 3 level checkerbord dither
+<p>The <kbd>checks</kbd> pattern produces a 3 level checkerboard  dither
 pattern. That is a grayscale will become a pattern of solid black, solid
 white, and  mid-tone colors into a checkerboard pattern of black and white.
 </p>
@@ -4990,7 +5009,7 @@ the <a href="http://www.w3.org/pub/WWW/TR">PNG</a> specification.</p>
 
 <p>This setting defines the colorspace used to sort out and reduce the number
 of colors needed by an image (for later dithering) by operators such as <a
-href="#colors" >-colors</a>, Note that color reducion also happens
+href="#colors" >-colors</a>, Note that color reduction also happens
 automatically when saving images to color-limited image file formats, such as
 GIF, and PNG8.</p>
 
@@ -5227,7 +5246,7 @@ ignored, unlike <a href="#resize">-resize</a>. </p>
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>minify/magnify the image using pixel block averaging and pixel replication, respectively.</td><td style='text-align:right;'></td></tr></table>
 
 <p>Change the image size simply by replacing pixels by averaging pixels
-together when minifying, or replacing pixels when magnifing.  </p>
+together when minifying, or replacing pixels when magnifying.  </p>
 
 <p>The results are thus equivalent to using <a href="#resize">-resize</a> with
 a <a href="#filter">-filter</a> setting of <kbd>box</kbd>.  Though it is a lot
@@ -5235,7 +5254,7 @@ faster, as it avoids all the filter processing of the image. As such it
 completely ignores the current <a href="#filter">-filter</a> setting. </p>
 
 <p>If when shrinking (minifying) images the original image is some integer
-multiple of the new image size, the number of pixels avergaed together to
+multiple of the new image size, the number of pixels averaged together to
 produce the new pixel color is the same across the whole image. This is
 a special case known as 'binning' and is often used as a method of reducing
 noise in image such as those generated by digital cameras, especially in low
@@ -5603,7 +5622,7 @@ default value. </p>
 
 <p>This will add rows and columns of the current <a
 href="#background">-background</a> color into the given image according to the
-given  <a href="#gravity">-gravity</a> effectd geometry setting.  >See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. Essentually <a href="#splice">-splice</a> will divide the
+given  <a href="#gravity">-gravity</a> geometry setting.  >See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. Essentially <a href="#splice">-splice</a> will divide the
 image into four quadrants, separating them by the inserted rows and columns.
 </P>
 
@@ -5762,9 +5781,9 @@ be the size of the larger_image - sub_image + 1.  The brightest location in
 this image is the location s the locate on the best match that is also
 reported. Note that this may or may nor be a perfect match, and the actual
 brightness will reflect this. Other bright 'peaks' can be used to locate other
-possible matching loctions. </p>
+possible matching locations. </p>
 
-<p>Note that the search will try to compare teh sub-image at every possible
+<p>Note that the search will try to compare the sub-image at every possible
 location in the larger image, as such it can be very slow.  The smaller the
 sub-image the faster this search is. </p>
 
@@ -6026,7 +6045,7 @@ single pixel transparent 'missed' image is returned, in the same way as when a
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>the image type.</td><td style='text-align:right;'></td></tr></table>
  <p>Choose from: <kbd>Bilevel</kbd>, <kbd>Grayscale</kbd>, <kbd>GrayscaleMatte</kbd>, <kbd>Palette</kbd>, <kbd>PaletteMatte</kbd>, <kbd>TrueColor</kbd>, <kbd>TrueColorMatte</kbd>, <kbd>ColorSeparation</kbd>, or <kbd>ColorSeparationMatte</kbd>.</p>
 
-<p>Normally, when a format supports different subformats such as grayscale and truecolor, the encoder will try to choose an efficient subformat. The <a href="#type">-type</a> option can be used to overrride this behavior. For example, to prevent a JPEG from being written in grayscale format even though only gray pixels are present, use.</p>
+<p>Normally, when a format supports different subformats such as grayscale and truecolor, the encoder will try to choose an efficient subformat. The <a href="#type">-type</a> option can be used to override this behavior. For example, to prevent a JPEG from being written in grayscale format even though only gray pixels are present, use.</p>
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert bird.png -type TrueColor bird.jpg</span></p>
 <p>Similarly, use <a href="#type">-type TrueColorMatte</a> to force the encoder to write an alpha channel even though the image is opaque, if the output format supports transparency.</p>

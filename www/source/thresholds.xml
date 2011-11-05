@@ -54,14 +54,14 @@
   Minimal Dither and Non-Dither Threshold Maps
 -->
   <threshold map="threshold" alias="1x1">
-    <description>Threshold Non-Dither</description>
+    <description>Threshold 1x1 (non-dither)</description>
     <levels width="1" height="1" divisor="2">
         1
     </levels>
   </threshold>
 
   <threshold map="checks" alias="2x1">
-    <description>Checkerboard Dither</description>
+    <description>Checkerboard 2x1 (dither)</description>
     <levels width="2" height="2" divisor="3">
        1 2
        2 1
@@ -69,10 +69,10 @@
   </threshold>
 
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  Diffused Pixel Ordered Dither Patterns
+  (dispersed) Ordered Dither Patterns
 -->
   <threshold map="o2x2" alias="2x2">
-    <description>Ordered 2x2 Diffused Pixel</description>
+    <description>Ordered 2x2 (dispersed)</description>
     <levels width="2" height="2" divisor="5">
        1  3
        4  2
@@ -80,7 +80,7 @@
   </threshold>
 
   <threshold map="o3x3" alias="3x3">
-    <description>Ordered 4x4 Diffused Pixel</description>
+    <description>Ordered 3x3 (dispersed)</description>
     <levels width="3" height="3" divisor="10">
         3  7  4
         6  1  9
@@ -93,7 +93,7 @@
        From "Dithering Algorithms"
        http://www.efg2.com/Lab/Library/ImageProcessing/DHALF.TXT
      -->
-    <description>Ordered 4x4 Diffused Pixel</description>
+    <description>Ordered 4x4 (dispersed)</description>
     <levels width="4" height="4" divisor="17">
        1   9   3  11
       13   5  15   7
@@ -104,7 +104,7 @@
 
   <threshold map="o8x8" alias="8x8">
     <!-- Extracted from original 'OrderedDither()' Function -->
-    <description>Ordered 8x8 Diffused Pixel</description>
+    <description>Ordered 8x8 (dispersed)</description>
     <levels width="8" height="8" divisor="65">
          1  49  13  61   4  52  16  64
         33  17  45  29  36  20  48  32
@@ -121,8 +121,11 @@
   Halftones - Angled 45 degrees
 
   Initially added to ImageMagick by Glenn Randers-Pehrson, IM v6.2.8-6,
-  modified to be more halftone-like by Anthony, IM v6.2.9-7 Larger halftone
-  patterns still needed to be added.
+  modified to be more symmetrical with intensity by Anthony, IM v6.2.9-7
+
+  These patterns initially start as circles, but then form diamonds
+  pattern at the 50% threshold level, before forming negated circles,
+  as it approached the other threshold extereme.
 -->
   <threshold map="h4x4a" alias="4x1">
     <description>Halftone 4x4 (angled)</description>
@@ -166,6 +169,10 @@
   Initially added by Anthony Thyssen, IM v6.2.9-5 using techniques from
   "Dithering & Halftoning" by Gernot Haffmann
   http://www.fho-emden.de/~hoffmann/hilb010101.pdf
+
+  These patterns initially start as circles, but then form square
+  pattern at the 50% threshold level, before forming negated circles,
+  as it approached the other threshold extereme.
 -->
   <threshold map="h4x4o">
     <description>Halftone 4x4 (orthogonal)</description>
@@ -229,6 +236,96 @@
         1   9  21  43  71  99 135 151 149 133  97  69  41  22  10   2
     </levels>
   </threshold>
+
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  Halftones - Orthogonally Expanding Circle Patterns
+
+  Added by Glenn Randers-Pehrson, 4 Nov 2010, ImageMagick 6.6.5-6
+
+  Rather than producing a diamond 50% threshold pattern, these
+  continue to generate larger (overlapping) circles.  They are
+  more like a true halftone pattern formed by covering a surface
+  with either pure white or pure black circular dots.
+
+  WARNING: true halftone patterns only use true circles even in
+  areas of highly varying intensity.  Threshold dither patterns
+  can generate distorted circles in such areas.
+-->
+
+  <threshold map="c5x5b" alias="c5x5">
+    <description>Circles 5x5 (black)</description>
+    <levels width="5" height="5" divisor="26">
+         1 21 16 15  4
+         5 17 20 19 14
+         6 21 25 24 12
+         7 18 22 23 11
+         2  8  9 10  3
+    </levels>
+  </threshold>
+
+
+  <threshold map="c5x5w">
+    <description>Circles 5x5 (white)</description>
+    <levels width="5" height="5" divisor="26">
+        25 21 10 11 22
+        20  9  6  7 12
+        19  5  1  2 13
+        18  8  4  3 14
+        24 17 16 15 23
+    </levels>
+  </threshold>
+
+  <threshold map="c6x6b" alias="c6x6">
+    <description>Circles 6x6 (black)</description>
+    <levels width="6" height="6" divisor="37">
+         1  5 14 13 12  4
+         6 22 28 27 21 11
+        15 29 35 34 26 20
+        16 30 36 33 25 19
+         7 23 31 32 24 10
+         2  8 17 18  9  3
+    </levels>
+  </threshold>
+
+  <threshold map="c6x6w">
+    <description>Circles 6x6 (white)</description>
+    <levels width="6" height="6" divisor="37">
+        36 32 23 24 25 33
+        31 15  9 10 16 26
+        22  8  2  3 11 17
+        21  7  1  4 12 18
+        30 14  6  5 13 27
+        35 29 20 19 28 34
+    </levels>
+  </threshold>
+
+  <threshold map="c7x7b" alias="c7x7">
+    <description>Circles 7x7 (black)</description>
+    <levels width="7" height="7" divisor="50">
+        3  9 18 28 17  8  2
+       10 24 33 39 32 23  7
+       19 34 44 48 43 31 16
+       25 40 45 49 47 38 27
+       20 35 41 46 42 29 15
+       11 21 36 37 28 22  6
+        4 12 13 26 14  5  1
+    </levels>
+  </threshold>
+
+
+  <threshold map="c7x7w">
+    <description>Circles 7x7 (white)</description>
+    <levels width="7" height="7" divisor="50">
+       47 41 32 22 33 42 48
+       40 26 17 11 18 27 43
+       31 16  6  2  7 19 34
+       25 10  5  1  3 12 23
+       30 15  9  4  8 20 35
+       39 29 14 13 21 28 44
+       46 38 37 24 36 45 49
+    </levels>
+  </threshold>
+
 
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   Special Purpose Dithers
