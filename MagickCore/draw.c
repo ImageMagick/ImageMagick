@@ -2041,8 +2041,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("font-size",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
-            graphic_context[n]->pointsize=StringToDouble(token,
-              (char **) NULL);
+            graphic_context[n]->pointsize=StringToDouble(token,(char **) NULL);
             break;
           }
         if (LocaleCompare("font-stretch",keyword) == 0)
@@ -2156,8 +2155,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("kerning",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
-            graphic_context[n]->kerning=StringToDouble(token,
-              (char **) NULL);
+            graphic_context[n]->kerning=StringToDouble(token,(char **) NULL);
             break;
           }
         status=MagickFalse;
@@ -2359,13 +2357,13 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 GetMagickToken(q,&q,token);
                 (void) CopyMagickString(name,token,MaxTextExtent);
                 GetMagickToken(q,&q,token);
-                bounds.x=(ssize_t) ceil(StringToDouble(token,
-                  (char **) NULL)-0.5);
+                bounds.x=(ssize_t) ceil(StringToDouble(token,(char **) NULL)-
+                  0.5);
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
-                bounds.y=(ssize_t) ceil(StringToDouble(token,
-                  (char **) NULL)-0.5);
+                bounds.y=(ssize_t) ceil(StringToDouble(token,(char **) NULL)-
+                  0.5);
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
@@ -2557,8 +2555,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                   GetMagickToken(q,&q,token);
                   if (*token == ',')
                     GetMagickToken(q,&q,token);
-                  graphic_context[n]->dash_pattern[j]=StringToDouble(
-                    token,(char **) NULL);
+                  graphic_context[n]->dash_pattern[j]=StringToDouble(token,
+                    (char **) NULL);
                 }
                 if ((x & 0x01) != 0)
                   for ( ; j < (2*x); j++)
@@ -2695,23 +2693,23 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (LocaleCompare("viewbox",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
-            graphic_context[n]->viewbox.x=(ssize_t) ceil(StringToDouble(
-              token,(char **) NULL)-0.5);
+            graphic_context[n]->viewbox.x=(ssize_t) ceil(StringToDouble(token,
+              (char **) NULL)-0.5);
             GetMagickToken(q,&q,token);
             if (*token == ',')
               GetMagickToken(q,&q,token);
-            graphic_context[n]->viewbox.y=(ssize_t) ceil(StringToDouble(
-              token,(char **) NULL)-0.5);
+            graphic_context[n]->viewbox.y=(ssize_t) ceil(StringToDouble(token,
+              (char **) NULL)-0.5);
             GetMagickToken(q,&q,token);
             if (*token == ',')
               GetMagickToken(q,&q,token);
-            graphic_context[n]->viewbox.width=(size_t) floor(
-              StringToDouble(token,(char **) NULL)+0.5);
+            graphic_context[n]->viewbox.width=(size_t) floor(StringToDouble(
+              token,(char **) NULL)+0.5);
             GetMagickToken(q,&q,token);
             if (*token == ',')
               GetMagickToken(q,&q,token);
-            graphic_context[n]->viewbox.height=(size_t) floor(
-              StringToDouble(token,(char **) NULL)+0.5);
+            graphic_context[n]->viewbox.height=(size_t) floor(StringToDouble(
+              token,(char **) NULL)+0.5);
             break;
           }
         status=MagickFalse;
@@ -4786,12 +4784,10 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
         draw_info->kerning=StringToDouble(option,(char **) NULL);
       option=GetImageOption(image_info,"interline-spacing");
       if (option != (const char *) NULL)
-        draw_info->interline_spacing=StringToDouble(option,
-          (char **) NULL);
+        draw_info->interline_spacing=StringToDouble(option,(char **) NULL);
       option=GetImageOption(image_info,"interword-spacing");
       if (option != (const char *) NULL)
-        draw_info->interword_spacing=StringToDouble(option,
-          (char **) NULL);
+        draw_info->interword_spacing=StringToDouble(option,(char **) NULL);
       option=GetImageOption(image_info,"direction");
       if (option != (const char *) NULL)
         draw_info->direction=(DirectionType) ParseCommandOption(

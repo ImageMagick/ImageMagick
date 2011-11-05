@@ -573,8 +573,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
             {
               case 0:
               {
-                color_correction.red.slope=StringToDouble(token,
-                  (char **) NULL);
+                color_correction.red.slope=StringToDouble(token,(char **) NULL);
                 break;
               }
               case 1:
@@ -639,8 +638,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
             {
               case 0:
               {
-                color_correction.red.power=StringToDouble(token,
-                  (char **) NULL);
+                color_correction.red.power=StringToDouble(token,(char **) NULL);
                 break;
               }
               case 1:
