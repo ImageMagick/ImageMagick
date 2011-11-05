@@ -1342,31 +1342,6 @@ MagickExport double InterpretSiPrefixValue(const char *restrict string,
   double
     value;
 
-  static const double
-    SIPrefixes['z'-'E'+1] =
-    {
-      ['y'-'E'] = (-24.0),
-      ['z'-'E'] = (-21.0),
-      ['a'-'E'] = (-18.0),
-      ['f'-'E'] = (-15.0),
-      ['p'-'E'] = (-12.0),
-      ['n'-'E'] = (-9.0),
-      ['u'-'E'] = (-6.0),
-      ['m'-'E'] = (-3.0),
-      ['c'-'E'] = (-2.0),
-      ['d'-'E'] = (-1.0),
-      ['h'-'E'] = 2.0,
-      ['k'-'E'] = 3.0,
-      ['K'-'E'] = 3.0,
-      ['M'-'E'] = 6.0,
-      ['G'-'E'] = 9.0,
-      ['T'-'E'] = 12.0,
-      ['P'-'E'] = 15.0,
-      ['E'-'E'] = 18.0,
-      ['Z'-'E'] = 21.0,
-      ['Y'-'E'] = 24.0
-    };
-
   value=InterpretLocaleValue(string,&q);
   if (q != string)
     {
@@ -1375,7 +1350,30 @@ MagickExport double InterpretSiPrefixValue(const char *restrict string,
           double
             e;
 
-          e=SIPrefixes[*q-'E'];
+          switch ((int) ((unsigned char) *q))
+          {
+            case 'y': e=(-24.0); break;
+            case 'z': e=(-21.0); break;
+            case 'a': e=(-18.0); break;
+            case 'f': e=(-15.0); break;
+            case 'p': e=(-12.0); break;
+            case 'n': e=(-9.0); break;
+            case 'u': e=(-6.0); break;
+            case 'm': e=(-3.0); break;
+            case 'c': e=(-2.0); break;
+            case 'd': e=(-1.0); break;
+            case 'h': e=2.0; break;
+            case 'k': e=3.0; break;
+            case 'K': e=3.0; break;
+            case 'M': e=6.0; break;
+            case 'G': e=9.0; break;
+            case 'T': e=12.0; break;
+            case 'P': e=15.0; break;
+            case 'E': e=18.0; break;
+            case 'Z': e=21.0; break;
+            case 'Y': e=24.0; break;
+            default: e=0.0; break;
+          }
           if (e >= MagickEpsilon)
             {
               if (q[1] == 'i')
