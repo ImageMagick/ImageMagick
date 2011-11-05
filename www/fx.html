@@ -189,9 +189,6 @@
   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
 </div>
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Deals" href="http://www.webhostingdeals.org">Web Hosting Deals</a><!-- 201111010270 chee.hoa darin -->
-</div>
-<div  class="sponsor">
   <a rel="follow" title="Sponsor: Autos part" href="http://www.pkwteile.de/autoteile">Autos part</a><!-- 201112010090s jr@pkwte... -->
 </div>
 <div  class="sponsor">
@@ -201,13 +198,10 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
-</div>
-<div  class="sponsor">
-   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.hostucan.com">Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
-</div>
-<div  class="sponsor">
    <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
+</div>
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Photo Sharing Websites" href="http://www.zoofoo.com">Photo Sharing Websites</a><!-- 2012050100150 dancu@dans...-->
 </div>
 </div>
 </div>
@@ -293,9 +287,9 @@
 
 <dl class="doc">
   <dt class="doc"> numbers:</dt>
-  	<dd> integer, floating point, or scientfic notation (+/- required, e.g. 3.81469e-06)</dd>
+  	<dd> integer, floating point, scientfic notation (+/- required, e.g. 3.81469e-06), International System number postfixes (.e.g KB, Mib, GB, etc.)</dd>
   <dt class="doc"> constants: </dt>
-    <dd> e, Epsilon, QuantumRange, QuantumScale, Opaque, Pi, Transparent</dd>
+    <dd> E (Euler's number), Epsilon, QuantumRange, QuantumScale, Opaque, Phi (golden ratio), Pi, Transparent</dd>
   <dt class="doc"> Fx operators (in order of precedence): </dt>
      <dd> ^ (power), unary -, *, /, % (modulo), +, -,
      &lt;&lt;, &gt;&gt;, &lt;, &lt;=, &gt;, &gt;=, ==, !=,
@@ -303,9 +297,7 @@
      &amp;&amp; (logical AND),  || (logical OR),
      ~ (logical NOT),  ?: (ternary conditional)</dd>
   <dt class="doc"> math functions: </dt>
-     <dd> abs(), acos(), acosh(), airy(), alt(), asin(), asinh(), atan(), atanh(), atan2(), ceil(), cos(), cosh(),
-     debug(), exp(), floor(), hypot(), int(), j0(), j1(), jinc(), ln(), log(), logtwo(), max(), min(), mod(),
-     pow(), rand(), round(), sign(), sin(), sinc(), sinh(), sqrt(), tan(), tanh(), trunc()</dd>
+     <dd> abs(), acos(), acosh(), airy(), alt(), asin(), asinh(), atan(), atanh(), atan2(), ceil(), cos(), cosh(), debug(), drc(), exp(), floor(), gauss(), gcd(), hypot(), int(), isnan(), j0(), j1(), jinc(), ln(), log(), logtwo(), max(), min(), mod(), not(), pow(), rand(), round(), sign(), sin(), sinc(), sinh(), sqrt(), squish(), tan(), tanh(), trunc()</dd>
   <dt class="doc"> channel functions: </dt>
     <dd> channel(r,g,b,a), channel(c,m,y,k,a)</dd>
   <dt class="doc"> color names:</dt>
@@ -365,6 +357,8 @@
      skewness = image skewness
        (add a channel specifier to compute a statistic for that channel, e.g. depth.r)
      </dd>
+  <dt class="doc"> iterators:</dt>
+    <dd> while()</dd>
 </dl>
 
 </div>
@@ -415,8 +409,8 @@
 <li> <kbd>abs(</kbd><em>x</em><kbd>)</kbd>:  absolute value function</li>
 <li> <kbd>acos(</kbd><em>x</em><kbd>)</kbd>:  arc cosine function</li>
 <li> <kbd>acosh(</kbd><em>x</em><kbd>)</kbd>:  inverse hyperbolic cosine function</li>
-<li> <kbd>airy(</kbd><em>x</em><kbd>)</kbd>:  Airy function (max=1, min=0); <kbd>airy(</kbd><em>x</em><kbd>)</kbd>=<kbd>[jinc(</kbd><em>x</em><kbd>)]<sup>2</sup></kbd>=<kbd>[2*j1(</kbd><em>pi*x</em><kbd>)/(</kbd><em>pi*x</em><kbd>)]<sup>2</sup></kbd></li>
-<li> <kbd>alt(</kbd><em>x</em><kbd>)</kbd>:  sign alternation function (return 1.0 if <kbd>int(</kbd><em>x</em><kbd>)</kbd> is even, -1.0 if <kbd>int(</kbd><em>x</em><kbd>)</kbd> is odd)</li>
+<li> <kbd>airy(</kbd><em>x</em><kbd>)</kbd>:  Airy function (max=1, min=0); airy(<em>x</em>)=[jinc(<em>x</em>)]<sup>2</sup>=[2*j1(<em>pi*x</em>)/(<em>pi*x</em>)]<sup>2</sup></li>
+<li> <kbd>alt(</kbd><em>x</em><kbd>)</kbd>:  sign alternation function (return 1.0 if int(<em>x</em>) is even, -1.0 if int(<em>x</em>) is odd)</li>
 <li> <kbd>asin(</kbd><em>x</em><kbd>)</kbd>:  arc sine function</li>
 <li> <kbd>asinh(</kbd><em>x</em><kbd>)</kbd>:  inverse hyperbolic sine function</li>
 <li> <kbd>atan(</kbd><em>x</em><kbd>)</kbd>:  arc tangent function</li>
@@ -428,13 +422,17 @@
 <li> <kbd>cos(</kbd><em>x</em><kbd>)</kbd>:  cosine function</li>
 <li> <kbd>cosh(</kbd><em>x</em><kbd>)</kbd>:  hyperbolic cosine function</li>
 <li> <kbd>debug(</kbd><em>x</em><kbd>)</kbd>:  print <em>x</em> (useful for debugging your expression)</li>
+<li> <kbd>drc(</kbd><em>x</em>,<em>y</em><kbd>)</kbd>:  dynamic range compression</li>
 <li> <kbd>exp(</kbd><em>x</em><kbd>)</kbd>:  natural exponential function (<em>e<sup>x</sup></em>)</li>
 <li> <kbd>floor(</kbd><em>x</em><kbd>)</kbd>:  largest integral value not greater than argument</li>
+<li> <kbd>gauss(</kbd><em>x</em><kbd>)</kbd>:  gaussian function; gauss(<em>x</em>)=exp(<em>-x*x/2</em>)/sqrt(2*pi)</li>
+<li> <kbd>gcd(</kbd><em>x</em>,<em>y</em><kbd>)</kbd>:  greatest common denominator</li>
 <li> <kbd>hypot(</kbd><em>x</em>,<em>y</em><kbd>)</kbd>:  the square root of x<sup>2</sup>+y<sup>2</sup></li>
 <li> <kbd>int(</kbd><em>x</em><kbd>)</kbd>:  greatest integer function (return greatest integer less than or equal to <em>x</em>)</li>
+<li> <kbd>isnan(</kbd><em>x</em><kbd>)</kbd>: return 1.0 if <em>x</em> is NAN, 0.0 otherwise</li>
 <li> <kbd>j0(</kbd><em>x</em><kbd>)</kbd>:  Bessel functions of <em>x</em> of the first kind of order 0</li>
 <li> <kbd>j1(</kbd><em>x</em><kbd>)</kbd>:  Bessel functions of <em>x</em> of the first kind of order 1</li>
-<li> <kbd>jinc(</kbd><em>x</em><kbd>)</kbd>:  jinc function (max=1, min=-0.1323); <kbd>jinc(</kbd><em>x</em><kbd>)</kbd>=<kbd>2*j1(</kbd><em>pi*x</em><kbd>)/(</kbd><em>pi*x</em><kbd>)</kbd></li>
+<li> <kbd>jinc(</kbd><em>x</em><kbd>)</kbd>:  jinc function (max=1, min=-0.1323); jinc(<em>x</em>)=2*j1(pi*<em>x</em>)/(pi*<em>*x</em>)</li>
 <li> <kbd>ln(</kbd><em>x</em><kbd>)</kbd>:  natural logarithm function</li>
 <li> <kbd>log(</kbd><em>x</em><kbd>)</kbd>:  logarithm base 10</li>
 <li> <kbd>logtwo(</kbd><em>x</em><kbd>)</kbd>:  logarithm base 2</li>
@@ -442,17 +440,20 @@
 <li> <kbd>max(</kbd><em>x</em>, <em>y</em><kbd>)</kbd>:  maximum of <em>x</em> and <em>y</em></li>
 <li> <kbd>min(</kbd><em>x</em>, <em>y</em><kbd>)</kbd>:  minimum of <em>x</em> and <em>y</em></li>
 <li> <kbd>mod(</kbd><em>x</em>, <em>y</em><kbd>)</kbd>:  floating-point remainder function</li>
+<li> <kbd>not(</kbd><em>x</em><kbd>)</kbd>:  return 1.0 if <em>x</em> is zero, 0.0 otherwise</li>
 <li> <kbd>pow(</kbd><em>x</em>,<em>y</em><kbd>)</kbd>:  power function (<em>x<sup>y</sup></em>)</li>
 <li> <kbd>rand()</kbd>:  value uniformly distributed over the interval [0.0, 1.0) with a 2 to the 128th-1 period</li>
 <li> <kbd>round()</kbd>:  round to integral value, regardless of rounding direction</li>
 <li> <kbd>sign(</kbd><em>x</em><kbd>)</kbd>:  return -1.0 if <em>x</em> is less than 0.0 otherwise 1.0</li>
 <li> <kbd>sin(</kbd><em>x</em><kbd>)</kbd>:  sine function</li>
-<li> <kbd>sinc(</kbd><em>x</em><kbd>)</kbd>:  sinc function (max=1, min=-0.21); <kbd>sinc(</kbd><em>x</em><kbd>)</kbd>=<kbd>sin(</kbd><em>pi*x</em><kbd>)/(</kbd><em>pi*x</em><kbd>)</kbd></li>
+<li> <kbd>sinc(</kbd><em>x</em><kbd>)</kbd>:  sinc function (max=1, min=-0.21); sinc(<em>x</em>)=sin(<em>pi*x</em>)/(<em>pi*x</em>)</li>
+<li> <kbd>squish(</kbd><em>x</em><kbd>)</kbd>:  squish function; squish(<em>x</em>)=1.0/(1.0+exp(<em>4.0*x</em>))</li>
 <li> <kbd>sinh(</kbd><em>x</em><kbd>)</kbd>:  hyperbolic sine function</li>
 <li> <kbd>sqrt(</kbd><em>x</em><kbd>)</kbd>:  square root function</li>
 <li> <kbd>tan(</kbd><em>x</em><kbd>)</kbd>:  tangent function</li>
 <li> <kbd>tanh(</kbd><em>x</em><kbd>)</kbd>:  hyperbolic tangent function</li>
 <li> <kbd>trunc(</kbd><em>x</em><kbd>)</kbd>:  round to integer, towards zero</li>
+<li> <kbd>while(</kbd><em>condition</em>,<em>expression</em><kbd>)</kbd>:  interate while the condition is not equal to 0</li>
 </ul>
 
 <p>The expression semantics include these rules:</p>
