@@ -456,8 +456,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
             {
               case 0:
               {
-                color_correction.red.slope=StringToDouble(token,
-                  (char **) NULL);
+                color_correction.red.slope=StringToDouble(token,(char **) NULL);
                 break;
               }
               case 1:
@@ -522,8 +521,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
             {
               case 0:
               {
-                color_correction.red.power=StringToDouble(token,
-                  (char **) NULL);
+                color_correction.red.power=StringToDouble(token,(char **) NULL);
                 break;
               }
               case 1:
@@ -554,8 +552,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
           content=GetXMLTreeContent(saturation);
           p=(const char *) content;
           GetMagickToken(p,&p,token);
-          color_correction.saturation=StringToDouble(token,
-            (char **) NULL);
+          color_correction.saturation=StringToDouble(token,(char **) NULL);
         }
     }
   ccc=DestroyXMLTree(ccc);

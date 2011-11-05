@@ -3523,7 +3523,8 @@ static MagickBooleanType XColorEditImage(Display *display,
             if (*fuzz == '\0')
               break;
             (void) ConcatenateMagickString(fuzz,"%",MaxTextExtent);
-            (*image)->fuzz=StringToDoubleInterval(fuzz,(double) QuantumRange+1.0);
+            (*image)->fuzz=StringToDoubleInterval(fuzz,(double) QuantumRange+
+              1.0);
             break;
           }
           case ColorEditUndoCommand:
@@ -8237,7 +8238,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      threshold=StringToDoubleInterval(factor,QuantumRange);
+      threshold=StringToDoubleInterval(factor,(double) QuantumRange+1.0);
       (void) BilevelImage(*image,threshold);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
@@ -8436,7 +8437,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      threshold=StringToDoubleInterval(factor,QuantumRange);
+      threshold=StringToDoubleInterval(factor,(double) QuantumRange+1.0);
       sepia_image=SepiaToneImage(*image,threshold,&(*image)->exception);
       if (sepia_image != (Image *) NULL)
         {
@@ -8471,7 +8472,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      threshold=StringToDoubleInterval(factor,QuantumRange);
+      threshold=StringToDoubleInterval(factor,(double) QuantumRange+1.0);
       (void) SolarizeImage(*image,threshold);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
@@ -9777,7 +9778,8 @@ static MagickBooleanType XMatteEditImage(Display *display,
             if (*fuzz == '\0')
               break;
             (void) ConcatenateMagickString(fuzz,"%",MaxTextExtent);
-            (*image)->fuzz=StringToDoubleInterval(fuzz,(double) QuantumRange+1.0);
+            (*image)->fuzz=StringToDoubleInterval(fuzz,(double) QuantumRange+
+              1.0);
             break;
           }
           case MatteEditValueCommand:

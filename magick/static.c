@@ -247,9 +247,6 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterNULLImage();
   (void) RegisterOTBImage();
   (void) RegisterPALMImage();
-#if defined(MAGICKCORE_PANGO_DELEGATE)
-  (void) RegisterPANGOImage();
-#endif
   (void) RegisterPATTERNImage();
   (void) RegisterPCDImage();
   (void) RegisterPCLImage();
@@ -425,9 +422,6 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterNULLImage();
   UnregisterOTBImage();
   UnregisterPALMImage();
-#if defined(MAGICKCORE_PANGO_DELEGATE)
-  UnregisterPANGOImage();
-#endif
   UnregisterPATTERNImage();
   UnregisterPCDImage();
   UnregisterPCLImage();

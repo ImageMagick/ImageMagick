@@ -2013,8 +2013,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             GetMagickToken(q,&q,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             graphic_context[n]->fill.opacity=ClampToQuantum((MagickRealType)
-              QuantumRange*(1.0-factor*StringToDouble(token,
-              (char **) NULL)));
+              QuantumRange*(1.0-factor*StringToDouble(token,(char **) NULL)));
             break;
           }
         if (LocaleCompare("fill-rule",keyword) == 0)
@@ -2051,8 +2050,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("font-size",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
-            graphic_context[n]->pointsize=StringToDouble(token,
-              (char **) NULL);
+            graphic_context[n]->pointsize=StringToDouble(token,(char **) NULL);
             break;
           }
         if (LocaleCompare("font-stretch",keyword) == 0)
@@ -2174,8 +2172,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("kerning",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
-            graphic_context[n]->kerning=StringToDouble(token,
-              (char **) NULL);
+            graphic_context[n]->kerning=StringToDouble(token,(char **) NULL);
             break;
           }
         status=MagickFalse;
@@ -2382,13 +2379,13 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                 GetMagickToken(q,&q,token);
                 (void) CopyMagickString(name,token,MaxTextExtent);
                 GetMagickToken(q,&q,token);
-                bounds.x=(ssize_t) ceil(StringToDouble(token,
-                  (char **) NULL)-0.5);
+                bounds.x=(ssize_t) ceil(StringToDouble(token,(char **) NULL)-
+                  0.5);
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
-                bounds.y=(ssize_t) ceil(StringToDouble(token,
-                  (char **) NULL)-0.5);
+                bounds.y=(ssize_t) ceil(StringToDouble(token,(char **) NULL)-
+                  0.5);
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
@@ -2579,8 +2576,8 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                   GetMagickToken(q,&q,token);
                   if (*token == ',')
                     GetMagickToken(q,&q,token);
-                  graphic_context[n]->dash_pattern[j]=StringToDouble(
-                    token,(char **) NULL);
+                  graphic_context[n]->dash_pattern[j]=StringToDouble(token,
+                    (char **) NULL);
                 }
                 if ((x & 0x01) != 0)
                   for ( ; j < (2*x); j++)
@@ -2640,8 +2637,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
             GetMagickToken(q,&q,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
             graphic_context[n]->stroke.opacity=ClampToQuantum((MagickRealType)
-              QuantumRange*(1.0-factor*StringToDouble(token,
-              (char **) NULL)));
+              QuantumRange*(1.0-factor*StringToDouble(token,(char **) NULL)));
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
@@ -2725,23 +2721,23 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("viewbox",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
-            graphic_context[n]->viewbox.x=(ssize_t) ceil(StringToDouble(
-              token,(char **) NULL)-0.5);
+            graphic_context[n]->viewbox.x=(ssize_t) ceil(StringToDouble(token,
+              (char **) NULL)-0.5);
             GetMagickToken(q,&q,token);
             if (*token == ',')
               GetMagickToken(q,&q,token);
-            graphic_context[n]->viewbox.y=(ssize_t) ceil(StringToDouble(
-              token,(char **) NULL)-0.5);
+            graphic_context[n]->viewbox.y=(ssize_t) ceil(StringToDouble(token,
+              (char **) NULL)-0.5);
             GetMagickToken(q,&q,token);
             if (*token == ',')
               GetMagickToken(q,&q,token);
-            graphic_context[n]->viewbox.width=(size_t) floor(
-              StringToDouble(token,(char **) NULL)+0.5);
+            graphic_context[n]->viewbox.width=(size_t) floor(StringToDouble(
+              token,(char **) NULL)+0.5);
             GetMagickToken(q,&q,token);
             if (*token == ',')
               GetMagickToken(q,&q,token);
-            graphic_context[n]->viewbox.height=(size_t) floor(
-              StringToDouble(token,(char **) NULL)+0.5);
+            graphic_context[n]->viewbox.height=(size_t) floor(StringToDouble(
+              token,(char **) NULL)+0.5);
             break;
           }
         status=MagickFalse;

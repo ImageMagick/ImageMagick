@@ -810,8 +810,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     }
                   if (LocaleCompare(keyword,"antialias") == 0)
                     {
-                      option=ParseCommandOption(MagickBooleanOptions,MagickFalse,
-                        value);
+                      option=ParseCommandOption(MagickBooleanOptions,
+                        MagickFalse,value);
                       if (option < 0)
                         ThrowMSLException(OptionError,"UnrecognizedBooleanType",
                           value);
@@ -900,8 +900,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"pointsize") == 0)
                     {
-                      draw_info->pointsize=StringToDouble(value,
-                        (char **) NULL);
+                      draw_info->pointsize=StringToDouble(value,(char **) NULL);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1200,8 +1199,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"radius") == 0)
                     {
-                      geometry_info.rho=StringToDouble(value,
-                        (char **) NULL);
+                      geometry_info.rho=StringToDouble(value,(char **) NULL);
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
@@ -1449,11 +1447,11 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             case 'R':
             case 'r':
             {
-              if (LocaleCompare(keyword, "radius") == 0)
-              {
-                radius = StringToDouble(value,(char **) NULL);
-                break;
-              }
+              if (LocaleCompare(keyword,"radius") == 0)
+                {
+                  radius=StringToDouble(value,(char **) NULL);
+                  break;
+                }
               ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
               break;
             }
@@ -7919,7 +7917,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
         {
           if (image == (Image *) NULL)
             break;
-          image->bias=StringToDoubleInterval(value,QuantumRange);
+          image->bias=StringToDoubleInterval(value,(double) QuantumRange+1.0);
           break;
         }
       if (LocaleCompare(keyword,"blue-primary") == 0)

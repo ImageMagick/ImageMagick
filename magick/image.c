@@ -4397,7 +4397,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       &image->exception);
   option=GetImageOption(image_info,"bias");
   if (option != (const char *) NULL)
-    image->bias=StringToDoubleInterval(option,QuantumRange);
+    image->bias=StringToDoubleInterval(option,(double) QuantumRange+1.0);
   option=GetImageOption(image_info,"black-point-compensation");
   if (option != (const char *) NULL)
     image->black_point_compensation=(MagickBooleanType) ParseCommandOption(
