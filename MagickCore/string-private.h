@@ -24,6 +24,21 @@ extern "C" {
 
 #include <MagickCore/locale_.h>
 
+static inline double SiPrefixToDoubleInterval(const char *string,
+  const double interval)
+{
+  char
+    *q;
+
+  double
+    value;
+
+  value=InterpretSiPrefixValue(string,&q);
+  if (*q == '%')
+    value*=interval/100.0;
+  return(value);
+}
+
 static inline double StringToDouble(const char *restrict string,
   char **restrict sentinal)
 {
@@ -39,7 +54,7 @@ static inline double StringToDoubleInterval(const char *string,
   double
     value;
 
-  value=InterpretSiPrefixValue(string,&q);
+  value=InterpretLocaleValue(string,&q);
   if (*q == '%')
     value*=interval/100.0;
   return(value);

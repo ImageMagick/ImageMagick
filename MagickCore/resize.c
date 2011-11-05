@@ -973,8 +973,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     }
   artifact=GetImageArtifact(image,"filter:support");
   if (artifact != (const char *) NULL)
-    resize_filter->support=fabs(StringToDouble(artifact,
-      (char **) NULL)); /* override support */
+    resize_filter->support=fabs(StringToDouble(artifact,(char **) NULL)); /* override support */
   /*
     Scale windowing function separately to the support 'clipping' window that
     calling operator is planning to actually use (expert override).
@@ -982,8 +981,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   resize_filter->window_support=resize_filter->support; /* default */
   artifact=GetImageArtifact(image,"filter:win-support");
   if (artifact != (const char *) NULL)
-    resize_filter->window_support=fabs(StringToDouble(artifact,
-      (char **) NULL));
+    resize_filter->window_support=fabs(StringToDouble(artifact,(char **) NULL));
   /*
     Adjust window function scaling to match windowing support for weighting
     function.  This avoids a division on every filter call.

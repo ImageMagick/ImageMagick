@@ -557,15 +557,15 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
 
           limit=MagickResourceInfinity;
           if (LocaleCompare("unlimited",arg) != 0)
-            limit=(MagickSizeType) StringToDoubleInterval(arg,100.0);
+            limit=(MagickSizeType) SiPrefixToDoubleInterval(arg,100.0);
           (void) SetMagickResourceLimit(MemoryResource,limit);
           (void) SetMagickResourceLimit(MapResource,2*limit);
           break;
         }
       if (LocaleCompare("caption",option) == 0)
         {
-          (void) SetImageOption(image_info,option,
-               IfSetOption ? arg : (const char*)NULL);
+          (void) SetImageOption(image_info,option,IfSetOption ? arg :
+            (const char*)NULL);
           break;
         }
       if (LocaleCompare("channel",option) == 0)
@@ -832,7 +832,8 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           */
           if (IfSetOption)
             {
-              image_info->fuzz=StringToDoubleInterval(arg,(double) QuantumRange+1.0);
+              image_info->fuzz=StringToDoubleInterval(arg,(double) QuantumRange+
+                1.0);
               (void) SetImageOption(image_info,option,arg);
               break;
             }
@@ -901,8 +902,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
 
           value = IfSetOption ? arg : "0"; /* undefined? */
           (void) SetImageOption(image_info,option, value);
-          draw_info->interline_spacing=StringToDouble(value,
-               (char **) NULL);
+          draw_info->interline_spacing=StringToDouble(value,(char **) NULL);
           break;
         }
       if (LocaleCompare("interpolate",option) == 0)
@@ -922,8 +922,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
 
           value = IfSetOption ? arg : "0"; /* undefined? */
           (void) SetImageOption(image_info,option, value);
-          draw_info->interword_spacing=StringToDouble(value,
-               (char **) NULL);
+          draw_info->interword_spacing=StringToDouble(value,(char **) NULL);
           break;
         }
       break;
@@ -965,7 +964,8 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
             MagickFalse,arg);
           limit=MagickResourceInfinity;
           if (LocaleCompare("unlimited",argv[2]) != 0)
-            limit=(MagickSizeType) StringToDoubleInterval(argv[2],100.0);
+            limit=(MagickSizeType) SiPrefixToDoubleInterval(argv[2],
+              100.0);
           (void) SetMagickResourceLimit(type,limit);
           break;
         }
@@ -2115,7 +2115,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           if (*argv[0] == '+')
             threshold=40.0*QuantumRange/100.0;
           else
-            threshold=StringToDoubleInterval(args[0],QuantumRange);
+            threshold=StringToDoubleInterval(args[0],(double) QuantumRange+1.0);
           new_image=DeskewImage(*image,threshold,exception);
           break;
         }
@@ -2276,7 +2276,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           (void) SyncImageSettings(image_info,*image,exception);
           op=(MagickEvaluateOperator) ParseCommandOption(
             MagickEvaluateOptions,MagickFalse,args[0]);
-          constant=StringToDoubleInterval(argv[2],QuantumRange);
+          constant=StringToDoubleInterval(argv[2],(double) QuantumRange+1.0);
           (void) EvaluateImage(*image,op,constant,exception);
           break;
         }
@@ -3218,7 +3218,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
             threshold;
 
           (void) SyncImageSettings(image_info,*image,exception);
-          threshold=StringToDoubleInterval(args[0],QuantumRange);
+          threshold=StringToDoubleInterval(args[0],(double) QuantumRange+1.0);
           new_image=SepiaToneImage(*image,threshold,exception);
           break;
         }
@@ -3354,7 +3354,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
             threshold;
 
           (void) SyncImageSettings(image_info,*image,exception);
-          threshold=StringToDoubleInterval(args[0],QuantumRange);
+          threshold=StringToDoubleInterval(args[0],(double) QuantumRange+1.0);
           (void) SolarizeImage(*image,threshold,exception);
           break;
         }
@@ -3433,7 +3433,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           if (*argv[0] == '+')
             threshold=(double) QuantumRange/2;
           else
-            threshold=StringToDoubleInterval(args[0],QuantumRange);
+            threshold=StringToDoubleInterval(args[0],(double) QuantumRange+1.0);
           (void) BilevelImage(*image,threshold,exception);
           break;
         }
