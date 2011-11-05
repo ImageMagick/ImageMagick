@@ -50,6 +50,7 @@
 #include "wand/studio.h"
 #include "wand/MagickWand.h"
 #include "wand/mogrify-private.h"
+#include "magick/string-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
