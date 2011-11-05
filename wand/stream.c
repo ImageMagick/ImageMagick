@@ -48,6 +48,7 @@
 #include "wand/MagickWand.h"
 #include "wand/mogrify-private.h"
 #include "magick/stream-private.h"
+#include "magick/string-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
