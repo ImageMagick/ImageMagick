@@ -2560,12 +2560,14 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           return((MagickRealType) floor(alpha));
         }
+#if defined(MAGICKCORE_HAVE_ISNAN)
       if (LocaleNCompare(expression,"isnan",5) == 0)
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+5,beta,
             exception);
           return((MagickRealType) !!isnan((double) alpha));
         }
+#endif
       if (LocaleCompare(expression,"i") == 0)
         return(FxGetSymbol(fx_info,channel,x,y,expression,exception));
       break;
