@@ -1,5 +1,5 @@
 2011-11-06  6.7.3-4 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.3-4, SVN revision 5863
+  * New version 6.7.3-4, SVN revision 5876
 
 2011-11-02  6.7.3-4 Glenn Randers-Pehrson <glennrp@image...>
   * Ensure that the GIF encoder writes a large enough logical screen (reference
