@@ -933,7 +933,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   /* Blur Override */
   artifact=GetImageArtifact(image,"filter:blur");
   if (artifact != (const char *) NULL)
-    resize_filter->blur *= StringToDouble(artifact,(char **) NULL);
+    resize_filter->blur*=StringToDouble(artifact,(char **) NULL);
   if (resize_filter->blur < MagickEpsilon)
     resize_filter->blur=(MagickRealType) MagickEpsilon;
 

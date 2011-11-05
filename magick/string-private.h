@@ -24,35 +24,18 @@ extern "C" {
 
 #include <magick/locale_.h>
 
-static inline double SiPrefixToDouble(const char *string,const double interval)
+static inline double SiPrefixToDoubleInterval(const char *string,
+  const double interval)
 {
   char
     *q;
 
   double
-    scale,
     value;
 
-  /*
-    Interpret string with International System of Units (SI) unit prefix.
-  */
-  value=InterpretLocaleValue(string,&q);
-  scale=1000.0;
-  if ((*q != '\0') && (tolower((int) ((unsigned char) *(q+1))) == 'i'))
-    scale=1024.0;
-  switch (tolower((int) ((unsigned char) *q)))
-  {
-    case '%': value*=pow(scale,0)*interval/100.0; break;
-    case 'k': value*=pow(scale,1); break;
-    case 'm': value*=pow(scale,2); break;
-    case 'g': value*=pow(scale,3); break;
-    case 't': value*=pow(scale,4); break;
-    case 'p': value*=pow(scale,5); break;
-    case 'e': value*=pow(scale,6); break;
-    case 'z': value*=pow(scale,7); break;
-    case 'y': value*=pow(scale,8); break;
-    default:  break;
-  }
+  value=InterpretSiPrefixValue(string,&q);
+  if (*q == '%')
+    value*=interval/100.0;
   return(value);
 }
 
@@ -71,7 +54,7 @@ static inline double StringToDoubleInterval(const char *string,
   double
     value;
 
-  value=InterpretSiPrefixValue(string,&q);
+  value=InterpretLocaleValue(string,&q);
   if (*q == '%')
     value*=interval/100.0;
   return(value);

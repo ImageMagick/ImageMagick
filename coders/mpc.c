@@ -444,8 +444,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"error") == 0)
                   {
-                    image->error.mean_error_per_pixel=StringToDouble(
-                      options,(char **) NULL);
+                    image->error.mean_error_per_pixel=StringToDouble(options,
+                      (char **) NULL);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options);
@@ -511,14 +511,14 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"maximum-error") == 0)
                   {
-                    image->error.normalized_maximum_error=
-                      StringToDouble(options,(char **) NULL);
+                    image->error.normalized_maximum_error=StringToDouble(
+                      options,(char **) NULL);
                     break;
                   }
                 if (LocaleCompare(keyword,"mean-error") == 0)
                   {
-                    image->error.normalized_mean_error=StringToDouble(
-                      options,(char **) NULL);
+                    image->error.normalized_mean_error=StringToDouble(options,
+                      (char **) NULL);
                     break;
                   }
                 if (LocaleCompare(keyword,"montage") == 0)
