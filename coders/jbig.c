@@ -63,6 +63,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/module.h"
 #if defined(MAGICKCORE_JBIG_DELEGATE)
 #include "jbig.h"
