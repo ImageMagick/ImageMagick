@@ -424,6 +424,11 @@
 #define MAGICKCORE_HAVE_INTTYPES_H 1
 #endif
 
+/* Define to 1 if you have the `isnan' function. */
+#ifndef MAGICKCORE_HAVE_ISNAN
+#define MAGICKCORE_HAVE_ISNAN 1
+#endif
+
 /* Define to 1 if you have the `j0' function. */
 #ifndef MAGICKCORE_HAVE_J0
 #define MAGICKCORE_HAVE_J0 1
