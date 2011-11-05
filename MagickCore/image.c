@@ -1822,7 +1822,6 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
         status=MagickFalse;
         continue;
       }
-    pixel=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       PixelTrait
