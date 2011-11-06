@@ -1861,11 +1861,6 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  RotateImage() is based on the paper "A Fast Algorithm for General
-%  Raster Rotatation" by Alan W. Paeth.  RotateImage is adapted from a similar
-%  method based on the Paeth paper written by Michael Halle of the Spatial
-%  Imaging Group, MIT Media Lab.
-%
 %  The format of the RotateImage method is:
 %
 %      Image *RotateImage(const Image *image,const double degrees,
@@ -1884,15 +1879,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   ExceptionInfo *exception)
 {
   Image
-    *integral_image,
     *rotate_image;
-
-  ssize_t
-    x_offset,
-    y_offset;
-
-  MagickBooleanType
-    status;
 
   MagickRealType
     angle;
@@ -1900,14 +1887,8 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   PointInfo
     shear;
 
-  RectangleInfo
-    border_info;
-
   size_t
-    height,
-    rotations,
-    width,
-    y_width;
+    rotations;
 
   /*
     Adjust rotation angle.
@@ -1927,81 +1908,12 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   /*
     Calculate shear equations.
   */
-  integral_image=IntegralRotateImage(image,rotations,exception);
-  if (integral_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   shear.x=(-tan((double) DegreesToRadians(angle)/2.0));
   shear.y=sin((double) DegreesToRadians(angle));
-  if ((shear.x == 0.0) && (shear.y == 0.0))
-    return(integral_image);
-  if (SetImageStorageClass(integral_image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&integral_image->exception);
-      integral_image=DestroyImage(integral_image);
-      return(integral_image);
-    }
-  if (integral_image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(integral_image,OpaqueAlphaChannel);
-  /*
-    Compute image size.
-  */
-  width=image->columns;
-  height=image->rows;
-  if ((rotations == 1) || (rotations == 3))
-    {
-      width=image->rows;
-      height=image->columns;
-    }
-  y_width=width+(ssize_t) floor(fabs(shear.x)*height+0.5);
-  x_offset=(ssize_t) ceil((double) width+((fabs(shear.y)*height)-width)/2.0-
-    0.5);
-  y_offset=(ssize_t) ceil((double) height+((fabs(shear.y)*y_width)-height)/2.0-
-    0.5);
-  /*
-    Surround image with a border.
-  */
-  integral_image->border_color=integral_image->background_color;
-  integral_image->compose=CopyCompositeOp;
-  border_info.width=(size_t) x_offset;
-  border_info.height=(size_t) y_offset;
-  rotate_image=BorderImage(integral_image,&border_info,exception);
-  integral_image=DestroyImage(integral_image);
-  if (rotate_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-  /*
-    Rotate the image.
-  */
-  status=XShearImage(rotate_image,shear.x,width,height,x_offset,(ssize_t)
-    (rotate_image->rows-height)/2,exception);
-  if (status == MagickFalse)
-    {
-      rotate_image=DestroyImage(rotate_image);
-      return((Image *) NULL);
-    }
-  status=YShearImage(rotate_image,shear.y,y_width,height,(ssize_t)
-    (rotate_image->columns-y_width)/2,y_offset,exception);
-  if (status == MagickFalse)
-    {
-      rotate_image=DestroyImage(rotate_image);
-      return((Image *) NULL);
-    }
-  status=XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,(ssize_t)
-    (rotate_image->columns-y_width)/2,0,exception);
-  if (status == MagickFalse)
-    {
-      rotate_image=DestroyImage(rotate_image);
-      return((Image *) NULL);
-    }
-  status=CropToFitImage(&rotate_image,shear.x,shear.y,(MagickRealType) width,
-    (MagickRealType) height,MagickTrue,exception);
-  if (status == MagickFalse)
-    {
-      rotate_image=DestroyImage(rotate_image);
-      return((Image *) NULL);
-    }
-  rotate_image->compose=image->compose;
-  rotate_image->page.width=0;
-  rotate_image->page.height=0;
+  if ((fabs(shear.x) < MagickEpsilon) && (fabs(shear.y) < MagickEpsilon))
+    return(IntegralRotateImage(image,rotations,exception));
+  rotate_image=DistortImage(image,ScaleRotateTranslateDistortion,1,
+    &degrees,MagickTrue,exception);
   return(rotate_image);
 }
 
