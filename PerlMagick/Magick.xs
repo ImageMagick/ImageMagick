@@ -8340,12 +8340,14 @@ Mogrify(ref,...)
                /*
                  Rotate image.
                */
-               rotate_image=RotateImage(composite_image,
-                 argument_list[8].real_reference,exception);
+               rotate_image=DistortImage(composite_image,
+                 ScaleRotateTranslateDistortion,1,
+                 &argument_list[8].real_reference,MagickTrue,exception);
                if (rotate_image == (Image *) NULL)
                  break;
             }
-          if (attribute_flag[7] && argument_list[7].integer_reference) /* tile */
+          if ((attribute_flag[7] != 0) &&
+              (argument_list[7].integer_reference != 0)) /* tile */
             {
               ssize_t
                 x,
