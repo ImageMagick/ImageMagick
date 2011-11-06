@@ -1905,15 +1905,12 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   for (rotations=0; angle > 45.0; rotations++)
     angle-=90.0;
   rotations%=4;
-  /*
-    Calculate shear equations.
-  */
   shear.x=(-tan((double) DegreesToRadians(angle)/2.0));
   shear.y=sin((double) DegreesToRadians(angle));
   if ((fabs(shear.x) < MagickEpsilon) && (fabs(shear.y) < MagickEpsilon))
     return(IntegralRotateImage(image,rotations,exception));
-  rotate_image=DistortImage(image,ScaleRotateTranslateDistortion,1,
-    &degrees,MagickTrue,exception);
+  rotate_image=DistortImage(image,ScaleRotateTranslateDistortion,1,&degrees,
+    MagickTrue,exception);
   return(rotate_image);
 }
 
