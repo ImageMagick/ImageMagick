@@ -33,8 +33,8 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The XShearImage, and YShearImage methods are based on the paper
-%  "A Fast Algorithm for General Raster Rotatation" by Alan W. Paeth, Graphics
+%  The XShearImage, and YShearImage methods are based on the paper "A Fast
+%  Algorithm for General Raster Rotatation" by Alan W. Paeth, Graphics
 %  Interface '86 (Vancouver).  RotateImage is adapted from a similar method
 %  based on the Paeth paper written by Michael Halle of the Spatial Imaging
 %  Group, MIT Media Lab.
