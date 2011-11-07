@@ -26,7 +26,8 @@ extern MagickExport Image
   *AffineTransformImage(const Image *,const AffineMatrix *,ExceptionInfo *),
   *DeskewImage(const Image *,const double,ExceptionInfo *),
   *RotateImage(const Image *,const double,ExceptionInfo *),
-  *ShearImage(const Image *,const double,const double,ExceptionInfo *);
+  *ShearImage(const Image *,const double,const double,ExceptionInfo *),
+  *ShearRotateImage(const Image *,const double,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
