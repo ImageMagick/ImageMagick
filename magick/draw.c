@@ -954,6 +954,7 @@ static PolygonInfo *DestroyPolygonInfo(PolygonInfo *polygon_info)
 %    o affine: the affine transform.
 %
 */
+
 static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
   const double y,const SegmentInfo *edge)
 {
@@ -978,11 +979,11 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
   if (affine->sx > MagickEpsilon)
     {
       intercept=(-z/affine->sx);
-      x=intercept+MagickEpsilon;
+      x=intercept;
       if (x > inverse_edge.x1)
         inverse_edge.x1=x;
       intercept=(-z+(double) image->columns)/affine->sx;
-      x=intercept-MagickEpsilon;
+      x=intercept;
       if (x < inverse_edge.x2)
         inverse_edge.x2=x;
     }
@@ -990,11 +991,11 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
     if (affine->sx < -MagickEpsilon)
       {
         intercept=(-z+(double) image->columns)/affine->sx;
-        x=intercept+MagickEpsilon;
+        x=intercept;
         if (x > inverse_edge.x1)
           inverse_edge.x1=x;
         intercept=(-z/affine->sx);
-        x=intercept-MagickEpsilon;
+        x=intercept;
         if (x < inverse_edge.x2)
           inverse_edge.x2=x;
       }
@@ -1011,11 +1012,11 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
   if (affine->rx > MagickEpsilon)
     {
       intercept=(-z/affine->rx);
-      x=intercept+MagickEpsilon;
+      x=intercept;
       if (x > inverse_edge.x1)
         inverse_edge.x1=x;
       intercept=(-z+(double) image->rows)/affine->rx;
-      x=intercept-MagickEpsilon;
+      x=intercept;
       if (x < inverse_edge.x2)
         inverse_edge.x2=x;
     }
@@ -1023,11 +1024,11 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
     if (affine->rx < -MagickEpsilon)
       {
         intercept=(-z+(double) image->rows)/affine->rx;
-        x=intercept+MagickEpsilon;
+        x=intercept;
         if (x > inverse_edge.x1)
           inverse_edge.x1=x;
         intercept=(-z/affine->rx);
-        x=intercept-MagickEpsilon;
+        x=intercept;
         if (x < inverse_edge.x2)
           inverse_edge.x2=x;
       }
