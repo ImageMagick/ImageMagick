@@ -2460,6 +2460,9 @@ static void SVGEndElement(void *context,const xmlChar *name)
 
 static void SVGCharacters(void *context,const xmlChar *c,int length)
 {
+  char
+    *text;
+
   register char
     *p;
 
@@ -2475,22 +2478,21 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.characters(%s,%.20g)",c,(double) length);
   svg_info=(SVGInfo *) context;
-  if (svg_info->text != (char *) NULL)
-    svg_info->text=(char *) ResizeQuantumMemory(svg_info->text,
-      strlen(svg_info->text)+length+MaxTextExtent,sizeof(*svg_info->text));
-  else
-    {
-      svg_info->text=(char *) AcquireQuantumMemory(length+MaxTextExtent,
-        sizeof(*svg_info->text));
-      if (svg_info->text != (char *) NULL)
-        *svg_info->text='\0';
-    }
-  if (svg_info->text == (char *) NULL)
+  text=(char *) AcquireQuantumMemory(length+1,sizeof(*text));
+  if (text == (char *) NULL)
     return;
-  p=svg_info->text+strlen(svg_info->text);
+  p=text;
   for (i=0; i < (ssize_t) length; i++)
     *p++=c[i];
   *p='\0';
+  StripString(text);
+  if (svg_info->text == (char *) NULL)
+    svg_info->text=text;
+  else
+    {
+      (void) ConcatenateString(&svg_info->text,text);
+      text=DestroyString(text);
+    }
 }
 
 static void SVGReference(void *context,const xmlChar *name)
