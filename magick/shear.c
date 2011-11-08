@@ -1889,6 +1889,9 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   size_t
     rotations;
 
+  VirtualPixelMethod
+    method;
+
   /*
     Adjust rotation angle.
   */
@@ -1908,8 +1911,10 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   shear.y=sin((double) DegreesToRadians(angle));
   if ((fabs(shear.x) < MagickEpsilon) && (fabs(shear.y) < MagickEpsilon))
     return(IntegralRotateImage(image,rotations,exception));
+  method=SetImageVirtualPixelMethod(image,BackgroundVirtualPixelMethod);
   rotate_image=DistortImage(image,ScaleRotateTranslateDistortion,1,&degrees,
     MagickTrue,exception);
+  method=SetImageVirtualPixelMethod(image,method);
   return(rotate_image);
 }
 
