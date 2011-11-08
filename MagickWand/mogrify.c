@@ -297,10 +297,6 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
 %
 */
 
-/*
-   GetImageCache() will read an image into a image cache if not already
-   present then return the image that is in the cache under that filename.
-*/
 static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   ExceptionInfo *exception)
 {
@@ -316,6 +312,10 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   ImageInfo
     *read_info;
 
+  /*
+    Read an image into a image cache if not already present.  Return the image
+    that is in the cache under that filename.
+  */
   (void) FormatLocaleString(key,MaxTextExtent,"cache:%s",path);
   sans_exception=AcquireExceptionInfo();
   image=(Image *) GetImageRegistry(ImageRegistryType,key,sans_exception);
