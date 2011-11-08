@@ -1405,10 +1405,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 transform.rx=affine.rx*current.sx+affine.sy*current.rx;
                 transform.ry=affine.sx*current.ry+affine.ry*current.sy;
                 transform.sy=affine.rx*current.ry+affine.sy*current.sy;
-                transform.tx=affine.sx*current.tx+affine.ry*current.ty+
-                  affine.tx;
-                transform.ty=affine.rx*current.tx+affine.sy*current.ty+
-                  affine.ty;
+                transform.tx=affine.tx*current.sx+affine.ty*current.ry+
+                  current.tx;
+                transform.ty=affine.tx*current.rx+affine.ty*current.sy+
+                  current.ty;
               }
               (void) FormatLocaleFile(svg_info->file,
                 "affine %g %g %g %g %g %g\n",transform.sx,
@@ -2038,10 +2038,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 transform.rx=affine.rx*current.sx+affine.sy*current.rx;
                 transform.ry=affine.sx*current.ry+affine.ry*current.sy;
                 transform.sy=affine.rx*current.ry+affine.sy*current.sy;
-                transform.tx=affine.sx*current.tx+affine.ry*current.ty+
-                  affine.tx;
-                transform.ty=affine.rx*current.tx+affine.sy*current.ty+
-                  affine.ty;
+                transform.tx=affine.tx*current.sx+affine.ty*current.ry+
+                  current.tx;
+                transform.ty=affine.tx*current.rx+affine.ty*current.sy+
+                  current.ty;
               }
               (void) FormatLocaleFile(svg_info->file,
                 "affine %g %g %g %g %g %g\n",transform.sx,transform.rx,
