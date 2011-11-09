@@ -2267,10 +2267,12 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image)
       while (next_image != NULL)
       {
         next_image->compression=NoCompression;
-        (void) WriteBlobMSBLong(image,0);
-        (void) WriteBlobMSBLong(image,0);
-        (void) WriteBlobMSBLong(image,(unsigned int) next_image->rows);
-        (void) WriteBlobMSBLong(image,(unsigned int) next_image->columns);
+        (void) WriteBlobMSBLong(image,(unsigned int) next_image->page.y);
+        (void) WriteBlobMSBLong(image,(unsigned int) next_image->page.x);
+        (void) WriteBlobMSBLong(image,(unsigned int) next_image->page.y+
+          next_image->rows);
+        (void) WriteBlobMSBLong(image,(unsigned int) next_image->page.x+
+          next_image->columns);
         packet_size=next_image->depth > 8 ? 2UL : 1UL;
         channel_size=(unsigned int) ((packet_size*next_image->rows*
           next_image->columns)+2);
