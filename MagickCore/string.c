@@ -1388,11 +1388,8 @@ MagickExport double InterpretSiPrefixValue(const char *restrict string,
                 }
             }
         }
-      if (*q == 'B')
-        {
-          value*=8.0;
-          q++;
-        }
+      if ((*q == 'b') || (*q == 'B'))
+        q++;
     }
   if (sentinal != (char **) NULL)
     *sentinal=q;
