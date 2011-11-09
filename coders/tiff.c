@@ -1743,7 +1743,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
 #if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
 static TIFFExtendProc
-  tiff_extensions = (TIFFExtendProc) NULL;
+  tag_extender = (TIFFExtendProc) NULL;
 
 static void TIFFTagExtender(TIFF *tiff)
 {
@@ -1755,8 +1755,8 @@ static void TIFFTagExtender(TIFF *tiff)
 
   TIFFMergeFieldInfo(tiff,TIFFExtensions,sizeof(TIFFExtensions)/
     sizeof(*TIFFExtensions));
-  if (tiff_extensions != (TIFFExtendProc) NULL)
-    (*tiff_extensions)(tiff);
+  if (tag_extender != (TIFFExtendProc) NULL)
+    (*tag_extender)(tiff);
 }
 #endif
 
@@ -1778,8 +1778,8 @@ ModuleExport size_t RegisterTIFFImage(void)
       if (MagickCreateThreadKey(&tiff_exception) == MagickFalse)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
 #if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
-      if (tiff_extensions == (TIFFExtendProc) NULL)
-        tiff_extensions=TIFFSetTagExtender(TIFFTagExtender);
+      if (tag_extender == (TIFFExtendProc) NULL)
+        tag_extender=TIFFSetTagExtender(TIFFTagExtender);
 #endif
       instantiate_key=MagickTrue;
     }
