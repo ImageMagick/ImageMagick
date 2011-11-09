@@ -1740,6 +1740,26 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 %      size_t RegisterTIFFImage(void)
 %
 */
+
+#if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
+static TIFFExtendProc
+  tiff_extensions = (TIFFExtendProc) NULL;
+
+static void TIFFTagExtender(TIFF *tiff)
+{
+  static const TIFFFieldInfo
+    TIFFExtensions[] =
+    {
+      { 37724, -3, -3, TIFF_UNDEFINED, FIELD_CUSTOM, 1, 1, "PhotoshopLayerData" }
+    };
+
+  TIFFMergeFieldInfo(tiff,TIFFExtensions,sizeof(TIFFExtensions)/
+    sizeof(*TIFFExtensions));
+  if (tiff_extensions != (TIFFExtendProc) NULL)
+    (*tiff_extensions)(tiff);
+}
+#endif
+
 ModuleExport size_t RegisterTIFFImage(void)
 {
 #define TIFFDescription  "Tagged Image File Format"
@@ -1846,6 +1866,10 @@ ModuleExport size_t RegisterTIFFImage(void)
     entry->version=ConstantString(version);
   entry->module=ConstantString("TIFF");
   (void) RegisterMagickInfo(entry);
+#if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
+  if (tiff_extensions == (TIFFExtendProc) NULL)
+    tiff_extensions=TIFFSetTagExtender(TIFFTagExtender);
+#endif
   return(MagickImageCoderSignature);
 }
 
@@ -2342,7 +2366,7 @@ static void TIFFSetProfiles(TIFF *tiff,Image *image)
         GetStringInfoLength(profile),GetStringInfoDatum(profile));
 #endif
     if (LocaleCompare(name,"tiff:37724") == 0)
-      (void) TIFFSetField(tiff,37724,(uint32)GetStringInfoLength(profile),
+      (void) TIFFSetField(tiff,37724,(uint32) GetStringInfoLength(profile),
         GetStringInfoDatum(profile));
     name=GetNextImageProfile(image);
   }
