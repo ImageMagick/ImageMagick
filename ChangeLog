@@ -1,6 +1,8 @@
 2011-11-07  6.7.3-4 Cristy  <quetzlzacatenango@image...>
   * Add ShearRotateImage() method.  RotateImage() now uses distorts rather
     than shears.
+  * MagickCoreGenesis() path must be accessible to use (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19795).
 
 2011-11-06  6.7.3-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.3-4, SVN revision 5876
