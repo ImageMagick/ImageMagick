@@ -735,25 +735,6 @@ static toff_t TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
   return((toff_t) SeekBlob((Image *) image,(MagickOffsetType) offset,whence));
 }
 
-#if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
-static TIFFExtendProc
-  tiff_extensions = (TIFFExtendProc) NULL;
-
-static void TIFFTagExtender(TIFF *tiff)
-{
-  static const TIFFFieldInfo
-    TIFFExtensions[] =
-    {
-      { 37724, -3, -3, TIFF_UNDEFINED, FIELD_CUSTOM, 1, 1, "PhotoshopLayerData" }
-    };
-
-  TIFFMergeFieldInfo(tiff,TIFFExtensions,sizeof(TIFFExtensions)/
-    sizeof(*TIFFExtensions));
-  if (tiff_extensions != (TIFFExtendProc) NULL)
-    (*tiff_extensions)(tiff);
-}
-#endif
-
 static void TIFFUnmapBlob(thandle_t image,tdata_t base,toff_t size)
 {
   (void) image;
@@ -891,10 +872,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-#if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
-  if (tiff_extensions == (TIFFExtendProc) NULL)
-    tiff_extensions=TIFFSetTagExtender(TIFFTagExtender);
-#endif
   image=AcquireImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
@@ -1763,6 +1740,26 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 %      size_t RegisterTIFFImage(void)
 %
 */
+
+#if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
+static TIFFExtendProc
+  tiff_extensions = (TIFFExtendProc) NULL;
+
+static void TIFFTagExtender(TIFF *tiff)
+{
+  static const TIFFFieldInfo
+    TIFFExtensions[] =
+    {
+      { 37724, -3, -3, TIFF_UNDEFINED, FIELD_CUSTOM, 1, 1, "PhotoshopLayerData" }
+    };
+
+  TIFFMergeFieldInfo(tiff,TIFFExtensions,sizeof(TIFFExtensions)/
+    sizeof(*TIFFExtensions));
+  if (tiff_extensions != (TIFFExtendProc) NULL)
+    (*tiff_extensions)(tiff);
+}
+#endif
+
 ModuleExport size_t RegisterTIFFImage(void)
 {
 #define TIFFDescription  "Tagged Image File Format"
@@ -1780,6 +1777,10 @@ ModuleExport size_t RegisterTIFFImage(void)
     {
       if (MagickCreateThreadKey(&tiff_exception) == MagickFalse)
         ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+#if defined(MAGICKCORE_HAVE_TIFFMERGEFIELDINFO) && defined(MAGICKCORE_HAVE_TIFFSETTAGEXTENDER)
+      if (tiff_extensions == (TIFFExtendProc) NULL)
+        tiff_extensions=TIFFSetTagExtender(TIFFTagExtender);
+#endif
       instantiate_key=MagickTrue;
     }
   UnlockSemaphoreInfo(tiff_semaphore);
