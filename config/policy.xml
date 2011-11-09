@@ -48,8 +48,8 @@
   <!-- <policy domain="resource" name="temporary-path" value="/tmp"/> -->
   <!-- <policy domain="resource" name="memory" value="2GiB"/> -->
   <!-- <policy domain="resource" name="map" value="4GiB"/> -->
-  <!-- <policy domain="resource" name="area" value="1gb"/> -->
-  <!-- <policy domain="resource" name="disk" value="16eb"/> -->
+  <!-- <policy domain="resource" name="area" value="1GB"/> -->
+  <!-- <policy domain="resource" name="disk" value="16EB"/> -->
   <!-- <policy domain="resource" name="file" value="768"/> -->
   <!-- <policy domain="resource" name="thread" value="4"/> -->
   <!-- <policy domain="resource" name="throttle" value="0"/> -->
