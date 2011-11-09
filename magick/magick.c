@@ -1275,7 +1275,7 @@ MagickExport void MagickCoreGenesis(const char *path,
     Set client name and execution path.
   */
   (void) GetExecutionPath(execution_path,MaxTextExtent);
-  if ((path != (const char *) NULL) && (*path != '\0') &&
+  if ((path != (const char *) NULL) && (*path == *DirectorySeparator) &&
       (IsPathAccessible(path) != MagickFalse))
     (void) CopyMagickString(execution_path,path,MaxTextExtent);
   GetPathComponent(execution_path,TailPath,filename);
