@@ -754,7 +754,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
         case MagickImageCoderModule:
         default:
         {
-          directory="modules";
+          directory="coders";
           break;
         }
         case MagickImageFilterModule:
