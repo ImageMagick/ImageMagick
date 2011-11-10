@@ -1859,7 +1859,7 @@ ModuleExport size_t RegisterTIFFImage(void)
   entry=SetMagickInfo("TIFF64");
 #if defined(TIFF_VERSION_BIG)
   entry->decoder=(DecodeImageHandler *) ReadTIFFImage;
-  entry->encoder=(EncodeImageHandler *) WritePTIFImage;
+  entry->encoder=(EncodeImageHandler *) WriteTIFFImage;
 #endif
   entry->adjoin=MagickFalse;
   entry->endian_support=MagickTrue;
@@ -1894,11 +1894,10 @@ ModuleExport size_t RegisterTIFFImage(void)
 */
 ModuleExport void UnregisterTIFFImage(void)
 {
-  (void) UnregisterMagickInfo("RAWGROUP4");
-  (void) UnregisterMagickInfo("PTIF");
-  (void) UnregisterMagickInfo("TIF");
-  (void) UnregisterMagickInfo("TIFF");
   (void) UnregisterMagickInfo("TIFF64");
+  (void) UnregisterMagickInfo("TIFF");
+  (void) UnregisterMagickInfo("TIF");
+  (void) UnregisterMagickInfo("PTIF");
   if (tiff_semaphore == (SemaphoreInfo *) NULL)
     tiff_semaphore=AllocateSemaphoreInfo();
   LockSemaphoreInfo(tiff_semaphore);
