@@ -2455,7 +2455,6 @@ PANGO_LIBS=""
 PANGO_PKG=""
 if test "x$with_pango" = "xyes"; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-    AC_MSG_CHECKING(for PANGO support )
     PKG_CHECK_MODULES(PANGO, [pangoft2 >= 1.15.1], have_pangoft2=yes, have_pangoft2=no)
     AC_MSG_RESULT([])
     PKG_CHECK_MODULES(PANGO, [pango >= 1.15.1], have_pango=yes, have_pango=no)
