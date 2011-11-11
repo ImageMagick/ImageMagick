@@ -394,7 +394,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     hex_digits[256];
 
   size_t
-    length;
+    length,
+    priority;
 
   ssize_t
     count;
@@ -482,8 +483,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ResetMagickMemory(&hires_bounds,0,sizeof(hires_bounds));
   (void) ResetMagickMemory(&page,0,sizeof(page));
   (void) ResetMagickMemory(command,0,sizeof(command));
-  hires_bounds.x2=0.0;
-  hires_bounds.y2=0.0;
+  priority=0;
   columns=0;
   rows=0;
   extent=0;
@@ -640,38 +640,54 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Note region defined by bounding box.
     */
     count=0;
+    i=0;
     if (LocaleNCompare(BoundingBox,command,strlen(BoundingBox)) == 0)
-      count=(ssize_t) sscanf(command,BoundingBox " %lf %lf %lf %lf",&bounds.x1,
-        &bounds.y1,&bounds.x2,&bounds.y2);
-    if (LocaleNCompare(DocumentMedia,command,strlen(DocumentMedia)) == 0)
-      count=(ssize_t) sscanf(command,DocumentMedia " %*s %lf %lf",&bounds.x2,
-        &bounds.y2)+2;
-    if (LocaleNCompare(HiResBoundingBox,command,strlen(HiResBoundingBox)) == 0)
-      count=(ssize_t) sscanf(command,HiResBoundingBox " %lf %lf %lf %lf",
-        &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
-    if (LocaleNCompare(PageBoundingBox,command,strlen(PageBoundingBox)) == 0)
-      count=(ssize_t) sscanf(command,PageBoundingBox " %lf %lf %lf %lf",
-        &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
-    if (LocaleNCompare(PageMedia,command,strlen(PageMedia)) == 0)
-      count=(ssize_t) sscanf(command,PageMedia " %*s %lf %lf",&bounds.x2,
-        &bounds.y2)+2;
-    if (count != 4)
-      continue;
-    if (((bounds.x2 > hires_bounds.x2) && (bounds.y2 > hires_bounds.y2)) ||
-        ((hires_bounds.x2 == 0.0) && (hires_bounds.y2 == 0.0)))
       {
-        /*
-          Set Postscript render geometry.
-        */
-        (void) FormatLocaleString(geometry,MaxTextExtent,
-          "%gx%g%+.15g%+.15g",bounds.x2-bounds.x1,bounds.y2-bounds.y1,
-          bounds.x1,bounds.y1);
-        (void) SetImageProperty(image,"ps:HiResBoundingBox",geometry);
-        page.width=(size_t) floor(bounds.x2-bounds.x1+0.5);
-        page.height=(size_t) floor(bounds.y2-bounds.y1+0.5);
-        hires_bounds=bounds;
+        count=(ssize_t) sscanf(command,BoundingBox " %lf %lf %lf %lf",
+          &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
+        i=2;
       }
+    if (LocaleNCompare(DocumentMedia,command,strlen(DocumentMedia)) == 0)
+      {
+        count=(ssize_t) sscanf(command,DocumentMedia " %lf %lf %lf %lf",
+          &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
+        i=1;
+      }
+    if (LocaleNCompare(HiResBoundingBox,command,strlen(HiResBoundingBox)) == 0)
+      {
+        count=(ssize_t) sscanf(command,HiResBoundingBox " %lf %lf %lf %lf",
+          &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
+        i=3;
+      }
+    if (LocaleNCompare(PageBoundingBox,command,strlen(PageBoundingBox)) == 0)
+      {
+        count=(ssize_t) sscanf(command,PageBoundingBox " %lf %lf %lf %lf",
+          &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
+        i=1;
+      }
+    if (LocaleNCompare(PageMedia,command,strlen(PageMedia)) == 0)
+      {
+        count=(ssize_t) sscanf(command,PageMedia " %lf %lf %lf %lf",
+          &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
+        i=1;
+      }
+    if ((count != 4) || (i < priority))
+      continue;
+    hires_bounds=bounds;
+    priority=i;
   }
+  if (priority != 0)
+    {
+      /*
+        Set Postscript render geometry.
+      */
+      (void) FormatLocaleString(geometry,MaxTextExtent,"%gx%g%+.15g%+.15g",
+        hires_bounds.x2-hires_bounds.x1,hires_bounds.y2-hires_bounds.y1,
+        hires_bounds.x1,hires_bounds.y1);
+      (void) SetImageProperty(image,"ps:HiResBoundingBox",geometry,exception);
+      page.width=(size_t) floor(hires_bounds.x2-hires_bounds.x1+0.5);
+      page.height=(size_t) floor(hires_bounds.y2-hires_bounds.y1+0.5);
+    }
   (void) CloseBlob(image);
   if (IsRGBColorspace(image_info->colorspace) != MagickFalse)
     cmyk=MagickFalse;
