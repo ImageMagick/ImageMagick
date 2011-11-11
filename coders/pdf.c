@@ -422,8 +422,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ResetMagickMemory(&hires_bounds,0,sizeof(hires_bounds));
   (void) ResetMagickMemory(&page,0,sizeof(page));
   (void) ResetMagickMemory(command,0,sizeof(command));
-  hires_bounds.x2=0.0;
-  hires_bounds.y2=0.0;
   angle=0.0;
   p=command;
   for (c=ReadBlobByte(image); c != EOF; c=ReadBlobByte(image))
@@ -521,21 +519,20 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
     if (count != 4)
       continue;
-    if (((bounds.x2 > hires_bounds.x2) && (bounds.y2 > hires_bounds.y2)) ||
-        ((hires_bounds.x2 == 0.0) && (hires_bounds.y2 == 0.0)))
-      {
-        /*
-          Set PDF render geometry.
-        */
-        (void) FormatLocaleString(geometry,MaxTextExtent,
-          "%gx%g%+.15g%+.15g",bounds.x2-bounds.x1,bounds.y2-bounds.y1,
-           bounds.x1,bounds.y1);
-        (void) SetImageProperty(image,"pdf:HiResBoundingBox",geometry);
-        page.width=(size_t) floor(bounds.x2-bounds.x1+0.5);
-        page.height=(size_t) floor(bounds.y2-bounds.y1+0.5);
-        hires_bounds=bounds;
-      }
+    hires_bounds=bounds;
   }
+  if ((hires_bounds.x2 != 0.0) && (hires_bounds.y2 != 0.0))
+    {
+      /*
+        Set PDF render geometry.
+      */
+      (void) FormatLocaleString(geometry,MaxTextExtent,"%gx%g%+.15g%+.15g",
+        hires_bounds.x2-bounds.x1,hires_bounds.y2-hires_bounds.y1,
+        hires_bounds.x1,hires_bounds.y1);
+      (void) SetImageProperty(image,"pdf:HiResBoundingBox",geometry,exception);
+      page.width=(size_t) floor(hires_bounds.x2-hires_bounds.x1+0.5);
+      page.height=(size_t) floor(hires_bounds.y2-hires_bounds.y1+0.5);
+    }
   (void) CloseBlob(image);
   if ((fabs(angle) == 90.0) || (fabs(angle) == 270.0))
     {
