@@ -34,8 +34,7 @@ static inline MagickPixelInfo *CloneMagickPixelInfo(
   MagickPixelInfo
     *clone_pixel;
 
-  clone_pixel=(MagickPixelInfo *) AcquireAlignedMemory(1,
-    sizeof(*clone_pixel));
+  clone_pixel=(MagickPixelInfo *) AcquireMemory(sizeof(*clone_pixel));
   if (clone_pixel == (MagickPixelInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   *clone_pixel=(*pixel);
@@ -88,41 +87,17 @@ static inline MagickBooleanType IsMonochromePixel(const PixelInfo *pixel)
   return(MagickFalse);
 }
 
-static inline void SetMagickPixelInfo(const Image *image,
-  const PixelInfo *color,const IndexPacket *index,MagickPixelInfo *pixel)
-{
-  pixel->red=(MagickRealType) GetPixelRed(color);
-  pixel->green=(MagickRealType) GetPixelGreen(color);
-  pixel->blue=(MagickRealType) GetPixelBlue(color);
-  pixel->opacity=(MagickRealType) GetPixelOpacity(color);
-  if ((image->colorspace == CMYKColorspace) &&
-      (index != (const IndexPacket *) NULL))
-    pixel->index=(MagickRealType) GetPixelIndex(index);
-}
-
-static inline void SetMagickPixelInfoBias(const Image *image,
-  MagickPixelInfo *pixel)
-{
-  /*
-    Obsoleted by MorphologyApply().
-  */
-  pixel->red=image->bias;
-  pixel->green=image->bias;
-  pixel->blue=image->bias;
-  pixel->opacity=image->bias;
-  pixel->index=image->bias;
-}
-
 static inline void SetPixelInfo(const Image *image,
   const MagickPixelInfo *pixel,PixelInfo *color,IndexPacket *index)
 {
   SetPixelRed(color,ClampToQuantum(pixel->red));
   SetPixelGreen(color,ClampToQuantum(pixel->green));
   SetPixelBlue(color,ClampToQuantum(pixel->blue));
-  if (image->colorspace == CMYKColorspace)
+  if (image->channel_map[AlphaPixelChannel].traits != UndefinedPixelTrait)
+    SetPixelAlpha(color,ClampToQuantum(pixel->alpha));
+  if (image->channel_map[BlackPixelChannel].traits != UndefinedPixelTrait)
     SetPixelBlack(index,ClampToQuantum(pixel->black));
-  SetPixelAlpha(color,ClampToQuantum(pixel->alpha));
-  if (image->storage_class == PseudoClass)
+  if (image->channel_map[IndexPixelChannel].traits != UndefinedPixelTrait)
     SetPixelIndex(index,ClampToQuantum(pixel->index));
 }
 
