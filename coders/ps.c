@@ -684,7 +684,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) FormatLocaleString(geometry,MaxTextExtent,"%gx%g%+.15g%+.15g",
         hires_bounds.x2-hires_bounds.x1,hires_bounds.y2-hires_bounds.y1,
         hires_bounds.x1,hires_bounds.y1);
-      (void) SetImageProperty(image,"ps:HiResBoundingBox",geometry,exception);
+      (void) SetImageProperty(image,"ps:HiResBoundingBox",geometry);
       page.width=(size_t) floor(hires_bounds.x2-hires_bounds.x1+0.5);
       page.height=(size_t) floor(hires_bounds.y2-hires_bounds.y1+0.5);
     }
