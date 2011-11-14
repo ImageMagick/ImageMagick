@@ -2365,36 +2365,22 @@ if test "$with_lzma" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-lzma=$with_lzma "
 fi
 
-#
-# Check for LZMA
-#
-have_lzma='no'
-LZMA_LIBS=''
-if test "$with_lzma" != 'no' || test "$with_tiff" != 'no'; then
-    AC_MSG_RESULT([-------------------------------------------------------------])
-  AC_MSG_CHECKING(for LZMA)
-  AC_MSG_RESULT()
-  failed=0
-  passed=0
-  AC_CHECK_HEADER(lzma.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-  AC_CHECK_LIB(lzma,lzma_code,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-  AC_MSG_CHECKING(if LZMA package is complete)
-  if test $passed -gt 0; then
-    if test $failed -gt 0; then
-      AC_MSG_RESULT(no -- some components failed test)
-      have_lzma='no (failed tests)'
-    else
-      LZMA_LIBS='-llzma'
-      LIBS="$LZMA_LIBS $LIBS"
-      AC_DEFINE(LZMA_DELEGATE,1,Define if you have lzma compression library)
-      AC_MSG_RESULT(yes)
-      have_lzma='yes'
-    fi
-  else
-    AC_MSG_RESULT(no)
-  fi
+LZMA_PKG=""
+if test "x$with_lzma" = "xyes"; then
+    AC_MSG_NOTICE([-------------------------------------------------------------])
+    PKG_CHECK_MODULES(LZMA,[liblzma >= 2.9.0], have_lzma=yes, have_lzma=no)
+    AC_MSG_NOTICE([])
 fi
+
+if test "$have_lzma" = 'yes'; then
+    AC_DEFINE(LZMA_DELEGATE,1,Define if you have LZMA library)
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$LZMA_CFLAGS $CPPFLAGS"
+    fi
+fi
+
 AM_CONDITIONAL(LZMA_DELEGATE, test "$have_lzma" = 'yes')
+AC_SUBST(LZMA_CFLAGS)
 AC_SUBST(LZMA_LIBS)
 
 dnl ===========================================================================

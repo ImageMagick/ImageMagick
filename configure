@@ -765,9 +765,10 @@ OPENEXR_DELEGATE_FALSE
 OPENEXR_DELEGATE_TRUE
 OPENEXR_LIBS
 OPENEXR_CFLAGS
-LZMA_LIBS
 LZMA_DELEGATE_FALSE
 LZMA_DELEGATE_TRUE
+LZMA_LIBS
+LZMA_CFLAGS
 LQR_DELEGATE_FALSE
 LQR_DELEGATE_TRUE
 LQR_LIBS
@@ -1181,6 +1182,8 @@ GVC_CFLAGS
 GVC_LIBS
 LQR_CFLAGS
 LQR_LIBS
+LZMA_CFLAGS
+LZMA_LIBS
 OPENEXR_CFLAGS
 OPENEXR_LIBS
 PANGO_CFLAGS
@@ -1942,6 +1945,8 @@ Some influential environment variables:
   GVC_LIBS    linker flags for GVC, overriding pkg-config
   LQR_CFLAGS  C compiler flags for LQR, overriding pkg-config
   LQR_LIBS    linker flags for LQR, overriding pkg-config
+  LZMA_CFLAGS C compiler flags for LZMA, overriding pkg-config
+  LZMA_LIBS   linker flags for LZMA, overriding pkg-config
   OPENEXR_CFLAGS
               C compiler flags for OPENEXR, overriding pkg-config
   OPENEXR_LIBS
@@ -3604,7 +3609,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5951
+MAGICK_SVN_REVISION=5959
 
 
 
@@ -30047,92 +30052,90 @@ if test "$with_lzma" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-lzma=$with_lzma "
 fi
 
-#
-# Check for LZMA
-#
-have_lzma='no'
-LZMA_LIBS=''
-if test "$with_lzma" != 'no' || test "$with_tiff" != 'no'; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
-$as_echo "-------------------------------------------------------------" >&6; }
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LZMA" >&5
+LZMA_PKG=""
+if test "x$with_lzma" = "xyes"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: -------------------------------------------------------------" >&5
+$as_echo "$as_me: -------------------------------------------------------------" >&6;}
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LZMA" >&5
 $as_echo_n "checking for LZMA... " >&6; }
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
-$as_echo "" >&6; }
-  failed=0
-  passed=0
-  ac_fn_c_check_header_mongrel "$LINENO" "lzma.h" "ac_cv_header_lzma_h" "$ac_includes_default"
-if test "x$ac_cv_header_lzma_h" = xyes; then :
-  passed=`expr $passed + 1`
+
+if test -n "$LZMA_CFLAGS"; then
+    pkg_cv_LZMA_CFLAGS="$LZMA_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"liblzma >= 2.9.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "liblzma >= 2.9.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LZMA_CFLAGS=`$PKG_CONFIG --cflags "liblzma >= 2.9.0" 2>/dev/null`
 else
-  failed=`expr $failed + 1`
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$LZMA_LIBS"; then
+    pkg_cv_LZMA_LIBS="$LZMA_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"liblzma >= 2.9.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "liblzma >= 2.9.0") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LZMA_LIBS=`$PKG_CONFIG --libs "liblzma >= 2.9.0" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
 fi
 
 
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for lzma_code in -llzma" >&5
-$as_echo_n "checking for lzma_code in -llzma... " >&6; }
-if ${ac_cv_lib_lzma_lzma_code+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-llzma  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
 
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char lzma_code ();
-int
-main ()
-{
-return lzma_code ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_lzma_lzma_code=yes
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
 else
-  ac_cv_lib_lzma_lzma_code=no
+        _pkg_short_errors_supported=no
 fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lzma_lzma_code" >&5
-$as_echo "$ac_cv_lib_lzma_lzma_code" >&6; }
-if test "x$ac_cv_lib_lzma_lzma_code" = xyes; then :
-  passed=`expr $passed + 1`
+        if test $_pkg_short_errors_supported = yes; then
+	        LZMA_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "liblzma >= 2.9.0" 2>&1`
+        else
+	        LZMA_PKG_ERRORS=`$PKG_CONFIG --print-errors "liblzma >= 2.9.0" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$LZMA_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                have_lzma=no
+elif test $pkg_failed = untried; then
+	have_lzma=no
 else
-  failed=`expr $failed + 1`
+	LZMA_CFLAGS=$pkg_cv_LZMA_CFLAGS
+	LZMA_LIBS=$pkg_cv_LZMA_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_lzma=yes
+fi
+    { $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
 fi
 
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking if LZMA package is complete" >&5
-$as_echo_n "checking if LZMA package is complete... " >&6; }
-  if test $passed -gt 0; then
-    if test $failed -gt 0; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-      have_lzma='no (failed tests)'
-    else
-      LZMA_LIBS='-llzma'
-      LIBS="$LZMA_LIBS $LIBS"
+if test "$have_lzma" = 'yes'; then
 
 $as_echo "#define LZMA_DELEGATE 1" >>confdefs.h
 
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-      have_lzma='yes'
+    if test "$with_modules" = 'no'; then
+        CPPFLAGS="$LZMA_CFLAGS $CPPFLAGS"
     fi
-  else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-  fi
 fi
+
  if test "$have_lzma" = 'yes'; then
   LZMA_DELEGATE_TRUE=
   LZMA_DELEGATE_FALSE='#'
@@ -30140,6 +30143,7 @@ else
   LZMA_DELEGATE_TRUE='#'
   LZMA_DELEGATE_FALSE=
 fi
+
 
 
 
