@@ -1362,13 +1362,13 @@
 
 /* Directory where architecture-independent configuration files live. */
 #ifndef MAGICKCORE_SHAREARCH_PATH
-#define MAGICKCORE_SHAREARCH_PATH "/usr/local/share/ImageMagick-7.0.0/"
+#define MAGICKCORE_SHAREARCH_PATH "/usr/local/lib/ImageMagick-7.0.0/config/"
 #endif
 
 /* Subdirectory of lib where architecture-independent configuration files
    live. */
 #ifndef MAGICKCORE_SHAREARCH_RELATIVE_PATH
-#define MAGICKCORE_SHAREARCH_RELATIVE_PATH "ImageMagick-7.0.0"
+#define MAGICKCORE_SHAREARCH_RELATIVE_PATH "ImageMagick-7.0.0/config"
 #endif
 
 /* Directory where architecture-independent configuration files live. */
