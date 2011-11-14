@@ -3604,7 +3604,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=5936
+MAGICK_SVN_REVISION=5951
 
 
 
@@ -8280,7 +8280,7 @@ eval "eval INCLUDEARCH_DIR=$includearch_dir"
 if test "${with_sharearch_dir+set}" = set; then :
   withval=$with_sharearch_dir; sharearch_dir=$withval
 else
-  sharearch_dir="${DATA_DIR}"
+  sharearch_dir="${LIB_DIR}"
 fi
 
 
@@ -30283,8 +30283,6 @@ PANGO_PKG=""
 if test "x$with_pango" = "xyes"; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PANGO support " >&5
-$as_echo_n "checking for PANGO support ... " >&6; }
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PANGO" >&5
@@ -32067,14 +32065,14 @@ _ACEOF
 
 
 # Subdirectory to place architecture-independent configuration files
-SHAREARCH_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}"
+SHAREARCH_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}/config"
 
 cat >>confdefs.h <<_ACEOF
 #define SHAREARCH_RELATIVE_PATH "$SHAREARCH_RELATIVE_PATH"
 _ACEOF
 
-SHAREARCH_PATH="${DATA_DIR}/${SHAREARCH_RELATIVE_PATH}"
-DEFINE_SHAREARCH_PATH="${DATA_DIR}/${SHAREARCH_RELATIVE_PATH}/"
+SHAREARCH_PATH="${SHAREARCH_DIR}/${SHAREARCH_RELATIVE_PATH}"
+DEFINE_SHAREARCH_PATH="${SHAREARCH_DIR}/${SHAREARCH_RELATIVE_PATH}/"
 case "${build_os}" in
   mingw* )
     DEFINE_SHAREARCH_PATH=`$WinPathScript "$DEFINE_SHAREARCH_PATH" 1`
