@@ -636,6 +636,9 @@
 /* Define to 1 if you have the <tiffconf.h> header file. */
 #undef HAVE_TIFFCONF_H
 
+/* Define to 1 if you have the `TIFFIsBigEndian' function. */
+#undef HAVE_TIFFISBIGENDIAN
+
 /* Define to 1 if you have the `TIFFIsCODECConfigured' function. */
 #undef HAVE_TIFFISCODECCONFIGURED
 
@@ -821,7 +824,7 @@
    */
 #undef LT_OBJDIR
 
-/* Define if you have lzma compression library */
+/* Define if you have LZMA library */
 #undef LZMA_DELEGATE
 
 /* Define to prepend to default font search path. */
