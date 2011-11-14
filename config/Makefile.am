@@ -22,7 +22,7 @@ configshare_DATA = \
 	config/francais.xml \
 	config/locale.xml
 
-# Where architecture-independent configuration files get installed
+# Where architecture-dependent configuration files get installed
 # (share/arch/ImageMagick-version)
 configsharearchdir = $(SHAREARCH_PATH)
 configsharearch_DATA = \
