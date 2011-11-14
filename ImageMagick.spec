@@ -1,5 +1,5 @@
 %global VERSION  6.7.3
-%global Patchlevel  6
+%global Patchlevel  7
 
 Name:           ImageMagick
 Version:        %{VERSION}
@@ -254,6 +254,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt
 %{_libdir}/libMagickCore.so*
 %{_libdir}/libMagickWand.so*
+%{_libdir}/%{name}-%{VERSION}
 %{_bindir}/[a-z]*
 %{_sysconfdir}/%{name}
 %{_libdir}/%{name}-%{VERSION}
