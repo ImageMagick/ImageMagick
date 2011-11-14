@@ -1,6 +1,7 @@
 2011-11-11  6.7.3-6 Cristy  <quetzlzacatenango@image...>
   * Prefer the hires bounding box for Postscript rendering (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19807).
+  * Default configure.xml destination folder to /usr/lib/ImageMagick-ver/config.
 
 2011-11-09  6.7.3-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.3-5, SVN revision 5936
