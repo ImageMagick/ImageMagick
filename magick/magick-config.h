@@ -979,6 +979,11 @@
 #define MAGICKCORE_HAVE_TIFFCONF_H 1
 #endif
 
+/* Define to 1 if you have the `TIFFIsBigEndian' function. */
+#ifndef MAGICKCORE_HAVE_TIFFISBIGENDIAN
+#define MAGICKCORE_HAVE_TIFFISBIGENDIAN 1
+#endif
+
 /* Define to 1 if you have the `TIFFIsCODECConfigured' function. */
 #ifndef MAGICKCORE_HAVE_TIFFISCODECCONFIGURED
 #define MAGICKCORE_HAVE_TIFFISCODECCONFIGURED 1
@@ -1252,7 +1257,7 @@
 #define MAGICKCORE_LT_OBJDIR ".libs/"
 #endif
 
-/* Define if you have lzma compression library */
+/* Define if you have LZMA library */
 #ifndef MAGICKCORE_LZMA_DELEGATE
 #define MAGICKCORE_LZMA_DELEGATE 1
 #endif

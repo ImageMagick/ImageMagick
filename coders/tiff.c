@@ -918,8 +918,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     TIFFGetEXIFProperties(tiff,image);
     TIFFGetProfiles(tiff,image);
     TIFFGetProperties(tiff,image);
+#if defined(MAGICKCORE_HAVE_TIFFISBIGENDIAN)
     (void) SetImageProperty(image,"tiff:endian",TIFFIsBigEndian(tiff) == 0 ?
       "lsb" : "msb");
+#endif
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_COMPRESSION,&compress_tag);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_ORIENTATION,&orientation);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_IMAGEWIDTH,&width);

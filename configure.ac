@@ -2656,7 +2656,6 @@ if test "$with_tiff" != 'no'; then
     AC_CHECK_HEADER(tiffio.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(tiff,TIFFOpen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_CHECK_LIB(tiff,TIFFClientOpen,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(tiff,TIFFIsBigEndian,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_CHECK_LIB(tiff,TIFFIsByteSwapped,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_CHECK_LIB(tiff,TIFFReadRGBATile,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_CHECK_LIB(tiff,TIFFReadRGBAStrip,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
@@ -2673,8 +2672,9 @@ if test "$with_tiff" != 'no'; then
             have_tiff='yes'
             AC_CHECK_HEADERS(tiffconf.h)
             AC_CHECK_FUNCS([TIFFIsCODECConfigured TIFFMergeFieldInfo \
-              TIFFReadEXIFDirectory TIFFSetErrorHandlerExt TIFFSetTagExtender \
-              TIFFSetWarningHandlerExt TIFFSwabArrayOfTriples])
+              TIFFIsBigEndian TIFFReadEXIFDirectory TIFFSetErrorHandlerExt \
+              TIFFSetTagExtender TIFFSetWarningHandlerExt \
+              TIFFSwabArrayOfTriples])
         fi
     else
         AC_MSG_RESULT([no])
