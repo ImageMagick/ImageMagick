@@ -2,13 +2,13 @@
 %global Patchlevel  0
 
 Name:           ImageMagick
-Version:        %{VERSION}
-Release:        %{Patchlevel}
+Version:        %{VERSION}.%{Patchlevel}
+Release:        1%{?dist}
 Summary:        Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images.
 Group:          Applications/Multimedia
 License:        http://www.imagemagick.org/script/license.php
 Url:            http://www.imagemagick.org/
-Source0:        ftp://ftp.imagemagick.org/pub/%{name}/%{name}-%{VERSION}-%{Patchlevel}.tar.bz2
+Source0:        http://www.imagemagick.org/download/%{name}/%{name}-%{VERSION}-%{Patchlevel}.tar.bz2
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
@@ -99,7 +99,6 @@ http://www.imagemagick.org/.
 %package perl
 Summary: ImageMagick perl bindings
 Group: System Environment/Libraries
-Requires: perl-base
 Requires: %{name} = %{version}-%{release}
 Requires: perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 
@@ -181,7 +180,7 @@ make
 rm -rf $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
-cp -a www/source $RPM_BUILD_ROOT%{_datadir}/doc/%{name}
+cp -a www/source $RPM_BUILD_ROOT%{_datadir}/doc/%{name}-%{VERSION}
 rm $RPM_BUILD_ROOT%{_libdir}/*.la
 
 # fix weird perl Magick.so permissions
@@ -254,6 +253,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt
 %{_libdir}/libMagickCore.so*
 %{_libdir}/libMagickWand.so*
+%{_libdir}/%{name}-%{VERSION}
 %{_bindir}/[a-z]*
 %{_sysconfdir}/%{name}
 %{_libdir}/%{name}-%{VERSION}
