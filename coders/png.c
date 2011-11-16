@@ -83,6 +83,15 @@
 #include "magick/utility.h"
 #if defined(MAGICKCORE_PNG_DELEGATE)
 
+/* Use a clone of the image in the PNG decoder.  This feature was added
+ * in IM-6.6.6-7 but is not useful and may be wasteful.
+ *
+ * This feature will be removed soon but is being retained temporarily
+ * (but disabled by default) in IM-6.7.3-6 for testing.
+ *
+ * #define PNG_USE_CLONE
+ */
+
 /* Suppress libpng pedantic warnings that were added in
  * libpng-1.2.41 and libpng-1.4.0.  If you are working on
  * migration to libpng-1.5, remove these defines and then
@@ -7374,13 +7383,15 @@ static MagickBooleanType Magick_png_write_chunk_from_profile(Image *image,
 
 /* Write one PNG image */
 static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
-   const ImageInfo *IMimage_info,Image *IMimage)
+   const ImageInfo *image_info,Image *image)
 {
+#ifdef PNG_USE_CLONE
   Image
     *image;
 
   ImageInfo
     *image_info;
+#endif
 
   char
     s[2];
@@ -7501,10 +7512,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
     "  Enter WriteOnePNGImage()");
 
+#ifdef PNG_USE_CLONE
   image = CloneImage(IMimage,0,0,MagickFalse,&IMimage->exception);
   image_info=(ImageInfo *) CloneImageInfo(IMimage_info);
   if (image_info == (ImageInfo *) NULL)
      ThrowWriterException(ResourceLimitError, "MemoryAllocationFailed");
+#endif
 
 #if 0
   if (image_info->type == PaletteMatteType)
@@ -8831,12 +8844,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if ((mng_info->write_png_colortype == 4 || mng_info->write_png8) &&
      (image->colors == 0 || image->colormap == NULL))
     {
+#ifdef PNG_USE_CLONE
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
-      (void) ThrowMagickException(&IMimage->exception,
+#endif
+      (void) ThrowMagickException(&image->exception,
           GetMagickModule(),CoderError,
           "Cannot write PNG8 or color-type 3; colormap is NULL",
-          "`%s'",IMimage->filename);
+          "`%s'",image->filename);
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
@@ -8883,10 +8898,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
+#ifdef PNG_USE_CLONE
       if (ping_have_blob != MagickFalse)
           (void) CloseBlob(image);
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
+#endif
       return(MagickFalse);
     }
   /*
@@ -10294,10 +10311,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
+#ifdef PNG_USE_CLONE
       if (ping_have_blob != MagickFalse)
           (void) CloseBlob(image);
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
+#endif
       return(MagickFalse);
     }
   quantum_info=AcquireQuantumInfo(image_info,image);
@@ -10738,14 +10757,16 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (ping_have_blob != MagickFalse)
      (void) CloseBlob(image);
 
+#ifdef PNG_USE_CLONE
   image_info=DestroyImageInfo(image_info);
   image=DestroyImage(image);
+#endif
 
   /* Store bit depth actually written */
   s[0]=(char) ping_bit_depth;
   s[1]='\0';
 
-  (void) SetImageProperty(IMimage,"png:bit-depth-written",s);
+  (void) SetImageProperty(image,"png:bit-depth-written",s);
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -11582,6 +11603,10 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   mng_info->need_blob = MagickTrue;
 
   status=WriteOnePNGImage(mng_info,image_info,image);
+
+#ifndef PNG_NO_USE_CLONE
+  (void) CloseBlob(image);
+#endif
 
   MngInfoFreeStruct(mng_info,&have_mng_structure);
 
