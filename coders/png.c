@@ -7382,8 +7382,13 @@ static MagickBooleanType Magick_png_write_chunk_from_profile(Image *image,
 
 
 /* Write one PNG image */
+#ifdef PNG_USE_CLONE
+static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
+   const ImageInfo *IMimage_info,Image *IMimage)
+#else
 static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
    const ImageInfo *image_info,Image *image)
+#endif
 {
 #ifdef PNG_USE_CLONE
   Image
@@ -10766,7 +10771,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   s[0]=(char) ping_bit_depth;
   s[1]='\0';
 
+#ifdef PNG_USE_CLONE
+  (void) SetImageProperty(IMimage,"png:bit-depth-written",s);
+#else
   (void) SetImageProperty(image,"png:bit-depth-written",s);
+#endif
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
