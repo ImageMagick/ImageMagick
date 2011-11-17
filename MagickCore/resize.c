@@ -1009,6 +1009,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
             }
         }
       /* Convert B,C values into Cubic Coefficents. See CubicBC(). */
+     {
         double
           B_squared;
 
@@ -1020,7 +1021,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
         resize_filter->coefficient[4]=-8.0*C-B_squared;
         resize_filter->coefficient[5]=B+5.0*C;
         resize_filter->coefficient[6]=(-1.0/6.0)*B-C;
-      }
+     }
     }
 
   /*

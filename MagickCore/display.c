@@ -53,6 +53,7 @@
 #include "MagickCore/delegate.h"
 #include "MagickCore/display.h"
 #include "MagickCore/display-private.h"
+#include "MagickCore/distort.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/effect.h"
 #include "MagickCore/enhance.h"
