@@ -281,17 +281,15 @@ static MagickRealType Hamming(const MagickRealType x,
 }
 
 static MagickRealType Kaiser(const MagickRealType x,
-  const ResizeFilter *magick_unused(resize_filter))
+  const ResizeFilter *resize_filter)
 {
-#define Alpha  6.5
-#define I0A  (1.0/I0(Alpha))
-
   /*
-    Kaiser Windowing Function (bessel windowing): Alpha is a free
-    value from 5 to 8 (currently hardcoded to 6.5).
-    Future: make alpha the IOA pre-calculation, an 'expert' setting.
+    Kaiser Windowing Function (bessel windowing)
+    Alpha (c[0]) is a free value from 5 to 8 (defaults to 6.5).
+    A scaling factor (c[1]) is not needed as filter is normalized
   */
-  return(I0A*I0(Alpha*sqrt((double) (1.0-x*x))));
+  return(resize_filter->coefficient[1]*
+              I0(resize_filter->coefficient[0]*sqrt((double) (1.0-x*x))));
 }
 
 static MagickRealType Lagrange(const MagickRealType x,
@@ -563,7 +561,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %  moderately blurs high frequency 'pixel-hash' patterns under no-op.  It turns
 %  out to be close to both Mitchell and Lanczos2Sharp.  For example, its first
 %  crossing is at (36 sqrt(2) + 123)/(72 sqrt(2) + 47), almost the same as the
-%  first crossing of Mitchell and Lanczos2Sharp.
+%  first crossing of both Mitchell and Lanczos2Sharp.
 %
 %  'EXPERT' OPTIONS:
 %
@@ -672,7 +670,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   MagickRealType
     B,
     C,
-    sigma;
+    value;
 
   register ResizeFilter
     *resize_filter;
@@ -827,7 +825,6 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   filter_type=mapping[filter].filter;
   window_type=mapping[filter].window;
   resize_filter->blur = blur;   /* function argument blur factor */
-  sigma = 0.5;    /* guassian sigma of half a pixel by default */
   /* Promote 1D Windowed Sinc Filters to a 2D Windowed Jinc filters */
   if (cylindrical != MagickFalse && filter_type == SincFastFilter
        && filter != SincFastFilter )
@@ -919,15 +916,26 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   ** Other Expert Option Modifications
   */
 
-  /* User Sigma Override - no support change */
-  artifact=GetImageArtifact(image,"filter:sigma");
-  if (artifact != (const char *) NULL)
-    sigma=StringToDouble(artifact,(char **) NULL);
-  /* Define coefficents for Gaussian */
+  /* User Gaussian Sigma Override - no support change */
+  value = 0.5;    /* guassian sigma default, half pixel */
   if ( GaussianFilter ) {
-    resize_filter->coefficient[0]=1.0/(2.0*sigma*sigma);
-    resize_filter->coefficient[1]=(MagickRealType) (1.0/(Magick2PI*sigma*
-      sigma)); /* Normalization Multiplier - unneeded for filters */
+    artifact=GetImageArtifact(image,"filter:sigma");
+    if (artifact != (const char *) NULL)
+      value=StringToDouble(artifact,(char **) NULL);
+    /* Define coefficents for Gaussian */
+    resize_filter->coefficient[0]=1.0/(2.0*value*value); /* X scaling */
+    resize_filter->coefficient[1]=(MagickRealType) (1.0/(Magick2PI*value*
+      value)); /* normalization */
+  }
+  /* User Kaiser Alpha Override - no support change */
+  if ( KaiserFilter ) {
+    value=6.5; /* default alpha value for Kaiser bessel windowing function */
+    artifact=GetImageArtifact(image,"filter:alpha");
+    if (artifact != (const char *) NULL)
+      value=StringToDouble(artifact,(char **) NULL);
+    /* Define coefficents for Kaiser Windowing Function */
+    resize_filter->coefficient[0]=value;         /* X scaling */
+    resize_filter->coefficient[1]=1.0/I0(value); /* normalization */
   }
 
   /* Blur Override */
@@ -1069,7 +1077,10 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
              GetMagickPrecision(), (double)resize_filter->blur);
         if ( filter_type == GaussianFilter )
           (void) FormatLocaleFile(stdout,"# gaussian_sigma = %.*g\n",
-               GetMagickPrecision(), (double)sigma);
+               GetMagickPrecision(), (double)value);
+        if ( filter_type == KaiserFilter )
+          (void) FormatLocaleFile(stdout,"# kaiser_alpha = %.*g\n",
+               GetMagickPrecision(), (double)value);
         (void) FormatLocaleFile(stdout,"# practical_support = %.*g\n",
              GetMagickPrecision(), (double)support);
         if ( filter_type == CubicFilter || window_type == CubicFilter )
