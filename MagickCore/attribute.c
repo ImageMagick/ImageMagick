@@ -156,15 +156,15 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
       image_view=DestroyCacheView(image_view);
       return(bounds);
     }
-  SetPixelInfo(image,p,&target[0]);
+  GetPixelInfoPixel(image,p,&target[0]);
   GetPixelInfo(image,&target[1]);
   p=GetCacheViewVirtualPixels(image_view,(ssize_t) image->columns-1,0,1,1,
     exception);
-  SetPixelInfo(image,p,&target[1]);
+  GetPixelInfoPixel(image,p,&target[1]);
   GetPixelInfo(image,&target[2]);
   p=GetCacheViewVirtualPixels(image_view,0,(ssize_t) image->rows-1,1,1,
     exception);
-  SetPixelInfo(image,p,&target[2]);
+  GetPixelInfoPixel(image,p,&target[2]);
   status=MagickTrue;
   GetPixelInfo(image,&zero);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -199,7 +199,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
     pixel=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelInfo(image,p,&pixel);
+      GetPixelInfoPixel(image,p,&pixel);
       if ((x < bounding_box.x) &&
           (IsFuzzyEquivalencePixelInfo(&pixel,&target[0]) == MagickFalse))
         bounding_box.x=x;

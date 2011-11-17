@@ -87,7 +87,7 @@ static inline MagickBooleanType IsMonochromePixel(const PixelInfo *pixel)
   return(MagickFalse);
 }
 
-static inline void SetPixelInfo(const Image *image,
+static inline void GetPixelInfo(const Image *image,
   const MagickPixelInfo *pixel,PixelInfo *color,IndexPacket *index)
 {
   SetPixelRed(color,ClampToQuantum(pixel->red));

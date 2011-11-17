@@ -2648,7 +2648,7 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
 
         if ( validity <= 0.0 ) {
           /* result of distortion is an invalid pixel - don't resample */
-          SetPixelPixelInfo(distort_image,&invalid,q);
+          SetPixelInfoPixel(distort_image,&invalid,q);
         }
         else {
           /* resample the source image to find its correct color */
@@ -2660,7 +2660,7 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
             CompositePixelInfoBlend(&pixel,validity,&invalid,(1.0-validity),
               &pixel);
           }
-          SetPixelPixelInfo(distort_image,&pixel,q);
+          SetPixelInfoPixel(distort_image,&pixel,q);
         }
         q+=GetPixelChannels(distort_image);
       }
@@ -2921,7 +2921,7 @@ MagickExport Image *SparseColorImage(const Image *image,
       GetPixelInfo(sparse_image,&pixel);
       for (i=0; i < (ssize_t) image->columns; i++)
       {
-        SetPixelInfo(image,q,&pixel);
+        GetPixelInfoPixel(image,q,&pixel);
         switch (sparse_method)
         {
           case BarycentricColorInterpolate:
@@ -3070,7 +3070,7 @@ MagickExport Image *SparseColorImage(const Image *image,
         if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
             (image->matte != MagickFalse))
           pixel.alpha*=QuantumRange;
-        SetPixelPixelInfo(sparse_image,&pixel,q);
+        SetPixelInfoPixel(sparse_image,&pixel,q);
         q+=GetPixelChannels(sparse_image);
       }
       sync=SyncCacheViewAuthenticPixels(sparse_view,exception);

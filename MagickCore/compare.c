@@ -245,9 +245,9 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
           difference=MagickTrue;
       }
       if (difference == MagickFalse)
-        SetPixelPixelInfo(highlight_image,&lowlight,r);
+        SetPixelInfoPixel(highlight_image,&lowlight,r);
       else
-        SetPixelPixelInfo(highlight_image,&highlight,r);
+        SetPixelInfoPixel(highlight_image,&highlight,r);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(reconstruct_image);
       r+=GetPixelChannels(highlight_image);

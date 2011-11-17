@@ -1198,10 +1198,10 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
         inverse_affine.ty;
       (void) InterpolatePixelInfo(source,source_view,UndefinedInterpolatePixel,
         point.x,point.y,&pixel,exception);
-      SetPixelInfo(image,q,&composite);
+      GetPixelInfoPixel(image,q,&composite);
       CompositePixelInfoOver(&pixel,pixel.alpha,&composite,composite.alpha,
         &composite);
-      SetPixelPixelInfo(image,&composite,q);
+      SetPixelInfoPixel(image,&composite,q);
       x_offset++;
       q+=GetPixelChannels(image);
     }
@@ -3280,7 +3280,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
       offset/=length;
     for (x=bounding_box.x; x < (ssize_t) bounding_box.width; x++)
     {
-      SetPixelInfo(image,q,&pixel);
+      GetPixelInfoPixel(image,q,&pixel);
       switch (gradient->spread)
       {
         case UndefinedSpread:
@@ -3414,7 +3414,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
       }
       CompositePixelInfoOver(&composite,composite.alpha,&pixel,pixel.alpha,
         &pixel);
-      SetPixelPixelInfo(image,&pixel,q);
+      SetPixelInfoPixel(image,&pixel,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -3883,7 +3883,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
               (y == (ssize_t) ceil(primitive_info->point.y-0.5)))
             {
               (void) GetStrokeColor(draw_info,x,y,&pixel,exception);
-              SetPixelPixelInfo(image,&pixel,q);
+              SetPixelInfoPixel(image,&pixel,q);
             }
           q+=GetPixelChannels(image);
         }
@@ -4169,7 +4169,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             break;
           GetPixelInfo(image,&pixel);
           (void) GetFillColor(draw_info,x,y,&pixel,exception);
-          SetPixelPixelInfo(image,&pixel,q);
+          SetPixelInfoPixel(image,&pixel,q);
           (void) SyncCacheViewAuthenticPixels(image_view,exception);
           break;
         }
@@ -4209,7 +4209,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
                   continue;
                 }
               (void) GetFillColor(draw_info,x,y,&pixel,exception);
-              SetPixelPixelInfo(image,&pixel,q);
+              SetPixelInfoPixel(image,&pixel,q);
               q+=GetPixelChannels(image);
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -4261,7 +4261,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             for (x=0; x < (ssize_t) image->columns; x++)
             {
               (void) GetFillColor(draw_info,x,y,&pixel,exception);
-              SetPixelPixelInfo(image,&pixel,q);
+              SetPixelInfoPixel(image,&pixel,q);
               q+=GetPixelChannels(image);
             }
             sync=SyncCacheViewAuthenticPixels(image_view,exception);

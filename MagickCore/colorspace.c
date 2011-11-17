@@ -330,9 +330,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         pixel=zero;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetPixelInfo(image,q,&pixel);
+          GetPixelInfoPixel(image,q,&pixel);
           ConvertRGBToCMYK(&pixel);
-          SetPixelPixelInfo(image,&pixel,q);
+          SetPixelInfoPixel(image,&pixel,q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -1759,9 +1759,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         pixel=zero;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetPixelInfo(image,q,&pixel);
+          GetPixelInfoPixel(image,q,&pixel);
           ConvertCMYKToRGB(&pixel);
-          SetPixelPixelInfo(image,&pixel,q);
+          SetPixelInfoPixel(image,&pixel,q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);

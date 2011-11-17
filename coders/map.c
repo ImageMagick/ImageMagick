@@ -227,7 +227,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           p++;
         }
       SetPixelIndex(image,index,q);
-      SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
+      SetPixelInfoPixel(image,image->colormap+(ssize_t) index,q);
       q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)

@@ -237,7 +237,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     {
       if (GetPixelAlpha(image,q) == TransparentAlpha)
         break;
-      SetPixelInfo(image,p,&pixel);
+      GetPixelInfoPixel(image,p,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,target) == invert)
         break;
       SetPixelAlpha(floodplane_image,TransparentAlpha,q);
@@ -270,7 +270,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
               {
                 if (GetPixelAlpha(image,q) == TransparentAlpha)
                   break;
-                SetPixelInfo(image,p,&pixel);
+                GetPixelInfoPixel(image,p,&pixel);
                 if (IsFuzzyEquivalencePixelInfo(&pixel,target) == invert)
                   break;
                 SetPixelAlpha(floodplane_image,TransparentAlpha,q);
@@ -299,7 +299,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
           {
             if (GetPixelAlpha(image,q) == TransparentAlpha)
               break;
-            SetPixelInfo(image,p,&pixel);
+            GetPixelInfoPixel(image,p,&pixel);
             if (IsFuzzyEquivalencePixelInfo(&pixel,target) != invert)
               break;
             p+=GetPixelChannels(image);
@@ -801,7 +801,7 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
     pixel=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelInfo(image,q,&pixel);
+      GetPixelInfoPixel(image,q,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,target) != invert)
         {
           if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
@@ -938,7 +938,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
     pixel=zero;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelInfo(image,q,&pixel);
+      GetPixelInfoPixel(image,q,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,target) != invert)
         SetPixelAlpha(image,opacity,q);
       q+=GetPixelChannels(image);
@@ -1067,7 +1067,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
     GetPixelInfo(image,&pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelInfo(image,q,&pixel);
+      GetPixelInfoPixel(image,q,&pixel);
       match=((pixel.red >= low->red) && (pixel.red <= high->red) &&
         (pixel.green >= low->green) && (pixel.green <= high->green) &&
         (pixel.blue  >= low->blue) && (pixel.blue <= high->blue)) ? MagickTrue :

@@ -485,7 +485,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
             *pixel=resample_filter->average_pixel; /* FAILED */
             break;
           }
-          SetPixelInfo(resample_filter->image,pixels,
+          GetPixelInfoPixel(resample_filter->image,pixels,
             &(resample_filter->average_pixel));
           average_view=DestroyCacheView(average_view);
           average_image=DestroyImage(average_image);

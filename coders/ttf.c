@@ -237,7 +237,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelPixelInfo(image,&background_color,q);
+      SetPixelInfoPixel(image,&background_color,q);
       q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)

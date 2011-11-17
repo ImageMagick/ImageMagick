@@ -8521,7 +8521,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           {
               if (GetPixelAlpha(image,r) < OpaqueAlpha/2)
                 {
-                  SetPixelPixelInfo(image,&image->background_color,r);
+                  SetPixelInfoPixel(image,&image->background_color,r);
                   SetPixelAlpha(image,TransparentAlpha,r);
                 }
               else

@@ -2073,7 +2073,7 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelPixelInfo(image,background,q);
+      SetPixelInfoPixel(image,background,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2467,7 +2467,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           if (GetPixelAlpha(image,q) == TransparentAlpha)
-            SetPixelPixelInfo(image,&background,q);
+            SetPixelInfoPixel(image,&background,q);
           q+=GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2597,7 +2597,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   if (image->background_color.alpha != OpaqueAlpha)
     image->matte=MagickTrue;
   background=image->background_color;
-  SetPacketPixelInfo(image,&background,&pixel);
+  SetPixelInfo(image,&background,&pixel);
   /*
     Set image background color.
   */
@@ -2622,7 +2622,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelPixelInfo(image,&background,q);
+      SetPixelInfoPixel(image,&background,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2703,7 +2703,7 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelPixelInfo(image,color,q);
+      SetPixelInfoPixel(image,color,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -4033,7 +4033,7 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
     {
       index=PushColormapIndex(image,(size_t) GetPixelIndex(image,q),
         &range_exception);
-      SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
+      SetPixelInfoPixel(image,image->colormap+(ssize_t) index,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

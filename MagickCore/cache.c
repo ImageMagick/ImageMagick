@@ -2295,7 +2295,7 @@ MagickExport MagickBooleanType GetOneVirtualMagickPixel(const Image *image,
   GetPixelInfo(image,pixel);
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
-  SetPixelInfo(image,p,pixel);
+  GetPixelInfoPixel(image,p,pixel);
   return(MagickTrue);
 }
 
@@ -3864,8 +3864,8 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
   {
     if ((p == (const Quantum *) NULL) || (r == (const Quantum *) NULL))
       break;
-    SetPixelInfo(image,p,&alpha);
-    SetPixelInfo(image,q,&beta);
+    GetPixelInfoPixel(image,p,&alpha);
+    GetPixelInfoPixel(image,q,&beta);
     MagickPixelCompositeMask(&beta,(MagickRealType) GetPixelIntensity(image,r),
       &alpha,alpha.alpha,&beta);
     SetPixelRed(image,ClampToQuantum(beta.red),q);

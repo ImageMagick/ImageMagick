@@ -226,7 +226,7 @@ static MagickBooleanType WriteDEBUGImage(const ImageInfo *image_info,
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g: ",(double)
           x,(double) y);
         (void) WriteBlobString(image,buffer);
-        SetPixelInfo(image,p,&pixel);
+        GetPixelInfoPixel(image,p,&pixel);
         (void) FormatLocaleString(tuple,MaxTextExtent,"%.20g,%.20g,%.20g ",
           (double) pixel.red,(double) pixel.green,(double) pixel.blue);
         if (pixel.colorspace == CMYKColorspace)

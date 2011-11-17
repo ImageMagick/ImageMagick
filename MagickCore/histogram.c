@@ -239,7 +239,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
       index=MaxTreeDepth-1;
       for (level=1; level < MaxTreeDepth; level++)
       {
-        SetPixelInfo(image,p,&pixel);
+        GetPixelInfoPixel(image,p,&pixel);
         id=ColorToNodeId(image,&pixel,index);
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
@@ -705,7 +705,7 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
       index=MaxTreeDepth-1;
       for (level=1; level < MaxTreeDepth; level++)
       {
-        SetPixelInfo(image,p,&pixel);
+        GetPixelInfoPixel(image,p,&pixel);
         id=ColorToNodeId(image,&pixel,index);
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
@@ -865,7 +865,7 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
       index=MaxTreeDepth-1;
       for (level=1; level < MaxTreeDepth; level++)
       {
-        SetPixelInfo(image,p,&pixel);
+        GetPixelInfoPixel(image,p,&pixel);
         id=ColorToNodeId(image,&pixel,index);
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
