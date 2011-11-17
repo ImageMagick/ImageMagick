@@ -2356,7 +2356,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                   {
                     (void) ProfileImage(*image,profile_info->magick,
                       GetStringInfoDatum(profile),(size_t)
-                      GetStringInfoLength(profile),MagickFalse);
+                      GetStringInfoLength(profile),exception);
                     profile=DestroyStringInfo(profile);
                   }
                 profile_info=DestroyImageInfo(profile_info);
@@ -2369,7 +2369,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               profile=GetImageProfile(profile_image,name);
               if (profile != (StringInfo *) NULL)
                 (void) ProfileImage(*image,name,GetStringInfoDatum(profile),
-                  (size_t) GetStringInfoLength(profile),MagickFalse);
+                  (size_t) GetStringInfoLength(profile),exception);
               name=GetNextImageProfile(profile_image);
             }
             profile_image=DestroyImage(profile_image);

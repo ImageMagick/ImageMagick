@@ -4422,7 +4422,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     {
                       (void) ProfileImage(msl_info->image[n],name,
                         GetStringInfoDatum(profile),(size_t)
-                        GetStringInfoLength(profile),MagickFalse);
+                        GetStringInfoLength(profile),&exception);
                       profile=DestroyStringInfo(profile);
                     }
                   continue;
@@ -4435,7 +4435,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 if (profile != (StringInfo *) NULL)
                   (void) ProfileImage(msl_info->image[n],name,
                     GetStringInfoDatum(profile),(size_t)
-                    GetStringInfoLength(profile),MagickFalse);
+                    GetStringInfoLength(profile),&exception);
                 name=GetNextImageProfile(profile_image);
               }
               profile_image=DestroyImage(profile_image);
