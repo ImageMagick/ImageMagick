@@ -521,8 +521,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (colorspace != GRAYColorspace)
         {
           (void) FormatLocaleFile(file,"  Image statistics:\n");
-          (void) PrintChannelStatistics(file,MaxPixelChannels,"Overall",
-            1.0/scale,channel_statistics);
+          (void) PrintChannelStatistics(file,(PixelChannel) MaxPixelChannels,
+            "Overall",1.0/scale,channel_statistics);
         }
       channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
         channel_statistics);

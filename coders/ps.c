@@ -671,7 +671,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
         i=1;
       }
-    if ((count != 4) || (i < priority))
+    if ((count != 4) || (i < (ssize_t) priority))
       continue;
     hires_bounds=bounds;
     priority=i;

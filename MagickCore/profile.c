@@ -103,7 +103,7 @@
 /*
   Typedef declarations
 */
-struct ProfileInfo
+struct _ProfileInfo
 {
   char
     *name;
