@@ -55,6 +55,7 @@
 #include "magick/constitute.h"
 #include "magick/decorate.h"
 #include "magick/display.h"
+#include "magick/distort.h"
 #include "magick/draw.h"
 #include "magick/effect.h"
 #include "magick/enhance.h"
