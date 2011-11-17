@@ -80,6 +80,7 @@
 #include "MagickCore/resize.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/segment.h"
+#include "MagickCore/shear.h"
 #include "MagickCore/signature-private.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/thread-private.h"
