@@ -87,10 +87,10 @@
  * in IM-6.6.6-7 but is not useful and may be wasteful.
  *
  * This feature will be removed soon but is being retained temporarily
- * (but disabled by default) in IM-6.7.3-6 for testing.
+ * (and enabled by default) in IM-6.7.3-6 for testing.
  *
- * #define PNG_USE_CLONE
  */
+ #define PNG_USE_CLONE
 
 /* Suppress libpng pedantic warnings that were added in
  * libpng-1.2.41 and libpng-1.4.0.  If you are working on
@@ -11613,7 +11613,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
 
   status=WriteOnePNGImage(mng_info,image_info,image);
 
-#ifndef PNG_NO_USE_CLONE
+#ifndef PNG_USE_CLONE
   (void) CloseBlob(image);
 #endif
 
