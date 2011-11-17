@@ -78,6 +78,7 @@
 #include "magick/resize.h"
 #include "magick/resource_.h"
 #include "magick/segment.h"
+#include "magick/shear.h"
 #include "magick/signature-private.h"
 #include "magick/string_.h"
 #include "magick/thread-private.h"
