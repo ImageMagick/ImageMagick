@@ -23,9 +23,8 @@ extern "C" {
 #endif
 
 extern MagickExport Image
-  *AffineTransformImage(const Image *,const AffineMatrix *,ExceptionInfo *),
   *DeskewImage(const Image *,const double,ExceptionInfo *),
-  *RotateImage(const Image *,const double,ExceptionInfo *),
+  *IntegralRotateImage(const Image *,size_t,ExceptionInfo *),
   *ShearImage(const Image *,const double,const double,ExceptionInfo *),
   *ShearRotateImage(const Image *,const double,ExceptionInfo *);
 
