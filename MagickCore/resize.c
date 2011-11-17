@@ -286,17 +286,15 @@ static MagickRealType Jinc(const MagickRealType x,
 }
 
 static MagickRealType Kaiser(const MagickRealType x,
-  const ResizeFilter *magick_unused(resize_filter))
+  const ResizeFilter *resize_filter)
 {
-#define Alpha  6.5
-#define I0A  (1.0/I0(Alpha))
-
   /*
-    Kaiser Windowing Function (bessel windowing): Alpha is a free value
-    from 5 to 8 (currently hardcoded to 6.5).  Future: make alpha the IOA
-    pre-calculation, an 'expert' setting.
+    Kaiser Windowing Function (bessel windowing)
+    Alpha (c[0]) is a free value from 5 to 8 (defaults to 6.5).
+    A scaling factor (c[1]) is not needed as filter is normalized
   */
-  return(I0A*I0(Alpha*sqrt((double) (1.0-x*x))));
+  return(resize_filter->coefficient[1]*
+              I0(resize_filter->coefficient[0]*sqrt((double) (1.0-x*x))));
 }
 
 static MagickRealType Lagrange(const MagickRealType x,
@@ -665,7 +663,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   MagickRealType
     B,
     C,
-    sigma;
+    value;
 
   register ResizeFilter
     *resize_filter;
@@ -734,10 +732,9 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     MagickRealType
       (*function)(const MagickRealType,const ResizeFilter*),
       lobes,  /* Default lobes/support size of the weighting filter. */
-      scale,  /* Support when function used as a windowing function.  Typically
-                 equal to the location of the first zero crossing. */
-      B,
-      C;      /* BC-spline coefficients, ignored if not a CubicBC filter. */
+      scale, /* Support when function used as a windowing function
+                Typically equal to the location of the first zero crossing. */
+      B,C;   /* BC-spline coefficients, ignored if not a CubicBC filter. */
   } const filters[SentinelFilter] =
   {
     { Box,       0.5, 0.5, 0.0, 0.0 }, /* Undefined (default to Box)  */
@@ -766,8 +763,8 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFast,  3.0, 1.0, 0.0, 0.0 }, /* lanczos, Sharpened          */
     { SincFast,  2.0, 1.0, 0.0, 0.0 }, /* Lanczos, 2-lobed            */
     { SincFast,  2.0, 1.0, 0.0, 0.0 }, /* Lanczos2, sharpened         */
-    { CubicBC,   2.0, 1.1685777620836932, 0.37821575509399867,
-      0.31089212245300067 }
+    { CubicBC,   2.0, 1.1685777620836932,
+                              0.37821575509399867, 0.31089212245300067 }
                      /* Robidoux: Keys cubic close to Lanczos2D sharpened */
   };
   /*
@@ -821,34 +818,27 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   filter_type=mapping[filter].filter;
   window_type=mapping[filter].window;
   resize_filter->blur = blur;   /* function argument blur factor */
-  sigma=0.5;    /* gaussian sigma of half a pixel by default */
+  /* Promote 1D Windowed Sinc Filters to a 2D Windowed Jinc filters */
   if ((cylindrical != MagickFalse) && (filter_type == SincFastFilter) &&
       (filter != SincFastFilter))
     filter_type=JincFilter;  /* 1D Windowed Sinc => 2D Windowed Jinc filters */
+  /* Expert filter setting override */
   artifact=GetImageArtifact(image,"filter:filter");
   if (artifact != (const char *) NULL)
     {
       ssize_t
         option;
 
-      /*
-        Expert filter setting override.
-      */
       option=ParseCommandOption(MagickFilterOptions,MagickFalse,artifact);
       if ((UndefinedFilter < option) && (option < SentinelFilter))
-        {
-          /*
-            Raw filter request - no window function.
-          */
+        { /* Raw filter request - no window function. */
           filter_type=(FilterTypes) option;
           window_type=BoxFilter;
         }
+      /* Filter override with a specific window function. */
       artifact=GetImageArtifact(image,"filter:window");
       if (artifact != (const char *) NULL)
         {
-          /*
-            Filter override with a specific window function.
-          */
           option=ParseCommandOption(MagickFilterOptions,MagickFalse,artifact);
           if ((UndefinedFilter < option) && (option < SentinelFilter))
             window_type=(FilterTypes) option;
@@ -856,15 +846,13 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     }
   else
     {
+      /* Window specified, but no filter function?  Assume Sinc/Jinc. */
       artifact=GetImageArtifact(image,"filter:window");
       if (artifact != (const char *) NULL)
         {
           ssize_t
             option;
 
-          /*
-            Window specified, but no filter function?  Assume Sinc/Jinc.
-          */
           option=ParseCommandOption(MagickFilterOptions,MagickFalse,artifact);
           if ((UndefinedFilter < option) && (option < SentinelFilter))
             {
@@ -874,121 +862,121 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
             }
         }
     }
-  /*
-    Assign the real functions to use for the filters selected.
-  */
+
+  /* Assign the real functions to use for the filters selected. */
   resize_filter->filter=filters[filter_type].function;
   resize_filter->support=filters[filter_type].lobes;
   resize_filter->window=filters[window_type].function;
   resize_filter->scale=filters[window_type].scale;
   resize_filter->signature=MagickSignature;
-  /*
-    Filter Modifications for orthogonal/cylindrical usage.
-  */
+
+  /* Filter Modifications for orthogonal/cylindrical usage */
   if (cylindrical != MagickFalse)
     switch (filter_type)
     {
       case BoxFilter:
-      {
-        /*
-          Support for Cylindrical Box should be sqrt(2)/2.
-        */
+        /* Support for Cylindrical Box should be sqrt(2)/2 */
         resize_filter->support=(MagickRealType) MagickSQ1_2;
         break;
-      }
       case LanczosFilter:
       case LanczosSharpFilter:
       case Lanczos2Filter:
       case Lanczos2SharpFilter:
-      {
-        /*
-          Number of lobes (support window size) remain unchanged.
-        */
         resize_filter->filter=filters[JincFilter].function;
         resize_filter->window=filters[JincFilter].function;
         resize_filter->scale=filters[JincFilter].scale;
+        /* number of lobes (support window size) remain unchanged */
         break;
-      }
       default:
         break;
     }
-  /*
-    Global Sharpening (regardless of orthoginal/cylindrical).
-  */
+  /* Global Sharpening (regardless of orthoginal/cylindrical) */
   switch (filter_type)
   {
     case LanczosSharpFilter:
-    {
       resize_filter->blur*=0.9812505644269356;
       break;
-    }
     case Lanczos2SharpFilter:
-    {
       resize_filter->blur*=0.9549963639785485;
       break;
-    }
     default:
       break;
   }
+
+  /*
+  ** Other Expert Option Modifications
+  */
+
+  /* User Gaussian Sigma Override - no support change */
+  value = 0.5;    /* guassian sigma default, half pixel */
+  if ( GaussianFilter ) {
   artifact=GetImageArtifact(image,"filter:sigma");
   if (artifact != (const char *) NULL)
-    sigma=StringToDouble(artifact,(char **) NULL);  /* override sigma */
-  if (GaussianFilter)
-    {
-      /*
-        Define coefficents for Gaussian.
-      */
-      resize_filter->coefficient[0]=1.0/(2.0*sigma*sigma);
-      resize_filter->coefficient[1]=(MagickRealType) (1.0/(Magick2PI*sigma*
-        sigma)); /* normalization multiplier - unneeded for filters */
-    }
+      value=StringToDouble(artifact,(char **) NULL);
+    /* Define coefficents for Gaussian */
+    resize_filter->coefficient[0]=1.0/(2.0*value*value); /* X scaling */
+    resize_filter->coefficient[1]=(MagickRealType) (1.0/(Magick2PI*value*
+      value)); /* normalization */
+  }
+  /* User Kaiser Alpha Override - no support change */
+  if ( KaiserFilter ) {
+    value=6.5; /* default alpha value for Kaiser bessel windowing function */
+    artifact=GetImageArtifact(image,"filter:alpha");
+    if (artifact != (const char *) NULL)
+      value=StringToDouble(artifact,(char **) NULL);
+    /* Define coefficents for Kaiser Windowing Function */
+    resize_filter->coefficient[0]=value;         /* X scaling */
+    resize_filter->coefficient[1]=1.0/I0(value); /* normalization */
+  }
+
+  /* Blur Override */
   artifact=GetImageArtifact(image,"filter:blur");
   if (artifact != (const char *) NULL)
-    resize_filter->blur*=StringToDouble(artifact,(char **) NULL);  /* override blur */
+    resize_filter->blur*=StringToDouble(artifact,(char **) NULL);
   if (resize_filter->blur < MagickEpsilon)
     resize_filter->blur=(MagickRealType) MagickEpsilon;
+
+  /* Support Overrides */
   artifact=GetImageArtifact(image,"filter:lobes");
   if (artifact != (const char *) NULL)
     {
       ssize_t
         lobes;
 
-      /*
-        Override lobes.
-      */
       lobes=(ssize_t) StringToLong(artifact);
       if (lobes < 1)
         lobes=1;
       resize_filter->support=(MagickRealType) lobes;
     }
+  /* Convert a Jinc function lobes value to a real support value */
   if (resize_filter->filter == Jinc)
     {
-      /*
-        Convert a Jinc function lobes value to a real support value.
-      */
       if (resize_filter->support > 16)
         resize_filter->support=jinc_zeros[15];  /* largest entry in table */
       else
         resize_filter->support=jinc_zeros[((long)resize_filter->support)-1];
     }
+  /* expert override of the support setting */
   artifact=GetImageArtifact(image,"filter:support");
   if (artifact != (const char *) NULL)
-    resize_filter->support=fabs(StringToDouble(artifact,(char **) NULL)); /* override support */
+    resize_filter->support=fabs(StringToDouble(artifact,(char **) NULL));
   /*
-    Scale windowing function separately to the support 'clipping' window that
-    calling operator is planning to actually use (expert override).
+    Scale windowing function separately to the support 'clipping'
+    window that calling operator is planning to actually use. (Expert
+    override)
   */
   resize_filter->window_support=resize_filter->support; /* default */
   artifact=GetImageArtifact(image,"filter:win-support");
   if (artifact != (const char *) NULL)
     resize_filter->window_support=fabs(StringToDouble(artifact,(char **) NULL));
   /*
-    Adjust window function scaling to match windowing support for weighting
-    function.  This avoids a division on every filter call.
+    Adjust window function scaling to match windowing support for
+    weighting function.  This avoids a division on every filter call.
   */
   resize_filter->scale/=resize_filter->window_support;
+
   /*
-    Set Cubic Spline B,C values, calculate cubic coefficients.
+   * Set Cubic Spline B,C values, calculate Cubic coefficients.
   */
   B=0.0;
   C=0.0;
@@ -1020,13 +1008,10 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
               B=1.0-2.0*C; /* Calculate B to get a Keys cubic filter. */
             }
         }
-      {
+      /* Convert B,C values into Cubic Coefficents. See CubicBC(). */
         double
           B_squared;
 
-        /*
-          Convert B,C values into Cubic Coefficents. See CubicBC().
-        */
         B_squared=B+B;
         resize_filter->coefficient[0]=1.0-(1.0/3.0)*B;
         resize_filter->coefficient[1]=-3.0+B_squared+C;
@@ -1037,8 +1022,9 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
         resize_filter->coefficient[6]=(-1.0/6.0)*B-C;
       }
     }
+
   /*
-    Expert option request for verbose details of the resulting filter.
+    Expert Option Request for verbose details of the resulting filter.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp master
@@ -1052,33 +1038,23 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
           x;
 
         /*
-          Set the weighting function properly when the weighting function may
-          not exactly match the filter of the same name.  EG: a point filter
-          really uses a box weighting function with a different support than is
-          typically used.
+          Set the weighting function properly when the weighting
+          function may not exactly match the filter of the same name.
+          EG: a Point filter is really uses a Box weighting function
+          with a different support than is typically used.
         */
-        if (resize_filter->filter == Box)
-          filter_type=BoxFilter;
-        if (resize_filter->filter == Sinc)
-          filter_type=SincFilter;
-        if (resize_filter->filter == SincFast)
-          filter_type=SincFastFilter;
-        if (resize_filter->filter == Jinc)
-          filter_type=JincFilter;
-        if (resize_filter->filter == CubicBC)
-          filter_type=CubicFilter;
-        if (resize_filter->window == Box)
-          window_type=BoxFilter;
-        if (resize_filter->window == Sinc)
-          window_type=SincFilter;
-        if (resize_filter->window == SincFast)
-          window_type=SincFastFilter;
-        if (resize_filter->window == Jinc)
-          window_type=JincFilter;
-        if (resize_filter->window == CubicBC)
-          window_type=CubicFilter;
+        if (resize_filter->filter == Box)       filter_type=BoxFilter;
+        if (resize_filter->filter == Sinc)      filter_type=SincFilter;
+        if (resize_filter->filter == SincFast)  filter_type=SincFastFilter;
+        if (resize_filter->filter == Jinc)      filter_type=JincFilter;
+        if (resize_filter->filter == CubicBC)   filter_type=CubicFilter;
+        if (resize_filter->window == Box)       window_type=BoxFilter;
+        if (resize_filter->window == Sinc)      window_type=SincFilter;
+        if (resize_filter->window == SincFast)  window_type=SincFastFilter;
+        if (resize_filter->window == Jinc)      window_type=JincFilter;
+        if (resize_filter->window == CubicBC)   window_type=CubicFilter;
         /*
-          Report filter details.
+          Report Filter Details.
         */
         support=GetResizeFilterSupport(resize_filter);  /* practical_support */
         (void) FormatLocaleFile(stdout,"# Resize Filter (for graphing)\n#\n");
@@ -1094,7 +1070,10 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
           GetMagickPrecision(), (double)resize_filter->blur);
         if (filter_type == GaussianFilter)
           (void) FormatLocaleFile(stdout,"# gaussian_sigma = %.*g\n",
-             GetMagickPrecision(), (double)sigma);
+               GetMagickPrecision(), (double)value);
+        if ( filter_type == KaiserFilter )
+          (void) FormatLocaleFile(stdout,"# kaiser_alpha = %.*g\n",
+               GetMagickPrecision(), (double)value);
         (void) FormatLocaleFile(stdout,"# practical_support = %.*g\n",
            GetMagickPrecision(), (double)support);
         if ( filter_type == CubicFilter || window_type == CubicFilter )
@@ -1102,21 +1081,17 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
              GetMagickPrecision(),(double)B, GetMagickPrecision(),(double)C);
         (void) FormatLocaleFile(stdout,"\n");
         /*
-          Output values of resulting filter graph -- for graphing filter result.
+          Output values of resulting filter graph -- for graphing
+          filter result.
         */
         for (x=0.0; x <= support; x+=0.01f)
-          (void) FormatLocaleFile(stdout,"%5.2lf\t%.*g\n",x,
-            GetMagickPrecision(),(double) GetResizeFilterWeight(resize_filter,
-            x));
-        /*
-          A final value so gnuplot can graph the 'stop' properly.
-        */
+          (void) FormatLocaleFile(stdout,"%5.2lf\t%.*g\n",x,GetMagickPrecision(),
+            (double) GetResizeFilterWeight(resize_filter,x));
+        /* A final value so gnuplot can graph the 'stop' properly. */
         (void) FormatLocaleFile(stdout,"%5.2lf\t%.*g\n",support,
           GetMagickPrecision(),0.0);
       }
-    /*
-      Output the above once only for each image - remove setting.
-    */
+      /* Output the above once only for each image - remove setting */
     (void) DeleteImageArtifact((Image *) image,"filter:verbose");
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   }
