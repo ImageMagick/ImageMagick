@@ -1,3 +1,7 @@
+2011-11-17  6.7.3-7 Anthony Thyssen <A.Thyssen@griffith...>
+  * Added a -define filter:alpha to contol the 'alpha value' of the
+    Kaiser Windowing filter.  Default value is 6.5
+
 2010-11-15  6.7.3-7 Glenn Randers-Pehrson <glennrp@image...>
   * Reverted the change of 6.6.6-7 that creates an image clone for use
     by the PNG encoder.  This was not useful and was somewhat wasteful.
