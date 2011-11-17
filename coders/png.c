@@ -10759,10 +10759,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   UnlockSemaphoreInfo(ping_semaphore);
 #endif
 
+#ifdef PNG_USE_CLONE
   if (ping_have_blob != MagickFalse)
      (void) CloseBlob(image);
 
-#ifdef PNG_USE_CLONE
   image_info=DestroyImageInfo(image_info);
   image=DestroyImage(image);
 #endif
