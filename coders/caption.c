@@ -259,7 +259,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   }
   if ((align != PANGO_ALIGN_CENTER) &&
       (draw_info->direction == RightToLeftDirection))
-    align=PANGO_ALIGN_LEFT+PANGO_ALIGN_RIGHT-align;
+    align=(PangoAlignment) (PANGO_ALIGN_LEFT+PANGO_ALIGN_RIGHT-align);
   pango_layout_set_alignment(layout,align);
   description=pango_font_description_from_string(draw_info->font ==
     (char *) NULL ? "helvetica" : draw_info->font);

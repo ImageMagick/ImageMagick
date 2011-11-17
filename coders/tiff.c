@@ -1752,7 +1752,10 @@ static void TIFFTagExtender(TIFF *tiff)
   static const TIFFFieldInfo
     TIFFExtensions[] =
     {
-      { 37724, -3, -3, TIFF_UNDEFINED, FIELD_CUSTOM, 1, 1, "PhotoshopLayerData" }
+      {
+        37724, -3, -3, TIFF_UNDEFINED, FIELD_CUSTOM, 1, 1,
+          (char *) "PhotoshopLayerData"
+      }
     };
 
   TIFFMergeFieldInfo(tiff,TIFFExtensions,sizeof(TIFFExtensions)/

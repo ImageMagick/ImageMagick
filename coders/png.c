@@ -2308,7 +2308,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             (void) ThrowMagickException(&image->exception,GetMagickModule(),
               ResourceLimitError,"MemoryAllocationFailed","`%s'",
               "unable to copy profile");
-            return(MagickFalse);
+            return((Image *) NULL);
           }
           (void) SetImageProfile(image,"icc",profile);
           profile=DestroyStringInfo(profile);
