@@ -81,6 +81,7 @@
 #include "MagickCore/resize.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/segment.h"
+#include "MagickCore/shear.h"
 #include "MagickCore/signature.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
