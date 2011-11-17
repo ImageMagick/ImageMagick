@@ -635,7 +635,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
     {
       index=(Quantum) (*p++);
       SetPixelIndex(image,index,q);
-      SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
+      SetPixelInfoPixel(image,image->colormap+(ssize_t) index,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

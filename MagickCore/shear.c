@@ -1554,25 +1554,25 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
           if ((x_offset+i) < step)
             {
               p+=GetPixelChannels(image);
-              SetPixelInfo(image,p,&pixel);
+              GetPixelInfoPixel(image,p,&pixel);
               q+=GetPixelChannels(image);
               continue;
             }
-          SetPixelInfo(image,p,&source);
+          GetPixelInfoPixel(image,p,&source);
           CompositePixelInfoAreaBlend(&pixel,(MagickRealType) pixel.alpha,
             &source,(MagickRealType) GetPixelAlpha(image,p),area,&destination);
-          SetPixelPixelInfo(image,&destination,q);
-          SetPixelInfo(image,p,&pixel);
+          SetPixelInfoPixel(image,&destination,q);
+          GetPixelInfoPixel(image,p,&pixel);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(image);
         }
         CompositePixelInfoAreaBlend(&pixel,(MagickRealType) pixel.alpha,
           &background,(MagickRealType) background.alpha,area,&destination);
-        SetPixelPixelInfo(image,&destination,q);
+        SetPixelInfoPixel(image,&destination,q);
         q+=GetPixelChannels(image);
         for (i=0; i < (step-1); i++)
         {
-          SetPixelPixelInfo(image,&background,q);
+          SetPixelInfoPixel(image,&background,q);
           q+=GetPixelChannels(image);
         }
         break;
@@ -1590,20 +1590,20 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
           q-=GetPixelChannels(image);
           if ((size_t) (x_offset+width+step-i) >= image->columns)
             continue;
-          SetPixelInfo(image,p,&source);
+          GetPixelInfoPixel(image,p,&source);
           CompositePixelInfoAreaBlend(&pixel,(MagickRealType) pixel.alpha,
             &source,(MagickRealType) GetPixelAlpha(image,p),area,&destination);
-          SetPixelPixelInfo(image,&destination,q);
-          SetPixelInfo(image,p,&pixel);
+          SetPixelInfoPixel(image,&destination,q);
+          GetPixelInfoPixel(image,p,&pixel);
         }
         CompositePixelInfoAreaBlend(&pixel,(MagickRealType) pixel.alpha,
           &background,(MagickRealType) background.alpha,area,&destination);
         q-=GetPixelChannels(image);
-        SetPixelPixelInfo(image,&destination,q);
+        SetPixelInfoPixel(image,&destination,q);
         for (i=0; i < (step-1); i++)
         {
           q-=GetPixelChannels(image);
-          SetPixelPixelInfo(image,&background,q);
+          SetPixelInfoPixel(image,&background,q);
         }
         break;
       }
@@ -1769,26 +1769,26 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
           if ((y_offset+i) < step)
             {
               p+=GetPixelChannels(image);
-              SetPixelInfo(image,p,&pixel);
+              GetPixelInfoPixel(image,p,&pixel);
               q+=GetPixelChannels(image);
               continue;
             }
-          SetPixelInfo(image,p,&source);
+          GetPixelInfoPixel(image,p,&source);
           CompositePixelInfoAreaBlend(&pixel,(MagickRealType) pixel.alpha,
             &source,(MagickRealType) GetPixelAlpha(image,p),area,
             &destination);
-          SetPixelPixelInfo(image,&destination,q);
-          SetPixelInfo(image,p,&pixel);
+          SetPixelInfoPixel(image,&destination,q);
+          GetPixelInfoPixel(image,p,&pixel);
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(image);
         }
         CompositePixelInfoAreaBlend(&pixel,(MagickRealType) pixel.alpha,
           &background,(MagickRealType) background.alpha,area,&destination);
-        SetPixelPixelInfo(image,&destination,q);
+        SetPixelInfoPixel(image,&destination,q);
         q+=GetPixelChannels(image);
         for (i=0; i < (step-1); i++)
         {
-          SetPixelPixelInfo(image,&background,q);
+          SetPixelInfoPixel(image,&background,q);
           q+=GetPixelChannels(image);
         }
         break;
@@ -1806,21 +1806,21 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
           q-=GetPixelChannels(image);
           if ((size_t) (y_offset+height+step-i) >= image->rows)
             continue;
-          SetPixelInfo(image,p,&source);
+          GetPixelInfoPixel(image,p,&source);
           CompositePixelInfoAreaBlend(&pixel,(MagickRealType) pixel.alpha,
             &source,(MagickRealType) GetPixelAlpha(image,p),area,
             &destination);
-          SetPixelPixelInfo(image,&destination,q);
-          SetPixelInfo(image,p,&pixel);
+          SetPixelInfoPixel(image,&destination,q);
+          GetPixelInfoPixel(image,p,&pixel);
         }
         CompositePixelInfoAreaBlend(&pixel,(MagickRealType) pixel.alpha,
           &background,(MagickRealType) background.alpha,area,&destination);
         q-=GetPixelChannels(image);
-        SetPixelPixelInfo(image,&destination,q);
+        SetPixelInfoPixel(image,&destination,q);
         for (i=0; i < (step-1); i++)
         {
           q-=GetPixelChannels(image);
-          SetPixelPixelInfo(image,&background,q);
+          SetPixelInfoPixel(image,&background,q);
         }
         break;
       }

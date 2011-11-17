@@ -1855,7 +1855,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             GetPixelGreen(composite_image,p));
           (void) ResamplePixelColor(resample_filter,(double) x_offset+x,
             (double) y_offset+y,&pixel);
-          SetPixelPixelInfo(destination_image,&pixel,q);
+          SetPixelInfoPixel(destination_image,&pixel,q);
           p+=GetPixelChannels(composite_image);
           q+=GetPixelChannels(destination_image);
         }
@@ -2027,7 +2027,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           pixel.alpha=(MagickRealType) QuantumRange*(1.0-(1.0-QuantumScale*
             pixel.alpha)*(1.0-QuantumScale*
             GetPixelAlpha(composite_image,p)));
-          SetPixelPixelInfo(destination_image,&pixel,q);
+          SetPixelInfoPixel(destination_image,&pixel,q);
           p+=GetPixelChannels(composite_image);
           q+=GetPixelChannels(destination_image);
         }

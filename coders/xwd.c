@@ -476,7 +476,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             index=ConstrainColormapIndex(image,XGetPixel(ximage,(int) x,
               (int) y),exception);
             SetPixelIndex(image,index,q);
-            SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
+            SetPixelInfoPixel(image,image->colormap+(ssize_t) index,q);
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)

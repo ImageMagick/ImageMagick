@@ -2409,11 +2409,11 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
         case RLECompression:
         {
           length=0;
-          SetPixelInfo(image,p,&pixel);
+          GetPixelInfoPixel(image,p,&pixel);
           p+=GetPixelChannels(image);
           for (x=1; x < (ssize_t) image->columns; x++)
           {
-            SetPixelInfo(image,p,&target);
+            GetPixelInfoPixel(image,p,&target);
             if ((length < 255) &&
                 (IsPixelInfoEquivalent(&pixel,&target) != MagickFalse))
               length++;
@@ -2422,7 +2422,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
                 q=PopRunlengthPacket(image,q,length,&pixel,exception);
                 length=0;
               }
-            SetPixelInfo(image,p,&pixel);
+            GetPixelInfoPixel(image,p,&pixel);
             p+=GetPixelChannels(image);
           }
           q=PopRunlengthPacket(image,q,length,&pixel,exception);

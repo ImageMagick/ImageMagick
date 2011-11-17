@@ -225,7 +225,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
       if (index < 0)
         index+=(ssize_t) image->colors;
       SetPixelIndex(image,(Quantum) index,q);
-      SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
+      SetPixelInfoPixel(image,image->colormap+(ssize_t) index,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -362,7 +362,7 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
     {
       index=(Quantum) pixels[(ssize_t) GetPixelIndex(image,q)];
       SetPixelIndex(image,index,q);
-      SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
+      SetPixelInfoPixel(image,image->colormap+(ssize_t) index,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

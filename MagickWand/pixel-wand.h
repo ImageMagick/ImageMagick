@@ -100,7 +100,7 @@ extern WandExport void
   PixelSetIndex(PixelWand *,const Quantum),
   PixelSetMagenta(PixelWand *,const double),
   PixelSetMagentaQuantum(PixelWand *,const Quantum),
-  PixelSetPixelInfo(PixelWand *,const PixelInfo *),
+  PixelGetPixelInfoPixel(PixelWand *,const PixelInfo *),
   PixelSetAlpha(PixelWand *,const double),
   PixelSetAlphaQuantum(PixelWand *,const Quantum),
   PixelSetQuantumPacket(PixelWand *,const PixelInfo *),

@@ -138,7 +138,7 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelPixelInfo(image,&background,q);
+      SetPixelInfoPixel(image,&background,q);
       q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)

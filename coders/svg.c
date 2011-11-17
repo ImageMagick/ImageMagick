@@ -3403,7 +3403,7 @@ static MagickBooleanType TraceSVGImage(Image *image,ExceptionInfo *exception)
         break;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        SetPixelInfo(image,p,&pixel);
+        GetPixelInfoPixel(image,p,&pixel);
         (void) QueryColorname(image,&pixel,SVGCompliance,tuple,exception);
         (void) FormatLocaleString(message,MaxTextExtent,
           "  <circle cx=\"%.20g\" cy=\"%.20g\" r=\"1\" fill=\"%s\"/>\n",

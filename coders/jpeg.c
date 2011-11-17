@@ -1293,7 +1293,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
               pixel=(size_t) ((GETJSAMPLE(*p) ^ 0x80) << 4);
             index=ConstrainColormapIndex(image,pixel,exception);
             SetPixelIndex(image,index,q);
-            SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
+            SetPixelInfoPixel(image,image->colormap+(ssize_t) index,q);
             p++;
             q+=GetPixelChannels(image);
           }
@@ -1331,7 +1331,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         {
           index=ConstrainColormapIndex(image,(size_t) GETJSAMPLE(*p),exception);
           SetPixelIndex(image,index,q);
-          SetPixelPixelInfo(image,image->colormap+(ssize_t) index,q);
+          SetPixelInfoPixel(image,image->colormap+(ssize_t) index,q);
           p++;
           q+=GetPixelChannels(image);
         }

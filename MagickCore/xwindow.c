@@ -2516,7 +2516,7 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
           /*
             Set this pixel to the background color.
           */
-          SetPixelPixelInfo(draw_image,&draw_image->background_color,q);
+          SetPixelInfoPixel(draw_image,&draw_image->background_color,q);
           SetPixelAlpha(draw_image,(Quantum) (draw_info->stencil ==
             OpaqueStencil ? TransparentAlpha : OpaqueAlpha),q);
         }
@@ -4506,7 +4506,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
               {
                 index=(Quantum) XGetPixel(ximage,x,y);
                 SetPixelIndex(composite_image,index,q);
-                SetPixelPixelInfo(composite_image,
+                SetPixelInfoPixel(composite_image,
                   composite_image->colormap+(ssize_t) index,q);
                 q+=GetPixelChannels(composite_image);
               }

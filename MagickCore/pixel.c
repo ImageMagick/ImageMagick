@@ -4983,7 +4983,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       filter_view=AcquireCacheView(filter_image);
       p=GetCacheViewVirtualPixels(filter_view,0,0,1,1,exception);
       if (p != (const Quantum *) NULL)
-        SetPixelInfo(image,p,pixel);
+        GetPixelInfoPixel(image,p,pixel);
       filter_view=DestroyCacheView(filter_view);
       filter_image=DestroyImage(filter_image);
       break;
@@ -4996,7 +4996,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           status=MagickFalse;
           break;
         }
-      SetPixelInfo(image,p,pixel);
+      GetPixelInfoPixel(image,p,pixel);
       break;
     }
     case MeshInterpolatePixel:
@@ -5128,7 +5128,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           status=MagickFalse;
           break;
         }
-      SetPixelInfo(image,p,pixel);
+      GetPixelInfoPixel(image,p,pixel);
       break;
     }
     case SplineInterpolatePixel:

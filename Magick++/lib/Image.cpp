@@ -3553,7 +3553,7 @@ void Magick::Image::pixelColor ( const ssize_t x_, const ssize_t y_,
     // Set pixel value
   Quantum *pixel = pixels.get(x_, y_, 1, 1 );
   PixelInfo packet = color_;
-  MagickCore::SetPixelPixelInfo(constImage(),&packet,pixel);
+  MagickCore::SetPixelInfoPixel(constImage(),&packet,pixel);
   // Tell ImageMagick that pixels have been updated
   pixels.sync();
 

@@ -137,7 +137,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->colorspace=color.colorspace;
   image->matte=color.matte;
   pixel.black=0;
-  SetPacketPixelInfo(image,&color,&pixel);
+  SetPixelInfo(image,&color,&pixel);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -145,7 +145,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelPixelInfo(image,&pixel,q);
+      SetPixelInfoPixel(image,&pixel,q);
       if (image->colorspace == CMYKColorspace)
         SetPixelBlack(image,pixel.black,q);
       q+=GetPixelChannels(image);

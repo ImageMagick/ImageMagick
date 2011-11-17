@@ -3406,7 +3406,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
 
       /* Starting Defaults */
       GetPixelInfo(image,&result);
-      SetPixelInfo(image,q,&result);
+      GetPixelInfoPixel(image,q,&result);
       if ( method != VoronoiMorphology )
         result.alpha = QuantumRange - result.alpha;
 
@@ -3464,7 +3464,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
                 if ( IsNan(*k) ) continue;
                 if( result.alpha > (*k)+GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)) )
                   {
-                    SetPixelInfo(image,k_pixels+u*GetPixelChannels(image),
+                    GetPixelInfoPixel(image,k_pixels+u*GetPixelChannels(image),
                       &result);
                     result.alpha += *k;
                   }
@@ -3479,7 +3479,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
                 if ( IsNan(*k) ) continue;
                 if( result.alpha > (*k)+GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)) )
                   {
-                    SetPixelInfo(image,k_pixels+u*GetPixelChannels(image),
+                    GetPixelInfoPixel(image,k_pixels+u*GetPixelChannels(image),
                       &result);
                     result.alpha += *k;
                   }
@@ -3492,7 +3492,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       /* Assign the resulting pixel values - Clamping Result */
       switch ( method ) {
         case VoronoiMorphology:
-          SetPixelPixelInfo(image,&result,q);
+          SetPixelInfoPixel(image,&result,q);
           break;
         default:
           if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
@@ -3590,7 +3590,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
 
       /* Default - previously modified pixel */
       GetPixelInfo(image,&result);
-      SetPixelInfo(image,q,&result);
+      GetPixelInfoPixel(image,q,&result);
       if ( method != VoronoiMorphology )
         result.alpha = QuantumRange - result.alpha;
 
@@ -3648,7 +3648,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
                 if ( IsNan(*k) ) continue;
                 if( result.alpha > (*k)+GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)) )
                   {
-                    SetPixelInfo(image,k_pixels+u*GetPixelChannels(image),
+                    GetPixelInfoPixel(image,k_pixels+u*GetPixelChannels(image),
                       &result);
                     result.alpha += *k;
                   }
@@ -3663,7 +3663,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
                 if ( IsNan(*k) ) continue;
                 if( result.alpha > (*k)+GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)) )
                   {
-                    SetPixelInfo(image,k_pixels+u*GetPixelChannels(image),
+                    GetPixelInfoPixel(image,k_pixels+u*GetPixelChannels(image),
                       &result);
                     result.alpha += *k;
                   }
@@ -3676,7 +3676,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       /* Assign the resulting pixel values - Clamping Result */
       switch ( method ) {
         case VoronoiMorphology:
-          SetPixelPixelInfo(image,&result,q);
+          SetPixelInfoPixel(image,&result,q);
           break;
         default:
           if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)

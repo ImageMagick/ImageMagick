@@ -2094,11 +2094,11 @@ WandExport void PixelSetMagentaQuantum(PixelWand *wand,const Quantum magenta)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PixelSetPixelInfo() sets the color of the pixel wand.
+%  PixelGetPixelInfoPixel() sets the color of the pixel wand.
 %
 %  The format of the PixelSetPixelInfo method is:
 %
-%      PixelSetPixelInfo(PixelWand *wand,const PixelInfo *color)
+%      PixelGetPixelInfoPixel(PixelWand *wand,const PixelInfo *color)
 %
 %  A description of each parameter follows:
 %
@@ -2107,7 +2107,7 @@ WandExport void PixelSetMagentaQuantum(PixelWand *wand,const Quantum magenta)
 %    o color: the pixel wand color.
 %
 */
-WandExport void PixelSetPixelInfo(PixelWand *wand,
+WandExport void PixelGetPixelInfoPixel(PixelWand *wand,
   const PixelInfo *color)
 {
   assert(wand != (const PixelWand *) NULL);

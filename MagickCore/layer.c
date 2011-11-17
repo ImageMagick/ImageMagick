@@ -626,8 +626,8 @@ static RectangleInfo CompareImagesBounds(const Image *image1,const Image *image2
       break;
     for (y=0; y < (ssize_t) image1->rows; y++)
     {
-      SetPixelInfo(image1,p,&pixel1);
-      SetPixelInfo(image2,q,&pixel2);
+      GetPixelInfoPixel(image1,p,&pixel1);
+      GetPixelInfoPixel(image2,q,&pixel2);
       if (ComparePixels(method,&pixel1,&pixel2))
         break;
       p+=GetPixelChannels(image1);
@@ -657,8 +657,8 @@ static RectangleInfo CompareImagesBounds(const Image *image1,const Image *image2
       break;
     for (y=0; y < (ssize_t) image1->rows; y++)
     {
-      SetPixelInfo(image1,p,&pixel1);
-      SetPixelInfo(image2,q,&pixel2);
+      GetPixelInfoPixel(image1,p,&pixel1);
+      GetPixelInfoPixel(image2,q,&pixel2);
       if (ComparePixels(method,&pixel1,&pixel2))
         break;
       p+=GetPixelChannels(image1);
@@ -677,8 +677,8 @@ static RectangleInfo CompareImagesBounds(const Image *image1,const Image *image2
       break;
     for (x=0; x < (ssize_t) image1->columns; x++)
     {
-      SetPixelInfo(image1,p,&pixel1);
-      SetPixelInfo(image2,q,&pixel2);
+      GetPixelInfoPixel(image1,p,&pixel1);
+      GetPixelInfoPixel(image2,q,&pixel2);
       if (ComparePixels(method,&pixel1,&pixel2))
         break;
       p+=GetPixelChannels(image1);
@@ -697,8 +697,8 @@ static RectangleInfo CompareImagesBounds(const Image *image1,const Image *image2
       break;
     for (x=0; x < (ssize_t) image1->columns; x++)
     {
-      SetPixelInfo(image1,p,&pixel1);
-      SetPixelInfo(image2,q,&pixel2);
+      GetPixelInfoPixel(image1,p,&pixel1);
+      GetPixelInfoPixel(image2,q,&pixel2);
       if (ComparePixels(method,&pixel1,&pixel2))
         break;
       p+=GetPixelChannels(image1);

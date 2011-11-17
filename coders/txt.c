@@ -668,7 +668,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g,%.20g: ",(double)
           x,(double) y);
         (void) WriteBlobString(image,buffer);
-        SetPixelInfo(image,p,&pixel);
+        GetPixelInfoPixel(image,p,&pixel);
         (void) CopyMagickString(tuple,"(",MaxTextExtent);
         ConcatenateColorComponent(&pixel,RedPixelChannel,X11Compliance,
           tuple);
