@@ -1673,7 +1673,6 @@ MagickExport Image *DistortResizeImage(const Image *image,
 %                    instead
 %
 */
-
 MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   const size_t number_arguments,const double *arguments,
   MagickBooleanType bestfit,ExceptionInfo *exception)
