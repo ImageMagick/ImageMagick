@@ -136,7 +136,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   image->colorspace=color.colorspace;
   image->matte=color.matte;
-  pixel.black=0;
+  GetPixelinfo(image,&pixel);
   SetPixelInfo(image,&color,&pixel);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
