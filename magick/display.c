@@ -52,6 +52,7 @@
 #include "magick/delegate.h"
 #include "magick/display.h"
 #include "magick/display-private.h"
+#include "magick/distort.h"
 #include "magick/draw.h"
 #include "magick/effect.h"
 #include "magick/enhance.h"
