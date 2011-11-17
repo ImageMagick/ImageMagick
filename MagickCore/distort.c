@@ -64,6 +64,7 @@
 #include "MagickCore/resample-private.h"
 #include "MagickCore/registry.h"
 #include "MagickCore/semaphore.h"
+#include "MagickCore/shear.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
