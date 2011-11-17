@@ -70,9 +70,11 @@ typedef enum
 } SparseColorMethod;
 
 extern MagickExport Image
+  *AffineTransformImage(const Image *,const AffineMatrix *,ExceptionInfo *),
   *DistortImage(const Image *,const DistortImageMethod,const size_t,
     const double *,MagickBooleanType,ExceptionInfo *exception),
   *DistortResizeImage(const Image *,const size_t,const size_t,ExceptionInfo *),
+  *RotateImage(const Image *,const double,ExceptionInfo *),
   *SparseColorImage(const Image *,const ChannelType,const SparseColorMethod,
     const size_t,const double *,ExceptionInfo *);
 
