@@ -8340,9 +8340,8 @@ Mogrify(ref,...)
                /*
                  Rotate image.
                */
-               rotate_image=DistortImage(composite_image,
-                 ScaleRotateTranslateDistortion,1,
-                 &argument_list[8].real_reference,MagickTrue,exception);
+               rotate_image=RotateImage(composite_image,
+                 argument_list[8].real_reference,exception);
                if (rotate_image == (Image *) NULL)
                  break;
             }
