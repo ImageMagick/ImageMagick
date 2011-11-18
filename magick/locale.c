@@ -742,9 +742,11 @@ MagickExport LinkedListInfo *GetLocaleOptions(const char *filename,
     blob=(char *) NTResourceToBlob(filename);
     if (blob != (char *) NULL)
       {
-        xml=StringToStringInfo(blob);
+        xml=AcquireStringInfo(0);
+        SetStringInfoLength(xml,strlen(blob)+1);
+        SetStringInfoDatum(xml,blob);
+        SetStringInfoPath(xml,filename);
         (void) AppendValueToLinkedList(messages,xml);
-        blob=DestroyString(blob);
       }
   }
 #endif
