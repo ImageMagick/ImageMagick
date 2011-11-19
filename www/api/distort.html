@@ -161,16 +161,13 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+   <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock<br />Photos</a><!-- 2012080100540 ... -->
 </div>
 <div  class="sponsor">
   <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
-</div>
-<div  class="sponsor">
-   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc... -->
@@ -182,6 +179,9 @@
   <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201201010090 barsh@inter... -->
 </div>
 <div  class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div  class="sponsor">
   <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540 suvalj -->
 </div>
 <div  class="sponsor">
@@ -191,13 +191,16 @@
   <a rel="follow" title="Sponsor: Autos part" href="http://www.pkwteile.de/autoteile">Autos part</a><!-- 201112010090s jr@pkwte... -->
 </div>
 <div  class="sponsor">
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock<br />Images</a><!-- 2012050100360 support@can -->
+</div>
+<div  class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingsecretrevealed.com">Web Hosting Secret Revealed</a><!-- 201204010540 iamchee jerry -->
 </div>
 <div  class="sponsor">
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012010100150 brooks@stripes...-->
+   <a rel="follow" title="Sponsor: Desktop Wallpaper" href="http://www.desktopexchange.com">Desktop Wallpaper</a><!-- 2012030100150 webinvasion1@y...-->
 </div>
 <div  class="sponsor">
    <a rel="follow" title="Sponsor: Brand shopping" href="http://brandport.net">Brand shopping</a><!-- 20120201000150 gyaku@gyaku... -->
@@ -213,8 +216,32 @@
 <div class="main">
 
 <h1>Module distort Methods</h1>
-<p class="navigation-index">[<a href="#DistortImage">DistortImage</a> &bull; <a href="#SparseColorImage">SparseColorImage</a>]</p>
+<p class="navigation-index">[<a href="#AffineTransformImage">AffineTransformImage</a> &bull; <a href="#DistortImage">DistortImage</a> &bull; <a href="#RotateImage">RotateImage</a> &bull; <a href="#SparseColorImage">SparseColorImage</a>]</p>
 
+<h2><a href="http://www.imagemagick.org/api/MagickCore/distort_8c.html" id="AffineTransformImage">AffineTransformImage</a></h2>
+<div class="doc-section">
+
+<p>AffineTransformImage() transforms an image as dictated by the affine matrix. It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
+
+<p>The format of the AffineTransformImage method is:</p>
+
+<pre class="code">
+  Image *AffineTransformImage(const Image *image,
+    AffineMatrix *affine_matrix,ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>affine_matrix</h5>
+<p>the affine matrix.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/distort_8c.html" id="DistortImage">DistortImage</a></h2>
 <div class="doc-section">
 
@@ -271,6 +298,30 @@
 <p>o 'interpolate' For source image lookups (scale enlargements)</p>
 
 <p>o 'filter'      Set filter to use for area-resampling (scale shrinking). Set to 'point' to turn off and use 'interpolate' lookup instead</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/distort_8c.html" id="RotateImage">RotateImage</a></h2>
+<div class="doc-section">
+
+<p>RotateImage() creates a new image that is a rotated copy of an existing one.  Positive angles rotate counter-clockwise (right-hand rule), while negative angles rotate clockwise.  Rotated images are usually larger than the originals and have 'empty' triangular corners.  X axis.  Empty triangles left over from shearing the image are filled with the background color defined by member 'background_color' of the image.  RotateImage allocates the memory necessary for the new Image structure and returns a pointer to the new image.</p>
+
+<p>The format of the RotateImage method is:</p>
+
+<pre class="code">
+  Image *RotateImage(const Image *image,const double degrees,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>degrees</h5>
+<p>Specifies the number of degrees to rotate the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/distort_8c.html" id="SparseColorImage">SparseColorImage</a></h2>
