@@ -89,8 +89,8 @@
  * This feature will be removed soon but is being retained temporarily
  * (and enabled by default) in IM-6.7.3-6 for testing.
  *
+#define PNG_USE_CLONE
  */
- #define PNG_USE_CLONE
 
 /* Suppress libpng pedantic warnings that were added in
  * libpng-1.2.41 and libpng-1.4.0.  If you are working on
@@ -9643,14 +9643,19 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          {
 
          ping_background.gray=(png_uint_16)
-           ((maxval/255.)*((PixelIntensity(&image->background_color)))+.5);
-
+           ((maxval/65535.)*(ScaleQuantumToShort(
+              PixelIntensity(&image->background_color)))+.5);
          if (logging != MagickFalse)
+         {
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "  Setting up bKGD chunk (2)");
-         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-             "      background_color index is %d",
-             (int) ping_background.index);
+               "  Setting up bKGD chunk (2)");
+           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "      ping_background.index is %d",
+               (int) ping_background.index);
+           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "      ping_background.gray is %d",
+               (int) ping_background.gray);
+         }
 
          ping_have_bKGD = MagickTrue;
          }
