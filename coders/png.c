@@ -2053,7 +2053,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   png_uint_32
     ping_height,
     ping_width,
-    ping_rowbytes,
     x_resolution,
     y_resolution;
 
@@ -2064,6 +2063,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     *ping_pixels;
 
   ssize_t
+    ping_rowbytes,
     y;
 
   register unsigned char
