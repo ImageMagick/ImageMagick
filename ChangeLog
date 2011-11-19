@@ -1,3 +1,7 @@
+2010-11-19  6.7.3-8 Glenn Randers-Pehrson <glennrp@image...>
+  * Fixed bug with scaling Q16 background to PNG sub-8-bit bKGD and
+    again disabled PNG_USE_CLONE in coders/png.c.
+
 2011-11-18  6.7.3-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.3-7, SVN revision 6024
 
@@ -12,6 +16,8 @@
 2010-11-15  6.7.3-7 Glenn Randers-Pehrson <glennrp@image...>
   * Reverted the change of 6.6.6-7 that creates an image clone for use
     by the PNG encoder.  This was not useful and was somewhat wasteful.
+  * After finding out that writing the bKGD chunk in sub-8-bit PNG files,
+    enabled PNG_USE_CLONE (To create an image clone again)
 
 2011-11-14  6.7.3-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.3-6, SVN revision 5972.
