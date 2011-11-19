@@ -1,5 +1,5 @@
 %global VERSION  6.7.3
-%global Patchlevel  7
+%global Patchlevel  8
 
 Name:           ImageMagick
 Version:        %{VERSION}
@@ -165,7 +165,7 @@ cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
            --with-lcms \
            --with-rsvg \
            --with-xml \
-           --with-perl-options="'INSTALLDIRS=vendor %{?perl_prefix} CC='%__cc -L$PWD/magick/.libs' LDDLFLAGS='-shared -L$PWD/magick/.libs'" \
+           --with-perl-options='INSTALLDIRS=vendor' \
            --without-dps \
            --without-included-ltdl --with-ltdl-include=%{_includedir} \
            --with-ltdl-lib=%{_libdir}
