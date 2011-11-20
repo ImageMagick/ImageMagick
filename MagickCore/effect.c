@@ -4573,9 +4573,9 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *UnsharpMaskImage(const Image *image,
-  const double radius,const double sigma,const double amount,
-  const double threshold,ExceptionInfo *exception)
+MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
+  const double sigma,const double amount,const double threshold,
+  ExceptionInfo *exception)
 {
 #define SharpenImageTag  "Sharpen/Image"
 
