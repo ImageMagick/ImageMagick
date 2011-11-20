@@ -2081,6 +2081,8 @@ MagickExport Image *MergeImageLayers(Image *image,
     if (proceed == MagickFalse)
       break;
     image=GetNextImageInList(image);
+    if (image == (Image *) NULL)
+      break;
   }
   return(canvas);
 }
