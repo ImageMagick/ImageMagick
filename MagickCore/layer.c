@@ -2012,6 +2012,8 @@ MagickExport Image *MergeImageLayers(Image *image,const ImageLayerMethod method,
         if (proceed == MagickFalse)
           break;
         image=GetNextImageInList(image);
+        if (image == (Image *) NULL)
+          break;
       }
       return((Image *) NULL);
     }
