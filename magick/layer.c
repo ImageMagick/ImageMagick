@@ -1971,7 +1971,7 @@ MagickExport Image *MergeImageLayers(Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   /*
-    Determine canvas image size, and its virtual canvas size and offset
+    Determine canvas image size, and its virtual canvas size and offset.
   */
   page=image->page;
   width=image->columns;
@@ -1982,28 +1982,31 @@ MagickExport Image *MergeImageLayers(Image *image,
     case MergeLayer:
     default:
     {
-      next = GetNextImageInList(image);
-      for ( ; next != (Image *) NULL;  next=GetNextImageInList(next)) {
-        if ( page.x > next->page.x ) {
-             width += page.x-next->page.x;
-             page.x = next->page.x;
-        }
-        if ( page.y > next->page.y ) {
-             height += page.y-next->page.y;
-             page.y = next->page.y;
-        }
-        if ( (ssize_t) width < (next->page.x + (ssize_t)next->columns - page.x) )
-           width = (size_t) next->page.x + (ssize_t)next->columns - page.x;
-        if ( (ssize_t) height < (next->page.y + (ssize_t)next->rows - page.y) )
-           height = (size_t) next->page.y + (ssize_t)next->rows - page.y;
+      next=GetNextImageInList(image);
+      for ( ; next != (Image *) NULL;  next=GetNextImageInList(next))
+      {
+        if (page.x > next->page.x)
+          {
+            width+=page.x-next->page.x;
+            page.x=next->page.x;
+          }
+        if (page.y > next->page.y)
+          {
+            height+=page.y-next->page.y;
+            page.y=next->page.y;
+          }
+        if ((ssize_t) width < (next->page.x+(ssize_t) next->columns-page.x))
+          width=(size_t) next->page.x+(ssize_t) next->columns-page.x;
+        if ((ssize_t) height < (next->page.y+(ssize_t) next->rows-page.y))
+          height=(size_t) next->page.y+(ssize_t) next->rows-page.y;
       }
       break;
     }
     case FlattenLayer:
     {
-      if ( page.width > 0 )
+      if (page.width > 0)
         width=page.width;
-      if ( page.height > 0 )
+      if (page.height > 0)
         height=page.height;
       page.x=0;
       page.y=0;
@@ -2011,19 +2014,21 @@ MagickExport Image *MergeImageLayers(Image *image,
     }
     case MosaicLayer:
     {
-      if ( page.width > 0 )
+      if (page.width > 0)
         width=page.width;
-      if ( page.height > 0 )
+      if (page.height > 0)
         height=page.height;
-      for (next=image; next != (Image *) NULL; next=GetNextImageInList(next)) {
-        if (method == MosaicLayer) {
-          page.x=next->page.x;
-          page.y=next->page.y;
-          if ( (ssize_t) width < (next->page.x + (ssize_t)next->columns) )
-             width = (size_t) next->page.x + next->columns;
-          if ( (ssize_t) height < (next->page.y + (ssize_t)next->rows) )
-             height = (size_t) next->page.y + next->rows;
-        }
+      for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
+      {
+        if (method == MosaicLayer)
+          {
+            page.x=next->page.x;
+            page.y=next->page.y;
+            if ((ssize_t) width < (next->page.x+(ssize_t) next->columns))
+              width=(size_t) next->page.x+next->columns;
+            if ((ssize_t) height < (next->page.y+(ssize_t) next->rows))
+              height=(size_t) next->page.y+next->rows;
+          }
       }
       page.width=width;
       page.height=height;
@@ -2032,32 +2037,35 @@ MagickExport Image *MergeImageLayers(Image *image,
     }
     break;
   }
-  /* set virtual canvas size if not defined */
-  if ( page.width == 0 )
-    page.width = (page.x < 0) ? width : width+page.x;
-  if ( page.height == 0 )
-    page.height = (page.y < 0) ? height : height+page.y;
-
   /*
-    Handle "TrimBoundsLayer" method separately to normal 'layer merge'
+    Set virtual canvas size if not defined.
   */
-  if ( method == TrimBoundsLayer ) {
-    number_images=GetImageListLength(image);
-    for (scene=0; scene < (ssize_t) number_images; scene++)
+  if (page.width == 0)
+    page.width=page.x < 0 ? width : width+page.x;
+  if (page.height == 0)
+    page.height=page.y < 0 ? height : height+page.y;
+  /*
+    Handle "TrimBoundsLayer" method separately to normal 'layer merge'.
+  */
+  if (method == TrimBoundsLayer)
     {
-      image->page.x -= page.x;
-      image->page.y -= page.y;
-      image->page.width = width;
-      image->page.height = height;
-      proceed=SetImageProgress(image,MergeLayersTag,(MagickOffsetType) scene,
-        number_images);
-      if (proceed == MagickFalse)
-        break;
-      image=GetNextImageInList(image);
+      number_images=GetImageListLength(image);
+      for (scene=0; scene < (ssize_t) number_images; scene++)
+      {
+        image->page.x-=page.x;
+        image->page.y-=page.y;
+        image->page.width=width;
+        image->page.height=height;
+        proceed=SetImageProgress(image,MergeLayersTag,(MagickOffsetType) scene,
+          number_images);
+        if (proceed == MagickFalse)
+          break;
+        image=GetNextImageInList(image);
+        if (image == (Image *) NULL)
+          break;
+      }
+      return((Image *) NULL);
     }
-    return((Image *) NULL);
-  }
-
   /*
     Create canvas size of width and height, and background color.
   */
@@ -2067,7 +2075,6 @@ MagickExport Image *MergeImageLayers(Image *image,
   (void) SetImageBackgroundColor(canvas);
   canvas->page=page;
   canvas->dispose=UndefinedDispose;
-
   /*
     Compose images onto canvas, with progress monitor
   */
@@ -2086,4 +2093,3 @@ MagickExport Image *MergeImageLayers(Image *image,
   }
   return(canvas);
 }
-
