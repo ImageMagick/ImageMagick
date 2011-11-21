@@ -168,9 +168,8 @@ MagickExport MagickBooleanType AdaptiveLevelImage(Image *image,
   return(status);
 }
 
-MagickExport Image *AdaptiveBlurImage(const Image *image,
-  const double radius,const double sigma,const double bias,
-  ExceptionInfo *exception)
+MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
+  const double sigma,const double bias,ExceptionInfo *exception)
 {
 #define AdaptiveBlurImageTag  "Convolve/Image"
 #define MagickSigma  (fabs(sigma) <= MagickEpsilon ? 1.0 : sigma)
@@ -2857,8 +2856,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *RadialBlurImage(const Image *image,
-  const double angle,const double bias,ExceptionInfo *exception)
+MagickExport Image *RadialBlurImage(const Image *image,const double angle,
+  const double bias,ExceptionInfo *exception)
 {
   CacheView
     *blur_view,
@@ -3123,9 +3122,9 @@ MagickExport Image *RadialBlurImage(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *SelectiveBlurImage(const Image *image,
-  const double radius,const double sigma,const double threshold,
-  const double bias,ExceptionInfo *exception)
+MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
+  const double sigma,const double threshold,const double bias,
+  ExceptionInfo *exception)
 {
 #define SelectiveBlurImageTag  "SelectiveBlur/Image"
 
