@@ -24,14 +24,15 @@ extern "C" {
 
 #include <magick/thread_.h>
 
-#define omp_throttle(factor)  num_threads(omp_get_max_threads() >> (factor))
-
 #if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR > 10))
 #define MagickCachePrefetch(address,mode,locality) \
   __builtin_prefetch(address,mode,locality)
 #else
 #define MagickCachePrefetch(address,mode,locality)
 #endif
+
+#define omp_throttle(factor)  num_threads(omp_get_max_threads() >> \
+   (factor) == 0 ? 1 : omp_get_max_threads() >> (factor))
 
 #if defined(MAGICKCORE_THREAD_SUPPORT)
   typedef pthread_mutex_t MagickMutexType;
@@ -124,7 +125,7 @@ static inline int GetOpenMPThreadId(void)
 static inline void SetOpenMPMaximumThreads(const int threads)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  omp_set_num_threads(threads < 1 ? 1 : threads);
+  omp_set_num_threads(threads);
 #else
   (void) threads;
 #endif
