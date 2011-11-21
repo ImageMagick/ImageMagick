@@ -492,260 +492,266 @@ MagickExport Image *EvaluateImages(const Image *images,
   random_info=AcquireRandomInfoThreadSet();
   evaluate_view=AcquireCacheView(evaluate_image);
   if (op == MedianEvaluateOperator)
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
-#endif
-    for (y=0; y < (ssize_t) evaluate_image->rows; y++)
     {
-      CacheView
-        *image_view;
-
-      const Image
-        *next;
-
-      const int
-        id = GetOpenMPThreadId();
-
-      register PixelChannels
-        *evaluate_pixel;
-
-      register Quantum
-        *restrict q;
-
-      register ssize_t
-        x;
-
-      if (status == MagickFalse)
-        continue;
-      q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,evaluate_image->columns,
-        1,exception);
-      if (q == (Quantum *) NULL)
-        {
-          status=MagickFalse;
-          continue;
-        }
-      evaluate_pixel=evaluate_pixels[id];
-      for (x=0; x < (ssize_t) evaluate_image->columns; x++)
+#if   defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(dynamic) shared(progress,status)
+#endif
+      for (y=0; y < (ssize_t) evaluate_image->rows; y++)
       {
-        register ssize_t
-          j,
-          k;
+        CacheView
+          *image_view;
 
-        for (j=0; j < (ssize_t) number_images; j++)
-          for (k=0; k < MaxPixelChannels; k++)
-            evaluate_pixel[j].channel[k]=0.0;
+        const Image
+          *next;
+
+        const int
+          id = GetOpenMPThreadId();
+
+        register PixelChannels
+          *evaluate_pixel;
+
+        register Quantum
+          *restrict q;
+
+        register ssize_t
+          x;
+
+        if (status == MagickFalse)
+          continue;
+        q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,
+          evaluate_image->columns,1,exception);
+        if (q == (Quantum *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        evaluate_pixel=evaluate_pixels[id];
+        for (x=0; x < (ssize_t) evaluate_image->columns; x++)
+        {
+          register ssize_t
+            j,
+            k;
+
+          for (j=0; j < (ssize_t) number_images; j++)
+            for (k=0; k < MaxPixelChannels; k++)
+              evaluate_pixel[j].channel[k]=0.0;
+          next=images;
+          for (j=0; j < (ssize_t) number_images; j++)
+          {
+            register const Quantum
+              *p;
+
+            register ssize_t
+              i;
+
+            image_view=AcquireCacheView(next);
+            p=GetCacheViewVirtualPixels(image_view,x,y,1,1,exception);
+            if (p == (const Quantum *) NULL)
+              {
+                image_view=DestroyCacheView(image_view);
+                break;
+              }
+            for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
+            {
+              PixelChannel
+                channel;
+
+              PixelTrait
+                evaluate_traits,
+                traits;
+
+              evaluate_traits=GetPixelChannelMapTraits(evaluate_image,
+                (PixelChannel) i);
+              channel=GetPixelChannelMapChannel(evaluate_image,
+                (PixelChannel) i);
+              traits=GetPixelChannelMapTraits(next,channel);
+              if ((traits == UndefinedPixelTrait) ||
+                  (evaluate_traits == UndefinedPixelTrait))
+                continue;
+              if ((evaluate_traits & UpdatePixelTrait) == 0)
+                continue;
+              evaluate_pixel[j].channel[i]=ApplyEvaluateOperator(
+                random_info[id],GetPixelChannel(evaluate_image,channel,p),op,
+                evaluate_pixel[j].channel[i]);
+            }
+            image_view=DestroyCacheView(image_view);
+            next=GetNextImageInList(next);
+          }
+          qsort((void *) evaluate_pixel,number_images,sizeof(*evaluate_pixel),
+            IntensityCompare);
+          for (k=0; k < (ssize_t) GetPixelChannels(evaluate_image); k++)
+            q[k]=ClampToQuantum(evaluate_pixel[j/2].channel[k]);
+          q+=GetPixelChannels(evaluate_image);
+        }
+        if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
+          status=MagickFalse;
+        if (images->progress_monitor != (MagickProgressMonitor) NULL)
+          {
+            MagickBooleanType
+              proceed;
+
+#if   defined(MAGICKCORE_OPENMP_SUPPORT)
+            #pragma omp critical (MagickCore_EvaluateImages)
+#endif
+            proceed=SetImageProgress(images,EvaluateImageTag,progress++,
+              evaluate_image->rows);
+            if (proceed == MagickFalse)
+              status=MagickFalse;
+          }
+      }
+    }
+  else
+    {
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(dynamic) shared(progress,status)
+#endif
+      for (y=0; y < (ssize_t) evaluate_image->rows; y++)
+      {
+        CacheView
+          *image_view;
+
+        const Image
+          *next;
+
+        const int
+          id = GetOpenMPThreadId();
+
+        register ssize_t
+          i,
+          x;
+
+        register PixelChannels
+          *evaluate_pixel;
+
+        register Quantum
+          *restrict q;
+
+        ssize_t
+          j;
+
+        if (status == MagickFalse)
+          continue;
+        q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,
+          evaluate_image->columns,1,exception);
+        if (q == (Quantum *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        evaluate_pixel=evaluate_pixels[id];
+        for (j=0; j < (ssize_t) evaluate_image->columns; j++)
+          for (i=0; i < MaxPixelChannels; i++)
+            evaluate_pixel[j].channel[i]=0.0;
         next=images;
         for (j=0; j < (ssize_t) number_images; j++)
         {
           register const Quantum
             *p;
 
-          register ssize_t
-            i;
-
           image_view=AcquireCacheView(next);
-          p=GetCacheViewVirtualPixels(image_view,x,y,1,1,exception);
+          p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
           if (p == (const Quantum *) NULL)
             {
               image_view=DestroyCacheView(image_view);
               break;
             }
-          for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
+          for (x=0; x < (ssize_t) next->columns; x++)
           {
-            PixelChannel
-              channel;
+            register ssize_t
+              i;
 
-            PixelTrait
-              evaluate_traits,
-              traits;
+            for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
+            {
+              PixelChannel
+                channel;
 
-            evaluate_traits=GetPixelChannelMapTraits(evaluate_image,
-              (PixelChannel) i);
-            channel=GetPixelChannelMapChannel(evaluate_image,(PixelChannel) i);
-            traits=GetPixelChannelMapTraits(next,channel);
-            if ((traits == UndefinedPixelTrait) ||
-                (evaluate_traits == UndefinedPixelTrait))
-              continue;
-            if ((evaluate_traits & UpdatePixelTrait) == 0)
-              continue;
-            evaluate_pixel[j].channel[i]=ApplyEvaluateOperator(random_info[id],
-              GetPixelChannel(evaluate_image,channel,p),op,
-              evaluate_pixel[j].channel[i]);
+              PixelTrait
+                evaluate_traits,
+                traits;
+
+              evaluate_traits=GetPixelChannelMapTraits(evaluate_image,
+                (PixelChannel) i);
+              channel=GetPixelChannelMapChannel(evaluate_image,(PixelChannel)
+                i);
+              traits=GetPixelChannelMapTraits(next,channel);
+              if ((traits == UndefinedPixelTrait) ||
+                  (evaluate_traits == UndefinedPixelTrait))
+                continue;
+              if ((traits & UpdatePixelTrait) == 0)
+                continue;
+              evaluate_pixel[x].channel[i]=ApplyEvaluateOperator(
+                random_info[id],GetPixelChannel(evaluate_image,channel,p),
+                j == 0 ? AddEvaluateOperator : op,evaluate_pixel[x].channel[i]);
+            }
+            p+=GetPixelChannels(next);
           }
           image_view=DestroyCacheView(image_view);
           next=GetNextImageInList(next);
         }
-        qsort((void *) evaluate_pixel,number_images,sizeof(*evaluate_pixel),
-          IntensityCompare);
-        for (k=0; k < (ssize_t) GetPixelChannels(evaluate_image); k++)
-          q[k]=ClampToQuantum(evaluate_pixel[j/2].channel[k]);
-        q+=GetPixelChannels(evaluate_image);
-      }
-      if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
-        status=MagickFalse;
-      if (images->progress_monitor != (MagickProgressMonitor) NULL)
+        for (x=0; x < (ssize_t) evaluate_image->columns; x++)
         {
-          MagickBooleanType
-            proceed;
+          register ssize_t
+             i;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-          #pragma omp critical (MagickCore_EvaluateImages)
-#endif
-          proceed=SetImageProgress(images,EvaluateImageTag,progress++,
-            evaluate_image->rows);
-          if (proceed == MagickFalse)
-            status=MagickFalse;
-        }
-    }
-  else
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(dynamic) shared(progress,status)
-#endif
-    for (y=0; y < (ssize_t) evaluate_image->rows; y++)
-    {
-      CacheView
-        *image_view;
-
-      const Image
-        *next;
-
-      const int
-        id = GetOpenMPThreadId();
-
-      register ssize_t
-        i,
-        x;
-
-      register PixelChannels
-        *evaluate_pixel;
-
-      register Quantum
-        *restrict q;
-
-      ssize_t
-        j;
-
-      if (status == MagickFalse)
-        continue;
-      q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,evaluate_image->columns,
-        1,exception);
-      if (q == (Quantum *) NULL)
-        {
-          status=MagickFalse;
-          continue;
-        }
-      evaluate_pixel=evaluate_pixels[id];
-      for (j=0; j < (ssize_t) evaluate_image->columns; j++)
-        for (i=0; i < MaxPixelChannels; i++)
-          evaluate_pixel[j].channel[i]=0.0;
-      next=images;
-      for (j=0; j < (ssize_t) number_images; j++)
-      {
-        register const Quantum
-          *p;
-
-        image_view=AcquireCacheView(next);
-        p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
-        if (p == (const Quantum *) NULL)
+          switch (op)
           {
-            image_view=DestroyCacheView(image_view);
-            break;
+            case MeanEvaluateOperator:
+            {
+              for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
+                evaluate_pixel[x].channel[i]/=(MagickRealType) number_images;
+              break;
+            }
+            case MultiplyEvaluateOperator:
+            {
+              for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
+              {
+                register ssize_t
+                  j;
+
+                for (j=0; j < (ssize_t) (number_images-1); j++)
+                  evaluate_pixel[x].channel[i]*=QuantumScale;
+              }
+              break;
+            }
+            default:
+              break;
           }
-        for (x=0; x < (ssize_t) next->columns; x++)
+        }
+        for (x=0; x < (ssize_t) evaluate_image->columns; x++)
         {
           register ssize_t
             i;
 
           for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
           {
-            PixelChannel
-              channel;
-
             PixelTrait
-              evaluate_traits,
               traits;
 
-            evaluate_traits=GetPixelChannelMapTraits(evaluate_image,
-              (PixelChannel) i);
-            channel=GetPixelChannelMapChannel(evaluate_image,(PixelChannel) i);
-            traits=GetPixelChannelMapTraits(next,channel);
-            if ((traits == UndefinedPixelTrait) ||
-                (evaluate_traits == UndefinedPixelTrait))
+            traits=GetPixelChannelMapTraits(evaluate_image,(PixelChannel) i);
+            if (traits == UndefinedPixelTrait)
               continue;
             if ((traits & UpdatePixelTrait) == 0)
               continue;
-            evaluate_pixel[x].channel[i]=ApplyEvaluateOperator(random_info[id],
-              GetPixelChannel(evaluate_image,channel,p),j == 0 ?
-              AddEvaluateOperator : op,evaluate_pixel[x].channel[i]);
+            q[i]=ClampToQuantum(evaluate_pixel[x].channel[i]);
           }
-          p+=GetPixelChannels(next);
+          q+=GetPixelChannels(evaluate_image);
         }
-        image_view=DestroyCacheView(image_view);
-        next=GetNextImageInList(next);
-      }
-      for (x=0; x < (ssize_t) evaluate_image->columns; x++)
-      {
-        register ssize_t
-           i;
-
-        switch (op)
-        {
-          case MeanEvaluateOperator:
+        if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
+          status=MagickFalse;
+        if (images->progress_monitor != (MagickProgressMonitor) NULL)
           {
-            for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
-              evaluate_pixel[x].channel[i]/=(MagickRealType) number_images;
-            break;
-          }
-          case MultiplyEvaluateOperator:
-          {
-            for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
-            {
-              register ssize_t
-                j;
+            MagickBooleanType
+              proceed;
 
-              for (j=0; j < (ssize_t) (number_images-1); j++)
-                evaluate_pixel[x].channel[i]*=QuantumScale;
-            }
-            break;
-          }
-          default:
-            break;
-        }
-      }
-      for (x=0; x < (ssize_t) evaluate_image->columns; x++)
-      {
-        register ssize_t
-          i;
-
-        for (i=0; i < (ssize_t) GetPixelChannels(evaluate_image); i++)
-        {
-          PixelTrait
-            traits;
-
-          traits=GetPixelChannelMapTraits(evaluate_image,(PixelChannel) i);
-          if (traits == UndefinedPixelTrait)
-            continue;
-          if ((traits & UpdatePixelTrait) == 0)
-            continue;
-          q[i]=ClampToQuantum(evaluate_pixel[x].channel[i]);
-        }
-        q+=GetPixelChannels(evaluate_image);
-      }
-      if (SyncCacheViewAuthenticPixels(evaluate_view,exception) == MagickFalse)
-        status=MagickFalse;
-      if (images->progress_monitor != (MagickProgressMonitor) NULL)
-        {
-          MagickBooleanType
-            proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-          #pragma omp critical (MagickCore_EvaluateImages)
+#if   defined(MAGICKCORE_OPENMP_SUPPORT)
+            #pragma omp critical (MagickCore_EvaluateImages)
 #endif
-          proceed=SetImageProgress(images,EvaluateImageTag,progress++,
-            evaluate_image->rows);
-          if (proceed == MagickFalse)
-            status=MagickFalse;
-        }
+            proceed=SetImageProgress(images,EvaluateImageTag,progress++,
+              evaluate_image->rows);
+            if (proceed == MagickFalse)
+              status=MagickFalse;
+          }
+      }
     }
   evaluate_view=DestroyCacheView(evaluate_view);
   evaluate_pixels=DestroyPixelThreadSet(evaluate_pixels);
