@@ -124,7 +124,7 @@ static inline int GetOpenMPThreadId(void)
 static inline void SetOpenMPMaximumThreads(const int threads)
 {
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  omp_set_num_threads(threads);
+  omp_set_num_threads(threads < 1 ? 1 : threads);
 #else
   (void) threads;
 #endif
