@@ -1,3 +1,6 @@
+2011-11-20  6.7.3-8 Cristy  <quetzlzacatenango@image...>
+  * The exif:ExposureBiasValue property is a signed value.
+
 2010-11-19  6.7.3-8 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed bug with scaling Q16 background to PNG sub-8-bit bKGD and
     again disabled PNG_USE_CLONE in coders/png.c.
