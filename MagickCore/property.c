@@ -737,7 +737,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
 #define TAG_GPS_OFFSET  0x8825
 #define TAG_INTEROP_OFFSET  0xa005
 
-#define EXIFMultipleValues(size, format, arg) \
+#define EXIFMultipleValues(size,format,arg) \
 { \
    ssize_t \
      component; \
@@ -763,7 +763,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
    value=AcquireString(buffer); \
 }
 
-#define EXIFMultipleFractions(size, format, arg1, arg2) \
+#define EXIFMultipleFractions(size,format,arg1,arg2) \
 { \
    ssize_t \
      component; \
@@ -779,7 +779,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
    for (component=0; component < components; component++) \
    { \
      length+=FormatLocaleString(buffer+length,MaxTextExtent-length, \
-       format", ",arg1, arg2); \
+       format", ",arg1,arg2); \
      if (length >= (MaxTextExtent-1)) \
        length=MaxTextExtent-1; \
      p1+=size; \
@@ -1344,7 +1344,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             case EXIF_FMT_SLONG:
             {
               EXIFMultipleValues(4,"%.20g",(double)
-                ReadPropertyLong(endian,p1));
+                ((int) ReadPropertyLong(endian,p1)));
               break;
             }
             case EXIF_FMT_URATIONAL:
@@ -1357,8 +1357,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             case EXIF_FMT_SRATIONAL:
             {
               EXIFMultipleFractions(8,"%.20g/%.20g",(double)
-                ReadPropertyLong(endian,p1),(double)
-                ReadPropertyLong(endian,p1+4));
+                ((int) ReadPropertyLong(endian,p1)),(double)
+                ((int) ReadPropertyLong(endian,p1+4)));
               break;
             }
             case EXIF_FMT_SINGLE:
@@ -1424,8 +1424,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                         break;
                       }
                   }
-                  (void) FormatLocaleString(key,MaxTextExtent,"%s",
-                    description);
+                  (void) FormatLocaleString(key,MaxTextExtent,"%s",description);
                   break;
                 }
                 case 2:
