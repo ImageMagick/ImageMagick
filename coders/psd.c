@@ -672,8 +672,6 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
                     q+=GetPixelChannels(image);
                     x++;
                   }
-                  q--;
-                  x--;
                 }
             }
           break;
