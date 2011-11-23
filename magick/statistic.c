@@ -1533,7 +1533,8 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
           if (pixel.blue > *maxima)
             *maxima=(double) pixel.blue;
         }
-      if ((channel & OpacityChannel) != 0)
+      if (((channel & OpacityChannel) != 0) &&
+          (image->matte != MagickFalse))
         {
           if (pixel.opacity < *minima)
             *minima=(double) pixel.opacity;
