@@ -1177,7 +1177,7 @@ if test "$enable_delegate_build" != 'no'; then
     # Most delegates have includes in the same directory as the library, but not all...
     #
     # Includes
-    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper/include jbig/libjbig jpeg lcms/include lzma magick png tiff/libtiff ttf/include wand wmf/include xml/include zlib; do
+    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper/include jbig/libjbig jpeg lcms/include lzma magick png tiff/libtiff ttf/include wand webp wmf/include xml/include zlib; do
         if test -d "$builddir/$dir"; then
             CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
         else
@@ -1188,7 +1188,7 @@ if test "$enable_delegate_build" != 'no'; then
     done
 
     # Libraries
-    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper jbig/libjbig jpeg lcms/src lzma magick png tiff/libtiff ttf/objs wand wmf/src xml zlib; do
+    for dir in bzlib fftw fpx gslib/src jp2 jp2/src/libjasper jbig/libjbig jpeg lcms/src lzma magick png tiff/libtiff ttf/objs wand webp wmf/src xml zlib; do
     if test -d "$builddir/$dir/.libs"; then
         LDFLAGS="$LDFLAGS -L$builddir/$dir/.libs"
     else
