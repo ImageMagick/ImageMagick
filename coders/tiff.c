@@ -2167,7 +2167,6 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
     Write pyramid-encoded TIFF image.
   */
   write_info=CloneImageInfo(image_info);
-  *write_info->magick='\0';
   write_info->adjoin=MagickTrue;
   status=WriteTIFFImage(write_info,GetFirstImageInList(images),exception);
   images=DestroyImageList(images);
@@ -3101,7 +3100,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         chromaticity[1]=(float) image->chromaticity.white_point.y;
         (void) TIFFSetField(tiff,TIFFTAG_WHITEPOINT,chromaticity);
       }
-    if ((image_info->adjoin != MagickFalse) && (GetImageListLength(image) > 1))
+    if ((LocaleCompare(image_info->magick,"PTIF") != 0) &&
+        (image_info->adjoin != MagickFalse) && (GetImageListLength(image) > 1))
       {
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
         if (image->scene != 0)
@@ -3118,7 +3118,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
 
       page=(uint16) scene;
       pages=(uint16) GetImageListLength(image);
-      if ((image_info->adjoin != MagickFalse) && (pages > 1))
+      if ((LocaleCompare(image_info->magick,"PTIF") != 0) &&
+          (image_info->adjoin != MagickFalse) && (pages > 1))
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
       (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,page,pages);
     }
