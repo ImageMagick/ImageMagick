@@ -406,17 +406,17 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->density != (char *) NULL)
     {
       flags=ParseGeometry(image_info->density,&geometry_info);
-      image->resolution.x=geometry_info.rho;
-      image->resolution.y=geometry_info.sigma;
+      image->x_resolution=geometry_info.rho;
+      image->y_resolution=geometry_info.sigma;
       if ((flags & SigmaValue) == 0)
-        image->resolution.y=image->resolution.x;
+        image->y_resolution=image->x_resolution;
     }
   (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
-  page.width=(size_t) ceil((double) (page.width*image->resolution.x/delta.x)-
+  page.width=(size_t) ceil((double) (page.width*image->x_resolution/delta.x)-
     0.5);
-  page.height=(size_t) ceil((double) (page.height*image->resolution.y/delta.y)-
+  page.height=(size_t) ceil((double) (page.height*image->y_resolution/delta.y)-
     0.5);
   /*
     Determine page geometry from the PDF media box.
@@ -549,9 +549,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         hires_bounds.x1,hires_bounds.y1);
       (void) SetImageProperty(image,"pdf:HiResBoundingBox",geometry);
       page.width=(size_t) ceil((double) ((hires_bounds.x2-hires_bounds.x1)*
-        image->resolution.x/delta.x)-0.5);
+        image->x_resolution/delta.x)-0.5);
       page.height=(size_t) ceil((double) ((hires_bounds.y2-hires_bounds.y1)*
-        image->resolution.y/delta.y)-0.5);
+        image->y_resolution/delta.y)-0.5);
     }
   (void) CloseBlob(image);
   if ((fabs(angle) == 90.0) || (fabs(angle) == 270.0))
