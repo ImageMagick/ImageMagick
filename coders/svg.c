@@ -1092,6 +1092,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
       if (LocaleCompare((const char *) name,"text") == 0)
         {
           (void) FormatLocaleFile(svg_info->file,"push graphic-context\n");
+          svg_info->bounds.x=0.0;
+          svg_info->bounds.y=0.0;
+          svg_info->bounds.width=0.0;
+          svg_info->bounds.height=0.0;
           break;
         }
       if (LocaleCompare((const char *) name,"tspan") == 0)
@@ -2402,7 +2406,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
                 *text;
 
               text=EscapeString(svg_info->text,'\'');
-              (void) FormatLocaleFile(svg_info->file,"text 0,0 '%s'\n",text);
+              (void) FormatLocaleFile(svg_info->file,"text %g,%g '%s'\n",
+                svg_info->bounds.x,svg_info->bounds.y,text);
               text=DestroyString(text);
               *svg_info->text='\0';
             }
