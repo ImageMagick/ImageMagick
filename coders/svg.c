@@ -2402,8 +2402,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
                 *text;
 
               text=EscapeString(svg_info->text,'\'');
-              (void) FormatLocaleFile(svg_info->file,"text %g,%g '%s'\n",
-                svg_info->bounds.x,svg_info->bounds.y,text);
+              (void) FormatLocaleFile(svg_info->file,"text 0,0 '%s'\n",text);
               text=DestroyString(text);
               *svg_info->text='\0';
             }
