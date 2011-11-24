@@ -405,6 +405,21 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((flags & SigmaValue) == 0)
         image->resolution.y=image->resolution.x;
     }
+  if (image_info->density != (char *) NULL)
+    {
+      flags=ParseGeometry(image_info->density,&geometry_info);
+      image->resolution.x=geometry_info.rho;
+      image->resolution.y=geometry_info.sigma;
+      if ((flags & SigmaValue) == 0)
+        image->resolution.y=image->resolution.x;
+    }
+  (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
+  if (image_info->page != (char *) NULL)
+    (void) ParseAbsoluteGeometry(image_info->page,&page);
+  page.width=(size_t) ceil((double) (page.width*image->resolution.x/delta.x)-
+    0.5);
+  page.height=(size_t) ceil((double) (page.height*image->resolution.y/delta.y)-
+    0.5);
   /*
     Determine page geometry from the PDF media box.
   */
@@ -422,7 +437,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ResetMagickMemory(&bounding_box,0,sizeof(bounding_box));
   (void) ResetMagickMemory(&bounds,0,sizeof(bounds));
   (void) ResetMagickMemory(&hires_bounds,0,sizeof(hires_bounds));
-  (void) ResetMagickMemory(&page,0,sizeof(page));
   (void) ResetMagickMemory(command,0,sizeof(command));
   angle=0.0;
   p=command;
@@ -477,6 +491,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (LocaleNCompare(PDFVersion,command,strlen(PDFVersion)) == 0)
       (void) SetImageProperty(image,"pdf:Version",command,exception);
+    if (image_info->page != (char *) NULL)
+      continue;
     count=0;
     if (cropbox != MagickFalse)
       {
@@ -532,8 +548,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         hires_bounds.x2-bounds.x1,hires_bounds.y2-hires_bounds.y1,
         hires_bounds.x1,hires_bounds.y1);
       (void) SetImageProperty(image,"pdf:HiResBoundingBox",geometry,exception);
-      page.width=(size_t) floor(hires_bounds.x2-hires_bounds.x1+0.5);
-      page.height=(size_t) floor(hires_bounds.y2-hires_bounds.y1+0.5);
+      page.width=(size_t) ceil((double) ((hires_bounds.x2-hires_bounds.x1)*
+        image->resolution.x/delta.x)-0.5);
+      page.height=(size_t) ceil((double) ((hires_bounds.y2-hires_bounds.y1)*
+        image->resolution.y/delta.y)-0.5);
     }
   (void) CloseBlob(image);
   if ((fabs(angle) == 90.0) || (fabs(angle) == 270.0))
@@ -578,26 +596,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   *options='\0';
-  if (image_info->density != (char *) NULL)
-    {
-      flags=ParseGeometry(image_info->density,&geometry_info);
-      image->resolution.x=geometry_info.rho;
-      image->resolution.y=geometry_info.sigma;
-      if ((flags & SigmaValue) == 0)
-        image->resolution.y=image->resolution.x;
-    }
   (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",image->resolution.x,
     image->resolution.y);
-  if (image_info->page != (char *) NULL)
-    {
-      (void) ParseAbsoluteGeometry(image_info->page,&page);
-      page.width=(size_t) floor((double) (page.width*image->resolution.x/
-        delta.x)+0.5);
-      page.height=(size_t) floor((double) (page.height*image->resolution.y/
-        delta.y)+0.5);
-      (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
-        page.width,(double) page.height);
-    }
+  (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
+     page.width,(double) page.height);
   if (cmyk != MagickFalse)
     (void) ConcatenateMagickString(options,"-dUseCIEColor ",MaxTextExtent);
   if (cropbox != MagickFalse)
