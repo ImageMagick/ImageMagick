@@ -693,7 +693,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     priority=i;
   }
   if ((fabs(hires_bounds.x2-hires_bounds.x1) >= MagickEpsilon) && 
-      (fabs(hires_bounds.y2-hires_bounds.x1) >= MagickEpsilon))
+      (fabs(hires_bounds.y2-hires_bounds.y1) >= MagickEpsilon))
     {
       /*
         Set Postscript render geometry.
@@ -731,7 +731,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         translate_geometry[MaxTextExtent];
 
       (void) FormatLocaleString(translate_geometry,MaxTextExtent,
-        "%g %g translate\n",-bounds.x1,-bounds.y1);
+        "%g %g translate\n",-hires_bounds.x1,-hires_bounds.y1);
       count=write(file,translate_geometry,(unsigned int)
         strlen(translate_geometry));
     }
