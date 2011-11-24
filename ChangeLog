@@ -5,6 +5,8 @@
     set.
   * Set FILETYPE_REDUCEDIMAGE tag on pyramidal TIFF images (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19892).
+  * Correct image geometry for Postscript for hi-res bounding box (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19807).
 
 2010-11-19  6.7.3-8 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed bug with scaling Q16 background to PNG sub-8-bit bKGD and
