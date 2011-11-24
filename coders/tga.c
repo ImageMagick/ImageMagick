@@ -167,6 +167,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char
     j,
     k,
+    pixels[4],
     runlength;
 
   /*
@@ -406,34 +407,47 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               range;
 
             /*
-              5 bits each of red green and blue.
+              5 bits each of RGB.
             */
-            j=(unsigned char) ReadBlobByte(image);
-            k=(unsigned char) ReadBlobByte(image);
+            if (ReadBlob(image,2,pixels) != 2)
+              ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+            j=pixels[0];
+            k=pixels[1];
             range=GetQuantumRange(5UL);
             pixel.red=ScaleAnyToQuantum(1UL*(k & 0x7c) >> 2,range);
             pixel.green=ScaleAnyToQuantum((1UL*(k & 0x03) << 3)+
               (1UL*(j & 0xe0) >> 5),range);
             pixel.blue=ScaleAnyToQuantum(1UL*(j & 0x1f),range);
             if (image->matte != MagickFalse)
-              pixel.alpha=(k & 0x80) == 0 ? (Quantum) OpaqueAlpha :
-                (Quantum) TransparentAlpha; 
+              pixel.alpha=(k & 0x80) == 0 ? (Quantum) OpaqueAlpha : (Quantum)
+                TransparentAlpha; 
             if (image->storage_class == PseudoClass)
               index=ConstrainColormapIndex(image,((size_t) k << 8)+j,exception);
             break;
           }
           case 24:
+          {
+            /*
+              BGR pixels.
+            */
+            if (ReadBlob(image,3,pixels) != 3)
+              ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+            pixel.blue=ScaleCharToQuantum(pixels[0]);
+            pixel.green=ScaleCharToQuantum(pixels[1]);
+            pixel.red=ScaleCharToQuantum(pixels[2]);
+            break;
+          }
           case 32:
           {
             /*
-              8 bits each of blue green and red.
+              BGRA pixels.
             */
-            pixel.blue=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
-            pixel.green=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
-            pixel.red=ScaleCharToQuantum((unsigned char) ReadBlobByte(image));
-            if (tga_info.bits_per_pixel == 32)
-              pixel.alpha=ScaleCharToQuantum((unsigned char)
-                ReadBlobByte(image));
+            if (ReadBlob(image,4,pixels) != 4)
+              ThrowReaderException(CorruptImageError,"UnableToReadImageData");
+            pixel.blue=ScaleCharToQuantum(pixels[0]);
+            pixel.green=ScaleCharToQuantum(pixels[1]);
+            pixel.red=ScaleCharToQuantum(pixels[2]);
+            pixel.alpha=ScaleCharToQuantum(pixels[3]);
             break;
           }
         }
