@@ -692,7 +692,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     hires_bounds=bounds;
     priority=i;
   }
-  if (priority != 0)
+  if ((fabs(hires_bounds.x2) >= MagickEpsilon) && 
+      (fabs(hires_bounds.y2) >= MagickEpsilon))
     {
       /*
         Set Postscript render geometry.
