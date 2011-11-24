@@ -1165,7 +1165,7 @@ static MagickBooleanType WriteCINImage(const ImageInfo *image_info,Image *image,
   if (0)
     {
       quantum_type=GrayQuantum;
-      length=GetBytesPerRow(image->columns,3,image->depth,MagickTrue);
+      length=GetBytesPerRow(image->columns,1,image->depth,MagickTrue);
     }
   for (y=0; y < (ssize_t) image->rows; y++)
   {

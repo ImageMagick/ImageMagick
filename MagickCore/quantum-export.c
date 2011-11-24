@@ -1369,14 +1369,17 @@ MagickExport size_t ExportQuantumPixels(Image *image,CacheView *image_view,
                 p+=3;
                 q+=quantum_info->pad;
               }
-              pixel=0UL;
-              if (x++ < (ssize_t) (number_pixels-1))
-                pixel|=ScaleQuantumToAny(GetPixelIntensity(image,p+1),
-                  range) << 12;
-              if (x++ < (ssize_t) number_pixels)
-                pixel|=ScaleQuantumToAny(GetPixelIntensity(image,p+0),
-                  range) << 2;
-              q=PopLongPixel(endian,pixel,q);
+              if (x < (ssize_t) number_pixels)
+                {
+                  pixel=0U;
+                  if (x++ < (ssize_t) (number_pixels-1))
+                    pixel|=ScaleQuantumToAny(GetPixelIntensity(image,p+1),
+                      range) << 12;
+                  if (x++ < (ssize_t) number_pixels)
+                    pixel|=ScaleQuantumToAny(GetPixelIntensity(image,p+0),
+                      range) << 2;
+                  q=PopLongPixel(endian,pixel,q);
+                }
               break;
             }
           for (x=0; x < (ssize_t) number_pixels; x++)

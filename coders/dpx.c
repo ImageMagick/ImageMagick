@@ -1290,6 +1290,9 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   DPXInfo
     dpx;
 
+  GeometryInfo
+    geometry_info;
+
   MagickBooleanType
     status;
 
@@ -1298,9 +1301,6 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
 
   MagickStatusType
     flags;
-
-  GeometryInfo
-    geometry_info;
 
   QuantumInfo
     *quantum_info;
@@ -1704,7 +1704,8 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
     dpx.television.field_number=(unsigned char) StringToLong(value);
   offset+=WriteBlobByte(image,dpx.television.field_number);
   dpx.television.video_signal=0;
-  value=GetDPXProperty(image_info,image,"dpx:television.video_signal",exception);
+  value=GetDPXProperty(image_info,image,"dpx:television.video_signal",
+    exception);
   if (value != (const char *) NULL)
     dpx.television.video_signal=(unsigned char) StringToLong(value);
   offset+=WriteBlobByte(image,dpx.television.video_signal);
@@ -1714,18 +1715,15 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
     dpx.television.padding=(unsigned char) StringToLong(value);
   offset+=WriteBlobByte(image,dpx.television.padding);
   dpx.television.horizontal_sample_rate=0.0f;
-  value=GetDPXProperty(image_info,image,
-    "dpx:television.horizontal_sample_rate",exception);
+  value=GetDPXProperty(image_info,image,"dpx:television.horizontal_sample_rate",    exception);
   if (value != (const char *) NULL)
-    dpx.television.horizontal_sample_rate=StringToDouble(value,
-      (char **) NULL);
+    dpx.television.horizontal_sample_rate=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.horizontal_sample_rate);
   dpx.television.vertical_sample_rate=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:television.vertical_sample_rate",
     exception);
   if (value != (const char *) NULL)
-    dpx.television.vertical_sample_rate=StringToDouble(value,
-      (char **) NULL);
+    dpx.television.vertical_sample_rate=StringToDouble(value,(char **) NULL);
   offset+=WriteBlobFloat(image,dpx.television.vertical_sample_rate);
   dpx.television.frame_rate=0.0f;
   value=GetDPXProperty(image_info,image,"dpx:television.frame_rate",exception);
