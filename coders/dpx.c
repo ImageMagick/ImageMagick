@@ -1808,8 +1808,7 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
     }
   extent=GetBytesPerRow(image->columns,image->matte != MagickFalse ? 4UL : 3UL,
     image->depth,MagickTrue);
-  if ((image_info->type != UndefinedType) &&
-      (image_info->type != TrueColorType) && (image->matte == MagickFalse) &&
+  if ((image_info->type != TrueColorType) && (image->matte == MagickFalse) &&
       (IsGrayImage(image,&image->exception) != MagickFalse))
     {
       quantum_type=GrayQuantum;
