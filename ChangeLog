@@ -1,3 +1,6 @@
+2011-11-25  6.7.3-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.3-8, SVN revision 6084
+
 2011-11-20  6.7.3-8 Cristy  <quetzlzacatenango@image...>
   * The exif:ExposureBiasValue property is a signed value.
   * Prevent buffer underflow for 1-bit PSD images.
