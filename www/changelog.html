@@ -200,10 +200,10 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Computer Wallpaper" href="http://www.free-computer-wallpapers.com">Computer Wallpaper</a><!-- 2012030100150 webinvasion1@y...-->
+   <a rel="follow" title="Sponsor: Photo Sharing Websites" href="http://www.zoofoo.com">Photo Sharing Websites</a><!-- 2012050100150 dancu@dans...-->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingreviewz.com">Web Hosting Reviews</a><!-- 2012040100030 Soft Tec-->
+   <a rel="follow" title="Sponsor: Hosting Web" href="http://www.hostalia.com">Hosting Web</a><!-- 20120401000150 david@carre... -->
 </div>
 </div>
 </div>
@@ -216,7 +216,17 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-11-18  6.7.3-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2011-11-25  6.7.3-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.3-8, SVN revision 6084</dd>
+<dt>2011-11-20  6.7.3-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The exif:ExposureBiasValue property is a signed value.</dd>
+  <dd> Prevent buffer underflow for 1-bit PSD images.</dd>
+  <dd> Don't include alpha channel when computing range unless image-&gt;matte is    set.</dd>
+  <dd> Set FILETYPE_REDUCEDIMAGE tag on pyramidal TIFF images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19892).</dd>
+  <dd> Correct image geometry for Postscript for hi-res bounding box (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19807).</dd>
+<dt>2010-11-19  6.7.3-8 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fixed bug with scaling Q16 background to PNG sub-8-bit bKGD and    again disabled PNG_USE_CLONE in coders/png.c.</dd>
+<dt>2011-11-18  6.7.3-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.3-7, SVN revision 6024</dd>
 <dt>2011-11-18  6.7.3-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Ensure embedded XML resource file is null terminated (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19856).</dd>
@@ -224,6 +234,7 @@
   <dd> Added a -define filter:alpha to contol the 'alpha value' of the    Kaiser Windowing filter.  Default value is 6.5</dd>
 <dt>2010-11-15  6.7.3-7 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Reverted the change of 6.6.6-7 that creates an image clone for use    by the PNG encoder.  This was not useful and was somewhat wasteful.</dd>
+  <dd> After finding out that writing the bKGD chunk in sub-8-bit PNG files,    enabled PNG_USE_CLONE (To create an image clone again)</dd>
 <dt>2011-11-14  6.7.3-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.3-6, SVN revision 5972.</dd>
 <dt>2011-11-11  6.7.3-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
