@@ -4718,11 +4718,8 @@ static void AddNodePixelList(PixelList *pixel_list,const ssize_t channel,
   } while (level-- > 0);
 }
 
-static MagickPixelPacket GetMaximumPixelList(PixelList *pixel_list)
+static void GetMaximumPixelList(PixelList *pixel_list,MagickPixelPacket *pixel)
 {
-  MagickPixelPacket
-    pixel;
-
   register SkipList
     *list;
 
@@ -4757,20 +4754,15 @@ static MagickPixelPacket GetMaximumPixelList(PixelList *pixel_list)
     } while (count < (ssize_t) pixel_list->length);
     channels[channel]=(unsigned short) maximum;
   }
-  GetMagickPixelPacket((const Image *) NULL,&pixel);
-  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
-  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
-  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
-  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
-  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
-  return(pixel);
+  pixel->red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel->green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel->blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel->opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel->index=(MagickRealType) ScaleShortToQuantum(channels[4]);
 }
 
-static MagickPixelPacket GetMeanPixelList(PixelList *pixel_list)
+static void GetMeanPixelList(PixelList *pixel_list,MagickPixelPacket *pixel)
 {
-  MagickPixelPacket
-    pixel;
-
   MagickRealType
     sum;
 
@@ -4807,20 +4799,15 @@ static MagickPixelPacket GetMeanPixelList(PixelList *pixel_list)
     sum/=pixel_list->length;
     channels[channel]=(unsigned short) sum;
   }
-  GetMagickPixelPacket((const Image *) NULL,&pixel);
-  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
-  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
-  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
-  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
-  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
-  return(pixel);
+  pixel->red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel->green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel->blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel->opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel->index=(MagickRealType) ScaleShortToQuantum(channels[4]);
 }
 
-static MagickPixelPacket GetMedianPixelList(PixelList *pixel_list)
+static void GetMedianPixelList(PixelList *pixel_list,MagickPixelPacket *pixel)
 {
-  MagickPixelPacket
-    pixel;
-
   register SkipList
     *list;
 
@@ -4851,20 +4838,16 @@ static MagickPixelPacket GetMedianPixelList(PixelList *pixel_list)
     } while (count <= (ssize_t) (pixel_list->length >> 1));
     channels[channel]=(unsigned short) color;
   }
-  GetMagickPixelPacket((const Image *) NULL,&pixel);
-  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
-  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
-  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
-  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
-  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
-  return(pixel);
+  GetMagickPixelPacket((const Image *) NULL,pixel);
+  pixel->red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel->green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel->blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel->opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel->index=(MagickRealType) ScaleShortToQuantum(channels[4]);
 }
 
-static MagickPixelPacket GetMinimumPixelList(PixelList *pixel_list)
+static void GetMinimumPixelList(PixelList *pixel_list,MagickPixelPacket *pixel)
 {
-  MagickPixelPacket
-    pixel;
-
   register SkipList
     *list;
 
@@ -4899,20 +4882,15 @@ static MagickPixelPacket GetMinimumPixelList(PixelList *pixel_list)
     } while (count < (ssize_t) pixel_list->length);
     channels[channel]=(unsigned short) minimum;
   }
-  GetMagickPixelPacket((const Image *) NULL,&pixel);
-  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
-  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
-  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
-  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
-  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
-  return(pixel);
+  pixel->red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel->green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel->blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel->opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel->index=(MagickRealType) ScaleShortToQuantum(channels[4]);
 }
 
-static MagickPixelPacket GetModePixelList(PixelList *pixel_list)
+static void GetModePixelList(PixelList *pixel_list,MagickPixelPacket *pixel)
 {
-  MagickPixelPacket
-    pixel;
-
   register SkipList
     *list;
 
@@ -4952,20 +4930,15 @@ static MagickPixelPacket GetModePixelList(PixelList *pixel_list)
     } while (count < (ssize_t) pixel_list->length);
     channels[channel]=(unsigned short) mode;
   }
-  GetMagickPixelPacket((const Image *) NULL,&pixel);
-  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
-  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
-  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
-  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
-  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
-  return(pixel);
+  pixel->red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel->green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel->blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel->opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel->index=(MagickRealType) ScaleShortToQuantum(channels[4]);
 }
 
-static MagickPixelPacket GetNonpeakPixelList(PixelList *pixel_list)
+static void GetNonpeakPixelList(PixelList *pixel_list,MagickPixelPacket *pixel)
 {
-  MagickPixelPacket
-    pixel;
-
   register SkipList
     *list;
 
@@ -5006,20 +4979,16 @@ static MagickPixelPacket GetNonpeakPixelList(PixelList *pixel_list)
         color=previous;
     channels[channel]=(unsigned short) color;
   }
-  GetMagickPixelPacket((const Image *) NULL,&pixel);
-  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
-  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
-  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
-  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
-  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
-  return(pixel);
+  pixel->red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel->green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel->blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel->opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel->index=(MagickRealType) ScaleShortToQuantum(channels[4]);
 }
 
-static MagickPixelPacket GetStandardDeviationPixelList(PixelList *pixel_list)
+static void GetStandardDeviationPixelList(PixelList *pixel_list,
+  MagickPixelPacket *pixel)
 {
-  MagickPixelPacket
-    pixel;
-
   MagickRealType
     sum,
     sum_squared;
@@ -5064,13 +5033,11 @@ static MagickPixelPacket GetStandardDeviationPixelList(PixelList *pixel_list)
     sum_squared/=pixel_list->length;
     channels[channel]=(unsigned short) sqrt(sum_squared-(sum*sum));
   }
-  GetMagickPixelPacket((const Image *) NULL,&pixel);
-  pixel.red=(MagickRealType) ScaleShortToQuantum(channels[0]);
-  pixel.green=(MagickRealType) ScaleShortToQuantum(channels[1]);
-  pixel.blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
-  pixel.opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
-  pixel.index=(MagickRealType) ScaleShortToQuantum(channels[4]);
-  return(pixel);
+  pixel->red=(MagickRealType) ScaleShortToQuantum(channels[0]);
+  pixel->green=(MagickRealType) ScaleShortToQuantum(channels[1]);
+  pixel->blue=(MagickRealType) ScaleShortToQuantum(channels[2]);
+  pixel->opacity=(MagickRealType) ScaleShortToQuantum(channels[3]);
+  pixel->index=(MagickRealType) ScaleShortToQuantum(channels[4]);
 }
 
 static inline void InsertPixelList(const Image *image,const PixelPacket *pixel,
@@ -5294,8 +5261,10 @@ MagickExport Image *StatisticImageChannel(const Image *image,
             maximum,
             minimum;
 
-          minimum=GetMinimumPixelList(pixel_list[id]);
-          maximum=GetMaximumPixelList(pixel_list[id]);
+          GetMinimumPixelList(pixel_list[id],&pixel);
+          minimum=pixel;
+          GetMaximumPixelList(pixel_list[id],&pixel);
+          maximum=pixel;
           pixel.red=MagickAbsoluteValue(maximum.red-minimum.red);
           pixel.green=MagickAbsoluteValue(maximum.green-minimum.green);
           pixel.blue=MagickAbsoluteValue(maximum.blue-minimum.blue);
@@ -5306,38 +5275,38 @@ MagickExport Image *StatisticImageChannel(const Image *image,
         }
         case MaximumStatistic:
         {
-          pixel=GetMaximumPixelList(pixel_list[id]);
+          GetMaximumPixelList(pixel_list[id],&pixel);
           break;
         }
         case MeanStatistic:
         {
-          pixel=GetMeanPixelList(pixel_list[id]);
+          GetMeanPixelList(pixel_list[id],&pixel);
           break;
         }
         case MedianStatistic:
         default:
         {
-          pixel=GetMedianPixelList(pixel_list[id]);
+          GetMedianPixelList(pixel_list[id],&pixel);
           break;
         }
         case MinimumStatistic:
         {
-          pixel=GetMinimumPixelList(pixel_list[id]);
+          GetMinimumPixelList(pixel_list[id],&pixel);
           break;
         }
         case ModeStatistic:
         {
-          pixel=GetModePixelList(pixel_list[id]);
+          GetModePixelList(pixel_list[id],&pixel);
           break;
         }
         case NonpeakStatistic:
         {
-          pixel=GetNonpeakPixelList(pixel_list[id]);
+          GetNonpeakPixelList(pixel_list[id],&pixel);
           break;
         }
         case StandardDeviationStatistic:
         {
-          pixel=GetStandardDeviationPixelList(pixel_list[id]);
+          GetStandardDeviationPixelList(pixel_list[id],&pixel);
           break;
         }
       }
