@@ -20,7 +20,7 @@
   <meta name="Description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
-  <meta name="Keywords" content="command-line, options, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Image, Processing, Automagically"/>
+  <meta name="Keywords" content="command-line, options, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
   <meta name="Rating" content="GENERAL"/>
   <meta name="Robots" content="INDEX, FOLLOW"/>
   <meta name="Generator" content="ImageMagick Studio LLC"/>
@@ -165,7 +165,7 @@
   style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
 <div class="sponsbox">
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock<br />Photos</a><!-- 2012080100540 ... -->
+   <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
 </div>
 <div  class="sponsor">
   <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
@@ -195,7 +195,7 @@
   <a rel="follow" title="Sponsor: Autos part" href="http://www.pkwteile.de/autoteile">Autos part</a><!-- 201112010090s jr@pkwte... -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock<br />Images</a><!-- 2012050100360 support@can -->
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
 </div>
 <div  class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingsecretrevealed.com">Web Hosting Secret Revealed</a><!-- 201204010540 iamchee jerry -->
@@ -207,7 +207,7 @@
    <a rel="follow" title="Sponsor: Notebook Reparatur" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur</a><!-- 2012020100300 atlas.multimedia-->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingreviewz.com">Web Hosting Reviews</a><!-- 2012040100030 Soft Tec-->
+   <a rel="follow" title="Sponsor: Brand shopping" href="http://brandport.net">Brand shopping</a><!-- 20120201000150 gyaku@gyaku... -->
 </div>
 </div>
 </div>
@@ -637,8 +637,8 @@ href="#auto-orient" >-auto-orient</a> operator will do nothing. </p>
 
 <p>Repeat the entire command for the given number of <em class="arg">iterations</em> and report the user-time and elapsed time. For instance, consider the following command and its output.  Modify the benchmark with the -duration to run the benchmark for a fixed number of seconds and -concurrent to run the benchmark in parallel (requires the OpenMP feature).</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize 1000% -bench 5 logo.png</span><span class='crtout'>Performance: 5i 0.875657ips 6.880u 0:05.710</span></p>
-<p>In this example, 5 iterations were completed at 0.875657 iterations per second, using 6.88 seconds of the user's allotted time, for a total elapsed time of 5.71 seconds.</p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize 1000% -bench 5 logo.png</span><span class='crtout'>Performance[4]: 5i 0.875657ips 6.880u 0:05.710</span></p>
+<p>In this example, 5 iterations were completed at 0.875657 iterations per second, using 4 threads and 6.88 seconds of the user's allotted time, for a total elapsed time of 5.71 seconds.</p>
 
 <div style="margin: auto;">
   <h4><a id="bias"></a>-bias <em class="arg">value</em>{<em class="arg">%</em>}</h4>
@@ -767,7 +767,7 @@ pixels which are outside the image proper are blurred into the final result.
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Surround the image with a border of color. </td><td style='text-align:right;'></td></tr></table>
 
 <p>Set the width and height using the <em class="arg">size</em> portion of the
-<em class="arg">gravity</em> argument.  See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. Offsets are
+<em class="arg">geometry</em> argument.  See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. Offsets are
 ignored. </p>
 
 <p>Set the border color by preceding with the <a
