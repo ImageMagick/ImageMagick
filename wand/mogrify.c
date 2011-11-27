@@ -225,10 +225,11 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       elapsed_time=GetElapsedTime(timer);
       user_time=GetUserTime(timer);
       (void) FormatLocaleFile(stderr,
-        "Performance: %.20gi %gips %0.3fu %.20g:%02g.%03g\n",(double)
-        iterations,1.0*iterations/elapsed_time,user_time,(double)
-        (elapsed_time/60.0),floor(fmod(elapsed_time,60.0)),(double)
-        (1000.0*(elapsed_time-floor(elapsed_time))));
+        "Performance[%.20g]: %.20gi %gips %0.3fu %lu:%02lu.%03lu\n",
+        (double) GetOpenMPMaximumThreads(),(double) iterations,(double)
+        iterations/elapsed_time,user_time,(unsigned long) (elapsed_time/60.0),
+        (unsigned long) floor(fmod(elapsed_time,60.0)),(unsigned long) 
+        (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
       (void) fflush(stderr);
     }
   timer=DestroyTimerInfo(timer);
