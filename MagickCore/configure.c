@@ -574,20 +574,21 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
       paths=DestroyLinkedList(paths,RelinquishMagickMemory);
     }
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  {
-    char
-      *blob;
+  if (GetNumberOfElementsInLinkedList(options) == 0)
+    {
+      char
+        *blob;
 
-    blob=(char *) NTResourceToBlob(filename);
-    if (blob != (char *) NULL)
-      {
-        xml=AcquireStringInfo(0);
-        SetStringInfoLength(xml,strlen(blob)+1);
-        SetStringInfoDatum(xml,blob);
-        SetStringInfoPath(xml,filename);
-        (void) AppendValueToLinkedList(options,xml);
-      }
-  }
+      blob=(char *) NTResourceToBlob(filename);
+      if (blob != (char *) NULL)
+        {
+          xml=AcquireStringInfo(0);
+          SetStringInfoLength(xml,strlen(blob)+1);
+          SetStringInfoDatum(xml,blob);
+          SetStringInfoPath(xml,filename);
+          (void) AppendValueToLinkedList(options,xml);
+        }
+    }
 #endif
   if (GetNumberOfElementsInLinkedList(options) == 0)
     (void) ThrowMagickException(exception,GetMagickModule(),ConfigureWarning,
@@ -625,6 +626,7 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
 MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
   ExceptionInfo *exception)
 {
+#define RegistryKey  "ConfigurePath"
 #define MagickCoreDLL  "CORE_RL_MagickCore_.dll"
 #define MagickCoreDebugDLL  "CORE_DB_MagickCore_.dll"
 
@@ -687,17 +689,13 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !(defined(MAGICKCORE_CONFIGURE_PATH) || defined(MAGICKCORE_SHARE_PATH))
   {
-    char
-      *registry_key;
-
     unsigned char
       *key_value;
 
     /*
       Locate file via registry key.
     */
-    registry_key="ConfigurePath";
-    key_value=NTRegistryKeyLookup(registry_key);
+    key_value=NTRegistryKeyLookup(RegistryKey);
     if (key_value != (unsigned char *) NULL)
       {
         (void) FormatLocaleString(path,MaxTextExtent,"%s%s",(char *) key_value,
@@ -787,18 +785,19 @@ MagickExport LinkedListInfo *GetConfigurePaths(const char *filename,
     if ((NTGetModulePath(MagickCoreDLL,module_path) != MagickFalse) ||
         (NTGetModulePath(MagickCoreDebugDLL,module_path) != MagickFalse))
       {
-        char
-          *element;
+        unsigned char
+          *key_value;
 
         /*
           Search module path.
         */
         (void) FormatLocaleString(path,MaxTextExtent,"%s%s",module_path,
           DirectorySeparator);
-        element=(char *) RemoveElementByValueFromLinkedList(paths,path);
-        if (element != (char *) NULL)
-          element=DestroyString(element);
-        (void) AppendValueToLinkedList(paths,ConstantString(path));
+        key_value=NTRegistryKeyLookup(RegistryKey);
+        if (key_value == (unsigned char *) NULL)
+          (void) AppendValueToLinkedList(paths,ConstantString(path));
+        else
+          key_value=(unsigned char *) RelinquishMagickMemory(key_value);
       }
     if (NTGetModulePath("Magick.dll",module_path) != MagickFalse)
       {
