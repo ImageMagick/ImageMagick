@@ -1,3 +1,6 @@
+2011-11-29  6.7.3-10 Cristy  <quetzlzacatenango@image...>
+  * Remove duplicates from the configuration file search path under Windows.
+
 2011-11-27  6.7.3-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.3-9, SVN revision 6092
 
