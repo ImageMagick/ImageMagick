@@ -1090,8 +1090,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       case COMPRESSION_ADOBE_DEFLATE: image->compression=ZipCompression; break;
       default: image->compression=RLECompression; break;
     }
-    TIFFGetProperties(tiff,image);
     TIFFGetProfiles(tiff,image);
+    TIFFGetProperties(tiff,image);
     TIFFGetEXIFProperties(tiff,image);
     /*
       Allocate memory for the image and pixel buffer.
