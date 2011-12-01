@@ -1960,7 +1960,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             Search for compression quality that does not exceed image extent.
           */
           jpeg_info->quality=0;
-          extent=(MagickSizeType) StringToDoubleInterval(option,100.0);
+          extent=(MagickSizeType) SiPrefixToDoubleInterval(option,100.0);
           (void) DeleteImageOption(jpeg_info,"jpeg:extent");
           (void) AcquireUniqueFilename(jpeg_image->filename);
           maximum=101;
