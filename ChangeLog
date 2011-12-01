@@ -1,6 +1,8 @@
 2011-11-29  6.7.3-10 Cristy  <quetzlzacatenango@image...>
   * Delay reading TIFF EXIF properties to prevent premature exit.
   * Remove duplicates from the configuration file search path under Windows.
+  * Use viewbox offset when setting affine transform translation (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19943).
 
 2011-11-27  6.7.3-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.3-9, SVN revision 6092
