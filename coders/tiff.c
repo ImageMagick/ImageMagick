@@ -915,9 +915,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   {
     if (0 && (image_info->verbose != MagickFalse))
       TIFFPrintDirectory(tiff,stdout,MagickFalse);
-    TIFFGetEXIFProperties(tiff,image);
-    TIFFGetProfiles(tiff,image);
-    TIFFGetProperties(tiff,image);
 #if defined(MAGICKCORE_HAVE_TIFFISBIGENDIAN)
     (void) SetImageProperty(image,"tiff:endian",TIFFIsBigEndian(tiff) == 0 ?
       "lsb" : "msb");
@@ -1041,9 +1038,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         image->chromaticity.blue_primary.x=chromaticity[4];
         image->chromaticity.blue_primary.y=chromaticity[5];
       }
-    /*
-      Allocate memory for the image and pixel buffer.
-    */
 #if defined(MAGICKCORE_HAVE_TIFFISCODECCONFIGURED) || (TIFFLIB_VERSION > 20040919)
     if ((compress_tag != COMPRESSION_NONE) &&
         (TIFFIsCODECConfigured(compress_tag) == 0))
@@ -1096,6 +1090,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       case COMPRESSION_ADOBE_DEFLATE: image->compression=ZipCompression; break;
       default: image->compression=RLECompression; break;
     }
+    TIFFGetProperties(tiff,image);
+    TIFFGetProfiles(tiff,image);
+    TIFFGetEXIFProperties(tiff,image);
+    /*
+      Allocate memory for the image and pixel buffer.
+    */
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       {
