@@ -2165,7 +2165,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           double
             sx,
-            sy;
+            sy,
+            tx,
+            ty;
 
           if ((svg_info->view_box.width == 0.0) ||
               (svg_info->view_box.height == 0.0))
@@ -2176,8 +2178,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
             (double) svg_info->width,(double) svg_info->height);
           sx=(double) svg_info->width/svg_info->view_box.width;
           sy=(double) svg_info->height/svg_info->view_box.height;
-          (void) FormatLocaleFile(svg_info->file,"affine %g 0 0 %g 0.0 0.0\n",
-            sx,sy);
+          tx=svg_info->view_box.x != 0.0 ? (double) -sx*svg_info->view_box.x :
+            0.0;
+          ty=svg_info->view_box.y != 0.0 ? (double) -sy*svg_info->view_box.y :
+            0.0;
+          (void) FormatLocaleFile(svg_info->file,"affine %g 0 0 %g %g %g\n",
+            sx,sy,tx,ty);
         }
     }
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  )");
