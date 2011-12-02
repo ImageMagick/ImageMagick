@@ -1,3 +1,6 @@
+2011-12-01  6.7.3-10 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.4-10, SVN revision 6106.
+
 2011-11-29  6.7.3-10 Cristy  <quetzlzacatenango@image...>
   * Delay reading TIFF EXIF properties to prevent premature exit.
   * Remove duplicates from the configuration file search path under Windows.
