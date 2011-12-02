@@ -34,12 +34,12 @@
 
 /* Location of coder modules */
 #ifndef MAGICKCORE_CODER_PATH
-#define MAGICKCORE_CODER_PATH "/usr/local/lib/ImageMagick-6.7.3/modules-Q16/coders/"
+#define MAGICKCORE_CODER_PATH "/usr/local/lib/ImageMagick-6.7.4/modules-Q16/coders/"
 #endif
 
 /* Subdirectory of lib where coder modules are installed */
 #ifndef MAGICKCORE_CODER_RELATIVE_PATH
-#define MAGICKCORE_CODER_RELATIVE_PATH "ImageMagick-6.7.3/modules-Q16/coders"
+#define MAGICKCORE_CODER_RELATIVE_PATH "ImageMagick-6.7.4/modules-Q16/coders"
 #endif
 
 /* Directory where architecture-dependent configuration files live. */
@@ -79,12 +79,12 @@
 
 /* Location of filter modules */
 #ifndef MAGICKCORE_FILTER_PATH
-#define MAGICKCORE_FILTER_PATH "/usr/local/lib/ImageMagick-6.7.3/modules-Q16/filters/"
+#define MAGICKCORE_FILTER_PATH "/usr/local/lib/ImageMagick-6.7.4/modules-Q16/filters/"
 #endif
 
 /* Subdirectory of lib where filter modules are installed */
 #ifndef MAGICKCORE_FILTER_RELATIVE_PATH
-#define MAGICKCORE_FILTER_RELATIVE_PATH "ImageMagick-6.7.3/modules-Q16/filters"
+#define MAGICKCORE_FILTER_RELATIVE_PATH "ImageMagick-6.7.4/modules-Q16/filters"
 #endif
 
 /* Define if you have FONTCONFIG library */
@@ -1205,13 +1205,13 @@
 
 /* Directory where architecture-dependent files live. */
 #ifndef MAGICKCORE_LIBRARY_PATH
-#define MAGICKCORE_LIBRARY_PATH "/usr/local/lib/ImageMagick-6.7.3/"
+#define MAGICKCORE_LIBRARY_PATH "/usr/local/lib/ImageMagick-6.7.4/"
 #endif
 
 /* Subdirectory of lib where ImageMagick architecture dependent files are
    installed */
 #ifndef MAGICKCORE_LIBRARY_RELATIVE_PATH
-#define MAGICKCORE_LIBRARY_RELATIVE_PATH "ImageMagick-6.7.3"
+#define MAGICKCORE_LIBRARY_RELATIVE_PATH "ImageMagick-6.7.4"
 #endif
 
 /* Define if you have LQR library */
@@ -1297,7 +1297,7 @@
 
 /* Define to the full name and version of this package. */
 #ifndef MAGICKCORE_PACKAGE_STRING
-#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.7.3-10"
+#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.7.4-0"
 #endif
 
 /* Define to the one symbol short name of this package. */
@@ -1312,7 +1312,7 @@
 
 /* Define to the version of this package. */
 #ifndef MAGICKCORE_PACKAGE_VERSION
-#define MAGICKCORE_PACKAGE_VERSION "6.7.3-10"
+#define MAGICKCORE_PACKAGE_VERSION "6.7.4-0"
 #endif
 
 /* Define if you have PANGOFT2 library */
@@ -1367,24 +1367,24 @@
 
 /* Directory where architecture-independent configuration files live. */
 #ifndef MAGICKCORE_SHAREARCH_PATH
-#define MAGICKCORE_SHAREARCH_PATH "/usr/local/lib/ImageMagick-6.7.3/config/"
+#define MAGICKCORE_SHAREARCH_PATH "/usr/local/lib/ImageMagick-6.7.4/config/"
 #endif
 
 /* Subdirectory of lib where architecture-independent configuration files
    live. */
 #ifndef MAGICKCORE_SHAREARCH_RELATIVE_PATH
-#define MAGICKCORE_SHAREARCH_RELATIVE_PATH "ImageMagick-6.7.3/config"
+#define MAGICKCORE_SHAREARCH_RELATIVE_PATH "ImageMagick-6.7.4/config"
 #endif
 
 /* Directory where architecture-independent configuration files live. */
 #ifndef MAGICKCORE_SHARE_PATH
-#define MAGICKCORE_SHARE_PATH "/usr/local/share/ImageMagick-6.7.3/"
+#define MAGICKCORE_SHARE_PATH "/usr/local/share/ImageMagick-6.7.4/"
 #endif
 
 /* Subdirectory of lib where architecture-independent configuration files
    live. */
 #ifndef MAGICKCORE_SHARE_RELATIVE_PATH
-#define MAGICKCORE_SHARE_RELATIVE_PATH "ImageMagick-6.7.3"
+#define MAGICKCORE_SHARE_RELATIVE_PATH "ImageMagick-6.7.4"
 #endif
 
 /* The size of `off_t', as computed by sizeof. */
@@ -1502,7 +1502,7 @@
 
 /* Version number of package */
 #ifndef MAGICKCORE_VERSION
-#define MAGICKCORE_VERSION "6.7.3-10"
+#define MAGICKCORE_VERSION "6.7.4-0"
 #endif
 
 /* Define if you have WEBP library */
