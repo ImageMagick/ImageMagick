@@ -523,7 +523,7 @@ static MagickBooleanType WritePS3MaskImage(const ImageInfo *image_info,
     ThrowWriterException(CoderError,exception->reason);
   channel_mask=SetPixelChannelMask(mask_image,AlphaChannel);
   status=SeparateImage(mask_image,exception);
-  (void) SetPixelChannelMap(mask_image,channel_mask);
+  (void) SetPixelChannelMapMask(mask_image,channel_mask);
   if (status == MagickFalse)
     {
       mask_image=DestroyImage(mask_image);

@@ -556,8 +556,8 @@ MagickExport Image *AppendImages(const Image *images,
             append_traits,
             traits;
 
-          traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-          channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+          traits=GetPixelChannelMapTraits(image,i);
+          channel=GetPixelChannelMapChannel(image,i);
           append_traits=GetPixelChannelMapTraits(append_image,channel);
           if ((traits == UndefinedPixelTrait) ||
               (append_traits == UndefinedPixelTrait))
@@ -1114,8 +1114,8 @@ MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
 
       if (next == (Image *) NULL)
         continue;
-      traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-      channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+      traits=GetPixelChannelMapTraits(image,i);
+      channel=GetPixelChannelMapChannel(image,i);
       combine_traits=GetPixelChannelMapTraits(combine_image,channel);
       if ((traits == UndefinedPixelTrait) ||
           (combine_traits == UndefinedPixelTrait))
@@ -1835,7 +1835,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
         MagickRealType
           pixel;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        traits=GetPixelChannelMapTraits(image,i);
         if (traits == UndefinedPixelTrait)
           continue;
         pixel=(MagickRealType) p[i];
@@ -2276,7 +2276,7 @@ MagickExport MagickBooleanType SeparateImage(Image *image,
         register ssize_t
           j;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        traits=GetPixelChannelMapTraits(image,i);
         if (traits == UndefinedPixelTrait)
           continue;
         if ((traits & UpdatePixelTrait) != 0)
@@ -2353,7 +2353,7 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
     PixelTrait
       traits;
 
-    traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+    traits=GetPixelChannelMapTraits(image,i);
     if (traits == UndefinedPixelTrait)
       continue;
     if ((traits & UpdatePixelTrait) != 0)
@@ -2364,7 +2364,7 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
             channel_mask=SetPixelChannelMask(separate_image,
               (ChannelType) (1 << i));
             (void) SeparateImage(separate_image,exception);
-            (void) SetPixelChannelMap(separate_image,channel_mask);
+            (void) SetPixelChannelMapMask(separate_image,channel_mask);
             AppendImageToList(&images,separate_image);
           }
       }
@@ -2438,8 +2438,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       /*
         Set transparent pixels to background color.
       */
-      if (image->matte == MagickFalse)
-        break;
+      image->matte=MagickTrue;
       if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         break;
       background=image->background_color;
@@ -2517,22 +2516,17 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     case OpaqueAlphaChannel:
     {
       status=SetImageAlpha(image,OpaqueAlpha,exception);
-      image->matte=MagickTrue;
       break;
     }
     case TransparentAlphaChannel:
     {
       status=SetImageAlpha(image,TransparentAlpha,exception);
-      image->matte=MagickTrue;
       break;
     }
     case SetAlphaChannel:
     {
       if (image->matte == MagickFalse)
-        {
-          status=SetImageAlpha(image,OpaqueAlpha,exception);
-          image->matte=MagickTrue;
-        }
+        status=SetImageAlpha(image,OpaqueAlpha,exception);
       break;
     }
     case UndefinedAlphaChannel:
@@ -3345,7 +3339,7 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  image->matte=alpha != OpaqueAlpha ? MagickTrue : MagickFalse;
+  image->matte=MagickTrue;
   status=MagickTrue;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

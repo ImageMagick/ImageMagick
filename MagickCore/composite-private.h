@@ -70,8 +70,8 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
     PixelTrait
       traits;
 
-    traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-    channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+    traits=GetPixelChannelMapTraits(image,i);
+    channel=GetPixelChannelMapChannel(image,i);
     if (traits == UndefinedPixelTrait)
       continue;
     switch (channel)

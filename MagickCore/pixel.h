@@ -54,10 +54,11 @@ typedef enum
   BluePixelChannel = 2,
   YellowPixelChannel = 2,
   CrPixelChannel = 2,
-  AlphaPixelChannel = 3,
-  BlackPixelChannel = 4,
-  IndexPixelChannel = 4,
-  MaskPixelChannel = 5,
+  BlackPixelChannel = 3,
+  AlphaPixelChannel = 4,
+  IndexPixelChannel = 5,
+  MaskPixelChannel = 6,
+  MetaPixelChannel = 7,
   IntensityPixelChannel = MaxPixelChannels,
   CompositePixelChannel = MaxPixelChannels,
   SyncPixelChannel = MaxPixelChannels+1
@@ -78,6 +79,9 @@ typedef struct _PixelChannelMap
 
   PixelTrait
     traits;
+
+  int
+    offset;
 } PixelChannelMap;
 
 typedef struct _PixelInfo
@@ -154,7 +158,7 @@ extern MagickExport PixelInfo
 extern MagickExport void
   InitializePixelChannelMap(Image *),
   GetPixelInfo(const Image *,PixelInfo *),
-  SetPixelChannelMap(Image *,const ChannelType);
+  SetPixelChannelMapMask(Image *,const ChannelType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -370,7 +370,7 @@ push(@$images,$example);
 print "Scale...\n";
 $example=$model->Clone();
 $example->Label('Scale');
-$example->Scale('60%');
+#$example->Scale('60%');
 push(@$images,$example);
 
 print "Segment...\n";

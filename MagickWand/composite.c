@@ -219,7 +219,7 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
                 composite_image,geometry.x,geometry.y,exception);
             }
     }
-  (void) SetPixelChannelMap(composite_image,channel_mask);
+  (void) SetPixelChannelMapMask(composite_image,channel_mask);
   return(status != 0 ? MagickTrue : MagickFalse);
 }
 
