@@ -161,7 +161,8 @@ static PixelChannels **AcquirePixelThreadSet(const Image *image,
     number_threads;
 
   number_threads=GetOpenMPMaximumThreads();
-  pixels=(PixelChannels **) AcquireQuantumMemory(number_threads,sizeof(*pixels));
+  pixels=(PixelChannels **) AcquireQuantumMemory(number_threads,
+    sizeof(*pixels));
   if (pixels == (PixelChannels **) NULL)
     return((PixelChannels **) NULL);
   (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
@@ -254,10 +255,10 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     case AddModulusEvaluateOperator:
     {
       /*
-        This returns a 'floored modulus' of the addition which is a
-        positive result.  It differs from % or fmod() that returns a
-        'truncated modulus' result, where floor() is replaced by trunc() and
-        could return a negative result (which is clipped).
+        This returns a 'floored modulus' of the addition which is a positive
+        result.  It differs from % or fmod() that returns a 'truncated modulus'
+        result, where floor() is replaced by trunc() and could return a
+        negative result (which is clipped).
       */
       result=pixel+value;
       result-=(QuantumRange+1.0)*floor((double) result/(QuantumRange+1.0));
@@ -493,7 +494,7 @@ MagickExport Image *EvaluateImages(const Image *images,
   evaluate_view=AcquireCacheView(evaluate_image);
   if (op == MedianEvaluateOperator)
     {
-#if   defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(dynamic) shared(progress,status)
 #endif
       for (y=0; y < (ssize_t) evaluate_image->rows; y++)
@@ -671,8 +672,7 @@ MagickExport Image *EvaluateImages(const Image *images,
 
               evaluate_traits=GetPixelChannelMapTraits(evaluate_image,
                 (PixelChannel) i);
-              channel=GetPixelChannelMapChannel(evaluate_image,(PixelChannel)
-                i);
+              channel=GetPixelChannelMapChannel(evaluate_image,i);
               traits=GetPixelChannelMapTraits(next,channel);
               if ((traits == UndefinedPixelTrait) ||
                   (evaluate_traits == UndefinedPixelTrait))
@@ -680,8 +680,8 @@ MagickExport Image *EvaluateImages(const Image *images,
               if ((traits & UpdatePixelTrait) == 0)
                 continue;
               evaluate_pixel[x].channel[i]=ApplyEvaluateOperator(
-                random_info[id],GetPixelChannel(evaluate_image,channel,p),
-                j == 0 ? AddEvaluateOperator : op,evaluate_pixel[x].channel[i]);
+                random_info[id],GetPixelChannel(evaluate_image,channel,p),j ==
+                0 ? AddEvaluateOperator : op,evaluate_pixel[x].channel[i]);
             }
             p+=GetPixelChannels(next);
           }
@@ -727,7 +727,7 @@ MagickExport Image *EvaluateImages(const Image *images,
             PixelTrait
               traits;
 
-            traits=GetPixelChannelMapTraits(evaluate_image,(PixelChannel) i);
+            traits=GetPixelChannelMapTraits(evaluate_image,i);
             if (traits == UndefinedPixelTrait)
               continue;
             if ((traits & UpdatePixelTrait) == 0)
@@ -823,7 +823,7 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
         PixelTrait
           traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        traits=GetPixelChannelMapTraits(image,i);
         if (traits == UndefinedPixelTrait)
           continue;
         q[i]=ClampToQuantum(ApplyEvaluateOperator(random_info[id],q[i],op,
@@ -902,8 +902,8 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
     case PolynomialFunction:
     {
       /*
-        Polynomial: polynomial constants, highest to lowest order
-        (e.g. c0*x^3 + c1*x^2 + c2*x + c3).
+        Polynomial: polynomial constants, highest to lowest order (e.g. c0*x^3+
+        c1*x^2+c2*x+c3).
       */
       result=0.0;
       for (i=0; i < (ssize_t) number_parameters; i++)
@@ -939,8 +939,8 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
         width;
 
       /*
-        Arcsin (peged at range limits for invalid results):
-        width, center, range, and bias.
+        Arcsin (peged at range limits for invalid results): width, center,
+        range, and bias.
       */
       width=(number_parameters >= 1) ? parameters[0] : 1.0;
       center=(number_parameters >= 2) ? parameters[1] : 0.5;
@@ -1041,7 +1041,7 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
         PixelTrait
           traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        traits=GetPixelChannelMapTraits(image,i);
         if (traits == UndefinedPixelTrait)
           continue;
         if ((traits & UpdatePixelTrait) == 0)
@@ -1176,7 +1176,7 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
     PixelTrait
       traits;
 
-    traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+    traits=GetPixelChannelMapTraits(image,i);
     if (traits == UndefinedPixelTrait)
       continue;
     if ((traits & UpdatePixelTrait) == 0)
@@ -1191,7 +1191,8 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
   channel_statistics[CompositePixelChannel].standard_deviation=
     sqrt(channel_statistics[CompositePixelChannel].standard_deviation/area);
   *mean=channel_statistics[CompositePixelChannel].mean;
-  *standard_deviation=channel_statistics[CompositePixelChannel].standard_deviation;
+  *standard_deviation=
+    channel_statistics[CompositePixelChannel].standard_deviation;
   channel_statistics=(ChannelStatistics *) RelinquishMagickMemory(
     channel_statistics);
   return(MagickTrue);
@@ -1290,7 +1291,7 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
         PixelTrait
           traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        traits=GetPixelChannelMapTraits(image,i);
         if (traits == UndefinedPixelTrait)
           continue;
         if ((traits & UpdatePixelTrait) == 0)
@@ -1409,7 +1410,7 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
         PixelTrait
           traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        traits=GetPixelChannelMapTraits(image,i);
         if (traits == UndefinedPixelTrait)
           continue;
         if ((traits & UpdatePixelTrait) == 0)
@@ -1479,7 +1480,7 @@ static size_t GetImageChannels(const Image *image)
     PixelTrait
       traits;
 
-    traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+    traits=GetPixelChannelMapTraits(image,i);
     if ((traits & UpdatePixelTrait) != 0)
       channels++;
   }
@@ -1548,7 +1549,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         PixelTrait
           traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        traits=GetPixelChannelMapTraits(image,i);
         if (traits == UndefinedPixelTrait)
           continue;
         if (channel_statistics[i].depth != MAGICKCORE_QUANTUM_DEPTH)
@@ -1629,15 +1630,15 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   {
     if (channel_statistics[i].standard_deviation == 0.0)
       continue;
-    channel_statistics[i].skewness=(channel_statistics[i].sum_cubed-
-      3.0*channel_statistics[i].mean*channel_statistics[i].sum_squared+
-      2.0*channel_statistics[i].mean*channel_statistics[i].mean*
+    channel_statistics[i].skewness=(channel_statistics[i].sum_cubed-3.0*
+      channel_statistics[i].mean*channel_statistics[i].sum_squared+2.0*
+      channel_statistics[i].mean*channel_statistics[i].mean*
       channel_statistics[i].mean)/(channel_statistics[i].standard_deviation*
       channel_statistics[i].standard_deviation*
       channel_statistics[i].standard_deviation);
-    channel_statistics[i].kurtosis=(channel_statistics[i].sum_fourth_power-
-      4.0*channel_statistics[i].mean*channel_statistics[i].sum_cubed+
-      6.0*channel_statistics[i].mean*channel_statistics[i].mean*
+    channel_statistics[i].kurtosis=(channel_statistics[i].sum_fourth_power-4.0*
+      channel_statistics[i].mean*channel_statistics[i].sum_cubed+6.0*
+      channel_statistics[i].mean*channel_statistics[i].mean*
       channel_statistics[i].sum_squared-3.0*channel_statistics[i].mean*
       channel_statistics[i].mean*1.0*channel_statistics[i].mean*
       channel_statistics[i].mean)/(channel_statistics[i].standard_deviation*

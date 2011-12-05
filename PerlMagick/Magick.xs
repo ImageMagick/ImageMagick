@@ -3182,7 +3182,7 @@ Compare(ref,...)
                     "UnrecognizedType",SvPV(ST(i),na));
                   return;
                 }
-              SetPixelChannelMap(image,(ChannelType) option);
+              SetPixelChannelMapMask(image,(ChannelType) option);
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -6145,7 +6145,7 @@ GetPixel(ref,...)
                     SvPV(ST(i),na));
                   return;
                 }
-              SetPixelChannelMap(image,(ChannelType) option);
+              SetPixelChannelMapMask(image,(ChannelType) option);
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",

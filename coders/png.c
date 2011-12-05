@@ -11691,7 +11691,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
       (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
       channel_mask=SetPixelChannelMask(jpeg_image,AlphaChannel);
       status=SeparateImage(jpeg_image,exception);
-      (void) SetPixelChannelMap(jpeg_image,channel_mask);
+      (void) SetPixelChannelMapMask(jpeg_image,channel_mask);
       jpeg_image->matte=MagickFalse;
 
       if (jng_quality >= 1000)

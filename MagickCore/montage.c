@@ -63,6 +63,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/montage.h"
 #include "MagickCore/option.h"
+#include "MagickCore/pixel.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/property.h"
 #include "MagickCore/resize.h"
@@ -759,9 +760,9 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
           if ((montage_info->frame != (char *) NULL) &&
               (image->compose == DstOutCompositeOp))
             {
-              SetPixelChannelMap(image,AlphaChannel);
+              SetPixelChannelMapMask(image,AlphaChannel);
               (void) NegateImage(image,MagickFalse,exception);
-              SetPixelChannelMap(image,DefaultChannels);
+              SetPixelChannelMapMask(image,DefaultChannels);
             }
         }
       /*

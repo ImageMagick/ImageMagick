@@ -532,7 +532,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image,
         register ssize_t
           j;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        traits=GetPixelChannelMapTraits(image,i);
         if (traits == UndefinedPixelTrait)
           continue;
         if ((traits & UpdatePixelTrait) == 0)

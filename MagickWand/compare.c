@@ -393,7 +393,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             if (channel < 0)
               ThrowCompareException(OptionError,"UnrecognizedChannelType",
                 argv[i]);
-            SetPixelChannelMap(image,(ChannelType) channel);
+            SetPixelChannelMapMask(image,(ChannelType) channel);
             break;
           }
         if (LocaleCompare("colorspace",option+1) == 0)

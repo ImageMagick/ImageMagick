@@ -347,7 +347,7 @@ void Magick::Image::addNoiseChannel( const ChannelType channel_,
     AddNoiseImage ( image(),
                            noiseType_, 1.0,
                            &exceptionInfo );
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -501,7 +501,7 @@ void Magick::Image::blurChannel( const ChannelType channel_,
   ChannelType channel_mask = SetPixelChannelMask( image(), channel_ );
   MagickCore::Image* newImage =
     BlurImage( image(), radius_, sigma_, image()->bias, &exceptionInfo);
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -531,7 +531,7 @@ void Magick::Image::channel ( const ChannelType channel_ )
   SeparateImage ( image(), &exceptionInfo );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
 }
 
 // Set or obtain modulus channel depth
@@ -1192,7 +1192,7 @@ void Magick::Image::fx ( const std::string expression,
   ChannelType channel_mask = SetPixelChannelMask( image(), channel );
   MagickCore::Image* newImage =
     FxImage ( image(), expression.c_str(), &exceptionInfo );
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1249,7 +1249,7 @@ void Magick::Image::gaussianBlurChannel ( const ChannelType channel_,
   ChannelType channel_mask = SetPixelChannelMask( image(), channel_ );
   MagickCore::Image* newImage =
     GaussianBlurImage( image(), width_, sigma_, image()->bias, &exceptionInfo );
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1367,7 +1367,7 @@ void Magick::Image::matteFloodfill ( const Color &target_ ,
   GetExceptionInfo( &exceptionInfo );
   FloodfillPaintImage ( image(), options()->drawInfo(), &target, x_, y_,
     method_ == FloodfillMethod ? MagickFalse : MagickTrue, &exceptionInfo);
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -1594,7 +1594,7 @@ void Magick::Image::quantumOperator ( const ChannelType channel_,
   GetExceptionInfo( &exceptionInfo );
   ChannelType channel_mask = SetPixelChannelMask( image(), channel_ );
   EvaluateImage( image(), operator_, rvalue_, &exceptionInfo);
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -1617,7 +1617,7 @@ void Magick::Image::quantumOperator ( const ssize_t x_,const ssize_t y_,
     &exceptionInfo );
   ChannelType channel_mask = SetPixelChannelMask( image(), channel_);
   EvaluateImage( crop_image, operator_, rvalue_, &exceptionInfo );
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
   (void) CompositeImage( image(), image()->matte != MagickFalse ?
     OverCompositeOp : CopyCompositeOp, crop_image, geometry.x, geometry.y,
     &exceptionInfo );
@@ -1665,7 +1665,7 @@ void Magick::Image::randomThresholdChannel( const Geometry &thresholds_,
   (void) RandomThresholdImage( image(),
                                       static_cast<std::string>(thresholds_).c_str(),
                                       &exceptionInfo );
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
   throwImageException();
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -1982,7 +1982,7 @@ void Magick::Image::sharpenChannel ( const ChannelType channel_,
                          sigma_,
                   image()->bias,
                          &exceptionInfo );
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -2056,7 +2056,7 @@ void Magick::Image::sparseColor ( const ChannelType channel,
   ChannelType channel_mask = SetPixelChannelMask( image(), channel );
   MagickCore::Image* newImage = SparseColorImage ( image(), method,
     number_arguments, arguments, &exceptionInfo );
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -2275,7 +2275,7 @@ void Magick::Image::unsharpmaskChannel ( const ChannelType channel_,
                              amount_,
                              threshold_,
                              &exceptionInfo );
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -3784,7 +3784,7 @@ void Magick::Image::statistics ( ImageStatistics *statistics )
     &statistics->red.standard_deviation,&exceptionInfo);
   (void) GetImageKurtosis( image(),&statistics->red.kurtosis,
     &statistics->red.skewness,&exceptionInfo);
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
 
   channel_mask = SetPixelChannelMask( image(), GreenChannel);
   (void) GetImageRange( image(),&minimum,&maximum,&exceptionInfo);
@@ -3794,7 +3794,7 @@ void Magick::Image::statistics ( ImageStatistics *statistics )
     &statistics->green.standard_deviation,&exceptionInfo);
   (void) GetImageKurtosis( image(),&statistics->green.kurtosis,
     &statistics->green.skewness,&exceptionInfo);
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
 
   channel_mask = SetPixelChannelMask( image(), GreenChannel);
   (void) GetImageRange( image(),&minimum,&maximum,&exceptionInfo);
@@ -3804,7 +3804,7 @@ void Magick::Image::statistics ( ImageStatistics *statistics )
     &statistics->blue.standard_deviation,&exceptionInfo);
   (void) GetImageKurtosis( image(),&statistics->blue.kurtosis,
     &statistics->blue.skewness,&exceptionInfo);
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
 
   channel_mask = SetPixelChannelMask( image(), AlphaChannel);
   (void) GetImageRange( image(),&minimum,&maximum,&exceptionInfo);
@@ -3814,7 +3814,7 @@ void Magick::Image::statistics ( ImageStatistics *statistics )
     &statistics->alpha.standard_deviation,&exceptionInfo);
   (void) GetImageKurtosis( image(),&statistics->alpha.kurtosis,
     &statistics->alpha.skewness,&exceptionInfo);
-  (void) SetPixelChannelMap( image(), channel_mask );
+  (void) SetPixelChannelMapMask( image(), channel_mask );
 
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );

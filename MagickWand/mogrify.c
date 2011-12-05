@@ -1012,7 +1012,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               channel=DefaultChannels;
             else
               channel=(ChannelType) ParseChannelOption(argv[i+1]);
-            SetPixelChannelMap(*image,channel);
+            SetPixelChannelMapMask(*image,channel);
             break;
           }
         if (LocaleCompare("charcoal",option+1) == 0)
@@ -7360,7 +7360,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 break;
               }
             channel=(ChannelType) ParseChannelOption(argv[i+1]);
-            SetPixelChannelMap(*images,channel);
+            SetPixelChannelMapMask(*images,channel);
             break;
           }
         if (LocaleCompare("clut",option+1) == 0)

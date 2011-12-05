@@ -10187,7 +10187,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
             (void) FloodfillPaintImage(*image,draw_info,&target,(ssize_t)
               x_offset,(ssize_t) y_offset,method == FloodfillMethod ?
               MagickFalse : MagickTrue,exception);
-            (void) SetPixelChannelMap(*image,channel_mask);
+            (void) SetPixelChannelMapMask(*image,channel_mask);
             draw_info=DestroyDrawInfo(draw_info);
             break;
           }

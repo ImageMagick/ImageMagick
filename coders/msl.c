@@ -746,7 +746,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           channel_mask=SetPixelChannelMask(msl_info->image[n],channel);
           noise_image=AddNoiseImage(msl_info->image[n],noise,1.0,
             msl_info->exception);
-          (void) SetPixelChannelMap(msl_info->image[n],channel_mask);
+          (void) SetPixelChannelMapMask(msl_info->image[n],channel_mask);
           if (noise_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);
@@ -1242,7 +1242,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           blur_image=BlurImage(msl_info->image[n],geometry_info.rho,
             geometry_info.sigma,geometry_info.xi,
             msl_info->exception);
-          (void) SetPixelChannelMap(msl_info->image[n],channel_mask);
+          (void) SetPixelChannelMapMask(msl_info->image[n],channel_mask);
           if (blur_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);
@@ -3796,7 +3796,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           (void) FloodfillPaintImage(msl_info->image[n],draw_info,&target,
             geometry.x,geometry.y,paint_method == FloodfillMethod ?
             MagickFalse : MagickTrue,msl_info->exception);
-          (void) SetPixelChannelMap(msl_info->image[n],channel_mask);
+          (void) SetPixelChannelMapMask(msl_info->image[n],channel_mask);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -4100,7 +4100,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           channel_mask=SetPixelChannelMask(msl_info->image[n],channel);
           (void) NegateImage(msl_info->image[n],gray,
             msl_info->exception);
-          (void) SetPixelChannelMap(msl_info->image[n],channel_mask);
+          (void) SetPixelChannelMapMask(msl_info->image[n],channel_mask);
           break;
         }
       if (LocaleCompare((const char *) tag,"normalize") == 0)
@@ -4299,7 +4299,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           channel_mask=SetPixelChannelMask(msl_info->image[n],channel);
           (void) OpaquePaintImage(msl_info->image[n],&target,&fill_color,
             MagickFalse,msl_info->exception);
-          (void) SetPixelChannelMap(msl_info->image[n],channel_mask);
+          (void) SetPixelChannelMapMask(msl_info->image[n],channel_mask);
           break;
         }
       ThrowMSLException(OptionError,"UnrecognizedElement",(const char *) tag);
