@@ -1470,7 +1470,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
           if (image->colorspace != CMYKColorspace)
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"ColorSeparatedImageRequired","`%s'",
+                ImageError,"ColorSeparatedImageRequired","`%s'",
                 image->filename);
               return(0.0);
             }
