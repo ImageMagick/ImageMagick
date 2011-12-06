@@ -1507,6 +1507,8 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           alpha=(MagickRealType) (QuantumScale*pixel.alpha);
           return(alpha);
         }
+        case IndexPixelChannel:
+          return(0.0);
         case IntensityPixelChannel:
         {
           return(QuantumScale*GetPixelInfoIntensity(&pixel));
@@ -3118,8 +3120,8 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
             continue;
           }
         alpha=0.0;
-        (void) FxEvaluateChannelExpression(fx_info[id],(PixelChannel) i,x,y,
-          &alpha,exception);
+        (void) FxEvaluateChannelExpression(fx_info[id],channel,x,y,&alpha,
+          exception);
         q[i]=ClampToQuantum((MagickRealType) QuantumRange*alpha);
       }
       p+=GetPixelChannels(image);
