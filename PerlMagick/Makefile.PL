@@ -155,10 +155,15 @@ foreach my $delegate (@tested_delegates) {
   }
 }
 
+my $openmp_option = '';
+if ($Config{'gccversion'} && $Config{'gccversion'} =~ m/^s*(d+).(d+)/ms) {
+    $openmp_option = ' -fopenmp' if($1 >= 4 && $2 >= 2); # openmp is only supported after gcc 4.2;
+}
+
 # defaults for LIBS & INC & CCFLAGS params that we later pass to Writemakefile
 my $INC_magick = '-I../ -I.. -pthread -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -pthread -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/graphviz -I/usr/include/freetype2 -I/usr/include/libxml2 -I"' . $Config{'usrinc'} . '/ImageMagick"';
 my $LIBS_magick = '-L../MagickCore/.libs -lMagickCore -lperl -lm';
-my $CCFLAGS_magick = "$Config{'ccflags'} -fopenmp -g -O2 -Wall -pthread";
+my $CCFLAGS_magick = "$Config{'ccflags'} $openmp_option -g -O2 -Wall -pthread";
 my $LDFLAGS_magick   = "-L../MagickCore/.libs -lMagickCore $Config{'ldflags'} -L/usr/lib";
 my $LDDLFLAGS_magick = "-L../MagickCore/.libs -lMagickCore $Config{'lddlflags'} -L/usr/lib";
 
