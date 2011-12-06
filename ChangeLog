@@ -1,3 +1,7 @@
+2011-11-29  6.7.4-1 Cristy  <quetzlzacatenango@image...>
+  * Add GetQuantumFormat() method to return the quantum format (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=19961).
+   
 2011-12-02  6.7.4-1 Anthony  <quetzlzacatenango@image...>
   * Fixed Equal-Area Cropping (size and minimum of delta increments)
 
