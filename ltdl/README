@@ -1,15 +1,15 @@
 This is GNU libltdl, a system independent dlopen wrapper for GNU libtool.
 
 It supports the following dlopen interfaces:
-* dlopen (Solaris, Linux and various BSD flavors)
+* dlopen (POSIX)
 * shl_load (HP-UX)
 * LoadLibrary (Win16 and Win32)
 * load_add_on (BeOS)
 * GNU DLD (emulates dynamic linking for static libraries)
 * dyld (darwin/Mac OS X)
 * libtool's dlpreopen
--- 
-   Copyright (C) 1999, 2003 Free Software Foundation, Inc.
+--
+   Copyright (C) 1999, 2003, 2011 Free Software Foundation, Inc.
    Written by Thomas Tanner, 1999
 
    This file is part of GNU Libtool.
