@@ -477,7 +477,7 @@ static struct
     { "ClipMask", { {"mask", ImageReference} } },
     { "LinearStretch", { {"levels", StringReference},
       {"black-point", RealReference},{"white-point", RealReference} } },
-    { "Recolor", { {"matrix", ArrayReference} } },
+    { "ColorMatrix", { {"matrix", ArrayReference} } },
     { "Mask", { {"mask", ImageReference} } },
     { "Polaroid", { {"caption", StringReference}, {"angle", RealReference},
       {"font", StringReference}, {"stroke", StringReference},
@@ -535,7 +535,7 @@ static struct
     { "Morphology", { {"kernel", StringReference},
       {"channel", MagickChannelOptions}, {"method", MagickMorphologyOptions},
       {"iterations", IntegerReference} } },
-    { "ColorMatrix", { {"matrix", ArrayReference} } },
+    { "Sans", { {"matrix", ArrayReference} } },
     { "Color", { {"color", StringReference} } },
     { "Mode", { {"geometry", StringReference},
       {"width", IntegerReference},{"height", IntegerReference},
@@ -7153,8 +7153,8 @@ Mogrify(ref,...)
     ClipMaskImage      = 212
     LinearStretch      = 213
     LinearStretchImage = 214
-    RecolorImage       = 215
-    Recolor            = 216
+    ColorMatrix        = 215
+    ColorMatrixImage   = 216
     Mask               = 217
     MaskImage          = 218
     Polaroid           = 219
@@ -7203,8 +7203,8 @@ Mogrify(ref,...)
     BrightnessContrastImage = 264
     Morphology         = 265
     MorphologyImage    = 266
-    ColorMatrix        = 267
-    ColorMatrixImage   = 268
+    Sans               = 267
+    SansImage          = 268
     Color              = 269
     ColorImage         = 270
     Mode               = 271
@@ -7388,6 +7388,7 @@ Mogrify(ref,...)
           goto continue_outer_loop;
         }
       al=(&argument_list[pp-rp->arguments]);
+   printf("%d %d\n",pp->type,StringReference);
       switch (pp->type)
       {
         case ArrayReference:
@@ -7478,6 +7479,7 @@ Mogrify(ref,...)
           region_image=image;
           image=CropImage(image,&region_info,exception);
         }
+      printf("%d\n",ix);
       switch (ix)
       {
         default:
@@ -10196,6 +10198,62 @@ Mogrify(ref,...)
           (void) LinearStretchImage(image,black_point,white_point,exception);
           break;
         }
+        case 108:  /* ColorMatrix */
+        {
+          AV
+            *av;
+
+          double
+            *color_matrix;
+
+          KernelInfo
+            *kernel_info;
+
+          size_t
+            order;
+
+          if (attribute_flag[0] == 0)
+            break;
+          av=(AV *) argument_list[0].array_reference;
+          order=(size_t) sqrt(av_len(av)+1);
+          color_matrix=(double *) AcquireQuantumMemory(order,order*
+            sizeof(*color_matrix));
+          if (color_matrix == (double *) NULL)
+            {
+              ThrowPerlException(exception,ResourceLimitFatalError,
+                "MemoryAllocationFailed",PackageName);
+              goto PerlException;
+           }
+          for (j=0; (j < (ssize_t) (order*order)) && (j < (av_len(av)+1)); j++)
+            color_matrix[j]=(double) SvNV(*(av_fetch(av,j,0)));
+          for ( ; j < (ssize_t) (order*order); j++)
+            color_matrix[j]=0.0;
+          kernel_info=AcquireKernelInfo((const char *) NULL);
+          if (kernel_info == (KernelInfo *) NULL)
+            break;
+          kernel_info->width=order;
+          kernel_info->height=order;
+          kernel_info->values=color_matrix;
+          image=ColorMatrixImage(image,kernel_info,exception);
+          kernel_info->values=(double *) NULL;
+          kernel_info=DestroyKernelInfo(kernel_info);
+          color_matrix=(double *) RelinquishMagickMemory(color_matrix);
+          break;
+        }
+        case 134:  /* SANS */
+        case 135:  /* Color */
+        {
+          PixelInfo
+            color;
+
+          (void) QueryColorCompliance("none",AllCompliance,&color,
+            exception);
+          if (attribute_flag[0] != 0)
+            (void) QueryColorCompliance(argument_list[0].string_reference,
+              AllCompliance,&color,exception);
+          (void) SetImageColor(image,&color,exception);
+          break;
+        }
         case 109:  /* Mask */
         {
           if (attribute_flag[0] == 0)
@@ -10716,64 +10774,6 @@ Mogrify(ref,...)
           if (image != (Image *) NULL)
             (void) SetPixelChannelMask(image,channel_mask);
           kernel=DestroyKernelInfo(kernel);
-          break;
-        }
-        case 108:  /* Recolor */
-        case 134:  /* ColorMatrix */
-        {
-          AV
-            *av;
-
-          double
-            *color_matrix;
-
-          KernelInfo
-            *kernel_info;
-
-          size_t
-            order;
-
-          if (attribute_flag[0] == 0)
-            break;
-          av=(AV *) argument_list[0].array_reference;
-          if (av == (AV *) NULL)
-            break;
-          order=(size_t) sqrt(av_len(av)+1);
-          color_matrix=(double *) AcquireQuantumMemory(order,order*
-            sizeof(*color_matrix));
-          if (color_matrix == (double *) NULL)
-            {
-              ThrowPerlException(exception,ResourceLimitFatalError,
-                "MemoryAllocationFailed",PackageName);
-              goto PerlException;
-           }
-          for (j=0; (j < (ssize_t) (order*order)) && (j < (av_len(av)+1)); j++)
-            color_matrix[j]=(double) SvNV(*(av_fetch(av,j,0)));
-          for ( ; j < (ssize_t) (order*order); j++)
-            color_matrix[j]=0.0;
-          kernel_info=AcquireKernelInfo((const char *) NULL);
-          if (kernel_info == (KernelInfo *) NULL)
-            break;
-          kernel_info->width=order;
-          kernel_info->height=order;
-          kernel_info->values=color_matrix;
-          image=ColorMatrixImage(image,kernel_info,exception);
-          kernel_info->values=(double *) NULL;
-          kernel_info=DestroyKernelInfo(kernel_info);
-          color_matrix=(double *) RelinquishMagickMemory(color_matrix);
-          break;
-        }
-        case 135:  /* Color */
-        {
-          PixelInfo
-            color;
-
-          (void) QueryColorCompliance("none",AllCompliance,&color,
-            exception);
-          if (attribute_flag[0] != 0)
-            (void) QueryColorCompliance(argument_list[0].string_reference,
-              AllCompliance,&color,exception);
-          (void) SetImageColor(image,&color,exception);
           break;
         }
         case 136:  /* Mode */
