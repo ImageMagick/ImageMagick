@@ -3609,7 +3609,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=6108
+MAGICK_SVN_REVISION=6116
 
 
 
@@ -30296,12 +30296,12 @@ if test -n "$PANGO_CFLAGS"; then
     pkg_cv_PANGO_CFLAGS="$PANGO_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangoft2 >= 1.15.1\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "pangoft2 >= 1.15.1") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangoft2 >= 1.28.1\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pangoft2 >= 1.28.1") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_PANGO_CFLAGS=`$PKG_CONFIG --cflags "pangoft2 >= 1.15.1" 2>/dev/null`
+  pkg_cv_PANGO_CFLAGS=`$PKG_CONFIG --cflags "pangoft2 >= 1.28.1" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -30312,12 +30312,12 @@ if test -n "$PANGO_LIBS"; then
     pkg_cv_PANGO_LIBS="$PANGO_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangoft2 >= 1.15.1\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "pangoft2 >= 1.15.1") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangoft2 >= 1.28.1\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pangoft2 >= 1.28.1") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_PANGO_LIBS=`$PKG_CONFIG --libs "pangoft2 >= 1.15.1" 2>/dev/null`
+  pkg_cv_PANGO_LIBS=`$PKG_CONFIG --libs "pangoft2 >= 1.28.1" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -30335,9 +30335,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        PANGO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "pangoft2 >= 1.15.1" 2>&1`
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "pangoft2 >= 1.28.1" 2>&1`
         else
-	        PANGO_PKG_ERRORS=`$PKG_CONFIG --print-errors "pangoft2 >= 1.15.1" 2>&1`
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --print-errors "pangoft2 >= 1.28.1" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$PANGO_PKG_ERRORS" >&5
@@ -30365,12 +30365,12 @@ if test -n "$PANGO_CFLAGS"; then
     pkg_cv_PANGO_CFLAGS="$PANGO_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango >= 1.15.1\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "pango >= 1.15.1") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango >= 1.28.1\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pango >= 1.28.1") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_PANGO_CFLAGS=`$PKG_CONFIG --cflags "pango >= 1.15.1" 2>/dev/null`
+  pkg_cv_PANGO_CFLAGS=`$PKG_CONFIG --cflags "pango >= 1.28.1" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -30381,12 +30381,12 @@ if test -n "$PANGO_LIBS"; then
     pkg_cv_PANGO_LIBS="$PANGO_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango >= 1.15.1\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "pango >= 1.15.1") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pango >= 1.28.1\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pango >= 1.28.1") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_PANGO_LIBS=`$PKG_CONFIG --libs "pango >= 1.15.1" 2>/dev/null`
+  pkg_cv_PANGO_LIBS=`$PKG_CONFIG --libs "pango >= 1.28.1" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -30404,9 +30404,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        PANGO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "pango >= 1.15.1" 2>&1`
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "pango >= 1.28.1" 2>&1`
         else
-	        PANGO_PKG_ERRORS=`$PKG_CONFIG --print-errors "pango >= 1.15.1" 2>&1`
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --print-errors "pango >= 1.28.1" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$PANGO_PKG_ERRORS" >&5

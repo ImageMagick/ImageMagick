@@ -1,7 +1,7 @@
 /* ltdl.c -- system independent dlopen wrapper
 
    Copyright (C) 1998, 1999, 2000, 2004, 2005, 2006,
-		 2007, 2008 Free Software Foundation, Inc.
+		 2007, 2008, 2011 Free Software Foundation, Inc.
    Written by Thomas Tanner, 1998
 
    NOTE: The canonical source of this file is maintained with the
@@ -79,6 +79,11 @@ static  const char	libext[]		= LT_LIBEXT;
 static  const char	libprefix[]		= LT_LIBPREFIX;
 #if defined(LT_MODULE_EXT)
 static	const char	shlib_ext[]		= LT_MODULE_EXT;
+#endif
+/* If the loadable module suffix is not the same as the linkable
+ * shared library suffix, this will be defined. */
+#if defined(LT_SHARED_EXT)
+static	const char	shared_ext[]		= LT_SHARED_EXT;
 #endif
 #if defined(LT_DLSEARCH_PATH)
 static	const char	sys_dlsearch_path[]	= LT_DLSEARCH_PATH;
@@ -1537,6 +1542,9 @@ has_library_ext (const char *filename)
 #if defined(LT_MODULE_EXT)
 	     || (streq (ext, shlib_ext))
 #endif
+#if defined(LT_SHARED_EXT)
+	     || (streq (ext, shared_ext))
+#endif
     ))
     {
       return 1;
@@ -1676,6 +1684,17 @@ lt_dlopenadvise (const char *filename, lt_dladvise advise)
       /* Try appending SHLIB_EXT.   */
       LT__SETERRORSTR (saved_error);
       errors = try_dlopen (&handle, filename, shlib_ext, advise);
+
+      /* As before, if the file was found but loading failed, return now
+	 with the current error message.  */
+      if (handle || ((errors > 0) && !file_not_found ()))
+	return handle;
+#endif
+
+#if defined(LT_SHARED_EXT)
+      /* Try appending SHARED_EXT.   */
+      LT__SETERRORSTR (saved_error);
+      errors = try_dlopen (&handle, filename, shared_ext, advise);
 
       /* As before, if the file was found but loading failed, return now
 	 with the current error message.  */
