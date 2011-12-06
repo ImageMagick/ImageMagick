@@ -156,6 +156,9 @@ extern MagickExport MagickBooleanType
   SetQuantumFormat(const Image *,QuantumInfo *,const QuantumFormatType),
   SetQuantumPad(const Image *,QuantumInfo *,const size_t);
 
+extern MagickExport QuantumFormatType
+  GetQuantumFormat(const QuantumInfo *);
+
 extern MagickExport QuantumInfo
   *AcquireQuantumInfo(const ImageInfo *,Image *),
   *DestroyQuantumInfo(QuantumInfo *);

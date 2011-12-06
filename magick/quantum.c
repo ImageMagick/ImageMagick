@@ -331,6 +331,35 @@ MagickExport size_t GetQuantumExtent(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t Q u a n t u m F o r m a t                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetQuantumFormat() returns the quantum format of the image.
+%
+%  The format of the GetQuantumFormat method is:
+%
+%      QuantumFormatType GetQuantumFormat(const QuantumInfo *quantum_info)
+%
+%  A description of each parameter follows:
+%
+%    o quantum_info: the quantum info.
+%
+*/
+MagickExport QuantumFormatType GetQuantumFormat(const QuantumInfo *quantum_info)
+{
+  assert(quantum_info != (QuantumInfo *) NULL);
+  assert(quantum_info->signature == MagickSignature);
+  return(quantum_info->format);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t Q u a n t u m I n f o                                               %
 %                                                                             %
 %                                                                             %
