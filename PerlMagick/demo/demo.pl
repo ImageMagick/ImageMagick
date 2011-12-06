@@ -100,7 +100,7 @@ push(@$images,$example);
 print "Charcoal...\n";
 $example=$model->Clone();
 $example->Label('Charcoal');
-$example->Charcoal('0x1');
+$example->Charcoal('2x0.5');
 push(@$images,$example);
 
 print "ColorMatrix...\n";
@@ -162,7 +162,7 @@ push(@$images,$example);
 print "Detect Edges...\n";
 $example=$model->Clone();
 $example->Label('Detect Edges');
-$example->Edge();
+$example->Edge('2x0.5');
 push(@$images,$example);
 
 print "Emboss...\n";
