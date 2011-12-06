@@ -100,7 +100,7 @@ push(@$images,$example);
 print "Charcoal...\n";
 $example=$model->Clone();
 $example->Label('Charcoal');
-$example->Charcoal('2x0.5');
+$example->Charcoal('2x1');
 push(@$images,$example);
 
 print "ColorMatrix...\n";
