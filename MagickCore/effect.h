@@ -58,19 +58,6 @@ typedef enum
   JPEGPreview
 } PreviewType;
 
-typedef enum
-{
-  UndefinedStatistic,
-  GradientStatistic,
-  MaximumStatistic,
-  MeanStatistic,
-  MedianStatistic,
-  MinimumStatistic,
-  ModeStatistic,
-  NonpeakStatistic,
-  StandardDeviationStatistic
-} StatisticType;
-
 extern MagickExport Image
   *AdaptiveBlurImage(const Image *,const double,const double,const double,
     ExceptionInfo *),
@@ -95,8 +82,6 @@ extern MagickExport Image
   *SharpenImage(const Image *,const double,const double,const double,
     ExceptionInfo *),
   *SpreadImage(const Image *,const double,const PixelInterpolateMethod,
-    ExceptionInfo *),
-  *StatisticImage(const Image *,const StatisticType,const size_t,const size_t,
     ExceptionInfo *),
   *UnsharpMaskImage(const Image *,const double,const double,const double,
     const double,ExceptionInfo *);

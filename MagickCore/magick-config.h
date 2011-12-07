@@ -1257,6 +1257,9 @@
 #define MAGICKCORE_LT_OBJDIR ".libs/"
 #endif
 
+/* Define to the shared library suffix, say, ".dylib". */
+/* #undef LT_SHARED_EXT */
+
 /* Define if you have LZMA library */
 #ifndef MAGICKCORE_LZMA_DELEGATE
 #define MAGICKCORE_LZMA_DELEGATE 1

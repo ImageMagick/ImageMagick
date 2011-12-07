@@ -247,7 +247,7 @@ push(@$images,$example);
 print "Median Filter...\n";
 $example=$model->Clone();
 $example->Label('Median Filter');
-$example->MedianFilter();
+$example->MedianFilter('3x3');
 push(@$images,$example);
 
 print "Mode...\n";
