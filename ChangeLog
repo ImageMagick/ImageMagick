@@ -5,6 +5,8 @@
 2011-11-29  6.7.4-1 Cristy  <quetzlzacatenango@image...>
   * Add GetQuantumFormat() method to return the quantum format (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=19961).
+  * Allow unspecified width/height in geometies with the aspect flag (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19964).
    
 2011-12-02  6.7.4-1 Anthony  <quetzlzacatenango@image...>
   * Fixed Equal-Area Cropping (size and minimum of delta increments)
