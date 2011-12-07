@@ -5,14 +5,14 @@
 2011-11-29  6.7.4-1 Cristy  <quetzlzacatenango@image...>
   * Add GetQuantumFormat() method to return the quantum format (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=19961).
-  * Allow unspecified width/height in geometies with the aspect flag (reference
+  * Allow unspecified width/height in geometries with the aspect flag (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19964).
    
 2011-12-02  6.7.4-1 Anthony  <quetzlzacatenango@image...>
   * Fixed Equal-Area Cropping (size and minimum of delta increments)
 
 2011-12-01  6.7.3-10 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.4-10, SVN revision 6106.
+  * New version 6.7.3-10, SVN revision 6106.
 
 2011-11-29  6.7.3-10 Cristy  <quetzlzacatenango@image...>
   * Delay reading TIFF EXIF properties to prevent premature exit.
