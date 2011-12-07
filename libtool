@@ -6,8 +6,8 @@
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
 #   Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005,
-#                 2006, 2007, 2008, 2009, 2010 Free Software Foundation,
-#                 Inc.
+#                 2006, 2007, 2008, 2009, 2010, 2011 Free Software
+#                 Foundation, Inc.
 #   Written by Gordon Matzigkeit, 1996
 #
 #   This file is part of GNU Libtool.
@@ -61,8 +61,8 @@ SHELL="/bin/sh"
 ECHO="printf %s\\n"
 
 # Which release of libtool.m4 was used?
-macro_version=2.4
-macro_revision=1.3293
+macro_version=2.4.2
+macro_revision=1.3337
 
 # Assembler program.
 AS="as"
@@ -84,6 +84,9 @@ pic_mode=default
 
 # Whether or not to optimize for fast installation.
 fast_install=yes
+
+# The PATH separator for the build system.
+PATH_SEPARATOR=":"
 
 # The host system.
 host_alias=
@@ -154,7 +157,7 @@ STRIP="strip"
 
 # Commands used to install an old-style archive.
 RANLIB="ranlib"
-old_postinstall_cmds="chmod 644 \$oldlib~\$RANLIB \$oldlib"
+old_postinstall_cmds="chmod 644 \$oldlib~\$RANLIB \$tool_oldlib"
 old_postuninstall_cmds=""
 
 # Whether to use a lock for old archive extraction.
@@ -299,7 +302,7 @@ reload_flag=" -r"
 reload_cmds="\$LD\$reload_flag -o \$output\$reload_objs"
 
 # Commands used to build an old-style archive.
-old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$oldlib"
+old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$tool_oldlib"
 
 # A language specific compiler.
 CC="gcc -std=gnu99 -std=gnu99"
@@ -367,10 +370,6 @@ no_undefined_flag=""
 # Flag to hardcode $libdir into a binary during linking.
 # This must work even if $libdir does not exist
 hardcode_libdir_flag_spec="\${wl}-rpath \${wl}\$libdir"
-
-# If ld is used when linking, flag to hardcode $libdir into a binary
-# during linking.  This must work even if $libdir does not exist.
-hardcode_libdir_flag_spec_ld=""
 
 # Whether we need a single "-rpath" flag with a separated argument.
 hardcode_libdir_separator=""
@@ -10104,7 +10103,7 @@ reload_flag=" -r"
 reload_cmds="\$LD\$reload_flag -o \$output\$reload_objs"
 
 # Commands used to build an old-style archive.
-old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$oldlib"
+old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$tool_oldlib"
 
 # A language specific compiler.
 CC="g++"
@@ -10169,10 +10168,6 @@ no_undefined_flag=""
 # Flag to hardcode $libdir into a binary during linking.
 # This must work even if $libdir does not exist
 hardcode_libdir_flag_spec="\${wl}-rpath \${wl}\$libdir"
-
-# If ld is used when linking, flag to hardcode $libdir into a binary
-# during linking.  This must work even if $libdir does not exist.
-hardcode_libdir_flag_spec_ld=""
 
 # Whether we need a single "-rpath" flag with a separated argument.
 hardcode_libdir_separator=""
