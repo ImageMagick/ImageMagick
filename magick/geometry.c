@@ -1274,12 +1274,12 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       (void) ParseGeometry(geometry,&geometry_info);
       area=geometry_info.rho;
       distance=sqrt((double) former_width*former_height);
-      scale.x=(double) former_width/(double) (distance/sqrt((double) area));
-      scale.y=(double) former_height/(double) (distance/sqrt((double) area));
+      scale.x=former_width/(distance/sqrt(area));
+      scale.y=former_height/(distance/sqrt(area));
       if ((scale.x < (double) *width) || (scale.y < (double) *height))
         {
-          *width=(size_t) (former_width/(distance/sqrt((double) area)));
-          *height=(size_t) (former_height/(distance/sqrt((double) area)));
+          *width=(size_t) (former_width/(distance/sqrt(area)));
+          *height=(size_t) (former_height/(distance/sqrt(area)));
         }
       former_width=(*width);
       former_height=(*height);
