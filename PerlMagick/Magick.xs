@@ -7388,7 +7388,6 @@ Mogrify(ref,...)
           goto continue_outer_loop;
         }
       al=(&argument_list[pp-rp->arguments]);
-   printf("%d %d\n",pp->type,StringReference);
       switch (pp->type)
       {
         case ArrayReference:
@@ -7479,7 +7478,6 @@ Mogrify(ref,...)
           region_image=image;
           image=CropImage(image,&region_info,exception);
         }
-      printf("%d\n",ix);
       switch (ix)
       {
         default:
