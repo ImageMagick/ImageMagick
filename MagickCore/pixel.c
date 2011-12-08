@@ -3662,7 +3662,7 @@ MagickExport void InitializePixelChannelMap(Image *image)
     sizeof(*image->channel_map));
   trait=UpdatePixelTrait;
   if (image->matte != MagickFalse)
-    trait|=BlendPixelTrait;
+    trait=(PixelTrait) (trait | BlendPixelTrait);
   n=0;
   SetPixelChannelMap(image,RedPixelChannel,trait,n++);
   SetPixelChannelMap(image,GreenPixelChannel,trait,n++);
@@ -3683,7 +3683,7 @@ if (0)
     SetPixelChannelMap(image,IndexPixelChannel,CopyPixelTrait,n++);
   assert((n+image->number_meta_channels) < MaxPixelChannels);
   for (i=0; i < (ssize_t) image->number_meta_channels; i++)
-    SetPixelChannelMap(image,(PixelChannel) MetaPixelChannel+i,CopyPixelTrait,
+    SetPixelChannelMap(image,(PixelChannel) (MetaPixelChannel+i),CopyPixelTrait,
       n++);
   image->number_channels=n;
   if (image->debug != MagickFalse)
