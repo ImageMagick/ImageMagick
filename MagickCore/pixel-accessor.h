@@ -92,7 +92,7 @@ static inline PixelChannel GetPixelChannelMapChannel(
 }
 
 static inline int GetPixelChannelMapOffset(const Image *restrict image,
-  const PixelChanel channel)
+  const PixelChannel channel)
 {
   return(image->channel_map[channel].offset);
 }
