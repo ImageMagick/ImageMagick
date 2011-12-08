@@ -247,13 +247,13 @@ push(@$images,$example);
 print "Median Filter...\n";
 $example=$model->Clone();
 $example->Label('Median Filter');
-$example->MedianFilter('3x3');
+$example->MedianFilter('4x4');
 push(@$images,$example);
 
 print "Mode...\n";
 $example=$model->Clone();
 $example->Label('Mode');
-$example->Mode();
+$example->Mode('4x4');
 push(@$images,$example);
 
 print "Modulate...\n";
@@ -272,7 +272,7 @@ push(@$images,$example);
 print "Morphology...\n";
 $example=$model->Clone();
 $example->Label('Morphology');
-$example->Morphology(method=>'Dilate',kernel=>'Diamond',iterations=>3);
+$example->Morphology(method=>'Dilate',kernel=>'Diamond',iterations=>2);
 push(@$images,$example);
 
 print "Motion Blur...\n";
@@ -296,7 +296,7 @@ push(@$images,$example);
 print "Oil Paint...\n";
 $example=$model->Clone();
 $example->Label('Oil Paint');
-$example->OilPaint();
+$example->OilPaint('2x0.5');
 push(@$images,$example);
 
 print "Plasma...\n";
@@ -340,7 +340,7 @@ push(@$images,$example);
 print "Reduce Noise...\n";
 $example=$model->Clone();
 $example->Label('Reduce Noise');
-$example->ReduceNoise();
+$example->ReduceNoise('2x2');
 push(@$images,$example);
 
 print "Resize...\n";
@@ -370,7 +370,7 @@ push(@$images,$example);
 print "Scale...\n";
 $example=$model->Clone();
 $example->Label('Scale');
-#$example->Scale('60%');
+$example->Scale('60%');
 push(@$images,$example);
 
 print "Segment...\n";
