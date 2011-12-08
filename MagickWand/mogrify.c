@@ -2160,8 +2160,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=1.0;
             mogrify_image=MotionBlurImage(*image,geometry_info.rho,
-              geometry_info.sigma,geometry_info.xi,geometry_info.psi,
-              exception);
+              geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
             break;
           }
         break;

@@ -7199,18 +7199,16 @@ Mogrify(ref,...)
     LevelImageColors   = 258
     Clamp              = 259
     ClampImage         = 260
-    BrightnessContrast = 263
-    BrightnessContrastImage = 264
-    Morphology         = 265
-    MorphologyImage    = 266
-    Sans               = 267
-    SansImage          = 268
-    Color              = 269
-    ColorImage         = 270
-    Mode               = 271
-    ModeImage          = 272
-    Statistic          = 273
-    StatisticImage     = 274
+    BrightnessContrast = 261
+    BrightnessContrastImage = 262
+    Morphology         = 263
+    MorphologyImage    = 264
+    Color              = 265
+    ColorImage         = 266
+    Mode               = 267
+    ModeImage          = 268
+    Statistic          = 269
+    StatisticImage     = 270
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -10238,20 +10236,6 @@ Mogrify(ref,...)
           color_matrix=(double *) RelinquishMagickMemory(color_matrix);
           break;
         }
-        case 134:  /* SANS */
-        case 135:  /* Color */
-        {
-          PixelInfo
-            color;
-
-          (void) QueryColorCompliance("none",AllCompliance,&color,
-            exception);
-          if (attribute_flag[0] != 0)
-            (void) QueryColorCompliance(argument_list[0].string_reference,
-              AllCompliance,&color,exception);
-          (void) SetImageColor(image,&color,exception);
-          break;
-        }
         case 109:  /* Mask */
         {
           if (attribute_flag[0] == 0)
@@ -10716,7 +10700,7 @@ Mogrify(ref,...)
           (void) SetPixelChannelMask(image,channel_mask);
           break;
         }
-        case 132:  /* BrightnessContrast */
+        case 131:  /* BrightnessContrast */
         {
           double
             brightness,
@@ -10743,7 +10727,7 @@ Mogrify(ref,...)
           (void) SetPixelChannelMask(image,channel_mask);
           break;
         }
-        case 133:  /* Morphology */
+        case 132:  /* Morphology */
         {
           KernelInfo
             *kernel;
@@ -10766,7 +10750,7 @@ Mogrify(ref,...)
             method=argument_list[2].integer_reference;
           iterations=1;
           if (attribute_flag[3] != 0)
-            iterations=argument_list[4].integer_reference;
+            iterations=argument_list[3].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
           image=MorphologyImage(image,method,iterations,kernel,exception);
           if (image != (Image *) NULL)
@@ -10774,7 +10758,7 @@ Mogrify(ref,...)
           kernel=DestroyKernelInfo(kernel);
           break;
         }
-        case 136:  /* Mode */
+        case 133:  /* Mode */
         {
           if (attribute_flag[0] != 0)
             {
@@ -10796,7 +10780,7 @@ Mogrify(ref,...)
             (void) SetPixelChannelMask(image,channel_mask);
           break;
         }
-        case 137:  /* Statistic */
+        case 134:  /* Statistic */
         {
           StatisticType
             statistic;

@@ -82,6 +82,7 @@
 #include "MagickCore/resource_.h"
 #include "MagickCore/shear.h"
 #include "MagickCore/segment.h"
+#include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/transform.h"
