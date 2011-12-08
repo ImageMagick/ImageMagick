@@ -272,7 +272,7 @@ push(@$images,$example);
 print "Morphology...\n";
 $example=$model->Clone();
 $example->Label('Morphology');
-$example->Morphology(method=>'Dilate',kernel=>'Diamond',iterations=>3);
+$example->Morphology(method=>'Dilate',kernel=>'Diamond',iterations=>2);
 push(@$images,$example);
 
 print "Motion Blur...\n";
