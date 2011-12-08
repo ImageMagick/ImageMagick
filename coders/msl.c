@@ -82,6 +82,7 @@
 #include "magick/segment.h"
 #include "magick/shear.h"
 #include "magick/signature.h"
+#include "magick/statistic.h"
 #include "magick/static.h"
 #include "magick/string_.h"
 #include "magick/string-private.h"

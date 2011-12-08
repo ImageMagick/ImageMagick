@@ -80,6 +80,7 @@
 #include "magick/resource_.h"
 #include "magick/shear.h"
 #include "magick/segment.h"
+#include "magick/statistic.h"
 #include "magick/string_.h"
 #include "magick/string-private.h"
 #include "magick/transform.h"

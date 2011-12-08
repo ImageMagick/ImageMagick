@@ -10570,7 +10570,7 @@ Mogrify(ref,...)
             method=argument_list[2].integer_reference;
           iterations=1;
           if (attribute_flag[3] != 0)
-            iterations=argument_list[4].integer_reference;
+            iterations=argument_list[3].integer_reference;
           image=MorphologyImageChannel(image,channel,method,iterations,kernel,
             exception);
           kernel=DestroyKernelInfo(kernel);
