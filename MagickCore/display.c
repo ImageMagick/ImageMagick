@@ -8659,8 +8659,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if ((flags & PsiValue) == 0)
         geometry_info.psi=0.1*(*image)->rows;
       vignette_image=VignetteImage(*image,geometry_info.rho,geometry_info.sigma,
-        (ssize_t) ceil(geometry_info.xi-0.5),(ssize_t) ceil(geometry_info.psi-
-        0.5),exception);
+        0.0,(ssize_t) ceil(geometry_info.xi-0.5),(ssize_t)
+        ceil(geometry_info.psi-0.5),exception);
       if (vignette_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);
