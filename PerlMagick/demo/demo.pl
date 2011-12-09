@@ -310,7 +310,7 @@ push(@$images,$plasma);
 print "Polaroid...\n";
 $example=$model->Clone();
 $example->Label('Polaroid');
-$example->Polaroid(caption=>'Magick',rotate=>-5.0,gravity=>'center');
+$example->Polaroid(caption=>'Magick',angle=>-5.0,gravity=>'center');
 push(@$images,$example);
 
 print "Posterize...\n";
