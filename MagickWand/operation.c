@@ -3291,8 +3291,9 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           if ((flags & PsiValue) == 0)
             geometry_info.psi=4.0;
           new_image=ShadowImage(*image,geometry_info.rho,
-            geometry_info.sigma,(ssize_t) ceil(geometry_info.xi-0.5),(ssize_t)
-            ceil(geometry_info.psi-0.5),exception);
+            geometry_info.sigma,(*image)->bias,(ssize_t)
+            ceil(geometry_info.xi-0.5),(ssize_t) ceil(geometry_info.psi-0.5),
+            exception);
           break;
         }
       if (LocaleCompare("sharpen",option) == 0)
@@ -3563,8 +3564,9 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           if ((flags & PsiValue) == 0)
             geometry_info.psi=0.1*(*image)->rows;
           new_image=VignetteImage(*image,geometry_info.rho,
-            geometry_info.sigma,(ssize_t) ceil(geometry_info.xi-0.5),(ssize_t)
-            ceil(geometry_info.psi-0.5),exception);
+            geometry_info.sigma,(*image)->bias,(ssize_t)
+            ceil(geometry_info.xi-0.5),(ssize_t) ceil(geometry_info.psi-0.5),
+            exception);
           break;
         }
       if (LocaleCompare("virtual-pixel",option) == 0)

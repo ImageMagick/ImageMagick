@@ -4209,8 +4209,8 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
 %  The format of the ShadowImage method is:
 %
 %      Image *ShadowImage(const Image *image,const double opacity,
-%        const double sigma,const ssize_t x_offset,const ssize_t y_offset,
-%        ExceptionInfo *exception)
+%        const double sigma,const double bias,const ssize_t x_offset,
+%        const ssize_t y_offset,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4220,6 +4220,8 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
+%    o bias: the bias.
+%
 %    o x_offset: the shadow x-offset.
 %
 %    o y_offset: the shadow y-offset.
@@ -4228,8 +4230,8 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
 %
 */
 MagickExport Image *ShadowImage(const Image *image,const double opacity,
-  const double sigma,const ssize_t x_offset,const ssize_t y_offset,
-  ExceptionInfo *exception)
+  const double sigma,const double bias,const ssize_t x_offset,
+  const ssize_t y_offset,ExceptionInfo *exception)
 {
 #define ShadowImageTag  "Shadow/Image"
 
@@ -4272,7 +4274,7 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   */
   (void) SetImageBackgroundColor(border_image,exception);
   channel_mask=SetPixelChannelMask(border_image,AlphaChannel);
-  shadow_image=BlurImage(border_image,0.0,sigma,image->bias,exception);
+  shadow_image=BlurImage(border_image,0.0,sigma,bias,exception);
   (void) SetPixelChannelMapMask(border_image,channel_mask);
   border_image=DestroyImage(border_image);
   if (shadow_image == (Image *) NULL)
@@ -5315,7 +5317,7 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
 %  The format of the VignetteImage method is:
 %
 %      Image *VignetteImage(const Image *image,const double radius,
-%        const double sigma,const ssize_t x,const ssize_t y,
+%        const double sigma,const double bias,const ssize_t x,const ssize_t y,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -5326,13 +5328,16 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
+%    o bias: the bias.
+%
 %    o x, y:  Define the x and y ellipse offset.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *VignetteImage(const Image *image,const double radius,
-  const double sigma,const ssize_t x,const ssize_t y,ExceptionInfo *exception)
+  const double sigma,const double bias,const ssize_t x,const ssize_t y,
+  ExceptionInfo *exception)
 {
   char
     ellipse[MaxTextExtent];
@@ -5382,7 +5387,7 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
   draw_info->primitive=AcquireString(ellipse);
   (void) DrawImage(oval_image,draw_info,exception);
   draw_info=DestroyDrawInfo(draw_info);
-  blur_image=BlurImage(oval_image,radius,sigma,image->bias,exception);
+  blur_image=BlurImage(oval_image,radius,sigma,bias,exception);
   oval_image=DestroyImage(oval_image);
   if (blur_image == (Image *) NULL)
     {

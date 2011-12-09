@@ -6366,8 +6366,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           shadow_image=ShadowImage(msl_info->image[n],geometry_info.rho,
-            geometry_info.sigma,(ssize_t) ceil(geometry_info.xi-0.5),(ssize_t)
-            ceil(geometry_info.psi-0.5),msl_info->exception);
+            geometry_info.sigma,0.0,(ssize_t) ceil(geometry_info.xi-0.5),
+            (ssize_t) ceil(geometry_info.psi-0.5),msl_info->exception);
           if (shadow_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);

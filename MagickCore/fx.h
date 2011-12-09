@@ -50,8 +50,8 @@ extern MagickExport Image
   *PolaroidImage(const Image *,const DrawInfo *,const double,
     const PixelInterpolateMethod,ExceptionInfo *),
   *SepiaToneImage(const Image *,const double,ExceptionInfo *),
-  *ShadowImage(const Image *,const double,const double,const ssize_t,
-    const ssize_t,ExceptionInfo *),
+  *ShadowImage(const Image *,const double,const double,const double,
+    const ssize_t,const ssize_t,ExceptionInfo *),
   *SketchImage(const Image *,const double,const double,const double,
     const double,ExceptionInfo *),
   *SteganoImage(const Image *,const Image *,ExceptionInfo *),
@@ -61,8 +61,8 @@ extern MagickExport Image
   *SwirlImage(const Image *,double,const PixelInterpolateMethod,
     ExceptionInfo *),
   *TintImage(const Image *,const char *,const PixelInfo *,ExceptionInfo *),
-  *VignetteImage(const Image *,const double,const double,const ssize_t,
-    const ssize_t,ExceptionInfo *),
+  *VignetteImage(const Image *,const double,const double,const double,
+    const ssize_t,const ssize_t,ExceptionInfo *),
   *WaveImage(const Image *,const double,const double,
     const PixelInterpolateMethod,ExceptionInfo *);
 
