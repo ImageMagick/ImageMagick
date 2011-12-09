@@ -108,6 +108,14 @@ static const char
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline double MagickMin(const double x,const double y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
 WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
   MagickCommand command,int argc,char **argv,char **metadata,
   ExceptionInfo *exception)
@@ -117,8 +125,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
 
   double
     duration,
-    elapsed_time,
-    user_time;
+    standard;
 
   MagickBooleanType
     concurrent,
@@ -128,11 +135,10 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
   register ssize_t
     i;
 
-  TimerInfo
-    *timer;
-
   size_t
-    iterations;
+    iterations,
+    n,
+    number_threads;
 
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
@@ -157,56 +163,33 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
     if (LocaleCompare("regard-warnings",option+1) == 0)
       regard_warnings=MagickTrue;
   }
-  timer=AcquireTimerInfo();
-  if (concurrent == MagickFalse)
-    {
-      for (i=0; i < (ssize_t) iterations; i++)
+  number_threads=GetOpenMPMaximumThreads();
+  standard=0.0;
+  for (n=1; n <= number_threads; n++)
+  {
+    double
+      efficiency,
+      elapsed_time,
+      user_time;
+
+    TimerInfo
+      *timer;
+
+    SetOpenMPMaximumThreads(n);
+    timer=AcquireTimerInfo();
+    if (concurrent == MagickFalse)
       {
-        if (status != MagickFalse)
-          continue;
-        if (duration > 0)
-          {
-            if (GetElapsedTime(timer) > duration)
-              continue;
-            (void) ContinueTimer(timer);
-          }
-        status=command(image_info,argc,argv,metadata,exception);
-        if (exception->severity != UndefinedException)
-          {
-            if ((exception->severity > ErrorException) ||
-                (regard_warnings != MagickFalse))
-              status=MagickTrue;
-            CatchException(exception);
-          }
-        if ((metadata != (char **) NULL) && (*metadata != (char *) NULL))
-          {
-            (void) fputs(*metadata,stdout);
-            (void) fputc('\n',stdout);
-            *metadata=DestroyString(*metadata);
-          }
-      }
-    }
-  else
-    {
-      SetOpenMPNested(1);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  # pragma omp parallel for shared(status)
-#endif
-      for (i=0; i < (ssize_t) iterations; i++)
-      {
-        if (status != MagickFalse)
-          continue;
-        if (duration > 0)
-          {
-            if (GetElapsedTime(timer) > duration)
-              continue;
-            (void) ContinueTimer(timer);
-          }
-        status=command(image_info,argc,argv,metadata,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  # pragma omp critical (MagickCore_CommandGenesis)
-#endif
+        for (i=0; i < (ssize_t) iterations; i++)
         {
+          if (status != MagickFalse)
+            continue;
+          if (duration > 0)
+            {
+              if (GetElapsedTime(timer) > duration)
+                continue;
+              (void) ContinueTimer(timer);
+            }
+          status=command(image_info,argc,argv,metadata,exception);
           if (exception->severity != UndefinedException)
             {
               if ((exception->severity > ErrorException) ||
@@ -222,19 +205,57 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
             }
         }
       }
-    }
-  if (iterations > 1)
-    {
-      elapsed_time=GetElapsedTime(timer);
-      user_time=GetUserTime(timer);
-      (void) FormatLocaleFile(stderr,
-        "Performance[%.20g]: %.20gi %gips %0.3fu %lu:%02lu.%03lu\n",
-        (double) GetOpenMPMaximumThreads(),(double) iterations,(double)
-        iterations/elapsed_time,user_time,(unsigned long) (elapsed_time/60.0),
-        (unsigned long) floor(fmod(elapsed_time,60.0)),(unsigned long) 
-        (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
-    }
-  timer=DestroyTimerInfo(timer);
+    else
+      {
+        SetOpenMPNested(1);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        # pragma omp parallel for shared(status)
+#endif
+        for (i=0; i < (ssize_t) iterations; i++)
+        {
+          if (status != MagickFalse)
+            continue;
+          if (duration > 0)
+            {
+              if (GetElapsedTime(timer) > duration)
+                continue;
+              (void) ContinueTimer(timer);
+            }
+          status=command(image_info,argc,argv,metadata,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+           # pragma omp critical (MagickCore_CommandGenesis)
+#endif
+          {
+            if (exception->severity != UndefinedException)
+              {
+                if ((exception->severity > ErrorException) ||
+                    (regard_warnings != MagickFalse))
+                  status=MagickTrue;
+                CatchException(exception);
+              }
+            if ((metadata != (char **) NULL) && (*metadata != (char *) NULL))
+              {
+                (void) fputs(*metadata,stdout);
+                (void) fputc('\n',stdout);
+                *metadata=DestroyString(*metadata);
+              }
+          }
+        }
+      }
+    elapsed_time=GetElapsedTime(timer);
+    if (n == 1)
+      standard=elapsed_time;
+    user_time=GetUserTime(timer);
+    efficiency=((1.0/MagickMin((double) number_threads,standard/elapsed_time))-
+      (1.0/number_threads))/(1.0-(1.0/number_threads));
+    (void) FormatLocaleFile(stderr,
+      "Performance[%.20g]: %.20gi %gips %0.3fe %0.3fu %lu:%02lu.%03lu\n",
+      (double) n,(double) iterations,(double) iterations/elapsed_time,
+      efficiency,user_time,(unsigned long) (elapsed_time/60.0),(unsigned long)
+      floor(fmod(elapsed_time,60.0)),(unsigned long) 
+      (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
+    timer=DestroyTimerInfo(timer);
+  }
   return(status);
 }
 
