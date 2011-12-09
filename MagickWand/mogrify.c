@@ -125,7 +125,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
 
   double
     duration,
-    standard;
+    serial;
 
   MagickBooleanType
     concurrent,
@@ -163,13 +163,31 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
     if (LocaleCompare("regard-warnings",option+1) == 0)
       regard_warnings=MagickTrue;
   }
+  if (iterations == 1)
+    {
+      status=command(image_info,argc,argv,metadata,exception);
+      if (exception->severity != UndefinedException)
+        {
+          if ((exception->severity > ErrorException) ||
+              (regard_warnings != MagickFalse))
+            status=MagickTrue;
+          CatchException(exception);
+        }
+        if ((metadata != (char **) NULL) && (*metadata != (char *) NULL))
+          {
+            (void) fputs(*metadata,stdout);
+            (void) fputc('\n',stdout);
+            *metadata=DestroyString(*metadata);
+          }
+      return(status);
+    }
   number_threads=GetOpenMPMaximumThreads();
-  standard=0.0;
+  serial=0.0;
   for (n=1; n <= number_threads; n++)
   {
     double
-      efficiency,
-      elapsed_time,
+      e,
+      parallel,
       user_time;
 
     TimerInfo
@@ -242,18 +260,20 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
           }
         }
       }
-    elapsed_time=GetElapsedTime(timer);
-    if (n == 1)
-      standard=elapsed_time;
     user_time=GetUserTime(timer);
-    efficiency=((1.0/MagickMin((double) number_threads,standard/elapsed_time))-
-      (1.0/number_threads))/(1.0-(1.0/number_threads));
+    parallel=GetElapsedTime(timer);
+    e=1.0;
+    if (n == 1)
+      serial=parallel;
+    else
+      e=((1.0/(1.0/((serial/(serial+parallel))+(1.0-(serial/(serial+parallel)))/
+        (double) n)))-(1.0/(double) n))/(1.0-1.0/(double) n);
     (void) FormatLocaleFile(stderr,
       "Performance[%.20g]: %.20gi %gips %0.3fe %0.3fu %lu:%02lu.%03lu\n",
-      (double) n,(double) iterations,(double) iterations/elapsed_time,
-      efficiency,user_time,(unsigned long) (elapsed_time/60.0),(unsigned long)
-      floor(fmod(elapsed_time,60.0)),(unsigned long) 
-      (1000.0*(elapsed_time-floor(elapsed_time))+0.5));
+      (double) n,(double) iterations,(double) iterations/parallel,e,
+      user_time,(unsigned long) (parallel/60.0),(unsigned long)
+      floor(fmod(parallel,60.0)),(unsigned long)
+      (1000.0*(parallel-floor(parallel))+0.5));
     timer=DestroyTimerInfo(timer);
   }
   return(status);
