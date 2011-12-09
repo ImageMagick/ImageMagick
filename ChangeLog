@@ -1,3 +1,6 @@
+2011-12-09  6.7.4-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.4-0, SVN revision 6162.
+
 2010-12-06  6.7.4-1 Glenn Randers-Pehrson <glennrp@image...>
   * Eliminated use of FARDATA in coders/png.c; it won't be supported in
     libpng-1.6.0 and is not needed now.
