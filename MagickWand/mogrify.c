@@ -269,7 +269,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       e=((1.0/(1.0/((serial/(serial+parallel))+(1.0-(serial/(serial+parallel)))/
         (double) n)))-(1.0/(double) n))/(1.0-1.0/(double) n);
     (void) FormatLocaleFile(stderr,
-      "Performance[%.20g]: %.20gi %gips %0.3fe %0.3fu %lu:%02lu.%03lu\n",
+      "Performance[%.20g]: %.20gi %0.3fips %0.3fe %0.3fu %lu:%02lu.%03lu\n",
       (double) n,(double) iterations,(double) iterations/parallel,e,
       user_time,(unsigned long) (parallel/60.0),(unsigned long)
       floor(fmod(parallel,60.0)),(unsigned long)
