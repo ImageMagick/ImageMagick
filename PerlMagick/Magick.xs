@@ -436,7 +436,7 @@ static struct
       {"background", StringReference}, {"gravity", MagickGravityOptions} } },
     { "Posterize", { {"levels", IntegerReference},
       {"dither", MagickBooleanOptions} } },
-    { "Shadow", { {"geometry", StringReference}, {"opacity", RealReference},
+    { "Shadow", { {"geometry", StringReference}, {"alpha", RealReference},
       {"sigma", RealReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
     { "Identify", { {"file", FileReference}, {"features", StringReference},
@@ -9830,9 +9830,9 @@ Mogrify(ref,...)
             geometry_info.xi=argument_list[3].integer_reference;
           if (attribute_flag[4] != 0)
             geometry_info.psi=argument_list[4].integer_reference;
-          image=ShadowImage(image,geometry_info.rho,geometry_info.sigma,
-            (ssize_t) ceil(geometry_info.xi-0.5),(ssize_t) ceil(geometry_info.psi-
-            0.5),exception);
+          image=ShadowImage(image,geometry_info.rho,geometry_info.sigma,0.0,
+            (ssize_t) ceil(geometry_info.xi-0.5),(ssize_t)
+            ceil(geometry_info.psi-0.5),exception);
           break;
         }
         case 90:  /* Identify */
@@ -9945,9 +9945,9 @@ Mogrify(ref,...)
           if (attribute_flag[5] != 0)
             (void) QueryColorCompliance(argument_list[5].string_reference,
               AllCompliance,&image->background_color,exception);
-          image=VignetteImage(image,geometry_info.rho,geometry_info.sigma,
-            (ssize_t) ceil(geometry_info.xi-0.5),(ssize_t) ceil(geometry_info.psi-
-            0.5),exception);
+          image=VignetteImage(image,geometry_info.rho,geometry_info.sigma,0.0,
+            (ssize_t) ceil(geometry_info.xi-0.5),(ssize_t)
+            ceil(geometry_info.psi-0.5),exception);
           break;
         }
         case 95:  /* ContrastStretch */

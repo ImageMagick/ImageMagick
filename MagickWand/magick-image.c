@@ -10203,7 +10203,8 @@ WandExport MagickBooleanType MagickShadeImage(MagickWand *wand,
 %  The format of the MagickShadowImage method is:
 %
 %      MagickBooleanType MagickShadowImage(MagickWand *wand,
-%        const double alpha,const double sigma,const ssize_t x,const ssize_t y)
+%        const double alpha,const double sigma,const double bias,
+%        const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -10213,13 +10214,16 @@ WandExport MagickBooleanType MagickShadeImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
+%    o bias: the bias.
+%
 %    o x: the shadow x-offset.
 %
 %    o y: the shadow y-offset.
 %
 */
 WandExport MagickBooleanType MagickShadowImage(MagickWand *wand,
-  const double alpha,const double sigma,const ssize_t x,const ssize_t y)
+  const double alpha,const double sigma,const double bias,const ssize_t x,
+  const ssize_t y)
 {
   Image
     *shadow_image;
@@ -10230,7 +10234,7 @@ WandExport MagickBooleanType MagickShadowImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  shadow_image=ShadowImage(wand->images,alpha,sigma,x,y,wand->exception);
+  shadow_image=ShadowImage(wand->images,alpha,sigma,bias,x,y,wand->exception);
   if (shadow_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,shadow_image);
@@ -11717,22 +11721,25 @@ WandExport MagickBooleanType MagickUnsharpMaskImage(MagickWand *wand,
 %  The format of the MagickVignetteImage method is:
 %
 %      MagickBooleanType MagickVignetteImage(MagickWand *wand,
-%        const double black_point,const double white_point,const ssize_t x,
-%        const ssize_t y)
+%        const double radius,const double sigma,const double bias,
+%        const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
-%    o black_point: the black point.
+%    o radius: the radius.
 %
-%    o white_point: the white point.
+%    o sigma: the sigma.
+%
+%    o bias: the bias.
 %
 %    o x, y:  Define the x and y ellipse offset.
 %
 */
 WandExport MagickBooleanType MagickVignetteImage(MagickWand *wand,
-  const double black_point,const double white_point,const ssize_t x,const ssize_t y)
+  const double radius,const double sigma,const double bias,const ssize_t x,
+  const ssize_t y)
 {
   Image
     *vignette_image;
@@ -11743,7 +11750,7 @@ WandExport MagickBooleanType MagickVignetteImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  vignette_image=VignetteImage(wand->images,black_point,white_point,x,y,
+  vignette_image=VignetteImage(wand->images,radius,sigma,bias,x,y,
     wand->exception);
   if (vignette_image == (Image *) NULL)
     return(MagickFalse);
