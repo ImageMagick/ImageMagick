@@ -7,6 +7,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=19961).
   * Allow unspecified width/height in geometries with the aspect flag (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19964).
+  * MagickGetImageDepth() no longer returns the depth setting but instead
+    computes the depth of the image.
    
 2011-12-02  6.7.4-1 Anthony  <quetzlzacatenango@image...>
   * Fixed Equal-Area Cropping (size and minimum of delta increments)
