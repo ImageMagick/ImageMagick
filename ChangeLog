@@ -13,7 +13,7 @@
   * MagickGetImageDepth() no longer returns the depth setting but instead
     computes the depth of the image.
    
-2011-12-02  6.7.4-1 Anthony  <quetzlzacatenango@image...>
+2011-12-02  6.7.4-0 Anthony  <quetzlzacatenango@image...>
   * Fixed Equal-Area Cropping (size and minimum of delta increments)
 
 2011-12-01  6.7.3-10 Cristy  <quetzlzacatenango@image...>
