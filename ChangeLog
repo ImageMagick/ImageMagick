@@ -66,8 +66,8 @@
 2010-11-15  6.7.3-7 Glenn Randers-Pehrson <glennrp@image...>
   * Reverted the change of 6.6.6-7 that creates an image clone for use
     by the PNG encoder.  This was not useful and was somewhat wasteful.
-  * After finding out that writing the bKGD chunk in sub-8-bit PNG files,
-    enabled PNG_USE_CLONE (To create an image clone again)
+  * After finding out that writing the bKGD chunk in sub-8-bit PNG fails,
+    enabled PNG_USE_CLONE (to create an image clone again)
 
 2011-11-14  6.7.3-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.3-6, SVN revision 5972.
