@@ -1,11 +1,11 @@
 2011-12-09  6.7.4-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.4-0, SVN revision 6162.
 
-2010-12-06  6.7.4-1 Glenn Randers-Pehrson <glennrp@image...>
+2010-12-06  6.7.4-0 Glenn Randers-Pehrson <glennrp@image...>
   * Eliminated use of FARDATA in coders/png.c; it won't be supported in
     libpng-1.6.0 and is not needed now.
 
-2011-11-29  6.7.4-1 Cristy  <quetzlzacatenango@image...>
+2011-11-29  6.7.4-0 Cristy  <quetzlzacatenango@image...>
   * Add GetQuantumFormat() method to return the quantum format (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=19961).
   * Allow unspecified width/height in geometries with the aspect flag (reference
