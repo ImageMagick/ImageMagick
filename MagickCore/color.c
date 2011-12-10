@@ -1954,8 +1954,8 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"color") == 0)
           {
-            (void) QueryColorCompliance(token,AllCompliance,
-              &color_info->color,exception);
+            (void) QueryColorCompliance(token,AllCompliance,&color_info->color,
+              exception);
             break;
           }
         if (LocaleCompare((char *) keyword,"compliance") == 0)
@@ -2116,8 +2116,8 @@ static MagickBooleanType LoadColorLists(const char *filename,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  QueryColorCompliance() returns the red, green, blue, and alpha
-%  intensities for a given color name and standards compliance.
+%  QueryColorCompliance() returns the red, green, blue, and alpha intensities
+%  for a given color name and standards compliance.
 %
 %  The format of the QueryColorCompliance method is:
 %
