@@ -4249,11 +4249,11 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
 #endif
   for (y=0; y < (ssize_t) border_image->rows; y++)
   {
-    register ssize_t
-      x;
-
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
