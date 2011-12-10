@@ -1067,7 +1067,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
-  for (x=0; x < (ssize_t) image->columns; x++)
+  for (x=0; x < (ssize_t) blur_image->columns; x++)
   {
     register const Quantum
       *restrict p;
@@ -1081,19 +1081,19 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,x,-((ssize_t) width/2L),1,
-      image->rows+width,exception);
+      blur_image->rows+width,exception);
     q=GetCacheViewAuthenticPixels(blur_view,x,0,1,blur_image->rows,exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
       }
-    for (y=0; y < (ssize_t) image->rows; y++)
+    for (y=0; y < (ssize_t) blur_image->rows; y++)
     {
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(blur_image); i++)
       {
         MagickRealType
           alpha,
@@ -1150,8 +1150,8 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
         gamma=0.0;
         for (u=0; u < (ssize_t) width; u++)
         {
-          alpha=(MagickRealType) (QuantumScale*
-            GetPixelAlpha(blur_image,pixels));
+          alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(blur_image,
+            pixels));
           pixel+=(*k)*alpha*pixels[i];
           gamma+=(*k)*alpha;
           k++;
