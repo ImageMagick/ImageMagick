@@ -29,24 +29,33 @@
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  
+  <!-- Optionaly include easing and/or mousewheel plugins -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.easing-1.3.pack.js"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
+  
+  <!-- Add fancyBox -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.3"></script>
+  
+  <!-- Optionaly include button and/or thumbnail helpers -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.3"></script>
+  
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.3"></script>
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(".fancybox").fancybox();
+  	});
+  </script>
+  <!-- ImageMagick style -->
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
-  <link rel="stylesheet" type="text/css" href="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
-  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
-        'transitionIn'  : 'elastic',
-        'transitionOut' : 'elastic',
-        'overlayShow'   : false,
-        'opacity'       : true
-      });
-    });
-  </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -188,9 +197,6 @@
   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
 </div>
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autos part" href="http://www.pkwteile.de/autoteile">Autos part</a><!-- 201112010090s jr@pkwte... -->
-</div>
-<div  class="sponsor">
    <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
 </div>
 <div  class="sponsor">
@@ -200,10 +206,10 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Notebook Reparatur" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur</a><!-- 2012020100300 atlas.multimedia-->
+   <a rel="follow" title="Sponsor: Photo Sharing Websites" href="http://www.zoofoo.com">Photo Sharing Websites</a><!-- 2012050100150 dancu@dans...-->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingreviewz.com">Web Hosting Reviews</a><!-- 2012040100030 Soft Tec-->
+   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
 </div>
 </div>
 </div>
@@ -211,6 +217,17 @@
 
 <div class="eastbar">
   <div class="g-plusone" data-size="standard" data-count="false"></div>
+  <script type="text/javascript">
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+  </script>
 </div>
 
 <div class="main">
@@ -220,7 +237,7 @@
 
 <a id="intro"></a>
 <div class="doc-section">
-<p><a id="wizard" href="../images/wizard.png" title="And Now a Touch of Magick"><img id="logo" alt="And Now a Touch of Magick" class="icon" width="241" height="320" src="../images/wizard.jpg"/></a> ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&amp;entry=78333969">&#174;</a></sup> is a software suite to create, edit, compose, or convert bitmap images.  It can read and write images in a variety of <a href="../www/formats.html">formats</a> (over 100) including <a href="../www/motion-picture.html">DPX</a>, <a href="../www/high-dynamic-range.html">EXR</a>, GIF, JPEG, JPEG-2000, PDF, PhotoCD, PNG, Postscript, SVG, and TIFF.  Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.</p>
+<p><a class="fancybox" rel="group" href="../images/wizard.png" title="And Now a Touch of Magick"><img id="logo" alt="And Now a Touch of Magick" class="icon" width="241" height="320" src="../images/wizard.jpg"/></a> ImageMagick<sup><a href="http://tarr.uspto.gov/servlet/tarr?regser=serial&amp;entry=78333969">&#174;</a></sup> is a software suite to create, edit, compose, or convert bitmap images.  It can read and write images in a variety of <a href="../www/formats.html">formats</a> (over 100) including <a href="../www/motion-picture.html">DPX</a>, <a href="../www/high-dynamic-range.html">EXR</a>, GIF, JPEG, JPEG-2000, PDF, PhotoCD, PNG, Postscript, SVG, and TIFF.  Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.</p>
 
 <p>The functionality of ImageMagick is typically utilized from the command line or you can use the features from programs written in your favorite language. Choose from these interfaces: <a href="../www/api.html#ada">G2F</a> (Ada), <a href="../www/api.html#c">MagickCore</a> (C), <a href="../www/api.html#c">MagickWand</a> (C), <a href="../www/api.html#ch">ChMagick</a> (Ch), <a href="../www/api.html#com_">ImageMagickObject</a> (COM+), <a href="../www/api.html#c__">Magick++</a> (C++), <a href="../www/api.html#java">JMagick</a> (Java), <a href="../www/api.html#lisp">L-Magick</a> (Lisp), <a href="../www/api.html#neko">NMagick</a> (Neko/haXe), <a href="../www/api.html#dot-net">MagickNet</a> (.NET), <a href="../www/api.html#pascal">PascalMagick</a> (Pascal),  <a href="../www/api.html#perl">PerlMagick</a> (Perl), <a href="../www/api.html#php">MagickWand for PHP</a> (PHP),  <a href="../www/api.html#php">IMagick</a> (PHP), <a href="../www/api.html#python">PythonMagick</a> (Python), <a href="../www/api.html#ruby">RMagick</a> (Ruby), or <a href="../www/api.html#tcl">TclMagick</a> (Tcl/TK). With a language interface, use ImageMagick to modify or create images dynamically and <em>automagically</em>.</p>
 
@@ -228,7 +245,7 @@
 
 <p>The ImageMagick development process ensures a stable API and ABI. Before each ImageMagick release, we perform a comprehensive security assessment that includes <a href="http://www.valgrind.org">memory and thread</a> error detection to prevent security vulnerabilities.</p>
 
-<p>The current release is ImageMagick 6.7.3-10.</p>
+<p>The current release is ImageMagick 6.7.4-10.</p>
 
 </div>
 
