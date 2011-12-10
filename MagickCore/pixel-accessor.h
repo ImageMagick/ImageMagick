@@ -98,9 +98,9 @@ static inline int GetPixelChannelMapOffset(const Image *restrict image,
 }
 
 static inline PixelTrait GetPixelChannelMapTraits(const Image *restrict image,
-  const int offset)
+  const PixelChannel channel)
 {
-  return(image->channel_map[image->channel_map[offset].channel].traits);
+  return(image->channel_map[channel].traits);
 }
 
 static inline size_t GetPixelChannels(const Image *restrict image)
