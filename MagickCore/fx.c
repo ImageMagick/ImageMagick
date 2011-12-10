@@ -4275,10 +4275,10 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   (void) SetImageBackgroundColor(border_image,exception);
   channel_mask=SetPixelChannelMask(border_image,AlphaChannel);
   shadow_image=BlurImage(border_image,0.0,sigma,bias,exception);
-  (void) SetPixelChannelMapMask(border_image,channel_mask);
   border_image=DestroyImage(border_image);
   if (shadow_image == (Image *) NULL)
     return((Image *) NULL);
+  (void) SetPixelChannelMapMask(shadow_image,channel_mask);
   if (shadow_image->page.width == 0)
     shadow_image->page.width=shadow_image->columns;
   if (shadow_image->page.height == 0)
