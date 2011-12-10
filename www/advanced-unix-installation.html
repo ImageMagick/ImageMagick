@@ -29,24 +29,33 @@
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  
+  <!-- Optionaly include easing and/or mousewheel plugins -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.easing-1.3.pack.js"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
+  
+  <!-- Add fancyBox -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.3"></script>
+  
+  <!-- Optionaly include button and/or thumbnail helpers -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.3"></script>
+  
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.3"></script>
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(".fancybox").fancybox();
+  	});
+  </script>
+  <!-- ImageMagick style -->
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
-  <link rel="stylesheet" type="text/css" href="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
-  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
-        'transitionIn'  : 'elastic',
-        'transitionOut' : 'elastic',
-        'overlayShow'   : false,
-        'opacity'       : true
-      });
-    });
-  </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -188,9 +197,6 @@
   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
 </div>
 <div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autos part" href="http://www.pkwteile.de/autoteile">Autos part</a><!-- 201112010090s jr@pkwte... -->
-</div>
-<div  class="sponsor">
    <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
 </div>
 <div  class="sponsor">
@@ -200,10 +206,10 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Photo Sharing Websites" href="http://www.zoofoo.com">Photo Sharing Websites</a><!-- 2012050100150 dancu@dans...-->
+   <a rel="follow" title="Sponsor: Turbolader Online kaufen" href="http://www.autoteile-carparts.de">Turbolader Online kaufen</a><!-- 2012030100150 t.temurbas...-->
 </div>
 <div  class="sponsor">
-   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.hostucan.com">Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
+   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
 </div>
 </div>
 </div>
@@ -211,6 +217,17 @@
 
 <div class="eastbar">
   <div class="g-plusone" data-size="standard" data-count="false"></div>
+  <script type="text/javascript">
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+  </script>
 </div>
 
 <div class="main">
@@ -226,7 +243,7 @@
 <h2><a id="download"></a>Download &amp; Unpack</h2>
 <div class="doc-section">
 
-<p>ImageMagick builds on a variety of Unix and Unix-like operating systems including Linux, Solaris, FreeBSD, Mac OS X, and others.  A compiler is required and fortunately almost all modern Unix systems have one.  Download <a href="ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick.tar.gz">ImageMagick.tar.gz</a> from <a href="ftp://ftp.imagemagick.org/pub/ImageMagick">ftp.imagemagick.org</a> or its <a href="../www/download.html">mirrors</a> and verify the distribution against its <a href="http://www.imagemagick.org/download/digest.rdf">message digest</a>.</p>
+<p>ImageMagick builds on a variety of Unix and Unix-like operating systems including Linux, Solaris, FreeBSD, Mac OS X, and others.  A compiler is required and fortunately almost all modern Unix systems have one.  Download <a href="http://www.imagemagick.org/download/ImageMagick.tar.gz">ImageMagick.tar.gz</a> from <a href="http://www.imagemagick.org/download">ftp.imagemagick.org</a> or its <a href="../www/download.html">mirrors</a> and verify the distribution against its <a href="http://www.imagemagick.org/download/digest.rdf">message digest</a>.</p>
 
 <p>Unpack the distribution it with this command:</p>
 
@@ -240,7 +257,7 @@
 
 <p>The configure script looks at your environment and decides what it can cobble together to get ImageMagick compiled and installed on your system.  This includes finding a compiler, where your compiler header files are located (e.g. stdlib.h), and if any delegate libraries are available for ImageMagick to use (e.g. JPEG, PNG, TIFF, etc.).  If you are willing to accept configure's default options, and build from within the source directory, you can simply type:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.3-10</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.4-10</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure</span></p>
 <p>Watch the configure script output to verify that it finds everything that
  you think it should.  Pay particular attention to the last lines of the script output.  For example, here is a recent report from our system:</p>
 
@@ -561,14 +578,14 @@ Options used to compile and link:
 <h2><a id="linux"></a>Linux-specific Build instructions</h2>
 <div class="doc-section">
 
-<p>Download <a href="ftp://ftp.imagemagick.org/pub/ImageMagick/linux/SRPMS/ImageMagick.src.rpm">ImageMagick.src.rpm</a> from <a href="ftp://ftp.imagemagick.org/pub/ImageMagick">ftp.imagemagick.org</a> or its <a href="../www/download.html">mirrors</a> and verify the distribution against its <a href="http://www.imagemagick.org/download/linux/SRPMS/digest.rdf">message digest</a>.</p>
+<p>Download <a href="http://www.imagemagick.org/download/linux/SRPMS/ImageMagick.src.rpm">ImageMagick.src.rpm</a> from <a href="http://www.imagemagick.org/download">ftp.imagemagick.org</a> or its <a href="../www/download.html">mirrors</a> and verify the distribution against its <a href="http://www.imagemagick.org/download/linux/SRPMS/digest.rdf">message digest</a>.</p>
 
 <p>Build ImageMagick with this command:</p>
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>rpmbuild --rebuild ImageMagick.src.rpm</span></p>
 <p>After the build you, locate the RPMS folder and install the ImageMagick binary RPM distribution:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>rpm -ivh ImageMagick-6.7.3-?.*.rpm</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>rpm -ivh ImageMagick-6.7.4-?.*.rpm</span></p>
 </div>
 
 <h2><a id="macosx"></a>Mac OS X-specific Build instructions</h2>
@@ -592,7 +609,7 @@ Options used to compile and link:
 	<div class="doc-section">
 	  <p><a href="../www/download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="http://www.imagemagick.org/download/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
-		<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvfz ImageMagick-6.7.3-10.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.3-10</span></p>	  <p>Configure ImageMagick:</p>
+		<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvfz ImageMagick-6.7.4-10.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.4-10</span></p>	  <p>Configure ImageMagick:</p>
 	<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>./configure --prefix=/opt --with-quantum-depth=16 \ <br/>
 		--disable-dependency-tracking --with-x=yes \ <br/>
 		--x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \ <br/>
@@ -612,7 +629,7 @@ Options used to compile and link:
 
 <p>Although you can download and install delegate libraries yourself, many are already available in the <a href="http://gnuwin32.sourceforge.net/">GnuWin32</a> distribution.  Download and install whichever delegate libraries you require such as JPEG, PNG, TIFF, etc.  Make sure you specify the development headers when you install a package.  Next type,</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar jxvf ImageMagick-6.7.3-?.tar.bz2</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.3-10</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>sudo make install</span></p></div>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar jxvf ImageMagick-6.7.4-?.tar.bz2</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.4-10</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>sudo make install</span></p></div>
 
 <h2><a id="problems"></a>Dealing with Unexpected Problems</h2>
 <div class="doc-section">
