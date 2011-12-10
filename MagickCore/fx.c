@@ -4208,7 +4208,7 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
 %
 %  The format of the ShadowImage method is:
 %
-%      Image *ShadowImage(const Image *image,const double opacity,
+%      Image *ShadowImage(const Image *image,const double alpha,
 %        const double sigma,const double bias,const ssize_t x_offset,
 %        const ssize_t y_offset,ExceptionInfo *exception)
 %
@@ -4216,7 +4216,7 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
 %
 %    o image: the image.
 %
-%    o opacity: percentage transparency.
+%    o alpha: percentage transparency.
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
@@ -4229,11 +4229,14 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *ShadowImage(const Image *image,const double opacity,
+MagickExport Image *ShadowImage(const Image *image,const double alpha,
   const double sigma,const double bias,const ssize_t x_offset,
   const ssize_t y_offset,ExceptionInfo *exception)
 {
 #define ShadowImageTag  "Shadow/Image"
+
+  CacheView
+    *image_view;
 
   ChannelType
     channel_mask;
@@ -4243,8 +4246,14 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
     *clone_image,
     *shadow_image;
 
+  MagickBooleanType
+    status;
+
   RectangleInfo
     border_info;
+
+  ssize_t
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -4256,14 +4265,14 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageVirtualPixelMethod(clone_image,EdgeVirtualPixelMethod);
-  clone_image->compose=OverCompositeOp;
   border_info.width=(size_t) floor(2.0*sigma+0.5);
   border_info.height=(size_t) floor(2.0*sigma+0.5);
   border_info.x=0;
   border_info.y=0;
   (void) QueryColorCompliance("none",AllCompliance,&clone_image->border_color,
     exception);
-  border_image=BorderImage(clone_image,&border_info,image->compose,exception);
+  clone_image->matte=MagickTrue;
+  border_image=BorderImage(clone_image,&border_info,OverCompositeOp,exception);
   clone_image=DestroyImage(clone_image);
   if (border_image == (Image *) NULL)
     return((Image *) NULL);
@@ -4272,9 +4281,48 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   /*
     Shadow image.
   */
-  (void) SetImageBackgroundColor(border_image,exception);
+  status=MagickTrue;
+  image_view=AcquireCacheView(border_image);
+  for (y=0; y < (ssize_t) border_image->rows; y++)
+  {
+    PixelInfo
+      background_color;
+
+    register Quantum
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=QueueCacheViewAuthenticPixels(image_view,0,y,border_image->columns,1,
+      exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    background_color=border_image->background_color;
+    background_color.matte=MagickTrue;
+    for (x=0; x < (ssize_t) border_image->columns; x++)
+    {
+      if (border_image->matte != MagickFalse)
+        background_color.alpha=GetPixelAlpha(border_image,q)*alpha/100.0;
+      SetPixelInfoPixel(border_image,&background_color,q);
+      q+=GetPixelChannels(border_image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    {
+      border_image=DestroyImage(border_image);
+      return((Image *) NULL);
+    }
   channel_mask=SetPixelChannelMask(border_image,AlphaChannel);
-  shadow_image=BlurImage(border_image,0.0,sigma,bias,exception);
+  shadow_image=GaussianBlurImage(border_image,0.0,sigma,bias,exception);
   border_image=DestroyImage(border_image);
   if (shadow_image == (Image *) NULL)
     return((Image *) NULL);
