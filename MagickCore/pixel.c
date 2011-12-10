@@ -81,75 +81,79 @@
       traits[MaxTextExtent]; \
  \
     const char \
-      *channel; \
+      *name; \
+ \
+    PixelChannel \
+      channel; \
  \
     switch (GetPixelChannelMapChannel(image,i)) \
     { \
       case RedPixelChannel: \
       { \
-        channel="red"; \
+        name="red"; \
         if (image->colorspace == CMYKColorspace) \
-          channel="cyan"; \
+          name="cyan"; \
         if (image->colorspace == GRAYColorspace) \
-          channel="gray"; \
+          name="gray"; \
         break; \
       } \
       case GreenPixelChannel: \
       { \
-        channel="green"; \
+        name="green"; \
         if (image->colorspace == CMYKColorspace) \
-          channel="magenta"; \
+          name="magenta"; \
         break; \
       } \
       case BluePixelChannel: \
       { \
-        channel="blue"; \
+        name="blue"; \
         if (image->colorspace == CMYKColorspace) \
-          channel="yellow"; \
+          name="yellow"; \
         break; \
       } \
       case BlackPixelChannel: \
       { \
-        channel="black"; \
+        name="black"; \
         if (image->storage_class == PseudoClass) \
-          channel="index"; \
+          name="index"; \
         break; \
       } \
       case IndexPixelChannel: \
       { \
-        channel="index"; \
+        name="index"; \
         break; \
       } \
       case AlphaPixelChannel: \
       { \
-        channel="alpha"; \
+        name="alpha"; \
         break; \
       } \
       case MaskPixelChannel: \
       { \
-        channel="mask"; \
+        name="mask"; \
         break; \
       } \
       case MetaPixelChannel: \
       { \
-        channel="meta"; \
+        name="meta"; \
         break; \
       } \
       default: \
-        channel="undefined"; \
+        name="undefined"; \
     } \
+    channel=GetPixelChannelMapChannel(image,i); \
     *traits='\0'; \
-    if ((GetPixelChannelMapTraits(image,i) & UpdatePixelTrait) != 0) \
+    if ((GetPixelChannelMapTraits(image,channel) & UpdatePixelTrait) != 0) \
       (void) ConcatenateMagickString(traits,"update,",MaxTextExtent); \
-    if ((GetPixelChannelMapTraits(image,i) & BlendPixelTrait) != 0) \
+    if ((GetPixelChannelMapTraits(image,channel) & BlendPixelTrait) != 0) \
       (void) ConcatenateMagickString(traits,"blend,",MaxTextExtent); \
-    if ((GetPixelChannelMapTraits(image,i) & CopyPixelTrait) != 0) \
+    if ((GetPixelChannelMapTraits(image,channel) & CopyPixelTrait) != 0) \
       (void) ConcatenateMagickString(traits,"copy,",MaxTextExtent); \
     if (*traits == '\0') \
       (void) ConcatenateMagickString(traits,"undefined,",MaxTextExtent); \
     traits[strlen(traits)-1]='\0'; \
     (void) LogMagickEvent(PixelEvent,GetMagickModule(),"  %.20g: %s (%s)", \
-      (double) i,channel,traits); \
+      (double) i,name,traits); \
   } \
 }
 
