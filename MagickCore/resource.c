@@ -996,7 +996,8 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
     limit=GetPolicyValue("file");
   if (limit != (char *) NULL)
     {
-      (void) SetMagickResourceLimit(FileResource,StringToSizeType(limit,100.0));
+      (void) SetMagickResourceLimit(FileResource,StringToSizeType(limit,
+        100.0));
       limit=DestroyString(limit);
     }
   (void) SetMagickResourceLimit(ThreadResource,GetOpenMPMaximumThreads());
