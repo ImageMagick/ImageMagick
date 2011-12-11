@@ -683,9 +683,6 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) raise_info->height; y++)
   {
-    PixelTrait
-      traits;
-
     register ssize_t
       i,
       x;
@@ -705,7 +702,14 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     {
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        traits=GetPixelChannelMapTraits(image,i);
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) != 0)
           q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
             HighlightFactor+(MagickRealType) foreground*(QuantumRange-
@@ -717,7 +721,14 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     {
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        traits=GetPixelChannelMapTraits(image,i);
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) != 0)
           q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
             AccentuateFactor+(MagickRealType) foreground*(QuantumRange-
@@ -729,7 +740,14 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     {
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        traits=GetPixelChannelMapTraits(image,i);
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) != 0)
           q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
             ShadowFactor+(MagickRealType) background*(QuantumRange-
@@ -754,9 +772,6 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 #endif
   for (y=(ssize_t) raise_info->height; y < (ssize_t) (image->rows-raise_info->height); y++)
   {
-    PixelTrait
-      traits;
-
     register ssize_t
       i,
       x;
@@ -776,7 +791,14 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     {
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        traits=GetPixelChannelMapTraits(image,i);
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) != 0)
           q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
             HighlightFactor+(MagickRealType) foreground*(QuantumRange-
@@ -790,7 +812,14 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     {
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        traits=GetPixelChannelMapTraits(image,i);
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) != 0)
           q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
             ShadowFactor+(MagickRealType) background*(QuantumRange-
@@ -815,9 +844,6 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 #endif
   for (y=(ssize_t) (image->rows-raise_info->height); y < (ssize_t) image->rows; y++)
   {
-    PixelTrait
-      traits;
-
     register ssize_t
       i,
       x;
@@ -837,7 +863,14 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     {
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        traits=GetPixelChannelMapTraits(image,i);
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) != 0)
           q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
             HighlightFactor+(MagickRealType) foreground*(QuantumRange-
@@ -849,7 +882,14 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     {
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        traits=GetPixelChannelMapTraits(image,i);
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) != 0)
           q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
             TroughFactor+(MagickRealType) background*(QuantumRange-
@@ -861,7 +901,14 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     {
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        traits=GetPixelChannelMapTraits(image,i);
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) != 0)
           q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
             ShadowFactor+(MagickRealType) background*(QuantumRange-

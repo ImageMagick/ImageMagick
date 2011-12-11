@@ -4220,8 +4220,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         register ssize_t
           j;
 
-        traits=GetPixelChannelMapTraits(source,i);
         channel=GetPixelChannelMapChannel(source,i);
+        traits=GetPixelChannelMapTraits(source,channel);
         destination_traits=GetPixelChannelMapTraits(destination,channel);
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
@@ -4268,8 +4268,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         register ssize_t
           j;
 
-        traits=GetPixelChannelMapTraits(source,i);
         channel=GetPixelChannelMapChannel(source,i);
+        traits=GetPixelChannelMapTraits(source,channel);
         destination_traits=GetPixelChannelMapTraits(destination,channel);
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
@@ -4322,8 +4322,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           delta,
           epsilon;
 
-        traits=GetPixelChannelMapTraits(source,i);
         channel=GetPixelChannelMapChannel(source,i);
+        traits=GetPixelChannelMapTraits(source,channel);
         destination_traits=GetPixelChannelMapTraits(destination,channel);
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
@@ -4377,8 +4377,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         RectangleInfo
           geometry;
 
-        traits=GetPixelChannelMapTraits(source,i);
         channel=GetPixelChannelMapChannel(source,i);
+        traits=GetPixelChannelMapTraits(source,channel);
         destination_traits=GetPixelChannelMapTraits(destination,channel);
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
@@ -4419,8 +4419,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
-        traits=GetPixelChannelMapTraits(source,i);
         channel=GetPixelChannelMapChannel(source,i);
+        traits=GetPixelChannelMapTraits(source,channel);
         destination_traits=GetPixelChannelMapTraits(destination,channel);
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
@@ -4440,8 +4440,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
-        traits=GetPixelChannelMapTraits(source,i);
         channel=GetPixelChannelMapChannel(source,i);
+        traits=GetPixelChannelMapTraits(source,channel);
         destination_traits=GetPixelChannelMapTraits(destination,channel);
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
@@ -4464,8 +4464,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           delta,
           luminance;
 
-        traits=GetPixelChannelMapTraits(source,i);
         channel=GetPixelChannelMapChannel(source,i);
+        traits=GetPixelChannelMapTraits(source,channel);
         destination_traits=GetPixelChannelMapTraits(destination,channel);
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
@@ -4584,8 +4584,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           k,
           n;
 
-        traits=GetPixelChannelMapTraits(source,i);
         channel=GetPixelChannelMapChannel(source,i);
+        traits=GetPixelChannelMapTraits(source,channel);
         destination_traits=GetPixelChannelMapTraits(destination,channel);
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))

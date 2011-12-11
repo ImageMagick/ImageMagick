@@ -199,8 +199,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
               chop_traits,
               traits;
 
-            traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-            channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+            channel=GetPixelChannelMapChannel(image,i);
+            traits=GetPixelChannelMapTraits(image,channel);
             chop_traits=GetPixelChannelMapTraits(chop_image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (chop_traits == UndefinedPixelTrait))
@@ -270,8 +270,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
               chop_traits,
               traits;
 
-            traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-            channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+            channel=GetPixelChannelMapChannel(image,i);
+            traits=GetPixelChannelMapTraits(image,channel);
             chop_traits=GetPixelChannelMapTraits(chop_image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (chop_traits == UndefinedPixelTrait))
@@ -623,8 +623,8 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
           crop_traits,
           traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         crop_traits=GetPixelChannelMapTraits(crop_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (crop_traits == UndefinedPixelTrait))
@@ -977,8 +977,8 @@ MagickExport Image *ExcerptImage(const Image *image,
           excerpt_traits,
           traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         excerpt_traits=GetPixelChannelMapTraits(excerpt_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (excerpt_traits == UndefinedPixelTrait))
@@ -1177,8 +1177,8 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
           flip_traits,
           traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         flip_traits=GetPixelChannelMapTraits(flip_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (flip_traits == UndefinedPixelTrait))
@@ -1319,8 +1319,8 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
           flop_traits,
           traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         flop_traits=GetPixelChannelMapTraits(flop_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (flop_traits == UndefinedPixelTrait))
@@ -1446,8 +1446,8 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
           destination_traits,
           source_traits;
 
-        source_traits=GetPixelChannelMapTraits(source,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(source,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(source,i);
+        source_traits=GetPixelChannelMapTraits(source,channel);
         destination_traits=GetPixelChannelMapTraits(destination,channel);
         if ((source_traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
@@ -1764,8 +1764,8 @@ MagickExport Image *SpliceImage(const Image *image,
           splice_traits,
           traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         splice_traits=GetPixelChannelMapTraits(splice_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (splice_traits == UndefinedPixelTrait))
@@ -1791,8 +1791,8 @@ MagickExport Image *SpliceImage(const Image *image,
           traits,
           splice_traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         splice_traits=GetPixelChannelMapTraits(splice_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (splice_traits == UndefinedPixelTrait))
@@ -1860,8 +1860,8 @@ MagickExport Image *SpliceImage(const Image *image,
           traits,
           splice_traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         splice_traits=GetPixelChannelMapTraits(splice_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (splice_traits == UndefinedPixelTrait))
@@ -1887,8 +1887,8 @@ MagickExport Image *SpliceImage(const Image *image,
           traits,
           splice_traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         splice_traits=GetPixelChannelMapTraits(splice_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (splice_traits == UndefinedPixelTrait))
@@ -2196,8 +2196,8 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
           traits,
           transpose_traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         transpose_traits=GetPixelChannelMapTraits(transpose_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (transpose_traits == UndefinedPixelTrait))
@@ -2343,8 +2343,8 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
           traits,
           transverse_traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
-        channel=GetPixelChannelMapChannel(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         transverse_traits=GetPixelChannelMapTraits(transverse_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (transverse_traits == UndefinedPixelTrait))
