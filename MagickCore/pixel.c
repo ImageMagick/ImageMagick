@@ -5419,7 +5419,7 @@ MagickExport void SetPixelChannelMapMask(Image *image,
     channel=GetPixelChannelMapChannel(image,i);
     SetPixelChannelMapTraits(image,channel,
       GetChannelBit(channel_mask,channel) == 0 ? CopyPixelTrait :
-      image->matte == MagickFalse ? UpdatePixelTrait : (PixelTrait)
+      channel == AlphaPixelChannel ? UpdatePixelTrait : (PixelTrait)
       (UpdatePixelTrait | BlendPixelTrait));
   }
   if (image->storage_class == PseudoClass)
