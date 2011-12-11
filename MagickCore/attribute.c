@@ -377,10 +377,14 @@ MagickExport size_t GetImageDepth(const Image *image,
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
+        PixelChannel
+          channel;
+
         PixelTrait
           traits;
 
-        traits=GetPixelChannelMapTraits(image,i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
         while (current_depth[id] < MAGICKCORE_QUANTUM_DEPTH)
@@ -854,10 +858,14 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
+        PixelChannel
+          channel;
+
         PixelTrait
           traits;
 
-        traits=GetPixelChannelMapTraits(image,i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
         q[i]=ScaleAnyToQuantum(ScaleQuantumToAny(q[i],range),range);

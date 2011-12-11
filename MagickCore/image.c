@@ -556,8 +556,8 @@ MagickExport Image *AppendImages(const Image *images,
             append_traits,
             traits;
 
-          traits=GetPixelChannelMapTraits(image,i);
           channel=GetPixelChannelMapChannel(image,i);
+          traits=GetPixelChannelMapTraits(image,channel);
           append_traits=GetPixelChannelMapTraits(append_image,channel);
           if ((traits == UndefinedPixelTrait) ||
               (append_traits == UndefinedPixelTrait))
@@ -1114,8 +1114,8 @@ MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
 
       if (next == (Image *) NULL)
         continue;
-      traits=GetPixelChannelMapTraits(image,i);
       channel=GetPixelChannelMapChannel(image,i);
+      traits=GetPixelChannelMapTraits(image,channel);
       combine_traits=GetPixelChannelMapTraits(combine_image,channel);
       if ((traits == UndefinedPixelTrait) ||
           (combine_traits == UndefinedPixelTrait))
@@ -2270,13 +2270,17 @@ MagickExport MagickBooleanType SeparateImage(Image *image,
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
+        PixelChannel
+          channel;
+
         PixelTrait
           traits;
 
         register ssize_t
           j;
 
-        traits=GetPixelChannelMapTraits(image,i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
         if ((traits & UpdatePixelTrait) != 0)
@@ -2350,10 +2354,14 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
   images=NewImageList();
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
+    PixelChannel
+      channel;
+
     PixelTrait
       traits;
 
-    traits=GetPixelChannelMapTraits(image,i);
+    channel=GetPixelChannelMapChannel(image,i);
+    traits=GetPixelChannelMapTraits(image,channel);
     if (traits == UndefinedPixelTrait)
       continue;
     if ((traits & UpdatePixelTrait) != 0)

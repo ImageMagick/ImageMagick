@@ -260,8 +260,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
         ssize_t
           v;
 
-        traits=GetPixelChannelMapTraits(image,i);
         channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         threshold_traits=GetPixelChannelMapTraits(threshold_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (threshold_traits == UndefinedPixelTrait))
@@ -409,10 +409,14 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
+        PixelChannel
+          channel;
+
         PixelTrait
           traits;
 
-        traits=GetPixelChannelMapTraits(image,i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) != 0)
           q[i]=(Quantum) ((MagickRealType) q[i] <= threshold ? 0 :
             QuantumRange);
@@ -555,10 +559,14 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
       n=0;
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
+        PixelChannel
+          channel;
+
         PixelTrait
           traits;
 
-        traits=GetPixelChannelMapTraits(image,i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         if ((MagickRealType) q[i] < threshold[n++ % 5])
@@ -695,10 +703,14 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
 
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
+        PixelChannel
+          channel;
+
         PixelTrait
           traits;
 
-        traits=GetPixelChannelMapTraits(image,i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
         q[i]=ClampToUnsignedQuantum(q[i]);
@@ -1313,6 +1325,9 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
       n=0;
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
+        PixelChannel
+          channel;
+
         PixelTrait
           traits;
 
@@ -1320,7 +1335,8 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
           level,
           threshold;
 
-        traits=GetPixelChannelMapTraits(image,i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         if (fabs(levels[n++]) < MagickEpsilon)
@@ -1480,10 +1496,14 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
         MagickRealType
           threshold;
 
+        PixelChannel
+          channel;
+
         PixelTrait
           traits;
 
-        traits=GetPixelChannelMapTraits(image,i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         if ((MagickRealType) q[i] < min_threshold)
@@ -1636,10 +1656,14 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
       n=0;
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
+        PixelChannel
+          channel;
+
         PixelTrait
           traits;
 
-        traits=GetPixelChannelMapTraits(image,i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         if ((MagickRealType) q[i] > threshold[n++ % 5])

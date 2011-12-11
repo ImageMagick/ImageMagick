@@ -1014,10 +1014,14 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
     ChannelType
       channel_mask;
 
+    PixelChannel
+      channel;
+
     PixelTrait
       traits;
 
-    traits=GetPixelChannelMapTraits(image,i);
+    channel=GetPixelChannelMapChannel(image,i);
+    traits=GetPixelChannelMapTraits(image,channel);
     if ((traits & UpdatePixelTrait) == 0)
       continue;
     channel_mask=SetPixelChannelMask(image,(ChannelType) (1 << i));
