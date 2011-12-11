@@ -4322,7 +4322,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
       return((Image *) NULL);
     }
   channel_mask=SetPixelChannelMask(border_image,AlphaChannel);
-  shadow_image=GaussianBlurImage(border_image,0.0,sigma,bias,exception);
+  shadow_image=BlurImage(border_image,0.0,sigma,bias,exception);
   border_image=DestroyImage(border_image);
   if (shadow_image == (Image *) NULL)
     return((Image *) NULL);
