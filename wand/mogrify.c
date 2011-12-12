@@ -2203,10 +2203,12 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             if (*option == '-')
               {
-                (void) ParseGeometry(argv[i+1],&geometry_info);
+                flags=ParseGeometry(argv[i+1],&geometry_info);
+                if ((flags & SigmaValue) == 0)
+                  geometry_info.sigma=geometry_info.rho;
                 mogrify_image=StatisticImageChannel(*image,channel,
                   NonpeakStatistic,(size_t) geometry_info.rho,(size_t)
-                  geometry_info.rho,exception);
+                  geometry_info.sigma,exception);
               }
             else
               {
