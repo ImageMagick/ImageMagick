@@ -1218,7 +1218,9 @@
 /* #undef LQR_DELEGATE */
 
 /* Define if using libltdl to support dynamically loadable modules */
-/* #undef LTDL_DELEGATE */
+#ifndef MAGICKCORE_LTDL_DELEGATE
+#define MAGICKCORE_LTDL_DELEGATE 1
+#endif
 
 /* Define if the OS needs help to load dependent libraries for dlopen(). */
 /* #undef LTDL_DLOPEN_DEPLIBS */
