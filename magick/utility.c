@@ -1883,15 +1883,7 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
     }
 #endif
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
-  {
-    int
-      mode;
-
-    mode=_P_WAIT;
-    if (asynchronous != MagickFalse)
-      mode=_P_NOWAIT;
-    status=spawnvp(mode,arguments[1],(const char **) (arguments+1));
-  }
+  status=NTSystemCommand(shell_command);
 #elif defined(macintosh)
   status=MACSystemCommand(shell_command);
 #elif defined(vms)
