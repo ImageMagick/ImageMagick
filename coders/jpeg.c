@@ -688,7 +688,7 @@ static void SkipInputData(j_decompress_ptr cinfo,long number_bytes)
 
 static void TerminateSource(j_decompress_ptr cinfo)
 {
-  cinfo=cinfo;
+  (void) cinfo;
 }
 
 static void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
