@@ -1791,7 +1791,7 @@ static png_voidp Magick_png_malloc(png_structp png_ptr,png_uint_32 size)
   png_voidp
     ret;
 
-  png_ptr=png_ptr;
+  (void) png_ptr;
   ret=((png_voidp) AcquireMagickMemory((size_t) size));
 
   if (ret == NULL)
@@ -1799,7 +1799,7 @@ static png_voidp Magick_png_malloc(png_structp png_ptr,png_uint_32 size)
 
   return(ret);
 #else
-  png_ptr=png_ptr;
+  (void) png_ptr;
   return((png_voidp) AcquireMagickMemory((size_t) size));
 #endif
 }
