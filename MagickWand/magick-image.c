@@ -4275,7 +4275,7 @@ WandExport size_t MagickGetImageDepth(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  return(GetImageDepth(wand->images,wand->exception));
+  return(wand->images->depth);
 }
 
 /*
