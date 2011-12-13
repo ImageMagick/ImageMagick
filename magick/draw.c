@@ -5296,6 +5296,10 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path)
           TraceArcPath(q,point,end,arc,angle,large_arc,sweep);
           q+=q->coordinates;
           point=end;
+          while (isspace((int) ((unsigned char) *p)) != 0)
+            p++;
+          if (*p == ',')
+            p++;
         } while (IsPoint(p) != MagickFalse);
         break;
       }
