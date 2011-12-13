@@ -472,8 +472,7 @@ MagickExport size_t GetImageQuantumDepth(const Image *image,
         if (depth <= 64)
           depth=64;
   if (constrain != MagickFalse)
-    depth=(size_t) MagickMin((double) depth,(double)
-      MAGICKCORE_QUANTUM_DEPTH);
+    depth=(size_t) MagickMin((double) depth,(double) MAGICKCORE_QUANTUM_DEPTH);
   return(depth);
 }
 
