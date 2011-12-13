@@ -91,7 +91,7 @@ static inline PixelChannel GetPixelChannelMapChannel(
   return(image->channel_map[offset].channel);
 }
 
-static inline int GetPixelChannelMapOffset(const Image *restrict image,
+static inline ssize_t GetPixelChannelMapOffset(const Image *restrict image,
   const PixelChannel channel)
 {
   return(image->channel_map[channel].offset);
