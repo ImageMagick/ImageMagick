@@ -4191,7 +4191,6 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
     i;
 
   ssize_t
-    offset,
     x_offset,
     y_offset;
 
@@ -4227,16 +4226,16 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
           continue;
-        offset=GetPixelChannelMapOffset(destination,channel);
         for (j=0; j < 16; j++)
           pixels[j]=(MagickRealType) p[j*GetPixelChannels(source)+i];
+        sum=0.0;
         if ((traits & BlendPixelTrait) == 0)
           {
             for (j=0; j < 16; j++)
-              pixel[offset]+=0.0625*pixels[j];
+              sum+=0.0625*pixels[j];
+            SetPixelChannel(destination,channel,ClampToQuantum(sum),pixel);
             continue;
           }
-        sum=0.0;
         for (j=0; j < 16; j++)
         {
           alpha[j]=QuantumScale*GetPixelAlpha(source,p+j*
@@ -4245,7 +4244,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           gamma=1.0/(fabs((double) alpha[j]) <= MagickEpsilon ? 1.0 : alpha[j]);
           sum+=gamma*0.0625*pixels[j];
         }
-        pixel[offset]=ClampToQuantum(sum);
+        SetPixelChannel(destination,channel,ClampToQuantum(sum),pixel);
       }
       break;
     }
@@ -4276,7 +4275,6 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
           continue;
-        offset=GetPixelChannelMapOffset(destination,channel);
         if ((traits & BlendPixelTrait) == 0)
           for (j=0; j < 16; j++)
           {
@@ -4305,8 +4303,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         u[1]=(v[0]-v[1])-u[0];
         u[2]=v[2]-v[0];
         u[3]=v[1];
-        pixel[offset]=ClampToQuantum((delta.y*delta.y*delta.y*u[0])+(delta.y*
-          delta.y*u[1])+(delta.y*u[2])+u[3]);
+        SetPixelChannel(destination,channel,ClampToQuantum((delta.y*delta.y*
+          delta.y*u[0])+(delta.y*delta.y*u[1])+(delta.y*u[2])+u[3]),pixel);
       }
       break;
     }
@@ -4331,7 +4329,6 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
           continue;
-        offset=GetPixelChannelMapOffset(destination,channel);
         delta.x=x-x_offset;
         delta.y=y-y_offset;
         epsilon.x=1.0-delta.x;
@@ -4344,9 +4341,9 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           {
             gamma=((epsilon.y*(epsilon.x+delta.x)+delta.y*(epsilon.x+delta.x)));
             gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-            pixel[offset]=ClampToQuantum(gamma*(epsilon.y*(epsilon.x*pixels[0]+
-              delta.x*pixels[1])+delta.y*(epsilon.x*pixels[2]+delta.x*
-              pixels[3])));
+            SetPixelChannel(destination,channel,ClampToQuantum(gamma*(epsilon.y*
+              (epsilon.x*pixels[0]+delta.x*pixels[1])+delta.y*(epsilon.x*
+              pixels[2]+delta.x*pixels[3]))),pixel);
             continue;
           }
         alpha[0]=QuantumScale*GetPixelAlpha(source,p);
@@ -4362,8 +4359,9 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         gamma=((epsilon.y*(epsilon.x*alpha[0]+delta.x*alpha[1])+delta.y*
           (epsilon.x*alpha[2]+delta.x*alpha[3])));
         gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        pixel[offset]=ClampToQuantum(gamma*(epsilon.y*(epsilon.x*pixels[0]+
-          delta.x*pixels[1])+delta.y*(epsilon.x*pixels[2]+delta.x*pixels[3])));
+        SetPixelChannel(destination,channel,ClampToQuantum(gamma*(epsilon.y*
+          (epsilon.x*pixels[0]+delta.x*pixels[1])+delta.y*(epsilon.x*pixels[2]+
+          delta.x*pixels[3]))),pixel);
       }
       break;
     }
@@ -4387,7 +4385,6 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
           continue;
-        offset=GetPixelChannelMapOffset(destination,channel);
         geometry.width=4L;
         geometry.height=4L;
         geometry.x=x_offset-1;
@@ -4409,8 +4406,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           status=MagickFalse;
         else
           {
-            offset=GetPixelChannelMapOffset(destination,channel);
-            pixel[offset]=p[i];
+            SetPixelChannel(destination,channel,p[i],pixel);
           }
         filter_view=DestroyCacheView(filter_view);
         filter_source=DestroyImage(filter_source);
@@ -4433,8 +4429,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
           continue;
-        offset=GetPixelChannelMapOffset(destination,channel);
-        pixel[offset]=p[i];
+        SetPixelChannel(destination,channel,p[i],pixel);
       }
       break;
     }
@@ -4455,8 +4450,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
           continue;
-        offset=GetPixelChannelMapOffset(destination,channel);
-        pixel[offset]=p[i];
+        SetPixelChannel(destination,channel,p[i],pixel);
       }
       break;
     }
@@ -4480,7 +4474,6 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
           continue;
-        offset=GetPixelChannelMapOffset(destination,channel);
         pixels[0]=(MagickRealType) p[i];
         pixels[1]=(MagickRealType) p[GetPixelChannels(source)+i];
         pixels[2]=(MagickRealType) p[2*GetPixelChannels(source)+i];
@@ -4521,8 +4514,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                 delta.y=1.0-delta.y;
                 gamma=MeshInterpolate(&delta,alpha[2],alpha[3],alpha[0]);
                 gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-                pixel[offset]=ClampToQuantum(gamma*MeshInterpolate(&delta,
-                  pixels[2],pixels[3],pixels[0]));
+                SetPixelChannel(destination,channel,ClampToQuantum(gamma*
+                  MeshInterpolate(&delta,pixels[2],pixels[3],pixels[0])),pixel);
               }
             else
               {
@@ -4532,8 +4525,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                 delta.x=1.0-delta.x;
                 gamma=MeshInterpolate(&delta,alpha[1],alpha[0],alpha[3]);
                 gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-                pixel[offset]=ClampToQuantum(gamma*MeshInterpolate(&delta,
-                  pixels[1],pixels[0],pixels[3]));
+                SetPixelChannel(destination,channel,ClampToQuantum(gamma*
+                  MeshInterpolate(&delta,pixels[1],pixels[0],pixels[3])),pixel);
               }
           }
         else
@@ -4548,8 +4541,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                 */
                 gamma=MeshInterpolate(&delta,alpha[0],alpha[1],alpha[2]);
                 gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-                pixel[offset]=ClampToQuantum(gamma*MeshInterpolate(&delta,
-                  pixels[0],pixels[1],pixels[2]));
+                SetPixelChannel(destination,channel,ClampToQuantum(gamma*
+                  MeshInterpolate(&delta,pixels[0],pixels[1],pixels[2])),pixel);
               }
             else
               {
@@ -4560,8 +4553,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                 delta.y=1.0-delta.y;
                 gamma=MeshInterpolate(&delta,alpha[3],alpha[2],alpha[1]);
                 gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-                pixel[offset]=ClampToQuantum(gamma*MeshInterpolate(&delta,
-                  pixels[3],pixels[2],pixels[1]));
+                SetPixelChannel(destination,channel,ClampToQuantum(gamma*
+                  MeshInterpolate(&delta,pixels[3],pixels[2],pixels[1])),pixel);
               }
           }
       }
@@ -4601,7 +4594,6 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
           continue;
-        offset=GetPixelChannelMapOffset(destination,channel);
         if ((traits & BlendPixelTrait) == 0)
           for (j=0; j < 16; j++)
           {
@@ -4631,7 +4623,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
             n++;
           }
         }
-        pixel[offset]=ClampToQuantum(sum);
+        SetPixelChannel(destination,channel,p[i],pixel);
       }
       break;
     }
