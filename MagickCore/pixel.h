@@ -80,7 +80,7 @@ typedef struct _PixelChannelMap
   PixelTrait
     traits;
 
-  int
+  ssize_t
     offset;
 } PixelChannelMap;
 
