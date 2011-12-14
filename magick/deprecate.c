@@ -5913,9 +5913,9 @@ MagickExport Image *RecolorImage(const Image *image,const size_t order,
     return((Image *) NULL);
   kernel_info->width=order;
   kernel_info->height=order;
-  kernel_info->values=(double *) color_matrix;
+  kernel_info->values=(MagickRealType *) color_matrix;
   recolor_image=ColorMatrixImage(image,kernel_info,exception);
-  kernel_info->values=(double *) NULL;
+  kernel_info->values=(MagickRealType *) NULL;
   kernel_info=DestroyKernelInfo(kernel_info);
   return(recolor_image);
 }

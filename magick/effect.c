@@ -2186,7 +2186,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
         format[MaxTextExtent],
         *message;
 
-      register const double
+      register const MagickRealType
         *k;
 
       ssize_t
@@ -2266,7 +2266,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
       MagickPixelPacket
         pixel;
 
-      register const double
+      register const MagickRealType
         *restrict k;
 
       register const PixelPacket
