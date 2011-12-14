@@ -28,10 +28,6 @@
 # include <sys/types.h>
 #endif
 
-#if defined(macintosh)
-#  include <stat.mac.h>  /* Needed for off_t */
-#endif
-
 #if defined(__BORLANDC__)
 # include <vcl.h> /* Borland C++ Builder 4.0 requirement */
 #endif // defined(__BORLANDC__)
