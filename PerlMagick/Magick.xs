@@ -10251,6 +10251,9 @@ Mogrify(ref,...)
         }
         case 110:  /* Polaroid */
         {
+          char
+            *caption;
+
           DrawInfo
             *draw_info;
 
@@ -10262,10 +10265,11 @@ Mogrify(ref,...)
 
           draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
             (DrawInfo *) NULL);
+          caption=(char *) NULL;
           if (attribute_flag[0] != 0)
-            (void) SetImageProperty(image,"caption",InterpretImageProperties(
-              info ? info->image_info : (ImageInfo *) NULL,image,
-              argument_list[0].string_reference,exception),exception);
+            caption=InterpretImageProperties(info ? info->image_info :
+              (ImageInfo *) NULL,image,argument_list[0].string_reference,
+              exception);
           angle=0.0;
           if (attribute_flag[1] != 0)
             angle=argument_list[1].real_reference;
@@ -10290,8 +10294,10 @@ Mogrify(ref,...)
           method=UndefinedInterpolatePixel;
           if (attribute_flag[9] != 0)
             method=(PixelInterpolateMethod) argument_list[9].integer_reference;
-          image=PolaroidImage(image,draw_info,angle,method,exception);
+          image=PolaroidImage(image,draw_info,caption,angle,method,exception);
           draw_info=DestroyDrawInfo(draw_info);
+          if (caption != (char *) NULL)
+            caption=DestroyString(caption);
           break;
         }
         case 111:  /* FloodfillPaint */

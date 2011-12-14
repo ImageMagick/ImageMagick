@@ -2935,6 +2935,9 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
         }
       if (LocaleCompare("polaroid",option) == 0)
         {
+          const char
+            *caption;
+
           double
             angle;
 
@@ -2954,7 +2957,8 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
               flags=ParseGeometry(args[0],&geometry_info);
               angle=geometry_info.rho;
             }
-          new_image=PolaroidImage(*image,draw_info,angle,
+          caption=GetImageProperty(*image,"caption",exception);
+          new_image=PolaroidImage(*image,draw_info,caption,angle,
             interpolate_method,exception);
           break;
         }

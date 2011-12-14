@@ -47,7 +47,7 @@ extern MagickExport Image
   *ImplodeImage(const Image *,const double,const PixelInterpolateMethod,
     ExceptionInfo *),
   *MorphImages(const Image *,const size_t,ExceptionInfo *),
-  *PolaroidImage(const Image *,const DrawInfo *,const double,
+  *PolaroidImage(const Image *,const DrawInfo *,const char *,const double,
     const PixelInterpolateMethod,ExceptionInfo *),
   *SepiaToneImage(const Image *,const double,ExceptionInfo *),
   *ShadowImage(const Image *,const double,const double,const double,

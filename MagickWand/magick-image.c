@@ -7202,7 +7202,7 @@ WandExport MagickBooleanType MagickPingImageFile(MagickWand *wand,FILE *file)
 %  The format of the MagickPolaroidImage method is:
 %
 %      MagickBooleanType MagickPolaroidImage(MagickWand *wand,
-%        const DrawingWand *drawing_wand,const double angle,
+%        const DrawingWand *drawing_wand,const char *caption,const double angle,
 %        const PixelInterpolateMethod method)
 %
 %  A description of each parameter follows:
@@ -7211,13 +7211,15 @@ WandExport MagickBooleanType MagickPingImageFile(MagickWand *wand,FILE *file)
 %
 %    o drawing_wand: the draw wand.
 %
+%    o caption: the Polaroid caption.
+%
 %    o angle: Apply the effect along this angle.
 %
 %    o method: the pixel interpolation method.
 %
 */
 WandExport MagickBooleanType MagickPolaroidImage(MagickWand *wand,
-  const DrawingWand *drawing_wand,const double angle,
+  const DrawingWand *drawing_wand,const char *caption,const double angle,
   const PixelInterpolateMethod method)
 {
   DrawInfo
@@ -7235,7 +7237,7 @@ WandExport MagickBooleanType MagickPolaroidImage(MagickWand *wand,
   draw_info=PeekDrawingWand(drawing_wand);
   if (draw_info == (DrawInfo *) NULL)
     return(MagickFalse);
-  polaroid_image=PolaroidImage(wand->images,draw_info,angle,method,
+  polaroid_image=PolaroidImage(wand->images,draw_info,caption,angle,method,
     wand->exception);
   if (polaroid_image == (Image *) NULL)
     return(MagickFalse);
