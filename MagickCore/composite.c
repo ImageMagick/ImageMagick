@@ -1488,10 +1488,10 @@ static inline void CompositeXor(const PixelInfo *p,const PixelInfo *q,
 }
 
 static void HSBComposite(const double hue,const double saturation,
-  const double brightness,MagickRealType *red,MagickRealType *green,
-  MagickRealType *blue)
+  const double brightness,double *red,double *green,
+  double *blue)
 {
-  MagickRealType
+  double
     f,
     h,
     p,
@@ -1501,12 +1501,12 @@ static void HSBComposite(const double hue,const double saturation,
   /*
     Convert HSB to RGB colorspace.
   */
-  assert(red != (MagickRealType *) NULL);
-  assert(green != (MagickRealType *) NULL);
-  assert(blue != (MagickRealType *) NULL);
+  assert(red != (double *) NULL);
+  assert(green != (double *) NULL);
+  assert(blue != (double *) NULL);
   if (saturation == 0.0)
     {
-      *red=(MagickRealType) QuantumRange*brightness;
+      *red=(double) QuantumRange*brightness;
       *green=(*red);
       *blue=(*red);
       return;
@@ -1521,44 +1521,44 @@ static void HSBComposite(const double hue,const double saturation,
     case 0:
     default:
     {
-      *red=(MagickRealType) QuantumRange*brightness;
-      *green=(MagickRealType) QuantumRange*t;
-      *blue=(MagickRealType) QuantumRange*p;
+      *red=(double) QuantumRange*brightness;
+      *green=(double) QuantumRange*t;
+      *blue=(double) QuantumRange*p;
       break;
     }
     case 1:
     {
-      *red=(MagickRealType) QuantumRange*q;
-      *green=(MagickRealType) QuantumRange*brightness;
-      *blue=(MagickRealType) QuantumRange*p;
+      *red=(double) QuantumRange*q;
+      *green=(double) QuantumRange*brightness;
+      *blue=(double) QuantumRange*p;
       break;
     }
     case 2:
     {
-      *red=(MagickRealType) QuantumRange*p;
-      *green=(MagickRealType) QuantumRange*brightness;
-      *blue=(MagickRealType) QuantumRange*t;
+      *red=(double) QuantumRange*p;
+      *green=(double) QuantumRange*brightness;
+      *blue=(double) QuantumRange*t;
       break;
     }
     case 3:
     {
-      *red=(MagickRealType) QuantumRange*p;
-      *green=(MagickRealType) QuantumRange*q;
-      *blue=(MagickRealType) QuantumRange*brightness;
+      *red=(double) QuantumRange*p;
+      *green=(double) QuantumRange*q;
+      *blue=(double) QuantumRange*brightness;
       break;
     }
     case 4:
     {
-      *red=(MagickRealType) QuantumRange*t;
-      *green=(MagickRealType) QuantumRange*p;
-      *blue=(MagickRealType) QuantumRange*brightness;
+      *red=(double) QuantumRange*t;
+      *green=(double) QuantumRange*p;
+      *blue=(double) QuantumRange*brightness;
       break;
     }
     case 5:
     {
-      *red=(MagickRealType) QuantumRange*brightness;
-      *green=(MagickRealType) QuantumRange*p;
-      *blue=(MagickRealType) QuantumRange*q;
+      *red=(double) QuantumRange*brightness;
+      *green=(double) QuantumRange*p;
+      *blue=(double) QuantumRange*q;
       break;
     }
   }
@@ -2560,6 +2560,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         }
         case ModulateCompositeOp:
         {
+          double
+            blue,
+            green,
+            red;
+
           ssize_t
             offset;
 
@@ -2572,8 +2577,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             &saturation,&brightness);
           brightness+=(0.01*percent_brightness*offset)/midpoint;
           saturation*=0.01*percent_saturation;
-          HSBComposite(hue,saturation,brightness,&composite.red,
-            &composite.green,&composite.blue);
+          HSBComposite(hue,saturation,brightness,&red,&green,&blue);
+          composite.red=red;
+          composite.green=green;
+          composite.blue=blue;
           break;
         }
         case HueCompositeOp:
