@@ -42,7 +42,11 @@ extern "C" {
 #define MaxColormapSize  256UL
 #define MaxMap  255UL
 
+#if defined __arm__ || defined __thumb__
+typedef float MagickRealType;
+#else
 typedef double MagickRealType;
+#endif
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef float Quantum;
 #define QuantumRange  255.0
@@ -58,7 +62,11 @@ typedef unsigned char Quantum;
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
 
+#if defined __arm__ || defined __thumb__
+typedef float MagickRealType;
+#else
 typedef double MagickRealType;
+#endif
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef float Quantum;
 #define QuantumRange  65535.0

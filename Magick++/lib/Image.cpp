@@ -623,10 +623,10 @@ void Magick::Image::colorMatrix (const size_t order_,
     kernel_info=AcquireKernelInfo("1");
   kernel_info->width=order_;
   kernel_info->height=order_;
-  kernel_info->values=(double *) color_matrix_;
+  kernel_info->values=(MagickRealType *) color_matrix_;
   MagickCore::Image* newImage =
     ColorMatrixImage( image(), kernel_info, &exceptionInfo );
-  kernel_info->values=(double *) NULL;
+  kernel_info->values=(MagickRealType *) NULL;
   kernel_info=DestroyKernelInfo(kernel_info);
   replaceImage( newImage );
   throwException( exceptionInfo );
