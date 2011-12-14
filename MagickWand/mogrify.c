@@ -2300,6 +2300,9 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("polaroid",option+1) == 0)
           {
+            const char
+              *caption;
+
             double
               angle;
 
@@ -2319,7 +2322,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 flags=ParseGeometry(argv[i+1],&geometry_info);
                 angle=geometry_info.rho;
               }
-            mogrify_image=PolaroidImage(*image,draw_info,angle,
+            caption=GetImageProperty(*image,"caption",exception);
+            mogrify_image=PolaroidImage(*image,draw_info,caption,angle,
               interpolate_method,exception);
             break;
           }
