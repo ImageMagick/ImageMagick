@@ -1589,18 +1589,19 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
               range) ? MagickTrue : MagickFalse;
             if (status != MagickFalse)
               {
-                channel_statistics[i].depth++;
+                channel_statistics[channel].depth++;
                 continue;
               }
           }
-        if ((double) p[i] < channel_statistics[i].minima)
-          channel_statistics[i].minima=(double) p[i];
-        if ((double) p[i] > channel_statistics[i].maxima)
-          channel_statistics[i].maxima=(double) p[i];
-        channel_statistics[i].sum+=p[i];
-        channel_statistics[i].sum_squared+=(double) p[i]*p[i];
-        channel_statistics[i].sum_cubed+=(double) p[i]*p[i]*p[i];
-        channel_statistics[i].sum_fourth_power+=(double) p[i]*p[i]*p[i]*p[i];
+        if ((double) p[i] < channel_statistics[channel].minima)
+          channel_statistics[channel].minima=(double) p[i];
+        if ((double) p[i] > channel_statistics[channel].maxima)
+          channel_statistics[channel].maxima=(double) p[i];
+        channel_statistics[channel].sum+=p[i];
+        channel_statistics[channel].sum_squared+=(double) p[i]*p[i];
+        channel_statistics[channel].sum_cubed+=(double) p[i]*p[i]*p[i];
+        channel_statistics[channel].sum_fourth_power+=(double) p[i]*p[i]*p[i]*
+          p[i];
       }
       p+=GetPixelChannels(image);
     }
