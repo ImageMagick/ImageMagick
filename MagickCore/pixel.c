@@ -3668,15 +3668,16 @@ MagickExport void InitializePixelChannelMap(Image *image)
   if (image->matte != MagickFalse)
     trait=(PixelTrait) (trait | BlendPixelTrait);
   n=0;
-  SetPixelChannelMap(image,RedPixelChannel,trait,n++);
-  SetPixelChannelMap(image,GreenPixelChannel,trait,n++);
-  SetPixelChannelMap(image,BluePixelChannel,trait,n++);
-if (0)
-  if (image->colorspace == GRAYColorspace)
+  if (0 && image->colorspace == GRAYColorspace)
     {
-      n=0;
-      SetPixelChannelMap(image,RedPixelChannel,trait,n);
+      SetPixelChannelMap(image,BluePixelChannel,trait,n);
       SetPixelChannelMap(image,GreenPixelChannel,trait,n);
+      SetPixelChannelMap(image,RedPixelChannel,trait,n++);
+    }
+  else
+    {
+      SetPixelChannelMap(image,RedPixelChannel,trait,n++);
+      SetPixelChannelMap(image,GreenPixelChannel,trait,n++);
       SetPixelChannelMap(image,BluePixelChannel,trait,n++);
     }
   if (image->colorspace == CMYKColorspace)
