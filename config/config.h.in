@@ -1008,7 +1008,10 @@
 /* Define if using the dmalloc debugging malloc package */
 #undef WITH_DMALLOC
 
-/* Define if you have WMF library */
+/* Define if you have wmflite library */
+#undef WMFLITE_DELEGATE
+
+/* Define if you have wmf library */
 #undef WMF_DELEGATE
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
