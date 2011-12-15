@@ -1217,7 +1217,7 @@ WandExport void DrawGetBorderColor(const DrawingWand *wand,
   assert(border_color != (PixelWand *) NULL);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  PixelSetQuantumPacket(border_color,&CurrentContext->border_color);
+  PixelSetPixelColor(border_color,&CurrentContext->border_color);
 }
 
 /*
@@ -1440,7 +1440,7 @@ WandExport void DrawGetFillColor(const DrawingWand *wand,PixelWand *fill_color)
   assert(fill_color != (PixelWand *) NULL);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  PixelSetQuantumPacket(fill_color,&CurrentContext->fill);
+  PixelSetPixelColor(fill_color,&CurrentContext->fill);
 }
 
 /*
@@ -1891,7 +1891,7 @@ WandExport void DrawGetStrokeColor(const DrawingWand *wand,
   assert(stroke_color != (PixelWand *) NULL);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  PixelSetQuantumPacket(stroke_color,&CurrentContext->stroke);
+  PixelSetPixelColor(stroke_color,&CurrentContext->stroke);
 }
 
 /*
@@ -2671,7 +2671,7 @@ WandExport void DrawGetTextUnderColor(const DrawingWand *wand,
   assert(under_color != (PixelWand *) NULL);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  PixelSetQuantumPacket(under_color,&CurrentContext->undercolor);
+  PixelSetPixelColor(under_color,&CurrentContext->undercolor);
 }
 
 /*

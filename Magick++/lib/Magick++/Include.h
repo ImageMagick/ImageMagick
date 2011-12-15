@@ -818,7 +818,7 @@ namespace Magick
   using MagickCore::PercentValue;
   using MagickCore::PingBlob;
   using MagickCore::PingImage;
-  using MagickCore::PixelSetQuantumPacket;
+  using MagickCore::PixelSetPixelColor;
   using MagickCore::PixelWand;
   using MagickCore::PointInfo;
   using MagickCore::PopDrawingWand;

@@ -2088,17 +2088,17 @@ WandExport void PixelSetMagentaQuantum(PixelWand *wand,const Quantum magenta)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P i x e l S e t M a g i c k C o l o r                                     %
+%   P i x e l S e t P i x e l C o l o r                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PixelGetPixelInfoPixel() sets the color of the pixel wand.
+%  PixelSetPixelColor() sets the color of the pixel wand.
 %
-%  The format of the PixelSetPixelInfo method is:
+%  The format of the PixelSetPixelColor method is:
 %
-%      PixelGetPixelInfoPixel(PixelWand *wand,const PixelInfo *color)
+%      PixelSetPixelColor(PixelWand *wand,const PixelInfo *color)
 %
 %  A description of each parameter follows:
 %
@@ -2107,8 +2107,7 @@ WandExport void PixelSetMagentaQuantum(PixelWand *wand,const Quantum magenta)
 %    o color: the pixel wand color.
 %
 */
-WandExport void PixelGetPixelInfoPixel(PixelWand *wand,
-  const PixelInfo *color)
+WandExport void PixelSetPixelColor(PixelWand *wand,const PixelInfo *color)
 {
   assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -2116,45 +2115,6 @@ WandExport void PixelGetPixelInfoPixel(PixelWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(color != (const PixelInfo *) NULL);
   wand->pixel=(*color);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P i x e l S e t Q u a n t u m P a c k e t                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PixelSetQuantumPacket() sets the packet of the pixel wand.
-%
-%  The format of the PixelSetQuantumPacket method is:
-%
-%      PixelSetQuantumPacket(PixelWand *wand,const PixelInfo *packet)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the pixel wand.
-%
-%    o packet: the pixel wand packet.
-%
-*/
-WandExport void PixelSetQuantumPacket(PixelWand *wand,const PixelInfo *packet)
-{
-  assert(wand != (const PixelWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  assert(packet != (PixelInfo *) NULL);
-  wand->pixel.red=(MagickRealType) packet->red;
-  wand->pixel.green=(MagickRealType) packet->green;
-  wand->pixel.blue=(MagickRealType) packet->blue;
-  wand->pixel.black=(MagickRealType) packet->black;
-  wand->pixel.alpha=(MagickRealType) packet->alpha;
-  wand->pixel.matte=packet->alpha != OpaqueAlpha ? MagickTrue : MagickFalse;
 }
 
 /*

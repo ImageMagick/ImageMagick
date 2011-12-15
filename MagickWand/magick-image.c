@@ -3564,7 +3564,7 @@ WandExport MagickBooleanType MagickGetImageBackgroundColor(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  PixelSetQuantumPacket(background_color,&wand->images->background_color);
+  PixelSetPixelColor(background_color,&wand->images->background_color);
   return(MagickTrue);
 }
 
@@ -3742,7 +3742,7 @@ WandExport MagickBooleanType MagickGetImageBorderColor(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  PixelSetQuantumPacket(border_color,&wand->images->border_color);
+  PixelSetPixelColor(border_color,&wand->images->border_color);
   return(MagickTrue);
 }
 
@@ -4022,7 +4022,7 @@ WandExport MagickBooleanType MagickGetImageColormapColor(MagickWand *wand,
         "InvalidColormapIndex","`%s'",wand->name);
       return(MagickFalse);
     }
-  PixelSetQuantumPacket(color,wand->images->colormap+index);
+  PixelSetPixelColor(color,wand->images->colormap+index);
   return(MagickTrue);
 }
 
@@ -4732,7 +4732,7 @@ WandExport PixelWand **MagickGetImageHistogram(MagickWand *wand,
   pixel_wands=NewPixelWands(*number_colors);
   for (i=0; i < (ssize_t) *number_colors; i++)
   {
-    PixelSetQuantumPacket(pixel_wands[i],&histogram[i]);
+    PixelSetPixelColor(pixel_wands[i],&histogram[i]);
     PixelSetColorCount(pixel_wands[i],(size_t) histogram[i].count);
   }
   histogram=(PixelInfo *) RelinquishMagickMemory(histogram);
@@ -4921,7 +4921,7 @@ WandExport MagickBooleanType MagickGetImageMatteColor(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  PixelSetQuantumPacket(matte_color,&wand->images->matte_color);
+  PixelSetPixelColor(matte_color,&wand->images->matte_color);
   return(MagickTrue);
 }
 
