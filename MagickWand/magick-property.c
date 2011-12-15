@@ -243,7 +243,7 @@ WandExport PixelWand *MagickGetBackgroundColor(MagickWand *wand)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   background_color=NewPixelWand();
-  PixelSetQuantumPacket(background_color,&wand->image_info->background_color);
+  PixelSetPixelColor(background_color,&wand->image_info->background_color);
   return(background_color);
 }
 
