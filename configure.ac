@@ -2758,34 +2758,56 @@ fi
 
 have_wmf='no'
 WMF_LIBS=''
+WMF_LIBS_DEPS=''
+OLIBS="$LIBS"
 if test "$with_wmf" != 'no'; then
     AC_MSG_RESULT([-------------------------------------------------------------])
     AC_MSG_CHECKING([for WMF])
     AC_MSG_RESULT([])
-    failed=0
-    passed=0
-    AC_CHECK_HEADER(libwmf/eps.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(wmf,wmf_eps_function,passed=`expr $passed + 1`,failed=`expr $failed + 1`,"-lwmflite")
-    AC_MSG_CHECKING([if WMF package is complete])
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            AC_MSG_RESULT([no -- some components failed test])
-            have_wmf='no (failed tests)'
-        else
-            WMF_LIBS='-lwmf -lwmflite'
+    have_libwmf='no'
+    have_libwmflite='no'
+    have_libwmf_ipa_h='no'
+
+    AC_CHECK_HEADER([libwmf/ipa.h],[have_libwmf_ipa_h='yes'],,[$FT2BUILD_H])
+    if test "$have_libwmf_ipa_h" = 'yes'; then
+        AC_CHECK_LIB(wmflite,wmf_lite_create,have_libwmflite='yes',,)
+        if test "$have_libwmflite" = 'yes'; then
+            AC_DEFINE(WMFLITE_DELEGATE,1,Define if you have wmflite library)
+            WMF_LIBS='-lwmflite'
             LIBS="$WMF_LIBS $LIBS"
-            AC_DEFINE(WMF_DELEGATE,1,Define if you have WMF library)
-            AC_MSG_RESULT([yes])
             have_wmf='yes'
+        else
+            WMF_LIBS_DEPS=''
+            WMF_CONFIG_LIBS=`libwmf-config --libs`
+            for lib in xml2 expat freetype jpeg png z; do
+                testlib="-l${lib}"
+                echo "$WMF_CONFIG_LIBS" | grep -- "$testlib" > /dev/null && WMF_LIBS_DEPS="$WMF_LIBS_DEPS $testlib"
+            done
+            AC_CHECK_LIB(wmf,wmf_api_create,have_libwmf='yes',,$WMF_LIBS_DEPS)
+            if test "$have_libwmf" = 'yes'; then
+                AC_DEFINE(WMF_DELEGATE,1,Define if you have wmf library)
+                WMF_LIBS='-lwmf'
+                LIBS="$WMF_LIBS $LIBS"
+                have_wmf='yes'
+            else
+                AC_MSG_RESULT([no -- some components failed test])
+                have_wmf='no (failed tests)'
+                have_wmflite='no (failed tests)'
+                LIBS="$OLIBS"
+                WMF_LIBS=''
+            fi
         fi
+    fi
+    AC_MSG_CHECKING([if WMF package is complete])
+    if test "$have_wmf" = 'yes'; then
+        AC_MSG_RESULT([yes])
     else
         AC_MSG_RESULT([no])
     fi
 fi
-AM_CONDITIONAL(WMF_DELEGATE,test "$have_wmf" = 'yes')
+AM_CONDITIONAL(WMF_DELEGATE, test "$have_wmf" = 'yes')
 AC_SUBST(WMF_LIBS)
-
-dnl ===========================================================================
+AC_SUBST(WMF_LIBS_DEPS)
 
 
 dnl ===========================================================================
