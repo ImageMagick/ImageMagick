@@ -578,15 +578,12 @@ static inline void SetPixelInfoPixel(const Image *restrict image,
     ClampToQuantum(pixel_info->green);
   pixel[image->channel_map[BluePixelChannel].offset]=
     ClampToQuantum(pixel_info->blue);
-  if ((image->channel_map[BlackPixelChannel].traits != UndefinedPixelTrait) &&
-      (image->colorspace == CMYKColorspace) &&
-      (pixel_info->colorspace == CMYKColorspace))
+  if (image->channel_map[BlackPixelChannel].traits != UndefinedPixelTrait)
     pixel[image->channel_map[BlackPixelChannel].offset]=
       ClampToQuantum(pixel_info->black);
   if (image->channel_map[AlphaPixelChannel].traits != UndefinedPixelTrait)
-    pixel[image->channel_map[AlphaPixelChannel].offset]=
-      pixel_info->matte == MagickFalse ? OpaqueAlpha :
-      ClampToQuantum(pixel_info->alpha);
+    pixel[image->channel_map[AlphaPixelChannel].offset]=pixel_info->matte ==
+      MagickFalse ? OpaqueAlpha : ClampToQuantum(pixel_info->alpha);
 }
 
 static inline void SetPixelMagenta(const Image *restrict image,
