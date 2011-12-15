@@ -9664,9 +9664,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          if (ping_exclude_bKGD == MagickFalse)
          {
 
-         ping_background.gray=(png_uint_16)
-           ((maxval/255.)*((GetPixelInfoIntensity(&image->background_color)))
-                                    +.5);
+         ping_background.gray=(png_uint_16) ((maxval/65535.)*
+           (ScaleQuantumToShort(((GetPixelInfoIntensity(
+           &image->background_color))) +.5)));
 
          if (logging != MagickFalse)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
