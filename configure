@@ -735,6 +735,7 @@ XML_LIBS
 XML_DELEGATE_FALSE
 XML_DELEGATE_TRUE
 xml2_config
+WMF_LIBS_DEPS
 WMF_LIBS
 WMF_DELEGATE_FALSE
 WMF_DELEGATE_TRUE
@@ -3609,7 +3610,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=6153
+MAGICK_SVN_REVISION=6188
 
 
 
@@ -31578,6 +31579,8 @@ fi
 
 have_wmf='no'
 WMF_LIBS=''
+WMF_LIBS_DEPS=''
+OLIBS="$LIBS"
 if test "$with_wmf" != 'no'; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
@@ -31585,23 +31588,25 @@ $as_echo "-------------------------------------------------------------" >&6; }
 $as_echo_n "checking for WMF... " >&6; }
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
-    failed=0
-    passed=0
-    ac_fn_c_check_header_mongrel "$LINENO" "libwmf/eps.h" "ac_cv_header_libwmf_eps_h" "$ac_includes_default"
-if test "x$ac_cv_header_libwmf_eps_h" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
+    have_libwmf='no'
+    have_libwmflite='no'
+    have_libwmf_ipa_h='no'
+
+    ac_fn_c_check_header_compile "$LINENO" "libwmf/ipa.h" "ac_cv_header_libwmf_ipa_h" "$FT2BUILD_H
+"
+if test "x$ac_cv_header_libwmf_ipa_h" = xyes; then :
+  have_libwmf_ipa_h='yes'
 fi
 
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wmf_eps_function in -lwmf" >&5
-$as_echo_n "checking for wmf_eps_function in -lwmf... " >&6; }
-if ${ac_cv_lib_wmf_wmf_eps_function+:} false; then :
+    if test "$have_libwmf_ipa_h" = 'yes'; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wmf_lite_create in -lwmflite" >&5
+$as_echo_n "checking for wmf_lite_create in -lwmflite... " >&6; }
+if ${ac_cv_lib_wmflite_wmf_lite_create+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lwmf "-lwmflite" $LIBS"
+LIBS="-lwmflite  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -31611,49 +31616,106 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 #ifdef __cplusplus
 extern "C"
 #endif
-char wmf_eps_function ();
+char wmf_lite_create ();
 int
 main ()
 {
-return wmf_eps_function ();
+return wmf_lite_create ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_wmf_wmf_eps_function=yes
+  ac_cv_lib_wmflite_wmf_lite_create=yes
 else
-  ac_cv_lib_wmf_wmf_eps_function=no
+  ac_cv_lib_wmflite_wmf_lite_create=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_wmf_wmf_eps_function" >&5
-$as_echo "$ac_cv_lib_wmf_wmf_eps_function" >&6; }
-if test "x$ac_cv_lib_wmf_wmf_eps_function" = xyes; then :
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_wmflite_wmf_lite_create" >&5
+$as_echo "$ac_cv_lib_wmflite_wmf_lite_create" >&6; }
+if test "x$ac_cv_lib_wmflite_wmf_lite_create" = xyes; then :
+  have_libwmflite='yes'
 fi
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if WMF package is complete" >&5
-$as_echo_n "checking if WMF package is complete... " >&6; }
-    if test $passed -gt 0; then
-        if test $failed -gt 0; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-            have_wmf='no (failed tests)'
-        else
-            WMF_LIBS='-lwmf -lwmflite'
+        if test "$have_libwmflite" = 'yes'; then
+
+$as_echo "#define WMFLITE_DELEGATE 1" >>confdefs.h
+
+            WMF_LIBS='-lwmflite'
             LIBS="$WMF_LIBS $LIBS"
+            have_wmf='yes'
+        else
+            WMF_LIBS_DEPS=''
+            WMF_CONFIG_LIBS=`libwmf-config --libs`
+            for lib in xml2 expat freetype jpeg png z; do
+                testlib="-l${lib}"
+                echo "$WMF_CONFIG_LIBS" | grep -- "$testlib" > /dev/null && WMF_LIBS_DEPS="$WMF_LIBS_DEPS $testlib"
+            done
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wmf_api_create in -lwmf" >&5
+$as_echo_n "checking for wmf_api_create in -lwmf... " >&6; }
+if ${ac_cv_lib_wmf_wmf_api_create+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lwmf $WMF_LIBS_DEPS $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char wmf_api_create ();
+int
+main ()
+{
+return wmf_api_create ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_wmf_wmf_api_create=yes
+else
+  ac_cv_lib_wmf_wmf_api_create=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_wmf_wmf_api_create" >&5
+$as_echo "$ac_cv_lib_wmf_wmf_api_create" >&6; }
+if test "x$ac_cv_lib_wmf_wmf_api_create" = xyes; then :
+  have_libwmf='yes'
+fi
+
+            if test "$have_libwmf" = 'yes'; then
 
 $as_echo "#define WMF_DELEGATE 1" >>confdefs.h
 
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-            have_wmf='yes'
+                WMF_LIBS='-lwmf'
+                LIBS="$WMF_LIBS $LIBS"
+                have_wmf='yes'
+            else
+                { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
+$as_echo "no -- some components failed test" >&6; }
+                have_wmf='no (failed tests)'
+                have_wmflite='no (failed tests)'
+                LIBS="$OLIBS"
+                WMF_LIBS=''
+            fi
         fi
+    fi
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if WMF package is complete" >&5
+$as_echo_n "checking if WMF package is complete... " >&6; }
+    if test "$have_wmf" = 'yes'; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
     else
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
