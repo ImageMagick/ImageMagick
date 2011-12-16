@@ -372,7 +372,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Create linear colormap.
       */
-      if (AcquireImageColormap(image,MaxColormapSize) == MagickFalse)
+      if (AcquireImageColormap(image,MaxColormapSize,exception) == MagickFalse)
         {
           FPX_ClearSystem();
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -930,12 +930,9 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
   summary_info.thumbnail_valid=MagickFalse;
   summary_info.appname_valid=MagickFalse;
   summary_info.security_valid=MagickFalse;
-  label=GetImageProperty(image,"label");
+  label=GetImageProperty(image,"label",exception);
   if (label != (const char *) NULL)
     {
-      size_t
-        length;
-
       /*
         Note image label.
       */
@@ -950,7 +947,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
       (void) CopyMagickString((char *) summary_info.title.ptr,label,
         MaxTextExtent);
     }
-  comment=GetImageProperty(image,"comment");
+  comment=GetImageProperty(image,"comment",exception);
   if (comment != (const char *) NULL)
     {
       /*
