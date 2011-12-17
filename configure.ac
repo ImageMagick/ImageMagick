@@ -985,7 +985,7 @@ elif test $ac_cv_sizeof_signed_long_long -eq 8; then
   INT64_T='signed long long'
   INT64_F='"ll"'
 fi
-case "${build_os}" in
+case "${host_os}" in
   mingw* )
     INT64_F='"I64"'
     ;;
@@ -1004,7 +1004,7 @@ elif test $ac_cv_sizeof_unsigned_long_long -eq 8; then
   UINT64_T='unsigned long long'
   UINT64_F='"ll"'
 fi
-case "${build_os}" in
+case "${host_os}" in
   mingw* )
     UINT64_F='"I64"'
     ;;
