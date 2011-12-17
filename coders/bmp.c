@@ -74,20 +74,33 @@
 #undef BI_PNG
 #define BI_PNG  5
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__MINGW32__)
+#undef BI_RGB
 #define BI_RGB  0
+#undef BI_RLE8
 #define BI_RLE8  1
+#undef BI_RLE4
 #define BI_RLE4  2
+#undef BI_BITFIELDS
 #define BI_BITFIELDS  3
 
+#undef LCS_CALIBRATED_RBG
 #define LCS_CALIBRATED_RBG  0
+#undef LCS_sRGB
 #define LCS_sRGB  1
+#undef LCS_WINDOWS_COLOR_SPACE
 #define LCS_WINDOWS_COLOR_SPACE  2
+#undef PROFILE_LINKED
 #define PROFILE_LINKED  3
+#undef PROFILE_EMBEDDED
 #define PROFILE_EMBEDDED  4
 
+#undef LCS_GM_BUSINESS
 #define LCS_GM_BUSINESS  1  /* Saturation */
+#undef LCS_GM_GRAPHICS
 #define LCS_GM_GRAPHICS  2  /* Relative */
+#undef LCS_GM_IMAGES
 #define LCS_GM_IMAGES  4  /* Perceptual */
+#undef LCS_GM_ABS_COLORIMETRIC
 #define LCS_GM_ABS_COLORIMETRIC  8  /* Absolute */
 #endif
 
