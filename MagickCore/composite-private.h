@@ -56,7 +56,7 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
     i;
 
   /*
-    Compose pixel p over pixel q with the given opacities.
+    Compose pixel p over pixel q with the given alpha.
   */
   Sa=QuantumScale*alpha;
   Da=QuantumScale*beta,
@@ -102,7 +102,7 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
       }
       case AlphaPixelChannel:
       {
-        composite[i]=ClampToQuantum(QuantumRange*gamma);
+        composite[i]=ClampToQuantum(QuantumRange*(Sa*(-Da)+Sa+Da));
         break;
       }
       default:
