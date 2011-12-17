@@ -3591,16 +3591,16 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
   return(polygon_info);
 }
 
-static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
+static MagickRealType GetFillAlpha(PolygonInfo *polygon_info,
   const MagickRealType mid,const MagickBooleanType fill,
   const FillRule fill_rule,const double x,const double y,
-  MagickRealType *stroke_opacity)
+  MagickRealType *stroke_alpha)
 {
   MagickRealType
     alpha,
     beta,
     distance,
-    subpath_opacity;
+    subpath_alpha;
 
   PointInfo
     delta;
@@ -3621,8 +3621,8 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
   /*
     Compute fill & stroke opacity for this (x,y) point.
   */
-  *stroke_opacity=0.0;
-  subpath_opacity=0.0;
+  *stroke_alpha=0.0;
+  subpath_alpha=0.0;
   p=polygon_info->edges;
   for (j=0; j < (ssize_t) polygon_info->number_edges; j++, p++)
   {
@@ -3683,28 +3683,28 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
       if (p->ghostline == MagickFalse)
         {
           alpha=mid+0.5;
-          if ((*stroke_opacity < 1.0) &&
+          if ((*stroke_alpha < 1.0) &&
               (distance <= ((alpha+0.25)*(alpha+0.25))))
             {
               alpha=mid-0.5;
               if (distance <= ((alpha+0.25)*(alpha+0.25)))
-                *stroke_opacity=1.0;
+                *stroke_alpha=1.0;
               else
                 {
                   beta=1.0;
                   if (distance != 1.0)
                     beta=sqrt((double) distance);
                   alpha=beta-mid-0.5;
-                  if (*stroke_opacity < ((alpha-0.25)*(alpha-0.25)))
-                    *stroke_opacity=(alpha-0.25)*(alpha-0.25);
+                  if (*stroke_alpha < ((alpha-0.25)*(alpha-0.25)))
+                    *stroke_alpha=(alpha-0.25)*(alpha-0.25);
                 }
             }
         }
-      if ((fill == MagickFalse) || (distance > 1.0) || (subpath_opacity >= 1.0))
+      if ((fill == MagickFalse) || (distance > 1.0) || (subpath_alpha >= 1.0))
         continue;
       if (distance <= 0.0)
         {
-          subpath_opacity=1.0;
+          subpath_alpha=1.0;
           continue;
         }
       if (distance > 1.0)
@@ -3716,8 +3716,8 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
             beta=sqrt(distance);
         }
       alpha=beta-1.0;
-      if (subpath_opacity < (alpha*alpha))
-        subpath_opacity=alpha*alpha;
+      if (subpath_alpha < (alpha*alpha))
+        subpath_alpha=alpha*alpha;
     }
   }
   /*
@@ -3725,7 +3725,7 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
   */
   if (fill == MagickFalse)
     return(0.0);
-  if (subpath_opacity >= 1.0)
+  if (subpath_alpha >= 1.0)
     return(1.0);
   /*
     Determine winding number.
@@ -3759,7 +3759,7 @@ static MagickRealType GetPixelOpacity(PolygonInfo *polygon_info,
   else
     if (MagickAbsoluteValue(winding_number) != 0)
       return(1.0);
-  return(subpath_opacity);
+  return(subpath_alpha);
 }
 
 static MagickBooleanType DrawPolygonPrimitive(Image *image,
@@ -3912,8 +3912,8 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
       id = GetOpenMPThreadId();
 
     MagickRealType
-      fill_opacity,
-      stroke_opacity;
+      fill_alpha,
+      stroke_alpha;
 
     PixelInfo
       fill_color,
@@ -3927,8 +3927,8 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
 
     if (status == MagickFalse)
       continue;
-    q=GetCacheViewAuthenticPixels(image_view,start,y,(size_t) (stop-
-      start+1),1,exception);
+    q=GetCacheViewAuthenticPixels(image_view,start,y,(size_t) (stop-start+1),1,
+      exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
@@ -3939,20 +3939,20 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
       /*
         Fill and/or stroke.
       */
-      fill_opacity=GetPixelOpacity(polygon_info[id],mid,fill,
-        draw_info->fill_rule,(double) x,(double) y,&stroke_opacity);
+      fill_alpha=GetFillAlpha(polygon_info[id],mid,fill,draw_info->fill_rule,
+        (double) x,(double) y,&stroke_alpha);
       if (draw_info->stroke_antialias == MagickFalse)
         {
-          fill_opacity=fill_opacity > 0.25 ? 1.0 : 0.0;
-          stroke_opacity=stroke_opacity > 0.25 ? 1.0 : 0.0;
+          fill_alpha=fill_alpha > 0.25 ? 1.0 : 0.0;
+          stroke_alpha=stroke_alpha > 0.25 ? 1.0 : 0.0;
         }
       (void) GetFillColor(draw_info,x,y,&fill_color,exception);
-      fill_opacity=fill_opacity*fill_color.alpha;
-      CompositePixelOver(image,&fill_color,fill_opacity,q,(MagickRealType)
+      fill_alpha=fill_alpha*fill_color.alpha;
+      CompositePixelOver(image,&fill_color,fill_alpha,q,(MagickRealType)
         GetPixelAlpha(image,q),q);
       (void) GetStrokeColor(draw_info,x,y,&stroke_color,exception);
-      stroke_opacity=stroke_opacity*stroke_color.alpha;
-      CompositePixelOver(image,&stroke_color,stroke_opacity,q,(MagickRealType)
+      stroke_alpha=stroke_alpha*stroke_color.alpha;
+      CompositePixelOver(image,&stroke_color,stroke_alpha,q,(MagickRealType)
         GetPixelAlpha(image,q),q);
       q+=GetPixelChannels(image);
     }
