@@ -552,23 +552,6 @@ static inline void SetPixelIndexTraits(Image *image,const PixelTrait traits)
   image->channel_map[IndexPixelChannel].traits=traits;
 }
 
-static inline void SetPixelInfo(const Image *restrict image,
-  const PixelInfo *restrict p,PixelInfo *restrict q)
-{
-  q->red=p->red;
-  q->green=p->green;
-  q->blue=p->blue;
-  q->black=0;
-  if (image->channel_map[BlackPixelChannel].traits != UndefinedPixelTrait)
-    q->black=p->black;
-  q->alpha=OpaqueAlpha;
-  if (image->channel_map[AlphaPixelChannel].traits != UndefinedPixelTrait)
-    q->alpha=p->alpha;
-  q->index=0;
-  if (image->channel_map[IndexPixelChannel].traits != UndefinedPixelTrait)
-    q->index=p->index;
-}
-
 static inline void SetPixelInfoPixel(const Image *restrict image,
   const PixelInfo *restrict pixel_info,Quantum *restrict pixel)
 {
