@@ -97,9 +97,6 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status;
 
   PixelInfo
-    color;
-
-  PixelInfo
     pixel;
 
   register ssize_t
@@ -128,16 +125,14 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=1;
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   status=QueryColorCompliance((char *) image_info->filename,AllCompliance,
-    &color,exception);
+    &pixel,exception);
   if (status == MagickFalse)
     {
       image=DestroyImage(image);
       return((Image *) NULL);
     }
-  image->colorspace=color.colorspace;
-  image->matte=color.matte;
-  GetPixelInfo(image,&pixel);
-  SetPixelInfo(image,&color,&pixel);
+  image->colorspace=pixel.colorspace;
+  image->matte=pixel.matte;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -146,8 +141,6 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       SetPixelInfoPixel(image,&pixel,q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(image,pixel.black,q);
       q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
