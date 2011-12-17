@@ -413,8 +413,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     *image;
 
   int
-    c,
-    code;
+    c;
 
 #if defined(MAGICKCORE_LZMA_DELEGATE)
   lzma_stream
@@ -494,7 +493,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   c=ReadBlobByte(image);
   if (c == EOF)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  code=0;
   *id='\0';
   (void) ResetMagickMemory(keyword,0,sizeof(keyword));
   version=0.0;
@@ -1258,6 +1256,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
       case BZipCompression:
       {
+        int
+          code;
+
         (void) ResetMagickMemory(&bzip_info,0,sizeof(bzip_info));
         bzip_info.bzalloc=AcquireBZIPMemory;
         bzip_info.bzfree=RelinquishBZIPMemory;
@@ -1272,6 +1273,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_LZMA_DELEGATE)
       case LZMACompression:
       {
+        int
+          code;
+
         (void) ResetMagickMemory(&allocator,0,sizeof(allocator));
         allocator.alloc=AcquireLZMAMemory;
         allocator.free=RelinquishLZMAMemory;
@@ -1287,6 +1291,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       case LZWCompression:
       case ZipCompression:
       {
+        int
+          code;
+
         (void) ResetMagickMemory(&zip_info,0,sizeof(zip_info));
         zip_info.zalloc=AcquireZIPMemory;
         zip_info.zfree=RelinquishZIPMemory;
@@ -1353,6 +1360,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           lzma_info.avail_out=packet_size*image->columns;
           do
           {
+            int
+              code;
+
             if (lzma_info.avail_in == 0)
               {
                 lzma_info.next_in=compress_pixels;
@@ -1442,6 +1452,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
       case BZipCompression:
       {
+        int
+          code;
+
         if (version == 0)
           {
             MagickOffsetType
@@ -1462,6 +1475,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_LZMA_DELEGATE)
       case LZMACompression:
       {
+        int
+          code;
+
         code=lzma_code(&lzma_info,LZMA_FINISH);
         if ((code != LZMA_STREAM_END) && (code != LZMA_OK))
           status=MagickFalse;
@@ -1473,6 +1489,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       case LZWCompression:
       case ZipCompression:
       {
+        int
+          code;
+
         if (version == 0)
           {
             MagickOffsetType
@@ -1814,9 +1833,6 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     *property,
     *value;
 
-  int
-    code;
-
 #if defined(MAGICKCORE_LZMA_DELEGATE)
   lzma_allocator
     allocator;
@@ -1876,7 +1892,6 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  code=0;
   scene=0;
   do
   {
@@ -2272,6 +2287,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
       case BZipCompression:
       {
+        int
+          code;
+
         (void) ResetMagickMemory(&bzip_info,0,sizeof(bzip_info));
         bzip_info.bzalloc=AcquireBZIPMemory;
         bzip_info.bzfree=RelinquishBZIPMemory;
@@ -2286,6 +2304,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_LZMA_DELEGATE)
       case LZMACompression:
       {
+        int
+          code;
+
         (void) ResetMagickMemory(&allocator,0,sizeof(allocator));
         allocator.alloc=AcquireLZMAMemory;
         allocator.free=RelinquishLZMAMemory;
@@ -2301,6 +2322,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       case LZWCompression:
       case ZipCompression:
       {
+        int
+          code;
+
         (void) ResetMagickMemory(&zip_info,0,sizeof(zip_info));
         zip_info.zalloc=AcquireZIPMemory;
         zip_info.zfree=RelinquishZIPMemory;
@@ -2341,6 +2365,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             quantum_type,pixels,exception);
           do
           {
+            int
+              code;
+
             bzip_info.next_out=(char *) compress_pixels;
             bzip_info.avail_out=(unsigned int) BZipMaxExtent(packet_size*
               image->columns);
@@ -2366,6 +2393,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             quantum_type,pixels,exception);
           do
           {
+            int
+              code;
+
             lzma_info.next_out=compress_pixels;
             lzma_info.avail_out=packet_size*image->columns;
             code=lzma_code(&lzma_info,LZMA_RUN);
@@ -2391,6 +2421,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
             quantum_type,pixels,exception);
           do
           {
+            int
+              code;
+
             zip_info.next_out=compress_pixels;
             zip_info.avail_out=(uInt) ZipMaxExtent(packet_size*image->columns);
             code=deflate(&zip_info,Z_SYNC_FLUSH);
@@ -2450,6 +2483,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
       case BZipCompression:
       {
+        int
+          code;
+
         for ( ; ; )
         {
           if (status == MagickFalse)
@@ -2476,6 +2512,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_LZMA_DELEGATE)
       case LZMACompression:
       {
+        int
+          code;
+
         for ( ; ; )
         {
           if (status == MagickFalse)
@@ -2500,6 +2539,9 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       case LZWCompression:
       case ZipCompression:
       {
+        int
+          code;
+
         for ( ; ; )
         {
           if (status == MagickFalse)
