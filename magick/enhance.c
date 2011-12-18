@@ -2577,13 +2577,29 @@ MagickExport MagickBooleanType LevelImage(Image *image,const char *levels)
 %             use 1.0 for purely linear stretching of image color values
 %
 */
+
+static inline MagickRealType LevelPixel(const double black_point,
+  const double white_point,const double gamma,const MagickRealType pixel)
+{
+  double
+    level_pixel,
+    scale;
+
+  if (pixel < black_point)
+    return(0.0);
+  if (pixel > white_point)
+    return(white_point);
+  scale=(white_point != black_point) ? 1.0/(white_point-black_point) : 1.0;
+  level_pixel=(MagickRealType) QuantumRange*pow(scale*((double) pixel-
+    black_point),1.0/gamma);
+  return(level_pixel);
+}
+
 MagickExport MagickBooleanType LevelImageChannel(Image *image,
   const ChannelType channel,const double black_point,const double white_point,
   const double gamma)
 {
 #define LevelImageTag  "Level/Image"
-#define LevelQuantum(x) (ClampToQuantum((MagickRealType) QuantumRange* \
-  pow(scale*((double) (x)-black_point),1.0/gamma)))
 
   CacheView
     *image_view;
@@ -2596,9 +2612,6 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
 
   MagickOffsetType
     progress;
-
-  register double
-    scale;
 
   register ssize_t
     i;
@@ -2613,7 +2626,6 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  scale=(white_point != black_point) ? 1.0/(white_point-black_point) : 1.0;
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -2624,13 +2636,17 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
         Level colormap.
       */
       if ((channel & RedChannel) != 0)
-        image->colormap[i].red=LevelQuantum(image->colormap[i].red);
+        image->colormap[i].red=(double) ClampToQuantum(LevelPixel(black_point,
+          white_point,gamma,image->colormap[i].red));
       if ((channel & GreenChannel) != 0)
-        image->colormap[i].green=LevelQuantum(image->colormap[i].green);
+        image->colormap[i].green=(double) ClampToQuantum(LevelPixel(black_point,
+          white_point,gamma,image->colormap[i].green));
       if ((channel & BlueChannel) != 0)
-        image->colormap[i].blue=LevelQuantum(image->colormap[i].blue);
+        image->colormap[i].blue=(double) ClampToQuantum(LevelPixel(black_point,
+          white_point,gamma,image->colormap[i].blue));
       if ((channel & OpacityChannel) != 0)
-        image->colormap[i].opacity=LevelQuantum(image->colormap[i].opacity);
+        image->colormap[i].opacity=(double) ClampToQuantum(LevelPixel(
+          black_point,white_point,gamma,image->colormap[i].opacity));
       }
   /*
     Level image.
@@ -2665,18 +2681,22 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        SetPixelRed(q,LevelQuantum(GetPixelRed(q)));
+        SetPixelRed(q,ClampToQuantum(LevelPixel(black_point,white_point,gamma,
+          (MagickRealType) GetPixelRed(q))));
       if ((channel & GreenChannel) != 0)
-        SetPixelGreen(q,LevelQuantum(GetPixelGreen(q)));
+        SetPixelGreen(q,ClampToQuantum(LevelPixel(black_point,white_point,gamma,
+          (MagickRealType) GetPixelGreen(q))));
       if ((channel & BlueChannel) != 0)
-        SetPixelBlue(q,LevelQuantum(GetPixelBlue(q)));
+        SetPixelBlue(q,ClampToQuantum(LevelPixel(black_point,white_point,gamma,
+          (MagickRealType) GetPixelBlue(q))));
       if (((channel & OpacityChannel) != 0) &&
           (image->matte == MagickTrue))
-        SetPixelAlpha(q,LevelQuantum(GetPixelAlpha(q)));
+        SetPixelAlpha(q,ClampToQuantum(LevelPixel(black_point,white_point,gamma,
+          (MagickRealType) GetPixelOpacity(q))));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetPixelIndex(indexes+x,LevelQuantum(
-          GetPixelIndex(indexes+x)));
+        SetPixelIndex(indexes+x,ClampToQuantum(LevelPixel(black_point,
+          white_point,gamma,(MagickRealType) GetPixelIndex(indexes+x))));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
