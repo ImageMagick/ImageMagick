@@ -2123,7 +2123,7 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
 %
 */
 
-static MagickRealType LevelPixel(const double black_point,
+static inline MagickRealType LevelPixel(const double black_point,
   const double white_point,const double gamma,const MagickRealType pixel)
 {
   double
@@ -2229,8 +2229,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits == UndefinedPixelTrait) ||
-            ((traits & UpdatePixelTrait) == 0))
+        if (traits == UndefinedPixelTrait)
           continue;
         q[i]=ClampToQuantum(LevelPixel(black_point,white_point,gamma,
           (MagickRealType) q[i]));
@@ -2391,8 +2390,8 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits == UndefinedPixelTrait) ||
-            ((traits & UpdatePixelTrait) == 0))
+        if (traits == UndefinedPixelTrait)
+          continue;
         q[i]=LevelizeValue(q[i]);
       }
       q+=GetPixelChannels(image);
