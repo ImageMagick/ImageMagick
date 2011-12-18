@@ -150,24 +150,24 @@ static inline double MagickMax(const double x,const double y)
 
 /*
    Programmers notes on SVG specification.
-  
+
    A Composition is defined by...
      Color Function :  f(Sc,Dc)  where Sc and Dc are the normizalized colors
       Blending areas :  X = 1    for area of overlap   ie: f(Sc,Dc)
                         Y = 1    for source preserved
                         Z = 1    for destination preserved
-  
+
    Conversion to transparency (then optimized)
       Dca' = f(Sc, Dc)*Sa*Da + Y*Sca*(1-Da) + Z*Dca*(1-Sa)
       Da'  = X*Sa*Da + Y*Sa*(1-Da) + Z*Da*(1-Sa)
-  
+
    Where...
      Sca = Sc*Sa     normalized Source color divided by Source alpha
      Dca = Dc*Da     normalized Dest color divided by Dest alpha
      Dc' = Dca'/Da'  the desired color value for this channel.
-  
+
    Da' (alpha result) is stored as 'gamma' in the functions.
-  
+
    The compose functions defined is just simplifications of the above
    formula on a case by case bases.
 
@@ -177,16 +177,16 @@ static inline double MagickMax(const double x,const double y)
    methods should use a 'Over' blending mode for Alpha Channel.
    It however was not applied for composition modes of 'Plus', 'Minus',
    the modulus versions of 'Add' and 'Subtract'.
-  
+
    Mathematical operator changes to be applied from IM v6.7...
-  
+
     1/ Modulus modes 'Add' and 'Subtract' are obsoleted and renamed
        'ModulusAdd' and 'ModulusSubtract' for clarity.
-  
+
     2/ All mathematical compositions work as per the SVG specification
        with regard to blending.  This now includes 'ModulusAdd' and
        'ModulusSubtract'.
-  
+
     3/ When the special channel flag 'sync' (syncronize channel updates)
        is turned off (enabled by default) then mathematical compositions are
        only performed on the channels specified, and are applied
@@ -1605,9 +1605,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   MagickStatusType
     flags;
 
-  PixelInfo
-    zero;
-
   ssize_t
     y;
 
@@ -1622,7 +1619,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   assert(composite_image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  GetPixelInfo(image,&zero);
   destination_image=(Image *) NULL;
   amount=0.5;
   destination_dissolve=1.0;
@@ -1634,13 +1630,13 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   switch (compose)
   {
     case ClearCompositeOp:
-    case SrcCompositeOp:
-    case InCompositeOp:
-    case SrcInCompositeOp:
-    case OutCompositeOp:
-    case SrcOutCompositeOp:
-    case DstInCompositeOp:
     case DstAtopCompositeOp:
+    case DstInCompositeOp:
+    case InCompositeOp:
+    case OutCompositeOp:
+    case SrcCompositeOp:
+    case SrcInCompositeOp:
+    case SrcOutCompositeOp:
     {
       /*
         Modify destination outside the overlaid region.
@@ -1802,7 +1798,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       /*
         Blur Image by resampling.
       */
-      pixel=zero;
       resample_filter=AcquireResampleFilter(image,exception);
       SetResampleFilter(resample_filter,CubicFilter,2.0);
       destination_view=AcquireCacheView(destination_image);
@@ -1974,7 +1969,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         Shift the pixel offset point as defined by the provided,
         displacement/distortion map.  -- Like a lens...
       */
-      pixel=zero;
+      GetPixelInfo(image,&pixel);
       image_view=AcquireCacheView(image);
       destination_view=AcquireCacheView(destination_image);
       composite_view=AcquireCacheView(composite_image);
@@ -2148,11 +2143,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   status=MagickTrue;
   progress=0;
   midpoint=((MagickRealType) QuantumRange+1.0)/2;
-  GetPixelInfo(composite_image,&zero);
   image_view=AcquireCacheView(image);
   composite_view=AcquireCacheView(composite_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+//  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2164,11 +2158,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       hue,
       saturation;
 
-    PixelInfo
-      composite,
-      destination,
-      source;
-
     register const Quantum
       *restrict p;
 
@@ -2177,6 +2166,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
     register ssize_t
       x;
+
+MagickBooleanType composite_channels;
 
     if (status == MagickFalse)
       continue;
@@ -2211,8 +2202,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         status=MagickFalse;
         continue;
       }
-    source=zero;
-    destination=zero;
     hue=0.0;
     saturation=0.0;
     brightness=0.0;
@@ -2228,494 +2217,792 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           if ((x-x_offset) >= (ssize_t) composite_image->columns)
             break;
         }
-      destination.red=(MagickRealType) GetPixelRed(image,q);
-      destination.green=(MagickRealType) GetPixelGreen(image,q);
-      destination.blue=(MagickRealType) GetPixelBlue(image,q);
-      if (image->colorspace == CMYKColorspace)
-        destination.black=(MagickRealType) GetPixelBlack(image,q);
-      if (image->colorspace == CMYKColorspace)
-        {
-          destination.red=(MagickRealType) QuantumRange-destination.red;
-          destination.green=(MagickRealType) QuantumRange-destination.green;
-          destination.blue=(MagickRealType) QuantumRange-destination.blue;
-          destination.black=(MagickRealType) QuantumRange-destination.black;
-        }
-      if (image->matte != MagickFalse)
-        destination.alpha=(MagickRealType) GetPixelAlpha(image,q);
-      /*
-        Handle destination modifications outside overlaid region.
-      */
-      composite=destination;
-      if ((pixels == (Quantum *) NULL) || (x < x_offset) ||
-          ((x-x_offset) >= (ssize_t) composite_image->columns))
-        {
-          switch (compose)
-          {
-            case DissolveCompositeOp:
-            case BlendCompositeOp:
-            {
-              composite.alpha=destination_dissolve*(composite.alpha);
-              break;
-            }
-            case ClearCompositeOp:
-            case SrcCompositeOp:
-            {
-              CompositeClear(&destination,&composite);
-              break;
-            }
-            case InCompositeOp:
-            case SrcInCompositeOp:
-            case OutCompositeOp:
-            case SrcOutCompositeOp:
-            case DstInCompositeOp:
-            case DstAtopCompositeOp:
-            case CopyOpacityCompositeOp:
-            case ChangeMaskCompositeOp:
-            {
-              composite.alpha=(MagickRealType) TransparentAlpha;
-              break;
-            }
-            default:
-            {
-              (void) GetOneVirtualPixelInfo(composite_image,
-                GetPixelCacheVirtualMethod(composite_image),x-x_offset,y-
-                y_offset,&composite,exception);
-              break;
-            }
-          }
-          if (image->colorspace == CMYKColorspace)
-            {
-              composite.red=(MagickRealType) QuantumRange-composite.red;
-              composite.green=(MagickRealType) QuantumRange-composite.green;
-              composite.blue=(MagickRealType) QuantumRange-composite.blue;
-              composite.black=(MagickRealType) QuantumRange-composite.black;
-            }
-          SetPixelRed(image,ClampToQuantum(composite.red),q);
-          SetPixelGreen(image,ClampToQuantum(composite.green),q);
-          SetPixelBlue(image,ClampToQuantum(composite.blue),q);
-          if (image->matte != MagickFalse)
-            SetPixelAlpha(image,ClampToQuantum(composite.alpha),q);
-          if (image->colorspace == CMYKColorspace)
-            SetPixelBlack(image,ClampToQuantum(composite.black),q);
-          q+=GetPixelChannels(image);
-          continue;
-        }
-      /*
-        Handle normal overlay of source onto destination.
-      */
-      source.red=(MagickRealType) GetPixelRed(composite_image,p);
-      source.green=(MagickRealType) GetPixelGreen(composite_image,p);
-      source.blue=(MagickRealType) GetPixelBlue(composite_image,p);
-      if (composite_image->colorspace == CMYKColorspace)
-        source.black=(MagickRealType) GetPixelBlack(composite_image,p);
-      if (composite_image->colorspace == CMYKColorspace)
-        {
-          source.red=(MagickRealType) QuantumRange-source.red;
-          source.green=(MagickRealType) QuantumRange-source.green;
-          source.blue=(MagickRealType) QuantumRange-source.blue;
-          source.black=(MagickRealType) QuantumRange-source.black;
-        }
-      if (composite_image->matte != MagickFalse)
-        source.alpha=(MagickRealType) GetPixelAlpha(composite_image,p);
-      /*
-        Porter-Duff compositions.
-      */
+      composite_channels=MagickFalse;
       switch (compose)
       {
-        case ClearCompositeOp:
-        {
-          CompositeClear(&destination,&composite);
-          break;
-        }
-        case SrcCompositeOp:
-        case CopyCompositeOp:
-        case ReplaceCompositeOp:
-        {
-          composite=source;
-          break;
-        }
-        case NoCompositeOp:
-        case DstCompositeOp:
-          break;
-        case OverCompositeOp:
-        case SrcOverCompositeOp:
-        {
-          CompositePixelInfoOver(&source,source.alpha,&destination,
-            destination.alpha,&composite);
-          break;
-        }
-        case DstOverCompositeOp:
-        {
-          CompositePixelInfoOver(&destination,destination.alpha,&source,
-            source.alpha,&composite);
-          break;
-        }
-        case SrcInCompositeOp:
-        case InCompositeOp:
-        {
-          CompositeIn(&source,&destination,&composite);
-          break;
-        }
-        case DstInCompositeOp:
-        {
-          CompositeIn(&destination,&source,&composite);
-          break;
-        }
-        case OutCompositeOp:
-        case SrcOutCompositeOp:
-        {
-          CompositeOut(&source,&destination,&composite);
-          break;
-        }
-        case DstOutCompositeOp:
-        {
-          CompositeOut(&destination,&source,&composite);
-          break;
-        }
         case AtopCompositeOp:
-        case SrcAtopCompositeOp:
-        {
-          CompositeAtop(&source,&destination,&composite);
-          break;
-        }
+        case ClearCompositeOp:
+        case CopyCompositeOp:
         case DstAtopCompositeOp:
-        {
-          CompositeAtop(&destination,&source,&composite);
-          break;
-        }
+        case DstCompositeOp:
+        case DstInCompositeOp:
+        case DstOverCompositeOp:
+        case DstOutCompositeOp:
+        case InCompositeOp:
+        case OutCompositeOp:
+        case OverCompositeOp:
+        case ReplaceCompositeOp:
+        case SrcAtopCompositeOp:
+        case SrcCompositeOp:
+        case SrcInCompositeOp:
+        case SrcOutCompositeOp:
+        case SrcOverCompositeOp:
         case XorCompositeOp:
         {
-          CompositeXor(&source,&destination,&composite);
-          break;
-        }
-        case PlusCompositeOp:
-        {
-          CompositePlus(image,&source,&destination,&composite);
-          break;
-        }
-        case MinusDstCompositeOp:
-        {
-          CompositeMinus(image,&source,&destination,&composite);
-          break;
-        }
-        case MinusSrcCompositeOp:
-        {
-          CompositeMinus(image,&destination,&source,&composite);
-          break;
-        }
-        case ModulusAddCompositeOp:
-        {
-          CompositeModulusAdd(image,&source,&destination,&composite);
-          break;
-        }
-        case ModulusSubtractCompositeOp:
-        {
-          CompositeModulusSubtract(image,&source,&destination,&composite);
-          break;
-        }
-        case DifferenceCompositeOp:
-        {
-          CompositeDifference(image,&source,&destination,&composite);
-          break;
-        }
-        case ExclusionCompositeOp:
-        {
-          CompositeExclusion(image,&source,&destination,&composite);
-          break;
-        }
-        case MultiplyCompositeOp:
-        {
-          CompositeMultiply(image,&source,&destination,&composite);
-          break;
-        }
-        case ScreenCompositeOp:
-        {
-          CompositeScreen(image,&source,&destination,&composite);
-          break;
-        }
-        case DivideDstCompositeOp:
-        {
-          CompositeDivide(image,&source,&destination,&composite);
-          break;
-        }
-        case DivideSrcCompositeOp:
-        {
-          CompositeDivide(image,&destination,&source,&composite);
-          break;
-        }
-        case DarkenCompositeOp:
-        {
-          CompositeDarken(image,&source,&destination,&composite);
-          break;
-        }
-        case LightenCompositeOp:
-        {
-          CompositeLighten(image,&source,&destination,&composite);
-          break;
-        }
-        case DarkenIntensityCompositeOp:
-        {
-          CompositeDarkenIntensity(image,&source,&destination,&composite);
-          break;
-        }
-        case LightenIntensityCompositeOp:
-        {
-          CompositeLightenIntensity(image,&source,&destination,&composite);
-          break;
-        }
-        case MathematicsCompositeOp:
-        {
-          CompositeMathematics(image,&source,&destination,&geometry_info,
-            &composite);
-          break;
-        }
-        case ColorDodgeCompositeOp:
-        {
-          CompositeColorDodge(&source,&destination,&composite);
-          break;
-        }
-        case ColorBurnCompositeOp:
-        {
-          CompositeColorBurn(&source,&destination,&composite);
-          break;
-        }
-        case LinearDodgeCompositeOp:
-        {
-          CompositeLinearDodge(&source,&destination,&composite);
-          break;
-        }
-        case LinearBurnCompositeOp:
-        {
-          CompositeLinearBurn(&source,&destination,&composite);
-          break;
-        }
-        case HardLightCompositeOp:
-        {
-          CompositeHardLight(&source,&destination,&composite);
-          break;
-        }
-        case OverlayCompositeOp:
-        {
-          CompositeHardLight(&destination,&source,&composite);
-          break;
-        }
-        case SoftLightCompositeOp:
-        {
-          CompositeSoftLight(&source,&destination,&composite);
-          break;
-        }
-        case LinearLightCompositeOp:
-        {
-          CompositeLinearLight(&source,&destination,&composite);
-          break;
-        }
-        case PegtopLightCompositeOp:
-        {
-          CompositePegtopLight(&source,&destination,&composite);
-          break;
-        }
-        case VividLightCompositeOp:
-        {
-          CompositeVividLight(&source,&destination,&composite);
-          break;
-        }
-        case PinLightCompositeOp:
-        {
-          CompositePinLight(&source,&destination,&composite);
-          break;
-        }
-        case ChangeMaskCompositeOp:
-        {
-          if ((composite.alpha > ((MagickRealType) QuantumRange/2.0)) ||
-              (IsFuzzyEquivalencePixelInfo(&source,&destination) != MagickFalse))
-            composite.alpha=(MagickRealType) TransparentAlpha;
-          else
-            composite.alpha=(MagickRealType) OpaqueAlpha;
-          break;
-        }
-        case BumpmapCompositeOp:
-        {
-          if (source.alpha == TransparentAlpha)
-            break;
-          CompositeBumpmap(&source,&destination,&composite);
-          break;
-        }
-        case DissolveCompositeOp:
-        {
-          CompositePixelInfoOver(&source,source_dissolve*source.alpha,
-            &destination,(MagickRealType) (destination_dissolve*
-            destination.alpha),&composite);
-          break;
-        }
-        case BlendCompositeOp:
-        {
-          CompositePixelInfoBlend(&source,source_dissolve,&destination,
-            destination_dissolve,&composite);
-          break;
-        }
-        case ThresholdCompositeOp:
-        {
-          CompositeThreshold(&source,&destination,threshold,amount,&composite);
-          break;
-        }
-        case ModulateCompositeOp:
-        {
-          double
-            blue,
-            green,
-            red;
-
-          ssize_t
-            offset;
-
-          if (source.alpha == TransparentAlpha)
-            break;
-          offset=(ssize_t) (GetPixelInfoIntensity(&source)-midpoint);
-          if (offset == 0)
-            break;
-          CompositeHSB(destination.red,destination.green,destination.blue,&hue,
-            &saturation,&brightness);
-          brightness+=(0.01*percent_brightness*offset)/midpoint;
-          saturation*=0.01*percent_saturation;
-          HSBComposite(hue,saturation,brightness,&red,&green,&blue);
-          composite.red=red;
-          composite.green=green;
-          composite.blue=blue;
-          break;
-        }
-        case HueCompositeOp:
-        {
-          if (source.alpha == TransparentAlpha)
-            break;
-          if (destination.alpha == TransparentAlpha)
-            {
-              composite=source;
-              break;
-            }
-          CompositeHSB(destination.red,destination.green,destination.blue,&hue,
-            &saturation,&brightness);
-          CompositeHSB(source.red,source.green,source.blue,&hue,&sans,&sans);
-          HSBComposite(hue,saturation,brightness,&composite.red,
-            &composite.green,&composite.blue);
-          if (source.alpha < destination.alpha)
-            composite.alpha=source.alpha;
-          break;
-        }
-        case SaturateCompositeOp:
-        {
-          if (source.alpha == TransparentAlpha)
-            break;
-          if (destination.alpha == TransparentAlpha)
-            {
-              composite=source;
-              break;
-            }
-          CompositeHSB(destination.red,destination.green,destination.blue,&hue,
-            &saturation,&brightness);
-          CompositeHSB(source.red,source.green,source.blue,&sans,&saturation,
-            &sans);
-          HSBComposite(hue,saturation,brightness,&composite.red,
-            &composite.green,&composite.blue);
-          if (source.alpha < destination.alpha)
-            composite.alpha=source.alpha;
-          break;
-        }
-        case LuminizeCompositeOp:
-        {
-          if (source.alpha == TransparentAlpha)
-            break;
-          if (destination.alpha == TransparentAlpha)
-            {
-              composite=source;
-              break;
-            }
-          CompositeHSB(destination.red,destination.green,destination.blue,&hue,
-            &saturation,&brightness);
-          CompositeHSB(source.red,source.green,source.blue,&sans,&sans,
-            &brightness);
-          HSBComposite(hue,saturation,brightness,&composite.red,
-            &composite.green,&composite.blue);
-          if (source.alpha < destination.alpha)
-            composite.alpha=source.alpha;
-          break;
-        }
-        case ColorizeCompositeOp:
-        {
-          if (source.alpha == TransparentAlpha)
-            break;
-          if (destination.alpha == TransparentAlpha)
-            {
-              composite=source;
-              break;
-            }
-          CompositeHSB(destination.red,destination.green,destination.blue,&sans,
-            &sans,&brightness);
-          CompositeHSB(source.red,source.green,source.blue,&hue,&saturation,
-            &sans);
-          HSBComposite(hue,saturation,brightness,&composite.red,
-            &composite.green,&composite.blue);
-          if (source.alpha < destination.alpha)
-            composite.alpha=source.alpha;
-          break;
-        }
-        case CopyRedCompositeOp:
-        case CopyCyanCompositeOp:
-        {
-          composite.red=source.red;
-          break;
-        }
-        case CopyGreenCompositeOp:
-        case CopyMagentaCompositeOp:
-        {
-          composite.green=source.green;
-          break;
-        }
-        case CopyBlueCompositeOp:
-        case CopyYellowCompositeOp:
-        {
-          composite.blue=source.blue;
-          break;
-        }
-        case CopyOpacityCompositeOp:
-        {
-          if (source.matte == MagickFalse)
-            {
-              composite.alpha=(MagickRealType) GetPixelInfoIntensity(&source);
-              break;
-            }
-          composite.alpha=source.alpha;
-          break;
-        }
-        case CopyBlackCompositeOp:
-        {
-          if (source.colorspace != CMYKColorspace)
-            ConvertRGBToCMYK(&source);
-          composite.black=source.black;
-          break;
-        }
-        case BlurCompositeOp:
-        case DisplaceCompositeOp:
-        case DistortCompositeOp:
-        {
-          composite=source;
+          composite_channels=MagickTrue;
           break;
         }
         default:
           break;
       }
-      if (image->colorspace == CMYKColorspace)
+      if (composite_channels != MagickFalse) {
+        MagickRealType
+          Da,
+          Dc,
+          gamma,
+          Sa,
+          Sc;
+
+        register ssize_t
+          i;
+
+        if ((pixels == (Quantum *) NULL) || (x < x_offset) ||
+            ((x-x_offset) >= (ssize_t) composite_image->columns))
+          {
+            Quantum
+              source[MaxPixelChannels];
+
+            /*
+              Virtual composite:
+                Sc: source color.
+                Dc: destination color.
+            */
+            (void) GetOneVirtualPixel(composite_image,x-x_offset,y-y_offset,
+              source,exception);
+            for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+            {
+              MagickRealType
+                pixel;
+
+              PixelChannel
+                channel;
+
+              PixelTrait
+                traits;
+
+              channel=GetPixelChannelMapChannel(image,i);
+              traits=GetPixelChannelMapTraits(image,channel);
+              if (traits == UndefinedPixelTrait)
+                continue;
+              switch (compose)
+              {
+                case ClearCompositeOp:
+                case CopyCompositeOp:
+                case ReplaceCompositeOp:
+                case SrcCompositeOp:
+                {
+                  pixel=0.0;
+                  if (channel == AlphaPixelChannel)
+                    pixel=(MagickRealType) TransparentAlpha;
+                  break;
+                }
+                case DstAtopCompositeOp:
+                case InCompositeOp:
+                case OutCompositeOp:
+                case SrcInCompositeOp:
+                case SrcOutCompositeOp:
+                {
+                  pixel=(MagickRealType) q[i];
+                  if (channel == AlphaPixelChannel)
+                    pixel=(MagickRealType) TransparentAlpha;
+                  break;
+                }
+                default:
+                {
+                  pixel=source[channel];
+                  break;
+                }
+              }
+              q[i]=ClampToQuantum(pixel);
+            }
+            q+=GetPixelChannels(image);
+            continue;
+          }
+        /*
+          Authentic composite:
+            Sa: source normalized alpha.
+            Da: destination normalized alpha.
+        */
+        Sa=QuantumScale*GetPixelAlpha(composite_image,p);
+        Da=QuantumScale*GetPixelAlpha(image,q);
+        switch (compose)
         {
-          composite.red=(MagickRealType) QuantumRange-composite.red;
-          composite.green=(MagickRealType) QuantumRange-composite.green;
-          composite.blue=(MagickRealType) QuantumRange-composite.blue;
-          composite.black=(MagickRealType) QuantumRange-composite.black;
+          case DstOverCompositeOp:
+          {
+            gamma=Da*(-Sa)+Da+Sa;
+            break;
+          }
+          case DstAtopCompositeOp:
+          case DstInCompositeOp:
+          case InCompositeOp:
+          case SrcInCompositeOp:
+          {
+            gamma=Sa*Da;
+            break;
+          }
+          case DstOutCompositeOp:
+          {
+            gamma=Da*(1.0-Sa);
+            break;
+          }
+          case OutCompositeOp:
+          case SrcOutCompositeOp:
+          {
+            gamma=Sa*(1.0-Da);
+            break;
+          }
+          case OverCompositeOp:
+          case SrcOverCompositeOp:
+          {
+            gamma=Sa*(-Da)+Sa+Da;
+            break;
+          }
+          case XorCompositeOp:
+          {
+            gamma=Sa+Da-2.0*Sa*Da;
+            break;
+          }
+          default:
+          {
+            gamma=1.0;
+            break;
+          }
         }
-      SetPixelRed(image,ClampToQuantum(composite.red),q);
-      SetPixelGreen(image,ClampToQuantum(composite.green),q);
-      SetPixelBlue(image,ClampToQuantum(composite.blue),q);
-      if (image->colorspace == CMYKColorspace)
-        SetPixelBlack(image,ClampToQuantum(composite.black),q);
-      SetPixelAlpha(image,ClampToQuantum(composite.alpha),q);
+        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+        {
+          MagickRealType
+            pixel;
+
+          PixelChannel
+            channel;
+
+          PixelTrait
+            composite_traits,
+            traits;
+
+          channel=GetPixelChannelMapChannel(image,i);
+          traits=GetPixelChannelMapTraits(image,channel);
+          composite_traits=GetPixelChannelMapTraits(composite_image,channel);
+          if ((traits == UndefinedPixelTrait) ||
+              (composite_traits == UndefinedPixelTrait))
+            continue;
+          /*
+            Sc: source color.
+            Dc: destination color.
+          */
+          Sc=(MagickRealType) GetPixelChannel(composite_image,channel,p);
+          Dc=(MagickRealType) q[i];
+          if ((traits & CopyPixelTrait) != 0)
+            {
+              if (channel != AlphaPixelChannel)
+                {
+                  /*
+                    Copy channel.
+                  */
+                  q[i]=Sc;
+                  continue;
+                }
+              /*
+                Set alpha channel.
+              */
+              pixel=0.0;
+              switch (compose)
+              {
+                case CopyCompositeOp:
+                case DstAtopCompositeOp:
+                case ReplaceCompositeOp:
+                case SrcCompositeOp:
+                {
+                  pixel=QuantumRange*Sa;
+                  break;
+                }
+                case AtopCompositeOp:
+                case SrcAtopCompositeOp:
+                case DstCompositeOp:
+                {
+                  pixel=QuantumRange*Da;
+                  break;
+                }
+                default:
+                {
+                  pixel=QuantumRange*gamma;
+                  break;
+                }
+              }
+              q[i]=ClampToQuantum(pixel);
+              continue;
+            }
+          /*
+            Porter-Duff compositions.
+          */
+          pixel=0.0;
+          switch (compose)
+          {
+            case AtopCompositeOp:
+            case SrcAtopCompositeOp:
+            {
+              pixel=Sc*Sa+Dc*(1.0-Sa);
+              break;
+            }
+            case CopyCompositeOp:
+            case ReplaceCompositeOp:
+            case SrcCompositeOp:
+            {
+              pixel=Sc;
+              break;
+            }
+            case DstAtopCompositeOp:
+            {
+              pixel=Dc*Da+Sc*(1.0-Da);
+              break;
+            }
+            case DstCompositeOp:
+            {
+              pixel=Dc;
+              break;
+            }
+            case DstInCompositeOp:
+            {
+              pixel=gamma*(Sa*Dc*Sa);
+              break;
+            }
+            case DstOutCompositeOp:
+            {
+              pixel=gamma*(Da*Dc*(1.0-Sa));
+              break;
+            }
+            case DstOverCompositeOp:
+            {
+              pixel=gamma*(Da*Dc-Da*Sa*Sc+Sa*Sc);
+              break;
+            }
+            case InCompositeOp:
+            case SrcInCompositeOp:
+            {
+              pixel=gamma*(Da*Sc*Da);
+              break;
+            }
+            case OutCompositeOp:
+            case SrcOutCompositeOp:
+            {
+              pixel=gamma*(Sa*Sc*(1.0-Da));
+              break;
+            }
+            case OverCompositeOp:
+            case SrcOverCompositeOp:
+            {
+              pixel=gamma*(Sa*Sc-Sa*Da*Dc+Da*Dc);
+              break;
+            }
+            case XorCompositeOp:
+            {
+              pixel=gamma*(Sc*Sa*(1.0-Da)+Dc*Da*(1.0-Sa));
+              break;
+            }
+            default:
+              break;
+          }
+          q[i]=ClampToQuantum(pixel);
+        }
+      } else {
+        PixelInfo
+          composite,
+          destination,
+          source,
+          zero;
+
+        GetPixelInfo(image,&zero);
+        source=zero;
+        destination=zero;
+        destination.red=(MagickRealType) GetPixelRed(image,q);
+        destination.green=(MagickRealType) GetPixelGreen(image,q);
+        destination.blue=(MagickRealType) GetPixelBlue(image,q);
+        if (image->colorspace == CMYKColorspace)
+          destination.black=(MagickRealType) GetPixelBlack(image,q);
+        if (image->colorspace == CMYKColorspace)
+          {
+            destination.red=(MagickRealType) QuantumRange-destination.red;
+            destination.green=(MagickRealType) QuantumRange-destination.green;
+            destination.blue=(MagickRealType) QuantumRange-destination.blue;
+            destination.black=(MagickRealType) QuantumRange-destination.black;
+          }
+        if (image->matte != MagickFalse)
+          destination.alpha=(MagickRealType) GetPixelAlpha(image,q);
+        /*
+          Handle destination modifications outside overlaid region.
+        */
+        composite=destination;
+        if ((pixels == (Quantum *) NULL) || (x < x_offset) ||
+            ((x-x_offset) >= (ssize_t) composite_image->columns))
+          {
+            switch (compose)
+            {
+              case DissolveCompositeOp:
+              case BlendCompositeOp:
+              {
+                composite.alpha=destination_dissolve*(composite.alpha);
+                break;
+              }
+              case ClearCompositeOp:
+              case SrcCompositeOp:
+              {
+                CompositeClear(&destination,&composite);
+                break;
+              }
+              case InCompositeOp:
+              case SrcInCompositeOp:
+              case OutCompositeOp:
+              case SrcOutCompositeOp:
+              case DstInCompositeOp:
+              case DstAtopCompositeOp:
+              case CopyOpacityCompositeOp:
+              case ChangeMaskCompositeOp:
+              {
+                composite.alpha=(MagickRealType) TransparentAlpha;
+                break;
+              }
+              default:
+              {
+                (void) GetOneVirtualPixelInfo(composite_image,
+                  GetPixelCacheVirtualMethod(composite_image),x-x_offset,y-
+                  y_offset,&composite,exception);
+                break;
+              }
+            }
+            if (image->colorspace == CMYKColorspace)
+              {
+                composite.red=(MagickRealType) QuantumRange-composite.red;
+                composite.green=(MagickRealType) QuantumRange-composite.green;
+                composite.blue=(MagickRealType) QuantumRange-composite.blue;
+                composite.black=(MagickRealType) QuantumRange-composite.black;
+              }
+            SetPixelRed(image,ClampToQuantum(composite.red),q);
+            SetPixelGreen(image,ClampToQuantum(composite.green),q);
+            SetPixelBlue(image,ClampToQuantum(composite.blue),q);
+            if (image->matte != MagickFalse)
+              SetPixelAlpha(image,ClampToQuantum(composite.alpha),q);
+            if (image->colorspace == CMYKColorspace)
+              SetPixelBlack(image,ClampToQuantum(composite.black),q);
+            q+=GetPixelChannels(image);
+            continue;
+          }
+        /*
+          Handle normal overlay of source onto destination.
+        */
+        source.red=(MagickRealType) GetPixelRed(composite_image,p);
+        source.green=(MagickRealType) GetPixelGreen(composite_image,p);
+        source.blue=(MagickRealType) GetPixelBlue(composite_image,p);
+        if (composite_image->colorspace == CMYKColorspace)
+          source.black=(MagickRealType) GetPixelBlack(composite_image,p);
+        if (composite_image->colorspace == CMYKColorspace)
+          {
+            source.red=(MagickRealType) QuantumRange-source.red;
+            source.green=(MagickRealType) QuantumRange-source.green;
+            source.blue=(MagickRealType) QuantumRange-source.blue;
+            source.black=(MagickRealType) QuantumRange-source.black;
+          }
+        if (composite_image->matte != MagickFalse)
+          source.alpha=(MagickRealType) GetPixelAlpha(composite_image,p);
+        /*
+          Porter-Duff compositions.
+        */
+        switch (compose)
+        {
+          case ClearCompositeOp:
+          {
+            CompositeClear(&destination,&composite);
+            break;
+          }
+          case SrcCompositeOp:
+          case CopyCompositeOp:
+          case ReplaceCompositeOp:
+          {
+            composite=source;
+            break;
+          }
+          case NoCompositeOp:
+          case DstCompositeOp:
+            break;
+          case OverCompositeOp:
+          case SrcOverCompositeOp:
+          {
+            CompositePixelInfoOver(&source,source.alpha,&destination,
+              destination.alpha,&composite);
+            break;
+          }
+          case DstOverCompositeOp:
+          {
+            CompositePixelInfoOver(&destination,destination.alpha,&source,
+              source.alpha,&composite);
+            break;
+          }
+          case SrcInCompositeOp:
+          case InCompositeOp:
+          {
+            CompositeIn(&source,&destination,&composite);
+            break;
+          }
+          case DstInCompositeOp:
+          {
+            CompositeIn(&destination,&source,&composite);
+            break;
+          }
+          case OutCompositeOp:
+          case SrcOutCompositeOp:
+          {
+            CompositeOut(&source,&destination,&composite);
+            break;
+          }
+          case DstOutCompositeOp:
+          {
+            CompositeOut(&destination,&source,&composite);
+            break;
+          }
+          case AtopCompositeOp:
+          case SrcAtopCompositeOp:
+          {
+            CompositeAtop(&source,&destination,&composite);
+            break;
+          }
+          case DstAtopCompositeOp:
+          {
+            CompositeAtop(&destination,&source,&composite);
+            break;
+          }
+          case XorCompositeOp:
+          {
+            CompositeXor(&source,&destination,&composite);
+            break;
+          }
+          case PlusCompositeOp:
+          {
+            CompositePlus(image,&source,&destination,&composite);
+            break;
+          }
+          case MinusDstCompositeOp:
+          {
+            CompositeMinus(image,&source,&destination,&composite);
+            break;
+          }
+          case MinusSrcCompositeOp:
+          {
+            CompositeMinus(image,&destination,&source,&composite);
+            break;
+          }
+          case ModulusAddCompositeOp:
+          {
+            CompositeModulusAdd(image,&source,&destination,&composite);
+            break;
+          }
+          case ModulusSubtractCompositeOp:
+          {
+            CompositeModulusSubtract(image,&source,&destination,&composite);
+            break;
+          }
+          case DifferenceCompositeOp:
+          {
+            CompositeDifference(image,&source,&destination,&composite);
+            break;
+          }
+          case ExclusionCompositeOp:
+          {
+            CompositeExclusion(image,&source,&destination,&composite);
+            break;
+          }
+          case MultiplyCompositeOp:
+          {
+            CompositeMultiply(image,&source,&destination,&composite);
+            break;
+          }
+          case ScreenCompositeOp:
+          {
+            CompositeScreen(image,&source,&destination,&composite);
+            break;
+          }
+          case DivideDstCompositeOp:
+          {
+            CompositeDivide(image,&source,&destination,&composite);
+            break;
+          }
+          case DivideSrcCompositeOp:
+          {
+            CompositeDivide(image,&destination,&source,&composite);
+            break;
+          }
+          case DarkenCompositeOp:
+          {
+            CompositeDarken(image,&source,&destination,&composite);
+            break;
+          }
+          case LightenCompositeOp:
+          {
+            CompositeLighten(image,&source,&destination,&composite);
+            break;
+          }
+          case DarkenIntensityCompositeOp:
+          {
+            CompositeDarkenIntensity(image,&source,&destination,&composite);
+            break;
+          }
+          case LightenIntensityCompositeOp:
+          {
+            CompositeLightenIntensity(image,&source,&destination,&composite);
+            break;
+          }
+          case MathematicsCompositeOp:
+          {
+            CompositeMathematics(image,&source,&destination,&geometry_info,
+              &composite);
+            break;
+          }
+          case ColorDodgeCompositeOp:
+          {
+            CompositeColorDodge(&source,&destination,&composite);
+            break;
+          }
+          case ColorBurnCompositeOp:
+          {
+            CompositeColorBurn(&source,&destination,&composite);
+            break;
+          }
+          case LinearDodgeCompositeOp:
+          {
+            CompositeLinearDodge(&source,&destination,&composite);
+            break;
+          }
+          case LinearBurnCompositeOp:
+          {
+            CompositeLinearBurn(&source,&destination,&composite);
+            break;
+          }
+          case HardLightCompositeOp:
+          {
+            CompositeHardLight(&source,&destination,&composite);
+            break;
+          }
+          case OverlayCompositeOp:
+          {
+            CompositeHardLight(&destination,&source,&composite);
+            break;
+          }
+          case SoftLightCompositeOp:
+          {
+            CompositeSoftLight(&source,&destination,&composite);
+            break;
+          }
+          case LinearLightCompositeOp:
+          {
+            CompositeLinearLight(&source,&destination,&composite);
+            break;
+          }
+          case PegtopLightCompositeOp:
+          {
+            CompositePegtopLight(&source,&destination,&composite);
+            break;
+          }
+          case VividLightCompositeOp:
+          {
+            CompositeVividLight(&source,&destination,&composite);
+            break;
+          }
+          case PinLightCompositeOp:
+          {
+            CompositePinLight(&source,&destination,&composite);
+            break;
+          }
+          case ChangeMaskCompositeOp:
+          {
+            if ((composite.alpha > ((MagickRealType) QuantumRange/2.0)) ||
+                (IsFuzzyEquivalencePixelInfo(&source,&destination) != MagickFalse))
+              composite.alpha=(MagickRealType) TransparentAlpha;
+            else
+              composite.alpha=(MagickRealType) OpaqueAlpha;
+            break;
+          }
+          case BumpmapCompositeOp:
+          {
+            if (source.alpha == TransparentAlpha)
+              break;
+            CompositeBumpmap(&source,&destination,&composite);
+            break;
+          }
+          case DissolveCompositeOp:
+          {
+            CompositePixelInfoOver(&source,source_dissolve*source.alpha,
+              &destination,(MagickRealType) (destination_dissolve*
+              destination.alpha),&composite);
+            break;
+          }
+          case BlendCompositeOp:
+          {
+            CompositePixelInfoBlend(&source,source_dissolve,&destination,
+              destination_dissolve,&composite);
+            break;
+          }
+          case ThresholdCompositeOp:
+          {
+            CompositeThreshold(&source,&destination,threshold,amount,&composite);
+            break;
+          }
+          case ModulateCompositeOp:
+          {
+            double
+              blue,
+              green,
+              red;
+
+            ssize_t
+              offset;
+
+            if (source.alpha == TransparentAlpha)
+              break;
+            offset=(ssize_t) (GetPixelInfoIntensity(&source)-midpoint);
+            if (offset == 0)
+              break;
+            CompositeHSB(destination.red,destination.green,destination.blue,&hue,
+              &saturation,&brightness);
+            brightness+=(0.01*percent_brightness*offset)/midpoint;
+            saturation*=0.01*percent_saturation;
+            HSBComposite(hue,saturation,brightness,&red,&green,&blue);
+            composite.red=red;
+            composite.green=green;
+            composite.blue=blue;
+            break;
+          }
+          case HueCompositeOp:
+          {
+            if (source.alpha == TransparentAlpha)
+              break;
+            if (destination.alpha == TransparentAlpha)
+              {
+                composite=source;
+                break;
+              }
+            CompositeHSB(destination.red,destination.green,destination.blue,&hue,
+              &saturation,&brightness);
+            CompositeHSB(source.red,source.green,source.blue,&hue,&sans,&sans);
+            HSBComposite(hue,saturation,brightness,&composite.red,
+              &composite.green,&composite.blue);
+            if (source.alpha < destination.alpha)
+              composite.alpha=source.alpha;
+            break;
+          }
+          case SaturateCompositeOp:
+          {
+            if (source.alpha == TransparentAlpha)
+              break;
+            if (destination.alpha == TransparentAlpha)
+              {
+                composite=source;
+                break;
+              }
+            CompositeHSB(destination.red,destination.green,destination.blue,&hue,
+              &saturation,&brightness);
+            CompositeHSB(source.red,source.green,source.blue,&sans,&saturation,
+              &sans);
+            HSBComposite(hue,saturation,brightness,&composite.red,
+              &composite.green,&composite.blue);
+            if (source.alpha < destination.alpha)
+              composite.alpha=source.alpha;
+            break;
+          }
+          case LuminizeCompositeOp:
+          {
+            if (source.alpha == TransparentAlpha)
+              break;
+            if (destination.alpha == TransparentAlpha)
+              {
+                composite=source;
+                break;
+              }
+            CompositeHSB(destination.red,destination.green,destination.blue,&hue,
+              &saturation,&brightness);
+            CompositeHSB(source.red,source.green,source.blue,&sans,&sans,
+              &brightness);
+            HSBComposite(hue,saturation,brightness,&composite.red,
+              &composite.green,&composite.blue);
+            if (source.alpha < destination.alpha)
+              composite.alpha=source.alpha;
+            break;
+          }
+          case ColorizeCompositeOp:
+          {
+            if (source.alpha == TransparentAlpha)
+              break;
+            if (destination.alpha == TransparentAlpha)
+              {
+                composite=source;
+                break;
+              }
+            CompositeHSB(destination.red,destination.green,destination.blue,&sans,
+              &sans,&brightness);
+            CompositeHSB(source.red,source.green,source.blue,&hue,&saturation,
+              &sans);
+            HSBComposite(hue,saturation,brightness,&composite.red,
+              &composite.green,&composite.blue);
+            if (source.alpha < destination.alpha)
+              composite.alpha=source.alpha;
+            break;
+          }
+          case CopyRedCompositeOp:
+          case CopyCyanCompositeOp:
+          {
+            composite.red=source.red;
+            break;
+          }
+          case CopyGreenCompositeOp:
+          case CopyMagentaCompositeOp:
+          {
+            composite.green=source.green;
+            break;
+          }
+          case CopyBlueCompositeOp:
+          case CopyYellowCompositeOp:
+          {
+            composite.blue=source.blue;
+            break;
+          }
+          case CopyOpacityCompositeOp:
+          {
+            if (source.matte == MagickFalse)
+              {
+                composite.alpha=(MagickRealType) GetPixelInfoIntensity(&source);
+                break;
+              }
+            composite.alpha=source.alpha;
+            break;
+          }
+          case CopyBlackCompositeOp:
+          {
+            if (source.colorspace != CMYKColorspace)
+              ConvertRGBToCMYK(&source);
+            composite.black=source.black;
+            break;
+          }
+          case BlurCompositeOp:
+          case DisplaceCompositeOp:
+          case DistortCompositeOp:
+          {
+            composite=source;
+            break;
+          }
+          default:
+            break;
+        }
+        if (image->colorspace == CMYKColorspace)
+          {
+            composite.red=(MagickRealType) QuantumRange-composite.red;
+            composite.green=(MagickRealType) QuantumRange-composite.green;
+            composite.blue=(MagickRealType) QuantumRange-composite.blue;
+            composite.black=(MagickRealType) QuantumRange-composite.black;
+          }
+        SetPixelRed(image,ClampToQuantum(composite.red),q);
+        SetPixelGreen(image,ClampToQuantum(composite.green),q);
+        SetPixelBlue(image,ClampToQuantum(composite.blue),q);
+        if (image->colorspace == CMYKColorspace)
+          SetPixelBlack(image,ClampToQuantum(composite.black),q);
+        SetPixelAlpha(image,ClampToQuantum(composite.alpha),q);
+      }
       p+=GetPixelChannels(composite_image);
       if (p >= (pixels+composite_image->columns*GetPixelChannels(composite_image)))
         p=pixels;
