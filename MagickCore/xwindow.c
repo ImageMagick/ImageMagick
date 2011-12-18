@@ -7527,7 +7527,7 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
   /*
     Show center pixel color.
   */
-  (void) GetOneVirtualMagickPixel(windows->image.image,TileVirtualPixelMethod,
+  (void) GetOneVirtualPixelInfo(windows->image.image,TileVirtualPixelMethod,
     (ssize_t) windows->magnify.x,(ssize_t) windows->magnify.y,&pixel,exception);
   (void) FormatLocaleString(tuple,MaxTextExtent,"%d,%d: ",
     windows->magnify.x,windows->magnify.y);

@@ -3826,7 +3826,7 @@ static MagickBooleanType XColorEditImage(Display *display,
             /*
               Update color information using floodfill algorithm.
             */
-            (void) GetOneVirtualMagickPixel(*image,
+            (void) GetOneVirtualPixelInfo(*image,
               GetPixelCacheVirtualMethod(*image),(ssize_t) x_offset,(ssize_t)
               y_offset,&target,exception);
             if (method == FillToBorderMethod)
@@ -10168,7 +10168,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
             /*
               Update matte information using floodfill algorithm.
             */
-            (void) GetOneVirtualMagickPixel(*image,
+            (void) GetOneVirtualPixelInfo(*image,
               GetPixelCacheVirtualMethod(*image),(ssize_t) x_offset,(ssize_t)
               y_offset,&target,exception);
             if (method == FillToBorderMethod)

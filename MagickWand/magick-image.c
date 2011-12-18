@@ -3046,7 +3046,7 @@ WandExport MagickBooleanType MagickFloodfillPaintImage(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   draw_info=CloneDrawInfo(wand->image_info,(DrawInfo *) NULL);
   PixelGetQuantumPacket(fill,&draw_info->fill);
-  (void) GetOneVirtualMagickPixel(wand->images,TileVirtualPixelMethod,x %
+  (void) GetOneVirtualPixelInfo(wand->images,TileVirtualPixelMethod,x %
     wand->images->columns,y % wand->images->rows,&target,wand->exception);
   if (bordercolor != (PixelWand *) NULL)
     PixelGetMagickColor(bordercolor,&target);

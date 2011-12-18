@@ -1697,7 +1697,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                         &geometry,&exception);
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
-                      (void) GetOneVirtualMagickPixel(msl_info->image[n],
+                      (void) GetOneVirtualPixelInfo(msl_info->image[n],
                         TileVirtualPixelMethod,geometry.x,geometry.y,&target,
                         &exception);
                       break;
@@ -1712,7 +1712,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"x") == 0)
                     {
                       geometry.x=StringToLong(value);
-                      (void) GetOneVirtualMagickPixel(msl_info->image[n],
+                      (void) GetOneVirtualPixelInfo(msl_info->image[n],
                         TileVirtualPixelMethod,geometry.x,geometry.y,&target,
                         &exception);
                       break;
@@ -1727,7 +1727,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"y") == 0)
                     {
                       geometry.y=StringToLong(value);
-                      (void) GetOneVirtualMagickPixel(msl_info->image[n],
+                      (void) GetOneVirtualPixelInfo(msl_info->image[n],
                         TileVirtualPixelMethod,geometry.x,geometry.y,&target,
                         &exception);
                       break;
@@ -3731,7 +3731,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                         &geometry,&exception);
                       if ((flags & HeightValue) == 0)
                         geometry.height=geometry.width;
-                      (void) GetOneVirtualMagickPixel(msl_info->image[n],
+                      (void) GetOneVirtualPixelInfo(msl_info->image[n],
                         TileVirtualPixelMethod,geometry.x,geometry.y,&target,
                         &exception);
                       break;
@@ -3758,7 +3758,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"x") == 0)
                     {
                       geometry.x=StringToLong(value);
-                      (void) GetOneVirtualMagickPixel(msl_info->image[n],
+                      (void) GetOneVirtualPixelInfo(msl_info->image[n],
                         TileVirtualPixelMethod,geometry.x,geometry.y,&target,
                         &exception);
                       break;
@@ -3773,7 +3773,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                   if (LocaleCompare(keyword,"y") == 0)
                     {
                       geometry.y=StringToLong(value);
-                      (void) GetOneVirtualMagickPixel(msl_info->image[n],
+                      (void) GetOneVirtualPixelInfo(msl_info->image[n],
                         TileVirtualPixelMethod,geometry.x,geometry.y,&target,
                         &exception);
                       break;
