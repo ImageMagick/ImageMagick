@@ -543,7 +543,7 @@ extern "C" {
 #define GetOneCacheViewVirtualMethodPixel  PrependMagickMethod(GetOneCacheViewVirtualMethodPixel)
 #define GetOneCacheViewVirtualPixel  PrependMagickMethod(GetOneCacheViewVirtualPixel)
 #define GetOnePixel  PrependMagickMethod(GetOnePixel)
-#define GetOneVirtualMagickPixel  PrependMagickMethod(GetOneVirtualMagickPixel)
+#define GetOneVirtualPixelInfo  PrependMagickMethod(GetOneVirtualPixelInfo)
 #define GetOneVirtualMethodPixel  PrependMagickMethod(GetOneVirtualMethodPixel)
 #define GetOneVirtualPixel  PrependMagickMethod(GetOneVirtualPixel)
 #define GetOptimalKernelWidth1D  PrependMagickMethod(GetOptimalKernelWidth1D)

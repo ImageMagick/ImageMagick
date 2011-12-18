@@ -2277,7 +2277,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             }
             default:
             {
-              (void) GetOneVirtualMagickPixel(composite_image,
+              (void) GetOneVirtualPixelInfo(composite_image,
                 GetPixelCacheVirtualMethod(composite_image),x-x_offset,y-
                 y_offset,&composite,exception);
               break;

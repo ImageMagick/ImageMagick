@@ -33,7 +33,7 @@ extern MagickExport const void
   *GetVirtualMetacontent(const Image *);
 
 extern MagickExport MagickBooleanType
-  GetOneVirtualMagickPixel(const Image *,const VirtualPixelMethod,
+  GetOneVirtualPixelInfo(const Image *,const VirtualPixelMethod,
     const ssize_t,const ssize_t,PixelInfo *,ExceptionInfo *),
   GetOneVirtualPixel(const Image *,const ssize_t,const ssize_t,Quantum *,
     ExceptionInfo *),

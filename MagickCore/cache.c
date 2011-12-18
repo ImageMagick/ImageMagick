@@ -2242,68 +2242,6 @@ static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t O n e V i r t u a l M a g i c k P i x e l                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetOneVirtualMagickPixel() returns a single pixel at the specified (x,y)
-%  location.  The image background color is returned if an error occurs.  If
-%  you plan to modify the pixel, use GetOneAuthenticPixel() instead.
-%
-%  The format of the GetOneVirtualMagickPixel() method is:
-%
-%      MagickBooleanType GetOneVirtualMagickPixel(const Image image,
-%        const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
-%        const ssize_t y,PixelInfo *pixel,ExceptionInfo exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o virtual_pixel_method: the virtual pixel method.
-%
-%    o x,y:  these values define the location of the pixel to return.
-%
-%    o pixel: return a pixel at the specified (x,y) location.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport MagickBooleanType GetOneVirtualMagickPixel(const Image *image,
-  const VirtualPixelMethod virtual_pixel_method,const ssize_t x,const ssize_t y,
-  PixelInfo *pixel,ExceptionInfo *exception)
-{
-  CacheInfo
-    *cache_info;
-
-  const int
-    id = GetOpenMPThreadId();
-
-  register const Quantum
-    *p;
-
-  assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(image->cache != (Cache) NULL);
-  cache_info=(CacheInfo *) image->cache;
-  assert(cache_info->signature == MagickSignature);
-  assert(id < (int) cache_info->number_threads);
-  p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x,y,1UL,1UL,
-    cache_info->nexus_info[id],exception);
-  GetPixelInfo(image,pixel);
-  if (p == (const Quantum *) NULL)
-    return(MagickFalse);
-  GetPixelInfoPixel(image,p,pixel);
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t O n e V i r t u a l P i x e l                                       %
 %                                                                             %
 %                                                                             %
@@ -2454,6 +2392,68 @@ static MagickBooleanType GetOneVirtualPixelFromCache(const Image *image,
     channel=GetPixelChannelMapChannel(image,i);
     pixel[channel]=p[i];
   }
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t O n e V i r t u a l P i x e l I n f o                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetOneVirtualPixelInfo() returns a single pixel at the specified (x,y)
+%  location.  The image background color is returned if an error occurs.  If
+%  you plan to modify the pixel, use GetOneAuthenticPixel() instead.
+%
+%  The format of the GetOneVirtualPixelInfo() method is:
+%
+%      MagickBooleanType GetOneVirtualPixelInfo(const Image image,
+%        const VirtualPixelMethod virtual_pixel_method,const ssize_t x,
+%        const ssize_t y,PixelInfo *pixel,ExceptionInfo exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o virtual_pixel_method: the virtual pixel method.
+%
+%    o x,y:  these values define the location of the pixel to return.
+%
+%    o pixel: return a pixel at the specified (x,y) location.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType GetOneVirtualPixelInfo(const Image *image,
+  const VirtualPixelMethod virtual_pixel_method,const ssize_t x,const ssize_t y,
+  PixelInfo *pixel,ExceptionInfo *exception)
+{
+  CacheInfo
+    *cache_info;
+
+  const int
+    id = GetOpenMPThreadId();
+
+  register const Quantum
+    *p;
+
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(image->cache != (Cache) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
+  assert(id < (int) cache_info->number_threads);
+  p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x,y,1UL,1UL,
+    cache_info->nexus_info[id],exception);
+  GetPixelInfo(image,pixel);
+  if (p == (const Quantum *) NULL)
+    return(MagickFalse);
+  GetPixelInfoPixel(image,p,pixel);
   return(MagickTrue);
 }
 
@@ -3786,9 +3786,8 @@ MagickPrivate const Quantum *GetVirtualPixelsNexus(const Cache cache,
 %
 */
 
-static inline void MagickPixelCompositeMask(const PixelInfo *p,
-  const MagickRealType alpha,const PixelInfo *q,
-  const MagickRealType beta,PixelInfo *composite)
+static inline void MaskPixelOver(const PixelInfo *p,const MagickRealType alpha,
+  const PixelInfo *q,const MagickRealType beta,PixelInfo *composite)
 {
   MagickRealType
     gamma;
@@ -3866,7 +3865,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
       break;
     GetPixelInfoPixel(image,p,&alpha);
     GetPixelInfoPixel(image,q,&beta);
-    MagickPixelCompositeMask(&beta,(MagickRealType) GetPixelIntensity(image,r),
+    MaskPixelOver(&beta,(MagickRealType) GetPixelIntensity(image,r),
       &alpha,alpha.alpha,&beta);
     SetPixelRed(image,ClampToQuantum(beta.red),q);
     SetPixelGreen(image,ClampToQuantum(beta.green),q);
