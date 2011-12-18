@@ -2122,12 +2122,28 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static MagickRealType LevelPixel(const double black_point,
+  const double white_point,const double gamma,const MagickRealType pixel)
+{
+  double
+    level_pixel,
+    scale;
+
+  if (pixel < black_point)
+    return(0.0);
+  if (pixel > white_point)
+    return(white_point);
+  scale=(white_point != black_point) ? 1.0/(white_point-black_point) : 1.0;
+  level_pixel=(MagickRealType) QuantumRange*pow(scale*((double) pixel-
+    black_point),1.0/gamma);
+  return(level_pixel);
+}
+
 MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
   const double white_point,const double gamma,ExceptionInfo *exception)
 {
 #define LevelImageTag  "Level/Image"
-#define LevelQuantum(x) (ClampToQuantum((MagickRealType) QuantumRange* \
-  pow(scale*((double) (x)-black_point),1.0/gamma)))
 
   CacheView
     *image_view;
@@ -2137,9 +2153,6 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
 
   MagickOffsetType
     progress;
-
-  register double
-    scale;
 
   register ssize_t
     i;
@@ -2154,7 +2167,6 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  scale=(white_point != black_point) ? 1.0/(white_point-black_point) : 1.0;
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
@@ -2165,17 +2177,17 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
         Level colormap.
       */
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].red=(double) LevelQuantum(
-          image->colormap[i].red);
+        image->colormap[i].red=(double) ClampToQuantum(LevelPixel(black_point,
+          white_point,gamma,image->colormap[i].red));
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].green=(double) LevelQuantum(
-          image->colormap[i].green);
+        image->colormap[i].green=(double) ClampToQuantum(LevelPixel(black_point,
+          white_point,gamma,image->colormap[i].green));
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].blue=(double) LevelQuantum(
-          image->colormap[i].blue);
+        image->colormap[i].blue=(double) ClampToQuantum(LevelPixel(black_point,
+          white_point,gamma,image->colormap[i].blue));
       if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].alpha=(double) LevelQuantum(
-          image->colormap[i].alpha);
+        image->colormap[i].alpha=(double) ClampToQuantum(LevelPixel(black_point,
+          white_point,gamma,image->colormap[i].alpha));
       }
   /*
     Level image.
@@ -2220,7 +2232,8 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
         if ((traits == UndefinedPixelTrait) ||
             ((traits & UpdatePixelTrait) == 0))
           continue;
-        q[i]=LevelQuantum(q[i]);
+        q[i]=ClampToQuantum(LevelPixel(black_point,white_point,gamma,
+          (MagickRealType) q[i]));
       }
       q+=GetPixelChannels(image);
     }
@@ -2378,8 +2391,9 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits & UpdatePixelTrait) != 0)
-          q[i]=LevelizeValue(q[i]);
+        if ((traits == UndefinedPixelTrait) ||
+            ((traits & UpdatePixelTrait) == 0))
+        q[i]=LevelizeValue(q[i]);
       }
       q+=GetPixelChannels(image);
     }
