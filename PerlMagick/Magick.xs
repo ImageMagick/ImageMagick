@@ -99,7 +99,7 @@ extern "C" {
   if (magick_registry != (SplayTreeInfo *) NULL) \
     { \
       (void) AddValueToSplayTree(magick_registry,image,image); \
-      (sv)=newSViv((IV) image); \
+      (sv)=newSViv(PTR2IV(image)); \
     } \
 }
 
@@ -991,10 +991,10 @@ static struct PackageInfo *GetPackageInfo(pTHX_ void *reference,
     }
   if (SvREFCNT(sv) == 0)
     (void) SvREFCNT_inc(sv);
-  if (SvIOKp(sv) && (clone_info=(struct PackageInfo *) SvIV(sv)))
+  if (SvIOKp(sv) && (clone_info=INT2PTR(struct PackageInfo *,SvIV(sv))))
     return(clone_info);
   clone_info=ClonePackageInfo(package_info,exception);
-  sv_setiv(sv,(IV) clone_info);
+  sv_setiv(sv,PTR2IV(clone_info));
   return(clone_info);
 }
 
@@ -3487,7 +3487,7 @@ DESTROY(ref)
         sv=GvSV(*gvp);
         if (sv && (SvREFCNT(sv) == 1) && SvIOK(sv))
           {
-            info=(struct PackageInfo *) SvIV(sv);
+            info=INT2PTR(struct PackageInfo *,SvIV(sv));
             DestroyPackageInfo(info);
           }
         key=hv_delete(hv,message,(long) strlen(message),G_DISCARD);
@@ -3502,7 +3502,7 @@ DESTROY(ref)
         /*
           Blessed scalar = (Image *) SvIV(reference)
         */
-        image=(Image *) SvIV(reference);
+        image=INT2PTR(Image *,SvIV(reference));
         if (image != (Image *) NULL)
           DeleteImageFromRegistry(reference,image);
         break;
@@ -10700,7 +10700,7 @@ Mogrify(ref,...)
                 image->next->previous=image;
               DeleteImageFromRegistry(*pv,next);
             }
-          sv_setiv(*pv,(IV) image);
+          sv_setiv(*pv,PTR2IV(image));
           next=image;
         }
       if (*pv)
