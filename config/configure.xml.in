@@ -39,7 +39,7 @@
   <configure name="HOST" value="@host@"/>
   <configure name="FEATURES" value="@MAGICK_FEATURES@"/>
   <configure name="DELEGATES" value="@DELEGATES@"/>
-  <configure name="COPYRIGHT" value="Copyright (C) 1999-2011 ImageMagick Studio LLC"/>
+  <configure name="COPYRIGHT" value="Copyright (C) 1999-2012 ImageMagick Studio LLC"/>
   <configure name="WEBSITE" value="http://www.imagemagick.org"/>
   <configure name="QuantumDepth" value="@QUANTUM_DEPTH@"/>
 </configuremap>
