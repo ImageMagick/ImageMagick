@@ -9740,7 +9740,8 @@ MagickPrivate Window XWindowByProperty(Display *display,const Window window,
 %
 %  The format of the XImportImage method is:
 %
-%      Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info)
+%      Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -9748,9 +9749,11 @@ MagickPrivate Window XWindowByProperty(Display *display,const Window window,
 %
 %    o ximage_info: Specifies a pointer to an XImportInfo structure.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickPrivate Image *XImportImage(const ImageInfo *image_info,
-  XImportInfo *ximage_info)
+  XImportInfo *ximage_info,ExceptionInfo *exception)
 {
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -9758,6 +9761,8 @@ MagickPrivate Image *XImportImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(ximage_info != (XImportInfo *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   return((Image *) NULL);
 }
 #endif
