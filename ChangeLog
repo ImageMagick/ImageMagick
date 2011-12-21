@@ -2,6 +2,8 @@
   * Sped up -noise option when radius is 0.
   * Read concatentated arcs correctly in a SVG path (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19992).
+  * PDF's now convert properly with -define pdf:use-cropbox=true (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20033).
 
 2011-12-09  6.7.4-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.4-0, SVN revision 6162.
