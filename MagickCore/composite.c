@@ -2251,7 +2251,7 @@ MagickBooleanType composite_channels;
         case MultiplyCompositeOp:
         case NoCompositeOp:
         case OutCompositeOp:
-        case OverCompositeOp:
+//        case OverCompositeOp:
         case OverlayCompositeOp:
         case PegtopLightCompositeOp:
         case PinLightCompositeOp:
