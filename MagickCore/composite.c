@@ -2222,6 +2222,7 @@ MagickBooleanType composite_channels;
       {
         case AtopCompositeOp:
         case ClearCompositeOp:
+        case ColorBurnCompositeOp:
         case ColorDodgeCompositeOp:
         case CopyCompositeOp:
         case DarkenCompositeOp:
@@ -2235,9 +2236,13 @@ MagickBooleanType composite_channels;
         case DstOverCompositeOp:
         case DstOutCompositeOp:
         case ExclusionCompositeOp:
+        case HardLightCompositeOp:
         case InCompositeOp:
         case LightenCompositeOp:
         case LightenIntensityCompositeOp:
+        case LinearBurnCompositeOp:
+        case LinearDodgeCompositeOp:
+        case LinearLightCompositeOp:
         case MathematicsCompositeOp:
         case MinusDstCompositeOp:
         case MinusSrcCompositeOp:
@@ -2247,14 +2252,19 @@ MagickBooleanType composite_channels;
         case NoCompositeOp:
         case OutCompositeOp:
         case OverCompositeOp:
+        case OverlayCompositeOp:
+        case PegtopLightCompositeOp:
+        case PinLightCompositeOp:
         case PlusCompositeOp:
         case ReplaceCompositeOp:
         case ScreenCompositeOp:
+        case SoftLightCompositeOp:
         case SrcAtopCompositeOp:
         case SrcCompositeOp:
         case SrcInCompositeOp:
         case SrcOutCompositeOp:
         case SrcOverCompositeOp:
+        case VividLightCompositeOp:
         case XorCompositeOp:
         {
           composite_channels=MagickTrue;
@@ -2268,9 +2278,11 @@ MagickBooleanType composite_channels;
           alpha,
           Da,
           Dc,
+          Dca,
           gamma,
           Sa,
-          Sc;
+          Sc,
+          Sca;
 
         register ssize_t
           i;
@@ -2339,8 +2351,8 @@ MagickBooleanType composite_channels;
           }
         /*
           Authentic composite:
-            Sa: source normalized alpha.
-            Da: destination normalized alpha.
+            Sa:  normalized source alpha.
+            Da:  normalized destination alpha.
         */
         Sa=QuantumScale*GetPixelAlpha(composite_image,p);
         Da=QuantumScale*GetPixelAlpha(image,q);
@@ -2356,18 +2368,28 @@ MagickBooleanType composite_channels;
             alpha=Sa*Da;
             break;
           }
+          case ColorBurnCompositeOp:
           case ColorDodgeCompositeOp:
           case DifferenceCompositeOp:
           case DivideDstCompositeOp:
           case DivideSrcCompositeOp:
           case ExclusionCompositeOp:
+          case HardLightCompositeOp:
+          case LinearBurnCompositeOp:
+          case LinearDodgeCompositeOp:
+          case LinearLightCompositeOp:
           case MathematicsCompositeOp:
           case MinusDstCompositeOp:
           case MinusSrcCompositeOp:
           case ModulusAddCompositeOp:
           case ModulusSubtractCompositeOp:
           case MultiplyCompositeOp:
+          case OverlayCompositeOp:
+          case PegtopLightCompositeOp:
+          case PinLightCompositeOp:
           case ScreenCompositeOp:
+          case SoftLightCompositeOp:
+          case VividLightCompositeOp:
           {
             alpha=RoundToUnity(Sa+Da-Sa*Da);
             break;
@@ -2430,10 +2452,14 @@ MagickBooleanType composite_channels;
             continue;
           /*
             Sc: source color.
+            Sca: source normalized color multiplied by alpha.
             Dc: destination color.
+            Dca: normalized destination color multiplied by alpha.
           */
           Sc=(MagickRealType) GetPixelChannel(composite_image,channel,p);
+          Sca=QuantumScale*Sa*Sc;
           Dc=(MagickRealType) q[i];
+          Dca=QuantumScale*Da*Dc;
           if ((traits & CopyPixelTrait) != 0)
             {
               if (channel != AlphaPixelChannel)
@@ -2511,6 +2537,22 @@ MagickBooleanType composite_channels;
               pixel=Sc*Sa+Dc*(1.0-Sa);
               break;
             }
+            case ColorBurnCompositeOp:
+            {
+              if ((fabs(Sca) < MagickEpsilon) && (fabs(Dca-Da) < MagickEpsilon))
+                {
+                  pixel=gamma*(Sa*Da+Dca*(1.0-Sa));
+                  break;
+                }
+              if (Sca < MagickEpsilon)
+                {
+                  pixel=gamma*(Dca*(1.0-Sa));
+                  break;
+                }
+              pixel=gamma*(Sa*Da-Sa*MagickMin(Da,(Da-Dca)*Sa/Sca)+Sca*(1.0-Da)+
+                Dca*(1.0-Sa));
+              break;
+            }
             case ColorDodgeCompositeOp:
             {
               if ((fabs((Sa*Sc)-Sa) < MagickEpsilon) &&
@@ -2558,40 +2600,32 @@ MagickBooleanType composite_channels;
             }
             case DivideDstCompositeOp:
             {
-              if ((fabs((QuantumScale*Sa*Sc)) < MagickEpsilon) &&
-                  (fabs((QuantumScale*Da*Dc)) < MagickEpsilon))
+              if ((fabs(Sca) < MagickEpsilon) && (fabs(Dca) < MagickEpsilon))
                 {
-                  pixel=gamma*((QuantumScale*Sa*Sc)*(1.0-Da)+
-                    (QuantumScale*Da*Dc)*(1.0-Sa));
+                  pixel=gamma*(Sca*(1.0-Da)+Dca*(1.0-Sa));
                   break;
                 }
-              if (fabs((QuantumScale*Da*Dc)) < MagickEpsilon)
+              if (fabs(Dca) < MagickEpsilon)
                 {
-                  pixel=gamma*(Sa*Da+(QuantumScale*Sa*Sc)*(1.0-Da)+
-                    (QuantumScale*Da*Dc)*(1.0-Sa));
+                  pixel=gamma*(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
                   break;
                 }
-              pixel=gamma*((QuantumScale*Sa*Sc)*Da*Da/(QuantumScale*Da*Dc)+
-                (QuantumScale*Sa*Sc)*(1.0-Da)+(QuantumScale*Da*Dc)*(1.0-Sa));
+              pixel=gamma*(Sca*Da*Da/Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
               break;
             }
             case DivideSrcCompositeOp:
             {
-              if ((fabs((QuantumScale*Da*Dc)) < MagickEpsilon) &&
-                  (fabs((QuantumScale*Sa*Sc)) < MagickEpsilon))
+              if ((fabs(Dca) < MagickEpsilon) && (fabs(Sca) < MagickEpsilon))
                 {
-                  pixel=gamma*((QuantumScale*Da*Dc)*(1.0-Sa)+
-                    (QuantumScale*Sa*Sc)*(1.0-Da));
+                  pixel=gamma*(Dca*(1.0-Sa)+Sca*(1.0-Da));
                   break;
                 }
-              if (fabs((QuantumScale*Sa*Sc)) < MagickEpsilon)
+              if (fabs(Sca) < MagickEpsilon)
                 {
-                  pixel=gamma*(Da*Sa+(QuantumScale*Da*Dc)*(1.0-Sa)+
-                    (QuantumScale*Sa*Sc)*(1.0-Da));
+                  pixel=gamma*(Da*Sa+Dca*(1.0-Sa)+Sca*(1.0-Da));
                   break;
                 }
-              pixel=gamma*((QuantumScale*Da*Dc)*Sa*Sa/(QuantumScale*Sa*Sc)+
-                (QuantumScale*Da*Dc)*(1.0-Sa)+(QuantumScale*Sa*Sc)*(1.0-Da));
+              pixel=gamma*(Dca*Sa*Sa/Sca+Dca*(1.0-Sa)+Sca*(1.0-Da));
               break;
             }
             case DstAtopCompositeOp:
@@ -2622,9 +2656,15 @@ MagickBooleanType composite_channels;
             }
             case ExclusionCompositeOp:
             {
-              pixel=gamma*((QuantumScale*Sa*Sc)*Da+(QuantumScale*Da*Dc)*Sa-2.0*
-                (QuantumScale*Sa*Sc)*(QuantumScale*Da*Dc)+(QuantumScale*Sa*Sc)*
-                (1.0-Da)+(QuantumScale*Da*Dc)*(1.0-Sa));
+              pixel=gamma*(Sca*Da+Dca*Sa-2.0*Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
+              break;
+            }
+            case HardLightCompositeOp:
+            {
+              if ((2.0*Sca) < Sa)
+                pixel=gamma*(2.0*Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
+              pixel=gamma*(Sa*Da-2.0*(Da-Dca)*(Sa-Sca)+Sca*(1.0-Da)+
+                Dca*(1.0-Sa));
               break;
             }
             case InCompositeOp:
@@ -2637,6 +2677,22 @@ MagickBooleanType composite_channels;
             {
               pixel=Sa*GetPixelIntensity(composite_image,p) >
                 Da*GetPixelIntensity(image,q) ? Sc : Dc;
+              break;
+            }
+            case LinearBurnCompositeOp:
+            {
+              pixel=gamma*(Sca+Dca-Sa*Da);
+              break;
+            }
+            case LinearDodgeCompositeOp:
+            {
+              pixel=gamma*(Sa*Sc+Da*Dc);
+              break;
+            }
+            case LinearLightCompositeOp:
+            {
+              pixel=gamma*((Sca-Sa)*Da+Sca+
+                Dca);
               break;
             }
             case MathematicsCompositeOp:
@@ -2684,8 +2740,7 @@ MagickBooleanType composite_channels;
             }
             case MultiplyCompositeOp:
             {
-              pixel=gamma*((QuantumScale*Sa*Sc)*(QuantumScale*Da*Dc)+
-                (QuantumScale*Sa*Sc)*(1.0-Da)+(QuantumScale*Da*Dc)*(1.0-Sa));
+              pixel=gamma*(Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
               break;
             }
             case OutCompositeOp:
@@ -2700,6 +2755,40 @@ MagickBooleanType composite_channels;
               pixel=gamma*(Sa*Sc-Sa*Da*Dc+Da*Dc);
               break;
             }
+            case OverlayCompositeOp:
+            {
+              if ((2.0*Dca) < Da)
+                pixel=gamma*(2.0*Dca*Sca+Dca*(1.0-Sa)+Sca*(1.0-Da));
+              pixel=gamma*(Da*Sa-2.0*(Sa-Sca)*(Da-Dca)+Dca*(1.0-Sa)+Sca*
+                (1.0-Da));
+              break;
+            }
+            case PegtopLightCompositeOp:
+            {
+              if (fabs(Da) < MagickEpsilon)
+                {
+                  pixel=gamma*(Sca);
+                  break;
+                }
+              pixel=gamma*(Dca*Dca*(Sa-2.0*Sca)/Da+Sca*(2.0*Dca+1.0-Da)+Dca*
+                (1.0-Sa));
+              break;
+            }
+            case PinLightCompositeOp:
+            {
+              if ((Dca*Sa) < (Da*(2.0*Sca-Sa)))
+                {
+                  pixel=gamma*(Sca*(Da+1.0)-Sa*Da+Dca*(1.0-Sa));
+                  break;
+                }
+              if ((Dca*Sa) > (2.0*Sca*Da))
+                {
+                  pixel=gamma*(Sca*Da+Sca+Dca*(1.0-Sa));
+                  break;
+                }
+              pixel=gamma*(Sca*(1.0-Da)+Dca);
+              break;
+            }
             case PlusCompositeOp:
             {
               pixel=gamma*(Sa*Sc+Da*Dc);
@@ -2708,6 +2797,41 @@ MagickBooleanType composite_channels;
             case ScreenCompositeOp:
             {
               pixel=gamma*((Sa*Sc)+(Da*Dc)-(Sa*Sc)*(Da*Dc));
+              break;
+            }
+            case SoftLightCompositeOp:
+            {
+              if ((2.0*Sca) < Sa)
+                {
+                  pixel=gamma*(Dca*(Sa+(2.0*Sca-Sa)*(1.0-(Dca/Da)))+Sca*
+                    (1.0-Da)+Dca*(1.0-Sa));
+                  break;
+                }
+              if (((2.0*Sca) > Sa) && ((4.0*Dca) <= Da))
+                {
+                  pixel=gamma*(Dca*Sa+Da*(2.0*Sca-Sa)*(4.0*(Dca/Da)*(4.0*
+                    (Dca/Da)+1.0)*((Dca/Da)-1.0)+7.0*(Dca/Da))+Sca*(1.0-Da)+Dca*
+                    (1.0-Sa));
+                  break;
+                }
+              pixel=gamma*(Dca*Sa+Da*(2.0*Sca-Sa)*(pow((Dca/Da),0.5)-(Dca/Da))+
+                Sca*(1.0-Da)+Dca*(1.0-Sa));
+              break;
+            }
+            case VividLightCompositeOp:
+            {
+              if ((fabs(Sa) < MagickEpsilon) || (fabs(Sca-Sa) < MagickEpsilon))
+                {
+                  pixel=gamma*(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
+                  break;
+                }
+              if ((2.0*Sca) <= Sa)
+                {
+                  pixel=gamma*(Sa*(Da+Sa*(Dca-Da)/(2.0*Sca))+Sca*(1.0-Da)+Dca*
+                    (1.0-Sa));
+                  break;
+                }
+              pixel=gamma*(Dca*Sa*Sa/(2.0*(Sa-Sca))+Sca*(1.0-Da)+Dca*(1.0-Sa));
               break;
             }
             case XorCompositeOp:
