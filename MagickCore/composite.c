@@ -2251,7 +2251,7 @@ MagickBooleanType composite_channels;
         case MultiplyCompositeOp:
         case NoCompositeOp:
         case OutCompositeOp:
-//        case OverCompositeOp:
+        case OverCompositeOp:
         case OverlayCompositeOp:
         case PegtopLightCompositeOp:
         case PinLightCompositeOp:
@@ -2309,11 +2309,15 @@ MagickBooleanType composite_channels;
                 channel;
 
               PixelTrait
+                composite_traits,
                 traits;
 
               channel=GetPixelChannelMapChannel(image,i);
               traits=GetPixelChannelMapTraits(image,channel);
-              if (traits == UndefinedPixelTrait)
+              composite_traits=GetPixelChannelMapTraits(composite_image,
+                channel);
+              if ((traits == UndefinedPixelTrait) ||
+                  (composite_traits == UndefinedPixelTrait))
                 continue;
               switch (compose)
               {
@@ -2473,7 +2477,6 @@ MagickBooleanType composite_channels;
               /*
                 Set alpha channel.
               */
-              pixel=0.0;
               switch (compose)
               {
                 case AtopCompositeOp:
@@ -2527,8 +2530,7 @@ MagickBooleanType composite_channels;
             default:
               break;
           }
-          gamma=QuantumRange/(fabs(alpha) <= MagickEpsilon ? 1.0 : alpha);
-          pixel=0.0;
+          gamma=1.0/(fabs(alpha) <= MagickEpsilon ? 1.0 : alpha);
           switch (compose)
           {
             case AtopCompositeOp:
@@ -2555,18 +2557,17 @@ MagickBooleanType composite_channels;
             }
             case ColorDodgeCompositeOp:
             {
-              if ((fabs((Sa*Sc)-Sa) < MagickEpsilon) &&
-                  (fabs((Da*Dc)) < MagickEpsilon))
+              if ((fabs(Sca-Sa) < MagickEpsilon) && (fabs(Dca) < MagickEpsilon))
                 {
-                  pixel=gamma*((Sa*Sc)*(1.0-Da)+(Da*Dc)*(1.0-Sa));
+                  pixel=gamma*QuantumRange*(Sca*(1.0-Da)+Dca*(1.0-Sa));
                   break;
                 }
-              if (fabs((Sa*Sc)-Sa) < MagickEpsilon)
+              if (fabs(Sca-Sa) < MagickEpsilon)
                 {
-                  pixel=gamma*(Sa*Da+(Sa*Sc)*(1.0-Da)+(Da*Dc)*(1.0-Sa));
+                  pixel=gamma*QuantumRange*(Sa*Da+Sca*(1.0-Da)+Dca*(1.0-Sa));
                   break;
                 }
-              pixel=gamma*((Da*Dc)*Sa*Sa/(Sa-(Sa*Sc))+(Sa*Sc)*(1.0-Da)+(Da*Dc)*
+              pixel=gamma*QuantumRange*(Dca*Sa*Sa/(Sa-Sca)+Sca*(1.0-Da)+Dca*
                 (1.0-Sa));
               break;
             }
@@ -2662,9 +2663,13 @@ MagickBooleanType composite_channels;
             case HardLightCompositeOp:
             {
               if ((2.0*Sca) < Sa)
-                pixel=gamma*(2.0*Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
-              pixel=gamma*(Sa*Da-2.0*(Da-Dca)*(Sa-Sca)+Sca*(1.0-Da)+
-                Dca*(1.0-Sa));
+                {
+                  pixel=gamma*QuantumRange*(2.0*Sca*Dca+Sca*(1.0-Da)+Dca*
+                    (1.0-Sa));
+                  break;
+                }
+              pixel=gamma*QuantumRange*(Sa*Da-2.0*(Da-Dca)*(Sa-Sca)+Sca*
+                (1.0-Da)+Dca*(1.0-Sa));
               break;
             }
             case InCompositeOp:
@@ -2740,7 +2745,7 @@ MagickBooleanType composite_channels;
             }
             case MultiplyCompositeOp:
             {
-              pixel=gamma*(Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
+              pixel=gamma*QuantumRange*(Sca*Dca+Sca*(1.0-Da)+Dca*(1.0-Sa));
               break;
             }
             case OutCompositeOp:
@@ -2796,7 +2801,7 @@ MagickBooleanType composite_channels;
             }
             case ScreenCompositeOp:
             {
-              pixel=gamma*((Sa*Sc)+(Da*Dc)-(Sa*Sc)*(Da*Dc));
+              pixel=gamma*QuantumRange*(Sca+Dca-Sca*Dca);
               break;
             }
             case SoftLightCompositeOp:
@@ -2840,7 +2845,10 @@ MagickBooleanType composite_channels;
               break;
             }
             default:
+            {
+              pixel=Sc;
               break;
+            }
           }
           q[i]=ClampToQuantum(pixel);
         }
