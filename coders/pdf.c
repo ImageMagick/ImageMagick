@@ -435,7 +435,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ResetMagickMemory(&bounding_box,0,sizeof(bounding_box));
   (void) ResetMagickMemory(&bounds,0,sizeof(bounds));
   (void) ResetMagickMemory(&hires_bounds,0,sizeof(hires_bounds));
-  (void) ResetMagickMemory(&page,0,sizeof(page));
   (void) ResetMagickMemory(command,0,sizeof(command));
   angle=0.0;
   p=command;
