@@ -2222,6 +2222,7 @@ MagickBooleanType composite_channels;
       {
         case AtopCompositeOp:
         case ClearCompositeOp:
+        case ColorDodgeCompositeOp:
         case CopyCompositeOp:
         case DarkenCompositeOp:
         case DarkenIntensityCompositeOp:
@@ -2237,6 +2238,7 @@ MagickBooleanType composite_channels;
         case InCompositeOp:
         case LightenCompositeOp:
         case LightenIntensityCompositeOp:
+        case MathematicsCompositeOp:
         case MinusDstCompositeOp:
         case MinusSrcCompositeOp:
         case ModulusAddCompositeOp:
@@ -2354,10 +2356,12 @@ MagickBooleanType composite_channels;
             alpha=Sa*Da;
             break;
           }
+          case ColorDodgeCompositeOp:
           case DifferenceCompositeOp:
           case DivideDstCompositeOp:
           case DivideSrcCompositeOp:
           case ExclusionCompositeOp:
+          case MathematicsCompositeOp:
           case MinusDstCompositeOp:
           case MinusSrcCompositeOp:
           case ModulusAddCompositeOp:
@@ -2507,6 +2511,23 @@ MagickBooleanType composite_channels;
               pixel=Sc*Sa+Dc*(1.0-Sa);
               break;
             }
+            case ColorDodgeCompositeOp:
+            {
+              if ((fabs((Sa*Sc)-Sa) < MagickEpsilon) &&
+                  (fabs((Da*Dc)) < MagickEpsilon))
+                {
+                  pixel=gamma*((Sa*Sc)*(1.0-Da)+(Da*Dc)*(1.0-Sa));
+                  break;
+                }
+              if (fabs((Sa*Sc)-Sa) < MagickEpsilon)
+                {
+                  pixel=gamma*(Sa*Da+(Sa*Sc)*(1.0-Da)+(Da*Dc)*(1.0-Sa));
+                  break;
+                }
+              pixel=gamma*((Da*Dc)*Sa*Sa/(Sa-(Sa*Sc))+(Sa*Sc)*(1.0-Da)+(Da*Dc)*
+                (1.0-Sa));
+              break;
+            }
             case CopyCompositeOp:
             case ReplaceCompositeOp:
             case SrcCompositeOp:
@@ -2616,6 +2637,13 @@ MagickBooleanType composite_channels;
             {
               pixel=Sa*GetPixelIntensity(composite_image,p) >
                 Da*GetPixelIntensity(image,q) ? Sc : Dc;
+              break;
+            }
+            case MathematicsCompositeOp:
+            {
+              pixel=gamma*geometry_info.rho*Sa*Sc*Da*Dc+geometry_info.sigma*
+                Sa*Sc*Da+geometry_info.xi*Da*Dc*Sa+geometry_info.psi*Sa*Da+
+                Sa*Sc*(1.0-Da)+Da*Dc*(1.0-Sa);
               break;
             }
             case MinusDstCompositeOp:

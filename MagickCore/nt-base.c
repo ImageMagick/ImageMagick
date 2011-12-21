@@ -1153,7 +1153,7 @@ MagickPrivate MagickBooleanType NTGetModulePath(const char *module,char *path)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   N T G e t T y pe L i s t                                                  %
++   N T G e t T y p e L i s t                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2236,7 +2236,8 @@ MagickPrivate struct dirent *NTReadDirectory(DIR *entry)
 %  may coexist.
 %
 %  Values are stored in the registry under a base path path similar to
-%  "HKEY_LOCAL_MACHINE/SOFTWARE\ImageMagick\5.5.7\Q:16". The provided subkey
+%  "HKEY_LOCAL_MACHINE/SOFTWARE\ImageMagick\7.0.0\Q:16" or
+%  "HKEY_CURRENT_USER/SOFTWARE\ImageMagick\7.0.0\Q:16". The provided subkey
 %  is appended to this base path to form the full key.
 %
 %  The format of the NTRegistryKeyLookup method is:
@@ -2276,6 +2277,9 @@ MagickPrivate unsigned char *NTRegistryKeyLookup(const char *subkey)
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"%s",package_key);
   registry_key=(HKEY) INVALID_HANDLE_VALUE;
   status=RegOpenKeyExA(HKEY_LOCAL_MACHINE,package_key,0,KEY_READ,&registry_key);
+  if (status != ERROR_SUCCESS)
+    status=RegOpenKeyExA(HKEY_CURRENT_USER,package_key,0,KEY_READ,
+      &registry_key);
   if (status != ERROR_SUCCESS)
     {
       registry_key=(HKEY) INVALID_HANDLE_VALUE;
