@@ -1789,7 +1789,7 @@ static png_voidp Magick_png_malloc(png_structp png_ptr,png_uint_32 size)
 */
 static png_free_ptr Magick_png_free(png_structp png_ptr,png_voidp ptr)
 {
-  png_ptr=png_ptr;
+  (void) png_ptr;
   ptr=RelinquishMagickMemory(ptr);
   return((png_free_ptr) NULL);
 }
@@ -13122,7 +13122,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image)
 
 static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
 {
-  image=image;
+  (void) image;
   printf("Your PNG library is too old: You have libpng-%s\n",
      PNG_LIBPNG_VER_STRING);
 
