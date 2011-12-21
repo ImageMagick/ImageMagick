@@ -1,3 +1,6 @@
+2011-12-21  6.7.4-1 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.4-1, SVN revision 6236.
+
 2011-12-12  6.7.4-0 Cristy  <quetzlzacatenango@image...>
   * Sped up -noise option when radius is 0.
   * Read concatentated arcs correctly in a SVG path (reference
