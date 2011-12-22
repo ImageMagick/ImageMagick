@@ -98,7 +98,7 @@ if test "$disable_opencl" = 'yes'; then
                                                [ax_cv_check_cl_libcl="$ax_try_lib $ax_check_cl_dylib_flag"; break])])])
   done
   
-  AS_IF([test "X$ax_cv_check_cl_libcl" = Xno -a X$no_x = Xyes],
+  AS_IF([test "X$ax_cv_check_cl_libcl" = Xno],
         [LIBS='-Wl,-framework,OpenCL'
         AC_LINK_IFELSE([AX_OPENCL_PROGRAM],
                        [ax_cv_check_cl_libcl=$LIBS])])

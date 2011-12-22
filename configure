@@ -3610,7 +3610,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=6229
+MAGICK_SVN_REVISION=6244
 
 
 
@@ -9366,7 +9366,7 @@ rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
   done
 
-  if test "X$ax_cv_check_cl_libcl" = Xno -a X$no_x = Xyes; then :
+  if test "X$ax_cv_check_cl_libcl" = Xno; then :
   LIBS='-Wl,-framework,OpenCL'
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
