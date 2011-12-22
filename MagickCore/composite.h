@@ -39,7 +39,7 @@ typedef enum
   CopyCyanCompositeOp,
   CopyGreenCompositeOp,
   CopyMagentaCompositeOp,
-  CopyOpacityCompositeOp,
+  CopyAlphaCompositeOp,
   CopyRedCompositeOp,
   CopyYellowCompositeOp,
   DarkenCompositeOp,

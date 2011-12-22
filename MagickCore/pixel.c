@@ -5170,20 +5170,22 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
 %
 %  The format of the IsFuzzyEquivalencePixel method is:
 %
-%      void IsFuzzyEquivalencePixel(const Image *image,const Quantum *p,
-%        const Quantum *q)
+%      void IsFuzzyEquivalencePixel(const Image *source,const Quantum *p,
+%        const Image *destination,const Quantum *q)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o source: the source image.
 %
 %    o p: Pixel p.
+%
+%    o destination: the destination image.
 %
 %    o q: Pixel q.
 %
 */
-MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *image,
-  const Quantum *p,const Quantum *q)
+MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
+  const Quantum *p,const Image *destination,const Quantum *q)
 {
   MagickRealType
     fuzz,
@@ -5193,18 +5195,18 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *image,
     distance,
     scale;
 
-  fuzz=MagickMax(image->fuzz,(MagickRealType) MagickSQ1_2)*MagickMax(
-    image->fuzz,(MagickRealType) MagickSQ1_2);
+  fuzz=MagickMax(source->fuzz,(MagickRealType) MagickSQ1_2)*MagickMax(
+    destination->fuzz,(MagickRealType) MagickSQ1_2);
   scale=1.0;
   distance=0.0;
-  if (image->matte != MagickFalse)
+  if (source->matte != MagickFalse)
     {
       /*
         Transparencies are involved - set alpha distance
       */
-      pixel=(MagickRealType) ((image->matte != MagickFalse ?
-        GetPixelAlpha(image,p) : OpaqueAlpha)-(image->matte != MagickFalse ?
-        GetPixelAlpha(image,q) : OpaqueAlpha));
+      pixel=(MagickRealType) ((source->matte != MagickFalse ?
+        GetPixelAlpha(source,p) : OpaqueAlpha)-(source->matte != MagickFalse ?
+        GetPixelAlpha(destination,q) : OpaqueAlpha));
       distance=pixel*pixel;
       if (distance > fuzz)
         return(MagickFalse);
@@ -5212,8 +5214,8 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *image,
         Generate a alpha scaling factor to generate a 4D cone on colorspace
         Note that if one color is transparent, distance has no color component.
       */
-      scale=QuantumScale*GetPixelAlpha(image,p);
-      scale*=QuantumScale*GetPixelAlpha(image,q);
+      scale=QuantumScale*GetPixelAlpha(source,p);
+      scale*=QuantumScale*GetPixelAlpha(destination,q);
       if (scale <= MagickEpsilon)
         return(MagickTrue);
     }
@@ -5222,10 +5224,10 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *image,
   */
   distance*=3.0;  /* rescale appropriately */
   fuzz*=3.0;
-  pixel=GetPixelRed(image,p)-(MagickRealType) GetPixelRed(image,q);
-  if ((image->colorspace == HSLColorspace) ||
-      (image->colorspace == HSBColorspace) ||
-      (image->colorspace == HWBColorspace))
+  pixel=GetPixelRed(source,p)-(MagickRealType) GetPixelRed(destination,q);
+  if ((source->colorspace == HSLColorspace) ||
+      (source->colorspace == HSBColorspace) ||
+      (source->colorspace == HWBColorspace))
     {
       /*
         Compute an arc distance for hue.  It should be a vector angle of
@@ -5238,11 +5240,11 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *image,
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=GetPixelGreen(image,p)-(MagickRealType) GetPixelGreen(image,q);
+  pixel=GetPixelGreen(source,p)-(MagickRealType) GetPixelGreen(destination,q);
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=GetPixelBlue(image,p)-(MagickRealType) GetPixelBlue(image,q);
+  pixel=GetPixelBlue(source,p)-(MagickRealType) GetPixelBlue(destination,q);
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);

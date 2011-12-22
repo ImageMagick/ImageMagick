@@ -3864,7 +3864,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
         /* Preserve the alpha channel of input image - but turned off */
         (void) SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel,
           exception);
-        (void) CompositeImage(rslt_image, CopyOpacityCompositeOp, image, 0, 0,
+        (void) CompositeImage(rslt_image, CopyAlphaCompositeOp, image, 0, 0,
           exception);
         (void) SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel,
           exception);

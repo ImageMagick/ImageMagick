@@ -1927,7 +1927,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                           SetImageType(composite_image,TrueColorMatteType,
                             &exception);
                           (void) CompositeImage(composite_image,
-                            CopyOpacityCompositeOp,msl_info->image[j],0,0,
+                            CopyAlphaCompositeOp,msl_info->image[j],0,0,
                             &exception);
                           break;
                         }

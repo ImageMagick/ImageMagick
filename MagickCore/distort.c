@@ -1561,7 +1561,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
         exception);
       (void) SetImageAlphaChannel(resize_alpha,DeactivateAlphaChannel,
         exception);
-      (void) CompositeImage(resize_image,CopyOpacityCompositeOp,resize_alpha,
+      (void) CompositeImage(resize_image,CopyAlphaCompositeOp,resize_alpha,
         0,0,exception);
       resize_alpha=DestroyImage(resize_alpha);
     }

@@ -2647,7 +2647,7 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
   draw_view=DestroyCacheView(draw_view);
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
   if (draw_info->stencil == TransparentStencil)
-    (void) CompositeImage(image,CopyOpacityCompositeOp,draw_image,(ssize_t) x,
+    (void) CompositeImage(image,CopyAlphaCompositeOp,draw_image,(ssize_t) x,
       (ssize_t) y,exception);
   else
     {
