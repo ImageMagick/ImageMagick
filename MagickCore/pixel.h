@@ -143,7 +143,7 @@ extern MagickExport MagickBooleanType
   InterpolatePixelInfo(const Image *,const CacheView_ *,
     const PixelInterpolateMethod,const double,const double,PixelInfo *,
     ExceptionInfo *),
-  IsFuzzyEquivalencePixel(const Image *,const Quantum *,
+  IsFuzzyEquivalencePixel(const Image *,const Quantum *,const Image *,
     const Quantum *),
   IsFuzzyEquivalencePixelInfo(const PixelInfo *,const PixelInfo *);
 

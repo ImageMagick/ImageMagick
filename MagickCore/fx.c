@@ -5449,7 +5449,7 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   blur_image->matte=MagickFalse;
-  (void) CompositeImage(canvas_image,CopyOpacityCompositeOp,blur_image,0,0,
+  (void) CompositeImage(canvas_image,CopyAlphaCompositeOp,blur_image,0,0,
     exception);
   blur_image=DestroyImage(blur_image);
   vignette_image=MergeImageLayers(canvas_image,FlattenLayer,exception);

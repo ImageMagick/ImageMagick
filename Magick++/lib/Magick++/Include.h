@@ -191,7 +191,7 @@ namespace Magick
   using MagickCore::CopyCyanCompositeOp;
   using MagickCore::CopyGreenCompositeOp;
   using MagickCore::CopyMagentaCompositeOp;
-  using MagickCore::CopyOpacityCompositeOp;
+  using MagickCore::CopyAlphaCompositeOp;
   using MagickCore::CopyRedCompositeOp;
   using MagickCore::CopyYellowCompositeOp;
   using MagickCore::DarkenCompositeOp;
