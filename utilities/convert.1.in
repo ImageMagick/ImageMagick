@@ -261,6 +261,8 @@ Miscellaneous Options:
   \-list type           print a list of supported option arguments
   \-version             print version information
 
+Use any setting or operator as an \fIoutput-option\fP.  Only a limited number of setting are  \fIinput-option\fP. They include: \-antialias, \-caption, \-density, \-define, \-encoding, \-font, \-pointsize, \-size, and \-texture as well as any of the miscellaneous options.
+
 By default, the image format of `file' is determined by its magic number.  To specify a particular image format, precede the filename with an image format name and a colon (i.e. ps:image) or specify the image type as the filename suffix (i.e. image.ps).  Specify 'file' as '-' for standard input or output.
 .SH SEE ALSO
 ImageMagick(1)
