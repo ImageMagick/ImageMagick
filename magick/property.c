@@ -2803,7 +2803,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           Image index in list.
         */
         q+=FormatLocaleString(q,extent,"%.20g",(double)
-            GetImageIndexInList(image));
+          GetImageIndexInList(image));
         break;
       }
       case 'q':
