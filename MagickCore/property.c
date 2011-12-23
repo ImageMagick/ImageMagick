@@ -2871,10 +2871,10 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         q+=CopyMagickString(q,image_info->filename,extent);
         break;
       }
-      case 'p': /* Image index in curent image list  */
+      case 'p': /* Image index in current image list  */
       {
         q+=FormatLocaleString(q,extent,"%.20g",(double)
-            GetImageIndexInList(image));
+          GetImageIndexInList(image));
         break;
       }
       case 'q': /* Quantum depth of image in memory */
