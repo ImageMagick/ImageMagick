@@ -495,7 +495,7 @@ MagickExport Image *EvaluateImages(const Image *images,
   if (op == MedianEvaluateOperator)
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(dynamic) shared(progress,status)
+      #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
       for (y=0; y < (ssize_t) evaluate_image->rows; y++)
       {
@@ -604,7 +604,7 @@ MagickExport Image *EvaluateImages(const Image *images,
   else
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(dynamic) shared(progress,status)
+      #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
       for (y=0; y < (ssize_t) evaluate_image->rows; y++)
       {
@@ -781,7 +781,7 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
   random_info=AcquireRandomInfoThreadSet();
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1019,7 +1019,7 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
   progress=0;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2548,7 +2548,7 @@ MagickExport Image *StatisticImageChannel(const Image *image,
   image_view=AcquireCacheView(image);
   statistic_view=AcquireCacheView(statistic_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) statistic_image->rows; y++)
   {

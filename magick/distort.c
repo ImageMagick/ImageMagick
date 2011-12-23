@@ -2309,7 +2309,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       UndefinedVirtualPixelMethod,MagickFalse,exception);
     distort_view=AcquireCacheView(distort_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
     for (j=0; j < (ssize_t) distort_image->rows; j++)
     {
@@ -3030,7 +3030,7 @@ MagickExport Image *SparseColorImage(const Image *image,
     progress=0;
     sparse_view=AcquireCacheView(sparse_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
     for (j=0; j < (ssize_t) sparse_image->rows; j++)
     {
