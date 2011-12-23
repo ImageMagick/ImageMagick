@@ -309,7 +309,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
   image_view=AcquireCacheView(image);
   composite_view=AcquireCacheView(composite_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -636,7 +636,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       image_view=AcquireCacheView(image);
       composite_view=AcquireCacheView(composite_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-#pragma omp parallel for schedule(dynamic,4) shared(status)
+#pragma omp parallel for schedule(static,4) shared(status)
 #endif
       for (y=0; y < (ssize_t) composite_image->rows; y++)
       {
@@ -1126,7 +1126,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   image_view=AcquireCacheView(image);
   composite_view=AcquireCacheView(composite_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2184,18 +2184,18 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 %
 %  The format of the TextureImage method is:
 %
-%      MagickBooleanType TextureImage(Image *image,const Image *texture,
+%      MagickBooleanType TextureImage(Image *image,const Image *texture_image,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o texture: This image is the texture to layer on the background.
+%    o texture_image: This image is the texture to layer on the background.
 %
 */
-MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
-  ExceptionInfo *exception)
+MagickExport MagickBooleanType TextureImage(Image *image,
+  const Image *texture_image,ExceptionInfo *exception)
 {
 #define TextureImageTag  "Texture/Image"
 
@@ -2213,36 +2213,37 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  if (texture == (const Image *) NULL)
+  if (texture_image == (const Image *) NULL)
     return(MagickFalse);
-  (void) SetImageVirtualPixelMethod(texture,TileVirtualPixelMethod);
+  (void) SetImageVirtualPixelMethod(texture_image,TileVirtualPixelMethod);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
   if ((image->compose != CopyCompositeOp) &&
       ((image->compose != OverCompositeOp) || (image->matte != MagickFalse) ||
-       (texture->matte != MagickFalse)))
+       (texture_image->matte != MagickFalse)))
     {
       /*
         Tile texture onto the image background.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(dynamic,4) shared(status) omp_throttle(1)
+      #pragma omp parallel for schedule(static,4) shared(status) omp_throttle(1)
 #endif
-      for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) texture->rows)
+      for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) texture_image->rows)
       {
         register ssize_t
           x;
 
         if (status == MagickFalse)
           continue;
-        for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) texture->columns)
+        for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) texture_image->columns)
         {
           MagickBooleanType
             thread_status;
 
-          thread_status=CompositeImage(image,image->compose,texture,x+
-            texture->tile_offset.x,y+texture->tile_offset.y,exception);
+          thread_status=CompositeImage(image,image->compose,texture_image,x+
+            texture_image->tile_offset.x,y+texture_image->tile_offset.y,
+            exception);
           if (thread_status == MagickFalse)
             {
               status=thread_status;
@@ -2272,9 +2273,9 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
   */
   status=MagickTrue;
   image_view=AcquireCacheView(image);
-  texture_view=AcquireCacheView(texture);
+  texture_view=AcquireCacheView(texture_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status) omp_throttle(1)
+  #pragma omp parallel for schedule(static,4) shared(status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2296,34 +2297,47 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
 
     if (status == MagickFalse)
       continue;
-    pixels=GetCacheViewVirtualPixels(texture_view,texture->tile_offset.x,(y+
-      texture->tile_offset.y) % texture->rows,texture->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-      exception);
+    pixels=GetCacheViewVirtualPixels(texture_view,texture_image->tile_offset.x,
+      (y+texture_image->tile_offset.y) % texture_image->rows,
+      texture_image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if ((pixels == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
       }
-    for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) texture->columns)
+    for (x=0; x < (ssize_t) image->columns; x+=(ssize_t) texture_image->columns)
     {
       register ssize_t
-        i;
+        j;
 
       p=pixels;
-      width=texture->columns;
+      width=texture_image->columns;
       if ((x+(ssize_t) width) > (ssize_t) image->columns)
         width=image->columns-x;
-      for (i=0; i < (ssize_t) width; i++)
+      for (j=0; j < (ssize_t) width; j++)
       {
-        SetPixelRed(image,GetPixelRed(texture,p),q);
-        SetPixelGreen(image,GetPixelGreen(texture,p),q);
-        SetPixelBlue(image,GetPixelBlue(texture,p),q);
-        SetPixelAlpha(image,GetPixelAlpha(texture,p),q);
-        if ((image->colorspace == CMYKColorspace)  &&
-            (texture->colorspace == CMYKColorspace))
-          SetPixelBlack(image,GetPixelBlack(texture,p),q);
-        p+=GetPixelChannels(texture);
+        register ssize_t
+          i;
+
+        for (i=0; i < (ssize_t) GetPixelChannels(texture_image); i++)
+        {
+          PixelChannel
+            channel;
+
+          PixelTrait
+            texture_traits,
+            traits;
+
+          channel=GetPixelChannelMapChannel(texture_image,i);
+          texture_traits=GetPixelChannelMapTraits(texture_image,channel);
+          traits=GetPixelChannelMapTraits(image,channel);
+          if ((traits == UndefinedPixelTrait) ||
+              (texture_traits == UndefinedPixelTrait))
+            continue;
+          SetPixelChannel(image,channel,p[i],q);
+        }
+        p+=GetPixelChannels(texture_image);
         q+=GetPixelChannels(image);
       }
     }

@@ -1180,7 +1180,7 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
   image_view=AcquireCacheView(image);
   resize_view=AcquireCacheView(resize_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) resize_image->rows; y++)
   {
@@ -2654,7 +2654,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   image_view=AcquireCacheView(image);
   sample_view=AcquireCacheView(sample_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) sample_image->rows; y++)
   {

@@ -223,7 +223,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   status=MagickTrue;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -593,7 +593,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
     Compute texture features.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status)
 #endif
   for (i=0; i < 4; i++)
   {
@@ -777,7 +777,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
     Compute more texture features.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status)
 #endif
   for (i=0; i < 4; i++)
   {
@@ -852,7 +852,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
     Compute more texture features.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status)
 #endif
   for (i=0; i < 4; i++)
   {
@@ -972,7 +972,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   (void) ResetMagickMemory(&variance,0,sizeof(variance));
   (void) ResetMagickMemory(&sum_squares,0,sizeof(sum_squares));
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status)
 #endif
   for (i=0; i < 4; i++)
   {
@@ -1123,7 +1123,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
     Compute more texture features.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status)
 #endif
   for (i=0; i < 4; i++)
   {
