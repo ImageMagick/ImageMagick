@@ -160,7 +160,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   image_view=AcquireCacheView(image);
   chop_view=AcquireCacheView(chop_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) extent.y; y++)
   {
@@ -222,7 +222,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     Extract chop image.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) (image->rows-(extent.y+extent.height)); y++)
   {
@@ -647,7 +647,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   image_view=AcquireCacheView(image);
   crop_view=AcquireCacheView(crop_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) crop_image->rows; y++)
   {
@@ -984,7 +984,7 @@ MagickExport Image *ExcerptImage(const Image *image,
   image_view=AcquireCacheView(image);
   excerpt_view=AcquireCacheView(excerpt_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) excerpt_image->rows; y++)
   {
@@ -1171,7 +1171,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   image_view=AcquireCacheView(image);
   flip_view=AcquireCacheView(flip_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) flip_image->rows; y++)
   {
@@ -1298,7 +1298,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   image_view=AcquireCacheView(image);
   flop_view=AcquireCacheView(flop_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status) omp_throttle(1)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) flop_image->rows; y++)
   {
@@ -1413,7 +1413,7 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
   source_view=AcquireCacheView(source);
   destination_view=AcquireCacheView(destination);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -1724,7 +1724,7 @@ MagickExport Image *SpliceImage(const Image *image,
   image_view=AcquireCacheView(image);
   splice_view=AcquireCacheView(splice_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) splice_geometry.y; y++)
   {
@@ -1802,7 +1802,7 @@ MagickExport Image *SpliceImage(const Image *image,
       }
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
   for (y=(ssize_t) (splice_geometry.y+splice_geometry.height);
        y < (ssize_t) splice_image->rows; y++)
@@ -2125,7 +2125,7 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
   image_view=AcquireCacheView(image);
   transpose_view=AcquireCacheView(transpose_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2253,7 +2253,7 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
   image_view=AcquireCacheView(image);
   transverse_view=AcquireCacheView(transverse_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
