@@ -5204,9 +5204,8 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
       /*
         Transparencies are involved - set alpha distance
       */
-      pixel=(MagickRealType) ((source->matte != MagickFalse ?
-        GetPixelAlpha(source,p) : OpaqueAlpha)-(source->matte != MagickFalse ?
-        GetPixelAlpha(destination,q) : OpaqueAlpha));
+      pixel=GetPixelAlpha(source,p)-(MagickRealType)
+        GetPixelAlpha(destination,q);
       distance=pixel*pixel;
       if (distance > fuzz)
         return(MagickFalse);
