@@ -665,12 +665,26 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
         for (x=0; x < (ssize_t) composite_image->columns; x++)
         {
-          SetPixelRed(image,GetPixelRed(composite_image,p),q);
-          SetPixelGreen(image,GetPixelGreen(composite_image,p),q);
-          SetPixelBlue(image,GetPixelBlue(composite_image,p),q);
-          SetPixelAlpha(image,GetPixelAlpha(composite_image,p),q);
-          if (image->colorspace == CMYKColorspace)
-            SetPixelBlack(image,GetPixelBlack(composite_image,p),q);
+          register ssize_t
+            i;
+
+          for (i=0; i < (ssize_t) GetPixelChannels(composite_image); i++)
+          {
+            PixelChannel
+              channel;
+
+            PixelTrait
+              composite_traits,
+              traits;
+
+            channel=GetPixelChannelMapChannel(composite_image,i);
+            composite_traits=GetPixelChannelMapTraits(composite_image,channel);
+            traits=GetPixelChannelMapTraits(image,channel);
+            if ((traits == UndefinedPixelTrait) ||
+                (composite_traits == UndefinedPixelTrait))
+              continue;
+            SetPixelChannel(image,channel,p[i],q);
+          }
           p+=GetPixelChannels(composite_image);
           q+=GetPixelChannels(image);
         }
