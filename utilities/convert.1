@@ -3,7 +3,7 @@
 convert \- convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.
 .SH SYNOPSIS
 .TP
-\fBconvert\fP [\fIinput-options\fP] \fIinput-file\fP [\fIoutput-options\fP] \fIoutput-file\fP
+\fBconvert\fP [\fIinput-option\fP] \fIinput-file\fP [\fIoutput-option\fP] \fIoutput-file\fP
 .SH OVERVIEW
 The \fBconvert\fP program is a member of the ImageMagick(1) suite of tools.  Use it to convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.  
 
@@ -260,6 +260,8 @@ Miscellaneous Options:
   \-log format          format of debugging information
   \-list type           print a list of supported option arguments
   \-version             print version information
+
+Use any setting or operator as an \fIoutput-option\fP.  Only a limited number of setting are  \fIinput-option\fP. They include: \-antialias, \-caption, \-density, \-define, \-encoding, \-font, \-pointsize, \-size, and \-texture as well as any of the miscellaneous options.
 
 By default, the image format of `file' is determined by its magic number.  To specify a particular image format, precede the filename with an image format name and a colon (i.e. ps:image) or specify the image type as the filename suffix (i.e. image.ps).  Specify 'file' as '-' for standard input or output.
 .SH SEE ALSO
