@@ -2596,7 +2596,7 @@ Append(ref,...)
       }
     }
     image=AppendImages(image,stack != 0 ? MagickTrue : MagickFalse,exception);
-    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+    if (image == (Image *) NULL)
       goto PerlException;
     for ( ; image; image=image->next)
     {
@@ -2685,7 +2685,7 @@ Average(ref)
         goto PerlException;
       }
     image=EvaluateImages(image,MeanEvaluateOperator,exception);
-    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+    if (image == (Image *) NULL)
       goto PerlException;
     /*
       Create blessed Perl array for the returned image.
@@ -2837,7 +2837,7 @@ BlobToImage(ref,...)
     for (i=number_images=0; i < n; i++)
     {
       image=BlobToImage(info->image_info,list[i],length[i],exception);
-      if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+      if (image == (Image *) NULL)
         break;
       for ( ; image; image=image->next)
       {
@@ -2949,7 +2949,7 @@ Clone(ref)
     for ( ; image; image=image->next)
     {
       clone=CloneImage(image,0,0,MagickTrue,exception);
-      if ((clone == (Image *) NULL) || (exception->severity >= ErrorException))
+      if (clone == (Image *) NULL)
         break;
       AddImageToRegistry(sv,clone);
       rv=newRV(sv);
@@ -3069,7 +3069,7 @@ Coalesce(ref)
         goto PerlException;
       }
     image=CoalesceImages(image,exception);
-    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+    if (image == (Image *) NULL)
       goto PerlException;
     for ( ; image; image=image->next)
     {
@@ -3404,7 +3404,7 @@ CompareLayers(ref)
       }
     }
     image=CompareImageLayers(image,method,exception);
-    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+    if (image == (Image *) NULL)
       goto PerlException;
     for ( ; image; image=image->next)
     {
@@ -3717,7 +3717,7 @@ EvaluateImages(ref)
         }
       }
     image=EvaluateImages(image,op,exception);
-    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+    if (image == (Image *) NULL)
       goto PerlException;
     /*
       Create blessed Perl array for the returned image.
@@ -4030,7 +4030,7 @@ Flatten(ref)
       }
     image->background_color=background_color;
     image=MergeImageLayers(image,FlattenLayer,exception);
-    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+    if (image == (Image *) NULL)
       goto PerlException;
     /*
       Create blessed Perl array for the returned image.
@@ -4198,7 +4198,7 @@ Fx(ref,...)
         }
       }
     image=FxImageChannel(image,channel,expression,exception);
-    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+    if (image == (Image *) NULL)
       goto PerlException;
     for ( ; image; image=image->next)
     {
@@ -6933,7 +6933,7 @@ Layers(ref,...)
         InheritException(&(layers->exception),exception);
         image=layers;
       }
-    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+    if (image == (Image *) NULL)
       goto PerlException;
     for ( ; image; image=image->next)
     {
@@ -11101,7 +11101,7 @@ Montage(ref,...)
     }
     image=MontageImageList(info->image_info,montage_info,image,exception);
     montage_info=DestroyMontageInfo(montage_info);
-    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+    if (image == (Image *) NULL)
       goto PerlException;
     if (transparent_color.opacity != TransparentOpacity)
       for (next=image; next; next=next->next)
@@ -11236,7 +11236,7 @@ Morph(ref,...)
       }
     }
     image=MorphImages(image,number_frames,exception);
-    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+    if (image == (Image *) NULL)
       goto PerlException;
     for ( ; image; image=image->next)
     {
@@ -11516,7 +11516,7 @@ Ping(ref,...)
       (void) CopyMagickString(package_info->image_info->filename,list[i],
         MaxTextExtent);
       image=PingImage(package_info->image_info,exception);
-      if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+      if (image == (Image *) NULL)
         break;
       if ((package_info->image_info->file != (FILE *) NULL) ||
           (package_info->image_info->blob != (void *) NULL))
@@ -13049,7 +13049,7 @@ Read(ref,...)
             MaxTextExtent);
           image=ReadImages(package_info->image_info,exception);
         }
-      if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+      if (image == (Image *) NULL)
         break;
       for ( ; image; image=image->next)
       {
@@ -13586,7 +13586,7 @@ Smush(ref,...)
     }
     image=SmushImages(image,stack != 0 ? MagickTrue : MagickFalse,offset,
       exception);
-    if ((image == (Image *) NULL) || (exception->severity >= ErrorException))
+    if (image == (Image *) NULL)
       goto PerlException;
     for ( ; image; image=image->next)
     {
@@ -13942,7 +13942,7 @@ Transform(ref,...)
     for ( ; image; image=image->next)
     {
       clone=CloneImage(image,0,0,MagickTrue,exception);
-      if ((clone == (Image *) NULL) || (exception->severity >= ErrorException))
+      if (clone == (Image *) NULL)
         goto PerlException;
       TransformImage(&clone,crop_geometry,geometry);
       for ( ; clone; clone=clone->next)
