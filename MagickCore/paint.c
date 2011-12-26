@@ -138,10 +138,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     status;
 
   PixelInfo
+    fill_color,
     pixel;
-
-  PixelInfo
-    fill_color;
 
   register SegmentInfo
     *s;
@@ -235,7 +233,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     q+=x1*GetPixelChannels(floodplane_image);
     for (x=x1; x >= 0; x--)
     {
-      if (GetPixelAlpha(image,q) == TransparentAlpha)
+      if (GetPixelAlpha(floodplane_image,q) == TransparentAlpha)
         break;
       GetPixelInfoPixel(image,p,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,target) == invert)
@@ -262,13 +260,13 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
             {
               p=GetCacheViewVirtualPixels(image_view,x,y,image->columns-x,1,
                 exception);
-              q=GetCacheViewAuthenticPixels(floodplane_view,x,y,
-                image->columns-x,1,exception);
+              q=GetCacheViewAuthenticPixels(floodplane_view,x,y,image->columns-
+                x,1,exception);
               if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for ( ; x < (ssize_t) image->columns; x++)
               {
-                if (GetPixelAlpha(image,q) == TransparentAlpha)
+                if (GetPixelAlpha(floodplane_image,q) == TransparentAlpha)
                   break;
                 GetPixelInfoPixel(image,p,&pixel);
                 if (IsFuzzyEquivalencePixelInfo(&pixel,target) == invert)
@@ -297,7 +295,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
             break;
           for ( ; x <= x2; x++)
           {
-            if (GetPixelAlpha(image,q) == TransparentAlpha)
+            if (GetPixelAlpha(floodplane_image,q) == TransparentAlpha)
               break;
             GetPixelInfoPixel(image,p,&pixel);
             if (IsFuzzyEquivalencePixelInfo(&pixel,target) != invert)

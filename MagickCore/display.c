@@ -10184,6 +10184,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
               (DrawInfo *) NULL);
             draw_info->fill.alpha=ClampToQuantum(StringToDouble(matte,
               (char **) NULL));
+            (void) SetImageAlphaChannel(*image,OpaqueAlphaChannel,exception);
             channel_mask=SetPixelChannelMask(*image,AlphaChannel); 
             (void) FloodfillPaintImage(*image,draw_info,&target,(ssize_t)
               x_offset,(ssize_t) y_offset,method == FloodfillMethod ?
