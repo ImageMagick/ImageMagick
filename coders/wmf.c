@@ -2538,16 +2538,8 @@ static long ipa_blob_tell(void* wand)
   return (long)TellBlob((Image*)wand);
 }
 
-static Image *ReadWMFImage(const ImageInfo *image_info,
-  ExceptionInfo * exception)
+static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  Image
-    *image;
-
-  float
-    wmf_width,
-    wmf_height;
-
   double
     bounding_height,
     bounding_width,
@@ -2558,6 +2550,13 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
     resolution_y,
     resolution_x,
     units_per_inch;
+
+  float
+    wmf_width,
+    wmf_height;
+
+  Image
+    *image;
 
   unsigned long
     wmf_options_flags = 0;
@@ -2577,7 +2576,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   wmfD_Rect
     bbox;
 
-  image = AcquireImage(image_info,exception);
+  image=AcquireImage(image_info,exception);
   if (OpenBlob(image_info,image,ReadBinaryBlobMode,exception) == MagickFalse)
     {
       if (image->debug != MagickFalse)
@@ -2622,14 +2621,15 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   /* Register progress monitor */
   wmf_status_function(API,image,magick_progress_callback);
 
-  ddata = WMF_MAGICK_GetData(API);
-  ddata->image = image;
-  ddata->image_info = image_info;
-  ddata->draw_info = CloneDrawInfo((const ImageInfo *) NULL, (const DrawInfo *) NULL);
-  ddata->exception = exception;
-  RelinquishMagickMemory(ddata->draw_info->font);
-  RelinquishMagickMemory(ddata->draw_info->text);
-
+  ddata=WMF_MAGICK_GetData(API);
+  ddata->image=image;
+  ddata->image_info=image_info;
+  ddata->draw_info=CloneDrawInfo(image_info,(const DrawInfo *) NULL);
+  ddata->exception=exception;
+  ddata->draw_info->font=(char *)
+    RelinquishMagickMemory(ddata->draw_info->font);
+  ddata->draw_info->text=(char *)
+    RelinquishMagickMemory(ddata->draw_info->text);
 
 #if defined(MAGICKCORE_WMFLITE_DELEGATE)
   /* Must initialize font subystem for WMFlite interface */
@@ -2643,7 +2643,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
    *
    */
   wmf_error = wmf_bbuf_input(API,ipa_blob_read,ipa_blob_seek,
-                             ipa_blob_tell,(void*)image);
+    ipa_blob_tell,(void*)image);
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
@@ -2667,7 +2667,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  Scanning WMF to obtain bounding box");
-  wmf_error = wmf_scan(API, 0, &bbox);
+  wmf_error=wmf_scan(API, 0, &bbox);
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
@@ -2686,7 +2686,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
    *
    */
 
-  ddata->bbox = bbox;
+  ddata->bbox=bbox;
 
   /* User specified resolution */
   resolution_y=DefaultResolution;
@@ -2696,7 +2696,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
       if (image->units == PixelsPerCentimeterResolution)
         resolution_y *= CENTIMETERS_PER_INCH;
     }
-
   resolution_x=DefaultResolution;
   if (image->resolution.x > 0)
     {
@@ -2706,7 +2705,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
     }
 
   /* Obtain output size expressed in metafile units */
-  wmf_error = wmf_size(API, &wmf_width, &wmf_height);
+  wmf_error=wmf_size(API,&wmf_width,&wmf_height);
   if (wmf_error != wmf_E_None)
     {
       wmf_api_destroy(API);
@@ -2722,11 +2721,11 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
 
   /* Obtain (or guess) metafile units */
   if ((API)->File->placeable)
-    units_per_inch = (API)->File->pmh->Inch;
+    units_per_inch=(API)->File->pmh->Inch;
   else if ( (wmf_width*wmf_height) < 1024*1024)
-    units_per_inch = POINTS_PER_INCH;  /* MM_TEXT */
+    units_per_inch=POINTS_PER_INCH;  /* MM_TEXT */
   else
-    units_per_inch = TWIPS_PER_INCH;  /* MM_TWIPS */
+    units_per_inch=TWIPS_PER_INCH;  /* MM_TWIPS */
 
   /* Calculate image width and height based on specified DPI
      resolution */
