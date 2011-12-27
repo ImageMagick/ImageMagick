@@ -2771,17 +2771,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
      (void) FormatLocaleString(msg,MaxTextExtent,
          "%d, %d",(int) ping_width, (int) ping_height);
-     (void) SetImageProperty(image,"PNG:IHDR.width,height    ",msg);
+     (void) SetImageProperty(image,"png:IHDR.width,height    ",msg);
 
      (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_bit_depth);
-     (void) SetImageProperty(image,"PNG:IHDR.bit_depth       ",msg);
+     (void) SetImageProperty(image,"png:IHDR.bit_depth       ",msg);
 
      (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_color_type);
-     (void) SetImageProperty(image,"PNG:IHDR.color_type      ",msg);
+     (void) SetImageProperty(image,"png:IHDR.color_type      ",msg);
 
      (void) FormatLocaleString(msg,MaxTextExtent,"%d",
         (int) ping_interlace_method);
-     (void) SetImageProperty(image,"PNG:IHDR.interlace_method",msg);
+     (void) SetImageProperty(image,"png:IHDR.interlace_method",msg);
    }
 
   /*
@@ -3508,38 +3508,38 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          /* libpng doesn't tell us whether they were tEXt, zTXt, or iTXt */
          (void) FormatLocaleString(msg,MaxTextExtent,
             "%d tEXt/zTXt/iTXt chunks were found", num_text_total);
-         (void) SetImageProperty(image,"PNG:text                 ",msg);
+         (void) SetImageProperty(image,"png:text                 ",msg);
        }
 
      if (num_raw_profiles != 0)
        {
          (void) FormatLocaleString(msg,MaxTextExtent,
             "%d were found", num_raw_profiles);
-         (void) SetImageProperty(image,"PNG:text-encoded profiles",msg);
+         (void) SetImageProperty(image,"png:text-encoded profiles",msg);
        }
 
      if (png_get_valid(ping,ping_info,PNG_INFO_cHRM))
        {
          (void) FormatLocaleString(msg,MaxTextExtent,"%s",
             "chunk was found (see Chromaticity, above)");
-         (void) SetImageProperty(image,"PNG:cHRM                 ",msg);
+         (void) SetImageProperty(image,"png:cHRM                 ",msg);
        }
 
      if (png_get_valid(ping,ping_info,PNG_INFO_bKGD))
        {
          (void) FormatLocaleString(msg,MaxTextExtent,"%s",
             "chunk was found (see Background color, above)");
-         (void) SetImageProperty(image,"PNG:bKGD                 ",msg);
+         (void) SetImageProperty(image,"png:bKGD                 ",msg);
        }
 
      (void) FormatLocaleString(msg,MaxTextExtent,"%s",
         "chunk was found");
 
      if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
-        (void) SetImageProperty(image,"PNG:iCCP                 ",msg);
+        (void) SetImageProperty(image,"png:iCCP                 ",msg);
 
      if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
-        (void) SetImageProperty(image,"PNG:tRNS                 ",msg);
+        (void) SetImageProperty(image,"png:tRNS                 ",msg);
 
 #if defined(PNG_sRGB_SUPPORTED)
      if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
@@ -3547,7 +3547,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) FormatLocaleString(msg,MaxTextExtent,
             "intent=%d (See Rendering intent)",
             (int) intent);
-         (void) SetImageProperty(image,"PNG:sRGB                 ",msg);
+         (void) SetImageProperty(image,"png:sRGB                 ",msg);
        }
 #endif
 
@@ -3556,7 +3556,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) FormatLocaleString(msg,MaxTextExtent,
             "gamma=%.8g (See Gamma, above)",
             file_gamma);
-         (void) SetImageProperty(image,"PNG:gAMA                 ",msg);
+         (void) SetImageProperty(image,"png:gAMA                 ",msg);
        }
 
 #if defined(PNG_pHYs_SUPPORTED)
@@ -3565,7 +3565,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) FormatLocaleString(msg,MaxTextExtent,
             "x_res=%.10g, y_res=%.10g, units=%d",
             (double) x_resolution,(double) y_resolution, unit_type);
-         (void) SetImageProperty(image,"PNG:pHYs                 ",msg);
+         (void) SetImageProperty(image,"png:pHYs                 ",msg);
        }
 #endif
 
@@ -3574,7 +3574,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        {
          (void) FormatLocaleString(msg,MaxTextExtent,"x_off=%.20g, y_off=%.20g",
             (double) image->page.x,(double) image->page.y);
-         (void) SetImageProperty(image,"PNG:oFFs                 ",msg);
+         (void) SetImageProperty(image,"png:oFFs                 ",msg);
        }
 #endif
 
@@ -3584,7 +3584,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) FormatLocaleString(msg,MaxTextExtent,
             "width=%.20g, height=%.20g",
             (double) image->page.width,(double) image->page.height);
-         (void) SetImageProperty(image,"PNG:vpAg                 ",msg);
+         (void) SetImageProperty(image,"png:vpAg                 ",msg);
        }
    }
 
@@ -9777,7 +9777,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     Note that using the -quality option, not all combinations of
     PNG filter type, zlib compression level, and zlib compression
     strategy are possible.  This is addressed by using
-    "-define PNG:compression-strategy", etc., which takes precedence
+    "-define png:compression-strategy", etc., which takes precedence
     over -quality.
 
    */
@@ -10007,7 +10007,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (mng_info->write_mng)
     png_set_sig_bytes(ping,8);
 
-  /* Bail out if cannot meet defined PNG:bit-depth or PNG:color-type */
+  /* Bail out if cannot meet defined png:bit-depth or png:color-type */
 
   if (mng_info->write_png_colortype != 0)
     {
@@ -10044,7 +10044,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           if (mng_info->write_png_depth)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "  Defined PNG:bit-depth=%u, Computed depth=%u",
+                  "  Defined png:bit-depth=%u, Computed depth=%u",
                   mng_info->write_png_depth,
                   ping_bit_depth);
             }
@@ -10052,14 +10052,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           if (mng_info->write_png_colortype)
             {
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "  Defined PNG:color-type=%u, Computed color type=%u",
+                  "  Defined png:color-type=%u, Computed color type=%u",
                   mng_info->write_png_colortype-1,
                   ping_color_type);
             }
         }
 
       png_warning(ping,
-        "Cannot write image with defined PNG:bit-depth or PNG:color-type.");
+        "Cannot write image with defined png:bit-depth or png:color-type.");
     }
 
   if (image_matte != MagickFalse && image->matte == MagickFalse)
@@ -10617,7 +10617,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       if (mng_info->write_png_depth)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    Defined PNG:bit-depth: %d",mng_info->write_png_depth);
+            "    Defined png:bit-depth: %d",mng_info->write_png_depth);
         }
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -10626,7 +10626,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       if (mng_info->write_png_colortype)
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "    Defined PNG:color-type: %d",mng_info->write_png_colortype-1);
+            "    Defined png:color-type: %d",mng_info->write_png_colortype-1);
         }
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -10822,7 +10822,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %
 %  While the datastream written is always in PNG format and normally would
 %  be given the "png" file extension, this method also writes the following
-%  pseudo-formats which are subsets of PNG:
+%  pseudo-formats which are subsets of png:
 %
 %    o PNG8:    An 8-bit indexed PNG datastream is written.  If the image has
 %               a depth greater than 8, the depth is reduced. If transparency
@@ -10927,7 +10927,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %   o  Opaque matte channel is removed when writing an indexed PNG.
 %   o  Grayscale images are reduced to 1, 2, or 4 bit depth if
 %      this can be done without loss and a larger bit depth N was not
-%      requested via the "-define PNG:bit-depth=N" option.
+%      requested via the "-define png:bit-depth=N" option.
 %   o  If matte channel is present but only one transparent color is
 %      present, RGB+tRNS is written instead of RGBA
 %   o  Opaque matte channel is removed (or added, if color-type 4 or 6
@@ -11115,7 +11115,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
    * The default is to not exclude any known chunks except for any
    * listed in the "unused_chunks" array, above.
    *
-   * Chunks can be listed for exclusion via a "PNG:exclude-chunk"
+   * Chunks can be listed for exclusion via a "png:exclude-chunk"
    * define (in the image properties or in the image artifacts)
    * or via a mng_info member.  For convenience, in addition
    * to or instead of a comma-separated list of chunks, the
@@ -11123,8 +11123,8 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
    *
    * The exclude-chunk define takes priority over the mng_info.
    *
-   * A "PNG:include-chunk" define takes  priority over both the
-   * mng_info and the "PNG:exclude-chunk" define.  Like the
+   * A "png:include-chunk" define takes  priority over both the
+   * mng_info and the "png:exclude-chunk" define.  Like the
    * "exclude-chunk" string, it can define "all" or "none" as
    * well as a comma-separated list.  Chunks that are unknown to
    * ImageMagick are always excluded, regardless of their "copy-safe"
@@ -11564,7 +11564,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   if (excluding != MagickFalse && logging != MagickFalse)
   {
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  Chunks to be excluded from the output PNG:");
+      "  Chunks to be excluded from the output png:");
     if (mng_info->ping_exclude_bKGD != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    bKGD");
