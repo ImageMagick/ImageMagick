@@ -6351,7 +6351,8 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     n=next;
                     q=GetAuthenticPixels(large_image,0,yy,large_image->columns,
                       1,exception);
-                    q+=(large_image->columns-image->columns);
+                    q+=(large_image->columns-image->columns)*
+                      GetPixelChannels(large_image);
 
                     for (x=(ssize_t) image->columns-1; x >= 0; x--)
                     {
@@ -8387,12 +8388,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
             for (y=0; y < (ssize_t) image->rows; y++)
             {
-              q=GetAuthenticPixels(image,0,y,image->columns,1,
-                  exception);
+              q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
               if (q == (Quantum *) NULL)
                 break;
-
 
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -8750,9 +8749,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       }
     }
   }
-{ ImageInfo *image_info=AcquireImageInfo(); strcpy(image->filename,"test.pnm");
-WriteImage(image_info,image,exception);
-}
   /* END OF BUILD_PALETTE */
 
   /* If we are excluding the tRNS chunk and there is transparency,
@@ -10554,8 +10550,7 @@ WriteImage(image_info,image,exception);
                   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "  pass %d, Image Is RGB, 16-bit GRAY, or GRAY_ALPHA",pass);
 
-                p=GetVirtualPixels(image,0,y,image->columns,1,
-                   exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1, exception);
 
                 if (p == (const Quantum *) NULL)
                   break;
