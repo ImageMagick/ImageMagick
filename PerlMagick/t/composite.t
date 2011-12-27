@@ -85,12 +85,12 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'reference/composite/CopyRed.miff', 0.3, 1.03);
 
 #
-# CopyOpacity
+# CopyAlpha
 #
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"70x46"/,
-  'input.miff', q//, q/, gravity=>'Center', compose=>'CopyOpacity'/,
-  'reference/composite/CopyOpacity.miff', 0.3, 1.03);
+  'input.miff', q//, q/, gravity=>'Center', compose=>'CopyAlpha'/,
+  'reference/composite/CopyAlpha.miff', 0.3, 1.03);
 
 #
 # Difference
