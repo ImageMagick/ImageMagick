@@ -6297,7 +6297,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     "    Magnify the rows to %.20g",(double) large_image->rows);
                 m=(ssize_t) mng_info->magn_mt;
                 yy=0;
-                length=(size_t) image->columns;
+                length=(size_t) image->columns*GetPixelChannels(image);
                 next=(Quantum *) AcquireQuantumMemory(length,sizeof(*next));
                 prev=(Quantum *) AcquireQuantumMemory(length,sizeof(*prev));
 
@@ -7798,8 +7798,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
            for (y=0; y < (ssize_t) image->rows; y++)
            {
-             r=GetAuthenticPixels(image,0,y,image->columns,1,
-                 exception);
+             r=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
              if (r == (Quantum *) NULL)
                break;
@@ -7807,7 +7806,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              for (x=0; x < (ssize_t) image->columns; x++)
              {
                 LBR16PixelRGBA(r);
-                r++;
+                r+=GetPixelChannels(image);
              }
 
              if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -7840,7 +7839,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              for (x=0; x < (ssize_t) image->columns; x++)
              {
                 LBR08PixelRGBA(r);
-                r++;
+                r+=GetPixelChannels(image);
              }
 
              if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -7864,8 +7863,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
            for (y=0; y < (ssize_t) image->rows; y++)
            {
-             r=GetAuthenticPixels(image,0,y,image->columns,1,
-                 exception);
+             r=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
              if (r == (Quantum *) NULL)
                break;
@@ -7873,7 +7871,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              for (x=0; x < (ssize_t) image->columns; x++)
              {
                 LBR04PixelRGBA(r);
-                r++;
+                r+=GetPixelChannels(image);
              }
 
              if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -7896,8 +7894,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
            for (y=0; y < (ssize_t) image->rows; y++)
            {
-             r=GetAuthenticPixels(image,0,y,image->columns,1,
-                 exception);
+             r=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
              if (r == (Quantum *) NULL)
                break;
@@ -7905,7 +7902,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              for (x=0; x < (ssize_t) image->columns; x++)
              {
                 LBR02PixelRGBA(r);
-                r++;
+                r+=GetPixelChannels(image);
              }
 
              if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -7927,8 +7924,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
            for (y=0; y < (ssize_t) image->rows; y++)
            {
-             r=GetAuthenticPixels(image,0,y,image->columns,1,
-                 exception);
+             r=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
              if (r == (Quantum *) NULL)
                break;
@@ -7936,7 +7932,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
              for (x=0; x < (ssize_t) image->columns; x++)
              {
                 LBR01PixelRGBA(r);
-                r++;
+                r+=GetPixelChannels(image);
              }
 
              if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -7984,7 +7980,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   tried_333 = MagickFalse;
   tried_444 = MagickFalse;
 
-if (0)
   for (j=0; j<6; j++)
   {
     /* BUILD_PALETTE
@@ -8512,8 +8507,7 @@ if (0)
 
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          r=GetAuthenticPixels(image,0,y,image->columns,1,
-              exception);
+          r=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
           if (r == (Quantum *) NULL)
             break;
@@ -8566,8 +8560,7 @@ if (0)
         {
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            r=GetAuthenticPixels(image,0,y,image->columns,1,
-                exception);
+            r=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
             if (r == (Quantum *) NULL)
               break;
@@ -8576,7 +8569,7 @@ if (0)
             {
               if (GetPixelAlpha(image,r) == OpaqueAlpha)
                   LBR04PixelRGB(r);
-              r++;
+              r+=GetPixelChannels(image);
             }
 
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -8617,8 +8610,7 @@ if (0)
         {
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            r=GetAuthenticPixels(image,0,y,image->columns,1,
-                exception);
+            r=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
             if (r == (Quantum *) NULL)
               break;
@@ -8627,7 +8619,7 @@ if (0)
             {
               if (GetPixelAlpha(image,r) == OpaqueAlpha)
                   LBR03RGB(r);
-              r++;
+              r+=GetPixelChannels(image);
             }
 
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -8671,8 +8663,7 @@ if (0)
         {
           for (y=0; y < (ssize_t) image->rows; y++)
           {
-            r=GetAuthenticPixels(image,0,y,image->columns,1,
-                exception);
+            r=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
             if (r == (Quantum *) NULL)
               break;
@@ -8681,7 +8672,7 @@ if (0)
             {
               if (GetPixelAlpha(image,r) == OpaqueAlpha)
                   LBR02PixelBlue(r);
-              r++;
+              r+=GetPixelChannels(image);
             }
 
             if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -8722,8 +8713,7 @@ if (0)
       {
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-          r=GetAuthenticPixels(image,0,y,image->columns,1,
-              exception);
+          r=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
           if (r == (Quantum *) NULL)
             break;
@@ -8760,6 +8750,9 @@ if (0)
       }
     }
   }
+{ ImageInfo *image_info=AcquireImageInfo(); strcpy(image->filename,"test.pnm");
+WriteImage(image_info,image,exception);
+}
   /* END OF BUILD_PALETTE */
 
   /* If we are excluding the tRNS chunk and there is transparency,
