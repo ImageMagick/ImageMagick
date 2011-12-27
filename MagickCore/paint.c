@@ -331,16 +331,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
       if (GetPixelAlpha(floodplane_image,p) != OpaqueAlpha)
         {
           (void) GetFillColor(draw_info,x,y,&fill_color,exception);
-          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelRed(image,ClampToQuantum(fill_color.red),q);
-          if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelGreen(image,ClampToQuantum(fill_color.green),q);
-          if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelBlue(image,ClampToQuantum(fill_color.blue),q);
-          if ((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelBlack(image,ClampToQuantum(fill_color.black),q);
-          if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelAlpha(image,ClampToQuantum(fill_color.alpha),q);
+          SetPixelInfoPixel(image,&fill_color,q);
         }
       p+=GetPixelChannels(floodplane_image);
       q+=GetPixelChannels(image);
