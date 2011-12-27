@@ -10099,7 +10099,8 @@ static MagickBooleanType XMatteEditImage(Display *display,
           continue;
         if (SetImageStorageClass(*image,DirectClass,exception) == MagickFalse)
           return(MagickFalse);
-        (*image)->matte=MagickTrue;
+        if ((*image)->matte == MagickFalse)
+          (void) SetImageAlphaChannel(*image,OpaqueAlphaChannel,exception);
         image_view=AcquireCacheView(*image);
         switch (method)
         {
@@ -10184,7 +10185,6 @@ static MagickBooleanType XMatteEditImage(Display *display,
               (DrawInfo *) NULL);
             draw_info->fill.alpha=ClampToQuantum(StringToDouble(matte,
               (char **) NULL));
-            (void) SetImageAlphaChannel(*image,OpaqueAlphaChannel,exception);
             channel_mask=SetPixelChannelMask(*image,AlphaChannel); 
             (void) FloodfillPaintImage(*image,draw_info,&target,(ssize_t)
               x_offset,(ssize_t) y_offset,method == FloodfillMethod ?
