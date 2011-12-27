@@ -8072,8 +8072,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            "      image->colors=%d",(int) image->colors);
 
        if (image->colors == 0)
-       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-           "        (zero means unknown)");
+         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "        (zero means unknown)");
 
        if (ping_preserve_colormap == MagickFalse)
          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -8112,8 +8112,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                          break;
                      }
 
-                   if (i ==  (ssize_t) number_opaque &&
-                       number_opaque < 259)
+                   if (i ==  (ssize_t) number_opaque && number_opaque < 259)
                      {
                        number_opaque++;
                        GetPixelInfoPixel(image, q, opaque+i);
