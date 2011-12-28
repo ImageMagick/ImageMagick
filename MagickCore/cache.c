@@ -1191,13 +1191,22 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
 static MagickBooleanType ClonePixelCachePixels(CacheInfo *clone_info,
   CacheInfo *cache_info,ExceptionInfo *exception)
 {
+  PixelChannelMap
+    *p,
+    *q;
+
   if (cache_info->type == PingCache)
     return(MagickTrue);
+  p=cache_info->channel_map;
+  q=clone_info->channel_map;
   if ((cache_info->columns == clone_info->columns) &&
       (cache_info->rows == clone_info->rows) &&
       (cache_info->number_channels == clone_info->number_channels) &&
+      (memcmp(p,q,cache_info->number_channels*sizeof(*p)) == 0) &&
       (cache_info->metacontent_extent == clone_info->metacontent_extent))
     return(OptimizedPixelCacheClone(clone_info,cache_info,exception));
+  if (memcmp(p,q,cache_info->number_channels*sizeof(*p)) != 0)
+    ;
   return(UnoptimizedPixelCacheClone(clone_info,cache_info,exception));
 }
 
@@ -4005,6 +4014,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   cache_info->columns=image->columns;
   InitializePixelChannelMap(image);
   cache_info->number_channels=GetPixelChannels(image);
+  (void) memcpy(cache_info->channel_map,image->channel_map,
+    cache_info->number_channels*sizeof(*image->channel_map));
   cache_info->metacontent_extent=image->metacontent_extent;
   cache_info->mode=mode;
   if (image->ping != MagickFalse)
