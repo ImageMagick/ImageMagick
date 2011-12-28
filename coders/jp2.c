@@ -1011,6 +1011,8 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     }
   status=jas_image_encode(jp2_image,jp2_stream,format,options) != 0 ?
     MagickTrue : MagickFalse;
+  if (options != (char *) NULL)
+    options=DestroyString(options);
   (void) jas_stream_close(jp2_stream);
   for (i=0; i < (ssize_t) number_components; i++)
     jas_matrix_destroy(pixels[i]);
