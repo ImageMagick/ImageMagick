@@ -129,6 +129,9 @@ typedef struct _CacheInfo
     metacontent_extent,
     number_channels;
 
+  PixelChannelMap
+    channel_map[MaxPixelChannels];
+
   CacheType
     type;
 
