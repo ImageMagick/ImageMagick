@@ -535,6 +535,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
     if (count != 4)
       continue;
+    if ((fabs(bounds.x2-bounds.x1) <= fabs(hires_bounds.x2-hires_bounds.x1)) &&
+        (fabs(bounds.y2-bounds.y1) <= fabs(hires_bounds.y2-hires_bounds.y1)))
+      continue;
     hires_bounds=bounds;
   }
   if ((fabs(hires_bounds.x2-hires_bounds.x1) >= MagickEpsilon) && 
