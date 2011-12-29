@@ -1032,7 +1032,7 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
             offset;
 
           /*
-            Write a set of pixel channels .
+            Write a set of pixel channels.
           */
           channel=clone_info->channel_map[i].channel;
           traits=cache_info->channel_map[channel].traits;
@@ -4021,6 +4021,10 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     length,
     number_pixels;
 
+  PixelChannelMap
+    *p,
+    *q;
+
   size_t
     columns,
     packet_size;
@@ -4045,8 +4049,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   cache_info->columns=image->columns;
   InitializePixelChannelMap(image);
   cache_info->number_channels=GetPixelChannels(image);
-  (void) memcpy(cache_info->channel_map,image->channel_map,
-    MaxPixelChannels*sizeof(*image->channel_map));
+  (void) memcpy(cache_info->channel_map,image->channel_map,MaxPixelChannels*
+    sizeof(*image->channel_map));
   cache_info->metacontent_extent=image->metacontent_extent;
   cache_info->mode=mode;
   if (image->ping != MagickFalse)
@@ -4067,10 +4071,13 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     ThrowBinaryException(ResourceLimitError,"PixelCacheAllocationFailed",
       image->filename);
   cache_info->length=length;
+  p=cache_info->channel_map;
+  q=source_info.channel_map;
   if ((cache_info->type != UndefinedCache) &&
       (cache_info->columns <= source_info.columns) &&
       (cache_info->rows <= source_info.rows) &&
       (cache_info->number_channels <= source_info.number_channels) &&
+      (memcmp(p,q,cache_info->number_channels*sizeof(*p)) == 0) &&
       (cache_info->metacontent_extent <= source_info.metacontent_extent))
     {
       /*
@@ -4079,6 +4086,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       if ((cache_info->columns == source_info.columns) &&
           (cache_info->rows == source_info.rows) &&
           (cache_info->number_channels == source_info.number_channels) &&
+          (memcmp(p,q,image->number_channels*sizeof(*p)) == 0) &&
           (cache_info->metacontent_extent == source_info.metacontent_extent))
         return(MagickTrue);
       return(ClonePixelCachePixels(cache_info,&source_info,exception));
