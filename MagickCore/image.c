@@ -984,7 +984,6 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   (void) CopyMagickString(clone_info->filename,image_info->filename,
     MaxTextExtent);
   clone_info->channel=image_info->channel;
-
   (void) CloneImageOptions(clone_info,image_info);
   clone_info->debug=IsEventLogging();
   clone_info->signature=image_info->signature;
