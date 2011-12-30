@@ -1272,11 +1272,29 @@ AC_DEFINE_UNQUOTED(X11_CONFIGURE_PATH,"$X11ConfigurePath",Location of X11 config
 GOMP_LIBS=''
 if test "$enable_openmp" != 'no'; then
   if test "${GCC}" = "yes"; then
-    AC_CHECK_LIB(gomp,GOMP_parallel_start,GOMP_LIBS="-lgomp",,)  # gcc
+    # Open64 (passes for GCC but uses different OpenMP implementation)
+    if test "x$GOMP_LIBS" = x ; then
+      if $CC --version 2>&1 | grep Open64 > /dev/null ; then
+        AC_CHECK_LIB(openmp,omp_get_num_procs,GOMP_LIBS="-lopenmp",,)
+      fi
+    fi
+    # GCC
+    if test "x$GOMP_LIBS" = x ; then
+      AC_CHECK_LIB(gomp,GOMP_parallel_start,GOMP_LIBS="-lgomp",,)
+    fi
   else
-    AC_CHECK_LIB(mtsk,sunw_mp_register_warn,GOMP_LIBS="-lmtsk",,)  # solaris cc
-    AC_CHECK_LIB(xlsmp,_xlsmpFlush,GOMP_LIBS="-lxlsmp",,)  # AIX xlc
-    AC_CHECK_LIB(mp,mp_destroy,GOMP_LIBS="-lmp",,)  # SGI IRIX 6.5 MIPSpro C/C++
+    # Sun CC
+    if test "x$GOMP_LIBS" = x ; then
+      AC_CHECK_LIB(mtsk,sunw_mp_register_warn,GOMP_LIBS="-lmtsk",,)
+    fi
+    # AIX xlc
+    if test "x$GOMP_LIBS" = x ; then
+    AC_CHECK_LIB(xlsmp,_xlsmpFlush,GOMP_LIBS="-lxlsmp",,)
+    fi
+    # SGI IRIX 6.5 MIPSpro C/C++
+    if test "x$GOMP_LIBS" = x ; then
+    AC_CHECK_LIB(mp,mp_destroy,GOMP_LIBS="-lmp",,)
+    fi
   fi
   LIBS="$GOMP_LIBS $LIBS"
 fi
