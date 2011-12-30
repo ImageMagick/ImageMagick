@@ -171,6 +171,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pixels[4],
     runlength;
 
+  unsigned int
+    alpha_bits;
+
   /*
     Open image file.
   */
@@ -224,7 +227,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image->columns=tga_info.width;
   image->rows=tga_info.height;
-  image->matte=(tga_info.attributes & 0x0FU) != 0 ? MagickTrue : MagickFalse;
+  alpha_bits=(tga_info.attributes & 0x0FU);
+  image->matte=(alpha_bits > 0) || (tga_info.bits_per_pixel == 32) ?
+    MagickTrue : MagickFalse;
   if ((tga_info.image_type != TGAColormap) &&
       (tga_info.image_type != TGARLEColormap))
     image->depth=(size_t) ((tga_info.bits_per_pixel <= 8) ? 8 :
