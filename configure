@@ -3610,7 +3610,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=6244
+MAGICK_SVN_REVISION=6261
 
 
 
@@ -8374,7 +8374,7 @@ fi
 # which indicates that we try without any flags at all, and "pthread-config"
 # which is a program returning the flags for the Pth emulation library.
 
-ax_pthread_flags="pthreads none -Kthread -kthread lthread -pthread -pthreads -mthreads pthread --thread-safe -mt pthread-config"
+ax_pthread_flags="pthreads none -Kthread -kthread lthread -pthread -pthreads -mthreads pthread --thread-safe -mt lpthread pthread-config"
 
 # The ordering *is* (sometimes) important.  Some notes on the
 # individual items follow:
@@ -8858,7 +8858,7 @@ fi
 # which indicates that we try without any flags at all, and "pthread-config"
 # which is a program returning the flags for the Pth emulation library.
 
-ax_pthread_flags="pthreads none -Kthread -kthread lthread -pthread -pthreads -mthreads pthread --thread-safe -mt pthread-config"
+ax_pthread_flags="pthreads none -Kthread -kthread lthread -pthread -pthreads -mthreads pthread --thread-safe -mt lpthread pthread-config"
 
 # The ordering *is* (sometimes) important.  Some notes on the
 # individual items follow:
@@ -26022,7 +26022,54 @@ _ACEOF
 GOMP_LIBS=''
 if test "$enable_openmp" != 'no'; then
   if test "${GCC}" = "yes"; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GOMP_parallel_start in -lgomp" >&5
+    # Open64 (passes for GCC but uses different OpenMP implementation)
+    if test "x$GOMP_LIBS" = x ; then
+      if $CC --version 2>&1 | grep Open64 > /dev/null ; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for omp_get_num_procs in -lopenmp" >&5
+$as_echo_n "checking for omp_get_num_procs in -lopenmp... " >&6; }
+if ${ac_cv_lib_openmp_omp_get_num_procs+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lopenmp  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char omp_get_num_procs ();
+int
+main ()
+{
+return omp_get_num_procs ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_openmp_omp_get_num_procs=yes
+else
+  ac_cv_lib_openmp_omp_get_num_procs=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_openmp_omp_get_num_procs" >&5
+$as_echo "$ac_cv_lib_openmp_omp_get_num_procs" >&6; }
+if test "x$ac_cv_lib_openmp_omp_get_num_procs" = xyes; then :
+  GOMP_LIBS="-lopenmp"
+fi
+
+      fi
+    fi
+    # GCC
+    if test "x$GOMP_LIBS" = x ; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GOMP_parallel_start in -lgomp" >&5
 $as_echo_n "checking for GOMP_parallel_start in -lgomp... " >&6; }
 if ${ac_cv_lib_gomp_GOMP_parallel_start+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -26061,9 +26108,12 @@ $as_echo "$ac_cv_lib_gomp_GOMP_parallel_start" >&6; }
 if test "x$ac_cv_lib_gomp_GOMP_parallel_start" = xyes; then :
   GOMP_LIBS="-lgomp"
 fi
-  # gcc
+
+    fi
   else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sunw_mp_register_warn in -lmtsk" >&5
+    # Sun CC
+    if test "x$GOMP_LIBS" = x ; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sunw_mp_register_warn in -lmtsk" >&5
 $as_echo_n "checking for sunw_mp_register_warn in -lmtsk... " >&6; }
 if ${ac_cv_lib_mtsk_sunw_mp_register_warn+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -26102,7 +26152,10 @@ $as_echo "$ac_cv_lib_mtsk_sunw_mp_register_warn" >&6; }
 if test "x$ac_cv_lib_mtsk_sunw_mp_register_warn" = xyes; then :
   GOMP_LIBS="-lmtsk"
 fi
-  # solaris cc
+
+    fi
+    # AIX xlc
+    if test "x$GOMP_LIBS" = x ; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for _xlsmpFlush in -lxlsmp" >&5
 $as_echo_n "checking for _xlsmpFlush in -lxlsmp... " >&6; }
 if ${ac_cv_lib_xlsmp__xlsmpFlush+:} false; then :
@@ -26142,7 +26195,10 @@ $as_echo "$ac_cv_lib_xlsmp__xlsmpFlush" >&6; }
 if test "x$ac_cv_lib_xlsmp__xlsmpFlush" = xyes; then :
   GOMP_LIBS="-lxlsmp"
 fi
-  # AIX xlc
+
+    fi
+    # SGI IRIX 6.5 MIPSpro C/C++
+    if test "x$GOMP_LIBS" = x ; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mp_destroy in -lmp" >&5
 $as_echo_n "checking for mp_destroy in -lmp... " >&6; }
 if ${ac_cv_lib_mp_mp_destroy+:} false; then :
@@ -26182,7 +26238,8 @@ $as_echo "$ac_cv_lib_mp_mp_destroy" >&6; }
 if test "x$ac_cv_lib_mp_mp_destroy" = xyes; then :
   GOMP_LIBS="-lmp"
 fi
-  # SGI IRIX 6.5 MIPSpro C/C++
+
+    fi
   fi
   LIBS="$GOMP_LIBS $LIBS"
 fi
