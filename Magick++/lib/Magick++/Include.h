@@ -10,7 +10,7 @@
 #if !defined(_MAGICK_CONFIG_H)
 # define _MAGICK_CONFIG_H
 # if !defined(vms) && !defined(macintosh)
-#  include "magick/magick-config.h"
+#  include "MagickCore/magick-config.h"
 # else
 #  include "magick-config.h"
 # endif
@@ -40,8 +40,8 @@
 //
 namespace MagickCore
 {
-#include <magick/MagickCore.h>
-#include <wand/MagickWand.h>
+#include <MagickCore/MagickCore.h>
+#include <MagickWand/MagickWand.h>
 #undef inline // Remove possible definition from config.h
 
 #undef class
@@ -68,40 +68,55 @@ namespace MagickCore
 // using code is dynamic, STATIC_MAGICK may be defined in the project to
 // override triggering dynamic library behavior.
 //
-#    define MagickDLLBuild
 #    if defined(_VISUALC_)
+#      define MagickDLLExplicitTemplate
 #      pragma warning( disable: 4273 )  /* Disable the stupid dll linkage warnings */
 #      pragma warning( disable: 4251 )
 #    endif
 #    if !defined(MAGICKCORE_IMPLEMENTATION)
-#      define MagickDLLDecl __declspec(dllimport)
-#      define MagickDLLDeclExtern extern __declspec(dllimport)
+#      if defined(__GNUC__)
+#       define MagickPPExport __attribute__ ((dllimport))
+#      else
+#       define MagickPPExport __declspec(dllimport)
+#      endif
+#      define MagickPPPrivate extern __declspec(dllimport)
 #      if defined(_VISUALC_)
 #        pragma message( "Magick++ lib DLL import" )
 #      endif
 #    else
-#      if defined(__BORLANDC__)
-#        define MagickDLLDecl __declspec(dllexport)
-#        define MagickDLLDeclExtern __declspec(dllexport)
-#        pragma message( "BCBMagick++ lib DLL export" )
+#      if defined(__BORLANDC__) || defined(__MINGW32__)
+#        define MagickPPExport __declspec(dllexport)
+#        define MagickPPPrivate __declspec(dllexport)
+#        if defined(__BORLANDC__)
+#          pragma message( "BCBMagick++ lib DLL export" )
+#        endif
 #      else
-#        define MagickDLLDecl __declspec(dllexport)
-#        define MagickDLLDeclExtern extern __declspec(dllexport)
+#        if defined(__GNUC__)
+#         define MagickPPExport __attribute__ ((dllexport))
+#        else
+#         define MagickPPExport __declspec(dllexport)
+#        endif
+#        define MagickPPPrivate extern __declspec(dllexport)
 #      endif
 #      if defined(_VISUALC_)
 #        pragma message( "Magick++ lib DLL export" )
 #      endif
 #    endif
 #  else
-#    define MagickDLLDecl
-#    define MagickDLLDeclExtern
+#    define MagickPPExport
+#    define MagickPPPrivate
 #    if defined(_VISUALC_)
 #      pragma message( "Magick++ lib static interface" )
 #    endif
 #  endif
 #else
-#  define MagickDLLDecl
-#  define MagickDLLDeclExtern
+# if __GNUC__ >= 4
+#  define MagickPPExport __attribute__ ((visibility ("default")))
+#  define MagickPPPrivate  __attribute__ ((visibility ("hidden")))
+# else
+#   define MagickPPExport
+#   define MagickPPPrivate
+# endif
 #endif
 
 #if defined(WIN32) && defined(_VISUALC_)
