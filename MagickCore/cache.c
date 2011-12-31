@@ -971,14 +971,24 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
         }
       cache_offset=cache_info->offset;
     }
+  if ((cache_info->type != MemoryCache) && (clone_info->type != MemoryCache) &&
+      (strcmp(cache_info->cache_filename,clone_info->cache_filename) == 0))
+    {
+      /*
+        Inplace cloning not reliable.
+      */
+      (void) ClosePixelCacheOnDisk(clone_info);
+      if (cache_info->type == MapCache)
+        {
+          clone_info->pixels=(Quantum *) UnmapBlob(clone_info->pixels,(size_t)
+            clone_info->length);
+          RelinquishMagickResource(MapResource,clone_info->length);
+        }
+      *clone_info->cache_filename='\0';
+      clone_info->type=DiskCache;
+    }
   if (clone_info->type == DiskCache)
     {
-      if ((cache_info->type == DiskCache) &&
-          (strcmp(cache_info->cache_filename,clone_info->cache_filename) == 0))
-        {
-          (void) ClosePixelCacheOnDisk(clone_info);
-          *clone_info->cache_filename='\0';
-        }
       if (OpenPixelCacheOnDisk(clone_info,WriteMode) == MagickFalse)
         {
           if (cache_info->type == DiskCache)
@@ -4086,7 +4096,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       if ((cache_info->columns == source_info.columns) &&
           (cache_info->rows == source_info.rows) &&
           (cache_info->number_channels == source_info.number_channels) &&
-          (memcmp(p,q,image->number_channels*sizeof(*p)) == 0) &&
+          (memcmp(p,q,cache_info->number_channels*sizeof(*p)) == 0) &&
           (cache_info->metacontent_extent == source_info.metacontent_extent))
         return(MagickTrue);
       return(ClonePixelCachePixels(cache_info,&source_info,exception));
@@ -4111,8 +4121,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               status=MagickTrue;
               if (image->debug != MagickFalse)
                 {
-                  (void) FormatMagickSize(cache_info->length,MagickTrue,
-                    format);
+                  (void) FormatMagickSize(cache_info->length,MagickTrue,format);
                   (void) FormatLocaleString(message,MaxTextExtent,
                     "open %s (%s memory, %.20gx%.20gx%.20g %s)",
                     cache_info->filename,cache_info->mapped != MagickFalse ?
