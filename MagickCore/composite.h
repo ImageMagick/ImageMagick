@@ -59,6 +59,7 @@ typedef enum
   HardLightCompositeOp,
   HueCompositeOp,
   InCompositeOp,
+  IntensityCompositeOp,
   LightenCompositeOp,
   LightenIntensityCompositeOp,
   LinearBurnCompositeOp,
