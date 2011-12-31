@@ -19,7 +19,8 @@ using namespace std;
 
 // Construct with message string
 Magick::Exception::Exception( const std::string& what_ )
-  : _what(what_)
+  : std::exception(),
+    _what(what_)
 {
 }
 
