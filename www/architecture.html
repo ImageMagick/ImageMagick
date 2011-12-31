@@ -214,10 +214,10 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Notebook Reparatur" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur</a><!-- 2012020100300 atlas.multimedia-->
+   <a rel="follow" title="Sponsor: Turbolader Online kaufen" href="http://www.autoteile-carparts.de">Turbolader Online kaufen</a><!-- 2012030100150 t.temurbas...-->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingreviewz.com">Web Hosting Reviews</a><!-- 2012040100030 Soft Tec-->
+   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
 </div>
 </div>
 </div>
@@ -332,7 +332,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.7.4-2 2011-12-20 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.7.4-3 2011-12-25 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
@@ -645,7 +645,7 @@ image=ReadStream(image_info,&amp;StreamPixels,exception);
 
 <p>Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the multicore processor chips. However, you are welcome to use ImageMagick algorithms in your threads of execution with the exception of the MagickCore's GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels(), or SyncAuthenticPixels() pixel cache methods.  These methods are intended for one thread of execution only with the exception of an OpenMP parallel section.  To access the pixel cache with more than one thread of execution, use a cache view.  We do this for the <a href="../www/api/composite.html#CompositeImage">CompositeImage()</a> method, for example.  Suppose we want to composite a single image over a different image in each thread of execution.  If we use GetVirtualPixels(), the results are unpredictable because multiple threads would likely be asking for different areas of the pixel cache simultaneously.  Instead we use GetCacheViewVirtualPixels() which creates a unique view for each thread of execution ensuring our program behaves properly regardless of how many threads are invoked.  The other program interfaces, such as the <a href="../www/magick-wand.html">MagickWand API</a>, are completely thread safe so there are no special precautions for threads of execution.</p>
 
-<p>Here is an MagickCore code snippet that takes advantage of threads of execution with the <a href="http://en.wikipedia.org/wiki/OpenMP">OpenMP</a> programming paradigm:</p>
+<p>Here is an MagickCore code snippet that takes advantage of threads of execution with the <a href="../www/parallel.html">OpenMP</a> programming paradigm:</p>
 
 <div class="viewport">
 {

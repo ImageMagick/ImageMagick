@@ -218,7 +218,7 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Desktop Wallpaper" href="http://www.desktopexchange.com">Desktop Wallpaper</a><!-- 2012030100150 webinvasion1@y...-->
+   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 <div class="sponsor">
    <a rel="follow" title="Sponsor: Hosting Web" href="http://www.hostalia.com">Hosting Web</a><!-- 20120401000150 david@carre... -->
@@ -1530,13 +1530,24 @@ to '<kbd>false</kbd>'.  </p>
 
 <p>If <kbd>LZW</kbd> compression is specified but LZW compression has not been enabled, the image data is written in an uncompressed LZW format that can be read by LZW decoders. This may result in larger-than-expected GIF files.</p>
 
-<p><kbd>Lossless</kbd> refers to lossless JPEG, which is only available if the JPEG library has been patched to support it. Use of lossless JPEG is generally not recommended.</p>
+<p><kbd>Lossless</kbd> refers to lossless JPEG, which is only available if the
+JPEG library has been patched to support it. Use of lossless JPEG is generally
+not recommended.</p>
 
 <p>
 When writing an ICO file, you may request that the images be encoded in
 PNG format, by specifying <kbd>Zip</kbd> compression.</p>
 
-<p>Use the <a href="#quality">-quality</a> option to set the compression level to be used by JPEG, PNG, MIFF, and MPEG encoders. Use the <a href="#sampling-factor">-sampling-factor</a> option to set the sampling factor to be used by JPEG, MPEG, and YUV encoders for down-sampling the chroma channels.</p>
+<p>
+When writing a JNG file, specify <kbd>Zip</kbd> compression to request that
+the alpha channel be encoded in PNG "IDAT" format, or <kbd>JPEG</kbd>
+to request that it be encoded in JPG "JDAA" format.</p>
+
+<p>Use the <a href="#quality">-quality</a> option to set the compression level
+to be used by JPEG, PNG, MIFF, and MPEG encoders.
+Use the <a href="#sampling-factor">-sampling-factor</a> option to set the
+sampling factor to be used by JPEG, MPEG, and YUV encoders for down-sampling
+the chroma channels.</p>
 
 <div style="margin: auto;">
   <h4><a id="contrast"></a>-contrast</h4>
