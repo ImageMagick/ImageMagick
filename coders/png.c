@@ -11679,14 +11679,14 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   jng_alpha_compression_method=image->compression==JPEGCompression? 8 : 0;
 
+  jng_alpha_quality=image_info->quality == 0UL ? 75UL : 
+      image_info->quality;
+
+  if (jng_alpha_quality >= 1000)
+    jng_alpha_quality /= 1000;
+
   if (transparent)
     {
-      jng_alpha_quality=image_info->quality == 0UL ? 75UL : 
-          image_info->quality;
-
-      if (jng_alpha_quality >= 1000)
-        jng_alpha_quality /= 1000;
-
       jng_color_type=14;
 
       /* Create JPEG blob, image, and image_info */
