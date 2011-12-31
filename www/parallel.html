@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html version="-//W3C//DTD XHTML 1.1//EN"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.w3.org/1999/xhtml
+                          http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="google-site-verification" content="MxsMq6bdLOx0KSuz1MY6yG9ZTIJ7_7DVRfl5NCAT5Yg"/>
+  <title>ImageMagick: Parallel Execution</title>
+  <meta http-equiv="Content-Language" content="en-US"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="Application-name" content="ImageMagick"/>
+  <meta name="Description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
+  <meta name="Application-url" content="http://www.imagemagick.org"/>
+  <meta name="Generator" content="PHP"/>
+  <meta name="Keywords" content="parallel, execution, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
+  <meta name="Rating" content="GENERAL"/>
+  <meta name="Robots" content="INDEX, FOLLOW"/>
+  <meta name="Generator" content="ImageMagick Studio LLC"/>
+  <meta name="Author" content="ImageMagick Studio LLC"/>
+  <meta name="Revisit-after" content="2 DAYS"/>
+  <meta name="Resource-type" content="document"/>
+  <meta name="Copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="Distribution" content="Global"/>
+  <link rel="icon" href="../images/wand.png"/>
+  <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
+  <link rel="canonical" href="http://www.imagemagick.org" />
+  <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  
+  <!-- Optionaly include easing and/or mousewheel plugins -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.easing-1.3.pack.js"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
+  
+  <!-- Add fancyBox -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.3"></script>
+  
+  <!-- Optionaly include button and/or thumbnail helpers -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.3"></script>
+  
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.3"></script>
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(".fancybox").fancybox();
+  	});
+  </script>
+  <!-- ImageMagick style -->
+  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+  <style type="text/css" media="all">
+    @import url("../www/magick.css");
+  </style>
+</head>
+
+<body id="www-imagemagick-org">
+<div class="titlebar">
+<div style="margin: 17px auto; float: left;">
+  <script type="text/javascript">
+  <!--
+    google_ad_client = "pub-3129977114552745";
+    google_ad_slot = "5439289906";
+    google_ad_width = 728;
+    google_ad_height = 90;
+  //-->
+  </script>
+  <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
+</div>
+<a href="http://www.imagemagick.org/discourse-server/">
+  <img src="../images/logo.jpg"
+  alt="ImageMagick Logo"
+  style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
+<a href="../index.html">
+  <img src="../images/sprite.jpg"
+  alt="ImageMagick Sprite"
+  style="width: 114px; height: 118px; border: 0px; float: right;" /></a>
+</div>
+
+<div class="westbar">
+
+<div class="menu">
+  <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
+</div>
+<div class="menu">
+  <a title="Binary Releases" href="../www/binary-releases.html">Binary Releases</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Unix" href="../www/binary-releases.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: MacOS X" href="../www/binary-releases.html#macosx">Mac OS X</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: iOS" href="../www/binary-releases.html#iOS">iOS</a>
+</div>
+<div class="sub">
+    <a title="Binary Release: Windows" href="../www/binary-releases.html#windows">Windows</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Command-line Tools" href="../www/command-line-tools.html">Command-line Tools</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Processing" href="../www/command-line-processing.html">Processing</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Options" href="../www/command-line-options.html">Options</a>
+</div>
+<div class="sub">
+    <a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a>
+</div>
+<div class="menu">
+  <a title="Program Interfaces" href="../www/api.html">Program Interfaces</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: MagickWand" href="../www/magick-wand.html">MagickWand</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: MagickCore" href="../www/magick-core.html">MagickCore</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: PerlMagick" href="../www/perl-magick.html">PerlMagick</a>
+</div>
+<div class="sub">
+    <a title="Program Interface: Magick++" href="../www/magick++.html">Magick++</a>
+</div>
+<div class="sep"></div>
+<div  class="menu">
+   <a title="Install from Source" href="../www/install-source.html">Install from Source</a>
+</div>
+<div class="sub">
+    <a title="Install from Source: Unix" href="../www/install-source.html#unix">Unix</a>
+</div>
+<div class="sub">
+    <a title="Install from Source: Windows" href="../www/install-source.html#windows">Windows</a>
+ </div>
+<div class="menu">
+  <a title="Resources" href="../www/resources.html">Resources</a>
+</div>
+<div class="menu">
+  <a title="Architecture" href="../www/architecture.html">Architecture</a>
+</div>
+<div class="menu">
+  <a title="Download" href="../www/download.html">Download</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Search" href="../www/search.html">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Site Map" href="../www/sitemap.html">Site Map</a>
+</div>
+<div  class="sub">
+  <a title="Site Map: Links" href="../www/links.html">Links</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a rel="follow" title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
+
+  <a href="http://www.networkredux.com"> <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201204010120 mickey@163... -->
+<div class="sponsbox">
+<div class="sponsor">
+  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201203010270 info@pkwte... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Tenant Check" href="http://www.rentmethod.com/">Tenant Check</a><!-- 201203010090s chris@rentm... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201203010090 barsh@inter... -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Best Local Services" href="http://www.openchime.com">Best Local Services</a><!-- 2012010100150 joey@openc... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540 suvalj -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingsecretrevealed.com">Web Hosting Secret Revealed</a><!-- 201204010540 iamchee jerry -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.hostucan.com">Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
+</div>
+</div>
+</div>
+</div>
+
+<div class="eastbar">
+  <div class="g-plusone" data-size="standard" data-count="false"></div>
+  <script type="text/javascript">
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+  </script>
+</div>
+
+<div class="main">
+
+
+
+<h1>Parallel Execution with OpenMP</h1>
+
+
+<div class="doc-section">
+<h4>OpenMP</h4>
+<p>Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the multicore processor chips and <a href="http://www.openmp.org">OpenMP</a>. OpenMP, is an API specification for parallel programming. If your compiler supports OpenMP (e.g. gcc, Visual Studio 2005) directives, ImageMagick automatically includes support. To verify, look for the OpenMP feature of ImageMagick with this command:</p>
+<pre class="text">
+# identify -version
+Version: ImageMagick 7.0.0-0 2011-12-26 Q16 http://www.imagemagick.org
+Copyright: Copyright (C) 1999-2012 ImageMagick Studio LLC
+Features: OpenMP OpenCL   
+</pre>
+<p>With OpenMP enabled, most ImageMagick algorithms execute on all the cores on your system in parallel.  For example, if you have a quad-core system, and attempt to resize an image, the resizing takes place on 4 cores (8 if hyperthreading is enabled).</p>
+<h4>The Perils of Parallel Execution</h4>
+<p>It can be difficult to predict behavior in a parallel environment. Performance might depend on a number of factors including the compiler, the version of the OpenMP library, the processor type, the number of cores, the amount of memory, whether hyperthreading is enabled, the mix of applications that are executing concurrently with ImageMagick, or the particular image-processing algorithm you utilize. The only way to be certain of the optimal performance, in terms of the number of threads, is to benchmark. ImageMagick includes progressive threading when benchmarking a command and returns the elapsed time and efficiency for one or more threads. This can help you identify how many threads are the most efficient in your environment. Here is an example benchmark for threads 1-8:</p>
+
+<pre class="text">
+convert -bench 40 model.png -sharpen 0x1 null:
+Performance[1]: 40i 0.712ips 1.000e 14.000u 0:14.040
+Performance[2]: 40i 1.362ips 0.657e 14.550u 0:07.340
+Performance[3]: 40i 2.033ips 0.741e 14.530u 0:04.920
+Performance[4]: 40i 2.667ips 0.789e 14.590u 0:03.750
+Performance[5]: 40i 3.236ips 0.820e 14.970u 0:03.090
+Performance[6]: 40i 3.802ips 0.842e 15.280u 0:02.630
+Performance[7]: 40i 4.274ips 0.857e 15.540u 0:02.340
+Performance[8]: 40i 4.831ips 0.872e 15.680u 0:02.070
+</pre>
+<p>In certain cases, it might be optimal to set the number of threads to 1 (e.g. <kbd>-limit thread 1</kbd>) or to disable OpenMP completely.  To disable this feature, add <kbd>--disable-openmp</kbd> to your configure script command line then rebuild and re-install ImageMagick.</p>
+<div>
+
+</div>
+
+<div id="linkbar">
+    <span id="linkbar-west">&nbsp;</span>
+    <span id="linkbar-center">
+      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
+    </span>
+    <span id="linkbar-east">&nbsp;</span>
+  </div>
+  <div class="footer">
+    <span id="footer-west">&copy; 1999-2011 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+  </div>
+  <div style="clear: both; margin: 0; width: 100%; "></div>
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-17690367-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+</body>
+</html>
