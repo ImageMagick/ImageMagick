@@ -1833,6 +1833,7 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
   /*
     Initialize histogram.
   */
+  SyncImagePixelCache(image,exception);
   InitializeHistogram(image,histogram,exception);
   (void) OptimalTau(histogram[Red],Tau,0.2,DeltaTau,
     smooth_threshold == 0.0 ? 1.0 : smooth_threshold,extrema[Red]);
