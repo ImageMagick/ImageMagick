@@ -3668,7 +3668,7 @@ MagickExport void InitializePixelChannelMap(Image *image)
   if (image->matte != MagickFalse)
     trait=(PixelTrait) (trait | BlendPixelTrait);
   n=0;
-  if (0 && image->colorspace == GRAYColorspace)
+  if (image->colorspace == GRAYColorspace)
     {
       SetPixelChannelMap(image,BluePixelChannel,trait,n);
       SetPixelChannelMap(image,GreenPixelChannel,trait,n);
