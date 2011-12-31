@@ -68,9 +68,8 @@ namespace MagickCore
 // using code is dynamic, STATIC_MAGICK may be defined in the project to
 // override triggering dynamic library behavior.
 //
-# define MagickDLLBuild
-# define MagickPPPrivate
 #    if defined(_VISUALC_)
+#      define MagickDLLExplicitTemplate
 #      pragma warning( disable: 4273 )  /* Disable the stupid dll linkage warnings */
 #      pragma warning( disable: 4251 )
 #    endif
@@ -80,19 +79,24 @@ namespace MagickCore
 #      else
 #       define MagickPPExport __declspec(dllimport)
 #      endif
+#      define MagickPPPrivate extern __declspec(dllimport)
 #      if defined(_VISUALC_)
 #        pragma message( "Magick++ lib DLL import" )
 #      endif
 #    else
-#      if defined(__BORLANDC__)
+#      if defined(__BORLANDC__) || defined(__MINGW32__)
 #        define MagickPPExport __declspec(dllexport)
-#        pragma message( "BCBMagick++ lib DLL export" )
+#        define MagickPPPrivate __declspec(dllexport)
+#        if defined(__BORLANDC__)
+#          pragma message( "BCBMagick++ lib DLL export" )
+#        endif
 #      else
 #        if defined(__GNUC__)
 #         define MagickPPExport __attribute__ ((dllexport))
 #        else
 #         define MagickPPExport __declspec(dllexport)
 #        endif
+#        define MagickPPPrivate extern __declspec(dllexport)
 #      endif
 #      if defined(_VISUALC_)
 #        pragma message( "Magick++ lib DLL export" )
@@ -100,6 +104,7 @@ namespace MagickCore
 #    endif
 #  else
 #    define MagickPPExport
+#    define MagickPPPrivate
 #    if defined(_VISUALC_)
 #      pragma message( "Magick++ lib static interface" )
 #    endif
