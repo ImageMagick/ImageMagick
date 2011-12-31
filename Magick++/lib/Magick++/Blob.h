@@ -16,7 +16,7 @@ namespace Magick
   // Forward decl
   class BlobRef;
 
-  class MagickDLLDecl Blob
+  class MagickPPExport Blob
   {
 
   public:

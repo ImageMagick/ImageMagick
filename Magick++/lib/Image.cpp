@@ -30,9 +30,9 @@ using namespace std;
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 
-MagickDLLDeclExtern const char *Magick::borderGeometryDefault = "6x6+0+0";
-MagickDLLDeclExtern const char *Magick::frameGeometryDefault  = "25x25+6+6";
-MagickDLLDeclExtern const char *Magick::raiseGeometryDefault  = "6x6+0+0";
+MagickPPExport const char *Magick::borderGeometryDefault = "6x6+0+0";
+MagickPPExport const char *Magick::frameGeometryDefault  = "25x25+6+6";
+MagickPPExport const char *Magick::raiseGeometryDefault  = "6x6+0+0";
 
 static bool magick_initialized=false;
 
@@ -44,7 +44,7 @@ static bool magick_initialized=false;
 // Friend functions to compare Image objects
 //
 
-MagickDLLDecl int Magick::operator == ( const Magick::Image& left_,
+MagickPPExport int Magick::operator == ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   // If image pixels and signature are the same, then the image is identical
@@ -53,17 +53,17 @@ MagickDLLDecl int Magick::operator == ( const Magick::Image& left_,
 	   ( left_.signature() == right_.signature() )
 	   );
 }
-MagickDLLDecl int Magick::operator != ( const Magick::Image& left_,
+MagickPPExport int Magick::operator != ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   return ( ! (left_ == right_) );
 }
-MagickDLLDecl int Magick::operator >  ( const Magick::Image& left_,
+MagickPPExport int Magick::operator >  ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   return ( !( left_ < right_ ) && ( left_ != right_ ) );
 }
-MagickDLLDecl int Magick::operator <  ( const Magick::Image& left_,
+MagickPPExport int Magick::operator <  ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   // If image pixels are less, then image is smaller
@@ -71,12 +71,12 @@ MagickDLLDecl int Magick::operator <  ( const Magick::Image& left_,
 	   ( right_.rows() * right_.columns() )
 	   );
 }
-MagickDLLDecl int Magick::operator >= ( const Magick::Image& left_,
+MagickPPExport int Magick::operator >= ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   return ( ( left_ > right_ ) || ( left_ == right_ ) );
 }
-MagickDLLDecl int Magick::operator <= ( const Magick::Image& left_,
+MagickPPExport int Magick::operator <= ( const Magick::Image& left_,
                                         const Magick::Image& right_ )
 {
   return ( ( left_ < right_ ) || ( left_ == right_ ) );
@@ -4279,7 +4279,7 @@ void Magick::MagickPlusPlusDestroyMagick(void)
 }
 
 // C library initialization routine
-void MagickDLLDecl Magick::InitializeMagick(const char *path_)
+void MagickPPExport Magick::InitializeMagick(const char *path_)
 {
   MagickCore::MagickCoreGenesis(path_,MagickFalse);
   if (!magick_initialized)
