@@ -11661,6 +11661,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
     transparent;
 
   size_t
+    jng_alpha_quality,
     jng_quality;
 
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -11672,22 +11673,19 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   status=MagickTrue;
   transparent=image_info->type==GrayscaleMatteType ||
-     image_info->type==TrueColorMatteType;
-  jng_color_type=10;
-  jng_alpha_sample_depth=0;
-  jng_quality=image_info->quality == 0UL ? 75UL : image_info->quality;
-  jng_alpha_compression_method=0;
+     image_info->type==TrueColorMatteType || image->matte != MagickFalse;
 
-  if (image->matte != MagickFalse)
-    {
-      /* if any pixels are transparent */
-      transparent=MagickTrue;
-      if (image_info->compression==JPEGCompression)
-        jng_alpha_compression_method=8;
-    }
+  jng_quality=image_info->quality == 0UL ? 75UL : image_info->quality%1000;
 
   if (transparent)
     {
+      jng_alpha_quality=image_info->quality == 0UL ? 75UL : 
+          image_info->quality;
+
+      if (jng_alpha_quality >= 1000)
+        jng_alpha_quality /= 1000;
+
+      jng_alpha_compression_method=8;
       jng_color_type=14;
 
       /* Create JPEG blob, image, and image_info */
@@ -11714,17 +11712,18 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
       status=NegateImage(jpeg_image,MagickFalse);
       jpeg_image->matte=MagickFalse;
 
-      if (jng_quality >= 1000)
-        jpeg_image_info->quality=jng_quality/1000;
-
-      else
-        jpeg_image_info->quality=jng_quality;
-
       jpeg_image_info->type=GrayscaleType;
+      jpeg_image->quality=jng_alpha_quality;
       (void) SetImageType(jpeg_image,GrayscaleType);
       (void) AcquireUniqueFilename(jpeg_image->filename);
       (void) FormatLocaleString(jpeg_image_info->filename,MaxTextExtent,
         "%s",jpeg_image->filename);
+    }
+  else
+    {
+      jng_alpha_compression_method=0;
+      jng_color_type=10;
+      jng_alpha_sample_depth=0;
     }
 
   /* To do: check bit depth of PNG alpha channel */
@@ -11733,6 +11732,23 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   if (image_info->type != TrueColorMatteType && image_info->type !=
     TrueColorType && ImageIsGray(image))
     jng_color_type-=2;
+
+  if (logging != MagickFalse)
+    {
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    JNG Quality           = %d",(int) jng_quality);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    JNG Color Type        = %d",jng_color_type);
+        if (transparent)
+          {
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    JNG Alpha Compression = %d",jng_alpha_compression_method);
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    JNG Alpha Depth       = %d",jng_alpha_sample_depth);
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "    JNG Alpha Quality     = %d",(int) jng_alpha_quality);
+          }
+    }
 
   if (transparent)
     {
@@ -12110,7 +12126,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   if (jng_color_type == 8 || jng_color_type == 12)
     jpeg_image_info->type=GrayscaleType;
 
-  jpeg_image_info->quality=jng_quality % 1000;
+  jpeg_image_info->quality=jng_quality;
+  jpeg_image->quality=jng_quality;
   (void) CopyMagickString(jpeg_image_info->magick,"JPEG",MaxTextExtent);
   (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
 
