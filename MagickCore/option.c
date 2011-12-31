@@ -761,6 +761,7 @@ static const OptionInfo
     { "HardLight", HardLightCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Hue", HueCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "In", InCompositeOp, UndefinedOptionFlag, MagickFalse },
+    { "Intensity", IntensityCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Lighten", LightenCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "LightenIntensity", LightenIntensityCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "LinearBurn", LinearBurnCompositeOp, UndefinedOptionFlag, MagickFalse },

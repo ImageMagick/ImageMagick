@@ -1521,6 +1521,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                   (1.0-Da)*GetPixelIntensity(image,q) ? Sa : Da;
                 break;
               }
+              case IntensityCompositeOp:
+              {
+                pixel=GetPixelIntensity(composite_image,p);
+                break;
+              }
               case LightenIntensityCompositeOp:
               {
                 pixel=Sa*GetPixelIntensity(composite_image,p) >
@@ -1672,6 +1677,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             break;
           }
           case CopyAlphaCompositeOp:
+          case IntensityCompositeOp:
           {
             if (channel == AlphaPixelChannel)
               {
