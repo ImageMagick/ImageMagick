@@ -1,3 +1,7 @@
+2010-12-30  6.7.4-3 Glenn Randers-Pehrson <glennrp@image...>
+  * Fix problems with JNG encoder "quality" (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20076).
+
 2011-12-28  6.7.4-3 Cristy  <quetzlzacatenango@image...>
   * Fix memory leak in JP2 coder (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20071).
