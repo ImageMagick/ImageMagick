@@ -24,34 +24,34 @@ namespace Magick
   class Options;
   class ImageRef;
 
-  extern MagickDLLDecl const char *borderGeometryDefault;
-  extern MagickDLLDecl const char *frameGeometryDefault;
-  extern MagickDLLDecl const char *raiseGeometryDefault;
+  extern MagickPPExport const char *borderGeometryDefault;
+  extern MagickPPExport const char *frameGeometryDefault;
+  extern MagickPPExport const char *raiseGeometryDefault;
 
   // Compare two Image objects regardless of LHS/RHS
   // Image sizes and signatures are used as basis of comparison
-  int MagickDLLDecl operator == ( const Magick::Image& left_,
+  int MagickPPExport operator == ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  int MagickDLLDecl operator != ( const Magick::Image& left_,
+  int MagickPPExport operator != ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  int MagickDLLDecl operator >  ( const Magick::Image& left_,
+  int MagickPPExport operator >  ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  int MagickDLLDecl operator <  ( const Magick::Image& left_,
+  int MagickPPExport operator <  ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  int MagickDLLDecl operator >= ( const Magick::Image& left_,
+  int MagickPPExport operator >= ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
-  int MagickDLLDecl operator <= ( const Magick::Image& left_,
+  int MagickPPExport operator <= ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
 
   // C library initialization routine
-  void MagickDLLDecl InitializeMagick(const char *path_);
+  void MagickPPExport InitializeMagick(const char *path_);
 
   //
   // Image is the representation of an image.  In reality, it actually
   // a handle object which contains a pointer to a shared reference
   // object (ImageRef). As such, this object is extremely space efficient.
   //
-  class MagickDLLDecl Image
+  class MagickPPExport Image
   {
   public:
     // Construct from image file or image specification

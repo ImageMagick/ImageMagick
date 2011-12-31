@@ -21,7 +21,7 @@ namespace Magick
   //
   // Reference counted access to Image *
   //
-  class MagickDLLDecl ImageRef {
+  class MagickPPExport ImageRef {
     friend class Image; 
   private:
     // Construct with an image pointer and default options
