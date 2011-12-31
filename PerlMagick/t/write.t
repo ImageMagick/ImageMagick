@@ -29,14 +29,14 @@ print("AVS X image file ...\n");
 testReadWrite( 'AVS:input.avs',
   'AVS:output.avs',
   q//,
-  '6a4a257921582768b774aeeac549b7c0c0b51f665395eddf921cce53a0ad2a33');
+  'e7d406ec41fe69ba2bd88dd59e5eb17a83f17c0a99519def02c020041144f5b3');
 
 print("Microsoft Windows bitmap image file ...\n");
 ++$test;
 testReadWrite( 'BMP:input.bmp',
   'BMP:output.bmp',
   q//,
-  '32d82b4ab7a2527d0b886ccdd60990f6f7e4a411181337bd033760256c0d596c');
+  'ae2007d0e05933a72294a6f8c7b59fc54d5fa3039f0f13bf8d65d05044ef2f39');
 
 print("Microsoft Windows 24-bit bitmap image file ...\n");
 ++$test;
@@ -44,7 +44,6 @@ testReadWrite( 'BMP:input.bmp24',
   'BMP:output.bmp24',
   q//,
   '6a4a257921582768b774aeeac549b7c0c0b51f665395eddf921cce53a0ad2a33');
-
 
 print("ZSoft IBM PC multi-page Paintbrush file ...\n");
 ++$test;
@@ -72,14 +71,14 @@ print("CompuServe graphics interchange format ...\n");
 testReadWrite( 'GIF:input.gif',
   'GIF:output.gif',
   q//,
-  '32d82b4ab7a2527d0b886ccdd60990f6f7e4a411181337bd033760256c0d596c');
+  'ae2007d0e05933a72294a6f8c7b59fc54d5fa3039f0f13bf8d65d05044ef2f39');
 
 print("CompuServe graphics interchange format (1987) ...\n");
 ++$test;
 testReadWrite( 'GIF87:input.gif87',
   'GIF87:output.gif87',
   q//,
-  'd8938f29cbd56aa164bf8265f385d9ec872be75fe08401601b68eee159df8cd9');
+  'a037bce490abf358b3c8e1f471a83d15434da26d6c91aa6d761407c0df573f1d');
 
 print("Magick image file format ...\n");
 ++$test;
@@ -170,14 +169,14 @@ print("SUN 1-bit Rasterfile ...\n");
 testReadWrite( 'SUN:input.im1',
   'SUN:output.im1',
   q//,
-  '31d166e543d44963cc8a500212ae60c1c6f040fac3117748bcd54174727b45e1');
+  'cf6e645339d1bb82131ad658f2e7521f1e8aac69eb6e7add728f6157489972cd');
 
 print("SUN 8-bit Rasterfile ...\n");
 ++$test;
 testReadWrite( 'SUN:input.im8',
   'SUN:output.im8',
   q//,
-  '88528b9fde504a6388f0db5a351e3373ea15607e18a0c2d0e7e0fe4c851cce10');
+  '6b894bae0411f6f21e76724047cc93e28a2b04176df31d0632b656e98ce9b6e8');
 
 print("SUN True-Color Rasterfile ...\n");
 ++$test;
@@ -201,7 +200,7 @@ testReadWrite( 'VIFF:input.viff',
   'VIFF:output.viff',
   q//,
   '7f2c98e7ce98983509580eaeb3bb6a420e3f358b39fcec4cdd96982ae1e21882',
-  '409e646b6ba024c597a6b2c34754bf23713857e367047e7ea15615d8bd0fd028',
+  'bbeaa063bd13c74414a9962f21a795844661b596bd89f753f064ba1db2624d03',
   'aa4a6154f3c314d99c257280faf9097f3863a132ec8bddbc3b68209ce2c19487');
 
 print("WBMP (Wireless Bitmap (level 0) image) ...\n");
@@ -210,7 +209,7 @@ testReadWrite( 'WBMP:input.wbmp',
   'WBMP:output.wbmp',
   q//,
   'b7b682361e82d9d7cf2bed34f76af87576b97590b12d76b961104e53ee18ee74',
-  'd386466607cfcec0625943f277454d66cce1d17696d482f50103a25a04bd1070',
+  '6d1374fa22aa5cb8fa9e98b928b8dea6e5fc6606ed2dc07c5f27d1e03e494d0e',
   'd818195f73f8d5db624c8f87a706bbcb3179dbb7a7f08abbad5b12cd97de8fe6');
 
 print("X Windows system bitmap (black and white only) ...\n");
@@ -218,14 +217,14 @@ print("X Windows system bitmap (black and white only) ...\n");
 testReadWrite( 'XBM:input.xbm',
   'XBM:output.xbm',
   q//,
-  '31d166e543d44963cc8a500212ae60c1c6f040fac3117748bcd54174727b45e1');
+  'cf6e645339d1bb82131ad658f2e7521f1e8aac69eb6e7add728f6157489972cd');
 
 print("X Windows system pixmap file (color) ...\n");
 ++$test;
 testReadWrite( 'XPM:input.xpm',
   'XPM:output.xpm',
   q//,
-  '88528b9fde504a6388f0db5a351e3373ea15607e18a0c2d0e7e0fe4c851cce10');
+  '6b894bae0411f6f21e76724047cc93e28a2b04176df31d0632b656e98ce9b6e8');
 
 print("CMYK format ...\n");
 ++$test;
@@ -262,6 +261,6 @@ testReadWriteSized( 'RGBA:input_70x46.rgba',
   '70x46',
   8,
   q//,
-  '6a4a257921582768b774aeeac549b7c0c0b51f665395eddf921cce53a0ad2a33' );
+  'e7d406ec41fe69ba2bd88dd59e5eb17a83f17c0a99519def02c020041144f5b3' );
 
 1;
