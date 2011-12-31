@@ -628,8 +628,6 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
   /*
     Open pixel cache on disk.
   */
-  if (cache_info->mode != mode)
-    (void) ClosePixelCacheOnDisk(cache_info);
   LockSemaphoreInfo(cache_info->disk_semaphore);
   if (cache_info->file != -1)
     {
@@ -671,8 +669,8 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
       return(MagickFalse);
     }
   (void) AcquireMagickResource(FileResource,1);
-  cache_info->mode=mode;
   cache_info->file=file;
+  cache_info->mode=mode;
   cache_info->timestamp=time(0);
   UnlockSemaphoreInfo(cache_info->disk_semaphore);
   return(MagickTrue);
@@ -977,8 +975,25 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
         }
       cache_offset=cache_info->offset;
     }
+  if ((cache_info->type != MemoryCache) && (clone_info->type != MemoryCache) &&
+      (strcmp(cache_info->cache_filename,clone_info->cache_filename) == 0))
+    {
+      /*
+        Inplace cloning not reliable.
+      */
+      (void) ClosePixelCacheOnDisk(clone_info);
+      if (cache_info->type == MapCache)
+        {
+          clone_info->pixels=(Quantum *) UnmapBlob(clone_info->pixels,(size_t)
+            clone_info->length);
+          RelinquishMagickResource(MapResource,clone_info->length);
+        }
+      *clone_info->cache_filename='\0';
+      clone_info->type=DiskCache;
+    }
   if (clone_info->type == DiskCache)
     {
+      (void) ClosePixelCacheOnDisk(clone_info);
       if (OpenPixelCacheOnDisk(clone_info,WriteMode) == MagickFalse)
         {
           if (cache_info->type == DiskCache)
@@ -4141,7 +4156,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if (cache_info->metacontent_extent != 0)
                 cache_info->metacontent=(void *) (cache_info->pixels+
                   number_pixels*cache_info->number_channels);
-              if (source_info.type != UndefinedCache)
+              if (source_info.storage_class != UndefinedClass)
                 {
                   status=ClonePixelCachePixels(cache_info,&source_info,
                     exception);
@@ -4162,8 +4177,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
         "CacheResourcesExhausted","`%s'",image->filename);
       return(MagickFalse);
     }
-  if (source_info.type != UndefinedCache)
-    *cache_info->cache_filename='\0';
   if (OpenPixelCacheOnDisk(cache_info,mode) == MagickFalse)
     {
       RelinquishMagickResource(DiskResource,cache_info->length);
@@ -4211,7 +4224,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if (cache_info->metacontent_extent != 0)
                 cache_info->metacontent=(void *) (cache_info->pixels+
                   number_pixels*cache_info->number_channels);
-              if (source_info.type != UndefinedCache)
+              if (source_info.storage_class != UndefinedClass)
                 {
                   status=ClonePixelCachePixels(cache_info,&source_info,
                     exception);
@@ -4236,7 +4249,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       RelinquishMagickResource(MapResource,cache_info->length);
     }
   status=MagickTrue;
-  if (source_info.type != UndefinedCache)
+  if ((source_info.type != UndefinedCache) && (mode != ReadMode))
     {
       status=ClonePixelCachePixels(cache_info,&source_info,exception);
       RelinquishPixelCachePixels(&source_info);
