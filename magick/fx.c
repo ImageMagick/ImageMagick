@@ -5337,8 +5337,8 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   canvas_image->matte=MagickTrue;
-  oval_image=CloneImage(canvas_image,canvas_image->columns,
-    canvas_image->rows,MagickTrue,exception);
+  oval_image=CloneImage(canvas_image,canvas_image->columns,canvas_image->rows,
+    MagickTrue,exception);
   if (oval_image == (Image *) NULL)
     {
       canvas_image=DestroyImage(canvas_image);
