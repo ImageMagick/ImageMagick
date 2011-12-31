@@ -85,11 +85,28 @@ typedef enum
   ArctanFunction
 } MagickFunction;
 
+typedef enum
+{
+  UndefinedStatistic,
+  GradientStatistic,
+  MaximumStatistic,
+  MeanStatistic,
+  MedianStatistic,
+  MinimumStatistic,
+  ModeStatistic,
+  NonpeakStatistic,
+  StandardDeviationStatistic
+} StatisticType;
+
 extern MagickExport ChannelStatistics
   *GetImageChannelStatistics(const Image *,ExceptionInfo *);
 
 extern MagickExport Image
-  *EvaluateImages(const Image *,const MagickEvaluateOperator,ExceptionInfo *);
+  *EvaluateImages(const Image *,const MagickEvaluateOperator,ExceptionInfo *),
+  *StatisticImage(const Image *,const StatisticType,const size_t,const size_t,
+    ExceptionInfo *),
+  *StatisticImageChannel(const Image *,const ChannelType,const StatisticType,
+    const size_t,const size_t,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   EvaluateImage(Image *,const MagickEvaluateOperator,const double,

@@ -542,6 +542,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
             image->rows=(size_t) floor(((image->rows*image->y_resolution)/
               DefaultResolution)+0.5);
         }
+      (void) flags;
       geometry=DestroyString(geometry);
     }
   hDC=GetDC(NULL);
