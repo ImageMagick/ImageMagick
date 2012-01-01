@@ -775,7 +775,10 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
       /* Image is gray when no complex flag is set and 2D Matrix */
     if ((MATLAB_HDR.DimFlag == 8) &&
         ((MATLAB_HDR.StructureFlag & FLAG_COMPLEX) == 0))
-      image->type=GrayscaleType;
+      {
+        image->type=GrayscaleType;
+        image->colorspace=GRAYColorspace;
+      }
 
     switch (CellType)
     {
