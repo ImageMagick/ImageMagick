@@ -327,35 +327,35 @@ inline void Magick::Color::initPixel()
 
 inline void Magick::Color::redQuantum ( Magick::Quantum red_ )
 {
-  _pixel->red = red_;
+  _pixel->red = (double) red_;
   _isValid = true;
 }
 
 inline Magick::Quantum Magick::Color::redQuantum ( void ) const
 {
-  return _pixel->red;
+  return ClampToQuantum(_pixel->red);
 }
 
 inline void Magick::Color::greenQuantum ( Magick::Quantum green_ )
 {
-  _pixel->green = green_;
+  _pixel->green = (double) green_;
   _isValid = true;
 }
 
 inline Magick::Quantum  Magick::Color::greenQuantum ( void ) const
 {
-  return _pixel->green;
+  return ClampToQuantum(_pixel->green);
 }
 
 inline void  Magick::Color::blueQuantum ( Magick::Quantum blue_ )
 {
-  _pixel->blue = blue_;
+  _pixel->blue = (double) blue_;
   _isValid = true;
 }
 
 inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
 {
-  return _pixel->blue;
+  return ClampToQuantum(_pixel->blue);
 }
 
 inline void  Magick::Color::alphaQuantum ( Magick::Quantum alpha_ )
@@ -366,7 +366,7 @@ inline void  Magick::Color::alphaQuantum ( Magick::Quantum alpha_ )
 
 inline Magick::Quantum Magick::Color::alphaQuantum ( void ) const
 {
-  return _pixel->alpha;
+  return MagickCore::ClampToQuantum(_pixel->alpha);
 }
 
 // Return ImageMagick PixelInfo struct based on color.
