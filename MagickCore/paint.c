@@ -55,6 +55,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/paint.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/thread-private.h"
 
@@ -175,10 +176,12 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   /*
     Set floodfill state.
   */
-  floodplane_image=CloneImage(image,0,0,MagickTrue,exception);
+  floodplane_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
   if (floodplane_image == (Image *) NULL)
     return(MagickFalse);
-  (void) SetImageAlphaChannel(floodplane_image,OpaqueAlphaChannel,exception);
+  floodplane_image->colorspace=GRAYColorspace;
+  (void) EvaluateImage(floodplane_image,SetEvaluateOperator,0.0,exception);
   segment_stack=(SegmentInfo *) AcquireQuantumMemory(MaxStacksize,
     sizeof(*segment_stack));
   if (segment_stack == (SegmentInfo *) NULL)
@@ -191,8 +194,6 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     Push initial segment on stack.
   */
   status=MagickTrue;
-  fill_color.black=0.0;
-  fill_color.index=0.0;
   x=x_offset;
   y=y_offset;
   start=0;
@@ -233,12 +234,12 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     q+=x1*GetPixelChannels(floodplane_image);
     for (x=x1; x >= 0; x--)
     {
-      if (GetPixelAlpha(floodplane_image,q) == TransparentAlpha)
+      if (GetPixelGray(floodplane_image,q) != 0)
         break;
       GetPixelInfoPixel(image,p,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,target) == invert)
         break;
-      SetPixelAlpha(floodplane_image,TransparentAlpha,q);
+      SetPixelGray(floodplane_image,QuantumRange,q);
       p-=GetPixelChannels(image);
       q-=GetPixelChannels(floodplane_image);
     }
@@ -266,12 +267,12 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
                 break;
               for ( ; x < (ssize_t) image->columns; x++)
               {
-                if (GetPixelAlpha(floodplane_image,q) == TransparentAlpha)
+                if (GetPixelGray(floodplane_image,q) != 0)
                   break;
                 GetPixelInfoPixel(image,p,&pixel);
                 if (IsFuzzyEquivalencePixelInfo(&pixel,target) == invert)
                   break;
-                SetPixelAlpha(floodplane_image,TransparentAlpha,q);
+                SetPixelGray(floodplane_image,QuantumRange,q);
                 p+=GetPixelChannels(image);
                 q+=GetPixelChannels(floodplane_image);
               }
@@ -295,7 +296,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
             break;
           for ( ; x <= x2; x++)
           {
-            if (GetPixelAlpha(floodplane_image,q) == TransparentAlpha)
+            if (GetPixelGray(floodplane_image,q) != 0)
               break;
             GetPixelInfoPixel(image,p,&pixel);
             if (IsFuzzyEquivalencePixelInfo(&pixel,target) != invert)
@@ -321,14 +322,13 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     /*
       Tile fill color onto floodplane.
     */
-    p=GetCacheViewVirtualPixels(floodplane_view,0,y,image->columns,1,
-      exception);
+    p=GetCacheViewVirtualPixels(floodplane_view,0,y,image->columns,1,exception);
     q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelAlpha(floodplane_image,p) != OpaqueAlpha)
+      if (GetPixelGray(floodplane_image,p) != 0)
         {
           (void) GetFillColor(draw_info,x,y,&fill_color,exception);
           SetPixelInfoPixel(image,&fill_color,q);
@@ -792,18 +792,7 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
     {
       GetPixelInfoPixel(image,q,&pixel);
       if (IsFuzzyEquivalencePixelInfo(&pixel,target) != invert)
-        {
-          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelRed(image,ClampToQuantum(fill->red),q);
-          if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelGreen(image,ClampToQuantum(fill->green),q);
-          if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelBlue(image,ClampToQuantum(fill->blue),q);
-          if ((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelBlack(image,ClampToQuantum(fill->black),q);
-          if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelAlpha(image,ClampToQuantum(fill->alpha),q);
-        }
+        SetPixelInfoPixel(image,fill,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

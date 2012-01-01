@@ -193,6 +193,51 @@ static inline Quantum GetPixelInfoLuminance(
   return((Quantum) luminance);
 }
 
+static inline Quantum GetPixelIntensity(const Image *restrict image,
+  const Quantum *restrict pixel)
+{
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  if ((pixel[image->channel_map[RedPixelChannel].offset] ==
+       pixel[image->channel_map[GreenPixelChannel].offset]) &&
+      (pixel[image->channel_map[GreenPixelChannel].offset] ==
+       pixel[image->channel_map[BluePixelChannel].offset]))
+    return(pixel[image->channel_map[RedPixelChannel].offset]);
+  return((Quantum) (0.299*pixel[image->channel_map[RedPixelChannel].offset]+
+    0.587*pixel[image->channel_map[GreenPixelChannel].offset]+0.114*
+    pixel[image->channel_map[BluePixelChannel].offset]+0.5));
+#else
+  {
+    double
+      alpha,
+      beta;
+
+    alpha=pixel[image->channel_map[RedPixelChannel].offset]-(double)
+      pixel[image->channel_map[GreenPixelChannel].offset];
+    beta=pixel[image->channel_map[GreenPixelChannel].offset]-(double)
+      pixel[image->channel_map[BluePixelChannel].offset];
+    if ((fabs(alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
+      return(pixel[image->channel_map[RedPixelChannel].offset]);
+    return((Quantum) (0.299*pixel[image->channel_map[RedPixelChannel].offset]+
+      0.587*pixel[image->channel_map[GreenPixelChannel].offset]+0.114*
+      pixel[image->channel_map[BluePixelChannel].offset]));
+  }
+#endif
+}
+
+static inline Quantum GetPixelLuminance(const Image *restrict image,
+  const Quantum *restrict pixel)
+{
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((Quantum) (0.21267*pixel[image->channel_map[RedPixelChannel].offset]+
+    0.71516*pixel[image->channel_map[GreenPixelChannel].offset]+0.07217*
+    pixel[image->channel_map[BluePixelChannel].offset]+0.5));
+#else
+  return((Quantum) (0.21267*pixel[image->channel_map[RedPixelChannel].offset]+
+    0.71516*pixel[image->channel_map[GreenPixelChannel].offset]+0.07217*
+    pixel[image->channel_map[BluePixelChannel].offset]));
+#endif
+}
+
 static inline Quantum GetPixelMagenta(const Image *restrict image,
   const Quantum *restrict pixel)
 {
@@ -622,51 +667,6 @@ static inline void SetPixelY(const Image *restrict image,const Quantum y,
 static inline void SetPixelYTraits(Image *image,const PixelTrait traits)
 {
   image->channel_map[YPixelChannel].traits=traits;
-}
-
-static inline Quantum GetPixelIntensity(const Image *restrict image,
-  const Quantum *restrict pixel)
-{
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-  if ((pixel[image->channel_map[RedPixelChannel].offset] ==
-       pixel[image->channel_map[GreenPixelChannel].offset]) &&
-      (pixel[image->channel_map[GreenPixelChannel].offset] ==
-       pixel[image->channel_map[BluePixelChannel].offset]))
-    return(pixel[image->channel_map[RedPixelChannel].offset]);
-  return((Quantum) (0.299*pixel[image->channel_map[RedPixelChannel].offset]+
-    0.587*pixel[image->channel_map[GreenPixelChannel].offset]+0.114*
-    pixel[image->channel_map[BluePixelChannel].offset]+0.5));
-#else
-  {
-    double
-      alpha,
-      beta;
-
-    alpha=pixel[image->channel_map[RedPixelChannel].offset]-(double)
-      pixel[image->channel_map[GreenPixelChannel].offset];
-    beta=pixel[image->channel_map[GreenPixelChannel].offset]-(double)
-      pixel[image->channel_map[BluePixelChannel].offset];
-    if ((fabs(alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
-      return(pixel[image->channel_map[RedPixelChannel].offset]);
-    return((Quantum) (0.299*pixel[image->channel_map[RedPixelChannel].offset]+
-      0.587*pixel[image->channel_map[GreenPixelChannel].offset]+0.114*
-      pixel[image->channel_map[BluePixelChannel].offset]));
-  }
-#endif
-}
-
-static inline Quantum GetPixelLuminance(const Image *restrict image,
-  const Quantum *restrict pixel)
-{
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) (0.21267*pixel[image->channel_map[RedPixelChannel].offset]+
-    0.71516*pixel[image->channel_map[GreenPixelChannel].offset]+0.07217*
-    pixel[image->channel_map[BluePixelChannel].offset]+0.5));
-#else
-  return((Quantum) (0.21267*pixel[image->channel_map[RedPixelChannel].offset]+
-    0.71516*pixel[image->channel_map[GreenPixelChannel].offset]+0.07217*
-    pixel[image->channel_map[BluePixelChannel].offset]));
-#endif
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
