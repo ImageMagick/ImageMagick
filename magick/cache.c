@@ -4093,8 +4093,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               */
               if (image->debug != MagickFalse)
                 {
-                  (void) FormatMagickSize(cache_info->length,MagickTrue,
-                    format);
+                  (void) FormatMagickSize(cache_info->length,MagickTrue,format);
                   (void) FormatLocaleString(message,MaxTextExtent,
                     "open %s (%s memory, %.20gx%.20g %s)",cache_info->filename,
                     cache_info->mapped != MagickFalse ? "anonymous" : "heap",
@@ -4184,7 +4183,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if (cache_info->active_index_channel != MagickFalse)
                 cache_info->indexes=(IndexPacket *) (cache_info->pixels+
                   number_pixels);
-              if ((source_info.type != UndefinedCache) && (mode != ReadMode))
+              if ((source_info.type != UndefinedCache) && 
+                  (source_info.mode != ReadMode))
                 {
                   status=ClonePixelCachePixels(cache_info,&source_info,
                     exception);
