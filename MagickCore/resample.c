@@ -333,9 +333,8 @@ MagickExport MagickBooleanType ResamplePixelColor(
   status=MagickTrue;
   /* GetPixelInfo(resample_filter->image,pixel); */
   if ( resample_filter->do_interpolate ) {
-    status=InterpolatePixelInfo(resample_filter->image,
-      resample_filter->view,resample_filter->interpolate,u0,v0,pixel,
-      resample_filter->exception);
+    status=InterpolatePixelInfo(resample_filter->image,resample_filter->view,
+      resample_filter->interpolate,u0,v0,pixel,resample_filter->exception);
     return(status);
   }
 
