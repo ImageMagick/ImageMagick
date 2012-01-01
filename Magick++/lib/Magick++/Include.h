@@ -571,6 +571,7 @@ namespace Magick
   using MagickCore::CharcoalImage;
   using MagickCore::ChopImage;
   using MagickCore::ClearMagickException;
+  using MagickCore::ClampToQuantum;
   using MagickCore::CloneDrawInfo;
   using MagickCore::CloneImage;
   using MagickCore::CloneImageInfo;
