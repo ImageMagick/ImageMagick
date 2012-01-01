@@ -3284,6 +3284,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             {
               for (x=0; x < ping_num_trans; x++)
               {
+                 image->colormap[x].matte=MagickTrue;
                  image->colormap[x].alpha =
                    ScaleCharToQuantum((unsigned char)ping_trans_alpha[x]);
               }
@@ -3296,6 +3297,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                  if (ScaleQuantumToShort(image->colormap[x].red) ==
                      transparent_color.alpha)
                  {
+                    image->colormap[x].matte=MagickTrue;
                     image->colormap[x].alpha = (Quantum) TransparentAlpha;
                  }
               }
