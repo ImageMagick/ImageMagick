@@ -198,10 +198,10 @@ const Magick::Color& Magick::Color::operator = ( const std::string &x11color_ )
   GetExceptionInfo( &exception );
   if ( QueryColorCompliance( x11color_.c_str(), AllCompliance, &target_color, &exception ) )
     {
-      redQuantum( target_color.red );
-      greenQuantum( target_color.green );
-      blueQuantum( target_color.blue );
-      alphaQuantum( target_color.alpha );
+      redQuantum( ClampToQuantum( target_color.red ) );
+      greenQuantum( ClampToQuantum( target_color.green ) );
+      blueQuantum( ClampToQuantum( target_color.blue ) );
+      alphaQuantum( ClampToQuantum( target_color.alpha ) );
 
       if ( target_color.alpha != OpaqueAlpha )
 	_pixelType = RGBAPixel;
@@ -310,9 +310,9 @@ Magick::ColorHSL::ColorHSL ( double hue_,
 		 &green,
 		 &blue );
 
-  redQuantum   ( red );
-  greenQuantum ( green );
-  blueQuantum  ( blue );
+  redQuantum   ( ClampToQuantum( red ) );
+  greenQuantum ( ClampToQuantum( green ) );
+  blueQuantum  ( ClampToQuantum( blue ) );
   alphaQuantum ( OpaqueAlpha );
 }
 
@@ -355,9 +355,9 @@ void Magick::ColorHSL::hue ( double hue_ )
 		 &blue
 		 );
 
-  redQuantum   ( red );
-  greenQuantum ( green );
-  blueQuantum  ( blue );
+  redQuantum   ( ClampToQuantum( red ) );
+  greenQuantum ( ClampToQuantum( green ) );
+  blueQuantum  ( ClampToQuantum( blue ) );
 }
 
 double Magick::ColorHSL::hue ( void ) const
@@ -393,9 +393,9 @@ void Magick::ColorHSL::saturation ( double saturation_ )
 		 &blue
 		 );
 
-  redQuantum   ( red );
-  greenQuantum ( green );
-  blueQuantum  ( blue );
+  redQuantum   ( ClampToQuantum( red ) );
+  greenQuantum ( ClampToQuantum( green ) );
+  blueQuantum  ( ClampToQuantum( blue ) );
 }
 
 double Magick::ColorHSL::saturation ( void ) const
@@ -431,9 +431,9 @@ void Magick::ColorHSL::luminosity ( double luminosity_ )
 		 &blue
 		 );
   
-  redQuantum   ( red );
-  greenQuantum ( green );
-  blueQuantum  ( blue );
+  redQuantum   ( ClampToQuantum( red ) );
+  greenQuantum ( ClampToQuantum( green ) );
+  blueQuantum  ( ClampToQuantum( blue ) );
 }
 
 double Magick::ColorHSL::luminosity ( void ) const
