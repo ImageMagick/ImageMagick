@@ -64,7 +64,7 @@ print("Flexible Image Transport System ...\n");
 testReadWrite( 'FITS:input.fits',
   'FITS:output.fits',
   q//,
-  'f28470f09857477a372a743665071cdc325613b963481d94b6dceabe292dd469' );
+  '04b3cafea6030665fbedcc3463711475bcda2ad35254e5a632d8772905f59ab9' );
 
 print("CompuServe graphics interchange format ...\n");
 ++$test;
@@ -99,14 +99,14 @@ print("Portable bitmap format (black and white), ASCII format ...\n");
 testReadWrite( 'PBM:input_p1.pbm',
   'PBM:output_p1.pbm',
   q/compression=>'None'/,
-  '57fc672e7e231d3f92793d9b2073132def273f4be3115bcbed1c49a1c3131222');
+  'c8c4f812d902693d1de6c74a6cffaaef7506bd868df65cae63b06707f2c9f3ac');
 
 print("Portable bitmap format (black and white), binary format ...\n");
 ++$test;
 testReadWrite( 'PBM:input_p4.pbm',
   'PBM:output_p4.pbm',
   q//,
-  '57fc672e7e231d3f92793d9b2073132def273f4be3115bcbed1c49a1c3131222');
+  'c8c4f812d902693d1de6c74a6cffaaef7506bd868df65cae63b06707f2c9f3ac');
 
 print("ZSoft IBM PC Paintbrush file ...\n");
 ++$test;
@@ -120,7 +120,7 @@ print("Portable graymap format (gray scale), ASCII format ...\n");
 testReadWrite( 'PGM:input_p2.pgm',
   'PGM:output_p2.pgm',
   q/compression=>'None'/,
-  'e2e1b058a09c2b9c0c696996163911dcce325def773cb2a1554c6f21a0391ff7');
+  'a52f1015dcd3290c136b892874b0ef06516d28a846a2a7383d896267a5299aba');
 
 print("Apple Macintosh QuickDraw/PICT file ...\n");
 ++$test;
@@ -141,7 +141,7 @@ print("Portable graymap format (gray scale), binary format ...\n");
 testReadWrite( 'PGM:input_p5.pgm',
   'PGM:output_p5.pgm',
   q//,
-  'e2e1b058a09c2b9c0c696996163911dcce325def773cb2a1554c6f21a0391ff7');
+  'a52f1015dcd3290c136b892874b0ef06516d28a846a2a7383d896267a5299aba');
 
 print("Portable pixmap format (color), binary format ...\n");
 ++$test;
@@ -242,7 +242,7 @@ testReadWriteSized( 'GRAY:input_70x46.gray',
   '70x46',
   8,
   q//,
-  'f28470f09857477a372a743665071cdc325613b963481d94b6dceabe292dd469' );
+  '04b3cafea6030665fbedcc3463711475bcda2ad35254e5a632d8772905f59ab9' );
 
 print("RGB format ...\n");
 ++$test;

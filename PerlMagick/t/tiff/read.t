@@ -19,7 +19,7 @@ chdir 't/tiff' || die 'Cd failed';
 # 
 print("Monochrome ...\n");
 testRead ( 'input_mono.tiff',
-  '57fc672e7e231d3f92793d9b2073132def273f4be3115bcbed1c49a1c3131222' );
+  'c8c4f812d902693d1de6c74a6cffaaef7506bd868df65cae63b06707f2c9f3ac' );
 
 #
 # 2) Test reading PseudoColor (16 color)
@@ -108,7 +108,7 @@ testRead( 'input_truecolor_stripped.tiff',
 ++$test;
 print("Grayscale (4-bit) ...\n");
 testRead( 'input_gray_4bit.tiff',
-  'a3ae7f6908bb538751f59565dd17f28f83201620ca3ccc8a87a388b3d4c50232');
+  'be370e06f1aad47490e88b5212002c89520b07af6764690b3cee4cb9f1343df9');
 
 #
 # 13) Test Reading Grayscale 8-bit
@@ -116,7 +116,7 @@ testRead( 'input_gray_4bit.tiff',
 ++$test;
 print("Grayscale (8-bit) ...\n");
 testRead( 'input_gray_8bit.tiff',
-  '63783c30b21fca4cc94bb6c02ae37df722224a466d997db39bb7ddece5e236a8');
+  '9bd950a80339e260c491025f5c58a21ca70c38e2c498914feda6558bfa1ffe35');
 
 #
 # 14) Test Reading Grayscale 8-bit + matte
@@ -124,7 +124,7 @@ testRead( 'input_gray_8bit.tiff',
 ++$test;
 print("Grayscale (8-bit + matte) ...\n");
 testRead( 'input_gray_8bit_matte.tiff',
-  'e87923c84a9140824abbb3683d603c19e8b1b08b926d78f794c5ea813db53615' );
+  'c34ac18bc2c04aa5d2577c579a620a1223e2249018ed6303cf08282f578d59c9' );
 
 #
 # 15) Test Reading Grayscale 12-bit
@@ -133,8 +133,8 @@ testRead( 'input_gray_8bit_matte.tiff',
 print("Grayscale (12-bit) ...\n");
 testRead( 'input_gray_12bit.tiff',
   'c29789db13969ddbfc9b588066d6578d87628566a60ffc33dbd43e6c4f747f51',
-  '92fd45c62bf2641e0dd33eb05d215c9c15b5c5856aaa4a758bcde6d65ea16e4f',
-  '92fd45c62bf2641e0dd33eb05d215c9c15b5c5856aaa4a758bcde6d65ea16e4f');
+  'ff6335069b6e140eb47149d847aea80bf7e2b06bd80ae9708aa382efb3ae21ee',
+  'ff6335069b6e140eb47149d847aea80bf7e2b06bd80ae9708aa382efb3ae21ee');
 
 #
 # 16) Test Reading Grayscale 16-bit
@@ -143,5 +143,5 @@ testRead( 'input_gray_12bit.tiff',
 print("Grayscale (16-bit) ...\n");
 testRead( 'input_gray_16bit.tiff',
   '7cc1f9e909cd671d0a4d32018fa885997a43de202eafdf4e0bec3dbff9f24a4e',
-  '63783c30b21fca4cc94bb6c02ae37df722224a466d997db39bb7ddece5e236a8',
-  '63783c30b21fca4cc94bb6c02ae37df722224a466d997db39bb7ddece5e236a8');
+  '9bd950a80339e260c491025f5c58a21ca70c38e2c498914feda6558bfa1ffe35',
+  '9bd950a80339e260c491025f5c58a21ca70c38e2c498914feda6558bfa1ffe35');
