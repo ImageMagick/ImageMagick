@@ -642,10 +642,9 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
         {
           SetPixelRed(image,pixel,q);
           if (channels == 1)
-            {
-              SetPixelGreen(image,GetPixelRed(image,q),q);
-              SetPixelBlue(image,GetPixelRed(image,q),q);
-            }
+            SetPixelGray(image,pixel,q);
+          else
+            SetPixelRed(image,pixel,q);
           if (image->storage_class == PseudoClass)
             {
               if (packet_size == 1)
