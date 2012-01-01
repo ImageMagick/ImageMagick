@@ -1,3 +1,6 @@
+2011-01-01  6.7.4-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.4-4, SVN revision 6313.
+
 2010-12-30  6.7.4-4 Glenn Randers-Pehrson <glennrp@image...>
   * Fix problems with JNG encoder "quality" (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20076).
