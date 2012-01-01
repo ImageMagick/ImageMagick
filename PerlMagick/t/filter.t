@@ -123,7 +123,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Minify.miff', 'Minify', 
 testFilterCompare('input.miff',  q//, 'reference/filter/Modulate.miff', 'Modulate', q/brightness=>110,saturation=>110,hue=>110/, 0.08, 1.08);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/QuantizeMono.miff', 'Quantize', q/colorspace=>'gray',colors=>2,dither=>'false'/, 0.3, 1.03);
+testFilterCompare('input.miff',  q//, 'reference/filter/QuantizeMono.miff', 'Quantize', q/colorspace=>'gray',colors=>2,dither=>'false'/, 0.4, 1.04);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/MotionBlur.miff', 'MotionBlur', q/'0x13+10-10'/, 0.003, 0.03);
