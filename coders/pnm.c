@@ -442,10 +442,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetPixelRed(image,PNMInteger(image,2,exception) == 0 ?
+            SetPixelGray(image,PNMInteger(image,2,exception) == 0 ?
               QuantumRange : 0,q);
-            SetPixelGreen(image,GetPixelRed(image,q),q);
-            SetPixelBlue(image,GetPixelRed(image,q),q);
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -497,12 +495,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             intensity=PNMInteger(image,10,exception);
-            SetPixelRed(image,intensity,q);
+            SetPixelGray(image,intensity,q);
             if (scale != (Quantum *) NULL)
-              SetPixelRed(image,scale[ConstrainPixel(image,(ssize_t) intensity,
+              SetPixelGray(image,scale[ConstrainPixel(image,(ssize_t) intensity,
                 max_value,exception)],q);
-            SetPixelGreen(image,GetPixelRed(image,q),q);
-            SetPixelBlue(image,GetPixelRed(image,q),q);
             q+=GetPixelChannels(image);
           }
           if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -732,9 +728,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   p=PushCharPixel(p,&pixel);
-                  SetPixelRed(image,ScaleAnyToQuantum(pixel,range),q);
-                  SetPixelGreen(image,GetPixelRed(image,q),q);
-                  SetPixelBlue(image,GetPixelRed(image,q),q);
+                  SetPixelGray(image,ScaleAnyToQuantum(pixel,range),q);
                   q+=GetPixelChannels(image);
                 }
               }
@@ -746,9 +740,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
                   p=PushShortPixel(MSBEndian,p,&pixel);
-                  SetPixelRed(image,ScaleAnyToQuantum(pixel,range),q);
-                  SetPixelGreen(image,GetPixelRed(image,q),q);
-                  SetPixelBlue(image,GetPixelRed(image,q),q);
+                  SetPixelGray(image,ScaleAnyToQuantum(pixel,range),q);
                   q+=GetPixelChannels(image);
                 }
               }
@@ -1021,9 +1013,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     for (x=0; x < (ssize_t) image->columns; x++)
                     {
                       p=PushCharPixel(p,&pixel);
-                      SetPixelRed(image,ScaleAnyToQuantum(pixel,range),q);
-                      SetPixelGreen(image,GetPixelRed(image,q),q);
-                      SetPixelBlue(image,GetPixelRed(image,q),q);
+                      SetPixelGray(image,ScaleAnyToQuantum(pixel,range),q);
                       SetPixelAlpha(image,OpaqueAlpha,q);
                       if (image->matte != MagickFalse)
                         {
@@ -1041,9 +1031,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     for (x=0; x < (ssize_t) image->columns; x++)
                     {
                       p=PushShortPixel(MSBEndian,p,&pixel);
-                      SetPixelRed(image,ScaleAnyToQuantum(pixel,range),q);
-                      SetPixelGreen(image,GetPixelRed(image,q),q);
-                      SetPixelBlue(image,GetPixelRed(image,q),q);
+                      SetPixelGray(image,ScaleAnyToQuantum(pixel,range),q);
                       SetPixelAlpha(image,OpaqueAlpha,q);
                       if (image->matte != MagickFalse)
                         {

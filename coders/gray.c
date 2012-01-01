@@ -150,6 +150,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   /*
     Create virtual canvas to support cropping (i.e. image.gray[100x100+10+20]).
   */
+  image->colorspace=GRAYColorspace;
   canvas_image=CloneImage(image,image->extract_info.width,1,MagickFalse,
     exception);
   (void) SetImageVirtualPixelMethod(canvas_image,BlackVirtualPixelMethod);
@@ -225,9 +226,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            SetPixelRed(image,GetPixelRed(canvas_image,p),q);
-            SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
-            SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
+            SetPixelGray(image,GetPixelGray(canvas_image,p),q);
             p+=GetPixelChannels(canvas_image);
             q+=GetPixelChannels(image);
           }
