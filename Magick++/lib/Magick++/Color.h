@@ -333,7 +333,7 @@ inline void Magick::Color::redQuantum ( Magick::Quantum red_ )
 
 inline Magick::Quantum Magick::Color::redQuantum ( void ) const
 {
-  return ClampToQuantum(_pixel->red);
+  return MagickCore::ClampToQuantum(_pixel->red);
 }
 
 inline void Magick::Color::greenQuantum ( Magick::Quantum green_ )
@@ -344,7 +344,7 @@ inline void Magick::Color::greenQuantum ( Magick::Quantum green_ )
 
 inline Magick::Quantum  Magick::Color::greenQuantum ( void ) const
 {
-  return ClampToQuantum(_pixel->green);
+  return MagickCore::ClampToQuantum(_pixel->green);
 }
 
 inline void  Magick::Color::blueQuantum ( Magick::Quantum blue_ )
@@ -355,7 +355,7 @@ inline void  Magick::Color::blueQuantum ( Magick::Quantum blue_ )
 
 inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
 {
-  return ClampToQuantum(_pixel->blue);
+  return MagickCore::ClampToQuantum(_pixel->blue);
 }
 
 inline void  Magick::Color::alphaQuantum ( Magick::Quantum alpha_ )

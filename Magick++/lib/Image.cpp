@@ -3416,9 +3416,9 @@ void Magick::Image::matteColor ( const Color &matteColor_ )
 }
 Magick::Color Magick::Image::matteColor ( void ) const
 {
-  return Color( constImage()->matte_color.red,
-		constImage()->matte_color.green,
-		constImage()->matte_color.blue );
+  return Color( ClampToQuantum( constImage()->matte_color.red ),
+		ClampToQuantum( constImage()->matte_color.green ),
+		ClampToQuantum( constImage()->matte_color.blue ) );
 }
 
 double Magick::Image::meanErrorPerPixel ( void ) const
