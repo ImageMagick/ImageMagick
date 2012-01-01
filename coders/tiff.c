@@ -1007,7 +1007,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     lsb_first=1;
     image->endian=MSBEndian;
     if ((int) (*(char *) &lsb_first) != 0)
-      image->endian=LSBEndian;
+    if ((photometric == PHOTOMETRIC_MINISBLACK) ||
+        (photometric == PHOTOMETRIC_MINISWHITE))
+      image->colorspace=GRAYColorspace;
     if (photometric == PHOTOMETRIC_SEPARATED)
       image->colorspace=CMYKColorspace;
     if (photometric == PHOTOMETRIC_CIELAB)
