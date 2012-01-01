@@ -373,9 +373,7 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
       {
         for (x=0; x < (ssize_t) tile_image->columns; x++)
         {
-          SetPixelRed(tile_image,ScaleCharToQuantum(*graydata),q);
-          SetPixelGreen(tile_image,GetPixelRed(image,q),q);
-          SetPixelBlue(tile_image,GetPixelRed(image,q),q);
+          SetPixelGray(tile_image,ScaleCharToQuantum(*graydata),q);
           SetPixelAlpha(tile_image,ScaleCharToQuantum((unsigned char)
             inLayerInfo->alpha),q);
           graydata++;
@@ -471,9 +469,9 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               {
                 case 0:
                 {
-                  SetPixelRed(tile_image,ScaleCharToQuantum(data),q);
-                  if (inDocInfo->image_type == GIMP_GRAY)
+                  if (inDocInfo->image_type != GIMP_GRAY)
                     {
+                      SetPixelRed(tile_image,ScaleCharToQuantum(data),q);
                       SetPixelGreen(tile_image,ScaleCharToQuantum(data),q);
                       SetPixelBlue(tile_image,ScaleCharToQuantum(data),q);
                       SetPixelAlpha(tile_image,ScaleCharToQuantum(
@@ -481,8 +479,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                     }
                   else
                     {
-                      SetPixelGreen(tile_image,GetPixelRed(image,q),q);
-                      SetPixelBlue(tile_image,GetPixelRed(image,q),q);
+                      SetPixelGray(tile_image,ScaleCharToQuantum(data),q);
                       SetPixelAlpha(tile_image,ScaleCharToQuantum(
                         (unsigned char) inLayerInfo->alpha),q);
                     }
@@ -531,9 +528,9 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
               {
                 case 0:
                 {
-                  SetPixelRed(tile_image,ScaleCharToQuantum(data),q);
-                  if (inDocInfo->image_type == GIMP_GRAY)
+                  if (inDocInfo->image_type != GIMP_GRAY)
                     {
+                      SetPixelRed(tile_image,ScaleCharToQuantum(data),q);
                       SetPixelGreen(tile_image,ScaleCharToQuantum(data),q);
                       SetPixelBlue(tile_image,ScaleCharToQuantum(data),q);
                       SetPixelAlpha(tile_image,ScaleCharToQuantum(
@@ -541,8 +538,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                     }
                   else
                     {
-                      SetPixelGreen(tile_image,GetPixelRed(image,q),q);
-                      SetPixelBlue(tile_image,GetPixelRed(image,q),q);
+                      SetPixelGray(tile_image,ScaleCharToQuantum(data),q);
                       SetPixelAlpha(tile_image,ScaleCharToQuantum(
                         (unsigned char) inLayerInfo->alpha),q);
                     }

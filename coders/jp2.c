@@ -467,6 +467,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=jas_image_width(jp2_image);
   image->rows=jas_image_height(jp2_image);
   image->compression=JPEG2000Compression;
+  if (number_components == 1)
+    image->colorspace=GRAYColorspace;
   for (i=0; i < (ssize_t) number_components; i++)
   {
     size_t
@@ -538,9 +540,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          SetPixelRed(image,ScaleAnyToQuantum((QuantumAny) pixel,range[0]),q);
-          SetPixelGreen(image,GetPixelRed(image,q),q);
-          SetPixelBlue(image,GetPixelRed(image,q),q);
+          SetPixelGray(image,ScaleAnyToQuantum((QuantumAny) pixel,range[0]),q);
           q+=GetPixelChannels(image);
         }
         break;

@@ -6084,9 +6084,10 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               q-=image->columns*GetPixelChannels(image);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                SetPixelRed(image,ScaleShortToQuantum(*p),q);
-                SetPixelGreen(image,GetPixelRed(image,q),q);
-                SetPixelBlue(image,GetPixelRed(image,q),q);
+                if (target_channels == 1)
+                  SetPixelGray(image,ScaleShortToQuantum(*p),q);
+                else
+                  SetPixelRed(image,ScaleShortToQuantum(*p),q);
                 p++;
                 if (target_channels > 1)
                   {

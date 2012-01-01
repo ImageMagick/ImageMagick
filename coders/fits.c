@@ -416,6 +416,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       fits_info.bits_per_pixel;
     image->endian=fits_info.endian;
     image->scene=(size_t) scene;
+    image->colorspace=GRAYColorspace;
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
@@ -444,10 +445,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         pixel=GetFITSPixel(image,fits_info.bits_per_pixel);
-        SetPixelRed(image,ClampToQuantum(scale*(fits_info.scale*
+        SetPixelGray(image,ClampToQuantum(scale*(fits_info.scale*
           (pixel-fits_info.min_data)+fits_info.zero)),q);
-        SetPixelGreen(image,GetPixelRed(image,q),q);
-        SetPixelBlue(image,GetPixelRed(image,q),q);
         q+=GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
