@@ -278,6 +278,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
                 image->filename);
               return(0);
             }
+          node_info->list[i]=pixel;
           node_info->list[i].red=GetPixelRed(image,p);
           node_info->list[i].green=GetPixelGreen(image,p);
           node_info->list[i].blue=GetPixelBlue(image,p);
@@ -353,12 +354,7 @@ static void DefineImageHistogram(const Image *image,NodeInfo *node_info,
       p=node_info->list;
       for (i=0; i < (ssize_t) node_info->number_unique; i++)
       {
-        (*histogram)->red=p->red;
-        (*histogram)->green=p->green;
-        (*histogram)->blue=p->blue;
-        (*histogram)->black=p->black;
-        (*histogram)->alpha=p->alpha;
-        (*histogram)->count=p->count;
+        **histogram=(*p);
         (*histogram)++;
         p++;
       }
@@ -909,6 +905,7 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
                 image->filename);
               break;
             }
+          node_info->list[i]=pixel;
           node_info->list[i].red=GetPixelRed(image,p);
           node_info->list[i].green=GetPixelGreen(image,p);
           node_info->list[i].blue=GetPixelBlue(image,p);
