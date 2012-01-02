@@ -1581,9 +1581,9 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if (channel_statistics[i].depth != MAGICKCORE_QUANTUM_DEPTH)
+        if (channel_statistics[channel].depth != MAGICKCORE_QUANTUM_DEPTH)
           {
-            depth=channel_statistics[i].depth;
+            depth=channel_statistics[channel].depth;
             range=GetQuantumRange(depth);
             status=p[i] != ScaleAnyToQuantum(ScaleQuantumToAny(p[i],range),
               range) ? MagickTrue : MagickFalse;
