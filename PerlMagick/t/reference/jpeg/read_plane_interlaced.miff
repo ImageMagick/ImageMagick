@@ -5,6 +5,8 @@ colorspace=RGB
 compression=JPEG  quality=75
 resolution=72x72
 page=70x46+0+0
+date:create={2012-01-01T21:26:43-05:00}
+date:modify={2009-09-05T17:47:34-04:00}
 jpeg:colorspace={2}
 jpeg:sampling-factor={1x1,1x1,1x1}
 
