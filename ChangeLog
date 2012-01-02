@@ -1,3 +1,6 @@
+2012-01-02  6.7.4-5 Glenn Randers-Pehrson <glennrp@image...>
+  * Removed PNG_USE_CLONE cruft from the PNG encoder (see 2011-11-19 entry)
+
 2011-01-01  6.7.4-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.4-4, SVN revision 6318.
 
@@ -80,7 +83,7 @@
   * Correct image geometry for Postscript for hi-res bounding box (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19807).
 
-2010-11-19  6.7.3-8 Glenn Randers-Pehrson <glennrp@image...>
+2011-11-19  6.7.3-8 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed bug with scaling Q16 background to PNG sub-8-bit bKGD and
     again disabled PNG_USE_CLONE in coders/png.c.
 
