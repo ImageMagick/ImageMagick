@@ -837,7 +837,7 @@ static MagickBooleanType DiskToDiskPixelCacheClone(CacheInfo *clone_info,
   return(MagickTrue);
 }
 
-static MagickBooleanType OptimizedPixelCacheClone(CacheInfo *clone_info,
+static MagickBooleanType PixelCacheCloneOptimized(CacheInfo *clone_info,
   CacheInfo *cache_info,ExceptionInfo *exception)
 {
   MagickOffsetType
@@ -908,7 +908,7 @@ static MagickBooleanType OptimizedPixelCacheClone(CacheInfo *clone_info,
   return(DiskToDiskPixelCacheClone(clone_info,cache_info,exception));
 }
 
-static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
+static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
   CacheInfo *cache_info,ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -921,6 +921,9 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
 
   register ssize_t
     x;
+
+  register unsigned char
+    *p;
 
   size_t
     length;
@@ -987,6 +990,7 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
     Clone pixel channels.
   */
   status=MagickTrue;
+  p=blob;
   for (y=0; y < (ssize_t) cache_info->rows; y++)
   {
     for (x=0; x < (ssize_t) cache_info->columns; x++)
@@ -999,11 +1003,10 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
       */
       length=cache_info->number_channels*sizeof(Quantum);
       if (cache_info->type != DiskCache)
-        (void) memcpy(blob,(unsigned char *) cache_info->pixels+cache_offset,
-          length);
+        p=(unsigned char *) cache_info->pixels+cache_offset;
       else
         {
-          count=ReadPixelCacheRegion(cache_info,cache_offset,length,blob);
+          count=ReadPixelCacheRegion(cache_info,cache_offset,length,p);
           if ((MagickSizeType) count != length)
             {
               status=MagickFalse;
@@ -1036,12 +1039,12 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
             }
           offset=cache_info->channel_map[channel].offset;
           if (clone_info->type != DiskCache)
-            (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,
-              blob+offset*sizeof(Quantum),sizeof(Quantum));
+            (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,p+
+              offset*sizeof(Quantum),sizeof(Quantum));
           else
             {
               count=WritePixelCacheRegion(clone_info,clone_offset,
-                sizeof(Quantum),blob+offset*sizeof(Quantum));
+                sizeof(Quantum),p+offset*sizeof(Quantum));
               if ((MagickSizeType) count != sizeof(Quantum))
                 {
                   status=MagickFalse;
@@ -1112,11 +1115,10 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
           */
           length=cache_info->metacontent_extent;
           if (cache_info->type != DiskCache)
-            (void) memcpy(blob,(unsigned char *) cache_info->pixels+
-              cache_offset,length);
+            p=(unsigned char *) cache_info->pixels+cache_offset;
           else
             {
-              count=ReadPixelCacheRegion(cache_info,cache_offset,length,blob);
+              count=ReadPixelCacheRegion(cache_info,cache_offset,length,p);
               if ((MagickSizeType) count != length)
                 {
                   status=MagickFalse;
@@ -1133,11 +1135,10 @@ static MagickBooleanType UnoptimizedPixelCacheClone(CacheInfo *clone_info,
               length=clone_info->metacontent_extent;
               if (clone_info->type != DiskCache)
                 (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,
-                  blob,length);
+                  p,length);
               else
                 {
-                  count=WritePixelCacheRegion(clone_info,clone_offset,length,
-                    blob);
+                  count=WritePixelCacheRegion(clone_info,clone_offset,length,p);
                   if ((MagickSizeType) count != length)
                     {
                       status=MagickFalse;
@@ -1218,8 +1219,8 @@ static MagickBooleanType ClonePixelCachePixels(CacheInfo *clone_info,
       (cache_info->number_channels == clone_info->number_channels) &&
       (memcmp(p,q,cache_info->number_channels*sizeof(*p)) == 0) &&
       (cache_info->metacontent_extent == clone_info->metacontent_extent))
-    return(OptimizedPixelCacheClone(clone_info,cache_info,exception));
-  return(UnoptimizedPixelCacheClone(clone_info,cache_info,exception));
+    return(PixelCacheCloneOptimized(clone_info,cache_info,exception));
+  return(PixelCacheCloneUnoptimized(clone_info,cache_info,exception));
 }
 
 /*
