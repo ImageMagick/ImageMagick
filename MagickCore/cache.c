@@ -422,7 +422,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
     *restrict q;
 
   register ssize_t
-    i;
+    x;
 
   /*
     Apply clip mask.
@@ -439,27 +439,35 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
   if ((image_nexus == (NexusInfo **) NULL) ||
       (clip_nexus == (NexusInfo **) NULL))
     ThrowBinaryException(CacheError,"UnableToGetCacheNexus",image->filename);
-  p=(const Quantum *) GetAuthenticPixelCacheNexus(image,
-    nexus_info->region.x,nexus_info->region.y,nexus_info->region.width,
-    nexus_info->region.height,image_nexus[0],exception);
+  p=(const Quantum *) GetAuthenticPixelCacheNexus(image,nexus_info->region.x,
+    nexus_info->region.y,nexus_info->region.width,nexus_info->region.height,
+    image_nexus[0],exception);
   q=nexus_info->pixels;
   r=GetVirtualPixelsFromNexus(image->clip_mask,MaskVirtualPixelMethod,
     nexus_info->region.x,nexus_info->region.y,nexus_info->region.width,
     nexus_info->region.height,clip_nexus[0],exception);
   number_pixels=(MagickSizeType) nexus_info->region.width*
     nexus_info->region.height;
-  for (i=0; i < (ssize_t) number_pixels; i++)
+  for (x=0; x < (ssize_t) number_pixels; x++)
   {
+    register ssize_t
+      i;
+
     if ((p == (const Quantum *) NULL) || (r == (const Quantum *) NULL))
       break;
-    if (GetPixelIntensity(image,r) > ((Quantum) QuantumRange/2))
+    if (GetPixelIntensity(image->clip_mask,r) > ((Quantum) QuantumRange/2))
+      for (i=0; i < (ssize_t) image->number_channels; i++)
       {
-        SetPixelRed(image,GetPixelRed(image,p),q);
-        SetPixelGreen(image,GetPixelGreen(image,p),q);
-        SetPixelBlue(image,GetPixelBlue(image,p),q);
-        if (cache_info->colorspace == CMYKColorspace)
-          SetPixelBlack(image,GetPixelBlack(image,p),q);
-        SetPixelAlpha(image,GetPixelAlpha(image,p),q);
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
+        if (traits != UndefinedPixelTrait)
+          q[i]=p[i];
       }
     p+=GetPixelChannels(image);
     q+=GetPixelChannels(image);
@@ -467,7 +475,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
   }
   clip_nexus=DestroyPixelCacheNexus(clip_nexus,1);
   image_nexus=DestroyPixelCacheNexus(image_nexus,1);
-  if (i < (ssize_t) number_pixels)
+  if (x < (ssize_t) number_pixels)
     return(MagickFalse);
   return(MagickTrue);
 }
