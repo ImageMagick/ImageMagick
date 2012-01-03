@@ -442,8 +442,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (type < 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     image->colorspace=(ColorspaceType) type;
-    (void) ResetMagickMemory(&pixel,0,sizeof(pixel));
     (void) SetImageBackgroundColor(image,exception);
+    GetPixelInfo(image,&pixel);
     range=GetQuantumRange(image->depth);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
@@ -451,35 +451,60 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         if (ReadBlobString(image,text) == (char *) NULL)
           break;
-        if (image->colorspace == CMYKColorspace)
+        switch (image->colorspace)
+        {
+          case GRAYColorspace:
           {
             if (image->matte != MagickFalse)
-              count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf,%lf",
-                &x_offset,&y_offset,&pixel.red,&pixel.green,&pixel.blue,
-                &pixel.black,&pixel.alpha);
-            else
-              count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf",&x_offset,
-                &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.black);
+              {
+                count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf",&x_offset,
+                  &y_offset,&pixel.red,&pixel.alpha);
+                pixel.green=pixel.red;
+                pixel.blue=pixel.red;
+                break;
+              }
+            count=(ssize_t) sscanf(text,"%ld,%ld: (%lf",&x_offset,&y_offset,
+              &pixel.red);
+            pixel.green=pixel.red;
+            pixel.blue=pixel.red;
+            break;       
           }
-        else
-          if (image->matte != MagickFalse)
+          case CMYKColorspace:
+          {
+            if (image->matte != MagickFalse)
+              {
+                count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf,%lf",
+                  &x_offset,&y_offset,&pixel.red,&pixel.green,&pixel.blue,
+                  &pixel.black,&pixel.alpha);
+                break;
+              }
             count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf",&x_offset,
-              &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.alpha);
-          else
+              &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.black);
+            break;
+          }
+          default:
+          {
+            if (image->matte != MagickFalse)
+              {
+                count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf",
+                  &x_offset,&y_offset,&pixel.red,&pixel.green,&pixel.blue,
+                  &pixel.alpha);
+                break;
+              }
             count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf",&x_offset,
               &y_offset,&pixel.red,&pixel.green,&pixel.blue);
-        if (count < 5)
-          continue;
+            break;       
+          }
+        }
+        pixel.red=ScaleAnyToQuantum(pixel.red,range);
+        pixel.green=ScaleAnyToQuantum(pixel.green,range);
+        pixel.blue=ScaleAnyToQuantum(pixel.blue,range);
+        pixel.black=ScaleAnyToQuantum(pixel.black,range);
+        pixel.alpha=ScaleAnyToQuantum(pixel.alpha,range);
         q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);
         if (q == (Quantum *) NULL)
           continue;
-        SetPixelRed(image,ScaleAnyToQuantum(pixel.red,range),q);
-        SetPixelGreen(image,ScaleAnyToQuantum(pixel.green,range),q);
-        SetPixelBlue(image,ScaleAnyToQuantum(pixel.blue,range),q);
-        if (image->colorspace == CMYKColorspace)
-          SetPixelBlack(image,ScaleAnyToQuantum(pixel.black,range),q);
-        if (image->matte != MagickFalse)
-          SetPixelAlpha(image,ScaleAnyToQuantum(pixel.alpha,range),q);
+        SetPixelInfoPixel(image,&pixel,q);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
       }
@@ -670,14 +695,20 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobString(image,buffer);
         GetPixelInfoPixel(image,p,&pixel);
         (void) CopyMagickString(tuple,"(",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,RedPixelChannel,X11Compliance,
-          tuple);
-        (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,GreenPixelChannel,X11Compliance,
-          tuple);
-        (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-        ConcatenateColorComponent(&pixel,BluePixelChannel,X11Compliance,
-          tuple);
+        if (pixel.colorspace == GRAYColorspace)
+          ConcatenateColorComponent(&pixel,GrayPixelChannel,X11Compliance,
+            tuple);
+        else
+          {
+            ConcatenateColorComponent(&pixel,RedPixelChannel,X11Compliance,
+              tuple);
+            (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+            ConcatenateColorComponent(&pixel,GreenPixelChannel,X11Compliance,
+              tuple);
+            (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+            ConcatenateColorComponent(&pixel,BluePixelChannel,X11Compliance,
+              tuple);
+          }
         if (pixel.colorspace == CMYKColorspace)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);

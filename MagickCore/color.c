@@ -1454,11 +1454,16 @@ MagickExport void GetColorTuple(const PixelInfo *pixel,
   if (color.matte != MagickFalse)
     (void) ConcatenateMagickString(tuple,"a",MaxTextExtent);
   (void) ConcatenateMagickString(tuple,"(",MaxTextExtent);
-  ConcatenateColorComponent(&color,RedPixelChannel,SVGCompliance,tuple);
-  (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-  ConcatenateColorComponent(&color,GreenPixelChannel,SVGCompliance,tuple);
-  (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
-  ConcatenateColorComponent(&color,BluePixelChannel,SVGCompliance,tuple);
+  if (color.colorspace == GRAYColorspace)
+    ConcatenateColorComponent(&color,GrayPixelChannel,SVGCompliance,tuple);
+  else
+    {
+      ConcatenateColorComponent(&color,RedPixelChannel,SVGCompliance,tuple);
+      (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+      ConcatenateColorComponent(&color,GreenPixelChannel,SVGCompliance,tuple);
+      (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
+      ConcatenateColorComponent(&color,BluePixelChannel,SVGCompliance,tuple);
+    }
   if (color.colorspace == CMYKColorspace)
     {
       (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
