@@ -606,7 +606,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (channel != DefaultChannels)
+      if (channel == DefaultChannels)
         {
           if (PixelIntensity(q) < MagickPixelIntensity(&threshold))
             {
@@ -2066,7 +2066,7 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (channel != DefaultChannels)
+      if (channel == DefaultChannels)
         {
           if (PixelIntensity(q) > MagickPixelIntensity(&threshold))
             {

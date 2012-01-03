@@ -1,4 +1,9 @@
 2012-01-02  6.7.4-5 Glenn Randers-Pehrson <glennrp@image...>
+  * Fixed -black-threshold and -white-threshold so they work properly with
+    the -channels option (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20096).
+
+2012-01-02  6.7.4-5 Glenn Randers-Pehrson <glennrp@image...>
   * Removed PNG_USE_CLONE cruft from the PNG encoder (see 2011-11-19 entry)
   * Promote image depths 9-15 to 16 to avoid crashing in the PNG
     encoder (reference
