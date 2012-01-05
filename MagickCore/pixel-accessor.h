@@ -259,6 +259,14 @@ static inline size_t GetPixelMetacontentExtent(const Image *restrict image)
   return(image->metacontent_extent);
 }
 
+static inline Quantum GetPixelOpacity(const Image *restrict image,
+  const Quantum *restrict pixel)
+{
+  if (image->channel_map[AlphaPixelChannel].traits == UndefinedPixelTrait)
+    return(QuantumRange-OpaqueAlpha);
+  return(QuantumRange-pixel[image->channel_map[AlphaPixelChannel].offset]);
+}
+
 static inline Quantum GetPixelRed(const Image *restrict image,
   const Quantum *restrict pixel)
 {
@@ -634,6 +642,13 @@ static inline void SetPixelMetaChannels(Image *image,
 static inline void SetPixelMetacontentExtent(Image *image,const size_t extent)
 {
   image->metacontent_extent=extent;
+}
+
+static inline void SetPixelOpacity(const Image *restrict image,
+  const Quantum alpha,Quantum *restrict pixel)
+{
+  if (image->channel_map[AlphaPixelChannel].traits != UndefinedPixelTrait)
+    pixel[image->channel_map[AlphaPixelChannel].offset]=QuantumRange-alpha;
 }
 
 static inline void SetPixelRed(const Image *restrict image,const Quantum red,
