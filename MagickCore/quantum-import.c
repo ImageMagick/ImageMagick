@@ -3245,7 +3245,8 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
   if (quantum_info->alpha_type == DisassociatedQuantumAlpha)
     {
       MagickRealType
-        alpha;
+        gamma,
+        Sa;
 
       register Quantum
         *restrict q;
@@ -3258,11 +3259,24 @@ MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
         q=GetCacheViewAuthenticPixelQueue(image_view);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
-        alpha=QuantumScale*GetPixelAlpha(image,q);
-        alpha=1.0/(fabs(alpha) <= MagickEpsilon ? 1.0 : alpha);
-        SetPixelRed(image,ClampToQuantum(alpha*GetPixelRed(image,q)),q);
-        SetPixelGreen(image,ClampToQuantum(alpha*GetPixelGreen(image,q)),q);
-        SetPixelBlue(image,ClampToQuantum(alpha*GetPixelBlue(image,q)),q);
+        register ssize_t
+          i;
+
+        Sa=QuantumScale*GetPixelAlpha(image,q);
+        gamma=1.0/(fabs(Sa) <= MagickEpsilon ? 1.0 : Sa);
+        for (i=0; i < (ssize_t) channels; i++)
+        {
+          PixelChannel
+            channel;
+
+          PixelTrait
+            traits;
+
+          channel=GetPixelChannelMapChannel(image,i);
+          traits=GetPixelChannelMapTraits(image,channel);
+          if ((traits & UpdatePixelTrait) != 0)
+            q[i]=ClampToQuantum(gamma*q[i]);
+        }
         q+=channels;
       }
     }
