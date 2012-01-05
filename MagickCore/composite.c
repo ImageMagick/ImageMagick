@@ -711,6 +711,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     }
     case CopyAlphaCompositeOp:
     case ChangeMaskCompositeOp:
+    case IntensityCompositeOp:
     {
       /*
         Modify destination outside the overlaid region and require an alpha
@@ -1139,7 +1140,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   image_view=AcquireCacheView(image);
   composite_view=AcquireCacheView(composite_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+//  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1263,6 +1264,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               case DstAtopCompositeOp:
               case DstInCompositeOp:
               case InCompositeOp:
+              case IntensityCompositeOp:
               case OutCompositeOp:
               case SrcInCompositeOp:
               case SrcOutCompositeOp:
@@ -1418,7 +1420,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
         composite_traits=GetPixelChannelMapTraits(composite_image,channel);
-        if ((traits == UndefinedPixelTrait) ||
+        if (traits == UndefinedPixelTrait)
+          continue;
+        if ((compose != IntensityCompositeOp) &&
             (composite_traits == UndefinedPixelTrait))
           continue;
         /*
@@ -1679,14 +1683,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case CopyAlphaCompositeOp:
           case IntensityCompositeOp:
           {
-            if (channel == AlphaPixelChannel)
-              {
-                if (composite_image->matte != MagickFalse)
-                  pixel=(MagickRealType) GetPixelAlpha(composite_image,p);
-                else
-                  pixel=(MagickRealType) GetPixelIntensity(composite_image,p);
-                break;
-              }
             pixel=Dc;
             break;
           }
