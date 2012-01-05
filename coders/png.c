@@ -2699,6 +2699,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   image->compression=ZipCompression;
   image->columns=ping_width;
   image->rows=ping_height;
+  if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
+      ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
+    image->colorspace=GRAYColorspace;
   if (((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
       ((int) ping_color_type == PNG_COLOR_TYPE_GRAY))
     {
@@ -6745,19 +6748,13 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 #if (MAGICKCORE_QUANTUM_DEPTH > 16)
       /* PNG does not handle depths greater than 16 so reduce it even
-       * if lossy.
+       * if lossy
        */
       if (image->depth > 16)
          image->depth=16;
 #endif
 
 #if (MAGICKCORE_QUANTUM_DEPTH > 8)
-      if (image->depth > 8)
-        {
-          /* To do: fill low byte properly */
-          image->depth=16;
-        }
-
       if (LosslessReduceDepthOK(image,exception) != MagickFalse)
          image->depth = 8;
 #endif
@@ -7971,12 +7968,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 #endif
 
 #if (MAGICKCORE_QUANTUM_DEPTH > 8)
-  if (image->depth > 8)
-    {
-      /* To do: fill low byte properly */
-      image->depth=16;
-    }
-
   if (image->depth == 16 && mng_info->write_png_depth != 16)
     if (mng_info->write_png8 || LosslessReduceDepthOK(image,exception) != MagickFalse)
       image->depth = 8;
@@ -11750,9 +11741,6 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
           (void) CopyMagickString(jpeg_image_info->magick,"PNG",MaxTextExtent);
           (void) CopyMagickString(jpeg_image->magick,"PNG",MaxTextExtent);
           jpeg_image_info->interlace=NoInterlace;
-
-          /* Exclude all ancillary chunks */
-          (void) SetImageArtifact(jpeg_image,"png:exclude-chunks","all");
 
           blob=ImageToBlob(jpeg_image_info,jpeg_image,&length,
             exception);
