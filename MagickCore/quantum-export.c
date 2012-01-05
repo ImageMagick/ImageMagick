@@ -240,9 +240,6 @@ MagickExport size_t ExportQuantumPixels(Image *image,CacheView *image_view,
   EndianType
     endian;
 
-  MagickRealType
-    alpha;
-
   MagickSizeType
     number_pixels;
 
@@ -290,6 +287,9 @@ MagickExport size_t ExportQuantumPixels(Image *image,CacheView *image_view,
     }
   if (quantum_info->alpha_type == AssociatedQuantumAlpha)
     {
+      MagickRealType
+        Sa;
+
       register Quantum
         *restrict q;
 
@@ -301,11 +301,24 @@ MagickExport size_t ExportQuantumPixels(Image *image,CacheView *image_view,
         q=GetCacheViewAuthenticPixelQueue(image_view);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        alpha=QuantumScale*GetPixelAlpha(image,q);
-        SetPixelRed(image,ClampToQuantum(alpha*GetPixelRed(image,q)),q);
-        SetPixelGreen(image,ClampToQuantum(alpha*GetPixelGreen(image,q)),q);
-        SetPixelBlue(image,ClampToQuantum(alpha*GetPixelBlue(image,q)),q);
-        q++;
+        register ssize_t
+          i;
+
+        Sa=QuantumScale*GetPixelAlpha(image,q);
+        for (i=0; i < (ssize_t) channels; i++)
+        {
+          PixelChannel
+            channel;
+
+          PixelTrait
+            traits;
+
+          channel=GetPixelChannelMapChannel(image,i);
+          traits=GetPixelChannelMapTraits(image,channel);
+          if ((traits & UpdatePixelTrait) != 0)
+            q[i]=ClampToQuantum(Sa*q[i]);
+        }
+        q+=channels;
       }
     }
   if ((quantum_type == RGBOQuantum) || (quantum_type == CMYKOQuantum) ||
@@ -320,7 +333,7 @@ MagickExport size_t ExportQuantumPixels(Image *image,CacheView *image_view,
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         SetPixelAlpha(image,GetPixelAlpha(image,q),q);
-        q++;
+        q+=channels;
       }
     }
   if ((quantum_type == CbYCrQuantum) || (quantum_type == CbYCrAQuantum))
