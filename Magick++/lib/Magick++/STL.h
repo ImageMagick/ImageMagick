@@ -2112,9 +2112,9 @@ namespace Magick
     for ( size_t i=0; i < colors; i++)
       {
         histogram_->insert(histogram_->end(),std::pair<const Color,size_t>
-                           ( Color(ClampToQuantum(histogram_array[i].red),
-                                   ClampToQuantum(histogram_array[i].green),
-                                   ClampToQuantum(histogram_array[i].blue)),
+                           ( Color(MagickCore::ClampToQuantum(histogram_array[i].red),
+                                   MagickCore::ClampToQuantum(histogram_array[i].green),
+                                   MagickCore::ClampToQuantum(histogram_array[i].blue)),
                                    (size_t) histogram_array[i].count) );
       }
     
