@@ -1175,13 +1175,13 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
   register ssize_t
     x;
 
-  register unsigned int
+  register unsigned long
     *q;
 
   ssize_t
     y;
 
-  q=(unsigned int *) pixels;
+  q=(unsigned long *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
       for (y=0; y < (ssize_t) rows; y++)
@@ -3063,7 +3063,7 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
   const char *restrict map,const QuantumType *quantum_map,
   const unsigned char *restrict pixels,ExceptionInfo *exception)
 {
-  register const unsigned int
+  register const unsigned long
     *restrict p;
 
   register Quantum
@@ -3075,7 +3075,7 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
   ssize_t
     y;
 
-  p=(const unsigned int *) pixels;
+  p=(const unsigned long *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
       for (y=0; y < (ssize_t) rows; y++)
