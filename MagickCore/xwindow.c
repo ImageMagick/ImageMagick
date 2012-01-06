@@ -49,6 +49,7 @@
 #include "MagickCore/color-private.h"
 #include "MagickCore/colormap.h"
 #include "MagickCore/composite.h"
+#include "MagickCore/constitute.h"
 #include "MagickCore/display.h"
 #include "MagickCore/distort.h"
 #include "MagickCore/exception.h"
