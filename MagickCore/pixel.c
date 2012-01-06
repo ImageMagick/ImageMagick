@@ -1175,13 +1175,13 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
   register ssize_t
     x;
 
-  register unsigned long
+  register MagickSizeType
     *q;
 
   ssize_t
     y;
 
-  q=(unsigned long *) pixels;
+  q=(MagickSizeType *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
       for (y=0; y < (ssize_t) rows; y++)
@@ -1191,9 +1191,9 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
-          *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
-          *q++=ScaleQuantumToLong(GetPixelRed(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelBlue(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelGreen(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelRed(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -1208,10 +1208,10 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
-          *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
-          *q++=ScaleQuantumToLong(GetPixelRed(image,p));
-          *q++=ScaleQuantumToLong(GetPixelAlpha(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelBlue(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelGreen(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelRed(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelAlpha(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -1226,9 +1226,9 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
-          *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
-          *q++=ScaleQuantumToLong(GetPixelRed(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelBlue(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelGreen(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelRed(image,p));
           *q++=0;
           p+=GetPixelChannels(image);
         }
@@ -1244,7 +1244,7 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          *q++=ScaleQuantumToLong(GetPixelIntensity(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelIntensity(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -1259,9 +1259,9 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          *q++=ScaleQuantumToLong(GetPixelRed(image,p));
-          *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
-          *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelRed(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelGreen(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelBlue(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -1276,10 +1276,10 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          *q++=ScaleQuantumToLong(GetPixelRed(image,p));
-          *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
-          *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
-          *q++=ScaleQuantumToLong(GetPixelAlpha(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelRed(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelGreen(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelBlue(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelAlpha(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -1294,9 +1294,9 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          *q++=ScaleQuantumToLong(GetPixelRed(image,p));
-          *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
-          *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelRed(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelGreen(image,p));
+          *q++=ScaleQuantumToLongLong(GetPixelBlue(image,p));
           *q++=0;
           p+=GetPixelChannels(image);
         }
@@ -1321,40 +1321,40 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
           case RedQuantum:
           case CyanQuantum:
           {
-            *q=ScaleQuantumToLong(GetPixelRed(image,p));
+            *q=ScaleQuantumToLongLong(GetPixelRed(image,p));
             break;
           }
           case GreenQuantum:
           case MagentaQuantum:
           {
-            *q=ScaleQuantumToLong(GetPixelGreen(image,p));
+            *q=ScaleQuantumToLongLong(GetPixelGreen(image,p));
             break;
           }
           case BlueQuantum:
           case YellowQuantum:
           {
-            *q=ScaleQuantumToLong(GetPixelBlue(image,p));
+            *q=ScaleQuantumToLongLong(GetPixelBlue(image,p));
             break;
           }
           case AlphaQuantum:
           {
-            *q=ScaleQuantumToLong(GetPixelAlpha(image,p));
+            *q=ScaleQuantumToLongLong(GetPixelAlpha(image,p));
             break;
           }
           case OpacityQuantum:
           {
-            *q=ScaleQuantumToLong(GetPixelAlpha(image,p));
+            *q=ScaleQuantumToLongLong(GetPixelAlpha(image,p));
             break;
           }
           case BlackQuantum:
           {
             if (image->colorspace == CMYKColorspace)
-              *q=ScaleQuantumToLong(GetPixelBlack(image,p));
+              *q=ScaleQuantumToLongLong(GetPixelBlack(image,p));
             break;
           }
           case IndexQuantum:
           {
-            *q=ScaleQuantumToLong(GetPixelIntensity(image,p));
+            *q=ScaleQuantumToLongLong(GetPixelIntensity(image,p));
             break;
           }
           default:
@@ -3063,7 +3063,7 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
   const char *restrict map,const QuantumType *quantum_map,
   const unsigned char *restrict pixels,ExceptionInfo *exception)
 {
-  register const unsigned long
+  register const MagickSizeType
     *restrict p;
 
   register Quantum
@@ -3075,7 +3075,7 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
   ssize_t
     y;
 
-  p=(const unsigned long *) pixels;
+  p=(const MagickSizeType *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
       for (y=0; y < (ssize_t) rows; y++)
@@ -3085,9 +3085,9 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          SetPixelBlue(image,ScaleLongToQuantum(*p++),q);
-          SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
-          SetPixelRed(image,ScaleLongToQuantum(*p++),q);
+          SetPixelBlue(image,ScaleLongLongToQuantum(*p++),q);
+          SetPixelGreen(image,ScaleLongLongToQuantum(*p++),q);
+          SetPixelRed(image,ScaleLongLongToQuantum(*p++),q);
           q+=GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -3104,10 +3104,10 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          SetPixelBlue(image,ScaleLongToQuantum(*p++),q);
-          SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
-          SetPixelRed(image,ScaleLongToQuantum(*p++),q);
-          SetPixelAlpha(image,ScaleLongToQuantum(*p++),q);
+          SetPixelBlue(image,ScaleLongLongToQuantum(*p++),q);
+          SetPixelGreen(image,ScaleLongLongToQuantum(*p++),q);
+          SetPixelRed(image,ScaleLongLongToQuantum(*p++),q);
+          SetPixelAlpha(image,ScaleLongLongToQuantum(*p++),q);
           q+=GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -3124,9 +3124,9 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          SetPixelBlue(image,ScaleLongToQuantum(*p++),q);
-          SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
-          SetPixelRed(image,ScaleLongToQuantum(*p++),q);
+          SetPixelBlue(image,ScaleLongLongToQuantum(*p++),q);
+          SetPixelGreen(image,ScaleLongLongToQuantum(*p++),q);
+          SetPixelRed(image,ScaleLongLongToQuantum(*p++),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -3144,7 +3144,7 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          SetPixelGray(image,ScaleLongToQuantum(*p++),q);
+          SetPixelGray(image,ScaleLongLongToQuantum(*p++),q);
           q+=GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -3161,9 +3161,9 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          SetPixelRed(image,ScaleLongToQuantum(*p++),q);
-          SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
-          SetPixelBlue(image,ScaleLongToQuantum(*p++),q);
+          SetPixelRed(image,ScaleLongLongToQuantum(*p++),q);
+          SetPixelGreen(image,ScaleLongLongToQuantum(*p++),q);
+          SetPixelBlue(image,ScaleLongLongToQuantum(*p++),q);
           q+=GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -3180,10 +3180,10 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          SetPixelRed(image,ScaleLongToQuantum(*p++),q);
-          SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
-          SetPixelBlue(image,ScaleLongToQuantum(*p++),q);
-          SetPixelAlpha(image,ScaleLongToQuantum(*p++),q);
+          SetPixelRed(image,ScaleLongLongToQuantum(*p++),q);
+          SetPixelGreen(image,ScaleLongLongToQuantum(*p++),q);
+          SetPixelBlue(image,ScaleLongLongToQuantum(*p++),q);
+          SetPixelAlpha(image,ScaleLongLongToQuantum(*p++),q);
           q+=GetPixelChannels(image);
         }
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -3200,9 +3200,9 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          SetPixelRed(image,ScaleLongToQuantum(*p++),q);
-          SetPixelGreen(image,ScaleLongToQuantum(*p++),q);
-          SetPixelBlue(image,ScaleLongToQuantum(*p++),q);
+          SetPixelRed(image,ScaleLongLongToQuantum(*p++),q);
+          SetPixelGreen(image,ScaleLongLongToQuantum(*p++),q);
+          SetPixelBlue(image,ScaleLongLongToQuantum(*p++),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -3228,39 +3228,39 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
           case RedQuantum:
           case CyanQuantum:
           {
-            SetPixelRed(image,ScaleLongToQuantum(*p),q);
+            SetPixelRed(image,ScaleLongLongToQuantum(*p),q);
             break;
           }
           case GreenQuantum:
           case MagentaQuantum:
           {
-            SetPixelGreen(image,ScaleLongToQuantum(*p),q);
+            SetPixelGreen(image,ScaleLongLongToQuantum(*p),q);
             break;
           }
           case BlueQuantum:
           case YellowQuantum:
           {
-            SetPixelBlue(image,ScaleLongToQuantum(*p),q);
+            SetPixelBlue(image,ScaleLongLongToQuantum(*p),q);
             break;
           }
           case AlphaQuantum:
           {
-            SetPixelAlpha(image,ScaleLongToQuantum(*p),q);
+            SetPixelAlpha(image,ScaleLongLongToQuantum(*p),q);
             break;
           }
           case OpacityQuantum:
           {
-            SetPixelAlpha(image,ScaleLongToQuantum(*p),q);
+            SetPixelAlpha(image,ScaleLongLongToQuantum(*p),q);
             break;
           }
           case BlackQuantum:
           {
-            SetPixelBlack(image,ScaleLongToQuantum(*p),q);
+            SetPixelBlack(image,ScaleLongLongToQuantum(*p),q);
             break;
           }
           case IndexQuantum:
           {
-            SetPixelGray(image,ScaleLongToQuantum(*p),q);
+            SetPixelGray(image,ScaleLongLongToQuantum(*p),q);
             break;
           }
           default:
