@@ -22,17 +22,7 @@
 extern "C" {
 #endif
 
-typedef enum
-{
-  UndefinedPixel,
-  CharPixel,
-  DoublePixel,
-  FloatPixel,
-  IntegerPixel,
-  LongPixel,
-  QuantumPixel,
-  ShortPixel
-} StorageType;
+#include <MagickCore/pixel.h>
 
 extern MagickExport Image
   *ConstituteImage(const size_t,const size_t,const char *,const StorageType,
