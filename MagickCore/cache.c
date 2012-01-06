@@ -3916,7 +3916,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
     }
     p+=GetPixelChannels(image);
     q+=GetPixelChannels(image);
-    r+=GetPixelChannels(image->clip_mask);
+    r+=GetPixelChannels(image->mask);
   }
   clip_nexus=DestroyPixelCacheNexus(clip_nexus,1);
   image_nexus=DestroyPixelCacheNexus(image_nexus,1);
