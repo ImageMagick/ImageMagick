@@ -320,8 +320,8 @@ MagickExport PixelChannelMap *DestroyPixelChannelMap(
 %
 %      MagickBooleanType ExportImagePixels(const Image *image,
 %        const ssize_t x_offset,const ssize_t y_offset,const size_t columns,
-%        const size_t rows,const char *map,const StorageType type,
-%        void *pixels,ExceptionInfo *exception)
+%        const size_t rows,const char *map,const StorageType type,void *pixels,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -351,8 +351,8 @@ MagickExport PixelChannelMap *DestroyPixelChannelMap(
 
 static void ExportCharPixel(const Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *restrict map,const QuantumType *quantum_map,
-  unsigned char *restrict pixels,ExceptionInfo *exception)
+  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  ExceptionInfo *exception)
 {
   register const Quantum
     *restrict p;
@@ -366,7 +366,7 @@ static void ExportCharPixel(const Image *image,const ssize_t x_offset,
   ssize_t
     y;
 
-  q=pixels;
+  q=(unsigned char *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
       for (y=0; y < (ssize_t) rows; y++)
@@ -554,8 +554,8 @@ static void ExportCharPixel(const Image *image,const ssize_t x_offset,
 
 static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *restrict map,const QuantumType *quantum_map,
-  unsigned char *restrict pixels,ExceptionInfo *exception)
+  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  ExceptionInfo *exception)
 {
   register const Quantum
     *restrict p;
@@ -758,8 +758,8 @@ static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
 
 static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *restrict map,const QuantumType *quantum_map,
-  unsigned char *restrict pixels,ExceptionInfo *exception)
+  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  ExceptionInfo *exception)
 {
   register const Quantum
     *restrict p;
@@ -961,8 +961,8 @@ static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
 
 static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *restrict map,const QuantumType *quantum_map,
-  unsigned char *restrict pixels,ExceptionInfo *exception)
+  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  ExceptionInfo *exception)
 {
   register const Quantum
     *restrict p;
@@ -1166,8 +1166,8 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
 
 static void ExportLongPixel(const Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *restrict map,const QuantumType *quantum_map,
-  unsigned char *restrict pixels,ExceptionInfo *exception)
+  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  ExceptionInfo *exception)
 {
   register const Quantum
     *restrict p;
@@ -1369,8 +1369,8 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
 
 static void ExportQuantumPixel(const Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *restrict map,const QuantumType *quantum_map,
-  unsigned char *restrict pixels,ExceptionInfo *exception)
+  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  ExceptionInfo *exception)
 {
   register const Quantum
     *restrict p;
@@ -1575,8 +1575,8 @@ static void ExportQuantumPixel(const Image *image,const ssize_t x_offset,
 
 static void ExportShortPixel(const Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *restrict map,const QuantumType *quantum_map,
-  unsigned char *restrict pixels,ExceptionInfo *exception)
+  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  ExceptionInfo *exception)
 {
   register const Quantum
     *restrict p;
@@ -2056,8 +2056,8 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 
 static void ImportCharPixel(Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *restrict map,const QuantumType *quantum_map,
-  const unsigned char *restrict pixels,ExceptionInfo *exception)
+  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
+  ExceptionInfo *exception)
 {
   register const unsigned char
     *restrict p;
@@ -2313,8 +2313,8 @@ static void ImportCharPixel(Image *image,const ssize_t x_offset,
 
 static void ImportDoublePixel(Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *restrict map,const QuantumType *quantum_map,
-  const unsigned char *restrict pixels,ExceptionInfo *exception)
+  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
+  ExceptionInfo *exception)
 {
   register const double
     *restrict p;
@@ -2578,8 +2578,8 @@ static void ImportDoublePixel(Image *image,const ssize_t x_offset,
 
 static void ImportFloatPixel(Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *restrict map,const QuantumType *quantum_map,
-  const unsigned char *restrict pixels,ExceptionInfo *exception)
+  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
+  ExceptionInfo *exception)
 {
   register const float
     *restrict p;
@@ -2843,8 +2843,8 @@ static void ImportFloatPixel(Image *image,const ssize_t x_offset,
 
 static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *restrict map,const QuantumType *quantum_map,
-  const unsigned char *restrict pixels,ExceptionInfo *exception)
+  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
+  ExceptionInfo *exception)
 {
   register const unsigned int
     *restrict p;
@@ -3060,8 +3060,8 @@ static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
 
 static void ImportLongPixel(Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *restrict map,const QuantumType *quantum_map,
-  const unsigned char *restrict pixels,ExceptionInfo *exception)
+  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
+  ExceptionInfo *exception)
 {
   register const MagickSizeType
     *restrict p;
@@ -3277,8 +3277,8 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
 
 static void ImportQuantumPixel(Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *restrict map,const QuantumType *quantum_map,
-  const unsigned char *restrict pixels,ExceptionInfo *exception)
+  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
+  ExceptionInfo *exception)
 {
   register const Quantum
     *restrict p;
@@ -3494,8 +3494,8 @@ static void ImportQuantumPixel(Image *image,const ssize_t x_offset,
 
 static void ImportShortPixel(Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
-  const char *restrict map,const QuantumType *quantum_map,
-  const unsigned char *restrict pixels,ExceptionInfo *exception)
+  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
+  ExceptionInfo *exception)
 {
   register const unsigned short
     *restrict p;
