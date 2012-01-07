@@ -23,7 +23,6 @@ extern "C" {
 #endif
 
 #include <MagickCore/colorspace.h>
-#include <MagickCore/constitute.h>
 
 #define MaxPixelChannels  32
 #undef index
@@ -122,6 +121,18 @@ typedef struct _PixelPacket
     alpha,
     black;
 } PixelPacket;
+
+typedef enum
+{
+  UndefinedPixel,
+  CharPixel,
+  DoublePixel,
+  FloatPixel,
+  IntegerPixel,
+  LongPixel,
+  QuantumPixel,
+  ShortPixel
+} StorageType;
 
 typedef struct _CacheView
   CacheView_;
