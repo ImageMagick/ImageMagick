@@ -2580,9 +2580,6 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   MagickBooleanType
     status;
 
-  PixelInfo
-    pixel;
-
   ssize_t
     y;
 
@@ -2592,14 +2589,10 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   assert(image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if (image->background_color.alpha != OpaqueAlpha)
-    image->matte=MagickTrue;
   /*
     Set image background color.
   */
   status=MagickTrue;
-  pixel=image->background_color;
-  pixel.black=0;
   image_view=AcquireCacheView(image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2619,7 +2612,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelInfoPixel(image,&pixel,q);
+      SetPixelInfoPixel(image,&image->background_color,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
