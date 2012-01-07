@@ -128,8 +128,8 @@ typedef enum
   CharPixel,
   DoublePixel,
   FloatPixel,
-  IntegerPixel,
   LongPixel,
+  LongLongPixel,
   QuantumPixel,
   ShortPixel
 } StorageType;

@@ -1496,8 +1496,8 @@ static const OptionInfo
     { "Char", CharPixel, UndefinedOptionFlag, MagickFalse },
     { "Double", DoublePixel, UndefinedOptionFlag, MagickFalse },
     { "Float", FloatPixel, UndefinedOptionFlag, MagickFalse },
-    { "Integer", IntegerPixel, UndefinedOptionFlag, MagickFalse },
     { "Long", LongPixel, UndefinedOptionFlag, MagickFalse },
+    { "LongLong", LongLongPixel, UndefinedOptionFlag, MagickFalse },
     { "Quantum", QuantumPixel, UndefinedOptionFlag, MagickFalse },
     { "Short", ShortPixel, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedResource, UndefinedOptionFlag, MagickFalse }

@@ -338,8 +338,9 @@ MagickExport PixelChannelMap *DestroyPixelChannelMap(
 %
 %    o type: Define the data type of the pixels.  Float and double types are
 %      normalized to [0..1] otherwise [0..QuantumRange].  Choose from these
-%      types: CharPixel, DoublePixel, FloatPixel, IntegerPixel, LongPixel,
-%      QuantumPixel, or ShortPixel.
+%      types: CharPixel (char *), DoublePixel (double *), FloatPixel (float *),
+%      LongPixel (unsigned int *), LongLongPixel (unsigned long *),
+%      QuantumPixel (Quantum *), or ShortPixel (unsigned short *).
 %
 %    o pixels: This array of values contain the pixel components as defined by
 %      map and type.  You must preallocate this array where the expected
@@ -959,7 +960,7 @@ static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
   }
 }
 
-static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
+static void ExportLongPixel(const Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
@@ -986,9 +987,9 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(image,p));
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(image,p));
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(image,p));
+          *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
+          *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
+          *q++=ScaleQuantumToLong(GetPixelRed(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -1003,10 +1004,10 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(image,p));
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(image,p));
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(image,p));
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelAlpha(image,p));
+          *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
+          *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
+          *q++=ScaleQuantumToLong(GetPixelRed(image,p));
+          *q++=ScaleQuantumToLong(GetPixelAlpha(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -1021,10 +1022,10 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(image,p));
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(image,p));
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(image,p));
-          *q++=0U;
+          *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
+          *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
+          *q++=ScaleQuantumToLong(GetPixelRed(image,p));
+          *q++=0;
           p+=GetPixelChannels(image);
         }
       }
@@ -1039,8 +1040,7 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          *q++=(unsigned int) ScaleQuantumToLong(
-            GetPixelIntensity(image,p));
+          *q++=ScaleQuantumToLong(GetPixelIntensity(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -1055,9 +1055,9 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(image,p));
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(image,p));
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(image,p));
+          *q++=ScaleQuantumToLong(GetPixelRed(image,p));
+          *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
+          *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -1072,10 +1072,10 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(image,p));
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(image,p));
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(image,p));
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelAlpha(image,p));
+          *q++=ScaleQuantumToLong(GetPixelRed(image,p));
+          *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
+          *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
+          *q++=ScaleQuantumToLong(GetPixelAlpha(image,p));
           p+=GetPixelChannels(image);
         }
       }
@@ -1090,10 +1090,10 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
           break;
         for (x=0; x < (ssize_t) columns; x++)
         {
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(image,p));
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(image,p));
-          *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(image,p));
-          *q++=0U;
+          *q++=ScaleQuantumToLong(GetPixelRed(image,p));
+          *q++=ScaleQuantumToLong(GetPixelGreen(image,p));
+          *q++=ScaleQuantumToLong(GetPixelBlue(image,p));
+          *q++=0;
           p+=GetPixelChannels(image);
         }
       }
@@ -1117,45 +1117,44 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
           case RedQuantum:
           case CyanQuantum:
           {
-            *q=(unsigned int) ScaleQuantumToLong(GetPixelRed(image,p));
+            *q=ScaleQuantumToLong(GetPixelRed(image,p));
             break;
           }
           case GreenQuantum:
           case MagentaQuantum:
           {
-            *q=(unsigned int) ScaleQuantumToLong(GetPixelGreen(image,p));
+            *q=ScaleQuantumToLong(GetPixelGreen(image,p));
             break;
           }
           case BlueQuantum:
           case YellowQuantum:
           {
-            *q=(unsigned int) ScaleQuantumToLong(GetPixelBlue(image,p));
+            *q=ScaleQuantumToLong(GetPixelBlue(image,p));
             break;
           }
           case AlphaQuantum:
           {
-            *q=(unsigned int) ScaleQuantumToLong(GetPixelAlpha(image,p));
+            *q=ScaleQuantumToLong(GetPixelAlpha(image,p));
             break;
           }
           case OpacityQuantum:
           {
-            *q=(unsigned int) ScaleQuantumToLong(GetPixelAlpha(image,p));
+            *q=ScaleQuantumToLong(GetPixelAlpha(image,p));
             break;
           }
           case BlackQuantum:
           {
             if (image->colorspace == CMYKColorspace)
-              *q=(unsigned int) ScaleQuantumToLong(GetPixelBlack(image,p));
+              *q=ScaleQuantumToLong(GetPixelBlack(image,p));
             break;
           }
           case IndexQuantum:
           {
-            *q=(unsigned int) ScaleQuantumToLong(
-              GetPixelIntensity(image,p));
+            *q=ScaleQuantumToLong(GetPixelIntensity(image,p));
             break;
           }
           default:
-            *q=0;
+            break;
         }
         q++;
       }
@@ -1164,7 +1163,7 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
   }
 }
 
-static void ExportLongPixel(const Image *image,const ssize_t x_offset,
+static void ExportLongLongPixel(const Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
@@ -1918,15 +1917,15 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
         pixels,exception);
       break;
     }
-    case IntegerPixel:
-    {
-      ExportIntegerPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
-      break;
-    }
     case LongPixel:
     {
       ExportLongPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
+        pixels,exception);
+      break;
+    }
+    case LongLongPixel:
+    {
+      ExportLongLongPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
         pixels,exception);
       break;
     }
@@ -2043,8 +2042,9 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 %
 %    o type: Define the data type of the pixels.  Float and double types are
 %      normalized to [0..1] otherwise [0..QuantumRange].  Choose from these
-%      types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or
-%      DoublePixel.
+%      types: CharPixel (char *), DoublePixel (double *), FloatPixel (float *),
+%      LongPixel (unsigned int *), LongLongPixel (unsigned long *),
+%      QuantumPixel (Quantum *), or ShortPixel (unsigned short *).
 %
 %    o pixels: This array of values contain the pixel components as defined by
 %      map and type.  You must preallocate this array where the expected
@@ -2841,7 +2841,7 @@ static void ImportFloatPixel(Image *image,const ssize_t x_offset,
   }
 }
 
-static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
+static void ImportLongPixel(Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
   const char *restrict map,const QuantumType *quantum_map,const void *pixels,
   ExceptionInfo *exception)
@@ -3058,7 +3058,7 @@ static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
   }
 }
 
-static void ImportLongPixel(Image *image,const ssize_t x_offset,
+static void ImportLongLongPixel(Image *image,const ssize_t x_offset,
   const ssize_t y_offset,const size_t columns,const size_t rows,
   const char *restrict map,const QuantumType *quantum_map,const void *pixels,
   ExceptionInfo *exception)
@@ -3842,15 +3842,15 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
         pixels,exception);
       break;
     }
-    case IntegerPixel:
-    {
-      ImportIntegerPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
-      break;
-    }
     case LongPixel:
     {
       ImportLongPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
+        pixels,exception);
+      break;
+    }
+    case LongLongPixel:
+    {
+      ImportLongLongPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
         pixels,exception);
       break;
     }
