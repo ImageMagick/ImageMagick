@@ -43,6 +43,7 @@
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/client.h"
+#include "MagickCore/constitute.h"
 #include "MagickCore/display.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
