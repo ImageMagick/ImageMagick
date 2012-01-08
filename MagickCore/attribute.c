@@ -364,7 +364,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
       ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
     for (i=0; i <= (ssize_t) MaxMap; i++)
     {
-      unsigned int
+      size_t
         depth;
 
       for (depth=1; depth < MAGICKCORE_QUANTUM_DEPTH; depth++)
