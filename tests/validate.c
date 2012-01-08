@@ -465,8 +465,8 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
 
   Image
     *difference_image,
-    *reference_image,
-    *reconstruct_image;
+    *reconstruct_image,
+    *reference_image;
 
   MagickBooleanType
     status;
@@ -476,13 +476,11 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
     j;
 
   size_t
-    length;
+    length,
+    test;
 
   unsigned char
     *blob;
-
-  size_t
-    test;
 
   test=0;
   (void) FormatLocaleFile(stdout,"validate image formats in memory:\n");

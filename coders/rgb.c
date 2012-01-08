@@ -1112,12 +1112,14 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
   if (LocaleCompare(image_info->magick,"RGBA") == 0)
     {
       quantum_type=RGBAQuantum;
-      image->matte=MagickTrue;
+      if (image->matte == MagickFalse)
+        SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
     }
   if (LocaleCompare(image_info->magick,"RGBO") == 0)
     {
       quantum_type=RGBOQuantum;
-      image->matte=MagickTrue;
+      if (image->matte == MagickFalse)
+        SetImageAlphaChannel(image,QuantumRange-OpaqueAlphaChannel,exception);
     }
   scene=0;
   do

@@ -417,8 +417,8 @@ static const struct ReferenceStorage
     { CharPixel, sizeof(unsigned char) },
     { DoublePixel, sizeof(double) },
     { FloatPixel, sizeof(float) },
-    { IntegerPixel, sizeof(unsigned int) },
-    { LongPixel, sizeof(size_t) },
+    { LongPixel, sizeof(unsigned int) },
+    { LongLongPixel, sizeof(MagickSizeType) },
     { ShortPixel, sizeof(unsigned short) },
     { UndefinedPixel, 0 }
   };

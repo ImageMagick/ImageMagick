@@ -1215,7 +1215,8 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
   if (LocaleCompare(image_info->magick,"CMYKA") == 0)
     {
       quantum_type=CMYKAQuantum;
-      image->matte=MagickTrue;
+      if (image->matte == MagickFalse)
+        SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
     }
   scene=0;
   do

@@ -482,7 +482,7 @@ namespace Magick
   using MagickCore::StorageType;
   using MagickCore::CharPixel;
   using MagickCore::ShortPixel;
-  using MagickCore::IntegerPixel;
+  using MagickCore::LongLongPixel;
   using MagickCore::FloatPixel;
   using MagickCore::DoublePixel;
 
