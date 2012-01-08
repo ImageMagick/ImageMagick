@@ -825,11 +825,40 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
       image->depth=depth;
       return(MagickTrue);
     }
+  range=GetQuantumRange(depth);
+  if (image->storage_class == PseudoClass)
+    {
+      register PixelInfo
+        *restrict p;
+
+      register ssize_t
+        i;
+
+      p=image->colormap;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status)
+#endif
+      for (i=0; i < (ssize_t) image->colors; i++)
+      {
+        if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+          p->red=ScaleAnyToQuantum(ScaleQuantumToAny(p->red,range),range);
+        if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+          p->green=ScaleAnyToQuantum(ScaleQuantumToAny(p->green,range),range);
+        if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+          p->blue=ScaleAnyToQuantum(ScaleQuantumToAny(p->blue,range),range);
+        if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+          p->alpha=ScaleAnyToQuantum(ScaleQuantumToAny(p->alpha,range),range);
+        p++;
+      }
+      status=SyncImage(image,exception);
+      if (status != MagickFalse)
+        image->depth=depth;
+      return(status);
+    }
   /*
     Scale pixels to desired depth.
   */
   status=MagickTrue;
-  range=GetQuantumRange(depth);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
@@ -879,31 +908,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  if (image->storage_class == PseudoClass)
-    {
-      register PixelInfo
-        *restrict p;
-
-      register ssize_t
-        i;
-
-      p=image->colormap;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
-#endif
-      for (i=0; i < (ssize_t) image->colors; i++)
-      {
-        if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-          p->red=ScaleAnyToQuantum(ScaleQuantumToAny(p->red,range),range);
-        if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          p->green=ScaleAnyToQuantum(ScaleQuantumToAny(p->green,range),range);
-        if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-          p->blue=ScaleAnyToQuantum(ScaleQuantumToAny(p->blue,range),range);
-        if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-          p->alpha=ScaleAnyToQuantum(ScaleQuantumToAny(p->alpha,range),range);
-        p++;
-      }
-    }
-  image->depth=depth;
+  if (status != MagickFalse)
+    image->depth=depth;
   return(status);
 }
