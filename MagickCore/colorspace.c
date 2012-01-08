@@ -1122,7 +1122,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
     }
     case PseudoClass:
     {
-      register size_t
+      register unsigned int
         blue,
         green,
         red;
