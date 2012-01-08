@@ -1130,7 +1130,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       /*
         Convert PseudoClass image.
       */
-      image_view=AcquireCacheView(image);
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         PixelInfo
@@ -1146,7 +1145,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         image->colormap[i].green=ScaleMapToQuantum(pixel.green);
         image->colormap[i].blue=ScaleMapToQuantum(pixel.blue);
       }
-      image_view=DestroyCacheView(image_view);
       (void) SyncImage(image,exception);
       break;
     }
