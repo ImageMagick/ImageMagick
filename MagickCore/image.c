@@ -3965,13 +3965,13 @@ MagickExport MagickBooleanType StripImage(Image *image,ExceptionInfo *exception)
 %
 */
 
-static inline Quantum PushColormapIndex(Image *image,
-  const size_t index,MagickBooleanType *range_exception)
+static inline Quantum PushColormapIndex(Image *image,const Quantum index,
+  MagickBooleanType *range_exception)
 {
   if (index < image->colors)
-    return((Quantum) index);
+    return(index);
   *range_exception=MagickTrue;
-  return((Quantum) 0);
+  return(0);
 }
 
 MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
@@ -4019,8 +4019,7 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=PushColormapIndex(image,(size_t) GetPixelIndex(image,q),
-        &range_exception);
+      index=PushColormapIndex(image,GetPixelIndex(image,q),&range_exception);
       SetPixelInfoPixel(image,image->colormap+(ssize_t) index,q);
       q+=GetPixelChannels(image);
     }
