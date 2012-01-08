@@ -1064,11 +1064,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         PixelInfo
           pixel;
 
-        register ssize_t
-          x;
-
         register Quantum
           *restrict q;
+
+        register ssize_t
+          x;
 
         register unsigned int
           blue,
