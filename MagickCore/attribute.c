@@ -364,7 +364,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
       ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
     for (i=0; i <= (ssize_t) MaxMap; i++)
     {
-      size_t
+      unsigned int
         depth;
 
       for (depth=1; depth < MAGICKCORE_QUANTUM_DEPTH; depth++)
@@ -479,15 +479,11 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
           continue;
         while (current_depth[id] < MAGICKCORE_QUANTUM_DEPTH)
         {
-          MagickStatusType
-            status;
-
           QuantumAny
             range;
 
           range=GetQuantumRange(current_depth[id]);
-          status=p[i] != ScaleAnyToQuantum(ScaleQuantumToAny(p[i],range),range);
-          if (status == 0)
+          if (p[i] == ScaleAnyToQuantum(ScaleQuantumToAny(p[i],range),range))
             break;
           current_depth[id]++;
         }
