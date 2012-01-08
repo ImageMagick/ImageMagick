@@ -852,60 +852,7 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
       image->depth=depth;
       return(MagickTrue);
     }
-  /*
-    Scale pixels to desired depth.
-  */
-  status=MagickTrue;
   range=GetQuantumRange(depth);
-  exception=(&image->exception);
-  image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
-#endif
-  for (y=0; y < (ssize_t) image->rows; y++)
-  {
-    register IndexPacket
-      *restrict indexes;
-
-    register ssize_t
-      x;
-
-    register PixelPacket
-      *restrict q;
-
-    if (status == MagickFalse)
-      continue;
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
-      exception);
-    if (q == (PixelPacket *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      if ((channel & RedChannel) != 0)
-        SetPixelRed(q,ScaleAnyToQuantum(ScaleQuantumToAny(GetPixelRed(q),
-          range),range));
-      if ((channel & GreenChannel) != 0)
-        SetPixelGreen(q,ScaleAnyToQuantum(ScaleQuantumToAny(GetPixelGreen(q),
-          range),range));
-      if ((channel & BlueChannel) != 0)
-        SetPixelBlue(q,ScaleAnyToQuantum(ScaleQuantumToAny(GetPixelBlue(q),
-          range),range));
-      if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
-        SetPixelOpacity(q,ScaleAnyToQuantum(ScaleQuantumToAny(
-          GetPixelOpacity(q),range),range));
-      q++;
-    }
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
-      {
-        status=MagickFalse;
-        continue;
-      }
-  }
-  image_view=DestroyCacheView(image_view);
   if (image->storage_class == PseudoClass)
     {
       register ssize_t
@@ -931,7 +878,60 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
             range);
         p++;
       }
+      status=SyncImage(image);
+      if (status != MagickFalse)
+        image->depth=depth;
+      return(status);
     }
-  image->depth=depth;
+  /*
+    Scale pixels to desired depth.
+  */
+  status=MagickTrue;
+  exception=(&image->exception);
+  image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register ssize_t
+      x;
+
+    register PixelPacket
+      *restrict q;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      if ((channel & RedChannel) != 0)
+        SetPixelRed(q,ScaleAnyToQuantum(ScaleQuantumToAny(GetPixelRed(q),
+          range),range));
+      if ((channel & GreenChannel) != 0)
+        SetPixelGreen(q,ScaleAnyToQuantum(ScaleQuantumToAny(GetPixelGreen(q),
+          range),range));
+      if ((channel & BlueChannel) != 0)
+        SetPixelBlue(q,ScaleAnyToQuantum(ScaleQuantumToAny(GetPixelBlue(q),
+          range),range));
+      if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
+        SetPixelOpacity(q,ScaleAnyToQuantum(ScaleQuantumToAny(
+          GetPixelOpacity(q),range),range));
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      {
+        status=MagickFalse;
+        continue;
+      }
+  }
+  image_view=DestroyCacheView(image_view);
+  if (status != MagickFalse)
+    image->depth=depth;
   return(status);
 }
