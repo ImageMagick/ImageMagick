@@ -1211,13 +1211,6 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
       if (status == MagickFalse)
         return(status);
     }
-  quantum_type=CMYKQuantum;
-  if (LocaleCompare(image_info->magick,"CMYKA") == 0)
-    {
-      quantum_type=CMYKAQuantum;
-      if (image->matte == MagickFalse)
-        SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
-    }
   scene=0;
   do
   {
@@ -1226,9 +1219,13 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
     */
     if (image->colorspace != CMYKColorspace)
       (void) TransformImageColorspace(image,CMYKColorspace,exception);
-    if ((LocaleCompare(image_info->magick,"CMYKA") == 0) &&
-        (image->matte == MagickFalse))
-      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
+    quantum_type=CMYKQuantum;
+    if (LocaleCompare(image_info->magick,"CMYKA") == 0)
+      {
+        quantum_type=CMYKAQuantum;
+        if (image->matte == MagickFalse)
+          (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
+      }
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
