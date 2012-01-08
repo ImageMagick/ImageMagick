@@ -897,10 +897,6 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
       if (((channel & OpacityChannel) != 0) && (image->matte != MagickFalse))
         SetPixelOpacity(q,ScaleAnyToQuantum(ScaleQuantumToAny(
           GetPixelOpacity(q),range),range));
-      if (((channel & IndexChannel) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        SetPixelIndex(indexes+x,ScaleAnyToQuantum(ScaleQuantumToAny(
-          GetPixelIndex(indexes+x),range),range));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
