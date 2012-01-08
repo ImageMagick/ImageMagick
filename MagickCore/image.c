@@ -3430,8 +3430,6 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
   {
     case BilevelType:
     {
-      if (IsImageGray(image,exception) == MagickFalse)
-        status=TransformImageColorspace(image,GRAYColorspace,exception);
       if (IsImageMonochrome(image,exception) == MagickFalse)
         {
           quantize_info=AcquireQuantizeInfo(image_info);
