@@ -185,7 +185,7 @@ static const char
     "static inline CLQuantum ClampToQuantum(const float value)\n"
     "{\n"
     "#if defined(MAGICKCORE_HDRI_SUPPORT)\n"
-    "  return((CLQuantum) value)\n"
+    "  return((CLQuantum) value);\n"
     "#else\n"
     "  if (value < 0.0)\n"
     "    return((CLQuantum) 0);\n"
