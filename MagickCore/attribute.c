@@ -867,7 +867,8 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        q[i]=ScaleAnyToQuantum(ScaleQuantumToAny(q[i],range),range);
+        if (channel != IndexPixelChannel)
+          q[i]=ScaleAnyToQuantum(ScaleQuantumToAny(q[i],range),range);
       }
       q+=GetPixelChannels(image);
     }
