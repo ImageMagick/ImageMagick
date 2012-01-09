@@ -362,7 +362,7 @@ static void ExportCharPixel(const Image *image,const ssize_t x_offset,
     x;
 
   register unsigned char
-    *q;
+    *restrict q;
 
   ssize_t
     y;
@@ -562,7 +562,7 @@ static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
     *restrict p;
 
   register double
-    *q;
+    *restrict q;
 
   register ssize_t
     x;
@@ -766,7 +766,7 @@ static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
     *restrict p;
 
   register float
-    *q;
+    *restrict q;
 
   register ssize_t
     x;
@@ -972,7 +972,7 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
     x;
 
   register unsigned int
-    *q;
+    *restrict q;
 
   ssize_t
     y;
@@ -1175,7 +1175,7 @@ static void ExportLongLongPixel(const Image *image,const ssize_t x_offset,
     x;
 
   register MagickSizeType
-    *q;
+    *restrict q;
 
   ssize_t
     y;
@@ -1375,7 +1375,7 @@ static void ExportQuantumPixel(const Image *image,const ssize_t x_offset,
     *restrict p;
 
   register Quantum
-    *q;
+    *restrict q;
 
   register ssize_t
     x;
@@ -1587,7 +1587,7 @@ static void ExportShortPixel(const Image *image,const ssize_t x_offset,
     y;
 
   register unsigned short
-    *q;
+    *restrict q;
 
   q=(unsigned short *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
@@ -2063,7 +2063,7 @@ static void ImportCharPixel(Image *image,const ssize_t x_offset,
     *restrict p;
 
   register Quantum
-    *q;
+    *restrict q;
 
   register ssize_t
     x;
@@ -2320,7 +2320,7 @@ static void ImportDoublePixel(Image *image,const ssize_t x_offset,
     *restrict p;
 
   register Quantum
-    *q;
+    *restrict q;
 
   register ssize_t
     x;
@@ -2585,7 +2585,7 @@ static void ImportFloatPixel(Image *image,const ssize_t x_offset,
     *restrict p;
 
   register Quantum
-    *q;
+    *restrict q;
 
   register ssize_t
     x;
@@ -2850,7 +2850,7 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
     *restrict p;
 
   register Quantum
-    *q;
+    *restrict q;
 
   register ssize_t
     x;
@@ -3067,7 +3067,7 @@ static void ImportLongLongPixel(Image *image,const ssize_t x_offset,
     *restrict p;
 
   register Quantum
-    *q;
+    *restrict q;
 
   register ssize_t
     x;
@@ -3284,7 +3284,7 @@ static void ImportQuantumPixel(Image *image,const ssize_t x_offset,
     *restrict p;
 
   register Quantum
-    *q;
+    *restrict q;
 
   register ssize_t
     x;
@@ -3501,7 +3501,7 @@ static void ImportShortPixel(Image *image,const ssize_t x_offset,
     *restrict p;
 
   register Quantum
-    *q;
+    *restrict q;
 
   register ssize_t
     x;
