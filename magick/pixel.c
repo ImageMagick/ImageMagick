@@ -144,7 +144,7 @@ static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -161,7 +161,7 @@ static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -179,7 +179,7 @@ static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -197,7 +197,7 @@ static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -212,7 +212,7 @@ static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -229,7 +229,7 @@ static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -247,7 +247,7 @@ static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -263,7 +263,7 @@ static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
     }
   for (y=0; y < (ssize_t) roi->height; y++)
   {
-    p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+    p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
@@ -350,7 +350,7 @@ static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -367,7 +367,7 @@ static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -386,7 +386,7 @@ static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -404,7 +404,7 @@ static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -419,7 +419,7 @@ static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -436,7 +436,7 @@ static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -455,7 +455,7 @@ static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -471,7 +471,7 @@ static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
     }
   for (y=0; y < (ssize_t) roi->height; y++)
   {
-    p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+    p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
@@ -559,7 +559,7 @@ static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -576,7 +576,7 @@ static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -594,7 +594,7 @@ static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -612,7 +612,7 @@ static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -627,7 +627,7 @@ static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -644,7 +644,7 @@ static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -662,7 +662,7 @@ static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -678,7 +678,7 @@ static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
     }
   for (y=0; y < (ssize_t) roi->height; y++)
   {
-    p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+    p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
@@ -765,7 +765,7 @@ static void ExportIntegerPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -782,7 +782,7 @@ static void ExportIntegerPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -801,7 +801,7 @@ static void ExportIntegerPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -819,7 +819,7 @@ static void ExportIntegerPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -834,7 +834,7 @@ static void ExportIntegerPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -851,7 +851,7 @@ static void ExportIntegerPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -869,7 +869,7 @@ static void ExportIntegerPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -885,7 +885,7 @@ static void ExportIntegerPixel(const Image *image,const RectangleInfo *roi,
     }
   for (y=0; y < (ssize_t) roi->height; y++)
   {
-    p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+    p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
@@ -973,7 +973,7 @@ static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -990,7 +990,7 @@ static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1008,7 +1008,7 @@ static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1026,7 +1026,7 @@ static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1041,7 +1041,7 @@ static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1058,7 +1058,7 @@ static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1076,7 +1076,7 @@ static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1092,7 +1092,7 @@ static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
     }
   for (y=0; y < (ssize_t) roi->height; y++)
   {
-    p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+    p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
@@ -1179,7 +1179,7 @@ static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1196,7 +1196,7 @@ static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1214,7 +1214,7 @@ static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1232,7 +1232,7 @@ static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1247,7 +1247,7 @@ static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1264,7 +1264,7 @@ static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1282,7 +1282,7 @@ static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1298,7 +1298,7 @@ static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
     }
   for (y=0; y < (ssize_t) roi->height; y++)
   {
-    p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+    p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
@@ -1388,7 +1388,7 @@ static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1405,7 +1405,7 @@ static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1423,7 +1423,7 @@ static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1441,7 +1441,7 @@ static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1456,7 +1456,7 @@ static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1473,7 +1473,7 @@ static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1491,7 +1491,7 @@ static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1507,7 +1507,7 @@ static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
     }
   for (y=0; y < (ssize_t) roi->height; y++)
   {
-    p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
+    p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
@@ -1870,7 +1870,7 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1889,7 +1889,7 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1909,7 +1909,7 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1929,7 +1929,7 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1949,7 +1949,7 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1968,7 +1968,7 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -1987,7 +1987,7 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2007,7 +2007,7 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2027,7 +2027,7 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2045,7 +2045,7 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
     }
   for (y=0; y < (ssize_t) roi->height; y++)
   {
-    q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+    q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
@@ -2134,7 +2134,7 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2156,7 +2156,7 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2181,7 +2181,7 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2204,7 +2204,7 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2224,7 +2224,7 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2246,7 +2246,7 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2270,7 +2270,7 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2290,7 +2290,7 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
     }
   for (y=0; y < (ssize_t) roi->height; y++)
   {
-    q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+    q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
@@ -2385,7 +2385,7 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2407,7 +2407,7 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2431,7 +2431,7 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2454,7 +2454,7 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2474,7 +2474,7 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2496,7 +2496,7 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2520,7 +2520,7 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2540,7 +2540,7 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
     }
   for (y=0; y < (ssize_t) roi->height; y++)
   {
-    q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+    q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
@@ -2631,7 +2631,7 @@ static void ImportIntegerPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2650,7 +2650,7 @@ static void ImportIntegerPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2670,7 +2670,7 @@ static void ImportIntegerPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2690,7 +2690,7 @@ static void ImportIntegerPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2709,7 +2709,7 @@ static void ImportIntegerPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2728,7 +2728,7 @@ static void ImportIntegerPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2748,7 +2748,7 @@ static void ImportIntegerPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2766,7 +2766,7 @@ static void ImportIntegerPixel(Image *image,const RectangleInfo *roi,
     }
   for (y=0; y < (ssize_t) roi->height; y++)
   {
-    q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+    q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
@@ -2855,7 +2855,7 @@ static void ImportLongPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2874,7 +2874,7 @@ static void ImportLongPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2894,7 +2894,7 @@ static void ImportLongPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2914,7 +2914,7 @@ static void ImportLongPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2933,7 +2933,7 @@ static void ImportLongPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2952,7 +2952,7 @@ static void ImportLongPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2972,7 +2972,7 @@ static void ImportLongPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -2990,7 +2990,7 @@ static void ImportLongPixel(Image *image,const RectangleInfo *roi,
     }
   for (y=0; y < (ssize_t) roi->height; y++)
   {
-    q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+    q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
@@ -3079,7 +3079,7 @@ static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -3098,7 +3098,7 @@ static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -3118,7 +3118,7 @@ static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -3138,7 +3138,7 @@ static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -3157,7 +3157,7 @@ static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -3176,7 +3176,7 @@ static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -3196,7 +3196,7 @@ static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -3214,7 +3214,7 @@ static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
     }
   for (y=0; y < (ssize_t) roi->height; y++)
   {
-    q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+    q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
@@ -3303,7 +3303,7 @@ static void ImportShortPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -3322,7 +3322,7 @@ static void ImportShortPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -3342,7 +3342,7 @@ static void ImportShortPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -3362,7 +3362,7 @@ static void ImportShortPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -3381,7 +3381,7 @@ static void ImportShortPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -3400,7 +3400,7 @@ static void ImportShortPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -3420,7 +3420,7 @@ static void ImportShortPixel(Image *image,const RectangleInfo *roi,
     {
       for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
@@ -3438,7 +3438,7 @@ static void ImportShortPixel(Image *image,const RectangleInfo *roi,
     }
   for (y=0; y < (ssize_t) roi->height; y++)
   {
-    q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
+    q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
