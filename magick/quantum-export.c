@@ -233,6 +233,540 @@ static inline unsigned char *PopQuantumLongPixel(QuantumState *quantum_state,
   return(pixels);
 }
 
+static void ExportBGRQuantum(const Image *image,const QuantumInfo *quantum_info,  QuantumState quantum_state,const MagickSizeType number_pixels,
+  const PixelPacket *restrict p,unsigned char *restrict q,
+  ExceptionInfo *exception)
+{
+  EndianType
+    endian;
+
+  QuantumAny
+    range;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    bit;
+
+  endian=quantum_state.endian;
+  switch (quantum_info->depth)
+  {
+    case 8:
+    {
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        q=PopCharPixel(ScaleQuantumToChar(GetPixelBlue(p)),q);
+        q=PopCharPixel(ScaleQuantumToChar(GetPixelGreen(p)),q);
+        q=PopCharPixel(ScaleQuantumToChar(GetPixelRed(p)),q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 10:
+    {
+      register unsigned int
+        pixel;
+
+      range=GetQuantumRange(quantum_info->depth);
+      if (quantum_info->pack == MagickFalse)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            pixel=(unsigned int) (
+              ScaleQuantumToAny(GetPixelRed(p),range) << 22 |
+              ScaleQuantumToAny(GetPixelGreen(p),range) << 12 |
+              ScaleQuantumToAny(GetPixelBlue(p),range) << 2);
+            q=PopLongPixel(endian,pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      if (quantum_info->quantum == 32UL)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
+            q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,q);
+            pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
+            q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,q);
+            pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
+            q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
+        pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
+        pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 12:
+    {
+      register unsigned int
+        pixel;
+
+      range=GetQuantumRange(quantum_info->depth);
+      if (quantum_info->pack == MagickFalse)
+        {
+          for (x=0; x < (ssize_t) (3*number_pixels-1); x+=2)
+          {
+            switch (x % 3)
+            {
+              default:
+              case 0:
+              {
+                pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
+                break;
+              }
+              case 1:
+              {
+                pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
+                break;
+              }
+              case 2:
+              {
+                pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
+                p++;
+                break;
+              }
+            }
+            q=PopShortPixel(endian,(unsigned short) (pixel << 4),q);
+            switch ((x+1) % 3)
+            {
+              default:
+              case 0:
+              {
+                pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
+                break;
+              }
+              case 1:
+              {
+                pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
+                break;
+              }
+              case 2:
+              {
+                pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
+                p++;
+                break;
+              }
+            }
+            q=PopShortPixel(endian,(unsigned short) (pixel << 4),q);
+            q+=quantum_info->pad;
+          }
+          for (bit=0; bit < (ssize_t) (3*number_pixels % 2); bit++)
+          {
+            switch ((x+bit) % 3)
+            {
+              default:
+              case 0:
+              {
+                pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
+                break;
+              }
+              case 1:
+              {
+                pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
+                break;
+              }
+              case 2:
+              {
+                pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
+                p++;
+                break;
+              }
+            }
+            q=PopShortPixel(endian,(unsigned short) (pixel << 4),q);
+            q+=quantum_info->pad;
+          }
+          if (bit != 0)
+            p++;
+          break;
+        }
+      if (quantum_info->quantum == 32UL)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
+            q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,q);
+            pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
+            q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,q);
+            pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
+            q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
+        pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
+        pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 16:
+    {
+      register unsigned short
+        pixel;
+
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            pixel=SinglePrecisionToHalf(QuantumScale*GetPixelBlue(p));
+            q=PopShortPixel(endian,pixel,q);
+            pixel=SinglePrecisionToHalf(QuantumScale*GetPixelGreen(p));
+            q=PopShortPixel(endian,pixel,q);
+            pixel=SinglePrecisionToHalf(QuantumScale*GetPixelRed(p));
+            q=PopShortPixel(endian,pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        pixel=ScaleQuantumToShort(GetPixelBlue(p));
+        q=PopShortPixel(endian,pixel,q);
+        pixel=ScaleQuantumToShort(GetPixelGreen(p));
+        q=PopShortPixel(endian,pixel,q);
+        pixel=ScaleQuantumToShort(GetPixelRed(p));
+        q=PopShortPixel(endian,pixel,q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 32:
+    {
+      register unsigned int
+        pixel;
+
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            q=PopFloatPixel(&quantum_state,(float) GetPixelRed(p),q);
+            q=PopFloatPixel(&quantum_state,(float) GetPixelGreen(p),q);
+            q=PopFloatPixel(&quantum_state,(float) GetPixelBlue(p),q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        pixel=ScaleQuantumToLong(GetPixelBlue(p));
+        q=PopLongPixel(endian,pixel,q);
+        pixel=ScaleQuantumToLong(GetPixelGreen(p));
+        q=PopLongPixel(endian,pixel,q);
+        pixel=ScaleQuantumToLong(GetPixelRed(p));
+        q=PopLongPixel(endian,pixel,q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 64:
+    {
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            q=PopDoublePixel(&quantum_state,(double) GetPixelRed(p),q);
+            q=PopDoublePixel(&quantum_state,(double) GetPixelGreen(p),q);
+            q=PopDoublePixel(&quantum_state,(double) GetPixelBlue(p),q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+    }
+    default:
+    {
+      range=GetQuantumRange(quantum_info->depth);
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,
+          ScaleQuantumToAny(GetPixelRed(p),range),q);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,
+          ScaleQuantumToAny(GetPixelGreen(p),range),q);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,
+          ScaleQuantumToAny(GetPixelBlue(p),range),q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+  }
+}
+
+static void ExportBGRAQuantum(const Image *image,
+  const QuantumInfo *quantum_info,QuantumState quantum_state,
+  const MagickSizeType number_pixels,const PixelPacket *restrict p,
+  unsigned char *restrict q,ExceptionInfo *exception)
+{
+  EndianType
+    endian;
+
+  QuantumAny
+    range;
+
+  register ssize_t
+    x;
+
+  endian=quantum_state.endian;
+  switch (quantum_info->depth)
+  {
+    case 8:
+    {
+      register unsigned char
+        pixel;
+
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        pixel=ScaleQuantumToChar(GetPixelBlue(p));
+        q=PopCharPixel(pixel,q);
+        pixel=ScaleQuantumToChar(GetPixelGreen(p));
+        q=PopCharPixel(pixel,q);
+        pixel=ScaleQuantumToChar(GetPixelRed(p));
+        q=PopCharPixel(pixel,q);
+        pixel=ScaleQuantumToChar((Quantum) GetPixelAlpha(p));
+        q=PopCharPixel(pixel,q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 10:
+    {
+      register unsigned int
+        pixel;
+
+      range=GetQuantumRange(quantum_info->depth);
+      if (quantum_info->pack == MagickFalse)
+        {
+          register ssize_t
+            i;
+
+          size_t
+            quantum;
+
+          ssize_t
+            n;
+
+          n=0;
+          quantum=0;
+          pixel=0;
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            for (i=0; i < 4; i++)
+            {
+              switch (i)
+              {
+                case 0: quantum=GetPixelRed(p); break;
+                case 1: quantum=GetPixelGreen(p); break;
+                case 2: quantum=GetPixelBlue(p); break;
+                case 3: quantum=(Quantum) (QuantumRange-GetPixelOpacity(p)); break;
+              }
+              switch (n % 3)
+              {
+                case 0:
+                {
+                  pixel|=(size_t) (ScaleQuantumToAny((Quantum) quantum,
+                    range) << 22);
+                  break;
+                }
+                case 1:
+                {
+                  pixel|=(size_t) (ScaleQuantumToAny((Quantum) quantum,
+                    range) << 12);
+                  break;
+                }
+                case 2:
+                {
+                  pixel|=(size_t) (ScaleQuantumToAny((Quantum) quantum,
+                    range) << 2);
+                  q=PopLongPixel(endian,pixel,q);
+                  pixel=0;
+                  break;
+                }
+              }
+              n++;
+            }
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      if (quantum_info->quantum == 32UL)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
+            q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,q);
+            pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
+            q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,q);
+            pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
+            q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,q);
+            pixel=(unsigned int) ScaleQuantumToAny((Quantum) (QuantumRange-
+              GetPixelOpacity(p)),range);
+            q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
+        pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
+        pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
+        pixel=(unsigned int) ScaleQuantumToAny((Quantum) (QuantumRange-
+          GetPixelOpacity(p)),range);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 16:
+    {
+      register unsigned short
+        pixel;
+
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            pixel=SinglePrecisionToHalf(QuantumScale*GetPixelBlue(p));
+            q=PopShortPixel(endian,pixel,q);
+            pixel=SinglePrecisionToHalf(QuantumScale*GetPixelGreen(p));
+            q=PopShortPixel(endian,pixel,q);
+            pixel=SinglePrecisionToHalf(QuantumScale*GetPixelRed(p));
+            q=PopShortPixel(endian,pixel,q);
+            pixel=SinglePrecisionToHalf(QuantumScale*GetPixelAlpha(p));
+            q=PopShortPixel(endian,pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        pixel=ScaleQuantumToShort(GetPixelBlue(p));
+        q=PopShortPixel(endian,pixel,q);
+        pixel=ScaleQuantumToShort(GetPixelGreen(p));
+        q=PopShortPixel(endian,pixel,q);
+        pixel=ScaleQuantumToShort(GetPixelRed(p));
+        q=PopShortPixel(endian,pixel,q);
+        pixel=ScaleQuantumToShort((Quantum) GetPixelAlpha(p));
+        q=PopShortPixel(endian,pixel,q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 32:
+    {
+      register unsigned int
+        pixel;
+
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            float
+              pixel;
+
+            q=PopFloatPixel(&quantum_state,(float) GetPixelRed(p),q);
+            q=PopFloatPixel(&quantum_state,(float) GetPixelGreen(p),q);
+            q=PopFloatPixel(&quantum_state,(float) GetPixelBlue(p),q);
+            pixel=(float) GetPixelAlpha(p);
+            q=PopFloatPixel(&quantum_state,pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        pixel=ScaleQuantumToLong(GetPixelBlue(p));
+        q=PopLongPixel(endian,pixel,q);
+        pixel=ScaleQuantumToLong(GetPixelGreen(p));
+        q=PopLongPixel(endian,pixel,q);
+        pixel=ScaleQuantumToLong(GetPixelRed(p));
+        q=PopLongPixel(endian,pixel,q);
+        pixel=ScaleQuantumToLong((Quantum) GetPixelAlpha(p));
+        q=PopLongPixel(endian,pixel,q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 64:
+    {
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          double
+            pixel;
+
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            q=PopDoublePixel(&quantum_state,(double) GetPixelRed(p),q);
+            q=PopDoublePixel(&quantum_state,(double) GetPixelGreen(p),q);
+            q=PopDoublePixel(&quantum_state,(double) GetPixelBlue(p),q);
+            pixel=(double) GetPixelAlpha(p);
+            q=PopDoublePixel(&quantum_state,pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+    }
+    default:
+    {
+      range=GetQuantumRange(quantum_info->depth);
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,
+          ScaleQuantumToAny(GetPixelBlue(p),range),q);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,
+          ScaleQuantumToAny(GetPixelGreen(p),range),q);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,
+          ScaleQuantumToAny(GetPixelRed(p),range),q);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,
+          ScaleQuantumToAny((Quantum) GetPixelAlpha(p),range),q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+  }
+}
+
 static void ExportCMYKQuantum(const Image *image,
   const QuantumInfo *quantum_info,QuantumState quantum_state,
   const MagickSizeType number_pixels,const PixelPacket *restrict p,
@@ -557,6 +1091,266 @@ static void ExportCMYKAQuantum(const Image *image,
   }
 }
 
+static void ExportGrayQuantum(const Image *image,
+  const QuantumInfo *quantum_info,QuantumState quantum_state,
+  const MagickSizeType number_pixels,const PixelPacket *restrict p,
+  unsigned char *restrict q,ExceptionInfo *exception)
+{
+  EndianType
+    endian;
+
+  QuantumAny
+    range;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    bit;
+
+  endian=quantum_state.endian;
+  switch (quantum_info->depth)
+  {
+    case 1:
+    {
+      register Quantum
+        threshold;
+
+      register unsigned char
+        black,
+        white;
+
+      black=0x00;
+      white=0x01;
+      if (quantum_info->min_is_white != MagickFalse)
+        {
+          black=0x01;
+          white=0x00;
+        }
+      threshold=(Quantum) (QuantumRange/2);
+      for (x=((ssize_t) number_pixels-7); x > 0; x-=8)
+      {
+        *q='\0';
+        *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 7;
+        p++;
+        *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 6;
+        p++;
+        *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 5;
+        p++;
+        *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 4;
+        p++;
+        *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 3;
+        p++;
+        *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 2;
+        p++;
+        *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 1;
+        p++;
+        *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 0;
+        p++;
+        q++;
+      }
+      if ((number_pixels % 8) != 0)
+        {
+          *q='\0';
+          for (bit=7; bit >= (ssize_t) (8-(number_pixels % 8)); bit--)
+          {
+            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << bit;
+            p++;
+          }
+          q++;
+        }
+      break;
+    }
+    case 4:
+    {
+      register unsigned char
+        pixel;
+
+      for (x=0; x < (ssize_t) (number_pixels-1) ; x+=2)
+      {
+        pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
+        *q=(((pixel >> 4) & 0xf) << 4);
+        p++;
+        pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
+        *q|=pixel >> 4;
+        p++;
+        q++;
+      }
+      if ((number_pixels % 2) != 0)
+        {
+          pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
+          *q=(((pixel >> 4) & 0xf) << 4);
+          p++;
+          q++;
+        }
+      break;
+    }
+    case 8:
+    {
+      register unsigned char
+        pixel;
+
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
+        q=PopCharPixel(pixel,q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 10:
+    {
+      range=GetQuantumRange(quantum_info->depth);
+      if (quantum_info->pack == MagickFalse)
+        {
+          register unsigned int
+            pixel;
+
+          for (x=0; x < (ssize_t) (number_pixels-2); x+=3)
+          {
+            pixel=(unsigned int) (
+              ScaleQuantumToAny(PixelIntensityToQuantum(p+2),range) << 22 |
+              ScaleQuantumToAny(PixelIntensityToQuantum(p+1),range) << 12 |
+              ScaleQuantumToAny(PixelIntensityToQuantum(p+0),range) << 2);
+            q=PopLongPixel(endian,pixel,q);
+            p+=3;
+            q+=quantum_info->pad;
+          }
+          if (x < (ssize_t) number_pixels)
+            {
+              pixel=0U;
+              if (x++ < (ssize_t) (number_pixels-1))
+                pixel|=ScaleQuantumToAny(PixelIntensityToQuantum(p+1),
+                  range) << 12;
+              if (x++ < (ssize_t) number_pixels)
+                pixel|=ScaleQuantumToAny(PixelIntensityToQuantum(p+0),
+                  range) << 2;
+              q=PopLongPixel(endian,pixel,q);
+            }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,
+          ScaleQuantumToAny(PixelIntensityToQuantum(p),range),q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 12:
+    {
+      register unsigned short
+        pixel;
+
+      range=GetQuantumRange(quantum_info->depth);
+      if (quantum_info->pack == MagickFalse)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
+            q=PopShortPixel(endian,(unsigned short) (pixel >> 4),q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,
+          ScaleQuantumToAny(PixelIntensityToQuantum(p),range),q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 16:
+    {
+      register unsigned short
+        pixel;
+
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            pixel=SinglePrecisionToHalf(QuantumScale*
+              PixelIntensityToQuantum(p));
+            q=PopShortPixel(endian,pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
+        q=PopShortPixel(endian,pixel,q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 32:
+    {
+      register unsigned int
+        pixel;
+
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            float
+              pixel;
+
+            pixel=(float) PixelIntensityToQuantum(p);
+            q=PopFloatPixel(&quantum_state,pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        pixel=ScaleQuantumToLong(PixelIntensityToQuantum(p));
+        q=PopLongPixel(endian,pixel,q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 64:
+    {
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            double
+              pixel;
+
+            pixel=(double) PixelIntensityToQuantum(p);
+            q=PopDoublePixel(&quantum_state,pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+    }
+    default:
+    {
+      range=GetQuantumRange(quantum_info->depth);
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,
+          ScaleQuantumToAny(PixelIntensityToQuantum(p),range),q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+  }
+}
+
 static void ExportIndexQuantum(const Image *image,
   const QuantumInfo *quantum_info,QuantumState quantum_state,
   const MagickSizeType number_pixels,const PixelPacket *restrict p,
@@ -706,6 +1500,207 @@ static void ExportIndexQuantum(const Image *image,
       {
         q=PopQuantumPixel(&quantum_state,quantum_info->depth,
           GetPixelIndex(indexes+x),q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+  }
+}
+
+static void ExportIndexAlphaQuantum(const Image *image,
+  const QuantumInfo *quantum_info,QuantumState quantum_state,
+  const MagickSizeType number_pixels,const PixelPacket *restrict p,
+  const IndexPacket *restrict indexes,unsigned char *restrict q,
+  ExceptionInfo *exception)
+{
+  EndianType
+    endian;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    bit;
+
+  if (image->storage_class != PseudoClass)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
+        "ColormappedImageRequired","`%s'",image->filename);
+      return;
+    }
+  endian=quantum_state.endian;
+  switch (quantum_info->depth)
+  {
+    case 1:
+    {
+      register unsigned char
+        pixel;
+
+      for (x=((ssize_t) number_pixels-3); x > 0; x-=4)
+      {
+        pixel=(unsigned char) *indexes++;
+        *q=((pixel & 0x01) << 7);
+        pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum)
+          TransparentOpacity ? 1 : 0);
+        *q|=((pixel & 0x01) << 6);
+        p++;
+        pixel=(unsigned char) *indexes++;
+        *q|=((pixel & 0x01) << 5);
+        pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum)
+          TransparentOpacity ? 1 : 0);
+        *q|=((pixel & 0x01) << 4);
+        p++;
+        pixel=(unsigned char) *indexes++;
+        *q|=((pixel & 0x01) << 3);
+        pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum)
+          TransparentOpacity ? 1 : 0);
+        *q|=((pixel & 0x01) << 2);
+        p++;
+        pixel=(unsigned char) *indexes++;
+        *q|=((pixel & 0x01) << 1);
+        pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum)
+          TransparentOpacity ? 1 : 0);
+        *q|=((pixel & 0x01) << 0);
+        p++;
+        q++;
+      }
+      if ((number_pixels % 4) != 0)
+        {
+          *q='\0';
+          for (bit=3; bit >= (ssize_t) (4-(number_pixels % 4)); bit-=2)
+          {
+            pixel=(unsigned char) *indexes++;
+            *q|=((pixel & 0x01) << (unsigned char) (bit+4));
+            pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum)
+              TransparentOpacity ? 1 : 0);
+            *q|=((pixel & 0x01) << (unsigned char) (bit+4-1));
+            p++;
+          }
+          q++;
+        }
+      break;
+    }
+    case 4:
+    {
+      register unsigned char
+        pixel;
+
+      for (x=0; x < (ssize_t) number_pixels ; x++)
+      {
+        pixel=(unsigned char) *indexes++;
+        *q=((pixel & 0xf) << 4);
+        pixel=(unsigned char) (16*QuantumScale*((Quantum) (QuantumRange-
+          GetPixelOpacity(p)))+0.5);
+        *q|=((pixel & 0xf) << 0);
+        p++;
+        q++;
+      }
+      break;
+    }
+    case 8:
+    {
+      register unsigned char
+        pixel;
+
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        q=PopCharPixel((unsigned char) GetPixelIndex(indexes+x),q);
+        pixel=ScaleQuantumToChar((Quantum) (QuantumRange-GetPixelOpacity(p)));
+        q=PopCharPixel(pixel,q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 16:
+    {
+      register unsigned short
+        pixel;
+
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            q=PopShortPixel(endian,(unsigned short) GetPixelIndex(indexes+x),q);
+            pixel=SinglePrecisionToHalf(QuantumScale*GetPixelAlpha(p));
+            q=PopShortPixel(endian,pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        q=PopShortPixel(endian,(unsigned short) GetPixelIndex(indexes+x),q);
+        pixel=ScaleQuantumToShort((Quantum) (QuantumRange-GetPixelOpacity(p)));
+        q=PopShortPixel(endian,pixel,q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 32:
+    {
+      register unsigned int
+        pixel;
+
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            float
+              pixel;
+
+            q=PopFloatPixel(&quantum_state,(float) GetPixelIndex(indexes+x),q);
+            pixel=(float)  (GetPixelAlpha(p));
+            q=PopFloatPixel(&quantum_state,pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        q=PopLongPixel(endian,(unsigned int) GetPixelIndex(indexes+x),q);
+        pixel=ScaleQuantumToLong((Quantum) (QuantumRange-GetPixelOpacity(p)));
+        q=PopLongPixel(endian,pixel,q);
+        p++;
+        q+=quantum_info->pad;
+      }
+      break;
+    }
+    case 64:
+    {
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            double
+              pixel;
+
+            q=PopDoublePixel(&quantum_state,(double) GetPixelIndex(indexes+x),
+              q);
+            pixel=(double) (GetPixelAlpha(p));
+            q=PopDoublePixel(&quantum_state,pixel,q);
+            p++;
+            q+=quantum_info->pad;
+          }
+          break;
+        }
+    }
+    default:
+    {
+      QuantumAny
+        range;
+
+      range=GetQuantumRange(quantum_info->depth);
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,
+          GetPixelIndex(indexes+x),q);
+        q=PopQuantumPixel(&quantum_state,quantum_info->depth,
+          ScaleQuantumToAny((Quantum) (GetPixelAlpha(p)),range),q);
         p++;
         q+=quantum_info->pad;
       }
@@ -1367,6 +2362,19 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
   endian=quantum_state.endian;
   switch (quantum_type)
   {
+    case BGRQuantum:
+    {
+      ExportBGRQuantum(image,quantum_info,quantum_state,number_pixels,p,q,
+        exception);
+      break;
+    }
+    case BGRAQuantum:
+    case BGROQuantum:
+    {
+      ExportBGRAQuantum(image,quantum_info,quantum_state,number_pixels,p,q,
+        exception);
+      break;
+    }
     case IndexQuantum:
     {
       ExportIndexQuantum(image,quantum_info,quantum_state,number_pixels,p,
@@ -1375,956 +2383,14 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
     }
     case IndexAlphaQuantum:
     {
-      if (image->storage_class != PseudoClass)
-        {
-          (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-            "ColormappedImageRequired","`%s'",image->filename);
-          return(extent);
-        }
-      switch (quantum_info->depth)
-      {
-        case 1:
-        {
-          register unsigned char
-            pixel;
-
-          for (x=((ssize_t) number_pixels-3); x > 0; x-=4)
-          {
-            pixel=(unsigned char) *indexes++;
-            *q=((pixel & 0x01) << 7);
-            pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum)
-              TransparentOpacity ? 1 : 0);
-            *q|=((pixel & 0x01) << 6);
-            p++;
-            pixel=(unsigned char) *indexes++;
-            *q|=((pixel & 0x01) << 5);
-            pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum)
-              TransparentOpacity ? 1 : 0);
-            *q|=((pixel & 0x01) << 4);
-            p++;
-            pixel=(unsigned char) *indexes++;
-            *q|=((pixel & 0x01) << 3);
-            pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum)
-              TransparentOpacity ? 1 : 0);
-            *q|=((pixel & 0x01) << 2);
-            p++;
-            pixel=(unsigned char) *indexes++;
-            *q|=((pixel & 0x01) << 1);
-            pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum)
-              TransparentOpacity ? 1 : 0);
-            *q|=((pixel & 0x01) << 0);
-            p++;
-            q++;
-          }
-          if ((number_pixels % 4) != 0)
-            {
-              *q='\0';
-              for (bit=3; bit >= (ssize_t) (4-(number_pixels % 4)); bit-=2)
-              {
-                pixel=(unsigned char) *indexes++;
-                *q|=((pixel & 0x01) << (unsigned char) (bit+4));
-                pixel=(unsigned char) (GetPixelOpacity(p) == (Quantum)
-                  TransparentOpacity ? 1 : 0);
-                *q|=((pixel & 0x01) << (unsigned char) (bit+4-1));
-                p++;
-              }
-              q++;
-            }
-          break;
-        }
-        case 4:
-        {
-          register unsigned char
-            pixel;
-
-          for (x=0; x < (ssize_t) number_pixels ; x++)
-          {
-            pixel=(unsigned char) *indexes++;
-            *q=((pixel & 0xf) << 4);
-            pixel=(unsigned char) (16*QuantumScale*((Quantum) (QuantumRange-
-              GetPixelOpacity(p)))+0.5);
-            *q|=((pixel & 0xf) << 0);
-            p++;
-            q++;
-          }
-          break;
-        }
-        case 8:
-        {
-          register unsigned char
-            pixel;
-
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            q=PopCharPixel((unsigned char) GetPixelIndex(indexes+x),q);
-            pixel=ScaleQuantumToChar((Quantum) (QuantumRange-
-              GetPixelOpacity(p)));
-            q=PopCharPixel(pixel,q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 16:
-        {
-          register unsigned short
-            pixel;
-
-          if (quantum_info->format == FloatingPointQuantumFormat)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                q=PopShortPixel(endian,(unsigned short) GetPixelIndex(
-                  indexes+x),q);
-                pixel=SinglePrecisionToHalf(QuantumScale*
-                  GetPixelAlpha(p));
-                q=PopShortPixel(endian,pixel,q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            q=PopShortPixel(endian,(unsigned short) GetPixelIndex(
-              indexes+x),q);
-            pixel=ScaleQuantumToShort((Quantum) (QuantumRange-
-              GetPixelOpacity(p)));
-            q=PopShortPixel(endian,pixel,q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 32:
-        {
-          register unsigned int
-            pixel;
-
-          if (quantum_info->format == FloatingPointQuantumFormat)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                float
-                  pixel;
-
-                q=PopFloatPixel(&quantum_state,(float) GetPixelIndex(
-                  indexes+x),q);
-                pixel=(float)  (GetPixelAlpha(p));
-                q=PopFloatPixel(&quantum_state,pixel,q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            q=PopLongPixel(endian,(unsigned int) GetPixelIndex(
-              indexes+x),q);
-            pixel=ScaleQuantumToLong((Quantum) (QuantumRange-
-              GetPixelOpacity(p)));
-            q=PopLongPixel(endian,pixel,q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 64:
-        {
-          if (quantum_info->format == FloatingPointQuantumFormat)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                double
-                  pixel;
-
-                q=PopDoublePixel(&quantum_state,(double) GetPixelIndex(
-                  indexes+x),q);
-                pixel=(double) (GetPixelAlpha(p));
-                q=PopDoublePixel(&quantum_state,pixel,q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-        }
-        default:
-        {
-          range=GetQuantumRange(quantum_info->depth);
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,
-              GetPixelIndex(indexes+x),q);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,
-              ScaleQuantumToAny((Quantum) (GetPixelAlpha(p)),range),q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-      }
-      break;
-    }
-    case BGRQuantum:
-    {
-      switch (quantum_info->depth)
-      {
-        case 8:
-        {
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            q=PopCharPixel(ScaleQuantumToChar(GetPixelBlue(p)),q);
-            q=PopCharPixel(ScaleQuantumToChar(GetPixelGreen(p)),q);
-            q=PopCharPixel(ScaleQuantumToChar(GetPixelRed(p)),q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 10:
-        {
-          register unsigned int
-            pixel;
-
-          range=GetQuantumRange(quantum_info->depth);
-          if (quantum_info->pack == MagickFalse)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                pixel=(unsigned int) (
-                  ScaleQuantumToAny(GetPixelRed(p),range) << 22 |
-                  ScaleQuantumToAny(GetPixelGreen(p),range) << 12 |
-                  ScaleQuantumToAny(GetPixelBlue(p),range) << 2);
-                q=PopLongPixel(endian,pixel,q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-          if (quantum_info->quantum == 32UL)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
-                q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,
-                  q);
-                pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
-                q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,
-                  q);
-                pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
-                q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,
-                  q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
-            pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
-            pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 12:
-        {
-          register unsigned int
-            pixel;
-
-          range=GetQuantumRange(quantum_info->depth);
-          if (quantum_info->pack == MagickFalse)
-            {
-              for (x=0; x < (ssize_t) (3*number_pixels-1); x+=2)
-              {
-                switch (x % 3)
-                {
-                  default:
-                  case 0:
-                  {
-                    pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
-                    break;
-                  }
-                  case 1:
-                  {
-                    pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
-                    break;
-                  }
-                  case 2:
-                  {
-                    pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
-                    p++;
-                    break;
-                  }
-                }
-                q=PopShortPixel(endian,(unsigned short) (pixel << 4),q);
-                switch ((x+1) % 3)
-                {
-                  default:
-                  case 0:
-                  {
-                    pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
-                    break;
-                  }
-                  case 1:
-                  {
-                    pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
-                    break;
-                  }
-                  case 2:
-                  {
-                    pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
-                    p++;
-                    break;
-                  }
-                }
-                q=PopShortPixel(endian,(unsigned short) (pixel << 4),q);
-                q+=quantum_info->pad;
-              }
-              for (bit=0; bit < (ssize_t) (3*number_pixels % 2); bit++)
-              {
-                switch ((x+bit) % 3)
-                {
-                  default:
-                  case 0:
-                  {
-                    pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
-                    break;
-                  }
-                  case 1:
-                  {
-                    pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
-                    break;
-                  }
-                  case 2:
-                  {
-                    pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
-                    p++;
-                    break;
-                  }
-                }
-                q=PopShortPixel(endian,(unsigned short) (pixel << 4),q);
-                q+=quantum_info->pad;
-              }
-              if (bit != 0)
-                p++;
-              break;
-            }
-          if (quantum_info->quantum == 32UL)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
-                q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,
-                  q);
-                pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
-                q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,
-                  q);
-                pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
-                q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,
-                  q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
-            pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
-            pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 16:
-        {
-          register unsigned short
-            pixel;
-
-          if (quantum_info->format == FloatingPointQuantumFormat)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                pixel=SinglePrecisionToHalf(QuantumScale*GetPixelBlue(p));
-                q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToHalf(QuantumScale*GetPixelGreen(p));
-                q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToHalf(QuantumScale*GetPixelRed(p));
-                q=PopShortPixel(endian,pixel,q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            pixel=ScaleQuantumToShort(GetPixelBlue(p));
-            q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort(GetPixelGreen(p));
-            q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort(GetPixelRed(p));
-            q=PopShortPixel(endian,pixel,q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 32:
-        {
-          register unsigned int
-            pixel;
-
-          if (quantum_info->format == FloatingPointQuantumFormat)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                q=PopFloatPixel(&quantum_state,(float) GetPixelRed(p),q);
-                q=PopFloatPixel(&quantum_state,(float) GetPixelGreen(p),q);
-                q=PopFloatPixel(&quantum_state,(float) GetPixelBlue(p),q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            pixel=ScaleQuantumToLong(GetPixelBlue(p));
-            q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong(GetPixelGreen(p));
-            q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong(GetPixelRed(p));
-            q=PopLongPixel(endian,pixel,q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 64:
-        {
-          if (quantum_info->format == FloatingPointQuantumFormat)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                q=PopDoublePixel(&quantum_state,(double) GetPixelRed(p),q);
-                q=PopDoublePixel(&quantum_state,(double) GetPixelGreen(p),q);
-                q=PopDoublePixel(&quantum_state,(double) GetPixelBlue(p),q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-        }
-        default:
-        {
-          range=GetQuantumRange(quantum_info->depth);
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,
-              ScaleQuantumToAny(GetPixelRed(p),range),q);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,
-              ScaleQuantumToAny(GetPixelGreen(p),range),q);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,
-              ScaleQuantumToAny(GetPixelBlue(p),range),q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-      }
-      break;
-    }
-    case BGRAQuantum:
-    case BGROQuantum:
-    {
-      switch (quantum_info->depth)
-      {
-        case 8:
-        {
-          register unsigned char
-            pixel;
-
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            pixel=ScaleQuantumToChar(GetPixelBlue(p));
-            q=PopCharPixel(pixel,q);
-            pixel=ScaleQuantumToChar(GetPixelGreen(p));
-            q=PopCharPixel(pixel,q);
-            pixel=ScaleQuantumToChar(GetPixelRed(p));
-            q=PopCharPixel(pixel,q);
-            pixel=ScaleQuantumToChar((Quantum) GetPixelAlpha(p));
-            q=PopCharPixel(pixel,q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 10:
-        {
-          register unsigned int
-            pixel;
-
-          range=GetQuantumRange(quantum_info->depth);
-          if (quantum_info->pack == MagickFalse)
-            {
-              register ssize_t
-                i;
-
-              size_t
-                quantum;
-
-              ssize_t
-                n;
-
-              n=0;
-              quantum=0;
-              pixel=0;
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                for (i=0; i < 4; i++)
-                {
-                  switch (i)
-                  {
-                    case 0: quantum=GetPixelRed(p); break;
-                    case 1: quantum=GetPixelGreen(p); break;
-                    case 2: quantum=GetPixelBlue(p); break;
-                    case 3: quantum=(Quantum) (QuantumRange-GetPixelOpacity(p)); break;
-                  }
-                  switch (n % 3)
-                  {
-                    case 0:
-                    {
-                      pixel|=(size_t) (ScaleQuantumToAny((Quantum) quantum,
-                        range) << 22);
-                      break;
-                    }
-                    case 1:
-                    {
-                      pixel|=(size_t) (ScaleQuantumToAny((Quantum) quantum,
-                        range) << 12);
-                      break;
-                    }
-                    case 2:
-                    {
-                      pixel|=(size_t) (ScaleQuantumToAny((Quantum) quantum,
-                        range) << 2);
-                      q=PopLongPixel(endian,pixel,q);
-                      pixel=0;
-                      break;
-                    }
-                  }
-                  n++;
-                }
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-          if (quantum_info->quantum == 32UL)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
-                q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,
-                  q);
-                pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
-                q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,
-                  q);
-                pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
-                q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,
-                  q);
-                pixel=(unsigned int) ScaleQuantumToAny((Quantum) (QuantumRange-
-                  GetPixelOpacity(p)),range);
-                q=PopQuantumLongPixel(&quantum_state,quantum_info->depth,pixel,
-                  q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            pixel=(unsigned int) ScaleQuantumToAny(GetPixelRed(p),range);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
-            pixel=(unsigned int) ScaleQuantumToAny(GetPixelGreen(p),range);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
-            pixel=(unsigned int) ScaleQuantumToAny(GetPixelBlue(p),range);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
-            pixel=(unsigned int) ScaleQuantumToAny((Quantum) (QuantumRange-
-              GetPixelOpacity(p)),range);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,pixel,q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 16:
-        {
-          register unsigned short
-            pixel;
-
-          if (quantum_info->format == FloatingPointQuantumFormat)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                pixel=SinglePrecisionToHalf(QuantumScale*GetPixelBlue(p));
-                q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToHalf(QuantumScale*GetPixelGreen(p));
-                q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToHalf(QuantumScale*GetPixelRed(p));
-                q=PopShortPixel(endian,pixel,q);
-                pixel=SinglePrecisionToHalf(QuantumScale*GetPixelAlpha(p));
-                q=PopShortPixel(endian,pixel,q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            pixel=ScaleQuantumToShort(GetPixelBlue(p));
-            q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort(GetPixelGreen(p));
-            q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort(GetPixelRed(p));
-            q=PopShortPixel(endian,pixel,q);
-            pixel=ScaleQuantumToShort((Quantum) GetPixelAlpha(p));
-            q=PopShortPixel(endian,pixel,q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 32:
-        {
-          register unsigned int
-            pixel;
-
-          if (quantum_info->format == FloatingPointQuantumFormat)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                float
-                  pixel;
-
-                q=PopFloatPixel(&quantum_state,(float) GetPixelRed(p),q);
-                q=PopFloatPixel(&quantum_state,(float) GetPixelGreen(p),q);
-                q=PopFloatPixel(&quantum_state,(float) GetPixelBlue(p),q);
-                pixel=(float) GetPixelAlpha(p);
-                q=PopFloatPixel(&quantum_state,pixel,q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            pixel=ScaleQuantumToLong(GetPixelBlue(p));
-            q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong(GetPixelGreen(p));
-            q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong(GetPixelRed(p));
-            q=PopLongPixel(endian,pixel,q);
-            pixel=ScaleQuantumToLong((Quantum) GetPixelAlpha(p));
-            q=PopLongPixel(endian,pixel,q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 64:
-        {
-          if (quantum_info->format == FloatingPointQuantumFormat)
-            {
-              double
-                pixel;
-
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                q=PopDoublePixel(&quantum_state,(double) GetPixelRed(p),q);
-                q=PopDoublePixel(&quantum_state,(double) GetPixelGreen(p),q);
-                q=PopDoublePixel(&quantum_state,(double) GetPixelBlue(p),q);
-                pixel=(double) GetPixelAlpha(p);
-                q=PopDoublePixel(&quantum_state,pixel,q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-        }
-        default:
-        {
-          range=GetQuantumRange(quantum_info->depth);
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,
-              ScaleQuantumToAny(GetPixelBlue(p),range),q);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,
-              ScaleQuantumToAny(GetPixelGreen(p),range),q);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,
-              ScaleQuantumToAny(GetPixelRed(p),range),q);
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,
-              ScaleQuantumToAny((Quantum) GetPixelAlpha(p),range),q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-      }
+      ExportIndexAlphaQuantum(image,quantum_info,quantum_state,number_pixels,p,
+        indexes,q,exception);
       break;
     }
     case GrayQuantum:
     {
-      switch (quantum_info->depth)
-      {
-        case 1:
-        {
-          register Quantum
-            threshold;
-
-          register unsigned char
-            black,
-            white;
-
-          black=0x00;
-          white=0x01;
-          if (quantum_info->min_is_white != MagickFalse)
-            {
-              black=0x01;
-              white=0x00;
-            }
-          threshold=(Quantum) (QuantumRange/2);
-          for (x=((ssize_t) number_pixels-7); x > 0; x-=8)
-          {
-            *q='\0';
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 7;
-            p++;
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 6;
-            p++;
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 5;
-            p++;
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 4;
-            p++;
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 3;
-            p++;
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 2;
-            p++;
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 1;
-            p++;
-            *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) << 0;
-            p++;
-            q++;
-          }
-          if ((number_pixels % 8) != 0)
-            {
-              *q='\0';
-              for (bit=7; bit >= (ssize_t) (8-(number_pixels % 8)); bit--)
-              {
-                *q|=(PixelIntensityToQuantum(p) < threshold ? black : white) <<
-                  bit;
-                p++;
-              }
-              q++;
-            }
-          break;
-        }
-        case 4:
-        {
-          register unsigned char
-            pixel;
-
-          for (x=0; x < (ssize_t) (number_pixels-1) ; x+=2)
-          {
-            pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
-            *q=(((pixel >> 4) & 0xf) << 4);
-            p++;
-            pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
-            *q|=pixel >> 4;
-            p++;
-            q++;
-          }
-          if ((number_pixels % 2) != 0)
-            {
-              pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
-              *q=(((pixel >> 4) & 0xf) << 4);
-              p++;
-              q++;
-            }
-          break;
-        }
-        case 8:
-        {
-          register unsigned char
-            pixel;
-
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
-            q=PopCharPixel(pixel,q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 10:
-        {
-          range=GetQuantumRange(quantum_info->depth);
-          if (quantum_info->pack == MagickFalse)
-            {
-              register unsigned int
-                pixel;
-
-              for (x=0; x < (ssize_t) (number_pixels-2); x+=3)
-              {
-                pixel=(unsigned int) (
-                  ScaleQuantumToAny(PixelIntensityToQuantum(p+2),range) << 22 |
-                  ScaleQuantumToAny(PixelIntensityToQuantum(p+1),range) << 12 |
-                  ScaleQuantumToAny(PixelIntensityToQuantum(p+0),range) << 2);
-                q=PopLongPixel(endian,pixel,q);
-                p+=3;
-                q+=quantum_info->pad;
-              }
-              if (x < (ssize_t) number_pixels)
-                {
-                  pixel=0U;
-                  if (x++ < (ssize_t) (number_pixels-1))
-                    pixel|=ScaleQuantumToAny(PixelIntensityToQuantum(p+1),
-                      range) << 12;
-                  if (x++ < (ssize_t) number_pixels)
-                    pixel|=ScaleQuantumToAny(PixelIntensityToQuantum(p+0),
-                      range) << 2;
-                  q=PopLongPixel(endian,pixel,q);
-                }
-              break;
-            }
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,
-              ScaleQuantumToAny(PixelIntensityToQuantum(p),range),q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 12:
-        {
-          register unsigned short
-            pixel;
-
-          range=GetQuantumRange(quantum_info->depth);
-          if (quantum_info->pack == MagickFalse)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
-                q=PopShortPixel(endian,(unsigned short) (pixel >> 4),q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,
-              ScaleQuantumToAny(PixelIntensityToQuantum(p),range),q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 16:
-        {
-          register unsigned short
-            pixel;
-
-          if (quantum_info->format == FloatingPointQuantumFormat)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                pixel=SinglePrecisionToHalf(QuantumScale*
-                  PixelIntensityToQuantum(p));
-                q=PopShortPixel(endian,pixel,q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
-            q=PopShortPixel(endian,pixel,q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 32:
-        {
-          register unsigned int
-            pixel;
-
-          if (quantum_info->format == FloatingPointQuantumFormat)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                float
-                  pixel;
-
-                pixel=(float) PixelIntensityToQuantum(p);
-                q=PopFloatPixel(&quantum_state,pixel,q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            pixel=ScaleQuantumToLong(PixelIntensityToQuantum(p));
-            q=PopLongPixel(endian,pixel,q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-        case 64:
-        {
-          if (quantum_info->format == FloatingPointQuantumFormat)
-            {
-              for (x=0; x < (ssize_t) number_pixels; x++)
-              {
-                double
-                  pixel;
-
-                pixel=(double) PixelIntensityToQuantum(p);
-                q=PopDoublePixel(&quantum_state,pixel,q);
-                p++;
-                q+=quantum_info->pad;
-              }
-              break;
-            }
-        }
-        default:
-        {
-          range=GetQuantumRange(quantum_info->depth);
-          for (x=0; x < (ssize_t) number_pixels; x++)
-          {
-            q=PopQuantumPixel(&quantum_state,quantum_info->depth,
-              ScaleQuantumToAny(PixelIntensityToQuantum(p),range),q);
-            p++;
-            q+=quantum_info->pad;
-          }
-          break;
-        }
-      }
+      ExportGrayQuantum(image,quantum_info,quantum_state,number_pixels,p,q,
+        exception);
       break;
     }
     case GrayAlphaQuantum:
