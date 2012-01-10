@@ -71,16 +71,15 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   E x p o r t I m a g e P i x e l s                                         %
-%                                                                             %
+%   E x p o r t I m a g e P i x e l s                                         % %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ExportImagePixels() extracts pixel data from an image and returns it to you.
 %  The method returns MagickTrue on success otherwise MagickFalse if an error is
-%  encountered.  The data is returned as char, short int, int, ssize_t, float,
-%  or double in the order specified by map.
+%  encountered.  The data is returned as char, short int, unsigned int,
+%  unsigned long long, float, or double in the order specified by map.
 %
 %  Suppose you want to extract the first scanline of a 640x480 image as
 %  character data in red-green-blue order:
@@ -89,17 +88,17 @@
 %
 %  The format of the ExportImagePixels method is:
 %
-%      MagickBooleanType ExportImagePixels(const Image *image,
-%        const ssize_t x_offset,const ssize_t y_offset,const size_t columns,
-%        const size_t rows,const char *map,const StorageType type,
-%        void *pixels,ExceptionInfo *exception)
+%      MagickBooleanType ExportImagePixels(const Image *image,const ssize_t x,
+%        const ssize_t y,const size_t width,const size_t height,
+%        const char *map,const StorageType type,void *pixels,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o x_offset,y_offset,columns,rows:  These values define the perimeter
-%      of a region of pixels you want to extract.
+%    o x,y,width,height:  These values define the perimeter of a region of
+%      pixels you want to extract.
 %
 %    o map:  This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
@@ -121,8 +120,7 @@
 %
 */
 
-static void ExportCharPixel(const Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
+static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -144,12 +142,12 @@ static void ExportCharPixel(const Image *image,const ssize_t x_offset,
   q=(unsigned char *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToChar(GetPixelBlue(p));
           *q++=ScaleQuantumToChar(GetPixelGreen(p));
@@ -161,17 +159,17 @@ static void ExportCharPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToChar(GetPixelBlue(p));
           *q++=ScaleQuantumToChar(GetPixelGreen(p));
           *q++=ScaleQuantumToChar(GetPixelRed(p));
-          *q++=ScaleQuantumToChar((Quantum) (GetPixelAlpha(p)));
+          *q++=ScaleQuantumToChar((Quantum) GetPixelAlpha(p));
           p++;
         }
       }
@@ -179,12 +177,12 @@ static void ExportCharPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToChar(GetPixelBlue(p));
           *q++=ScaleQuantumToChar(GetPixelGreen(p));
@@ -197,12 +195,12 @@ static void ExportCharPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"I") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
           p++;
@@ -212,12 +210,12 @@ static void ExportCharPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGB") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToChar(GetPixelRed(p));
           *q++=ScaleQuantumToChar(GetPixelGreen(p));
@@ -229,17 +227,17 @@ static void ExportCharPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToChar(GetPixelRed(p));
           *q++=ScaleQuantumToChar(GetPixelGreen(p));
           *q++=ScaleQuantumToChar(GetPixelBlue(p));
-          *q++=ScaleQuantumToChar((Quantum) (GetPixelAlpha(p)));
+          *q++=ScaleQuantumToChar((Quantum) GetPixelAlpha(p));
           p++;
         }
       }
@@ -247,12 +245,12 @@ static void ExportCharPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToChar(GetPixelRed(p));
           *q++=ScaleQuantumToChar(GetPixelGreen(p));
@@ -263,13 +261,13 @@ static void ExportCharPixel(const Image *image,const ssize_t x_offset,
       }
       return;
     }
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) roi->height; y++)
   {
-    p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+    p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) roi->width; x++)
     {
       register ssize_t
         i;
@@ -328,8 +326,7 @@ static void ExportCharPixel(const Image *image,const ssize_t x_offset,
   }
 }
 
-static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
+static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -351,12 +348,12 @@ static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
   q=(double *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(double) (QuantumScale*GetPixelBlue(p));
           *q++=(double) (QuantumScale*GetPixelGreen(p));
@@ -368,12 +365,12 @@ static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(double) (QuantumScale*GetPixelBlue(p));
           *q++=(double) (QuantumScale*GetPixelGreen(p));
@@ -387,12 +384,12 @@ static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(double) (QuantumScale*GetPixelBlue(p));
           *q++=(double) (QuantumScale*GetPixelGreen(p));
@@ -405,12 +402,12 @@ static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"I") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(double) (QuantumScale*PixelIntensityToQuantum(p));
           p++;
@@ -420,12 +417,12 @@ static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGB") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(double) (QuantumScale*GetPixelRed(p));
           *q++=(double) (QuantumScale*GetPixelGreen(p));
@@ -437,12 +434,12 @@ static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(double) (QuantumScale*GetPixelRed(p));
           *q++=(double) (QuantumScale*GetPixelGreen(p));
@@ -456,12 +453,12 @@ static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(double) (QuantumScale*GetPixelRed(p));
           *q++=(double) (QuantumScale*GetPixelGreen(p));
@@ -472,13 +469,13 @@ static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
       }
       return;
     }
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) roi->height; y++)
   {
-    p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+    p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) roi->width; x++)
     {
       register ssize_t
         i;
@@ -538,8 +535,7 @@ static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
   }
 }
 
-static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
+static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -561,12 +557,12 @@ static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
   q=(float *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(float) (QuantumScale*GetPixelBlue(p));
           *q++=(float) (QuantumScale*GetPixelGreen(p));
@@ -578,12 +574,12 @@ static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(float) (QuantumScale*GetPixelBlue(p));
           *q++=(float) (QuantumScale*GetPixelGreen(p));
@@ -596,12 +592,12 @@ static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(float) (QuantumScale*GetPixelBlue(p));
           *q++=(float) (QuantumScale*GetPixelGreen(p));
@@ -614,12 +610,12 @@ static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"I") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(float) (QuantumScale*PixelIntensityToQuantum(p));
           p++;
@@ -629,12 +625,12 @@ static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGB") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(float) (QuantumScale*GetPixelRed(p));
           *q++=(float) (QuantumScale*GetPixelGreen(p));
@@ -646,12 +642,12 @@ static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(float) (QuantumScale*GetPixelRed(p));
           *q++=(float) (QuantumScale*GetPixelGreen(p));
@@ -664,12 +660,12 @@ static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(float) (QuantumScale*GetPixelRed(p));
           *q++=(float) (QuantumScale*GetPixelGreen(p));
@@ -680,13 +676,13 @@ static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
       }
       return;
     }
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) roi->height; y++)
   {
-    p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+    p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) roi->width; x++)
     {
       register ssize_t
         i;
@@ -745,8 +741,7 @@ static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
   }
 }
 
-static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
+static void ExportIntegerPixel(const Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -768,12 +763,12 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
   q=(unsigned int *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
           *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
@@ -785,12 +780,12 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
           *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
@@ -804,12 +799,12 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
           *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
@@ -822,12 +817,12 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"I") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(unsigned int) ScaleQuantumToLong(PixelIntensityToQuantum(p));
           p++;
@@ -837,12 +832,12 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGB") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
           *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
@@ -854,12 +849,12 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
           *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
@@ -872,12 +867,12 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
           *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
@@ -888,13 +883,13 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
       }
       return;
     }
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) roi->height; y++)
   {
-    p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+    p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) roi->width; x++)
     {
       register ssize_t
         i;
@@ -954,8 +949,7 @@ static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
   }
 }
 
-static void ExportLongPixel(const Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
+static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -977,12 +971,12 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
   q=(unsigned int *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToLong(GetPixelBlue(p));
           *q++=ScaleQuantumToLong(GetPixelGreen(p));
@@ -994,12 +988,12 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToLong(GetPixelBlue(p));
           *q++=ScaleQuantumToLong(GetPixelGreen(p));
@@ -1012,12 +1006,12 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToLong(GetPixelBlue(p));
           *q++=ScaleQuantumToLong(GetPixelGreen(p));
@@ -1030,12 +1024,12 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"I") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
           p++;
@@ -1045,12 +1039,12 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGB") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToLong(GetPixelRed(p));
           *q++=ScaleQuantumToLong(GetPixelGreen(p));
@@ -1062,12 +1056,12 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToLong(GetPixelRed(p));
           *q++=ScaleQuantumToLong(GetPixelGreen(p));
@@ -1080,12 +1074,12 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToLong(GetPixelRed(p));
           *q++=ScaleQuantumToLong(GetPixelGreen(p));
@@ -1096,13 +1090,13 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
       }
       return;
     }
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) roi->height; y++)
   {
-    p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+    p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) roi->width; x++)
     {
       register ssize_t
         i;
@@ -1161,8 +1155,7 @@ static void ExportLongPixel(const Image *image,const ssize_t x_offset,
   }
 }
 
-static void ExportQuantumPixel(const Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
+static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1184,12 +1177,12 @@ static void ExportQuantumPixel(const Image *image,const ssize_t x_offset,
   q=(Quantum *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=GetPixelBlue(p);
           *q++=GetPixelGreen(p);
@@ -1201,12 +1194,12 @@ static void ExportQuantumPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=GetPixelBlue(p);
           *q++=GetPixelGreen(p);
@@ -1219,12 +1212,12 @@ static void ExportQuantumPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=GetPixelBlue(p);
           *q++=GetPixelGreen(p);
@@ -1237,12 +1230,12 @@ static void ExportQuantumPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"I") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=PixelIntensityToQuantum(p);
           p++;
@@ -1252,12 +1245,12 @@ static void ExportQuantumPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGB") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=GetPixelRed(p);
           *q++=GetPixelGreen(p);
@@ -1269,12 +1262,12 @@ static void ExportQuantumPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=GetPixelRed(p);
           *q++=GetPixelGreen(p);
@@ -1287,12 +1280,12 @@ static void ExportQuantumPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=GetPixelRed(p);
           *q++=GetPixelGreen(p);
@@ -1303,13 +1296,13 @@ static void ExportQuantumPixel(const Image *image,const ssize_t x_offset,
       }
       return;
     }
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) roi->height; y++)
   {
-    p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+    p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) roi->width; x++)
     {
       register ssize_t
         i;
@@ -1371,8 +1364,7 @@ static void ExportQuantumPixel(const Image *image,const ssize_t x_offset,
   }
 }
 
-static void ExportShortPixel(const Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
+static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1394,12 +1386,12 @@ static void ExportShortPixel(const Image *image,const ssize_t x_offset,
   q=(unsigned short *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToShort(GetPixelBlue(p));
           *q++=ScaleQuantumToShort(GetPixelGreen(p));
@@ -1411,12 +1403,12 @@ static void ExportShortPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToShort(GetPixelBlue(p));
           *q++=ScaleQuantumToShort(GetPixelGreen(p));
@@ -1429,12 +1421,12 @@ static void ExportShortPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToShort(GetPixelBlue(p));
           *q++=ScaleQuantumToShort(GetPixelGreen(p));
@@ -1447,12 +1439,12 @@ static void ExportShortPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"I") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToShort(PixelIntensityToQuantum(p));
           p++;
@@ -1462,12 +1454,12 @@ static void ExportShortPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGB") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToShort(GetPixelRed(p));
           *q++=ScaleQuantumToShort(GetPixelGreen(p));
@@ -1479,12 +1471,12 @@ static void ExportShortPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToShort(GetPixelRed(p));
           *q++=ScaleQuantumToShort(GetPixelGreen(p));
@@ -1497,12 +1489,12 @@ static void ExportShortPixel(const Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           *q++=ScaleQuantumToShort(GetPixelRed(p));
           *q++=ScaleQuantumToShort(GetPixelGreen(p));
@@ -1513,13 +1505,13 @@ static void ExportShortPixel(const Image *image,const ssize_t x_offset,
       }
       return;
     }
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) roi->height; y++)
   {
-    p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+    p=GetVirtualPixels(image,roi->x,roi->y,roi->width,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetVirtualIndexQueue(image);
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) roi->width; x++)
     {
       register ssize_t
         i;
@@ -1579,12 +1571,14 @@ static void ExportShortPixel(const Image *image,const ssize_t x_offset,
 }
 
 MagickExport MagickBooleanType ExportImagePixels(const Image *image,
-  const ssize_t x_offset,const ssize_t y_offset,const size_t columns,
-  const size_t rows,const char *map,const StorageType type,void *pixels,
-  ExceptionInfo *exception)
+  const ssize_t x,const ssize_t y,const size_t width,const size_t height,
+  const char *map,const StorageType type,void *pixels,ExceptionInfo *exception)
 {
   QuantumType
     *quantum_map;
+
+  RectangleInfo
+    roi;
 
   register ssize_t
     i;
@@ -1700,48 +1694,45 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
       }
     }
   }
+  roi.width=width;
+  roi.height=height;
+  roi.x=x;
+  roi.y=y;
   switch (type)
   {
     case CharPixel:
     {
-      ExportCharPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
+      ExportCharPixel(image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case DoublePixel:
     {
-      ExportDoublePixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
+      ExportDoublePixel(image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case FloatPixel:
     {
-      ExportFloatPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
+      ExportFloatPixel(image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case IntegerPixel:
     {
-      ExportIntegerPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
+      ExportIntegerPixel(image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case LongPixel:
     {
-      ExportLongPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
+      ExportLongPixel(image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case QuantumPixel:
     {
-      ExportQuantumPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
+      ExportQuantumPixel(image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case ShortPixel:
     {
-      ExportShortPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
+      ExportShortPixel(image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     default:
@@ -1816,7 +1807,8 @@ MagickExport void GetMagickPixelPacket(const Image *image,
 %  ImportImagePixels() accepts pixel data and stores in the image at the
 %  location you specify.  The method returns MagickTrue on success otherwise
 %  MagickFalse if an error is encountered.  The pixel data can be either char,
-%  short int, int, ssize_t, float, or double in the order specified by map.
+%  short int, unsigned int, unsigned long long, float, or double in the order
+%  specified by map.
 %
 %  Suppose your want to upload the first scanline of a 640x480 image from
 %  character data in red-green-blue order:
@@ -1825,17 +1817,16 @@ MagickExport void GetMagickPixelPacket(const Image *image,
 %
 %  The format of the ImportImagePixels method is:
 %
-%      MagickBooleanType ImportImagePixels(Image *image,const ssize_t x_offset,
-%        const ssize_t y_offset,const size_t columns,
-%        const size_t rows,const char *map,const StorageType type,
-%        const void *pixels)
+%      MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
+%        const ssize_t y,const size_t width,const size_t height,
+%        const char *map,const StorageType type,const void *pixels)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o x_offset,y_offset,columns,rows:  These values define the perimeter
-%      of a region of pixels you want to define.
+%    o x,y,width,height:  These values define the perimeter of a region of
+%      pixels you want to define.
 %
 %    o map:  This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
@@ -1855,8 +1846,7 @@ MagickExport void GetMagickPixelPacket(const Image *image,
 %
 */
 
-static void ImportCharPixel(Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
+static void ImportCharPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,const void *pixels,
   ExceptionInfo *exception)
 {
@@ -1878,12 +1868,12 @@ static void ImportCharPixel(Image *image,const ssize_t x_offset,
   p=(const unsigned char *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ScaleCharToQuantum(*p++));
           SetPixelGreen(q,ScaleCharToQuantum(*p++));
@@ -1897,12 +1887,12 @@ static void ImportCharPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ScaleCharToQuantum(*p++));
           SetPixelGreen(q,ScaleCharToQuantum(*p++));
@@ -1917,12 +1907,12 @@ static void ImportCharPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRO") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ScaleCharToQuantum(*p++));
           SetPixelGreen(q,ScaleCharToQuantum(*p++));
@@ -1937,12 +1927,12 @@ static void ImportCharPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ScaleCharToQuantum(*p++));
           SetPixelGreen(q,ScaleCharToQuantum(*p++));
@@ -1957,12 +1947,12 @@ static void ImportCharPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"I") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleCharToQuantum(*p++));
           SetPixelGreen(q,GetPixelRed(q));
@@ -1976,12 +1966,12 @@ static void ImportCharPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGB") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleCharToQuantum(*p++));
           SetPixelGreen(q,ScaleCharToQuantum(*p++));
@@ -1995,12 +1985,12 @@ static void ImportCharPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleCharToQuantum(*p++));
           SetPixelGreen(q,ScaleCharToQuantum(*p++));
@@ -2015,12 +2005,12 @@ static void ImportCharPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBO") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleCharToQuantum(*p++));
           SetPixelGreen(q,ScaleCharToQuantum(*p++));
@@ -2035,12 +2025,12 @@ static void ImportCharPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleCharToQuantum(*p++));
           SetPixelGreen(q,ScaleCharToQuantum(*p++));
@@ -2053,13 +2043,13 @@ static void ImportCharPixel(Image *image,const ssize_t x_offset,
       }
       return;
     }
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) roi->height; y++)
   {
-    q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+    q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) roi->width; x++)
     {
       register ssize_t
         i;
@@ -2120,8 +2110,7 @@ static void ImportCharPixel(Image *image,const ssize_t x_offset,
   }
 }
 
-static void ImportDoublePixel(Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
+static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,const void *pixels,
   ExceptionInfo *exception)
 {
@@ -2143,12 +2132,12 @@ static void ImportDoublePixel(Image *image,const ssize_t x_offset,
   p=(const double *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           p++;
@@ -2165,12 +2154,12 @@ static void ImportDoublePixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           p++;
@@ -2190,12 +2179,12 @@ static void ImportDoublePixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           p++;
@@ -2213,12 +2202,12 @@ static void ImportDoublePixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"I") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           SetPixelGreen(q,GetPixelRed(q));
@@ -2233,12 +2222,12 @@ static void ImportDoublePixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGB") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           p++;
@@ -2255,12 +2244,12 @@ static void ImportDoublePixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           p++;
@@ -2279,12 +2268,12 @@ static void ImportDoublePixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           p++;
@@ -2299,13 +2288,13 @@ static void ImportDoublePixel(Image *image,const ssize_t x_offset,
       }
       return;
     }
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) roi->height; y++)
   {
-    q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+    q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) roi->width; x++)
     {
       register ssize_t
         i;
@@ -2372,8 +2361,7 @@ static void ImportDoublePixel(Image *image,const ssize_t x_offset,
   }
 }
 
-static void ImportFloatPixel(Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
+static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,const void *pixels,
   ExceptionInfo *exception)
 {
@@ -2395,12 +2383,12 @@ static void ImportFloatPixel(Image *image,const ssize_t x_offset,
   p=(const float *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           p++;
@@ -2417,12 +2405,12 @@ static void ImportFloatPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           p++;
@@ -2441,12 +2429,12 @@ static void ImportFloatPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           p++;
@@ -2464,12 +2452,12 @@ static void ImportFloatPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"I") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           SetPixelGreen(q,GetPixelRed(q));
@@ -2484,12 +2472,12 @@ static void ImportFloatPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGB") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           p++;
@@ -2506,12 +2494,12 @@ static void ImportFloatPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           p++;
@@ -2530,12 +2518,12 @@ static void ImportFloatPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           p++;
@@ -2550,13 +2538,13 @@ static void ImportFloatPixel(Image *image,const ssize_t x_offset,
       }
       return;
     }
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) roi->height; y++)
   {
-    q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+    q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) roi->width; x++)
     {
       register ssize_t
         i;
@@ -2619,8 +2607,7 @@ static void ImportFloatPixel(Image *image,const ssize_t x_offset,
   }
 }
 
-static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
+static void ImportIntegerPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,const void *pixels,
   ExceptionInfo *exception)
 {
@@ -2642,12 +2629,12 @@ static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
   p=(const unsigned int *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ScaleLongToQuantum(*p++));
           SetPixelGreen(q,ScaleLongToQuantum(*p++));
@@ -2661,12 +2648,12 @@ static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ScaleLongToQuantum(*p++));
           SetPixelGreen(q,ScaleLongToQuantum(*p++));
@@ -2681,12 +2668,12 @@ static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ScaleLongToQuantum(*p++));
           SetPixelGreen(q,ScaleLongToQuantum(*p++));
@@ -2701,12 +2688,12 @@ static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"I") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleLongToQuantum(*p++));
           SetPixelGreen(q,GetPixelRed(q));
@@ -2720,12 +2707,12 @@ static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGB") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleLongToQuantum(*p++));
           SetPixelGreen(q,ScaleLongToQuantum(*p++));
@@ -2739,12 +2726,12 @@ static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleLongToQuantum(*p++));
           SetPixelGreen(q,ScaleLongToQuantum(*p++));
@@ -2759,12 +2746,12 @@ static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleLongToQuantum(*p++));
           SetPixelGreen(q,ScaleLongToQuantum(*p++));
@@ -2777,13 +2764,13 @@ static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
       }
       return;
     }
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) roi->height; y++)
   {
-    q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+    q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) roi->width; x++)
     {
       register ssize_t
         i;
@@ -2844,8 +2831,7 @@ static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
   }
 }
 
-static void ImportLongPixel(Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
+static void ImportLongPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,const void *pixels,
   ExceptionInfo *exception)
 {
@@ -2867,12 +2853,12 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
   p=(const unsigned int *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ScaleLongToQuantum(*p++));
           SetPixelGreen(q,ScaleLongToQuantum(*p++));
@@ -2886,12 +2872,12 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ScaleLongToQuantum(*p++));
           SetPixelGreen(q,ScaleLongToQuantum(*p++));
@@ -2906,12 +2892,12 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ScaleLongToQuantum(*p++));
           SetPixelGreen(q,ScaleLongToQuantum(*p++));
@@ -2926,12 +2912,12 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"I") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleLongToQuantum(*p++));
           SetPixelGreen(q,GetPixelRed(q));
@@ -2945,12 +2931,12 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGB") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleLongToQuantum(*p++));
           SetPixelGreen(q,ScaleLongToQuantum(*p++));
@@ -2964,12 +2950,12 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleLongToQuantum(*p++));
           SetPixelGreen(q,ScaleLongToQuantum(*p++));
@@ -2984,12 +2970,12 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleLongToQuantum(*p++));
           SetPixelGreen(q,ScaleLongToQuantum(*p++));
@@ -3002,13 +2988,13 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
       }
       return;
     }
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) roi->height; y++)
   {
-    q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+    q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) roi->width; x++)
     {
       register ssize_t
         i;
@@ -3069,8 +3055,7 @@ static void ImportLongPixel(Image *image,const ssize_t x_offset,
   }
 }
 
-static void ImportQuantumPixel(Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
+static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,const void *pixels,
   ExceptionInfo *exception)
 {
@@ -3092,12 +3077,12 @@ static void ImportQuantumPixel(Image *image,const ssize_t x_offset,
   p=(const Quantum *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,*p++);
           SetPixelGreen(q,*p++);
@@ -3111,12 +3096,12 @@ static void ImportQuantumPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,*p++);
           SetPixelGreen(q,*p++);
@@ -3131,12 +3116,12 @@ static void ImportQuantumPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,*p++);
           SetPixelGreen(q,*p++);
@@ -3151,12 +3136,12 @@ static void ImportQuantumPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"I") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,*p++);
           SetPixelGreen(q,GetPixelRed(q));
@@ -3170,12 +3155,12 @@ static void ImportQuantumPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGB") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,*p++);
           SetPixelGreen(q,*p++);
@@ -3189,12 +3174,12 @@ static void ImportQuantumPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,*p++);
           SetPixelGreen(q,*p++);
@@ -3209,12 +3194,12 @@ static void ImportQuantumPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,*p++);
           SetPixelGreen(q,*p++);
@@ -3227,13 +3212,13 @@ static void ImportQuantumPixel(Image *image,const ssize_t x_offset,
       }
       return;
     }
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) roi->height; y++)
   {
-    q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+    q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) roi->width; x++)
     {
       register ssize_t
         i;
@@ -3294,8 +3279,7 @@ static void ImportQuantumPixel(Image *image,const ssize_t x_offset,
   }
 }
 
-static void ImportShortPixel(Image *image,const ssize_t x_offset,
-  const ssize_t y_offset,const size_t columns,const size_t rows,
+static void ImportShortPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,const void *pixels,
   ExceptionInfo *exception)
 {
@@ -3317,12 +3301,12 @@ static void ImportShortPixel(Image *image,const ssize_t x_offset,
   p=(const unsigned short *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ScaleShortToQuantum(*p++));
           SetPixelGreen(q,ScaleShortToQuantum(*p++));
@@ -3336,12 +3320,12 @@ static void ImportShortPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ScaleShortToQuantum(*p++));
           SetPixelGreen(q,ScaleShortToQuantum(*p++));
@@ -3356,12 +3340,12 @@ static void ImportShortPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"BGRP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelBlue(q,ScaleShortToQuantum(*p++));
           SetPixelGreen(q,ScaleShortToQuantum(*p++));
@@ -3376,12 +3360,12 @@ static void ImportShortPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"I") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleShortToQuantum(*p++));
           SetPixelGreen(q,GetPixelRed(q));
@@ -3395,12 +3379,12 @@ static void ImportShortPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGB") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleShortToQuantum(*p++));
           SetPixelGreen(q,ScaleShortToQuantum(*p++));
@@ -3414,12 +3398,12 @@ static void ImportShortPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBA") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleShortToQuantum(*p++));
           SetPixelGreen(q,ScaleShortToQuantum(*p++));
@@ -3434,12 +3418,12 @@ static void ImportShortPixel(Image *image,const ssize_t x_offset,
     }
   if (LocaleCompare(map,"RGBP") == 0)
     {
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) roi->height; y++)
       {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (ssize_t) columns; x++)
+        for (x=0; x < (ssize_t) roi->width; x++)
         {
           SetPixelRed(q,ScaleShortToQuantum(*p++));
           SetPixelGreen(q,ScaleShortToQuantum(*p++));
@@ -3452,13 +3436,13 @@ static void ImportShortPixel(Image *image,const ssize_t x_offset,
       }
       return;
     }
-  for (y=0; y < (ssize_t) rows; y++)
+  for (y=0; y < (ssize_t) roi->height; y++)
   {
-    q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+    q=GetAuthenticPixels(image,roi->x,roi->y,roi->width,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
-    for (x=0; x < (ssize_t) columns; x++)
+    for (x=0; x < (ssize_t) roi->width; x++)
     {
       register ssize_t
         i;
@@ -3519,16 +3503,18 @@ static void ImportShortPixel(Image *image,const ssize_t x_offset,
   }
 }
 
-MagickExport MagickBooleanType ImportImagePixels(Image *image,
-  const ssize_t x_offset,const ssize_t y_offset,const size_t columns,
-  const size_t rows,const char *map,const StorageType type,
-  const void *pixels)
+MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
+  const ssize_t y,const size_t width,const size_t height,const char *map,
+  const StorageType type,const void *pixels)
 {
   ExceptionInfo
     *exception;
 
   QuantumType
     *quantum_map;
+
+  RectangleInfo
+    roi;
 
   register ssize_t
     i;
@@ -3636,48 +3622,45 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
     Transfer the pixels from the pixel datarray to the image.
   */
   exception=(&image->exception);
+  roi.width=width;
+  roi.height=height;
+  roi.x=x;
+  roi.y=y;
   switch (type)
   {
     case CharPixel:
     {
-      ImportCharPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
+      ImportCharPixel(image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case DoublePixel:
     {
-      ImportDoublePixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
+      ImportDoublePixel(image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case FloatPixel:
     {
-      ImportFloatPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
+      ImportFloatPixel(image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case IntegerPixel:
     {
-      ImportIntegerPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
+      ImportIntegerPixel(image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case LongPixel:
     {
-      ImportLongPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
+      ImportLongPixel(image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case QuantumPixel:
     {
-      ImportQuantumPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
+      ImportQuantumPixel(image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case ShortPixel:
     {
-      ImportShortPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
-        pixels,exception);
+      ImportShortPixel(image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     default:
