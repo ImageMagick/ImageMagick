@@ -3911,7 +3911,7 @@ static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
         continue;
       Sc=(MagickRealType) p[i];
       Dc=(MagickRealType) q[i];
-      pixel=QuantumRange*gamma*(Sa*Sc-Sa*Da*Dc+Da*Dc);
+      pixel=gamma*(Sa*Sc-Sa*Da*Dc+Da*Dc);
       q[i]=ClampToQuantum(pixel);
     }
     p+=GetPixelChannels(image);
