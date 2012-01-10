@@ -1279,8 +1279,8 @@ MagickExport MagickStatusType ParseMetaGeometry(const char *geometry,ssize_t *x,
       scale.y=former_height/(distance/sqrt((double) area));
       if ((scale.x < (double) *width) || (scale.y < (double) *height))
         {
-          *width=(size_t) (former_width/(distance/sqrt(area)));
-          *height=(size_t) (former_height/(distance/sqrt(area)));
+          *width=(size_t) (former_width/(distance/sqrt(area))+0.5);
+          *height=(size_t) (former_height/(distance/sqrt(area))+0.5);
         }
       former_width=(*width);
       former_height=(*height);
