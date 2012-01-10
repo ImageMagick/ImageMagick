@@ -339,7 +339,7 @@ MagickExport PixelChannelMap *DestroyPixelChannelMap(
 %    o type: Define the data type of the pixels.  Float and double types are
 %      normalized to [0..1] otherwise [0..QuantumRange].  Choose from these
 %      types: CharPixel (char *), DoublePixel (double *), FloatPixel (float *),
-%      LongPixel (unsigned int *), LongLongPixel (unsigned long *),
+%      LongPixel (unsigned int *), LongLongPixel (unsigned long long *),
 %      QuantumPixel (Quantum *), or ShortPixel (unsigned short *).
 %
 %    o pixels: This array of values contain the pixel components as defined by
@@ -2043,7 +2043,7 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 %    o type: Define the data type of the pixels.  Float and double types are
 %      normalized to [0..1] otherwise [0..QuantumRange].  Choose from these
 %      types: CharPixel (char *), DoublePixel (double *), FloatPixel (float *),
-%      LongPixel (unsigned int *), LongLongPixel (unsigned long *),
+%      LongPixel (unsigned int *), LongLongPixel (unsigned long long *),
 %      QuantumPixel (Quantum *), or ShortPixel (unsigned short *).
 %
 %    o pixels: This array of values contain the pixel components as defined by
