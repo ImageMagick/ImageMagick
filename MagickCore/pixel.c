@@ -308,7 +308,7 @@ MagickExport PixelChannelMap *DestroyPixelChannelMap(
 %
 %  ExportImagePixels() extracts pixel data from an image and returns it to you.
 %  The method returns MagickTrue on success otherwise MagickFalse if an error is
-%  encountered.  The data is returned as char, short int, unsigned int,
+%  encountered.  The data is returned as char, short int, Quantum, unsigned int,
 %  unsigned long long, float, or double in the order specified by map.
 %
 %  Suppose you want to extract the first scanline of a 640x480 image as
@@ -2005,8 +2005,8 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 %  ImportImagePixels() accepts pixel data and stores in the image at the
 %  location you specify.  The method returns MagickTrue on success otherwise
 %  MagickFalse if an error is encountered.  The pixel data can be either char,
-%  short int, unsigned int, unsigned long long, float, or double in the order
-%  specified by map.
+%  Quantum, short int, unsigned int, unsigned long long, float, or double in
+%  the order specified by map.
 %
 %  Suppose your want to upload the first scanline of a 640x480 image from
 %  character data in red-green-blue order:
