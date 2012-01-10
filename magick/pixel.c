@@ -109,8 +109,9 @@
 %
 %    o type: Define the data type of the pixels.  Float and double types are
 %      normalized to [0..1] otherwise [0..QuantumRange].  Choose from these
-%      types: CharPixel, DoublePixel, FloatPixel, IntegerPixel, LongPixel,
-%      QuantumPixel, or ShortPixel.
+%      types: CharPixel (char *), DoublePixel (double *), FloatPixel (float *),
+%      LongPixel (unsigned int *), QuantumPixel (Quantum *), or
+%      ShortPixel (unsigned short *).
 %
 %    o pixels: This array of values contain the pixel components as defined by
 %      map and type.  You must preallocate this array where the expected
@@ -298,7 +299,7 @@ static void ExportCharPixel(const Image *image,const ssize_t x_offset,
           }
           case AlphaQuantum:
           {
-            *q=ScaleQuantumToChar(GetPixelAlpha(p));
+            *q=ScaleQuantumToChar((Quantum) GetPixelAlpha(p));
             break;
           }
           case OpacityQuantum:
@@ -338,11 +339,11 @@ static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
   register const PixelPacket
     *restrict p;
 
-  register ssize_t
-    x;
-
   register double
     *q;
+
+  register ssize_t
+    x;
 
   ssize_t
     y;
@@ -537,6 +538,1046 @@ static void ExportDoublePixel(const Image *image,const ssize_t x_offset,
   }
 }
 
+static void ExportFloatPixel(const Image *image,const ssize_t x_offset,
+  const ssize_t y_offset,const size_t columns,const size_t rows,
+  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  ExceptionInfo *exception)
+{
+  register const IndexPacket
+    *restrict indexes;
+
+  register const PixelPacket
+    *restrict p;
+
+  register float
+    *q;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    y;
+
+  q=(float *) pixels;
+  if (LocaleCompare(map,"BGR") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=(float) (QuantumScale*GetPixelBlue(p));
+          *q++=(float) (QuantumScale*GetPixelGreen(p));
+          *q++=(float) (QuantumScale*GetPixelRed(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=(float) (QuantumScale*GetPixelBlue(p));
+          *q++=(float) (QuantumScale*GetPixelGreen(p));
+          *q++=(float) (QuantumScale*GetPixelRed(p));
+          *q++=(float) (QuantumScale*GetPixelAlpha(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=(float) (QuantumScale*GetPixelBlue(p));
+          *q++=(float) (QuantumScale*GetPixelGreen(p));
+          *q++=(float) (QuantumScale*GetPixelRed(p));
+          *q++=0.0;
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"I") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=(float) (QuantumScale*PixelIntensityToQuantum(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGB") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=(float) (QuantumScale*GetPixelRed(p));
+          *q++=(float) (QuantumScale*GetPixelGreen(p));
+          *q++=(float) (QuantumScale*GetPixelBlue(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=(float) (QuantumScale*GetPixelRed(p));
+          *q++=(float) (QuantumScale*GetPixelGreen(p));
+          *q++=(float) (QuantumScale*GetPixelBlue(p));
+          *q++=(float) (QuantumScale*GetPixelAlpha(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=(float) (QuantumScale*GetPixelRed(p));
+          *q++=(float) (QuantumScale*GetPixelGreen(p));
+          *q++=(float) (QuantumScale*GetPixelBlue(p));
+          *q++=0.0;
+          p++;
+        }
+      }
+      return;
+    }
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    indexes=GetVirtualIndexQueue(image);
+    for (x=0; x < (ssize_t) columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) strlen(map); i++)
+      {
+        *q=0;
+        switch (quantum_map[i])
+        {
+          case RedQuantum:
+          case CyanQuantum:
+          {
+            *q=(float) (QuantumScale*GetPixelRed(p));
+            break;
+          }
+          case GreenQuantum:
+          case MagentaQuantum:
+          {
+            *q=(float) (QuantumScale*GetPixelGreen(p));
+            break;
+          }
+          case BlueQuantum:
+          case YellowQuantum:
+          {
+            *q=(float) (QuantumScale*GetPixelBlue(p));
+            break;
+          }
+          case AlphaQuantum:
+          {
+            *q=(float) (QuantumScale*((Quantum) (GetPixelAlpha(p))));
+            break;
+          }
+          case OpacityQuantum:
+          {
+            *q=(float) (QuantumScale*GetPixelOpacity(p));
+            break;
+          }
+          case BlackQuantum:
+          {
+            if (image->colorspace == CMYKColorspace)
+              *q=(float) (QuantumScale*GetPixelIndex(indexes+x));
+            break;
+          }
+          case IndexQuantum:
+          {
+            *q=(float) (QuantumScale*PixelIntensityToQuantum(p));
+            break;
+          }
+          default:
+            *q=0;
+        }
+        q++;
+      }
+      p++;
+    }
+  }
+}
+
+static void ExportIntegerPixel(const Image *image,const ssize_t x_offset,
+  const ssize_t y_offset,const size_t columns,const size_t rows,
+  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  ExceptionInfo *exception)
+{
+  register const IndexPacket
+    *restrict indexes;
+
+  register const PixelPacket
+    *restrict p;
+
+  register ssize_t
+    x;
+
+  register unsigned int
+    *q;
+
+  ssize_t
+    y;
+
+  q=(unsigned int *) pixels;
+  if (LocaleCompare(map,"BGR") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
+          *q++=(unsigned int) ScaleQuantumToLong((Quantum) (QuantumRange-
+            GetPixelOpacity(p)));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
+          *q++=0U;
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"I") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=(unsigned int) ScaleQuantumToLong(PixelIntensityToQuantum(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGB") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
+          *q++=(unsigned int) ScaleQuantumToLong((Quantum) GetPixelAlpha(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
+          *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
+          *q++=0U;
+          p++;
+        }
+      }
+      return;
+    }
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    indexes=GetVirtualIndexQueue(image);
+    for (x=0; x < (ssize_t) columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) strlen(map); i++)
+      {
+        *q=0;
+        switch (quantum_map[i])
+        {
+          case RedQuantum:
+          case CyanQuantum:
+          {
+            *q=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
+            break;
+          }
+          case GreenQuantum:
+          case MagentaQuantum:
+          {
+            *q=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
+            break;
+          }
+          case BlueQuantum:
+          case YellowQuantum:
+          {
+            *q=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
+            break;
+          }
+          case AlphaQuantum:
+          {
+            *q=(unsigned int) ScaleQuantumToLong((Quantum) (QuantumRange-
+              GetPixelOpacity(p)));
+            break;
+          }
+          case OpacityQuantum:
+          {
+            *q=(unsigned int) ScaleQuantumToLong(GetPixelOpacity(p));
+            break;
+          }
+          case BlackQuantum:
+          {
+            if (image->colorspace == CMYKColorspace)
+              *q=(unsigned int) ScaleQuantumToLong(GetPixelIndex(indexes+x));
+            break;
+          }
+          case IndexQuantum:
+          {
+            *q=(unsigned int) ScaleQuantumToLong(PixelIntensityToQuantum(p));
+            break;
+          }
+          default:
+            *q=0;
+        }
+        q++;
+      }
+      p++;
+    }
+  }
+}
+
+static void ExportLongPixel(const Image *image,const ssize_t x_offset,
+  const ssize_t y_offset,const size_t columns,const size_t rows,
+  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  ExceptionInfo *exception)
+{
+  register const IndexPacket
+    *restrict indexes;
+
+  register const PixelPacket
+    *restrict p;
+
+  register unsigned int
+    *q;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    y;
+
+  q=(unsigned int *) pixels;
+  if (LocaleCompare(map,"BGR") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=ScaleQuantumToLong(GetPixelBlue(p));
+          *q++=ScaleQuantumToLong(GetPixelGreen(p));
+          *q++=ScaleQuantumToLong(GetPixelRed(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=ScaleQuantumToLong(GetPixelBlue(p));
+          *q++=ScaleQuantumToLong(GetPixelGreen(p));
+          *q++=ScaleQuantumToLong(GetPixelRed(p));
+          *q++=ScaleQuantumToLong((Quantum) (GetPixelAlpha(p)));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=ScaleQuantumToLong(GetPixelBlue(p));
+          *q++=ScaleQuantumToLong(GetPixelGreen(p));
+          *q++=ScaleQuantumToLong(GetPixelRed(p));
+          *q++=0;
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"I") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGB") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=ScaleQuantumToLong(GetPixelRed(p));
+          *q++=ScaleQuantumToLong(GetPixelGreen(p));
+          *q++=ScaleQuantumToLong(GetPixelBlue(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=ScaleQuantumToLong(GetPixelRed(p));
+          *q++=ScaleQuantumToLong(GetPixelGreen(p));
+          *q++=ScaleQuantumToLong(GetPixelBlue(p));
+          *q++=ScaleQuantumToLong((Quantum) (GetPixelAlpha(p)));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=ScaleQuantumToLong(GetPixelRed(p));
+          *q++=ScaleQuantumToLong(GetPixelGreen(p));
+          *q++=ScaleQuantumToLong(GetPixelBlue(p));
+          *q++=0;
+          p++;
+        }
+      }
+      return;
+    }
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    indexes=GetVirtualIndexQueue(image);
+    for (x=0; x < (ssize_t) columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) strlen(map); i++)
+      {
+        *q=0;
+        switch (quantum_map[i])
+        {
+          case RedQuantum:
+          case CyanQuantum:
+          {
+            *q=ScaleQuantumToLong(GetPixelRed(p));
+            break;
+          }
+          case GreenQuantum:
+          case MagentaQuantum:
+          {
+            *q=ScaleQuantumToLong(GetPixelGreen(p));
+            break;
+          }
+          case BlueQuantum:
+          case YellowQuantum:
+          {
+            *q=ScaleQuantumToLong(GetPixelBlue(p));
+            break;
+          }
+          case AlphaQuantum:
+          {
+            *q=ScaleQuantumToLong((Quantum) GetPixelAlpha(p));
+            break;
+          }
+          case OpacityQuantum:
+          {
+            *q=ScaleQuantumToLong(GetPixelOpacity(p));
+            break;
+          }
+          case BlackQuantum:
+          {
+            if (image->colorspace == CMYKColorspace)
+              *q=ScaleQuantumToLong(GetPixelIndex(indexes+x));
+            break;
+          }
+          case IndexQuantum:
+          {
+            *q=ScaleQuantumToLong(PixelIntensityToQuantum(p));
+            break;
+          }
+          default:
+            break;
+        }
+        q++;
+      }
+      p++;
+    }
+  }
+}
+
+static void ExportQuantumPixel(const Image *image,const ssize_t x_offset,
+  const ssize_t y_offset,const size_t columns,const size_t rows,
+  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  ExceptionInfo *exception)
+{
+  register const IndexPacket
+    *restrict indexes;
+
+  register const PixelPacket
+    *restrict p;
+
+  register Quantum
+    *q;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    y;
+
+  q=(Quantum *) pixels;
+  if (LocaleCompare(map,"BGR") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=GetPixelBlue(p);
+          *q++=GetPixelGreen(p);
+          *q++=GetPixelRed(p);
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=GetPixelBlue(p);
+          *q++=GetPixelGreen(p);
+          *q++=GetPixelRed(p);
+          *q++=(Quantum) GetPixelAlpha(p);
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=GetPixelBlue(p);
+          *q++=GetPixelGreen(p);
+          *q++=GetPixelRed(p);
+          *q++=(Quantum) 0;
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"I") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=PixelIntensityToQuantum(p);
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGB") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=GetPixelRed(p);
+          *q++=GetPixelGreen(p);
+          *q++=GetPixelBlue(p);
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=GetPixelRed(p);
+          *q++=GetPixelGreen(p);
+          *q++=GetPixelBlue(p);
+          *q++=(Quantum) GetPixelAlpha(p);
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=GetPixelRed(p);
+          *q++=GetPixelGreen(p);
+          *q++=GetPixelBlue(p);
+          *q++=(Quantum) 0;
+          p++;
+        }
+      }
+      return;
+    }
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    indexes=GetVirtualIndexQueue(image);
+    for (x=0; x < (ssize_t) columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) strlen(map); i++)
+      {
+        *q=(Quantum) 0;
+        switch (quantum_map[i])
+        {
+          case RedQuantum:
+          case CyanQuantum:
+          {
+            *q=GetPixelRed(p);
+            break;
+          }
+          case GreenQuantum:
+          case MagentaQuantum:
+          {
+            *q=GetPixelGreen(p);
+            break;
+          }
+          case BlueQuantum:
+          case YellowQuantum:
+          {
+            *q=GetPixelBlue(p);
+            break;
+          }
+          case AlphaQuantum:
+          {
+            *q=(Quantum) (GetPixelAlpha(p));
+            break;
+          }
+          case OpacityQuantum:
+          {
+            *q=GetPixelOpacity(p);
+            break;
+          }
+          case BlackQuantum:
+          {
+            if (image->colorspace == CMYKColorspace)
+              *q=GetPixelIndex(indexes+x);
+            break;
+          }
+          case IndexQuantum:
+          {
+            *q=(PixelIntensityToQuantum(p));
+            break;
+          }
+          default:
+          {
+            *q=(Quantum) 0;
+            break;
+          }
+        }
+        q++;
+      }
+      p++;
+    }
+  }
+}
+
+static void ExportShortPixel(const Image *image,const ssize_t x_offset,
+  const ssize_t y_offset,const size_t columns,const size_t rows,
+  const char *restrict map,const QuantumType *quantum_map,void *pixels,
+  ExceptionInfo *exception)
+{
+  register const IndexPacket
+    *restrict indexes;
+
+  register const PixelPacket
+    *restrict p;
+
+  register ssize_t
+    x;
+
+  register unsigned short
+    *q;
+
+  ssize_t
+    y;
+
+  q=(unsigned short *) pixels;
+  if (LocaleCompare(map,"BGR") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=ScaleQuantumToShort(GetPixelBlue(p));
+          *q++=ScaleQuantumToShort(GetPixelGreen(p));
+          *q++=ScaleQuantumToShort(GetPixelRed(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=ScaleQuantumToShort(GetPixelBlue(p));
+          *q++=ScaleQuantumToShort(GetPixelGreen(p));
+          *q++=ScaleQuantumToShort(GetPixelRed(p));
+          *q++=ScaleQuantumToShort((Quantum) GetPixelAlpha(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=ScaleQuantumToShort(GetPixelBlue(p));
+          *q++=ScaleQuantumToShort(GetPixelGreen(p));
+          *q++=ScaleQuantumToShort(GetPixelRed(p));
+          *q++=0;
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"I") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=ScaleQuantumToShort(PixelIntensityToQuantum(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGB") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=ScaleQuantumToShort(GetPixelRed(p));
+          *q++=ScaleQuantumToShort(GetPixelGreen(p));
+          *q++=ScaleQuantumToShort(GetPixelBlue(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=ScaleQuantumToShort(GetPixelRed(p));
+          *q++=ScaleQuantumToShort(GetPixelGreen(p));
+          *q++=ScaleQuantumToShort(GetPixelBlue(p));
+          *q++=ScaleQuantumToShort((Quantum) GetPixelAlpha(p));
+          p++;
+        }
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          *q++=ScaleQuantumToShort(GetPixelRed(p));
+          *q++=ScaleQuantumToShort(GetPixelGreen(p));
+          *q++=ScaleQuantumToShort(GetPixelBlue(p));
+          *q++=0;
+          p++;
+        }
+      }
+      return;
+    }
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    indexes=GetVirtualIndexQueue(image);
+    for (x=0; x < (ssize_t) columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) strlen(map); i++)
+      {
+        *q=0;
+        switch (quantum_map[i])
+        {
+          case RedQuantum:
+          case CyanQuantum:
+          {
+            *q=ScaleQuantumToShort(GetPixelRed(p));
+            break;
+          }
+          case GreenQuantum:
+          case MagentaQuantum:
+          {
+            *q=ScaleQuantumToShort(GetPixelGreen(p));
+            break;
+          }
+          case BlueQuantum:
+          case YellowQuantum:
+          {
+            *q=ScaleQuantumToShort(GetPixelBlue(p));
+            break;
+          }
+          case AlphaQuantum:
+          {
+            *q=ScaleQuantumToShort((Quantum) (GetPixelAlpha(p)));
+            break;
+          }
+          case OpacityQuantum:
+          {
+            *q=ScaleQuantumToShort(GetPixelOpacity(p));
+            break;
+          }
+          case BlackQuantum:
+          {
+            if (image->colorspace == CMYKColorspace)
+              *q=ScaleQuantumToShort(GetPixelIndex(indexes+x));
+            break;
+          }
+          case IndexQuantum:
+          {
+            *q=ScaleQuantumToShort(PixelIntensityToQuantum(p));
+            break;
+          }
+          default:
+            break;
+        }
+        q++;
+      }
+      p++;
+    }
+  }
+}
+
 MagickExport MagickBooleanType ExportImagePixels(const Image *image,
   const ssize_t x_offset,const ssize_t y_offset,const size_t columns,
   const size_t rows,const char *map,const StorageType type,void *pixels,
@@ -546,34 +1587,21 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
     *quantum_map;
 
   register ssize_t
-    i,
-    x;
-
-  register const IndexPacket
-    *indexes;
-
-  register const PixelPacket
-    *p;
-
-  size_t
-    length;
-
-  ssize_t
-    y;
+    i;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  length=strlen(map);
-  quantum_map=(QuantumType *) AcquireQuantumMemory(length,sizeof(*quantum_map));
+  quantum_map=(QuantumType *) AcquireQuantumMemory(strlen(map),
+    sizeof(*quantum_map));
   if (quantum_map == (QuantumType *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
-  for (i=0; i < (ssize_t) length; i++)
+  for (i=0; i < (ssize_t) strlen(map); i++)
   {
     switch (map[i])
     {
@@ -688,952 +1716,32 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
     }
     case FloatPixel:
     {
-      register float
-        *q;
-
-      q=(float *) pixels;
-      if (LocaleCompare(map,"BGR") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=(float) (QuantumScale*GetPixelBlue(p));
-              *q++=(float) (QuantumScale*GetPixelGreen(p));
-              *q++=(float) (QuantumScale*GetPixelRed(p));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=(float) (QuantumScale*GetPixelBlue(p));
-              *q++=(float) (QuantumScale*GetPixelGreen(p));
-              *q++=(float) (QuantumScale*GetPixelRed(p));
-              *q++=(float) (QuantumScale*(Quantum) (GetPixelAlpha(p)));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=(float) (QuantumScale*GetPixelBlue(p));
-              *q++=(float) (QuantumScale*GetPixelGreen(p));
-              *q++=(float) (QuantumScale*GetPixelRed(p));
-              *q++=0.0;
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"I") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=(float) (QuantumScale*PixelIntensityToQuantum(p));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGB") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=(float) (QuantumScale*GetPixelRed(p));
-              *q++=(float) (QuantumScale*GetPixelGreen(p));
-              *q++=(float) (QuantumScale*GetPixelBlue(p));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=(float) (QuantumScale*GetPixelRed(p));
-              *q++=(float) (QuantumScale*GetPixelGreen(p));
-              *q++=(float) (QuantumScale*GetPixelBlue(p));
-              *q++=(float) (QuantumScale*((Quantum) (GetPixelAlpha(p))));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=(float) (QuantumScale*GetPixelRed(p));
-              *q++=(float) (QuantumScale*GetPixelGreen(p));
-              *q++=(float) (QuantumScale*GetPixelBlue(p));
-              *q++=0.0;
-              p++;
-            }
-          }
-          break;
-        }
-      for (y=0; y < (ssize_t) rows; y++)
-      {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        indexes=GetVirtualIndexQueue(image);
-        for (x=0; x < (ssize_t) columns; x++)
-        {
-          for (i=0; i < (ssize_t) length; i++)
-          {
-            *q=0;
-            switch (quantum_map[i])
-            {
-              case RedQuantum:
-              case CyanQuantum:
-              {
-                *q=(float) (QuantumScale*GetPixelRed(p));
-                break;
-              }
-              case GreenQuantum:
-              case MagentaQuantum:
-              {
-                *q=(float) (QuantumScale*GetPixelGreen(p));
-                break;
-              }
-              case BlueQuantum:
-              case YellowQuantum:
-              {
-                *q=(float) (QuantumScale*GetPixelBlue(p));
-                break;
-              }
-              case AlphaQuantum:
-              {
-                *q=(float) (QuantumScale*((Quantum) (GetPixelAlpha(p))));
-                break;
-              }
-              case OpacityQuantum:
-              {
-                *q=(float) (QuantumScale*GetPixelOpacity(p));
-                break;
-              }
-              case BlackQuantum:
-              {
-                if (image->colorspace == CMYKColorspace)
-                  *q=(float) (QuantumScale*GetPixelIndex(indexes+x));
-                break;
-              }
-              case IndexQuantum:
-              {
-                *q=(float) (QuantumScale*PixelIntensityToQuantum(p));
-                break;
-              }
-              default:
-                *q=0;
-            }
-            q++;
-          }
-          p++;
-        }
-      }
+      ExportFloatPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
+        pixels,exception);
       break;
     }
     case IntegerPixel:
     {
-      register unsigned int
-        *q;
-
-      q=(unsigned int *) pixels;
-      if (LocaleCompare(map,"BGR") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
-              *q++=(unsigned int) ScaleQuantumToLong((Quantum) (QuantumRange-
-                GetPixelOpacity(p)));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
-              *q++=0U;
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"I") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=(unsigned int)
-                ScaleQuantumToLong(PixelIntensityToQuantum(p));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGB") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
-              *q++=(unsigned int) ScaleQuantumToLong((Quantum)
-                (GetPixelAlpha(p)));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
-              *q++=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
-              *q++=0U;
-              p++;
-            }
-          }
-          break;
-        }
-      for (y=0; y < (ssize_t) rows; y++)
-      {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        indexes=GetVirtualIndexQueue(image);
-        for (x=0; x < (ssize_t) columns; x++)
-        {
-          for (i=0; i < (ssize_t) length; i++)
-          {
-            *q=0;
-            switch (quantum_map[i])
-            {
-              case RedQuantum:
-              case CyanQuantum:
-              {
-                *q=(unsigned int) ScaleQuantumToLong(GetPixelRed(p));
-                break;
-              }
-              case GreenQuantum:
-              case MagentaQuantum:
-              {
-                *q=(unsigned int) ScaleQuantumToLong(GetPixelGreen(p));
-                break;
-              }
-              case BlueQuantum:
-              case YellowQuantum:
-              {
-                *q=(unsigned int) ScaleQuantumToLong(GetPixelBlue(p));
-                break;
-              }
-              case AlphaQuantum:
-              {
-                *q=(unsigned int) ScaleQuantumToLong((Quantum) (QuantumRange-
-                  GetPixelOpacity(p)));
-                break;
-              }
-              case OpacityQuantum:
-              {
-                *q=(unsigned int) ScaleQuantumToLong(GetPixelOpacity(p));
-                break;
-              }
-              case BlackQuantum:
-              {
-                if (image->colorspace == CMYKColorspace)
-                  *q=(unsigned int) ScaleQuantumToLong(GetPixelIndex(indexes+x));
-                break;
-              }
-              case IndexQuantum:
-              {
-                *q=(unsigned int)
-                  ScaleQuantumToLong(PixelIntensityToQuantum(p));
-                break;
-              }
-              default:
-                *q=0;
-            }
-            q++;
-          }
-          p++;
-        }
-      }
+      ExportIntegerPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
+        pixels,exception);
       break;
     }
     case LongPixel:
     {
-      register size_t
-        *q;
-
-      q=(size_t *) pixels;
-      if (LocaleCompare(map,"BGR") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=ScaleQuantumToLong(GetPixelBlue(p));
-              *q++=ScaleQuantumToLong(GetPixelGreen(p));
-              *q++=ScaleQuantumToLong(GetPixelRed(p));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=ScaleQuantumToLong(GetPixelBlue(p));
-              *q++=ScaleQuantumToLong(GetPixelGreen(p));
-              *q++=ScaleQuantumToLong(GetPixelRed(p));
-              *q++=ScaleQuantumToLong((Quantum) (GetPixelAlpha(p)));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=ScaleQuantumToLong(GetPixelBlue(p));
-              *q++=ScaleQuantumToLong(GetPixelGreen(p));
-              *q++=ScaleQuantumToLong(GetPixelRed(p));
-              *q++=0;
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"I") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGB") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=ScaleQuantumToLong(GetPixelRed(p));
-              *q++=ScaleQuantumToLong(GetPixelGreen(p));
-              *q++=ScaleQuantumToLong(GetPixelBlue(p));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=ScaleQuantumToLong(GetPixelRed(p));
-              *q++=ScaleQuantumToLong(GetPixelGreen(p));
-              *q++=ScaleQuantumToLong(GetPixelBlue(p));
-              *q++=ScaleQuantumToLong((Quantum) (GetPixelAlpha(p)));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=ScaleQuantumToLong(GetPixelRed(p));
-              *q++=ScaleQuantumToLong(GetPixelGreen(p));
-              *q++=ScaleQuantumToLong(GetPixelBlue(p));
-              *q++=0;
-              p++;
-            }
-          }
-          break;
-        }
-      for (y=0; y < (ssize_t) rows; y++)
-      {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        indexes=GetVirtualIndexQueue(image);
-        for (x=0; x < (ssize_t) columns; x++)
-        {
-          for (i=0; i < (ssize_t) length; i++)
-          {
-            *q=0;
-            switch (quantum_map[i])
-            {
-              case RedQuantum:
-              case CyanQuantum:
-              {
-                *q=ScaleQuantumToLong(GetPixelRed(p));
-                break;
-              }
-              case GreenQuantum:
-              case MagentaQuantum:
-              {
-                *q=ScaleQuantumToLong(GetPixelGreen(p));
-                break;
-              }
-              case BlueQuantum:
-              case YellowQuantum:
-              {
-                *q=ScaleQuantumToLong(GetPixelBlue(p));
-                break;
-              }
-              case AlphaQuantum:
-              {
-                *q=ScaleQuantumToLong((Quantum) (GetPixelAlpha(p)));
-                break;
-              }
-              case OpacityQuantum:
-              {
-                *q=ScaleQuantumToLong(GetPixelOpacity(p));
-                break;
-              }
-              case BlackQuantum:
-              {
-                if (image->colorspace == CMYKColorspace)
-                  *q=ScaleQuantumToLong(GetPixelIndex(indexes+x));
-                break;
-              }
-              case IndexQuantum:
-              {
-                *q=ScaleQuantumToLong(PixelIntensityToQuantum(p));
-                break;
-              }
-              default:
-                break;
-            }
-            q++;
-          }
-          p++;
-        }
-      }
+      ExportLongPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
+        pixels,exception);
       break;
     }
     case QuantumPixel:
     {
-      register Quantum
-        *q;
-
-      q=(Quantum *) pixels;
-      if (LocaleCompare(map,"BGR") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=GetPixelBlue(p);
-              *q++=GetPixelGreen(p);
-              *q++=GetPixelRed(p);
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=GetPixelBlue(p);
-              *q++=GetPixelGreen(p);
-              *q++=GetPixelRed(p);
-              *q++=(Quantum) (GetPixelAlpha(p));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=GetPixelBlue(p);
-              *q++=GetPixelGreen(p);
-              *q++=GetPixelRed(p);
-              *q++=(Quantum) 0;
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"I") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=PixelIntensityToQuantum(p);
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGB") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=GetPixelRed(p);
-              *q++=GetPixelGreen(p);
-              *q++=GetPixelBlue(p);
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=GetPixelRed(p);
-              *q++=GetPixelGreen(p);
-              *q++=GetPixelBlue(p);
-              *q++=(Quantum) (GetPixelAlpha(p));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=GetPixelRed(p);
-              *q++=GetPixelGreen(p);
-              *q++=GetPixelBlue(p);
-              *q++=(Quantum) 0;
-              p++;
-            }
-          }
-          break;
-        }
-      for (y=0; y < (ssize_t) rows; y++)
-      {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        indexes=GetVirtualIndexQueue(image);
-        for (x=0; x < (ssize_t) columns; x++)
-        {
-          for (i=0; i < (ssize_t) length; i++)
-          {
-            *q=(Quantum) 0;
-            switch (quantum_map[i])
-            {
-              case RedQuantum:
-              case CyanQuantum:
-              {
-                *q=GetPixelRed(p);
-                break;
-              }
-              case GreenQuantum:
-              case MagentaQuantum:
-              {
-                *q=GetPixelGreen(p);
-                break;
-              }
-              case BlueQuantum:
-              case YellowQuantum:
-              {
-                *q=GetPixelBlue(p);
-                break;
-              }
-              case AlphaQuantum:
-              {
-                *q=(Quantum) (GetPixelAlpha(p));
-                break;
-              }
-              case OpacityQuantum:
-              {
-                *q=GetPixelOpacity(p);
-                break;
-              }
-              case BlackQuantum:
-              {
-                if (image->colorspace == CMYKColorspace)
-                  *q=GetPixelIndex(indexes+x);
-                break;
-              }
-              case IndexQuantum:
-              {
-                *q=(PixelIntensityToQuantum(p));
-                break;
-              }
-              default:
-                *q=(Quantum) 0;
-            }
-            q++;
-          }
-          p++;
-        }
-      }
+      ExportQuantumPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
+        pixels,exception);
       break;
     }
     case ShortPixel:
     {
-      register unsigned short
-        *q;
-
-      q=(unsigned short *) pixels;
-      if (LocaleCompare(map,"BGR") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=ScaleQuantumToShort(GetPixelBlue(p));
-              *q++=ScaleQuantumToShort(GetPixelGreen(p));
-              *q++=ScaleQuantumToShort(GetPixelRed(p));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=ScaleQuantumToShort(GetPixelBlue(p));
-              *q++=ScaleQuantumToShort(GetPixelGreen(p));
-              *q++=ScaleQuantumToShort(GetPixelRed(p));
-              *q++=ScaleQuantumToShort((Quantum) (GetPixelAlpha(p)));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=ScaleQuantumToShort(GetPixelBlue(p));
-              *q++=ScaleQuantumToShort(GetPixelGreen(p));
-              *q++=ScaleQuantumToShort(GetPixelRed(p));
-              *q++=0;
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"I") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=ScaleQuantumToShort(PixelIntensityToQuantum(p));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGB") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=ScaleQuantumToShort(GetPixelRed(p));
-              *q++=ScaleQuantumToShort(GetPixelGreen(p));
-              *q++=ScaleQuantumToShort(GetPixelBlue(p));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=ScaleQuantumToShort(GetPixelRed(p));
-              *q++=ScaleQuantumToShort(GetPixelGreen(p));
-              *q++=ScaleQuantumToShort(GetPixelBlue(p));
-              *q++=ScaleQuantumToShort((Quantum) (GetPixelAlpha(p)));
-              p++;
-            }
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (p == (const PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              *q++=ScaleQuantumToShort(GetPixelRed(p));
-              *q++=ScaleQuantumToShort(GetPixelGreen(p));
-              *q++=ScaleQuantumToShort(GetPixelBlue(p));
-              *q++=0;
-              p++;
-            }
-          }
-          break;
-        }
-      for (y=0; y < (ssize_t) rows; y++)
-      {
-        p=GetVirtualPixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        indexes=GetVirtualIndexQueue(image);
-        for (x=0; x < (ssize_t) columns; x++)
-        {
-          for (i=0; i < (ssize_t) length; i++)
-          {
-            *q=0;
-            switch (quantum_map[i])
-            {
-              case RedQuantum:
-              case CyanQuantum:
-              {
-                *q=ScaleQuantumToShort(GetPixelRed(p));
-                break;
-              }
-              case GreenQuantum:
-              case MagentaQuantum:
-              {
-                *q=ScaleQuantumToShort(GetPixelGreen(p));
-                break;
-              }
-              case BlueQuantum:
-              case YellowQuantum:
-              {
-                *q=ScaleQuantumToShort(GetPixelBlue(p));
-                break;
-              }
-              case AlphaQuantum:
-              {
-                *q=ScaleQuantumToShort((Quantum) (GetPixelAlpha(p)));
-                break;
-              }
-              case OpacityQuantum:
-              {
-                *q=ScaleQuantumToShort(GetPixelOpacity(p));
-                break;
-              }
-              case BlackQuantum:
-              {
-                if (image->colorspace == CMYKColorspace)
-                  *q=ScaleQuantumToShort(GetPixelIndex(indexes+x));
-                break;
-              }
-              case IndexQuantum:
-              {
-                *q=ScaleQuantumToShort(PixelIntensityToQuantum(p));
-                break;
-              }
-              default:
-                break;
-            }
-            q++;
-          }
-          p++;
-        }
-      }
+      ExportShortPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
+        pixels,exception);
       break;
     }
     default:
@@ -1737,8 +1845,9 @@ MagickExport void GetMagickPixelPacket(const Image *image,
 %
 %    o type: Define the data type of the pixels.  Float and double types are
 %      normalized to [0..1] otherwise [0..QuantumRange].  Choose from these
-%      types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or
-%      DoublePixel.
+%      types: CharPixel (char *), DoublePixel (double *), FloatPixel (float *),
+%      LongPixel (unsigned int *), QuantumPixel (Quantum *), or ShortPixel
+%      (unsigned short *).
 %
 %    o pixels: This array of values contain the pixel components as defined by
 %      map and type.  You must preallocate this array where the expected
@@ -2263,6 +2372,1153 @@ static void ImportDoublePixel(Image *image,const ssize_t x_offset,
   }
 }
 
+static void ImportFloatPixel(Image *image,const ssize_t x_offset,
+  const ssize_t y_offset,const size_t columns,const size_t rows,
+  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
+  ExceptionInfo *exception)
+{
+  register const float
+    *restrict p;
+
+  register IndexPacket
+    *restrict indexes;
+
+  register PixelPacket
+    *restrict q;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    y;
+
+  p=(const float *) pixels;
+  if (LocaleCompare(map,"BGR") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          SetPixelGreen(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          SetPixelGreen(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          SetPixelAlpha(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          SetPixelGreen(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"I") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          SetPixelGreen(q,GetPixelRed(q));
+          SetPixelBlue(q,GetPixelRed(q));
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGB") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          SetPixelGreen(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          SetPixelGreen(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          SetPixelAlpha(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          SetPixelGreen(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      break;
+    indexes=GetAuthenticIndexQueue(image);
+    for (x=0; x < (ssize_t) columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) strlen(map); i++)
+      {
+        switch (quantum_map[i])
+        {
+          case RedQuantum:
+          case CyanQuantum:
+          {
+            SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+            break;
+          }
+          case GreenQuantum:
+          case MagentaQuantum:
+          {
+            SetPixelGreen(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+            break;
+          }
+          case BlueQuantum:
+          case YellowQuantum:
+          {
+            SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+            break;
+          }
+          case AlphaQuantum:
+          {
+            SetPixelAlpha(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+            break;
+          }
+          case OpacityQuantum:
+          {
+            SetPixelOpacity(q,ClampToQuantum((MagickRealType)
+              QuantumRange*(*p)));
+            break;
+          }
+          case BlackQuantum:
+          {
+            SetPixelIndex(indexes+x,ClampToQuantum((MagickRealType)
+              QuantumRange*(*p)));
+            break;
+          }
+          case IndexQuantum:
+          {
+            SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
+            SetPixelGreen(q,GetPixelRed(q));
+            SetPixelBlue(q,GetPixelRed(q));
+            break;
+          }
+          default:
+            break;
+        }
+        p++;
+      }
+      q++;
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      break;
+  }
+}
+
+static void ImportIntegerPixel(Image *image,const ssize_t x_offset,
+  const ssize_t y_offset,const size_t columns,const size_t rows,
+  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
+  ExceptionInfo *exception)
+{
+  register const unsigned int
+    *restrict p;
+
+  register IndexPacket
+    *restrict indexes;
+
+  register PixelPacket
+    *restrict q;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    y;
+
+  p=(const unsigned int *) pixels;
+  if (LocaleCompare(map,"BGR") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,ScaleLongToQuantum(*p++));
+          SetPixelGreen(q,ScaleLongToQuantum(*p++));
+          SetPixelRed(q,ScaleLongToQuantum(*p++));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,ScaleLongToQuantum(*p++));
+          SetPixelGreen(q,ScaleLongToQuantum(*p++));
+          SetPixelRed(q,ScaleLongToQuantum(*p++));
+          SetPixelAlpha(q,ScaleLongToQuantum(*p++));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,ScaleLongToQuantum(*p++));
+          SetPixelGreen(q,ScaleLongToQuantum(*p++));
+          SetPixelRed(q,ScaleLongToQuantum(*p++));
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"I") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ScaleLongToQuantum(*p++));
+          SetPixelGreen(q,GetPixelRed(q));
+          SetPixelBlue(q,GetPixelRed(q));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGB") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ScaleLongToQuantum(*p++));
+          SetPixelGreen(q,ScaleLongToQuantum(*p++));
+          SetPixelBlue(q,ScaleLongToQuantum(*p++));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ScaleLongToQuantum(*p++));
+          SetPixelGreen(q,ScaleLongToQuantum(*p++));
+          SetPixelBlue(q,ScaleLongToQuantum(*p++));
+          SetPixelAlpha(q,ScaleLongToQuantum(*p++));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ScaleLongToQuantum(*p++));
+          SetPixelGreen(q,ScaleLongToQuantum(*p++));
+          SetPixelBlue(q,ScaleLongToQuantum(*p++));
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      break;
+    indexes=GetAuthenticIndexQueue(image);
+    for (x=0; x < (ssize_t) columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) strlen(map); i++)
+      {
+        switch (quantum_map[i])
+        {
+          case RedQuantum:
+          case CyanQuantum:
+          {
+            SetPixelRed(q,ScaleLongToQuantum(*p));
+            break;
+          }
+          case GreenQuantum:
+          case MagentaQuantum:
+          {
+            SetPixelGreen(q,ScaleLongToQuantum(*p));
+            break;
+          }
+          case BlueQuantum:
+          case YellowQuantum:
+          {
+            SetPixelBlue(q,ScaleLongToQuantum(*p));
+            break;
+          }
+          case AlphaQuantum:
+          {
+            SetPixelAlpha(q,ScaleLongToQuantum(*p));
+            break;
+          }
+          case OpacityQuantum:
+          {
+            SetPixelOpacity(q,ScaleLongToQuantum(*p));
+            break;
+          }
+          case BlackQuantum:
+          {
+            SetPixelIndex(indexes+x,ScaleLongToQuantum(*p));
+            break;
+          }
+          case IndexQuantum:
+          {
+            SetPixelRed(q,ScaleLongToQuantum(*p));
+            SetPixelGreen(q,GetPixelRed(q));
+            SetPixelBlue(q,GetPixelRed(q));
+            break;
+          }
+          default:
+            break;
+        }
+        p++;
+      }
+      q++;
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      break;
+  }
+}
+
+static void ImportLongPixel(Image *image,const ssize_t x_offset,
+  const ssize_t y_offset,const size_t columns,const size_t rows,
+  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
+  ExceptionInfo *exception)
+{
+  register const unsigned int
+    *restrict p;
+
+  register IndexPacket
+    *restrict indexes;
+
+  register PixelPacket
+    *restrict q;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    y;
+
+  p=(const unsigned int *) pixels;
+  if (LocaleCompare(map,"BGR") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,ScaleLongToQuantum(*p++));
+          SetPixelGreen(q,ScaleLongToQuantum(*p++));
+          SetPixelRed(q,ScaleLongToQuantum(*p++));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,ScaleLongToQuantum(*p++));
+          SetPixelGreen(q,ScaleLongToQuantum(*p++));
+          SetPixelRed(q,ScaleLongToQuantum(*p++));
+          SetPixelAlpha(q,ScaleLongToQuantum(*p++));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,ScaleLongToQuantum(*p++));
+          SetPixelGreen(q,ScaleLongToQuantum(*p++));
+          SetPixelRed(q,ScaleLongToQuantum(*p++));
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"I") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ScaleLongToQuantum(*p++));
+          SetPixelGreen(q,GetPixelRed(q));
+          SetPixelBlue(q,GetPixelRed(q));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGB") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ScaleLongToQuantum(*p++));
+          SetPixelGreen(q,ScaleLongToQuantum(*p++));
+          SetPixelBlue(q,ScaleLongToQuantum(*p++));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ScaleLongToQuantum(*p++));
+          SetPixelGreen(q,ScaleLongToQuantum(*p++));
+          SetPixelBlue(q,ScaleLongToQuantum(*p++));
+          SetPixelAlpha(q,ScaleLongToQuantum(*p++));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ScaleLongToQuantum(*p++));
+          SetPixelGreen(q,ScaleLongToQuantum(*p++));
+          SetPixelBlue(q,ScaleLongToQuantum(*p++));
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      break;
+    indexes=GetAuthenticIndexQueue(image);
+    for (x=0; x < (ssize_t) columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) strlen(map); i++)
+      {
+        switch (quantum_map[i])
+        {
+          case RedQuantum:
+          case CyanQuantum:
+          {
+            SetPixelRed(q,ScaleLongToQuantum(*p));
+            break;
+          }
+          case GreenQuantum:
+          case MagentaQuantum:
+          {
+            SetPixelGreen(q,ScaleLongToQuantum(*p));
+            break;
+          }
+          case BlueQuantum:
+          case YellowQuantum:
+          {
+            SetPixelBlue(q,ScaleLongToQuantum(*p));
+            break;
+          }
+          case AlphaQuantum:
+          {
+            SetPixelAlpha(q,ScaleLongToQuantum(*p));
+            break;
+          }
+          case OpacityQuantum:
+          {
+          SetPixelOpacity(q,ScaleLongToQuantum(*p));
+          break;
+          }
+          case BlackQuantum:
+          {
+            SetPixelIndex(indexes+x,ScaleLongToQuantum(*p));
+            break;
+          }
+          case IndexQuantum:
+          {
+            SetPixelRed(q,ScaleLongToQuantum(*p));
+            SetPixelGreen(q,GetPixelRed(q));
+            SetPixelBlue(q,GetPixelRed(q));
+            break;
+          }
+          default:
+            break;
+        }
+        p++;
+      }
+      q++;
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      break;
+  }
+}
+
+static void ImportQuantumPixel(Image *image,const ssize_t x_offset,
+  const ssize_t y_offset,const size_t columns,const size_t rows,
+  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
+  ExceptionInfo *exception)
+{
+  register const Quantum
+    *restrict p;
+
+  register IndexPacket
+    *restrict indexes;
+
+  register PixelPacket
+    *restrict q;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    y;
+
+  p=(const Quantum *) pixels;
+  if (LocaleCompare(map,"BGR") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,*p++);
+          SetPixelGreen(q,*p++);
+          SetPixelRed(q,*p++);
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,*p++);
+          SetPixelGreen(q,*p++);
+          SetPixelRed(q,*p++);
+          SetPixelAlpha(q,*p++);
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,*p++);
+          SetPixelGreen(q,*p++);
+          SetPixelRed(q,*p++);
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"I") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,*p++);
+          SetPixelGreen(q,GetPixelRed(q));
+          SetPixelBlue(q,GetPixelRed(q));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGB") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,*p++);
+          SetPixelGreen(q,*p++);
+          SetPixelBlue(q,*p++);
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,*p++);
+          SetPixelGreen(q,*p++);
+          SetPixelBlue(q,*p++);
+          SetPixelAlpha(q,*p++);
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,*p++);
+          SetPixelGreen(q,*p++);
+          SetPixelBlue(q,*p++);
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      break;
+    indexes=GetAuthenticIndexQueue(image);
+    for (x=0; x < (ssize_t) columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) strlen(map); i++)
+      {
+        switch (quantum_map[i])
+        {
+          case RedQuantum:
+          case CyanQuantum:
+          {
+            SetPixelRed(q,*p);
+            break;
+          }
+          case GreenQuantum:
+          case MagentaQuantum:
+          {
+            SetPixelGreen(q,*p);
+            break;
+          }
+          case BlueQuantum:
+          case YellowQuantum:
+          {
+            SetPixelBlue(q,*p);
+            break;
+          }
+          case AlphaQuantum:
+          {
+            SetPixelAlpha(q,*p);
+            break;
+          }
+          case OpacityQuantum:
+          {
+            SetPixelOpacity(q,*p);
+            break;
+          }
+          case BlackQuantum:
+          {
+            SetPixelIndex(indexes+x,*p);
+            break;
+          }
+          case IndexQuantum:
+          {
+            SetPixelRed(q,*p);
+            SetPixelGreen(q,GetPixelRed(q));
+            SetPixelBlue(q,GetPixelRed(q));
+            break;
+          }
+          default:
+            break;
+        }
+        p++;
+      }
+      q++;
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      break;
+  }
+}
+
+static void ImportShortPixel(Image *image,const ssize_t x_offset,
+  const ssize_t y_offset,const size_t columns,const size_t rows,
+  const char *restrict map,const QuantumType *quantum_map,const void *pixels,
+  ExceptionInfo *exception)
+{
+  register const unsigned short
+    *restrict p;
+
+  register IndexPacket
+    *restrict indexes;
+
+  register PixelPacket
+    *restrict q;
+
+  register ssize_t
+    x;
+
+  ssize_t
+    y;
+
+  p=(const unsigned short *) pixels;
+  if (LocaleCompare(map,"BGR") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,ScaleShortToQuantum(*p++));
+          SetPixelGreen(q,ScaleShortToQuantum(*p++));
+          SetPixelRed(q,ScaleShortToQuantum(*p++));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,ScaleShortToQuantum(*p++));
+          SetPixelGreen(q,ScaleShortToQuantum(*p++));
+          SetPixelRed(q,ScaleShortToQuantum(*p++));
+          SetPixelAlpha(q,ScaleShortToQuantum(*p++));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"BGRP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelBlue(q,ScaleShortToQuantum(*p++));
+          SetPixelGreen(q,ScaleShortToQuantum(*p++));
+          SetPixelRed(q,ScaleShortToQuantum(*p++));
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"I") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ScaleShortToQuantum(*p++));
+          SetPixelGreen(q,GetPixelRed(q));
+          SetPixelBlue(q,GetPixelRed(q));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGB") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ScaleShortToQuantum(*p++));
+          SetPixelGreen(q,ScaleShortToQuantum(*p++));
+          SetPixelBlue(q,ScaleShortToQuantum(*p++));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBA") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ScaleShortToQuantum(*p++));
+          SetPixelGreen(q,ScaleShortToQuantum(*p++));
+          SetPixelBlue(q,ScaleShortToQuantum(*p++));
+          SetPixelAlpha(q,ScaleShortToQuantum(*p++));
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  if (LocaleCompare(map,"RGBP") == 0)
+    {
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (ssize_t) columns; x++)
+        {
+          SetPixelRed(q,ScaleShortToQuantum(*p++));
+          SetPixelGreen(q,ScaleShortToQuantum(*p++));
+          SetPixelBlue(q,ScaleShortToQuantum(*p++));
+          p++;
+          q++;
+        }
+        if (SyncAuthenticPixels(image,exception) == MagickFalse)
+          break;
+      }
+      return;
+    }
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      break;
+    indexes=GetAuthenticIndexQueue(image);
+    for (x=0; x < (ssize_t) columns; x++)
+    {
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) strlen(map); i++)
+      {
+        switch (quantum_map[i])
+        {
+          case RedQuantum:
+          case CyanQuantum:
+          {
+            SetPixelRed(q,ScaleShortToQuantum(*p));
+            break;
+          }
+          case GreenQuantum:
+          case MagentaQuantum:
+          {
+            SetPixelGreen(q,ScaleShortToQuantum(*p));
+            break;
+          }
+          case BlueQuantum:
+          case YellowQuantum:
+          {
+            SetPixelBlue(q,ScaleShortToQuantum(*p));
+            break;
+          }
+          case AlphaQuantum:
+          {
+            SetPixelAlpha(q,ScaleShortToQuantum(*p));
+            break;
+          }
+          case OpacityQuantum:
+          {
+            SetPixelOpacity(q,ScaleShortToQuantum(*p));
+            break;
+          }
+          case BlackQuantum:
+          {
+            SetPixelIndex(indexes+x,ScaleShortToQuantum(*p));
+            break;
+          }
+          case IndexQuantum:
+          {
+            SetPixelRed(q,ScaleShortToQuantum(*p));
+            SetPixelGreen(q,GetPixelRed(q));
+            SetPixelBlue(q,GetPixelRed(q));
+            break;
+          }
+          default:
+            break;
+        }
+        p++;
+      }
+      q++;
+    }
+    if (SyncAuthenticPixels(image,exception) == MagickFalse)
+      break;
+  }
+}
+
 MagickExport MagickBooleanType ImportImagePixels(Image *image,
   const ssize_t x_offset,const ssize_t y_offset,const size_t columns,
   const size_t rows,const char *map,const StorageType type,
@@ -2271,24 +3527,11 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
   ExceptionInfo
     *exception;
 
-  PixelPacket
-    *q;
-
   QuantumType
     *quantum_map;
 
-  register IndexPacket
-    *indexes;
-
   register ssize_t
-    i,
-    x;
-
-  size_t
-    length;
-
-  ssize_t
-    y;
+    i;
 
   /*
     Allocate image structure.
@@ -2297,12 +3540,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  length=strlen(map);
-  quantum_map=(QuantumType *) AcquireQuantumMemory(length,sizeof(*quantum_map));
+  quantum_map=(QuantumType *) AcquireQuantumMemory(strlen(map),
+    sizeof(*quantum_map));
   if (quantum_map == (QuantumType *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  for (i=0; i < (ssize_t) length; i++)
+  for (i=0; i < (ssize_t) strlen(map); i++)
   {
     switch (map[i])
     {
@@ -2409,1085 +3652,32 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,
     }
     case FloatPixel:
     {
-      register const float
-        *p;
-
-      p=(const float *) pixels;
-      if (LocaleCompare(map,"BGR") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              SetPixelGreen(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              SetPixelRed(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              SetPixelGreen(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              SetPixelRed(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              SetPixelAlpha(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              SetPixelGreen(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              SetPixelRed(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"I") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              SetPixelGreen(q,GetPixelRed(q));
-              SetPixelBlue(q,GetPixelRed(q));
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGB") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              SetPixelGreen(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              SetPixelBlue(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              SetPixelGreen(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              SetPixelBlue(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              SetPixelAlpha(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              SetPixelGreen(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              SetPixelBlue(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      for (y=0; y < (ssize_t) rows; y++)
-      {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (ssize_t) columns; x++)
-        {
-          for (i=0; i < (ssize_t) length; i++)
-          {
-            switch (quantum_map[i])
-            {
-              case RedQuantum:
-              case CyanQuantum:
-              {
-                SetPixelRed(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-                break;
-              }
-              case GreenQuantum:
-              case MagentaQuantum:
-              {
-                SetPixelGreen(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-                break;
-              }
-              case BlueQuantum:
-              case YellowQuantum:
-              {
-                SetPixelBlue(q,ClampToQuantum((MagickRealType)
-                QuantumRange*(*p)));
-                break;
-              }
-              case AlphaQuantum:
-              {
-                SetPixelAlpha(q,ClampToQuantum((MagickRealType)
-                  QuantumRange*(*p)));
-                break;
-              }
-              case OpacityQuantum:
-              {
-                SetPixelOpacity(q,ClampToQuantum((MagickRealType)
-                  QuantumRange*(*p)));
-                break;
-              }
-              case BlackQuantum:
-              {
-                SetPixelIndex(indexes+x,ClampToQuantum(
-                  (MagickRealType) QuantumRange*(*p)));
-                break;
-              }
-              case IndexQuantum:
-              {
-                SetPixelRed(q,ClampToQuantum((MagickRealType)
-                  QuantumRange*(*p)));
-                SetPixelGreen(q,GetPixelRed(q));
-                SetPixelBlue(q,GetPixelRed(q));
-                break;
-              }
-              default:
-                break;
-            }
-            p++;
-          }
-          q++;
-        }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
-      }
+      ImportFloatPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
+        pixels,exception);
       break;
     }
     case IntegerPixel:
     {
-      register const unsigned int
-        *p;
-
-      p=(const unsigned int *) pixels;
-      if (LocaleCompare(map,"BGR") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,ScaleLongToQuantum(*p++));
-              SetPixelGreen(q,ScaleLongToQuantum(*p++));
-              SetPixelRed(q,ScaleLongToQuantum(*p++));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,ScaleLongToQuantum(*p++));
-              SetPixelGreen(q,ScaleLongToQuantum(*p++));
-              SetPixelRed(q,ScaleLongToQuantum(*p++));
-              SetPixelAlpha(q,ScaleLongToQuantum(*p++));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,ScaleLongToQuantum(*p++));
-              SetPixelGreen(q,ScaleLongToQuantum(*p++));
-              SetPixelRed(q,ScaleLongToQuantum(*p++));
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"I") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ScaleLongToQuantum(*p++));
-              SetPixelGreen(q,GetPixelRed(q));
-              SetPixelBlue(q,GetPixelRed(q));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGB") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ScaleLongToQuantum(*p++));
-              SetPixelGreen(q,ScaleLongToQuantum(*p++));
-              SetPixelBlue(q,ScaleLongToQuantum(*p++));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ScaleLongToQuantum(*p++));
-              SetPixelGreen(q,ScaleLongToQuantum(*p++));
-              SetPixelBlue(q,ScaleLongToQuantum(*p++));
-              SetPixelAlpha(q,ScaleLongToQuantum(*p++));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ScaleLongToQuantum(*p++));
-              SetPixelGreen(q,ScaleLongToQuantum(*p++));
-              SetPixelBlue(q,ScaleLongToQuantum(*p++));
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      for (y=0; y < (ssize_t) rows; y++)
-      {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (ssize_t) columns; x++)
-        {
-          for (i=0; i < (ssize_t) length; i++)
-          {
-            switch (quantum_map[i])
-            {
-              case RedQuantum:
-              case CyanQuantum:
-              {
-                SetPixelRed(q,ScaleLongToQuantum(*p));
-                break;
-              }
-              case GreenQuantum:
-              case MagentaQuantum:
-              {
-                SetPixelGreen(q,ScaleLongToQuantum(*p));
-                break;
-              }
-              case BlueQuantum:
-              case YellowQuantum:
-              {
-                SetPixelBlue(q,ScaleLongToQuantum(*p));
-                break;
-              }
-              case AlphaQuantum:
-              {
-                SetPixelAlpha(q,ScaleLongToQuantum(*p));
-                break;
-              }
-              case OpacityQuantum:
-              {
-                SetPixelOpacity(q,ScaleLongToQuantum(*p));
-                break;
-              }
-              case BlackQuantum:
-              {
-                SetPixelIndex(indexes+x,ScaleLongToQuantum(*p));
-                break;
-              }
-              case IndexQuantum:
-              {
-                SetPixelRed(q,ScaleLongToQuantum(*p));
-                SetPixelGreen(q,GetPixelRed(q));
-                SetPixelBlue(q,GetPixelRed(q));
-                break;
-              }
-              default:
-                break;
-            }
-            p++;
-          }
-          q++;
-        }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
-      }
+      ImportIntegerPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
+        pixels,exception);
       break;
     }
     case LongPixel:
     {
-      register const unsigned int
-        *p;
-
-      p=(const unsigned int *) pixels;
-      if (LocaleCompare(map,"BGR") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,ScaleLongToQuantum(*p++));
-              SetPixelGreen(q,ScaleLongToQuantum(*p++));
-              SetPixelRed(q,ScaleLongToQuantum(*p++));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,ScaleLongToQuantum(*p++));
-              SetPixelGreen(q,ScaleLongToQuantum(*p++));
-              SetPixelRed(q,ScaleLongToQuantum(*p++));
-              SetPixelAlpha(q,ScaleLongToQuantum(*p++));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,ScaleLongToQuantum(*p++));
-              SetPixelGreen(q,ScaleLongToQuantum(*p++));
-              SetPixelRed(q,ScaleLongToQuantum(*p++));
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"I") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ScaleLongToQuantum(*p++));
-              SetPixelGreen(q,GetPixelRed(q));
-              SetPixelBlue(q,GetPixelRed(q));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGB") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ScaleLongToQuantum(*p++));
-              SetPixelGreen(q,ScaleLongToQuantum(*p++));
-              SetPixelBlue(q,ScaleLongToQuantum(*p++));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ScaleLongToQuantum(*p++));
-              SetPixelGreen(q,ScaleLongToQuantum(*p++));
-              SetPixelBlue(q,ScaleLongToQuantum(*p++));
-              SetPixelAlpha(q,ScaleLongToQuantum(*p++));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ScaleLongToQuantum(*p++));
-              SetPixelGreen(q,ScaleLongToQuantum(*p++));
-              SetPixelBlue(q,ScaleLongToQuantum(*p++));
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      for (y=0; y < (ssize_t) rows; y++)
-      {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (ssize_t) columns; x++)
-        {
-          for (i=0; i < (ssize_t) length; i++)
-          {
-            switch (quantum_map[i])
-            {
-              case RedQuantum:
-              case CyanQuantum:
-              {
-                SetPixelRed(q,ScaleLongToQuantum(*p));
-                break;
-              }
-              case GreenQuantum:
-              case MagentaQuantum:
-              {
-                SetPixelGreen(q,ScaleLongToQuantum(*p));
-                break;
-              }
-              case BlueQuantum:
-              case YellowQuantum:
-              {
-                SetPixelBlue(q,ScaleLongToQuantum(*p));
-                break;
-              }
-              case AlphaQuantum:
-              {
-                SetPixelAlpha(q,ScaleLongToQuantum(*p));
-                break;
-              }
-              case OpacityQuantum:
-              {
-                SetPixelOpacity(q,ScaleLongToQuantum(*p));
-                break;
-              }
-              case BlackQuantum:
-              {
-                SetPixelIndex(indexes+x,ScaleLongToQuantum(*p));
-                break;
-              }
-              case IndexQuantum:
-              {
-                SetPixelRed(q,ScaleLongToQuantum(*p));
-                SetPixelGreen(q,GetPixelRed(q));
-                SetPixelBlue(q,GetPixelRed(q));
-                break;
-              }
-              default:
-                break;
-            }
-            p++;
-          }
-          q++;
-        }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
-      }
+      ImportLongPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
+        pixels,exception);
       break;
     }
     case QuantumPixel:
     {
-      register const Quantum
-        *p;
-
-      p=(const Quantum *) pixels;
-      if (LocaleCompare(map,"BGR") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,*p++);
-              SetPixelGreen(q,*p++);
-              SetPixelRed(q,*p++);
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,*p++);
-              SetPixelGreen(q,*p++);
-              SetPixelRed(q,*p++);
-              SetPixelAlpha(q,*p++);
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,*p++);
-              SetPixelGreen(q,*p++);
-              SetPixelRed(q,*p++);
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"I") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,*p++);
-              SetPixelGreen(q,GetPixelRed(q));
-              SetPixelBlue(q,GetPixelRed(q));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGB") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,*p++);
-              SetPixelGreen(q,*p++);
-              SetPixelBlue(q,*p++);
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,*p++);
-              SetPixelGreen(q,*p++);
-              SetPixelBlue(q,*p++);
-              SetPixelAlpha(q,*p++);
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,*p++);
-              SetPixelGreen(q,*p++);
-              SetPixelBlue(q,*p++);
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      for (y=0; y < (ssize_t) rows; y++)
-      {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (ssize_t) columns; x++)
-        {
-          for (i=0; i < (ssize_t) length; i++)
-          {
-            switch (quantum_map[i])
-            {
-              case RedQuantum:
-              case CyanQuantum:
-              {
-                SetPixelRed(q,*p);
-                break;
-              }
-              case GreenQuantum:
-              case MagentaQuantum:
-              {
-                SetPixelGreen(q,*p);
-                break;
-              }
-              case BlueQuantum:
-              case YellowQuantum:
-              {
-                SetPixelBlue(q,*p);
-                break;
-              }
-              case AlphaQuantum:
-              {
-                SetPixelAlpha(q,*p);
-                break;
-              }
-              case OpacityQuantum:
-              {
-                SetPixelOpacity(q,*p);
-                break;
-              }
-              case BlackQuantum:
-              {
-                SetPixelIndex(indexes+x,*p);
-                break;
-              }
-              case IndexQuantum:
-              {
-                SetPixelRed(q,*p);
-                SetPixelGreen(q,GetPixelRed(q));
-                SetPixelBlue(q,GetPixelRed(q));
-                break;
-              }
-              default:
-                break;
-            }
-            p++;
-          }
-          q++;
-        }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
-      }
+      ImportQuantumPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
+        pixels,exception);
       break;
     }
     case ShortPixel:
     {
-      register const unsigned short
-        *p;
-
-      p=(const unsigned short *) pixels;
-      if (LocaleCompare(map,"BGR") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,ScaleShortToQuantum(*p++));
-              SetPixelGreen(q,ScaleShortToQuantum(*p++));
-              SetPixelRed(q,ScaleShortToQuantum(*p++));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,ScaleShortToQuantum(*p++));
-              SetPixelGreen(q,ScaleShortToQuantum(*p++));
-              SetPixelRed(q,ScaleShortToQuantum(*p++));
-              SetPixelAlpha(q,ScaleShortToQuantum(*p++));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"BGRP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelBlue(q,ScaleShortToQuantum(*p++));
-              SetPixelGreen(q,ScaleShortToQuantum(*p++));
-              SetPixelRed(q,ScaleShortToQuantum(*p++));
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"I") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ScaleShortToQuantum(*p++));
-              SetPixelGreen(q,GetPixelRed(q));
-              SetPixelBlue(q,GetPixelRed(q));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGB") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ScaleShortToQuantum(*p++));
-              SetPixelGreen(q,ScaleShortToQuantum(*p++));
-              SetPixelBlue(q,ScaleShortToQuantum(*p++));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBA") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ScaleShortToQuantum(*p++));
-              SetPixelGreen(q,ScaleShortToQuantum(*p++));
-              SetPixelBlue(q,ScaleShortToQuantum(*p++));
-              SetPixelAlpha(q,ScaleShortToQuantum(*p++));
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      if (LocaleCompare(map,"RGBP") == 0)
-        {
-          for (y=0; y < (ssize_t) rows; y++)
-          {
-            q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (ssize_t) columns; x++)
-            {
-              SetPixelRed(q,ScaleShortToQuantum(*p++));
-              SetPixelGreen(q,ScaleShortToQuantum(*p++));
-              SetPixelBlue(q,ScaleShortToQuantum(*p++));
-              p++;
-              q++;
-            }
-            if (SyncAuthenticPixels(image,exception) == MagickFalse)
-              break;
-          }
-          break;
-        }
-      for (y=0; y < (ssize_t) rows; y++)
-      {
-        q=GetAuthenticPixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetAuthenticIndexQueue(image);
-        for (x=0; x < (ssize_t) columns; x++)
-        {
-          for (i=0; i < (ssize_t) length; i++)
-          {
-            switch (quantum_map[i])
-            {
-              case RedQuantum:
-              case CyanQuantum:
-              {
-                SetPixelRed(q,ScaleShortToQuantum(*p));
-                break;
-              }
-              case GreenQuantum:
-              case MagentaQuantum:
-              {
-                SetPixelGreen(q,ScaleShortToQuantum(*p));
-                break;
-              }
-              case BlueQuantum:
-              case YellowQuantum:
-              {
-                SetPixelBlue(q,ScaleShortToQuantum(*p));
-                break;
-              }
-              case AlphaQuantum:
-              {
-                SetPixelAlpha(q,ScaleShortToQuantum(*p));
-                break;
-              }
-              case OpacityQuantum:
-              {
-                SetPixelOpacity(q,ScaleShortToQuantum(*p));
-                break;
-              }
-              case BlackQuantum:
-              {
-                SetPixelIndex(indexes+x,ScaleShortToQuantum(*p));
-                break;
-              }
-              case IndexQuantum:
-              {
-                SetPixelRed(q,ScaleShortToQuantum(*p));
-                SetPixelGreen(q,GetPixelRed(q));
-                SetPixelBlue(q,GetPixelRed(q));
-                break;
-              }
-              default:
-                break;
-            }
-            p++;
-          }
-          q++;
-        }
-        if (SyncAuthenticPixels(image,exception) == MagickFalse)
-          break;
-      }
+      ImportShortPixel(image,x_offset,y_offset,columns,rows,map,quantum_map,
+        pixels,exception);
       break;
     }
     default:
