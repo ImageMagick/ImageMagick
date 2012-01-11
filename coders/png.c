@@ -11668,9 +11668,6 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   if (transparent)
     {
-      ChannelType
-        channel_mask;
-
       jng_color_type=14;
 
       /* Create JPEG blob, image, and image_info */
@@ -11687,15 +11684,10 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Creating jpeg_image.");
 
-      jpeg_image=CloneImage(image,0,0,MagickTrue,exception);
-
+      jpeg_image=SeparateImage(jpeg_image,AlphaChannel,exception);
       if (jpeg_image == (Image *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-
       (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
-      channel_mask=SetPixelChannelMask(jpeg_image,AlphaChannel);
-      status=SeparateImage(jpeg_image,exception);
-      (void) SetPixelChannelMapMask(jpeg_image,channel_mask);
       jpeg_image->matte=MagickFalse;
       jpeg_image->quality=jng_alpha_quality;
       jpeg_image_info->type=GrayscaleType;
