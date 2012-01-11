@@ -11684,7 +11684,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Creating jpeg_image.");
 
-      jpeg_image=SeparateImage(jpeg_image,AlphaChannel,exception);
+      jpeg_image=SeparateImage(image,AlphaChannel,exception);
       if (jpeg_image == (Image *) NULL)
         ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
       (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
