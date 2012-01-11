@@ -499,6 +499,7 @@ extern MagickExport Image
   *NewMagickImage(const ImageInfo *,const size_t,const size_t,const PixelInfo *,
     ExceptionInfo *),
   *ReferenceImage(Image *),
+  *SeparateImage(const Image *,const ChannelType,ExceptionInfo *),
   *SeparateImages(const Image *,ExceptionInfo *),
   *SmushImages(const Image *,const MagickBooleanType,const ssize_t,
     ExceptionInfo *);
@@ -518,7 +519,6 @@ extern MagickExport MagickBooleanType
   ListMagickInfo(FILE *,ExceptionInfo *),
   ModifyImage(Image **,ExceptionInfo *),
   ResetImagePage(Image *,const char *),
-  SeparateImage(Image *,ExceptionInfo *),
   SetImageAlpha(Image *,const Quantum,ExceptionInfo *),
   SetImageAlphaChannel(Image *,const AlphaChannelType,ExceptionInfo *),
   SetImageBackgroundColor(Image *,ExceptionInfo *),

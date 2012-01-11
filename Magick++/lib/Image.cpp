@@ -525,13 +525,13 @@ void Magick::Image::border( const Geometry &geometry_ )
 void Magick::Image::channel ( const ChannelType channel_ )
 {
   modifyImage();
-  ChannelType channel_mask = SetPixelChannelMask( image(), channel_ );
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  SeparateImage ( image(), &exceptionInfo );
+  MagickCore::Image* newImage =
+    SeparateImage( image(), channel_, &exceptionInfo);
+  replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
-  (void) SetPixelChannelMapMask( image(), channel_mask );
 }
 
 // Set or obtain modulus channel depth

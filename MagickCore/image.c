@@ -2204,22 +2204,30 @@ MagickExport MagickBooleanType ResetImagePage(Image *image,const char *page)
 %
 %  The format of the SeparateImage method is:
 %
-%      MagickBooleanType SeparateImage(Image *image,ExceptionInfo *exception)
+%      Image *SeparateImage(const Image *image,const ChannelType channel,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
+%    o channel: the image channel.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType SeparateImage(Image *image,
-  ExceptionInfo *exception)
+MagickExport Image *SeparateImage(const Image *image,
+  const ChannelType channel_type,ExceptionInfo *exception)
 {
+#define GetChannelBit(mask,bit)  (((size_t) (mask) >> (size_t) (bit)) & 0x01)
 #define SeparateImageTag  "Separate/Image"
 
   CacheView
-    *image_view;
+    *image_view,
+    *separate_view;
+
+  Image
+    *separate_image;
 
   MagickBooleanType
     status;
@@ -2230,23 +2238,40 @@ MagickExport MagickBooleanType SeparateImage(Image *image,
   ssize_t
     y;
 
+  /*
+    Initialize spread image attributes.
+  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-    return(MagickFalse);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  separate_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
+  if (separate_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(separate_image,DirectClass,exception) == MagickFalse)
+    {
+      separate_image=DestroyImage(separate_image);
+      return((Image *) NULL);
+    }
+  separate_image->colorspace=GRAYColorspace;
   /*
-    Separate image channels.
+    Separate image.
   */
   status=MagickTrue;
   progress=0;
   image_view=AcquireCacheView(image);
+  separate_view=AcquireCacheView(separate_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_throttle(1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    register const Quantum
+      *restrict p;
+
     register Quantum
       *restrict q;
 
@@ -2255,8 +2280,10 @@ MagickExport MagickBooleanType SeparateImage(Image *image,
 
     if (status == MagickFalse)
       continue;
-    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    if (q == (Quantum *) NULL)
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(separate_view,0,y,separate_image->columns,1,
+      exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
         continue;
@@ -2266,6 +2293,7 @@ MagickExport MagickBooleanType SeparateImage(Image *image,
       register ssize_t
         i;
 
+      SetPixelChannel(separate_image,GrayPixelChannel,0,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -2273,21 +2301,18 @@ MagickExport MagickBooleanType SeparateImage(Image *image,
 
         PixelTrait
           traits;
-
-        register ssize_t
-          j;
-
+       
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
+        if ((traits == UndefinedPixelTrait) ||
+            (GetChannelBit(channel_type,channel) == 0))
           continue;
-        if ((traits & UpdatePixelTrait) != 0)
-          for (j=0; j < (ssize_t) GetPixelChannels(image); j++)
-            q[j]=q[i];
+        SetPixelChannel(separate_image,GrayPixelChannel,p[i],q);
       }
-      q+=GetPixelChannels(image);
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(separate_image);
     }
-    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+    if (SyncCacheViewAuthenticPixels(separate_view,exception) == MagickFalse)
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -2295,16 +2320,16 @@ MagickExport MagickBooleanType SeparateImage(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_SeparateImage)
+  #pragma omp critical (MagickCore_SeparateImage)
 #endif
         proceed=SetImageProgress(image,SeparateImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
+  separate_view=DestroyCacheView(separate_view);
   image_view=DestroyCacheView(image_view);
-  (void) SetImageColorspace(image,RGBColorspace,exception);
-  return(status);
+  return(separate_image);
 }
 
 /*
@@ -2335,9 +2360,6 @@ MagickExport MagickBooleanType SeparateImage(Image *image,
 */
 MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 {
-  ChannelType
-    channel_mask;
-
   Image
     *images,
     *separate_image;
@@ -2360,20 +2382,12 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 
     channel=GetPixelChannelMapChannel(image,i);
     traits=GetPixelChannelMapTraits(image,channel);
-    if (traits == UndefinedPixelTrait)
+    if ((traits == UndefinedPixelTrait) ||
+        ((traits & UpdatePixelTrait) == 0))
       continue;
-    if ((traits & UpdatePixelTrait) != 0)
-      {
-        separate_image=CloneImage(image,0,0,MagickTrue,exception);
-        if (separate_image != (Image *) NULL)
-          {
-            channel_mask=SetPixelChannelMask(separate_image,
-              (ChannelType) (1 << i));
-            (void) SeparateImage(separate_image,exception);
-            (void) SetPixelChannelMapMask(separate_image,channel_mask);
-            AppendImageToList(&images,separate_image);
-          }
-      }
+    separate_image=SeparateImage(image,(ChannelType) (1 << channel),exception);
+    if (separate_image != (Image *) NULL)
+      AppendImageToList(&images,separate_image);
   }
   return(images);
 }
@@ -2412,9 +2426,6 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
   const AlphaChannelType alpha_type,ExceptionInfo *exception)
 {
-  ChannelType
-    channel_mask;
-
   MagickBooleanType
     status;
 
@@ -2490,32 +2501,17 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     case CopyAlphaChannel:
     {
       /*
-        Special usage case for SeparateImage(): copy grayscale color to
-        the alpha channel.
+        Copy pixel intensity to the alpha channel.
       */
-      channel_mask=SetPixelChannelMask(image,GrayChannel);
-      status=SeparateImage(image,exception);
-      (void) SetPixelChannelMask(image,channel_mask);
-      image->matte=MagickTrue; /* make sure transparency is now on! */
+      status=CompositeImage(image,IntensityCompositeOp,image,0,0,exception);
       if (alpha_type == ShapeAlphaChannel)
-        {
-          PixelInfo
-            background;
-
-          /*
-            Reset all color channels to background color.
-          */
-          background=image->background_color;
-          (void) LevelImageColors(image,&background,&background,MagickTrue,
-            exception);
-        }
+        (void) LevelImageColors(image,&image->background_color,
+          &image->background_color,MagickTrue,exception);
       break;
     }
     case ExtractAlphaChannel:
     {
-      channel_mask=SetPixelChannelMask(image,AlphaChannel);
-      status=SeparateImage(image,exception);
-      (void) SetPixelChannelMask(image,channel_mask);
+      status=CompositeImage(image,AlphaCompositeOp,image,0,0,exception);
       image->matte=MagickFalse;
       break;
     }
@@ -3967,7 +3963,7 @@ MagickExport MagickBooleanType StripImage(Image *image,ExceptionInfo *exception)
 static inline Quantum PushColormapIndex(Image *image,const Quantum index,
   MagickBooleanType *range_exception)
 {
-  if (index < image->colors)
+  if ((size_t) index < image->colors)
     return(index);
   *range_exception=MagickTrue;
   return(0);
@@ -4257,11 +4253,10 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     image->type=(ImageType) ParseCommandOption(MagickTypeOptions,MagickFalse,
       option);
   option=GetImageOption(image_info,"units");
+  units=image_info->units;
   if (option != (const char *) NULL)
     units=(ResolutionType) ParseCommandOption(MagickResolutionOptions,
       MagickFalse,option);
-  else
-    units = image_info->units;
   if (units != UndefinedResolution)
     {
       if (image->units != units)

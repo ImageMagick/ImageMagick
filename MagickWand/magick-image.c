@@ -8408,22 +8408,33 @@ WandExport MagickBooleanType MagickSelectiveBlurImage(MagickWand *wand,
 %
 %  The format of the MagickSeparateImage method is:
 %
-%      MagickBooleanType MagickSeparateImage(MagickWand *wand)
+%      MagickBooleanType MagickSeparateImage(MagickWand *wand,
+%        const ChannelType channel)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
+%    o channel: the channel.
+%
 */
-WandExport MagickBooleanType MagickSeparateImage(MagickWand *wand)
+WandExport MagickBooleanType MagickSeparateImage(MagickWand *wand,
+  const ChannelType channel)
 {
+  Image
+    *separate_image;
+
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  return(SeparateImage(wand->images,wand->exception));
+  separate_image=SeparateImage(wand->images,channel,wand->exception);
+  if (separate_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,separate_image);
+  return(MagickTrue);
 }
 
 /*

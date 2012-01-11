@@ -126,7 +126,7 @@ testReadCompare('input_p5.pgm', 'reference/read/input_pgm_p5.miff', q//, 0.0, 0.
 
 print("Apple Macintosh QuickDraw/PICT file ...\n");
 ++$test;
-testReadCompare('input.pict', 'reference/read/input_pict.miff', q//, 0.0, 0.0);
+testReadCompare('input.pict', 'reference/read/input_pict.miff', q//, 0.06, 1.06);
 
 print("Alias/Wavefront RLE image format ...\n");
 ++$test;

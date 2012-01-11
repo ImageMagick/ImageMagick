@@ -229,7 +229,7 @@ extern WandExport MagickBooleanType
     const double,const double),
   MagickSelectiveBlurImage(MagickWand *,const double,const double,const double,
     const double),
-  MagickSeparateImage(MagickWand *),
+  MagickSeparateImage(MagickWand *,const ChannelType),
   MagickSepiaToneImage(MagickWand *,const double),
   MagickSetImage(MagickWand *,const MagickWand *),
   MagickSetImageAlphaChannel(MagickWand *,const AlphaChannelType),
