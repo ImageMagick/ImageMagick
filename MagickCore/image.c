@@ -2193,15 +2193,14 @@ MagickExport MagickBooleanType ResetImagePage(Image *image,const char *page)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     S e p a r a t e I m a g e C h a n n e l                                 %
+%     S e p a r a t e I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SeparateImage() separates a channel from the image and returns it as
-%  a grayscale image.  A channel is a particular color component of each pixel
-%  in the image.
+%  SeparateImage() separates a channel from the image and returns it as a
+%  grayscale image.
 %
 %  The format of the SeparateImage method is:
 %
