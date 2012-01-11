@@ -275,7 +275,7 @@ static struct
       {"pointsize", RealReference}, {"density", StringReference},
       {"undercolor", StringReference}, {"stroke", StringReference},
       {"fill", StringReference}, {"geometry", StringReference},
-      {"pen", StringReference}, {"x", RealReference},
+      {"sans", StringReference}, {"x", RealReference},
       {"y", RealReference}, {"gravity", MagickGravityOptions},
       {"translate", StringReference}, {"scale", StringReference},
       {"rotate", RealReference}, {"skewX", RealReference},
@@ -1795,12 +1795,6 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           for ( ; image; image=image->next)
             (void) ParsePageGeometry(image,geometry,&image->page,exception);
           geometry=(char *) RelinquishMagickMemory(geometry);
-          break;
-        }
-      if (LocaleCompare(attribute,"pen") == 0)
-        {
-          if (info)
-            (void) SetImageOption(info->image_info,"fill",SvPV(sval,na));
           break;
         }
       if (LocaleNCompare(attribute,"pixel",5) == 0)

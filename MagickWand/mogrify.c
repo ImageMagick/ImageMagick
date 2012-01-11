@@ -2277,18 +2277,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               geometry_info.sigma,exception);
             break;
           }
-        if (LocaleCompare("pen",option+1) == 0)
-          {
-            if (*option == '+')
-              {
-                (void) QueryColorCompliance("none",AllCompliance,
-                  &draw_info->fill,exception);
-                break;
-              }
-            (void) QueryColorCompliance(argv[i+1],AllCompliance,
-              &draw_info->fill,exception);
-            break;
-          }
         if (LocaleCompare("pointsize",option+1) == 0)
           {
             if (*option == '+')
@@ -6910,16 +6898,6 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
                 (long) geometry.x,(long) geometry.y);
             (void) SetImageOption(image_info,option+1,page);
             (void) CloneString(&image_info->page,page);
-            break;
-          }
-        if (LocaleCompare("pen",option+1) == 0)
-          {
-            if (*option == '+')
-              {
-                (void) SetImageOption(image_info,option+1,"none");
-                break;
-              }
-            (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }
         if (LocaleCompare("ping",option+1) == 0)
