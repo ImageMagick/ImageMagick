@@ -1,3 +1,6 @@
+2011-01-10  6.7.4-5 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.4-5, SVN revision 6422.
+
 2012-01-02  6.7.4-5 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed -black-threshold and -white-threshold so they work properly with
     the -channels option (reference
