@@ -1259,6 +1259,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               continue;
             switch (compose)
             {
+              case AlphaCompositeOp:
               case ChangeMaskCompositeOp:
               case CopyAlphaCompositeOp:
               case DstAtopCompositeOp:
@@ -1422,7 +1423,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         composite_traits=GetPixelChannelMapTraits(composite_image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if ((compose != IntensityCompositeOp) &&
+        if ((compose != AlphaCompositeOp) &&
+            (compose != IntensityCompositeOp) &&
             (composite_traits == UndefinedPixelTrait))
           continue;
         /*
@@ -1446,6 +1448,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             */
             switch (compose)
             {
+              case AlphaCompositeOp:
+              {
+                pixel=Sa;
+                break;
+              }
               case AtopCompositeOp:
               case CopyBlackCompositeOp:
               case CopyBlueCompositeOp:

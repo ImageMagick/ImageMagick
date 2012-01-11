@@ -142,34 +142,6 @@ typedef MagickSizeType QuantumAny;
 
 typedef enum
 {
-  UndefinedChannel = 0x0000,
-  RedChannel = 0x0001,
-  GrayChannel = 0x0001,
-  CyanChannel = 0x0001,
-  GreenChannel = 0x0002,
-  MagentaChannel = 0x0002,
-  BlueChannel = 0x0004,
-  YellowChannel = 0x0004,
-  BlackChannel = 0x0008,
-  AlphaChannel = 0x0010,
-  OpacityChannel = 0x0010,
-  IndexChannel = 0x0020,
-  MaskChannel = 0x0040,
-  MetaChannel = 0x0080,
-  CompositeChannels = 0x002F,
-  AllChannels = 0x7ffffff,
-  /*
-    Special purpose channel types.
-  */
-  TrueAlphaChannel = 0x0100, /* extract actual alpha channel from opacity */
-  RGBChannels = 0x0200,      /* set alpha from grayscale mask in RGB */
-  GrayChannels = 0x0400,
-  SyncChannels = 0x1000,     /* channels should be modified equally */
-  DefaultChannels = ((AllChannels | SyncChannels) &~ AlphaChannel)
-} ChannelType;
-
-typedef enum
-{
   UndefinedClass,
   DirectClass,
   PseudoClass

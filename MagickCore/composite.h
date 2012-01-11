@@ -24,6 +24,7 @@ extern "C" {
 
 typedef enum
 {
+  AlphaCompositeOp,
   AtopCompositeOp,
   BlendCompositeOp,
   BlurCompositeOp,
