@@ -195,8 +195,11 @@ static size_t PNMInteger(Image *image,const unsigned int base,
               p=comment+strlen(comment);
             }
           c=ReadBlobByte(image);
-          *p=(char) c;
-          *(p+1)='\0';
+          if (c != (int) '\n')
+            {
+              *p=(char) c;
+              *(p+1)='\0';
+            }
         }
         if (comment == (char *) NULL)
           return(0);
