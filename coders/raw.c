@@ -93,8 +93,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadRAWImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadRAWImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *canvas_image,
@@ -199,8 +198,8 @@ static Image *ReadRAWImage(const ImageInfo *image_info,
 
       if (count != (ssize_t) length)
         {
-          ThrowFileException(exception,CorruptImageError,
-            "UnexpectedEndOfFile",image->filename);
+          ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
+            image->filename);
           break;
         }
       q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,exception);
