@@ -1423,8 +1423,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         composite_traits=GetPixelChannelMapTraits(composite_image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if ((compose != AlphaCompositeOp) &&
-            (compose != IntensityCompositeOp) &&
+        if ((compose != IntensityCompositeOp) &&
             (composite_traits == UndefinedPixelTrait))
           continue;
         /*
@@ -1450,7 +1449,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             {
               case AlphaCompositeOp:
               {
-                pixel=Sa;
+                pixel=QuantumRange*Sa;
                 break;
               }
               case AtopCompositeOp:
@@ -1584,6 +1583,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         gamma=1.0/(fabs(alpha) <= MagickEpsilon ? 1.0 : alpha);
         switch (compose)
         {
+          case AlphaCompositeOp:
+          {
+            pixel=QuantumRange*Sa;
+            break;
+          }
           case AtopCompositeOp:
           case SrcAtopCompositeOp:
           {
