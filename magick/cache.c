@@ -5003,7 +5003,7 @@ static inline MagickBooleanType AcquireCacheNexusPixels(CacheInfo *cache_info,
   if (nexus_info->length != (MagickSizeType) ((size_t) nexus_info->length))
     return(MagickFalse);
   nexus_info->mapped=MagickFalse;
-  nexus_info->cache=(PixelPacket *) AcquireAlignedMemory((size_t)
+  nexus_info->cache=(PixelPacket *) AcquireAlignedMemory(1,(size_t)
     nexus_info->length);
   if (nexus_info->cache == (PixelPacket *) NULL)
     {
