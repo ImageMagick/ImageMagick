@@ -197,11 +197,8 @@ static inline Quantum GetPixelIntensity(const Image *restrict image,
   const Quantum *restrict pixel)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  if ((pixel[image->channel_map[RedPixelChannel].offset] ==
-       pixel[image->channel_map[GreenPixelChannel].offset]) &&
-      (pixel[image->channel_map[GreenPixelChannel].offset] ==
-       pixel[image->channel_map[BluePixelChannel].offset]))
-    return(pixel[image->channel_map[RedPixelChannel].offset]);
+  if (image->colorspace == GRAYColorspace)
+    return(pixel[image->channel_map[GrayPixelChannel].offset]);
   return((Quantum) (0.299*pixel[image->channel_map[RedPixelChannel].offset]+
     0.587*pixel[image->channel_map[GreenPixelChannel].offset]+0.114*
     pixel[image->channel_map[BluePixelChannel].offset]+0.5));
