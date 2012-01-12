@@ -172,13 +172,13 @@
   <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
 </div>
 <div class="sponsor">
+  <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
+</div>
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201203010270 info@pkwte... -->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: Tenant Check" href="http://www.rentmethod.com/">Tenant Check</a><!-- 201203010090s chris@rentm... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201203010090 barsh@inter... -->
@@ -211,7 +211,7 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012090100150 brooks@stripes...-->
+   <a rel="follow" title="Sponsor: Photo Sharing Websites" href="http://www.zoofoo.com">Photo Sharing Websites</a><!-- 2012050100150 dancu@dans...-->
 </div>
 <div class="sponsor">
    <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.webhostingclue.com">Best Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
@@ -238,7 +238,14 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-01-01  6.7.4-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2011-01-10  6.7.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.4-5, SVN revision 6422.</dd>
+<dt>2012-01-02  6.7.4-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fixed -black-threshold and -white-threshold so they work properly with    the -channels option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20096).</dd>
+<dt>2012-01-02  6.7.4-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Removed PNG_USE_CLONE cruft from the PNG encoder (see 2011-11-19 entry)</dd>
+  <dd> Promote image depths 9-15 to 16 to avoid crashing in the PNG    encoder (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20098).</dd>
+<dt>2011-01-01  6.7.4-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.4-4, SVN revision 6318.</dd>
 <dt>2010-12-30  6.7.4-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Fix problems with JNG encoder "quality" (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20076).</dd>
@@ -286,7 +293,7 @@
   <dd> Don't include alpha channel when computing range unless image-&gt;matte is    set.</dd>
   <dd> Set FILETYPE_REDUCEDIMAGE tag on pyramidal TIFF images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19892).</dd>
   <dd> Correct image geometry for Postscript for hi-res bounding box (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19807).</dd>
-<dt>2010-11-19  6.7.3-8 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+<dt>2011-11-19  6.7.3-8 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Fixed bug with scaling Q16 background to PNG sub-8-bit bKGD and    again disabled PNG_USE_CLONE in coders/png.c.</dd>
 <dt>2011-11-18  6.7.3-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.3-7, SVN revision 6024</dd>
