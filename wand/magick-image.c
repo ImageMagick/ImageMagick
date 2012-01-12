@@ -3171,9 +3171,8 @@ WandExport MagickBooleanType MagickExportImagePixels(MagickWand *wand,
 %
 %  The format of the MagickExtentImage method is:
 %
-%      MagickBooleanType MagickExtentImage(MagickWand *wand,
-%        const size_t width,const size_t height,const ssize_t x,
-%        const ssize_t y)
+%      MagickBooleanType MagickExtentImage(MagickWand *wand,const size_t width,
+%        const size_t height,const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -3189,8 +3188,7 @@ WandExport MagickBooleanType MagickExportImagePixels(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickExtentImage(MagickWand *wand,
-  const size_t width,const size_t height,const ssize_t x,
-  const ssize_t y)
+  const size_t width,const size_t height,const ssize_t x,const ssize_t y)
 {
   Image
     *extent_image;
