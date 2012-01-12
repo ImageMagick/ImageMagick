@@ -173,13 +173,13 @@
   <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
 </div>
 <div class="sponsor">
+  <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
+</div>
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201203010270 info@pkwte... -->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: Tenant Check" href="http://www.rentmethod.com/">Tenant Check</a><!-- 201203010090s chris@rentm... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201203010090 barsh@inter... -->
@@ -212,10 +212,10 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012090100150 brooks@stripes...-->
+   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Brand shopping" href="http://brandport.net">Brand shopping</a><!-- 20120201000150 gyaku@gyaku... -->
+   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.hostucan.com">Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
 </div>
 </div>
 </div>
@@ -240,22 +240,17 @@
 
 <h1>ImageMagick Version 7 Porting Guide</h1>
 
-<p class="navigation-index">[<a href="#headers">Header Files</a> &bull; <a href="#channels">Pixel Channels</a> &bull; <a href="#alpha">Alpha</a> &bull; <a href="#grayscale">Grayscale</a> &bull; <a href="#core">MagickCore API Changes</a> &bull; <a href="#depecate">Deprecated Features Removed</a> &bull; <a href="#cli">Command-line Interface</a> &bull; <a href="#summary">Version 7 Change Summary</a> ]</p>
+<p class="navigation-index">[<a href="#imv7">ImageMagick Version 7</a> &bull; <a href="#channels">Pixel Channels</a> &bull; <a href="#alpha">Alpha</a> &bull; <a href="#grayscale">Grayscale</a> &bull; <a href="#core">MagickCore API Changes</a> &bull; <a href="#headers">Header Files</a>  &bull; <a href="#depecate">Deprecated Features Removed</a> &bull; <a href="#cli">Command-line Interface</a> &bull; <a href="#summary">Version 7 Change Summary</a> ]</p>
 
+<h2><a id="imv7"></a>ImageMagick Version 7</h2>
+<div class="doc-section">
 <p>The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With ImageMagick version 7 we aim to improve the design based on lessons learned from the version 6 implementation.  ImageMagick was originally designed to display RGB images to an X Windows server.  Over time we extended support to RGBA images and then to the CMYK and CMYKA image format.  With ImageMagick version 7, we extend support to arbitrary colorspaces with an arbitrary number of pixel channels.  Other design changes are in the works and we will document them here so be sure to revisit periodically.</p>
 
-<p>To support variable pixel channels in the MagickCore API, pixel handling has changed when getting or setting the pixel channels.  You can access channels as an array, pixel[i], or use an accessor such as GetPixelRed() or SetPixelRed().  There are some modest changes to the MagickWand API.   Magick++ and PerlMagick should behave exactly as it does for ImageMagick version 6.</p>
+<p>To support variable pixel channels in the MagickCore API, pixel handling has changed when getting or setting the pixel channels.  You can access channels as an array, <em>pixel[i]</em>, or use an accessor such as GetPixelRed() or SetPixelRed().  There are some modest changes to the MagickWand API.   Magick++ and PerlMagick should behave exactly as it does for ImageMagick version 6.</p>
 
-<p>We intend to make ImageMagick version 7 available as an Alpha release by the end-of-year 2011.  Look for a Beta release sometime in 2012.  An official ImageMagick version 7 release will depend on how smoothly the Beta cycle progresses.  During the Beta cycle, version 6 developers can attempt to port their software to version 7.<p>
+<p>We intend to make ImageMagick version 7 available as an Alpha release by the mid-year 2012.  Look for a Beta release sometime in late 2012.  An official ImageMagick version 7 release depends on how smoothly the Beta cycle progresses.  During the Beta cycle, version 6 developers can attempt to port their software to version 7.<p>
 
 <p>During the ImageMagick version 7 development cycle and release, we will continue to support and enhance version 6 for a minimum of 10 years.</p>
-<h2><a id="headers"></a>Header Files</h2>
-<div class="doc-section">
-<p>Prior versions of ImageMagick (4-6) reference the ImageMagick header files as <kbd>magick/</kbd> and <kbd>wand/</kbd>.  ImageMagick 7 instead uses <kbd>MagickCore/</kbd> and <kbd>MagickWand/</kbd> respectively.  For example,</p>
-<pre class="code">
-#include &lt;MagickCore/MagickCore.h>
-#include &lt;MagickWand/MagickWand.h>
-</pre>
 </div>
 
 <h2><a id="channels"></a>Pixel Channels</h2>
@@ -297,10 +292,9 @@
   }
 </pre>
 
-<p>ImageMagick version 7 supports any number of channels from 1 to 32 (and beyond) and simplifies access with a single method that returns an array of pixel channels of type Quantum.   Source code that compiles against prior versions of ImageMagick will require refactoring to work with ImageMagick version 7.  We illustrate with an example.  Let's naively refactor the version 6 code snippet from above so it works with the ImageMagick version 7 API:</p>
+<p>ImageMagick version 7 supports any number of channels from 1 to 32 (and beyond) and simplifies access with a single method that returns an array of pixel channels of type Quantum.   Source code that compiles against prior versions of ImageMagick requires refactoring to work with ImageMagick version 7.  We illustrate with an example.  Let's naively refactor the version 6 code snippet from above so it works with the ImageMagick version 7 API:</p>
 
 <pre class="code">
-  SetPixelAlphaTraits(CopyPixelTrait);
   for (y=0; y &lt; (ssize_t) image->rows; y++)
   {
     register Quantum
@@ -333,7 +327,6 @@
 
 <p>Let's do that again but take full advantage of the new variable pixel channel support:</p>
 <pre class="code">
-  SetPixelAlphaTraits(CopyPixelTrait);
   for (y=0; y &lt; (ssize_t) image->rows; y++)
   {
     register Quantum
@@ -370,7 +363,7 @@
   }
 </pre>
 
-<p>Use GetPixelChannels() to advance to the next set of pixel channels.</p>
+<p>Note, how we use GetPixelChannels() to advance to the next set of pixel channels.</p>
 
 <p>The colormap indexes and black pixel channel (for the CMYK colorspace) are no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead they are now a pixel channel and accessed with the convenience pixel accessor methods GetPixelIndex(), SetPixelIndex(), GetPixelBlack(), and SetPixelBlack().</p>
 
@@ -510,8 +503,17 @@
 <p>All method channel analogs have been removed (e.g. BlurImageChannel()), they are no longer necessary, use pixel traits instead.</p>
 <p>Public and private API calls are now declared with the GCC visibility attribute.  The MagickCore and MagickWand dynamic libraries now only export public struct and function declarations.</p>
 <p>The InterpolatePixelMethod enum is now PixelInterpolateMethod.</p>
-<p>To account for variable pixel channels, images may now return a different signature.</p>
+<p>The IntegerPixel storage type is removed (use LongPixel instead) and LongLongPixel is added</p>
+<p>Image signatures have changed to account for variable pixel channels.</p>
 <p>All color packet structures, PixelPacket, LongPacket, and DoublePacket, are consolidated to a single color structure, PixelInfo.</p>
+</div>
+<h2><a id="headers"></a>Header Files</h2>
+<div class="doc-section">
+<p>Prior versions of ImageMagick (4-6) reference the ImageMagick header files as <kbd>magick/</kbd> and <kbd>wand/</kbd>.  ImageMagick 7 instead uses <kbd>MagickCore/</kbd> and <kbd>MagickWand/</kbd> respectively.  For example,</p>
+<pre class="code">
+#include &lt;MagickCore/MagickCore.h>
+#include &lt;MagickWand/MagickWand.h>
+</pre>
 </div>
 <h2><a id="deprecate"></a>Deprecated Features Removed</h2>
 <div class="doc-section">
@@ -521,9 +523,9 @@
   MagickCore-config
   MagickWand-config
 </pre>
+<p>The FilterImage() method has been removed.  Use ConvolveImage() instead.</p>
 
 <p>In addition, all deprecated <a href="http://magick.imagemagick.org/api/deprecate.html">MagickCore</a> and <a href="http://magick.imagemagick.org/api/magick-deprecate.html">MagickWand</a> methods are no longer available in version 7.</p>
-<li>The FilterImage() method has been removed.  Use ConvolveImage() instead.</li>
 </div>
 <h2><a id="cli"></a>Command-line Interface</h2>
 <div class="doc-section">
