@@ -3356,10 +3356,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       image->storage_class=DirectClass;
     }
 
-  if ((ping_color_type == PNG_COLOR_TYPE_GRAY) ||
-      (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
-    image->colorspace=GRAYColorspace;
-
   for (j = 0; j < 2; j++)
   {
     if (j == 0)
