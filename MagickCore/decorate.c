@@ -379,7 +379,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     Draw sides of ornamental border.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
-  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_throttle(1)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -679,7 +679,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   progress=0;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
-  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_throttle(1)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) raise_info->height; y++)
   {
@@ -768,7 +768,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_throttle(1)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=(ssize_t) raise_info->height; y < (ssize_t) (image->rows-raise_info->height); y++)
   {
@@ -840,7 +840,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
-  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_throttle(1)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
   for (y=(ssize_t) (image->rows-raise_info->height); y < (ssize_t) image->rows; y++)
   {
