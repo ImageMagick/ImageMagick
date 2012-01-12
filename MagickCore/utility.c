@@ -1843,7 +1843,8 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
 #if !defined(MAGICKCORE_HAVE_EXECVP)
   status=system(shell_command);
 #else
-  if ((asynchronous != MagickFalse) || (strspn(shell_command,"&;<>|") == 0))
+  if ((asynchronous != MagickFalse) ||
+      (strpbrk(shell_command,"&;<>|") == (char *) NULL))
     status=system(shell_command);
   else
     {
