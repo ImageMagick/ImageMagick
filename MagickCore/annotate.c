@@ -1250,20 +1250,15 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
      flags|=FT_LOAD_TARGET_MONO;
   else
     {
-#ifdef FT_LOAD_TARGET_LCD
-      flags|=FT_LOAD_TARGET_LCD;
-#else
-#if FT_LOAD_TARGET_LIGHT
+#if defined(FT_LOAD_TARGET_LIGHT)
       flags|=FT_LOAD_TARGET_LIGHT;
-#endif
+#elif defined(FT_LOAD_TARGET_LCD)
+      flags|=FT_LOAD_TARGET_LCD;
 #endif
     }
   value=GetImageProperty(image,"type:hinting",exception);
   if ((value != (const char *) NULL) && (LocaleCompare(value,"off") == 0))
     flags|=FT_LOAD_NO_HINTING;
-  value=GetImageProperty(image,"type:autohint",exception);
-  if ((value != (const char *) NULL) && (LocaleCompare(value,"on") == 0))
-    flags|=FT_LOAD_FORCE_AUTOHINT;
   glyph.id=0;
   glyph.image=NULL;
   last_glyph.id=0;
