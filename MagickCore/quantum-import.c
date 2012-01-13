@@ -90,7 +90,7 @@
 %
 %  The format of the ImportQuantumPixels method is:
 %
-%      size_t ImportQuantumPixels(Image *image,CacheView *image_view,
+%      size_t ImportQuantumPixels(const Image *image,CacheView *image_view,
 %        QuantumInfo *quantum_info,const QuantumType quantum_type,
 %        const unsigned char *pixels,ExceptionInfo *exception)
 %
@@ -3411,9 +3411,10 @@ static void ImportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
   }
 }
 
-MagickExport size_t ImportQuantumPixels(Image *image,CacheView *image_view,
-  QuantumInfo *quantum_info,const QuantumType quantum_type,
-  const unsigned char *pixels,ExceptionInfo *exception)
+MagickExport size_t ImportQuantumPixels(const Image *image,
+  CacheView *image_view,QuantumInfo *quantum_info,
+  const QuantumType quantum_type,const unsigned char *pixels,
+  ExceptionInfo *exception)
 {
   MagickSizeType
     number_pixels;
