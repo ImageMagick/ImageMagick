@@ -1230,7 +1230,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       flags|=FT_LOAD_TARGET_LCD;
 #endif
     }
-  value=GetImageProperty(image,"type:hinting",exception);
+  value=GetImageProperty(image,"type:hinting");
   if ((value != (const char *) NULL) && (LocaleCompare(value,"off") == 0))
     flags|=FT_LOAD_NO_HINTING;
   glyph.id=0;
