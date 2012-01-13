@@ -7479,8 +7479,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 else
                   {
                     /*
-                      Set a blending mask for the composition.
-                      Posible error, what if image->mask already set.
+                      Set a blending mask for the composition.  Possible
+                      problem, what if image->mask already set.
                     */
                     image->mask=mask_image;
                     (void) NegateImage(image->mask,MagickFalse,exception);
@@ -7489,7 +7489,10 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             (void) CompositeImage(image,image->compose,composite_image,
               geometry.x,geometry.y,exception);
             if (mask_image != (Image *) NULL)
-              mask_image=image->mask=DestroyImage(image->mask);
+              {
+                image->mask=DestroyImage(image->mask);
+                mask_image=(Image *) NULL;
+              }
             composite_image=DestroyImage(composite_image);
             *images=DestroyImageList(*images);
             *images=image;

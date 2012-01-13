@@ -531,11 +531,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   MagickStatusType
     flags;
 
-  ssize_t
-    y;
-
   size_t
     channels;
+
+  ssize_t
+    y;
 
   /*
      Composition based on the SVG specification:
@@ -584,7 +584,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
          performed as 'pure' mathematical operations, rather than as image
          operations.
   */
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
@@ -1581,6 +1580,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             break;
         }
         gamma=1.0/(fabs(alpha) <= MagickEpsilon ? 1.0 : alpha);
+        pixel=Dc;
         switch (compose)
         {
           case AlphaCompositeOp:
@@ -1694,30 +1694,35 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case CopyAlphaCompositeOp:
           case IntensityCompositeOp:
           {
-            pixel=Dc;
+            if (channel == AlphaPixelChannel)
+              pixel=(MagickRealType) GetPixelAlpha(composite_image,p);
             break;
           }
           case CopyBlackCompositeOp:
           {
-            pixel=(MagickRealType) GetPixelBlack(composite_image,p);
+            if (channel == BlackPixelChannel)
+              pixel=(MagickRealType) GetPixelBlack(composite_image,p);
             break;
           }
           case CopyBlueCompositeOp:
           case CopyYellowCompositeOp:
           {
-            pixel=(MagickRealType) GetPixelBlue(composite_image,p);
+            if (channel == BluePixelChannel)
+              pixel=(MagickRealType) GetPixelBlue(composite_image,p);
             break;
           }
           case CopyGreenCompositeOp:
           case CopyMagentaCompositeOp:
           {
-            pixel=(MagickRealType) GetPixelGreen(composite_image,p);
+            if (channel == GreenPixelChannel)
+              pixel=(MagickRealType) GetPixelGreen(composite_image,p);
             break;
           }
           case CopyRedCompositeOp:
           case CopyCyanCompositeOp:
           {
-            pixel=(MagickRealType) GetPixelRed(composite_image,p);
+            if (channel == RedPixelChannel)
+              pixel=(MagickRealType) GetPixelRed(composite_image,p);
             break;
           }
           case DarkenCompositeOp:
