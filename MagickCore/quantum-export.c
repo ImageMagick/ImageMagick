@@ -3181,9 +3181,9 @@ static void ExportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
   }
 }
 
-MagickExport size_t ExportQuantumPixels(Image *image,CacheView *image_view,
-  QuantumInfo *quantum_info,const QuantumType quantum_type,
-  unsigned char *pixels,ExceptionInfo *exception)
+MagickExport size_t ExportQuantumPixels(const Image *image,
+  CacheView *image_view,QuantumInfo *quantum_info,
+  const QuantumType quantum_type,unsigned char *pixels,ExceptionInfo *exception)
 {
   MagickSizeType
     number_pixels;
