@@ -1658,7 +1658,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
 */
 
 static void Hull(const ssize_t x_offset,const ssize_t y_offset,
-  const size_t columns,const size_t rows,const int polarity,const Quantum *f,
+  const size_t columns,const size_t rows,const int polarity,Quantum *f,
   Quantum *g)
 {
   MagickRealType
