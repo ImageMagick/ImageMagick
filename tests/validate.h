@@ -260,7 +260,7 @@ static const struct ReferenceFormats
     { "FRACTAL", UndefinedCompression, 0.0 },
     { "GIF", UndefinedCompression, 0.0 },
     { "GIF87", UndefinedCompression, 0.0 },
-    { "GRAY", UndefinedCompression, 0.0 },
+    { "GRAY", UndefinedCompression, 0.003 },
     { "HTM", UndefinedCompression, 0.0 },
     { "HRZ", UndefinedCompression, 0.0 },
     { "HTML", UndefinedCompression, 0.0 },
