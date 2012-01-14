@@ -522,7 +522,7 @@ MagickExport QuantumType GetQuantumType(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e s e t Q u a n t u m S t a t e                                         %
++   R e s e t Q u a n t u m S t a t e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -539,7 +539,7 @@ MagickExport QuantumType GetQuantumType(Image *image,ExceptionInfo *exception)
 %    o quantum_info: the quantum info.
 %
 */
-MagickExport void ResetQuantumState(QuantumInfo *quantum_info)
+MagickPrivate void ResetQuantumState(QuantumInfo *quantum_info)
 {
   static const unsigned int mask[32] =
   {

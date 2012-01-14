@@ -85,6 +85,9 @@ struct _QuantumInfo
     signature;
 };
 
+extern MagickPrivate void
+  ResetQuantumState(QuantumInfo *);
+
 static inline MagickSizeType GetQuantumRange(const size_t depth)
 {
   MagickSizeType

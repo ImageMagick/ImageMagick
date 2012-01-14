@@ -177,7 +177,6 @@ extern MagickExport unsigned char
 
 extern MagickExport void
   GetQuantumInfo(const ImageInfo *,QuantumInfo *),
-  ResetQuantumState(QuantumInfo *),
   SetQuantumAlphaType(QuantumInfo *,const QuantumAlphaType),
   SetQuantumImageType(Image *,const QuantumType),
   SetQuantumMinIsWhite(QuantumInfo *,const MagickBooleanType),
