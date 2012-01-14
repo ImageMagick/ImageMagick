@@ -80,7 +80,7 @@ extern "C" {
 #    define WandExport __declspec(dllimport)
 #   endif
 #   if defined(_VISUALC_)
-#    pragma message( "WandWand lib DLL import interface" )
+#    pragma message( "MagickWand lib DLL import interface" )
 #   endif
 #  else
 #   if defined(__GNUC__)
@@ -89,31 +89,14 @@ extern "C" {
 #    define WandExport __declspec(dllexport)
 #   endif
 #   if defined(_VISUALC_)
-#    pragma message( "WandWand lib DLL export interface" )
+#    pragma message( "MagickWand lib DLL export interface" )
 #   endif
 #  endif
 # else
 #  define WandExport
 #  if defined(_VISUALC_)
-#   pragma message( "WandWand lib static interface" )
+#   pragma message( "MagickWand lib static interface" )
 #  endif
-# endif
-
-# if defined(_DLL) && !defined(_LIB)
-#   if defined(__GNUC__)
-#    define ModuleExport __attribute__ ((dllexport))
-#   else
-#    define ModuleExport __declspec(dllexport)
-#   endif
-#  if defined(_VISUALC_)
-#   pragma message( "WandWand module DLL export interface" )
-#  endif
-# else
-#  define ModuleExport
-#  if defined(_VISUALC_)
-#   pragma message( "WandWand module static interface" )
-#  endif
-
 # endif
 # define WandGlobal __declspec(thread)
 # if defined(_VISUALC_)
@@ -133,10 +116,8 @@ extern "C" {
 #   define WandExport
 #   define WandPrivate
 # endif
-# define ModuleExport  WandExport
 # define WandGlobal
 #endif
-
 
 #if defined(__cplusplus) || defined(c_plusplus)
 # define storage_class  c_class

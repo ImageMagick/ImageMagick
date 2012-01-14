@@ -1841,7 +1841,7 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
   status=system(shell_command);
 #else
   if ((asynchronous != MagickFalse) ||
-      (strpbrk(shell_command,"&;<>|") == (char *) NULL))
+      (strpbrk(shell_command,"&;<>|") != (char *) NULL))
     status=system(shell_command);
   else
     {

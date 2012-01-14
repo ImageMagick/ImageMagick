@@ -48,10 +48,6 @@
 /*
   Include declarations.
 */
-#if !defined(WIN32)
-#define MagickExport
-#endif
-
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif

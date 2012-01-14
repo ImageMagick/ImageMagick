@@ -1105,6 +1105,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         TIFFClose(tiff);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
+    quantum_info->endian=LSBEndian;
+    if (endian == FILLORDER_LSB2MSB)
+      quantum_info->endian=MSBEndian;
+    image->endian=quantum_info->endian;
     if (sample_format == SAMPLEFORMAT_UINT)
       status=SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
     if (sample_format == SAMPLEFORMAT_INT)
@@ -1679,9 +1683,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
     if (image->storage_class == PseudoClass)
       image->depth=GetImageDepth(image,exception);
-    image->endian=MSBEndian;
-    if (endian == FILLORDER_LSB2MSB)
-      image->endian=LSBEndian;
     if ((photometric == PHOTOMETRIC_LOGL) ||
         (photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
