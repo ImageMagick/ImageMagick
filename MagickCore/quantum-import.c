@@ -351,7 +351,7 @@ static void ImportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -403,7 +403,7 @@ static void ImportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 10:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       if (quantum_info->pack == MagickFalse)
         {
           for (x=0; x < (ssize_t) number_pixels; x++)
@@ -446,7 +446,7 @@ static void ImportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 12:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       if (quantum_info->pack == MagickFalse)
         {
           unsigned short
@@ -657,7 +657,7 @@ static void ImportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -887,7 +887,7 @@ static void ImportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -1013,7 +1013,7 @@ static void ImportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -1128,7 +1128,7 @@ static void ImportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -1219,7 +1219,7 @@ static void ImportCbYCrYQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -1380,7 +1380,7 @@ static void ImportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -1559,7 +1559,7 @@ static void ImportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -1633,7 +1633,7 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
       register unsigned char
         pixel;
 
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < ((ssize_t) number_pixels-1); x+=2)
       {
         pixel=(unsigned char) ((*p >> 4) & 0xf);
@@ -1681,7 +1681,7 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 10:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       if (quantum_info->pack == MagickFalse)
         {
           if (image->endian != LSBEndian)
@@ -1755,7 +1755,7 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 12:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       if (quantum_info->pack == MagickFalse)
         {
           unsigned short
@@ -1878,7 +1878,7 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -1944,7 +1944,7 @@ static void ImportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
       register unsigned char
         pixel;
 
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         pixel=(unsigned char) ((*p >> 4) & 0xf);
@@ -1974,7 +1974,7 @@ static void ImportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 10:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -1988,7 +1988,7 @@ static void ImportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 12:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -2084,7 +2084,7 @@ static void ImportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -2201,7 +2201,7 @@ static void ImportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -2491,7 +2491,7 @@ static void ImportIndexAlphaQuantum(const Image *image,
       register unsigned char
         pixel;
 
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         pixel=(unsigned char) ((*p >> 4) & 0xf);
@@ -2620,7 +2620,7 @@ static void ImportIndexAlphaQuantum(const Image *image,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -2742,7 +2742,7 @@ static void ImportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -2856,7 +2856,7 @@ static void ImportRedQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -2908,7 +2908,7 @@ static void ImportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 10:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       if (quantum_info->pack == MagickFalse)
         {
           for (x=0; x < (ssize_t) number_pixels; x++)
@@ -2951,7 +2951,7 @@ static void ImportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     case 12:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       if (quantum_info->pack == MagickFalse)
         {
           unsigned short
@@ -3162,7 +3162,7 @@ static void ImportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
@@ -3392,7 +3392,7 @@ static void ImportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
     }
     default:
     {
-      range=GetQuantumRange(image->depth);
+      range=GetQuantumRange(quantum_info->depth);
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
