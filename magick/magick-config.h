@@ -554,9 +554,7 @@
 #endif
 
 /* Define to 1 if you have a working `mmap' system call. */
-#ifndef MAGICKCORE_HAVE_MMAP_FILEIO
-#define MAGICKCORE_HAVE_MMAP_FILEIO 1
-#endif
+/* #undef HAVE_MMAP_FILEIO */
 
 /* Define to 1 if you have the `munmap' function. */
 #ifndef MAGICKCORE_HAVE_MUNMAP
@@ -1142,9 +1140,7 @@
 #endif
 
 /* Define to 1 if the system has the type `_Bool'. */
-#ifndef MAGICKCORE_HAVE__BOOL
-#define MAGICKCORE_HAVE__BOOL 1
-#endif
+/* #undef HAVE__BOOL */
 
 /* Define to 1 if you have the `_exit' function. */
 #ifndef MAGICKCORE_HAVE__EXIT
@@ -1220,9 +1216,7 @@
 /* #undef LQR_DELEGATE */
 
 /* Define if using libltdl to support dynamically loadable modules */
-#ifndef MAGICKCORE_LTDL_DELEGATE
-#define MAGICKCORE_LTDL_DELEGATE 1
-#endif
+/* #undef LTDL_DELEGATE */
 
 /* Define if the OS needs help to load dependent libraries for dlopen(). */
 /* #undef LTDL_DLOPEN_DEPLIBS */

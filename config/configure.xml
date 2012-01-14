@@ -11,8 +11,8 @@
   <configure name="LIB_VERSION" value="0x674"/>
   <configure name="LIB_VERSION_NUMBER" value="6,7,4,7"/>
   <configure name="SVN_REVISION" value="6343" />
-  <configure name="RELEASE_DATE" value="2012-01-12"/>
-  <configure name="CONFIGURE" value="./configure "/>
+  <configure name="RELEASE_DATE" value="2012-01-14"/>
+  <configure name="CONFIGURE" value="./configure  '--disable-shared' 'CC=g++'"/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
   <configure name="INCLUDE_PATH" value="/usr/local/include/ImageMagick"/>
@@ -23,16 +23,16 @@
   <configure name="LIBRARY_PATH" value="/usr/local/lib/ImageMagick-6.7.4"/>
   <configure name="CODER_PATH" value="/usr/local/lib/ImageMagick-6.7.4/modules-Q16/coders"/>
   <configure name="FILTER_PATH" value="/usr/local/lib/ImageMagick-6.7.4/modules-Q16/filters"/>
-  <configure name="CC" value="gcc -std=gnu99 -std=gnu99"/>
+  <configure name="CC" value="g++"/>
   <configure name="CFLAGS" value="-fopenmp -g -O2 -Wall -pthread"/>
   <configure name="CPPFLAGS" value="-I/usr/local/include/ImageMagick"/>
   <configure name="PCFLAGS" value="-fopenmp"/>
   <configure name="DEFS" value="-DHAVE_CONFIG_H"/>
   <configure name="LDFLAGS" value="-L/usr/local/lib -L/usr/lib"/>
-  <configure name="LIBS" value="-lMagickCore -llcms2 -ltiff -lfreetype -ljasper -ljpeg -lpng12 -ldjvulibre -lfftw3 -lfontconfig -lwmflite -lXext -lXt -lSM -lICE -lX11 -llzma -lbz2 -pthread -lpangoft2-1.0 -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lxml2 -lgvc -lgraph -lcdt -lz -lm -lgomp -lpthread -lltdl"/>
+  <configure name="LIBS" value="-lMagickCore -llcms2 -ltiff -lfreetype -ljasper -ljpeg -lpng12 -ldjvulibre -lfftw3 -lfontconfig -lwmflite -lXext -lXt -lSM -lICE -lX11 -llzma -lbz2 -pthread -lpangoft2-1.0 -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lxml2 -lgvc -lgraph -lcdt -lz -lm -lgomp -lpthread "/>
   <configure name="CXX" value="g++"/>
   <configure name="CXXFLAGS" value="-g -O2 -pthread"/>
-  <configure name="DISTCHECK_CONFIG_FLAGS" value="--disable-deprecated --with-quantum-depth=16 --with-umem=no --with-autotrace=no --with-gslib=no --with-fontpath= --with-perl=no"/>
+  <configure name="DISTCHECK_CONFIG_FLAGS" value="'CC=g++' --disable-deprecated --with-quantum-depth=16 --with-umem=no --with-autotrace=no --with-gslib=no --with-fontpath= --with-perl=no"/>
   <configure name="TARGET_CPU" value="x86_64"/>
   <configure name="TARGET_VENDOR" value="unknown"/>
   <configure name="TARGET_OS" value="linux-gnu"/>

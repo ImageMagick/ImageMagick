@@ -63,7 +63,7 @@ typedef struct _ModuleInfo
     signature;
 } ModuleInfo;
 
-typedef ModuleExport size_t
+typedef size_t
   ImageFilterHandler(Image **,const int,const char **,ExceptionInfo *);
 
 extern MagickExport char

@@ -1658,8 +1658,8 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
 */
 
 static void Hull(const ssize_t x_offset,const ssize_t y_offset,
-  const size_t columns,const size_t rows,Quantum *f,Quantum *g,
-  const int polarity)
+  const size_t columns,const size_t rows,const int polarity,const Quantum *f,
+  Quantum *g)
 {
   MagickRealType
     v;
@@ -1879,10 +1879,10 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     (void) ResetMagickMemory(buffer,0,length*sizeof(*buffer));
     for (k=0; k < 4; k++)
     {
-      Hull(X[k],Y[k],image->columns,image->rows,pixel,buffer,1);
-      Hull(-X[k],-Y[k],image->columns,image->rows,pixel,buffer,1);
-      Hull(-X[k],-Y[k],image->columns,image->rows,pixel,buffer,-1);
-      Hull(X[k],Y[k],image->columns,image->rows,pixel,buffer,-1);
+      Hull(X[k],Y[k],image->columns,image->rows,1,pixel,buffer);
+      Hull(-X[k],-Y[k],image->columns,image->rows,1,pixel,buffer);
+      Hull(-X[k],-Y[k],image->columns,image->rows,-1,pixel,buffer);
+      Hull(X[k],Y[k],image->columns,image->rows,-1,pixel,buffer);
     }
     j=(ssize_t) image->columns+2;
     for (y=0; y < (ssize_t) image->rows; y++)
