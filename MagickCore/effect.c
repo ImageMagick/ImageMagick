@@ -1577,15 +1577,14 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  Quantum
-    *restrict buffers,
-    *restrict pixels;
-
-  register ssize_t
-    i;
+  MagickOffsetType
+    progress;
 
   size_t
-    length;
+    extent;
+
+  ssize_t
+    y;
 
   static const ssize_t
     X[4] = {0, 1, 1,-1},
@@ -1600,7 +1599,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  despeckle_image=CloneImage(image,0,0,MagickTrue,exception);
+  despeckle_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
   if (despeckle_image == (Image *) NULL)
     return((Image *) NULL);
   status=SetImageStorageClass(despeckle_image,DirectClass,exception);
@@ -1610,130 +1610,115 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   /*
-    Allocate image buffers.
-  */
-  length=(size_t) ((image->columns+2)*(image->rows+2));
-  pixels=(Quantum *) AcquireQuantumMemory(length,2*sizeof(*pixels));
-  buffers=(Quantum *) AcquireQuantumMemory(length,2*sizeof(*pixels));
-  if ((pixels == (Quantum *) NULL) || (buffers == (Quantum *) NULL))
-    {
-      if (buffers != (Quantum *) NULL)
-        buffers=(Quantum *) RelinquishMagickMemory(buffers);
-      if (pixels != (Quantum *) NULL)
-        pixels=(Quantum *) RelinquishMagickMemory(pixels);
-      despeckle_image=DestroyImage(despeckle_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  /*
     Reduce speckle in the image.
   */
   status=MagickTrue;
+  progress=0;
+  extent=3*(image->columns+2);
   image_view=AcquireCacheView(image);
   despeckle_view=AcquireCacheView(despeckle_image);
-  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
-    PixelChannel
-      channel;
+    Quantum
+      *restrict buffers,
+      *restrict pixels;
 
-    PixelTrait
-      despeckle_traits,
-      traits;
+    register const Quantum
+      *restrict p;
 
     register Quantum
-      *buffer,
-      *pixel;
+      *restrict q;
 
     register ssize_t
-      k,
-      x;
+      i;
 
-    ssize_t
-      j,
-      y;
-
-    if (status == MagickFalse)
-      continue;
-    channel=GetPixelChannelMapChannel(image,i);
-    traits=GetPixelChannelMapTraits(image,channel);
-    despeckle_traits=GetPixelChannelMapTraits(despeckle_image,channel);
-    if ((traits == UndefinedPixelTrait) ||
-        (despeckle_traits == UndefinedPixelTrait))
-      continue;
-    if ((despeckle_traits & CopyPixelTrait) != 0)
-      continue;
-    pixel=pixels;
-    (void) ResetMagickMemory(pixel,0,length*sizeof(*pixel));
-    buffer=buffers;
-    j=(ssize_t) image->columns+2;
-    for (y=0; y < (ssize_t) image->rows; y++)
-    {
-      register const Quantum
-        *restrict p;
-
-      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-      if (p == (const Quantum *) NULL)
-        {
-          status=MagickFalse;
-          continue;
-        }
-      j++;
-      for (x=0; x < (ssize_t) image->columns; x++)
+    p=GetCacheViewVirtualPixels(image_view,-1,y-1,image->columns+2,3,exception);
+    q=GetCacheViewAuthenticPixels(despeckle_view,0,y,despeckle_image->columns,1,
+      exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
-        pixel[j++]=p[i];
-        p+=GetPixelChannels(image);
-      }
-      j++;
-    }
-    (void) ResetMagickMemory(buffer,0,length*sizeof(*buffer));
-    for (k=0; k < 4; k++)
-    {
-      Hull(X[k],Y[k],image->columns,image->rows,1,pixel,buffer);
-      Hull(-X[k],-Y[k],image->columns,image->rows,1,pixel,buffer);
-      Hull(-X[k],-Y[k],image->columns,image->rows,-1,pixel,buffer);
-      Hull(X[k],Y[k],image->columns,image->rows,-1,pixel,buffer);
-    }
-    j=(ssize_t) image->columns+2;
-    for (y=0; y < (ssize_t) image->rows; y++)
-    {
-      MagickBooleanType
-        sync;
-
-      register Quantum
-        *restrict q;
-
-      q=GetCacheViewAuthenticPixels(despeckle_view,0,y,despeckle_image->columns,
-        1,exception);
-      if (q == (Quantum *) NULL)
-        {
-          status=MagickFalse;
-          continue;
-        }
-      j++;
-      for (x=0; x < (ssize_t) image->columns; x++)
-      {
-        SetPixelChannel(despeckle_image,channel,pixel[j++],q);
-        q+=GetPixelChannels(despeckle_image);
-      }
-      sync=SyncCacheViewAuthenticPixels(despeckle_view,exception);
-      if (sync == MagickFalse)
         status=MagickFalse;
-      j++;
+        continue;
+      }
+    pixels=(Quantum *) AcquireQuantumMemory(extent,sizeof(*pixels));
+    buffers=(Quantum *) AcquireQuantumMemory(extent,sizeof(*buffers));
+    if ((pixels == (Quantum *) NULL) || (buffers == (Quantum *) NULL))
+      {
+        if (buffers != (Quantum *) NULL)
+          buffers=(Quantum *) RelinquishMagickMemory(buffers);
+        if (pixels != (Quantum *) NULL)
+          pixels=(Quantum *) RelinquishMagickMemory(pixels);
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        continue;
+      }
+    for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+    {
+      PixelChannel
+        channel;
+
+      PixelTrait
+        despeckle_traits,
+        traits;
+
+      register ssize_t
+        j,
+        x;
+
+      if (status == MagickFalse)
+        continue;
+      channel=GetPixelChannelMapChannel(image,i);
+      traits=GetPixelChannelMapTraits(image,channel);
+      despeckle_traits=GetPixelChannelMapTraits(despeckle_image,channel);
+      if ((traits == UndefinedPixelTrait) ||
+          (despeckle_traits == UndefinedPixelTrait))
+        continue;
+      for (x=0; x < (ssize_t) (3*(image->columns+2)); x++)
+        pixels[x]=p[x*GetPixelChannels(image)+i];
+      if ((despeckle_traits & CopyPixelTrait) != 0)
+        {
+          /*
+            Do not despeckle this channel, just copy.
+          */
+          for (x=0; x < (ssize_t) image->columns; x++)
+            SetPixelChannel(despeckle_image,channel,pixels[x+image->columns+3],
+              q+x*GetPixelChannels(despeckle_image));
+          continue;
+        }
+      (void) ResetMagickMemory(buffers,0,extent*sizeof(*buffers));
+      for (j=0; j < 4; j++)
+      {
+        Hull(X[j],Y[j],image->columns,1,1,pixels,buffers);
+        Hull(-X[j],-Y[j],image->columns,1,1,pixels,buffers);
+        Hull(-X[j],-Y[j],image->columns,1,-1,pixels,buffers);
+        Hull(X[j],Y[j],image->columns,1,-1,pixels,buffers);
+      }
+      for (x=0; x < (ssize_t) image->columns; x++)
+        SetPixelChannel(despeckle_image,channel,pixels[x+image->columns+3],q+x*
+          GetPixelChannels(despeckle_image));
     }
+    if (SyncCacheViewAuthenticPixels(despeckle_view,exception) == MagickFalse)
+      status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
           proceed;
 
-        proceed=SetImageProgress(image,DespeckleImageTag,(MagickOffsetType) i,
-          GetPixelChannels(image));
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_DespeckleImage)
+#endif
+        proceed=SetImageProgress(image,DespeckleImageTag,progress,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
+    buffers=(Quantum *) RelinquishMagickMemory(buffers);
+    pixels=(Quantum *) RelinquishMagickMemory(pixels);
   }
   despeckle_view=DestroyCacheView(despeckle_view);
   image_view=DestroyCacheView(image_view);
-  buffers=(Quantum *) RelinquishMagickMemory(buffers);
-  pixels=(Quantum *) RelinquishMagickMemory(pixels);
   despeckle_image->type=image->type;
   if (status == MagickFalse)
     despeckle_image=DestroyImage(despeckle_image);
