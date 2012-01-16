@@ -385,8 +385,11 @@ static Image *SparseColorOption(const Image *image,
 %  holding the image_info, draw_info, quantize_info structures that will be
 %  later used when processing images.
 %
-%  These options require no images to be present in the wand for them to be
-%  able to be set.  That is they may be used before the first image is read.
+%  These options do no require images to be present in the wand for them to be
+%  able to be set.  That is they may be used without any image in memory.
+%
+%  Options handled by this function are listed in CommandOptions[] of
+%  "option.c" that is one of "SettingInfoOption" option flags.
 %
 %  The format of the ApplySettingOption method is:
 %
@@ -400,7 +403,7 @@ static Image *SparseColorOption(const Image *image,
 %
 %    o option: The option string to be set
 %
-%    o set_option: is the option being set, or reset to some default
+%    o set_option: is the option being set (-), or reset (+) to some default
 %
 %    o arg: the single argument (if needed) to set this option.
 %
@@ -564,8 +567,8 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
         }
       if (LocaleCompare("caption",option) == 0)
         {
-          (void) SetImageOption(image_info,option,IfSetOption ? arg :
-            (const char*)NULL);
+          (void) SetImageOption(image_info,option,
+               IfSetOption ? arg : (const char*)NULL);
           break;
         }
       if (LocaleCompare("channel",option) == 0)
@@ -832,8 +835,8 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           */
           if (IfSetOption)
             {
-              image_info->fuzz=StringToDoubleInterval(arg,(double) QuantumRange+
-                1.0);
+              image_info->fuzz=StringToDoubleInterval(arg,(double)
+                QuantumRange+1.0);
               (void) SetImageOption(image_info,option,arg);
               break;
             }
@@ -1852,7 +1855,7 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
       if (LocaleCompare("channel",option) == 0)
         {
           /* The "channel" setting has already been set */
-          SetPixelChannelMap(*image,image_info->channel);
+          SetPixelChannelMapMask(*image,image_info->channel);
           break;
         }
       if (LocaleCompare("charcoal",option) == 0)
@@ -2160,19 +2163,19 @@ WandExport MagickBooleanType ApplySettingsOption(MagickWand *wand,
           (void) SyncImageSettings(image_info,*image,exception);
           method=(DistortImageMethod) ParseCommandOption(MagickDistortOptions,
             MagickFalse,args[0]);
-          if ( method == ResizeDistortion )
+          if (method == ResizeDistortion)
             {
+               double
+                 resize_args[2];
                /* Special Case - Argument is actually a resize geometry!
                ** Convert that to an appropriate distortion argument array.
                */
-               double
-                 resize_args[2];
                (void) ParseRegionGeometry(*image,argv[2],&geometry,
-                    exception);
-               resize_args[0]=(double)geometry.width;
-               resize_args[1]=(double)geometry.height;
+                 exception);
+               resize_args[0]=(double) geometry.width;
+               resize_args[1]=(double) geometry.height;
                new_image=DistortImage(*image,method,(size_t)2,
-                    resize_args,MagickTrue,exception);
+                 resize_args,MagickTrue,exception);
                break;
             }
           args=InterpretImageProperties(image_info,*image,argv[2],
@@ -3862,7 +3865,7 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
                 {
                   /*
                     Set a blending mask for the composition.
-                    Posible error, what if image->mask already set.
+                    Possible problem, what if image->mask already set.
                   */
                   image->mask=mask_image;
                   (void) NegateImage(image->mask,MagickFalse,exception);
@@ -3871,7 +3874,10 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
           (void) CompositeImage(image,compose,composite_image,
             geometry.x,geometry.y,exception);
           if (mask_image != (Image *) NULL)
-            mask_image=image->mask=DestroyImage(image->mask);
+            {
+              image->mask=DestroyImage(image->mask);
+              mask_image=(Image *) NULL;
+            }
           composite_image=DestroyImage(composite_image);
           *images=DestroyImageList(*images);
           *images=image;
