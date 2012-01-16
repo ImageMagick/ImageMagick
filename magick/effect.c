@@ -1660,7 +1660,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
 static void inline Hull(const ssize_t x,const ssize_t y,const int polarity,
   Quantum *pixels)
 {
-  double
+  MagickRealType
     pixel;
 
   Quantum
@@ -1671,23 +1671,24 @@ static void inline Hull(const ssize_t x,const ssize_t y,const int polarity,
   b=pixels+4;
   a=b-(y*3)-x;
   c=b+(y*3)+x;
-  pixel=(double) *b;
+  pixel=(MagickRealType) *b;
   if (polarity > 0)
     {
-      if ((double) *c >= (pixel+ScaleCharToQuantum(2)))
+      if ((MagickRealType) *c >= (pixel+ScaleCharToQuantum(2)))
         pixel+=ScaleCharToQuantum(1);
     }
   else
-    if ((double) *c <= (pixel-ScaleCharToQuantum(2)))
+    if ((MagickRealType) *c <= (pixel-ScaleCharToQuantum(2)))
       pixel-=ScaleCharToQuantum(1);
   if (polarity > 0)
     {
-      if (((double) *a >= (pixel+ScaleCharToQuantum(2))) &&
-          ((double) *c > pixel))
+      if (((MagickRealType) *a >= (pixel+ScaleCharToQuantum(2))) &&
+          ((MagickRealType) *c > pixel))
         pixel+=ScaleCharToQuantum(1);
     }
   else
-    if (((double) *a <= (pixel-ScaleCharToQuantum(2))) && ((double) *c < pixel))
+    if (((MagickRealType) *a <= (pixel-ScaleCharToQuantum(2))) &&
+        ((MagickRealType) *c < pixel))
       pixel-=ScaleCharToQuantum(1);
   pixels[4]=ClampToQuantum(pixel);
 }
@@ -1728,7 +1729,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  despeckle_image=CloneImage(image,0,0,MagickTrue,exception);
+  despeckle_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
   if (despeckle_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(despeckle_image,DirectClass) == MagickFalse)
@@ -1743,12 +1745,12 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   status=MagickTrue;
   number_channels=(size_t) (image->colorspace == CMYKColorspace ? 5 : 4);
   progress=0;
-  image_view=AcquireCacheView(despeckle_image);
+  image_view=AcquireCacheView(image);
   despeckle_view=AcquireCacheView(despeckle_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
-  for (y=0; y < (ssize_t) despeckle_image->rows; y++)
+  for (y=0; y < (ssize_t) image->rows; y++)
   {
     MagickBooleanType
       sync;
