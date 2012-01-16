@@ -1643,7 +1643,10 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DespeckleImage() reduces the speckle noise in an image while perserving the
-%  edges of the original image.
+%  edges of the original image.  A speckle removing filter uses a complementary %  hulling technique (raising pixels that are darker than their surrounding
+%  neighbors, then complementarily lowering pixels that are brighter than their
+%  surrounding neighbors) to reduce the speckle index of that image (reference
+%  Crimmins speckle removal).
 %
 %  The format of the DespeckleImage method is:
 %
@@ -1657,40 +1660,94 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
 %
 */
 
-static void inline Hull(const ssize_t x,const ssize_t y,const int polarity,
-  Quantum *pixels)
+static void Hull(const ssize_t x_offset,const ssize_t y_offset,
+  const size_t columns,const size_t rows,const int polarity,Quantum *restrict f,
+  Quantum *restrict g)
 {
-  MagickRealType
-    pixel;
-
   Quantum
-    *a,
-    *b,
-    *c;
+    *p,
+    *q,
+    *r,
+    *s;
 
-  b=pixels+4;
-  a=b-(y*3)-x;
-  c=b+(y*3)+x;
-  pixel=(MagickRealType) *b;
-  if (polarity > 0)
-    {
-      if ((MagickRealType) *c >= (pixel+ScaleCharToQuantum(2)))
-        pixel+=ScaleCharToQuantum(1);
-    }
-  else
-    if ((MagickRealType) *c <= (pixel-ScaleCharToQuantum(2)))
-      pixel-=ScaleCharToQuantum(1);
-  if (polarity > 0)
-    {
-      if (((MagickRealType) *a >= (pixel+ScaleCharToQuantum(2))) &&
-          ((MagickRealType) *c > pixel))
-        pixel+=ScaleCharToQuantum(1);
-    }
-  else
-    if (((MagickRealType) *a <= (pixel-ScaleCharToQuantum(2))) &&
-        ((MagickRealType) *c < pixel))
-      pixel-=ScaleCharToQuantum(1);
-  pixels[4]=ClampToQuantum(pixel);
+  ssize_t
+    y;
+
+  assert(f != (Quantum *) NULL);
+  assert(g != (Quantum *) NULL);
+  p=f+(columns+2);
+  q=g+(columns+2);
+  r=p+(y_offset*(columns+2)+x_offset);
+#if defined(HAVE_OPENMP)
+  #pragma omp parallel for schedule(guided)
+#endif
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    SignedQuantum
+      v;
+
+    ssize_t
+      i,
+      x;
+
+    i=(2*y+1)+y*columns;
+    if (polarity > 0)
+      for (x=0; x < (ssize_t) columns; x++)
+      {
+        v=(SignedQuantum) p[i];
+        if ((SignedQuantum) r[i] >= (v+ScaleCharToQuantum(2)))
+          v+=ScaleCharToQuantum(1);
+        q[i]=(Quantum) v;
+        i++;
+      }
+    else
+      for (x=0; x < (ssize_t) columns; x++)
+      {
+        v=(SignedQuantum) p[i];
+        if ((SignedQuantum) r[i] <= (v-ScaleCharToQuantum(2)))
+          v-=ScaleCharToQuantum(1);
+        q[i]=(Quantum) v;
+        i++;
+      }
+  }
+  p=f+(columns+2);
+  q=g+(columns+2);
+  r=q+(y_offset*(columns+2)+x_offset);
+  s=q-(y_offset*(columns+2)+x_offset);
+#if defined(HAVE_OPENMP)
+  #pragma omp parallel for schedule(guided)
+#endif
+  for (y=0; y < (ssize_t) rows; y++)
+  {
+    SignedQuantum
+      v;
+
+    ssize_t
+      i,
+      x;
+
+    i=(2*y+1)+y*columns;
+    if (polarity > 0)
+      for (x=0; x < (ssize_t) columns; x++)
+      {
+        v=(SignedQuantum) q[i];
+        if (((SignedQuantum) s[i] >= (v+ScaleCharToQuantum(2))) &&
+            ((SignedQuantum) r[i] > v))
+          v+=ScaleCharToQuantum(1);
+        p[i]=(Quantum) v;
+        i++;
+      }
+    else
+      for (x=0; x < (ssize_t) columns; x++)
+      {
+        v=(SignedQuantum) q[i];
+        if (((SignedQuantum) s[i] <= (v-ScaleCharToQuantum(2))) &&
+            ((SignedQuantum) r[i] < v))
+          v-=ScaleCharToQuantum(1);
+        p[i]=(Quantum) v;
+        i++;
+      }
+  }
 }
 
 MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
@@ -1707,14 +1764,16 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  MagickOffsetType
-    progress;
+  register ssize_t
+    i;
+
+  Quantum
+    *restrict buffer,
+    *restrict pixels;
 
   size_t
+    length,
     number_channels;
-
-  ssize_t
-    y;
 
   static const ssize_t
     X[4] = {0, 1, 1,-1},
@@ -1740,115 +1799,133 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   /*
-    Remove speckle in the image.
+    Allocate image buffer.
+  */
+  length=(size_t) ((image->columns+2)*(image->rows+2));
+  pixels=(Quantum *) AcquireQuantumMemory(length,sizeof(*pixels));
+  buffer=(Quantum *) AcquireQuantumMemory(length,sizeof(*pixels));
+  if ((pixels == (Quantum *) NULL) || (buffer == (Quantum *) NULL))
+    {
+      if (buffer != (Quantum *) NULL)
+        buffer=(Quantum *) RelinquishMagickMemory(buffer);
+      if (pixels != (Quantum *) NULL)
+        pixels=(Quantum *) RelinquishMagickMemory(pixels);
+      despeckle_image=DestroyImage(despeckle_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  /*
+    Reduce speckle in the image.
   */
   status=MagickTrue;
   number_channels=(size_t) (image->colorspace == CMYKColorspace ? 5 : 4);
-  progress=0;
   image_view=AcquireCacheView(image);
   despeckle_view=AcquireCacheView(despeckle_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
-#endif
-  for (y=0; y < (ssize_t) image->rows; y++)
+  for (i=0; i < (ssize_t) number_channels; i++)
   {
-    MagickBooleanType
-      sync;
-
-    register IndexPacket
-      *restrict despeckle_indexes;
-
-    register PixelPacket
-      *restrict q;
-
-    ssize_t
+    register ssize_t
+      k,
       x;
 
-    q=GetCacheViewAuthenticPixels(despeckle_view,0,y,despeckle_image->columns,1,
-      exception);
-    if (q == (PixelPacket *) NULL)
-      {
-        status=MagickFalse;
-        continue;
-      }
-    despeckle_indexes=GetCacheViewAuthenticIndexQueue(despeckle_view);
-    for (x=0; x < (ssize_t) image->columns; x++)
+    ssize_t
+      j,
+      y;
+
+    if (status == MagickFalse)
+      continue;
+    (void) ResetMagickMemory(pixels,0,length*sizeof(*pixels));
+    j=(ssize_t) image->columns+2;
+    for (y=0; y < (ssize_t) image->rows; y++)
     {
-      register ssize_t
-        i;
+      register const IndexPacket
+        *restrict indexes;
 
-      for (i=0; i < (ssize_t) number_channels; i++)
+      register const PixelPacket
+        *restrict p;
+
+      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+      if (p == (const PixelPacket *) NULL)
+        break;
+      indexes=GetCacheViewVirtualIndexQueue(image_view);
+      j++;
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
-        Quantum
-          pixels[9];
-
-        register const PixelPacket
-          *restrict p;
-
-        register IndexPacket
-          *restrict indexes;
-
-        register ssize_t
-          j;
-
-        p=GetCacheViewVirtualPixels(image_view,x-1,y-1,3,3,exception);
-        if (p == (const PixelPacket *) NULL)
-          {
-            status=MagickFalse;
-            continue;
-          }
-        indexes=GetCacheViewAuthenticIndexQueue(image_view);
-        for (j=0; j < 9; j++)
-        {
-          switch (i)
-          {
-            case 0: pixels[j]=GetPixelRed(p); break;
-            case 1: pixels[j]=GetPixelGreen(p); break;
-            case 2: pixels[j]=GetPixelBlue(p); break;
-            case 3: pixels[j]=GetPixelOpacity(p); break;
-            case 4: pixels[j]=GetPixelBlack(indexes+x); break;
-            default: break;
-          }
-          p++;
-        }
-        for (j=0; j < 4; j++)
-        {
-          Hull(X[j],Y[j],1,pixels);
-          Hull(-X[j],-Y[j],1,pixels);
-          Hull(-X[j],-Y[j],-1,pixels);
-          Hull(X[j],Y[j],-1,pixels);
-        }
         switch (i)
         {
-          case 0: SetPixelRed(q,pixels[4]); break;
-          case 1: SetPixelGreen(q,pixels[4]); break;
-          case 2: SetPixelBlue(q,pixels[4]); break;
-          case 3: SetPixelOpacity(q,pixels[4]); break;
-          case 4: SetPixelIndex(despeckle_indexes+x,pixels[4]); break;
+          case 0: pixels[j]=GetPixelRed(p); break;
+          case 1: pixels[j]=GetPixelGreen(p); break;
+          case 2: pixels[j]=GetPixelBlue(p); break;
+          case 3: pixels[j]=GetPixelOpacity(p); break;
+          case 4: pixels[j]=GetPixelBlack(indexes+x); break;
           default: break;
         }
+        p++;
+        j++;
       }
-      q++;
+      j++;
     }
-    sync=SyncCacheViewAuthenticPixels(despeckle_view,exception);
-    if (sync == MagickFalse)
-      status=MagickFalse;
+    (void) ResetMagickMemory(buffer,0,length*sizeof(*buffer));
+    for (k=0; k < 4; k++)
+    {
+      Hull(X[k],Y[k],image->columns,image->rows,1,pixels,buffer);
+      Hull(-X[k],-Y[k],image->columns,image->rows,1,pixels,buffer);
+      Hull(-X[k],-Y[k],image->columns,image->rows,-1,pixels,buffer);
+      Hull(X[k],Y[k],image->columns,image->rows,-1,pixels,buffer);
+    }
+    j=(ssize_t) image->columns+2;
+    for (y=0; y < (ssize_t) image->rows; y++)
+    {
+      MagickBooleanType
+        sync;
+
+      register IndexPacket
+        *restrict indexes;
+
+      register PixelPacket
+        *restrict q;
+
+      q=GetCacheViewAuthenticPixels(despeckle_view,0,y,despeckle_image->columns,
+        1,exception);
+      if (q == (PixelPacket *) NULL)
+        break;
+      indexes=GetCacheViewAuthenticIndexQueue(despeckle_view);
+      j++;
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        switch (i)
+        {
+          case 0: SetPixelRed(q,pixels[j]); break;
+          case 1: SetPixelGreen(q,pixels[j]); break;
+          case 2: SetPixelBlue(q,pixels[j]); break;
+          case 3: SetPixelOpacity(q,pixels[j]); break;
+          case 4: SetPixelIndex(indexes+x,pixels[j]); break;
+          default: break;
+        }
+        q++;
+        j++;
+      }
+      sync=SyncCacheViewAuthenticPixels(despeckle_view,exception);
+      if (sync == MagickFalse)
+        {
+          status=MagickFalse;
+          break;
+        }
+      j++;
+    }
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_DespeckleImage)
-#endif
-        proceed=SetImageProgress(image,DespeckleImageTag,progress++,
-          image->rows);
+        proceed=SetImageProgress(image,DespeckleImageTag,(MagickOffsetType) i,
+          number_channels);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
   }
   despeckle_view=DestroyCacheView(despeckle_view);
   image_view=DestroyCacheView(image_view);
+  buffer=(Quantum *) RelinquishMagickMemory(buffer);
+  pixels=(Quantum *) RelinquishMagickMemory(pixels);
   despeckle_image->type=image->type;
   if (status == MagickFalse)
     despeckle_image=DestroyImage(despeckle_image);
