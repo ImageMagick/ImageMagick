@@ -1633,7 +1633,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_DespeckleImage)
 #endif
-        proceed=SetImageProgress(image,DespeckleImageTag,progress,image->rows);
+        proceed=SetImageProgress(image,DespeckleImageTag,progress++,
+          image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
