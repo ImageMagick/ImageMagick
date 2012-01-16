@@ -1538,7 +1538,7 @@ MagickExport int SetMagickPrecision(const int precision)
     magick_precision = 0;
 
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (precision != 0)
+  if (precision > 0)
     magick_precision=precision;
   return(magick_precision);
 }
