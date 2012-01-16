@@ -665,24 +665,7 @@ MagickExport char **GetMagickList(const char *pattern,
 */
 MagickExport int GetMagickPrecision(void)
 {
-#define MagickPrecision  6
-
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  if (SetMagickPrecision(0) == 0)
-    {
-      char
-        *limit;
-
-      (void) SetMagickPrecision(MagickPrecision);
-      limit=GetEnvironmentValue("MAGICK_PRECISION");
-      if (limit == (char *) NULL)
-        limit=GetPolicyValue("precision");
-      if (limit != (char *) NULL)
-        {
-          (void) SetMagickPrecision(StringToInteger(limit));
-          limit=DestroyString(limit);
-        }
-    }
   return(SetMagickPrecision(0));
 }
 
@@ -1521,7 +1504,13 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SetMagickPrecision() sets the maximum number of significant digits to be
-%  printed and returns it.
+%  printed.
+%
+%  An input argument of 0 returns the current precision setting.
+%
+%  A negative value will force precision to reset to a default value
+%  according to the environment variable "MAGICK_PRECISION", the current
+%  'policy' configuration setting, or the default value of '6', in that order.
 %
 %  The format of the SetMagickPrecision method is:
 %
@@ -1534,12 +1523,35 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
 */
 MagickExport int SetMagickPrecision(const int precision)
 {
+#define MagickPrecision  6
+
   static int
     magick_precision = 0;
 
+
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+
   if (precision > 0)
-    magick_precision=precision;
+    magick_precision = precision;
+
+  if (precision < 0 || magick_precision == 0)
+    {
+      char
+        *limit;
+
+      /*
+        Precision Reset, or it has not been set yet
+      */
+      magick_precision = MagickPrecision;
+      limit=GetEnvironmentValue("MAGICK_PRECISION");
+      if (limit == (char *) NULL)
+        limit=GetPolicyValue("precision");
+      if (limit != (char *) NULL)
+        {
+          magick_precision = StringToInteger(limit);
+          limit=DestroyString(limit);
+        }
+    }
   return(magick_precision);
 }
 
