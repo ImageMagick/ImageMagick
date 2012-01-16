@@ -131,6 +131,12 @@ typedef unsigned __int64 MagickSizeType;
 #define MagickSizeFormat  "I64u"
 #endif
 
+#if QuantumDepth > 16
+  typedef double SignedQuantum;
+#else
+  typedef ssize_t SignedQuantum;
+#endif
+
 #if defined(_MSC_VER) && (_MSC_VER == 1200)
 typedef MagickOffsetType QuantumAny;
 #else
