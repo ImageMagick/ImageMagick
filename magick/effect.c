@@ -1664,7 +1664,7 @@ static void Hull(const ssize_t x_offset,const ssize_t y_offset,
   const size_t columns,const size_t rows,const int polarity,Quantum *restrict f,
   Quantum *restrict g)
 {
-  Quantum
+  register Quantum
     *p,
     *q,
     *r,
@@ -1683,12 +1683,12 @@ static void Hull(const ssize_t x_offset,const ssize_t y_offset,
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
-    SignedQuantum
-      v;
-
-    ssize_t
+    register ssize_t
       i,
       x;
+
+    SignedQuantum
+      v;
 
     i=(2*y+1)+y*columns;
     if (polarity > 0)
@@ -1719,12 +1719,12 @@ static void Hull(const ssize_t x_offset,const ssize_t y_offset,
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
-    SignedQuantum
-      v;
-
-    ssize_t
+    register ssize_t
       i,
       x;
+
+    SignedQuantum
+      v;
 
     i=(2*y+1)+y*columns;
     if (polarity > 0)
