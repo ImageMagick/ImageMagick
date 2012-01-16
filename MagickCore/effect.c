@@ -1466,32 +1466,39 @@ MagickExport Image *ConvolveImage(const Image *image,
 %
 */
 
-static void Hull(const ssize_t x,const ssize_t y,const int polarity,
+static void inline Hull(const ssize_t x,const ssize_t y,const int polarity,
   Quantum *pixels)
 {
   double
-    a,
-    b,
-    c;
+    pixel;
 
-  b=(double) pixels[4];
-  a=(double) pixels[4-(y*3)-x];
-  c=(double) pixels[4+(y*3)+x];
+  Quantum
+    *a,
+    *b,
+    *c;
+
+  b=pixels+4;
+  a=b-(y*3)-x;
+  c=b+(y*3)+x;
+  pixel=(double) *b;
   if (polarity > 0)
     {
-      if (c >= (b+ScaleCharToQuantum(2)))
-        b+=ScaleCharToQuantum(1);
-      if (a >= (b+ScaleCharToQuantum(2)) && (c > b))
-        b+=ScaleCharToQuantum(1);
+      if ((double) *c >= (pixel+ScaleCharToQuantum(2)))
+        pixel+=ScaleCharToQuantum(1);
     }
   else
+    if ((double) *c <= (pixel-ScaleCharToQuantum(2)))
+      pixel-=ScaleCharToQuantum(1);
+  if (polarity > 0)
     {
-      if (c <= (b-ScaleCharToQuantum(2)))
-        b-=ScaleCharToQuantum(1);
-      if (a <= (b-ScaleCharToQuantum(2)) && (c < b))
-        b-=ScaleCharToQuantum(1);
+      if (((double) *a >= (pixel+ScaleCharToQuantum(2))) &&
+          ((double) *c > pixel))
+        pixel+=ScaleCharToQuantum(1);
     }
-  pixels[4]=ClampToQuantum(b);
+  else
+    if (((double) *a <= (pixel-ScaleCharToQuantum(2))) && ((double) *c < pixel))
+      pixel-=ScaleCharToQuantum(1);
+  pixels[4]=ClampToQuantum(pixel);
 }
 
 MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
