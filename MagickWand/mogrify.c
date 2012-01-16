@@ -108,14 +108,6 @@ static const char
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
   MagickCommand command,int argc,char **argv,char **metadata,
   ExceptionInfo *exception)
@@ -7479,8 +7471,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 else
                   {
                     /*
-                      Set a blending mask for the composition.  Possible
-                      problem, what if image->mask already set.
+                      Set a blending mask for the composition.
+                      Possible problem, what if image->mask already set.
                     */
                     image->mask=mask_image;
                     (void) NegateImage(image->mask,MagickFalse,exception);
