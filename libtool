@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # libtool - Provide generalized library-building support services.
-# Generated automatically by config.status (ImageMagick) 6.7.4-7
+# Generated automatically by config.status (ImageMagick) 6.7.4-8
 # Libtool was configured on host magick.imagemagick.org:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
@@ -74,7 +74,7 @@ DLLTOOL="false"
 OBJDUMP="objdump"
 
 # Whether or not to build shared libraries.
-build_libtool_libs=no
+build_libtool_libs=yes
 
 # Whether or not to build static libraries.
 build_old_libs=yes
@@ -83,7 +83,7 @@ build_old_libs=yes
 pic_mode=default
 
 # Whether or not to optimize for fast installation.
-fast_install=needless
+fast_install=yes
 
 # The PATH separator for the build system.
 PATH_SEPARATOR=":"
@@ -164,7 +164,7 @@ old_postuninstall_cmds=""
 lock_old_archive_extraction=no
 
 # A C compiler.
-LTCC="g++"
+LTCC="gcc -std=gnu99 -std=gnu99"
 
 # LTCC compiler flags.
 LTCFLAGS="-fopenmp -g -O2 -Wall -pthread"
@@ -284,10 +284,10 @@ sys_lib_dlsearch_path_spec="/lib64 /usr/lib64 /lib /usr/lib /usr/lib64/atlas /us
 dlopen_support=yes
 
 # Whether dlopen of programs is supported.
-dlopen_self=no
+dlopen_self=yes
 
 # Whether dlopen of statically linked programs is supported.
-dlopen_self_static=unknown
+dlopen_self_static=yes
 
 # Commands to strip libraries.
 old_striplib="strip --strip-debug"
@@ -305,13 +305,13 @@ reload_cmds="\$LD\$reload_flag -o \$output\$reload_objs"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$tool_oldlib"
 
 # A language specific compiler.
-CC="g++"
+CC="gcc -std=gnu99 -std=gnu99"
 
 # Is the compiler the GNU compiler?
 with_gcc=yes
 
 # Compiler flag to turn off builtin functions.
-no_builtin_flag=" -fno-builtin -fno-rtti -fno-exceptions"
+no_builtin_flag=" -fno-builtin"
 
 # Additional compiler flags for building library objects.
 pic_flag=" -fPIC -DPIC"
@@ -326,7 +326,7 @@ link_static_flag=""
 compiler_c_o="yes"
 
 # Whether or not to add -lc for building shared libraries.
-build_libtool_need_lc=yes
+build_libtool_need_lc=no
 
 # Whether or not to disallow shared libs when runtime libs are static.
 allow_libtool_libs_with_static_runtimes=no
