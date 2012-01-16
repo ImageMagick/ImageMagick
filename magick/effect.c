@@ -1832,6 +1832,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 
     if (status == MagickFalse)
       continue;
+    if ((image->matte == MagickFalse) && (i == 3))
+      continue;
     (void) ResetMagickMemory(pixels,0,length*sizeof(*pixels));
     j=(ssize_t) image->columns+2;
     for (y=0; y < (ssize_t) image->rows; y++)
