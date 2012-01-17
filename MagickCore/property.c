@@ -2385,6 +2385,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         }
       if (LocaleNCompare("scene",property,5) == 0)
         {
+          /* FUTURE: I am not certain this properity return makes sense! */
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
             image->scene);
           if (image_info->number_scenes != 0)

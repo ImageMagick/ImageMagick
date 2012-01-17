@@ -35,7 +35,7 @@ typedef enum
 typedef struct _QuantizeInfo
 {
   size_t
-    number_colors;
+    number_colors;     /* desired maximum number of colors */
 
   size_t
     tree_depth;
