@@ -1485,7 +1485,7 @@ static void Hull(const ssize_t x_offset,const ssize_t y_offset,
   q=g+(columns+2);
   r=p+(y_offset*(columns+2)+x_offset);
 #if defined(HAVE_OPENMP)
-  #pragma omp parallel for schedule(guided)
+  #pragma omp parallel for schedule(static)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
