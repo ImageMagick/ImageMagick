@@ -351,19 +351,19 @@ struct _ImageInfo
 
   MagickBooleanType
     temporary,
-    adjoin,
+    adjoin,             /* save images to seperate scene files */
     affirm,
     antialias;
 
   char
-    *size,
-    *extract,
+    *size,              /* image generation size */
+    *extract,           /* crop/resize string on image read */
     *page,
-    *scenes;
+    *scenes;            /* scene numbers that is to be read in */
 
   size_t
-    scene,
-    number_scenes,
+    scene,              /* starting value for image save numbering */
+    number_scenes,      /* total number of images in list - for escapes */
     depth;
 
   InterlaceType
@@ -381,18 +381,21 @@ struct _ImageInfo
   char
     *sampling_factor,   /* JPEG write sampling factor */
     *server_name,       /* X windows server name - display/animate */
-    *font,              /* draw_info */
+    *font,              /* DUP for draw_info */
     *texture,           /* montage/display background tile */
-    *density;           /* for image and draw_info */
+    *density;           /* DUP for image and draw_info */
 
   double
     pointsize,
     fuzz;               /* current color fuzz attribute */
 
   PixelInfo
-    background_color,
-    border_color,
-    matte_color;
+    background_color,   /* user set background color */
+    border_color,       /* user set border color */
+    matte_color,        /* matte (frame) color */
+    transparent_color;  /* color for transparent index in color tables */
+                        /* NB: fill color is only needed in draw_info! */
+                        /* the same for undercolor (for font drawing) */
 
   MagickBooleanType
     dither,            /* dither enable-disable */
@@ -400,6 +403,9 @@ struct _ImageInfo
 
   ColorspaceType
     colorspace;
+
+  CompositeOperator
+    compose;
 
   ImageType
     type;
@@ -416,7 +422,6 @@ struct _ImageInfo
 
   char
     *view;
-    /* authenticate -- moved to ImageOptions() */
 
   ChannelType
     channel;
@@ -426,9 +431,6 @@ struct _ImageInfo
 
   VirtualPixelMethod
     virtual_pixel_method;
-
-  PixelInfo
-    transparent_color;
 
   void
     *profile;

@@ -143,7 +143,7 @@ typedef enum
   NonConvertOptionFlag      = 0x4000,  /* Option not used by Convert */
   DeprecateOptionFlag       = 0x8000,  /* Deprecate option, give warning */
 
-  SettingInfoOption         = 0x001F   /* one of the setting options */
+  SettingInfoOption         = 0x001F   /* mask for all setting options */
 } CommandOptionFlags;
 
 extern MagickExport char
