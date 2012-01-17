@@ -40,6 +40,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/artifact.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/cache.h"
@@ -871,6 +872,11 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           return(MagickFalse);
         write_info=CloneImageInfo(image_info);
         (void) CopyMagickString(write_info->filename,"PNG:",MaxTextExtent);
+
+        /* Don't write any ancillary chunks except for gAMA and tRNS */
+        (void) SetImageArtifact(write_image,"png:include-chunk",
+           "none,trns,gama");
+
         png=(unsigned char *) ImageToBlob(write_info,write_image,&length,
           &image->exception);
         write_image=DestroyImage(write_image);
