@@ -2114,7 +2114,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   image_view=AcquireCacheView(image);
   resize_view=AcquireCacheView(resize_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for shared(status)
+  #pragma omp parallel for schedule(guided) shared(status)
 #endif
   for (x=0; x < (ssize_t) resize_image->columns; x++)
   {
@@ -2326,7 +2326,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   image_view=AcquireCacheView(image);
   resize_view=AcquireCacheView(resize_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for shared(status)
+  #pragma omp parallel for schedule(guided) shared(status)
 #endif
   for (y=0; y < (ssize_t) resize_image->rows; y++)
   {

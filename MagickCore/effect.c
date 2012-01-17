@@ -1304,7 +1304,7 @@ MagickExport Image *ConvolveImage(const Image *image,
   image_view=AcquireCacheView(image);
   convolve_view=AcquireCacheView(convolve_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(guided) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1485,7 +1485,7 @@ static void Hull(const ssize_t x_offset,const ssize_t y_offset,
   q=g+(columns+2);
   r=p+(y_offset*(columns+2)+x_offset);
 #if defined(HAVE_OPENMP)
-  #pragma omp parallel for schedule(static)
+  #pragma omp parallel for schedule(guided)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -3787,7 +3787,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   image_view=AcquireCacheView(image);
   spread_view=AcquireCacheView(spread_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) shared(progress,status)
+  #pragma omp parallel for schedule(static,8) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
