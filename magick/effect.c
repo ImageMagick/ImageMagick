@@ -1885,8 +1885,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       register PixelPacket
         *restrict q;
 
-      q=GetCacheViewAuthenticPixels(despeckle_view,0,y,despeckle_image->columns,
-        1,exception);
+      q=QueueCacheViewAuthenticPixels(despeckle_view,0,y,
+        despeckle_image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetCacheViewAuthenticIndexQueue(despeckle_view);
