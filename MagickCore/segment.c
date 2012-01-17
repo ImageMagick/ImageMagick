@@ -403,8 +403,8 @@ static MagickBooleanType Classify(Image *image,short **extrema,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_Classify)
 #endif
-        proceed=SetImageProgress(image,SegmentImageTag,progress++,
-          2*image->rows);
+        proceed=SetImageProgress(image,SegmentImageTag,progress++,2*
+          image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
