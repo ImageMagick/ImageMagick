@@ -834,7 +834,7 @@ static double *GetBlurKernel(const size_t width,const double sigma)
     Generate a 1-D convolution kernel.
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  kernel=(double *) AcquireQuantumMemory((size_t) width,sizeof(*kernel));
+  kernel=(double *) AcquireAlignedMemory((size_t) width,sizeof(*kernel));
   if (kernel == (double *) NULL)
     return(0);
   normalize=0.0;
@@ -960,7 +960,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
       continue;
     p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y,
       image->columns+width,1,exception);
-    q=GetCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
+    q=QueueCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
@@ -1181,10 +1181,10 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   }
   blur_view=DestroyCacheView(blur_view);
   image_view=DestroyCacheView(image_view);
-  kernel=(double *) RelinquishMagickMemory(kernel);
+  kernel=(double *) RelinquishAlignedMemory(kernel);
+  blur_image->type=image->type;
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
-  blur_image->type=image->type;
   return(blur_image);
 }
 
@@ -2059,7 +2059,7 @@ static double *GetMotionBlurKernel(const size_t width,const double sigma)
    Generate a 1-D convolution kernel.
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  kernel=(double *) AcquireQuantumMemory((size_t) width,sizeof(*kernel));
+  kernel=(double *) AcquireAlignedMemory((size_t) width,sizeof(*kernel));
   if (kernel == (double *) NULL)
     return(kernel);
   normalize=0.0;
@@ -2080,7 +2080,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 {
   CacheView
     *blur_view,
-    *image_view;
+    *image_view,
+    *motion_view;
 
   double
     *kernel;
@@ -2121,19 +2122,19 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   offset=(OffsetInfo *) AcquireQuantumMemory(width,sizeof(*offset));
   if (offset == (OffsetInfo *) NULL)
     {
-      kernel=(double *) RelinquishMagickMemory(kernel);
+      kernel=(double *) RelinquishAlignedMemory(kernel);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     {
-      kernel=(double *) RelinquishMagickMemory(kernel);
+      kernel=(double *) RelinquishAlignedMemory(kernel);
       offset=(OffsetInfo *) RelinquishMagickMemory(offset);
       return((Image *) NULL);
     }
   if (SetImageStorageClass(blur_image,DirectClass,exception) == MagickFalse)
     {
-      kernel=(double *) RelinquishMagickMemory(kernel);
+      kernel=(double *) RelinquishAlignedMemory(kernel);
       offset=(OffsetInfo *) RelinquishMagickMemory(offset);
       blur_image=DestroyImage(blur_image);
       return((Image *) NULL);
@@ -2151,6 +2152,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   status=MagickTrue;
   progress=0;
   image_view=AcquireCacheView(image);
+  motion_view=AcquireCacheView(image);
   blur_view=AcquireCacheView(blur_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,1) shared(progress,status)
@@ -2168,8 +2170,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(blur_view,0,y,image->columns,1,exception);
-    q=GetCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
@@ -2221,7 +2223,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
           {
             for (j=0; j < (ssize_t) width; j++)
             {
-              r=GetCacheViewVirtualPixels(image_view,x+offset[j].x,y+
+              r=GetCacheViewVirtualPixels(motion_view,x+offset[j].x,y+
                 offset[j].y,1,1,exception);
               if (r == (const Quantum *) NULL)
                 {
@@ -2238,7 +2240,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
         gamma=0.0;
         for (j=0; j < (ssize_t) width; j++)
         {
-          r=GetCacheViewVirtualPixels(image_view,x+offset[j].x,y+offset[j].y,1,
+          r=GetCacheViewVirtualPixels(motion_view,x+offset[j].x,y+offset[j].y,1,
             1,exception);
           if (r == (const Quantum *) NULL)
             {
@@ -2272,8 +2274,9 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
       }
   }
   blur_view=DestroyCacheView(blur_view);
+  motion_view=DestroyCacheView(motion_view);
   image_view=DestroyCacheView(image_view);
-  kernel=(double *) RelinquishMagickMemory(kernel);
+  kernel=(double *) RelinquishAlignedMemory(kernel);
   offset=(OffsetInfo *) RelinquishMagickMemory(offset);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
@@ -2849,7 +2852,8 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
 {
   CacheView
     *blur_view,
-    *image_view;
+    *image_view,
+    *radial_view;
 
   Image
     *blur_image;
@@ -2923,6 +2927,7 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
   status=MagickTrue;
   progress=0;
   image_view=AcquireCacheView(image);
+  radial_view=AcquireCacheView(image);
   blur_view=AcquireCacheView(blur_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
@@ -2940,8 +2945,8 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(blur_view,0,y,image->columns,1,exception);
-    q=GetCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
@@ -3012,7 +3017,7 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
           {
             for (j=0; j < (ssize_t) n; j+=(ssize_t) step)
             {
-              r=GetCacheViewVirtualPixels(image_view, (ssize_t) (blur_center.x+
+              r=GetCacheViewVirtualPixels(radial_view, (ssize_t) (blur_center.x+
                 center.x*cos_theta[j]-center.y*sin_theta[j]+0.5),(ssize_t)
                 (blur_center.y+center.x*sin_theta[j]+center.y*cos_theta[j]+0.5),
                 1,1,exception);
@@ -3030,7 +3035,7 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
           }
         for (j=0; j < (ssize_t) n; j+=(ssize_t) step)
         {
-          r=GetCacheViewVirtualPixels(image_view, (ssize_t) (blur_center.x+
+          r=GetCacheViewVirtualPixels(radial_view, (ssize_t) (blur_center.x+
             center.x*cos_theta[j]-center.y*sin_theta[j]+0.5),(ssize_t)
             (blur_center.y+center.x*sin_theta[j]+center.y*cos_theta[j]+0.5),
             1,1,exception);
@@ -3064,6 +3069,7 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
       }
   }
   blur_view=DestroyCacheView(blur_view);
+  radial_view=DestroyCacheView(radial_view);
   image_view=DestroyCacheView(image_view);
   cos_theta=(MagickRealType *) RelinquishMagickMemory(cos_theta);
   sin_theta=(MagickRealType *) RelinquishMagickMemory(sin_theta);
@@ -3155,7 +3161,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth1D(radius,sigma);
-  kernel=(double *) AcquireQuantumMemory((size_t) width,width*sizeof(*kernel));
+  kernel=(double *) AcquireAlignedMemory((size_t) width,width*sizeof(*kernel));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   j=(ssize_t) width/2;
@@ -3239,7 +3245,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
       continue;
     p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
       (width/2L),image->columns+width,width,exception);
-    q=GetCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
+    q=QueueCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
@@ -3368,7 +3374,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   blur_image->type=image->type;
   blur_view=DestroyCacheView(blur_view);
   image_view=DestroyCacheView(image_view);
-  kernel=(double *) RelinquishMagickMemory(kernel);
+  kernel=(double *) RelinquishAlignedMemory(kernel);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
   return(blur_image);
@@ -3908,11 +3914,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-
-
-  /* FUTURE:  use of bias on sharpen is non-sensical */
   unsharp_image=BlurImage(image,radius,sigma,image->bias,exception);
-
   if (unsharp_image == (Image *) NULL)
     return((Image *) NULL);
   quantum_threshold=(MagickRealType) QuantumRange*threshold;
@@ -3940,7 +3942,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=GetCacheViewAuthenticPixels(unsharp_view,0,y,unsharp_image->columns,1,
+    q=QueueCacheViewAuthenticPixels(unsharp_view,0,y,unsharp_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
