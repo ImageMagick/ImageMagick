@@ -11113,7 +11113,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
    * well as a comma-separated list.  Chunks that are unknown to
    * ImageMagick are always excluded, regardless of their "copy-safe"
    * status according to the PNG specification, and even if they
-   * appear in the "include-chunk" list.
+   * appear in the "include-chunk" list. Such defines appearing among
+   * the image options take priority over those found among the image
+   * artifacts.
    *
    * Finally, all chunks listed in the "unused_chunks" array are
    * automatically excluded, regardless of the other instructions
