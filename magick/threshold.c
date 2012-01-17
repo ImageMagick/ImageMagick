@@ -195,7 +195,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   image_view=AcquireCacheView(image);
   threshold_view=AcquireCacheView(threshold_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(guided) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -257,8 +257,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           pixel.blue+=r[u].blue;
           pixel.opacity+=r[u].opacity;
           if (image->colorspace == CMYKColorspace)
-            pixel.index=(MagickRealType) GetPixelIndex(
-              indexes+x+(r-p)+u);
+            pixel.index=(MagickRealType) GetPixelIndex(indexes+x+(r-p)+u);
         }
         r+=image->columns+width;
       }
@@ -268,18 +267,18 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       mean.opacity=(MagickRealType) (pixel.opacity/number_pixels+offset);
       if (image->colorspace == CMYKColorspace)
         mean.index=(MagickRealType) (pixel.index/number_pixels+offset);
-      SetPixelRed(q,((MagickRealType) GetPixelRed(q) <=
-        mean.red) ? 0 : QuantumRange);
-      SetPixelGreen(q,((MagickRealType) GetPixelGreen(q) <=
-        mean.green) ? 0 : QuantumRange);
-      SetPixelBlue(q,((MagickRealType) GetPixelBlue(q) <=
-        mean.blue) ? 0 : QuantumRange);
-      SetPixelOpacity(q,((MagickRealType) GetPixelOpacity(q)
-        <= mean.opacity) ? 0 : QuantumRange);
+      SetPixelRed(q,((MagickRealType) GetPixelRed(q) <= mean.red) ?
+        0 : QuantumRange);
+      SetPixelGreen(q,((MagickRealType) GetPixelGreen(q) <= mean.green) ?
+        0 : QuantumRange);
+      SetPixelBlue(q,((MagickRealType) GetPixelBlue(q) <= mean.blue) ?
+        0 : QuantumRange);
+      SetPixelOpacity(q,((MagickRealType) GetPixelOpacity(q) <= mean.opacity) ?
+         0 : QuantumRange);
       if (image->colorspace == CMYKColorspace)
         SetPixelIndex(threshold_indexes+x,(((MagickRealType)
-          GetPixelIndex(threshold_indexes+x) <= mean.index) ? 0 :
-          QuantumRange));
+          GetPixelIndex(threshold_indexes+x) <= mean.index) ?
+          0 : QuantumRange));
       p++;
       q++;
     }
@@ -393,7 +392,7 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,8) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -582,7 +581,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
   progress=0;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,8) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -763,7 +762,7 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
   exception=(&image->exception);
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,8) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1503,7 +1502,7 @@ printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
     progress=0;
     image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,8) shared(progress,status)
 #endif
     for (y=0; y < (ssize_t) image->rows; y++)
     {
@@ -1732,7 +1731,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
       random_info=AcquireRandomInfoThreadSet();
       image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(progress,status)
+      #pragma omp parallel for schedule(static,8) shared(progress,status)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1811,7 +1810,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
   random_info=AcquireRandomInfoThreadSet();
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,8) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2042,7 +2041,7 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
   progress=0;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,8) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
