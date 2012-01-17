@@ -218,7 +218,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
     Create a set of kernels from maximum (radius,sigma) to minimum.
   */
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double **) AcquireQuantumMemory((size_t) width,sizeof(*kernel));
+  kernel=(double **) AcquireAlignedMemory((size_t) width,sizeof(*kernel));
   if (kernel == (double **) NULL)
     {
       edge_image=DestroyImage(edge_image);
@@ -228,7 +228,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
   (void) ResetMagickMemory(kernel,0,(size_t) width*sizeof(*kernel));
   for (i=0; i < (ssize_t) width; i+=2)
   {
-    kernel[i]=(double *) AcquireQuantumMemory((size_t) (width-i),(width-i)*
+    kernel[i]=(double *) AcquireAlignedMemory((size_t) (width-i),(width-i)*
       sizeof(**kernel));
     if (kernel[i] == (double *) NULL)
       break;
@@ -254,8 +254,8 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
   if (i < (ssize_t) width)
     {
       for (i-=2; i >= 0; i-=2)
-        kernel[i]=(double *) RelinquishMagickMemory(kernel[i]);
-      kernel=(double **) RelinquishMagickMemory(kernel);
+        kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+      kernel=(double **) RelinquishAlignedMemory(kernel);
       edge_image=DestroyImage(edge_image);
       blur_image=DestroyImage(blur_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -396,8 +396,8 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
   image_view=DestroyCacheView(image_view);
   edge_image=DestroyImage(edge_image);
   for (i=0; i < (ssize_t) width;  i+=2)
-    kernel[i]=(double *) RelinquishMagickMemory(kernel[i]);
-  kernel=(double **) RelinquishMagickMemory(kernel);
+    kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+  kernel=(double **) RelinquishAlignedMemory(kernel);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
   return(blur_image);
@@ -535,7 +535,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
     Create a set of kernels from maximum (radius,sigma) to minimum.
   */
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double **) AcquireQuantumMemory((size_t) width,sizeof(*kernel));
+  kernel=(double **) AcquireAlignedMemory((size_t) width,sizeof(*kernel));
   if (kernel == (double **) NULL)
     {
       edge_image=DestroyImage(edge_image);
@@ -545,7 +545,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
   (void) ResetMagickMemory(kernel,0,(size_t) width*sizeof(*kernel));
   for (i=0; i < (ssize_t) width; i+=2)
   {
-    kernel[i]=(double *) AcquireQuantumMemory((size_t) (width-i),(width-i)*
+    kernel[i]=(double *) AcquireAlignedMemory((size_t) (width-i),(width-i)*
       sizeof(**kernel));
     if (kernel[i] == (double *) NULL)
       break;
@@ -571,8 +571,8 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
   if (i < (ssize_t) width)
     {
       for (i-=2; i >= 0; i-=2)
-        kernel[i]=(double *) RelinquishMagickMemory(kernel[i]);
-      kernel=(double **) RelinquishMagickMemory(kernel);
+        kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+      kernel=(double **) RelinquishAlignedMemory(kernel);
       edge_image=DestroyImage(edge_image);
       sharp_image=DestroyImage(sharp_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -714,8 +714,8 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
   image_view=DestroyCacheView(image_view);
   edge_image=DestroyImage(edge_image);
   for (i=0; i < (ssize_t) width;  i+=2)
-    kernel[i]=(double *) RelinquishMagickMemory(kernel[i]);
-  kernel=(double **) RelinquishMagickMemory(kernel);
+    kernel[i]=(double *) RelinquishAlignedMemory(kernel[i]);
+  kernel=(double **) RelinquishAlignedMemory(kernel);
   if (status == MagickFalse)
     sharp_image=DestroyImage(sharp_image);
   return(sharp_image);
@@ -790,7 +790,7 @@ static double *GetBlurKernel(const size_t width,const double sigma)
     Generate a 1-D convolution kernel.
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  kernel=(double *) AcquireQuantumMemory((size_t) width,sizeof(*kernel));
+  kernel=(double *) AcquireAlignedMemory((size_t) width,sizeof(*kernel));
   if (kernel == (double *) NULL)
     return(0);
   normalize=0.0;
@@ -927,7 +927,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
       continue;
     p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y,
       image->columns+width,1,exception);
-    q=GetCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
+    q=QueueCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       {
@@ -1256,7 +1256,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
   }
   blur_view=DestroyCacheView(blur_view);
   image_view=DestroyCacheView(image_view);
-  kernel=(double *) RelinquishMagickMemory(kernel);
+  kernel=(double *) RelinquishAlignedMemory(kernel);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
   blur_image->type=image->type;
@@ -1401,7 +1401,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
   /*
     Normalize kernel.
   */
-  normal_kernel=(double *) AcquireQuantumMemory(width*width,
+  normal_kernel=(double *) AcquireAlignedMemory(width*width,
     sizeof(*normal_kernel));
   if (normal_kernel == (double *) NULL)
     {
@@ -1625,7 +1625,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
   convolve_image->type=image->type;
   convolve_view=DestroyCacheView(convolve_view);
   image_view=DestroyCacheView(image_view);
-  normal_kernel=(double *) RelinquishMagickMemory(normal_kernel);
+  normal_kernel=(double *) RelinquishAlignedMemory(normal_kernel);
   if (status == MagickFalse)
     convolve_image=DestroyImage(convolve_image);
   return(convolve_image);
@@ -1985,14 +1985,14 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth1D(radius,0.5);
-  kernel=(double *) AcquireQuantumMemory((size_t) width,width*sizeof(*kernel));
+  kernel=(double *) AcquireAlignedMemory((size_t) width,width*sizeof(*kernel));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   for (i=0; i < (ssize_t) (width*width); i++)
     kernel[i]=(-1.0);
   kernel[i/2]=(double) (width*width-1.0);
   edge_image=ConvolveImage(image,width,kernel,exception);
-  kernel=(double *) RelinquishMagickMemory(kernel);
+  kernel=(double *) RelinquishAlignedMemory(kernel);
   return(edge_image);
 }
 
@@ -2057,7 +2057,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double *) AcquireQuantumMemory((size_t) width,width*sizeof(*kernel));
+  kernel=(double *) AcquireAlignedMemory((size_t) width,width*sizeof(*kernel));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   j=(ssize_t) width/2;
@@ -2079,7 +2079,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   emboss_image=ConvolveImage(image,width,kernel,exception);
   if (emboss_image != (Image *) NULL)
     (void) EqualizeImage(emboss_image);
-  kernel=(double *) RelinquishMagickMemory(kernel);
+  kernel=(double *) RelinquishAlignedMemory(kernel);
   return(emboss_image);
 }
 
@@ -2497,7 +2497,7 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double *) AcquireQuantumMemory((size_t) width,width*sizeof(*kernel));
+  kernel=(double *) AcquireAlignedMemory((size_t) width,width*sizeof(*kernel));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   j=(ssize_t) width/2;
@@ -2509,7 +2509,7 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
         MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
   }
   blur_image=ConvolveImageChannel(image,channel,width,kernel,exception);
-  kernel=(double *) RelinquishMagickMemory(kernel);
+  kernel=(double *) RelinquishAlignedMemory(kernel);
   return(blur_image);
 }
 
@@ -2571,7 +2571,7 @@ static double *GetMotionBlurKernel(const size_t width,const double sigma)
    Generate a 1-D convolution kernel.
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  kernel=(double *) AcquireQuantumMemory((size_t) width,sizeof(*kernel));
+  kernel=(double *) AcquireAlignedMemory((size_t) width,sizeof(*kernel));
   if (kernel == (double *) NULL)
     return(kernel);
   normalize=0.0;
@@ -2647,19 +2647,19 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
   offset=(OffsetInfo *) AcquireQuantumMemory(width,sizeof(*offset));
   if (offset == (OffsetInfo *) NULL)
     {
-      kernel=(double *) RelinquishMagickMemory(kernel);
+      kernel=(double *) RelinquishAlignedMemory(kernel);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   blur_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     {
-      kernel=(double *) RelinquishMagickMemory(kernel);
+      kernel=(double *) RelinquishAlignedMemory(kernel);
       offset=(OffsetInfo *) RelinquishMagickMemory(offset);
       return((Image *) NULL);
     }
   if (SetImageStorageClass(blur_image,DirectClass) == MagickFalse)
     {
-      kernel=(double *) RelinquishMagickMemory(kernel);
+      kernel=(double *) RelinquishAlignedMemory(kernel);
       offset=(OffsetInfo *) RelinquishMagickMemory(offset);
       InheritException(exception,&blur_image->exception);
       blur_image=DestroyImage(blur_image);
@@ -2809,7 +2809,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
   }
   blur_view=DestroyCacheView(blur_view);
   image_view=DestroyCacheView(image_view);
-  kernel=(double *) RelinquishMagickMemory(kernel);
+  kernel=(double *) RelinquishAlignedMemory(kernel);
   offset=(OffsetInfo *) RelinquishMagickMemory(offset);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
@@ -3740,7 +3740,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth1D(radius,sigma);
-  kernel=(double *) AcquireQuantumMemory((size_t) width,width*sizeof(*kernel));
+  kernel=(double *) AcquireAlignedMemory((size_t) width,width*sizeof(*kernel));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   j=(ssize_t) width/2;
@@ -4045,7 +4045,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
   blur_image->type=image->type;
   blur_view=DestroyCacheView(blur_view);
   image_view=DestroyCacheView(image_view);
-  kernel=(double *) RelinquishMagickMemory(kernel);
+  kernel=(double *) RelinquishAlignedMemory(kernel);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
   return(blur_image);
@@ -4329,7 +4329,7 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double *) AcquireQuantumMemory((size_t) width*width,sizeof(*kernel));
+  kernel=(double *) AcquireAlignedMemory((size_t) width*width,sizeof(*kernel));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   normalize=0.0;
@@ -4347,7 +4347,7 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   }
   kernel[i/2]=(double) ((-2.0)*normalize);
   sharp_image=ConvolveImageChannel(image,channel,width,kernel,exception);
-  kernel=(double *) RelinquishMagickMemory(kernel);
+  kernel=(double *) RelinquishAlignedMemory(kernel);
   return(sharp_image);
 }
 
