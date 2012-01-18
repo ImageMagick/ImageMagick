@@ -68,7 +68,7 @@ static inline MagickBooleanType GetStrokeColor(const DrawInfo *draw_info,
 
     pattern=draw_info->stroke_pattern;
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
-  #pragma omp critical
+    #pragma omp critical
 #endif
     status=GetOneVirtualPixelInfo(pattern,TileVirtualPixelMethod,x+
       pattern->tile_offset.x,y+pattern->tile_offset.y,stroke,exception);
