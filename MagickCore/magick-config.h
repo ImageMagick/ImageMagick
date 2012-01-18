@@ -9,9 +9,7 @@
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 
 /* Define if you have AUTOTRACE library */
-#ifndef MAGICKCORE_AUTOTRACE_DELEGATE
-#define MAGICKCORE_AUTOTRACE_DELEGATE 1
-#endif
+/* #undef AUTOTRACE_DELEGATE */
 
 /* Define if coders and filters are to be built as modules. */
 /* #undef BUILD_MODULES */
@@ -105,12 +103,12 @@
 #endif
 
 /* Define if you have Ghostscript library or framework */
-#ifndef MAGICKCORE_GS_DELEGATE
-#define MAGICKCORE_GS_DELEGATE 1
-#endif
+/* #undef GS_DELEGATE */
 
 /* Define if you have GVC library */
-/* #undef GVC_DELEGATE */
+#ifndef MAGICKCORE_GVC_DELEGATE
+#define MAGICKCORE_GVC_DELEGATE 1
+#endif
 
 /* Define to 1 if you have the `acosh' function. */
 #ifndef MAGICKCORE_HAVE_ACOSH
@@ -181,7 +179,9 @@
 #endif
 
 /* define if bool is a built-in type */
-/* #undef HAVE_BOOL */
+#ifndef MAGICKCORE_HAVE_BOOL
+#define MAGICKCORE_HAVE_BOOL /**/
+#endif
 
 /* Define to 1 if you have the `cabs' function. */
 #ifndef MAGICKCORE_HAVE_CABS
@@ -442,15 +442,15 @@
 #endif
 
 /* Define if you have the <lcms2.h> header file. */
-/* #undef HAVE_LCMS2_H */
+#ifndef MAGICKCORE_HAVE_LCMS2_H
+#define MAGICKCORE_HAVE_LCMS2_H 1
+#endif
 
 /* Define if you have the <lcms2/lcms2.h> header file. */
 /* #undef HAVE_LCMS2_LCMS2_H */
 
 /* Define if you have the <lcms.h> header file. */
-#ifndef MAGICKCORE_HAVE_LCMS_H
-#define MAGICKCORE_HAVE_LCMS_H 1
-#endif
+/* #undef HAVE_LCMS_H */
 
 /* Define if you have the <lcms/lcms.h> header file. */
 /* #undef HAVE_LCMS_LCMS_H */
@@ -564,10 +564,14 @@
 #endif
 
 /* define if the compiler implements namespaces */
-/* #undef HAVE_NAMESPACES */
+#ifndef MAGICKCORE_HAVE_NAMESPACES
+#define MAGICKCORE_HAVE_NAMESPACES /**/
+#endif
 
 /* Define if g++ supports namespace std. */
-/* #undef HAVE_NAMESPACE_STD */
+#ifndef MAGICKCORE_HAVE_NAMESPACE_STD
+#define MAGICKCORE_HAVE_NAMESPACE_STD /**/
+#endif
 
 /* Define to 1 if you have the `nanosleep' function. */
 #ifndef MAGICKCORE_HAVE_NANOSLEEP
@@ -778,7 +782,9 @@
 #endif
 
 /* define if the compiler supports ISO C++ standard library */
-/* #undef HAVE_STD_LIBS */
+#ifndef MAGICKCORE_HAVE_STD_LIBS
+#define MAGICKCORE_HAVE_STD_LIBS /**/
+#endif
 
 /* Define to 1 if you have the `strcasecmp' function. */
 #ifndef MAGICKCORE_HAVE_STRCASECMP
@@ -1211,9 +1217,7 @@
 #endif
 
 /* Define if you have LQR library */
-#ifndef MAGICKCORE_LQR_DELEGATE
-#define MAGICKCORE_LQR_DELEGATE 1
-#endif
+/* #undef LQR_DELEGATE */
 
 /* Define if using libltdl to support dynamically loadable modules */
 #ifndef MAGICKCORE_LTDL_DELEGATE
@@ -1225,7 +1229,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib/atlas:/usr/lib/catalyst:/usr/lib/qt-3.3/lib:/usr/lib/wine/:/usr/lib/xulrunner-1.9.2"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib/llvm:/usr/lib64/llvm:/usr/local/lib:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.5/tclx8.4:/usr/lib64/tcl8.5:/usr/lib64/tracker-0.12:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-2"
 #endif
 
 /* The archive extension */
@@ -1259,7 +1263,9 @@
 /* #undef LT_SHARED_EXT */
 
 /* Define if you have LZMA library */
-/* #undef LZMA_DELEGATE */
+#ifndef MAGICKCORE_LZMA_DELEGATE
+#define MAGICKCORE_LZMA_DELEGATE 1
+#endif
 
 /* Define to prepend to default font search path. */
 /* #undef MAGICK_FONT_PATH */
@@ -1315,10 +1321,14 @@
 #endif
 
 /* Define if you have PANGOFT2 library */
-/* #undef PANGOFT2_DELEGATE */
+#ifndef MAGICKCORE_PANGOFT2_DELEGATE
+#define MAGICKCORE_PANGOFT2_DELEGATE 1
+#endif
 
 /* Define if you have PANGO library */
-/* #undef PANGO_DELEGATE */
+#ifndef MAGICKCORE_PANGO_DELEGATE
+#define MAGICKCORE_PANGO_DELEGATE 1
+#endif
 
 /* Define if you have PNG library */
 #ifndef MAGICKCORE_PNG_DELEGATE
@@ -1343,9 +1353,7 @@
 #endif
 
 /* Define if you have RSVG library */
-#ifndef MAGICKCORE_RSVG_DELEGATE
-#define MAGICKCORE_RSVG_DELEGATE 1
-#endif
+/* #undef RSVG_DELEGATE */
 
 /* Define to the type of arg 1 for `select'. */
 #ifndef MAGICKCORE_SELECT_TYPE_ARG1
@@ -1396,7 +1404,7 @@
 
 /* The size of `signed long', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_SIGNED_LONG
-#define MAGICKCORE_SIZEOF_SIGNED_LONG 4
+#define MAGICKCORE_SIZEOF_SIGNED_LONG 8
 #endif
 
 /* The size of `signed long long', as computed by sizeof. */
@@ -1411,12 +1419,12 @@
 
 /* The size of `size_t', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_SIZE_T
-#define MAGICKCORE_SIZEOF_SIZE_T 4
+#define MAGICKCORE_SIZEOF_SIZE_T 8
 #endif
 
 /* The size of `ssize_t', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_SSIZE_T
-#define MAGICKCORE_SIZEOF_SSIZE_T 4
+#define MAGICKCORE_SIZEOF_SSIZE_T 8
 #endif
 
 /* The size of `unsigned int', as computed by sizeof. */
@@ -1426,12 +1434,12 @@
 
 /* The size of `unsigned int*', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_UNSIGNED_INTP
-#define MAGICKCORE_SIZEOF_UNSIGNED_INTP 4
+#define MAGICKCORE_SIZEOF_UNSIGNED_INTP 8
 #endif
 
 /* The size of `unsigned long', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_UNSIGNED_LONG
-#define MAGICKCORE_SIZEOF_UNSIGNED_LONG 4
+#define MAGICKCORE_SIZEOF_UNSIGNED_LONG 8
 #endif
 
 /* The size of `unsigned long long', as computed by sizeof. */
@@ -1558,9 +1566,7 @@
 #endif
 
 /* Number of bits in a file offset, on hosts where this is settable. */
-#ifndef MAGICKCORE__FILE_OFFSET_BITS
-#define MAGICKCORE__FILE_OFFSET_BITS 64
-#endif
+/* #undef _FILE_OFFSET_BITS */
 
 /* enable run-time bounds-checking */
 /* #undef _FORTIFY_SOURCE */
