@@ -1312,9 +1312,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
     i;
 
   size_t
-    length;
-
-  size_t
+    length,
     level;
 
   p=expression;
@@ -1434,10 +1432,8 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
   GetPixelInfo(image,&pixel);
   (void) InterpolatePixelInfo(image,fx_info->view[i],image->interpolate,
     point.x,point.y,&pixel,exception);
-  if ((strlen(p) > 2) &&
-      (LocaleCompare(p,"intensity") != 0) &&
-      (LocaleCompare(p,"luminance") != 0) &&
-      (LocaleCompare(p,"hue") != 0) &&
+  if ((strlen(p) > 2) && (LocaleCompare(p,"intensity") != 0) &&
+      (LocaleCompare(p,"luminance") != 0) && (LocaleCompare(p,"hue") != 0) &&
       (LocaleCompare(p,"saturation") != 0) &&
       (LocaleCompare(p,"lightness") != 0))
     {
@@ -1468,12 +1464,19 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
               p+=strlen(name);
             }
           else
-            if (QueryColorCompliance(name,AllCompliance,&pixel,fx_info->exception) != MagickFalse)
-              {
-                (void) AddValueToSplayTree(fx_info->colors,ConstantString(name),
-                  ClonePixelInfo(&pixel));
-                p+=strlen(name);
-              }
+            {
+              MagickBooleanType
+                status;
+
+              status=QueryColorCompliance(name,AllCompliance,&pixel,
+                fx_info->exception);
+              if (status != MagickFalse)
+                {
+                  (void) AddValueToSplayTree(fx_info->colors,ConstantString(
+                    name),ClonePixelInfo(&pixel));
+                  p+=strlen(name);
+                }
+            }
         }
     }
   (void) CopyMagickString(symbol,p,MaxTextExtent);
@@ -2189,15 +2192,13 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
         case LeftShiftOperator:
         {
           gamma=FxEvaluateSubexpression(fx_info,channel,x,y,++p,beta,exception);
-          *beta=(MagickRealType) ((size_t) (alpha+0.5) << (size_t)
-            (gamma+0.5));
+          *beta=(MagickRealType) ((size_t) (alpha+0.5) << (size_t) (gamma+0.5));
           return(*beta);
         }
         case RightShiftOperator:
         {
           gamma=FxEvaluateSubexpression(fx_info,channel,x,y,++p,beta,exception);
-          *beta=(MagickRealType) ((size_t) (alpha+0.5) >> (size_t)
-            (gamma+0.5));
+          *beta=(MagickRealType) ((size_t) (alpha+0.5) >> (size_t) (gamma+0.5));
           return(*beta);
         }
         case '<':
@@ -2233,15 +2234,13 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
         case '&':
         {
           gamma=FxEvaluateSubexpression(fx_info,channel,x,y,++p,beta,exception);
-          *beta=(MagickRealType) ((size_t) (alpha+0.5) & (size_t)
-            (gamma+0.5));
+          *beta=(MagickRealType) ((size_t) (alpha+0.5) & (size_t) (gamma+0.5));
           return(*beta);
         }
         case '|':
         {
           gamma=FxEvaluateSubexpression(fx_info,channel,x,y,++p,beta,exception);
-          *beta=(MagickRealType) ((size_t) (alpha+0.5) | (size_t)
-            (gamma+0.5));
+          *beta=(MagickRealType) ((size_t) (alpha+0.5) | (size_t) (gamma+0.5));
           return(*beta);
         }
         case LogicalAndOperator:
@@ -2488,10 +2487,9 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
           if (strlen(subexpression) > 1)
             subexpression[strlen(subexpression)-1]='\0';
           if (fx_info->file != (FILE *) NULL)
-            (void) FormatLocaleFile(fx_info->file,
-              "%s[%.20g,%.20g].%s: %s=%.*g\n",fx_info->images->filename,
-               (double) x,(double) y,type,subexpression,GetMagickPrecision(),
-               (double) alpha);
+            (void) FormatLocaleFile(fx_info->file,"%s[%.20g,%.20g].%s: "
+               "%s=%.*g\n",fx_info->images->filename,(double) x,(double) y,type,
+               subexpression,GetMagickPrecision(),(double) alpha);
           return(0.0);
         }
       if (LocaleNCompare(expression,"drc",3) == 0)
@@ -2545,8 +2543,8 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
 
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+3,beta,
             exception);
-          gcd=FxGCD((MagickOffsetType) (alpha+0.5),(MagickOffsetType)
-            (*beta+0.5));
+          gcd=FxGCD((MagickOffsetType) (alpha+0.5),(MagickOffsetType) (*beta+
+            0.5));
           return((MagickRealType) gcd);
         }
       if (LocaleCompare(expression,"g") == 0)
@@ -2626,8 +2624,8 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           if (alpha == 0.0)
             return(1.0);
-          gamma=(MagickRealType) (2.0*j1((double) (MagickPI*alpha))/
-            (MagickPI*alpha));
+          gamma=(MagickRealType) (2.0*j1((double) (MagickPI*alpha))/(MagickPI*
+            alpha));
           return(gamma);
         }
 #endif
@@ -3303,7 +3301,16 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
           PixelChannel
             channel;
 
+          PixelTrait
+            implode_traits,
+            traits;
+
           channel=GetPixelChannelMapChannel(image,i);
+          traits=GetPixelChannelMapTraits(image,channel);
+          implode_traits=GetPixelChannelMapTraits(implode_image,channel);
+          if ((traits == UndefinedPixelTrait) ||
+              (implode_traits == UndefinedPixelTrait))
+            continue;
           SetPixelChannel(implode_image,channel,p[i],q);
         }
       else
@@ -3316,8 +3323,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
           */
           factor=1.0;
           if (distance > 0.0)
-            factor=pow(sin((double) (MagickPI*sqrt((double) distance)/
-              radius/2)),-amount);
+            factor=pow(sin((double) (MagickPI*sqrt((double) distance)/radius/
+              2)),-amount);
           status=InterpolatePixelChannels(image,image_view,implode_image,method,
             (double) (factor*delta.x/scale.x+center.x),(double) (factor*delta.y/
             scale.y+center.y),q,exception);
@@ -3469,7 +3476,8 @@ MagickExport Image *MorphImages(const Image *image,
           morph_images=DestroyImageList(morph_images);
           return((Image *) NULL);
         }
-      if (SetImageStorageClass(morph_image,DirectClass,exception) == MagickFalse)
+      status=SetImageStorageClass(morph_image,DirectClass,exception);
+      if (status == MagickFalse)
         {
           morph_image=DestroyImage(morph_image);
           return((Image *) NULL);
@@ -3516,19 +3524,32 @@ MagickExport Image *MorphImages(const Image *image,
           }
         for (x=0; x < (ssize_t) morph_images->columns; x++)
         {
-          SetPixelRed(morph_images,ClampToQuantum(alpha*
-            GetPixelRed(morph_images,q)+beta*GetPixelRed(morph_image,p)),q);
-          SetPixelGreen(morph_images,ClampToQuantum(alpha*
-            GetPixelGreen(morph_images,q)+beta*GetPixelGreen(morph_image,p)),q);
-          SetPixelBlue(morph_images,ClampToQuantum(alpha*
-            GetPixelBlue(morph_images,q)+beta*GetPixelBlue(morph_image,p)),q);
-          SetPixelAlpha(morph_images,ClampToQuantum(alpha*
-            GetPixelAlpha(morph_images,q)+beta*GetPixelAlpha(morph_image,p)),q);
-          if ((morph_image->colorspace == CMYKColorspace) &&
-              (morph_images->colorspace == CMYKColorspace))
-            SetPixelBlack(morph_images,ClampToQuantum(alpha*
-              GetPixelBlack(morph_images,q)+beta*GetPixelBlack(morph_image,p)),
-              q);
+          register ssize_t
+            i;
+
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          {
+            PixelChannel
+              channel;
+
+            PixelTrait
+              morph_traits,
+              traits;
+
+            channel=GetPixelChannelMapChannel(image,i);
+            traits=GetPixelChannelMapTraits(image,channel);
+            morph_traits=GetPixelChannelMapTraits(morph_image,channel);
+            if ((traits == UndefinedPixelTrait) ||
+                (morph_traits == UndefinedPixelTrait))
+              continue;
+            if ((morph_traits & CopyPixelTrait) != 0)
+              {
+                SetPixelChannel(morph_image,channel,p[i],q);
+                continue;
+              }
+            SetPixelChannel(morph_image,channel,ClampToQuantum(alpha*
+              GetPixelChannel(morph_images,channel,q)+beta*p[i]),q);
+          }
           p+=GetPixelChannels(morph_image);
           q+=GetPixelChannels(morph_images);
         }
@@ -3701,10 +3722,10 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
         Left pixel.
       */
       x=(ssize_t) ceil(segment->x1-0.5);
-      u=GetCacheViewVirtualPixels(u_view,x,(ssize_t) ceil(segment->y1-0.5),
-        1,1,exception);
-      v=GetCacheViewVirtualPixels(v_view,x,(ssize_t) ceil(segment->y2-0.5),
-        1,1,exception);
+      u=GetCacheViewVirtualPixels(u_view,x,(ssize_t) ceil(segment->y1-0.5),1,1,
+        exception);
+      v=GetCacheViewVirtualPixels(v_view,x,(ssize_t) ceil(segment->y2-0.5),1,1,
+        exception);
       q=QueueCacheViewAuthenticPixels(image_view,x,y_mid,1,1,exception);
       if ((u == (const Quantum *) NULL) || (v == (const Quantum *) NULL) ||
           (q == (Quantum *) NULL))
@@ -3990,8 +4011,8 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
     exception);
   if (caption_image != (Image *) NULL)
     {
-      (void) CompositeImage(picture_image,OverCompositeOp,caption_image,
-        quantum,(ssize_t) (image->rows+3*quantum/2),exception);
+      (void) CompositeImage(picture_image,OverCompositeOp,caption_image,quantum,
+        (ssize_t) (image->rows+3*quantum/2),exception);
       caption_image=DestroyImage(caption_image);
     }
   (void) QueryColorCompliance("none",AllCompliance,
@@ -4029,8 +4050,8 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
       return(picture_image);
     }
   polaroid_image=flop_image;
-  (void) CompositeImage(polaroid_image,OverCompositeOp,picture_image,
-    (ssize_t) (-0.01*picture_image->columns/2.0),0L,exception);
+  (void) CompositeImage(polaroid_image,OverCompositeOp,picture_image,(ssize_t)
+    (-0.01*picture_image->columns/2.0),0L,exception);
   picture_image=DestroyImage(picture_image);
   (void) QueryColorCompliance("none",AllCompliance,
     &polaroid_image->background_color,exception);
@@ -4107,7 +4128,7 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  sepia_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  sepia_image=CloneImage(image,0,0,MagickTrue,exception);
   if (sepia_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(sepia_image,DirectClass,exception) == MagickFalse)
@@ -4139,7 +4160,7 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=QueueCacheViewAuthenticPixels(sepia_view,0,y,sepia_image->columns,1,
+    q=GetCacheViewAuthenticPixels(sepia_view,0,y,sepia_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
@@ -4750,13 +4771,17 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
         Quantum
           virtual_pixel[CompositePixelChannel];
 
+        ssize_t
+          offset;
+
         (void) GetOneCacheViewVirtualPixel(watermark_view,x,y,virtual_pixel,
           exception);
         pixel.red=(double) virtual_pixel[RedPixelChannel];
         pixel.green=(double) virtual_pixel[GreenPixelChannel];
         pixel.blue=(double) virtual_pixel[BluePixelChannel];
         pixel.alpha=(double) virtual_pixel[AlphaPixelChannel];
-        if ((k/(ssize_t) stegano_image->columns) >= (ssize_t) stegano_image->rows)
+        offset=k/(ssize_t) stegano_image->columns;
+        if (offset >= (ssize_t) stegano_image->rows)
           break;
         q=GetCacheViewAuthenticPixels(stegano_view,k % (ssize_t)
           stegano_image->columns,k/(ssize_t) stegano_image->columns,1,1,
@@ -5086,7 +5111,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    q=GetCacheViewAuthenticPixels(swirl_view,0,y,swirl_image->columns,1,
+    q=QueueCacheViewAuthenticPixels(swirl_view,0,y,swirl_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
@@ -5096,9 +5121,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     delta.y=scale.y*(double) (y-center.y);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
-        i;
-
       /*
         Determine if the pixel is within an ellipse.
       */
@@ -5106,8 +5128,26 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       distance=delta.x*delta.x+delta.y*delta.y;
       if (distance >= (radius*radius))
         {
+          register ssize_t
+            i;
+
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-            q[i]=p[i];
+          {
+            PixelChannel
+              channel;
+
+            PixelTrait
+              swirl_traits,
+              traits;
+
+            channel=GetPixelChannelMapChannel(image,i);
+            traits=GetPixelChannelMapTraits(image,channel);
+            swirl_traits=GetPixelChannelMapTraits(swirl_image,channel);
+            if ((traits == UndefinedPixelTrait) ||
+                (swirl_traits == UndefinedPixelTrait))
+              continue;
+            SetPixelChannel(swirl_image,channel,p[i],q);
+          }
         }
       else
         {
@@ -5207,8 +5247,7 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
     intensity;
 
   PixelInfo
-    color_vector,
-    pixel;
+    color_vector;
 
   MagickStatusType
     flags;
@@ -5238,32 +5277,37 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
   /*
     Determine RGB values of the color.
   */
-  GetPixelInfo(image,&pixel);
+  GetPixelInfo(image,&color_vector);
   flags=ParseGeometry(blend,&geometry_info);
-  pixel.red=geometry_info.rho;
-  pixel.green=geometry_info.rho;
-  pixel.blue=geometry_info.rho;
-  pixel.alpha=OpaqueAlpha;
+  color_vector.red=geometry_info.rho;
+  color_vector.green=geometry_info.rho;
+  color_vector.blue=geometry_info.rho;
+  color_vector.alpha=OpaqueAlpha;
   if ((flags & SigmaValue) != 0)
-    pixel.green=geometry_info.sigma;
+    color_vector.green=geometry_info.sigma;
   if ((flags & XiValue) != 0)
-    pixel.blue=geometry_info.xi;
+    color_vector.blue=geometry_info.xi;
   if ((flags & PsiValue) != 0)
-    pixel.alpha=geometry_info.psi;
+    color_vector.alpha=geometry_info.psi;
   if (image->colorspace == CMYKColorspace)
     {
-      pixel.black=geometry_info.rho;
+      color_vector.black=geometry_info.rho;
       if ((flags & PsiValue) != 0)
-        pixel.black=geometry_info.psi;
+        color_vector.black=geometry_info.psi;
       if ((flags & ChiValue) != 0)
-        pixel.alpha=geometry_info.chi;
+        color_vector.alpha=geometry_info.chi;
     }
   intensity=(MagickRealType) GetPixelInfoIntensity(tint);
-  color_vector.red=(MagickRealType) (pixel.red*tint->red/100.0-intensity);
-  color_vector.green=(MagickRealType) (pixel.green*tint->green/100.0-intensity);
-  color_vector.blue=(MagickRealType) (pixel.blue*tint->blue/100.0-intensity);
-  color_vector.black=(MagickRealType) (pixel.black*tint->black/100.0-intensity);
-  color_vector.alpha=(MagickRealType) (pixel.alpha*tint->alpha/100.0-intensity);
+  color_vector.red=(MagickRealType) (color_vector.red*tint->red/100.0-
+    intensity);
+  color_vector.green=(MagickRealType) (color_vector.green*tint->green/100.0-
+    intensity);
+  color_vector.blue=(MagickRealType) (color_vector.blue*tint->blue/100.0-
+    intensity);
+  color_vector.black=(MagickRealType) (color_vector.black*tint->black/100.0-
+    intensity);
+  color_vector.alpha=(MagickRealType) (color_vector.alpha*tint->alpha/100.0-
+    intensity);
   /*
     Tint image.
   */
@@ -5303,36 +5347,44 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
       MagickRealType
         weight;
 
-      if ((GetPixelRedTraits(tint_image) & UpdatePixelTrait) != 0)
-        {
-          weight=QuantumScale*GetPixelRed(image,p)-0.5;
-          pixel.red=(MagickRealType) GetPixelRed(image,p)+
-            color_vector.red*(1.0-(4.0*(weight*weight)));
-          SetPixelRed(tint_image,ClampToQuantum(pixel.red),q);
-        }
-      if ((GetPixelGreenTraits(tint_image) & UpdatePixelTrait) != 0)
-        {
-          weight=QuantumScale*GetPixelGreen(image,p)-0.5;
-          pixel.green=(MagickRealType) GetPixelGreen(image,p)+
-            color_vector.green*(1.0-(4.0*(weight*weight)));
-          SetPixelGreen(tint_image,ClampToQuantum(pixel.green),q);
-        }
-      if ((GetPixelBlueTraits(tint_image) & UpdatePixelTrait) != 0)
-        {
-          weight=QuantumScale*GetPixelBlue(image,p)-0.5;
-          pixel.blue=(MagickRealType) GetPixelBlue(image,p)+
-            color_vector.blue*(1.0-(4.0*(weight*weight)));
-          SetPixelBlue(tint_image,ClampToQuantum(pixel.blue),q);
-        }
-      if ((GetPixelBlackTraits(tint_image) & UpdatePixelTrait) != 0)
-        {
-          weight=QuantumScale*GetPixelBlack(image,p)-0.5;
-          pixel.black=(MagickRealType) GetPixelBlack(image,p)+
-            color_vector.black*(1.0-(4.0*(weight*weight)));
-          SetPixelBlack(tint_image,ClampToQuantum(pixel.black),q);
-        }
-      if ((GetPixelAlphaTraits(tint_image) & CopyPixelTrait) != 0)
-        SetPixelAlpha(tint_image,GetPixelAlpha(image,p),q);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          tint_traits,
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
+        tint_traits=GetPixelChannelMapTraits(tint_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (tint_traits == UndefinedPixelTrait))
+          continue;
+        if ((tint_traits & CopyPixelTrait) != 0)
+          {
+            SetPixelChannel(tint_image,channel,p[i],q);
+            continue;
+          }
+      }
+      GetPixelInfo(image,&pixel);
+      weight=QuantumScale*GetPixelRed(image,p)-0.5;
+      pixel.red=(MagickRealType) GetPixelRed(image,p)+color_vector.red*
+        (1.0-(4.0*(weight*weight)));
+      weight=QuantumScale*GetPixelGreen(image,p)-0.5;
+      pixel.green=(MagickRealType) GetPixelGreen(image,p)+color_vector.green*
+        (1.0-(4.0*(weight*weight)));
+      weight=QuantumScale*GetPixelBlue(image,p)-0.5;
+      pixel.blue=(MagickRealType) GetPixelBlue(image,p)+color_vector.blue*
+        (1.0-(4.0*(weight*weight)));
+      weight=QuantumScale*GetPixelBlack(image,p)-0.5;
+      pixel.black=(MagickRealType) GetPixelBlack(image,p)+color_vector.black*
+        (1.0-(4.0*(weight*weight)));
+      SetPixelInfoPixel(tint_image,&pixel,q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(tint_image);
     }
@@ -5438,9 +5490,9 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
     exception);
   (void) QueryColorCompliance("#ffffff",AllCompliance,&draw_info->stroke,
     exception);
-  (void) FormatLocaleString(ellipse,MaxTextExtent,
-    "ellipse %g,%g,%g,%g,0.0,360.0",image->columns/2.0,
-    image->rows/2.0,image->columns/2.0-x,image->rows/2.0-y);
+  (void) FormatLocaleString(ellipse,MaxTextExtent,"ellipse %g,%g,%g,%g,"
+    "0.0,360.0",image->columns/2.0,image->rows/2.0,image->columns/2.0-x,
+    image->rows/2.0-y);
   draw_info->primitive=AcquireString(ellipse);
   (void) DrawImage(oval_image,draw_info,exception);
   draw_info=DestroyDrawInfo(draw_info);
