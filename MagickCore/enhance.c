@@ -727,7 +727,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
         Apply transfer function to colormap.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+      #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
@@ -736,15 +736,15 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
 
         luma=0.2126*image->colormap[i].red+0.7152*image->colormap[i].green+
           0.0722*image->colormap[i].blue;
-        image->colormap[i].red=luma+color_correction.saturation*
-          cdl_map[ScaleQuantumToMap(ClampToQuantum(
-          image->colormap[i].red))].red-luma;
-        image->colormap[i].green=luma+color_correction.saturation*
-          cdl_map[ScaleQuantumToMap(ClampToQuantum(
-          image->colormap[i].green))].green-luma;
-        image->colormap[i].blue=luma+color_correction.saturation*
-          cdl_map[ScaleQuantumToMap(ClampToQuantum(
-          image->colormap[i].blue))].blue-luma;
+        image->colormap[i].red=luma+color_correction.saturation*cdl_map[
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))].red-
+          luma;
+        image->colormap[i].green=luma+color_correction.saturation*cdl_map[
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))].green-
+          luma;
+        image->colormap[i].blue=luma+color_correction.saturation*cdl_map[
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))].blue-
+          luma;
       }
     }
   /*
