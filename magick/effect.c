@@ -1678,7 +1678,7 @@ static void Hull(const ssize_t x_offset,const ssize_t y_offset,
   p=f+(columns+2);
   q=g+(columns+2);
   r=p+(y_offset*(columns+2)+x_offset);
-#if defined(HAVE_OPENMP)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(guided)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
@@ -1714,7 +1714,7 @@ static void Hull(const ssize_t x_offset,const ssize_t y_offset,
   q=g+(columns+2);
   r=q+(y_offset*(columns+2)+x_offset);
   s=q-(y_offset*(columns+2)+x_offset);
-#if defined(HAVE_OPENMP)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(guided)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
