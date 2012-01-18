@@ -1421,7 +1421,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
   progress=0;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) height; y++)
   {
@@ -1641,7 +1641,7 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
   progress=0;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(dynamic) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
   for (x=0; x < (ssize_t) width; x++)
   {
