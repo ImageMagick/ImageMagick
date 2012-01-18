@@ -236,6 +236,10 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
 %  CloneString() allocates memory for the destination string and copies
 %  the source string to that memory location.
 %
+%  If source is a NULL pointer the destination will also be set to a NULL
+%  point (any existing string is freed).  Otherwise the memory is allocated
+%  (or resized) and the source string copied into it.
+%
 %  The format of the CloneString method is:
 %
 %      char *CloneString(char **destination,const char *source)
