@@ -673,8 +673,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
           content=GetXMLTreeContent(saturation);
           p=(const char *) content;
           GetMagickToken(p,&p,token);
-          color_correction.saturation=StringToDouble(token,
-            (char **) NULL);
+          color_correction.saturation=StringToDouble(token,(char **) NULL);
         }
     }
   ccc=DestroyXMLTree(ccc);
