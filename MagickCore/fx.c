@@ -323,7 +323,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=GetCacheViewAuthenticPixels(noise_view,0,y,noise_image->columns,1,
+    q=QueueCacheViewAuthenticPixels(noise_view,0,y,noise_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
@@ -445,8 +445,7 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  shift_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
+  shift_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (shift_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(shift_image,DirectClass,exception) == MagickFalse)
@@ -3085,7 +3084,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=GetCacheViewAuthenticPixels(fx_view,0,y,fx_image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(fx_view,0,y,fx_image->columns,1,exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
@@ -3280,7 +3279,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
-    q=GetCacheViewAuthenticPixels(implode_view,0,y,implode_image->columns,1,
+    q=QueueCacheViewAuthenticPixels(implode_view,0,y,implode_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
@@ -3299,9 +3298,13 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       delta.x=scale.x*(double) (x-center.x);
       distance=delta.x*delta.x+delta.y*delta.y;
       if (distance >= (radius*radius))
+        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
-          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-            q[i]=p[i];
+          PixelChannel
+            channel;
+
+          channel=GetPixelChannelMapChannel(image,i);
+          SetPixelChannel(implode_image,channel,p[i],q);
         }
       else
         {

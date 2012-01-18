@@ -2329,7 +2329,7 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+    #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
     for (i=0; i < (ssize_t) image->colors; i++)
     {
