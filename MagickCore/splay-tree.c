@@ -132,7 +132,7 @@ static void
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  AddValueToSplayTree() adds the given key and value to the splay-tree.
-%  The both key and value is used as is, without coping or cloning.
+%  Both key and value are used as is, without coping or cloning.
 %
 %  The format of the AddValueToSplayTree method is:
 %

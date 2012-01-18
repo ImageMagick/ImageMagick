@@ -2311,8 +2311,8 @@ static int32 TIFFWritePixels(TIFF *tiff,TIFFInfo *tiff_info,ssize_t row,
     Write tile to TIFF image.
   */
   status=0;
-  bytes_per_pixel=TIFFTileSize(tiff)/(ssize_t) (tiff_info->tile_geometry.height*
-    tiff_info->tile_geometry.width);
+  bytes_per_pixel=TIFFTileSize(tiff)/(ssize_t) (
+    tiff_info->tile_geometry.height*tiff_info->tile_geometry.width);
   number_tiles=(image->columns+tiff_info->tile_geometry.width)/
     tiff_info->tile_geometry.width;
   for (i=0; i < (ssize_t) number_tiles; i++)
