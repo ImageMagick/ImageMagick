@@ -4028,7 +4028,7 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SyncImageSettings() sync the image_info options into per-image attributes.
+%  SyncImageSettings() syncs the image_info options into per-image attributes.
 %
 %  The format of the SyncImageSettings method is:
 %
