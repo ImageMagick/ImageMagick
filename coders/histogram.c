@@ -292,12 +292,13 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Initialize histogram image.
   */
-  (void) QueryColorCompliance("#000000",AllCompliance,
+  (void) QueryColorCompliance("#000",AllCompliance,
     &histogram_image->background_color,exception);
   (void) SetImageBackgroundColor(histogram_image,exception);
   for (x=0; x < (ssize_t) histogram_image->columns; x++)
   {
-    q=GetAuthenticPixels(histogram_image,x,0,1,histogram_image->rows,exception);
+    q=GetAuthenticPixels(histogram_image,x,0,1,histogram_image->rows,
+      exception);
     if (q == (Quantum *) NULL)
       break;
     if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)

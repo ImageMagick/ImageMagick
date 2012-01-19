@@ -10666,10 +10666,10 @@ Mogrify(ref,...)
             black_point,
             white_point;
 
-          (void) QueryColorCompliance("#000000",AllCompliance,
-            &black_point,exception);
-          (void) QueryColorCompliance("#ffffff",AllCompliance,
-            &white_point,exception);
+          (void) QueryColorCompliance("#000000",AllCompliance,&black_point,
+            exception);
+          (void) QueryColorCompliance("#ffffff",AllCompliance,&white_point,
+            exception);
           if (attribute_flag[1] != 0)
              (void) QueryColorCompliance(
                argument_list[1].string_reference,AllCompliance,&black_point,

@@ -1270,7 +1270,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
     coordinates;
 
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  (void) QueryColorCompliance("#0000",AllCompliance,&clone_info->fill,
+  (void) QueryColorCompliance("#000F",AllCompliance,&clone_info->fill,
     exception);
   resolution.x=DefaultResolution;
   resolution.y=DefaultResolution;
@@ -1420,7 +1420,7 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
       (void) SetImageClipMask(image,clip_mask,exception);
       clip_mask=DestroyImage(clip_mask);
     }
-  (void) QueryColorCompliance("#00000000",AllCompliance,
+  (void) QueryColorCompliance("#000F",AllCompliance,
     &image->clip_mask->background_color,exception);
   image->clip_mask->background_color.alpha=(Quantum) TransparentAlpha;
   (void) SetImageBackgroundColor(image->clip_mask,exception);
@@ -3495,7 +3495,7 @@ MagickExport MagickBooleanType DrawPatternPath(Image *image,
   image_info->size=AcquireString(geometry);
   *pattern=AcquireImage(image_info,exception);
   image_info=DestroyImageInfo(image_info);
-  (void) QueryColorCompliance("#00000000",AllCompliance,
+  (void) QueryColorCompliance("#000000FF",AllCompliance,
     &(*pattern)->background_color,exception);
   (void) SetImageBackgroundColor(*pattern,exception);
   if (image->debug != MagickFalse)
@@ -4748,9 +4748,9 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   (void) ResetMagickMemory(draw_info,0,sizeof(*draw_info));
   GetAffineMatrix(&draw_info->affine);
   exception=AcquireExceptionInfo();
-  (void) QueryColorCompliance("#000F",AllCompliance,&draw_info->fill,
+  (void) QueryColorCompliance("#0000",AllCompliance,&draw_info->fill,
     exception);
-  (void) QueryColorCompliance("#FFF0",AllCompliance,&draw_info->stroke,
+  (void) QueryColorCompliance("#FFFF",AllCompliance,&draw_info->stroke,
     exception);
   draw_info->stroke_width=1.0;
   draw_info->alpha=OpaqueAlpha;
