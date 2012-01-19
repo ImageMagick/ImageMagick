@@ -1159,8 +1159,12 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
 MagickExport Image *AdaptiveResizeImage(const Image *image,
   const size_t columns,const size_t rows, ExceptionInfo *exception)
 {
-  return(InterpolativeResizeImage(image,columns,rows,MeshInterpolatePixel,
-               exception));
+  Image
+    *resize_image;
+
+  resize_image=InterpolativeResizeImage(image,columns,rows,MeshInterpolatePixel,
+    exception);
+  return(resize_image);
 }
 
 /*
@@ -1572,9 +1576,8 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
   progress=0;
   image_view=AcquireCacheView(image);
   resize_view=AcquireCacheView(resize_image);
-  scale.x=(MagickRealType)image->columns/resize_image->columns;
-  scale.y=(MagickRealType)image->rows/resize_image->rows;
-
+  scale.x=(double) image->columns/resize_image->columns;
+  scale.y=(double) image->rows/resize_image->rows;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,1) shared(progress,status)
 #endif
@@ -1600,7 +1603,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
     {
       offset.x=((MagickRealType) x+0.5)*scale.x-0.5;
       status=InterpolatePixelChannels(image,image_view,resize_image,method,
-           offset.x,offset.y,q,exception);
+        offset.x,offset.y,q,exception);
       q+=GetPixelChannels(resize_image);
     }
     if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
