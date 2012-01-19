@@ -58,9 +58,11 @@
 %  AcquireMagickMatrix() allocates and returns a matrix in the form of an
 %  array of pointers to an array of doubles, with all values pre-set to zero.
 %
-%  This used to generate the two dimensional matrix, and vectors required
-%  for the GaussJordanElimination() method below, solving some system of
-%  simultanious equations.
+%  This used to generate the two dimensional matrix, that can be referenced
+%  using the simple C-code of the form "matrix[y][x]".
+%
+%  This matrix is typically used for perform for the GaussJordanElimination()
+%  method below, solving some system of simultanious equations.
 %
 %  The format of the AcquireMagickMatrix method is:
 %
@@ -134,7 +136,7 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %    o vectors: the additional matrix argumenting the matrix for row reduction.
 %             Producing an 'array of column vectors'.
 %
-%    o rank:  The size of the matrix (both rows and columns).
+%    o rank:  The size of the square matrix (both rows and columns).
 %             Also represents the number terms that need to be solved.
 %
 %    o number_vectors: Number of vectors columns, argumenting the above matrix.
@@ -147,9 +149,14 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %
 %  However 'vectors' is a 'array of column pointers' which can have any number
 %  of columns, with each column array the same 'rank' size as 'matrix'.
+%  It is assigned  vector[column][row]  where 'column' is the specific
+%  'result' and 'row' is the 'values' for that answer.  After processing
+%  the same vector array contains the 'weights' (answers) for each of the
+%  'separatable' results.
 %
 %  This allows for simpler handling of the results, especially is only one
-%  column 'vector' is all that is required to produce the desired solution.
+%  column 'vector' is all that is required to produce the desired solution
+%  for that specific set of equations.
 %
 %  For example, the 'vectors' can consist of a pointer to a simple array of
 %  doubles.  when only one set of simultanious equations is to be solved from
@@ -169,11 +176,14 @@ MagickExport double **AcquireMagickMatrix(const size_t number_rows,
 %
 %  Another example is generation of a color gradient from a set of colors
 %  at specific coordients, such as a list    x,y -> r,g,b,a
-%  (Reference to be added - Anthony)
+%
+%  See LeastSquaresAddTerms() below for such an example.
 %
 %  You can also use the 'vectors' to generate an inverse of the given 'matrix'
 %  though as a 'column first array' rather than a 'row first array' (matrix
-%  is transposed). For details see
+%  is transposed).
+%
+%  For details of this process see...
 %     http://en.wikipedia.org/wiki/Gauss-Jordan_elimination
 %
 */
@@ -343,16 +353,18 @@ MagickPrivate MagickBooleanType GaussJordanElimination(double **matrix,
 %     ...
 %     if ( GaussJordanElimination(matrix,vectors,3UL,2UL) ) {
 %       c0 = vectors[0][0];
-%       c2 = vectors[0][1];
+%       c2 = vectors[0][1];  %* weights to calculate u from any given x,y *%
 %       c4 = vectors[0][2];
 %       c1 = vectors[1][0];
-%       c3 = vectors[1][1];
+%       c3 = vectors[1][1];  %* weights for calculate v from any given x,y *%
 %       c5 = vectors[1][2];
 %     }
 %     else
 %       printf("Matrix unsolvable\n);
 %     RelinquishMagickMatrix(matrix,3UL);
 %     RelinquishMagickMatrix(vectors,2UL);
+%
+% More examples can be found in "distort.c"
 %
 */
 MagickPrivate void LeastSquaresAddTerms(double **matrix,double **vectors,

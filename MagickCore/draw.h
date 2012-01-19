@@ -207,22 +207,21 @@ typedef struct _DrawInfo
   AffineMatrix
     affine;
 
-  GravityType
-    gravity;
-
   PixelInfo
     fill,
-    stroke;
+    stroke,
+    undercolor,
+    border_color;
+
+  Image
+    *fill_pattern,
+    *stroke_pattern;
 
   double
     stroke_width;
 
   GradientInfo
     gradient;
-
-  Image
-    *fill_pattern,
-    *stroke_pattern;
 
   MagickBooleanType
     stroke_antialias,
@@ -250,15 +249,13 @@ typedef struct _DrawInfo
     compose;
 
   char
-    *text;
-
-  size_t
-    face;
-
-  char
+    *text,
     *font,
     *metrics,
     *family;
+
+  size_t
+    face;
 
   StyleType
     style;
@@ -281,9 +278,8 @@ typedef struct _DrawInfo
   AlignType
     align;
 
-  PixelInfo
-    undercolor,
-    border_color;
+  GravityType
+    gravity;
 
   char
     *server_name;
@@ -318,12 +314,12 @@ typedef struct _DrawInfo
     direction;
 
   MagickBooleanType
-
     debug;
 
   size_t
     signature;
 } DrawInfo;
+
 
 typedef struct _PrimitiveInfo
 {

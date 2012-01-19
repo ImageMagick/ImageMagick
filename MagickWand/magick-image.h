@@ -72,8 +72,7 @@ extern WandExport PixelInterpolateMethod
 
 extern WandExport MagickBooleanType
   MagickAdaptiveBlurImage(MagickWand *,const double,const double,const double),
-  MagickAdaptiveResizeImage(MagickWand *,const size_t,const size_t,
-    const PixelInterpolateMethod),
+  MagickAdaptiveResizeImage(MagickWand *,const size_t,const size_t),
   MagickAdaptiveSharpenImage(MagickWand *,const double,const double,
     const double),
   MagickAdaptiveThresholdImage(MagickWand *,const size_t,const size_t,
@@ -169,6 +168,8 @@ extern WandExport MagickBooleanType
   MagickImplodeImage(MagickWand *,const double,const PixelInterpolateMethod),
   MagickImportImagePixels(MagickWand *,const ssize_t,const ssize_t,const size_t,
     const size_t,const char *,const StorageType,const void *),
+  MagickInterpolativeResizeImage(MagickWand *,const size_t,const size_t,
+    const PixelInterpolateMethod),
   MagickInverseFourierTransformImage(MagickWand *,MagickWand *,
     const MagickBooleanType),
   MagickLabelImage(MagickWand *,const char *),

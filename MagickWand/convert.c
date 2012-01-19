@@ -213,6 +213,8 @@ static MagickBooleanType ConvertUsage(void)
       "-identify            identify the format and characteristics of the image",
       "-ift                 implements the inverse discrete Fourier transform (DFT)",
       "-implode amount      implode image pixels about the center",
+      "-interpolative-resize geometry",
+      "                     resize image using interpolation",
       "-lat geometry        local adaptive thresholding",
       "-layers method       optimize, merge,  or compare image layers",
       "-level value         adjust the level of image contrast",
@@ -1807,17 +1809,6 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
-            break;
-          }
-        if (LocaleCompare("linewidth",option+1) == 0)
-          {
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) (argc-1))
-              ThrowConvertException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("liquid-rescale",option+1) == 0)

@@ -163,6 +163,9 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
 %  positions.  If you cycle the colormap a number of times you can produce
 %  a psychodelic effect.
 %
+%  WARNING: this assumes an images colormap is in a well know and defined
+%  order. Currently Imagemagick has no way of setting that order.
+%
 %  The format of the CycleColormapImage method is:
 %
 %      MagickBooleanType CycleColormapImage(Image *image,const ssize_t displace,

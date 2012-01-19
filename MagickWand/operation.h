@@ -24,13 +24,13 @@ extern "C" {
 
 
 extern WandExport MagickBooleanType
-  ApplySettingInfoOption(ImageInfo *,const int,const char *,ExceptionInfo *),
-  ApplySimpleOperationImage(ImageInfo *,const int,const char *,const char *,
-       Image **,ExceptionInfo *),
-/*ApplySimpleOperationImages(ImageInfo *,const int,const char **,Image
-       **,ExceptionInfo *), */
-  ApplySequenceOperationImages(ImageInfo *,const int,const char **,Image **,
-       ExceptionInfo *);
+  WandSettingOptionWand(MagickWand *,const char *,const char *),
+  WandSimpleOperationImage(MagickWand *,const int,const char *,const char *,
+       const char *);
+  WandSimpleOperationImages(MagickWand *,const int,const char *,const char *,
+       const char *);
+  WandListOperationImages(MagickWand *,const int,const char *,const char *,
+       const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

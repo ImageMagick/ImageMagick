@@ -2359,7 +2359,7 @@ MagickPrivate void XColorBrowserWidget(Display *display,XWindows *windows,
               if (MatteIsActive(grab_info,event.xbutton))
                 {
                   /*
-                    Select a pen color from the X server.
+                    Select a fill color from the X server.
                   */
                   (void) XGetWindowColor(display,windows,reply_info.text,
                     exception);

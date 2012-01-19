@@ -690,7 +690,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   if (blend == (const char *) NULL)
     return(colorize_image);
   /*
-    Determine RGB values of the pen color.
+    Determine RGB values of the fill color for pixel
   */
   GetPixelInfo(image,&pixel);
   flags=ParseGeometry(blend,&geometry_info);
@@ -869,6 +869,11 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+/* FUTURE: modify to make use of a MagickMatrix Mutliply function
+   That should be provided in "matrix.c"
+   (ASIDE: actually distorts should do this too but currently doesn't)
+*/
+
 MagickExport Image *ColorMatrixImage(const Image *image,
   const KernelInfo *color_matrix,ExceptionInfo *exception)
 {
@@ -907,7 +912,7 @@ MagickExport Image *ColorMatrixImage(const Image *image,
     y;
 
   /*
-    Create color matrix.
+    Map given color_matrix, into a 6x6 matrix   RGBKA and a constant
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -959,7 +964,7 @@ MagickExport Image *ColorMatrixImage(const Image *image,
       message=DestroyString(message);
     }
   /*
-    ColorMatrix image.
+    Apply the ColorMatrix to image.
   */
   status=MagickTrue;
   progress=0;

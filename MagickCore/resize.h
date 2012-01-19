@@ -23,7 +23,8 @@ extern "C" {
 #endif
 
 extern MagickExport Image
-  *AdaptiveResizeImage(const Image *,const size_t,const size_t,
+  *AdaptiveResizeImage(const Image *,const size_t,const size_t,ExceptionInfo *),
+  *InterpolativeResizeImage(const Image *,const size_t,const size_t,
     const PixelInterpolateMethod,ExceptionInfo *),
   *LiquidRescaleImage(const Image *,const size_t,const size_t,const double,
     const double,ExceptionInfo *),

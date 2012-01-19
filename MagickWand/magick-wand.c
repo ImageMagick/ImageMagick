@@ -328,7 +328,7 @@ WandExport char *MagickGetException(const MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t  E x c e p t i o n T y p e                              %
+%   M a g i c k G e t E x c e p t i o n T y p e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %

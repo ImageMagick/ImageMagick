@@ -1135,11 +1135,15 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
 %
 %  AdaptiveResizeImage() adaptively resize image with pixel resampling.
 %
+%  This is shortcut function for a fast interpolative resize using mesh
+%  interpolation.  It works well for small resizes of less than +/- 50%
+%  of the original image size.  For larger resizing on images a full
+%  filtered and slower resize function should be used instead.
+%
 %  The format of the AdaptiveResizeImage method is:
 %
 %      Image *AdaptiveResizeImage(const Image *image,const size_t columns,
-%        const size_t rows,const PixelInterpolateMethod method,
-%        ExceptionInfo *exception)
+%        const size_t rows, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1149,107 +1153,14 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
 %
 %    o rows: the number of rows in the resized image.
 %
-%    o method: the pixel interpolation method.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *AdaptiveResizeImage(const Image *image,
-  const size_t columns,const size_t rows,const PixelInterpolateMethod method,
-  ExceptionInfo *exception)
+  const size_t columns,const size_t rows, ExceptionInfo *exception)
 {
-#define AdaptiveResizeImageTag  "Resize/Image"
-
-  CacheView
-    *image_view,
-    *resize_view;
-
-  Image
-    *resize_image;
-
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
-  ssize_t
-    y;
-
-  /*
-    Adaptively resize image.
-  */
-  assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  if ((columns == 0) || (rows == 0))
-    return((Image *) NULL);
-  if ((columns == image->columns) && (rows == image->rows))
-    return(CloneImage(image,0,0,MagickTrue,exception));
-  resize_image=CloneImage(image,columns,rows,MagickTrue,exception);
-  if (resize_image == (Image *) NULL)
-    return((Image *) NULL);
-  if (SetImageStorageClass(resize_image,DirectClass,exception) == MagickFalse)
-    {
-      resize_image=DestroyImage(resize_image);
-      return((Image *) NULL);
-    }
-  status=MagickTrue;
-  progress=0;
-  image_view=AcquireCacheView(image);
-  resize_view=AcquireCacheView(resize_image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) shared(progress,status)
-#endif
-  for (y=0; y < (ssize_t) resize_image->rows; y++)
-  {
-    PointInfo
-      offset;
-
-    register Quantum
-      *restrict q;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    q=QueueCacheViewAuthenticPixels(resize_view,0,y,resize_image->columns,1,
-      exception);
-    if (q == (Quantum *) NULL)
-      continue;
-    offset.y=((MagickRealType) (y+0.5)*image->rows/resize_image->rows);
-    for (x=0; x < (ssize_t) resize_image->columns; x++)
-    {
-      offset.x=((MagickRealType) (x+0.5)*image->columns/resize_image->columns);
-      status=InterpolatePixelChannels(image,image_view,resize_image,
-        method,offset.x-0.5,offset.y-0.5,q,exception);
-      q+=GetPixelChannels(resize_image);
-    }
-    if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
-      continue;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_AdaptiveResizeImage)
-#endif
-        proceed=SetImageProgress(image,AdaptiveResizeImageTag,progress++,
-          image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
-  }
-  resize_view=DestroyCacheView(resize_view);
-  image_view=DestroyCacheView(image_view);
-  if (status == MagickFalse)
-    resize_image=DestroyImage(resize_image);
-  return(resize_image);
+  return(InterpolativeResizeImage(image,columns,rows,MeshInterpolatePixel,
+               exception));
 }
 
 /*
@@ -1576,6 +1487,143 @@ MagickPrivate MagickRealType GetResizeFilterWeight(
     }
   weight=scale*resize_filter->filter(x_blur,resize_filter);
   return(weight);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I n t e r p o l a t i v e R e s i z e I m a g e                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InterpolativeResizeImage() resizes an image using the specified
+%  interpolation method.
+%
+%  The format of the InterpolativeResizeImage method is:
+%
+%      Image *InterpolativeResizeImage(const Image *image,const size_t columns,
+%        const size_t rows,const PixelInterpolateMethod method,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o columns: the number of columns in the resized image.
+%
+%    o rows: the number of rows in the resized image.
+%
+%    o method: the pixel interpolation method.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *InterpolativeResizeImage(const Image *image,
+  const size_t columns,const size_t rows,const PixelInterpolateMethod method,
+  ExceptionInfo *exception)
+{
+#define InterpolativeResizeImageTag  "Resize/Image"
+
+  CacheView
+    *image_view,
+    *resize_view;
+
+  Image
+    *resize_image;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  PointInfo
+    scale;
+
+  ssize_t
+    y;
+
+  /*
+    Interpolatively resize image.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  if ((columns == 0) || (rows == 0))
+    return((Image *) NULL);
+  if ((columns == image->columns) && (rows == image->rows))
+    return(CloneImage(image,0,0,MagickTrue,exception));
+  resize_image=CloneImage(image,columns,rows,MagickTrue,exception);
+  if (resize_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(resize_image,DirectClass,exception) == MagickFalse)
+    {
+      resize_image=DestroyImage(resize_image);
+      return((Image *) NULL);
+    }
+  status=MagickTrue;
+  progress=0;
+  image_view=AcquireCacheView(image);
+  resize_view=AcquireCacheView(resize_image);
+  scale.x=(MagickRealType)image->columns/resize_image->columns;
+  scale.y=(MagickRealType)image->rows/resize_image->rows;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,1) shared(progress,status)
+#endif
+  for (y=0; y < (ssize_t) resize_image->rows; y++)
+  {
+    PointInfo
+      offset;
+
+    register Quantum
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=QueueCacheViewAuthenticPixels(resize_view,0,y,resize_image->columns,1,
+      exception);
+    if (q == (Quantum *) NULL)
+      continue;
+    offset.y=((MagickRealType) y+0.5)*scale.y-0.5;
+    for (x=0; x < (ssize_t) resize_image->columns; x++)
+    {
+      offset.x=((MagickRealType) x+0.5)*scale.x-0.5;
+      status=InterpolatePixelChannels(image,image_view,resize_image,method,
+           offset.x,offset.y,q,exception);
+      q+=GetPixelChannels(resize_image);
+    }
+    if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
+      continue;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp critical (MagickCore_InterpolativeResizeImage)
+#endif
+        proceed=SetImageProgress(image,InterpolativeResizeImageTag,progress++,
+          image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  resize_view=DestroyCacheView(resize_view);
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    resize_image=DestroyImage(resize_image);
+  return(resize_image);
 }
 #if defined(MAGICKCORE_LQR_DELEGATE)
 
@@ -3318,7 +3366,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
     exception);
   (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
     image->magick_rows);
-  (void) SetImageProperty(thumbnail_image,"Thumb::Image::height",value,
+  (void) SetImageProperty(thumbnail_image,"Thumb::Image::Height",value,
     exception);
   (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
     GetImageListLength(image));

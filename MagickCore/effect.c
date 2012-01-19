@@ -1296,6 +1296,7 @@ MagickExport Image *ConvolveImage(const Image *image,
     return(convolve_image);
   /*
     Convolve image.
+    FUTURE: Use Morphology Convolve instead.
   */
   center=(ssize_t) GetPixelChannels(image)*(image->columns+kernel_info->width)*
     (kernel_info->height/2L)+GetPixelChannels(image)*(kernel_info->width/2L);

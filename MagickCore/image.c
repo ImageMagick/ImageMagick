@@ -269,7 +269,6 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->client_data=image_info->client_data;
   if (image_info->cache != (void *) NULL)
     ClonePixelCacheMethods(image->cache,image_info->cache);
-  (void) SetImageVirtualPixelMethod(image,image_info->virtual_pixel_method);
   (void) SyncImageSettings(image_info,image,exception);
   option=GetImageOption(image_info,"delay");
   if (option != (const char *) NULL)
@@ -966,7 +965,6 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   SetImageInfoFile(clone_info,image_info->file);
   SetImageInfoBlob(clone_info,image_info->blob,image_info->length);
   clone_info->stream=image_info->stream;
-  clone_info->virtual_pixel_method=image_info->virtual_pixel_method;
   (void) CopyMagickString(clone_info->magick,image_info->magick,MaxTextExtent);
   (void) CopyMagickString(clone_info->unique,image_info->unique,MaxTextExtent);
   (void) CopyMagickString(clone_info->zero,image_info->zero,MaxTextExtent);
@@ -2747,7 +2745,7 @@ MagickExport MagickBooleanType SetImageStorageClass(Image *image,
 %
 %    o image: the image.
 %
-%    o clip_mask: the image clip path.
+%    o clip_mask: the image clip mask,  NULL undefines.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -4278,6 +4276,10 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
         }
       image->units=units;
     }
+  option=GetImageOption(image_info,"virtual-pixel");
+  if (option != (const char *) NULL)
+    (void) SetImageVirtualPixelMethod(image, (VirtualPixelMethod)
+         ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,option));
   option=GetImageOption(image_info,"white-point");
   if (option != (const char *) NULL)
     {
