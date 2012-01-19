@@ -792,15 +792,6 @@ bool Magick::Options::verbose ( void ) const
   return static_cast<bool>(_imageInfo->verbose);
 }
 
-void Magick::Options::virtualPixelMethod ( VirtualPixelMethod virtual_pixel_method_ )
-{
-  _imageInfo->virtual_pixel_method = virtual_pixel_method_;
-}
-Magick::VirtualPixelMethod Magick::Options::virtualPixelMethod ( void ) const
-{
-  return static_cast<Magick::VirtualPixelMethod>(_imageInfo->virtual_pixel_method);
-}
-
 void Magick::Options::view ( const std::string &view_ )
 {
   if ( view_.length() == 0 )
