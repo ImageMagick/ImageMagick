@@ -927,7 +927,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
       continue;
     p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y,
       image->columns+width,1,exception);
-    q=QueueCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
+    q=GetCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       {
