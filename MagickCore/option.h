@@ -138,7 +138,7 @@ typedef enum
   DrawInfoOptionFlag        = 0x0002,  /* Setting for DrawInfo */
   QuantizeInfoOptionFlag    = 0x0004,  /* Setting for QuantizeInfo */
   GlobalOptionFlag          = 0x0008,  /* Setting for Global Option */
-  SettingOptionFlags        = 0x000F   /* mask for all setting options */
+  SettingOptionFlags        = 0x000F,  /* mask for all setting options */
 
   SimpleOperatorOptionFlag  = 0x0010,  /* Simple Image processing operator */
   ListOperatorOptionFlag    = 0x0020,  /* Multi-Image processing operator */
@@ -147,7 +147,7 @@ typedef enum
 
   NonConvertOptionFlag      = 0x1000,  /* Option not used by Convert */
   FireOptionFlag            = 0x4000,  /* Convert operation seq firing point */
-  DeprecateOptionFlag       = 0x8000,  /* Deprecate option, give warning */
+  DeprecateOptionFlag       = 0x8000   /* Deprecate option, give warning */
 
 } CommandOptionFlags;
 
