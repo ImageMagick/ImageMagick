@@ -161,14 +161,11 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
       return((Image *) NULL);
     }
   (void) SetImageAlphaChannel(highlight_image,OpaqueAlphaChannel,exception);
-  (void) QueryColorCompliance("#f1001ecc",AllCompliance,&highlight,
-    exception);
+  (void) QueryColorCompliance("#f1001e33",AllCompliance,&highlight,exception);
   artifact=GetImageArtifact(image,"highlight-color");
   if (artifact != (const char *) NULL)
-    (void) QueryColorCompliance(artifact,AllCompliance,&highlight,
-      exception);
-  (void) QueryColorCompliance("#ffffffcc",AllCompliance,&lowlight,
-    exception);
+    (void) QueryColorCompliance(artifact,AllCompliance,&highlight,exception);
+  (void) QueryColorCompliance("#ffffff33",AllCompliance,&lowlight,exception);
   artifact=GetImageArtifact(image,"lowlight-color");
   if (artifact != (const char *) NULL)
     (void) QueryColorCompliance(artifact,AllCompliance,&lowlight,exception);

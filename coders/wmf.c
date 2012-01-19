@@ -890,10 +890,9 @@ static void ipa_device_begin(wmfAPI * API)
             ddata->pattern_id);
           (void) DrawSetFillPatternURL(WmfDrawingWand,pattern_id);
           ++ddata->pattern_id;
-
           DrawRectangle(WmfDrawingWand,
-                         XC(ddata->bbox.TL.x),YC(ddata->bbox.TL.y),
-                         XC(ddata->bbox.BR.x),YC(ddata->bbox.BR.y));
+            XC(ddata->bbox.TL.x),YC(ddata->bbox.TL.y),
+            XC(ddata->bbox.BR.x),YC(ddata->bbox.BR.y));
           image=DestroyImageList(image);
         }
       else
@@ -1941,7 +1940,6 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_appl
 
               (void) FormatLocaleString(pattern_id,MaxTextExtent,"#brush_%lu",
                 ddata->pattern_id);
-
               if ( brush_apply == BrushApplyStroke )
                 (void) DrawSetStrokePatternURL(WmfDrawingWand,pattern_id);
               else
