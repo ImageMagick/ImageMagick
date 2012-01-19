@@ -2025,7 +2025,7 @@ static void RemoveResolutionFromResourceBlock(StringInfo *bim_profile)
     p=PushShortPixel(MSBEndian,p,&id);
     p=PushShortPixel(MSBEndian,p,&short_sans);
     p=PushLongPixel(MSBEndian,p,&count);
-    if ((id == 0x000003ed) && (PSDQuantum(count) < (length-12)))
+    if ((id == 0x000003ed) && (PSDQuantum(count) < (ssize_t) (length-12)))
       {
         (void) CopyMagickMemory(q,q+PSDQuantum(count)+12,length-
           (PSDQuantum(count)+12)-(q-datum));
