@@ -24,11 +24,11 @@ extern "C" {
 
 
 extern WandExport MagickBooleanType
-  WandSettingOptionWand(MagickWand *,const char *,const char *),
+  WandSettingOptionInfo(MagickWand *,const char *,const char *),
   WandSimpleOperationImage(MagickWand *,const int,const char *,const char *,
-       const char *);
+       const char *),
   WandSimpleOperationImages(MagickWand *,const int,const char *,const char *,
-       const char *);
+       const char *),
   WandListOperationImages(MagickWand *,const int,const char *,const char *,
        const char *);
 

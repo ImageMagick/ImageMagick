@@ -375,13 +375,13 @@ static Image *SparseColorOption(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W a n d S e t t i n g O p t i o n                                         %
++   W a n d S e t t i n g O p t i o n I n f I n f o                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WandSettingOption() applies a single settings option into a CLI wand
+%  WandSettingOptionInfo() applies a single settings option into a CLI wand
 %  holding the image_info, draw_info, quantize_info structures that will be
 %  used when processing the images also found within the wand.
 %
@@ -391,9 +391,9 @@ static Image *SparseColorOption(const Image *image,
 %  Options handled by this function are listed in CommandOptions[] of
 %  "option.c" that is one of "SettingOptionFlags" option flags.
 %
-%  The format of the WandSettingOption method is:
+%  The format of the WandSettingOptionInfo method is:
 %
-%    MagickBooleanType WandSettingInfoOption(MagickWand *wand,
+%    MagickBooleanType WandSettingOptionInfo(MagickWand *wand,
 %        const char *option, const char *arg, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -411,9 +411,9 @@ static Image *SparseColorOption(const Image *image,
 %
 % Example usage...
 %
-%    WandSettingOptionWand(wand, "background", MagickTrue, "Red");
-%    WandSettingOptionWand(wand, "adjoin", "true");
-%    WandSettingOptionWand(wand, "adjoin", NULL);
+%    WandSettingOptionInfo(wand, "background", MagickTrue, "Red");
+%    WandSettingOptionInfo(wand, "adjoin", "true");
+%    WandSettingOptionInfo(wand, "adjoin", NULL);
 %
 % Or for handling command line arguments EG: +/-option ["arg"]
 %
@@ -423,7 +423,7 @@ static Image *SparseColorOption(const Image *image,
 %    count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
 %    flags=GetCommandOptionFlags(MagickCommandOptions,MagickFalse,argv[i]);
 %    if ( (flags & SettingOptionFlags) != 0 )
-%      WandSettingsOptionWand(wand, argv[i]+1,
+%      WandSettingOptionInfo(wand, argv[i]+1,
 %            (((*argv[i])!='-') ? (char *)NULL
 %                   : (count>0) ? argv[i+1] : "true") );
 %        exception);
@@ -431,7 +431,7 @@ static Image *SparseColorOption(const Image *image,
 %    i += count+1;
 %
 */
-WandExport MagickBooleanType ApplySettingOptionWand(MagickWand *wand,
+WandExport MagickBooleanType WandSettingOptionInfo(MagickWand *wand,
   const char *option, const char *arg)
 {
   assert(wand != (MagickWand *) NULL);
@@ -551,7 +551,7 @@ WandExport MagickBooleanType ApplySettingOptionWand(MagickWand *wand,
       if (LocaleCompare("box",option) == 0)
         {
           /* DEPRECIATED - now "undercolor" */
-          WandSettingOption(wand,"undercolor",arg,exception);
+          WandSettingOptionInfo(wand,"undercolor",arg);
           break;
         }
       break;
@@ -1465,9 +1465,9 @@ WandExport MagickBooleanType ApplySettingOptionWand(MagickWand *wand,
 %  It is assumed that any per-image settings are up-to-date with respect to
 %  extra settings that have been saved in the wand.
 %
-%  The format of the WandSimpleImageOperator method is:
+%  The format of the WandSimpleOperatorImage method is:
 %
-%    MagickBooleanType WandSimpleImageOperator(MagickWand *wand,
+%    MagickBooleanType WandSimpleOperatorImage(MagickWand *wand,
 %        const MagickBooleanType plus_alt_op, const char *option,
 %        const char *arg1, const char *arg2)
 %
@@ -1780,7 +1780,7 @@ WandExport MagickBooleanType WandSimpleOperatorImage(MagickWand *wand,
       if (LocaleCompare("channel",option) == 0)
         {
           /* The "channel" setting has already been set
-             FUTURE: This probably should be part of WandSettingOption()
+             FUTURE: This probably should be part of WandSettingOptionInfo()
              or SyncImageSettings().
           */
           SetPixelChannelMapMask(*image,image_info->channel);
