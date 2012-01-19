@@ -818,7 +818,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
               /*
                 Shadow image.
               */
-              (void) QueryColorCompliance("#000000",AllCompliance,
+              (void) QueryColorCompliance("#0000",AllCompliance,
                 &image->background_color,exception);
               shadow_image=ShadowImage(image,80.0,2.0,0.0,5,5,exception);
               if (shadow_image != (Image *) NULL)
