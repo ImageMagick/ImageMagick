@@ -1601,9 +1601,28 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
     offset.y=((MagickRealType) y+0.5)*scale.y-0.5;
     for (x=0; x < (ssize_t) resize_image->columns; x++)
     {
-      offset.x=((MagickRealType) x+0.5)*scale.x-0.5;
-      status=InterpolatePixelChannels(image,image_view,resize_image,method,
-        offset.x,offset.y,q,exception);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          resize_traits,
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
+        resize_traits=GetPixelChannelMapTraits(resize_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (resize_traits == UndefinedPixelTrait))
+          continue;
+        offset.x=((MagickRealType) x+0.5)*scale.x-0.5;
+        status=InterpolatePixelChannels(image,image_view,resize_image,method,
+          offset.x,offset.y,q,exception);
+      }
       q+=GetPixelChannels(resize_image);
     }
     if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
