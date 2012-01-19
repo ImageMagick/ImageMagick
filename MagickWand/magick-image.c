@@ -225,8 +225,7 @@ WandExport MagickBooleanType MagickAdaptiveBlurImage(MagickWand *wand,
 %  triangulation.
 %
 %      MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand,
-%        const size_t columns,const size_t rows,
-%        const PixelInterpolateMethod method)
+%        const size_t columns,const size_t rows)
 %
 %  A description of each parameter follows:
 %
@@ -236,11 +235,9 @@ WandExport MagickBooleanType MagickAdaptiveBlurImage(MagickWand *wand,
 %
 %    o rows: the number of rows in the scaled image.
 %
-%    o interpolate: the pixel interpolation method.
-%
 */
 WandExport MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand,
-  const size_t columns,const size_t rows,const PixelInterpolateMethod method)
+  const size_t columns,const size_t rows)
 {
   Image
     *resize_image;
@@ -251,8 +248,7 @@ WandExport MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  resize_image=AdaptiveResizeImage(wand->images,columns,rows,method,
-    wand->exception);
+  resize_image=AdaptiveResizeImage(wand->images,columns,rows,wand->exception);
   if (resize_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,resize_image);
@@ -5914,6 +5910,55 @@ WandExport MagickBooleanType MagickImportImagePixels(MagickWand *wand,
   status=ImportImagePixels(wand->images,x,y,columns,rows,map,storage,pixels,
     wand->exception);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k I n t e r p o l a t i v e R e s i z e I m a g e               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickInterpolativeResizeImage() resize image using a interpolative
+%  method.
+%
+%      MagickBooleanType MagickInterpolativeResizeImage(MagickWand *wand,
+%        const size_t columns,const size_t rows,
+%        const PixelInterpolateMethod method)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o columns: the number of columns in the scaled image.
+%
+%    o rows: the number of rows in the scaled image.
+%
+%    o interpolate: the pixel interpolation method.
+%
+*/
+WandExport MagickBooleanType MagickInterpolativeResizeImage(MagickWand *wand,
+  const size_t columns,const size_t rows,const PixelInterpolateMethod method)
+{
+  Image
+    *resize_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  resize_image=InterpolativeResizeImage(wand->images,columns,rows,method,
+    wand->exception);
+  if (resize_image == (Image *) NULL)
+    return(MagickFalse);
+  ReplaceImageInList(&wand->images,resize_image);
+  return(MagickTrue);
 }
 
 /*

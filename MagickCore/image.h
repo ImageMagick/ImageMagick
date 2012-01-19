@@ -150,33 +150,34 @@ struct _Image
     storage_class;
 
   ColorspaceType
-    colorspace;      /* colorspace of image data */
+    colorspace;         /* colorspace of image data */
 
   CompressionType
-    compression;     /* compression of image when read/write */
+    compression;        /* compression of image when read/write */
 
   size_t
-    quality;         /* compression quality setting, meaning varies */
+    quality;            /* compression quality setting, meaning varies */
 
   OrientationType
-    orientation;     /* photo orientation of image */
+    orientation;        /* photo orientation of image */
 
   MagickBooleanType
-    taint,           /* has image been modified since reading */
-    matte;           /* is transparency channel defined and active */
+    taint,              /* has image been modified since reading */
+    matte;              /* is transparency channel defined and active */
 
   size_t
-    columns,         /* physical size of image */
+    columns,            /* physical size of image */
     rows,
-    depth,           /* depth of image on read/write */
-    colors;          /* Size of color table, or actual color count if known */
-                     /* Only valid if image is not DirectClass */
+    depth,              /* depth of image on read/write */
+    colors;             /* Size of color table, or actual color count */
+                        /* Only valid if image is not DirectClass */
 
   PixelInfo
     *colormap,
-    background_color, /* current background color attribute */
-    border_color,     /* current bordercolor attribute */
-    matte_color;      /* current mattecolor attribute */
+    background_color,   /* current background color attribute */
+    border_color,       /* current bordercolor attribute */
+    matte_color,        /* current mattecolor attribute */
+    transparent_color;  /* color for 'transparent' color index in GIF */
 
   double
     gamma;
@@ -253,9 +254,6 @@ struct _Image
 
   MagickBooleanType
     black_point_compensation;
-
-  PixelInfo
-    transparent_color; /* color for 'transparent' color index in GIF */
 
   struct _Image
     *mask;
@@ -344,10 +342,10 @@ struct _Image
 struct _ImageInfo
 {
   CompressionType
-    compression;
+    compression;        /* compression method when reading/saving image */
 
   OrientationType
-    orientation;
+    orientation;        /* orientation setting */
 
   MagickBooleanType
     temporary,
@@ -364,7 +362,7 @@ struct _ImageInfo
   size_t
     scene,              /* starting value for image save numbering */
     number_scenes,      /* total number of images in list - for escapes */
-    depth;
+    depth;              /* current read/save depth of images */
 
   InterlaceType
     interlace;          /* interlace for image write */
@@ -398,8 +396,8 @@ struct _ImageInfo
                         /* the same for undercolor (for font drawing) */
 
   MagickBooleanType
-    dither,            /* dither enable-disable */
-    monochrome;        /* read/write pcl,pdf,ps,xps as monocrome image */
+    dither,             /* dither enable-disable */
+    monochrome;         /* read/write pcl,pdf,ps,xps as monocrome image */
 
   ColorspaceType
     colorspace;
@@ -428,9 +426,6 @@ struct _ImageInfo
 
   void
     *options;                /* splay tree of use options */
-
-  VirtualPixelMethod
-    virtual_pixel_method;
 
   void
     *profile;

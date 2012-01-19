@@ -127,24 +127,30 @@ typedef struct _OptionInfo
 
 /*
   Flags to describe classes of image processing options.
+  These are used to determine how a option should be processed, and
+  allow use to avoid attempting to process each option in every way posible.
 */
 typedef enum
 {
-  UndefinedOptionFlag       = 0x0000,
-  FireOptionFlag            = 0x0001,  /* Option sequence firing point */
-  ImageInfoOptionFlag       = 0x0002,  /* Sets ImageInfo, no image needed */
-  DrawInfoOptionFlag        = 0x0004,  /* Sets DrawInfo, no image needed */
-  QuantizeInfoOptionFlag    = 0x0008,  /* Sets QuantizeInfo, no image needed */
-  GlobalOptionFlag          = 0x0010,  /* Sets Global Option, no image needed */
-  SimpleOperatorOptionFlag  = 0x0100,  /* Simple Image processing operator */
-  ListOperatorOptionFlag    = 0x0200,  /* Multi-Image processing operator */
-  SpecialOperatorOptionFlag = 0x0400,  /* Specially handled Operator Option */
-  GenesisOptionFlag         = 0x0400,  /* Genesis Command Wrapper Option  */
-  NonConvertOptionFlag      = 0x4000,  /* Option not used by Convert */
+  UndefinedOptionFlag       = 0x0000,  /* option flag is not in use */
+
+  ImageInfoOptionFlag       = 0x0001,  /* Setting for ImageInfo */
+  DrawInfoOptionFlag        = 0x0002,  /* Setting for DrawInfo */
+  QuantizeInfoOptionFlag    = 0x0004,  /* Setting for QuantizeInfo */
+  GlobalOptionFlag          = 0x0008,  /* Setting for Global Option */
+  SettingOptionFlags        = 0x000F   /* mask for all setting options */
+
+  SimpleOperatorOptionFlag  = 0x0010,  /* Simple Image processing operator */
+  ListOperatorOptionFlag    = 0x0020,  /* Multi-Image processing operator */
+  SpecialOperatorOptionFlag = 0x0040,  /* Specially handled Operator Option */
+  GenesisOptionFlag         = 0x0080,  /* Genesis Command Wrapper Option  */
+
+  NonConvertOptionFlag      = 0x1000,  /* Option not used by Convert */
+  FireOptionFlag            = 0x4000,  /* Convert operation seq firing point */
   DeprecateOptionFlag       = 0x8000,  /* Deprecate option, give warning */
 
-  SettingInfoOption         = 0x001F   /* mask for all setting options */
 } CommandOptionFlags;
+
 
 extern MagickExport char
   **GetCommandOptions(const CommandOption),
