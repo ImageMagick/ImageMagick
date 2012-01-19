@@ -4095,7 +4095,6 @@ void Magick::Image::virtualPixelMethod ( const VirtualPixelMethod virtual_pixel_
 {
   modifyImage();
   SetImageVirtualPixelMethod( image(), virtual_pixel_method_ );
-  options()->virtualPixelMethod( virtual_pixel_method_ );
 }
 Magick::VirtualPixelMethod Magick::Image::virtualPixelMethod ( void ) const
 {
