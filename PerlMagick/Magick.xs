@@ -473,7 +473,7 @@ static struct
     { "AdaptiveResize", { {"geometry", StringReference},
       {"width", IntegerReference}, {"height", IntegerReference},
       {"filter", MagickFilterOptions}, {"support", StringReference },
-      {"blur", RealReference }, {"interpolate", MagickInterpolateOptions} } },
+      {"blur", RealReference } } },
     { "ClipMask", { {"mask", ImageReference} } },
     { "LinearStretch", { {"levels", StringReference},
       {"black-point", RealReference},{"white-point", RealReference} } },
@@ -2191,8 +2191,6 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
                 "UnrecognizedVirtualPixelMethod",SvPV(sval,na));
               break;
             }
-          if (info)
-            info->image_info->virtual_pixel_method=(VirtualPixelMethod) sp;
           for ( ; image; image=image->next)
             SetImageVirtualPixelMethod(image,(VirtualPixelMethod) sp);
           break;
@@ -10118,9 +10116,6 @@ Mogrify(ref,...)
         }
         case 105:  /* AdaptiveResize */
         {
-          PixelInterpolateMethod
-            method;
-
           if (attribute_flag[0] != 0)
             flags=ParseRegionGeometry(image,argument_list[0].string_reference,
               &geometry,exception);
@@ -10135,11 +10130,8 @@ Mogrify(ref,...)
               argument_list[4].string_reference);
           if (attribute_flag[5] != 0)
             image->blur=argument_list[5].real_reference;
-          method=UndefinedInterpolatePixel;
-          if (attribute_flag[6] != 0)
-            method=(PixelInterpolateMethod) argument_list[6].integer_reference;
           image=AdaptiveResizeImage(image,geometry.width,geometry.height,
-            method,exception);
+            exception);
           break;
         }
         case 106:  /* ClipMask */
