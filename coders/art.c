@@ -286,11 +286,11 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image)
   register const PixelPacket
     *p;
 
-  ssize_t
-    count;
-
   size_t
-    length,
+    length;
+
+  ssize_t
+    count,
     y;
 
   unsigned char

@@ -110,10 +110,8 @@ typedef struct KernelInfo
     x,
     y;
 
-  MagickRealType
-    *values;
-
   double
+    *values,
     minimum,
     maximum,
     negative_range,

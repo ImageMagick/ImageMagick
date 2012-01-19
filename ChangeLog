@@ -1,3 +1,7 @@
+2011-01-19  6.7.4-8 Cristy  <quetzlzacatenango@image...>
+  * Although MagickRealType is a double, use double for KernelInfo values in
+    the rare event of problems with C++ name mangling.
+
 2012-01-17  6.7.4-8 Glenn Randers-Pehrson <glennrp@image...>
   * Don't write ancillary chunks in PNG-encoded ICO files.
 
