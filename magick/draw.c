@@ -4638,13 +4638,11 @@ static MagickBooleanType DrawStrokePolygon(Image *image,
       "    begin draw-stroke-polygon");
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->fill=draw_info->stroke;
+  if (clone_info->fill_pattern != (Image *) NULL)
+    clone_info->fill_pattern=DestroyImage(clone_info->fill_pattern);
   if (clone_info->stroke_pattern != (Image *) NULL)
-    {
-      if (clone_info->fill_pattern != (Image *) NULL)
-        clone_info->fill_pattern=DestroyImage(clone_info->fill_pattern);
-      clone_info->fill_pattern=CloneImage(clone_info->stroke_pattern,0,0,
-        MagickTrue,&clone_info->stroke_pattern->exception);
-    }
+    clone_info->fill_pattern=CloneImage(clone_info->stroke_pattern,0,0,
+      MagickTrue,&clone_info->stroke_pattern->exception);
   clone_info->stroke.opacity=(Quantum) TransparentOpacity;
   clone_info->stroke_width=0.0;
   clone_info->fill_rule=NonZeroRule;
