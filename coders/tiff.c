@@ -50,6 +50,7 @@
 #include "magick/colorspace.h"
 #include "magick/colorspace-private.h"
 #include "magick/constitute.h"
+#include "magick/draw.h"
 #include "magick/enhance.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
@@ -2131,6 +2132,9 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  PointInfo
+    resolution;
+
   size_t
     columns,
     rows;
@@ -2141,25 +2145,36 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
   images=NewImageList();
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    AppendImageToList(&images,CloneImage(next,0,0,MagickFalse,
+    AppendImageToList(&images,CloneImage(next,0,0,MagickTrue,
       &image->exception));
     columns=next->columns;
     rows=next->rows;
+    resolution.x=next->x_resolution;
+    resolution.y=next->y_resolution;
     while ((columns > 64) && (rows > 64))
     {
       columns/=2;
       rows/=2;
+      resolution.x/=2.0;
+      resolution.y/=2.0;
       pyramid_image=ResizeImage(next,columns,rows,image->filter,image->blur,
         &image->exception);
+      if (pyramid_image == (Image *) NULL)
+        break;
+      pyramid_image->x_resolution=resolution.x;
+      pyramid_image->y_resolution=resolution.y;
       AppendImageToList(&images,pyramid_image);
     }
   }
+  images=GetFirstImageInList(images);
   /*
     Write pyramid-encoded TIFF image.
   */
   write_info=CloneImageInfo(image_info);
   write_info->adjoin=MagickTrue;
-  status=WriteTIFFImage(write_info,GetFirstImageInList(images));
+  (void) CopyMagickString(write_info->magick,"TIFF",MaxTextExtent);
+  (void) CopyMagickString(images->magick,"TIFF",MaxTextExtent);
+  status=WriteTIFFImage(write_info,images);
   images=DestroyImageList(images);
   write_info=DestroyImageInfo(write_info);
   return(status);
@@ -3115,6 +3130,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     */
     if (GetTIFFInfo(image_info,tiff,&tiff_info) == MagickFalse)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    quantum_info->endian=LSBEndian;
+    if (endian == FILLORDER_LSB2MSB)
+      quantum_info->endian=MSBEndian;
     pixels=GetQuantumPixels(quantum_info);
     tiff_info.scanline=GetQuantumPixels(quantum_info);
     switch (photometric)
