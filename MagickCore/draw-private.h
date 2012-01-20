@@ -42,9 +42,6 @@ static inline MagickBooleanType GetFillColor(const DrawInfo *draw_info,
       status;
 
     pattern=draw_info->fill_pattern;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical
-#endif
     status=GetOneVirtualPixelInfo(pattern,TileVirtualPixelMethod,x+
       pattern->tile_offset.x,y+pattern->tile_offset.y,fill,exception);
     return(status);
@@ -67,9 +64,6 @@ static inline MagickBooleanType GetStrokeColor(const DrawInfo *draw_info,
       status;
 
     pattern=draw_info->stroke_pattern;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical
-#endif
     status=GetOneVirtualPixelInfo(pattern,TileVirtualPixelMethod,x+
       pattern->tile_offset.x,y+pattern->tile_offset.y,stroke,exception);
     return(status);
