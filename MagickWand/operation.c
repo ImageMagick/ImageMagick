@@ -2327,10 +2327,8 @@ WandExport MagickBooleanType WandSimpleOperatorImage(MagickWand *wand,
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
-          if ((flags & XiValue) == 0)
-            geometry_info.xi=0.0;
           new_image=GaussianBlurImage(*image,geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,exception);
+            geometry_info.sigma,exception);
           break;
         }
 /* ------------- */

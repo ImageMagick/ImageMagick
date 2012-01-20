@@ -383,7 +383,7 @@ static struct
     { "Deconstruct", },
     { "GaussianBlur", { {"geometry", StringReference},
       {"radius", RealReference}, {"sigma", RealReference},
-      {"bias", RealReference}, {"channel", MagickChannelOptions} } },
+      {"channel", MagickChannelOptions} } },
     { "Convolve", { {"coefficients", ArrayReference},
       {"channel", MagickChannelOptions}, {"bias", StringReference},
       {"kernel", StringReference} } },
@@ -9202,12 +9202,10 @@ Mogrify(ref,...)
           if (attribute_flag[2] != 0)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
-            geometry_info.xi=argument_list[3].real_reference;
-          if (attribute_flag[4] != 0)
-            channel=(ChannelType) argument_list[4].integer_reference;
+            channel=(ChannelType) argument_list[3].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
           image=GaussianBlurImage(image,geometry_info.rho,geometry_info.sigma,
-            geometry_info.xi,exception);
+            exception);
           if (image != (Image *) NULL)
             (void) SetPixelChannelMask(image,channel_mask);
           break;
