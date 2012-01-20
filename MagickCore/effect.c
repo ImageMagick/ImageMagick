@@ -920,7 +920,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
         *k;
 
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  BlurImage with %.20g kernel:",(double) width);
+        "  blur image with kernel width %.20g:",(double) width);
       message=AcquireString("");
       k=kernel;
       for (i=0; i < (ssize_t) width; i++)
@@ -1049,7 +1049,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_BlurImage)
+        #pragma omp critical (MagickCore_BlurImage)
 #endif
         proceed=SetImageProgress(image,BlurImageTag,progress++,blur_image->rows+
           blur_image->columns);
@@ -1062,6 +1062,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   /*
     Blur columns.
   */
+  center=(ssize_t) GetPixelChannels(blur_image)*(width/2L);
   image_view=AcquireCacheView(blur_image);
   blur_view=AcquireCacheView(blur_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1171,7 +1172,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_BlurImage)
+        #pragma omp critical (MagickCore_BlurImage)
 #endif
         proceed=SetImageProgress(blur_image,BlurImageTag,progress++,
           blur_image->rows+blur_image->columns);
@@ -1423,7 +1424,7 @@ MagickExport Image *ConvolveImage(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_ConvolveImage)
+        #pragma omp critical (MagickCore_ConvolveImage)
 #endif
         proceed=SetImageProgress(image,ConvolveImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
