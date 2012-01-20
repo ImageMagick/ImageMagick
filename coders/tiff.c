@@ -2147,6 +2147,9 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
+  PointInfo
+    resolution;
+
   size_t
     columns,
     rows;
@@ -2160,21 +2163,30 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
     AppendImageToList(&images,CloneImage(next,0,0,MagickFalse,exception));
     columns=next->columns;
     rows=next->rows;
+    resolution=next->resolution;
     while ((columns > 64) && (rows > 64))
     {
       columns/=2;
       rows/=2;
+      resolution.x/=2;
+      resolution.y/=2;
       pyramid_image=ResizeImage(next,columns,rows,image->filter,image->blur,
         exception);
+      if (pyramid_image == (Image *) NULL)
+        break;
+      pyramid_image->resolution=resolution;
       AppendImageToList(&images,pyramid_image);
     }
   }
+  images=GetFirstImageInList(images);
   /*
     Write pyramid-encoded TIFF image.
   */
   write_info=CloneImageInfo(image_info);
   write_info->adjoin=MagickTrue;
-  status=WriteTIFFImage(write_info,GetFirstImageInList(images),exception);
+  (void) CopyMagickString(write_info->magick,"TIFF",MaxTextExtent);
+  (void) CopyMagickString(images->magick,"TIFF",MaxTextExtent);
+  status=WriteTIFFImage(write_info,images,exception);
   images=DestroyImageList(images);
   write_info=DestroyImageInfo(write_info);
   return(status);
@@ -3137,6 +3149,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     */
     if (GetTIFFInfo(image_info,tiff,&tiff_info) == MagickFalse)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    quantum_info->endian=LSBEndian;
+    if (endian == FILLORDER_LSB2MSB)
+      quantum_info->endian=MSBEndian;
     pixels=GetQuantumPixels(quantum_info);
     tiff_info.scanline=GetQuantumPixels(quantum_info);
     switch (photometric)
