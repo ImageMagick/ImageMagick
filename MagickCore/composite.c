@@ -291,9 +291,6 @@ static MagickBooleanType CompositeOverImage(Image *image,
   ssize_t
     y;
 
-  size_t
-    channels;
-
   /*
     Prepare composite image.
   */
@@ -324,6 +321,9 @@ static MagickBooleanType CompositeOverImage(Image *image,
 
     register ssize_t
       x;
+
+    size_t
+      channels;
 
     if (status == MagickFalse)
       continue;
@@ -503,9 +503,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   const char
     *value;
 
-  double
-    sans;
-
   GeometryInfo
     geometry_info;
 
@@ -530,9 +527,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
   MagickStatusType
     flags;
-
-  size_t
-    channels;
 
   ssize_t
     y;
@@ -1214,6 +1208,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       register ssize_t
         i;
 
+      size_t
+        channels;
+
       if (modify_outside_overlay == MagickFalse)
         {
           if (x < x_offset)
@@ -1407,6 +1404,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
+        double
+          sans;
+
         MagickRealType
           pixel;
 

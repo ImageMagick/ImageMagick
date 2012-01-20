@@ -389,6 +389,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     register Quantum
       *restrict q;
 
+    size_t
+      width;
+
     /*
       Initialize scanline with matte color.
     */
