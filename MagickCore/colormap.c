@@ -359,7 +359,7 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
-        continue;
+        break;
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
