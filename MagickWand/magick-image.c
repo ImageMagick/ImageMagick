@@ -3370,7 +3370,7 @@ WandExport MagickBooleanType MagickGammaImage(MagickWand *wand,
 %  The format of the MagickGaussianBlurImage method is:
 %
 %      MagickBooleanType MagickGaussianBlurImage(MagickWand *wand,
-%        const double radius,const double sigma,const double bias)
+%        const double radius,const double sigma)
 %
 %  A description of each parameter follows:
 %
@@ -3381,11 +3381,9 @@ WandExport MagickBooleanType MagickGammaImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o bias: the bias.
-%
 */
 WandExport MagickBooleanType MagickGaussianBlurImage(MagickWand *wand,
-  const double radius,const double sigma,const double bias)
+  const double radius,const double sigma)
 {
   Image
     *blur_image;
@@ -3396,7 +3394,7 @@ WandExport MagickBooleanType MagickGaussianBlurImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=GaussianBlurImage(wand->images,radius,sigma,bias,wand->exception);
+  blur_image=GaussianBlurImage(wand->images,radius,sigma,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);

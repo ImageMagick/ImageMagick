@@ -140,7 +140,7 @@ extern WandExport MagickBooleanType
   MagickFunctionImage(MagickWand *,const MagickFunction,const size_t,
     const double *),
   MagickGammaImage(MagickWand *,const double),
-  MagickGaussianBlurImage(MagickWand *,const double,const double,const double),
+  MagickGaussianBlurImage(MagickWand *,const double,const double),
   MagickGetImageAlphaChannel(MagickWand *),
   MagickGetImageBackgroundColor(MagickWand *,PixelWand *),
   MagickGetImageBluePrimary(MagickWand *,double *,double *),

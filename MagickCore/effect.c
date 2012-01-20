@@ -234,7 +234,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   (void) AdaptiveLevelImage(edge_image,"20%,95%",exception);
-  gaussian_image=GaussianBlurImage(edge_image,radius,sigma,bias,exception);
+  gaussian_image=GaussianBlurImage(edge_image,radius,sigma,exception);
   if (gaussian_image != (Image *) NULL)
     {
       edge_image=DestroyImage(edge_image);
@@ -556,7 +556,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   (void) AdaptiveLevelImage(edge_image,"20%,95%",exception);
-  gaussian_image=GaussianBlurImage(edge_image,radius,sigma,bias,exception);
+  gaussian_image=GaussianBlurImage(edge_image,radius,sigma,exception);
   if (gaussian_image != (Image *) NULL)
     {
       edge_image=DestroyImage(edge_image);
@@ -1931,7 +1931,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %  The format of the GaussianBlurImage method is:
 %
 %      Image *GaussianBlurImage(const Image *image,onst double radius,
-%        const double sigma,const double bias,ExceptionInfo *exception)
+%        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1942,13 +1942,11 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o bias: the bias.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
-  const double sigma,const double bias,ExceptionInfo *exception)
+  const double sigma,ExceptionInfo *exception)
 {
   Image
     *blur_image;
@@ -1980,7 +1978,6 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->bias=bias;  /* FUTURE: user bias on Gaussian Blur! non-sense */
   kernel_info->signature=MagickSignature;
   kernel_info->values=(MagickRealType *) AcquireAlignedMemory(
     kernel_info->width,kernel_info->width*sizeof(*kernel_info->values));

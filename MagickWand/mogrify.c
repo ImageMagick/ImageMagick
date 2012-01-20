@@ -1482,7 +1482,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("emboss",option+1) == 0)
           {
             /*
-              Gaussian embossen image.
+              Emboss image.
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
             flags=ParseGeometry(argv[i+1],&geometry_info);
@@ -1775,10 +1775,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParseGeometry(argv[i+1],&geometry_info);
             if ((flags & SigmaValue) == 0)
               geometry_info.sigma=1.0;
-            if ((flags & XiValue) == 0)
-              geometry_info.xi=0.0;
             mogrify_image=GaussianBlurImage(*image,geometry_info.rho,
-              geometry_info.sigma,geometry_info.xi,exception);
+              geometry_info.sigma,exception);
             break;
           }
         if (LocaleCompare("geometry",option+1) == 0)
