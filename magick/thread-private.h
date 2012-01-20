@@ -100,7 +100,7 @@ static inline size_t GetOpenMPMaximumThreads(void)
   static size_t
     maximum_threads = 1;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   {
     ssize_t
       threads;
@@ -115,7 +115,7 @@ static inline size_t GetOpenMPMaximumThreads(void)
 
 static inline int GetOpenMPThreadId(void)
 {
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   return(omp_get_thread_num());
 #else
   return(0);
@@ -124,7 +124,7 @@ static inline int GetOpenMPThreadId(void)
 
 static inline void SetOpenMPMaximumThreads(const int threads)
 {
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   omp_set_num_threads(threads);
 #else
   (void) threads;
@@ -133,7 +133,7 @@ static inline void SetOpenMPMaximumThreads(const int threads)
 
 static inline void SetOpenMPNested(const int value)
 {
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (_OPENMP >= 200203)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   omp_set_nested(value);
 #else
   (void) value;
