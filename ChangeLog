@@ -1,5 +1,5 @@
 2011-01-20  6.7.4-8 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.4-8, SVN revision 6541.
+  * New version 6.7.4-8, SVN revision 6551.
 
 2011-01-19  6.7.4-8 Cristy  <quetzlzacatenango@image...>
   * Although MagickRealType is a double, use double for KernelInfo values in
