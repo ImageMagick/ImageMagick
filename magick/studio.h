@@ -225,7 +225,7 @@ extern "C" {
 #  define MAGICKCORE_OPENCL_SUPPORT  1
 #endif
 
-#if defined(_OPENMP) && (_OPENMP >= 200203)
+#if defined(_OPENMP) && ((_OPENMP >= 200203) || defined(__OPENCC__))
 #  include <omp.h>
 #  define MAGICKCORE_OPENMP_SUPPORT  1
 #endif
