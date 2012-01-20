@@ -211,10 +211,10 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Photo Sharing Websites" href="http://www.zoofoo.com">Photo Sharing Websites</a><!-- 2012050100150 dancu@dans...-->
+   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.webhostingclue.com">Best Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
+   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.hostucan.com">Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
 </div>
 </div>
 </div>
@@ -300,7 +300,11 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/magick_8c.html" id="SetMagickPrecision">SetMagickPrecision</a></h2>
 <div class="doc-section">
 
-<p>SetMagickPrecision() sets the maximum number of significant digits to be printed and returns it.</p>
+<p>SetMagickPrecision() sets the maximum number of significant digits to be printed.</p>
+
+<p>An input argument of 0 returns the current precision setting.</p>
+
+<p>A negative value forces the precision to reset to a default value according to the environment variable "MAGICK_PRECISION", the current 'policy' configuration setting, or the default value of '6', in that order.</p>
 
 <p>The format of the SetMagickPrecision method is:</p>
 
