@@ -1,7 +1,11 @@
+2011-01-20  6.7.4-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.4-8, SVN revision 6541.
+
 2011-01-19  6.7.4-8 Cristy  <quetzlzacatenango@image...>
   * Although MagickRealType is a double, use double for KernelInfo values in
     the rare event of problems with C++ name mangling.
   * Get strokes with patterns (e.g. -stroke xc:red) working again.
+  * Revert KernelInfo values from MagickRealType to double.
 
 2012-01-17  6.7.4-8 Glenn Randers-Pehrson <glennrp@image...>
   * Don't write ancillary chunks (except for tRNS and gAMA) in PNG-encoded
