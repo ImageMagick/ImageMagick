@@ -657,7 +657,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
             status=MagickTrue;
             is_gray=IsImageGray(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel sections
+            #pragma omp parallel sections
 #endif
             {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

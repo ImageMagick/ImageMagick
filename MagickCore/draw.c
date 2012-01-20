@@ -1102,6 +1102,8 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     edge;
 
   ssize_t
+    start,
+    stop,
     y;
 
   /*
@@ -1153,12 +1155,14 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   edge.y2=MagickMin(max.y,(double) image->rows-1.0);
   inverse_affine=InverseAffineMatrix(affine);
   GetPixelInfo(image,&zero);
+  start=(ssize_t) ceil(edge.y1-0.5);
+  stop=(ssize_t) ceil(edge.y2-0.5);
   image_view=AcquireCacheView(image);
   source_view=AcquireCacheView(source);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status)
 #endif
-  for (y=(ssize_t) ceil(edge.y1-0.5); y <= (ssize_t) floor(edge.y2+0.5); y++)
+  for (y=start; y <= stop; y++)
   {
     PixelInfo
       composite,
@@ -3841,18 +3845,18 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   bounds.y2=bounds.y2 < 0.0 ? 0.0 : (size_t) floor(bounds.y2+0.5) >=
     image->rows ? (double) image->rows-1.0 : bounds.y2;
   status=MagickTrue;
-  start=(ssize_t) ceil(bounds.x1-0.5);
-  stop=(ssize_t) floor(bounds.x2+0.5);
   image_view=AcquireCacheView(image);
   if (primitive_info->coordinates == 1)
     {
       /*
         Draw point.
       */
+      start=(ssize_t) ceil(bounds.y1-0.5);
+      stop=(ssize_t) floor(bounds.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status)
+      #pragma omp parallel for schedule(static) shared(status)
 #endif
-      for (y=(ssize_t) ceil(bounds.y1-0.5); y <= (ssize_t) floor(bounds.y2+0.5); y++)
+      for (y=start; y <= stop; y++)
       {
         MagickBooleanType
           sync;
@@ -3866,8 +3870,14 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         register Quantum
           *restrict q;
 
+        ssize_t
+          start,
+          stop;
+
         if (status == MagickFalse)
           continue;
+        start=(ssize_t) ceil(bounds.x1-0.5);
+        stop=(ssize_t) floor(bounds.x2+0.5);
         x=start;
         q=GetCacheViewAuthenticPixels(image_view,x,y,(size_t) (stop-x+1),
           1,exception);
@@ -3903,10 +3913,12 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   */
   if (image->matte == MagickFalse)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
+  start=(ssize_t) ceil(bounds.y1-0.5);
+  stop=(ssize_t) floor(bounds.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status)
 #endif
-  for (y=(ssize_t) ceil(bounds.y1-0.5); y <= (ssize_t) floor(bounds.y2+0.5); y++)
+  for (y=start; y <= stop; y++)
   {
     const int
       id = GetOpenMPThreadId();
@@ -3925,8 +3937,14 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     register ssize_t
       x;
 
+    ssize_t
+      start,
+      stop;
+
     if (status == MagickFalse)
       continue;
+    start=(ssize_t) ceil(bounds.x1-0.5);
+    stop=(ssize_t) floor(bounds.x2+0.5);
     q=GetCacheViewAuthenticPixels(image_view,start,y,(size_t) (stop-start+1),1,
       exception);
     if (q == (Quantum *) NULL)
