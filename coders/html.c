@@ -292,6 +292,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
         Open output image file.
       */
       assert(exception != (ExceptionInfo *) NULL);
+      status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
       if (status == MagickFalse)
         return(status);
       /*
