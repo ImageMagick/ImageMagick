@@ -647,9 +647,6 @@ static Image *SparseColorOption(const Image *image,
 WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
   const char **argv,Image **image,ExceptionInfo *exception)
 {
-  ChannelType
-    channel;
-
   CompositeOperator
     compose;
 
@@ -714,7 +711,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
   attenuate=1.0;
   compose=(*image)->compose;
   interpolate_method=UndefinedInterpolatePixel;
-  channel=mogrify_info->channel;
   format=GetImageOption(mogrify_info,"format");
   SetGeometry(*image,&region_geometry);
   region_image=NewImageList();
@@ -1037,15 +1033,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               break;
             (void) ColorDecisionListImage(*image,color_correction_collection,
               exception);
-            break;
-          }
-        if (LocaleCompare("channel",option+1) == 0)
-          {
-            if (*option == '+')
-              channel=DefaultChannels;
-            else
-              channel=(ChannelType) ParseChannelOption(argv[i+1]);
-            SetPixelChannelMapMask(*image,channel);
             break;
           }
         if (LocaleCompare("charcoal",option+1) == 0)
