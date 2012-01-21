@@ -181,8 +181,7 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     length;
 
   ssize_t
-    y,
-    z;
+    y;
 
   unsigned int
     number_grays;
@@ -1136,6 +1135,9 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
 #endif
   for (i=0; i < 4; i++)
   {
+    register ssize_t
+      z;
+
     for (z=0; z < (ssize_t) number_grays; z++)
     {
       register ssize_t

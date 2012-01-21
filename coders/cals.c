@@ -414,6 +414,7 @@ static ssize_t WriteCALSRecord(Image *image,const char *data)
     count;
 
   i=0;
+  count=0;
   if (data != (const char *) NULL)
     {
       p=data;
