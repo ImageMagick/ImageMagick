@@ -97,7 +97,7 @@ typedef enum
   VoronoiMorphology
 } MorphologyMethod;
 
-typedef struct KernelInfo
+typedef struct _KernelInfo
 {
   KernelInfoType
     type;
@@ -121,7 +121,7 @@ typedef struct KernelInfo
     angle,
     bias;
 
-  struct KernelInfo
+  struct _KernelInfo
     *next;
 
   size_t
