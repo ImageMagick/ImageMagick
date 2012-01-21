@@ -1598,9 +1598,6 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   const char
     *value;
 
-  double
-    sans;
-
   ExceptionInfo
     *exception;
 
@@ -2204,7 +2201,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     double
       brightness,
       hue,
-      saturation;
+      saturation,
+      sans;
 
     MagickPixelPacket
       composite,

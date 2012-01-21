@@ -435,6 +435,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
   channel_statistics=(ChannelStatistics *) NULL;
   channel_features=(ChannelFeatures *) NULL;
   colorspace=image->colorspace;
+  scale=1;
   if (ping == MagickFalse)
     {
       size_t
