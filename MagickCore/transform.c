@@ -1404,7 +1404,7 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
   source_view=AcquireCacheView(source);
   destination_view=AcquireCacheView(destination);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
+  #pragma omp parallel for schedule(static) shared(status)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
