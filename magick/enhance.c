@@ -2126,22 +2126,22 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if ((channel & RedChannel) != 0)
-          image->colormap[i].red=gamma_map[
-            ScaleQuantumToMap(image->colormap[i].red)];
+          image->colormap[i].red=gamma_map[ScaleQuantumToMap(
+            image->colormap[i].red)];
         if ((channel & GreenChannel) != 0)
-          image->colormap[i].green=gamma_map[
-            ScaleQuantumToMap(image->colormap[i].green)];
+          image->colormap[i].green=gamma_map[ScaleQuantumToMap(
+            image->colormap[i].green)];
         if ((channel & BlueChannel) != 0)
-          image->colormap[i].blue=gamma_map[
-            ScaleQuantumToMap(image->colormap[i].blue)];
+          image->colormap[i].blue=gamma_map[ScaleQuantumToMap(
+            image->colormap[i].blue)];
         if ((channel & OpacityChannel) != 0)
           {
             if (image->matte == MagickFalse)
-              image->colormap[i].opacity=gamma_map[
-                ScaleQuantumToMap(image->colormap[i].opacity)];
+              image->colormap[i].opacity=gamma_map[ScaleQuantumToMap(
+                image->colormap[i].opacity)];
             else
-              image->colormap[i].opacity=(Quantum) QuantumRange-
-                gamma_map[ScaleQuantumToMap((Quantum) (QuantumRange-
+              image->colormap[i].opacity=(Quantum) QuantumRange-gamma_map[
+                ScaleQuantumToMap((Quantum) (QuantumRange-
                 image->colormap[i].opacity))];
           }
       }
@@ -2180,24 +2180,18 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
     {
       if (channel == DefaultChannels)
         {
-          SetPixelRed(q,gamma_map[ScaleQuantumToMap(
-            GetPixelRed(q))]);
-          SetPixelGreen(q,gamma_map[ScaleQuantumToMap(
-            GetPixelGreen(q))]);
-          SetPixelBlue(q,gamma_map[ScaleQuantumToMap(
-            GetPixelBlue(q))]);
+          SetPixelRed(q,gamma_map[ScaleQuantumToMap(GetPixelRed(q))]);
+          SetPixelGreen(q,gamma_map[ScaleQuantumToMap(GetPixelGreen(q))]);
+          SetPixelBlue(q,gamma_map[ScaleQuantumToMap(GetPixelBlue(q))]);
         }
       else
         {
           if ((channel & RedChannel) != 0)
-            SetPixelRed(q,gamma_map[ScaleQuantumToMap(
-              GetPixelRed(q))]);
+            SetPixelRed(q,gamma_map[ScaleQuantumToMap(GetPixelRed(q))]);
           if ((channel & GreenChannel) != 0)
-            SetPixelGreen(q,gamma_map[ScaleQuantumToMap(
-              GetPixelGreen(q))]);
+            SetPixelGreen(q,gamma_map[ScaleQuantumToMap(GetPixelGreen(q))]);
           if ((channel & BlueChannel) != 0)
-            SetPixelBlue(q,gamma_map[ScaleQuantumToMap(
-              GetPixelBlue(q))]);
+            SetPixelBlue(q,gamma_map[ScaleQuantumToMap(GetPixelBlue(q))]);
           if ((channel & OpacityChannel) != 0)
             {
               if (image->matte == MagickFalse)

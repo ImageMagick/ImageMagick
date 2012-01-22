@@ -361,7 +361,7 @@ WandExport MagickBooleanType DuplexTransferPixelViewIterator(
   progress=0;
   exception=destination->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
   for (y=source->region.y; y < (ssize_t) source->region.height; y++)
   {
@@ -629,7 +629,7 @@ WandExport MagickBooleanType GetPixelViewIterator(PixelView *source,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
   for (y=source->region.y; y < (ssize_t) source->region.height; y++)
   {
@@ -2720,7 +2720,7 @@ WandExport MagickBooleanType SetPixelViewIterator(PixelView *destination,
   progress=0;
   exception=destination->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
   for (y=destination->region.y; y < (ssize_t) destination->region.height; y++)
   {
@@ -2858,7 +2858,7 @@ WandExport MagickBooleanType TransferPixelViewIterator(PixelView *source,
   progress=0;
   exception=destination->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
   for (y=source->region.y; y < (ssize_t) source->region.height; y++)
   {
@@ -3023,7 +3023,7 @@ WandExport MagickBooleanType UpdatePixelViewIterator(PixelView *source,
   progress=0;
   exception=source->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
   for (y=source->region.y; y < (ssize_t) source->region.height; y++)
   {
