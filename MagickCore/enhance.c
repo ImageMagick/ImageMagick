@@ -1766,14 +1766,14 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
   CacheView
     *image_view;
 
-  double
-    *gamma_map;
-
   MagickBooleanType
     status;
 
   MagickOffsetType
     progress;
+
+  Quantum
+    *gamma_map;
 
   register ssize_t
     i;
@@ -1790,8 +1790,8 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (gamma == 1.0)
     return(MagickTrue);
-  gamma_map=(double *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*gamma_map));
-  if (gamma_map == (double *) NULL)
+  gamma_map=(Quantum *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*gamma_map));
+  if (gamma_map == (Quantum *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   (void) ResetMagickMemory(gamma_map,0,(MaxMap+1)*sizeof(*gamma_map));
@@ -1800,15 +1800,15 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
     #pragma omp parallel for
 #endif
     for (i=0; i <= (ssize_t) MaxMap; i++)
-      gamma_map[i]=(MagickRealType) ScaleMapToQuantum((
-        MagickRealType) (MaxMap*pow((double) i/MaxMap,1.0/gamma)));
+      gamma_map[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*pow((double) i/
+        MaxMap,1.0/gamma)));
   if (image->storage_class == PseudoClass)
     {
       /*
         Gamma-correct colormap.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(progress,status)
+      #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
@@ -1867,7 +1867,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) != 0)
-          q[i]=ClampToQuantum(gamma_map[ScaleQuantumToMap(q[i])]);
+          q[i]=gamma_map[ScaleQuantumToMap(q[i])];
       }
       q+=GetPixelChannels(image);
     }
@@ -1888,7 +1888,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
       }
   }
   image_view=DestroyCacheView(image_view);
-  gamma_map=(double *) RelinquishMagickMemory(gamma_map);
+  gamma_map=(Quantum *) RelinquishMagickMemory(gamma_map);
   if (image->gamma != 0.0)
     image->gamma*=gamma;
   return(status);
