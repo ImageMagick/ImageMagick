@@ -306,9 +306,21 @@ namespace Magick
   using MagickCore::CubicFilter;
   using MagickCore::CatromFilter;
   using MagickCore::MitchellFilter;
-  using MagickCore::LanczosFilter;
-  using MagickCore::BesselFilter;
+  using MagickCore::JincFilter;
   using MagickCore::SincFilter;
+  using MagickCore::SincFastFilter;
+  using MagickCore::KaiserFilter;
+  using MagickCore::WelshFilter;
+  using MagickCore::ParzenFilter;
+  using MagickCore::BohmanFilter;
+  using MagickCore::BartlettFilter;
+  using MagickCore::LagrangeFilter;
+  using MagickCore::LanczosFilter;
+  using MagickCore::LanczosSharpFilter;
+  using MagickCore::Lanczos2Filter;
+  using MagickCore::Lanczos2SharpFilter;
+  using MagickCore::RobidouxFilter;
+  using MagickCore::SentinelFilter;
 
   // Bit gravity
   using MagickCore::GravityType;
