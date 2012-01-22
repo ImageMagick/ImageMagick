@@ -1579,7 +1579,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
   scale.x=(double) image->columns/resize_image->columns;
   scale.y=(double) image->rows/resize_image->rows;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) resize_image->rows; y++)
   {
@@ -2746,7 +2746,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   image_view=AcquireCacheView(image);
   sample_view=AcquireCacheView(sample_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) sample_image->rows; y++)
   {

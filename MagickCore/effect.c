@@ -2154,7 +2154,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   motion_view=AcquireCacheView(image);
   blur_view=AcquireCacheView(blur_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

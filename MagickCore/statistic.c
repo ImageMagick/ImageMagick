@@ -1276,7 +1276,7 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
   sum_fourth_power=0.0;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) shared(status)
+  #pragma omp parallel for schedule(static) shared(status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1399,7 +1399,7 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   *minima=MagickHuge;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,1) shared(status)
+  #pragma omp parallel for schedule(static) shared(status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
