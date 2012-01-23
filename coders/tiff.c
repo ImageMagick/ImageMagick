@@ -1000,9 +1000,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %.20g",
         (double) image->depth);
     lsb_first=1;
-    image->endian=MSBEndian;
-    if ((int) (*(char *) &lsb_first) != 0)
-      image->endian=LSBEndian;
+    image->endian=LSBEndian;
+    if (endian == FILLORDER_LSB2MSB)
+      image->endian=MSBEndian;
     if ((photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
       image->colorspace=GRAYColorspace;
@@ -1111,10 +1111,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         TIFFClose(tiff);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
-    quantum_info->endian=LSBEndian;
-    if (endian == FILLORDER_LSB2MSB)
-      quantum_info->endian=MSBEndian;
-    image->endian=quantum_info->endian;
     if (sample_format == SAMPLEFORMAT_UINT)
       status=SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
     if (sample_format == SAMPLEFORMAT_INT)
@@ -1124,6 +1120,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       {
         TIFFClose(tiff);
+        quantum_info=DestroyQuantumInfo(quantum_info);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
     status=MagickTrue;
@@ -2150,7 +2147,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
   images=NewImageList();
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    AppendImageToList(&images,CloneImage(next,0,0,MagickTrue,
+    AppendImageToList(&images,CloneImage(next,0,0,MagickFalse,
       &image->exception));
     columns=next->columns;
     rows=next->rows;
@@ -2171,15 +2168,12 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
       AppendImageToList(&images,pyramid_image);
     }
   }
-  images=GetFirstImageInList(images);
   /*
     Write pyramid-encoded TIFF image.
   */
   write_info=CloneImageInfo(image_info);
   write_info->adjoin=MagickTrue;
-  (void) CopyMagickString(write_info->magick,"TIFF",MaxTextExtent);
-  (void) CopyMagickString(images->magick,"TIFF",MaxTextExtent);
-  status=WriteTIFFImage(write_info,images);
+  status=WriteTIFFImage(write_info,GetFirstImageInList(images));
   images=DestroyImageList(images);
   write_info=DestroyImageInfo(write_info);
   return(status);
@@ -3135,9 +3129,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     */
     if (GetTIFFInfo(image_info,tiff,&tiff_info) == MagickFalse)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-    quantum_info->endian=LSBEndian;
-    if (endian == FILLORDER_LSB2MSB)
-      quantum_info->endian=MSBEndian;
     pixels=GetQuantumPixels(quantum_info);
     tiff_info.scanline=GetQuantumPixels(quantum_info);
     switch (photometric)
@@ -3162,8 +3153,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               register const PixelPacket
                 *restrict p;
 
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               length=ExportQuantumPixels(image,(const CacheView *) NULL,
