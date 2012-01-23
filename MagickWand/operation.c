@@ -2913,19 +2913,6 @@ WandExport MagickBooleanType WandSimpleOperatorImage(MagickWand *wand,
           (void) RandomThresholdImage(*image,arg1,exception);
           break;
         }
-      if (LocaleCompare("recolor",option) == 0)
-        {
-          /* DEPRECIATED - now "color-matrix" */
-          KernelInfo
-            *kernel;
-
-          kernel=AcquireKernelInfo(arg1);
-          if (kernel == (KernelInfo *) NULL)
-            break;
-          new_image=ColorMatrixImage(*image,kernel,exception);
-          kernel=DestroyKernelInfo(kernel);
-          break;
-        }
       if (LocaleCompare("remap",option) == 0)
         {
           Image

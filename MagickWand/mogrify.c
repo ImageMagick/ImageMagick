@@ -2443,19 +2443,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) RandomThresholdImage(*image,argv[i+1],exception);
             break;
           }
-        if (LocaleCompare("recolor",option+1) == 0)
-          {
-            KernelInfo
-              *kernel;
-
-            (void) SyncImageSettings(mogrify_info,*image,exception);
-            kernel=AcquireKernelInfo(argv[i+1]);
-            if (kernel == (KernelInfo *) NULL)
-              break;
-            mogrify_image=ColorMatrixImage(*image,kernel,exception);
-            kernel=DestroyKernelInfo(kernel);
-            break;
-          }
         if (LocaleCompare("region",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image,exception);
@@ -5361,17 +5348,6 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               break;
             i++;
             if (i == (ssize_t) argc)
-              ThrowMogrifyException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowMogrifyInvalidArgumentException(option,argv[i]);
-            break;
-          }
-        if (LocaleCompare("recolor",option+1) == 0)
-          {
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) (argc-1))
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             if (IsGeometry(argv[i]) == MagickFalse)
               ThrowMogrifyInvalidArgumentException(option,argv[i]);
