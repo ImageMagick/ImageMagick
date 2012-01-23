@@ -679,6 +679,8 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
 #endif
       case TIFF_RATIONAL:
       case TIFF_SRATIONAL:
+      case TIFF_FLOAT:
+      case TIFF_DOUBLE:
       {
         float
           rational[16];
@@ -822,7 +824,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
   size_t
     length,
-    lsb_first,
     pad;
 
   ssize_t
@@ -997,10 +998,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %.20g",
         (double) image->depth);
-    lsb_first=1;
-    image->endian=MSBEndian;
-    if ((int) (*(char *) &lsb_first) != 0)
-      image->endian=LSBEndian;
+    if ((photometric == PHOTOMETRIC_MINISBLACK) ||
+        (photometric == PHOTOMETRIC_MINISWHITE))
+      image->colorspace=GRAYColorspace;
     if (photometric == PHOTOMETRIC_SEPARATED)
       image->colorspace=CMYKColorspace;
     if (photometric == PHOTOMETRIC_CIELAB)
@@ -1119,6 +1119,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       {
         TIFFClose(tiff);
+        quantum_info=DestroyQuantumInfo(quantum_info);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
     status=MagickTrue;
@@ -2543,8 +2544,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     i;
 
   size_t
-    length,
-    lsb_first;
+    length;
 
   ssize_t
     y;
@@ -2856,10 +2856,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         break;
       }
     }
-    lsb_first=1;
-    image->endian=MSBEndian;
-    if ((int) (*(char *) &lsb_first) != 0)
-      image->endian=LSBEndian;
     if ((compress_tag == COMPRESSION_CCITTFAX3) &&
         (photometric != PHOTOMETRIC_MINISWHITE))
       {
@@ -3133,6 +3129,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     quantum_info->endian=LSBEndian;
     if (endian == FILLORDER_LSB2MSB)
       quantum_info->endian=MSBEndian;
+    image->endian=quantum_info->endian;
     pixels=GetQuantumPixels(quantum_info);
     tiff_info.scanline=GetQuantumPixels(quantum_info);
     switch (photometric)
@@ -3187,8 +3184,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               register const PixelPacket
                 *restrict p;
 
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               length=ExportQuantumPixels(image,(const CacheView *) NULL,
@@ -3207,8 +3203,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               register const PixelPacket
                 *restrict p;
 
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               length=ExportQuantumPixels(image,(const CacheView *) NULL,
@@ -3227,8 +3222,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               register const PixelPacket
                 *restrict p;
 
-              p=GetVirtualPixels(image,0,y,image->columns,1,
-                &image->exception);
+              p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;
               length=ExportQuantumPixels(image,(const CacheView *) NULL,
@@ -3377,9 +3371,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     if (0 && (image_info->verbose == MagickTrue))
       TIFFPrintDirectory(tiff,stdout,MagickFalse);
     (void) TIFFWriteDirectory(tiff);
-    image->endian=MSBEndian;
-    if (endian == FILLORDER_LSB2MSB)
-      image->endian=LSBEndian;
     image=SyncNextImageInList(image);
     if (image == (Image *) NULL)
       break;
