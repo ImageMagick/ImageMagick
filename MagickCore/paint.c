@@ -551,6 +551,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     width;
 
   ssize_t
+    center,
     y;
 
   /*
@@ -582,6 +583,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   */
   status=MagickTrue;
   progress=0;
+  center=(ssize_t) GetPixelChannels(image)*(image->columns+width)*
+    (width/2L)+GetPixelChannels(image)*(width/2L);
   image_view=AcquireCacheView(image);
   paint_view=AcquireCacheView(paint_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -625,45 +628,53 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       ssize_t
         j,
         k,
+        n,
         v;
 
       /*
         Assign most frequent color.
       */
-      i=0;
+      k=0;
       j=0;
       count=0;
-      (void) ResetMagickMemory(histogram,0,NumberPaintBins*sizeof(*histogram));
+      (void) ResetMagickMemory(histogram,0,NumberPaintBins* sizeof(*histogram));
       for (v=0; v < (ssize_t) width; v++)
       {
         for (u=0; u < (ssize_t) width; u++)
         {
-          k=(ssize_t) ScaleQuantumToChar(GetPixelIntensity(image,p+
-            GetPixelChannels(image)*(u+i)));
-          histogram[k]++;
-          if (histogram[k] > count)
+          n=(ssize_t) ScaleQuantumToChar(GetPixelIntensity(image,p+
+            GetPixelChannels(image)*(u+k)));
+          histogram[n]++;
+          if (histogram[n] > count)
             {
-              j=i+u;
-              count=histogram[k];
+              j=k+u;
+              count=histogram[n];
             }
         }
-        i+=(ssize_t) (image->columns+width);
+        k+=(ssize_t) (image->columns+width);
       }
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelRed(paint_image,GetPixelRed(image,p+j*
-          GetPixelChannels(image)),q);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelGreen(paint_image,GetPixelGreen(image,p+j*
-          GetPixelChannels(image)),q);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlue(paint_image,GetPixelBlue(image,p+j*
-          GetPixelChannels(image)),q);
-      if ((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelBlack(paint_image,GetPixelBlack(image,p+j*
-          GetPixelChannels(image)),q);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        SetPixelAlpha(paint_image,GetPixelAlpha(image,p+j*
-          GetPixelChannels(image)),q);
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          paint_traits,
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
+        paint_traits=GetPixelChannelMapTraits(paint_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (paint_traits == UndefinedPixelTrait))
+          continue;
+        if ((paint_traits & CopyPixelTrait) != 0)
+          {
+            SetPixelChannel(paint_image,channel,p[center+i],q);
+            continue;
+          }
+        SetPixelChannel(paint_image,channel,p[j*GetPixelChannels(image)+i],q);
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(paint_image);
     }
