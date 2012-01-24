@@ -1,3 +1,9 @@
+2011-01-24  6.7.4-9 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.4-9, SVN revision 6579.
+
+2011-01-24  6.7.4-9 Cristy  <quetzlzacatenango@image...>
+  * Fix rare file link in the pixel cache.
+
 2011-01-20  6.7.4-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.4-8, SVN revision 6551.
 
