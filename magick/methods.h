@@ -838,7 +838,7 @@ extern "C" {
 #define QueryColorname  PrependMagickMethod(QueryColorname)
 #define QueryMagickColorname  PrependMagickMethod(QueryMagickColorname)
 #define QueryMagickColor  PrependMagickMethod(QueryMagickColor)
-#define QueueAuthenticNexus  PrependMagickMethod(QueueAuthenticNexus)
+#define QueueAuthenticPixelCacheNexus  PrependMagickMethod(QueueAuthenticPixelCacheNexus)
 #define QueueAuthenticPixels  PrependMagickMethod(QueueAuthenticPixels)
 #define QueueCacheViewAuthenticPixels  PrependMagickMethod(QueueCacheViewAuthenticPixels)
 #define RadialBlurImageChannel  PrependMagickMethod(RadialBlurImageChannel)

@@ -834,8 +834,8 @@ MagickExport PixelPacket *QueueCacheViewAuthenticPixels(CacheView *cache_view,
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
   assert(id < (int) cache_view->number_threads);
-  return(QueueAuthenticNexus(cache_view->image,x,y,columns,rows,MagickFalse,
-    cache_view->nexus_info[id],exception));
+  return(QueueAuthenticPixelCacheNexus(cache_view->image,x,y,columns,rows,
+    MagickFalse,cache_view->nexus_info[id],exception));
 }
 
 /*
