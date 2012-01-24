@@ -3775,7 +3775,7 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
       image->filename);
   (void) ResetMagickMemory(sigmoidal_map,0,(MaxMap+1)*sizeof(*sigmoidal_map));
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
@@ -3805,7 +3805,7 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
         Sigmoidal-contrast enhance colormap.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(progress,status)
+      #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
