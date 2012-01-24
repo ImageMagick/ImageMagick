@@ -1100,7 +1100,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     TIFFGetProperties(tiff,image,exception);
     option=GetImageOption(image_info,"tiff:exif-properties");
     if ((option == (const char *) NULL) ||
-        (IsMagickTrue(option) == MagickFalse))
+        (IsMagickTrue(option) != MagickFalse))
       TIFFGetEXIFProperties(tiff,image,exception);
     /*
       Allocate memory for the image and pixel buffer.
