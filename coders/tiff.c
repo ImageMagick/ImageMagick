@@ -630,6 +630,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
   if (TIFFGetField(tiff,TIFFTAG_EXIFIFD,&offset) == 0)
     return;
   directory=TIFFCurrentDirectory(tiff);
+  offset=0;
   if (TIFFReadEXIFDirectory(tiff,offset) == 0)
     return;
   sans=NULL;
@@ -644,7 +645,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
           *ascii;
 
         ascii=(char *) NULL;
-        if ((TIFFGetField(tiff,exif_info[i].tag,&ascii,&sans) != 0) &&
+        if ((TIFFGetField(tiff,exif_info[i].tag,&ascii,&sans,&sans) != 0) &&
             (ascii != (char *) NULL) && (*ascii != '\0'))
           (void) CopyMagickMemory(value,ascii,MaxTextExtent);
         break;
@@ -654,7 +655,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
         uint16
           shorty[2] = { 0, 0};
 
-        if (TIFFGetField(tiff,exif_info[i].tag,&shorty,&sans) != 0)
+        if (TIFFGetField(tiff,exif_info[i].tag,&shorty,&sans,&sans) != 0)
           (void) FormatLocaleString(value,MaxTextExtent,"%d",(int) shorty[0]);
         break;
       }
@@ -663,7 +664,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
         uint32
           longy;
 
-        if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans) != 0)
+        if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans,&sans) != 0)
           (void) FormatLocaleString(value,MaxTextExtent,"%d",longy);
         break;
       }
@@ -673,7 +674,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
         uint64
           longy;
 
-        if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans) != 0)
+        if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans,&sans) != 0)
           (void) FormatLocaleString(value,MaxTextExtent,"%lld",longy);
         break;
       }
@@ -686,7 +687,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
         float
           rational[16];
 
-        if (TIFFGetField(tiff,exif_info[i].tag,&rational,&sans) != 0)
+        if (TIFFGetField(tiff,exif_info[i].tag,&rational,&sans,&sans) != 0)
           (void) FormatLocaleString(value,MaxTextExtent,"%g",rational[0]);
         break;
       }
