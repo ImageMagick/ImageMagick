@@ -1,5 +1,5 @@
 2011-01-25  6.7.4-10 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.4-10, SVN revision 6591.
+  * New version 6.7.4-10, SVN revision 6592.
 
 2011-01-25  6.7.4-10 Cristy  <quetzlzacatenango@image...>
   * Update PerlMagick TIFF regression signatures to match endian order.
