@@ -626,10 +626,10 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
   /*
     Read EXIF properties.
   */
+  offset=0;
   if (TIFFGetField(tiff,TIFFTAG_EXIFIFD,&offset) == 0)
     return;
   directory=TIFFCurrentDirectory(tiff);
-  offset=0;
   if (TIFFReadEXIFDirectory(tiff,offset) == 0)
     return;
   sans=NULL;
