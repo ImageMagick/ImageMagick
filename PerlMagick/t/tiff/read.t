@@ -84,7 +84,7 @@ testRead( 'input_truecolor.tiff',
 print("TrueColor (16-bit) image ...\n");
 testRead( 'input_truecolor_16.tiff',
   '0adb551c0d521ce9e502e7242040463543f1c84b55c6349d3aa4cbd093b1a410',
-  '725e5f79cd2dea9fd6000df596a1e63790e8ecf48a4a7c303324c176e88c5757' );
+  '1358ede821d93f885b4930e046fd17a56c367e14c9b7da66f09a286744dcc01e' );
 
 #
 # 10) Test Reading 8-bit TrueColor Tiled (32x32 tiles)
@@ -133,8 +133,8 @@ testRead( 'input_gray_8bit_matte.tiff',
 print("Grayscale (12-bit) ...\n");
 testRead( 'input_gray_12bit.tiff',
   'c29789db13969ddbfc9b588066d6578d87628566a60ffc33dbd43e6c4f747f51',
-  '0f2c8dfde42ee59deddd126853a8d6f69f6d517cebd8fab28c35836d21227064',
-  '0f2c8dfde42ee59deddd126853a8d6f69f6d517cebd8fab28c35836d21227064');
+  'eed3d77a875f1f8df3f6bffc5a2e778020dae673e1351af1515599a3204d8194',
+  'eed3d77a875f1f8df3f6bffc5a2e778020dae673e1351af1515599a3204d8194');
 
 #
 # 16) Test Reading Grayscale 16-bit
@@ -143,5 +143,5 @@ testRead( 'input_gray_12bit.tiff',
 print("Grayscale (16-bit) ...\n");
 testRead( 'input_gray_16bit.tiff',
   '7cc1f9e909cd671d0a4d32018fa885997a43de202eafdf4e0bec3dbff9f24a4e',
-  '5ebfb789a15df77bdd86342617710eb2f685a0ab32886aa4818719c9a84683ed',
-  '5ebfb789a15df77bdd86342617710eb2f685a0ab32886aa4818719c9a84683ed');
+  '9d7891335df85a1744e3068d8b46b603292ad765223ac432b526f0fb20bc3c89',
+  '9d7891335df85a1744e3068d8b46b603292ad765223ac432b526f0fb20bc3c89');
