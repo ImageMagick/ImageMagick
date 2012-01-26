@@ -1,5 +1,6 @@
 2011-01-25  6.7.5-0 Cristy  <quetzlzacatenango@image...>
-  *
+  * Support the -alpha flatten option (use it to flatten a transparent PDF,
+    convert -density 200 apple.pdf -alpha background x:).
 
 2011-01-25  6.7.4-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.4-10, SVN revision 6592.
