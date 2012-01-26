@@ -39,7 +39,8 @@ typedef enum
   ResetAlphaChannel,  /* deprecated */
   SetAlphaChannel,
   ShapeAlphaChannel,
-  TransparentAlphaChannel
+  TransparentAlphaChannel,
+  FlattenAlphaChannel
 } AlphaChannelType;
 
 typedef enum

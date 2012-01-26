@@ -2703,13 +2703,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image_view=DestroyCacheView(image_view);
       return(status);
     }
-    case DeactivateAlphaChannel:
-    {
-      image->matte=MagickFalse;
-      break;
-    }
-    case ShapeAlphaChannel:
     case CopyAlphaChannel:
+    case ShapeAlphaChannel:
     {
       /*
         Special usage case for SeparateImageChannel(): copy grayscale color to
@@ -2732,22 +2727,111 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         }
       break;
     }
+    case DeactivateAlphaChannel:
+    {
+      image->matte=MagickFalse;
+      break;
+    }
     case ExtractAlphaChannel:
     {
       status=SeparateImageChannel(image,TrueAlphaChannel);
       image->matte=MagickFalse;
       break;
     }
+    case FlattenAlphaChannel:
+    {
+      CacheView
+        *image_view;
+
+      ExceptionInfo
+        *exception;
+
+      IndexPacket
+        index;
+
+      MagickBooleanType
+        status;
+
+      MagickPixelPacket
+        background;
+
+      PixelPacket
+        pixel;
+
+      ssize_t
+        y;
+
+      /*
+        Flatten image pixels over the background pixels.
+      */
+      if (image->matte == MagickFalse)
+        break;
+      if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+        break;
+      GetMagickPixelPacket(image,&background);
+      SetMagickPixelPacket(image,&image->background_color,(const IndexPacket *)
+        NULL,&background);
+      if (image->colorspace == CMYKColorspace)
+        ConvertRGBToCMYK(&background);
+      index=0;
+      SetPixelPacket(image,&background,&pixel,&index);
+      status=MagickTrue;
+      exception=(&image->exception);
+      image_view=AcquireCacheView(image);
+      #if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp parallel for schedule(static,4) shared(status)
+      #endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        register IndexPacket
+          *restrict indexes;
+
+        register PixelPacket
+          *restrict q;
+
+        register ssize_t
+          x;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (PixelPacket *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          MagickRealType
+            gamma;
+
+          gamma=1.0-QuantumScale*QuantumScale*q->opacity*pixel.opacity;
+          q->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
+          gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
+          q->red=gamma*MagickOver_(q->red,q->opacity,pixel.red,pixel.opacity);
+          q->green=gamma*MagickOver_(q->green,q->opacity,pixel.green,
+            pixel.opacity);
+          q->blue=gamma*MagickOver_(q->blue,q->opacity,pixel.blue,
+            pixel.opacity);
+          q++;
+        }
+        if (image->colorspace == CMYKColorspace)
+          {
+            indexes=GetCacheViewAuthenticIndexQueue(image_view);
+            for (x=0; x < (ssize_t) image->columns; x++)
+              SetPixelIndex(indexes+x,index);
+          }
+        if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
+      return(status);
+    }
     case ResetAlphaChannel: /* deprecated */
     case OpaqueAlphaChannel:
     {
       status=SetImageOpacity(image,OpaqueOpacity);
-      image->matte=MagickTrue;
-      break;
-    }
-    case TransparentAlphaChannel:
-    {
-      status=SetImageOpacity(image,TransparentOpacity);
       image->matte=MagickTrue;
       break;
     }
@@ -2758,6 +2842,12 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           status=SetImageOpacity(image,OpaqueOpacity);
           image->matte=MagickTrue;
         }
+      break;
+    }
+    case TransparentAlphaChannel:
+    {
+      status=SetImageOpacity(image,TransparentOpacity);
+      image->matte=MagickTrue;
       break;
     }
     case UndefinedAlphaChannel:
