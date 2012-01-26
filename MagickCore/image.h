@@ -38,7 +38,8 @@ typedef enum
   OpaqueAlphaChannel,
   SetAlphaChannel,
   ShapeAlphaChannel,
-  TransparentAlphaChannel
+  TransparentAlphaChannel,
+  FlattenAlphaChannel
 } AlphaChannelType;
 
 typedef enum
