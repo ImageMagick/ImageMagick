@@ -2410,6 +2410,75 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
+  const MagickRealType alpha,const Quantum *q,const MagickRealType beta,
+  Quantum *composite)
+{
+  MagickRealType
+    Da,
+    gamma,
+    Sa;
+
+  register ssize_t
+    i;
+
+  /*
+    Compose pixel p over pixel q with the given alpha.
+  */
+  Sa=QuantumScale*alpha;
+  Da=QuantumScale*beta,
+  gamma=Sa*(-Da)+Sa+Da;
+  gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
+  for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+  {
+    PixelChannel
+      channel;
+
+    PixelTrait
+      traits;
+
+    channel=GetPixelChannelMapChannel(image,i);
+    traits=GetPixelChannelMapTraits(image,channel);
+    if (traits == UndefinedPixelTrait)
+      continue;
+    switch (channel)
+    {
+      case RedPixelChannel:
+      {
+        composite[i]=ClampToQuantum(gamma*MagickOver_((MagickRealType) q[i],
+          beta,(MagickRealType) p->red,alpha));
+        break;
+      }
+      case GreenPixelChannel:
+      {
+        composite[i]=ClampToQuantum(gamma*MagickOver_((MagickRealType) q[i],
+          beta,(MagickRealType) p->green,alpha));
+        break;
+      }
+      case BluePixelChannel:
+      {
+        composite[i]=ClampToQuantum(gamma*MagickOver_((MagickRealType) q[i],
+          beta,(MagickRealType) p->blue,alpha));
+        break;
+      }
+      case BlackPixelChannel:
+      {
+        composite[i]=ClampToQuantum(gamma*MagickOver_((MagickRealType) q[i],
+          beta,(MagickRealType) p->black,alpha));
+        break;
+      }
+      case AlphaPixelChannel:
+      {
+        composite[i]=ClampToQuantum(QuantumRange*(Sa*(-Da)+Sa+Da));
+        break;
+      }
+      default:
+        break;
+    }
+  }
+}
+
 MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
   const AlphaChannelType alpha_type,ExceptionInfo *exception)
 {
@@ -2433,19 +2502,16 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       CacheView
         *image_view;
 
-      PixelInfo
-        background;
-
       ssize_t
         y;
 
       /*
         Set transparent pixels to background color.
       */
-      image->matte=MagickTrue;
+      if (image->matte == MagickFalse)
+        break;
       if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         break;
-      background=image->background_color;
       image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
@@ -2470,7 +2536,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           if (GetPixelAlpha(image,q) == TransparentAlpha)
-            SetPixelInfoPixel(image,&background,q);
+            SetPixelInfoPixel(image,&image->background_color,q);
           q+=GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2479,13 +2545,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image_view=DestroyCacheView(image_view);
       return(status);
     }
-    case DeactivateAlphaChannel:
-    {
-      image->matte=MagickFalse;
-      break;
-    }
-    case ShapeAlphaChannel:
     case CopyAlphaChannel:
+    case ShapeAlphaChannel:
     {
       /*
         Copy pixel intensity to the alpha channel.
@@ -2494,6 +2555,11 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       if (alpha_type == ShapeAlphaChannel)
         (void) LevelImageColors(image,&image->background_color,
           &image->background_color,MagickTrue,exception);
+      break;
+    }
+    case DeactivateAlphaChannel:
+    {
+      image->matte=MagickFalse;
       break;
     }
     case ExtractAlphaChannel:
@@ -2507,15 +2573,64 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       status=SetImageAlpha(image,OpaqueAlpha,exception);
       break;
     }
-    case TransparentAlphaChannel:
+    case FlattenAlphaChannel:
     {
-      status=SetImageAlpha(image,TransparentAlpha,exception);
-      break;
+      CacheView
+        *image_view;
+
+      ssize_t
+        y;
+
+      /*
+        Flatten image pixels over the background pixels.
+      */
+      if (image->matte == MagickFalse)
+        break;
+      if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+        break;
+      image_view=AcquireCacheView(image);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        register Quantum
+          *restrict q;
+
+        register ssize_t
+          x;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (Quantum *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          FlattenPixelInfo(image,&image->background_color,
+            image->background_color.alpha,q,(MagickRealType)
+            GetPixelAlpha(image,q),q);
+          q+=GetPixelChannels(image);
+        }
+        if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
+      return(status);
     }
     case SetAlphaChannel:
     {
       if (image->matte == MagickFalse)
         status=SetImageAlpha(image,OpaqueAlpha,exception);
+      break;
+    }
+    case TransparentAlphaChannel:
+    {
+      status=SetImageAlpha(image,TransparentAlpha,exception);
       break;
     }
     case UndefinedAlphaChannel:
