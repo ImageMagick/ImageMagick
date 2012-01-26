@@ -98,6 +98,7 @@ static const OptionInfo
     { "Copy", CopyAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Deactivate", DeactivateAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Extract", ExtractAlphaChannel, UndefinedOptionFlag, MagickFalse },
+    { "Flatten", FlattenAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Off", DeactivateAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "On", ActivateAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Opaque", OpaqueAlphaChannel, UndefinedOptionFlag, MagickFalse },
