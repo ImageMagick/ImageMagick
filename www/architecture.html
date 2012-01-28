@@ -16,7 +16,7 @@
   <meta name="Description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
-  <meta name="Keywords" content="architecture, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Image, Processing, Automagically"/>
+  <meta name="Keywords" content="architecture, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
   <meta name="Rating" content="GENERAL"/>
   <meta name="Robots" content="INDEX, FOLLOW"/>
   <meta name="Generator" content="ImageMagick Studio LLC"/>
@@ -29,24 +29,33 @@
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  
+  <!-- Optionaly include easing and/or mousewheel plugins -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.easing-1.3.pack.js"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
+  
+  <!-- Add fancyBox -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.3"></script>
+  
+  <!-- Optionaly include button and/or thumbnail helpers -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.3"></script>
+  
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.3"></script>
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(".fancybox").fancybox();
+  	});
+  </script>
+  <!-- ImageMagick style -->
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
-  <link rel="stylesheet" type="text/css" href="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
-  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
-        'transitionIn'  : 'elastic',
-        'transitionOut' : 'elastic',
-        'overlayShow'   : false,
-        'opacity'       : true
-      });
-    });
-  </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -153,57 +162,62 @@
   <a title="Site Map: Links" href="../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div  class="menu">
+<div class="menu">
   <a rel="follow" title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
 
-<a href="http://www.networkredux.com">
-  <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]"
-  style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.networkredux.com"> <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201204010120 mickey@163... -->
 <div class="sponsbox">
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540s suvalj -->
+<div class="sponsor">
+  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
 </div>
-<div  class="sponsor">
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201110010090s jen@seo lowprofilelinks -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201203010270 info@pkwte... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Web Site Hosting" href="http://webhostinggeeks.com">Web Site Hosting</a><!-- 201302010900 funds@enmob... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Deals" href="http://www.webhostingdeals.org">Web Hosting Deals</a><!-- 201111010270 chee.hoa darin -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Tenant Check" href="http://www.rentmethod.com/">Tenant Check</a><!-- 201203010090 chris@rentm... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autos part" href="http://www.pkwteile.de/autoteile">Autos part</a><!-- 201112010090s jr@pkwte... -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201204010090 barsh@inter... -->
 </div>
-<div  class="sponsor">
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540 suvalj -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingsecretrevealed.com">Web Hosting Secret Revealed</a><!-- 201204010540 iamchee jerry -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Break" href="http://www.webhostingbreak.com">Web Hosting Break</a><!-- 201109010090 ian@ian-m... -->
-</div>
-<div  class="sponsor">
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201110010090 alexanian media -->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Computer Wallpaper" href="http://www.free-computer-wallpapers.com">Computer Wallpaper</a><!-- 2012030100150 webinvasion1@y...-->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-   <a rel="follow" title="Sponsor: Notebook Reparatur" href="http://www.atlasmultimedia.de">Notebook Reparatur</a><!-- 2011100100025 atlas.multimedia-->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Hosting Web" href="http://www.hostalia.com">Hosting Web</a><!-- 20120401000150 david@carre... -->
 </div>
 </div>
 </div>
@@ -211,6 +225,17 @@
 
 <div class="eastbar">
   <div class="g-plusone" data-size="standard" data-count="false"></div>
+  <script type="text/javascript">
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+  </script>
 </div>
 
 <div class="main">
@@ -307,7 +332,7 @@
 
 <p>When the pixel cache is initialized, pixels are scaled from whatever bit depth they originated from to that required by the pixel cache.  For example, a 1-channel 1-bit monochrome PBM image is scaled to a 4 channel 8-bit RGBA image, if you are using the Q8 version of ImageMagick, and 16-bit RGBA for the Q16 version.  You can determine which version you have with the <a href="../www/command-line-options.html#version">&#x2011;version</a> option: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.7.1-5 2011-07-01 Q16 http://www.imagemagick.org</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -version</span><span class='crtout'>Version: ImageMagick 6.7.5-0 2012-01-25 Q16 http://www.imagemagick.org</span></p>
 <p>As you can see, the convenience of the pixel cache sometimes comes with a trade-off in storage (e.g. storing a 1-bit monochrome image as 16-bit RGBA is wasteful) and speed (i.e. storing the entire image in memory is generally slower than accessing one scanline of pixels at a time).  In most cases, the benefits of the pixel cache typically outweigh any disadvantages.</p>
 </div>
 
@@ -426,7 +451,7 @@
   <dt class="doc">files</dt>
   <dd>maximum number of open pixel cache files.  When this limit is exceeded, any subsequent pixels cached to disk are closed and reopened on demand. This behavior permits a large number of images to be accessed simultaneously on disk, but without a speed penalty due to repeated open/close calls.</dd>
   <dt class="doc">area</dt>
-  <dd>maximum area in bytes of any one image that can reside in the pixel cache memory.  If this limit is exceeded, the image is automagically cached to disk.</dd>
+  <dd>maximum area in bytes of any one image that can reside in the pixel cache memory.  If this limit is exceeded, the image is automagically cached to disk and optionally memory-mapped.</dd>
   <dt class="doc">memory</dt>
   <dd>maximum amount of memory in bytes to allocate for the pixel cache from the anonymous mapped memory or the heap.</dd>
   <dt class="doc">map</dt>
@@ -441,7 +466,7 @@
 
 <p>To determine the current setting of these limits, use this command:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list resource</span></p><pre class="text">
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -list resource</span></p><pre class="text">
 File         Area       Memory          Map         Disk    Thread         Time
 -------------------------------------------------------------------------------
  768     1.0386GB    3.8692GiB    7.7384GiB    unlimited         4    unlimited
@@ -493,7 +518,7 @@ File         Area       Memory          Map         Disk    Thread         Time
 <h3>Best Practices</h3>
 <div class="doc-section">
 
-<p>Although you can request any pixel from the pixel cache, any block of pixels, any scanline, multiple scanlines, any row, or multiple rows with the GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels, GetCacheViewVirtualPixels(), GetCacheViewAuthenticPixels(), and QueueCacheViewAuthenticPixels() methods, ImageMagick is optimized to return a few pixels or a few pixels rows at time.  There are additional optimizations if you request a single scanline or a few scanlines at a time.  These methods also permit random access to the pixel cache, however, ImageMagick is optimized for sequential access.  Although you can access scanlines of pixels sequentially from the last row of the image to the first, you may get a perfomance boost if you access scanlines from the first row of the image to the last, in sequentual order.</p>
+<p>Although you can request any pixel from the pixel cache, any block of pixels, any scanline, multiple scanlines, any row, or multiple rows with the GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels, GetCacheViewVirtualPixels(), GetCacheViewAuthenticPixels(), and QueueCacheViewAuthenticPixels() methods, ImageMagick is optimized to return a few pixels or a few pixels rows at time.  There are additional optimizations if you request a single scanline or a few scanlines at a time.  These methods also permit random access to the pixel cache, however, ImageMagick is optimized for sequential access.  Although you can access scanlines of pixels sequentially from the last row of the image to the first, you may get a performance boost if you access scanlines from the first row of the image to the last, in sequentual order.</p>
 
 <p>If you update pixels returned from GetAuthenticPixels() or GetCacheViewAuthenticPixels(), don't forget to call SyncAuthenticPixels() or SyncCacheViewAuthenticPixels() respectively to ensure your changes are synchronized with the pixel cache.</p>
 
@@ -511,11 +536,11 @@ File         Area       Memory          Map         Disk    Thread         Time
 
 <p>If you are dealing with large images, make sure the pixel cache is written to a disk area with plenty of free space.  Under Unix, this is typically <kbd>/tmp</kbd> and for Windows, <kbd>c:/temp</kbd>.  You can tell ImageMagick to write the pixel cache to an alternate location with the MAGICK_TEMPORARY_PATH environment variable.  For example,</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>export MAGICK_TEMPORARY_PATH=/data/magick</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>export MAGICK_TEMPORARY_PATH=/data/magick</span></p>
 
 <p>If you plan on processing the same image many times, consider the MPC format.  Reading a MPC image has near-zero overhead because its in the native pixel cache format eliminating the need for decoding the image pixels.  Here is an example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.tif image.mpc</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.mpc -crop 100x100+0+0 +repage 1.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.mpc -crop 100x100+100+0 +repage 2.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.mpc -crop 100x100+200+0 +repage 3.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.tif image.mpc</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert image.mpc -crop 100x100+0+0 +repage 1.png</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert image.mpc -crop 100x100+100+0 +repage 2.png</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert image.mpc -crop 100x100+200+0 +repage 3.png</span></p>
 <p>MPC is ideal for web sites.  It reduces the overhead of reading and writing an image.  We use it exclusively at our <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">online image studio</a>.</p>
 </div>
 
@@ -601,26 +626,26 @@ image=ReadStream(image_info,&amp;StreamPixels,exception);
 <div class="doc-section">
 <p>ImageMagick can read, process, or write mega-, giga-, or tera-pixel image sizes.  An image width or height can range from 1 to 2 giga-pixels on a 32 bit OS and up to 9 exa-pixels on a 64-bit OS.  Note, that some image formats have restrictions on image size.  For example, Photoshop images are limited to 300,000 pixels for width or height.  Here we resize an image to a quarter million pixels square:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize 250000x250000 logo.miff</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize 250000x250000 logo.miff</span></p>
 <p>For large images, ImageMagick will likely create a pixel cache on disk.  Make sure you have plenty of temporary disk space.  If your default temporary disk partition is too small, tell ImageMagick to use another partition with plenty of free space.  For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp logo:  \ <br/>     -resize 250000x250000 logo.miff</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp logo:  \ <br/>     -resize 250000x250000 logo.miff</span></p>
 <p>To ensure large images do not consume all the memory on your system, force the image pixels to memory-mapped disk with resource limits:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp -limit memory 16mb  \ <br/>     logo: -resize 250000x250000 logo.miff</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp -limit memory 16mb  \ <br/>     logo: -resize 250000x250000 logo.miff</span></p>
 <p>Here we force all image pixels to disk:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp -limit area 0  \ <br/>     logo: -resize 250000x250000 logo.miff</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -define registry:temporary-path=/data/tmp -limit area 0  \ <br/>     logo: -resize 250000x250000 logo.miff</span></p>
 <p>Caching pixels to disk is about 1000 times slower than memory.  Expect long run times when processing large images on disk with ImageMagick.  You can monitor progress with this command:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -monitor -define registry:temporary-path=/data/tmp -limit area 0  \ <br/>     logo: -resize 250000x250000 logo.miff</span></p></div>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -monitor -define registry:temporary-path=/data/tmp -limit area 0  \ <br/>     logo: -resize 250000x250000 logo.miff</span></p></div>
 
 <h2><a id="threads"></a>Threads of Execution</h2>
 <div class="doc-section">
 
 <p>Many of ImageMagick's internal algorithms are threaded to take advantage of speed-ups offered by the multicore processor chips. However, you are welcome to use ImageMagick algorithms in your threads of execution with the exception of the MagickCore's GetVirtualPixels(), GetAuthenticPixels(), QueueAuthenticPixels(), or SyncAuthenticPixels() pixel cache methods.  These methods are intended for one thread of execution only with the exception of an OpenMP parallel section.  To access the pixel cache with more than one thread of execution, use a cache view.  We do this for the <a href="../www/api/composite.html#CompositeImage">CompositeImage()</a> method, for example.  Suppose we want to composite a single image over a different image in each thread of execution.  If we use GetVirtualPixels(), the results are unpredictable because multiple threads would likely be asking for different areas of the pixel cache simultaneously.  Instead we use GetCacheViewVirtualPixels() which creates a unique view for each thread of execution ensuring our program behaves properly regardless of how many threads are invoked.  The other program interfaces, such as the <a href="../www/magick-wand.html">MagickWand API</a>, are completely thread safe so there are no special precautions for threads of execution.</p>
 
-<p>Here is an MagickCore code snippet that takes advantage of threads of execution with the <a href="http://en.wikipedia.org/wiki/OpenMP">OpenMP</a> programming paradigm:</p>
+<p>Here is an MagickCore code snippet that takes advantage of threads of execution with the <a href="../www/parallel.html">OpenMP</a> programming paradigm:</p>
 
 <div class="viewport">
 {
@@ -751,6 +776,20 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
 
 <p>The OpenMP committee has not defined the behavior of mixing OpenMP with other threading models such as Posix threads.  However, using modern releases of Linux, OpenMP and Posix threads appear to interoperate without complaint.  If you want to use Posix threads from a program module that calls one of the ImageMagick application programming interfaces (e.g. MagickCore, MagickWand, Magick++, etc.) from Mac OS X or an older Linux release, you may need to disable OpenMP support within ImageMagick.  Add the <kbd>--disable-openmp</kbd> option to the configure script command line and rebuild and reinstall ImageMagick.</p>
 
+<h4>Threading Performance</h4>
+<p>It can be difficult to predict behavior in a parallel environment.   Performance might depend on a number of factors including the compiler, the version of the OpenMP library, the processor type, the number of cores, the amount of memory, whether hyperthreading is enabled, the mix of applications that are executing concurrently with ImageMagick, or the particular image-processing algorithm you utilize.  The only way to be certain of optimal performance, in terms of the number of threads, is to benchmark.   ImageMagick includes progressive threading when benchmarking a command and returns the elapsed time and efficiency for one or more threads.  This can help you identify how many threads is the most efficient in your environment.  Here is an example benchmark for threads 1-8:</p>
+<pre class="text">
+convert -bench 40 model.png -sharpen 0x1 null:
+Performance[1]: 10i 0.712ips 1.000e 14.000u 0:14.040
+Performance[2]: 10i 1.362ips 0.657e 14.550u 0:07.340
+Performance[3]: 10i 2.033ips 0.741e 14.530u 0:04.920
+Performance[4]: 10i 2.667ips 0.789e 14.590u 0:03.750
+Performance[5]: 10i 3.236ips 0.820e 14.970u 0:03.090
+Performance[6]: 10i 3.802ips 0.842e 15.280u 0:02.630
+Performance[7]: 10i 4.274ips 0.857e 15.540u 0:02.340
+Performance[8]: 10i 4.831ips 0.872e 15.680u 0:02.070
+</pre>
+<p>In certain cases, it might be optimal to set the number of threads to 1 or to disable OpenMP completely.</p>
 </div>
 
 <h2><a id="distributed"></a>Heterogeneous Distributed Processing</h2>
@@ -759,10 +798,10 @@ void ConvertBMPToImage(const BITMAPINFOHEADER *bmp_info,
 
 <p>First verify that your version of ImageMagick includes support for the OpenCL feature:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -version</span><span class='crtout'>Features: OpenMP OpenCL</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -version</span><span class='crtout'>Features: OpenMP OpenCL</span></p>
 <p>If so, run this command to realize a significant speed-up for image convolution:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1'  \ <br/> convolve.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png -convolve '-1, -1, -1, -1, 9, -1, -1, -1, -1'  \ <br/> convolve.png</span></p>
 <p>If an accelerator is not available or if the accelerator fails to respond, ImageMagick reverts to the non-accelerated convolution algorithm.</p>
 
 <p>Here is an example OpenCL kernel that convolves an image:</p>
@@ -777,16 +816,16 @@ static inline long ClampToCanvas(const long offset,const ulong range)
   return(offset);
 }
 
-static inline CLQuantum ClampToQuantum(const double value)
+static inline CLQuantum ClampToQuantum(const float value)
 {
   if (value &lt; 0.0)
     return((CLQuantum) 0);
-  if (value >= (double) QuantumRange)
+  if (value >= (float) QuantumRange)
     return((CLQuantum) QuantumRange);
   return((CLQuantum) (value+0.5));
 }
 
-__kernel void Convolve(const __global CLPixelType *source,__constant double *filter,
+__kernel void Convolve(const __global CLPixelType *source,__constant float *filter,
   const ulong width,const ulong height,__global CLPixelType *destination)
 {
   const ulong columns = get_global_size(0);
@@ -795,11 +834,11 @@ __kernel void Convolve(const __global CLPixelType *source,__constant double *fil
   const long x = get_global_id(0);
   const long y = get_global_id(1);
 
-  const double scale = (1.0/QuantumRange);
+  const float scale = (1.0/QuantumRange);
   const long mid_width = (width-1)/2;
   const long mid_height = (height-1)/2;
-  double4 sum = { 0.0, 0.0, 0.0, 0.0 };
-  double gamma = 0.0;
+  float4 sum = { 0.0, 0.0, 0.0, 0.0 };
+  float gamma = 0.0;
   register ulong i = 0;
 
   for (long v=(-mid_height); v &lt;= mid_height; v++)
@@ -808,7 +847,7 @@ __kernel void Convolve(const __global CLPixelType *source,__constant double *fil
     {
       register const ulong index=ClampToCanvas(y+v,rows)*columns+ClampToCanvas(x+u,
         columns);
-      const double alpha=scale*(QuantumRange-source[index].w);
+      const float alpha=scale*(QuantumRange-source[index].w);
       sum.x+=alpha*filter[i]*source[index].x;
       sum.y+=alpha*filter[i]*source[index].y;
       sum.z+=alpha*filter[i]*source[index].z;
@@ -1244,8 +1283,8 @@ static MagickBooleanType WriteMGKImage(const ImageInfo *image_info,Image *image)
 
 <p>To invoke the custom coder from the command line, use these commands:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: logo.mgk</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>display logo.mgk</span></p>
-<p>We provide the <a href="ftp://ftp.imagemagick.org/pub/ImageMagick/kits/MagickCoderKit-1.0.0.tar.gz">Magick Coder Kit</a> to help you get started writing your own custom coder.</p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: logo.mgk</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>display logo.mgk</span></p>
+<p>We provide the <a href="http://www.imagemagick.org/download/kits/MagickCoderKit-1.0.0.tar.gz">Magick Coder Kit</a> to help you get started writing your own custom coder.</p>
 
 </div>
 
@@ -1459,7 +1498,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
 
 <p>To invoke the custom filter from the command line, use this command:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -process "analyze" -verbose info:</span><span class='crtout'>Image: logo: <br/>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -process "analyze" -verbose info:</span><span class='crtout'>Image: logo: <br/>
     Format: LOGO (ImageMagick Logo)  <br/>
     Class: PseudoClass  <br/>
     Geometry: 640x480  <br/>
@@ -1473,7 +1512,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
     filter:saturation:skewness: 2.42848 <br/>
     filter:saturation:standard-deviation: 15575.9</span></p>
 
-<p>We provide the <a href="ftp://ftp.imagemagick.org/pub/ImageMagick/kits/MagickFilterKit-1.0.0.tar.gz">Magick Filter Kit</a> to help you get started writing your own custom image filter.</p>
+<p>We provide the <a href="http://www.imagemagick.org/download/kits/MagickFilterKit-1.0.0.tar.gz">Magick Filter Kit</a> to help you get started writing your own custom image filter.</p>
 
 </div>
 
@@ -1488,7 +1527,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,const char **argv
     <span id="linkbar-east">&nbsp;</span>
   </div>
   <div class="footer">
-    <span id="footer-west">&copy; 1999-2012 ImageMagick Studio LLC</span>
+    <span id="footer-west">&copy; 1999-2011 ImageMagick Studio LLC</span>
     <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>

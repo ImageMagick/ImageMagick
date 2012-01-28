@@ -17,7 +17,7 @@
   <meta name="Description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
-  <meta name="Keywords" content="porting, to, imagemagick, version, 7, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Image, Processing, Automagically"/>
+  <meta name="Keywords" content="porting, to, imagemagick, version, 7, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
   <meta name="Rating" content="GENERAL"/>
   <meta name="Robots" content="INDEX, FOLLOW"/>
   <meta name="Generator" content="ImageMagick Studio LLC"/>
@@ -30,24 +30,33 @@
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  
+  <!-- Optionaly include easing and/or mousewheel plugins -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.easing-1.3.pack.js"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
+  
+  <!-- Add fancyBox -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.3"></script>
+  
+  <!-- Optionaly include button and/or thumbnail helpers -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.3"></script>
+  
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.3"></script>
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(".fancybox").fancybox();
+  	});
+  </script>
+  <!-- ImageMagick style -->
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
-  <link rel="stylesheet" type="text/css" href="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
-  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
-        'transitionIn'  : 'elastic',
-        'transitionOut' : 'elastic',
-        'overlayShow'   : false,
-        'opacity'       : true
-      });
-    });
-  </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -154,57 +163,62 @@
   <a title="Site Map: Links" href="../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div  class="menu">
+<div class="menu">
   <a rel="follow" title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
 
-<a href="http://www.networkredux.com">
-  <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]"
-  style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.networkredux.com"> <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201204010120 mickey@163... -->
 <div class="sponsbox">
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540s suvalj -->
+<div class="sponsor">
+  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
 </div>
-<div  class="sponsor">
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201110010090s jen@seo lowprofilelinks -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201203010270 info@pkwte... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Web Site Hosting" href="http://webhostinggeeks.com">Web Site Hosting</a><!-- 201302010900 funds@enmob... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Deals" href="http://www.webhostingdeals.org">Web Hosting Deals</a><!-- 201111010270 chee.hoa darin -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Tenant Check" href="http://www.rentmethod.com/">Tenant Check</a><!-- 201203010090 chris@rentm... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autos part" href="http://www.pkwteile.de/autoteile">Autos part</a><!-- 201112010090s jr@pkwte... -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201204010090 barsh@inter... -->
 </div>
-<div  class="sponsor">
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540 suvalj -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingsecretrevealed.com">Web Hosting Secret Revealed</a><!-- 201204010540 iamchee jerry -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Break" href="http://www.webhostingbreak.com">Web Hosting Break</a><!-- 201109010090 ian@ian-m... -->
-</div>
-<div  class="sponsor">
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201110010090 alexanian media -->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Turbolader Online kaufen" href="http://www.autoteile-carparts.de">Turbolader Online kaufen</a><!-- 2012050100150 t.temurbas...-->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-   <a rel="follow" title="Kaffeevollautomaten Reparatur Kundendienst Berlin" href="http://www.kaffeemaschinen-center.de">Kaffeevollautomaten Reparatur Berlin</a><!-- 2011090100025 c.karule-->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingreviewz.com">Web Hosting Reviews</a><!-- 2012040100030 Soft Tec-->
 </div>
 </div>
 </div>
@@ -212,28 +226,34 @@
 
 <div class="eastbar">
   <div class="g-plusone" data-size="standard" data-count="false"></div>
+  <script type="text/javascript">
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+  </script>
 </div>
 
 <div class="main">
 
 <h1>ImageMagick Version 7 Porting Guide</h1>
 
-<p class="navigation-index">[<a href="#headers">Header Files</a> &bull; <a href="#channels">Pixel Channels</a> &bull; <a href="#alpha">Alpha</a> &bull; <a href="#grayscale">Grayscale</a> &bull; <a href="#core">MagickCore API Changes</a> &bull; <a href="#depecate">Deprecated Features Removed</a> &bull; <a href="#cli">Command-line Interface</a> &bull; <a href="#summary">Version 7 Change Summary</a> ]</p>
+<p class="navigation-index">[<a href="#imv7">ImageMagick Version 7</a> &bull; <a href="#channels">Pixel Channels</a> &bull; <a href="#alpha">Alpha</a> &bull; <a href="#grayscale">Grayscale</a> &bull; <a href="#core">MagickCore API Changes</a> &bull; <a href="#headers">Header Files</a>  &bull; <a href="#depecate">Deprecated Features Removed</a> &bull; <a href="#cli">Command-line Interface</a> &bull; <a href="#summary">Version 7 Change Summary</a> ]</p>
 
+<h2><a id="imv7"></a>ImageMagick Version 7</h2>
+<div class="doc-section">
 <p>The design of ImageMagick is an evolutionary process, with the design and implementation efforts serving to influence and guide further progress in the other.  With ImageMagick version 7 we aim to improve the design based on lessons learned from the version 6 implementation.  ImageMagick was originally designed to display RGB images to an X Windows server.  Over time we extended support to RGBA images and then to the CMYK and CMYKA image format.  With ImageMagick version 7, we extend support to arbitrary colorspaces with an arbitrary number of pixel channels.  Other design changes are in the works and we will document them here so be sure to revisit periodically.</p>
 
-<p>To support variable pixel channels in the MagickCore API, pixel handling has changed when getting or setting the pixel channels.  You can access channels as an array, pixel[i], or use an accessor such as GetPixelRed() or SetPixelRed().  There are some modest changes to the MagickWand API.   Magick++ and PerlMagick should behave exactly as it does for ImageMagick version 6.</p>
+<p>To support variable pixel channels in the MagickCore API, pixel handling has changed when getting or setting the pixel channels.  You can access channels as an array, <em>pixel[i]</em>, or use an accessor such as GetPixelRed() or SetPixelRed().  There are some modest changes to the MagickWand API.   Magick++ and PerlMagick should behave exactly as it does for ImageMagick version 6.</p>
 
-<p>We intend to make ImageMagick version 7 available as an Alpha release by the end-of-year 2011.  Look for a Beta release sometime in 2012.  An official ImageMagick version 7 release will depend on how smoothly the Beta cycle progresses.  During the Beta cycle, version 6 developers can attempt to port their software to version 7.<p>
+<p>We intend to make ImageMagick version 7 available as an Alpha release by the mid-year 2012.  Look for a Beta release sometime in late 2012.  An official ImageMagick version 7 release depends on how smoothly the Beta cycle progresses.  During the Beta cycle, version 6 developers can attempt to port their software to version 7.<p>
 
 <p>During the ImageMagick version 7 development cycle and release, we will continue to support and enhance version 6 for a minimum of 10 years.</p>
-<h2><a id="headers"></a>Header Files</h2>
-<div class="doc-section">
-<p>Prior versions of ImageMagick (4-6) reference the ImageMagick header files as <kbd>magick/</kbd> and <kbd>wand/</kbd>.  ImageMagick 7 instead uses <kbd>MagickCore/</kbd> and <kbd>MagickWand/</kbd> respectively.  For example,</p>
-<pre class="code">
-#include &lt;MagickCore/MagickCore.h>
-#include &lt;MagickWand/MagickWand.h>
-</pre>
 </div>
 
 <h2><a id="channels"></a>Pixel Channels</h2>
@@ -275,10 +295,9 @@
   }
 </pre>
 
-<p>ImageMagick version 7 supports any number of channels from 1 to 100 (and beyond) and simplifies access with a single method that returns an array of pixel channels of type Quantum.   Source code that compiles against prior versions of ImageMagick will require refactoring to work with ImageMagick version 7.  We illustrate with an example.  Let's naively refactor the version 6 code snippet from above so it works with the ImageMagick version 7 API:</p>
+<p>ImageMagick version 7 supports any number of channels from 1 to 32 (and beyond) and simplifies access with a single method that returns an array of pixel channels of type Quantum.   Source code that compiles against prior versions of ImageMagick requires refactoring to work with ImageMagick version 7.  We illustrate with an example.  Let's naively refactor the version 6 code snippet from above so it works with the ImageMagick version 7 API:</p>
 
 <pre class="code">
-  SetPixelAlphaTraits(CopyPixelTrait);
   for (y=0; y &lt; (ssize_t) image->rows; y++)
   {
     register Quantum
@@ -311,7 +330,6 @@
 
 <p>Let's do that again but take full advantage of the new variable pixel channel support:</p>
 <pre class="code">
-  SetPixelAlphaTraits(CopyPixelTrait);
   for (y=0; y &lt; (ssize_t) image->rows; y++)
   {
     register Quantum
@@ -330,10 +348,14 @@
 
       for (i=0; i &lt; (ssize_t) GetPixelChannels(image); i++)
       {
+        PixelChannel
+          channel;
+
         PixelTrait
           traits;
 
-        traits=GetPixelChannelMapTraits(image,(PixelChannel) i);
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
         if ((traits &amp; UpdatePixelTrait) != 0)
           q[i]=QuantumRange-q[i];
       }
@@ -344,9 +366,9 @@
   }
 </pre>
 
-<p>Use GetPixelChannels() to advance to the next set of pixel channels.</p>
+<p>Note, how we use GetPixelChannels() to advance to the next set of pixel channels.</p>
 
-<p>The colormap indexes and black pixel channel (for the CMYK colorspace) are no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead they are now a pixel channel and accessed with the convenience pixel macros GetPixelIndex(), SetPixelIndex(), GetPixelBlack(), and SetPixelBlack().</p>
+<p>The colormap indexes and black pixel channel (for the CMYK colorspace) are no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead they are now a pixel channel and accessed with the convenience pixel accessor methods GetPixelIndex(), SetPixelIndex(), GetPixelBlack(), and SetPixelBlack().</p>
 
 <h4></a>Pixel Accessors</h4>
 <p>Use accessors to get or set pixel channels:</p>
@@ -439,8 +461,8 @@
 <p>For convenience you can set the active trait for a set of pixel channels with a channel mask and these methods:</p>
 <pre class="text">
   PopPixelChannelMap()
-  PushPixelChannelMap()
   SetPixelChannelMap()
+  SetPixelChannelMask()
 </pre>
 
 <p>Previously MagickCore methods had channel analogs, for example, NegateImage() and NegateImageChannels().  The channel analog methods are no longer necessary because the pixel channel traits specify whether to act on a particular pixel channel and whether to blend with the alpha mask.  For example, instead of</p>
@@ -449,15 +471,15 @@
 </pre>
 <p>we use:</p>
 <pre class="text">
-  PushPixelChannelMap(image,channel);
-  NegateImage(image);
-  PopPixelChannelMap(image);
+  channel_mask=SetPixelChannelMask(image,channel);
+  NegateImage(image,exception);
+  (void) SetPixelChannelMap(image,channel_mask);
 </pre>
 
-<h4></a>Pixel Meta Channels</h4>
-<p>In version 7, we introduce pixel meta channels.  Traditionally we utilize 4 channels, red, green, blue, and alpha.   For CMYK we also have a black channel.  Meta channels are designed to contain whatever additional channel information that makes sense.  Some examples include extra channels in TIFF or PSD images or perhaps you require a channel with infrared information for the pixel.  You can associate traits with the meta channels so that they when they are acted upon by an image processing algorithm (e.g. blur) the pixels are copied, acted upon by the algorithm, or even blended with the alpha channel if that makes sense.</p>
+<h4></a>Pixel User Channels</h4>
+<p>In version 7, we introduce pixel user channels.  Traditionally we utilize 4 channels, red, green, blue, and alpha.   For CMYK we also have a black channel.  User channels are designed to contain whatever additional channel information that makes sense for your application.  Some examples include extra channels in TIFF or PSD images or perhaps you require a channel with infrared information for the pixel.  You can associate traits with the user channels so that they when they are acted upon by an image processing algorithm (e.g. blur) the pixels are copied, acted upon by the algorithm, or even blended with the alpha channel if that makes sense.</p>
 <h4></a>Pixel Metacontent</h4>
-<p>In version 7, we introduce pixel metacontent.  Metacontent is content about content. So rather than being the content itself, it's something that describes or amplifies the content.  Here the content is a pixel.  The pixel metacontent is for your exclusive use and is accessed with these MagickCore API methods:</p>
+<p>In version 7, we introduce pixel metacontent.  Metacontent is content about content. So rather than being the content itself, it's something that describes or is associated with the content.  Here the content is a pixel.  The pixel metacontent is for your exclusive use and is accessed with these MagickCore API methods:</p>
 <pre class="text">
   SetImageMetacontentExtent()
   GetImageMetacontentExtent()
@@ -470,7 +492,7 @@
 
 <h2><a id="alpha"></a>Alpha</h2>
 <div class="doc-section">
-<p>We support alpha now, previously opacity.  With alpha, a value of 0 means that the pixel does not have any coverage information and is transparent; i.e. there was no color contribution from any geometry because the geometry did not overlap this pixel. A value of QuantumRange means that the pixel is opaque because the geometry completely overlapped the pixel. As a consequence, in version 7, the PixelPacket structure member alpha has replaced the previous opacity member.</p>
+<p>We support alpha now, previously opacity.  With alpha, a value of 0 means that the pixel does not have any coverage information and is transparent; i.e. there was no color contribution from any geometry because the geometry did not overlap this pixel. A value of QuantumRange means that the pixel is opaque because the geometry completely overlapped the pixel. As a consequence, in version 7, the PixelInfo structure member alpha has replaced the previous opacity member.</p>
 </div>
 <h2><a id="grayscale"></a>Grayscale</h2>
 <div class="doc-section">
@@ -479,8 +501,22 @@
 
 <h2><a id="core"></a>MagickCore API Changes</h2>
 <div class="doc-section">
+<p>Almost all image processing algorithms are now channel aware.</p>
 <p>MagickCore, version 7, adds an ExceptionInfo argument to those methods that lacked it in version 6, e.g. NegateImage(image,MagickTrue,exception);</p>
 <p>All method channel analogs have been removed (e.g. BlurImageChannel()), they are no longer necessary, use pixel traits instead.</p>
+<p>Public and private API calls are now declared with the GCC visibility attribute.  The MagickCore and MagickWand dynamic libraries now only export public struct and function declarations.</p>
+<p>The InterpolatePixelMethod enum is now PixelInterpolateMethod.</p>
+<p>The IntegerPixel storage type is removed (use LongPixel instead) and LongLongPixel is added</p>
+<p>Image signatures have changed to account for variable pixel channels.</p>
+<p>All color packet structures, PixelPacket, LongPacket, and DoublePacket, are consolidated to a single color structure, PixelInfo.</p>
+</div>
+<h2><a id="headers"></a>Header Files</h2>
+<div class="doc-section">
+<p>Prior versions of ImageMagick (4-6) reference the ImageMagick header files as <kbd>magick/</kbd> and <kbd>wand/</kbd>.  ImageMagick 7 instead uses <kbd>MagickCore/</kbd> and <kbd>MagickWand/</kbd> respectively.  For example,</p>
+<pre class="code">
+#include &lt;MagickCore/MagickCore.h>
+#include &lt;MagickWand/MagickWand.h>
+</pre>
 </div>
 <h2><a id="deprecate"></a>Deprecated Features Removed</h2>
 <div class="doc-section">
@@ -490,9 +526,9 @@
   MagickCore-config
   MagickWand-config
 </pre>
+<p>The FilterImage() method has been removed.  Use ConvolveImage() instead.</p>
 
 <p>In addition, all deprecated <a href="http://magick.imagemagick.org/api/deprecate.html">MagickCore</a> and <a href="http://magick.imagemagick.org/api/magick-deprecate.html">MagickWand</a> methods are no longer available in version 7.</p>
-<li>The FilterImage() method has been removed.  Use ConvolveImage() instead.</li>
 </div>
 <h2><a id="cli"></a>Command-line Interface</h2>
 <div class="doc-section">
@@ -510,6 +546,7 @@
 <li>The index channel for colormapped images is no longer stored in the index channel, previously accessed with GetAuthenticIndexQueue() and GetCacheViewAuthenticIndexQueue(().  Instead it is now a pixel channel and accessed with the convenience pixel macros GetPixelIndex() and SetPixelIndex().</li>
 <li>Use GetPixelChannels() to advance to the next set of pixel channels.</li>
 <li>Use the <em>metacontent</em> channel  to associate metacontent with each pixel.</li>
+<li>All color packet structures, PixelPacket, LongPacket, and DoublePacket, are consolidated to a single color structure, PixelInfo.</li>
 </dl>
 <h5>Alpha</h5>
 <dl>
@@ -522,8 +559,12 @@
 </dl>
 <h5>MagickCore API Changes</h5>
 <dl>
+<li>Almost all image processing algorithms are now channel aware.</li>
 <li>MagickCore, version 7, adds an ExceptionInfo argument to those methods that lacked it in version 6, e.g. NegateImage(image,MagickTrue,exception);</li>
 <li>All method channel analogs have been removed (e.g. BlurImageChannel()), they are no longer necessary, use pixel traits instead.</li>
+<li>Public and private API calls are now declared with the GCC visibility attribute.  The MagickCore and MagickWand dynamic libraries now only export public struct and function declarations.</li>
+<li>The InterpolatePixelMethod enum is now PixelInterpolateMethod.</li>
+<li>To account for variable pixel channels, images may now return a different signature.</li>
 </dl>
 <h5>Deprecated Methods</h5>
 <dl>
@@ -549,7 +590,7 @@
     <span id="linkbar-east">&nbsp;</span>
   </div>
   <div class="footer">
-    <span id="footer-west">&copy; 1999-2012 ImageMagick Studio LLC</span>
+    <span id="footer-west">&copy; 1999-2011 ImageMagick Studio LLC</span>
     <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>

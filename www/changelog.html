@@ -16,7 +16,7 @@
   <meta name="Description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
-  <meta name="Keywords" content="changelog, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Image, Processing, Automagically"/>
+  <meta name="Keywords" content="changelog, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
   <meta name="Rating" content="GENERAL"/>
   <meta name="Robots" content="INDEX, FOLLOW"/>
   <meta name="Generator" content="ImageMagick Studio LLC"/>
@@ -29,24 +29,33 @@
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  
+  <!-- Optionaly include easing and/or mousewheel plugins -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.easing-1.3.pack.js"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
+  
+  <!-- Add fancyBox -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.3"></script>
+  
+  <!-- Optionaly include button and/or thumbnail helpers -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.3"></script>
+  
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.3"></script>
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(".fancybox").fancybox();
+  	});
+  </script>
+  <!-- ImageMagick style -->
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
-  <link rel="stylesheet" type="text/css" href="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
-  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
-        'transitionIn'  : 'elastic',
-        'transitionOut' : 'elastic',
-        'overlayShow'   : false,
-        'opacity'       : true
-      });
-    });
-  </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -153,57 +162,62 @@
   <a title="Site Map: Links" href="../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div  class="menu">
+<div class="menu">
   <a rel="follow" title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
 
-<a href="http://www.networkredux.com">
-  <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]"
-  style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.networkredux.com"> <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201204010120 mickey@163... -->
 <div class="sponsbox">
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540s suvalj -->
+<div class="sponsor">
+  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
 </div>
-<div  class="sponsor">
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201110010090s jen@seo lowprofilelinks -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201203010270 info@pkwte... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Web Site Hosting" href="http://webhostinggeeks.com">Web Site Hosting</a><!-- 201302010900 funds@enmob... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Deals" href="http://www.webhostingdeals.org">Web Hosting Deals</a><!-- 201111010270 chee.hoa darin -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Tenant Check" href="http://www.rentmethod.com/">Tenant Check</a><!-- 201203010090 chris@rentm... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autos part" href="http://www.pkwteile.de/autoteile">Autos part</a><!-- 201112010090s jr@pkwte... -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201204010090 barsh@inter... -->
 </div>
-<div  class="sponsor">
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540 suvalj -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingsecretrevealed.com">Web Hosting Secret Revealed</a><!-- 201204010540 iamchee jerry -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Break" href="http://www.webhostingbreak.com">Web Hosting Break</a><!-- 201109010090 ian@ian-m... -->
-</div>
-<div  class="sponsor">
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201110010090 alexanian media -->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Computer Wallpaper" href="http://www.free-computer-wallpapers.com">Computer Wallpaper</a><!-- 2012030100150 webinvasion1@y...-->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Hosting Web" href="http://www.hostalia.com">Hosting Web</a><!-- 20120401000150 david@carre... -->
 </div>
 </div>
 </div>
@@ -211,12 +225,241 @@
 
 <div class="eastbar">
   <div class="g-plusone" data-size="standard" data-count="false"></div>
+  <script type="text/javascript">
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+  </script>
 </div>
 
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-08-10  6.7.1-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2011-01-28  6.7.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.5-0, SVN revision 6604.</dd>
+<dt>2011-01-25  6.7.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Support the -alpha flatten option (use it to flatten a transparent PDF,    convert -density 200 apple.pdf -alpha background x:).</dd>
+<dt>2011-01-25  6.7.4-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.4-10, SVN revision 6592.</dd>
+<dt>2011-01-25  6.7.4-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Update PerlMagick TIFF regression signatures to match endian order.</dd>
+<dt>2011-01-24  6.7.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.4-9, SVN revision 6589.</dd>
+<dt>2011-01-24  6.7.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fix rare file link in the pixel cache.</dd>
+<dt>2011-01-20  6.7.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.4-8, SVN revision 6551.</dd>
+<dt>2011-01-19  6.7.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Although MagickRealType is a double, use double for KernelInfo values in    the rare event of problems with C++ name mangling.</dd>
+  <dd> Get strokes with patterns (e.g. -stroke xc:red) working again.</dd>
+  <dd> Revert KernelInfo values from MagickRealType to double.</dd>
+<dt>2012-01-17  6.7.4-8 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Don't write ancillary chunks (except for tRNS and gAMA) in PNG-encoded    ICO files.</dd>
+<dt>2011-01-14  6.7.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.4-7, SVN revision 6471.</dd>
+<dt>2011-01-13  6.7.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Default to a lighter hinting algorithm for non-monochrome font rendering.</dd>
+<dt>2011-01-12  6.7.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.4-6, SVN revision 6434.</dd>
+<dt>2011-01-12  6.7.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Eliminate preprocessor exception for the HDRI build.</dd>
+<dt>2011-01-10  6.7.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.4-5, SVN revision 6422.</dd>
+<dt>2012-01-02  6.7.4-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fixed -black-threshold and -white-threshold so they work properly with    the -channels option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20096).</dd>
+<dt>2012-01-02  6.7.4-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Removed PNG_USE_CLONE cruft from the PNG encoder (see 2011-11-19 entry)</dd>
+  <dd> Promote image depths 9-15 to 16 to avoid crashing in the PNG    encoder (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20098).</dd>
+<dt>2011-01-01  6.7.4-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.4-4, SVN revision 6318.</dd>
+<dt>2010-12-30  6.7.4-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fix problems with JNG encoder "quality" (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20076).</dd>
+<dt>2011-12-30  6.7.4-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.4-3, SVN revision 6310.</dd>
+<dt>2011-12-28  6.7.4-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fix memory leak in JP2 coder (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20071).</dd>
+  <dd> Use maximum bounds when rendering PDF (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20078).</dd>
+<dt>2011-12-25  6.7.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.4-2, SVN revision 6254.</dd>
+<dt>2011-12-24  6.7.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Export new Windows binaries.</dd>
+<dt>2011-12-21  6.7.4-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.4-1, SVN revision 6236.</dd>
+<dt>2011-12-12  6.7.4-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Sped up -noise option when radius is 0.</dd>
+  <dd> Read concatentated arcs correctly in a SVG path (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19992).</dd>
+  <dd> PDF's now convert properly with -define pdf:use-cropbox=true (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20033).</dd>
+<dt>2011-12-09  6.7.4-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.4-0, SVN revision 6162.</dd>
+<dt>2010-12-06  6.7.4-0 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Eliminated use of FARDATA in coders/png.c; it won't be supported in    libpng-1.6.0 and is not needed now.</dd>
+<dt>2011-11-29  6.7.4-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Add GetQuantumFormat() method to return the quantum format (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=19961).</dd>
+  <dd> Allow unspecified width/height in geometries with the aspect flag (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19964).</dd>
+  <dd> MagickGetImageDepth() no longer returns the depth setting but instead    computes the depth of the image.   <dt>2011-12-02  6.7.4-0 Anthony  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fixed Equal-Area Cropping (size and minimum of delta increments)</dd>
+<dt>2011-12-01  6.7.3-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.3-10, SVN revision 6106.</dd>
+<dt>2011-11-29  6.7.3-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Delay reading TIFF EXIF properties to prevent premature exit.</dd>
+  <dd> Remove duplicates from the configuration file search path under Windows.</dd>
+  <dd> Use viewbox offset when setting affine transform translation (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19943).</dd>
+  <dd> Ensure equally sized tiles for -crop 11x2@ (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18322).</dd>
+  <dd> Recognize SI prefixes for jpeg:extent (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19944).</dd>
+<dt>2011-11-27  6.7.3-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.3-9, SVN revision 6092</dd>
+<dt>2011-11-27  6.7.3-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Upgrade libtool / ltdl to version 2.4.7.</dd>
+<dt>2011-11-25  6.7.3-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.3-8, SVN revision 6084</dd>
+<dt>2011-11-20  6.7.3-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The exif:ExposureBiasValue property is a signed value.</dd>
+  <dd> Prevent buffer underflow for 1-bit PSD images.</dd>
+  <dd> Don't include alpha channel when computing range unless image-&gt;matte is    set.</dd>
+  <dd> Set FILETYPE_REDUCEDIMAGE tag on pyramidal TIFF images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19892).</dd>
+  <dd> Correct image geometry for Postscript for hi-res bounding box (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19807).</dd>
+<dt>2011-11-19  6.7.3-8 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fixed bug with scaling Q16 background to PNG sub-8-bit bKGD and    again disabled PNG_USE_CLONE in coders/png.c.</dd>
+<dt>2011-11-18  6.7.3-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.3-7, SVN revision 6024</dd>
+<dt>2011-11-18  6.7.3-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Ensure embedded XML resource file is null terminated (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19856).</dd>
+<dt>2011-11-17  6.7.3-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Added a -define filter:alpha to contol the 'alpha value' of the    Kaiser Windowing filter.  Default value is 6.5</dd>
+<dt>2010-11-15  6.7.3-7 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Reverted the change of 6.6.6-7 that creates an image clone for use    by the PNG encoder.  This was not useful and was somewhat wasteful.</dd>
+  <dd> After finding out that writing the bKGD chunk in sub-8-bit PNG fails,    enabled PNG_USE_CLONE (to create an image clone again)</dd>
+<dt>2011-11-14  6.7.3-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.3-6, SVN revision 5972.</dd>
+<dt>2011-11-11  6.7.3-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Prefer the hires bounding box for Postscript rendering (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19807).</dd>
+  <dd> Default configure.xml destination folder to /usr/lib/ImageMagick-ver/config.</dd>
+<dt>2011-11-09  6.7.3-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.3-5, SVN revision 5936</dd>
+<dt>2011-11-07  6.7.3-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Add ShearRotateImage() method.  RotateImage() now uses distorts rather    than shears.</dd>
+  <dd> MagickCoreGenesis() path must be accessible to use (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19795).</dd>
+<dt>2011-11-06  6.7.3-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.3-4, SVN revision 5876</dd>
+<dt>2011-11-02  6.7.3-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Ensure that the GIF encoder writes a large enough logical screen (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19734).</dd>
+<dt>2011-11-02  6.7.3-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.3-3, SVN revision 5825</dd>
+<dt>2011-11-02  6.7.3-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fix small memory leak in the TIFF coder.</dd>
+  <dd> Support -debug accelerate option.</dd>
+  <dd> Support -includearch-dir and -sharearch-dir configure option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19720).</dd>
+  <dd> Use Pango to improve the caption coder.</dd>
+<dt>2011-11-01  6.7.3-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.3-2, SVN revision 5718</dd>
+<dt>2011-11-01  6.7.3-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Support Ghostscript under 64-bit Windows (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19659).</dd>
+  <dd> Correct affine translation for certain SVG files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19664).</dd>
+  <dd> -evaluate-sequence multiply no longer hangs ereference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19549).</dd>
+<dt>2011-10-15  6.7.3-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.3-1.</dd>
+<dt>2011-10-15  6.7.3-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Read TIFF EXIF profile before reading the image data.</dd>
+  <dd> Fix "test: no: unexpected operator" in the configure script (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19615).</dd>
+  <dd> Off by one error when writing the JPEG XMP profile (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19616).</dd>
+  <dd> Revert GetPathComponent() patch.</dd>
+<dt>2011-10-09  6.7.3-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.3-0.</dd>
+<dt>2011-10-09  6.7.3-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Generate output for caption:"[!]" (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=19589.</dd>
+<dt>2011-10-05  6.7.3-0 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Add "png:format" property with possible values png8, png24, and png32,    for use when prepending the format type to the filename is not convenient    or is not possible, e.g., when embedding the PNG in a PNG-encoded ICO.</dd>
+<dt>2011-10-04  6.7.2-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.2-10.</dd>
+<dt>2011-10-04  6.7.2-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Remove most of the LLVM compiler warnings.</dd>
+  <dd> Fix bug in -evaluate-sequence multiply (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19549).</dd>
+  <dd> Upgrade to sRGB V4 ICC profile (reference    http://www.color.org/srgbprofiles.xalter).</dd>
+  <dd> Distinguish embedded PNG vs BMP within the MicroSoft ICON image format.</dd>
+<dt>2011-09-30  6.7.2-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Recognize the sRGB version 4 ICC profile and write PNG sRGB chunk instead.</dd>
+  <dd> Use crc32 instead of "sRGB" string to recognize certain sRGB profiles.</dd>
+<dt>2011-09-26  6.7.2-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.2-9.</dd>
+<dt>2011-09-26  6.7.2-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fix race condition on image rotate @ 90 degrees.</dd>
+<dt>2011-09-25  6.7.2-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.2-8.</dd>
+<dt>2011-09-20  6.7.2-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Prevent infinite loop when font is too large for specified width (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19502).</dd>
+  <dd> Fix LFS cross-compile detection (patch from Mike Frysinger).</dd>
+  <dd> Add open_utf8(), fopen_utf8(), access_utf8(), etc. utility methods.</dd>
+<dt>2011-09-15  6.7.2-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Convert empty .htm / .html file no longer removes source file.</dd>
+  <dd> -crop 11x2@ now returns 22 images as expected.</dd>
+  <dd> Enable reading the EXIF profile in a TIFF image under Windows.</dd>
+  <dd> Support drawing text with bitmap font.</dd>
+<dt>2011-09-13  6.7.2-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.2-6.</dd>
+<dt>2011-09-12  6.7.2-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Expand pixel range for 12 bit DCM images stored in 16-bit words.</dd>
+  <dd> Gray images not displayed properly when saved as MIFF with sRGB    colorspace.</dd>
+  <dd> OpenCL's clCreateContextFromType() no longer returns a system default.</dd>
+  <dd> Use -enable-zero-configuration for zero configuration ImageMagick    (previously -enable-embeddable).</dd>
+<dt>2011-09-10  6.7.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.2-5.</dd>
+<dt>2011-09-10  6.7.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> SO bump.</dd>
+<dt>2011-09-09  6.7.2-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.2-4.</dd>
+<dt>2011-09-05  6.7.2-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fix cut-n-paste error when reading JPEG profiles.</dd>
+<dt>2011-09-07  6.7.2-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.2-3.</dd>
+<dt>2011-09-05  6.7.2-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> A small memory overwrite when reading TIFF with 1-bit alpha (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19417).</dd>
+  <dd> Remove a 2 byte memory leak when checking for environment variables.</dd>
+<dt>2011-09-05  6.7.2-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.2-2.</dd>
+<dt>2011-09-03  6.7.2-2 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Recognize the sRGB ICC profile and write the PNG sRGB profile instead    of a full iCCP chunk.</dd>
+<dt>2011-08-31  6.7.2-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Write grayscale MIFF as a single gray pixel component, not RGB (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=19403).</dd>
+  <dd> Bail gracefully for corrupt JPEG images.</dd>
+  <dd> Bail gracefully for negative montage geometries (references    https://bugzilla.redhat.com/show_bug.cgi?id=735599).</dd>
+  <dd> Account for DCm bits allocated 16 and significant bits 12 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19420).</dd>
+  <dd> Fix bug when appending JPEG image profiles (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19429).</dd>
+<dt>2011-08-29  6.7.2-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.2-1.</dd>
+<dt>2011-08-29  6.7.2-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> The AllChannels defined changed to 0x7ffffff to avoid integer overflow.</dd>
+<dt>2011-08-26  6.7.2-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> HDR format 32-bit_rle_xyze implies the XYZ colorspace.</dd>
+<dt>2011-08-22  6.7.1-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Revert FormatImageAttributeList(), FormatImagePropertyList() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19339).</dd>
+<dt>2011-08-21  6.7.1-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Revised configure.ac (and configure) to look for -lpng15, -lpng14, -lpng12,    and -lpng in that order instead of just -lpng.  This should help find    a consistent library and headers when users upgrade their libpng delegate    from one version to another, incompatible version.</dd>
+<dt>2011-08-20  6.7.1-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.1-9.</dd>
+<dt>2011-08-20  6.7.1-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fix memory leak in text annotation (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=19331).</dd>
+<dt>2011-08-18  6.7.1-9 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> The "-strip" option was excluding the PNG tRNS chunk (see 6.6.6-7, below);  revised the -strip option so it behaves as  if "-define PNG:include-chunk=none,trns,gama" had appeared on the commandline.</dd>
+  <dd> When writing a PNG8 and more than one transparent color is present,  merge them into the image-&gt;background_color (Reference  http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=19329),  finishing the implementation started in version 6.6.8-7.</dd>
+<dt>2011-08-18  6.7.1-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.1-8.</dd>
+<dt>2011-08-18  6.7.1-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Caption now wraps properly for Chinese text (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19249).</dd>
+<dt>2011-08-18  6.7.1-8 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> The PNG encoder would sometimes fail to respect the -define PNG:color-type    option when the incoming image was PseudoClass (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=19262).</dd>
+<dt>2011-08-15  6.7.1-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.1-7.</dd>
+<dt>2011-08-15  6.7.1-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Properly handled continued JPEG embedded profiles.</dd>
+<dt>2011-08-12  6.7.1-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Yet another attempt to read Japanese filenames under Windows.</dd>
+<dt>2011-08-10  6.7.1-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.1-5.</dd>
 <dt>2011-08-10  6.7.1-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Revert -colorspace sRGB option patch (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=19256).</dd>
@@ -300,7 +543,7 @@
 <dt>2011-05-21  6.7.0-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Avoid fault on corrupt JPEG images.</dd>
   <dd> Avoid fault on certain DJVU images (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=18807).</dd>
-  <dd> Fix -fx to interpret scientfic notation properly.</dd>
+  <dd> Fix -fx to interpret scientific notation properly.</dd>
 <dt>2011-05-20  6.6.9-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.6.9-10.</dd>
 <dt>2011-05-20  6.6.9-10 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
@@ -369,7 +612,7 @@
   <dd> Fix minor Morphology kernel compose bug (cleanup after Src/Dst swap)</dd>
   <dd> Fix segmentation fault after error in a morphology 'named' kernel</dd>
   <dd> Added a range of kernels used for specialised thinning purposes    as defined in a research paper by Dan S. Bloomberg.</dd>
-  <dd> Added Dan Bloomberg best thinning skeletion, "Skeleton:3"</dd>
+  <dd> Added Dan Bloomberg best thinning skeleton, "Skeleton:3"</dd>
   <dd> Removed origin pixel from many Hit-and-Miss kernels allowing kernels    to not only be used for thinning, but also thickening.</dd>
   <dd> Renamed "ThinDiagonals" kernel to just "Diagonals"</dd>
   <dd> Distance uses a fast two pass algorithm, and no longer needs 'iteration'</dd>
@@ -658,7 +901,7 @@
   <dd> Patch for  DrawableRotation() and DrawableTranslation() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=17246).</dd>
   <dd> The webp format requires the webpconv delegate program (experimental).</dd>
 <dt>2010-10-05  6.6.5-0 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <dd> Replaced "Robidoux" with Cubic 'Keys' filter that is near equivalent to    the previous sharped "Lanczos2D" filter. (C=0.31089212245300069)    This also is very similer to a Mitchell filter but specifically designed    for EWA use and is the new default filter for Distorting Images.</dd>
+  <dd> Replaced "Robidoux" with Cubic 'Keys' filter that is near equivalent to    the previous sharped "Lanczos2D" filter. (C=0.31089212245300069)    This also is very similar to a Mitchell filter but specifically designed    for EWA use and is the new default filter for Distorting Images.</dd>
   <dd> Original sharpened Lanczos2D filter now called "Lanczos2Dsharp"</dd>
 <dt>2010-10-08  6.6.4-10 Jerry Gay  &lt;jerry.gay@gmail..&gt;</dt>
   <dd> Autodetect file type support in Makefile.PL to prevent test failures</dd>
@@ -675,8 +918,8 @@
 <dt>2010-10-02  6.6.4-9 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Added sqrt(2) blurring default for Gaussian Filter if used as    a Cylindrical EWA filter.  This resulted removing the last aliasing    issue that was present in tests for Gaussian EWA resampling. Of course    it is still a very blurry filter for default use in EWA.</dd>
   <dd> Adjusted Variable Mapping Blur Composition so user arguments actual    relate properly to the sigma of the blur for a maximum mapping value.</dd>
-  <dd> Fix horizon anti-alising for output-scaled perspective distortions.</dd>
-  <dd> 'Bessel' filter is now offically and more accuritally named 'Jinc'    however 'Bessel' while not visible as a filter option can still be used    as an internal alias for 'Jinc'.</dd>
+  <dd> Fix horizon anti-aliasing for output-scaled perspective distortions.</dd>
+  <dd> 'Bessel' filter is now officially and more accurately named 'Jinc'    however 'Bessel' while not visible as a filter option can still be used    as an internal alias for 'Jinc'.</dd>
 <dt>2010-09-28  6.6.4-8 Nicolas Robidoux &lt;nicolas.robidoux@gmai...&gt;</dt>
   <dd> Chantal Racette double checked the bounding parallelogram computation    in resample.c (and I tightened the comments).</dd>
 <dt>2010-09-28  6.6.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -727,7 +970,7 @@
   <dd> The RGBO format is now listed as a supported format.</dd>
 <dt>2010-09-07  6.6.4-1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Added the Nicolas Robidoux and Chantal Racette  Lanczos resize filter    function as "LanczosChebyshev" as faster alternative to Lanczos.</dd>
-  <dd> Re-code Nicolas Robidoux and Chantal Racette Polynomial Approximation of    the Sinc Trigonometric resize filter, as a proper filter to allow    direct comparision and speed testing of the filter.</dd>
+  <dd> Re-code Nicolas Robidoux and Chantal Racette Polynomial Approximation of    the Sinc Trigonometric resize filter, as a proper filter to allow    direct comparison and speed testing of the filter.</dd>
   <dd> Expanded the "-set option:filter:verbose 1" output, so as to also include    the actual functions and other values that were used to create the filter.</dd>
 <dt>2010-09-02  6.6.4-0 el_supremo  &lt;digipete@shaw...&gt;</dt>
   <dd> Repair a few incorrect LocaleNCompare() calls (ttf.c, ps.c).</dd>
@@ -809,7 +1052,7 @@
   <dd> mogrify -format properly handles compressed image filename (e.g.    -format jpg logo.png.bz2).</dd>
   <dd> Respect +dither option when saving to the GIF image format.</dd>
 <dt>2010-06-08  6.6.2-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> End of string sentinal is \n not \r.</dd>
+  <dd> End of string sentinel is \n not \r.</dd>
 <dt>2010-06-06  6.6.2-3 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Don't decode pixels in coders/png.c when image->ping is set.</dd>
 <dt>2010-06-06  6.6.2-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -854,7 +1097,7 @@
   <dd> Allow a scaled unity kernel to be added to kernel (EdgeDet-&gt;Sharpen)    EG: -set option:convolve:scale [kernel_scale][^!],[unity_scale][%]</dd>
   <dd> Addition of "Laplacian of Gaussian" (LOG), also known as Mexican Hat    EG: -morphology convolve LOG:0x1</dd>
   <dd> Added FreiChen, Kirsch  Convolution kernels</dd>
-  <dd> Added Descrete 'Laplacian of Gaussian' kernels (Laplacian type 15 and 19)</dd>
+  <dd> Added Discrete 'Laplacian of Gaussian' kernels (Laplacian type 15 and 19)</dd>
   <dd> Added Edges HitAndMiss Kernel</dd>
 <dt>2010-05-17  6.6.2-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> PSD images require a proper layer to support an alpha channel.</dd>
@@ -906,8 +1149,10 @@
   <dd> Fix "Minus", "ModulusAdd", and "ModulusSubtract" to follow    normal SVG 'Over' blending specifications, (see next for override)    Note that this does NOT include the "Plus" composition method which has    SVG definition for it to use a 'Plus' blending rather than 'Over' blending.</dd>
 </dd>
   <dd> By default mathematical compositions work as per SVG definition. That is    the results are synchronized with 'Over' alpha-blending (except "Plus"    which uses 'plus' alpha-blending).</dd>
-    By removing the default 'sync' flag from the -channel setting however    Break this inter-channel synchronization and do the mathematical operations    only on the individual channels as specified by the -channel setting.    That is do 'channel' math rather than 'SVG' composition.</dd>
-    With this change you can then use mathematical composition methods on    individual channels or even with the alpha channel of images.</dd>
+</dd>
+  <dd> By removing the default 'sync' flag from the -channel setting however    Break this inter-channel synchronization and do the mathematical operations    only on the individual channels as specified by the -channel setting.    That is do 'channel' math rather than 'SVG' composition.</dd>
+</dd>
+  <dd> With this change you can then use mathematical composition methods on    individual channels or even with the alpha channel of images.</dd>
 <dt>2010-04-28  6.6.1-6 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Special case handling in Barrel distortion (pixel at image center)</dd>
   <dd> Calculation of image for Barrel distortion (pixel vs image coords)</dd>
@@ -1120,7 +1365,8 @@
 <dt>2009-10-06  6.5.6-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Declare the  MagickCore method SpliceImage() in Magick++/Include.h.</dd>
     QueueCacheViewAuthenticPixels() for the CopyComposite optimization.<dt>2009-10-04  6.5.6-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Use GetCacheViewAuthenticPixels() rather than    QueueCacheViewAuthenticPixels() for the CopyComposite optimization.</dd>
+  <dd> Use GetCacheViewAuthenticPixels() rather than</dd>
+  <dd> QueueCacheViewAuthenticPixels() for the CopyComposite optimization.</dd>
 <dt>2009-10-03  6.5.6-8 Nick Wellnhofer &lt;wellnhofer@aevum...&gt;</dt>
   <dd> Add missing libraries to the LIBADD entries in coders/Makefile.am,    filters/Makefile.am and wand/Makefile.am.</dd>
   <dd> Use LIBS rather than LDFLAGS in configure.ac for the Freetype delegate    library.</dd>
@@ -1216,7 +1462,7 @@
   <dd> Addition of user definable 'Mathematics' compose method      -compose Mathematics -set option:compose:args A,B,C,D -composite    Will implement the formula    f(Sc,Dc) = A*Sc*Dc + B*Sc + C*Dc + D    this lets you implement most smooth polynomial compose methods.    (requested by Fred WienHaus)</dd>
 <dt>2009-07-11  6.5.4-3 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Finished the recoding of Composite methods to allow easier debugging    and faster access.</dd>
-  <dd> Added PegtopLight compose method as an alternative simpler Softlight    alternative.  See notes and comparision to SoftLight in...       http://www.pegtop.net/delphi/articles/blendmodes/softlight.htm</dd>
+  <dd> Added PegtopLight compose method as an alternative simpler Softlight    alternative.  See notes and comparison to SoftLight in...       http://www.pegtop.net/delphi/articles/blendmodes/softlight.htm</dd>
   <dd> From the notes on Photoshop blend modes at       http://www.simplefilter.de/en/basics/mixmods.html    Added extra composition modes:       VividLight, PinLight, LinearBurn, LinearDodge    NOTE: 'LinearBurn' the same as 'Plus' but with the normal 'Over' blending.</dd>
 <dt>2009-07-10  6.5.4-3 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Re-coding of Composite methods HardLight, SoftLight, Overlay, LinearLight,    ColorBurn, ColorDodge, Multiply, Screen  to make it more readable, easier    to debug, and directly comparable to SVG specifications.</dd>
@@ -1227,7 +1473,6 @@
   <dd> Add compression flag for each channel of a PSD layer.</dd>
   <dd> Implement experimental forward and inverse Fourier transforms (contributed    by Sean Burke and Fred Weinhaus).  The -fft / -ifft option is not ready for    prime time just yet.</dd>
   <dd> Support -cdl (color decision list) option.</dd>
-  <dd> Support breaks in Chinese characters which traditionally do not include    spaces.</dd>
   <dd> Don't process directories as filenames when using wildcard paths    (i.e. logo[1]/png).</dd>
 <dt>2009-07-01  6.5.4-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Can't bit shift a float.</dd>
@@ -1325,7 +1570,7 @@
   <dd> The mogrify -crop option returns multiple images if an x/y offset is not    specified (e.g. -crop 100x100).</dd>
   <dd> Generate a proper file path for -path @filelist.txt (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=13671).</dd>
 <dt>2009-05-01  6.5.2-0 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <dd> Accept "-define png:bit-depth=value" and "-define png:color-type=value"    options.  This is work-in-progress with the objective of being able to    precisely specify the type of PNG file to be written.  The previously-used    internal attribute "png:bit-depth" that was used to communicate between    the PNG writer and the JNG writer is changed to "png:bit-depth-written".    This feature needs testing.  It is important to note that this feature    cannot be used to force the PNG to use a bit-depth or color-type that    does not losslessly represent the image.  You can, however, cause    the writer to use a larger depth or to use the RGB colorspace when    grayscale or indexed would have been sufficent.</dd>
+  <dd> Accept "-define png:bit-depth=value" and "-define png:color-type=value"    options.  This is work-in-progress with the objective of being able to    precisely specify the type of PNG file to be written.  The previously-used    internal attribute "png:bit-depth" that was used to communicate between    the PNG writer and the JNG writer is changed to "png:bit-depth-written".    This feature needs testing.  It is important to note that this feature    cannot be used to force the PNG to use a bit-depth or color-type that    does not losslessly represent the image.  You can, however, cause    the writer to use a larger depth or to use the RGB colorspace when    grayscale or indexed would have been sufficient.</dd>
 <dt>2009-05-01  6.5.1-10 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Fixed the Rmin usage in Depolar and Polar distortions</dd>
   <dd> The 6th argument (Ato) for Polar/Depolar is now optional and defaults    to Afrom + 360 degrees (or a fill circle from the given start angle)</dd>
@@ -1385,8 +1630,8 @@
 <dt>2009-03-25  6.5.0-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Fix assertion in IntegralRotateImage (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13410).</dd>
 <dt>2009-03-24  6.5.0-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Referenced counted blob was incremented incorrectedly in CloneImage().</dd>
-    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13410).<dt>2009-03-23  6.5.0-6 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
+  <dd> Referenced counted blob incremented incorrectly in CloneImage() (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13410).</dd>
+<dt>2009-03-23  6.5.0-6 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
   <dd> Assertion failure reading PSD image (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13397).</dd>
 <dt>2009-03-21  6.5.0-5 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
   <dd> Change -selective-blur to use gaussian kernel.</dd>
@@ -1440,7 +1685,7 @@
 <dt>2009-02-04  6.4.9-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> JPEG to PDF was not always reversible (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13020).</dd>
 <dt>2009-01-30  6.4.9-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Stroking when annotating failed for stroks widths > 2 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13009).</dd>
+  <dd> Stroking when annotating failed for stroke widths > 2 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=13009).</dd>
 <dt>2009-01-24  6.4.8-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> TransformImageColorspace() returns GRAYColorspace when set (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=12990).</dd>
   <dd> Don;t assume CMYK unless document process colors include Cyan, Magenta,    or Yellow.</dd>
@@ -1503,7 +1748,7 @@
   <dd> Recognize negative geometries for -shear and -annotate (.e.g. 45x-30).</dd>
   <dd> Fix Y shear angle for -shear option.</dd>
 <dt>2008-12-26  6.4.8-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Use GetImageArtifact() to retrieve -attentuate option value for +noise.</dd>
+  <dd> Use GetImageArtifact() to retrieve -attenuate option value for +noise.</dd>
   <dd> Support reading FITS test files (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=12799).</dd>
   <dd> Replace input.ttf with the public domain Tuffy.ttf font.</dd>
   <dd> MagickNewImage() no longer faults when parameters are incorrect (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=12817).</dd>
@@ -1518,9 +1763,9 @@
   <dd> Initialize the black channel when testing the CMY colorspace (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=12685).</dd>
   <dd> remove calls to exit() in MagickWand (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=2&t=12772).</dd>
   <dd> Validate -affine arguments.</dd>
-  <dd> Accept -attentuate as an option for convert.</dd>
+  <dd> Accept -attenuate as an option for convert.</dd>
   <dd> Properly create RGBA image if colormapped image has transparency.</dd>
-  <dd> Support X11 geometry like this: +-4+-4;  wierd but X11 supports it.</dd>
+  <dd> Support X11 geometry like this: +-4+-4;  weird but X11 supports it.</dd>
 <dt>2008-12-17  6.4.7-10 Chris Madison  &lt;madisonblu@gmail...&gt;</dt>
   <dd> Fix off-by-one problem with -shear.</dd>
   <dd> Clone pixel cache method when cloning an image.</dd>
@@ -1560,7 +1805,7 @@
 <dt>2008-12-02  6.4.6-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Use ScaleQuantumToMap() to prevent fault in SetGrayscaleImage() when    quantum depth is 32.</dd>
 <dt>2008-12-01  6.4.6-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Global replaced accidently renamed MagickGetImagePixelColor().</dd>
+  <dd> Global replaced accidentally renamed MagickGetImagePixelColor().</dd>
 <dt>2008-11-29  6.4.6-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Fixed transient bug in the -white-threshold option.</dd>
   <dd> -extent x256+100+100 no longer returns an exception (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=7&t=12583).</dd>
@@ -1572,7 +1817,7 @@
   <dd> DPX 10 bit YUV 4:2:2 are now processed properly (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=12443).</dd>
   <dd> Default PDF compression to that of the image unless overwritten by    the -compress option.</dd>
 <dt>2008-11-25  6.4.6-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Numerous pixel cache improvements including embeded support for    OpenMP in a transparent manner.</dd>
+  <dd> Numerous pixel cache improvements including embedded support for    OpenMP in a transparent manner.</dd>
 <dt>2008-11-20  6.4.6-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Transient bug in encipher / decipher operation (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=12540).</dd>
 <dt>2008-11-14  6.4.6-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -1686,7 +1931,7 @@
 <dt>2008-08-14  6.4.2-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Add --coder-path and --filter-path options to MagickCore-config to    support the Magick Coder and Image Filter kits.</dd>
 <dt>2008-08-17  6.4.2-9 Anthony &lt;anthony@griffith...&gt;</dt>
-  <dd> -sparse-color option completed with inital set of methods.</dd>
+  <dd> -sparse-color option completed with initial set of methods.</dd>
   <dd> -distort Barrel arguments expanded.</dd>
 <dt>2008-08-14  6.4.2-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> The -draw option no longer returns an error when for # like .6 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11879).</dd>
@@ -1712,8 +1957,8 @@
 <dt>2008-07-30  6.4.2-6 Anthony &lt;anthony@griffith...&gt;</dt>
   <dd> Added a  "-set option:distort:scale"  which scales the output 'view'    by the amount given.  This is directly useful for doing 'super-sampled'    distorts, just set this, the scale the result back to a normal size.</dd>
 <dt>2008-07-27  6.4.2-5 Anthony &lt;anthony@griffith...&gt;</dt>
-  <dd> Rewrite on coefficient handlig for DistortImages so allow for generation    by other operators (SparseColor), and addition of verbose output of    equivalent -fx functions for DistortImages to report of the internal    coefficients that was calculated, and who they are used.</dd>
-  <dd> Initial implementation of SparseColor for interpolated gradients from    sparsely separated points of color (or posibily other forms of arguments)</dd>
+  <dd> Rewrite on coefficient handling for DistortImages so allow for generation    by other operators (SparseColor), and addition of verbose output of    equivalent -fx functions for DistortImages to report of the internal    coefficients that was calculated, and who they are used.</dd>
+  <dd> Initial implementation of SparseColor for interpolated gradients from    sparsely separated points of color (or possibly other forms of arguments)</dd>
   <dd> New distortion Barrel as defined by Helmut Dersch options A,B,C,D    on his web page  http://www.all-in-one.ee/~dersch/barrel/barrel.html    And as developed by Fred WeinHaus in his PinBarrel script</dd>
 <dt>2008-07-20  6.4.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Certain corrupt GIF images no longer hang (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11723).</dd>
@@ -1736,7 +1981,7 @@
 <dt>2008-06-22  6.4.2-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Use the source image interpolation method when drawing an affine image.</dd>
 <dt>2008-06-24  6.4.2-1 Anthony &lt;anthony@griffith...&gt;</dt>
-  <dd> Added new operator  +/-level-colors which will 'level' images based    on colors to use for the black and white points. This lets to adjust    the image in terms of mapping the given colors from/to black and white    respectivally.</dd>
+  <dd> Added new operator  +/-level-colors which will 'level' images based    on colors to use for the black and white points. This lets to adjust    the image in terms of mapping the given colors from/to black and white    respectively.</dd>
 <dt>2008-06-23  6.4.2-0 Christian Lackas &lt;christian@lacka...&gt;</dt>
   <dd> Fix a problem with calling mpeg2encode with parameters (%o/%i) in wrong    order.</dd>
 <dt>2008-06-22  6.4.2-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -1744,9 +1989,9 @@
 <dt>2008-06-25  6.4.1-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Add pow as an -evaluate operation, using normalized values</dd>
 <dt>2008-06-18  6.4.1-9 Anthony &lt;anthony@griffith...&gt;</dt>
-  <dd> Added a  LevelizeImageChannels() which is simular to LevelImageChannels()    Function maps black and white values to the given level values.    Rather than mapping the given level values to black and white.    Bacically a 'reverse-level' function, with different input args.</dd>
+  <dd> Added a  LevelizeImageChannels() which is similar to LevelImageChannels()    Function maps black and white values to the given level values.    Rather than mapping the given level values to black and white.    Bacically a 'reverse-level' function, with different input args.</dd>
   <dd> Set  +level  or a '!' flag in -level or LevelImage() to call    the new 'reverse-level' function LevelizeImageChannels().</dd>
-  <dd> More work on IsMagickColorSimular() to fix relationship between    transparent-black and opaque-black, which was matched as 'simular'.    Also attempts to fix 'K' channel handling for CMYK colorspace.    More work on this to come.</dd>
+  <dd> More work on IsMagickColorSimular() to fix relationship between    transparent-black and opaque-black, which was matched as 'similar'.    Also attempts to fix 'K' channel handling for CMYK colorspace.    More work on this to come.</dd>
 <dt>2008-06-25  6.4.1-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> The TXT format correctly reports alpha channel (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11478).</dd>
   <dd> MONOTCHROME1 Dicom images are not longer inverted (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11492).</dd>
@@ -1776,7 +2021,7 @@
   <dd> The +opaque option now recognizes its required argument (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11298).</dd>
   <dd> The -background and -virtual-pixel settings are now applied correctly    across parenthesis.</dd>
   <dd> Only reset the exception signature if the relinquish memory is MagickTrue.</dd>
-  <dd> Correct recolor equation for computing opacity (referencee    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11346).</dd>
+  <dd> Correct recolor equation for computing opacity (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=11346).</dd>
   <dd> Set midpoint when scaling JP2 images.</dd>
   <dd> Semaphores must be passed by reference when destroyed for reliable thread    locks.</dd>
   <dd> Updated Matlab coder (thanks to Jaroslav Fojtik).</dd>
@@ -1784,7 +2029,7 @@
   <dd> MagickGetResource(): resources are MagickSizeType not unsigned long.</dd>
 <dt>2008-05-11  6.4.1-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Import: properly handle a hierarchy of subwindows under X11.</dd>
-  <dd> Refactor quantum pixel processor to inprove ease of use and speed.</dd>
+  <dd> Refactor quantum pixel processor to improve ease of use and speed.</dd>
 <dt>2008-05-09  6.4.1-2 Leonardo de Paula Rosa Piga &lt;lpiga@terra...&gt;</dt>
   <dd> OpenMP patch for sepia-tone effect.</dd>
 <dt>2008-05-08  6.4.1-2 Bruno Cardoso Lopes &lt;bruno.cardoso@gmail...&gt;</dt>
@@ -1936,7 +2181,7 @@
   <dd> Bug fix in height calculation for -layers merge operation</dd>
 <dt>2007-11-02  6.3.7-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Add support for SCT grayscale images.</dd>
-  <dd> Fixed transparancy bug for the ICO image format.</dd>
+  <dd> Fixed transparency bug for the ICO image format.</dd>
   <dd> Fixed small memory leak in the caption and label coders.</dd>
   <dd> Fixed -threshold option to return all white for -threshold 0 (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=10126).</dd>
 <dt>2007-11-06  6.3.6-10 Chris Madison  &lt;madisonblu@hotma...&gt;</dt>
@@ -1969,9 +2214,9 @@
   <dd> Obsolete -support (set filter blur factor)</dd>
   <dd> Expansion to add -set/define filter options</dd>
 <dt>2007-10-12  6.3.6-2 Anthony &lt;anthony@griffith...&gt;</dt>
-  <dd> Least Squares coordinate handling added for -distort methods Affine,    Perspective, Bilinear.   This allows for more than the minimal number of    coordinates to be used to 'fit' a distortion function to an image.    This addition will allow the use of image registration to generate    panarama overviews and better geographical coordinate correction.</dd>
-  <dd> Cosolidated the simular methods FlattenImage() and MosaicImage()    into a new layers function MergeImageLayers() method, adding 'flatten'    and 'mosaic' layer methods.</dd>
-  <dd> Addition of another simular layers method 'merge' which 'unlocks' the    normal flatten/mosaic layer merger from the origin, The resulting image    will have a virtual canvas of minimal size with an offset. Also images    with negative offsets will not be clipped by the 'merge' form of the    command.  This was created for better layering of distorted images, such    as panarama overlays.</dd>
+  <dd> Least Squares coordinate handling added for -distort methods Affine,    Perspective, Bilinear.   This allows for more than the minimal number of    coordinates to be used to 'fit' a distortion function to an image.    This addition will allow the use of image registration to generate    panorama overviews and better geographical coordinate correction.</dd>
+  <dd> Consolidated the similar methods FlattenImage() and MosaicImage()    into a new layers function MergeImageLayers() method, adding 'flatten'    and 'mosaic' layer methods.</dd>
+  <dd> Addition of another similar layers method 'merge' which 'unlocks' the    normal flatten/mosaic layer merger from the origin, The resulting image    will have a virtual canvas of minimal size with an offset. Also images    with negative offsets will not be clipped by the 'merge' form of the    command.  This was created for better layering of distorted images, such    as panorama overlays.</dd>
   <dd> Bug fix in handling transparency for EWA resampling.</dd>
   <dd> Access to Resize Filter Functions from resize.c (for resample.c)    with possible future filter sources... Acquire/Destory/Call ResizeFilter()</dd>
   <dd> All resize filters added to resampling, but filter handling is incomplete.</dd>
@@ -2006,8 +2251,8 @@
   <dd> The -level option now works properly for colormapped images.</dd>
   <dd> Allow Extrapolated blending of images using -blend       http://netpbm.sourceforge.net/doc/extendedopacity.html</dd>
 <dt>2007-09-12  6.3.5-9 Anthony &lt;anthony@griffith...&gt;</dt>
-  <dd> Major Addition,  Area Resampling Functions, (scaled interpolation)    for pixel lookup in Distortion functions.  This improves the look in    areas of minification enormousally, especially in situations of infinite    tiling and horizon views.  All virtual pixel methods have been handled    to minimise computation time involved with area resampling.  To use the    new function distortions need to be able to determine scaling vectors    (distortion function derivitives) for correct working.  All    -distort methods, except Arc, uses scaled area resampling.</dd>
-  <dd> Improvements to perspective distort method, to include the correct    differentation between the 'ground' on which the image lies, and the    'sky', the color of which can be set using the -mattecolor setting    (as the distortion invalid pixel color). Background color is retains    for surrounding ground areas. The horizon is also correct anti-aliased    and transparent colors are also allowed, allowing you to add backdrops    of gradients and patterns.</dd>
+  <dd> Major Addition,  Area Resampling Functions, (scaled interpolation)    for pixel lookup in Distortion functions.  This improves the look in    areas of minification enormously, especially in situations of infinite    tiling and horizon views.  All virtual pixel methods have been handled    to minimise computation time involved with area resampling.  To use the    new function distortions need to be able to determine scaling vectors    (distortion function derivitives) for correct working.  All    -distort methods, except Arc, uses scaled area resampling.</dd>
+  <dd> Improvements to perspective distort method, to include the correct    differentiation between the 'ground' on which the image lies, and the    'sky', the color of which can be set using the -mattecolor setting    (as the distortion invalid pixel color). Background color is retains    for surrounding ground areas. The horizon is also correct anti-aliased    and transparent colors are also allowed, allowing you to add backdrops    of gradients and patterns.</dd>
 <dt>2007-09-04  6.3.5-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Read/Write Scanalytics IPLab image format (contributed by Sean Burke).</dd>
   <dd> Patched ReadBlobString() to fix a off-by-one vulnerability (alert from    iDefense).</dd>
@@ -2040,7 +2285,7 @@
 <dt>2007-07-30  6.3.5-5 Anthony  &lt;anthony@griffith...&gt;</dt>
   <dd> Added -distort arc.  This update also allows the destination image    size and offset to be set according to the specific distortion being    applied.</dd>
 <dt>2007-07-29  6.3.5-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Set the -poloroid border color with the -bordercolor option.</dd>
+  <dd> Set the -polaroid border color with the -bordercolor option.</dd>
 <dt>2007-07-25  6.3.5-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Remove extranous break statement so -type option properly sets the    image_info-&gt;type member (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=9261).</dd>
 <dt>2007-07-21  6.3.5-4 Anthony  &lt;anthony@griffith...&gt;</dt>
@@ -2114,11 +2359,11 @@
 <dt>2007-04-12  6.3.3-8 Chris Madison  &lt;madisonblu@hotma...&gt;</dt>
   <dd> Fix fault whem comparing a colormapped image with a non-colormapped one.</dd>
   <dd> Fix race condition when spawning delegate programs.</dd>
-  <dd> TIFF JPEG now respects the -quality comptression setting.</dd>
+  <dd> TIFF JPEG now respects the -quality compression setting.</dd>
   <dd> The -fx option now properly groks the logical and operator.</dd>
   <dd> DPX tilestamp property should be timestamp.</dd>
 <dt>2007-04-13  6.3.3-7 Anthony  &lt;anthony@griffith...&gt;</dt>
-  <dd> Added GravityAdjustGeometry() to "geometry.c" to adjust geometry settings    according to given gravity and canvas area it applies to. This is for    code simplification thoughout MagickCore.</dd>
+  <dd> Added GravityAdjustGeometry() to "geometry.c" to adjust geometry settings    according to given gravity and canvas area it applies to. This is for    code simplification throughout MagickCore.</dd>
 <dt>2007-04-09  6.3.3-6 Anthony  &lt;anthony@griffith...&gt;</dt>
   <dd> Fixed CoalesceImages() to reset virtual canvas info on second and later    frames.   Other animation handlers may also need to reset virtual canvas    sizes to match the first frame, as well.</dd>
 <dt>2007-04-06  6.3.3-6 Anthony  &lt;anthony@griffith...&gt;</dt>
@@ -2184,7 +2429,7 @@
   <dd> Don't over-allocate file buffers.</dd>
 <dt>2007-02-12  6.3.2-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Format strings in the POSIX locale.</dd>
-  <dd> Make font metrics invarient to the strokewidth.</dd>
+  <dd> Make font metrics invariant to the strokewidth.</dd>
 <dt>2007-02-10  6.3.2-4 Albert Chin  &lt;china@thewr...&gt;</dt>
   <dd> Patch to fix configure.ac typo.</dd>
 <dt>2007-02-08  6.3.2-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
@@ -2230,7 +2475,7 @@
     <span id="linkbar-east">&nbsp;</span>
   </div>
   <div class="footer">
-    <span id="footer-west">&copy; 1999-2012 ImageMagick Studio LLC</span>
+    <span id="footer-west">&copy; 1999-2011 ImageMagick Studio LLC</span>
     <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>

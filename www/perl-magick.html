@@ -16,7 +16,7 @@
   <meta name="Description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
-  <meta name="Keywords" content="perlmagick, perl, api, for, imagemagick, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Image, Processing, Automagically"/>
+  <meta name="Keywords" content="perlmagick, perl, api, for, imagemagick, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
   <meta name="Rating" content="GENERAL"/>
   <meta name="Robots" content="INDEX, FOLLOW"/>
   <meta name="Generator" content="ImageMagick Studio LLC"/>
@@ -29,24 +29,33 @@
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  
+  <!-- Optionaly include easing and/or mousewheel plugins -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.easing-1.3.pack.js"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
+  
+  <!-- Add fancyBox -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.3"></script>
+  
+  <!-- Optionaly include button and/or thumbnail helpers -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.3"></script>
+  
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.3"></script>
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(".fancybox").fancybox();
+  	});
+  </script>
+  <!-- ImageMagick style -->
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
-  <link rel="stylesheet" type="text/css" href="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
-  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
-        'transitionIn'  : 'elastic',
-        'transitionOut' : 'elastic',
-        'overlayShow'   : false,
-        'opacity'       : true
-      });
-    });
-  </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -153,57 +162,62 @@
   <a title="Site Map: Links" href="../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div  class="menu">
+<div class="menu">
   <a rel="follow" title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
 
-<a href="http://www.networkredux.com">
-  <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]"
-  style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.networkredux.com"> <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201204010120 mickey@163... -->
 <div class="sponsbox">
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540s suvalj -->
+<div class="sponsor">
+  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
 </div>
-<div  class="sponsor">
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201110010090s jen@seo lowprofilelinks -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201203010270 info@pkwte... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Web Site Hosting" href="http://webhostinggeeks.com">Web Site Hosting</a><!-- 201302010900 funds@enmob... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Deals" href="http://www.webhostingdeals.org">Web Hosting Deals</a><!-- 201111010270 chee.hoa darin -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Tenant Check" href="http://www.rentmethod.com/">Tenant Check</a><!-- 201203010090 chris@rentm... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autos part" href="http://www.pkwteile.de/autoteile">Autos part</a><!-- 201112010090s jr@pkwte... -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201204010090 barsh@inter... -->
 </div>
-<div  class="sponsor">
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540 suvalj -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingsecretrevealed.com">Web Hosting Secret Revealed</a><!-- 201204010540 iamchee jerry -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Break" href="http://www.webhostingbreak.com">Web Hosting Break</a><!-- 201109010090 ian@ian-m... -->
-</div>
-<div  class="sponsor">
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201110010090 alexanian media -->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Turbolader Online kaufen" href="http://www.autoteile-carparts.de">Turbolader Online kaufen</a><!-- 2012050100150 t.temurbas...-->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-   <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.webhostingclue.com">Best Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingreviewz.com">Web Hosting Reviews</a><!-- 2012040100030 Soft Tec-->
 </div>
 </div>
 </div>
@@ -211,6 +225,17 @@
 
 <div class="eastbar">
   <div class="g-plusone" data-size="standard" data-count="false"></div>
+  <script type="text/javascript">
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+  </script>
 </div>
 
 <div class="main">
@@ -237,13 +262,13 @@
 
 <p>ImageMagick must already be installed on your system. Next, get
 the <a href="../www/download.html">PerlMagick</a> distribution corresponding to the installed ImageMagick distribution
-(e.g., PerlMagick 6.71 for
-ImageMagick 6.7.1) and unpack it as shown below:</p>
+(e.g., PerlMagick 6.75 for
+ImageMagick 6.7.5) and unpack it as shown below:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>tar xvfz PerlMagick-6.71.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd PerlMagick</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvfz PerlMagick-6.75.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd PerlMagick</span></p>
 <p>Next, edit <kbd>Makefile.PL</kbd> and change LIBS and INC to include the appropriate path information to the required <kbd>MagickCore</kbd> library. You may need paths to JPEG, PNG, TIFF, etc.  delegates if they were included with your installed version of ImageMagick. Build and install it like this:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>perl Makefile.PL</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make install</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>perl Makefile.PL</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make install</span></p>
 <p>For Unix, you typically need to be <kbd>root</kbd> to install the software. There are ways around this. Consult the Perl manual pages for more information.</p>
 
 <p><b>Windows XP / Windows 2000</b></p>
@@ -252,17 +277,17 @@ ImageMagick 6.7.1) and unpack it as shown below:</p>
 
 <p>Next, type</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd PerlMagick</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>perl Makefile.nt</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>nmake</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>nmake install</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd PerlMagick</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>perl Makefile.nt</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>nmake</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>nmake install</span></p>
 <p>See the <a href="http://www.dylanbeattie.net/magick/">PerlMagick Windows HowTo</a> page for further installation instructions.</p>
 
 <p><b>Running the Regression Tests</b></p>
 
 <p>To verify a correct installation, type</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make test</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>make test</span></p>
 <p>Use <kbd>nmake test</kbd> under Windows. There are a few demonstration scripts available to exercise many of the functions PerlMagick can perform. Type</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>cd demo</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>make</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd demo</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span></p>
 <p>You are now ready to utilize the PerlMagick methods from within your Perl scripts.</p>
 
 </div>
@@ -308,7 +333,7 @@ ImageMagick 6.7.1) and unpack it as shown below:</p>
 
 <p>Some of the PerlMagick methods require external programs such as <a href="http://www.cs.wisc.edu/~ghost/">Ghostscript</a>. This may require an explicit path in your PATH environment variable to work properly. For example (in Unix),</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>$ENV{PATH}='/../bin:/usr/bin:/usr/local/bin';</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>$ENV{PATH}='/../bin:/usr/bin:/usr/local/bin';</span></p>
 <div style="margin: auto;">
 <h2><a id="example"></a>Example Script</h2>
 </div>
@@ -519,7 +544,7 @@ ImageMagick 6.7.1) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">AdaptiveBlur</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, bias=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
     <td valign="top">adaptively blur the image with a Gaussian operator of the given radius and standard deviation (sigma).  Decrease the effect near edges.</td>
   </tr>
 
@@ -531,7 +556,7 @@ ImageMagick 6.7.1) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">AdaptiveSharpen</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, bias=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
     <td valign="top">adaptively sharpen the image with a Gaussian operator of the given radius and standard deviation (sigma).  Increase the effect near edges.</td>
   </tr>
 
@@ -543,7 +568,7 @@ ImageMagick 6.7.1) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">AddNoise</td>
-    <td valign="top">noise=&gt;{Uniform, Gaussian, Multiplicative, Impulse, Laplacian, Poisson}, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
+    <td valign="top">noise=&gt;{Uniform, Gaussian, Multiplicative, Impulse, Laplacian, Poisson}, attenuate=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
     <td valign="top">add noise to an image</td>
   </tr>
 
@@ -597,7 +622,7 @@ ImageMagick 6.7.1) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Blur</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, bias=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
     <td valign="top">reduce image noise and reduce detail levels with a Gaussian operator of the given radius and standard deviation (sigma).</td>
   </tr>
 
@@ -639,7 +664,7 @@ ImageMagick 6.7.1) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Clut</td>
-    <td valign="top">image=&gt;<i>image-handle</i>,  channel=&gt;{Red, RGB, CMYK, Cyan, Green, Magenta, Blue, Yellow, Opacity, Black, or All}</td>
+    <td valign="top">image=&gt;<i>image-handle</i>,  interpolate={Average, Bicubic, Bilinear, Filter, Integer, Mesh, NearestNeighbor}, channel=&gt;{Red, RGB, CMYK, Cyan, Green, Magenta, Blue, Yellow, Opacity, Black, or All}</td>
     <td valign="top">apply a color lookup table to an image sequence</td>
   </tr>
 
@@ -663,7 +688,7 @@ ImageMagick 6.7.1) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Colorize</td>
-    <td valign="top">fill=&gt;<i><a href="../www/color.html">color name</a></i>, opacity=&gt;<i>string</i></td>
+    <td valign="top">fill=&gt;<i><a href="../www/color.html">color name</a></i>, blend=&gt;<i>string</i></td>
     <td valign="top">colorize the image with the fill color</td>
   </tr>
 
@@ -855,7 +880,7 @@ ImageMagick 6.7.1) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">GaussianBlur</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, bias=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
     <td valign="top">reduce image noise and reduce detail levels with a Gaussian operator of the given radius and standard deviation (sigma).</td>
   </tr>
 
@@ -981,7 +1006,7 @@ ImageMagick 6.7.1) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">MotionBlur</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, angle=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, angle=&gt;<i>double</i>, bias=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
     <td valign="top">reduce image noise and reduce detail levels with a Gaussian operator of the given radius and standard deviation (sigma) at the given angle to simulate the effect of motion</td>
   </tr>
 
@@ -1042,7 +1067,7 @@ fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, De
 
   <tr>
     <td valign="top">RadialBlur</td>
-    <td valign="top">angle=&gt;<i>double</i></td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, angle=&gt;<i>double</i>, bias=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
     <td valign="top">radial blur the image.</td>
   </tr>
 
@@ -1108,7 +1133,7 @@ fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, De
 
   <tr>
     <td valign="top">SelectiveBlur</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, threshold=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, threshold=&gt;<i>double</i>, bias=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
     <td valign="top">selectively blur pixels within a contrast threshold.</td>
   </tr>
   <tr>
@@ -1137,7 +1162,7 @@ fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, De
 
   <tr>
     <td valign="top">Sharpen</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, bias=&gt;<i>double</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}</td>
     <td valign="top">sharpen the image with a Gaussian operator of the given radius and standard deviation (sigma).</td>
   </tr>
 
@@ -1191,7 +1216,7 @@ fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, De
 
   <tr>
     <td valign="top">Spread</td>
-    <td valign="top">radius=&gt;<i>double</i></td>
+    <td valign="top">radius=&gt;<i>double</i>, interpolate=&gt;{undefined, average, bicubic, bilinear, mesh, nearest-neighbor, spline}</td>
     <td valign="top">displace image pixels by a random amount</td>
   </tr>
 
@@ -1244,7 +1269,7 @@ fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, De
 
   <tr>
     <td valign="top">Tint</td>
-    <td valign="top">fill=&gt;<i><a href="../www/color.html">color name</a></i>, opacity=&gt;<i>string</i></td>
+    <td valign="top">fill=&gt;<i><a href="../www/color.html">color name</a></i>, blend=&gt;<i>string</i></td>
     <td valign="top">tint the image with the fill color.</td>
   </tr>
 
@@ -2646,7 +2671,7 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
     <span id="linkbar-east">&nbsp;</span>
   </div>
   <div class="footer">
-    <span id="footer-west">&copy; 1999-2012 ImageMagick Studio LLC</span>
+    <span id="footer-west">&copy; 1999-2011 ImageMagick Studio LLC</span>
     <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>

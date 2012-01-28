@@ -16,7 +16,7 @@
   <meta name="Description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
-  <meta name="Keywords" content="command-line, processing, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Image, Processing, Automagically"/>
+  <meta name="Keywords" content="command-line, processing, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
   <meta name="Rating" content="GENERAL"/>
   <meta name="Robots" content="INDEX, FOLLOW"/>
   <meta name="Generator" content="ImageMagick Studio LLC"/>
@@ -29,24 +29,33 @@
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  
+  <!-- Optionaly include easing and/or mousewheel plugins -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.easing-1.3.pack.js"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
+  
+  <!-- Add fancyBox -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.3"></script>
+  
+  <!-- Optionaly include button and/or thumbnail helpers -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.3"></script>
+  
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.3"></script>
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(".fancybox").fancybox();
+  	});
+  </script>
+  <!-- ImageMagick style -->
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
-  <link rel="stylesheet" type="text/css" href="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
-  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
-        'transitionIn'  : 'elastic',
-        'transitionOut' : 'elastic',
-        'overlayShow'   : false,
-        'opacity'       : true
-      });
-    });
-  </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -153,57 +162,62 @@
   <a title="Site Map: Links" href="../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div  class="menu">
+<div class="menu">
   <a rel="follow" title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
 
-<a href="http://www.networkredux.com">
-  <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]"
-  style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.networkredux.com"> <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201204010120 mickey@163... -->
 <div class="sponsbox">
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540s suvalj -->
+<div class="sponsor">
+  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
 </div>
-<div  class="sponsor">
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201110010090s jen@seo lowprofilelinks -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201203010270 info@pkwte... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Web Site Hosting" href="http://webhostinggeeks.com">Web Site Hosting</a><!-- 201302010900 funds@enmob... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Deals" href="http://www.webhostingdeals.org">Web Hosting Deals</a><!-- 201111010270 chee.hoa darin -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Tenant Check" href="http://www.rentmethod.com/">Tenant Check</a><!-- 201203010090 chris@rentm... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autos part" href="http://www.pkwteile.de/autoteile">Autos part</a><!-- 201112010090s jr@pkwte... -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201204010090 barsh@inter... -->
 </div>
-<div  class="sponsor">
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540 suvalj -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingsecretrevealed.com">Web Hosting Secret Revealed</a><!-- 201204010540 iamchee jerry -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Break" href="http://www.webhostingbreak.com">Web Hosting Break</a><!-- 201109010090 ian@ian-m... -->
-</div>
-<div  class="sponsor">
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201110010090 alexanian media -->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Turbolader Online kaufen" href="http://www.autoteile-carparts.de">Turbolader Online kaufen</a><!-- 2012050100150 t.temurbas...-->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-   <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.webhostingclue.com">Best Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingreviewz.com">Web Hosting Reviews</a><!-- 2012040100030 Soft Tec-->
 </div>
 </div>
 </div>
@@ -211,6 +225,17 @@
 
 <div class="eastbar">
   <div class="g-plusone" data-size="standard" data-count="false"></div>
+  <script type="text/javascript">
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+  </script>
 </div>
 
 <div class="main">
@@ -225,10 +250,10 @@
 
 <p>The ImageMagick command line can be as simple as this.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.jpg image.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.jpg image.png</span></p>
 <p>Or it can be very complex, as in the following.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert label.gif +matte \ <br/>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert label.gif +matte \ <br/>
     \( +clone  -shade 110x90 -normalize -negate +clone  -compose Plus -composite \) \<br/>
     \( -clone 0 -shade 110x50 -normalize -channel BG -fx 0 +channel -matte \) \<br/>
     -delete 0 +swap  -compose Multiply -composite  button.gif</span></p>
@@ -317,7 +342,7 @@ convert -size 320x90 canvas:none -stroke snow4 -size 1x90 -tile gradient:white-s
 <p>In Unix shells, certain characters such as the asterisk (<kbd>*</kbd>) and question mark (<kbd>?</kbd>) automagically cause lists of filenames to be generated based on pattern matches. This feature is known as globbing.  ImageMagick supports filename globbing for systems, such as Windows, that does not natively support it.  For example, suppose you want to convert <kbd>1.jpg</kbd>, <kbd>2.jpg</kbd>, <kbd>3.jpg</kbd>, <kbd>4.jpg</kbd>, and <kbd>5.jpg</kbd> in your current directory to a GIF animation.  You can conveniently  refer to all of the JPEG files with this command:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert *.jpg images.gif</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert *.jpg images.gif</span></p>
 </div>
 
 <h3>Explicit Image Format</h3>
@@ -338,7 +363,7 @@ values.  ImageMagick has no way to automagically determine the image format
 so we explicitly set one:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 640x480 -depth 8 rgb:image image.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 640x480 -depth 8 rgb:image image.png</span></p>
   </div>
 
 <h3>Built-in Images and Patterns</h3>
@@ -346,7 +371,7 @@ so we explicitly set one:
 <p>ImageMagick has a number of built-in <a href="../www/formats.html#builtin-images">images</a> and <a href="../www/formats.html#builtin-patterns">patterns</a>.  To utilize the checkerboard pattern, for example, use:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 640x480 pattern:checkerboard checkerboard.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 640x480 pattern:checkerboard checkerboard.png</span></p>
 </div>
 
 <h3>STDIN, STDOUT, and file descriptors</h3>
@@ -355,19 +380,19 @@ so we explicitly set one:
   <a href="../www/convert.html">convert</a> to the <a href="../www/display.html">display</a> program:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: gif:- | display gif:-</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: gif:- | display gif:-</span></p>
 <p>The second explicit format "<kbd>gif:</kbd>" is optional in the preceding example.  The GIF image format has a unique signature within the image so ImageMagick's <a href="../www/display.html">display</a> command can readily recognize the format as GIF.  The <a href="../www/convert.html">convert</a> program also accepts STDIN as input in this way:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: gif:- | convert - -resize "200%" bigrose.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert rose: gif:- | convert - -resize "200%" bigrose.jpg</span></p>
 <p>Other pipes can be accessed via their <em>file descriptors</em> (as of version 6.4.9-3). The file descriptors 0, 1, and 2 are reserved for the standard streams STDIN, STDOUT, and STDERR, respectively, but a pipe associated with a file descriptor number <em>N</em>&gt;2 can be accessed using the pseudonym <kbd>fd:</kbd><em>N</em>. (The pseudonyms <kbd>fd:0</kbd> and <kbd>fd:1</kbd> can be used for STDIN and STDOUT.) The next example shows how to append image data piped from files with  descriptors 3 and 4 and direct the result to the file with descriptor number 5.
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert fd:3 fd:4 -append fd:5</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert fd:3 fd:4 -append fd:5</span></p>
 <p>When needed, explicit image formats can be given as mentioned earlier, as in the following.
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert gif:fd:3 jpg:fd:4 -append tif:fd:5</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert gif:fd:3 jpg:fd:4 -append tif:fd:5</span></p>
 </div>
 
 <h3>Selecting Frames</h3>
@@ -375,7 +400,7 @@ so we explicitly set one:
 <p>Some images formats contain more than one image frame.  Perhaps you only want the first image, or the last, or some number of images in-between.  You can specify which image frames to read by appending the image filename with the frame range enclosed in brackets.  Here our image (an animated GIF) contains more than one frame but we only want the first:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert 'images.gif[0]' image.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert 'images.gif[0]' image.png</span></p>
 <p class="warn">[Unix shells generally interpret brackets so we enclosed the filename in quotes above.
 In a Windows command shell the brackets are not interpreted but using quotes doesn't hurt. However, in most cases the roles of single-quotes and double-quotes are reversed with respect to Unix and Windows, so Windows users should usually try double-quotes where we display single-quotes, and vice versa.]
 </p>
@@ -383,11 +408,11 @@ In a Windows command shell the brackets are not interpreted but using quotes doe
 <p>You can read more than one image from a sequence with a frame range.  For example, you can extract the first four frames of an image sequence:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert 'images.gif[0-3]' images.mng</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert 'images.gif[0-3]' images.mng</span></p>
 <p>Finally, you can read more than one image from a sequence, out-of-order. The next command gets the third image in the sequence, followed by the second, and then the fourth:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert 'images.gif[3,2,4]' images.mng</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert 'images.gif[3,2,4]' images.mng</span></p>
 <p>Notice that in the last two commands, a single image is written. The output in this case, where the image type is MNG, is a multi-frame file because the MNG format supports multiple frames. Had the output format been JPG, which only supports single frames, the output would have consisted of separate frames. More about that below, in the section about the <a href="#output">Output Filename</a>.
 </p>
 </div>
@@ -397,12 +422,12 @@ In a Windows command shell the brackets are not interpreted but using quotes doe
 <p>Raw images are a sequence of color intensities without additional meta information such as width, height, or image signature.  With raw image formats, you must specify the image width and height but you can also specify a region of the image to read.  In our example, the image is in the raw 8-bit RGB format and is 6000 pixels wide and 4000 pixels high.  However, we only want a region of 600 by 400 near the center of the image:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 6000x4000 -depth 8 \ <br/> 'rgb:image[600x400+1900+2900]' image.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 6000x4000 -depth 8 \ <br/> 'rgb:image[600x400+1900+2900]' image.jpg</span></p>
 <p>
   You can get the same results with the <a href="../www/command-line-options.html#extract">&#x2011;extract</a> option:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 6000x4000 -depth 8 \ <br/> -extract 600x400+1900+2900 rgb:image image.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 6000x4000 -depth 8 \ <br/> -extract 600x400+1900+2900 rgb:image image.jpg</span></p>
 </div>
 
 <h3>Inline Image Resize</h3>
@@ -410,13 +435,13 @@ In a Windows command shell the brackets are not interpreted but using quotes doe
 <p>It is sometimes convenient to resize an image as they are read.  Suppose you have hundreds of large JPEG images you want to convert to a sequence of PNG thumbails:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert '*.jpg' -resize 120x120 thumbnail%03d.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert '*.jpg' -resize 120x120 thumbnail%03d.png</span></p>
 <p>Here <em>all</em> the images are read and subsequently
 resized.  It is faster and less resource intensive to resize each image it
 is read:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert '*.jpg[120x120]' thumbnail%03d.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert '*.jpg[120x120]' thumbnail%03d.png</span></p>
 </div>
 
 <h3>Inline Image Crop</h3>
@@ -424,11 +449,11 @@ is read:
 <p>It is sometimes convenient to crop an image as they are read.  Suppose you have hundreds of large JPEG images you want to convert to a sequence of PNG thumbails:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert '*.jpg' -crop 120x120+10+5 thumbnail%03d.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert '*.jpg' -crop 120x120+10+5 thumbnail%03d.png</span></p>
 <p>Here <em>all</em> the images are read and subsequently cropped.  It is faster and less resource-intensive to crop each image as it is read:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert '*.jpg[120x120+10+5]' thumbnail%03d.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert '*.jpg[120x120+10+5]' thumbnail%03d.png</span></p>
 </div>
 
 <h3>Filename References</h3>
@@ -444,7 +469,7 @@ The first is with '<kbd>@</kbd>' which reads image filenames separated by white 
 </pre>
 
 <p>We then expect this command:</p>
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert @myimages.txt mymovie.gif</span></p><p>to read the images <kbd>frame001.jpg</kbd>, <kbd>frame002.jpg</kbd>, and <kbd>frame003.jpg</kbd> and convert them to a GIF image sequence.  </p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert @myimages.txt mymovie.gif</span></p><p>to read the images <kbd>frame001.jpg</kbd>, <kbd>frame002.jpg</kbd>, and <kbd>frame003.jpg</kbd> and convert them to a GIF image sequence.  </p>
 <p>If the image path includes one or more spaces, enclose the path in quotes:</p>
 <pre class="text">
   'my title.jpg'
@@ -462,7 +487,7 @@ the <kbd>@</kbd> (e.g. <kbd>@mypoly.txt</kbd>).</p>
 embedding a formatting character in the filename with a scene range.  Consider
 the filename <kbd>image-%d.jpg[1-5]</kbd>. The command</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image-%d.jpg[1-5]</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image-%d.jpg[1-5]</span></p>
 <p>causes ImageMagick to attempt to read images with these filenames:
 </p>
 
@@ -492,7 +517,7 @@ is reset or the command line terminates.  The image settings include:</p>
 <p>In this example, <em class="arg">-channel</em> applies to each of the images, since, as we mentioned, settings persist:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -channel RGB wand.png wizard.png images.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -channel RGB wand.png wizard.png images.png</span></p>
 </div>
 
 <h2><a id="operator"></a>Image Operator</h2>
@@ -512,7 +537,7 @@ include:</p>
 
 <p>In this example, <em class="arg">-negate</em> negates the wand image but not the wizard:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert wand.png -negate wizard.png images.png</span></p></div>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert wand.png -negate wizard.png images.png</span></p></div>
 
 <h2><a id="sequence"></a>Image Sequence Operator</h2>
 <div class="doc-section">
@@ -623,11 +648,11 @@ setting for more specifics.</p>
 This fine image</a> is 640&nbsp;pixels wide and 480&nbsp;pixels high. We say its <em>dimensions</em> are 640x480. When we give dimensions of an image, the width (the horizontal dimension) always precedes the height (the vertical dimension). This will be true when we speak of coordinates or <em>offsets</em> into an image, which will always be <em>x</em>&ndash;value followed by&nbsp;<em>y</em>. Just think of your high school algebra classes and the <em>xy</em>&ndash;plane. (Well, almost: our <em>y</em>&ndash;axis will always go downward!)
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize '200%' bigWiz.png</span></p>
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize '200x50%' longShortWiz.png</span></p>
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize '100x200' notThinWiz.png</span></p>
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize '100x200^' biggerNotThinWiz.png</span></p>
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize '100x200!' dochThinWiz.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '200%' bigWiz.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '200x50%' longShortWiz.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '100x200' notThinWiz.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '100x200^' biggerNotThinWiz.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '100x200!' dochThinWiz.png</span></p>
 
 <p>The first of the four commands is simple&mdash;it stretches both the width and height of the input image by <kbd>200%</kbd> in each direction; it magnifies the whole thing by a factor of two. The second command specifies different percentages for each direction, stretching the width to&nbsp;<kbd>200</kbd>% and squashing the height to&nbsp;<kbd>50%</kbd>. The resulting image (in this example) has dimensions 1280x240. Notice that the percent symbol needn't be repeated; the following are equivalent: <kbd>200x50%</kbd>, <kbd>200%x50</kbd>, <kbd>200%x50%</kbd>.
 </p>
@@ -645,10 +670,10 @@ This fine image</a> is 640&nbsp;pixels wide and 480&nbsp;pixels high. We say its
 Here are a few more examples:
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize '100' wiz1.png</span></p>
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize 'x200' wiz2.png</span></p>
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize '100x200&gt;' wiz3.png</span></p>
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize '100x200&lt;' wiz4.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '100' wiz1.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize 'x200' wiz2.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '100x200&gt;' wiz3.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '100x200&lt;' wiz4.png</span></p>
 <p>If only one dimension is given it is taken to be the width. When only the width is specified, as in the first example above, the width is accepted as given and the height is chosen to maintain the aspect ratio of the input image. Similarly, if only the height is specified, as in the second example above, the height is accepted and the width is chosen to maintain the aspect ratio.</p>
 
 
@@ -656,7 +681,7 @@ Here are a few more examples:
 
 <p>Finally, use <kbd>@</kbd> to specify the maximum area in pixels of an image, again while attempting to preserve aspect ratio. (Pixels take only integer values, so some approximation is always at work.) In the following example, an area of 10000&nbsp;pixels is requested. The resulting file has dimensions 115x86, which has 9890&nbsp;pixels. </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize '@10000' wiz10000.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize '@10000' wiz10000.png</span></p>
 <p class="warn">Another word about the quotation marks: In all the examples above and below, we have enclosed the <em class="arg">geometry</em> arguments  within quotation marks. Doing so is optional in many cases, but not always. We <em>must</em> enclose the geometry specifications in quotation marks when using <kbd>&lt;</kbd> or <kbd>&gt;</kbd> to prevent these characters from being interpreted by the shell as <em>file redirection</em>. On Windows systems, the carat <kbd>^</kbd>&nbsp; needs to be within quotes, else it is ignored. To be safe, one should probably maintain a habit of enclosing all <em class="arg">geometry</em> arguments in quotes, as we have here.
 </p>
 </div>
@@ -668,9 +693,9 @@ Here are some examples to illustrate the use of <em>offsets</em> in <em class="a
 <a href="../www/command-line-options.html#region">&#x2011;region</a> option. This option allows many other options to modify the pixels within a specified rectangular subregion of an image. As such, it needs to be given the width and height of that region, and also an <em>offset</em> into the image, which is a pair of coordinates that indicate the location of the region within the larger image. Below, in the first example, we specify a region of size <kbd>100x200</kbd> to be located at the <em>xy</em>&ndash;coordinates <em>x</em>=10,&nbsp;<em>y</em>=20. Let's use the usual algebraic notation (<em>x</em>,<em>y</em>)=(10,20), for convenience.
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -region '100x200+10+20' -negate wizNeg1.png</span></p>
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -region '100x200-10+20' -negate wizNeg2.png</span></p>
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -gravity center -region '100x200-10+20' \ <br/> -negate wizNeg3.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -region '100x200+10+20' -negate wizNeg1.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -region '100x200-10+20' -negate wizNeg2.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -gravity center -region '100x200-10+20' \ <br/> -negate wizNeg3.png</span></p>
 
 <p>Note that offsets always require +/&minus; signs. The offset is not actually a true location within the image; its coordinates must be added to some other location. Let's refer to that as the <em>current location</em>. In the first two examples above, though, that location is the upper-left hand corner of the image, which has coordinates (0,0). (That is the default situation when there are no other directives given to change it.) The first example above puts the <kbd>100x200</kbd> rectangle's own upper-left corner at (10,20). </p>
 
@@ -687,7 +712,7 @@ Here are some examples to illustrate the use of <em>offsets</em> in <em class="a
 
 <p>In school, your teacher probably permitted you to work on problems on a scrap of paper and then copy the results to your test paper.  An image stack is similar.  It permits you to work on an image or image sequence in isolation and subsequently introduce the results back into the command line.  The image stack is delineated with parenthesis.  Image operators only affect images in the current stack.  For example, we can limit the image rotation to just the wizard image like this:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert wand.gif \( wizard.gif -rotate 30 \) +append images.gif</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert wand.gif \( wizard.gif -rotate 30 \) +append images.gif</span></p>
 
 <p class="warn">Notice again that the  parentheses are <em>escaped</em> by preceding them with
 backslashes.  This is required under Unix, where parentheses are special
@@ -726,7 +751,7 @@ above.</p>
   <p>Images can be stored in a mryiad of image formats including the better known JPEG, PNG, TIFF and others.  ImageMagick must know the desired format of the image before it is written.  ImageMagick leverages the filename extension to determine the format.  For example, <kbd>image.jpg</kbd> tells ImageMagick to write the image in the JPEG format.  In some cases the filename does not identify the image format.  In these cases, the image is written in the format it was originally read unless an explicit image format is specified.  For example, suppose we want to write our image to a filename of <kbd>image</kbd> in the raw red, green, and blue intensity format:
   </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.jpg rgb:image</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.jpg rgb:image</span></p>
 </div>
 
 <h3>Standard Out</h3>
@@ -734,7 +759,7 @@ above.</p>
   <p>Unix permits the output of one command to be piped to another.  ImageMagick permits piping one command to another with a filename of <kbd>-</kbd>.  In this example we pipe the output of <a href="../www/convert.html">convert</a> to the <a href="../www/display.html">display</a> program:
   </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: gif:- | display gif:-</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: gif:- | display gif:-</span></p>
 <p>Here the explicit format is optional.  The GIF image format has a signature that uniquely identifies it so ImageMagick can readily recognize the format as GIF.
 </p>
 </div>
@@ -753,7 +778,7 @@ above.</p>
 <p>Or retrieve image properties to modify the image filename.  For example, the command
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set filename:area '%wx%h' \ <br/> 'rose-%[filename:area].png'</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert rose: -set filename:area '%wx%h' \ <br/> 'rose-%[filename:area].png'</span></p>
 <p>writes an image with this filename:
 </p>
 
@@ -782,7 +807,7 @@ above.</p>
     <span id="linkbar-east">&nbsp;</span>
   </div>
   <div class="footer">
-    <span id="footer-west">&copy; 1999-2012 ImageMagick Studio LLC</span>
+    <span id="footer-west">&copy; 1999-2011 ImageMagick Studio LLC</span>
     <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>
