@@ -16,7 +16,7 @@
   <meta name="Description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
-  <meta name="Keywords" content="magickcore, c, api, for, imagemagick:, deprecated, methods, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Image, Processing, Automagically"/>
+  <meta name="Keywords" content="magickcore, c, api, for, imagemagick:, deprecated, methods, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
   <meta name="Rating" content="GENERAL"/>
   <meta name="Robots" content="INDEX, FOLLOW"/>
   <meta name="Generator" content="ImageMagick Studio LLC"/>
@@ -29,24 +29,33 @@
   <link rel="shortcut icon" href="../../images/wand.ico"  type="images/x-icon"/>
   <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  
+  <!-- Optionaly include easing and/or mousewheel plugins -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.easing-1.3.pack.js"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
+  
+  <!-- Add fancyBox -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.3"></script>
+  
+  <!-- Optionaly include button and/or thumbnail helpers -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.3"></script>
+  
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.3"></script>
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(".fancybox").fancybox();
+  	});
+  </script>
+  <!-- ImageMagick style -->
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
-  <link rel="stylesheet" type="text/css" href="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
     @import url("../../www/magick.css");
   </style>
-  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
-        'transitionIn'  : 'elastic',
-        'transitionOut' : 'elastic',
-        'overlayShow'   : false,
-        'opacity'       : true
-      });
-    });
-  </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -153,57 +162,62 @@
   <a title="Site Map: Links" href="../../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div  class="menu">
+<div class="menu">
   <a rel="follow" title="Sponsors" href="../../www/sponsors.html">Sponsors:</a>
 
-<a href="http://www.networkredux.com">
-  <img src="../../images/networkredux.png" width="140" height="31" alt="[sponsor]"
-  style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.networkredux.com"> <img src="../../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201204010120 mickey@163... -->
 <div class="sponsbox">
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540s suvalj -->
+<div class="sponsor">
+  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
 </div>
-<div  class="sponsor">
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201110010090s jen@seo lowprofilelinks -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201203010270 info@pkwte... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Web Site Hosting" href="http://webhostinggeeks.com">Web Site Hosting</a><!-- 201302010900 funds@enmob... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Deals" href="http://www.webhostingdeals.org">Web Hosting Deals</a><!-- 201111010270 chee.hoa darin -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Tenant Check" href="http://www.rentmethod.com/">Tenant Check</a><!-- 201203010090 chris@rentm... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autos part" href="http://www.pkwteile.de/autoteile">Autos part</a><!-- 201112010090s jr@pkwte... -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201204010090 barsh@inter... -->
 </div>
-<div  class="sponsor">
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540 suvalj -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingsecretrevealed.com">Web Hosting Secret Revealed</a><!-- 201204010540 iamchee jerry -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Break" href="http://www.webhostingbreak.com">Web Hosting Break</a><!-- 201109010090 ian@ian-m... -->
-</div>
-<div  class="sponsor">
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201110010090 alexanian media -->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Computer Wallpaper" href="http://www.free-computer-wallpapers.com">Computer Wallpaper</a><!-- 2012030100150 webinvasion1@y...-->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-   <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.webhostingclue.com">Best Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Hosting Web" href="http://www.hostalia.com">Hosting Web</a><!-- 20120401000150 david@carre... -->
 </div>
 </div>
 </div>
@@ -211,12 +225,23 @@
 
 <div class="eastbar">
   <div class="g-plusone" data-size="standard" data-count="false"></div>
+  <script type="text/javascript">
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+  </script>
 </div>
 
 <div class="main">
 
 <h1>Module deprecate Methods</h1>
-<p class="navigation-index">[<a href="#AcquireCacheViewIndexes">AcquireCacheViewIndexes</a> &bull; <a href="#AcquireCacheViewPixels">AcquireCacheViewPixels</a> &bull; <a href="#AcquireImagePixels">AcquireImagePixels</a> &bull; <a href="#AcquireIndexes">AcquireIndexes</a> &bull; <a href="#AcquireMemory">AcquireMemory</a> &bull; <a href="#AcquireOneCacheViewPixel">AcquireOneCacheViewPixel</a> &bull; <a href="#AcquireOneCacheViewVirtualPixel">AcquireOneCacheViewVirtualPixel</a> &bull; <a href="#AcquireOneMagickPixel">AcquireOneMagickPixel</a> &bull; <a href="#AcquireOnePixel">AcquireOnePixel</a> &bull; <a href="#AcquireOneVirtualPixel">AcquireOneVirtualPixel</a> &bull; <a href="#AcquirePixels">AcquirePixels</a> &bull; <a href="#AffinityImage">AffinityImage</a> &bull; <a href="#AffinityImages">AffinityImages</a> &bull; <a href="#AllocateImage">AllocateImage</a> &bull; <a href="#AllocateImageColormap">AllocateImageColormap</a> &bull; <a href="#AllocateNextImage">AllocateNextImage</a> &bull; <a href="#AllocateString">AllocateString</a> &bull; <a href="#AverageImages">AverageImages</a> &bull; <a href="#ChannelThresholdImage">ChannelThresholdImage</a> &bull; <a href="#ClipPathImage">ClipPathImage</a> &bull; <a href="#CloneImageAttributes">CloneImageAttributes</a> &bull; <a href="#CloneMemory">CloneMemory</a> &bull; <a href="#CloseCacheView">CloseCacheView</a> &bull; <a href="#ColorFloodfill">ColorFloodfill</a> &bull; <a href="#DeleteImageAttribute">DeleteImageAttribute</a> &bull; <a href="#DeleteImageList">DeleteImageList</a> &bull; <a href="#DeleteMagickRegistry">DeleteMagickRegistry</a> &bull; <a href="#DescribeImage">DescribeImage</a> &bull; <a href="#DestroyImageAttributes">DestroyImageAttributes</a> &bull; <a href="#DestroyImages">DestroyImages</a> &bull; <a href="#DestroyMagick">DestroyMagick</a> &bull; <a href="#DispatchImage">DispatchImage</a> &bull; <a href="#ExtractSubimageFromImageImage">ExtractSubimageFromImageImage</a> &bull; <a href="#FlattenImages">FlattenImages</a> &bull; <a href="#FormatImageAttribute">FormatImageAttribute</a> &bull; <a href="#FormatMagickString">FormatMagickString</a> &bull; <a href="#FormatString">FormatString</a> &bull; <a href="#GetConfigureBlob">GetConfigureBlob</a> &bull; <a href="#GetCacheView">GetCacheView</a> &bull; <a href="#GetCacheViewIndexes">GetCacheViewIndexes</a> &bull; <a href="#GetCacheViewPixels">GetCacheViewPixels</a> &bull; <a href="#GetImageAttribute">GetImageAttribute</a> &bull; <a href="#GetImageClippingPathAttribute">GetImageClippingPathAttribute</a> &bull; <a href="#GetImageFromMagickRegistry">GetImageFromMagickRegistry</a> &bull; <a href="#GetMagickRegistry">GetMagickRegistry</a> &bull; <a href="#GetImageGeometry">GetImageGeometry</a> &bull; <a href="#GetImageList">GetImageList</a> &bull; <a href="#GetImageListIndex">GetImageListIndex</a> &bull; <a href="#GetImageListSize">GetImageListSize</a> &bull; <a href="#GetImagePixels">GetImagePixels</a> &bull; <a href="#GetIndexes">GetIndexes</a> &bull; <a href="#GetNextImage">GetNextImage</a> &bull; <a href="#GetNextImageAttribute">GetNextImageAttribute</a> &bull; <a href="#GetNumberScenes">GetNumberScenes</a> &bull; <a href="#GetOnePixel">GetOnePixel</a> &bull; <a href="#GetPixels">GetPixels</a> &bull; <a href="#GetPreviousImage">GetPreviousImage</a> &bull; <a href="#HSLTransform">HSLTransform</a> &bull; <a href="#IdentityAffine">IdentityAffine</a> &bull; <a href="#InitializeMagick">InitializeMagick</a> &bull; <a href="#InterpolatePixelColor">InterpolatePixelColor</a> &bull; <a href="#InterpretImageAttributes">InterpretImageAttributes</a> &bull; <a href="#LevelImageColor">LevelImageColor</a> &bull; <a href="#LiberateMemory">LiberateMemory</a> &bull; <a href="#LiberateSemaphoreInfo">LiberateSemaphoreInfo</a> &bull; <a href="#MagickIncarnate">MagickIncarnate</a> &bull; <a href="#MagickMonitor">MagickMonitor</a> &bull; <a href="#MapImage">MapImage</a> &bull; <a href="#MapImages">MapImages</a> &bull; <a href="#MatteFloodfill">MatteFloodfill</a> &bull; <a href="#MaximumImages">MaximumImages</a> &bull; <a href="#MinimumImages">MinimumImages</a> &bull; <a href="#MedianFilterImage">MedianFilterImage</a> &bull; <a href="#ModeImage">ModeImage</a> &bull; <a href="#MosaicImages">MosaicImages</a> &bull; <a href="#OpaqueImage">OpaqueImage</a> &bull; <a href="#OpenCacheView">OpenCacheView</a> &bull; <a href="#PaintFloodfill">PaintFloodfill</a> &bull; <a href="#PaintOpaqueImage">PaintOpaqueImage</a> &bull; <a href="#PaintTransparentImage">PaintTransparentImage</a> &bull; <a href="#ParseSizeGeometry">ParseSizeGeometry</a> &bull; <a href="#PopImageList">PopImageList</a> &bull; <a href="#PopImagePixels">PopImagePixels</a> &bull; <a href="#PostscriptGeometry">PostscriptGeometry</a> &bull; <a href="#PushImageList">PushImageList</a> &bull; <a href="#PushImagePixels">PushImagePixels</a> &bull; <a href="#QuantizationError">QuantizationError</a> &bull; <a href="#RandomChannelThresholdImage">RandomChannelThresholdImage</a> &bull; <a href="#ReacquireMemory">ReacquireMemory</a> &bull; <a href="#RecolorImage">RecolorImage</a> &bull; <a href="#ReduceNoiseImage">ReduceNoiseImage</a> &bull; <a href="#ResetImageAttributeIterator">ResetImageAttributeIterator</a> &bull; <a href="#SetCacheViewPixels">SetCacheViewPixels</a> &bull; <a href="#SetExceptionInfo">SetExceptionInfo</a> &bull; <a href="#SetImage">SetImage</a> &bull; <a href="#SetImageAttribute">SetImageAttribute</a> &bull; <a href="#SetImageList">SetImageList</a> &bull; <a href="#SetImagePixels">SetImagePixels</a> &bull; <a href="#SetMagickRegistry">SetMagickRegistry</a> &bull; <a href="#SetMonitorHandler">SetMonitorHandler</a> &bull; <a href="#ShiftImageList">ShiftImageList</a> &bull; <a href="#SpliceImageList">SpliceImageList</a> &bull; <a href="#Strip">Strip</a> &bull; <a href="#SyncCacheView">SyncCacheView</a> &bull; <a href="#SyncCacheViewPixels">SyncCacheViewPixels</a> &bull; <a href="#SyncImagePixels">SyncImagePixels</a> &bull; <a href="#TemporaryFilename">TemporaryFilename</a> &bull; <a href="#ThresholdImage">ThresholdImage</a> &bull; <a href="#ThresholdImageChannel">ThresholdImageChannel</a> &bull; <a href="#TransformHSL">TransformHSL</a> &bull; <a href="#TranslateText">TranslateText</a> &bull; <a href="#TransparentImage">TransparentImage</a> &bull; <a href="#UnshiftImageList">UnshiftImageList</a> &bull; <a href="#ZoomImage">ZoomImage</a>]</p>
+<p class="navigation-index">[<a href="#AcquireCacheViewIndexes">AcquireCacheViewIndexes</a> &bull; <a href="#AcquireCacheViewPixels">AcquireCacheViewPixels</a> &bull; <a href="#AcquireImagePixels">AcquireImagePixels</a> &bull; <a href="#AcquireIndexes">AcquireIndexes</a> &bull; <a href="#AcquireMemory">AcquireMemory</a> &bull; <a href="#AcquireOneCacheViewPixel">AcquireOneCacheViewPixel</a> &bull; <a href="#AcquireOneCacheViewVirtualPixel">AcquireOneCacheViewVirtualPixel</a> &bull; <a href="#AcquireOneMagickPixel">AcquireOneMagickPixel</a> &bull; <a href="#AcquireOnePixel">AcquireOnePixel</a> &bull; <a href="#AcquireOneVirtualPixel">AcquireOneVirtualPixel</a> &bull; <a href="#AcquirePixels">AcquirePixels</a> &bull; <a href="#AffinityImage">AffinityImage</a> &bull; <a href="#AffinityImages">AffinityImages</a> &bull; <a href="#AllocateImage">AllocateImage</a> &bull; <a href="#AllocateImageColormap">AllocateImageColormap</a> &bull; <a href="#AllocateNextImage">AllocateNextImage</a> &bull; <a href="#AllocateString">AllocateString</a> &bull; <a href="#AverageImages">AverageImages</a> &bull; <a href="#ChannelThresholdImage">ChannelThresholdImage</a> &bull; <a href="#ClipPathImage">ClipPathImage</a> &bull; <a href="#CloneImageAttributes">CloneImageAttributes</a> &bull; <a href="#CloneMemory">CloneMemory</a> &bull; <a href="#CloseCacheView">CloseCacheView</a> &bull; <a href="#ColorFloodfill">ColorFloodfill</a> &bull; <a href="#DeleteImageAttribute">DeleteImageAttribute</a> &bull; <a href="#DeleteImageList">DeleteImageList</a> &bull; <a href="#DeleteMagickRegistry">DeleteMagickRegistry</a> &bull; <a href="#DescribeImage">DescribeImage</a> &bull; <a href="#DestroyImageAttributes">DestroyImageAttributes</a> &bull; <a href="#DestroyImages">DestroyImages</a> &bull; <a href="#DestroyMagick">DestroyMagick</a> &bull; <a href="#DispatchImage">DispatchImage</a> &bull; <a href="#ExtractSubimageFromImageImage">ExtractSubimageFromImageImage</a> &bull; <a href="#FlattenImages">FlattenImages</a> &bull; <a href="#FormatImageAttribute">FormatImageAttribute</a> &bull; <a href="#FormatMagickString">FormatMagickString</a> &bull; <a href="#FormatString">FormatString</a> &bull; <a href="#GetConfigureBlob">GetConfigureBlob</a> &bull; <a href="#GetCacheView">GetCacheView</a> &bull; <a href="#GetCacheViewIndexes">GetCacheViewIndexes</a> &bull; <a href="#GetCacheViewPixels">GetCacheViewPixels</a> &bull; <a href="#GetImageAttribute">GetImageAttribute</a> &bull; <a href="#GetImageClippingPathAttribute">GetImageClippingPathAttribute</a> &bull; <a href="#GetImageFromMagickRegistry">GetImageFromMagickRegistry</a> &bull; <a href="#GetMagickRegistry">GetMagickRegistry</a> &bull; <a href="#GetImageGeometry">GetImageGeometry</a> &bull; <a href="#GetImageList">GetImageList</a> &bull; <a href="#GetImageListIndex">GetImageListIndex</a> &bull; <a href="#GetImageListSize">GetImageListSize</a> &bull; <a href="#GetImagePixels">GetImagePixels</a> &bull; <a href="#GetIndexes">GetIndexes</a> &bull; <a href="#GetNextImage">GetNextImage</a> &bull; <a href="#GetNextImageAttribute">GetNextImageAttribute</a> &bull; <a href="#GetNumberScenes">GetNumberScenes</a> &bull; <a href="#GetOnePixel">GetOnePixel</a> &bull; <a href="#GetPixels">GetPixels</a> &bull; <a href="#GetPreviousImage">GetPreviousImage</a> &bull; <a href="#HSLTransform">HSLTransform</a> &bull; <a href="#IdentityAffine">IdentityAffine</a> &bull; <a href="#InitializeMagick">InitializeMagick</a> &bull; <a href="#InterpolatePixelColor">InterpolatePixelColor</a> &bull; <a href="#InterpretImageAttributes">InterpretImageAttributes</a> &bull; <a href="#LevelImageColor">LevelImageColor</a> &bull; <a href="#LiberateMemory">LiberateMemory</a> &bull; <a href="#LiberateSemaphoreInfo">LiberateSemaphoreInfo</a> &bull; <a href="#MagickIncarnate">MagickIncarnate</a> &bull; <a href="#MagickMonitor">MagickMonitor</a> &bull; <a href="#MapImage">MapImage</a> &bull; <a href="#MapImages">MapImages</a> &bull; <a href="#MatteFloodfill">MatteFloodfill</a> &bull; <a href="#MaximumImages">MaximumImages</a> &bull; <a href="#MinimumImages">MinimumImages</a> &bull; <a href="#MedianFilterImage">MedianFilterImage</a> &bull; <a href="#ModeImage">ModeImage</a> &bull; <a href="#MosaicImages">MosaicImages</a> &bull; <a href="#OpaqueImage">OpaqueImage</a> &bull; <a href="#OpenCacheView">OpenCacheView</a> &bull; <a href="#OpenMagickStream">OpenMagickStream</a> &bull; <a href="#PaintFloodfill">PaintFloodfill</a> &bull; <a href="#PaintOpaqueImage">PaintOpaqueImage</a> &bull; <a href="#PaintTransparentImage">PaintTransparentImage</a> &bull; <a href="#ParseSizeGeometry">ParseSizeGeometry</a> &bull; <a href="#PopImageList">PopImageList</a> &bull; <a href="#PopImagePixels">PopImagePixels</a> &bull; <a href="#PostscriptGeometry">PostscriptGeometry</a> &bull; <a href="#PushImageList">PushImageList</a> &bull; <a href="#PushImagePixels">PushImagePixels</a> &bull; <a href="#QuantizationError">QuantizationError</a> &bull; <a href="#RandomChannelThresholdImage">RandomChannelThresholdImage</a> &bull; <a href="#ReacquireMemory">ReacquireMemory</a> &bull; <a href="#RecolorImage">RecolorImage</a> &bull; <a href="#ReduceNoiseImage">ReduceNoiseImage</a> &bull; <a href="#ResetImageAttributeIterator">ResetImageAttributeIterator</a> &bull; <a href="#SetCacheViewPixels">SetCacheViewPixels</a> &bull; <a href="#SetExceptionInfo">SetExceptionInfo</a> &bull; <a href="#SetImage">SetImage</a> &bull; <a href="#SetImageAttribute">SetImageAttribute</a> &bull; <a href="#SetImageList">SetImageList</a> &bull; <a href="#SetImagePixels">SetImagePixels</a> &bull; <a href="#SetMagickRegistry">SetMagickRegistry</a> &bull; <a href="#SetMonitorHandler">SetMonitorHandler</a> &bull; <a href="#ShiftImageList">ShiftImageList</a> &bull; <a href="#SpliceImageList">SpliceImageList</a> &bull; <a href="#Strip">Strip</a> &bull; <a href="#SyncCacheView">SyncCacheView</a> &bull; <a href="#SyncCacheViewPixels">SyncCacheViewPixels</a> &bull; <a href="#SyncImagePixels">SyncImagePixels</a> &bull; <a href="#TemporaryFilename">TemporaryFilename</a> &bull; <a href="#ThresholdImage">ThresholdImage</a> &bull; <a href="#ThresholdImageChannel">ThresholdImageChannel</a> &bull; <a href="#TransformHSL">TransformHSL</a> &bull; <a href="#TranslateText">TranslateText</a> &bull; <a href="#TransparentImage">TransparentImage</a> &bull; <a href="#UnshiftImageList">UnshiftImageList</a> &bull; <a href="#ZoomImage">ZoomImage</a>]</p>
 
 <h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="AcquireCacheViewIndexes">AcquireCacheViewIndexes</a></h2>
 <div class="doc-section">
@@ -2255,6 +2280,26 @@
 <p>the image.</p>
 
  </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="OpenMagickStream">OpenMagickStream</a></h2>
+<div class="doc-section">
+
+<p>OpenMagickStream() opens the file at the specified path and return the associated stream.</p>
+
+<p>The path of the OpenMagickStream method is:</p>
+
+<pre class="code">
+  FILE *OpenMagickStream(const char *path,const char *mode)
+</pre>
+
+<p>A description of each parameter follows.</p>
+
+<h5> path</h5>
+<p>the file path.</p>
+
+<h5> mode</h5>
+<p>the file mode.</p>
+
+ </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/deprecate_8c.html" id="PaintFloodfill">PaintFloodfill</a></h2>
 <div class="doc-section">
 
@@ -2273,8 +2318,9 @@
 
 <pre class="code">
   MagickBooleanType PaintFloodfillImage(Image *image,
-    const ChannelType channel,const MagickPixelPacket target,const ssize_t x,
-    const ssize_t y,const DrawInfo *draw_info,const PaintMethod method)
+    const ChannelType channel,const MagickPixelPacket target,
+    const ssize_t x,const ssize_t y,const DrawInfo *draw_info,
+    const PaintMethod method)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -3231,7 +3277,7 @@
     <span id="linkbar-east">&nbsp;</span>
   </div>
   <div class="footer">
-    <span id="footer-west">&copy; 1999-2012 ImageMagick Studio LLC</span>
+    <span id="footer-west">&copy; 1999-2011 ImageMagick Studio LLC</span>
     <span id="footer-east"> <a href="../http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>

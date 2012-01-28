@@ -20,7 +20,7 @@
   <meta name="Description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
   <meta name="Application-url" content="http://www.imagemagick.org"/>
   <meta name="Generator" content="PHP"/>
-  <meta name="Keywords" content="command-line, options, ImageMagick, ImageMagic, MagickCore, MagickWand, PerlMagick, Magick++, RMagick, PythonMagick, JMagick, TclMagick, Image, Magick, Magic, Wand, ImageMagickObject, Image, Processing, Automagically"/>
+  <meta name="Keywords" content="command-line, options, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
   <meta name="Rating" content="GENERAL"/>
   <meta name="Robots" content="INDEX, FOLLOW"/>
   <meta name="Generator" content="ImageMagick Studio LLC"/>
@@ -33,24 +33,33 @@
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
+  <!-- Add jQuery library -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  
+  <!-- Optionaly include easing and/or mousewheel plugins -->
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.easing-1.3.pack.js"></script>
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
+  
+  <!-- Add fancyBox -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.3"></script>
+  
+  <!-- Optionaly include button and/or thumbnail helpers -->
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.3"></script>
+  
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.3" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.3"></script>
+  <script type="text/javascript">
+  	$(document).ready(function() {
+  		$(".fancybox").fancybox();
+  	});
+  </script>
+  <!-- ImageMagick style -->
   <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
-  <link rel="stylesheet" type="text/css" href="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
-  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $("a[href$=.jpg],a[href$=.png],a[href$=.gif]").fancybox({
-        'transitionIn'  : 'elastic',
-        'transitionOut' : 'elastic',
-        'overlayShow'   : false,
-        'opacity'       : true
-      });
-    });
-  </script>
 </head>
 
 <body id="www-imagemagick-org">
@@ -157,57 +166,62 @@
   <a title="Site Map: Links" href="../www/links.html">Links</a>
 </div>
 <div class="sep"></div>
-<div  class="menu">
+<div class="menu">
   <a rel="follow" title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
 
-<a href="http://www.networkredux.com">
-  <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]"
-  style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.networkredux.com"> <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
+  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201204010120 mickey@163... -->
 <div class="sponsbox">
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540s suvalj -->
+<div class="sponsor">
+  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
 </div>
-<div  class="sponsor">
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201110010090s jen@seo lowprofilelinks -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201203010270 info@pkwte... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 201110010720 -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Web Site Hosting" href="http://webhostinggeeks.com">Web Site Hosting</a><!-- 201302010900 funds@enmob... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Deals" href="http://www.webhostingdeals.org">Web Hosting Deals</a><!-- 201111010270 chee.hoa darin -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Tenant Check" href="http://www.rentmethod.com/">Tenant Check</a><!-- 201203010090 chris@rentm... -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Autos part" href="http://www.pkwteile.de/autoteile">Autos part</a><!-- 201112010090s jr@pkwte... -->
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201204010090 barsh@inter... -->
 </div>
-<div  class="sponsor">
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540 suvalj -->
+</div>
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
+</div>
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingsecretrevealed.com">Web Hosting Secret Revealed</a><!-- 201204010540 iamchee jerry -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Break" href="http://www.webhostingbreak.com">Web Hosting Break</a><!-- 201109010090 ian@ian-m... -->
-</div>
-<div  class="sponsor">
+<div class="sponsor">
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Website Hosting" href="http://www.hostreviewgeeks.com">Website Hosting</a><!-- 201110010090 alexanian media -->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Hotel München" href="http://www.messehotel-erb-muenchen.de">Hotel München</a><!-- 201111010450 cerb -->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Best Web Hosting" href="http://webhostinggeeks.com">Best Web Hosting</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Flyer drucken" href="http://www.online-druck.biz">Flyer drucken</a><!-- 201109010900 Floeter-->
-</div>
-<div  class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Ratings" href="http://webhostingrating.com">Web Hosting Ratings</a><!-- 201110010720 -->
-</div>
-<div  class="sponsor">
-   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.webhostingclue.com">Best Web Hosting</a><!-- 2012030100300 accounting@webhostingclue -->
 </div>
 </div>
 </div>
@@ -215,6 +229,17 @@
 
 <div class="eastbar">
   <div class="g-plusone" data-size="standard" data-count="false"></div>
+  <script type="text/javascript">
+    window.___gcfg = {
+      lang: 'en-US'
+    };
+
+    (function() {
+      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+      po.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+  </script>
 </div>
 
 <div class="main">
@@ -232,7 +257,7 @@ option name in the navigation bar above and you will go right to it. Unless
 otherwise noted, each option is recognized by the commands <a href="../www/convert.html">convert</a>, <a href="../www/mogrify.html">mogrify</a>.</p>
 
 <div style="margin: auto;">
-  <h4><a id="adaptive-blur"></a>-adaptive-blur <em class="arg">radius</em>[x<em class="arg">sigma</em>]</h4>
+  <h4><a id="adaptive-blur"></a>-adaptive-blur <em class="arg">radius</em>[x<em class="arg">sigma</em>+<em class="arg">bias</em>]</h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Adaptively blur pixels, with decreasing effect near edges.</td><td style='text-align:right;'></td></tr></table>
@@ -247,7 +272,7 @@ otherwise noted, each option is recognized by the commands <a href="../www/conve
 <p>See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. The <a href="#adaptive-resize">-adaptive-resize</a> option defaults to data-dependent triangulation.  Use the <a href="#filter">-filter</a> to choose a different resampling algorithm.  Offsets, if present in the geometry string, are ignored, and the <a href="#gravity">-gravity</a> option has no effect.</p>
 
 <div style="margin: auto;">
-  <h4><a id="adaptive-sharpen"></a>-adaptive-sharpen <em class="arg">radius</em>[x<em class="arg">sigma</em>]</h4>
+  <h4><a id="adaptive-sharpen"></a>-adaptive-sharpen <em class="arg">radius</em>[x<em class="arg">sigma</em>+<em class="arg">bias</em>]</h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Adaptively sharpen pixels, with increasing effect near edges.</td><td style='text-align:right;'></td></tr></table>
@@ -279,7 +304,7 @@ strings, such as '<kbd>%d</kbd>' or '<kbd>%03d</kbd>', are familiar to those
 who have used the standard <kbd>printf()</kbd>' C-library function. As an
 example, the command</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: rose: -morph 15 my%02dmorph.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: rose: -morph 15 my%02dmorph.jpg</span></p>
 <p>will create a sequence of 17 images (the two given plus 15 more created by
 <a href="#morph">-morph</a>), named: my00morph.jpg, my01morph.jpg,
 my02morph.jpg, ..., my16morph.jpg.  </p>
@@ -330,7 +355,7 @@ system: positive <em class="arg">x</em> and <em class="arg">y</em> directions
 are rightward and downward, resp.; positive rotation is clockwise.</p>
 
 <p> If the translation coefficients <em class="arg">t<sub>x</sub></em> and <em
-class="arg">t<sub>y</sub></em> are omotted they default to 0,0. Therefore,
+class="arg">t<sub>y</sub></em> are omitted they default to 0,0. Therefore,
 four parameters suffice for rotation and scaling without translation.</p>
 
 <p>Scaling by the factors <em class="arg">s<sub>x</sub></em> and <em
@@ -447,6 +472,12 @@ channel data, to create an alpha channel, or to perform other operations on the 
        it fully-transparent.  This can make some image file formats, such as
        PNG, smaller as the RGB values of transparent pixels are more uniform,
        and thus can compress better.
+       </td></tr>
+
+  <tr valign="top">
+    <td valign="top"><kbd>Flatten</kbd></td>
+    <td valign="top">
+       Composite the image over the background color.
        </td></tr>
   </tbody>
 </table>
@@ -597,10 +628,10 @@ and then performs the appropriate 90 degree rotation on the image to orient
 the image, for correct viewing. </p>
 
 <p>This EXIF profile setting is usually set using a gravity sensor in digital
-camara, however photos taken directly downward or upward may not have an
+camera, however photos taken directly downward or upward may not have an
 appropriate value.  Also images that have been orientation 'corrected' without
 reseting this setting, may be 'corrected' again resulting in a incorrect
-result.  If the he EXIF profile was previously stripped, the  <a
+result.  If the EXIF profile was previously stripped, the  <a
 href="#auto-orient" >-auto-orient</a> operator will do nothing. </p>
 
 
@@ -637,8 +668,8 @@ href="#auto-orient" >-auto-orient</a> operator will do nothing. </p>
 
 <p>Repeat the entire command for the given number of <em class="arg">iterations</em> and report the user-time and elapsed time. For instance, consider the following command and its output.  Modify the benchmark with the -duration to run the benchmark for a fixed number of seconds and -concurrent to run the benchmark in parallel (requires the OpenMP feature).</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -resize 1000% -bench 5 logo.png</span><span class='crtout'>Performance: 5i 0.875657ips 6.880u 0:05.710</span></p>
-<p>In this example, 5 iterations were completed at 0.875657 iterations per second, using 6.88 seconds of the user's allotted time, for a total elapsed time of 5.71 seconds.</p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -resize 1000% -bench 5 logo.png</span><span class='crtout'>Performance[4]: 5i 0.875657ips 6.880u 0:05.710</span></p>
+<p>In this example, 5 iterations were completed at 0.875657 iterations per second, using 4 threads and 6.88 seconds of the user's allotted time, for a total elapsed time of 5.71 seconds.</p>
 
 <div style="margin: auto;">
   <h4><a id="bias"></a>-bias <em class="arg">value</em>{<em class="arg">%</em>}</h4>
@@ -703,7 +734,7 @@ the background image is weighted by the exact opposite amount. That is a
 <div style="margin: auto;">
 
 <div style="margin: auto;">
-  <h4><a id="blur"></a>-blur <em class="arg">radius</em><br />-blur <em class="arg">radius</em>x<em class="arg">sigma</em></h4>
+  <h4><a id="blur"></a>-blur <em class="arg">radius</em><br />-blur <em class="arg">radius</em>x<em class="arg">sigma</em>+<em class="arg">bias</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Reduce image noise and reduce detail levels.</td><td style='text-align:right;'></td></tr></table>
@@ -723,11 +754,11 @@ integer.  If not given, or set to zero, IM will calculate the largest possible
 radius that will provide meaningful results for the Gaussian distribution.
 </p>
 
-<p>The larger the <em class="arg" >Radius</em> the radius the slower the
+<p>The larger the <em class="arg" >Radius</em> the slower the
 operation is. However too small a <em class="arg" >Radius</em>, and sever
 aliasing effects may result.  As a guideline, <em class="arg" >Radius</em>
 should be at least twice the <em class="arg" >Sigma</em> value, though three
-times will produce a more accurite result. </p>
+times will produce a more accurate result. </p>
 
 <p>This option differs from <a href="#gaussian-blur">-gaussian-blur</a> simply
 by taking advantage of the separability properties of the distribution.  Here
@@ -751,7 +782,7 @@ mapping. </p>
 
 <p>The ellipse is weighted with sigma set to the given <em class="arg"
 >Width</em> and <em class="arg" >Height</em>. The <em class="arg" >Height</em>
-defaults to the <em class="arg" >Width</em> for a normal circular Guassian
+defaults to the <em class="arg" >Width</em> for a normal circular Gaussian
 weighting.  The <em class="arg" >Angle</em> will rotate the ellipse from
 horizontal clock-wise.  </p>
 
@@ -767,7 +798,7 @@ pixels which are outside the image proper are blurred into the final result.
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Surround the image with a border of color. </td><td style='text-align:right;'></td></tr></table>
 
 <p>Set the width and height using the <em class="arg">size</em> portion of the
-<em class="arg">gravity</em> argument.  See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. Offsets are
+<em class="arg">geometry</em> argument.  See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. Offsets are
 ignored. </p>
 
 <p>Set the border color by preceding with the <a
@@ -863,7 +894,7 @@ class="arg">@</em>, the image caption is read from a file titled by the
 remaining characters in the string.  Comments read in from a file are literal;
 no embedded formatting characters are recognized.</p>
 
-<p>Caption meta-data ais not visible on the image itself. To do that use the
+<p>Caption meta-data is not visible on the image itself. To do that use the
 <a href="#annotate">-annotate</a> or <a href="#draw">-draw</a> options
 instead.</p>
 
@@ -971,7 +1002,7 @@ channel</a>.</p>
 <p>By default, ImageMagick sets <a href="#channel">-channel</a> to the value
 '<kbd>RGBK,sync</kbd>', which specifies that operators act on all color
 channels except the transparency channel, and that all the color channels are
-to be modified in exactly the same way, with a understanding of transprancy
+to be modified in exactly the same way, with an understanding of transparency
 (depending on the operation being applied).  The 'plus' form <a
 href="#channel" >+channel</a> will reset the value back to this default. </p>
 
@@ -1039,7 +1070,7 @@ href="#clut">-clut</a> operator is a good example of this. </p>
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Restrict image colors from 0 to the quantum depth.</td><td style='text-align:right;'></td></tr></table>
 
 <div style="margin: auto;">
-  <h4><a id="charcoal"></a>-charcoal <em class="arg">factor</em></h4>
+  <h4><a id="charcoal"></a>-charcoal <em class="arg">radius</em><br />-charcoal <em class="arg">radius</em>x<em class="arg">sigma</em>+<em class="arg">bias</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Simulate a charcoal drawing.</td><td style='text-align:right;'></td></tr></table>
@@ -1066,7 +1097,7 @@ offsets so as to remove a single edge from an image.  Compare this to <a
 href="#shave" >-shave</a> which removes equal numbers of pixels from oppisite
 sides of the image.  </p>
 
-<p>Using <a href="#chop">-chop</a> will effectivally undo the results of a <a
+<p>Using <a href="#chop">-chop</a> effectively undoes the results of a <a
 href="#splice">-splice</a> that was given the same <em
 class="arg">geometry</em> and <a href="#gravity">-gravity</a> settings. </p>
 
@@ -1081,7 +1112,7 @@ class="arg">geometry</em> and <a href="#gravity">-gravity</a> settings. </p>
 
 <p>For example, in the command</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -clip -negate cockatoo.tif negated.tif</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -clip -negate cockatoo.tif negated.tif</span></p>
 <p>only the pixels within the clipping path are negated.</p>
 
 <p>The <a href="#clip">-clip</a> feature requires the XML library. If the XML library is not present, the option is ignored.</p>
@@ -1109,7 +1140,7 @@ operation. </p>
   <h4><a id="clip-path"></a>-clip-path <em class="arg">id</em></h4>
 </div>
 
-<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Clip along a named path from the 8BImageMagick profile.</td><td style='text-align:right;'></td></tr></table>
+<table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Clip along a named path from the 8BIM profile.</td><td style='text-align:right;'></td></tr></table>
 
 <p>This is almost identical to <a href="#clip">-clip</a>. </p>
 
@@ -1403,7 +1434,7 @@ CMYKA images) and offsets are normalized (divide Flash offset by 255).</p>
 <p>This option can be thought of as the inverse to <a href="#separate">-separate</a>, so long as the channel settings are the same. Thus, in the following example, the final image should be a copy of the original.
 </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert original.png -channel RGB -separate sepimage.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert sepimage-0.png sepimage-1.png sepimage-2.png -channel RGB \ <br/> -combine imagecopy.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert original.png -channel RGB -separate sepimage.png</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert sepimage-0.png sepimage-1.png sepimage-2.png -channel RGB \ <br/> -combine imagecopy.png</span></p>
 <div style="margin: auto;">
   <h4><a id="comment"></a>-comment <em class="arg">string</em></h4>
 </div>
@@ -1505,9 +1536,24 @@ to '<kbd>false</kbd>'.  </p>
 
 <p>If <kbd>LZW</kbd> compression is specified but LZW compression has not been enabled, the image data is written in an uncompressed LZW format that can be read by LZW decoders. This may result in larger-than-expected GIF files.</p>
 
-<p><kbd>Lossless</kbd> refers to lossless JPEG, which is only available if the JPEG library has been patched to support it. Use of lossless JPEG is generally not recommended.</p>
+<p><kbd>Lossless</kbd> refers to lossless JPEG, which is only available if the
+JPEG library has been patched to support it. Use of lossless JPEG is generally
+not recommended.</p>
 
-<p>Use the <a href="#quality">-quality</a> option to set the compression level to be used by JPEG, PNG, MIFF, and MPEG encoders. Use the <a href="#sampling-factor">-sampling-factor</a> option to set the sampling factor to be used by JPEG, MPEG, and YUV encoders for down-sampling the chroma channels.</p>
+<p>
+When writing an ICO file, you may request that the images be encoded in
+PNG format, by specifying <kbd>Zip</kbd> compression.</p>
+
+<p>
+When writing a JNG file, specify <kbd>Zip</kbd> compression to request that
+the alpha channel be encoded in PNG "IDAT" format, or <kbd>JPEG</kbd>
+to request that it be encoded in JPG "JDAA" format.</p>
+
+<p>Use the <a href="#quality">-quality</a> option to set the compression level
+to be used by JPEG, PNG, MIFF, and MPEG encoders.
+Use the <a href="#sampling-factor">-sampling-factor</a> option to set the
+sampling factor to be used by JPEG, MPEG, and YUV encoders for down-sampling
+the chroma channels.</p>
 
 <div style="margin: auto;">
   <h4><a id="contrast"></a>-contrast</h4>
@@ -1519,7 +1565,7 @@ to '<kbd>false</kbd>'.  </p>
 
 <p>For a more pronounced effect you can repeat the option:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -contrast -contrast rose_c2.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert rose: -contrast -contrast rose_c2.png</span></p>
 <div style="margin: auto;">
   <h4><a id="contrast-stretch"></a>-contrast-stretch <em class="arg">black-point</em><br />-contrast-stretch <em class="arg">black-point</em>{x<em class="arg">white-point</em>}{<em class="arg">%</em>}}</h4>
 </div>
@@ -1616,7 +1662,11 @@ relative top left corner of the region cropped. </p>
 special single pixel transparent 'missed' image is returned, and a 'crop
 missed' warning given. </p>
 
-<p>It might be necessary to <a href="#repage" >+repage</a> the image prior to cropping the image to ensure the crop coordinate frame is relocated to the upper-left corner of the visible image.</p>
+<p>It might be necessary to <a href="#repage" >+repage</a> the image prior to
+cropping the image to ensure the crop coordinate frame is relocated to the
+upper-left corner of the visible image. This is especially true when you are
+going to write to an image format such as PNG that supports an image
+offset.</p>
 
 <div style="margin: auto;">
   <h4><a id="cycle"></a>-cycle <em class="arg">amount</em></h4>
@@ -1634,12 +1684,12 @@ colormap entry is shifted.</p>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>enable debug printout.</td><td style='text-align:right;'></td></tr></table>
 
-<p>The <kbd>events</kbd> parameter specifies which events are to be logged. It can be either <kbd>None</kbd>, <kbd>All</kbd>, <kbd>Trace</kbd>, or a comma-separated list consisting of one or more of the following domains: <kbd>Annotate</kbd>, <kbd>Blob</kbd>, <kbd>Cache</kbd>, <kbd>Coder</kbd>, <kbd>Configure</kbd>, <kbd>Deprecate</kbd>, <kbd>Exception</kbd>, <kbd>Locale</kbd>, <kbd>Render</kbd>, <kbd>Resource</kbd>, <kbd>Security</kbd>, <kbd>TemporaryFile</kbd>, <kbd>Transform</kbd>, <kbd>X11</kbd>, or <kbd>User</kbd>. </p>
+<p>The <kbd>events</kbd> parameter specifies which events are to be logged. It can be either <kbd>None</kbd>, <kbd>All</kbd>, <kbd>Trace</kbd>, or a comma-separated list consisting of one or more of the following domains: <kbd>Accelerate</kbd>, <kbd>Annotate</kbd>, <kbd>Blob</kbd>, <kbd>Cache</kbd>, <kbd>Coder</kbd>, <kbd>Configure</kbd>, <kbd>Deprecate</kbd>, <kbd>Exception</kbd>, <kbd>Locale</kbd>, <kbd>Render</kbd>, <kbd>Resource</kbd>, <kbd>Security</kbd>, <kbd>TemporaryFile</kbd>, <kbd>Transform</kbd>, <kbd>X11</kbd>, or <kbd>User</kbd>. </p>
 
 
 <p>For example, to log cache and blob events, use.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -debug "Cache,Blob" rose: rose.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -debug "Cache,Blob" rose: rose.png</span></p>
 <p>The <kbd>User</kbd> domain is normally empty, but developers can log user events in their private copy of ImageMagick.</p>
 
 <p>To print the complete list of debug methods, use <a href="#list">-list debug</a>.</p>
@@ -1710,6 +1760,16 @@ is case-dependent.</p>
 available:</p>
 
 <dl>
+
+<dt>compose:args=<em class="arg">arguments</em></dt>
+<dd>Sets certain compose argument values when using convert ... -compose ... -composite. See <a href="http://www.imagemagick.org/www/compose.html">Image Composition</a></dd>
+
+<dt>distort:scale=<em class="arg">value</em></dt>
+   <dd>Sets the output scaling factor for use with <a href="#distort">-distort</a></dd>
+
+<dt>distort:viewport=WxH+X+Y</dt>
+   <dd>Sets the viewport for use with <a href="#distort">-distort</a></dd>
+
 <dt>dcm:display-range=reset</dt>
 <dd>Set the display range to the minimum and maximum pixel values for the
     DCM image format.</dd>
@@ -1770,6 +1830,13 @@ available:</p>
    values 3 and 4, respectively, will use the zlib default strategy
    instead.</dd>
 
+<dt>png:format=<em class="arg">value</em></dt>
+   <dd> valid values are <em class="arg">png8</em>, <em class="arg">png24</em>,
+   and <em class="arg">png32</em>.  This property can be useful for specifying
+   the specific PNG format to be used, when the usual method of prepending the
+   format name to the output filename is inconvenient, such as when writing
+   a PNG-encoded ICO file.</dd>
+
 <dt>png:exclude-chunk=<em class="arg">value</em></dt>
 <dt>png:include-chunk=<em class="arg">value</em></dt>
 <dd>ancillary chunks to be excluded from or included in PNG output.
@@ -1795,6 +1862,13 @@ available:</p>
    -define png:include-chunk=none,gAMA
 </pre>
 
+    <p>As a special case, if the <kbd>sRGB</kbd> chunk is not excluded and
+    the PNG encoder recognizes that the image contains the sRGB ICC profile,
+    the PNG encoder will write the <kbd>sRGB</kbd> chunk instead of the entire
+    3144-byte ICC profile.  To force the PNG encoder to write the sRGB
+    profile as an <kbd>iCCP</kbd> chunk in the output PNG instead of the
+    <kbd>sRGB</kbd> chunk, exclude the <kbd>sRGB</kbd> chunk.</p>
+
     <p>The critical PNG chunks <kbd>IHDR</kbd>, <kbd>PLTE</kbd>,
     <kbd>IDAT</kbd>, and <kbd>IEND</kbd> cannot be excluded.  Any such
     entries appearing in the list will be ignored.</p>
@@ -1809,7 +1883,7 @@ available:</p>
     following for PNG output:</p>
 
 <pre class="text">
-   -define png:include-chunk=none,gama
+   -define png:include-chunk=none,trns,gama
 </pre>
 
     <p>The default behavior is to include all known PNG ancillary chunks
@@ -1850,12 +1924,27 @@ available:</p>
     If <a href="#depth">-depth</a> 32 is included, the result is
     double precision floating point format.</dd>
 
+<dt>showkernel=1</em></dt>
+   <dd>Outputs (to 'standard error') all the information about a generated <a href="#morphology">-morphology</a> kernel.</dd>
+
+<dt>tiff:quantum:polarity=min-is-black
+<br />
+tiff:quantum:polarity=min-is-white</dt>
+   <dd>Toggles the photometric interpretation</dd>
+
+<dt>tiff:rows-per-strip=<em class="arg">value</em></dt>
+   <dd>Sets the number of rows per strip</dd>
+
+<dt>tiff:tile-geometry=<em class="arg">WxH</em></dt>
+   <dd>Sets the tile size for pyramid tiffs. Requires the suffix PTIF: before the outputname</dd>
+
+
 </dl>
 
 <p>For example, to create a postscript file that will render only the black
 pixels of a bilevel image, use:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert bilevel.tif -define ps:imagemask eps3:stencil.ps</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert bilevel.tif -define ps:imagemask eps3:stencil.ps</span></p>
 <p>Set attributes of the image registry by prefixing the value with
 <kbd>registry:</kbd>.  For example, to set a temporary path to put work files,
 use:</p>
@@ -1984,7 +2073,7 @@ the  <em class="arg">scale</em> bounds.  In other words each pixel can lookup
 any other nearby pixel, producing complex 2 dimensional displacements, rather
 than a simple 1 dimensional vector displacements. </p>
 
-<p>Alteratively rather than supplying two separate images, as of IM v6.4.4-0,
+<p>Alternatively rather than supplying two separate images, as of IM v6.4.4-0,
 you can use the 'red' channel of the overlay image to specify the horizontal
 or X displacement, and the 'green' channel for the vertical or Y displacement.
 </p>
@@ -2118,7 +2207,7 @@ class="arg">method</em> being used. </p>
        distortions. <br/>
 
        More than 3 sets given control point pairs (12 numbers) is least
-       squares fitted to best match a lineary affine distortion. If only 2
+       squares fitted to best match a linear affine distortion. If only 2
        control point pairs (8 numbers) are given a two point image translation
        rotation and scaling is performed, without any possible  shearing,
        flipping or changes in aspect ratio to the resulting image. If only one
@@ -2150,7 +2239,7 @@ class="arg">method</em> being used. </p>
        alternative methods of defining this distortion, with ImageMagick doing
        the calculations needed to generate the required coefficients. You can
        see the internally generated coefficients, by using a <a
-       href="#verbose" >-verbose</a> setting with those other varients.  </td>
+       href="#verbose" >-verbose</a> setting with those other variants.  </td>
 
   </tr>
 
@@ -2165,13 +2254,13 @@ class="arg">method</em> being used. </p>
 
        The '<kbd>BilinearForward</kbd>' is used to map rectangles to any
        quadrilateral, while the '<kbd>BilinearReverse</kbd>' form maps any
-       quadrilateral to a rectangle, while preserving the straigth line edges
+       quadrilateral to a rectangle, while preserving the straight line edges
        in each case.  <br/>
 
        Note that '<kbd>BilinearForward</kbd>' can generate invalid pixels
        which will be colored using the <a href="#mattecolor" >-mattecolor</a>
-       color setting.  Also if the quadraterial becomes 'flipped' the image
-       may dissappear. <br/>
+       color setting.  Also if the quadrilateral becomes 'flipped' the image
+       may disappear. <br/>
 
        There are future plans to produce a true Bilinear distortion that will
        attempt to map any quadrilateral to any other quadrilateral, while
@@ -2186,7 +2275,7 @@ class="arg">method</em> being used. </p>
        Perspective distort the images, using a list of 4 or more sets of
        control points (as defined below).  More that 4 sets (16 numbers) of
        control points provide least squares fitting for more accurate
-       distortions (for the purposes of image registration and panarama
+       distortions (for the purposes of image registration and panorama
        effects).  Less than 4 sets will fall back to a '<kbd>Affine</kbd>'
        linear distortion.  <br/>
 
@@ -2202,7 +2291,7 @@ class="arg">method</em> being used. </p>
        Do a '<kbd>Perspective</kbd>' distortion biased on a set of 8
        pre-calculated coefficients. You can get these coefficients by looking
        at the <a href="#verbose" >-verbose</a> output of a
-       '<kbd>Prespective</kbd>' distortion, or by calculating them yourself.
+       '<kbd>Perspective</kbd>' distortion, or by calculating them yourself.
        If the last two perspective scaling coefficients are zero, the
        remaining 6 represents a transposed 'Affine Matrix'. </td>
 
@@ -2291,7 +2380,7 @@ class="arg">method</em> being used. </p>
     <td valign="top">
        Given the four coefficients (A,B,C,D) as defined by <a
        href="http://wiki.panotools.org/Lens_correction_model" >Helmut
-       Dersch</a>, perform a barrell or pin-cushion distortion appropriate to
+       Dersch</a>, perform a barrel or pin-cushion distortion appropriate to
        correct radial lens distortions.  That is in photographs, make straight
        lines straight again. <br/>
 
@@ -2315,7 +2404,7 @@ class="arg">method</em> being used. </p>
   <tr valign="top">
     <td valign="top"><kbd>BarrelInverse</kbd></td>
     <td valign="top">
-       This is very simular to '<kbd>Barrel</kbd>' with the same set of
+       This is very similar to '<kbd>Barrel</kbd>' with the same set of
        arguments, and argument handling.  However it uses the inverse
        of the radial polynomial,
        so that it forms the function <br/>
@@ -2342,7 +2431,7 @@ class="arg">method</em> being used. </p>
 
        The distortion has been likened to 'taffy pulling' using nails, or
        pins' stuck in a block of 'jelly' which is then moved to the new
-       position, distorting te surface of the jelly. <br/>
+       position, distorting the surface of the jelly. <br/>
 
        Internally it is equivalent to generating a displacement map (see <a
        href="#displace" >-displace</a>) for source image color look-up using
@@ -2378,7 +2467,7 @@ perspective distortion of the built-in "rose:" image. Note how spaces were
 used to group the 4 sets of coordinate pairs, to make it easier to read and
 understand.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>
 convert rose:  -virtual-pixel black \<br/>
      -distort Perspective '0,0,0,0  0,45,0,45  69,0,60,10  69,45,60,35' \<br/>
      rose_3d_rotated.gif</span></p>
@@ -2386,7 +2475,7 @@ convert rose:  -virtual-pixel black \<br/>
 a distortion, the distortion method is 'least squares' fitted to produce the
 best result for all the coordinate pairs given. If less than the ideal number
 of points are given, the distort will generally fall back to a simpler form of
-distortion that can handles the smaller number of coordinates (usally a linear
+distortion that can handles the smaller number of coordinates (usually a linear
 '<kbd>Affine</kbd>' distortion). </p>
 
 <p>By using more coordinates you can make use of image registration tool to
@@ -2402,7 +2491,7 @@ produce a higher quality image.  For example you can use
 a '<kbd>perspective</kbd>' distortion to view a infinitely tiled 'plane' all
 the way to the horizon. </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>
 convert -size 90x90 pattern:checkerboard -normalize -virtual-pixel tile \<br/>
      -distort perspective  '0,0,5,45  89,0,45,46  0,89,0,89  89,89,89,89' \<br/>
      checks_tiled.jpg</span></p>
@@ -2834,7 +2923,7 @@ multi-value version of evaluate. </p>
 display.  If the aspect ratio of the input image isn't exactly 4:3, then the
 image is centered on an 800x600 black canvas: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert input.jpg -resize 800x600 -background black -compose Copy \ <br />  -gravity center -extent 800x600 -quality 92 output.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert input.jpg -resize 800x600 -background black -compose Copy \ <br />  -gravity center -extent 800x600 -quality 92 output.jpg</span></p>
 
 
 <p>See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument.</p>
@@ -2847,13 +2936,13 @@ image is centered on an 800x600 black canvas: </p>
 
 <p>This option is most useful for extracting a subregion of a very large raw image.  Note that these two commands are equivalent:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 -extract 640x480+1280+960 \ <br/> image.rgb image.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 'image.rgb[640x480+1280+960]' \ <br/> image.rgb image.png</span></p><p>If you omit the offsets, as in</p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 16000x16000 -depth 8 -extract 640x480+1280+960 \ <br/> image.rgb image.png</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert -size 16000x16000 -depth 8 'image.rgb[640x480+1280+960]' \ <br/> image.rgb image.png</span></p><p>If you omit the offsets, as in</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 -extract 640x480 \ <br/> image.rgb image.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 16000x16000 -depth 8 -extract 640x480 \ <br/> image.rgb image.png</span></p>
 <p>the image is <em>resized</em> to the specified dimensions instead,
 equivalent to:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -size 16000x16000 -depth 8 -resize 640x480 image.rgb image.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -size 16000x16000 -depth 8 -resize 640x480 image.rgb image.png</span></p>
 <p>See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument.</p>
 
 <div style="margin: auto;">
@@ -2886,30 +2975,33 @@ equivalent to:</p>
 
 <p>The magnitude and phase component images must be specified using image formats that do not limit the color or compress the image. Thus, MIFF, TIF, PFM, EXR and PNG are the recommended image formats to use. All of these formats, except PNG support multi-frame images. So for example,</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -fft fft_image.miff</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png -fft fft_image.miff</span></p>
 <p>generates a magnitude image as <kbd>fft_image.miff[0]</kbd> and a phase image as <kbd>fft_image.miff[1]</kbd>. Similarly,</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -fft fft_image.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png -fft fft_image.png</span></p>
 <p>generates a magnitude image as <kbd>fft_image-0.png</kbd> and a phase image as <kbd>fft_image-1.png</kbd>. If you prefer this representation, then you can force any of the other formats to produce two output images by including <a href="#adjoin">+adjoin</a> following -fft in the command line.</p>
 
 <p>The input image can be any size, but if not square and even-dimensioned, it is padded automagically to the larger of the width or height of the input image and to an even number of pixels. The padding will occur at the bottom and/or right sides of the input image. The resulting output magnitude and phase images is square at this size. The kind of padding relies on the <a href="#virtual-pixel">-virtual-pixel</a> setting.</p>
 
-<p>Both output components will have dynamic ranges that fit within [0,&nbsp;<em class="QR">QuantumRange</em>], so that HDRI need not be enabled. Phase values nominally range from 0 to 2*&pi;, but for non-HDRI compilations of ImageMagick, the phase image is scaled to span the full dynamic range. The magnitude image is not scaled and thus generally will contain very small values. As such, the image normally will appear totally black. In order to view any detail, the magnitude image typically is enhanced with a log function into what is usually called the spectrum. A log function is used to enhance the darker values more in comparison to the lighter values. This can be done, for example, as follows:</p>
+<p>Both output components will have dynamic ranges that fit within [0,&nbsp;<em class="QR">QuantumRange</em>], so that HDRI need not be enabled. Phase values nominally range from 0 to 2*&pi;, but is scaled to span the full dynamic range.
+(The first few releases had non-HDRI scaled but HDRI not scaled). The magnitude image is not scaled and thus generally will contain very small values. As such, the image normally will appear totally black. In order to view any detail, the magnitude image typically is enhanced with a log function into what is usually called the spectrum. A log function is used to enhance the darker values more in comparison to the lighter values. This can be done, for example, as follows:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert fft_image.miff[0] -contrast-stretch 0 \ <br />
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert fft_image.miff[0] -contrast-stretch 0 \ <br />
                 -evaluate log 1000 fft_image_spectrum.png</span></p>
-<p>where the <a href="#contrast-stretch">-contrast-stretch</a> 0 is used to  scale the image to full dynamic range, first. The argument to the <a href="#evaluate">-evaluate</a> log typically is specified between 100 and 10,000, depending upon the amount of detail that one wants to bring out in the spectrum. Larger values produce more visible detail. Too much detail, however, may hide the important features.</p>
+<p>where either <a href="#contrast-stretch">-contrast-stretch</a> 0 or <a href="#auto-level">-auto-level</a> is used to scale the image to full dynamic range, first. The argument to the <a href="#evaluate">-evaluate</a> log typically is specified between 100 and 10,000, depending upon the amount of detail that one wants to bring out in the spectrum. Larger values produce more visible detail. Too much detail, however, may hide the important features.</p>
 
 <p>The <a href="http://www.fftw.org/">FFTW</a> delegate library is required to use <a href="#fft">-fft</a>.</p>
 
 <p>Use <a href="#fft">+fft</a> to produce two output images that are the real and imaginary components of the complex valued Fourier transform.</p>
 
-<p>However, as the real and imaginary components can contain negative values, this requires that IM be configured with HDRI enabled. In this case, you must use either MIFF, TIF or PFM formats for the real and imaginary component results, since they are formats that preserve both negative and fractional values without clipping them or truncating the fractional part.</p>
+<p>However, as the real and imaginary components can contain negative values, this requires that IM be configured with HDRI enabled. In this case, you must use either MIFF, TIF, PFM or MPC formats for the real and imaginary component results, since they are formats that preserve both negative and fractional values without clipping them or truncating the fractional part. With either 
+MIFF or TIF, one should add -define quantum:format=32, to allow those image 
+types to work properly in HDRI mode without clipping.</p>
 
-<p>The real and imaginary component images resulting from <a href="#fft">+fft</a> is also square, even dimensioned images due to the same padding that was discussed above for the magnitude and phase component images.</p>
+<p>The real and imaginary component images resulting from <a href="#fft">+fft</a> are also square, even dimensioned images due to the same padding that was discussed above for the magnitude and phase component images.</p>
 
 <p>See the discussion on HDRI implementations of ImageMagick on the page
-<a href="../www/high-dynamic-range.html">High Dynamic-Range Images</a>. For more about HDRI go the ImageMagick <a href="http://www.imagemagick.org/Usage/basics/#hdri">Usage</a> pages or this <a href="http://en.wikipedia.org/wiki/High_dynamic_range_imaging">Wikipedia</a> entry.
+<a href="../www/high-dynamic-range.html">High Dynamic-Range Images</a>. For more about HDRI go the ImageMagick <a href="http://www.imagemagick.org/Usage/basics/#hdri">Usage</a> pages, <a href="http://www.fmwconcepts.com/imagemagick/fourier_transforms/fourier.html">Fred's Fourier Processing With ImageMagick page</a> or this <a href="http://en.wikipedia.org/wiki/High_dynamic_range_imaging">Wikipedia</a> entry.
 </p>
 
 
@@ -3052,12 +3144,12 @@ href="#set" >-set</a>):-</p>
 
 <p>For example, to get a 8 lobe Bessel windowed Bessel filter:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -filter bessel \ <br/>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png -filter bessel \ <br/>
           -set filter:window=bessel -set filter:lobes=8 \ <br/>
           -resize 150%   image.jpg</span></p>
 <p>Or a raw un-windowed Sinc filter with 4 lobes:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -set filter:filter=sinc -set filter:lobes=4 \ <br/>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png -set filter:filter=sinc -set filter:lobes=4 \ <br/>
           -resize 150%   image.jpg</span></p>
 <p>Note that the use of expert options (except for 'blur' with simple resize
 filters, and 'verbose' for viewing the internal filter selection), are
@@ -3316,7 +3408,7 @@ of values.</p>
    -function <kbd>ArcSin</kbd> <em class="arg">width</em>,[<em class="arg">center</em>,[<em class="arg">range</em>,[<em class="arg">bias</em>]]]
 </p>
 
-<p>with all values given in terms of noramlize color values (0.0 for black,
+<p>with all values given in terms of normalized color values (0.0 for black,
 1.0 for white). Defaulting to values covering the full range from 0.0 to 1.0
 for bout input (<em class="arg">width</em>), and output (<em
 class="arg">width</em>) values. '<code>1.0,0.5,1.0,0.5</code>' </p>
@@ -3383,12 +3475,18 @@ All these values can be adjusted via the arguments.</p>
 
 <p>You can apply separate gamma values to the red, green, and blue channels of the image with a gamma value list delimited with commas (e.g., <kbd>1.7,2.3,1.2</kbd>).</p>
 
-<p>Use <a href="#gamma">+gamma <em class="arg">value</em></a> to set the image gamma level without actually adjusting the image pixels. This option is useful if the image is of a known gamma but not set as an image attribute (e.g. PNG images).</p>
+<p>Use <a href="#gamma">+gamma <em class="arg">value</em></a> to set the
+image gamma level without actually adjusting the image pixels. This option
+is useful if the image is of a known gamma but not set as an image attribute
+(e.g. PNG images).  Write the "file gamma" which is the reciprocal of the
+display gamma; e.g., if your image is sRGB and you want to write a PNG gAMA
+chunk, use
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert input.png +gamma .45455 output.png</span></p>(0.45455 is 1/2.2)</p>
 
 <p>Note that gamma adjustments are also available via the <a href="#level">-level</a> operator.</p>
 
 <div style="margin: auto;">
-  <h4><a id="gaussian-blur"></a>-gaussian-blur <em class="arg">radius</em><br />-gaussian-blur <em class="arg">radius</em>x<em class="arg">sigma</em></h4>
+  <h4><a id="gaussian-blur"></a>-gaussian-blur <em class="arg">radius</em><br />-gaussian-blur <em class="arg">radius</em>x<em class="arg">sigma</em>+<em class="arg">bias</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Blur the image with a Gaussian operator.</td><td style='text-align:right;'></td></tr></table>
@@ -3412,7 +3510,7 @@ radius that will provide meaningful results for the Gaussian distribution.
 operation is. However too small a <em class="arg" >Radius</em>, and sever
 aliasing effects may result.  As a guideline, <em class="arg" >Radius</em>
 should be at least twice the <em class="arg" >Sigma</em> value, though three
-times will produce a more accurite result. </p>
+times will produce a more accurate result. </p>
 
 <p>This differs from the faster <a href="#blur">-blur</a> operator in that a
 full 2-dimensional convolution is used to generate the weighted average of the
@@ -3443,13 +3541,13 @@ pixels which are outside the image proper are blurred into the final result.
 list of <a href="#gravity">-gravity</a> settings available in your ImageMagick
 installation.</p>
 
-<p>The direction you choose specifies where to position text or subimages. For example, a gravity of <kbd>Center</kbd> forces the text to be centered within the image. By default, the image gravity is <kbd>NorthWest</kbd>. See <a href="#draw">-draw</a> for more details about graphic primitives.  Only the text primitive of <a href="#draw">-draw</a> affected by the <a href="#gravity">-gravity</a> option.</p>
+<p>The direction you choose specifies where to position text or subimages. For example, a gravity of <kbd>Center</kbd> forces the text to be centered within the image. By default, the image gravity is <kbd>NorthWest</kbd>. See <a href="#draw">-draw</a> for more details about graphic primitives.  Only the text primitive of <a href="#draw">-draw</a> is affected by the <a href="#gravity">-gravity</a> option.</p>
 
 <p>The <a href="#gravity">-gravity</a> option is also used in concert with the <a href="#geometry">-geometry</a> setting and other settings or options that take <em class="arg">geometry</em> as an argument, such as the <a href="#crop">-crop</a> option. </p>
 
 <p>If a <a href="#gravity">-gravity</a> setting occurs before another option or setting having a <em class="arg">geometry</em> argument that specifies an offset, the offset is usually applied to the point within the image suggested by the <a href="#gravity">-gravity</a> argument.  Thus, in the following command, for example, suppose the file <kbd>image.png</kbd> has dimensions 200x100. The offset specified by the argument to <a href="#region">-region</a> is (&minus;40,+20). The argument to <a href="#gravity">-gravity</a> is <kbd>Center</kbd>, which suggests the midpoint of the image, at the point (100,50). The offset (&minus;40,20) is applied to that point, giving (100&minus;40,50+20)=(60,70), so the specified 10x10&nbsp;region is located at that point. (In addition, the <a href="#gravity">-gravity</a> affects the region itself, which is <em>centered</em> at the pixel coordinate&nbsp;(60,70). (See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument.)</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -gravity Center -region 10x10-40+20 \ <br/> -negate output.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png -gravity Center -region 10x10-40+20 \ <br/> -negate output.png</span></p>
 <p>When used as an option to <a href="../www/composite.html">composite</a>, <a href="#gravity">-gravity</a> gives the direction that the image gravitates within the composite.</p>
 
 <p>When used as an option to <a href="../www/montage.html">montage</a>, <a href="#gravity">-gravity</a> gives the direction that an image gravitates within a tile. The default gravity is <kbd>Center</kbd> for this purpose.</p>
@@ -3473,7 +3571,7 @@ dimensions.  Create it with the <kbd>HALD:</kbd> prefix (e.g. HALD:8).  You
 can apply any color transformation to the Hald image and then use this option
 to apply the transform to the image. </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png hald.png -hald-clut transform.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png hald.png -hald-clut transform.png</span></p>
 <p>This option provides a convenient method for you to use Gimp or Photoshop
 to make color corrections to the Hald CLUT image and subsequently apply them
 to multiple images using an ImageMagick script. </p>
@@ -3485,7 +3583,7 @@ href="#channel" >-channel</a> setting effected, nor can it adjust or modify an
 images transparency or alpha/matte channel.</p>
 
 <p>See also <a href="#clut" >-clut</a> which provides color value replacement
-of the individual color channels, usally involving a simplier gray-scale
+of the individual color channels, usually involving a simpler gray-scale
 image. E.g:  gray-scale to color replacement, or modification by a histogram
 mapping. </p>
 
@@ -3542,10 +3640,10 @@ image histogram, and others.</p>
 
 <p>For example, depending upon the image format used to store the result of the <a href="#fft">-fft</a>, one would use either</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert fft_image.miff -ift fft_image_ift.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert fft_image.miff -ift fft_image_ift.png</span></p>
 <p>or</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert fft_image-0.png fft_image-1.png -ift fft_image_ift.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert fft_image-0.png fft_image-1.png -ift fft_image_ift.png</span></p>
 
 <p>The resulting image may need to be cropped due to padding introduced when the original image, prior to the <a href="#fft">-fft</a> or <a href="#fft">+fft</a>, was not square or even dimensioned. Any padding is at the right and/or bottom sides of the image.</p>
 
@@ -3729,7 +3827,7 @@ sensitive to those small variations. </p>
 
 <p>This is commonly used to threshold images with an uneven background.  It is
 based on the assumption that average color of the small window is the
-the local background color, from which to separate the forground color. </p>
+the local background color, from which to separate the foreground color. </p>
 
 
 <div style="margin: auto;">
@@ -3836,7 +3934,7 @@ animation, or a fully-'coalesced' animation sequence. </p>
   </tr>
 
   <tr><td></td>
-    <td>This usally used as one of the final 'image layering' operations
+    <td>This usually used as one of the final 'image layering' operations
         overlaying all the prepared image layers into a final image. </td>
   </tr>
 
@@ -3859,14 +3957,14 @@ animation, or a fully-'coalesced' animation sequence. </p>
 
   <tr><td></td><td>Caution is advised when handling image layers with
         negative offsets as few image file formats handle them correctly.
-        Following this operation methd with <a href="#repage" >+repage</a>
+        Following this operation method with <a href="#repage" >+repage</a>
         will remove the layer offset, and create a image in which all the
         overlaid image positions relative to each other is preserved, though
-        not nessaraily exactly where you specified them.
+        not necessarily exactly where you specified them.
         </td>
   </tr>
 
-  <tr><td></td><td>See also 'trim-bounds' below whcih is closely related but
+  <tr><td></td><td>See also 'trim-bounds' below which is closely related but
         without  doing the'flatten' to merge the images together. </td>
   </tr>
 
@@ -3967,7 +4065,7 @@ animation, or a fully-'coalesced' animation sequence. </p>
 
   <tr><td></td><td>In a GIF animation, such images are usually frames which
         provide partial intermediary updates between the frames that are
-        actually displayed to users.  These frames are usally added for
+        actually displayed to users.  These frames are usually added for
         improved frame optimization in GIF animations. </td>
   </tr>
 
@@ -4088,7 +4186,7 @@ color (+ form). </p>
 
 <p>Use <a href="#list">-list resource</a> to list the current limits. For example, our system shows these limits:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list resource</span><span class='crtout'></span></p><pre class="text">
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -list resource</span><span class='crtout'></span></p><pre class="text">
   File         Area       Memory          Map         Disk   Thread         Time
   ------------------------------------------------------------------------------
    768     12.404GB    8.6642GiB    23.104GiB  18.446744EB        8    unlimited
@@ -4128,7 +4226,7 @@ color (+ form). </p>
 
 <p>This is very similar to <a href="#contrast-stretch" >-contrast-stretch</a>,
 and uses a 'histogram bin' to determine the range of color values that needs to
-be stretched.  However it then stretchs those colors using the <a
+be stretched.  However it then stretches those colors using the <a
 href="#level" >-level</a> operator.</p>
 
 <p>As such while the initial determination may have 'binning' round off
@@ -4189,7 +4287,7 @@ normalization of mathematical images. </p>
 list</kbd>" to get a complete listing of all the "<kbd>-list</kbd>" arguments
 available:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>identify -list list</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>identify -list list</span></p>
 <div style="margin: auto;">
   <h4><a id="log"></a>-log <em class="arg">string</em></h4>
 </div>
@@ -4219,7 +4317,7 @@ characters:</p>
 
 <p>For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -debug coders -log "%u %m:%l %e" in.gif out.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -debug coders -log "%u %m:%l %e" in.gif out.png</span></p>
 <p>The default behavior is to print all of the components.</p>
 
 <div style="margin: auto;">
@@ -4368,7 +4466,7 @@ name. </p>
 with the <a href="#fuzz" >-fuzz</a> factor (ignore pixels which
 only changed by a small amount).  Use '<kbd>PAE</kbd>' to find the
 size of the <a href="#fuzz" >-fuzz</a> factor needed to make all pixels
-'similar', while '<kbd>MAE</kbd>' dtermines the factor needed
+'similar', while '<kbd>MAE</kbd>' determines the factor needed
 for about half the pixels to be similar. </p>
 
 <p>The '<kbd>MEPP</kbd>' metric returns three different metrics
@@ -4447,7 +4545,7 @@ class="arg">option:modulate:colorspace</kbd>' to specify which colorspace to
 modulate.  Choose from <kbd>HSB</kbd>, <kbd>HSL</kbd> (the default), or
 <kbd>HWB</kbd>.  For example,</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.png -set option:modulate:colorspace hsb -modulate 120,90 modulate.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.png -set option:modulate:colorspace hsb -modulate 120,90 modulate.png</span></p>
 
 <div style="margin: auto;">
   <h4><a id="monitor"></a>-monitor</h4>
@@ -4462,7 +4560,6 @@ modulate.  Choose from <kbd>HSB</kbd>, <kbd>HSL</kbd> (the default), or
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>transform the image to black and white.</td><td style='text-align:right;'></td></tr></table>
 
-
 <div style="margin: auto;">
   <h4><a id="morph"></a>-morph <em class="arg">frames</em></h4>
 </div>
@@ -4470,7 +4567,7 @@ modulate.  Choose from <kbd>HSB</kbd>, <kbd>HSL</kbd> (the default), or
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>morphs an image sequence.</td><td style='text-align:right;'></td></tr></table>
 
 <p>Both the image pixels and size are linearly interpolated to give the
-appearance of a meta-morphosis from one image to the next, over all the images
+appearance of a metamorphosis from one image to the next, over all the images
 in the current image list. The added images are the equivalent of a <a
 href="#blend">-blend</a> composition. The <em class="arg">frames</em>
 argument determine how many images to interpolate between each image. </p>
@@ -4496,7 +4593,7 @@ Morphology</a>. </p>
 
 
 <div style="margin: auto;">
-  <h4><a id="motion-blur"></a>-motion-blur <em class="arg">radius</em><br />-motion-blur <em class="arg">radius</em>x<em class="arg">sigma</em>+<em class="arg">angle</em></h4>
+  <h4><a id="motion-blur"></a>-motion-blur <em class="arg">radius</em><br />-motion-blur <em class="arg">radius</em>x<em class="arg">sigma</em>+<em class="arg">angle</em>+<em class="arg">bias</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>simulate motion blur.</td><td style='text-align:right;'></td></tr></table>
@@ -4550,8 +4647,8 @@ pixels which are outside the image proper are blurred into the final result.
 
 <p>To print a complete list of noises, use the <a href="#list">-list noise</a> option.</p>
 
-<p>Also see the <a href="#evaluate">-evaluate</a> noise functions that allos
-the use of a controlling value to specify teh amount of noise that should be
+<p>Also see the <a href="#evaluate">-evaluate</a> noise functions that allows
+the use of a controlling value to specify the amount of noise that should be
 added to an image. </p>
 
 
@@ -4619,7 +4716,7 @@ This could be used with <em class="arg" >level</em> to do the equivalent of <a
 href="#posterize" >-posterize</a> to reduce an image to basic primary colors.
 </p>
 
-<p>The <kbd>checks</kbd> pattern produces a 3 level checkerbord dither
+<p>The <kbd>checks</kbd> pattern produces a 3 level checkerboard  dither
 pattern. That is a grayscale will become a pattern of solid black, solid
 white, and  mid-tone colors into a checkerboard pattern of black and white.
 </p>
@@ -4877,14 +4974,14 @@ orientation</a> option.</p>
 
 <p>Use <kbd>identify -verbose</kbd> to find out which profiles are in the image file. Use <a href="#strip">-strip</a> to remove all profiles (and comments).</p>
 
-<p>To extract a profile, the <a href="#profile">-profile</a> option is not used. Instead, simply write the file to an image format such as <em class="arg">APP1, 8BImageMagick, ICM,</em> or <em class="arg">IPTC</em>.</p>
+<p>To extract a profile, the <a href="#profile">-profile</a> option is not used. Instead, simply write the file to an image format such as <em class="arg">APP1, 8BIM, ICM,</em> or <em class="arg">IPTC</em>.</p>
 
 <p>For example, to extract the Exif data (which is stored in JPEG files in the <em class="arg">APP1</em> profile), use.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert cockatoo.jpg profile.exif</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert cockatoo.jpg profile.exif</span></p>
 <p>It is important to note that results may depend on whether or not the original image already has an included profile. Also, keep in mind that <a href="#profile">-profile</a> is an "operator" (as opposed to a "setting") and therefore a conversion is made each time it is encountered, in order, in the command-line. For instance, in the following example, if the original image is CMYK with profile, a CMYK-CMYK-RGB conversion results.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert CMYK.tif -profile "CMYK.icc" -profile "RGB.icc" RGB.tiff</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert CMYK.tif -profile "CMYK.icc" -profile "RGB.icc" RGB.tiff</span></p>
 <p>Furthermore, since ICC profiles are not necessarily symmetric, extra conversion steps can yield unwanted results.
 CMYK profiles are often very asymmetric since they involve 3&minus;&gt;4 and 4&minus;&gt;3 channel mapping.
 </p>
@@ -4964,7 +5061,7 @@ the <a href="http://www.w3.org/pub/WWW/TR">PNG</a> specification.</p>
 
 <p>This setting defines the colorspace used to sort out and reduce the number
 of colors needed by an image (for later dithering) by operators such as <a
-href="#colors" >-colors</a>, Note that color reducion also happens
+href="#colors" >-colors</a>, Note that color reduction also happens
 automatically when saving images to color-limited image file formats, such as
 GIF, and PNG8.</p>
 
@@ -4976,7 +5073,7 @@ GIF, and PNG8.</p>
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>suppress all warning messages. Error messages are still reported.</td><td style='text-align:right;'></td></tr></table>
 
 <div style="margin: auto;">
-  <h4><a id="radial-blur"></a>-radial-blur  <em class="arg">angle</em></h4>
+  <h4><a id="radial-blur"></a>-radial-blur  <em class="arg">angle</em>+<em class="arg">bias</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Blur around the center of the image.</td><td style='text-align:right;'></td></tr></table>
@@ -5125,7 +5222,7 @@ directly assign virtual canvas meta-data. </p>
 
 <p>Many image processing algorithms assume your image is in a linear-light coding.  If your image is gamma-corrected, you can remove the nonlinear gamma correction, apply the transform, then restore it like this:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert portrait.jpg -gamma .45455 -resize 25% -gamma 2.2  \ <br/> -quality 92 passport.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert portrait.jpg -gamma .45455 -resize 25% -gamma 2.2  \ <br/> -quality 92 passport.jpg</span></p>
 <div style="margin: auto;">
   <h4><a id="respect-parentheses"></a>-respect-parentheses</h4>
 </div>
@@ -5201,7 +5298,7 @@ ignored, unlike <a href="#resize">-resize</a>. </p>
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>minify/magnify the image using pixel block averaging and pixel replication, respectively.</td><td style='text-align:right;'></td></tr></table>
 
 <p>Change the image size simply by replacing pixels by averaging pixels
-together when minifying, or replacing pixels when magnifing.  </p>
+together when minifying, or replacing pixels when magnifying.  </p>
 
 <p>The results are thus equivalent to using <a href="#resize">-resize</a> with
 a <a href="#filter">-filter</a> setting of <kbd>box</kbd>.  Though it is a lot
@@ -5209,7 +5306,7 @@ faster, as it avoids all the filter processing of the image. As such it
 completely ignores the current <a href="#filter">-filter</a> setting. </p>
 
 <p>If when shrinking (minifying) images the original image is some integer
-multiple of the new image size, the number of pixels avergaed together to
+multiple of the new image size, the number of pixels averaged together to
 produce the new pixel color is the same across the whole image. This is
 a special case known as 'binning' and is often used as a method of reducing
 noise in image such as those generated by digital cameras, especially in low
@@ -5253,7 +5350,7 @@ of the color clusters is returned.</p>
 
 
 <div style="margin: auto;">
-  <h4><a id="selective-blur"></a>-selective-blur <em class="arg">radius</em><br />-selective-blur <em class="arg">radius</em>x<em class="arg">sigma</em>{<em class="arg">+threshold</em>}</h4>
+  <h4><a id="selective-blur"></a>-selective-blur <em class="arg">radius</em><br />-selective-blur <em class="arg">radius</em>x<em class="arg">sigma</em>{+<em class="arg">+threshold</em>+<em class="arg">bias</em>}</h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>Selectively blur pixels within a contrast threshold.</td><td style='text-align:right;'></td></tr></table>
@@ -5310,11 +5407,11 @@ using the options <a href="#comment" >-comment</a>, <a href="#label"
 a global 'artifact' which are automatically assigned (and any <a href="../www/escape.html" >Format Percent
 Escapes</a> expanded) to images as they are read in.  For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set comment 'Rose is a rose is a rose is a rose' rose.png</span><span class='crtout'>identify -format %c rose.png</span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>Rose is a rose is a rose is a rose</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert rose: -set comment 'Rose is a rose is a rose is a rose' rose.png</span><span class='crtout'>identify -format %c rose.png</span><span class="crtprompt"> $ </span><span class='crtin'>Rose is a rose is a rose is a rose</span></p>
 <p>The set value can also make use of <a href="../www/escape.html" >Format and Print Image
 Properties</a> in the defined value.  For example:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set origsize '%wx%h' -resize 50% \</span><span class='crtout'>        -format 'Old size = %[origsize]  New size = %wx%h' info:</span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>Old size = 70x46  New size = 35x23</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert rose: -set origsize '%wx%h' -resize 50% \</span><span class='crtout'>        -format 'Old size = %[origsize]  New size = %wx%h' info:</span><span class="crtprompt"> $ </span><span class='crtin'>Old size = 70x46  New size = 35x23</span></p>
 <p>Other well known 'properties' that are availible include:
 '<kbd>date:create</kbd>' and '<kbd>date:modify</kbd>' and
 '<kbd>signature</kbd>'. </p>
@@ -5329,12 +5426,12 @@ attribute. </p>
 <p>This option can also associate a colorspace or profile with your image.
 For example,</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert image.psd -set profile ISOcoated_v2_eci.icc image-icc.psd</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert image.psd -set profile ISOcoated_v2_eci.icc image-icc.psd</span></p>
 <p>Some 'properties' must be defined in a specific way to be used. For
 example only 'properties' prefixed with "<kbd>filename:</kbd>" can be used to
 modify the output filename of an image. For example</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose: -set filename:mysize '%wx%h' 'rose_%[filename:mysize].png'</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert rose: -set filename:mysize '%wx%h' 'rose_%[filename:mysize].png'</span></p>
 <p>If the setting value is prefixed with "<kbd>option:</kbd>" the setting will
 be saved as a global "Artifact" exactly as if it was set using the <a
 href="#define" >-define</a> option. As such settings are global in scope, they
@@ -5342,7 +5439,7 @@ can be used to pass 'attributes' and 'properties' of one specific image,
 in a way that allows you to use them in a completely different image, even if
 the original image has long since been modified or destroyed. For example: </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert rose:  -set option:rosesize '%wx%h' -delete 0 \</span><span class='crtout'>        label:'%[rosesize]'   label_size_of_rose.gif</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert rose:  -set option:rosesize '%wx%h' -delete 0 \</span><span class='crtout'>        label:'%[rosesize]'   label_size_of_rose.gif</span></p>
 <p>Note that <a href="../www/escape.html" >Format Percent Escapes</a> will only match
 a 'artifact' if the given <em class="arg">key</em> does not match an existing
 'attribute' or 'property'.  </p>
@@ -5355,7 +5452,7 @@ previously-formatted ancillary chunks into the output PNG file, using
 the commandline option as shown below or by setting the profile via a
 programming interface:</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -set profile PNG-chunk-x:&lt;filename&gt; out.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert in.png -set profile PNG-chunk-x:&lt;filename&gt; out.png</span></p>
 <p>where <em>x</em> is a location flag and
 <em class="arg">filename</em> is a file containing the chunk
 name in the first 4 bytes, then a colon (":"), followed by the chunk data.
@@ -5368,7 +5465,7 @@ of the same type, then add a short unique string after the "x" to prevent
 subsequent profiles from overwriting the preceding ones, e.g.,</p>
 
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -set profile PNG-chunk-b01:file01 / <br/>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert in.png -set profile PNG-chunk-b01:file01 / <br/>
             -profile PNG-chunk-b02:file02 out.png</span></p>
 <p>&nbsp;</p>
 
@@ -5397,7 +5494,7 @@ id="shared-memory"></a>-shared-memory</h4>
 <p>This option specifies whether the utility should attempt to use shared memory for pixmaps. ImageMagick must be compiled with shared memory support, and the display must support the <em class="arg">MIT-SHM</em> extension. Otherwise, this option is ignored. The default is <kbd>True</kbd>.</p>
 
 <div style="margin: auto;">
-  <h4><a id="sharpen"></a>-sharpen <em class="arg">radius</em>{x<em class="arg">sigma</em>}</h4>
+  <h4><a id="sharpen"></a>-sharpen <em class="arg">radius</em><br />-sharpen <em class="arg">radius</em>x<em class="arg">sigma</em>+<em class="arg">bias</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>sharpen the image.</td><td style='text-align:right;'></td></tr></table>
@@ -5428,10 +5525,10 @@ id="shared-memory"></a>-shared-memory</h4>
 
 <p>The horizontal shear is performed before the vertical part. This is important to note, since horizontal and vertical shears do not <em>commute</em>, i.e., the order matters in a sequence of shears. For example, the following two commands are not equivalent.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -shear 20x0 -shear 0x60 logo-sheared.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -shear 0x60 -shear 20x0 logo-sheared.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -shear 20x0 -shear 0x60 logo-sheared.png</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -shear 0x60 -shear 20x0 logo-sheared.png</span></p>
 <p>The first of the two commands above is equivalent to the following, except for the amount of empty space created; the command that follows generates a smaller image, and so is a better choice in terms of time and space.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert logo: -shear 20x60 logo-sheared.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert logo: -shear 20x60 logo-sheared.png</span></p>
 <div style="margin: auto;">
   <h4><a id="sigmoidal-contrast"></a>-sigmoidal-contrast <em class="arg">contrast</em>x<em class="arg">mid-point</em></h4>
 </div>
@@ -5465,7 +5562,7 @@ id="shared-memory"></a>-shared-memory</h4>
 </pre>
 
 <div style="margin: auto;">
-  <h4><a id="sketch"></a>-sketch <em class="arg">radius</em><br />-sketch <em class="arg">radius</em>x<em class="arg">sigma</em>+<em class="arg">angle</em></h4>
+  <h4><a id="sketch"></a>-sketch <em class="arg">radius</em><br />-sketch <em class="arg">radius</em>x<em class="arg">sigma</em>+<em class="arg">angle</em>+<em class="arg">bias</em></h4>
 </div>
 
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>simulate a pencil sketch.</td><td style='text-align:right;'></td></tr></table>
@@ -5577,7 +5674,7 @@ default value. </p>
 
 <p>This will add rows and columns of the current <a
 href="#background">-background</a> color into the given image according to the
-given  <a href="#gravity">-gravity</a> effectd geometry setting.  >See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. Essentually <a href="#splice">-splice</a> will divide the
+given  <a href="#gravity">-gravity</a> geometry setting.  >See <a href="../www/command-line-processing.html#geometry">Image Geometry</a> for complete details about the <em class="arg">geometry</em> argument. Essentially <a href="#splice">-splice</a> will divide the
 image into four quadrants, separating them by the inserted rows and columns.
 </P>
 
@@ -5736,9 +5833,9 @@ be the size of the larger_image - sub_image + 1.  The brightest location in
 this image is the location s the locate on the best match that is also
 reported. Note that this may or may nor be a perfect match, and the actual
 brightness will reflect this. Other bright 'peaks' can be used to locate other
-possible matching loctions. </p>
+possible matching locations. </p>
 
-<p>Note that the search will try to compare teh sub-image at every possible
+<p>Note that the search will try to compare the sub-image at every possible
 location in the larger image, as such it can be very slow.  The smaller the
 sub-image the faster this search is. </p>
 
@@ -5806,11 +5903,11 @@ the last two images in the sequence.</p>
 
 <p> The following would force pixels with red values above 50% to have 100% red values, while those at or below 50% red would be set to 0 in the red channel. The green, blue, and alpha channels (if present) would be unchanged. </p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -channel red -threshold 50% out.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert in.png -channel red -threshold 50% out.png</span></p>
 <p>As (possibly) impractical but instructive examples, the following would generate an all-black and an all-white image with the same dimensions as the input image.</p>
 
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -threshold 100% black.png</span><span class='crtout'></span><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert in.png -threshold -1 white.png</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert in.png -threshold 100% black.png</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>convert in.png -threshold -1 white.png</span></p>
 <p>Note that the values of the transparency channel is treated as 'matte'
 values (0 is opaque) and not as 'alpha' values (0 is transparent).</p>
 
@@ -5892,7 +5989,7 @@ values (0 is opaque) and not as 'alpha' values (0 is transparent).</p>
 
 <p>This option applies the transformation matrix from a previous <a href="#affine">-affine</a> option.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg</span></p>
 
 <p>This operator has been now been superseded by the  <a
 href="#distort">-distort</a> '<kbd>AffineProjection</kbd>' method. </p>
@@ -6000,9 +6097,9 @@ single pixel transparent 'missed' image is returned, in the same way as when a
 <table style='background-color:#FFFFE0; margin-left:40px; margin-right:40px; width:88%'><tr><td style='width:75%'>the image type.</td><td style='text-align:right;'></td></tr></table>
  <p>Choose from: <kbd>Bilevel</kbd>, <kbd>Grayscale</kbd>, <kbd>GrayscaleMatte</kbd>, <kbd>Palette</kbd>, <kbd>PaletteMatte</kbd>, <kbd>TrueColor</kbd>, <kbd>TrueColorMatte</kbd>, <kbd>ColorSeparation</kbd>, or <kbd>ColorSeparationMatte</kbd>.</p>
 
-<p>Normally, when a format supports different subformats such as grayscale and truecolor, the encoder will try to choose an efficient subformat. The <a href="#type">-type</a> option can be used to overrride this behavior. For example, to prevent a JPEG from being written in grayscale format even though only gray pixels are present, use.</p>
+<p>Normally, when a format supports different subformats such as grayscale and truecolor, the encoder will try to choose an efficient subformat. The <a href="#type">-type</a> option can be used to override this behavior. For example, to prevent a JPEG from being written in grayscale format even though only gray pixels are present, use.</p>
 
-<p class='crt'><span class="crtprompt"> $magick&gt; </span><span class='crtin'>convert bird.png -type TrueColor bird.jpg</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>convert bird.png -type TrueColor bird.jpg</span></p>
 <p>Similarly, use <a href="#type">-type TrueColorMatte</a> to force the encoder to write an alpha channel even though the image is opaque, if the output format supports transparency.</p>
 
 <p>Use <a href="#type">-type optimize</a> to ensure the image is written in the smallest possible file size.</p>
@@ -6253,6 +6350,7 @@ percentage, which defaults to 100 percent (no color change). </p>
 </div>
 </div>
 
+
 </div>
 
 <div id="linkbar">
@@ -6264,7 +6362,7 @@ percentage, which defaults to 100 percent (no color change). </p>
     <span id="linkbar-east">&nbsp;</span>
   </div>
   <div class="footer">
-    <span id="footer-west">&copy; 1999-2012 ImageMagick Studio LLC</span>
+    <span id="footer-west">&copy; 1999-2011 ImageMagick Studio LLC</span>
     <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>

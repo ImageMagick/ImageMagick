@@ -1,138 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE codermap [
-<!ELEMENT codermap (coder)+>
+<!ELEMENT codermap (coder)*>
 <!ELEMENT coder (#PCDATA)>
 <!ATTLIST coder magick CDATA #REQUIRED>
 <!ATTLIST coder name CDATA #REQUIRED>
 ]>
+<!--
+  Associate an image format with the specified coder module.
+
+  ImageMagick has a number of coder modules to support the reading and/or
+  writing of an image format (e.g. JPEG). Some coder modules support more
+  than one associated image format and the mapping between an associated
+  format and its respective coder module is defined in this configuration
+  file. For example, the PNG coder module not only supports the PNG image
+  format, but the JNG and MNG formats as well.
+-->
 <codermap>
-  <coder magick="8BIM" name="META"/>
-  <coder magick="8BIMTEXT" name="META"/>
-  <coder magick="8BIMWTEXT" name="META"/>
-  <coder magick="AFM" name="TTF"/>
-  <coder magick="A" name="RAW"/>
-  <coder magick="AI" name="PDF"/>
-  <coder magick="APP1JPEG" name="META"/>
-  <coder magick="APP1" name="META"/>
-  <coder magick="BIE" name="JBIG"/>
-  <coder magick="BMP2" name="BMP"/>
-  <coder magick="BMP3" name="BMP"/>
-  <coder magick="B" name="RAW"/>
-  <coder magick="BRF" name="BRAILLE"/>
-  <coder magick="BGR" name="RGB"/>
-  <coder magick="BRG" name="RGB"/>
-  <coder magick="CMYKA" name="CMYK"/>
-  <coder magick="C" name="RAW"/>
-  <coder magick="CR2" name="DNG"/>
-  <coder magick="CRW" name="DNG"/>
-  <coder magick="CUR" name="ICON"/>
-  <coder magick="DCR" name="DNG"/>
-  <coder magick="DCX" name="PCX"/>
-  <coder magick="DFONT" name="TTF"/>
-  <coder magick="EPDF" name="PDF"/>
-  <coder magick="EPI" name="PS"/>
-  <coder magick="EPS2" name="PS2"/>
-  <coder magick="EPS3" name="PS3"/>
-  <coder magick="EPSF" name="PS"/>
-  <coder magick="EPSI" name="PS"/>
-  <coder magick="EPS" name="PS"/>
-  <coder magick="EPT2" name="EPT"/>
-  <coder magick="EPT3" name="EPT"/>
-  <coder magick="EXIF" name="META"/>
-  <coder magick="FILE" name="URL"/>
-  <coder magick="FRACTAL" name="PLASMA"/>
-  <coder magick="FTP" name="URL"/>
-  <coder magick="FTS" name="FITS"/>
-  <coder magick="G3" name="FAX"/>
-  <coder magick="GIF87" name="GIF"/>
-  <coder magick="G" name="RAW"/>
-  <coder magick="GBR" name="RGB"/>
-  <coder magick="GRB" name="RGB"/>
-  <coder magick="GRANITE" name="MAGICK"/>
-  <coder magick="H" name="MAGICK"/>
-  <coder magick="HTM" name="HTML"/>
-  <coder magick="HTTP" name="URL"/>
-  <coder magick="ICB" name="TGA"/>
-  <coder magick="ICC" name="META"/>
-  <coder magick="ICM" name="META"/>
-  <coder magick="ICO" name="ICON"/>
-  <coder magick="IMPLICIT" name="***"/>
-  <coder magick="IPTC" name="META"/>
-  <coder magick="IPTCTEXT" name="META"/>
-  <coder magick="IPTCWTEXT" name="META"/>
-  <coder magick="ISOBRL" name="BRAILLE"/>
-  <coder magick="JBG" name="JBIG"/>
-  <coder magick="JNG" name="PNG"/>
-  <coder magick="JPC" name="JP2"/>
-  <coder magick="JPG" name="JPEG"/>
-  <coder magick="JPX" name="JP2"/>
-  <coder magick="K" name="RAW"/>
-  <coder magick="LOGO" name="MAGICK"/>
-  <coder magick="M2V" name="MPEG"/>
-  <coder magick="M4V" name="MPEG"/>
-  <coder magick="M" name="RAW"/>
-  <coder magick="MNG" name="PNG"/>
-  <coder magick="MOV" name="PNG"/>
-  <coder magick="MP4" name="MPEG"/>
-  <coder magick="MPG" name="MPEG"/>
-  <coder magick="MPRI" name="MPR"/>
-  <coder magick="MRW" name="DNG"/>
-  <coder magick="MSVG" name="SVG"/>
-  <coder magick="NEF" name="DNG"/>
-  <coder magick="NETSCAPE" name="MAGICK"/>
-  <coder magick="O" name="RAW"/>
-  <coder magick="ORF" name="DNG"/>
-  <coder magick="OTF" name="TTF"/>
-  <coder magick="P7" name="PNM"/>
-  <coder magick="PAL" name="UYVY"/>
-  <coder magick="PAM" name="PNM"/>
-  <coder magick="PBM" name="PNM"/>
-  <coder magick="PCDS" name="PCD"/>
-  <coder magick="PDFA" name="PDF"/>
-  <coder magick="PEF" name="DNG"/>
-  <coder magick="PEF" name="DNG"/>
-  <coder magick="PFA" name="TTF"/>
-  <coder magick="PFB" name="TTF"/>
-  <coder magick="PFM" name="PNM"/>
-  <coder magick="PGM" name="PNM"/>
-  <coder magick="PGX" name="JP2"/>
-  <coder magick="PICON" name="XPM"/>
-  <coder magick="PJPEG" name="JPEG"/>
-  <coder magick="PM" name="XPM"/>
-  <coder magick="PNG24" name="PNG"/>
-  <coder magick="PNG32" name="PNG"/>
-  <coder magick="PNG8" name="PNG"/>
-  <coder magick="PPM" name="PNM"/>
-  <coder magick="PTIF" name="TIFF"/>
-  <coder magick="RADIAL-GRADIENT" name="GRADIENT"/>
-  <coder magick="RAF" name="DNG"/>
-  <coder magick="RAS" name="SUN"/>
-  <coder magick="RBG" name="RGB"/>
-  <coder magick="RGBA" name="RGB"/>
-  <coder magick="RGBO" name="RGB"/>
-  <coder magick="R" name="RAW"/>
-  <coder magick="ROSE" name="MAGICK"/>
-  <coder magick="SHTML" name="HTML"/>
-  <coder magick="SVGZ" name="SVG"/>
-  <coder magick="TEXT" name="TXT"/>
-  <coder magick="TIFF64" name="TIFF"/>
-  <coder magick="TIF" name="TIFF"/>
-  <coder magick="TTC" name="TTF"/>
-  <coder magick="UBRL" name="BRAILLE"/>
-  <coder magick="VDA" name="TGA"/>
-  <coder magick="VST" name="TGA"/>
-  <coder magick="WMV" name="MPEG"/>
-  <coder magick="WMFWIN32" name="EMF"/>
-  <coder magick="WMZ" name="WMF"/>
-  <coder magick="X3f" name="DNG"/>
-  <coder magick="XMP" name="META"/>
-  <coder magick="XTRNARRAY" name="XTRN"/>
-  <coder magick="XTRNBLOB" name="XTRN"/>
-  <coder magick="XTRNBSTR" name="XTRN"/>
-  <coder magick="XTRNFILE" name="XTRN"/>
-  <coder magick="XTRNIMAGE" name="XTRN"/>
-  <coder magick="XTRNSTREAM" name="XTRN"/>
-  <coder magick="XV" name="VIFF"/>
-  <coder magick="Y" name="RAW"/>
-  <coder magick="YCbCrA" name="YCbCr"/>
+  <!-- <coder magick="GIF87" name="GIF"/> -->
+  <!-- <coder magick="JPG" name="JPEG"/> -->
+  <!-- <coder magick="PGM" name="PNM"/> -->
 </codermap>
