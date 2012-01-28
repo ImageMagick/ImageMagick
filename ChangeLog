@@ -1,9 +1,10 @@
 2011-01-28  6.7.5-0 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.5-0, SVN revision 6604.
+  * New version 6.7.5-0, SVN revision 6606.
 
 2011-01-25  6.7.5-0 Cristy  <quetzlzacatenango@image...>
   * Support the -alpha flatten option (use it to flatten a transparent PDF,
     convert -density 200 apple.pdf -alpha background x:).
+  * Zlib-1.2.5.2 requires gzFile cast (bug report from John Bowler).
 
 2011-01-25  6.7.4-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.4-10, SVN revision 6592.
