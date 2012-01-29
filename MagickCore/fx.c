@@ -335,6 +335,12 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(noise_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -751,6 +757,12 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(colorize_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -3098,6 +3110,12 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(fx_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -3298,6 +3316,12 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       /*
         Determine if the pixel is within an ellipse.
       */
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(implode_image);
+          continue;
+        }
       delta.x=scale.x*(double) (x-center.x);
       distance=delta.x*delta.x+delta.y*delta.y;
       if (distance >= (radius*radius))
@@ -3532,7 +3556,12 @@ MagickExport Image *MorphImages(const Image *image,
           register ssize_t
             i;
 
-          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          if (GetPixelMask(morph_image,p) != 0)
+            {
+              p+=GetPixelChannels(morph_image);
+              continue;
+            }
+          for (i=0; i < (ssize_t) GetPixelChannels(morph_image); i++)
           {
             PixelChannel
               channel;
@@ -4468,6 +4497,11 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       register ssize_t
         i;
 
+      if (GetPixelMask(random_image,q) != 0)
+        {
+          q+=GetPixelChannels(random_image);
+          continue;
+        }
       value=GetPseudoRandomValue(random_info[id]);
       for (i=0; i < (ssize_t) GetPixelChannels(random_image); i++)
       {
@@ -4629,6 +4663,11 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,q) != 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -5129,6 +5168,12 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       /*
         Determine if the pixel is within an ellipse.
       */
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(swirl_image);
+          continue;
+        }
       delta.x=scale.x*(double) (x-center.x);
       distance=delta.x*delta.x+delta.y*delta.y;
       if (distance >= (radius*radius))
@@ -5355,6 +5400,12 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(tint_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel

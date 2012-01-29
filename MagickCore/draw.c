@@ -1392,7 +1392,10 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
   const DrawInfo *draw_info,const char *name,ExceptionInfo *exception)
 {
   char
-    clip_mask[MaxTextExtent];
+    filename[MaxTextExtent];
+
+  Image
+    *clip_mask;
 
   const char
     *value;
@@ -1408,26 +1411,17 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(draw_info != (const DrawInfo *) NULL);
-  (void) FormatLocaleString(clip_mask,MaxTextExtent,"%s",name);
-  value=GetImageArtifact(image,clip_mask);
+  (void) FormatLocaleString(filename,MaxTextExtent,"%s",name);
+  value=GetImageArtifact(image,filename);
   if (value == (const char *) NULL)
     return(MagickFalse);
-  if (image->clip_mask == (Image *) NULL)
-    {
-      Image
-        *clip_mask;
-
-      clip_mask=CloneImage(image,image->columns,image->rows,MagickTrue,
-        exception);
-      if (clip_mask == (Image *) NULL)
-        return(MagickFalse);
-      (void) SetImageClipMask(image,clip_mask,exception);
-      clip_mask=DestroyImage(clip_mask);
-    }
+  clip_mask=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  if (clip_mask == (Image *) NULL)
+    return(MagickFalse);
   (void) QueryColorCompliance("#0000",AllCompliance,
-    &image->clip_mask->background_color,exception);
-  image->clip_mask->background_color.alpha=(Quantum) TransparentAlpha;
-  (void) SetImageBackgroundColor(image->clip_mask,exception);
+    &clip_mask->background_color,exception);
+  clip_mask->background_color.alpha=(Quantum) TransparentAlpha;
+  (void) SetImageBackgroundColor(clip_mask,exception);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"\nbegin clip-path %s",
       draw_info->clip_mask);
@@ -1436,9 +1430,11 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
   (void) QueryColorCompliance("#ffffff",AllCompliance,&clone_info->fill,
     exception);
   clone_info->clip_mask=(char *) NULL;
-  status=DrawImage(image->clip_mask,clone_info,exception);
-  status|=NegateImage(image->clip_mask,MagickFalse,exception);
+  status|=NegateImage(clip_mask,MagickFalse,exception);
+  (void) SetImageMask(image,clip_mask,exception);
+  clip_mask=DestroyImage(clip_mask);
   clone_info=DestroyDrawInfo(clone_info);
+  status=DrawImage(image,clone_info,exception);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end clip-path");
   return(status != 0 ? MagickTrue : MagickFalse);
@@ -2250,7 +2246,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 if (graphic_context[n]->clip_mask != (char *) NULL)
                   if (LocaleCompare(graphic_context[n]->clip_mask,
                       graphic_context[n-1]->clip_mask) != 0)
-                    (void) SetImageClipMask(image,(Image *) NULL,exception);
+                    image->masky=MagickFalse;
                 graphic_context[n]=DestroyDrawInfo(graphic_context[n]);
                 n--;
                 break;

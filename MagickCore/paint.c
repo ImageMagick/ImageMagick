@@ -653,6 +653,12 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         }
         k+=(ssize_t) (image->columns+width);
       }
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(paint_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel

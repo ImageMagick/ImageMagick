@@ -358,115 +358,6 @@ MagickPrivate void CacheComponentTerminus(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   C l i p P i x e l C a c h e N e x u s                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ClipPixelCacheNexus() clips the cache nexus as defined by the image clip
-%  mask.  It returns MagickTrue if the pixel region is clipped, otherwise
-%  MagickFalse.
-%
-%  The format of the ClipPixelCacheNexus() method is:
-%
-%      MagickBooleanType ClipPixelCacheNexus(Image *image,NexusInfo *nexus_info,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o nexus_info: the cache nexus to clip.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static MagickBooleanType ClipPixelCacheNexus(Image *image,
-  NexusInfo *nexus_info,ExceptionInfo *exception)
-{
-  CacheInfo
-    *cache_info;
-
-  MagickSizeType
-    number_pixels;
-
-  NexusInfo
-    **clip_nexus,
-    **image_nexus;
-
-  register const Quantum
-    *restrict p,
-    *restrict r;
-
-  register Quantum
-    *restrict q;
-
-  register ssize_t
-    x;
-
-  /*
-    Clip the image as defined by the clipping mask.
-  */
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->clip_mask == (Image *) NULL)
-    return(MagickFalse);
-  cache_info=(CacheInfo *) image->cache;
-  if (cache_info == (Cache) NULL)
-    return(MagickFalse);
-  image_nexus=AcquirePixelCacheNexus(1);
-  clip_nexus=AcquirePixelCacheNexus(1);
-  if ((image_nexus == (NexusInfo **) NULL) ||
-      (clip_nexus == (NexusInfo **) NULL))
-    ThrowBinaryException(CacheError,"UnableToGetCacheNexus",image->filename);
-  p=(const Quantum *) GetAuthenticPixelCacheNexus(image,nexus_info->region.x,
-    nexus_info->region.y,nexus_info->region.width,nexus_info->region.height,
-    image_nexus[0],exception);
-  q=nexus_info->pixels;
-  r=GetVirtualPixelsFromNexus(image->clip_mask,MaskVirtualPixelMethod,
-    nexus_info->region.x,nexus_info->region.y,nexus_info->region.width,
-    nexus_info->region.height,clip_nexus[0],exception);
-  number_pixels=(MagickSizeType) nexus_info->region.width*
-    nexus_info->region.height;
-  for (x=0; x < (ssize_t) number_pixels; x++)
-  {
-    register ssize_t
-      i;
-
-    if ((p == (const Quantum *) NULL) || (r == (const Quantum *) NULL))
-      break;
-    if (GetPixelIntensity(image->clip_mask,r) > ((Quantum) QuantumRange/2))
-      for (i=0; i < (ssize_t) image->number_channels; i++)
-      {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          traits;
-
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        if (traits == UndefinedPixelTrait)
-          continue;
-        q[i]=p[i];
-      }
-    p+=GetPixelChannels(image);
-    q+=GetPixelChannels(image);
-    r+=GetPixelChannels(image->clip_mask);
-  }
-  clip_nexus=DestroyPixelCacheNexus(clip_nexus,1);
-  image_nexus=DestroyPixelCacheNexus(image_nexus,1);
-  if (x < (ssize_t) number_pixels)
-    return(MagickFalse);
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   C l o n e P i x e l C a c h e                                             %
 %                                                                             %
 %                                                                             %
@@ -1944,6 +1835,7 @@ static inline MagickBooleanType ValidatePixelCacheMorphology(const Image *image)
   if ((image->storage_class != cache_info->storage_class) ||
       (image->colorspace != cache_info->colorspace) ||
       (image->matte != cache_info->matte) ||
+      (image->masky != cache_info->masky) ||
       (image->columns != cache_info->columns) ||
       (image->rows != cache_info->rows) ||
       (image->number_channels != cache_info->number_channels) ||
@@ -3745,132 +3637,6 @@ MagickPrivate const Quantum *GetVirtualPixelsNexus(const Cache cache,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   M a s k P i x e l C a c h e N e x u s                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MaskPixelCacheNexus() masks the cache nexus as defined by the image mask.
-%  The method returns MagickTrue if the pixel region is masked, otherwise
-%  MagickFalse.
-%
-%  The format of the MaskPixelCacheNexus() method is:
-%
-%      MagickBooleanType MaskPixelCacheNexus(Image *image,
-%        NexusInfo *nexus_info,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o nexus_info: the cache nexus to clip.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static MagickBooleanType MaskPixelCacheNexus(Image *image,NexusInfo *nexus_info,
-  ExceptionInfo *exception)
-{
-  CacheInfo
-    *cache_info;
-
-  MagickSizeType
-    number_pixels;
-
-  NexusInfo
-    **clip_nexus,
-    **image_nexus;
-
-  register const Quantum
-    *restrict p,
-    *restrict r;
-
-  register Quantum
-    *restrict q;
-
-  register ssize_t
-    x;
-
-  /*
-    Prevent updates to image pixels specified by the mask.
-  */
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->mask == (Image *) NULL)
-    return(MagickFalse);
-  cache_info=(CacheInfo *) image->cache;
-  if (cache_info == (Cache) NULL)
-    return(MagickFalse);
-  image_nexus=AcquirePixelCacheNexus(1);
-  clip_nexus=AcquirePixelCacheNexus(1);
-  if ((image_nexus == (NexusInfo **) NULL) ||
-      (clip_nexus == (NexusInfo **) NULL))
-    ThrowBinaryException(CacheError,"UnableToGetCacheNexus",image->filename);
-  p=(const Quantum *) GetAuthenticPixelCacheNexus(image,
-    nexus_info->region.x,nexus_info->region.y,nexus_info->region.width,
-    nexus_info->region.height,image_nexus[0],exception);
-  q=nexus_info->pixels;
-  r=GetVirtualPixelsFromNexus(image->mask,MaskVirtualPixelMethod,
-    nexus_info->region.x,nexus_info->region.y,nexus_info->region.width,
-    nexus_info->region.height,clip_nexus[0],exception);
-  number_pixels=(MagickSizeType) nexus_info->region.width*
-    nexus_info->region.height;
-  for (x=0; x < (ssize_t) number_pixels; x++)
-  {
-    MagickRealType
-      alpha,
-      Da,
-      gamma,
-      Sa;
-
-    register ssize_t
-      i;
-
-    if ((p == (const Quantum *) NULL) || (r == (const Quantum *) NULL))
-      break;
-    Sa=QuantumScale*GetPixelIntensity(image->mask,r);
-    Da=QuantumScale*GetPixelAlpha(image,q);
-    alpha=Sa*(-Da)+Sa+Da;
-    gamma=1.0/(fabs(alpha) <= MagickEpsilon ? 1.0 : alpha);
-    for (i=0; i < (ssize_t) image->number_channels; i++)
-    {
-      MagickRealType
-        Dc,
-        pixel,
-        Sc;
-
-      PixelChannel
-        channel;
-
-      PixelTrait
-        traits;
-
-      channel=GetPixelChannelMapChannel(image,i);
-      traits=GetPixelChannelMapTraits(image,channel);
-      if (traits == UndefinedPixelTrait)
-        continue;
-      Sc=(MagickRealType) p[i];
-      Dc=(MagickRealType) q[i];
-      pixel=gamma*(Sa*Sc-Sa*Da*Dc+Da*Dc);
-      q[i]=ClampToQuantum(pixel);
-    }
-    p+=GetPixelChannels(image);
-    q+=GetPixelChannels(image);
-    r+=GetPixelChannels(image->mask);
-  }
-  clip_nexus=DestroyPixelCacheNexus(clip_nexus,1);
-  image_nexus=DestroyPixelCacheNexus(image_nexus,1);
-  if (x < (ssize_t) number_pixels)
-    return(MagickFalse);
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   O p e n P i x e l C a c h e                                               %
 %                                                                             %
 %                                                                             %
@@ -3987,6 +3753,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
   cache_info->matte=image->matte;
+  cache_info->masky=image->masky;
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
   InitializePixelChannelMap(image);
@@ -5021,8 +4788,7 @@ static Quantum *SetPixelCacheNexusPixels(const Image *image,
   if (cache_info->type == UndefinedCache)
     return((Quantum *) NULL);
   nexus_info->region=(*region);
-  if ((cache_info->type != DiskCache) && (cache_info->type != PingCache) &&
-      (image->clip_mask == (Image *) NULL) && (image->mask == (Image *) NULL))
+  if ((cache_info->type != DiskCache) && (cache_info->type != PingCache))
     {
       ssize_t
         x,
@@ -5187,12 +4953,6 @@ MagickPrivate MagickBooleanType SyncAuthenticPixelCacheNexus(Image *image,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->type == UndefinedCache)
-    return(MagickFalse);
-  if ((image->clip_mask != (Image *) NULL) &&
-      (ClipPixelCacheNexus(image,nexus_info,exception) == MagickFalse))
-    return(MagickFalse);
-  if ((image->mask != (Image *) NULL) &&
-      (MaskPixelCacheNexus(image,nexus_info,exception) == MagickFalse))
     return(MagickFalse);
   if (IsPixelAuthentic(cache_info,nexus_info) != MagickFalse)
     return(MagickTrue);

@@ -1033,17 +1033,6 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   if (*write_info->magick == '\0')
     (void) CopyMagickString(write_info->magick,image->magick,MaxTextExtent);
   (void) SetImageInfo(write_info,1,sans_exception);
-  if (LocaleCompare(write_info->magick,"clipmask") == 0)
-    {
-      if (image->clip_mask == (Image *) NULL)
-        {
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            OptionError,"NoClipPathDefined","`%s'",image->filename);
-          return(MagickFalse);
-        }
-      image=image->clip_mask;
-      (void) SetImageInfo(write_info,1,sans_exception);
-    }
   (void) CopyMagickString(filename,image->filename,MaxTextExtent);
   (void) CopyMagickString(image->filename,write_info->filename,MaxTextExtent);
   domain=CoderPolicyDomain;

@@ -3237,6 +3237,11 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
         register ssize_t
           i;
 
+        if (GetPixelMask(image,q) != 0)
+          {
+            q+=GetPixelChannels(image);
+            continue;
+          }
         Sa=QuantumScale*GetPixelAlpha(image,q);
         for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {

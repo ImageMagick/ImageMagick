@@ -216,6 +216,13 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
         i;
 
       difference=MagickFalse;
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(reconstruct_image);
+          r+=GetPixelChannels(highlight_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -353,6 +360,12 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
         i;
 
       difference=MagickFalse;
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(reconstruct_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -468,6 +481,12 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(reconstruct_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -563,6 +582,12 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(reconstruct_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -655,6 +680,12 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(reconstruct_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -747,6 +778,12 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(reconstruct_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -855,6 +892,12 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(reconstruct_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -877,7 +920,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
           reconstruct_statistics[channel].mean);
       }
       p+=GetPixelChannels(image);
-      q+=GetPixelChannels(image);
+      q+=GetPixelChannels(reconstruct_image);
     }
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -958,8 +1001,8 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
-    q=GetCacheViewVirtualPixels(reconstruct_view,0,y,
-      reconstruct_image->columns,1,exception);
+    q=GetCacheViewVirtualPixels(reconstruct_view,0,y,reconstruct_image->columns,
+      1,exception);
     if ((p == (const Quantum *) NULL) || (q == (const Quantum *) NULL))
       {
         status=MagickFalse;
@@ -971,6 +1014,12 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(reconstruct_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -999,7 +1048,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
           channel_distortion[CompositePixelChannel]=distance;
       }
       p+=GetPixelChannels(image);
-      q+=GetPixelChannels(image);
+      q+=GetPixelChannels(reconstruct_image);
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_GetPeakAbsoluteError)
@@ -1379,6 +1428,12 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(reconstruct_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -1575,6 +1630,11 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
           *similarity_metric=similarity;
           offset->x=x;
           offset->y=y;
+        }
+      if (GetPixelMask(image,q) != 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {

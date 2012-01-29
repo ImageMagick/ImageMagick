@@ -394,6 +394,11 @@ static MagickBooleanType CompositeOverImage(Image *image,
           */
           (void) GetOneVirtualPixel(composite_image,x-x_offset,y-y_offset,
             source,exception);
+          if (GetPixelMask(image,q) != 0)
+            {
+              q+=GetPixelChannels(image);
+              continue;
+            }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel
@@ -405,8 +410,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
 
             channel=GetPixelChannelMapChannel(image,i);
             traits=GetPixelChannelMapTraits(image,channel);
-            composite_traits=GetPixelChannelMapTraits(composite_image,
-              channel);
+            composite_traits=GetPixelChannelMapTraits(composite_image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (composite_traits == UndefinedPixelTrait))
               continue;
@@ -661,6 +665,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           register ssize_t
             i;
 
+          if (GetPixelMask(image,p) != 0)
+            {
+              p+=GetPixelChannels(composite_image);
+              q+=GetPixelChannels(image);
+              continue;
+            }
           for (i=0; i < (ssize_t) GetPixelChannels(composite_image); i++)
           {
             PixelChannel
@@ -1234,6 +1244,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           */
           (void) GetOneVirtualPixel(composite_image,x-x_offset,y-y_offset,
             source,exception);
+          if (GetPixelMask(image,q) != 0)
+            {
+              q+=GetPixelChannels(image);
+              continue;
+            }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             MagickRealType
@@ -1402,6 +1417,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           break;
         }
       }
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(composite_image);
+          q+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -2390,6 +2411,12 @@ MagickExport MagickBooleanType TextureImage(Image *image,
         register ssize_t
           i;
 
+        if (GetPixelMask(image,p) != 0)
+          {
+            p+=GetPixelChannels(texture_image);
+            q+=GetPixelChannels(image);
+            continue;
+          }
         for (i=0; i < (ssize_t) GetPixelChannels(texture_image); i++)
         {
           PixelChannel

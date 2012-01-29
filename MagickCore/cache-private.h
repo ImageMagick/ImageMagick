@@ -119,7 +119,8 @@ typedef struct _CacheInfo
     colorspace;
 
   MagickBooleanType
-    matte;
+    matte,
+    masky;
 
   size_t
     columns,

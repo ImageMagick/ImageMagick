@@ -3490,18 +3490,18 @@ WandExport MagickBooleanType MagickGetImageAlphaChannel(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageClipMask() gets the image clip mask at the current image index.
+%  MagickGetImageMask() gets the image clip mask at the current image index.
 %
-%  The format of the MagickGetImageClipMask method is:
+%  The format of the MagickGetImageMask method is:
 %
-%      MagickWand *MagickGetImageClipMask(MagickWand *wand)
+%      MagickWand *MagickGetImageMask(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
 */
-WandExport MagickWand *MagickGetImageClipMask(MagickWand *wand)
+WandExport MagickWand *MagickGetImageMask(MagickWand *wand)
 {
   Image
     *image;
@@ -3516,7 +3516,7 @@ WandExport MagickWand *MagickGetImageClipMask(MagickWand *wand)
         "ContainsNoImages","`%s'",wand->name);
       return((MagickWand *) NULL);
     }
-  image=GetImageClipMask(wand->images,wand->exception);
+  image=GetImageMask(wand->images,wand->exception);
   if (image == (Image *) NULL)
     return((MagickWand *) NULL);
   return(CloneMagickWandFromImages(wand,image));
@@ -8781,11 +8781,11 @@ WandExport MagickBooleanType MagickSetImageBorderColor(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetImageClipMask() sets image clip mask.
+%  MagickSetImageMask() sets image clip mask.
 %
-%  The format of the MagickSetImageClipMask method is:
+%  The format of the MagickSetImageMask method is:
 %
-%      MagickBooleanType MagickSetImageClipMask(MagickWand *wand,
+%      MagickBooleanType MagickSetImageMask(MagickWand *wand,
 %        const MagickWand *clip_mask)
 %
 %  A description of each parameter follows:
@@ -8795,7 +8795,7 @@ WandExport MagickBooleanType MagickSetImageBorderColor(MagickWand *wand,
 %    o clip_mask: the clip_mask wand.
 %
 */
-WandExport MagickBooleanType MagickSetImageClipMask(MagickWand *wand,
+WandExport MagickBooleanType MagickSetImageMask(MagickWand *wand,
   const MagickWand *clip_mask)
 {
   assert(wand != (MagickWand *) NULL);
@@ -8808,7 +8808,7 @@ WandExport MagickBooleanType MagickSetImageClipMask(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",clip_mask->name);
   if (clip_mask->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",clip_mask->name);
-  return(SetImageClipMask(wand->images,clip_mask->images,wand->exception));
+  return(SetImageMask(wand->images,clip_mask->images,wand->exception));
 }
 
 /*

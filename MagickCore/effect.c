@@ -346,6 +346,12 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
         break;
       center=(ssize_t) GetPixelChannels(image)*(width-j)*
         ((width-j)/2L)+GetPixelChannels(image)*((width-j)/2L);
+      if (GetPixelMask(image,q) != 0)
+        {
+          q+=GetPixelChannels(blur_image);
+          r+=GetPixelChannels(edge_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -668,6 +674,12 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
         break;
       center=(ssize_t) GetPixelChannels(image)*(width-j)*
         ((width-j)/2L)+GetPixelChannels(image)*((width-j)/2);
+      if (GetPixelMask(image,q) != 0)
+        {
+          q+=GetPixelChannels(sharp_image);
+          r+=GetPixelChannels(edge_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -972,6 +984,12 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(blur_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -1094,6 +1112,12 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
       register ssize_t
         i;
 
+      if (GetPixelMask(blur_image,p) != 0)
+        {
+          p+=GetPixelChannels(blur_image);
+          q+=GetPixelChannels(blur_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(blur_image); i++)
       {
         MagickRealType
@@ -1336,6 +1360,12 @@ MagickExport Image *ConvolveImage(const Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(convolve_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -2182,6 +2212,12 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(blur_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -2980,6 +3016,12 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
             if (step >= n)
               step=n-1;
         }
+      if (GetPixelMask(image,p) != 0)
+        {
+	  p+=GetPixelChannels(image);
+	  q+=GetPixelChannels(blur_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -3256,6 +3298,12 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(blur_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -3541,6 +3589,14 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
               if (normal_distance > (MagickEpsilon*MagickEpsilon))
                 shade=distance/sqrt((double) normal_distance);
             }
+        }
+      if (GetPixelMask(image,pre) != 0)
+        {
+          pre+=GetPixelChannels(image);
+          center+=GetPixelChannels(image);
+          post+=GetPixelChannels(image);
+          q+=GetPixelChannels(shade_image);
+          continue;
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
@@ -3953,6 +4009,12 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(unsharp_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
