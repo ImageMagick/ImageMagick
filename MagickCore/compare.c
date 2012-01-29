@@ -1631,12 +1631,12 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
           offset->x=x;
           offset->y=y;
         }
-      if (GetPixelMask(image,q) != 0)
+      if (GetPixelMask(similarity_image,q) != 0)
         {
-          q+=GetPixelChannels(image);
+          q+=GetPixelChannels(similarity_image);
           continue;
         }
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(similarity_image); i++)
       {
         PixelChannel
           channel;

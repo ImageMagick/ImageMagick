@@ -1101,7 +1101,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
-  for (i=0; i < number_channels; i++)
+  for (i=0; i < (ssize_t) number_channels; i++)
   {
     double
       intensity;
@@ -1590,7 +1590,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
-  for (i=0; i < (size_t) number_channels; i++)
+  for (i=0; i < (ssize_t) number_channels; i++)
   {
     MagickRealType
       intensity;
@@ -1834,16 +1834,16 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].red=gamma_map[
+          image->colormap[i].red=(MagickRealType) gamma_map[
             ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))];
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].green=gamma_map[
+          image->colormap[i].green=(MagickRealType) gamma_map[
             ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))];
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].blue=gamma_map[
+          image->colormap[i].blue=(MagickRealType) gamma_map[
             ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))];
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].alpha=gamma_map[
+          image->colormap[i].alpha=(MagickRealType) gamma_map[
             ScaleQuantumToMap(ClampToQuantum(image->colormap[i].alpha))];
       }
     }

@@ -392,13 +392,13 @@ static MagickBooleanType CompositeOverImage(Image *image,
               Sc: source color.
               Dc: destination color.
           */
-          (void) GetOneVirtualPixel(composite_image,x-x_offset,y-y_offset,
-            source,exception);
           if (GetPixelMask(image,q) != 0)
             {
               q+=GetPixelChannels(image);
               continue;
             }
+          (void) GetOneVirtualPixel(composite_image,x-x_offset,y-y_offset,
+            source,exception);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel
@@ -424,6 +424,15 @@ static MagickBooleanType CompositeOverImage(Image *image,
           Sa:  normalized source alpha.
           Da:  normalized destination alpha.
       */
+      if (GetPixelMask(composite_image,p) != 0)
+        {
+          p+=GetPixelChannels(composite_image);
+          channels=GetPixelChannels(composite_image);
+          if (p >= (pixels+channels*composite_image->columns))
+            p=pixels;
+          q+=GetPixelChannels(image);
+          continue;
+        }
       Sa=QuantumScale*GetPixelAlpha(composite_image,p);
       Da=QuantumScale*GetPixelAlpha(image,q);
       alpha=Sa*(-Da)+Sa+Da;

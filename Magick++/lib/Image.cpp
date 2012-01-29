@@ -2692,8 +2692,7 @@ Magick::Image Magick::Image::clipMask ( void  ) const
 {
    ExceptionInfo exceptionInfo;
    GetExceptionInfo( &exceptionInfo );
-   MagickCore::Image* image =
-     GetImageClipMask( constImage(), &exceptionInfo );
+   MagickCore::Image* image = GetImageMask( constImage(), &exceptionInfo );
    throwException( exceptionInfo );
    (void) DestroyExceptionInfo( &exceptionInfo );
    return Magick::Image( image );

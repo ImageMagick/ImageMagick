@@ -674,13 +674,13 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
         break;
       center=(ssize_t) GetPixelChannels(image)*(width-j)*
         ((width-j)/2L)+GetPixelChannels(image)*((width-j)/2);
-      if (GetPixelMask(image,q) != 0)
+      if (GetPixelMask(sharp_image,q) != 0)
         {
           q+=GetPixelChannels(sharp_image);
           r+=GetPixelChannels(edge_image);
           continue;
         }
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(sharp_image); i++)
       {
         MagickRealType
           alpha,

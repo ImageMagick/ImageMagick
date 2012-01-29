@@ -190,11 +190,6 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
           register ssize_t
             i;
 
-          if (GetPixelMask(image,p) != 0)
-            {
-              q+=GetPixelChannels(chop_image);
-              continue;
-            }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel
@@ -266,12 +261,6 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
           register ssize_t
             i;
 
-         if (GetPixelMask(image,p) != 0)
-           {
-             p+=GetPixelChannels(image);
-             q+=GetPixelChannels(chop_image);
-             continue;
-           }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel
