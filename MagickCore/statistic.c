@@ -659,9 +659,9 @@ MagickExport Image *EvaluateImages(const Image *images,
             register ssize_t
               i;
 
-            if (GetPixelMask(evaluate_image,p) != 0)
+            if (GetPixelMask(next,p) != 0)
               {
-                p+=GetPixelChannels(evaluate_image);
+                p+=GetPixelChannels(next);
                 continue;
               }
             for (i=0; i < (ssize_t) GetPixelChannels(next); i++)

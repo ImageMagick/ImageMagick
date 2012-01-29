@@ -567,12 +567,12 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
       ssize_t
         n;
 
-      n=0;
       if (GetPixelMask(image,q) != 0)
         {
           q+=GetPixelChannels(image);
           continue;
         }
+      n=0;
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel

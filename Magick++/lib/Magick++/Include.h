@@ -751,10 +751,10 @@ namespace Magick
   using MagickCore::GetGeometry;
   using MagickCore::GetImageBoundingBox;
   using MagickCore::GetImageDepth;
+  using MagickCore::GetImageMask;
   using MagickCore::GetImageMean;
   using MagickCore::GetImageKurtosis;
   using MagickCore::GetImageRange;
-  using MagickCore::GetImageClipMask;
   using MagickCore::GetImageDepth;
   using MagickCore::GetImageInfo;
   using MagickCore::GetImageInfoFile;
