@@ -233,9 +233,6 @@ struct _Image
   DisposeType
     dispose;        /* GIF animation disposal method */
 
-  struct _Image
-    *clip_mask;
-
   size_t
     scene,          /* index of image in multi-image file */
     delay;          /* Animation delay time */
@@ -256,9 +253,6 @@ struct _Image
   MagickBooleanType
     black_point_compensation;
 
-  struct _Image
-    *mask;
-
   RectangleInfo
     tile_offset;
 
@@ -277,6 +271,9 @@ struct _Image
 
   MagickBooleanType
     ping;
+
+  MagickBooleanType
+    masky;
 
   size_t
     number_channels,
@@ -520,7 +517,6 @@ extern MagickExport MagickBooleanType
   SetImageAlpha(Image *,const Quantum,ExceptionInfo *),
   SetImageAlphaChannel(Image *,const AlphaChannelType,ExceptionInfo *),
   SetImageBackgroundColor(Image *,ExceptionInfo *),
-  SetImageClipMask(Image *,const Image *,ExceptionInfo *),
   SetImageColor(Image *,const PixelInfo *,ExceptionInfo *),
   SetImageExtent(Image *,const size_t,const size_t,ExceptionInfo *),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),

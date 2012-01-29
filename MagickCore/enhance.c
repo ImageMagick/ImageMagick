@@ -379,6 +379,11 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,q) != 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(clut_image); i++)
       {
         PixelChannel
@@ -1225,6 +1230,11 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,q) != 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -1380,6 +1390,12 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(enhance_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -1688,6 +1704,11 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,q) != 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -1856,6 +1877,11 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,q) != 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -2228,6 +2254,11 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,q) != 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -2389,6 +2420,11 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,q) != 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -3068,7 +3104,8 @@ MagickExport MagickBooleanType NegateImage(Image *image,
           register ssize_t
             i;
 
-          if (IsPixelGray(image,q) != MagickFalse)
+          if ((GetPixelMask(image,q) != 0) ||
+              (IsPixelGray(image,q) != MagickFalse))
             {
               q+=GetPixelChannels(image);
               continue;
@@ -3135,6 +3172,11 @@ MagickExport MagickBooleanType NegateImage(Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,q) != 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -3361,6 +3403,11 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,q) != 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel

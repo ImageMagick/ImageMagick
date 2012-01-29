@@ -1813,7 +1813,7 @@ WandExport MagickBooleanType WandSimpleOperatorImage(MagickWand *wand,
           if (plus_alt_op == MagickFalse)
             (void) ClipImage(*image,exception);
           else /* "+clip" remove the write mask */
-            (void) SetImageClipMask(*image,(Image *) NULL,exception);
+            (void) SetImageMask(*image,(Image *) NULL,exception);
           break;
         }
       if (LocaleCompare("clip-mask",option) == 0)
@@ -1868,7 +1868,7 @@ WandExport MagickBooleanType WandSimpleOperatorImage(MagickWand *wand,
           /* clean up and set the write mask */
           mask_view=DestroyCacheView(mask_view);
           mask_image->matte=MagickTrue;
-          (void) SetImageClipMask(*image,mask_image,exception);
+          (void) SetImageMask(*image,mask_image,exception);
           mask_image=DestroyImage(mask_image);
           break;
         }

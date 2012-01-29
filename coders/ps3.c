@@ -1125,16 +1125,15 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     /*
       PS clipping path from Photoshop clipping path.
     */
-    if ((image->clip_mask == (Image *) NULL) ||
-        (LocaleNCompare("8BIM:",image->clip_mask->magick_filename,5) != 0))
+    if ((image->masky != MagickFalse) ||
+        (LocaleNCompare("8BIM:",image->magick_filename,5) != 0))
       (void) WriteBlobString(image,"/ClipImage {} def\n");
     else
       {
         const char
           *value;
 
-        value=GetImageProperty(image,image->clip_mask->magick_filename,
-          exception);
+        value=GetImageProperty(image,image->magick_filename,exception);
         if (value == (const char *) NULL)
           return(MagickFalse);
         (void) WriteBlobString(image,value);
@@ -1202,8 +1201,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     /*
       Photoshop clipping path active?
     */
-    if ((image->clip_mask != (Image *) NULL) &&
-        (LocaleNCompare("8BIM:",image->clip_mask->magick_filename,5) == 0))
+    if ((image->masky != MagickFalse) &&
+        (LocaleNCompare("8BIM:",image->magick_filename,5) == 0))
         (void) WriteBlobString(image,"true\n");
       else
         (void) WriteBlobString(image,"false\n");

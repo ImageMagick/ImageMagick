@@ -189,7 +189,6 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->resolution.y=DefaultResolution;
   image->units=PixelsPerInchResolution;
   GetTimerInfo(&image->timer);
-  image->ping=MagickFalse;
   image->cache=AcquirePixelCache(0);
   image->channel_mask=DefaultChannels;
   image->channel_map=AcquirePixelChannelMap();
@@ -546,6 +545,12 @@ MagickExport Image *AppendImages(const Image *images,
         register ssize_t
           i;
 
+        if (GetPixelMask(image,p) != 0)
+          {
+            p+=GetPixelChannels(image);
+            q+=GetPixelChannels(append_image);
+            continue;
+          }
         for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
           PixelChannel
@@ -723,7 +728,7 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
     (void) NegateImage(clip_mask,MagickFalse,exception);
   (void) FormatLocaleString(clip_mask->magick_filename,MaxTextExtent,
     "8BIM:1999,2998:%s\nPS",pathname);
-  (void) SetImageClipMask(image,clip_mask,exception);
+  (void) SetImageMask(image,clip_mask,exception);
   clip_mask=DestroyImage(clip_mask);
   return(MagickTrue);
 }
@@ -798,6 +803,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->number_meta_channels=image->number_meta_channels;
   clone_image->metacontent_extent=image->metacontent_extent;
   clone_image->colorspace=image->colorspace;
+  clone_image->masky=image->masky;
   clone_image->matte=image->matte;
   clone_image->columns=image->columns;
   clone_image->rows=image->rows;
@@ -837,8 +843,6 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->next=image->next;
   clone_image->previous=image->previous;
   clone_image->list=NewImageList();
-  clone_image->clip_mask=NewImageList();
-  clone_image->mask=NewImageList();
   if (detach == MagickFalse)
     clone_image->blob=ReferenceBlob(image->blob);
   else
@@ -856,21 +860,8 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
         (void) CloneString(&clone_image->montage,image->montage);
       if (image->directory != (char *) NULL)
         (void) CloneString(&clone_image->directory,image->directory);
-      if (image->clip_mask != (Image *) NULL)
-        clone_image->clip_mask=CloneImage(image->clip_mask,0,0,MagickTrue,
-          exception);
-      if (image->mask != (Image *) NULL)
-        clone_image->mask=CloneImage(image->mask,0,0,MagickTrue,exception);
       clone_image->cache=ReferencePixelCache(image->cache);
       return(clone_image);
-    }
-  if ((columns == image->columns) && (rows == image->rows))
-    {
-      if (image->clip_mask != (Image *) NULL)
-        clone_image->clip_mask=CloneImage(image->clip_mask,0,0,MagickTrue,
-          exception);
-      if (image->mask != (Image *) NULL)
-        clone_image->mask=CloneImage(image->mask,0,0,MagickTrue,exception);
     }
   scale=(MagickRealType) columns/(MagickRealType) image->columns;
   clone_image->page.width=(size_t) floor(scale*image->page.width+0.5);
@@ -1190,10 +1181,6 @@ MagickExport Image *DestroyImage(Image *image)
   */
   DestroyImagePixels(image);
   image->channel_map=DestroyPixelChannelMap(image->channel_map);
-  if (image->clip_mask != (Image *) NULL)
-    image->clip_mask=DestroyImage(image->clip_mask);
-  if (image->mask != (Image *) NULL)
-    image->mask=DestroyImage(image->mask);
   if (image->montage != (char *) NULL)
     image->montage=DestroyString(image->montage);
   if (image->directory != (char *) NULL)
@@ -1347,40 +1334,6 @@ MagickExport MagickBooleanType GetImageAlphaChannel(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e C l i p M a s k                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetImageClipMask() returns the clip path associated with the image.
-%
-%  The format of the GetImageClipMask method is:
-%
-%      Image *GetImageClipMask(const Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-*/
-MagickExport Image *GetImageClipMask(const Image *image,
-  ExceptionInfo *exception)
-{
-  assert(image != (const Image *) NULL);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  assert(image->signature == MagickSignature);
-  if (image->clip_mask == (Image *) NULL)
-    return((Image *) NULL);
-  return(CloneImage(image->clip_mask,0,0,MagickTrue,exception));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   G e t I m a g e I n f o                                                   %
 %                                                                             %
 %                                                                             %
@@ -1486,13 +1439,67 @@ MagickExport FILE *GetImageInfoFile(const ImageInfo *image_info)
 */
 MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
 {
-  assert(image != (const Image *) NULL);
+  CacheView
+    *mask_view,
+    *image_view;
+
+  Image
+    *mask_image;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  /*
+    Get image mask.
+  */
+  assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  if (image->mask == (Image *) NULL)
+  mask_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  if (mask_image == (Image *) NULL)
     return((Image *) NULL);
-  return(CloneImage(image->mask,0,0,MagickTrue,exception));
+  status=MagickTrue;
+  mask_image->colorspace=GRAYColorspace;
+  mask_image->masky=MagickFalse;
+  image_view=AcquireCacheView(image);
+  mask_view=AcquireCacheView(mask_image);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const Quantum
+      *restrict p;
+
+    register Quantum
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(mask_view,0,y,mask_image->columns,1,
+      exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      SetPixelGray(mask_image,GetPixelMask(image,p),q);
+      p+=GetPixelChannels(image);
+      q+=GetPixelChannels(mask_image);
+    }
+    if (SyncCacheViewAuthenticPixels(mask_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  mask_view=DestroyCacheView(mask_view);
+  image_view=DestroyCacheView(image_view);
+  return(mask_image);
 }
 
 /*
@@ -1816,6 +1823,11 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -2280,6 +2292,12 @@ MagickExport Image *SeparateImage(const Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(separate_image);
+          continue;
+        }
       SetPixelChannel(separate_image,GrayPixelChannel,0,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
@@ -2288,7 +2306,7 @@ MagickExport Image *SeparateImage(const Image *image,
 
         PixelTrait
           traits;
-       
+
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits == UndefinedPixelTrait) ||
@@ -2840,60 +2858,6 @@ MagickExport MagickBooleanType SetImageStorageClass(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t I m a g e C l i p M a s k                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetImageClipMask() associates a clip path with the image.  The clip path
-%  must be the same dimensions as the image.  Set any pixel component of
-%  the clip path to TransparentAlpha to prevent that corresponding image
-%  pixel component from being updated when SyncAuthenticPixels() is applied.
-%
-%  The format of the SetImageClipMask method is:
-%
-%      MagickBooleanType SetImageClipMask(Image *image,const Image *clip_mask,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o clip_mask: the image clip mask,  NULL undefines.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport MagickBooleanType SetImageClipMask(Image *image,
-  const Image *clip_mask,ExceptionInfo *exception)
-{
-  assert(image != (Image *) NULL);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  assert(image->signature == MagickSignature);
-  if (clip_mask != (const Image *) NULL)
-    if ((clip_mask->columns != image->columns) ||
-        (clip_mask->rows != image->rows))
-      ThrowBinaryException(ImageError,"ImageSizeDiffers",image->filename);
-  if (image->clip_mask != (Image *) NULL)
-    image->clip_mask=DestroyImage(image->clip_mask);
-  image->clip_mask=NewImageList();
-  if (clip_mask == (Image *) NULL)
-    return(MagickTrue);
-  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-    return(MagickFalse);
-  image->clip_mask=CloneImage(clip_mask,0,0,MagickTrue,exception);
-  if (image->clip_mask == (Image *) NULL)
-    return(MagickFalse);
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   S e t I m a g e E x t e n t                                               %
 %                                                                             %
 %                                                                             %
@@ -3367,27 +3331,69 @@ MagickExport void SetImageInfoFile(ImageInfo *image_info,FILE *file)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport MagickBooleanType SetImageMask(Image *image,
-  const Image *mask,ExceptionInfo *exception)
+MagickExport MagickBooleanType SetImageMask(Image *image,const Image *mask,
+  ExceptionInfo *exception)
 {
+  CacheView
+    *mask_view,
+    *image_view;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  /*
+    Set image mask.
+  */
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  if (mask != (const Image *) NULL)
-    if ((mask->columns != image->columns) || (mask->rows != image->rows))
-      ThrowBinaryException(ImageError,"ImageSizeDiffers",image->filename);
-  if (image->mask != (Image *) NULL)
-    image->mask=DestroyImage(image->mask);
-  image->mask=NewImageList();
-  if (mask == (Image *) NULL)
-    return(MagickTrue);
-  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-    return(MagickFalse);
-  image->mask=CloneImage(mask,0,0,MagickTrue,exception);
-  if (image->mask == (Image *) NULL)
-    return(MagickFalse);
-  return(MagickTrue);
+  if (mask == (const Image *) NULL)
+    {
+      image->masky=MagickFalse;
+      return(MagickTrue);
+    }
+  if ((mask->columns != image->columns) || (mask->rows != image->rows))
+    ThrowBinaryException(ImageError,"ImageSizeDiffers",image->filename);
+  status=MagickTrue;
+  image->masky=MagickTrue;
+  image_view=AcquireCacheView(image);
+  mask_view=AcquireCacheView(mask);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register const Quantum
+      *restrict p;
+
+    register Quantum
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(mask_view,0,y,mask->columns,1,exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      SetPixelMask(image,GetPixelGray(mask,p),q);
+      p+=GetPixelChannels(mask);
+      q+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  mask_view=DestroyCacheView(mask_view);
+  image_view=DestroyCacheView(image_view);
+  return(status);
 }
 
 /*

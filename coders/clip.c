@@ -160,14 +160,13 @@ static MagickBooleanType WriteCLIPImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  if (image->clip_mask == (Image *) NULL)
+  if (image->masky == MagickFalse)
     (void) ClipImage(image,exception);
-  if (image->clip_mask == (Image *) NULL)
+  if (image->masky == MagickFalse)
     ThrowWriterException(CoderError,"ImageDoesNotHaveAClipMask");
-  clip_image=CloneImage(image->clip_mask,0,0,MagickTrue,exception);
+  clip_image=GetImageMask(image,exception);
   if (clip_image == (Image *) NULL)
     return(MagickFalse);
-  (void) SetImageType(clip_image,TrueColorType,exception);
   (void) CopyMagickString(clip_image->filename,image->filename,MaxTextExtent);
   write_info=CloneImageInfo(image_info);
   (void) SetImageInfo(write_info,1,exception);

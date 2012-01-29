@@ -6061,7 +6061,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                       &exception);
                     if (LocaleCompare(property,value) == 0)
                       {
-                        SetImageClipMask(msl_info->image[n],msl_info->image[j],
+                        SetImageMask(msl_info->image[n],msl_info->image[j],
                           &exception);
                         break;
                       }

@@ -246,6 +246,19 @@ static inline PixelTrait GetPixelMagentaTraits(const Image *restrict image)
   return(image->channel_map[MagentaPixelChannel].traits);
 }
 
+static inline Quantum GetPixelMask(const Image *restrict image,
+  const Quantum *restrict pixel)
+{
+  if (image->channel_map[MaskPixelChannel].traits == UndefinedPixelTrait)
+    return(0);
+  return(pixel[image->channel_map[MaskPixelChannel].offset]);
+}
+
+static inline PixelTrait GetPixelMaskTraits(const Image *restrict image)
+{
+  return(image->channel_map[MaskPixelChannel].traits);
+}
+
 static inline size_t GetPixelMetaChannels(const Image *restrict image)
 {
   return(image->number_meta_channels);
@@ -628,6 +641,13 @@ static inline void SetPixelMagenta(const Image *restrict image,
 static inline void SetPixelMagentaTraits(Image *image,const PixelTrait traits)
 {
   image->channel_map[MagentaPixelChannel].traits=traits;
+}
+
+static inline void SetPixelMask(const Image *restrict image,
+  const Quantum mask,Quantum *restrict pixel)
+{
+  if (image->channel_map[MaskPixelChannel].traits != UndefinedPixelTrait)
+    pixel[image->channel_map[MaskPixelChannel].offset]=mask;
 }
 
 static inline void SetPixelMetaChannels(Image *image,

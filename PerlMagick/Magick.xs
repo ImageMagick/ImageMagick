@@ -1234,7 +1234,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           if (SvPOK(sval))
             clip_mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL,exception);
           for ( ; image; image=image->next)
-            SetImageClipMask(image,clip_mask,exception);
+            SetImageMask(image,clip_mask,exception);
           break;
         }
       if (LocaleNCompare(attribute,"colormap",8) == 0)
@@ -4433,15 +4433,19 @@ Get(ref,...)
             {
               if (image != (Image *) NULL)
                 {
+                  Image
+                    *mask_image;
+
                   SV
                     *sv;
 
                   sv=NULL;
-                  if (image->mask == (Image *) NULL)
+                  if (image->masky == MagickFalse)
                     ClipImage(image,exception);
-                  if (image->mask != (Image *) NULL)
+                  mask_image=GetImageMask(image,exception);
+                  if (mask_image != (Image *) NULL)
                     {
-                      AddImageToRegistry(sv,image->mask);
+                      AddImageToRegistry(sv,mask_image);
                       s=sv_bless(newRV(sv),SvSTASH(reference));
                     }
                 }
@@ -4452,15 +4456,19 @@ Get(ref,...)
             {
               if (image != (Image *) NULL)
                 {
+                  Image
+                    *mask_image;
+
                   SV
                     *sv;
 
                   sv=NULL;
-                  if (image->clip_mask == (Image *) NULL)
+                  if (image->masky != MagickFalse)
                     ClipImage(image,exception);
-                  if (image->clip_mask != (Image *) NULL)
+                  mask_image=GetImageMask(image,exception);
+                  if (mask_image != (Image *) NULL)
                     {
-                      AddImageToRegistry(sv,image->clip_mask);
+                      AddImageToRegistry(sv,mask_image);
                       s=sv_bless(newRV(sv),SvSTASH(reference));
                     }
                 }
@@ -8402,12 +8410,17 @@ Mogrify(ref,...)
                 }
               else
                 {
+                  Image
+                    *mask_image;
+
                   /*
                     Set a blending mask for the composition.
                   */
-                  image->mask=CloneImage(argument_list[10].image_reference,0,0,
+                  mask_image=CloneImage(argument_list[10].image_reference,0,0,
                     MagickTrue,exception);
-                  (void) NegateImage(image->mask,MagickFalse,exception);
+                  (void) NegateImage(mask_image,MagickFalse,exception);
+                  (void) SetImageMask(image,mask_image,exception);
+                  mask_image=DestroyImage(mask_image);
                 }
             }
           if (attribute_flag[11] != 0) /* channel */
@@ -8444,7 +8457,7 @@ Mogrify(ref,...)
                   (image->compose == DistortCompositeOp))
                 composite_image=DestroyImage(composite_image);
               else
-                image->mask=DestroyImage(image->mask);
+                (void) SetImageMask(image,(Image *) NULL,exception);
             }
           (void) SetPixelChannelMask(image,channel_mask);
           break;
@@ -10134,15 +10147,20 @@ Mogrify(ref,...)
         }
         case 106:  /* ClipMask */
         {
+          Image
+            *mask_image;
+
           if (attribute_flag[0] == 0)
             {
               ThrowPerlException(exception,OptionError,"MaskImageRequired",
                 PackageName);
               goto PerlException;
             }
-          image->clip_mask=CloneImage(argument_list[0].image_reference,0,0,
-            MagickTrue,exception);
-          (void) NegateImage(image->clip_mask,MagickFalse,exception);
+          mask_image=CloneImage(argument_list[0].image_reference,0,0,MagickTrue,
+            exception);
+          (void) NegateImage(mask_image,MagickFalse,exception);
+          (void) SetImageMask(image,mask_image,exception);
+          mask_image=DestroyImage(mask_image);
           break;
         }
         case 107:  /* LinearStretch */
@@ -10218,15 +10236,20 @@ Mogrify(ref,...)
         }
         case 109:  /* Mask */
         {
+          Image
+            *mask_image;
+
           if (attribute_flag[0] == 0)
             {
               ThrowPerlException(exception,OptionError,"MaskImageRequired",
                 PackageName);
               goto PerlException;
             }
-          image->mask=CloneImage(argument_list[0].image_reference,0,0,
+          mask_image=CloneImage(argument_list[0].image_reference,0,0,
             MagickTrue,exception);
-          (void) NegateImage(image->mask,MagickFalse,exception);
+          (void) NegateImage(mask_image,MagickFalse,exception);
+          (void) SetImageMask(image,mask_image,exception);
+          mask_image=DestroyImage(mask_image);
           break;
         }
         case 110:  /* Polaroid */

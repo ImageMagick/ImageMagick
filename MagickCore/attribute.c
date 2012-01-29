@@ -407,6 +407,11 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
           register ssize_t
             i;
 
+          if (GetPixelMask(image,p) != 0)
+            {
+              p+=GetPixelChannels(image);
+              continue;
+            }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel
@@ -418,7 +423,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
             channel=GetPixelChannelMapChannel(image,i);
             traits=GetPixelChannelMapTraits(image,channel);
             if ((traits == UndefinedPixelTrait) ||
-                (channel == IndexPixelChannel))
+                (channel == IndexPixelChannel) || (channel == MaskPixelChannel))
               continue;
             if (depth_map[ScaleQuantumToMap(p[i])] > current_depth[id])
               current_depth[id]=depth_map[ScaleQuantumToMap(p[i])];
@@ -465,6 +470,11 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -475,8 +485,8 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (channel == IndexPixelChannel))
+        if ((traits == UndefinedPixelTrait) || (channel == IndexPixelChannel) ||
+            (channel == MaskPixelChannel))
           continue;
         while (current_depth[id] < MAGICKCORE_QUANTUM_DEPTH)
         {
@@ -982,6 +992,11 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
           register ssize_t
             i;
 
+          if (GetPixelMask(image,q) != 0)
+            {
+              q+=GetPixelChannels(image);
+              continue;
+            }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
             PixelChannel
@@ -993,7 +1008,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
             channel=GetPixelChannelMapChannel(image,i);
             traits=GetPixelChannelMapTraits(image,channel);
             if ((traits == UndefinedPixelTrait) ||
-                (channel == IndexPixelChannel))
+                (channel == IndexPixelChannel) || (channel == MaskPixelChannel))
               continue;
             q[i]=depth_map[ScaleQuantumToMap(q[i])];
           }
@@ -1039,6 +1054,11 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,q) != 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -1049,7 +1069,8 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits == UndefinedPixelTrait) || (channel == IndexPixelChannel))
+        if ((traits == UndefinedPixelTrait) || (channel == IndexPixelChannel) ||
+            (channel == MaskPixelChannel))
           continue;
         q[i]=ScaleAnyToQuantum(ScaleQuantumToAny(q[i],range),range);
       }

@@ -1074,7 +1074,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image,exception);
             if (*option == '+')
               {
-                (void) SetImageClipMask(*image,(Image *) NULL,exception);
+                (void) SetImageMask(*image,(Image *) NULL,exception);
                 break;
               }
             (void) ClipImage(*image,exception);
@@ -1136,7 +1136,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             }
             mask_view=DestroyCacheView(mask_view);
             mask_image->matte=MagickTrue;
-            (void) SetImageClipMask(*image,mask_image,exception);
+            (void) SetImageMask(*image,mask_image,exception);
             break;
           }
         if (LocaleCompare("clip-path",option+1) == 0)
@@ -7426,17 +7426,14 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                       Set a blending mask for the composition.
                       Possible problem, what if image->mask already set.
                     */
-                    image->mask=mask_image;
-                    (void) NegateImage(image->mask,MagickFalse,exception);
+                    (void) NegateImage(mask_image,MagickFalse,exception);
+                    (void) SetImageMask(image,mask_image,exception);
+                    mask_image=DestroyImage(mask_image);
                   }
               }
             (void) CompositeImage(image,image->compose,composite_image,
               geometry.x,geometry.y,exception);
-            if (mask_image != (Image *) NULL)
-              {
-                image->mask=DestroyImage(image->mask);
-                mask_image=(Image *) NULL;
-              }
+            (void) SetImageMask(image,(Image *) NULL,exception);
             composite_image=DestroyImage(composite_image);
             *images=DestroyImageList(*images);
             *images=image;

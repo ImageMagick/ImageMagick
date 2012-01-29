@@ -873,14 +873,13 @@ namespace Magick
   using MagickCore::SeparateImage;
   using MagickCore::SetClientName;
   using MagickCore::SetGeometry;
+  using MagickCore::SetImageAlpha;
   using MagickCore::SetImageBackgroundColor;
-  using MagickCore::SetImageDepth;
-  using MagickCore::SetImageClipMask;
   using MagickCore::SetImageDepth;
   using MagickCore::SetImageExtent;
   using MagickCore::SetImageInfo;
   using MagickCore::SetImageInfoFile;
-  using MagickCore::SetImageAlpha;
+  using MagickCore::SetImageMask;
   using MagickCore::SetImageOption;
   using MagickCore::SetImageProfile;
   using MagickCore::SetImageProperty;

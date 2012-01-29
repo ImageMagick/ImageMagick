@@ -2678,12 +2678,12 @@ void Magick::Image::clipMask ( const Magick::Image & clipMask_ )
   if( clipMask_.isValid() )
     {
       // Set clip mask
-      SetImageClipMask( image(), clipMask_.constImage(), &exceptionInfo );
+      SetImageMask( image(), clipMask_.constImage(), &exceptionInfo );
     }
   else
     {
       // Unset existing clip mask
-      SetImageClipMask( image(), 0, &exceptionInfo );
+      SetImageMask( image(), 0, &exceptionInfo );
     }
    throwException( exceptionInfo );
    (void) DestroyExceptionInfo( &exceptionInfo );
