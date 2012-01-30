@@ -3,7 +3,7 @@
     convert -density 200 apple.pdf -alpha remove x:).
 
 2012-01-30  6.7.5-1 Glenn Randers-Pehrson <glennrp@image...>
-  * Fix bug in png coder (reference
+  * Fix bug in png coder (spurious warning, reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=20257).
 
 2011-01-28  6.7.5-0 Cristy  <quetzlzacatenango@image...>
