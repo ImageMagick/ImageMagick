@@ -311,6 +311,14 @@ ModuleExport size_t RegisterDNGImage(void)
   entry->description=ConstantString("Kodak Digital Camera Raw Image Format");
   entry->module=ConstantString("DNG");
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("MEF");
+  entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->blob_support=MagickFalse;
+  entry->seekable_stream=MagickTrue;
+  entry->format_type=ExplicitFormatType;
+  entry->description=ConstantString("Mamiya Raw Image File");
+  entry->module=ConstantString("DNG");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("MRW");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
   entry->blob_support=MagickFalse;
@@ -407,6 +415,7 @@ ModuleExport void UnregisterDNGImage(void)
   (void) UnregisterMagickInfo("ORF");
   (void) UnregisterMagickInfo("NEF");
   (void) UnregisterMagickInfo("MRW");
+  (void) UnregisterMagickInfo("MEF");
   (void) UnregisterMagickInfo("K25");
   (void) UnregisterMagickInfo("KDC");
   (void) UnregisterMagickInfo("DCR");
