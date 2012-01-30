@@ -3069,8 +3069,8 @@ static void ReduceImageColors(const Image *image,CubeInfo *cube_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RemapImage() replaces the colors of an image with the closest color from
-%  a reference image.
+%  RemapImage() replaces the colors of an image with a dither of the colors
+%  provided.
 %
 %  The format of the RemapImage method is:
 %

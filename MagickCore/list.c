@@ -74,26 +74,26 @@
 %    o image: the appended image or image list.
 %
 */
-MagickExport void AppendImageToList(Image **images,const Image *image)
+MagickExport void AppendImageToList(Image **images,const Image *append)
 {
   register Image
     *p,
     *q;
 
   assert(images != (Image **) NULL);
-  if (image == (Image *) NULL)
+  if (append == (Image *) NULL)
     return;
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(append->signature == MagickSignature);
+  if (append->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",append->filename);
   if ((*images) == (Image *) NULL)
     {
-      *images=(Image *) image;
+      *images=(Image *) append;
       return;
     }
   assert((*images)->signature == MagickSignature);
   p=GetLastImageInList(*images);
-  q=GetFirstImageInList(image);
+  q=GetFirstImageInList(append);
   p->next=q;
   q->previous=p;
 }
@@ -673,9 +673,9 @@ MagickExport size_t GetImageListLength(const Image *images)
   assert(images->signature == MagickSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
-  while (images->previous != (Image *) NULL)
-    images=images->previous;
-  for (i=0; images != (Image *) NULL; images=images->next)
+  while (images->next != (Image *) NULL)
+    images=images->next;
+  for (i=0; images != (Image *) NULL; images=images->previous)
     i++;
   return((size_t) i);
 }
@@ -787,7 +787,10 @@ MagickExport Image *GetPreviousImageInList(const Image *images)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ImageListToArray() is a convenience method that converts an image list to
-%  a sequential array.  For example,
+%  a sequential array, with a NULL image pointer at the end of the array.
+%
+%  The images remain part of the original image list, with the array providing
+%  an alternative means of indexing the image array.
 %
 %    group = ImageListToArray(images, exception);
 %    while (i = 0; group[i] != (Image *) NULL; i++)
@@ -846,36 +849,36 @@ MagickExport Image **ImageListToArray(const Image *images,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InsertImageInList() insert second given image or image list, into the first
+%  InsertImageInList() insert the given image or image list, into the first
 %  image list, immediately AFTER the image pointed to.  The given image list
 %  pointer is left unchanged unless previously empty.
 %
 %  The format of the InsertImageInList method is:
 %
-%      InsertImageInList(Image **images,Image *image)
+%      InsertImageInList(Image **images,Image *insert)
 %
 %  A description of each parameter follows:
 %
 %    o images: the image list to insert into.
 %
-%    o image: the image list to insert.
+%    o insert: the image list to insert.
 %
 */
-MagickExport void InsertImageInList(Image **images,Image *image)
+MagickExport void InsertImageInList(Image **images,Image *insert)
 {
   Image
     *split;
 
   assert(images != (Image **) NULL);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(insert != (Image *) NULL);
+  assert(insert->signature == MagickSignature);
+  if (insert->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",insert->filename);
   if ((*images) == (Image *) NULL)
     return;
   assert((*images)->signature == MagickSignature);
   split=SplitImageList(*images);
-  AppendImageToList(images,image);
+  AppendImageToList(images,insert);
   AppendImageToList(images,split);
 }
 
@@ -1105,46 +1108,48 @@ MagickExport Image *RemoveLastImageFromList(Image **images)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ReplaceImageInList() replaces an image in the list with the given image, or
-%  list of images.  Old image is destroyed.  The image list pointer is set to
-%  point to the first image of the inserted list of images.
+%  list of images.  Old image is destroyed.
+%
+%  The images list pointer is set to point to the first image of the inserted
+%  list of images.
 %
 %  The format of the ReplaceImageInList method is:
 %
-%      ReplaceImageInList(Image **images,Image *image)
+%      ReplaceImageInList(Image **images,Image *replace)
 %
 %  A description of each parameter follows:
 %
 %    o images: the list and pointer to image to replace
 %
-%    o image: the image or image list replacing the original
+%    o replace: the image or image list replacing the original
 %
 */
-MagickExport void ReplaceImageInList(Image **images,Image *image)
+MagickExport void ReplaceImageInList(Image **images,Image *replace)
 {
   assert(images != (Image **) NULL);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(replace != (Image *) NULL);
+  assert(replace->signature == MagickSignature);
+  if (replace->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",replace->filename);
   if ((*images) == (Image *) NULL)
     return;
   assert((*images)->signature == MagickSignature);
 
   /* link next pointer */
-  image=GetLastImageInList(image);
-  image->next=(*images)->next;
-  if (image->next != (Image *) NULL)
-    image->next->previous=image;
+  replace=GetLastImageInList(replace);
+  replace->next=(*images)->next;
+  if (replace->next != (Image *) NULL)
+    replace->next->previous=replace;
 
-  /* link previous pointer - set image position to first replacement image */
-  image=GetFirstImageInList(image);
-  image->previous=(*images)->previous;
-  if (image->previous != (Image *) NULL)
-    image->previous->next=image;
+  /* link previous pointer - set images position to first replacement image */
+  replace=GetFirstImageInList(replace);
+  replace->previous=(*images)->previous;
+  if (replace->previous != (Image *) NULL)
+    replace->previous->next=replace;
 
-  /* destroy replaced image */
+  /* destroy the replaced image that was in images */
   (void) DestroyImage(*images);
-  (*images)=image;
+  (*images)=replace;
 }
 
 /*
@@ -1159,48 +1164,50 @@ MagickExport void ReplaceImageInList(Image **images,Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ReplaceImageInListReturnLast() is exactly as ReplaceImageInList() except
-%  the image pointer is set to the last image in the list.
+%  the images pointer is set to the last image in the list of replacemen
+%  images.
 %
-%  This allows you to simply use 'next' to go to the image that follows the
-%  just replaced image.
+%  This allows you to simply use GetNextImageInList() to go to the image
+%  that follows the just replaced image, even if a list of replacement images
+%  was inserted.
 %
 %  The format of the ReplaceImageInList method is:
 %
-%      ReplaceImageInListReturnLast(Image **images,Image *image)
+%      ReplaceImageInListReturnLast(Image **images,Image *replace)
 %
 %  A description of each parameter follows:
 %
 %    o images: the list and pointer to image to replace
 %
-%    o image: the image or image list replacing the original
+%    o replace: the image or image list replacing the original
 %
 */
-MagickExport void ReplaceImageInListReturnLast(Image **images,Image *image)
+MagickExport void ReplaceImageInListReturnLast(Image **images,Image *replace)
 {
   assert(images != (Image **) NULL);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(replace != (Image *) NULL);
+  assert(replace->signature == MagickSignature);
+  if (replace->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",replace->filename);
   if ((*images) == (Image *) NULL)
     return;
   assert((*images)->signature == MagickSignature);
 
   /* link previous pointer */
-  image=GetFirstImageInList(image);
-  image->previous=(*images)->previous;
-  if (image->previous != (Image *) NULL)
-    image->previous->next=image;
+  replace=GetFirstImageInList(replace);
+  replace->previous=(*images)->previous;
+  if (replace->previous != (Image *) NULL)
+    replace->previous->next=replace;
 
-  /* link next pointer - set image position to last replacement image */
-  image=GetLastImageInList(image);
-  image->next=(*images)->next;
-  if (image->next != (Image *) NULL)
-    image->next->previous=image;
+  /* link next pointer - set images position to last replacement image */
+  replace=GetLastImageInList(replace);
+  replace->next=(*images)->next;
+  if (replace->next != (Image *) NULL)
+    replace->next->previous=replace;
 
-  /* destroy replaced image */
+  /* destroy the replaced image that was in images */
   (void) DestroyImage(*images);
-  (*images)=image;
+  (*images)=replace;
 }
 
 /*

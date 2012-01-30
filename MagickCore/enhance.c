@@ -2314,10 +2314,10 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
 %  LevelizeImage() can be called with by using a +level command line
 %  API option, or using a '!' on a -level or LevelImage() geometry string.
 %
-%  It can be used for example de-contrast a greyscale image to the exact
-%  levels specified.  Or by using specific levels for each channel of an image
-%  you can convert a gray-scale image to any linear color gradient, according
-%  to those levels.
+%  It can be used to de-contrast a greyscale image to the exact levels
+%  specified.  Or by using specific levels for each channel of an image you
+%  can convert a gray-scale image to any linear color gradient, according to
+%  those levels.
 %
 %  The format of the LevelizeImage method is:
 %
@@ -3263,10 +3263,9 @@ MagickExport MagickBooleanType NormalizeImage(Image *image,
 %  sigmoidal contrast algorithm.  Increase the contrast of the image using a
 %  sigmoidal transfer function without saturating highlights or shadows.
 %  Contrast indicates how much to increase the contrast (0 is none; 3 is
-%  typical; 20 is pushing it); mid-point indicates where midtones fall in the
-%  resultant image (0 is white; 50% is middle-gray; 100% is black).  Set
-%  sharpen to MagickTrue to increase the image contrast otherwise the contrast
-%  is reduced.
+%  typical; 20 is pushing it); mid-point indicates where threshold 'knee' of
+%  the curve falls (typical 50% for mid-gray). Set sharpen to MagickTrue to
+%  increase the image contrast otherwise the contrast is reduced.
 %
 %  The format of the SigmoidalContrastImage method is:
 %
