@@ -3628,19 +3628,15 @@ WandExport MagickBooleanType SequenceOperationImages(ImageInfo *image_info,
                 {
                   /*
                     Set a blending mask for the composition.
-                    Possible problem, what if image->mask already set.
                   */
-                  image->mask=mask_image;
-                  (void) NegateImage(image->mask,MagickFalse,exception);
+                  (void) NegateImage(mask_image,MagickFalse,exception);
+                  (void) SetImageMask(image,mask_image,exception);
+                  mask_image=DestroyImage(mask_image);
                 }
             }
           (void) CompositeImage(image,compose,composite_image,
             geometry.x,geometry.y,exception);
-          if (mask_image != (Image *) NULL)
-            {
-              image->mask=DestroyImage(image->mask);
-              mask_image=(Image *) NULL;
-            }
+          (void) SetImageMask(image,(Image *) NULL,exception);
           composite_image=DestroyImage(composite_image);
           *images=DestroyImageList(*images);
           *images=image;
