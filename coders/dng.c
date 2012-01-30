@@ -416,6 +416,7 @@ ModuleExport void UnregisterDNGImage(void)
   (void) UnregisterMagickInfo("ORF");
   (void) UnregisterMagickInfo("NEF");
   (void) UnregisterMagickInfo("MRW");
+  (void) UnregisterMagickInfo("MEF");
   (void) UnregisterMagickInfo("K25");
   (void) UnregisterMagickInfo("KDC");
   (void) UnregisterMagickInfo("DCR");
