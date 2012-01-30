@@ -102,6 +102,7 @@ static const OptionInfo
     { "Off", DeactivateAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "On", ActivateAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Opaque", OpaqueAlphaChannel, UndefinedOptionFlag, MagickFalse },
+    { "Remove", RemoveAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Set", SetAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Shape", ShapeAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Reset", SetAlphaChannel, DeprecateOptionFlag, MagickTrue },
