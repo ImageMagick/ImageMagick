@@ -7317,20 +7317,6 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
       }
       case 'c':
       {
-        if (LocaleCompare("channel",option+1) == 0)
-          {
-            ChannelType
-              channel;
-
-            if (*option == '+')
-              {
-                channel=DefaultChannels;
-                break;
-              }
-            channel=(ChannelType) ParseChannelOption(argv[i+1]);
-            SetPixelChannelMapMask(*images,channel);
-            break;
-          }
         if (LocaleCompare("clut",option+1) == 0)
           {
             Image

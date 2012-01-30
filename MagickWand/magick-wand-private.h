@@ -38,7 +38,7 @@ struct _MagickWand
     name[MaxTextExtent];  /* Wand name to use for MagickWand Logs */
 
   Image
-    *images;          /* The images in this wand */
+    *images;          /* The images in this wand - also the current image */
 
   ImageInfo
     *image_info;      /* Global settings used for images in Wand */

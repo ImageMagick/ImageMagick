@@ -1961,6 +1961,12 @@ MagickExport char *StringInfoToString(const StringInfo *string_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  StringToArgv() converts a text string into command line arguments.
+%  The 'argv' array of arguments, is returned while the number of arguments
+%  is returned via the provided integer variable pointer.
+%
+%  Simple 'word' tokenizer, which allows for each word to be optionally
+%  quoted.  However it will not allow use of partial quotes, or escape
+%  characters.
 %
 %  The format of the StringToArgv method is:
 %

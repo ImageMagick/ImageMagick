@@ -451,13 +451,13 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #define ThrowWandFatalException(severity,tag,context) \
 { \
   ExceptionInfo \
-    *exception; \
+    *fatal_exception; \
  \
-  exception=AcquireExceptionInfo(); \
-  (void) ThrowMagickException(exception,GetMagickModule(),severity,tag, \
-    "`%s'",context); \
-  CatchException(exception); \
-  exception=DestroyExceptionInfo(exception); \
+  fatal_exception=AcquireExceptionInfo(); \
+  (void) ThrowMagickException(fatal_exception,GetMagickModule(),severity,tag, \
+    "`%s'",(context)); \
+  CatchException(fatal_exception); \
+  fatal_exception=DestroyExceptionInfo(fatal_exception); \
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

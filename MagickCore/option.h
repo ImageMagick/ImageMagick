@@ -142,7 +142,7 @@ typedef enum
 
   SimpleOperatorOptionFlag  = 0x0010,  /* Simple Image processing operator */
   ListOperatorOptionFlag    = 0x0020,  /* Multi-Image processing operator */
-  SpecialOperatorOptionFlag = 0x0040,  /* Specially handled Operator Option */
+  SpecialOptionFlag         = 0x0040,  /* Special handled Option */
   GenesisOptionFlag         = 0x0080,  /* Genesis Command Wrapper Option  */
 
   NonConvertOptionFlag      = 0x1000,  /* Option not used by Convert */
