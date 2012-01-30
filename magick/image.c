@@ -2738,6 +2738,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       image->matte=MagickFalse;
       break;
     }
+    case RemoveAlphaChannel:
     case FlattenAlphaChannel:
     {
       CacheView
