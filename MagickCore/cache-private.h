@@ -120,7 +120,7 @@ typedef struct _CacheInfo
 
   MagickBooleanType
     matte,
-    masky;
+    mask;
 
   size_t
     columns,

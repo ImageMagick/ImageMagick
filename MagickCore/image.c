@@ -803,7 +803,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->number_meta_channels=image->number_meta_channels;
   clone_image->metacontent_extent=image->metacontent_extent;
   clone_image->colorspace=image->colorspace;
-  clone_image->masky=image->masky;
+  clone_image->mask=image->mask;
   clone_image->matte=image->matte;
   clone_image->columns=image->columns;
   clone_image->rows=image->rows;
@@ -1464,7 +1464,7 @@ MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
     return((Image *) NULL);
   status=MagickTrue;
   mask_image->colorspace=GRAYColorspace;
-  mask_image->masky=MagickFalse;
+  mask_image->mask=MagickFalse;
   image_view=AcquireCacheView(image);
   mask_view=AcquireCacheView(mask_image);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -3353,13 +3353,13 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const Image *mask,
   assert(image->signature == MagickSignature);
   if (mask == (const Image *) NULL)
     {
-      image->masky=MagickFalse;
+      image->mask=MagickFalse;
       return(MagickTrue);
     }
   if ((mask->columns != image->columns) || (mask->rows != image->rows))
     ThrowBinaryException(ImageError,"ImageSizeDiffers",image->filename);
   status=MagickTrue;
-  image->masky=MagickTrue;
+  image->mask=MagickTrue;
   image_view=AcquireCacheView(image);
   mask_view=AcquireCacheView(mask);
   for (y=0; y < (ssize_t) image->rows; y++)

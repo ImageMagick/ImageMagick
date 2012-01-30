@@ -3922,7 +3922,7 @@ MagickExport void InitializePixelChannelMap(Image *image)
     SetPixelChannelMap(image,AlphaPixelChannel,CopyPixelTrait,n++);
   if (image->storage_class == PseudoClass)
     SetPixelChannelMap(image,IndexPixelChannel,CopyPixelTrait,n++);
-  if (image->masky != MagickFalse)
+  if (image->mask != MagickFalse)
     SetPixelChannelMap(image,MaskPixelChannel,CopyPixelTrait,n++);
   assert((n+image->number_meta_channels) < MaxPixelChannels);
   for (i=0; i < (ssize_t) image->number_meta_channels; i++)
@@ -5668,7 +5668,7 @@ MagickExport void SetPixelChannelMapMask(Image *image,
   }
   if (image->storage_class == PseudoClass)
     SetPixelChannelMapTraits(image,IndexPixelChannel,CopyPixelTrait);
-  if (image->masky != MagickFalse)
+  if (image->mask != MagickFalse)
     SetPixelChannelMapTraits(image,MaskPixelChannel,CopyPixelTrait);
   if (image->debug != MagickFalse)
     LogPixelChannels(image);

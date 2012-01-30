@@ -273,7 +273,7 @@ struct _Image
     ping;
 
   MagickBooleanType
-    masky;
+    mask;
 
   size_t
     number_channels,

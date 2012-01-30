@@ -4440,7 +4440,7 @@ Get(ref,...)
                     *sv;
 
                   sv=NULL;
-                  if (image->masky == MagickFalse)
+                  if (image->mask == MagickFalse)
                     ClipImage(image,exception);
                   mask_image=GetImageMask(image,exception);
                   if (mask_image != (Image *) NULL)
@@ -4463,7 +4463,7 @@ Get(ref,...)
                     *sv;
 
                   sv=NULL;
-                  if (image->masky != MagickFalse)
+                  if (image->mask != MagickFalse)
                     ClipImage(image,exception);
                   mask_image=GetImageMask(image,exception);
                   if (mask_image != (Image *) NULL)
