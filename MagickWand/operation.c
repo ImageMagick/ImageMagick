@@ -13,7 +13,7 @@
 %                         MagickWand Module Methods                           %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
+%                              Anthony Thyssen                                %
 %                               September 2011                                %
 %                                                                             %
 %                                                                             %
