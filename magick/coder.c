@@ -156,6 +156,7 @@ static const CoderMapInfo
     { "MP4", "MPEG" },
     { "MPG", "MPEG" },
     { "MPRI", "MPR" },
+    { "MEF", "DNG" },
     { "MRW", "DNG" },
     { "MSVG", "SVG" },
     { "NEF", "DNG" },
