@@ -11071,6 +11071,9 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       if (LocaleCompare(value,"0") == 0)
         mng_info->write_png_colortype = 1;
 
+      else if (LocaleCompare(value,"1") == 0)
+        mng_info->write_png_colortype = 2;
+
       else if (LocaleCompare(value,"2") == 0)
         mng_info->write_png_colortype = 3;
 
@@ -11170,7 +11173,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       if (LocaleCompare(value,"0") == 0)
         mng_info->write_png_compression_level = 1;
 
-      else if (LocaleCompare(value,"1") == 0)
+      if (LocaleCompare(value,"1") == 0)
         mng_info->write_png_compression_level = 2;
 
       else if (LocaleCompare(value,"2") == 0)
