@@ -1430,7 +1430,7 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
   (void) QueryColorCompliance("#ffffff",AllCompliance,&clone_info->fill,
     exception);
   clone_info->clip_mask=(char *) NULL;
-  status|=NegateImage(clip_mask,MagickFalse,exception);
+  status=NegateImage(clip_mask,MagickFalse,exception);
   (void) SetImageMask(image,clip_mask,exception);
   clip_mask=DestroyImage(clip_mask);
   clone_info=DestroyDrawInfo(clone_info);
