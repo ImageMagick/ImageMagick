@@ -69,6 +69,7 @@ typedef enum
   SetEvaluateOperator,
   SineEvaluateOperator,
   SubtractEvaluateOperator,
+  SumEvaluateOperator,
   ThresholdBlackEvaluateOperator,
   ThresholdEvaluateOperator,
   ThresholdWhiteEvaluateOperator,
