@@ -1254,8 +1254,11 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     }
     if (EOFBlob(image) != MagickFalse)
-      (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-        "UnexpectedEndOfFile","`%s'",image->filename);
+      {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+          CorruptImageError,"UnexpectedEndOfFile","`%s'",image->filename);
+        break;
+      }
     /*
       Proceed to next image.
     */
