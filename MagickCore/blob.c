@@ -2032,8 +2032,21 @@ MagickPrivate MagickBooleanType IsBlobSeekable(const Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  seekable=(image->blob->type == FileStream) ||
-    (image->blob->type == BlobStream) ? MagickTrue : MagickFalse;
+  switch (image->blob->type)
+  {
+    case FileStream:
+    case BlobStream:
+    case ZipStream:
+    {
+      seekable=MagickTrue;
+      break;
+    }
+    default:
+    {
+      seekable=MagickFalse;
+      break;
+    }
+  }
   return(seekable);
 }
 
