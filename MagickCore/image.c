@@ -2600,7 +2600,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         y;
 
       /*
-        Flatten image pixels over the background pixels.
+        Remove transparency.
       */
       if (image->matte == MagickFalse)
         break;
@@ -2638,6 +2638,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
+      image->matte=image->background_color.matte;
       return(status);
     }
     case SetAlphaChannel:
