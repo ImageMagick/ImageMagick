@@ -893,6 +893,7 @@ namespace Magick
   using MagickCore::SetPixelChannelMask;
   using MagickCore::SetStringInfoDatum;
   using MagickCore::ShadeImage;
+  using MagickCore::ShadowImage;
   using MagickCore::SharpenImage;
   using MagickCore::SharpenImage;
   using MagickCore::ShaveImage;
