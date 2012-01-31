@@ -3333,6 +3333,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
   if (*extension != '\0')
     if ((LocaleCompare(extension,"gz") == 0) ||
         (LocaleCompare(extension,"Z") == 0) ||
+        (LocaleCompare(extension,"svgz") == 0) ||
         (LocaleCompare(extension,"wmz") == 0))
       {
         char
