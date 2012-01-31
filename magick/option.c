@@ -966,6 +966,7 @@ static const OptionInfo
     { "Sin", SineEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "Sine", SineEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "Subtract", SubtractEvaluateOperator, UndefinedOptionFlag, MagickFalse },
+    { "Sum", SumEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "Threshold", ThresholdEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "ThresholdBlack", ThresholdBlackEvaluateOperator, UndefinedOptionFlag, MagickFalse },
     { "ThresholdWhite", ThresholdWhiteEvaluateOperator, UndefinedOptionFlag, MagickFalse },
