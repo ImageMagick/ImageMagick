@@ -1260,7 +1260,7 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   if (image->colorspace == colorspace)
     return(MagickTrue);
   if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))
-    return(TransformRGBImage(image,image->colorspace));
+    return(TransformRGBImage(image,colorspace));
   status=MagickTrue;
   if ((image->colorspace != RGBColorspace) &&
       (image->colorspace != TransparentColorspace) &&
@@ -1668,9 +1668,13 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
   switch (colorspace)
   {
     case GRAYColorspace:
+    case RGBColorspace:
+    {
+      image->colorspace=colorspace;
+      return(MagickTrue);
+    }
     case Rec601LumaColorspace:
     case Rec709LumaColorspace:
-    case RGBColorspace:
     case TransparentColorspace:
     case UndefinedColorspace:
       return(MagickTrue);
