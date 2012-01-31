@@ -2577,7 +2577,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
         else
 #endif
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
-          if (LocaleCompare(extension,".bz2") == 0)
+          if (LocaleCompare(extension,"bz2") == 0)
             {
               image->blob->bzfile=BZ2_bzopen(filename,type);
               if (image->blob->bzfile != (BZFILE *) NULL)
