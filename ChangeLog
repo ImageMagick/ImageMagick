@@ -1,6 +1,7 @@
 2011-01-30  6.7.5-1 Cristy  <quetzlzacatenango@image...>
   * Support the -alpha remove option (use it to remove transparency from PDF,
     convert -density 200 apple.pdf -alpha remove x:).
+  * Use union instead of casting gzFile and BZFILE.
 
 2012-01-30  6.7.5-1 Glenn Randers-Pehrson <glennrp@image...>
   * Fix bug in png coder (spurious warning, reference
