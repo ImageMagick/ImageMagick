@@ -2498,8 +2498,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                 ((int) magick[2] == 0x08))
               {
                 (void) fclose(image->blob->file);
-                image->blob->file=(FILE *) gzopen(filename,type);
-                if (image->blob->file != (FILE *) NULL)
+                image->blob->gzfile=gzopen(filename,type);
+                if (image->blob->gzfile != (gzFile) NULL)
                   image->blob->type=ZipStream;
                }
 #endif
@@ -2507,8 +2507,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
             if (strncmp((char *) magick,"BZh",3) == 0)
               {
                 (void) fclose(image->blob->file);
-                image->blob->file=(FILE *) BZ2_bzopen(filename,type);
-                if (image->blob->file != (FILE *) NULL)
+                image->blob->bzfile=BZ2_bzopen(filename,type);
+                if (image->blob->bzfile != (BZFILE *) NULL)
                   image->blob->type=BZipStream;
               }
 #endif
@@ -2567,8 +2567,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
           {
             if (mode == WriteBinaryBlobMode)
               type="wb";
-            image->blob->file=(FILE *) gzopen(filename,type);
-            if (image->blob->file != (FILE *) NULL)
+            image->blob->gzfile=gzopen(filename,type);
+            if (image->blob->gzfile != (gzFile) NULL)
               image->blob->type=ZipStream;
           }
         else
@@ -2576,8 +2576,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
           if (LocaleCompare(extension,".bz2") == 0)
             {
-              image->blob->file=(FILE *) BZ2_bzopen(filename,type);
-              if (image->blob->file != (FILE *) NULL)
+              image->blob->bzfile=BZ2_bzopen(filename,type);
+              if (image->blob->bzfile != (BZFILE *) NULL)
                 image->blob->type=BZipStream;
             }
           else
