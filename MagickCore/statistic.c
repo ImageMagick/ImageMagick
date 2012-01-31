@@ -384,6 +384,11 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
       result=(MagickRealType) (pixel-value);
       break;
     }
+    case SumEvaluateOperator:
+    {
+      result=(MagickRealType) (pixel+value);
+      break;
+    }
     case ThresholdEvaluateOperator:
     {
       result=(MagickRealType) (((MagickRealType) pixel <= value) ? 0 :
