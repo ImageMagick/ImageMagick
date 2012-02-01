@@ -3172,11 +3172,6 @@ MagickExport MagickBooleanType NegateImage(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,q) != 0)
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -3187,8 +3182,10 @@ MagickExport MagickBooleanType NegateImage(Image *image,
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits & UpdatePixelTrait) != 0)
-          q[i]=QuantumRange-q[i];
+        if (((traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(image,q) != 0))
+          continue;
+        q[i]=QuantumRange-q[i];
       }
       q+=GetPixelChannels(image);
     }
