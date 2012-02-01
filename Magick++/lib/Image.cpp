@@ -1954,7 +1954,7 @@ void Magick::Image::shade ( const double azimuth_,
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
-// Charcoal-effect image
+// Simulate an image shadow
 void Magick::Image::shadow( const double percent_opacity_, const double sigma_,
   const ssize_t x_, const ssize_t y_ )
 {

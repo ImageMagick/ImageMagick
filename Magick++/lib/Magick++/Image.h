@@ -607,11 +607,11 @@ namespace Magick
           const double elevation_ = 30,
           const bool   colorShading_ = false );
     
-    // simulate an image shadow
-    void            shadow ( const double radius_ = 0.0,
-                             const double sigma_ = 1.0,
-                             const ssize_t x_ = 0,
-                             const ssize_t y_ = 0 );
+    // Simulate an image shadow
+    void            shadow ( const double percent_opacity_ = 80.0,
+                             const double sigma_ = 0.5,
+                             const ssize_t x_ = 5,
+                             const ssize_t y_ = 5 );
 
     // Sharpen pixels in image
     // The radius_ parameter specifies the radius of the Gaussian, in
