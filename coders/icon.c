@@ -850,7 +850,8 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   next=image;
   do
   {
-    if (next->compression == ZipCompression)
+    if ((next->columns > 256L) && (next->rows > 256L) &&
+        (next->compression == ZipCompression))
       {
         Image
           *write_image;
@@ -872,11 +873,11 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           return(MagickFalse);
         write_info=CloneImageInfo(image_info);
         (void) CopyMagickString(write_info->filename,"PNG:",MaxTextExtent);
-
-        /* Don't write any ancillary chunks except for gAMA and tRNS */
+        /*
+          Don't write any ancillary chunks except for gAMA and tRNS
+        */
         (void) SetImageArtifact(write_image,"png:include-chunk",
            "none,trns,gama");
-
         png=(unsigned char *) ImageToBlob(write_info,write_image,&length,
           &image->exception);
         write_image=DestroyImage(write_image);
