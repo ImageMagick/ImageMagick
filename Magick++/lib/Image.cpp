@@ -1873,7 +1873,7 @@ void Magick::Image::shadow( const double percent_opacity_, const double sigma_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage = ShadowImage( image(), percent_opacity_, sigma_,
-    image()->bias, x_, y_, &exceptionInfo );
+    x_, y_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
