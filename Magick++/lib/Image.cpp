@@ -1866,6 +1866,19 @@ void Magick::Image::shade ( const double azimuth_,
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+// Simulate an image shadow
+void Magick::Image::shadow( const double percent_opacity_, const double sigma_,
+  const ssize_t x_, const ssize_t y_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage = ShadowImage( image(), percent_opacity_, sigma_,
+    image()->bias, x_, y_, &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 // Sharpen pixels in image
 void Magick::Image::sharpen ( const double radius_, const double sigma_ )
 {

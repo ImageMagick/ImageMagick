@@ -977,6 +977,22 @@ namespace Magick
     bool    _colorShading;
   };
 
+  // Shadow effect image (simulate an image shadow)
+  class MagickPPExport shadowImage : public std::unary_function<Image&,void>
+  {
+  public:
+    shadowImage( const double percent_opacity_ = 80, const double sigma_ = 0.5,
+      const ssize_t x_ = 5, const ssize_t y_ = 5 );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    double _percent_opacity;
+    double _sigma;
+    ssize_t _x;
+    ssize_t _y;
+  };
+
   // Sharpen pixels in image
   class MagickPPExport sharpenImage : public std::unary_function<Image&,void>
   {
