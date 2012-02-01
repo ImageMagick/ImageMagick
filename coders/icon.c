@@ -862,7 +862,8 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   next=image;
   do
   {
-    if (next->compression == ZipCompression)
+    if ((next->columns > 256L) && (next->rows > 256L) &&
+        (next->compression == ZipCompression))
       {
         Image
           *write_image;
