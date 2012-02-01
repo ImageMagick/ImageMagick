@@ -141,6 +141,7 @@ typedef struct _PSDInfo
 
   unsigned short
     channels,
+    color_channels,
     version;
 
   unsigned char
@@ -699,14 +700,17 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
           if (image->colorspace == CMYKColorspace)
             SetPixelIndex(indexes+x,pixel);
           else
-            SetPixelAlpha(q,pixel);
+            if (image->matte != MagickFalse)
+              SetPixelAlpha(q,pixel);
           break;
         }
         case 4:
         {
-          if ((IsRGBColorspace(image->colorspace) == MagickTrue) && (channels > 3))
+          if ((IsRGBColorspace(image->colorspace) == MagickTrue) &&
+              (channels > 3))
             break;
-          SetPixelAlpha(q,pixel);
+          if (image->matte != MagickFalse)
+            SetPixelAlpha(q,pixel);
           break;
         }
         default:
@@ -737,6 +741,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *layer_info;
 
   MagickBooleanType
+    check_background,
     status;
 
   MagickOffsetType
@@ -784,6 +789,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+
   image=AcquireImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
@@ -801,6 +807,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   count=ReadBlob(image,6,psd_info.reserved);
   psd_info.channels=ReadBlobMSBShort(image);
+  psd_info.color_channels=psd_info.channels;
   if (psd_info.channels > MaxPSDChannels)
     ThrowReaderException(CorruptImageError,"MaximumChannelsExceeded");
   psd_info.rows=ReadBlobMSBLong(image);
@@ -830,28 +837,26 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  image->matte=psd_info.channels >= 4 ? MagickTrue : MagickFalse;
   if (psd_info.mode == LabMode)
     image->colorspace=LabColorspace;
+  psd_info.color_channels=3;
   if (psd_info.mode == CMYKMode)
     {
+      psd_info.color_channels=4;
       image->colorspace=CMYKColorspace;
-      image->matte=psd_info.channels >= 5 ? MagickTrue : MagickFalse;
     }
   if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
       (psd_info.mode == DuotoneMode))
     {
+      psd_info.color_channels=1;
       if (AcquireImageColormap(image,256) == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      image->matte=psd_info.channels >= 2 ? MagickTrue : MagickFalse;
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Image colormap allocated");
       image->colorspace=GRAYColorspace;
     }
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      image->matte ? "  image has matte" : "  image has no matte");
+  image->matte=MagickFalse;
   /*
     Read PSD raster colormap only present for indexed and duotone images.
   */
@@ -889,7 +894,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (i=0; i < (ssize_t) image->colors; i++)
             image->colormap[i].blue=ScaleCharToQuantum((unsigned char)
               ReadBlobByte(image));
-          image->matte=psd_info.channels >= 2 ? MagickTrue : MagickFalse;
+          image->matte=MagickFalse;
         }
     }
   length=ReadBlobMSBLong(image);
@@ -930,12 +935,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       length=ReadBlobMSBLong(image);
       length=ReadBlobMSBLong(image);
     }
+  check_background=MagickFalse;
   if ((image_info->number_scenes == 1) && (image_info->scene == 0))
     {
-      if (DiscardBlobBytes(image,length) == MagickFalse)
-        ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-          image->filename);
-      length=0;
+      if (image->debug != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "  read composite only");
+      check_background=MagickTrue;
     }
   if (length == 0)
     {
@@ -984,6 +990,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickOffsetType
             layer_offset;
 
+          image->matte=psd_info.channels > psd_info.color_channels ?
+            MagickTrue : MagickFalse;
+          if (image->debug != MagickFalse)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              image->matte ? "  image has matte" : "  image has no matte");
           layer_offset=offset+length;
           number_layers=(short) ReadBlobMSBShort(image);
           if (image->debug != MagickFalse)
@@ -1028,6 +1039,19 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             layer_info[i].page.width=(ssize_t) (x-layer_info[i].page.x);
             layer_info[i].page.height=(ssize_t) (y-layer_info[i].page.y);
             layer_info[i].channels=ReadBlobMSBShort(image);
+            if (check_background == MagickTrue)
+              {
+                size_t
+                  quantum;
+
+                if (layer_info[i].channels == psd_info.color_channels)
+                  image->matte=MagickFalse;
+                quantum=psd_info.version == 1 ? 4UL : 8UL;
+                if (DiscardBlobBytes(image,length-20-quantum) == MagickFalse)
+                   ThrowFileException(exception,CorruptImageError,
+                     "UnexpectedEndOfFile",image->filename);
+                break;
+              }
             if (layer_info[i].channels > MaxPSDChannels)
               ThrowReaderException(CorruptImageError,"MaximumChannelsExceeded");
             if (image->debug != MagickFalse)
@@ -1235,167 +1259,172 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) SetImageProperty(layer_info[i].image,"label",(char *)
               layer_info[i].name);
           }
-        if (image->debug != MagickFalse)
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  reading image data for layers");
-        /*
-          Read pixel data for each layer.
-        */
-        for (i=0; i < number_layers; i++)
-        {
-          if (image->debug != MagickFalse)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  reading data for layer %.20g",(double) i);
-            for (j=0; j < (ssize_t) layer_info[i].channels; j++)
-            {
-              if (image->debug != MagickFalse)
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    reading data for channel %.20g",(double) j);
-#if     1
-              if (layer_info[i].channel_info[j].size <= (2*layer_info[i].image->rows))
-                {
-                  ssize_t
-                    k;
-
-                  if (image->debug != MagickFalse)
-                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                      "      layer data is empty");
-                  /*
-                    A layer without data.
-                  */
-                  for (k=0; k < (ssize_t) layer_info[i].channel_info[j].size; k++)
-                    (void) ReadBlobByte(layer_info[i].image);
-                  continue;
-                }
-#endif
-              offsets=(MagickOffsetType *) NULL;
-              layer_info[i].image->compression=NoCompression;
-              compression=ReadBlobMSBShort(layer_info[i].image);
-              if ((layer_info[i].page.height != 0) &&
-                  (layer_info[i].page.width != 0))
-                {
-                  if (compression == 1)
-                    {
-                      /*
-                        Read RLE compressed data.
-                      */
-                      layer_info[i].image->compression=RLECompression;
-                      if (image->debug != MagickFalse)
-                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                          "      layer data is RLE compressed");
-                      offsets=(MagickOffsetType *) AcquireQuantumMemory(
-                        layer_info[i].image->rows,sizeof(*offsets));
-                      if (offsets == (MagickOffsetType *) NULL)
-                        ThrowReaderException(ResourceLimitError,
-                          "MemoryAllocationFailed");
-                      for (y=0; y < (ssize_t) layer_info[i].image->rows; y++)
-                        offsets[y]=GetPSDOffset(&psd_info,layer_info[i].image);
-                    }
-                  status=ReadPSDLayer(layer_info[i].image,
-                    layer_info[i].channels,layer_info[i].channel_info[j].type,
-                    offsets,exception);
-                  if (compression == 1)
-                    offsets=(MagickOffsetType *) RelinquishMagickMemory(
-                      offsets);
-                  if (status == MagickFalse)
-                    break;
-                }
-              }
-            if (layer_info[i].opacity != OpaqueOpacity)
-              {
-                /*
-                  Correct for opacity level.
-                */
-                for (y=0; y < (ssize_t) layer_info[i].image->rows; y++)
-                {
-                  q=GetAuthenticPixels(layer_info[i].image,0,y,
-                    layer_info[i].image->columns,1,exception);
-                  if (q == (PixelPacket *) NULL)
-                    break;
-                  for (x=0; x < (ssize_t) layer_info[i].image->columns; x++)
-                  {
-                    q->opacity=(Quantum) (QuantumRange-(Quantum) (QuantumScale*
-                      ((QuantumRange-q->opacity)*(QuantumRange-
-                      layer_info[i].opacity))));
-                    q++;
-                  }
-                  if (SyncAuthenticPixels(layer_info[i].image,exception) == MagickFalse)
-                    break;
-                }
-              }
-            if (layer_info[i].image->colorspace == CMYKColorspace)
-              (void) NegateImage(layer_info[i].image,MagickFalse);
-            status=SetImageProgress(image,LoadImagesTag,i,(MagickSizeType)
-              number_layers);
-            if (status == MagickFalse)
-              break;
-          }
-        /* added by palf -> invisible group layer make layer of this group
-           invisible I consider that all layer with width and height null are
-           layer for group layer */
-       {
-         short inside_layer = 0;
-         short layer_visible = 0;
-         for (i=number_layers-1; i >=0; i--)
-         {
-           if ((layer_info[i].page.width == 0) ||
-               (layer_info[i].page.height == 0))
-             {
-               if (inside_layer == 0)
-                 {
-                   inside_layer=1;
-                   layer_visible=(short int) layer_info[i].visible;
-                 }
-               else
-                 {
-                   inside_layer = 0;
-                 }
-             }
-           else
-             if ((inside_layer == 1) && (layer_visible == 0))
-               {
-                 layer_info[i].visible=(unsigned char) layer_visible;
-                 layer_info[i].image->compose=NoCompositeOp;
-               }
-         }
-       }
-       /* added by palf -> suppression of empty layer */
-       /* I consider that all layer with width and height null are layer for group layer */
-       for (i=0; i < number_layers; i++)
-       {
-         if ((layer_info[i].page.width == 0) ||
-             (layer_info[i].page.height == 0))
-           {
-             if (layer_info[i].image != (Image *) NULL)
-               layer_info[i].image=DestroyImage(layer_info[i].image);
-             for (j=i; j < number_layers - 1; j++)
-               layer_info[j] = layer_info[j+1];
-             number_layers--;
-             i--;
-           }
-        }
-        mask_size = ReadBlobMSBLong(image);  /* global mask size: currently ignored */
-        (void) mask_size;
-        if (number_layers > 0)
+        if (check_background == MagickFalse)
           {
             if (image->debug != MagickFalse)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                "  putting layers into image list");
+               "  reading image data for layers");
+            /*
+              Read pixel data for each layer.
+            */
             for (i=0; i < number_layers; i++)
             {
-              if (i > 0)
-                layer_info[i].image->previous=layer_info[i-1].image;
-              if (i < (number_layers-1))
-                layer_info[i].image->next=layer_info[i+1].image;
-              layer_info[i].image->page=layer_info[i].page;
+              if (image->debug != MagickFalse)
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                  "  reading data for layer %.20g",(double) i);
+                for (j=0; j < (ssize_t) layer_info[i].channels; j++)
+                {
+                  if (image->debug != MagickFalse)
+                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                      "    reading data for channel %.20g",(double) j);
+#if 1
+                  if (layer_info[i].channel_info[j].size <= (2*layer_info[i].image->rows))
+                    {
+                      ssize_t
+                        k;
+
+                      if (image->debug != MagickFalse)
+                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "      layer data is empty");
+                      /*
+                        A layer without data.
+                      */
+                      for (k=0; k < (ssize_t) layer_info[i].channel_info[j].size; k++)
+                        (void) ReadBlobByte(layer_info[i].image);
+                      continue;
+                    }
+#endif
+                  offsets=(MagickOffsetType *) NULL;
+                  layer_info[i].image->compression=NoCompression;
+                  compression=ReadBlobMSBShort(layer_info[i].image);
+                  if ((layer_info[i].page.height != 0) &&
+                      (layer_info[i].page.width != 0))
+                    {
+                      if (compression == 1)
+                        {
+                          /*
+                            Read RLE compressed data.
+                          */
+                          layer_info[i].image->compression=RLECompression;
+                          if (image->debug != MagickFalse)
+                            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "      layer data is RLE compressed");
+                          offsets=(MagickOffsetType *) AcquireQuantumMemory(
+                            layer_info[i].image->rows,sizeof(*offsets));
+                          if (offsets == (MagickOffsetType *) NULL)
+                            ThrowReaderException(ResourceLimitError,
+                              "MemoryAllocationFailed");
+                          for (y=0; y < (ssize_t) layer_info[i].image->rows; y++)
+                            offsets[y]=GetPSDOffset(&psd_info,
+                              layer_info[i].image);
+                        }
+                      status=ReadPSDLayer(layer_info[i].image,
+                        layer_info[i].channels,
+                        layer_info[i].channel_info[j].type,offsets,exception);
+                      if (compression == 1)
+                        offsets=(MagickOffsetType *) RelinquishMagickMemory(
+                          offsets);
+                      if (status == MagickFalse)
+                        break;
+                    }
+                  }
+                if (layer_info[i].opacity != OpaqueOpacity)
+                  {
+                    /*
+                      Correct for opacity level.
+                    */
+                    for (y=0; y < (ssize_t) layer_info[i].image->rows; y++)
+                    {
+                      q=GetAuthenticPixels(layer_info[i].image,0,y,
+                        layer_info[i].image->columns,1,exception);
+                      if (q == (PixelPacket *) NULL)
+                        break;
+                      for (x=0; x < (ssize_t) layer_info[i].image->columns; x++)
+                      {
+                        q->opacity=(Quantum) (QuantumRange-(Quantum)
+                          (QuantumScale*((QuantumRange-q->opacity)*
+                          (QuantumRange-layer_info[i].opacity))));
+                        q++;
+                      }
+                      if (SyncAuthenticPixels(layer_info[i].image,exception) == MagickFalse)
+                        break;
+                    }
+                  }
+                if (layer_info[i].image->colorspace == CMYKColorspace)
+                  (void) NegateImage(layer_info[i].image,MagickFalse);
+                status=SetImageProgress(image,LoadImagesTag,i,(MagickSizeType)
+                  number_layers);
+                if (status == MagickFalse)
+                  break;
+              }
+            /* added by palf -> invisible group layer make layer of this group
+               invisible I consider that all layer with width and height null
+               are layer for group layer */
+           {
+             short inside_layer = 0;
+             short layer_visible = 0;
+             for (i=number_layers-1; i >=0; i--)
+             {
+               if ((layer_info[i].page.width == 0) ||
+                   (layer_info[i].page.height == 0))
+                 {
+                   if (inside_layer == 0)
+                     {
+                       inside_layer=1;
+                       layer_visible=(short int) layer_info[i].visible;
+                     }
+                   else
+                     {
+                       inside_layer = 0;
+                     }
+                 }
+               else
+                 if ((inside_layer == 1) && (layer_visible == 0))
+                   {
+                     layer_info[i].visible=(unsigned char) layer_visible;
+                     layer_info[i].image->compose=NoCompositeOp;
+                   }
+             }
+           }
+           /* added by palf -> suppression of empty layer */
+           /* I consider that all layer with width and height null are layer
+              for group layer */
+           for (i=0; i < number_layers; i++)
+           {
+             if ((layer_info[i].page.width == 0) ||
+                 (layer_info[i].page.height == 0))
+               {
+                 if (layer_info[i].image != (Image *) NULL)
+                   layer_info[i].image=DestroyImage(layer_info[i].image);
+                 for (j=i; j < number_layers - 1; j++)
+                   layer_info[j] = layer_info[j+1];
+                 number_layers--;
+                 i--;
+               }
             }
-            image->next=layer_info[0].image;
-            layer_info[0].image->previous=image;
-            layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
+            mask_size = ReadBlobMSBLong(image);  /* ignore global mask size */
+            (void) mask_size;
+            if (number_layers > 0)
+              {
+                if (image->debug != MagickFalse)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "  putting layers into image list");
+                for (i=0; i < number_layers; i++)
+                {
+                  if (i > 0)
+                    layer_info[i].image->previous=layer_info[i-1].image;
+                  if (i < (number_layers-1))
+                    layer_info[i].image->next=layer_info[i+1].image;
+                  layer_info[i].image->page=layer_info[i].page;
+                }
+                image->next=layer_info[0].image;
+                layer_info[0].image->previous=image;
+                layer_info=(LayerInfo *) RelinquishMagickMemory(layer_info);
+              }
+            layer_offset-=TellBlob(image);
+            offset=SeekBlob(image,layer_offset,SEEK_CUR);
           }
-        layer_offset-=TellBlob(image);
-        offset=SeekBlob(image,layer_offset,SEEK_CUR);
-      }
+        }
     }
   /*
     Read the precombined layer, present for PSD < 4 compatibility
