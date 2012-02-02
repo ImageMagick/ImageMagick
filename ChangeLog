@@ -1,35 +1,41 @@
-2011-01-30  6.7.5-1 Cristy  <quetzlzacatenango@image...>
+2012-01-30  6.7.5-1 Cristy  <quetzlzacatenango@image...>
   * Support the -alpha remove option (use it to remove transparency from PDF,
     convert -density 200 apple.pdf -alpha remove x:).
   * Use union instead of casting gzFile and BZFILE.
   * Don't treat PSD user channel as alpha (patch from Dominic Benson).
+  * Prevent overflow when casting short int to size_t when parsing a
+    maliciously crafted image with an IFD whose all IOP tags' value offsets
+    point to the beginning of the IFD itself [FICORA #595210].
+  * Prevent DES when parsing a maliciously crafted image with an IFD whose
+    all IOP tags' value offsets point to the beginning of the IFD itself
+    [FICORA #595210].
 
 2012-01-30  6.7.5-1 Glenn Randers-Pehrson <glennrp@image...>
   * Fix bug in png coder (spurious warning, reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=20257).
 
-2011-01-28  6.7.5-0 Cristy  <quetzlzacatenango@image...>
+2012-01-28  6.7.5-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.5-0, SVN revision 6606.
 
-2011-01-25  6.7.5-0 Cristy  <quetzlzacatenango@image...>
+2012-01-25  6.7.5-0 Cristy  <quetzlzacatenango@image...>
   * Zlib-1.2.5.2 requires gzFile cast (bug report from John Bowler).
 
-2011-01-25  6.7.4-10 Cristy  <quetzlzacatenango@image...>
+2012-01-25  6.7.4-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.4-10, SVN revision 6592.
 
-2011-01-25  6.7.4-10 Cristy  <quetzlzacatenango@image...>
+2012-01-25  6.7.4-10 Cristy  <quetzlzacatenango@image...>
   * Update PerlMagick TIFF regression signatures to match endian order.
 
-2011-01-24  6.7.4-9 Cristy  <quetzlzacatenango@image...>
+2012-01-24  6.7.4-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.4-9, SVN revision 6589.
 
-2011-01-24  6.7.4-9 Cristy  <quetzlzacatenango@image...>
+2012-01-24  6.7.4-9 Cristy  <quetzlzacatenango@image...>
   * Fix rare file link in the pixel cache.
 
-2011-01-20  6.7.4-8 Cristy  <quetzlzacatenango@image...>
+2012-01-20  6.7.4-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.4-8, SVN revision 6551.
 
-2011-01-19  6.7.4-8 Cristy  <quetzlzacatenango@image...>
+2012-01-19  6.7.4-8 Cristy  <quetzlzacatenango@image...>
   * Although MagickRealType is a double, use double for KernelInfo values in
     the rare event of problems with C++ name mangling.
   * Get strokes with patterns (e.g. -stroke xc:red) working again.
@@ -39,19 +45,19 @@
   * Don't write ancillary chunks (except for tRNS and gAMA) in PNG-encoded
     ICO files.
 
-2011-01-14  6.7.4-7 Cristy  <quetzlzacatenango@image...>
+2012-01-14  6.7.4-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.4-7, SVN revision 6471.
 
-2011-01-13  6.7.4-7 Cristy  <quetzlzacatenango@image...>
+2012-01-13  6.7.4-7 Cristy  <quetzlzacatenango@image...>
   * Default to a lighter hinting algorithm for non-monochrome font rendering.
 
-2011-01-12  6.7.4-6 Cristy  <quetzlzacatenango@image...>
+2012-01-12  6.7.4-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.4-6, SVN revision 6434.
 
-2011-01-12  6.7.4-6 Cristy  <quetzlzacatenango@image...>
+2012-01-12  6.7.4-6 Cristy  <quetzlzacatenango@image...>
   * Eliminate preprocessor exception for the HDRI build.
 
-2011-01-10  6.7.4-5 Cristy  <quetzlzacatenango@image...>
+2012-01-10  6.7.4-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.4-5, SVN revision 6422.
 
 2012-01-02  6.7.4-5 Glenn Randers-Pehrson <glennrp@image...>
@@ -65,10 +71,10 @@
     encoder (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20098).
 
-2011-01-01  6.7.4-4 Cristy  <quetzlzacatenango@image...>
+2012-01-01  6.7.4-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.4-4, SVN revision 6318.
 
-2010-12-30  6.7.4-4 Glenn Randers-Pehrson <glennrp@image...>
+2011-12-30  6.7.4-4 Glenn Randers-Pehrson <glennrp@image...>
   * Fix problems with JNG encoder "quality" (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20076).
 
