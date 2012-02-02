@@ -1208,7 +1208,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   }
   if (length < 16)
     return(MagickFalse);
-  id=(ssize_t) ReadPropertyShort(LSBEndian,exif);
+  id=(ssize_t) ((int) ReadPropertyShort(LSBEndian,exif));
   endian=LSBEndian;
   if (id == 0x4949)
     endian=LSBEndian;
@@ -1233,7 +1233,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   level=0;
   entry=0;
   tag_offset=0;
-  do
+  for (i=0; i < 1024; i++)
   {
     /*
       If there is anything on the stack then pop it off.
@@ -1262,9 +1262,9 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       ssize_t
         components;
 
-      q=(unsigned char *) (directory+2+(12*entry));
-      tag_value=(ssize_t) (ReadPropertyShort(endian,q)+tag_offset);
-      format=(size_t) ReadPropertyShort(endian,q+2);
+      q=(unsigned char *) (directory+(12*entry)+2);
+      tag_value=(ssize_t) ((int) ReadPropertyShort(endian,q)+tag_offset);
+      format=(size_t) ((int) ReadPropertyShort(endian,q+2));
       if (format >= (sizeof(tag_bytes)/sizeof(*tag_bytes)))
         break;
       components=(ssize_t) ((int) ReadPropertyLong(endian,q+4));
@@ -1328,8 +1328,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             case EXIF_FMT_URATIONAL:
             {
               EXIFMultipleFractions(8,"%.20g/%.20g",(double)
-                ReadPropertyLong(endian,p1),(double)
-                ReadPropertyLong(endian,p1+4));
+                ((int) ReadPropertyLong(endian,p1)),(double)
+                ((int) ReadPropertyLong(endian,p1+4)));
               break;
             }
             case EXIF_FMT_SRATIONAL:
@@ -1436,7 +1436,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             size_t
               offset;
 
-            offset=(size_t) ReadPropertyLong(endian,p);
+            offset=(size_t) ((int) ReadPropertyLong(endian,p));
             if ((offset < length) && (level < (MaxDirectoryStack-2)))
               {
                 size_t
@@ -1468,7 +1468,9 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             break;
           }
     }
-  } while (level > 0);
+    if (level <= 0)
+      break;
+  }
   return(status);
 }
 
