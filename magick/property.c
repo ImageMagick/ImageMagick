@@ -1088,6 +1088,9 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     tag_offset,
     tag;
 
+  SplayTreeInfo
+    *exif_resources;
+
   ssize_t
     all,
     id,
@@ -1233,7 +1236,9 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
   level=0;
   entry=0;
   tag_offset=0;
-  for (i=0; i < 1024; i++)
+  exif_resources=NewSplayTree((int (*)(const void *,const void *)) NULL,
+    (void *(*)(void *)) NULL,(void *(*)(void *)) NULL);
+  do
   {
     /*
       If there is anything on the stack then pop it off.
@@ -1263,6 +1268,9 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
         components;
 
       q=(unsigned char *) (directory+(12*entry)+2);
+      if (GetValueFromSplayTree(exif_resources,q) == q)
+        break;
+      (void) AddValueToSplayTree(exif_resources,q,q);
       tag_value=(ssize_t) ((int) ReadPropertyShort(endian,q)+tag_offset);
       format=(size_t) ((int) ReadPropertyShort(endian,q+2));
       if (format >= (sizeof(tag_bytes)/sizeof(*tag_bytes)))
@@ -1468,9 +1476,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             break;
           }
     }
-    if (level <= 0)
-      break;
-  }
+  } while (level > 0);
+  exif_resources=DestroySplayTree(exif_resources);
   return(status);
 }
 
