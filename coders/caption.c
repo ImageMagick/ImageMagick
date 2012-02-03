@@ -358,14 +358,15 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     for (x=page.x; x < (ssize_t) (image->columns-page.x); x++)
     {
       MagickRealType
-        fill_opacity;
+        fill_alpha;
 
       (void) GetFillColor(draw_info,x,y,&fill_color,exception);
-      fill_opacity=(*p)*fill_color.alpha/canvas->num_grays;
+      fill_alpha=(MagickRealType) (*p)/(canvas->num_grays-1);
       if (draw_info->text_antialias == MagickFalse)
-        fill_opacity=fill_opacity >= 0.5 ? 1.0 : 0.0;
-      CompositePixelOver(image,&fill_color,fill_opacity,q,
-        GetPixelAlpha(image,q),q);
+        fill_alpha=fill_alpha >= 0.5 ? 1.0 : 0.0;
+      fill_alpha=fill_alpha*fill_color.alpha;
+      CompositePixelOver(image,&fill_color,fill_alpha,q,GetPixelAlpha(image,q),
+        q);
       p++;
       q+=GetPixelChannels(image);
     }
