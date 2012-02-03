@@ -5,10 +5,10 @@
   * Don't treat PSD user channel as alpha (patch from Dominic Benson).
   * Prevent overflow when casting short int to size_t when parsing a
     maliciously crafted image with an IFD whose all IOP tags' value offsets
-    point to the beginning of the IFD itself [FICORA #595210].
+    point to the beginning of the IFD itself [CVE-2012-0247].
   * Prevent DES when parsing a maliciously crafted image with an IFD whose
     all IOP tags' value offsets point to the beginning of the IFD itself
-    [FICORA #595210].
+    [CVE-2012-0248].
   * Caption with Pango support no longer return a blank canvas.
 
 2012-01-30  6.7.5-1 Glenn Randers-Pehrson <glennrp@image...>
