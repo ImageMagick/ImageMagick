@@ -359,10 +359,10 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         fill_opacity;
 
       (void) GetFillColor(draw_info,x,y,&fill_color);
-      fill_opacity=QuantumRange-(*p)/canvas->num_grays*(QuantumRange-
-        fill_color.opacity);
+      fill_opacity=(MagickRealType) (*p)/(canvas->num_grays-1);
       if (draw_info->text_antialias == MagickFalse)
         fill_opacity=fill_opacity >= 0.5 ? 1.0 : 0.0;
+      fill_opacity=QuantumRange-fill_opacity*(QuantumRange-fill_color.opacity);
       MagickCompositeOver(&fill_color,fill_opacity,q,q->opacity,q);
       p++;
       q++;
