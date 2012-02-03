@@ -1580,8 +1580,7 @@ static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
 }
 
 static char *TracePSClippath(const unsigned char *blob,size_t length,
-  const size_t magick_unused(columns),
-  const size_t magick_unused(rows))
+  const size_t magick_unused(columns),const size_t magick_unused(rows))
 {
   char
     *path,
