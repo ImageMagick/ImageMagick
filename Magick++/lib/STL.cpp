@@ -899,6 +899,21 @@ void Magick::shadeImage::operator()( Magick::Image &image_ ) const
   image_.shade( _azimuth, _elevation, _colorShading );
 }
 
+// Simulate an image shadow
+Magick::shadowImage::shadowImage( const double percent_opacity_,
+                                const double sigma_,
+        const ssize_t x_, const ssize_t y_ )
+  : _percent_opacity( percent_opacity_ ),
+    _sigma( sigma_ ),
+    _x ( x_ ),
+    _y ( y_ )
+{
+} 
+void Magick::shadowImage::operator()( Magick::Image &image_ ) const
+{
+  image_.shadow( _percent_opacity, _sigma, _x, _y );
+}
+
 // Sharpen pixels in image
 Magick::sharpenImage::sharpenImage( const double radius_, const double sigma_ )
   : _radius( radius_ ),
