@@ -432,7 +432,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   property=DestroyString(property);
   caption=ConstantString(GetImageProperty(image,"caption"));
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  draw_info->text=ConstantString(caption);
+  (void) CloneString(&draw_info->text,caption);
   gravity=GetImageOption(image_info,"gravity");
   if (gravity != (char *) NULL)
     draw_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
