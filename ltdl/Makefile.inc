@@ -125,7 +125,7 @@ CLEANFILES		       += ltdl/libltdl.la \
 ## automatically:
 CLEANFILES	       += $(ltdl_LIBOBJS) $(ltdl_LTLIBOBJS)
 
-EXTRA_DIST	       += ltdl/COPYING.LIB \
+EXTRA_DIST	       += ltdl/README \
 			  ltdl/README
 
 ## --------------------------- ##
