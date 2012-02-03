@@ -10,6 +10,7 @@
     all IOP tags' value offsets point to the beginning of the IFD itself
     [CVE-2012-0248].
   * Caption with Pango support no longer return a blank canvas.
+  * Correct sRGB colorspace conversion equations.
 
 2012-01-30  6.7.5-1 Glenn Randers-Pehrson <glennrp@image...>
   * Fix bug in png coder (spurious warning, reference
