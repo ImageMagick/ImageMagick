@@ -214,10 +214,10 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Notebook Reparatur" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur</a><!-- 2012050100300 atlas.multimedia-->
+   <a rel="follow" title="Sponsor: Turbolader Online kaufen" href="http://www.autoteile-carparts.de">Turbolader Online kaufen</a><!-- 2012050100150 t.temurbas...-->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Brand shopping" href="http://brandport.net">Brand shopping</a><!-- 20120201000150 gyaku@gyaku... -->
+   <a rel="follow" title="Sponsor: Waschmaschinen Reparatur Berlin" href="http://www.waschmaschinen-reparaturen-berlin.de">Waschmaschinen Reparatur Berlin</a><!-- 2012050100060 Temurbas@autoteile-->
 </div>
 </div>
 </div>
@@ -241,45 +241,56 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2011-01-28  6.7.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2012-02-02  6.7.5-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.5-1, SVN revision 6684.</dd>
+<dt>2012-01-30  6.7.5-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Support the -alpha remove option (use it to remove transparency from PDF,    convert -density 200 apple.pdf -alpha remove x:).</dd>
+  <dd> Use union instead of casting gzFile and BZFILE.</dd>
+  <dd> Don't treat PSD user channel as alpha (patch from Dominic Benson).</dd>
+  <dd> Prevent overflow when casting short int to size_t when parsing a    maliciously crafted image with an IFD whose all IOP tags' value offsets    point to the beginning of the IFD itself [CVE-2012-0247].</dd>
+  <dd> Prevent DES when parsing a maliciously crafted image with an IFD whose    all IOP tags' value offsets point to the beginning of the IFD itself    [CVE-2012-0248].</dd>
+  <dd> Caption with Pango support no longer return a blank canvas.</dd>
+  <dd> Correct sRGB colorspace conversion equations.</dd>
+<dt>2012-01-30  6.7.5-1 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Fix bug in png coder (spurious warning, reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=1&t=20257).</dd>
+<dt>2012-01-28  6.7.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.5-0, SVN revision 6606.</dd>
-<dt>2011-01-25  6.7.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Support the -alpha flatten option (use it to flatten a transparent PDF,    convert -density 200 apple.pdf -alpha background x:).</dd>
+<dt>2012-01-25  6.7.5-0 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Zlib-1.2.5.2 requires gzFile cast (bug report from John Bowler).</dd>
-<dt>2011-01-25  6.7.4-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-01-25  6.7.4-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.4-10, SVN revision 6592.</dd>
-<dt>2011-01-25  6.7.4-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-01-25  6.7.4-10 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Update PerlMagick TIFF regression signatures to match endian order.</dd>
-<dt>2011-01-24  6.7.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-01-24  6.7.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.4-9, SVN revision 6589.</dd>
-<dt>2011-01-24  6.7.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-01-24  6.7.4-9 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Fix rare file link in the pixel cache.</dd>
-<dt>2011-01-20  6.7.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-01-20  6.7.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.4-8, SVN revision 6551.</dd>
-<dt>2011-01-19  6.7.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-01-19  6.7.4-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Although MagickRealType is a double, use double for KernelInfo values in    the rare event of problems with C++ name mangling.</dd>
   <dd> Get strokes with patterns (e.g. -stroke xc:red) working again.</dd>
   <dd> Revert KernelInfo values from MagickRealType to double.</dd>
 <dt>2012-01-17  6.7.4-8 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Don't write ancillary chunks (except for tRNS and gAMA) in PNG-encoded    ICO files.</dd>
-<dt>2011-01-14  6.7.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-01-14  6.7.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.4-7, SVN revision 6471.</dd>
-<dt>2011-01-13  6.7.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-01-13  6.7.4-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Default to a lighter hinting algorithm for non-monochrome font rendering.</dd>
-<dt>2011-01-12  6.7.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-01-12  6.7.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.4-6, SVN revision 6434.</dd>
-<dt>2011-01-12  6.7.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-01-12  6.7.4-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Eliminate preprocessor exception for the HDRI build.</dd>
-<dt>2011-01-10  6.7.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-01-10  6.7.4-5 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.4-5, SVN revision 6422.</dd>
 <dt>2012-01-02  6.7.4-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Fixed -black-threshold and -white-threshold so they work properly with    the -channels option (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20096).</dd>
 <dt>2012-01-02  6.7.4-5 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Removed PNG_USE_CLONE cruft from the PNG encoder (see 2011-11-19 entry)</dd>
   <dd> Promote image depths 9-15 to 16 to avoid crashing in the PNG    encoder (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20098).</dd>
-<dt>2011-01-01  6.7.4-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dt>2012-01-01  6.7.4-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.4-4, SVN revision 6318.</dd>
-<dt>2010-12-30  6.7.4-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+<dt>2011-12-30  6.7.4-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
   <dd> Fix problems with JNG encoder "quality" (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=20076).</dd>
 <dt>2011-12-30  6.7.4-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.4-3, SVN revision 6310.</dd>
