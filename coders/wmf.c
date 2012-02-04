@@ -821,7 +821,7 @@ static void ipa_device_begin(wmfAPI * API)
   DrawSetViewbox(WmfDrawingWand, 0, 0, ddata->image->columns, ddata->image->rows );
 
   (void) FormatLocaleString(comment,MaxTextExtent,"Created by ImageMagick %s",
-    GetMagickVersion((unsigned long *) NULL));
+    GetMagickVersion((size_t *) NULL));
   DrawComment(WmfDrawingWand,comment);
 
   /* Scale width and height to image */
