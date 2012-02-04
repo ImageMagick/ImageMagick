@@ -562,7 +562,15 @@ MagickExport Image *GetFirstImageInList(const Image *images)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageFromList() returns an image at the specified offset from the list.
+%  GetImageFromList() returns an image at the specified index from the image
+%  list. Starting with 0 as the first image in the list.
+%
+%  A negative offset will return the image from the end of the list, such that
+%  an index of -1 is the last image.
+%
+%  If no such image exists at the specified offset a NULL image pointer is
+%  returned.  This will only happen if index is less that the negative of
+%  the list length, or larger than list length -1.  EG: ( -N to N-1 )
 %
 %  The format of the GetImageFromList method is:
 %
@@ -583,25 +591,33 @@ MagickExport Image *GetImageFromList(const Image *images,const ssize_t index)
   register ssize_t
     i;
 
-  size_t
-    length;
-
-  ssize_t
-    offset;
-
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
-  for (p=images; p->previous != (Image *) NULL; p=p->previous) ;
-  length=GetImageListLength(images);
-  for (offset=index; offset < 0; offset+=(ssize_t) length) ;
-  for (i=0; p != (Image *) NULL; p=p->next)
-    if (i++ == (ssize_t) (offset % length))
-      break;
-  if (p == (Image *) NULL)
-    return((Image *) NULL);
+
+  /*
+    Designed to efficiently find first image (index == 0), or last image
+    (index == -1) as appropriate, without to go through the whole image list,
+    unless the offset is outside of the list length range.
+
+    That is it tries to avoid 'counting the whole list' to handle the index.
+  */
+  if ( index < 0 )
+    {
+      p=GetLastImageInList(images);
+      for (i=-1; p != (Image *) NULL; p=p->previous)
+        if (i-- == index)
+          break;
+    }
+  else
+    {
+      p=GetFirstImageInList(images);
+      for (i=0; p != (Image *) NULL; p=p->next)
+        if (i++ == index)
+          break;
+    }
   return((Image *) p);
 }
 
@@ -673,8 +689,7 @@ MagickExport size_t GetImageListLength(const Image *images)
   assert(images->signature == MagickSignature);
   if (images->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
-  while (images->next != (Image *) NULL)
-    images=images->next;
+  images=GetLastImageInList(images);
   for (i=0; images != (Image *) NULL; images=images->previous)
     i++;
   return((size_t) i);
@@ -931,7 +946,6 @@ MagickExport Image *NewImageList(void)
 */
 MagickExport void PrependImageToList(Image **images,Image *image)
 {
-  /* prepend, append the two lists with order swapped! */
   AppendImageToList(&image,*images);
 }
 
