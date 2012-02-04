@@ -718,10 +718,10 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits & UpdatePixelTrait) != 0)
-          q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
-            HighlightFactor+(MagickRealType) foreground*(QuantumRange-
-            HighlightFactor)));
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*HighlightFactor+
+          (MagickRealType) foreground*(QuantumRange-HighlightFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -742,10 +742,11 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits & UpdatePixelTrait) != 0)
-          q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
-            AccentuateFactor+(MagickRealType) foreground*(QuantumRange-
-            AccentuateFactor)));
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
+          AccentuateFactor+(MagickRealType) foreground*(QuantumRange-
+          AccentuateFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -766,10 +767,10 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits & UpdatePixelTrait) != 0)
-          q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
-            ShadowFactor+(MagickRealType) background*(QuantumRange-
-            ShadowFactor)));
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*ShadowFactor+
+          (MagickRealType) background*(QuantumRange-ShadowFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -822,10 +823,10 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits & UpdatePixelTrait) != 0)
-          q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
-            HighlightFactor+(MagickRealType) foreground*(QuantumRange-
-            HighlightFactor)));
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*HighlightFactor+
+          (MagickRealType) foreground*(QuantumRange-HighlightFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -848,10 +849,10 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits & UpdatePixelTrait) != 0)
-          q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
-            ShadowFactor+(MagickRealType) background*(QuantumRange-
-            ShadowFactor)));
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*ShadowFactor+
+          (MagickRealType) background*(QuantumRange-ShadowFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -904,10 +905,10 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits & UpdatePixelTrait) != 0)
-          q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
-            HighlightFactor+(MagickRealType) foreground*(QuantumRange-
-            HighlightFactor)));
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*HighlightFactor+
+          (MagickRealType) foreground*(QuantumRange-HighlightFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -923,10 +924,10 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits & UpdatePixelTrait) != 0)
-          q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
-            TroughFactor+(MagickRealType) background*(QuantumRange-
-            TroughFactor)));
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*TroughFactor+
+          (MagickRealType) background*(QuantumRange-TroughFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -947,10 +948,10 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits & UpdatePixelTrait) != 0)
-          q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
-            ShadowFactor+(MagickRealType) background*(QuantumRange-
-            ShadowFactor)));
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*ShadowFactor+
+          (MagickRealType) background*(QuantumRange-ShadowFactor)));
       }
       q+=GetPixelChannels(image);
     }

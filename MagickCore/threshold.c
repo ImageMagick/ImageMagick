@@ -238,12 +238,6 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
-        {
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(threshold_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -272,7 +266,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
         if ((traits == UndefinedPixelTrait) ||
             (threshold_traits == UndefinedPixelTrait))
           continue;
-        if ((threshold_traits & CopyPixelTrait) != 0)
+        if (((threshold_traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(image,p) != 0))
           {
             SetPixelChannel(threshold_image,channel,p[center+i],q);
             continue;
@@ -428,9 +423,9 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
 
         channel=GetPixelChannelMapChannel(image,i);
         traits=GetPixelChannelMapTraits(image,channel);
-        if ((traits & UpdatePixelTrait) != 0)
-          q[i]=(Quantum) ((MagickRealType) q[i] <= threshold ? 0 :
-            QuantumRange);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        q[i]=(Quantum) ((MagickRealType) q[i] <= threshold ? 0 : QuantumRange);
       }
       q+=GetPixelChannels(image);
     }
@@ -1684,12 +1679,12 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
       ssize_t
         n;
 
-      n=0;
       if (GetPixelMask(image,q) != 0)
         {
           q+=GetPixelChannels(image);
           continue;
         }
+      n=0;
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel

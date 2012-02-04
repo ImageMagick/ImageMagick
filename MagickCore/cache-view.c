@@ -643,10 +643,15 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
     cache_view->nexus_info[id],exception);
   if (p == (const Quantum *) NULL)
     {
-      pixel[RedPixelChannel]=cache_view->image->background_color.red;
-      pixel[GreenPixelChannel]=cache_view->image->background_color.green;
-      pixel[BluePixelChannel]=cache_view->image->background_color.blue;
-      pixel[AlphaPixelChannel]=cache_view->image->background_color.alpha;
+      PixelInfo
+        background_color;
+
+      background_color=cache_view->image->background_color;
+      pixel[RedPixelChannel]=ClampToQuantum(background_color.red);
+      pixel[GreenPixelChannel]=ClampToQuantum(background_color.green);
+      pixel[BluePixelChannel]=ClampToQuantum(background_color.blue);
+      pixel[BlackPixelChannel]=ClampToQuantum(background_color.black);
+      pixel[AlphaPixelChannel]=ClampToQuantum(background_color.alpha);
       return(MagickFalse);
     }
   for (i=0; i < (ssize_t) GetPixelChannels(cache_view->image); i++)
@@ -714,10 +719,15 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
     exception);
   if (p == (const Quantum *) NULL)
     {
-      pixel[RedPixelChannel]=cache_view->image->background_color.red;
-      pixel[GreenPixelChannel]=cache_view->image->background_color.green;
-      pixel[BluePixelChannel]=cache_view->image->background_color.blue;
-      pixel[AlphaPixelChannel]=cache_view->image->background_color.alpha;
+      PixelInfo
+        background_color;
+
+      background_color=cache_view->image->background_color;
+      pixel[RedPixelChannel]=ClampToQuantum(background_color.red);
+      pixel[GreenPixelChannel]=ClampToQuantum(background_color.green);
+      pixel[BluePixelChannel]=ClampToQuantum(background_color.blue);
+      pixel[BlackPixelChannel]=ClampToQuantum(background_color.black);
+      pixel[AlphaPixelChannel]=ClampToQuantum(background_color.alpha);
       return(MagickFalse);
     }
   for (i=0; i < (ssize_t) GetPixelChannels(cache_view->image); i++)
@@ -788,10 +798,15 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
     cache_view->nexus_info[id],exception);
   if (p == (const Quantum *) NULL)
     {
-      pixel[RedPixelChannel]=cache_view->image->background_color.red;
-      pixel[GreenPixelChannel]=cache_view->image->background_color.green;
-      pixel[BluePixelChannel]=cache_view->image->background_color.blue;
-      pixel[AlphaPixelChannel]=cache_view->image->background_color.alpha;
+      PixelInfo
+        background_color;
+
+      background_color=cache_view->image->background_color;
+      pixel[RedPixelChannel]=ClampToQuantum(background_color.red);
+      pixel[GreenPixelChannel]=ClampToQuantum(background_color.green);
+      pixel[BluePixelChannel]=ClampToQuantum(background_color.blue);
+      pixel[BlackPixelChannel]=ClampToQuantum(background_color.black);
+      pixel[AlphaPixelChannel]=ClampToQuantum(background_color.alpha);
       return(MagickFalse);
     }
   for (i=0; i < (ssize_t) GetPixelChannels(cache_view->image); i++)
