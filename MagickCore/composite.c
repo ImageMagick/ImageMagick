@@ -1272,8 +1272,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
             channel=GetPixelChannelMapChannel(image,i);
             traits=GetPixelChannelMapTraits(image,channel);
-            composite_traits=GetPixelChannelMapTraits(composite_image,
-              channel);
+            composite_traits=GetPixelChannelMapTraits(composite_image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (composite_traits == UndefinedPixelTrait))
               continue;

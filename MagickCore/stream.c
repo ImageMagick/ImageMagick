@@ -457,6 +457,7 @@ static MagickBooleanType GetOneAuthenticPixelFromStream(Image *image,
       pixel[RedPixelChannel]=ClampToQuantum(image->background_color.red);
       pixel[GreenPixelChannel]=ClampToQuantum(image->background_color.green);
       pixel[BluePixelChannel]=ClampToQuantum(image->background_color.blue);
+      pixel[BlackPixelChannel]=ClampToQuantum(image->background_color.black);
       pixel[AlphaPixelChannel]=ClampToQuantum(image->background_color.alpha);
       return(MagickFalse);
     }
@@ -523,6 +524,7 @@ static MagickBooleanType GetOneVirtualPixelFromStream(const Image *image,
       pixel[RedPixelChannel]=ClampToQuantum(image->background_color.red);
       pixel[GreenPixelChannel]=ClampToQuantum(image->background_color.green);
       pixel[BluePixelChannel]=ClampToQuantum(image->background_color.blue);
+      pixel[BlackPixelChannel]=ClampToQuantum(image->background_color.black);
       pixel[AlphaPixelChannel]=ClampToQuantum(image->background_color.alpha);
       return(MagickFalse);
     }

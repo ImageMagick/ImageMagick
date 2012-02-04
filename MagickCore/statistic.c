@@ -2282,12 +2282,6 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
-        {
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(statistic_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -2315,7 +2309,8 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
         if ((traits == UndefinedPixelTrait) ||
             (statistic_traits == UndefinedPixelTrait))
           continue;
-        if ((statistic_traits & CopyPixelTrait) != 0)
+        if (((statistic_traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(image,p) != 0))
           {
             SetPixelChannel(statistic_image,channel,p[center+i],q);
             continue;

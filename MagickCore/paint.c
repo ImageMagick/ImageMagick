@@ -583,8 +583,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   */
   status=MagickTrue;
   progress=0;
-  center=(ssize_t) GetPixelChannels(image)*(image->columns+width)*
-    (width/2L)+GetPixelChannels(image)*(width/2L);
+  center=(ssize_t) GetPixelChannels(image)*(image->columns+width)*(width/2L)+
+    GetPixelChannels(image)*(width/2L);
   image_view=AcquireCacheView(image);
   paint_view=AcquireCacheView(paint_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -653,12 +653,6 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         }
         k+=(ssize_t) (image->columns+width);
       }
-      if (GetPixelMask(image,p) != 0)
-        {
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(paint_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -674,7 +668,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         if ((traits == UndefinedPixelTrait) ||
             (paint_traits == UndefinedPixelTrait))
           continue;
-        if ((paint_traits & CopyPixelTrait) != 0)
+        if (((paint_traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(image,p) != 0))
           {
             SetPixelChannel(paint_image,channel,p[center+i],q);
             continue;
