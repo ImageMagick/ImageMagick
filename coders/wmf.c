@@ -2850,8 +2850,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-       "  Creating canvas image with size %ldx%ld",
-       image->rows,image->columns);
+       "  Creating canvas image with size %lux%lu",image->rows,image->columns);
 
   /*
    * Set solid background color
