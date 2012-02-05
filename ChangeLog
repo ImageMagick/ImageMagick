@@ -1,5 +1,9 @@
+2012-02-05  6.7.5-2 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.5-2, SVN revision 6708.
+
 2012-02-03  6.7.5-2 Cristy  <quetzlzacatenango@image...>
   * Add SyncImagePixelCache() to ensure cache morphology is consistent.
+  * Patch so two -colorspace options return correct results for rowund-trip.
 
 2012-02-02  6.7.5-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.5-1, SVN revision 6684.
