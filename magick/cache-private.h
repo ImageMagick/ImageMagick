@@ -222,7 +222,8 @@ extern MagickExport IndexPacket
   *GetPixelCacheNexusIndexes(const Cache,NexusInfo *);
 
 extern MagickExport MagickBooleanType
-  SyncAuthenticPixelCacheNexus(Image *,NexusInfo *,ExceptionInfo *);
+  SyncAuthenticPixelCacheNexus(Image *,NexusInfo *,ExceptionInfo *),
+  SyncImagePixelCache(Image *,ExceptionInfo *);
 
 extern MagickExport MagickSizeType
   GetPixelCacheNexusExtent(const Cache,NexusInfo *);
