@@ -1,9 +1,9 @@
 #! /bin/sh
 # Wrapper for compilers which do not understand `-c -o'.
 
-scriptversion=2009-10-06.20; # UTC
+scriptversion=2010-11-15.09; # UTC
 
-# Copyright (C) 1999, 2000, 2003, 2004, 2005, 2009  Free Software
+# Copyright (C) 1999, 2000, 2003, 2004, 2005, 2009, 2010 Free Software
 # Foundation, Inc.
 # Written by Tom Tromey <tromey@cygnus.com>.
 #
@@ -29,6 +29,171 @@ scriptversion=2009-10-06.20; # UTC
 # bugs to <bug-automake@gnu.org> or send patches to
 # <automake-patches@gnu.org>.
 
+nl='
+'
+
+# We need space, tab and new line, in precisely that order.  Quoting is
+# there to prevent tools from complaining about whitespace usage.
+IFS=" ""	$nl"
+
+file_conv=
+
+# func_file_conv build_file lazy
+# Convert a $build file to $host form and store it in $file
+# Currently only supports Win32 hosts. If the determined conversion
+# type is listed in (the comma separated) LAZY, no conversion will
+# take place.
+func_file_conv ()
+{
+  file=$1
+  case $file in
+    / | /[!/]*) # absolute file, and not a UNC file
+      if test -z "$file_conv"; then
+	# lazily determine how to convert abs files
+	case `uname -s` in
+	  MINGW*)
+	    file_conv=mingw
+	    ;;
+	  CYGWIN*)
+	    file_conv=cygwin
+	    ;;
+	  *)
+	    file_conv=wine
+	    ;;
+	esac
+      fi
+      case $file_conv/,$2, in
+	*,$file_conv,*)
+	  ;;
+	mingw/*)
+	  file=`cmd //C echo "$file " | sed -e 's/"\(.*\) " *$/\1/'`
+	  ;;
+	cygwin/*)
+	  file=`cygpath -m "$file" || echo "$file"`
+	  ;;
+	wine/*)
+	  file=`winepath -w "$file" || echo "$file"`
+	  ;;
+      esac
+      ;;
+  esac
+}
+
+# func_cl_wrapper cl arg...
+# Adjust compile command to suit cl
+func_cl_wrapper ()
+{
+  # Assume a capable shell
+  lib_path=
+  shared=:
+  linker_opts=
+  for arg
+  do
+    if test -n "$eat"; then
+      eat=
+    else
+      case $1 in
+	-o)
+	  # configure might choose to run compile as `compile cc -o foo foo.c'.
+	  eat=1
+	  case $2 in
+	    *.o | *.[oO][bB][jJ])
+	      func_file_conv "$2"
+	      set x "$@" -Fo"$file"
+	      shift
+	      ;;
+	    *)
+	      func_file_conv "$2"
+	      set x "$@" -Fe"$file"
+	      shift
+	      ;;
+	  esac
+	  ;;
+	-I*)
+	  func_file_conv "${1#-I}" mingw
+	  set x "$@" -I"$file"
+	  shift
+	  ;;
+	-l*)
+	  lib=${1#-l}
+	  found=no
+	  save_IFS=$IFS
+	  IFS=';'
+	  for dir in $lib_path $LIB
+	  do
+	    IFS=$save_IFS
+	    if $shared && test -f "$dir/$lib.dll.lib"; then
+	      found=yes
+	      set x "$@" "$dir/$lib.dll.lib"
+	      break
+	    fi
+	    if test -f "$dir/$lib.lib"; then
+	      found=yes
+	      set x "$@" "$dir/$lib.lib"
+	      break
+	    fi
+	  done
+	  IFS=$save_IFS
+
+	  test "$found" != yes && set x "$@" "$lib.lib"
+	  shift
+	  ;;
+	-L*)
+	  func_file_conv "${1#-L}"
+	  if test -z "$lib_path"; then
+	    lib_path=$file
+	  else
+	    lib_path="$lib_path;$file"
+	  fi
+	  linker_opts="$linker_opts -LIBPATH:$file"
+	  ;;
+	-static)
+	  shared=false
+	  ;;
+	-Wl,*)
+	  arg=${1#-Wl,}
+	  save_ifs="$IFS"; IFS=','
+	  for flag in $arg; do
+	    IFS="$save_ifs"
+	    linker_opts="$linker_opts $flag"
+	  done
+	  IFS="$save_ifs"
+	  ;;
+	-Xlinker)
+	  eat=1
+	  linker_opts="$linker_opts $2"
+	  ;;
+	-*)
+	  set x "$@" "$1"
+	  shift
+	  ;;
+	*.cc | *.CC | *.cxx | *.CXX | *.[cC]++)
+	  func_file_conv "$1"
+	  set x "$@" -Tp"$file"
+	  shift
+	  ;;
+	*.c | *.cpp | *.CPP | *.lib | *.LIB | *.Lib | *.OBJ | *.obj | *.[oO])
+	  func_file_conv "$1" mingw
+	  set x "$@" "$file"
+	  shift
+	  ;;
+	*)
+	  set x "$@" "$1"
+	  shift
+	  ;;
+      esac
+    fi
+    shift
+  done
+  if test -n "$linker_opts"; then
+    linker_opts="-link$linker_opts"
+  fi
+  exec "$@" $linker_opts
+  exit 1
+}
+
+eat=
+
 case $1 in
   '')
      echo "$0: No command.  Try \`$0 --help' for more information." 1>&2
@@ -53,11 +218,13 @@ EOF
     echo "compile $scriptversion"
     exit $?
     ;;
+  cl | *[/\\]cl | cl.exe | *[/\\]cl.exe )
+    func_cl_wrapper "$@"      # Doesn't return...
+    ;;
 esac
 
 ofile=
 cfile=
-eat=
 
 for arg
 do
