@@ -1,5 +1,5 @@
 2012-02-05  6.7.5-2 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.5-2, SVN revision 6708.
+  * New version 6.7.5-2, SVN revision 6718.
 
 2012-02-03  6.7.5-2 Cristy  <quetzlzacatenango@image...>
   * Add SyncImagePixelCache() to ensure cache morphology is consistent.
