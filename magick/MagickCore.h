@@ -55,7 +55,7 @@ extern "C" {
 #  define MAGICKCORE_POSIX_SUPPORT
 #endif 
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
 # define MagickPrivate
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
 #  define _MAGICKDLL_
