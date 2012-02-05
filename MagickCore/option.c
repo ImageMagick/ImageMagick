@@ -699,7 +699,7 @@ static const OptionInfo
     { "-use-pixmap", 1L, NonConvertOptionFlag, MagickFalse },
     { "+verbose", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-verbose", 0L, ImageInfoOptionFlag, MagickFalse },
-    { "+version", 0L, SpecialOptionFlag, MagickFalse },
+    { "+version", 0L, DepreciatedOptionFlag, MagickTrue },
     { "-version", 1L, SpecialOptionFlag, MagickFalse },
     { "+view", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-view", 1L, ImageInfoOptionFlag, MagickFalse },
