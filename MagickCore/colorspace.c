@@ -214,20 +214,8 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
   assert(colorspace != RGBColorspace);
   assert(colorspace != TransparentColorspace);
   assert(colorspace != UndefinedColorspace);
-  switch (image->colorspace)
-  {
-    case GRAYColorspace:
-    case Rec601LumaColorspace:
-    case Rec709LumaColorspace:
-    case RGBColorspace:
-    case TransparentColorspace:
-      break;
-    default:
-    {
-      (void) TransformImageColorspace(image,image->colorspace,exception);
-      break;
-    }
-  }
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+    (void) TransformRGBImage(image,image->colorspace,exception);
   if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;
@@ -1260,7 +1248,10 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   if (colorspace == UndefinedColorspace)
     return(SetImageColorspace(image,colorspace,exception));
   if (image->colorspace == colorspace)
-    return(MagickTrue);
+    return(MagickTrue);  /* same colorspace: no op */
+  /*
+    Convert the reference image from an alternate colorspace to RGB.
+  */
   if ((colorspace == RGBColorspace) || (colorspace == sRGBColorspace) ||
       (colorspace == TransparentColorspace))
     return(TransformRGBImage(image,colorspace,exception));
@@ -1269,6 +1260,9 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
       (image->colorspace != TransparentColorspace) &&
       (image->colorspace != GRAYColorspace))
     status=TransformRGBImage(image,image->colorspace,exception);
+  /*
+    Convert the reference image from RGB to an alternate colorspace.
+  */
   if (RGBTransformImage(image,colorspace,exception) == MagickFalse)
     status=MagickFalse;
   return(status);
@@ -1667,25 +1661,11 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  switch (colorspace)
-  {
-    case GRAYColorspace:
-    case RGBColorspace:
-    {
-      image->colorspace=colorspace;
-      return(MagickTrue);
-    }
-    case Rec601LumaColorspace:
-    case Rec709LumaColorspace:
-    case TransparentColorspace:
-    case UndefinedColorspace:
-      return(MagickTrue);
-    default:
-      break;
-  }
+  if (IsRGBColorspace(image->colorspace) != MagickFalse)
+    return(status);
   status=MagickTrue;
   progress=0;
-  switch (colorspace)
+  switch (image->colorspace)
   {
     case CMYColorspace:
     {
