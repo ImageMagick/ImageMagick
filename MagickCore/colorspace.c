@@ -77,7 +77,7 @@ typedef struct _TransformPacket
 } TransformPacket;
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1252,13 +1252,10 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   /*
     Convert the reference image from an alternate colorspace to RGB.
   */
-  if ((colorspace == RGBColorspace) || (colorspace == sRGBColorspace) ||
-      (colorspace == TransparentColorspace))
+  if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))
     return(TransformRGBImage(image,colorspace,exception));
   status=MagickTrue;
-  if ((image->colorspace != RGBColorspace) &&
-      (image->colorspace != TransparentColorspace) &&
-      (image->colorspace != GRAYColorspace))
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     status=TransformRGBImage(image,image->colorspace,exception);
   /*
     Convert the reference image from RGB to an alternate colorspace.
@@ -2176,7 +2173,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
-  switch (colorspace)
+  switch (image->colorspace)
   {
     case OHTAColorspace:
     {
