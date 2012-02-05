@@ -5014,7 +5014,6 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
           if ((ximage_info->frame == MagickFalse) &&
               (prior_target != MagickFalse))
             target=prior_target;
-          XDelay(display,SuspendTime << 4);
         }
     }
   if (ximage_info->screen)
