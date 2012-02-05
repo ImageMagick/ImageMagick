@@ -1659,7 +1659,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (IsRGBColorspace(image->colorspace) != MagickFalse)
-    return(status);
+    return(MagickTrue);
   status=MagickTrue;
   progress=0;
   switch (image->colorspace)
