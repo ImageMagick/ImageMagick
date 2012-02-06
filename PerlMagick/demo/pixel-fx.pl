@@ -49,5 +49,5 @@ for( my $j = 0; $j < $height; $j++ ) {
 
 # display the result (or you could save it)
 $dest->Write('win:');
-$dest->Write('pixel_fx.gif');
+$dest->Write('pixel-fx.gif');
 
