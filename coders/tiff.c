@@ -1004,6 +1004,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %.20g",
         (double) image->depth);
+    image->endian=LSBEndian;
+    if (endian == FILLORDER_LSB2MSB)
+      image->endian=MSBEndian;
     if ((photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
       image->colorspace=GRAYColorspace;
@@ -1112,10 +1115,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         TIFFClose(tiff);
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
-    quantum_info->endian=LSBEndian;
-    if (endian == FILLORDER_LSB2MSB)
-      quantum_info->endian=MSBEndian;
-    image->endian=quantum_info->endian;
     if (sample_format == SAMPLEFORMAT_UINT)
       status=SetQuantumFormat(image,quantum_info,UnsignedQuantumFormat);
     if (sample_format == SAMPLEFORMAT_INT)
@@ -1226,6 +1225,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       method=ReadGenericMethod;
     if (TIFFIsTiled(tiff) != MagickFalse)
       method=ReadTileMethod;
+    quantum_info->endian=LSBEndian;
     quantum_type=RGBQuantum;
     pixels=GetQuantumPixels(quantum_info);
     switch (method)
@@ -2593,8 +2593,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
@@ -3142,9 +3140,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     if (GetTIFFInfo(image_info,tiff,&tiff_info) == MagickFalse)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
     quantum_info->endian=LSBEndian;
-    if (endian == FILLORDER_LSB2MSB)
-      quantum_info->endian=MSBEndian;
-    image->endian=quantum_info->endian;
     pixels=GetQuantumPixels(quantum_info);
     tiff_info.scanline=GetQuantumPixels(quantum_info);
     switch (photometric)
