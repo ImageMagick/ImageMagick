@@ -44,5 +44,5 @@ $im->Scale('1000%');
 
 # Output the changed pixels
 $im->Write('win:');
-$im->Write('single_pixels.gif');
+$im->Write('single-pixels.gif');
 

@@ -49,13 +49,13 @@ sub lsys_init
   
   # Create the flower images
   $pink_flower = new Image::Magick;
-  $pink_flower->Read('pink_flower.gif');
+  $pink_flower->Read('pink-flower.gif');
   
   $red_flower = new Image::Magick;
-  $red_flower->Read('red_flower.gif');
+  $red_flower->Read('red-flower.gif');
   
   $yellow_flower = new Image::Magick;
-  $yellow_flower->Read('yellow_flower.gif');
+  $yellow_flower->Read('yellow-flower.gif');
   
   # Turtle:  the midpoint of the bottom edge of the image, pointing up.
   $turtle=new Turtle($imagesize/2, $imagesize, 0, 1);
