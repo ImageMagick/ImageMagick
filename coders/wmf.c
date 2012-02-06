@@ -63,6 +63,10 @@
 #include "magick/module.h"
 #include "wand/MagickWand.h"
 
+#if defined(__CYGWIN__)
+#undef MAGICKCORE_WMF_DELEGATE
+#endif
+
 #if defined(MAGICKCORE_WMF_DELEGATE)
 #include "libwmf/api.h"
 #include "libwmf/eps.h"
