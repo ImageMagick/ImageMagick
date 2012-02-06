@@ -1219,6 +1219,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       method=ReadGenericMethod;
     if (TIFFIsTiled(tiff) != MagickFalse)
       method=ReadTileMethod;
+    quantum_info->endian=LSBEndian;
     quantum_type=RGBQuantum;
     pixels=GetQuantumPixels(quantum_info);
     switch (method)
@@ -2541,8 +2542,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     i;
 
   size_t
-    length,
-    lsb_first;
+    length;
 
   ssize_t
     y;
@@ -2854,10 +2854,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         break;
       }
     }
-    lsb_first=1;
-    image->endian=MSBEndian;
-    if ((int) (*(char *) &lsb_first) != 0)
-      image->endian=LSBEndian;
     if ((compress_tag == COMPRESSION_CCITTFAX3) &&
         (photometric != PHOTOMETRIC_MINISWHITE))
       {
@@ -3128,6 +3124,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     */
     if (GetTIFFInfo(image_info,tiff,&tiff_info) == MagickFalse)
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    quantum_info->endian=LSBEndian;
     pixels=GetQuantumPixels(quantum_info);
     tiff_info.scanline=GetQuantumPixels(quantum_info);
     switch (photometric)
@@ -3368,9 +3365,6 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     if (0 && (image_info->verbose == MagickTrue))
       TIFFPrintDirectory(tiff,stdout,MagickFalse);
     (void) TIFFWriteDirectory(tiff);
-    image->endian=MSBEndian;
-    if (endian == FILLORDER_LSB2MSB)
-      image->endian=LSBEndian;
     image=SyncNextImageInList(image);
     if (image == (Image *) NULL)
       break;

@@ -1,3 +1,6 @@
+2012-02-06  6.7.5-3 Cristy  <quetzlzacatenango@image...>
+  * TIFF no longer writes the incorrect fill order.
+
 2012-02-05  6.7.5-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.5-2, SVN revision 6718.
 
