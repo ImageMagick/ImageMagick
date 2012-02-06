@@ -29,16 +29,16 @@
   <configure name="PCFLAGS" value="-fopenmp"/>
   <configure name="DEFS" value="-DHAVE_CONFIG_H"/>
   <configure name="LDFLAGS" value="-L/usr/local/lib -L/usr/lib"/>
-  <configure name="LIBS" value="-lMagickCore -llcms2 -ltiff -lfreetype -ljasper -ljpeg -lpng12 -ldjvulibre -lfftw3 -lfontconfig -lXext -lXt -lSM -lICE -lX11 -llzma -lbz2 -pthread -lpangoft2-1.0 -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lxml2 -lgvc -lgraph -lcdt -lz -lm -lgomp -lpthread -lltdl"/>
+  <configure name="LIBS" value="-lMagickCore -llcms2 -ltiff -lfreetype -ljasper -ljpeg -lpng12 -ldjvulibre -lfftw3 -lfontconfig -lwmflite -lXext -lXt -lSM -lICE -lX11 -llzma -lbz2 -pthread -lpangoft2-1.0 -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lxml2 -lgvc -lgraph -lcdt -lz -lm -lgomp -lpthread -lltdl"/>
   <configure name="CXX" value="g++"/>
   <configure name="CXXFLAGS" value="-g -O2 -pthread"/>
-  <configure name="DISTCHECK_CONFIG_FLAGS" value="--disable-deprecated --with-quantum-depth=16 --with-umem=no --with-autotrace=no --with-gslib=no --with-fontpath= --with-wmf=no --with-perl=no"/>
+  <configure name="DISTCHECK_CONFIG_FLAGS" value="--disable-deprecated --with-quantum-depth=16 --with-umem=no --with-autotrace=no --with-gslib=no --with-fontpath= --with-perl=no"/>
   <configure name="TARGET_CPU" value="x86_64"/>
   <configure name="TARGET_VENDOR" value="unknown"/>
   <configure name="TARGET_OS" value="linux-gnu"/>
   <configure name="HOST" value="x86_64-unknown-linux-gnu"/>
   <configure name="FEATURES" value="OpenMP "/>
-  <configure name="DELEGATES" value="bzlib djvu fftw fontconfig freetype gvc jpeg jng jp2 lcms2 lzma png tiff x11 xml zlib"/>
+  <configure name="DELEGATES" value="bzlib djvu fftw fontconfig freetype gvc jpeg jng jp2 lcms2 lzma png tiff x11 xml wmf zlib"/>
   <configure name="COPYRIGHT" value="Copyright (C) 1999-2012 ImageMagick Studio LLC"/>
   <configure name="WEBSITE" value="http://www.imagemagick.org"/>
   <configure name="QuantumDepth" value="16"/>
