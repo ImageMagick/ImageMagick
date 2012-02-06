@@ -3360,8 +3360,6 @@ MagickExport MagickBooleanType SetImageMask(Image *image,const Image *mask,
       image->mask=MagickFalse;
       return(MagickTrue);
     }
-  if ((mask->columns != image->columns) || (mask->rows != image->rows))
-    ThrowBinaryException(ImageError,"ImageSizeDiffers",image->filename);
   status=MagickTrue;
   image->mask=MagickTrue;
   image_view=AcquireCacheView(image);
