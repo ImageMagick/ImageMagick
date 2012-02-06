@@ -5,13 +5,13 @@ all:
 	perl piddle.pl
 	perl tree.pl
 	perl steganography.pl
-	perl shadow_text.pl
-	perl compose_specials.pl
-	perl pixel_fx.pl
-	perl single_pixels.pl
+	perl shadow-text.pl
+	perl compose-specials.pl
+	perl pixel-fx.pl
+	perl single-pixels.pl
 	perl annotate.pl
 	perl composite.pl
 
 clean:
 	/bin/rm -f demo.jpg button.gif model.png shadow.gif tree.gif \
-	    compose_specials.jpg  single_pixels.gif  pixel_fx.gif
+	    compose-specials.jpg  single-pixels.gif  pixel-fx.gif
