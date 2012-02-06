@@ -2,9 +2,9 @@
 # Configuration validation subroutine script.
 #   Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
 #   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
-#   2011 Free Software Foundation, Inc.
+#   2011, 2012 Free Software Foundation, Inc.
 
-timestamp='2011-11-11'
+timestamp='2012-01-01'
 
 # This file is (in principle) common to ALL GNU software.
 # The presence of a machine in this file suggests that SOME GNU software
@@ -76,8 +76,8 @@ version="\
 GNU config.sub ($timestamp)
 
 Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
-2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Free
-Software Foundation, Inc.
+2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012
+Free Software Foundation, Inc.
 
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
@@ -320,7 +320,6 @@ case $basic_machine in
 		basic_machine=tic6x-unknown
 		;;
 	m6811 | m68hc11 | m6812 | m68hc12 | picochip)
-		# Motorola 68HC11/12.
 		basic_machine=$basic_machine-unknown
 		os=-none
 		;;
@@ -719,7 +718,6 @@ case $basic_machine in
 	i370-ibm* | ibm*)
 		basic_machine=i370-ibm
 		;;
-# I'm not sure what "Sysv32" means.  Should this be sysv3.2?
 	i*86v32)
 		basic_machine=`echo $1 | sed -e 's/86.*/86-pc/'`
 		os=-sysv32
@@ -1559,9 +1557,6 @@ case $basic_machine in
 		;;
 	m68000-sun)
 		os=-sunos3
-		# This also exists in the configure program, but was not the
-		# default.
-		# os=-sunos4
 		;;
 	m68*-cisco)
 		os=-aout
