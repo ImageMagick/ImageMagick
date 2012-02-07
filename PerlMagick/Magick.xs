@@ -7824,13 +7824,8 @@ Mogrify(ref,...)
           if (attribute_flag[0] == 0)
             argument_list[0].real_reference=90.0;
           if (attribute_flag[1] != 0)
-            {
-              QueryColorCompliance(argument_list[1].string_reference,
-                AllCompliance,&image->background_color,exception);
-              if ((image->background_color.matte != MagickFalse) &&
-                  (image->matte == MagickFalse))
-                (void) SetImageAlpha(image,OpaqueAlpha,exception);
-            }
+            QueryColorCompliance(argument_list[1].string_reference,
+              AllCompliance,&image->background_color,exception);
           image=RotateImage(image,argument_list[0].real_reference,exception);
           break;
         }
