@@ -171,8 +171,11 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     return(MagickFalse);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
+  if ((target->matte != MagickFalse) &&
+      (image->matte == MagickFalse))
+    (void) SetImageAlpha(image,OpaqueAlpha,exception);
   if (image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
+    (void) SetImageAlpha(image,OpaqueAlpha,exception);
   /*
     Set floodfill state.
   */
