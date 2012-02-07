@@ -3173,9 +3173,8 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
             virtual_pixel);
           SetPixelBlue(image,ClampToQuantum(image->background_color.blue),
             virtual_pixel);
-          if (image->colorspace == CMYKColorspace)
-            SetPixelBlack(image,ClampToQuantum(image->background_color.black),
-              virtual_pixel);
+          SetPixelBlack(image,ClampToQuantum(image->background_color.black),
+            virtual_pixel);
           SetPixelAlpha(image,ClampToQuantum(image->background_color.alpha),
             virtual_pixel);
           break;
