@@ -2276,7 +2276,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     }
   distort_image->page.x=geometry.x;
   distort_image->page.y=geometry.y;
-  if (distort_image->background_color.alpha != OpaqueAlpha)
+  if (distort_image->background_color.matte != MagickFalse)
     distort_image->matte=MagickTrue;
 
   { /* ----- MAIN CODE -----
