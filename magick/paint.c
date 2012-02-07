@@ -175,7 +175,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if ((target->opacity != OpaqueOpacity) && (image->matte == MagickFalse))
-    (void) SetImageAlphaChannel(image,OpaqueOpacity);
+    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
   if (image->matte == MagickFalse)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
   /*
@@ -800,7 +800,7 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if ((fill->opacity != OpaqueOpacity) && (image->matte == MagickFalse))
-    (void) SetImageAlphaChannel(image,OpaqueOpacity);
+    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
   /*
     Make image color opaque.
   */
