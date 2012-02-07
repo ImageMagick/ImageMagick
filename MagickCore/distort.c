@@ -2790,6 +2790,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   ExceptionInfo *exception)
 {
   Image
+    *distort_image,
     *rotate_image;
 
   MagickRealType
@@ -2800,9 +2801,6 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
 
   size_t
     rotations;
-
-  VirtualPixelMethod
-    method;
 
   /*
     Adjust rotation angle.
@@ -2823,13 +2821,16 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   shear.y=sin((double) DegreesToRadians(angle));
   if ((fabs(shear.x) < MagickEpsilon) && (fabs(shear.y) < MagickEpsilon))
     return(IntegralRotateImage(image,rotations,exception));
-  if ((image->background_color.matte != MagickFalse) &&
-      (image->matte == MagickFalse))
-    (void) SetImageAlpha(image,OpaqueAlpha,exception);
-  method=SetImageVirtualPixelMethod(image,BackgroundVirtualPixelMethod);
-  rotate_image=DistortImage(image,ScaleRotateTranslateDistortion,1,&degrees,
-    MagickTrue,exception);
-  method=SetImageVirtualPixelMethod(image,method);
+  distort_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (distort_image == (Image *) NULL)
+    return((Image *) NULL);
+  if ((distort_image->background_color.matte != MagickFalse) &&
+      (distort_image->matte == MagickFalse))
+    (void) SetImageAlpha(distort_image,OpaqueAlpha,exception);
+  (void) SetImageVirtualPixelMethod(distort_image,BackgroundVirtualPixelMethod);
+  rotate_image=DistortImage(distort_image,ScaleRotateTranslateDistortion,1,
+    &degrees,MagickTrue,exception);
+  distort_image=DestroyImage(distort_image);
   return(rotate_image);
 }
 
