@@ -688,6 +688,9 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
       colorize_image=DestroyImage(colorize_image);
       return((Image *) NULL);
     }
+  if ((colorize->matte != MagickFalse) &&
+      (colorize_image->matte == MagickFalse))
+    (void) SetImageAlpha(colorize_image,OpaqueAlpha,exception);
   if (blend == (const char *) NULL)
     return(colorize_image);
   /*
