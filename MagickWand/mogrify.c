@@ -3130,12 +3130,12 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if (*option == '+')
               {
                 (void) SetImageVirtualPixelMethod(*image,
-                  UndefinedVirtualPixelMethod);
+                  UndefinedVirtualPixelMethod,exception);
                 break;
               }
             (void) SetImageVirtualPixelMethod(*image,(VirtualPixelMethod)
               ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,
-              argv[i+1]));
+              argv[i+1]),exception);
             break;
           }
         break;

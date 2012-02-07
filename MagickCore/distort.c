@@ -1487,7 +1487,6 @@ MagickExport Image *DistortResizeImage(const Image *image,
     return((Image *) NULL);
   /* Do not short-circuit this resize if final image size is unchanged */
 
-  (void) SetImageVirtualPixelMethod(image,TransparentVirtualPixelMethod);
 
   (void) ResetMagickMemory(distort_args,0,12*sizeof(double));
   distort_args[4]=(double) image->columns;
@@ -1500,7 +1499,8 @@ MagickExport Image *DistortResizeImage(const Image *image,
   tmp_image=CloneImage(image,0,0,MagickTrue,exception);
   if ( tmp_image == (Image *) NULL )
     return((Image *) NULL);
-  (void) SetImageVirtualPixelMethod(tmp_image,TransparentVirtualPixelMethod);
+  (void) SetImageVirtualPixelMethod(tmp_image,TransparentVirtualPixelMethod,
+    exception);
 
   if (image->matte == MagickFalse)
     {
@@ -1542,7 +1542,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
       if ( tmp_image == (Image *) NULL )
         return((Image *) NULL);
       (void) SetImageVirtualPixelMethod(tmp_image,
-        TransparentVirtualPixelMethod);
+        TransparentVirtualPixelMethod,exception);
       resize_image=DistortImage(tmp_image,AffineDistortion,12,distort_args,
         MagickTrue,exception),
       tmp_image=DestroyImage(tmp_image);
@@ -1560,7 +1560,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
         0,0,exception);
       resize_alpha=DestroyImage(resize_alpha);
     }
-  (void) SetImageVirtualPixelMethod(resize_image,vp_save);
+  (void) SetImageVirtualPixelMethod(resize_image,vp_save,exception);
 
   /*
     Clean up the results of the Distortion
@@ -2824,10 +2824,8 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   distort_image=CloneImage(image,0,0,MagickTrue,exception);
   if (distort_image == (Image *) NULL)
     return((Image *) NULL);
-  if ((distort_image->background_color.matte != MagickFalse) &&
-      (distort_image->matte == MagickFalse))
-    (void) SetImageAlpha(distort_image,OpaqueAlpha,exception);
-  (void) SetImageVirtualPixelMethod(distort_image,BackgroundVirtualPixelMethod);
+  (void) SetImageVirtualPixelMethod(distort_image,BackgroundVirtualPixelMethod,
+    exception);
   rotate_image=DistortImage(distort_image,ScaleRotateTranslateDistortion,1,
     &degrees,MagickTrue,exception);
   distort_image=DestroyImage(distort_image);

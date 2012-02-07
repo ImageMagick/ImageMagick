@@ -2314,7 +2314,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,
   assert(image->signature == MagickSignature);
   if (texture_image == (const Image *) NULL)
     return(MagickFalse);
-  (void) SetImageVirtualPixelMethod(texture_image,TileVirtualPixelMethod);
+  (void) SetImageVirtualPixelMethod(texture_image,TileVirtualPixelMethod,
+    exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   status=MagickTrue;

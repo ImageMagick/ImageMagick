@@ -4873,8 +4873,8 @@ static Quantum *SetPixelCacheNexusPixels(const Image *image,
 %
 %  The format of the SetPixelCacheVirtualMethod() method is:
 %
-%      VirtualPixelMethod SetPixelCacheVirtualMethod(const Image *image,
-%        const VirtualPixelMethod virtual_pixel_method)
+%      VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
+%        const VirtualPixelMethod virtual_pixel_method,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4882,9 +4882,11 @@ static Quantum *SetPixelCacheNexusPixels(const Image *image,
 %
 %    o virtual_pixel_method: choose the type of virtual pixel.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickPrivate VirtualPixelMethod SetPixelCacheVirtualMethod(const Image *image,
-  const VirtualPixelMethod virtual_pixel_method)
+MagickPrivate VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
+  const VirtualPixelMethod virtual_pixel_method,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -4901,6 +4903,24 @@ MagickPrivate VirtualPixelMethod SetPixelCacheVirtualMethod(const Image *image,
   assert(cache_info->signature == MagickSignature);
   method=cache_info->virtual_pixel_method;
   cache_info->virtual_pixel_method=virtual_pixel_method;
+  switch (virtual_pixel_method)
+  {
+    case BackgroundVirtualPixelMethod:
+    {
+      if ((image->background_color.matte != MagickFalse) &&
+          (image->matte == MagickFalse))
+        (void) SetImageAlpha(image,OpaqueAlpha,exception);
+      break;
+    }
+    case TransparentVirtualPixelMethod:
+    {
+      if (image->matte == MagickFalse)
+        (void) SetImageAlpha(image,OpaqueAlpha,exception);
+      break;
+    }
+    default:
+      break;
+  }
   return(method);
 }
 

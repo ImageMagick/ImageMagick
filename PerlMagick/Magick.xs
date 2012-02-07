@@ -2192,7 +2192,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               break;
             }
           for ( ; image; image=image->next)
-            SetImageVirtualPixelMethod(image,(VirtualPixelMethod) sp);
+            SetImageVirtualPixelMethod(image,(VirtualPixelMethod) sp,exception);
           break;
         }
       if (info)
@@ -7824,8 +7824,13 @@ Mogrify(ref,...)
           if (attribute_flag[0] == 0)
             argument_list[0].real_reference=90.0;
           if (attribute_flag[1] != 0)
-            QueryColorCompliance(argument_list[1].string_reference,
-              AllCompliance,&image->background_color,exception);
+            {
+              QueryColorCompliance(argument_list[1].string_reference,
+                AllCompliance,&image->background_color,exception);
+              if ((image->background_color.matte != MagickFalse) &&
+                  (image->matte == MagickFalse))
+                (void) SetImageAlpha(image,OpaqueAlpha,exception);
+            }
           image=RotateImage(image,argument_list[0].real_reference,exception);
           break;
         }
@@ -10384,12 +10389,13 @@ Mogrify(ref,...)
           virtual_pixel=UndefinedVirtualPixelMethod;
           if (attribute_flag[2] != 0)
             virtual_pixel=SetImageVirtualPixelMethod(image,(VirtualPixelMethod)
-              argument_list[2].integer_reference);
+              argument_list[2].integer_reference,exception);
           image=DistortImage(image,method,number_coordinates,coordinates,
             argument_list[3].integer_reference != 0 ? MagickTrue : MagickFalse,
             exception);
           if ((attribute_flag[2] != 0) && (image != (Image *) NULL))
-            virtual_pixel=SetImageVirtualPixelMethod(image,virtual_pixel);
+            virtual_pixel=SetImageVirtualPixelMethod(image,virtual_pixel,
+              exception);
           coordinates=(double *) RelinquishMagickMemory(coordinates);
           break;
         }
@@ -10517,7 +10523,7 @@ Mogrify(ref,...)
           virtual_pixel=UndefinedVirtualPixelMethod;
           if (attribute_flag[2] != 0)
             virtual_pixel=SetImageVirtualPixelMethod(image,(VirtualPixelMethod)
-              argument_list[2].integer_reference);
+              argument_list[2].integer_reference,exception);
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
           channel_mask=SetPixelChannelMask(image,channel);
@@ -10526,7 +10532,8 @@ Mogrify(ref,...)
           if (image != (Image *) NULL)
             (void) SetPixelChannelMask(image,channel_mask);
           if ((attribute_flag[2] != 0) && (image != (Image *) NULL))
-            virtual_pixel=SetImageVirtualPixelMethod(image,virtual_pixel);
+            virtual_pixel=SetImageVirtualPixelMethod(image,virtual_pixel,
+              exception);
           coordinates=(double *) RelinquishMagickMemory(coordinates);
           break;
         }
@@ -10567,11 +10574,12 @@ Mogrify(ref,...)
           virtual_pixel=UndefinedVirtualPixelMethod;
           if (attribute_flag[2] != 0)
             virtual_pixel=SetImageVirtualPixelMethod(image,(VirtualPixelMethod)
-              argument_list[2].integer_reference);
+              argument_list[2].integer_reference,exception);
           (void) FunctionImage(image,function,number_parameters,parameters,
             exception);
           if ((attribute_flag[2] != 0) && (image != (Image *) NULL))
-            virtual_pixel=SetImageVirtualPixelMethod(image,virtual_pixel);
+            virtual_pixel=SetImageVirtualPixelMethod(image,virtual_pixel,
+              exception);
           parameters=(double *) RelinquishMagickMemory(parameters);
           break;
         }

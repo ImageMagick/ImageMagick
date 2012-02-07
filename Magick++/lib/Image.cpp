@@ -4106,7 +4106,11 @@ std::string Magick::Image::view ( void ) const
 void Magick::Image::virtualPixelMethod ( const VirtualPixelMethod virtual_pixel_method_ )
 {
   modifyImage();
-  SetImageVirtualPixelMethod( image(), virtual_pixel_method_ );
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  SetImageVirtualPixelMethod( image(), virtual_pixel_method_, &exceptionInfo );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 Magick::VirtualPixelMethod Magick::Image::virtualPixelMethod ( void ) const
 {

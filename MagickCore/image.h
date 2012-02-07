@@ -537,7 +537,7 @@ extern MagickExport ssize_t
 
 extern MagickExport VirtualPixelMethod
   GetImageVirtualPixelMethod(const Image *),
-  SetImageVirtualPixelMethod(const Image *,const VirtualPixelMethod);
+  SetImageVirtualPixelMethod(Image *,const VirtualPixelMethod,ExceptionInfo *);
 
 extern MagickExport void
   AcquireNextImage(const ImageInfo *,Image *,ExceptionInfo *),
