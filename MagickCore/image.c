@@ -3676,8 +3676,8 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
 %
 %  The format of the SetImageVirtualPixelMethod() method is:
 %
-%      VirtualPixelMethod SetImageVirtualPixelMethod(const Image *image,
-%        const VirtualPixelMethod virtual_pixel_method)
+%      VirtualPixelMethod SetImageVirtualPixelMethod(Image *image,
+%        const VirtualPixelMethod virtual_pixel_method,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3685,15 +3685,17 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
 %
 %    o virtual_pixel_method: choose the type of virtual pixel.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport VirtualPixelMethod SetImageVirtualPixelMethod(const Image *image,
-  const VirtualPixelMethod virtual_pixel_method)
+MagickExport VirtualPixelMethod SetImageVirtualPixelMethod(Image *image,
+  const VirtualPixelMethod virtual_pixel_method,ExceptionInfo *exception)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  return(SetPixelCacheVirtualMethod(image,virtual_pixel_method));
+  return(SetPixelCacheVirtualMethod(image,virtual_pixel_method,exception));
 }
 
 /*
@@ -4401,8 +4403,9 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     }
   option=GetImageOption(image_info,"virtual-pixel");
   if (option != (const char *) NULL)
-    (void) SetImageVirtualPixelMethod(image, (VirtualPixelMethod)
-         ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,option));
+    (void) SetImageVirtualPixelMethod(image,(VirtualPixelMethod)
+      ParseCommandOption(MagickVirtualPixelOptions,MagickFalse,option),
+      exception);
   option=GetImageOption(image_info,"white-point");
   if (option != (const char *) NULL)
     {

@@ -4301,7 +4301,8 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
   clone_image=CloneImage(image,0,0,MagickTrue,exception);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetImageVirtualPixelMethod(clone_image,EdgeVirtualPixelMethod);
+  (void) SetImageVirtualPixelMethod(clone_image,EdgeVirtualPixelMethod,
+    exception);
   border_info.width=(size_t) floor(2.0*sigma+0.5);
   border_info.height=(size_t) floor(2.0*sigma+0.5);
   border_info.x=0;

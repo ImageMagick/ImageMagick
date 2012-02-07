@@ -249,7 +249,7 @@ extern MagickPrivate size_t
 
 extern MagickPrivate VirtualPixelMethod
   GetPixelCacheVirtualMethod(const Image *),
-  SetPixelCacheVirtualMethod(const Image *,const VirtualPixelMethod);
+  SetPixelCacheVirtualMethod(Image *,const VirtualPixelMethod,ExceptionInfo *);
 
 extern MagickPrivate void
   CacheComponentTerminus(void),

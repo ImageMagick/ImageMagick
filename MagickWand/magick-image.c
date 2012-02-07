@@ -10147,7 +10147,7 @@ WandExport VirtualPixelMethod MagickSetImageVirtualPixelMethod(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     return(UndefinedVirtualPixelMethod);
-  return(SetImageVirtualPixelMethod(wand->images,method));
+  return(SetImageVirtualPixelMethod(wand->images,method,wand->exception));
 }
 
 /*

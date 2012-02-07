@@ -881,7 +881,8 @@ MagickExport Image *DeskewImage(const Image *image,const double threshold,
   clone_image=CloneImage(image,0,0,MagickTrue,exception);
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetImageVirtualPixelMethod(clone_image,BackgroundVirtualPixelMethod);
+  (void) SetImageVirtualPixelMethod(clone_image,BackgroundVirtualPixelMethod,
+    exception);
   degrees=RadiansToDegrees(-atan((double) skew/width/8));
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TransformEvent,GetMagickModule(),
