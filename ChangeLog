@@ -1,3 +1,6 @@
+2012-02-08  6.7.5-4 Cristy  <quetzlzacatenango@image...>
+  * Set image alpha channel for -virtual-pixel background and transparent.
+
 2012-02-06  6.7.5-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.5-3, SVN revision 6732.
 

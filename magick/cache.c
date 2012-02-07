@@ -5104,6 +5104,24 @@ MagickExport VirtualPixelMethod SetPixelCacheVirtualMethod(const Image *image,
   assert(cache_info->signature == MagickSignature);
   method=cache_info->virtual_pixel_method;
   cache_info->virtual_pixel_method=virtual_pixel_method;
+  switch (virtual_pixel_method)
+  {
+    case BackgroundVirtualPixelMethod:
+    {
+      if ((image->background_color.opacity != OpaqueOpacity) &&
+          (image->matte == MagickFalse))
+        (void) SetImageAlphaChannel((Image *) image,OpaqueOpacity);
+      break;
+    }
+    case TransparentVirtualPixelMethod:
+    {
+      if (image->matte == MagickFalse)
+        (void) SetImageAlphaChannel((Image *) image,OpaqueOpacity);
+      break;
+    }
+    default:
+      break;
+  }
   return(method);
 }
 
