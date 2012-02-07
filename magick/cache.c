@@ -5086,6 +5086,62 @@ static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
 %    o virtual_pixel_method: choose the type of virtual pixel.
 %
 */
+
+static MagickBooleanType SetCacheAlphaChannel(Image *image,
+  const Quantum opacity)
+{
+  CacheInfo
+    *cache_info;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(image->cache != (Cache) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
+  image->matte=MagickTrue;
+  status=MagickTrue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    const int
+      id = GetOpenMPThreadId();
+
+    register PixelPacket
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetAuthenticPixelCacheNexus(image,0,y,image->columns,1,
+      cache_info->nexus_info[id],&image->exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      q->opacity=opacity;
+      q++;
+    }
+    status=SyncAuthenticPixelCacheNexus(image,cache_info->nexus_info[id],
+      &image->exception);
+  }
+  return(status);
+}
+
 MagickExport VirtualPixelMethod SetPixelCacheVirtualMethod(const Image *image,
   const VirtualPixelMethod virtual_pixel_method)
 {
@@ -5110,13 +5166,13 @@ MagickExport VirtualPixelMethod SetPixelCacheVirtualMethod(const Image *image,
     {
       if ((image->background_color.opacity != OpaqueOpacity) &&
           (image->matte == MagickFalse))
-        (void) SetImageAlphaChannel((Image *) image,OpaqueOpacity);
+        (void) SetCacheAlphaChannel((Image *) image,OpaqueOpacity);
       break;
     }
     case TransparentVirtualPixelMethod:
     {
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel((Image *) image,OpaqueOpacity);
+        (void) SetCacheAlphaChannel((Image *) image,OpaqueOpacity);
       break;
     }
     default:
