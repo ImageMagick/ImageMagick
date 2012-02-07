@@ -225,8 +225,9 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
       frame_image=DestroyImage(frame_image);
       return((Image *) NULL);
     }
-  if (frame_image->matte_color.opacity != OpaqueOpacity)
-    frame_image->matte=MagickTrue;
+  if ((frame_image->border_color.opacity != OpaqueOpacity) &&
+      (frame_image->matte == MagickFalse))
+    (void) SetImageAlphaChannel(frame_image,OpaqueOpacity);
   frame_image->page=image->page;
   if ((image->page.width != 0) && (image->page.height != 0))
     {
