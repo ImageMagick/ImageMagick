@@ -1520,9 +1520,7 @@
 /* #undef WITH_DMALLOC */
 
 /* Define if you have wmflite library */
-#ifndef MAGICKCORE_WMFLITE_DELEGATE
-#define MAGICKCORE_WMFLITE_DELEGATE 1
-#endif
+/* #undef WMFLITE_DELEGATE */
 
 /* Define if you have wmf library */
 /* #undef WMF_DELEGATE */
