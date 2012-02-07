@@ -2283,7 +2283,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 %
 %  The format of the TextureImage method is:
 %
-%      MagickBooleanType TextureImage(Image *image,const Image *texture_image,
+%      MagickBooleanType TextureImage(Image *image,const Image *texture,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -2293,14 +2293,17 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 %    o texture_image: This image is the texture to layer on the background.
 %
 */
-MagickExport MagickBooleanType TextureImage(Image *image,
-  const Image *texture_image,ExceptionInfo *exception)
+MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
+  ExceptionInfo *exception)
 {
 #define TextureImageTag  "Texture/Image"
 
   CacheView
     *image_view,
     *texture_view;
+
+  Image
+    *texture_image;
 
   MagickBooleanType
     status;
@@ -2312,12 +2315,15 @@ MagickExport MagickBooleanType TextureImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
+  if (texture == (const Image *) NULL)
+    return(MagickFalse);
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    return(MagickFalse);
+  texture_image=CloneImage(texture,0,0,MagickTrue,exception);
   if (texture_image == (const Image *) NULL)
     return(MagickFalse);
   (void) SetImageVirtualPixelMethod(texture_image,TileVirtualPixelMethod,
     exception);
-  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-    return(MagickFalse);
   status=MagickTrue;
   if ((image->compose != CopyCompositeOp) &&
       ((image->compose != OverCompositeOp) || (image->matte != MagickFalse) ||
@@ -2366,6 +2372,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,
       }
       (void) SetImageProgress(image,TextureImageTag,(MagickOffsetType)
         image->rows,image->rows);
+      texture_image=DestroyImage(texture_image);
       return(status);
     }
   /*
@@ -2466,5 +2473,6 @@ MagickExport MagickBooleanType TextureImage(Image *image,
   }
   texture_view=DestroyCacheView(texture_view);
   image_view=DestroyCacheView(image_view);
+  texture_image=DestroyImage(texture_image);
   return(status);
 }
