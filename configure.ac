@@ -680,11 +680,12 @@ fi
 AC_ARG_WITH([method-prefix],
     [AC_HELP_STRING([--with-method-prefix=PREFIX],
                     [prefix MagickCore API methods])],
-    [with_method_prefix=$enableval],
-    [with_method_prefix=''])
+    [with_method_prefix=$withval],
+    [with_method_prefix='no'])
 
-if test "$with_method_prefix" != ''; then
+if test "$with_method_prefix" != 'no'; then
     AC_DEFINE_UNQUOTED(NAMESPACE_PREFIX,$with_method_prefix,[Magick API method prefix])
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-method-prefix "
 fi
 
 # Number of bits in a Quantum
@@ -745,7 +746,7 @@ AC_ARG_WITH([perl],
 # Options to pass when configuring PerlMagick
 AC_ARG_WITH([perl-options],
     [AC_HELP_STRING([--with-perl-options=OPTIONS],
-                    [options to pass on command-line when generating PerlMagick's build file])],
+                    [options to pass on command-line when generating PerlMagick build file])],
 PERL_MAKE_OPTIONS=$withval)
 AC_SUBST(PERL_MAKE_OPTIONS)
 
@@ -1814,7 +1815,7 @@ AC_ARG_WITH([fontconfig],
     [AC_HELP_STRING([--without-fontconfig],
                     [disable fontconfig support])],
         [with_fontconfig=$withval],
-        [with_fontconfig=$have_x])
+        [with_fontconfig='yes'])
 
 if test "$with_fontconfig" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-fontconfig=$with_fontconfig "
@@ -2442,7 +2443,7 @@ AC_ARG_WITH([pango],
     [AC_HELP_STRING([--without-pango],
                     [disable PANGO support])],
     [with_pango=$withval],
-    [with_pango=$have_x])
+    [with_pango='yes'])
 
 if test "$with_pango" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-pango=$with_pango "
@@ -2606,7 +2607,7 @@ AC_ARG_WITH([rsvg],
     [AC_HELP_STRING([--without-rsvg],
                     [disable RSVG support])],
     [with_rsvg=$withval],
-    [with_rsvg=$have_x])
+    [with_rsvg='yes'])
 
 if test "$with_rsvg" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-rsvg=$with_rsvg "
@@ -2765,7 +2766,7 @@ AC_ARG_WITH([wmf],
     [AC_HELP_STRING([--without-wmf],
                     [disable WMF support])],
     [with_wmf=$withval],
-    [with_wmf='yes'])
+    [with_wmf='no'])
 
 if test "$with_wmf" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-wmf=$with_wmf "
@@ -2834,7 +2835,7 @@ AC_ARG_WITH([xml],
     [AC_HELP_STRING([--without-xml],
                     [disable XML support])],
     [with_xml=$withval],
-    [with_xml=$have_x])
+    [with_xml='yes'])
 
 if test "$with_xml" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-xml=$with_xml "

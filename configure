@@ -1885,7 +1885,7 @@ Optional Packages:
   --with-perl             enable build/install of PerlMagick
   --with-perl-options=OPTIONS
                           options to pass on command-line when generating
-                          PerlMagick's build file
+                          PerlMagick build file
   --with-umem             enable umem memory allocation library support
   --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)
   --without-bzlib         disable BZLIB support
@@ -21443,18 +21443,19 @@ fi
 
 # Check whether --with-method-prefix was given.
 if test "${with_method_prefix+set}" = set; then :
-  withval=$with_method_prefix; with_method_prefix=$enableval
+  withval=$with_method_prefix; with_method_prefix=$withval
 else
-  with_method_prefix=''
+  with_method_prefix='no'
 fi
 
 
-if test "$with_method_prefix" != ''; then
+if test "$with_method_prefix" != 'no'; then
 
 cat >>confdefs.h <<_ACEOF
 #define NAMESPACE_PREFIX $with_method_prefix
 _ACEOF
 
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-method-prefix "
 fi
 
 # Number of bits in a Quantum
@@ -28819,7 +28820,7 @@ fi
 if test "${with_fontconfig+set}" = set; then :
   withval=$with_fontconfig; with_fontconfig=$withval
 else
-  with_fontconfig=$have_x
+  with_fontconfig='yes'
 fi
 
 
@@ -30450,7 +30451,7 @@ fi
 if test "${with_pango+set}" = set; then :
   withval=$with_pango; with_pango=$withval
 else
-  with_pango=$have_x
+  with_pango='yes'
 fi
 
 
@@ -31046,7 +31047,7 @@ fi
 if test "${with_rsvg+set}" = set; then :
   withval=$with_rsvg; with_rsvg=$withval
 else
-  with_rsvg=$have_x
+  with_rsvg='yes'
 fi
 
 
@@ -31687,7 +31688,7 @@ fi
 if test "${with_wmf+set}" = set; then :
   withval=$with_wmf; with_wmf=$withval
 else
-  with_wmf='yes'
+  with_wmf='no'
 fi
 
 
@@ -31860,7 +31861,7 @@ fi
 if test "${with_xml+set}" = set; then :
   withval=$with_xml; with_xml=$withval
 else
-  with_xml=$have_x
+  with_xml='yes'
 fi
 
 
