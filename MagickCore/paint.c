@@ -451,7 +451,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   */
   status=DrawGradientImage(image,draw_info,exception);
   draw_info=DestroyDrawInfo(draw_info);
-  if ((start_color->alpha == OpaqueAlpha) && (stop_color->alpha == OpaqueAlpha))
+  if ((start_color->matte == MagickFalse) && (stop_color->matte == MagickFalse))
     image->matte=MagickFalse;
   if ((IsPixelInfoGray(start_color) != MagickFalse) &&
       (IsPixelInfoGray(stop_color) != MagickFalse))
@@ -770,6 +770,8 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
+  if ((fill->matte != MagickFalse) && (image->matte == MagickFalse))
+    (void) SetImageAlpha(image,OpaqueAlpha,exception);
   /*
     Make image color opaque.
   */
