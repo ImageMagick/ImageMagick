@@ -705,6 +705,9 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
       colorize_image=DestroyImage(colorize_image);
       return((Image *) NULL);
     }
+  if ((colorize.opacity != OpaqueOpacity) &&
+      (colorize_image->matte == MagickFalse))
+    (void) SetImageAlphaChannel(colorize_image,OpaqueOpacity);
   if (opacity == (const char *) NULL)
     return(colorize_image);
   /*
