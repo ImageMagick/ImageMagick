@@ -3,16 +3,16 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%             OOO  PPPP  EEEE RRRR   AA  TTTTTT III  OOO  N   N               %
-%            O   O P   P E    R   R A  A   TT    I  O   O NN  N               %
-%            O   O PPPP  EEE  RRRR  AAAA   TT    I  O   O N N N               %
-%            O   O P     E    R R   A  A   TT    I  O   O N  NN               %
-%             OOO  P     EEEE R  RR A  A   TT   III  OOO  N   N               %
+%          OOO   PPPP   EEEE  RRRR    AA   TTTTT  III   OOO   N   N           %
+%         O   O  P   P  E     R   R  A  A    T     I   O   O  NN  N           %
+%         O   O  PPPP   EEE   RRRR   AAAA    T     I   O   O  N N N           %
+%         O   O  P      E     R R    A  A    T     I   O   O  N  NN           %
+%          OOO   P      EEEE  R  RR  A  A    T    III   OOO   N   N           %
 %                                                                             %
 %                                                                             %
-%                         MagickWand Module Methods                           %
+%                         CLI Magick Option Methods                           %
 %                                                                             %
-%                              Software Design                                %
+%                              Dragon Computing                               %
 %                              Anthony Thyssen                                %
 %                               September 2011                                %
 %                                                                             %
@@ -34,14 +34,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Apply the given options (settings, and simple, or sequence operations) to
-% the given image(s) according to the current "image_info" and "draw_info"
-% settings.
+% the given image(s) according to the current "image_info", "draw_info", and
+% "quantize_info" settings, stored in a special CLI Image Wand.
 %
 % The final goal is to allow the execution in a strict one option at a time
 % manner that is needed for 'pipelining and file scripting' of options in
 % IMv7.
 %
-% Anthony Thyssen, Sept 2011
+% Anthony Thyssen, September 2011
 */
 
 /*
@@ -351,7 +351,7 @@ static Image *SparseColorOption(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W a n d S e t t i n g O p t i o n I n f I n f o                           %
++   W a n d S e t t i n g O p t i o n I n f o                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1457,9 +1457,9 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
 %
 % Example usage...
 %
-%  WandSimpleOperatorImages(wand,MagickFalse,"crop","100x100+20+30",NULL);
-%  WandSimpleOperatorImages(wand,MagickTrue,"repage",NULL,NULL);
-%  WandSimpleOperatorImages(wand,MagickTrue,"distort","SRT","45");
+%  WandSimpleOperatorImages(wand,"crop",MagickFalse,"100x100+20+30",NULL);
+%  WandSimpleOperatorImages(wand,"repage",MagickTrue,NULL,NULL);
+%  WandSimpleOperatorImages(wand,"distort",MagickTrue,"SRT","45");
 %  if ( wand->exception->severity != UndefinedException ) {
 %    CatchException(exception);
 %    exit(1);
@@ -1472,9 +1472,9 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
 %
 %    count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
 %    flags=GetCommandOptionFlags(MagickCommandOptions,MagickFalse,argv[i]);
-%    if ( flags == SimpleOperatorOptionFlag )
-%      WandSimpleOperatorImages(wand,
-%          (MagickBooleanType)(*argv[i])=='+'), argv[i]+1,
+%    if ( flags & SimpleOperatorOptionFlag != 0 )
+%      WandSimpleOperatorImages(wand, argv[i]+1,
+%          ((*argv[i])=='+')?MagickTrue:MagickFalse,
 %          count>=1 ? argv[i+1] : (char *)NULL,
 %          count>=2 ? argv[i+2] : (char *)NULL );
 %    i += count+1;
@@ -1498,9 +1498,8 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
   also change.  GetFirstImageInList() should be used by caller if they wish
   return the Image pointer to the first image in list.
 */
-static void WandSimpleOperatorImage(MagickWand *wand,
-  const MagickBooleanType plus_alt_op, const char *option,
-  const char *arg1, const char *arg2)
+static void WandSimpleOperatorImage(MagickWand *wand, const char *option,
+  const MagickBooleanType plus_alt_op,const char *arg1, const char *arg2)
 {
   Image *
     new_image;
@@ -3332,24 +3331,49 @@ WandExport void WandSimpleOperatorImages(MagickWand *wand,
 %
 %  The format of the MogrifyImage method is:
 %
-%    void WandListOperatorImages(MagickWand *wand,
-%        const MagickBooleanType plus_alt_op, const char *option,
+%    void WandListOperatorImages(MagickWand *wand,const char *option,
+%        const MagickBooleanType plus_alt_op,
 %        const char *arg1, const char *arg2)
 %
 %  A description of each parameter follows:
 %
 %    o wand: structure holding settings to be applied
 %
-%    o plus_alt_op:  request the 'plus' or alturnative form of the operation
-%
 %    o option:  The option string for the operation
+%
+%    o plus_alt_op:  request the 'plus' or alturnative form of the operation
 %
 %    o arg1, arg2: optional argument strings to the operation
 %
+% NOTE: only "limit" currently uses two arguments.
+%
+% Example usage...
+%
+%  WandListOperatorImages(wand,"read", MagickFalse,"rose:",NULL);
+%  WandListOperatorImages(wand,"duplicate",MagickFalse,"3",NULL);
+%  WandListOperatorImages(wand,"append",MagickTrue,NULL,NULL);
+%  if ( wand->exception->severity != UndefinedException ) {
+%    CatchException(exception);
+%    exit(1);
+%  }
+%
+% Or for handling command line arguments EG: +/-option ["arg"]
+%
+%    argc,argv
+%    i=index in argv
+%
+%    count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
+%    flags=GetCommandOptionFlags(MagickCommandOptions,MagickFalse,argv[i]);
+%    if ( flags & ListOperatorOptionFlag != 0 )
+%      WandSimpleOperatorImages(wand, argv[i]+1,
+%          ((*argv[i])=='+')?MagickTrue:MagickFalse,
+%          count>=1 ? argv[i+1] : (char *)NULL,
+%          count>=2 ? argv[i+2] : (char *)NULL );
+%    i += count+1;
+%
 */
-WandExport void WandListOperatorImages(MagickWand *wand,
-  const MagickBooleanType plus_alt_op, const char *option,
-  const char *arg1, const char *arg2)
+WandExport void WandListOperatorImages(MagickWand *wand,const char *option,
+     const MagickBooleanType plus_alt_op,const char *arg1, const char *arg2)
 {
   Image
     *new_images;
