@@ -331,7 +331,7 @@ static MagickBooleanType WriteFAXImage(const ImageInfo *image_info,Image *image,
       Convert MIFF to monochrome.
     */
     if (IsRGBColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,RGBColorspace,exception);
+      (void) TransformImageColorspace(image,sRGBColorspace,exception);
     status=HuffmanEncodeImage(write_info,image,image,exception);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;

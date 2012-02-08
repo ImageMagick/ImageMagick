@@ -632,7 +632,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,RGBColorspace,exception);
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   SetGeometry(image,&geometry);
   (void) ParseMetaGeometry(PiconGeometry,&geometry.x,&geometry.y,
     &geometry.width,&geometry.height);
@@ -879,7 +879,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,RGBColorspace,exception);
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   opacity=(-1);
   if (image->matte == MagickFalse)
     {

@@ -1220,7 +1220,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Read image attributes.
     */
     image->storage_class=PseudoClass;
-    image->colorspace=sRGBColorspace;
     image->compression=LZWCompression;
     page.x=(ssize_t) ReadBlobLSBShort(image);
     page.y=(ssize_t) ReadBlobLSBShort(image);
@@ -1564,7 +1563,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
   do
   {
     if (IsRGBColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,RGBColorspace,exception);
+      (void) TransformImageColorspace(image,sRGBColorspace,exception);
     opacity=(-1);
     if (IsImageOpaque(image,exception) != MagickFalse)
       {
