@@ -167,7 +167,17 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
   (void) CopyMagickString(image->magick,"MIFF",MaxTextExtent);
   image->storage_class=DirectClass;
   image->depth=MAGICKCORE_QUANTUM_DEPTH;
-  image->colorspace=RGBColorspace;
+  image->colorspace=sRGBColorspace;
+  image->rendering_intent=PerceptualIntent;
+  image->gamma=0.45455f;
+  image->chromaticity.red_primary.x=0.6400f;
+  image->chromaticity.red_primary.y=0.3300f;
+  image->chromaticity.green_primary.x=0.3000f;
+  image->chromaticity.green_primary.y=0.6000f;
+  image->chromaticity.blue_primary.x=0.1500f;
+  image->chromaticity.blue_primary.y=0.0600f;
+  image->chromaticity.white_point.x=0.3127f;
+  image->chromaticity.white_point.y=0.3290f;
   image->interlace=NoInterlace;
   image->ticks_per_second=UndefinedTicksPerSecond;
   image->compose=OverCompositeOp;
@@ -3833,7 +3843,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
     case PaletteType:
     {
       if (IsRGBColorspace(image->colorspace) == MagickFalse)
-        status=TransformImageColorspace(image,RGBColorspace);
+        status=TransformImageColorspace(image,sRGBColorspace);
       if ((image->storage_class == DirectClass) || (image->colors > 256))
         {
           quantize_info=AcquireQuantizeInfo(image_info);
@@ -3847,7 +3857,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
     case PaletteBilevelMatteType:
     {
       if (IsRGBColorspace(image->colorspace) == MagickFalse)
-        status=TransformImageColorspace(image,RGBColorspace);
+        status=TransformImageColorspace(image,sRGBColorspace);
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
       (void) BilevelImageChannel(image,AlphaChannel,(double) QuantumRange/2.0);
@@ -3859,7 +3869,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
     case PaletteMatteType:
     {
       if (IsRGBColorspace(image->colorspace) == MagickFalse)
-        status=TransformImageColorspace(image,RGBColorspace);
+        status=TransformImageColorspace(image,sRGBColorspace);
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
       quantize_info=AcquireQuantizeInfo(image_info);
@@ -3871,7 +3881,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
     case TrueColorType:
     {
       if (IsRGBColorspace(image->colorspace) == MagickFalse)
-        status=TransformImageColorspace(image,RGBColorspace);
+        status=TransformImageColorspace(image,sRGBColorspace);
       if (image->storage_class != DirectClass)
         status=SetImageStorageClass(image,DirectClass);
       image->matte=MagickFalse;
@@ -3880,7 +3890,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
     case TrueColorMatteType:
     {
       if (IsRGBColorspace(image->colorspace) == MagickFalse)
-        status=TransformImageColorspace(image,RGBColorspace);
+        status=TransformImageColorspace(image,sRGBColorspace);
       if (image->storage_class != DirectClass)
         status=SetImageStorageClass(image,DirectClass);
       if (image->matte == MagickFalse)
@@ -3892,7 +3902,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (image->colorspace != CMYKColorspace)
         {
           if (IsRGBColorspace(image->colorspace) == MagickFalse)
-            status=TransformImageColorspace(image,RGBColorspace);
+            status=TransformImageColorspace(image,sRGBColorspace);
           status=TransformImageColorspace(image,CMYKColorspace);
         }
       if (image->storage_class != DirectClass)
@@ -3905,7 +3915,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (image->colorspace != CMYKColorspace)
         {
           if (IsRGBColorspace(image->colorspace) == MagickFalse)
-            status=TransformImageColorspace(image,RGBColorspace);
+            status=TransformImageColorspace(image,sRGBColorspace);
           status=TransformImageColorspace(image,CMYKColorspace);
         }
       if (image->storage_class != DirectClass)

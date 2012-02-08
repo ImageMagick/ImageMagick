@@ -7694,7 +7694,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,RGBColorspace);
+    (void) TransformImageColorspace(image,sRGBColorspace);
 
   /*
     Sometimes we get PseudoClass images whose RGB values don't match

@@ -905,7 +905,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image)
       Initialize SGI raster file header.
     */
     if (IsRGBColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,RGBColorspace);
+      (void) TransformImageColorspace(image,sRGBColorspace);
     (void) ResetMagickMemory(&iris_info,0,sizeof(iris_info));
     iris_info.magic=0x01DA;
     compression=image->compression;

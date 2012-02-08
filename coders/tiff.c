@@ -999,9 +999,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %.20g",
         (double) image->depth);
-    image->endian=LSBEndian;
+    image->endian=MSBEndian;
     if (endian == FILLORDER_LSB2MSB)
-      image->endian=MSBEndian;
+      image->endian=LSBEndian;
     if ((photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
       image->colorspace=GRAYColorspace;
@@ -2791,7 +2791,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           else
             {
               if (IsRGBColorspace(image->colorspace) == MagickFalse)
-                (void) TransformImageColorspace(image,RGBColorspace);
+                (void) TransformImageColorspace(image,sRGBColorspace);
               photometric=PHOTOMETRIC_RGB;
             }
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);

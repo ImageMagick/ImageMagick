@@ -360,7 +360,7 @@ static MagickBooleanType WriteMTVImage(const ImageInfo *image_info,Image *image)
       Allocate memory for pixels.
     */
     if (IsRGBColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,RGBColorspace);
+      (void) TransformImageColorspace(image,sRGBColorspace);
     pixels=(unsigned char *) AcquireQuantumMemory((size_t) image->columns,
       3UL*sizeof(*pixels));
     if (pixels == (unsigned char *) NULL)
