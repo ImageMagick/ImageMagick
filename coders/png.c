@@ -2341,8 +2341,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_READ_sRGB_SUPPORTED)
   {
     if (mng_info->have_global_srgb)
-      image->rendering_intent=Magick_RenderingIntent_from_PNG_RenderingIntent
-        (mng_info->global_srgb_intent);
+      {
+        image->colorspace=sRGBColorspace;
+        image->rendering_intent=Magick_RenderingIntent_from_PNG_RenderingIntent
+          (mng_info->global_srgb_intent);
+      }
 
     if (png_get_sRGB(ping,ping_info,&intent))
       {
@@ -4235,6 +4238,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (length == 1)
           {
+            image->colorspace=sRGBColorspace;
             image->rendering_intent=
               Magick_RenderingIntent_from_PNG_RenderingIntent(p[0]);
             image->gamma=0.45455f;
