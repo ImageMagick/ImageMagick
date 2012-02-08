@@ -173,6 +173,16 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->storage_class=DirectClass;
   image->depth=MAGICKCORE_QUANTUM_DEPTH;
   image->colorspace=sRGBColorspace;
+  image->rendering_intent=PerceptualIntent;
+  image->gamma=0.45455f;
+  image->chromaticity.red_primary.x=0.6400f;
+  image->chromaticity.red_primary.y=0.3300f;
+  image->chromaticity.green_primary.x=0.3000f;
+  image->chromaticity.green_primary.y=0.6000f;
+  image->chromaticity.blue_primary.x=0.1500f;
+  image->chromaticity.blue_primary.y=0.0600f;
+  image->chromaticity.white_point.x=0.3127f;
+  image->chromaticity.white_point.y=0.3290f;
   image->interlace=NoInterlace;
   image->ticks_per_second=UndefinedTicksPerSecond;
   image->compose=OverCompositeOp;
