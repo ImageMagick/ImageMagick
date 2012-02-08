@@ -1212,11 +1212,11 @@ int main( int /*argc*/, char ** argv)
     //
     // renderingIntent
     //
-    if ( image.renderingIntent() != UndefinedIntent )
+    if ( image.renderingIntent() != PerceptualIntent )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", renderingIntent default is not UndefinedIntent as expected"
+             << ", renderingIntent default is not PerceptualIntent as expected"
              << endl;
       }
 
