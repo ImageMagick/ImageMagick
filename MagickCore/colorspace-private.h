@@ -71,7 +71,8 @@ static inline MagickBooleanType IsGrayColorspace(
 static inline MagickBooleanType IsRGBColorspace(const ColorspaceType colorspace)
 {
   if ((IsGrayColorspace(colorspace) != MagickFalse) ||
-      (colorspace == sRGBColorspace) || (colorspace == TransparentColorspace))
+      (colorspace == RGBColorspace) || (colorspace == sRGBColorspace) ||
+      (colorspace == TransparentColorspace))
     return(MagickTrue);
   return(MagickFalse);
 }
