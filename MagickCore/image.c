@@ -2705,8 +2705,9 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   assert(image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if (image->background_color.matte != MagickFalse)
-    image->matte=MagickTrue;
+  if ((image->border_color.matte != MagickFalse) &&
+      (image->matte == MagickFalse))
+    (void) SetImageAlpha(image,OpaqueAlpha,exception);
   /*
     Set image background color.
   */
