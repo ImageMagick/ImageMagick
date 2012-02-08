@@ -1008,7 +1008,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
     Initialize DIB raster file header.
   */
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,RGBColorspace);
+    (void) TransformImageColorspace(image,sRGBColorspace);
   if (image->storage_class == DirectClass)
     {
       /*
