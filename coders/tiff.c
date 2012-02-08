@@ -1004,9 +1004,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (image->debug != MagickFalse)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %.20g",
         (double) image->depth);
-    image->endian=LSBEndian;
+    image->endian=MSBEndian;
     if (endian == FILLORDER_LSB2MSB)
-      image->endian=MSBEndian;
+      image->endian=LSBEndian;
     if ((photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
       image->colorspace=GRAYColorspace;
