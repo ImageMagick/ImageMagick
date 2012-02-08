@@ -1220,6 +1220,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Read image attributes.
     */
     image->storage_class=PseudoClass;
+    image->colorspace=sRGBColorspace;
     image->compression=LZWCompression;
     page.x=(ssize_t) ReadBlobLSBShort(image);
     page.y=(ssize_t) ReadBlobLSBShort(image);
@@ -1227,10 +1228,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=ReadBlobLSBShort(image);
     image->depth=8;
     flag=(unsigned char) ReadBlobByte(image);
-    image->interlace=BitSet((int) flag,0x40) != 0 ? GIFInterlace :
-      NoInterlace;
-    image->colors=BitSet((int) flag,0x80) == 0 ? global_colors :
-      one << ((size_t) (flag & 0x07)+1);
+    image->interlace=BitSet((int) flag,0x40) != 0 ? GIFInterlace : NoInterlace;
+    image->colors=BitSet((int) flag,0x80) == 0 ? global_colors : one <<
+      ((size_t) (flag & 0x07)+1);
     if (opacity >= (ssize_t) image->colors)
       opacity=(-1);
     image->page.width=page.width;
@@ -1288,8 +1288,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read local colormap.
         */
-        colormap=(unsigned char *) AcquireQuantumMemory(image->colors,
-          3*sizeof(*colormap));
+        colormap=(unsigned char *) AcquireQuantumMemory(image->colors,3*
+          sizeof(*colormap));
         if (colormap == (unsigned char *) NULL)
           {
             global_colormap=(unsigned char *) RelinquishMagickMemory(

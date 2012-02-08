@@ -2346,6 +2346,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
     if (png_get_sRGB(ping,ping_info,&intent))
       {
+        image->colorspace=sRGBColorspace;
         image->rendering_intent=Magick_RenderingIntent_from_PNG_RenderingIntent
           (intent);
 
@@ -3573,11 +3574,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_sRGB_SUPPORTED)
      if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
        {
+         image->colorspace=sRGBColorspace;
          (void) FormatLocaleString(msg,MaxTextExtent,
-            "intent=%d (See Rendering intent)",
-            (int) intent);
+            "intent=%d (See Rendering intent)", (int) intent);
          (void) SetImageProperty(image,"png:sRGB                 ",msg,
-                exception);
+           exception);
        }
 #endif
 
