@@ -54,6 +54,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/string-private.h"
+#if 0
 
 /*
   Define declarations.
@@ -4056,3 +4057,4 @@ WandExport void WandListOperatorImages(MagickWand *wand,const char *option,
 #undef exception
 #undef normal_op
 }
+#endif

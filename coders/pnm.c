@@ -1561,7 +1561,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
     if (format != '7')
       {
         if (IsRGBColorspace(image->colorspace) == MagickFalse)
-          (void) TransformImageColorspace(image,RGBColorspace,exception);
+          (void) TransformImageColorspace(image,sRGBColorspace,exception);
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g\n",
           (double) image->columns,(double) image->rows);
         (void) WriteBlobString(image,buffer);

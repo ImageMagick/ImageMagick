@@ -216,7 +216,7 @@ MagickExport void *CropImageToHBITMAP(Image *image,
   if ( bitmap.bmBits == NULL )
     bitmap.bmBits = bitmap_bits;
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
-    TransformImageColorspace(image,RGBColorspace,exception);
+    TransformImageColorspace(image,sRGBColorspace,exception);
   /*
     Extract crop image.
   */
@@ -560,7 +560,7 @@ MagickExport void *ImageToHBITMAP(Image *image,ExceptionInfo *exception)
   q=bitmap_bits;
   if (bitmap.bmBits == NULL)
     bitmap.bmBits=bitmap_bits;
-  (void) TransformImageColorspace(image,RGBColorspace,exception);
+  (void) TransformImageColorspace(image,sRGBColorspace,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);

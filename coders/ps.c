@@ -1448,7 +1448,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image,
     */
     if ((IsRGBColorspace(image->colorspace) == MagickFalse) &&
         (image->colorspace != CMYKColorspace))
-      (void) TransformImageColorspace(image,RGBColorspace,exception);
+      (void) TransformImageColorspace(image,sRGBColorspace,exception);
     delta.x=DefaultResolution;
     delta.y=DefaultResolution;
     resolution.x=image->resolution.x;

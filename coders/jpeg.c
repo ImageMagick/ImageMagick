@@ -1052,8 +1052,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   else
     if (jpeg_info.out_color_space == JCS_CMYK)
       image->colorspace=CMYKColorspace;
-    else
-      image->colorspace=sRGBColorspace;
   /*
     Set image resolution.
   */
@@ -1862,7 +1860,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     default:
     {
       if (IsRGBColorspace(image->colorspace) == MagickFalse)
-        (void) TransformImageColorspace(image,RGBColorspace,exception);
+        (void) TransformImageColorspace(image,sRGBColorspace,exception);
       break;
     }
   }

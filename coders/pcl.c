@@ -722,7 +722,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image,
   do
   {
     if (IsRGBColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,RGBColorspace,exception);
+      (void) TransformImageColorspace(image,sRGBColorspace,exception);
     /*
       Initialize the printer.
     */

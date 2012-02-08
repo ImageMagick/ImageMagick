@@ -2806,7 +2806,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           else
             {
               if (IsRGBColorspace(image->colorspace) == MagickFalse)
-                (void) TransformImageColorspace(image,RGBColorspace,exception);
+                (void) TransformImageColorspace(image,sRGBColorspace,exception);
               photometric=PHOTOMETRIC_RGB;
             }
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);
