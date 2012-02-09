@@ -3060,7 +3060,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    option=GetImageOption(image_info,"tiff:tile-geometry");
+    option=GetImageArtifact(image,"tiff:rows-per-strip");
     if (option == (const char *) NULL)
       (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
     if ((image->resolution.x != 0.0) && (image->resolution.y != 0.0))
