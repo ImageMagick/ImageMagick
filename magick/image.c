@@ -169,7 +169,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
   image->depth=MAGICKCORE_QUANTUM_DEPTH;
   image->colorspace=sRGBColorspace;
   image->rendering_intent=PerceptualIntent;
-  image->gamma=0.45455f;
+  image->gamma=0.45455;
   image->chromaticity.red_primary.x=0.6400f;
   image->chromaticity.red_primary.y=0.3300f;
   image->chromaticity.green_primary.x=0.3000f;
