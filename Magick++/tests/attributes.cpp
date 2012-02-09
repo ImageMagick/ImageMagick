@@ -350,7 +350,7 @@ int main( int /*argc*/, char ** argv)
       // Test default setting
       double x, y;
       image.chromaBluePrimary( &x, &y );
-      if ( x != 0 || y != 0 )
+      if ( x != 0.1500 || y != 0.0600 )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
@@ -376,7 +376,7 @@ int main( int /*argc*/, char ** argv)
       // Test default setting
       double x, y;
       image.chromaGreenPrimary( &x, &y );
-      if ( x != 0 || y != 0 )
+      if ( x != 0.3000 || y != 0.6000 )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
@@ -401,7 +401,7 @@ int main( int /*argc*/, char ** argv)
       // Test default setting
       double x, y;
       image.chromaRedPrimary( &x, &y );
-      if ( x != 0 || y != 0 )
+      if ( x != 0.6400 || y != 0.3300 )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
@@ -426,7 +426,7 @@ int main( int /*argc*/, char ** argv)
       // Test default setting
       double x, y;
       image.chromaWhitePoint( &x, &y );
-      if ( x != 0 || y != 0 )
+      if ( x != 0.3127 || y != 0.3290 )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
