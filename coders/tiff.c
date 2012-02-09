@@ -40,6 +40,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/artifact.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
@@ -2585,7 +2586,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
   error_handler=TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   warning_handler=TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   endian_type=UndefinedEndian;
-  option=GetImageOption(image_info,"tiff:endian");
+  option=GetImageArtifact(image,"tiff:endian");
   if (option != (const char *) NULL)
     {
       if (LocaleNCompare(option,"msb",3) == 0)
@@ -2867,7 +2868,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
          compress_tag=COMPRESSION_NONE;
          endian=FILLORDER_MSB2LSB;
        }
-    option=GetImageProperty(image,"tiff:fill-order");
+    option=GetImageArtifact(image,"tiff:fill-order");
     if (option != (const char *) NULL)
       {
         if (LocaleNCompare(option,"msb",3) == 0)
@@ -2890,7 +2891,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         */
         extra_samples=1;
         sample_info[0]=EXTRASAMPLE_UNASSALPHA;
-        option=GetImageProperty(image,"tiff:alpha");
+        option=GetImageArtifact(image,"tiff:alpha");
         if ((option != (const char *) NULL) &&
             (LocaleCompare(option,"associated") == 0))
           sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
@@ -2935,7 +2936,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     if (TIFFScanlineSize(tiff) != 0)
       rows_per_strip=(uint32) MagickMax((size_t) TIFFDefaultStripSize(tiff,0),
         1);
-    option=GetImageOption(image_info,"tiff:rows-per-strip");
+    option=GetImageArtifact(image,"tiff:rows-per-strip");
     if (option != (const char *) NULL)
       rows_per_strip=(size_t) strtol(option,(char **) NULL,10);
     switch (compress_tag)
@@ -3044,7 +3045,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       default:
         break;
     }
-    option=GetImageOption(image_info,"tiff:tile-geometry");
+    option=GetImageArtifact(image,"tiff:rows-per-strip");
     if (option == (const char *) NULL)
       (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
     if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
