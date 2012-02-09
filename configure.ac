@@ -3073,7 +3073,7 @@ else
 fi
 RLEEncodeDelegateDefault='rawtorle'
 RMDelegateDefault='rm'
-RSVGDecodeDelegateDefault='rsvg'
+RSVGDecodeDelegateDefault='rsvg-convert'
 SCANDecodeDelegateDefault='scanimage'
 TXTDelegateDefault='enscript'
 UniconvertorDelegateDefault='uniconvertor'
