@@ -1458,9 +1458,9 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
 %
 % Example usage...
 %
-%  WandSimpleOperatorImages(wand,"crop",MagickFalse,"100x100+20+30",NULL);
-%  WandSimpleOperatorImages(wand,"repage",MagickTrue,NULL,NULL);
-%  WandSimpleOperatorImages(wand,"distort",MagickTrue,"SRT","45");
+%  WandSimpleOperatorImages(wand, MagickFalse,"crop","100x100+20+30",NULL);
+%  WandSimpleOperatorImages(wand, MagickTrue, "repage",NULL,NULL);
+%  WandSimpleOperatorImages(wand, MagickTrue, "distort","SRT","45");
 %  if ( wand->exception->severity != UndefinedException ) {
 %    CatchException(exception);
 %    exit(1);
@@ -1474,8 +1474,8 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
 %    count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
 %    flags=GetCommandOptionFlags(MagickCommandOptions,MagickFalse,argv[i]);
 %    if ( flags & SimpleOperatorOptionFlag != 0 )
-%      WandSimpleOperatorImages(wand, argv[i]+1,
-%          ((*argv[i])=='+')?MagickTrue:MagickFalse,
+%      WandSimpleOperatorImages(wand,
+%          ((*argv[i])=='+')?MagickTrue:MagickFalse,argv[i]+1,
 %          count>=1 ? argv[i+1] : (char *)NULL,
 %          count>=2 ? argv[i+2] : (char *)NULL );
 %    i += count+1;
@@ -1499,8 +1499,9 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
   also change.  GetFirstImageInList() should be used by caller if they wish
   return the Image pointer to the first image in list.
 */
-static void WandSimpleOperatorImage(MagickWand *wand, const char *option,
-  const MagickBooleanType plus_alt_op,const char *arg1, const char *arg2)
+static void WandSimpleOperatorImage(MagickWand *wand,
+  const MagickBooleanType plus_alt_op, const char *option,
+  const char *arg1, const char *arg2)
 {
   Image *
     new_image;
@@ -3332,17 +3333,17 @@ WandExport void WandSimpleOperatorImages(MagickWand *wand,
 %
 %  The format of the MogrifyImage method is:
 %
-%    void WandListOperatorImages(MagickWand *wand,const char *option,
-%        const MagickBooleanType plus_alt_op,
+%    void WandListOperatorImages(MagickWand *wand,
+%        const MagickBooleanType plus_alt_op,const char *option,
 %        const char *arg1, const char *arg2)
 %
 %  A description of each parameter follows:
 %
 %    o wand: structure holding settings to be applied
 %
-%    o option:  The option string for the operation
-%
 %    o plus_alt_op:  request the 'plus' or alturnative form of the operation
+%
+%    o option:  The option string for the operation
 %
 %    o arg1, arg2: optional argument strings to the operation
 %
@@ -3366,15 +3367,16 @@ WandExport void WandSimpleOperatorImages(MagickWand *wand,
 %    count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
 %    flags=GetCommandOptionFlags(MagickCommandOptions,MagickFalse,argv[i]);
 %    if ( flags & ListOperatorOptionFlag != 0 )
-%      WandSimpleOperatorImages(wand, argv[i]+1,
-%          ((*argv[i])=='+')?MagickTrue:MagickFalse,
+%      WandListOperatorImages(wand,
+%          ((*argv[i])=='+')?MagickTrue:MagickFalse,argv[i]+1,
 %          count>=1 ? argv[i+1] : (char *)NULL,
 %          count>=2 ? argv[i+2] : (char *)NULL );
 %    i += count+1;
 %
 */
-WandExport void WandListOperatorImages(MagickWand *wand,const char *option,
-     const MagickBooleanType plus_alt_op,const char *arg1, const char *arg2)
+WandExport void WandListOperatorImages(MagickWand *wand,
+     const MagickBooleanType plus_alt_op,const char *option,
+     const char *arg1, const char *arg2)
 {
   Image
     *new_images;
@@ -3526,11 +3528,8 @@ WandExport void WandListOperatorImages(MagickWand *wand,const char *option,
         }
       if (LocaleCompare("duplicate",option) == 0)
         {
-          Image
-            *duplicate_images;
-
           if (plus_alt_op != MagickFalse)
-            duplicate_images=DuplicateImages(images,1,"-1",exception);
+            new_images=DuplicateImages(images,1,"-1",exception);
           else
             {
               const char
@@ -3542,13 +3541,14 @@ WandExport void WandListOperatorImages(MagickWand *wand,const char *option,
               number_duplicates=(size_t) StringToLong(arg1);
               p=strchr(arg1,',');
               if (p == (const char *) NULL)
-                duplicate_images=DuplicateImages(images,number_duplicates,
+                new_images=DuplicateImages(images,number_duplicates,
                   "-1",exception);
               else
-                duplicate_images=DuplicateImages(images,number_duplicates,p,
+                new_images=DuplicateImages(images,number_duplicates,p,
                   exception);
             }
-          AppendImageToList(&images, duplicate_images);
+          AppendImageToList(&images, new_images);
+          new_images=(Image *)NULL;
           break;
         }
       break;
@@ -3936,6 +3936,17 @@ WandExport void WandListOperatorImages(MagickWand *wand,const char *option,
     }
     case 'r':
     {
+      if (LocaleCompare("read",option) == 0)
+        {
+          CopyMagickString(image_info->filename,arg1,MaxTextExtent);
+          if (image_info->ping != MagickFalse)
+            new_images=PingImages(image_info,exception);
+          else
+            new_images=ReadImages(image_info,exception);
+          AppendImageToList(&images, new_images);
+          new_images=(Image *) NULL;
+          break;
+        }
       if (LocaleCompare("remap",option) == 0)
         {
               (void) RemapImages(quantize_info,images,(Image *) NULL,exception);
