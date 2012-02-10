@@ -157,6 +157,8 @@ static const OptionInfo
   },
   CommandOptions[] =
   {
+    { "(", 0L, SpecialOptionFlag, MagickTrue },
+    { ")", 0L, SpecialOptionFlag, MagickTrue },
     { "+adjoin", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-adjoin", 0L, ImageInfoOptionFlag, MagickFalse },
     { "+adaptive-blur", 1L, DeprecateOptionFlag, MagickTrue },
@@ -535,6 +537,7 @@ static const OptionInfo
     { "-raise", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+random-threshold", 1L, DeprecateOptionFlag, MagickTrue },
     { "-random-threshold", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "-read", 1L, ListOperatorOptionFlag, MagickFalse },
     { "+recolor", 1L, DeprecateOptionFlag, MagickTrue },
     { "-recolor", 1L, DeprecateOptionFlag, MagickTrue },
     { "+red-primary", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -567,7 +570,7 @@ static const OptionInfo
     { "-sample", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+sampling-factor", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-sampling-factor", 1L, ImageInfoOptionFlag, MagickFalse },
-    { "+sans", 1L, SpecialOptionFlag, MagickTrue }, /* equivelent to 'noop' */
+    { "+sans", 1L, SpecialOptionFlag, MagickTrue }, /* equivelent 'noop' */
     { "-sans", 1L, SpecialOptionFlag, MagickTrue },
     { "+sans0", 0L, SpecialOptionFlag, MagickTrue },
     { "-sans0", 0L, SpecialOptionFlag, MagickTrue },
