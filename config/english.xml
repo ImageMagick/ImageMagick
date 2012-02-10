@@ -592,6 +592,9 @@
         <message name="CompositeImageRequired">
           composite image required
         </message>
+        <message name="DeprecatedOption">
+          option is deprecated
+        </message>
         <message name="DivideByZero">
           divide by zero
         </message>
