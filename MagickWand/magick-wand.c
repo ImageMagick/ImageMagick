@@ -186,13 +186,15 @@ WandExport MagickWand *DestroyMagickWand(MagickWand *wand)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  wand->images=DestroyImageList(wand->images);
   if (wand->quantize_info != (QuantizeInfo *) NULL )
     wand->quantize_info=DestroyQuantizeInfo(wand->quantize_info);
   if (wand->draw_info != (DrawInfo *) NULL )
     wand->draw_info=DestroyDrawInfo(wand->draw_info);
-  wand->image_info=DestroyImageInfo(wand->image_info);
-  wand->images=DestroyImageList(wand->images);
-  wand->exception=DestroyExceptionInfo(wand->exception);
+  if (wand->image_info != (ImageInfo *) NULL )
+    wand->image_info=DestroyImageInfo(wand->image_info);
+  if (wand->exception != (ExceptionInfo *) NULL )
+    wand->exception=DestroyExceptionInfo(wand->exception);
   RelinquishWandId(wand->id);
   wand->signature=(~WandSignature);
   wand=(MagickWand *) RelinquishMagickMemory(wand);
