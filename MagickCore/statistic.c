@@ -1475,9 +1475,9 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
         #pragma omp critical (MagickCore_GetImageRange)
 #endif
         {
-          if (p[i] < *minima)
+          if ((double) p[i] < *minima)
             *minima=(double) p[i];
-          if (p[i] > *maxima)
+          if ((double) p[i] > *maxima)
             *maxima=(double) p[i];
         }
       }

@@ -517,11 +517,11 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   i=0;
   for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
   {
-    image->colormap[i].red=ScaleCharToQuantum((unsigned char)
+    image->colormap[i].red=(double) ScaleCharToQuantum((unsigned char)
       (cluster->red.center+0.5));
-    image->colormap[i].green=ScaleCharToQuantum((unsigned char)
+    image->colormap[i].green=(double) ScaleCharToQuantum((unsigned char)
       (cluster->green.center+0.5));
-    image->colormap[i].blue=ScaleCharToQuantum((unsigned char)
+    image->colormap[i].blue=(double) ScaleCharToQuantum((unsigned char)
       (cluster->blue.center+0.5));
     i++;
   }
@@ -602,22 +602,22 @@ static MagickBooleanType Classify(Image *image,short **extrema,
             p=image->colormap+j;
             distance_squared=squares[(ssize_t) ScaleQuantumToChar(
               GetPixelRed(image,q))-(ssize_t)
-              ScaleQuantumToChar(p->red)]+squares[(ssize_t)
+              ScaleQuantumToChar(ClampToQuantum(p->red))]+squares[(ssize_t)
               ScaleQuantumToChar(GetPixelGreen(image,q))-(ssize_t)
-              ScaleQuantumToChar(p->green)]+squares[(ssize_t)
+              ScaleQuantumToChar(ClampToQuantum(p->green))]+squares[(ssize_t)
               ScaleQuantumToChar(GetPixelBlue(image,q))-(ssize_t)
-              ScaleQuantumToChar(p->blue)];
+              ScaleQuantumToChar(ClampToQuantum(p->blue))];
             numerator=distance_squared;
             for (k=0; k < (ssize_t) image->colors; k++)
             {
               p=image->colormap+k;
                 distance_squared=squares[(ssize_t) ScaleQuantumToChar(
                   GetPixelRed(image,q))-(ssize_t)
-                  ScaleQuantumToChar(p->red)]+squares[(ssize_t)
-                  ScaleQuantumToChar(GetPixelGreen(image,q))-(ssize_t)
-                  ScaleQuantumToChar(p->green)]+squares[(ssize_t)
-                  ScaleQuantumToChar(GetPixelBlue(image,q))-(ssize_t)
-                  ScaleQuantumToChar(p->blue)];
+                  ScaleQuantumToChar(ClampToQuantum(p->red))]+squares[
+                  (ssize_t) ScaleQuantumToChar(GetPixelGreen(image,q))-(ssize_t)
+                  ScaleQuantumToChar(ClampToQuantum(p->green))]+squares[
+                  (ssize_t) ScaleQuantumToChar(GetPixelBlue(image,q))-(ssize_t)
+                  ScaleQuantumToChar(ClampToQuantum(p->blue))];
               ratio=numerator/distance_squared;
               sum+=SegmentPower(ratio);
             }

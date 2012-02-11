@@ -123,7 +123,7 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
       }
     status=CompareImagesCommand(image_info,number_arguments,arguments,
       (char **) NULL,exception);
-    for (j=0; j < number_arguments; j++)
+    for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
     arguments=(char **) RelinquishMagickMemory(arguments);
     if (status != MagickFalse)
@@ -215,7 +215,7 @@ static size_t ValidateCompositeCommand(ImageInfo *image_info,
       }
     status=CompositeImageCommand(image_info,number_arguments,arguments,
       (char **) NULL,exception);
-    for (j=0; j < number_arguments; j++)
+    for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
     arguments=(char **) RelinquishMagickMemory(arguments);
     if (status != MagickFalse)
@@ -306,7 +306,7 @@ static size_t ValidateConvertCommand(ImageInfo *image_info,
       }
     status=ConvertImageCommand(image_info,number_arguments,arguments,
       (char **) NULL,exception);
-    for (j=0; j < number_arguments; j++)
+    for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
     arguments=(char **) RelinquishMagickMemory(arguments);
     if (status != MagickFalse)
@@ -398,7 +398,7 @@ static size_t ValidateIdentifyCommand(ImageInfo *image_info,
       }
     status=IdentifyImageCommand(image_info,number_arguments,arguments,
       (char **) NULL,exception);
-    for (j=0; j < number_arguments; j++)
+    for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
     arguments=(char **) RelinquishMagickMemory(arguments);
     if (status != MagickFalse)
@@ -1099,7 +1099,7 @@ static size_t ValidateMontageCommand(ImageInfo *image_info,
       }
     status=MontageImageCommand(image_info,number_arguments,arguments,
       (char **) NULL,exception);
-    for (j=0; j < number_arguments; j++)
+    for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
     arguments=(char **) RelinquishMagickMemory(arguments);
     if (status != MagickFalse)
@@ -1190,7 +1190,7 @@ static size_t ValidateStreamCommand(ImageInfo *image_info,
       }
     status=StreamImageCommand(image_info,number_arguments,arguments,
       (char **) NULL,exception);
-    for (j=0; j < number_arguments; j++)
+    for (j=0; j < (ssize_t) number_arguments; j++)
       arguments[j]=DestroyString(arguments[j]);
     arguments=(char **) RelinquishMagickMemory(arguments);
     if (status != MagickFalse)

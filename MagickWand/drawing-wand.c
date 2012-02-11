@@ -4728,14 +4728,14 @@ WandExport void DrawSetFillColor(DrawingWand *wand,const PixelWand *fill_wand)
 */
 WandExport void DrawSetFillAlpha(DrawingWand *wand,const double fill_alpha)
 {
-  Quantum
+  double
     alpha;
 
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  alpha=ClampToQuantum((double) QuantumRange*(1.0-fill_alpha));
+  alpha=(double) ClampToQuantum((double) QuantumRange*(1.0-fill_alpha));
   if ((wand->filter_off != MagickFalse) ||
       (CurrentContext->fill.alpha != alpha))
     {
@@ -4889,7 +4889,7 @@ WandExport MagickBooleanType DrawSetFillPatternURL(DrawingWand *wand,
     &CurrentContext->fill_pattern);
 #endif
   if (CurrentContext->fill.alpha != (Quantum) TransparentAlpha)
-    CurrentContext->fill.alpha=CurrentContext->alpha;
+    CurrentContext->fill.alpha=(double) CurrentContext->alpha;
   (void) MvgPrintf(wand,"fill %s\n",pattern_spec);
   return(MagickTrue);
 }
@@ -5329,7 +5329,7 @@ WandExport MagickBooleanType DrawSetStrokePatternURL(DrawingWand *wand,
     &CurrentContext->stroke_pattern);
 #endif
   if (CurrentContext->stroke.alpha != (Quantum) TransparentAlpha)
-    CurrentContext->stroke.alpha=CurrentContext->alpha;
+    CurrentContext->stroke.alpha=(double) CurrentContext->alpha;
   (void) MvgPrintf(wand,"stroke %s\n",pattern_spec);
   return(MagickTrue);
 }
@@ -5695,14 +5695,14 @@ WandExport void DrawSetStrokeMiterLimit(DrawingWand *wand,
 WandExport void DrawSetStrokeAlpha(DrawingWand *wand,
   const double stroke_alpha)
 {
-  Quantum
+  double
     alpha;
 
   assert(wand != (DrawingWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  alpha=ClampToQuantum((double) QuantumRange*(1.0-stroke_alpha));
+  alpha=(double) ClampToQuantum((double) QuantumRange*(1.0-stroke_alpha));
   if ((wand->filter_off != MagickFalse) ||
       (CurrentContext->stroke.alpha != alpha))
     {
@@ -6189,7 +6189,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->fill.alpha=ClampToQuantum((MagickRealType)
+        CurrentContext->fill.alpha=(double) ClampToQuantum((MagickRealType)
           QuantumRange*(1.0-StringToDouble(value,(char **) NULL)));
     }
   child=GetXMLTreeChild(xml_info,"fill-rule");
@@ -6353,7 +6353,7 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->stroke.alpha=ClampToQuantum((MagickRealType)
+        CurrentContext->stroke.alpha=(double) ClampToQuantum((MagickRealType)
           QuantumRange*(1.0-StringToDouble(value,(char **) NULL)));
     }
   child=GetXMLTreeChild(xml_info,"stroke-width");

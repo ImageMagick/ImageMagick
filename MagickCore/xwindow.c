@@ -561,10 +561,14 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
   (void) GetOneVirtualPixel(image,(ssize_t) x,(ssize_t) y,virtual_pixel,
     exception);
-  annotate_image->background_color.red=virtual_pixel[RedPixelChannel];
-  annotate_image->background_color.green=virtual_pixel[GreenPixelChannel];
-  annotate_image->background_color.blue=virtual_pixel[BluePixelChannel];
-  annotate_image->background_color.alpha=virtual_pixel[AlphaPixelChannel];
+  annotate_image->background_color.red=(double)
+    virtual_pixel[RedPixelChannel];
+  annotate_image->background_color.green=(double)
+    virtual_pixel[GreenPixelChannel];
+  annotate_image->background_color.blue=(double)
+    virtual_pixel[BluePixelChannel];
+  annotate_image->background_color.alpha=(double)
+    virtual_pixel[AlphaPixelChannel];
   if (annotate_info->stencil == ForegroundStencil)
     annotate_image->matte=MagickTrue;
   annotate_view=AcquireCacheView(annotate_image);
@@ -2242,12 +2246,12 @@ static void XDitherImage(Image *image,XImage *ximage,ExceptionInfo *exception)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      color.red=ClampToQuantum((MagickRealType) (red_map[i][j][(int)
-        ScaleQuantumToChar(GetPixelRed(image,p))] << 8));
-      color.green=ClampToQuantum((MagickRealType) (green_map[i][j][(int)
-        ScaleQuantumToChar(GetPixelGreen(image,p))] << 8));
-      color.blue=ClampToQuantum((MagickRealType) (blue_map[i][j][(int)
-        ScaleQuantumToChar(GetPixelBlue(image,p))] << 8));
+      color.red=(double) ClampToQuantum((MagickRealType) (red_map[i][j][
+        (int) ScaleQuantumToChar(GetPixelRed(image,p))] << 8));
+      color.green=(double) ClampToQuantum((MagickRealType) (green_map[i][j][
+        (int) ScaleQuantumToChar(GetPixelGreen(image,p))] << 8));
+      color.blue=(double) ClampToQuantum((MagickRealType) (blue_map[i][j][
+        (int) ScaleQuantumToChar(GetPixelBlue(image,p))] << 8));
       pixel=(size_t) (((size_t) color.red & 0xe0) |
         (((size_t) color.green & 0xe0) >> 3) |
         (((size_t) color.blue & 0xc0) >> 6));
@@ -2490,10 +2494,10 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
   (void) GetOneVirtualPixel(image,(ssize_t) x,(ssize_t) y,virtual_pixel,
     exception);
-  draw_image->background_color.red=virtual_pixel[RedPixelChannel];
-  draw_image->background_color.green=virtual_pixel[GreenPixelChannel];
-  draw_image->background_color.blue=virtual_pixel[BluePixelChannel];
-  draw_image->background_color.alpha=virtual_pixel[AlphaPixelChannel];
+  draw_image->background_color.red=(double) virtual_pixel[RedPixelChannel];
+  draw_image->background_color.green=(double) virtual_pixel[GreenPixelChannel];
+  draw_image->background_color.blue=(double) virtual_pixel[BluePixelChannel];
+  draw_image->background_color.alpha=(double) virtual_pixel[AlphaPixelChannel];
   if (SetImageStorageClass(draw_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   draw_image->matte=MagickTrue;
@@ -3941,9 +3945,9 @@ MagickPrivate MagickBooleanType XGetWindowColor(Display *display,
     Match color against the color database.
   */
   (void) XQueryColor(display,window_attributes.colormap,&color);
-  pixel.red=ScaleShortToQuantum(color.red);
-  pixel.green=ScaleShortToQuantum(color.green);
-  pixel.blue=ScaleShortToQuantum(color.blue);
+  pixel.red=(double) ScaleShortToQuantum(color.red);
+  pixel.green=(double) ScaleShortToQuantum(color.green);
+  pixel.blue=(double) ScaleShortToQuantum(color.blue);
   pixel.alpha=OpaqueAlpha;
   (void) QueryColorname(windows->image.image,&pixel,X11Compliance,name,
     exception);
@@ -4487,11 +4491,11 @@ static Image *XGetWindowImage(Display *display,const Window window,
               }
             for (i=0; i < (int) composite_image->colors; i++)
             {
-              composite_image->colormap[colors[i].pixel].red=
+              composite_image->colormap[colors[i].pixel].red=(double)
                 ScaleShortToQuantum(colors[i].red);
-              composite_image->colormap[colors[i].pixel].green=
+              composite_image->colormap[colors[i].pixel].green=(double)
                 ScaleShortToQuantum(colors[i].green);
-              composite_image->colormap[colors[i].pixel].blue=
+              composite_image->colormap[colors[i].pixel].blue=(double)
                 ScaleShortToQuantum(colors[i].blue);
             }
             /*
@@ -8011,9 +8015,9 @@ MagickPrivate void XMakeStandardColormap(Display *display,
               "UnableToCreateColormap",image->filename);
           for (i=0; i < (ssize_t) image->colors; i++)
           {
-            diversity[i].red=image->colormap[i].red;
-            diversity[i].green=image->colormap[i].green;
-            diversity[i].blue=image->colormap[i].blue;
+            diversity[i].red=ClampToQuantum(image->colormap[i].red);
+            diversity[i].green=ClampToQuantum(image->colormap[i].green);
+            diversity[i].blue=ClampToQuantum(image->colormap[i].blue);
             diversity[i].index=(unsigned short) i;
             diversity[i].count=0;
           }

@@ -65,7 +65,7 @@ static inline int MultiByteToWideCharacter(const char *string,
 }
 #endif
 
-static inline int access_utf8(const char *path,mode_t mode)
+static inline int access_utf8(const char *path,int mode)
 {
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
   return(access(path,mode));

@@ -279,12 +279,12 @@ static CubeInfo *ClassifyImageColors(const Image *image,
               return(0);
             }
           node_info->list[i]=pixel;
-          node_info->list[i].red=GetPixelRed(image,p);
-          node_info->list[i].green=GetPixelGreen(image,p);
-          node_info->list[i].blue=GetPixelBlue(image,p);
+          node_info->list[i].red=(double) GetPixelRed(image,p);
+          node_info->list[i].green=(double) GetPixelGreen(image,p);
+          node_info->list[i].blue=(double) GetPixelBlue(image,p);
           if (image->colorspace == CMYKColorspace)
-            node_info->list[i].black=GetPixelBlack(image,p);
-          node_info->list[i].alpha=GetPixelAlpha(image,p);
+            node_info->list[i].black=(double) GetPixelBlack(image,p);
+          node_info->list[i].alpha=(double) GetPixelAlpha(image,p);
           node_info->list[i].count=1;
           node_info->number_unique++;
           cube_info->colors++;
@@ -745,12 +745,12 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
                 image->filename);
               break;
             }
-          node_info->list[i].red=GetPixelRed(image,p);
-          node_info->list[i].green=GetPixelGreen(image,p);
-          node_info->list[i].blue=GetPixelBlue(image,p);
+          node_info->list[i].red=(double) GetPixelRed(image,p);
+          node_info->list[i].green=(double) GetPixelGreen(image,p);
+          node_info->list[i].blue=(double) GetPixelBlue(image,p);
           if (image->colorspace == CMYKColorspace)
-            node_info->list[i].black=GetPixelBlack(image,p);
-          node_info->list[i].alpha=GetPixelAlpha(image,p);
+            node_info->list[i].black=(double) GetPixelBlack(image,p);
+          node_info->list[i].alpha=(double) GetPixelAlpha(image,p);
           node_info->list[i].count=1;
           node_info->number_unique++;
           cube_info->colors++;
@@ -906,12 +906,12 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
               break;
             }
           node_info->list[i]=pixel;
-          node_info->list[i].red=GetPixelRed(image,p);
-          node_info->list[i].green=GetPixelGreen(image,p);
-          node_info->list[i].blue=GetPixelBlue(image,p);
+          node_info->list[i].red=(double) GetPixelRed(image,p);
+          node_info->list[i].green=(double) GetPixelGreen(image,p);
+          node_info->list[i].blue=(double) GetPixelBlue(image,p);
           if (image->colorspace == CMYKColorspace)
-            node_info->list[i].black=GetPixelBlack(image,p);
-          node_info->list[i].alpha=GetPixelAlpha(image,p);
+            node_info->list[i].black=(double) GetPixelBlack(image,p);
+          node_info->list[i].alpha=(double) GetPixelAlpha(image,p);
           node_info->list[i].count=1;
           node_info->number_unique++;
           cube_info->colors++;
@@ -1241,12 +1241,12 @@ static void UniqueColorsToImage(Image *unique_image,CacheView *unique_view,
           exception);
         if (q == (Quantum *) NULL)
           continue;
-        SetPixelRed(unique_image,p->red,q);
-        SetPixelGreen(unique_image,p->green,q);
-        SetPixelBlue(unique_image,p->blue,q);
-        SetPixelAlpha(unique_image,p->alpha,q);
+        SetPixelRed(unique_image,ClampToQuantum(p->red),q);
+        SetPixelGreen(unique_image,ClampToQuantum(p->green),q);
+        SetPixelBlue(unique_image,ClampToQuantum(p->blue),q);
+        SetPixelAlpha(unique_image,ClampToQuantum(p->alpha),q);
         if (unique_image->colorspace == CMYKColorspace)
-          SetPixelBlack(unique_image,p->black,q);
+          SetPixelBlack(unique_image,ClampToQuantum(p->black),q);
         if (SyncCacheViewAuthenticPixels(unique_view,exception) == MagickFalse)
           break;
         cube_info->x++;

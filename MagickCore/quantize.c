@@ -620,11 +620,15 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
               SetPixelIndex(image,(Quantum) index,q);
             if (cube.quantize_info->measure_error == MagickFalse)
               {
-                SetPixelRed(image,image->colormap[index].red,q);
-                SetPixelGreen(image,image->colormap[index].green,q);
-                SetPixelBlue(image,image->colormap[index].blue,q);
+                SetPixelRed(image,ClampToQuantum(
+                  image->colormap[index].red),q);
+                SetPixelGreen(image,ClampToQuantum(
+                  image->colormap[index].green),q);
+                SetPixelBlue(image,ClampToQuantum(
+                  image->colormap[index].blue),q);
                 if (cube.associate_alpha != MagickFalse)
-                  SetPixelAlpha(image,image->colormap[index].alpha,q);
+                  SetPixelAlpha(image,ClampToQuantum(
+                    image->colormap[index].alpha),q);
               }
             q+=GetPixelChannels(image);
           }
@@ -652,7 +656,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
   if ((cube_info->quantize_info->number_colors == 2) &&
       (cube_info->quantize_info->colorspace == GRAYColorspace))
     {
-      Quantum
+      double
         intensity;
 
       register PixelInfo
@@ -667,7 +671,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
       q=image->colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
       {
-        intensity=(Quantum) ((MagickRealType) GetPixelInfoIntensity(q) <
+        intensity=(double) ((MagickRealType) GetPixelInfoIntensity(q) <
           ((MagickRealType) QuantumRange/2.0) ? 0 : QuantumRange);
         q->red=intensity;
         q->green=intensity;
@@ -1251,12 +1255,12 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
       alpha=1.0/(fabs(alpha) <= MagickEpsilon ? 1.0 : alpha);
       if (cube_info->associate_alpha == MagickFalse)
         {
-          q->red=ClampToQuantum((MagickRealType)
+          q->red=(double) ClampToQuantum((MagickRealType)
             (alpha*QuantumRange*node_info->total_color.red));
-          q->green=ClampToQuantum((MagickRealType)
+          q->green=(double) ClampToQuantum((MagickRealType)
             (alpha*QuantumRange*node_info->total_color.green));
-          q->blue=ClampToQuantum((MagickRealType)
-            (alpha*QuantumRange*node_info->total_color.blue));
+          q->blue=(double) ClampToQuantum((MagickRealType)
+            (alpha*(double) QuantumRange*node_info->total_color.blue));
           q->alpha=OpaqueAlpha;
         }
       else
@@ -1266,14 +1270,14 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
 
           opacity=(MagickRealType) (alpha*QuantumRange*
             node_info->total_color.alpha);
-          q->alpha=ClampToQuantum(opacity);
+          q->alpha=(double) ClampToQuantum(opacity);
           if (q->alpha == OpaqueAlpha)
             {
-              q->red=ClampToQuantum((MagickRealType)
+              q->red=(double) ClampToQuantum((MagickRealType)
                 (alpha*QuantumRange*node_info->total_color.red));
-              q->green=ClampToQuantum((MagickRealType)
+              q->green=(double) ClampToQuantum((MagickRealType)
                 (alpha*QuantumRange*node_info->total_color.green));
-              q->blue=ClampToQuantum((MagickRealType)
+              q->blue=(double) ClampToQuantum((MagickRealType)
                 (alpha*QuantumRange*node_info->total_color.blue));
             }
           else
@@ -1283,11 +1287,11 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
 
               gamma=(MagickRealType) (QuantumScale*q->alpha);
               gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-              q->red=ClampToQuantum((MagickRealType)
+              q->red=(double) ClampToQuantum((MagickRealType)
                 (alpha*gamma*QuantumRange*node_info->total_color.red));
-              q->green=ClampToQuantum((MagickRealType)
+              q->green=(double) ClampToQuantum((MagickRealType)
                 (alpha*gamma*QuantumRange*node_info->total_color.green));
-              q->blue=ClampToQuantum((MagickRealType)
+              q->blue=(double) ClampToQuantum((MagickRealType)
                 (alpha*gamma*QuantumRange*node_info->total_color.blue));
               if (node_info->number_unique > cube_info->transparent_pixels)
                 {
@@ -1622,11 +1626,11 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
         SetPixelIndex(image,(Quantum) index,q);
       if (cube.quantize_info->measure_error == MagickFalse)
         {
-          SetPixelRed(image,image->colormap[index].red,q);
-          SetPixelGreen(image,image->colormap[index].green,q);
-          SetPixelBlue(image,image->colormap[index].blue,q);
+          SetPixelRed(image,ClampToQuantum(image->colormap[index].red),q);
+          SetPixelGreen(image,ClampToQuantum(image->colormap[index].green),q);
+          SetPixelBlue(image,ClampToQuantum(image->colormap[index].blue),q);
           if (cube.associate_alpha != MagickFalse)
-            SetPixelAlpha(image,image->colormap[index].alpha,q);
+            SetPixelAlpha(image,ClampToQuantum(image->colormap[index].alpha),q);
         }
       if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
         status=MagickFalse;
@@ -1879,11 +1883,11 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
         SetPixelIndex(image,(Quantum) index,q);
       if (cube_info->quantize_info->measure_error == MagickFalse)
         {
-          SetPixelRed(image,image->colormap[index].red,q);
-          SetPixelGreen(image,image->colormap[index].green,q);
-          SetPixelBlue(image,image->colormap[index].blue,q);
+          SetPixelRed(image,ClampToQuantum(image->colormap[index].red),q);
+          SetPixelGreen(image,ClampToQuantum(image->colormap[index].green),q);
+          SetPixelBlue(image,ClampToQuantum(image->colormap[index].blue),q);
           if (cube_info->associate_alpha != MagickFalse)
-            SetPixelAlpha(image,image->colormap[index].alpha,q);
+            SetPixelAlpha(image,ClampToQuantum(image->colormap[index].alpha),q);
         }
       if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
         return(MagickFalse);
@@ -2384,13 +2388,17 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
         Posterize colormap.
       */
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].red=PosterizePixel(image->colormap[i].red);
+        image->colormap[i].red=(double)
+          PosterizePixel(image->colormap[i].red);
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].green=PosterizePixel(image->colormap[i].green);
+        image->colormap[i].green=(double)
+          PosterizePixel(image->colormap[i].green);
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].blue=PosterizePixel(image->colormap[i].blue);
+        image->colormap[i].blue=(double)
+          PosterizePixel(image->colormap[i].blue);
       if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-        image->colormap[i].alpha=PosterizePixel(image->colormap[i].alpha);
+        image->colormap[i].alpha=(double)
+          PosterizePixel(image->colormap[i].alpha);
     }
   /*
     Posterize image.
@@ -2689,10 +2697,10 @@ static MagickBooleanType DirectToColormapImage(Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      image->colormap[i].red=GetPixelRed(image,q);
-      image->colormap[i].green=GetPixelGreen(image,q);
-      image->colormap[i].blue=GetPixelBlue(image,q);
-      image->colormap[i].alpha=GetPixelAlpha(image,q);
+      image->colormap[i].red=(double) GetPixelRed(image,q);
+      image->colormap[i].green=(double) GetPixelGreen(image,q);
+      image->colormap[i].blue=(double) GetPixelBlue(image,q);
+      image->colormap[i].alpha=(double) GetPixelAlpha(image,q);
       SetPixelIndex(image,(Quantum) i,q);
       i++;
       q+=GetPixelChannels(image);
@@ -3328,9 +3336,12 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
               if (colormap_index[intensity] < 0)
                 {
                   colormap_index[intensity]=(ssize_t) image->colors;
-                  image->colormap[image->colors].red=GetPixelRed(image,q);
-                  image->colormap[image->colors].green=GetPixelGreen(image,q);
-                  image->colormap[image->colors].blue=GetPixelBlue(image,q);
+                  image->colormap[image->colors].red=(double)
+                    GetPixelRed(image,q);
+                  image->colormap[image->colors].green=(double)
+                    GetPixelGreen(image,q);
+                  image->colormap[image->colors].blue=(double)
+                    GetPixelBlue(image,q);
                   image->colors++;
                }
             }
@@ -3344,7 +3355,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
       image_view=DestroyCacheView(image_view);
     }
   for (i=0; i < (ssize_t) image->colors; i++)
-    image->colormap[i].alpha=(unsigned short) i;
+    image->colormap[i].alpha=(double) i;
   qsort((void *) image->colormap,image->colors,sizeof(PixelInfo),
     IntensityCompare);
   colormap=(PixelInfo *) AcquireQuantumMemory(image->colors,

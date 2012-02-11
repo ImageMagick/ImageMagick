@@ -317,10 +317,8 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
   resource_info.immutable=MagickTrue;
   argv[0]=AcquireString(GetClientName());
   (void) XAnimateImages(display,&resource_info,argv,1,images,exception);
-  SetErrorHandler((ErrorHandler) NULL);
-  SetWarningHandler((WarningHandler) NULL);
-  SetErrorHandler((ErrorHandler) NULL);
-  SetWarningHandler((WarningHandler) NULL);
+  (void) SetErrorHandler((ErrorHandler) NULL);
+  (void) SetWarningHandler((WarningHandler) NULL);
   argv[0]=DestroyString(argv[0]);
   (void) XCloseDisplay(display);
   XDestroyResourceInfo(&resource_info);

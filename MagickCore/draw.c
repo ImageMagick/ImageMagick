@@ -2246,7 +2246,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 if (graphic_context[n]->clip_mask != (char *) NULL)
                   if (LocaleCompare(graphic_context[n]->clip_mask,
                       graphic_context[n-1]->clip_mask) != 0)
-                    SetImageMask(image,(Image *) NULL,exception);
+                    (void) SetImageMask(image,(Image *) NULL,exception);
                 graphic_context[n]=DestroyDrawInfo(graphic_context[n]);
                 n--;
                 break;
