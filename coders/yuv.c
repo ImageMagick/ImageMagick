@@ -123,9 +123,11 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ssize_t
     count,
     horizontal_factor,
-    quantum,
     vertical_factor,
     y;
+
+  size_t
+    quantum;
 
   unsigned char
     *scanline;
@@ -143,7 +145,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AcquireImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
-  quantum=image->depth <= 8 ? 1 : 2;
+  quantum=(size_t) (image->depth <= 8 ? 1 : 2);
   interlace=image_info->interlace;
   horizontal_factor=2;
   vertical_factor=2;
@@ -182,7 +184,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image=DestroyImageList(image);
           return((Image *) NULL);
         }
-      if (DiscardBlobBytes(image,image->offset) == MagickFalse)
+      if (DiscardBlobBytes(image,(MagickSizeType) image->offset) == MagickFalse)
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
           image->filename);
     }
@@ -586,7 +588,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  quantum=image->depth <= 8 ? 1 : 2;
+  quantum=(size_t) (image->depth <= 8 ? 1 : 2);
   interlace=image->interlace;
   horizontal_factor=2;
   vertical_factor=2;
@@ -636,7 +638,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image)
     /*
       Sample image to an even width and height, if necessary.
     */
-    image->depth=quantum == 1 ? 8 : 16;
+    image->depth=(size_t) (quantum == 1 ? 8 : 16);
     width=image->columns+(image->columns & (horizontal_factor-1));
     height=image->rows+(image->rows & (vertical_factor-1));
     yuv_image=ResizeImage(image,width,height,TriangleFilter,1.0,

@@ -1851,7 +1851,7 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
       /*
         Call application directly rather than from a shell.
       */
-      child_pid=fork();
+      child_pid=(pid_t) fork();
       if (child_pid == (pid_t) -1)
         status=system(command);
       else
@@ -1869,7 +1869,7 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
               pid;
 
             child_status=0;
-            pid=waitpid(child_pid,&child_status,0);
+            pid=(pid_t) waitpid(child_pid,&child_status,0);
             if (pid == -1)
               status=(-1);
             else

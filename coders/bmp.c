@@ -248,16 +248,16 @@ static MagickBooleanType DecodeImage(Image *image,const size_t compression,
         /*
           Encoded mode.
         */
-        count=MagickMin(count,(int) (q-p));
+        count=(int) MagickMin((ssize_t) count,(ssize_t) (q-p));
         byte=(unsigned char) ReadBlobByte(image);
         if (compression == BI_RLE8)
           {
-            for (i=0; i < count; i++)
+            for (i=0; i < (ssize_t) count; i++)
               *p++=(unsigned char) byte;
           }
         else
           {
-            for (i=0; i < count; i++)
+            for (i=0; i < (ssize_t) count; i++)
               *p++=(unsigned char)
                 ((i & 0x01) != 0 ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
           }
@@ -1814,7 +1814,8 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
             *q++=ScaleQuantumToChar(GetPixelBlue(p));
             *q++=ScaleQuantumToChar(GetPixelGreen(p));
             *q++=ScaleQuantumToChar(GetPixelRed(p));
-            *q++=ScaleQuantumToChar(QuantumRange-GetPixelOpacity(p));
+            *q++=ScaleQuantumToChar((Quantum) (QuantumRange-
+              GetPixelOpacity(p)));
             p++;
           }
           if (image->previous == (Image *) NULL)

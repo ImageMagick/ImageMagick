@@ -107,7 +107,7 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
 #endif
 }
 
-static inline int open_utf8(const char *path,int flags,int mode)
+static inline int open_utf8(const char *path,int flags,mode_t mode)
 {
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
   return(open(path,flags,mode));

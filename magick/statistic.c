@@ -2510,7 +2510,7 @@ MagickExport Image *StatisticImageChannel(const Image *image,
   PixelList
     **restrict pixel_list;
 
-  ssize_t
+  size_t
     neighbor_height,
     neighbor_width;
 
@@ -2536,7 +2536,8 @@ MagickExport Image *StatisticImageChannel(const Image *image,
       statistic_image=DestroyImage(statistic_image);
       return((Image *) NULL);
     }
-  neighbor_width=width == 0 ? GetOptimalKernelWidth2D((double) width,0.5) : width;
+  neighbor_width=width == 0 ? GetOptimalKernelWidth2D((double) width,0.5) :
+    width;
   neighbor_height=height == 0 ? GetOptimalKernelWidth2D((double) height,0.5) :
     height;
   pixel_list=AcquirePixelListThreadSet(neighbor_width,neighbor_height);

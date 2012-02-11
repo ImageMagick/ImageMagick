@@ -2821,12 +2821,15 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           gamma=1.0-QuantumScale*QuantumScale*q->opacity*pixel.opacity;
           opacity=(MagickRealType) QuantumRange*(1.0-gamma);
           gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
-          q->red=ClampToQuantum(gamma*MagickOver_(q->red,q->opacity,
-            pixel.red,pixel.opacity));
-          q->green=ClampToQuantum(gamma*MagickOver_(q->green,q->opacity,
-            pixel.green,pixel.opacity));
-          q->blue=ClampToQuantum(gamma*MagickOver_(q->blue,q->opacity,
-            pixel.blue,pixel.opacity));
+          q->red=ClampToQuantum(gamma*MagickOver_((MagickRealType) q->red,
+            (MagickRealType) q->opacity,(MagickRealType) pixel.red,
+            (MagickRealType) pixel.opacity));
+          q->green=ClampToQuantum(gamma*MagickOver_((MagickRealType) q->green,
+            (MagickRealType) q->opacity,(MagickRealType) pixel.green,
+            (MagickRealType) pixel.opacity));
+          q->blue=ClampToQuantum(gamma*MagickOver_((MagickRealType) q->blue,
+            (MagickRealType) q->opacity,(MagickRealType) pixel.blue,
+            (MagickRealType) pixel.opacity));
           q->opacity=ClampToQuantum(opacity);
           q++;
         }

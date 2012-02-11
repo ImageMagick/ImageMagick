@@ -1305,10 +1305,10 @@ static double *GenerateCoefficients(const Image *image,
         /* image is curved around cylinder, so FOV angle (in radians)
          * scales directly to image X coordinate, according to its radius.
          */
-        coeff[1] = image->columns/coeff[0];
+        coeff[1] = (double) image->columns/coeff[0];
       else
         /* radius is distance away from an image with this angular FOV */
-        coeff[1] = image->columns / ( 2 * tan(coeff[0]/2) );
+        coeff[1] = (double) image->columns / ( 2 * tan(coeff[0]/2) );
 
       coeff[2] = (double)(image->columns)/2.0+image->page.x;
       coeff[3] = (double)(image->rows)/2.0+image->page.y;
@@ -1890,11 +1890,11 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
          * center, or pixel edge. This allows for reversibility of the
          * distortion */
         geometry.x = geometry.y = 0;
-        geometry.width = ceil( 2.0*coeff[1]*tan(coeff[0]/2.0) );
-        geometry.height = ceil( 2.0*coeff[3]/cos(coeff[0]/2.0) );
+        geometry.width = (size_t) ceil( 2.0*coeff[1]*tan(coeff[0]/2.0) );
+        geometry.height = (size_t) ceil( 2.0*coeff[3]/cos(coeff[0]/2.0) );
         /* correct center of distortion relative to new size */
-        coeff[4] = geometry.width/2.0;
-        coeff[5] = geometry.height/2.0;
+        coeff[4] = (double) geometry.width/2.0;
+        coeff[5] = (double) geometry.height/2.0;
         fix_bounds = MagickFalse;
         break;
       }
@@ -1903,11 +1903,11 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         /* direct calculation center is either pixel center, or pixel edge
          * so as to allow reversibility of the image distortion */
         geometry.x = geometry.y = 0;
-        geometry.width = ceil(coeff[0]*coeff[1]);  /* FOV * radius */
-        geometry.height = 2*coeff[3];              /* input image height */
+        geometry.width = (size_t) (ceil(coeff[0]*coeff[1]);  /* FOV * radius */
+        geometry.height = (size_t) (2*coeff[3]);  /* input image height */
         /* correct center of distortion relative to new size */
-        coeff[4] = geometry.width/2.0;
-        coeff[5] = geometry.height/2.0;
+        coeff[4] = (double) geometry.width/2.0;
+        coeff[5] = (double) geometry.height/2.0;
         fix_bounds = MagickFalse;
         break;
       }
