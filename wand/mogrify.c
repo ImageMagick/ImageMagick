@@ -182,7 +182,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
     TimerInfo
       *timer;
 
-    SetOpenMPMaximumThreads(n);
+    SetOpenMPMaximumThreads((int) n);
     timer=AcquireTimerInfo();
     if (concurrent == MagickFalse)
       {
