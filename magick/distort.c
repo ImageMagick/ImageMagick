@@ -1903,7 +1903,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
         /* direct calculation center is either pixel center, or pixel edge
          * so as to allow reversibility of the image distortion */
         geometry.x = geometry.y = 0;
-        geometry.width = (size_t) (ceil(coeff[0]*coeff[1]);  /* FOV * radius */
+        geometry.width = (size_t) ceil(coeff[0]*coeff[1]);  /* FOV * radius */
         geometry.height = (size_t) (2*coeff[3]);  /* input image height */
         /* correct center of distortion relative to new size */
         coeff[4] = (double) geometry.width/2.0;
