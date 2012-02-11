@@ -126,8 +126,10 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
 
   size_t
     iterations,
-    n,
     number_threads;
+
+  ssize_t
+    n;
 
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
@@ -172,7 +174,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
     }
   number_threads=GetOpenMPMaximumThreads();
   serial=0.0;
-  for (n=1; n <= number_threads; n++)
+  for (n=1; n <= (ssize_t) number_threads; n++)
   {
     double
       e,
