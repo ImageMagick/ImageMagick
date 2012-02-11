@@ -2766,8 +2766,8 @@ dnl ===========================================================================
 # Check for WMF delegate library.
 #
 AC_ARG_WITH([wmf],
-    [AC_HELP_STRING([--without-wmf],
-                    [disable WMF support])],
+    [AC_HELP_STRING([--with-wmf],
+                    [enable WMF support])],
     [with_wmf=$withval],
     [with_wmf='no'])
 
