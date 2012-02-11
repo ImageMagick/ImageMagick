@@ -674,10 +674,10 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
       q=image->colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
       {
-        q->red=ClampToUnsignedQuantum(q->red);
-        q->green=ClampToUnsignedQuantum(q->green);
-        q->blue=ClampToUnsignedQuantum(q->blue);
-        q->alpha=ClampToUnsignedQuantum(q->alpha);
+        q->red=(double) ClampToUnsignedQuantum(ClampToQuantum(q->red));
+        q->green=(double) ClampToUnsignedQuantum(ClampToQuantum(q->green));
+        q->blue=(double) ClampToUnsignedQuantum(ClampToQuantum(q->blue));
+        q->alpha=(double) ClampToUnsignedQuantum(ClampToQuantum(q->alpha));
         q++;
       }
       return(SyncImage(image,exception));
@@ -1365,8 +1365,9 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
         threshold=(ssize_t) (QuantumScale*q[i]*(levels[n]*(map->divisor-1)+1));
         level=threshold/(map->divisor-1);
         threshold-=level*(map->divisor-1);
-        q[i]=RoundToQuantum((level+(threshold >= map->levels[(x % map->width)+
-          map->width*(y % map->height)]))*QuantumRange/levels[n]);
+        q[i]=RoundToQuantum((MagickRealType) (level+(threshold >=
+          map->levels[(x % map->width)+map->width*(y % map->height)]))*
+          QuantumRange/levels[n]);
         n++;
       }
       q+=GetPixelChannels(image);

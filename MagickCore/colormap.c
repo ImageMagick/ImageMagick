@@ -136,13 +136,13 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
       image->filename);
   for (i=0; i < (ssize_t) image->colors; i++)
   {
-    size_t
+    double
       pixel;
 
-    pixel=(size_t) (i*(QuantumRange/MagickMax(colors-1,1)));
-    image->colormap[i].red=(Quantum) pixel;
-    image->colormap[i].green=(Quantum) pixel;
-    image->colormap[i].blue=(Quantum) pixel;
+    pixel=(double) (i*(QuantumRange/MagickMax(colors-1,1)));
+    image->colormap[i].red=pixel;
+    image->colormap[i].green=pixel;
+    image->colormap[i].blue=pixel;
     image->colormap[i].alpha=OpaqueAlpha;
   }
   return(SetImageStorageClass(image,PseudoClass,exception));
@@ -328,7 +328,7 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
   for (i=0; i < (ssize_t) image->colors; i++)
-    image->colormap[i].alpha=(Quantum) i;
+    image->colormap[i].alpha=(double) i;
   /*
     Sort image colormap by decreasing color popularity.
   */

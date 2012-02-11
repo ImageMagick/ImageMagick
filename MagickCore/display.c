@@ -1701,8 +1701,8 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
     image=GetImageFromList(images,i % GetImageListLength(images));
     (void) XDisplayImage(display,&resource_info,argv,1,&image,&state,exception);
   }
-  SetErrorHandler((ErrorHandler) NULL);
-  SetWarningHandler((WarningHandler) NULL);
+  (void) SetErrorHandler((ErrorHandler) NULL);
+  (void) SetWarningHandler((WarningHandler) NULL);
   argv[0]=DestroyString(argv[0]);
   (void) XCloseDisplay(display);
   XDestroyResourceInfo(&resource_info);
@@ -3768,10 +3768,10 @@ static MagickBooleanType XColorEditImage(Display *display,
             */
             (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t) x_offset,
               (ssize_t) y_offset,virtual_pixel,exception);
-            target.red=virtual_pixel[RedPixelChannel];
-            target.green=virtual_pixel[GreenPixelChannel];
-            target.blue=virtual_pixel[BluePixelChannel];
-            target.alpha=virtual_pixel[AlphaPixelChannel];
+            target.red=(double) virtual_pixel[RedPixelChannel];
+            target.green=(double) virtual_pixel[GreenPixelChannel];
+            target.blue=(double) virtual_pixel[BluePixelChannel];
+            target.alpha=(double) virtual_pixel[AlphaPixelChannel];
             if ((*image)->storage_class == DirectClass)
               {
                 for (y=0; y < (int) (*image)->rows; y++)
@@ -3803,11 +3803,11 @@ static MagickBooleanType XColorEditImage(Display *display,
                 for (i=0; i < (ssize_t) (*image)->colors; i++)
                   if (IsFuzzyEquivalencePixelInfo((*image)->colormap+i,&target))
                     {
-                      (*image)->colormap[i].red=ScaleShortToQuantum(
+                      (*image)->colormap[i].red=(double) ScaleShortToQuantum(
                         color.red);
-                      (*image)->colormap[i].green=ScaleShortToQuantum(
+                      (*image)->colormap[i].green=(double) ScaleShortToQuantum(
                         color.green);
-                      (*image)->colormap[i].blue=ScaleShortToQuantum(
+                      (*image)->colormap[i].blue=(double) ScaleShortToQuantum(
                         color.blue);
                     }
                 (void) SyncImage(*image,exception);
@@ -10132,10 +10132,10 @@ static MagickBooleanType XMatteEditImage(Display *display,
             */
             (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t) x_offset,
               (ssize_t) y_offset,virtual_pixel,exception);
-            target.red=virtual_pixel[RedPixelChannel];
-            target.green=virtual_pixel[GreenPixelChannel];
-            target.blue=virtual_pixel[BluePixelChannel];
-            target.alpha=virtual_pixel[AlphaPixelChannel];
+            target.red=(double) virtual_pixel[RedPixelChannel];
+            target.green=(double) virtual_pixel[GreenPixelChannel];
+            target.blue=(double) virtual_pixel[BluePixelChannel];
+            target.alpha=(double) virtual_pixel[AlphaPixelChannel];
             for (y=0; y < (int) (*image)->rows; y++)
             {
               q=GetCacheViewAuthenticPixels(image_view,0,(ssize_t) y,
@@ -10183,8 +10183,8 @@ static MagickBooleanType XMatteEditImage(Display *display,
               }
             draw_info=CloneDrawInfo(resource_info->image_info,
               (DrawInfo *) NULL);
-            draw_info->fill.alpha=ClampToQuantum(StringToDouble(matte,
-              (char **) NULL));
+            draw_info->fill.alpha=(MagickRealType) ClampToQuantum(
+              StringToDouble(matte,(char **) NULL));
             channel_mask=SetPixelChannelMask(*image,AlphaChannel); 
             (void) FloodfillPaintImage(*image,draw_info,&target,(ssize_t)
               x_offset,(ssize_t) y_offset,method == FloodfillMethod ?
@@ -12416,11 +12416,11 @@ static MagickBooleanType XRotateImage(Display *display,
       exception);
   XSetCursorState(display,windows,MagickTrue);
   XCheckRefreshWindows(display,windows);
-  (*image)->background_color.red=ScaleShortToQuantum(
+  (*image)->background_color.red=(double) ScaleShortToQuantum(
     windows->pixel_info->pen_colors[pen_id].red);
-  (*image)->background_color.green=ScaleShortToQuantum(
+  (*image)->background_color.green=(double) ScaleShortToQuantum(
     windows->pixel_info->pen_colors[pen_id].green);
-  (*image)->background_color.blue=ScaleShortToQuantum(
+  (*image)->background_color.blue=(double) ScaleShortToQuantum(
     windows->pixel_info->pen_colors[pen_id].blue);
   rotate_image=RotateImage(*image,degrees,exception);
   XSetCursorState(display,windows,MagickFalse);
@@ -13286,10 +13286,10 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         image_view=AcquireCacheView(image);
         (void) GetOneCacheViewVirtualPixel(image_view,0,0,virtual_pixel,
           exception);
-        pixel.red=virtual_pixel[RedPixelChannel];
-        pixel.green=virtual_pixel[GreenPixelChannel];
-        pixel.blue=virtual_pixel[BluePixelChannel];
-        pixel.alpha=virtual_pixel[AlphaPixelChannel];
+        pixel.red=(double) virtual_pixel[RedPixelChannel];
+        pixel.green=(double) virtual_pixel[GreenPixelChannel];
+        pixel.blue=(double) virtual_pixel[BluePixelChannel];
+        pixel.alpha=(double) virtual_pixel[AlphaPixelChannel];
         for (i=0; i < (int) height; i++)
         {
           s=GetCacheViewAuthenticPixels(image_view,(ssize_t) x_offset,(ssize_t)

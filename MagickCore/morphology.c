@@ -1382,8 +1382,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[3] = +MagickSQ2;
-            kernel->values[5] = -MagickSQ2;
+            kernel->values[3]+=(MagickRealType) MagickSQ2;
+            kernel->values[5]-=(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             break;
           case 2:
@@ -1391,8 +1391,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[1] = kernel->values[3] = +MagickSQ2;
-            kernel->values[5] = kernel->values[7] = -MagickSQ2;
+            kernel->values[1] = kernel->values[3]+=(MagickRealType) MagickSQ2;
+            kernel->values[5] = kernel->values[7]-=(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1407,8 +1407,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[3] = +MagickSQ2;
-            kernel->values[5] = -MagickSQ2;
+            kernel->values[3]+=(MagickRealType) MagickSQ2;
+            kernel->values[5]-=(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1417,8 +1417,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[1] = +MagickSQ2;
-            kernel->values[7] = +MagickSQ2;
+            kernel->values[1]+=(MagickRealType) MagickSQ2;
+            kernel->values[7]+=(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1427,8 +1427,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[0] = +MagickSQ2;
-            kernel->values[8] = -MagickSQ2;
+            kernel->values[0]+=(MagickRealType) MagickSQ2;
+            kernel->values[8]-=(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1437,8 +1437,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[2] = -MagickSQ2;
-            kernel->values[6] = +MagickSQ2;
+            kernel->values[2]-=(MagickRealType) MagickSQ2;
+            kernel->values[6]+=(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -4474,7 +4474,8 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
         j;
 
       k=kernel->values;
-      for ( i=0, j=kernel->width*kernel->height-1;  i<j;  i++, j--)
+      j=(ssize_t) (kernel->width*kernel->height-1);
+      for (i=0;  i < j;  i++, j--)
         t=k[i],  k[i]=k[j],  k[j]=t;
 
       kernel->x = (ssize_t) kernel->width  - kernel->x - 1;
