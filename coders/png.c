@@ -10997,6 +10997,31 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   mng_info->write_png24=LocaleCompare(image_info->magick,"PNG24") == 0;
   mng_info->write_png32=LocaleCompare(image_info->magick,"PNG32") == 0;
 
+  value=GetImageOption(image_info,"png:format");
+
+  if (value != (char *) NULL)
+    {
+      if (LocaleCompare(value,"png8") == 0)
+        {
+        mng_info->write_png8 = MagickTrue;
+        mng_info->write_png24 = MagickFalse;
+        mng_info->write_png32 = MagickFalse;
+        }
+
+      else if (LocaleCompare(value,"png24") == 0)
+        {
+        mng_info->write_png8 = MagickFalse;
+        mng_info->write_png24 = MagickTrue;
+        mng_info->write_png32 = MagickFalse;
+        }
+
+      else if (LocaleCompare(value,"png32") == 0)
+        {
+        mng_info->write_png8 = MagickFalse;
+        mng_info->write_png24 = MagickFalse;
+        mng_info->write_png32 = MagickTrue;
+        }
+    }
   if (mng_info->write_png8)
     {
       mng_info->write_png_colortype = /* 3 */ 4;
