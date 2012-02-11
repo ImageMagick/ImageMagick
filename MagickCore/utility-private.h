@@ -44,26 +44,46 @@ extern MagickPrivate void
   Windows UTF8 compatibility methods.
 */
 
-static inline int access_utf8(const char *path,int mode)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__) && !defined(__MINGW32__)
+static inline int MultiByteToWideCharacter(const char *string,
+  WCHAR **wide_string,size_t *extent)
+{
+  size_t
+    length;
+
+  *extent=0;
+  if (wide_string == (WCHAR **) NULL)
+    return(0);
+  *wide_string=(WCHAR *) NULL;
+  if (string == (const char *) NULL)
+    return(0);
+  length=strlen(string)+1;
+  *wide_string=(WCHAR *) AcquireQuantumMemory(length,sizeof(*wide_string));
+  if (*wide_string == (WCHAR *) NULL)
+    return(-1);
+  return(mbstowcs_s(extent,*wide_string,length,string,_TRUNCATE));
+}
+#endif
+
+static inline int access_utf8(const char *path,mode_t mode)
 {
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
   return(access(path,mode));
 #else
    int
-     count,
      status;
 
-   WCHAR
-     *path_wide;
+   ssize_t
+     extent;
 
-   path_wide=(WCHAR *) NULL;
-   count=MultiByteToWideChar(CP_UTF8,0,path,-1,NULL,0);
-   path_wide=(WCHAR *) AcquireQuantumMemory(count,sizeof(*path_wide));
-   if (path_wide == (WCHAR *) NULL)
-     return(-1);
-   count=MultiByteToWideChar(CP_UTF8,0,path,-1,path_wide,count);
-   status=_waccess(path_wide,mode);
-   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
+   WCHAR
+     *wide_path;
+
+   status=MultiByteToWideCharacter(path,&wide_path,&extent);
+   if (status != 0)
+     return(status);
+   status=_waccess(wide_path,mode);
+   wide_path=(WCHAR *) RelinquishMagickMemory(wide_path);
    return(status);
 #endif
 }
@@ -77,29 +97,27 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
      *file;
 
    int
-     count;
+     status;
+
+   ssize_t
+     extent;
 
    WCHAR
-     *mode_wide,
-     *path_wide;
+     *wide_mode,
+     *wide_path;
 
-   path_wide=(WCHAR *) NULL;
-   count=MultiByteToWideChar(CP_UTF8,0,path,-1,NULL,0);
-   path_wide=(WCHAR *) AcquireQuantumMemory(count,sizeof(*path_wide));
-   if (path_wide == (WCHAR *) NULL)
+   status=MultiByteToWideCharacter(path,&wide_path,&extent);
+   if (status != 0)
      return((FILE *) NULL);
-   count=MultiByteToWideChar(CP_UTF8,0,path,-1,path_wide,count);
-   count=MultiByteToWideChar(CP_UTF8,0,mode,-1,NULL,0);
-   mode_wide=(WCHAR *) AcquireQuantumMemory(count,sizeof(*mode_wide));
-   if (mode_wide == (WCHAR *) NULL)
+   status=MultiByteToWideCharacter(mode,&wide_mode,&extent);
+   if (status != 0)
      {
-       path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
+       wide_path=(WCHAR *) RelinquishMagickMemory(wide_path);
        return((FILE *) NULL);
      }
-   count=MultiByteToWideChar(CP_UTF8,0,mode,-1,mode_wide,count);
-   file=_wfopen(path_wide,mode_wide);
-   mode_wide=(WCHAR *) RelinquishMagickMemory(mode_wide);
-   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
+   file=_wfopen(wide_path,wide_mode);
+   wide_mode=(WCHAR *) RelinquishMagickMemory(wide_mode);
+   wide_path=(WCHAR *) RelinquishMagickMemory(wide_path);
    return(file);
 #endif
 }
@@ -110,20 +128,19 @@ static inline int open_utf8(const char *path,int flags,mode_t mode)
   return(open(path,flags,mode));
 #else
    int
-     count,
      status;
 
-   WCHAR
-     *path_wide;
+   ssize_t
+     extent;
 
-   path_wide=(WCHAR *) NULL;
-   count=MultiByteToWideChar(CP_UTF8,0,path,-1,NULL,0);
-   path_wide=(WCHAR *) AcquireQuantumMemory(count,sizeof(*path_wide));
-   if (path_wide == (WCHAR *) NULL)
-     return(-1);
-   count=MultiByteToWideChar(CP_UTF8,0,path,-1,path_wide,count);
-   status=_wopen(path_wide,flags,mode);
-   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
+   WCHAR
+     *wide_path;
+
+   status=MultiByteToWideCharacter(path,&wide_path,&extent);
+   if (status != 0)
+     return(status);
+   status=_wopen(wide_path,flags,mode);
+   wide_path=(WCHAR *) RelinquishMagickMemory(wide_path);
    return(status);
 #endif
 }
@@ -137,29 +154,27 @@ static inline FILE *popen_utf8(const char *command,const char *type)
      *file;
 
    int
-     count;
+     status;
+
+   ssize_t
+     extent;
 
    WCHAR
-     *type_wide,
-     *command_wide;
+     *wide_type,
+     *wide_command;
 
-   command_wide=(WCHAR *) NULL;
-   count=MultiByteToWideChar(CP_UTF8,0,command,-1,NULL,0);
-   command_wide=(WCHAR *) AcquireQuantumMemory(count,sizeof(*command_wide));
-   if (command_wide == (WCHAR *) NULL)
+   status=MultiByteToWideCharacter(command,&wide_command,&extent);
+   if (status != 0)
      return((FILE *) NULL);
-   count=MultiByteToWideChar(CP_UTF8,0,command,-1,command_wide,count);
-   count=MultiByteToWideChar(CP_UTF8,0,type,-1,NULL,0);
-   type_wide=(WCHAR *) AcquireQuantumMemory(count,sizeof(*type_wide));
-   if (type_wide == (WCHAR *) NULL)
+   status=MultiByteToWideCharacter(type,&wide_type,&extent);
+   if (status != 0)
      {
-       command_wide=(WCHAR *) RelinquishMagickMemory(command_wide);
+       wide_command=(WCHAR *) RelinquishMagickMemory(wide_command);
        return((FILE *) NULL);
      }
-   count=MultiByteToWideChar(CP_UTF8,0,type,-1,type_wide,count);
-   file=_wpopen(command_wide,type_wide);
-   type_wide=(WCHAR *) RelinquishMagickMemory(type_wide);
-   command_wide=(WCHAR *) RelinquishMagickMemory(command_wide);
+   file=_wpopen(wide_command,wide_type);
+   wide_type=(WCHAR *) RelinquishMagickMemory(wide_type);
+   wide_command=(WCHAR *) RelinquishMagickMemory(wide_command);
    return(file);
 #endif
 }
@@ -170,20 +185,19 @@ static inline int remove_utf8(const char *path)
   return(unlink(path));
 #else
    int
-     count,
      status;
 
-   WCHAR
-     *path_wide;
+   ssize_t
+     extent;
 
-   path_wide=(WCHAR *) NULL;
-   count=MultiByteToWideChar(CP_UTF8,0,path,-1,NULL,0);
-   path_wide=(WCHAR *) AcquireQuantumMemory(count,sizeof(*path_wide));
-   if (path_wide == (WCHAR *) NULL)
-     return(-1);
-   count=MultiByteToWideChar(CP_UTF8,0,path,-1,path_wide,count);
-   status=_wremove(path_wide);
-   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
+   WCHAR
+     *wide_path;
+
+   status=MultiByteToWideCharacter(path,&wide_path,&extent);
+   if (status != 0)
+     return(status);
+   status=_wremove(wide_path);
+   wide_path=(WCHAR *) RelinquishMagickMemory(wide_path);
    return(status);
 #endif
 }
@@ -194,31 +208,27 @@ static inline int rename_utf8(const char *source,const char *destination)
   return(rename(source,destination));
 #else
    int
-     count,
      status;
 
-   WCHAR
-     *destination_wide,
-     *source_wide;
+   ssize_t
+     extent;
 
-   source_wide=(WCHAR *) NULL;
-   count=MultiByteToWideChar(CP_UTF8,0,source,-1,NULL,0);
-   source_wide=(WCHAR *) AcquireQuantumMemory(count,sizeof(*source_wide));
-   if (source_wide == (WCHAR *) NULL)
-     return(-1);
-   count=MultiByteToWideChar(CP_UTF8,0,source,-1,source_wide,count);
-   count=MultiByteToWideChar(CP_UTF8,0,destination,-1,NULL,0);
-   destination_wide=(WCHAR *) AcquireQuantumMemory(count,
-     sizeof(*destination_wide));
-   if (destination_wide == (WCHAR *) NULL)
+   WCHAR
+     *wide_destination,
+     *wide_source;
+
+   status=MultiByteToWideCharacter(source,&wide_source,&extent);
+   if (status != 0)
+     return(status);
+   status=MultiByteToWideCharacter(destination,&wide_destination,&extent);
+   if (status != 0)
      {
-       source_wide=(WCHAR *) RelinquishMagickMemory(source_wide);
-       return(-1);
+       wide_source=(WCHAR *) RelinquishMagickMemory(wide_source);
+       return(status);
      }
-   count=MultiByteToWideChar(CP_UTF8,0,destination,-1,destination_wide,count);
-   status=_wrename(source_wide,destination_wide);
-   destination_wide=(WCHAR *) RelinquishMagickMemory(destination_wide);
-   source_wide=(WCHAR *) RelinquishMagickMemory(source_wide);
+   status=_wrename(wide_source,wide_destination);
+   wide_destination=(WCHAR *) RelinquishMagickMemory(wide_destination);
+   wide_source=(WCHAR *) RelinquishMagickMemory(wide_source);
    return(status);
 #endif
 }
@@ -229,20 +239,19 @@ static inline int stat_utf8(const char *path,struct stat *attributes)
   return(stat(path,attributes));
 #else
    int
-     count,
      status;
 
-   WCHAR
-     *path_wide;
+   ssize_t
+     extent;
 
-   path_wide=(WCHAR *) NULL;
-   count=MultiByteToWideChar(CP_UTF8,0,path,-1,NULL,0);
-   path_wide=(WCHAR *) AcquireQuantumMemory(count,sizeof(*path_wide));
-   if (path_wide == (WCHAR *) NULL)
-     return(-1);
-   count=MultiByteToWideChar(CP_UTF8,0,path,-1,path_wide,count);
-   status=_wstat64(path_wide,attributes);
-   path_wide=(WCHAR *) RelinquishMagickMemory(path_wide);
+   WCHAR
+     *wide_path;
+
+   status=MultiByteToWideCharacter(path,&wide_path,&extent);
+   if (status != 0)
+     return(status);
+   status=_wstat64(wide_path,attributes);
+   wide_path=(WCHAR *) RelinquishMagickMemory(wide_path);
    return(status);
 #endif
 }
