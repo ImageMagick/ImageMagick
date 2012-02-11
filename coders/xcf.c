@@ -646,15 +646,18 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
     /* seek to the tile offset */
     offset=SeekBlob(image, offset, SEEK_SET);
 
-      /* allocate the image for the tile
-        NOTE: the last tile in a row or column may not be a full tile!
+      /*
+        Allocate the image for the tile.  NOTE: the last tile in a row or
+        column may not be a full tile!
       */
       tile_image_width=(size_t) (destLeft == (int) ntile_cols-1 ?
         (int) width % TILE_WIDTH : TILE_WIDTH);
-      if (tile_image_width == 0) tile_image_width=TILE_WIDTH;
+      if (tile_image_width == 0)
+        tile_image_width=TILE_WIDTH;
       tile_image_height = (size_t) (destTop == (int) ntile_rows-1 ?
         (int) height % TILE_HEIGHT : TILE_HEIGHT);
-      if (tile_image_height == 0) tile_image_height=TILE_HEIGHT;
+      if (tile_image_height == 0)
+        tile_image_height=TILE_HEIGHT;
       tile_image=CloneImage(inLayerInfo->image,tile_image_width,
         tile_image_height,MagickTrue,exception);
 
