@@ -30,6 +30,9 @@ extern "C" {
 */
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__) && !defined(__MINGW32__)
+typedef int
+  mode_t;
+
 static inline int MultiByteToWideCharacter(const char *string,
   WCHAR **wide_string,size_t *extent)
 {
