@@ -2841,7 +2841,8 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
           break;
         }
       p=image->blob->data+image->blob->offset;
-      count=(ssize_t) MagickMin(length,image->blob->length-image->blob->offset);
+      count=(ssize_t) MagickMin(length,(MagickSizeType) (image->blob->length-
+        image->blob->offset));
       image->blob->offset+=count;
       if (count != (ssize_t) length)
         image->blob->eof=MagickTrue;

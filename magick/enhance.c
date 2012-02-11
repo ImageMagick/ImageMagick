@@ -2630,17 +2630,21 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
         Level colormap.
       */
       if ((channel & RedChannel) != 0)
-        image->colormap[i].red=(double) ClampToQuantum(LevelPixel(black_point,
-          white_point,gamma,image->colormap[i].red));
+        image->colormap[i].red=(Quantum) ClampToQuantum(LevelPixel(
+          black_point,white_point,gamma,(MagickRealType)
+          image->colormap[i].red));
       if ((channel & GreenChannel) != 0)
-        image->colormap[i].green=(double) ClampToQuantum(LevelPixel(black_point,
-          white_point,gamma,image->colormap[i].green));
+        image->colormap[i].green=(Quantum) ClampToQuantum(LevelPixel(
+          black_point,white_point,gamma,(MagickRealType)
+          image->colormap[i].green));
       if ((channel & BlueChannel) != 0)
-        image->colormap[i].blue=(double) ClampToQuantum(LevelPixel(black_point,
-          white_point,gamma,image->colormap[i].blue));
+        image->colormap[i].blue=(Quantum) ClampToQuantum(LevelPixel(
+          black_point,white_point,gamma,(MagickRealType)
+          image->colormap[i].blue));
       if ((channel & OpacityChannel) != 0)
-        image->colormap[i].opacity=(double) ClampToQuantum(LevelPixel(
-          black_point,white_point,gamma,image->colormap[i].opacity));
+        image->colormap[i].opacity=(Quantum) ClampToQuantum(LevelPixel(
+          black_point,white_point,gamma,(MagickRealType)
+          image->colormap[i].opacity));
       }
   /*
     Level image.

@@ -698,7 +698,7 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
         beta=GetPseudoRandomValue(random_info);
         alpha*=beta;
       }
-      noise=(double) QuantumRange*i/SigmaPoisson;
+      noise=(double) (QuantumRange*i/SigmaPoisson);
       break;
     }
     case RandomNoise:

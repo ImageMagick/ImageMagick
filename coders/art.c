@@ -176,7 +176,9 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count=ReadBlob(image,(size_t) (-(ssize_t) length) & 0x01,pixels);
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
       break;
-    if (SetImageProgress(image,LoadImageTag,y,image->rows) == MagickFalse)
+    status=SetImageProgress(image,LoadImageTag,(MagickOffsetType) y,
+      image->rows);
+    if (status == MagickFalse)
       break;
   }
   SetQuantumImageType(image,quantum_type);
