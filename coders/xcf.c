@@ -622,15 +622,16 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
   width=ReadBlobMSBLong(image);
   height=ReadBlobMSBLong(image);
 
-  /* read in the first tile offset.
-   *  if it is '0', then this tile level is empty
-   *  and we can simply return.
-   */
+  /*
+    Read in the first tile offset.  If it is '0', then this tile level is empty
+    and we can simply return.
+  */
   offset=(MagickOffsetType) ReadBlobMSBLong(image);
   if (offset == 0)
     return(MagickTrue);
-  /* Initialise the reference for the in-memory tile-compression
-   */
+  /*
+    Initialize the reference for the in-memory tile-compression.
+  */
   ntile_rows=(height+TILE_HEIGHT-1)/TILE_HEIGHT;
   ntile_cols=(width+TILE_WIDTH-1)/TILE_WIDTH;
   ntiles=ntile_rows*ntile_cols;
@@ -658,10 +659,12 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
       */
       tile_image_width=(size_t) (destLeft == (int) ntile_cols-1 ?
         (int) width % TILE_WIDTH : TILE_WIDTH);
-      if (tile_image_width == 0) tile_image_width=TILE_WIDTH;
+      if (tile_image_width == 0)
+        tile_image_width=TILE_WIDTH;
       tile_image_height = (size_t) (destTop == (int) ntile_rows-1 ?
         (int) height % TILE_HEIGHT : TILE_HEIGHT);
-      if (tile_image_height == 0) tile_image_height=TILE_HEIGHT;
+      if (tile_image_height == 0)
+        tile_image_height=TILE_HEIGHT;
       tile_image=CloneImage(inLayerInfo->image,tile_image_width,
         tile_image_height,MagickTrue,exception);
 
