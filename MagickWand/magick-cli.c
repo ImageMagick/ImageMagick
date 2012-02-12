@@ -199,19 +199,19 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
       flags=(CommandOptionFlags) GetCommandOptionFlags(
                    MagickCommandOptions,MagickFalse,argv[i]);
 
-#define MagickCommandDebug 0
+#define MagickCommandDebug 1
 
       if ( count == -1 || flags == UndefinedOptionFlag ||
            (flags & NonConvertOptionFlag) != 0 )
         {
-          count = 0;
 #if MagickCommandDebug
-      (void) FormatLocaleFile(stderr, "CLI Non-Option: \"%s\"\n", option);
+          (void) FormatLocaleFile(stderr, "CLI Non-Option: \"%s\"\n", option);
 #endif
           if (IsCommandOption(option) == MagickFalse)
             {
               /* non-option -- treat as a image read */
               MagickSpecialOption(wand,"-read",option);
+              count = 0;
               continue;
             }
           else
@@ -277,19 +277,18 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
         }
     }
 
-  /* FUTURE: in the following produce a better error report
-     -- Missing Output filename
-  */
-
-  assert(i!=(ssize_t)(argc-1));
+  assert(i==(ssize_t)(argc-1));
   option=argv[i];  /* the last argument - output filename! */
-
 #if MagickCommandDebug
   (void) FormatLocaleFile(stderr, "CLI Output: \"%s\"\n", option );
 #endif
 
   // if stacks are not empty
   //  ThrowConvertException(OptionError,"UnbalancedParenthesis",option,i);
+
+  /* FUTURE: in the following produce a better error report
+     -- Missing Output filename
+  */
 
 
   /* This is the only value 'do no write' option for a CLI */
