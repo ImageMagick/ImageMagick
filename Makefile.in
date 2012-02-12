@@ -747,9 +747,9 @@ am__objects_18 = MagickWand/MagickWand_libMagickWand_la-animate.lo \
 	MagickWand/MagickWand_libMagickWand_la-drawing-wand.lo \
 	MagickWand/MagickWand_libMagickWand_la-identify.lo \
 	MagickWand/MagickWand_libMagickWand_la-import.lo \
-	MagickWand/MagickWand_libMagickWand_la-magick-cli.lo \
 	MagickWand/MagickWand_libMagickWand_la-magick-image.lo \
 	MagickWand/MagickWand_libMagickWand_la-magick-property.lo \
+	MagickWand/MagickWand_libMagickWand_la-magick-cli.lo \
 	MagickWand/MagickWand_libMagickWand_la-magick-wand.lo \
 	MagickWand/MagickWand_libMagickWand_la-mogrify.lo \
 	MagickWand/MagickWand_libMagickWand_la-montage.lo \
@@ -4347,12 +4347,12 @@ MAGICKWAND_SOURCES = \
 	MagickWand/identify.h \
 	MagickWand/import.c \
 	MagickWand/import.h \
-	MagickWand/magick-cli.c \
-	MagickWand/magick-cli.h \
 	MagickWand/magick-image.c \
 	MagickWand/magick-image.h \
 	MagickWand/magick-property.c \
 	MagickWand/magick-property.h \
+	MagickWand/magick-cli.c \
+	MagickWand/magick-cli.h \
 	MagickWand/magick-wand.c \
 	MagickWand/magick-wand-private.h \
 	MagickWand/mogrify.c \
@@ -5707,13 +5707,13 @@ MagickWand/MagickWand_libMagickWand_la-identify.lo:  \
 MagickWand/MagickWand_libMagickWand_la-import.lo:  \
 	MagickWand/$(am__dirstamp) \
 	MagickWand/$(DEPDIR)/$(am__dirstamp)
-MagickWand/MagickWand_libMagickWand_la-magick-cli.lo:  \
-	MagickWand/$(am__dirstamp) \
-	MagickWand/$(DEPDIR)/$(am__dirstamp)
 MagickWand/MagickWand_libMagickWand_la-magick-image.lo:  \
 	MagickWand/$(am__dirstamp) \
 	MagickWand/$(DEPDIR)/$(am__dirstamp)
 MagickWand/MagickWand_libMagickWand_la-magick-property.lo:  \
+	MagickWand/$(am__dirstamp) \
+	MagickWand/$(DEPDIR)/$(am__dirstamp)
+MagickWand/MagickWand_libMagickWand_la-magick-cli.lo:  \
 	MagickWand/$(am__dirstamp) \
 	MagickWand/$(DEPDIR)/$(am__dirstamp)
 MagickWand/MagickWand_libMagickWand_la-magick-wand.lo:  \
@@ -7794,6 +7794,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/display.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/identify.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/import.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/magick.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/mogrify.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/montage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/stream.Po@am__quote@
@@ -9341,13 +9342,6 @@ MagickWand/MagickWand_libMagickWand_la-import.lo: MagickWand/import.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickWand/MagickWand_libMagickWand_la-import.lo `test -f 'MagickWand/import.c' || echo '$(srcdir)/'`MagickWand/import.c
 
-MagickWand/MagickWand_libMagickWand_la-magick-cli.lo: MagickWand/magick-cli.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickWand/MagickWand_libMagickWand_la-magick-cli.lo -MD -MP -MF MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-cli.Tpo -c -o MagickWand/MagickWand_libMagickWand_la-magick-cli.lo `test -f 'MagickWand/magick-cli.c' || echo '$(srcdir)/'`MagickWand/magick-cli.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-cli.Tpo MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-cli.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='MagickWand/magick-cli.c' object='MagickWand/MagickWand_libMagickWand_la-magick-cli.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickWand/MagickWand_libMagickWand_la-magick-cli.lo `test -f 'MagickWand/magick-cli.c' || echo '$(srcdir)/'`MagickWand/magick-cli.c
-
 MagickWand/MagickWand_libMagickWand_la-magick-image.lo: MagickWand/magick-image.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickWand/MagickWand_libMagickWand_la-magick-image.lo -MD -MP -MF MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-image.Tpo -c -o MagickWand/MagickWand_libMagickWand_la-magick-image.lo `test -f 'MagickWand/magick-image.c' || echo '$(srcdir)/'`MagickWand/magick-image.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-image.Tpo MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-image.Plo
@@ -9361,6 +9355,13 @@ MagickWand/MagickWand_libMagickWand_la-magick-property.lo: MagickWand/magick-pro
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='MagickWand/magick-property.c' object='MagickWand/MagickWand_libMagickWand_la-magick-property.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickWand/MagickWand_libMagickWand_la-magick-property.lo `test -f 'MagickWand/magick-property.c' || echo '$(srcdir)/'`MagickWand/magick-property.c
+
+MagickWand/MagickWand_libMagickWand_la-magick-cli.lo: MagickWand/magick-cli.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickWand/MagickWand_libMagickWand_la-magick-cli.lo -MD -MP -MF MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-cli.Tpo -c -o MagickWand/MagickWand_libMagickWand_la-magick-cli.lo `test -f 'MagickWand/magick-cli.c' || echo '$(srcdir)/'`MagickWand/magick-cli.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-cli.Tpo MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-cli.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='MagickWand/magick-cli.c' object='MagickWand/MagickWand_libMagickWand_la-magick-cli.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickWand/MagickWand_libMagickWand_la-magick-cli.lo `test -f 'MagickWand/magick-cli.c' || echo '$(srcdir)/'`MagickWand/magick-cli.c
 
 MagickWand/MagickWand_libMagickWand_la-magick-wand.lo: MagickWand/magick-wand.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickWand/MagickWand_libMagickWand_la-magick-wand.lo -MD -MP -MF MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-wand.Tpo -c -o MagickWand/MagickWand_libMagickWand_la-magick-wand.lo `test -f 'MagickWand/magick-wand.c' || echo '$(srcdir)/'`MagickWand/magick-wand.c
