@@ -675,8 +675,8 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image)
           longy;
 
         if (TIFFGetField(tiff,exif_info[i].tag,&longy,&sans,&sans) != 0)
-          (void) FormatLocaleString(value,MaxTextExtent,"%" MagickOffsetFormat,
-            (MagickOffsetType) longy);
+          (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+            ((MagickOffsetType) longy));
         break;
       }
 #endif
