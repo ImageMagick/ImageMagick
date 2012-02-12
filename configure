@@ -1919,7 +1919,7 @@ Optional Packages:
   --without-webp          disable WEBP support
   --with-windows-font-dir=DIR
                           directory containing MS-Windows fonts
-  --without-wmf           disable WMF support
+  --with-wmf              enable WMF support
   --without-xml           disable XML support
 
 Some influential environment variables:
@@ -3612,7 +3612,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=6788
+MAGICK_SVN_REVISION=6837
 
 
 
