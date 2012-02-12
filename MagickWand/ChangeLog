@@ -1,3 +1,6 @@
+2012-02-12  7.0.0-0 Anthony  <anthony@griffith...>
+  * new module "magick-cli" providing base for new "magick" command
+
 2011-10-04  7.0.0-0 Anthony  <anthony@griffith...>
   * Rename adjust handling of wand iteration flags to be more logical
   * Remove initialization of unused "quantize_info" in wand

@@ -23,6 +23,7 @@ UTILITIES_PGMS = \
 	utilities/display \
 	utilities/identify \
 	utilities/import \
+	utilities/magick \
 	utilities/mogrify \
 	utilities/montage \
 	utilities/stream
@@ -62,6 +63,10 @@ utilities_identify_SOURCES	= utilities/identify.c
 utilities_import_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 utilities_import_LDFLAGS	= $(LDFLAGS)
 utilities_import_SOURCES	= utilities/import.c
+
+utilities_magick_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+utilities_magick_LDFLAGS	= $(LDFLAGS)
+utilities_magick_SOURCES	= utilities/magick.c
 
 utilities_mogrify_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 utilities_mogrify_LDFLAGS	= $(LDFLAGS)

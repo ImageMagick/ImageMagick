@@ -70,6 +70,7 @@ TESTS_ENVIRONMENT = \
 	CONVERT="$(MEMCHECK) @abs_top_builddir@/utilities/convert" \
 	DISPLAY="$(MEMCHECK) @abs_top_builddir@/utilities/display" \
 	IDENTIFY="$(MEMCHECK) @abs_top_builddir@/utilities/identify" \
+	MAGICK="$(MEMCHECK) @abs_top_builddir@/utilities/magick" \
 	MONTAGE="$(MEMCHECK) @abs_top_builddir@/utilities/montage" \
 	VALIDATE="$(MEMCHECK) @abs_top_builddir@/tests/validate" \
 	LD_LIBRARY_PATH="@abs_top_builddir@/MagickCore/.libs:${LD_LIBRARY_PATH}" \
