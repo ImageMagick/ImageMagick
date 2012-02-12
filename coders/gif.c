@@ -1535,17 +1535,6 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
     page.height=image->page.height;
   page.x=image->page.x;
   page.y=image->page.y;
-  if (write_info->adjoin != MagickFalse)
-    for (next_image=image; next_image != (Image *) NULL; )
-    {
-      page.x=next_image->page.x;
-      page.y=next_image->page.y;
-      if ((next_image->page.width+page.x) > page.width)
-        page.width=next_image->page.width+page.x;
-      if ((next_image->page.height+page.y) > page.height)
-        page.height=next_image->page.height+page.y;
-      next_image=GetNextImageInList(next_image);
-    }
   (void) WriteBlobLSBShort(image,(unsigned short) page.width);
   (void) WriteBlobLSBShort(image,(unsigned short) page.height);
   /*
