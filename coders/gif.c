@@ -1450,9 +1450,6 @@ ModuleExport void UnregisterGIFImage(void)
 static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
   ExceptionInfo *exception)
 {
-  Image
-    *next_image;
-
   int
     c;
 
