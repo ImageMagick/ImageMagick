@@ -184,7 +184,7 @@
   <a rel="follow" title="Sponsor: Tenant Check" href="http://www.rentmethod.com/">Tenant Check</a><!-- 201203010090 chris@rentm... -->
 </div>
 <div class="sponsor">
-  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201204010090 barsh@inter... -->
+  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201205010090 barsh@inter... -->
 </div>
 <div class="sponsor">
    <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
@@ -214,7 +214,7 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012090100150 brooks@stripes...-->
+   <a rel="follow" title="Sponsor: Photo Sharing Websites" href="http://www.zoofoo.com">Photo Sharing Websites</a><!-- 2012050100150 dancu@dans...-->
 </div>
 <div class="sponsor">
    <a rel="follow" title="Sponsor: Hosting Web" href="http://www.hostalia.com">Hosting Web</a><!-- 20120401000150 david@carre... -->
@@ -421,7 +421,11 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/list_8c.html" id="GetImageFromList">GetImageFromList</a></h2>
 <div class="doc-section">
 
-<p>GetImageFromList() returns an image at the specified offset from the list.</p>
+<p>GetImageFromList() returns an image at the specified index from the image list. Starting with 0 as the first image in the list.</p>
+
+<p>A negative offset will return the image from the end of the list, such that an index of -1 is the last image.</p>
+
+<p>If no such image exists at the specified offset a NULL image pointer is returned.  This will only happen if index is less that the negative of the list length, or larger than list length -1.  EG: ( -N to N-1 )</p>
 
 <p>The format of the GetImageFromList method is:</p>
 
@@ -526,7 +530,9 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/list_8c.html" id="ImageListToArray">ImageListToArray</a></h2>
 <div class="doc-section">
 
-<p>ImageListToArray() is a convenience method that converts an image list to a sequential array.  For example,</p>
+<p>ImageListToArray() is a convenience method that converts an image list to a sequential array, with a NULL image pointer at the end of the array.</p>
+
+<p>The images remain part of the original image list, with the array providing an alternative means of indexing the image array.</p>
 
 <p>group = ImageListToArray(images, exception); while (i = 0; group[i] != (Image *) NULL; i++) printf("s\n", group[i]->filename); printf("d images\n", i); group = RelinquishMagickMemory(group);</p>
 
@@ -548,12 +554,12 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/list_8c.html" id="InsertImageInList">InsertImageInList</a></h2>
 <div class="doc-section">
 
-<p>InsertImageInList() inserts the second image or image list into the first image list immediately after the image pointed to.  The given image list pointer is unchanged unless previously empty.</p>
+<p>InsertImageInList() insert the given image or image list, into the first image list, immediately AFTER the image pointed to.  The given image list pointer is left unchanged unless previously empty.</p>
 
 <p>The format of the InsertImageInList method is:</p>
 
 <pre class="code">
-  InsertImageInList(Image **images,Image *image)
+  InsertImageInList(Image **images,Image *insert)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -561,7 +567,7 @@
 <h5>images</h5>
 <p>the image list to insert into.</p>
 
-<h5>image</h5>
+<h5>insert</h5>
 <p>the image list to insert.</p>
 
  </div>
@@ -657,12 +663,14 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/list_8c.html" id="ReplaceImageInList">ReplaceImageInList</a></h2>
 <div class="doc-section">
 
-<p>ReplaceImageInList() replaces an image in the list with the given image, or list of images.  Old image is destroyed.  The image list pointer is set to point to the first image of the inserted list of images.</p>
+<p>ReplaceImageInList() replaces an image in the list with the given image, or list of images.  Old image is destroyed.</p>
+
+<p>The images list pointer is set to point to the first image of the inserted list of images.</p>
 
 <p>The format of the ReplaceImageInList method is:</p>
 
 <pre class="code">
-  ReplaceImageInList(Image **images,Image *image)
+  ReplaceImageInList(Image **images,Image *replace)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -670,21 +678,21 @@
 <h5>images</h5>
 <p>the list and pointer to image to replace</p>
 
-<h5>image</h5>
+<h5>replace</h5>
 <p>the image or image list replacing the original</p>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/list_8c.html" id="ReplaceImageInListReturnLast">ReplaceImageInListReturnLast</a></h2>
 <div class="doc-section">
 
-<p>ReplaceImageInListReturnLast() is exactly as ReplaceImageInList() except the image pointer is set to the last image in the list.</p>
+<p>ReplaceImageInListReturnLast() is exactly as ReplaceImageInList() except the images pointer is set to the last image in the list of replacemen images.</p>
 
-<p>This allows you to simply use 'next' to go to the image that follows the just replaced image.</p>
+<p>This allows you to simply use GetNextImageInList() to go to the image that follows the just replaced image, even if a list of replacement images was inserted.</p>
 
 <p>The format of the ReplaceImageInList method is:</p>
 
 <pre class="code">
-  ReplaceImageInListReturnLast(Image **images,Image *image)
+  ReplaceImageInListReturnLast(Image **images,Image *replace)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -692,7 +700,7 @@
 <h5>images</h5>
 <p>the list and pointer to image to replace</p>
 
-<h5>image</h5>
+<h5>replace</h5>
 <p>the image or image list replacing the original</p>
 
  </div>
