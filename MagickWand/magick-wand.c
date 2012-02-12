@@ -842,7 +842,7 @@ WandExport void MagickResetIterator(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   wand->images=GetFirstImageInList(wand->images);
   wand->set_first=MagickFalse;    /* we did not jump to the first image */
-  wand->image_pending=MagickTrue; /* this image is the 'next' image */
+  wand->image_pending=MagickTrue; /* pointed image is the 'next' image */
 }
 
 /*
@@ -857,6 +857,10 @@ WandExport void MagickResetIterator(MagickWand *wand)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickSetFirstIterator() sets the wand iterator to the first image.
+%
+%  Flags are set to point not only to the 'next' image to be processed,
+%  but also define where InsertImageInWand() (such as from MagickReadImage())
+%  should instert new images.
 %
 %  The format of the MagickSetFirstIterator method is:
 %
@@ -874,8 +878,8 @@ WandExport void MagickSetFirstIterator(MagickWand *wand)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   wand->images=GetFirstImageInList(wand->images);
-  wand->set_first=MagickTrue;       /* we jumped to the first image */
-  wand->image_pending=MagickFalse;  /* but this image is not 'next' */
+  wand->set_first=MagickTrue;       /* we did jumped to the first image */
+  wand->image_pending=MagickFalse;  /* but we are not iterating */
 }
 
 /*
@@ -925,7 +929,7 @@ WandExport MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
     }
   wand->images=image;
   wand->set_first=MagickFalse;     /* we are not at very start of list */
-  wand->image_pending=MagickFalse; /* but it is not iteration pending */
+  wand->image_pending=MagickFalse;  /* but we are not directly iterating */
   return(MagickTrue);
 }
 /*
@@ -940,6 +944,10 @@ WandExport MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickSetLastIterator() sets the wand iterator to the last image.
+%
+%  Flags are set to point not only to the 'previous' image to be processed,
+%  but also define where InsertImageInWand() (such as from MagickReadImage())
+%  should instert new images.
 %
 %  The format of the MagickSetLastIterator method is:
 %
@@ -958,7 +966,7 @@ WandExport void MagickSetLastIterator(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   wand->images=GetLastImageInList(wand->images);
   wand->set_first=MagickFalse;     /* we are not at very start of list */
-  wand->image_pending=MagickFalse; /* and is not iteration pending  */
+  wand->image_pending=MagickFalse;  /* but we are not iterating */
 }
 
 /*

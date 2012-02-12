@@ -418,7 +418,7 @@ static inline MagickBooleanType InsertImageInWand(MagickWand *wand,
     }
   wand->set_first = MagickFalse; /* flag no longer valid */
 
-  /* Current image was flaged as 'pending' iterative processing. */
+  /* Current image was flagged as 'pending' iterative processing. */
   if (wand->image_pending != MagickFalse)
     {
       /* current pending image is the last, append new images */
@@ -7734,7 +7734,7 @@ WandExport MagickBooleanType MagickRandomThresholdImage(MagickWand *wand,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickReadImage() reads an image or image sequence.  The images are inserted
-%  at the current image pointer position.
+%  jjust before the current image pointer position.
 %
 %  Use MagickSetFirstIterator(), to insert new images before all the current
 %  images in the wand, MagickSetLastIterator() to append add to the end,

@@ -710,7 +710,7 @@
           unrecognized color
         </message>
         <message name="UnrecognizedColorspace">
-          unrecognized image colorspace
+          unrecognized colorspace
         </message>
         <message name="UnrecognizedComposeOperator">
           unrecognized compose operator
