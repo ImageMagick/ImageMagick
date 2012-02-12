@@ -82,7 +82,7 @@ static int MagickMain(int argc,char **argv)
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
 int main(int argc,char **argv)
 {
-  return(ConvertMain(argc,argv));
+  return(MagickMain(argc,argv));
 }
 #else
 int wmain(int argc,wchar_t *argv[])
@@ -97,7 +97,7 @@ int wmain(int argc,wchar_t *argv[])
     i;
 
   utf8=NTArgvToUTF8(argc,argv);
-  status=ConvertMain(argc,utf8);
+  status=MagickMain(argc,utf8);
   for (i=0; i < argc; i++)
     utf8[i]=DestroyString(utf8[i]);
   utf8=(char **) RelinquishMagickMemory(utf8);
