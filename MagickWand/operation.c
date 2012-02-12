@@ -54,7 +54,6 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/string-private.h"
-#if 0
 
 /*
   Define declarations.
@@ -904,6 +903,9 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
           ssize_t
             list;
 
+          /* FUTURE: This is not really a Setting Option, but a Special
+           * The bulk of this should be turned into a MagickCore function
+           */
           list=ParseCommandOption(MagickListOptions,MagickFalse,
                ArgOption("list"));
           switch (list)
@@ -1473,7 +1475,7 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
 %
 %    count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
 %    flags=GetCommandOptionFlags(MagickCommandOptions,MagickFalse,argv[i]);
-%    if ( flags & SimpleOperatorOptionFlag != 0 )
+%    if ( (flags & SimpleOperatorOptionFlag) != 0 )
 %      WandSimpleOperatorImages(wand,
 %          ((*argv[i])=='+')?MagickTrue:MagickFalse,argv[i]+1,
 %          count>=1 ? argv[i+1] : (char *)NULL,
@@ -3351,9 +3353,8 @@ WandExport void WandSimpleOperatorImages(MagickWand *wand,
 %
 % Example usage...
 %
-%  WandListOperatorImages(wand,"read", MagickFalse,"rose:",NULL);
-%  WandListOperatorImages(wand,"duplicate",MagickFalse,"3",NULL);
-%  WandListOperatorImages(wand,"append",MagickTrue,NULL,NULL);
+%  WandListOperatorImages(wand,MagickFalse,"duplicate", "3",  NULL);
+%  WandListOperatorImages(wand,MagickTrue, "append",    NULL, NULL);
 %  if ( wand->exception->severity != UndefinedException ) {
 %    CatchException(exception);
 %    exit(1);
@@ -3366,7 +3367,7 @@ WandExport void WandSimpleOperatorImages(MagickWand *wand,
 %
 %    count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
 %    flags=GetCommandOptionFlags(MagickCommandOptions,MagickFalse,argv[i]);
-%    if ( flags & ListOperatorOptionFlag != 0 )
+%    if ( (flags & ListOperatorOptionFlag) != 0 )
 %      WandListOperatorImages(wand,
 %          ((*argv[i])=='+')?MagickTrue:MagickFalse,argv[i]+1,
 %          count>=1 ? argv[i+1] : (char *)NULL,
@@ -3431,6 +3432,7 @@ WandExport void WandListOperatorImages(MagickWand *wand,
 
           new_images=RemoveFirstImageFromList(&images);
           clut_image=RemoveLastImageFromList(&images);
+          /* FUTURE - produce Exception, rather than silent fail */
           if (clut_image == (Image *) NULL)
               break;
           (void) ClutImage(new_images,clut_image,images->interpolate,exception);
@@ -3471,8 +3473,10 @@ WandExport void WandListOperatorImages(MagickWand *wand,
 
           new_images=RemoveFirstImageFromList(&images);
           source_image=RemoveFirstImageFromList(&images);
+          /* FUTURE - produce Exception, rather than silent fail */
           if (source_image == (Image *) NULL)
             break;
+
           /* FUTURE - this should not be here! - should be part of -geometry */
           (void) TransformImage(&source_image,(char *) NULL,
             source_image->geometry,exception);
@@ -3617,6 +3621,7 @@ WandExport void WandListOperatorImages(MagickWand *wand,
 
            magnitude_image=RemoveFirstImageFromList(&images);
            phase_image=RemoveFirstImageFromList(&images);
+          /* FUTURE - produce Exception, rather than silent fail */
            if (phase_image == (Image *) NULL)
              break;
            new_images=InverseFourierTransformImage(magnitude_image,phase_image,
@@ -3936,17 +3941,6 @@ WandExport void WandListOperatorImages(MagickWand *wand,
     }
     case 'r':
     {
-      if (LocaleCompare("read",option) == 0)
-        {
-          CopyMagickString(image_info->filename,arg1,MaxTextExtent);
-          if (image_info->ping != MagickFalse)
-            new_images=PingImages(image_info,exception);
-          else
-            new_images=ReadImages(image_info,exception);
-          AppendImageToList(&images, new_images);
-          new_images=(Image *) NULL;
-          break;
-        }
       if (LocaleCompare("remap",option) == 0)
         {
               (void) RemapImages(quantize_info,images,(Image *) NULL,exception);
@@ -4068,4 +4062,3 @@ WandExport void WandListOperatorImages(MagickWand *wand,
 #undef exception
 #undef normal_op
 }
-#endif

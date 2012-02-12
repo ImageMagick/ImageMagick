@@ -145,7 +145,7 @@ typedef enum
   SpecialOptionFlag         = 0x0040,  /* Special handled Option */
   GenesisOptionFlag         = 0x0080,  /* Genesis Command Wrapper Option  */
 
-  NonConvertOptionFlag      = 0x1000,  /* Option not used by Convert */
+  NonConvertOptionFlag      = 0x1000,  /* Option not used by Convert/Magick */
   FireOptionFlag            = 0x4000,  /* Convert operation seq firing point */
   DeprecateOptionFlag       = 0x8000   /* Deprecate option, give warning */
 

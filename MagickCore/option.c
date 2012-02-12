@@ -339,6 +339,7 @@ static const OptionInfo
     { "-evaluate", 2L, SimpleOperatorOptionFlag, MagickFalse },
     { "+evaluate-sequence", 1L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
     { "-evaluate-sequence", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
+    { "-exit", 1L, SpecialOptionFlag, MagickFalse },
     { "+extent", 1L, DeprecateOptionFlag, MagickTrue },
     { "-extent", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+extract", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -389,8 +390,6 @@ static const OptionInfo
     { "-green-primary", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+hald-clut", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
     { "-hald-clut", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
-    { "+help", 0L, SpecialOptionFlag, MagickFalse },
-    { "-help", 0L, SpecialOptionFlag, MagickFalse },
     { "+highlight-color", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-highlight-color", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+iconGeometry", 0L, NonConvertOptionFlag, MagickFalse },
@@ -485,7 +484,6 @@ static const OptionInfo
     { "-negate", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "+noise", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-noise", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+noop", 0L, SpecialOptionFlag, MagickFalse },
     { "-noop", 0L, SpecialOptionFlag, MagickFalse },
     { "+normalize", 0L, DeprecateOptionFlag, MagickTrue },
     { "-normalize", 0L, SimpleOperatorOptionFlag, MagickFalse },
@@ -501,8 +499,8 @@ static const OptionInfo
     { "-page", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+paint", 0L, DeprecateOptionFlag, MagickTrue },
     { "-paint", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+path", 0L, SpecialOptionFlag, MagickFalse },
-    { "-path", 1L, SpecialOptionFlag, MagickFalse },
+    { "+path", 0L, NonConvertOptionFlag, MagickFalse },
+    { "-path", 1L, NonConvertOptionFlag, MagickFalse },
     { "+pause", 0L, NonConvertOptionFlag, MagickFalse },
     { "-pause", 1L, NonConvertOptionFlag, MagickFalse },
     { "+passphrase", 0L, DeprecateOptionFlag, MagickTrue },
@@ -703,7 +701,7 @@ static const OptionInfo
     { "+verbose", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-verbose", 0L, ImageInfoOptionFlag, MagickFalse },
     { "+version", 0L, DeprecateOptionFlag, MagickTrue },
-    { "-version", 1L, SpecialOptionFlag, MagickFalse },
+    { "-version", 0L, SpecialOptionFlag, MagickFalse },
     { "+view", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-view", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+vignette", 1L, DeprecateOptionFlag, MagickTrue },
@@ -1913,7 +1911,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
 
   option_info=GetOptionInfo(option);
   if (option_info == (const OptionInfo *) NULL)
-    return(-1);
+    return(UndefinedOptionFlag);
   option_types=0;
   sentinel=',';
   if (strchr(options,'|') != (char *) NULL)

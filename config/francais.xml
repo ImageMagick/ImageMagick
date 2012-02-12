@@ -701,7 +701,7 @@
           couleur non reconnue
         </message>
         <message name="UnrecognizedColorspace">
-          espace colorimétrique de l'image non reconnu
+          espace colorimétrique non reconnu
         </message>
         <message name="UnrecognizedComposeOperator">
           opérateur de composition non reconnu
