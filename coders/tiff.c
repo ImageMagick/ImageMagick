@@ -2767,6 +2767,12 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         }
       }
 #endif
+    if ((image->colorspace == CMYKColorspace) &&
+        (compress_tag != COMPRESSION_JPEG))
+      {
+        compress_tag=COMPRESSION_NONE;
+        compression=NoCompression;
+      }
     switch (compression)
     {
       case FaxCompression:

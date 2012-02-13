@@ -3305,6 +3305,7 @@ WandExport void WandSimpleOperatorImages(MagickWand *wand,
 
   i=0;
   n=GetImageListLength(wand->images);
+  (void) n;
   wand->images=GetFirstImageInList(wand->images);
   for ( ; ; )
   {
