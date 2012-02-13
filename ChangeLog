@@ -1,5 +1,5 @@
 2012-02-13  6.7.5-6 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.5-5, SVN revision 6851.
+  * New version 6.7.5-6, SVN revision 6851.
 
 2012-02-13  6.7.5-6 Cristy  <quetzlzacatenango@image...>
   * Only set PDF & PS page size when explicitedly request (e.g. -page).
