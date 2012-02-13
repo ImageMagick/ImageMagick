@@ -23,9 +23,7 @@ extern "C" {
 #endif
 
 extern WandExport void
-  MagickSpecialOption(MagickWand *,const char *,const char *);
-
-extern WandExport void
+  MagickSpecialOption(MagickWand *,const char *,const char *),
   MagickCommandProcessOptions(MagickWand *,int,char **);
 
 extern WandExport MagickBooleanType
