@@ -232,7 +232,7 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
 #if MagickCommandDebug
       (void) FormatLocaleFile(stderr,
           "CLI Option: \"%s\" \tCount: %d  Flags: %04x Args: \"%s\" \"%s\"\n",
-          option,count,flags,arg1,arg2);
+          option,(int) count,flags,arg1,arg2);
 #endif
 
       if ( (flags & SpecialOptionFlag) != 0 )
