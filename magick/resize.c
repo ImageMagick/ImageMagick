@@ -1990,7 +1990,7 @@ static ContributionInfo **DestroyContributionThreadSet(
   assert(contribution != (ContributionInfo **) NULL);
   for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
     if (contribution[i] != (ContributionInfo *) NULL)
-      contribution[i]=(ContributionInfo *) RelinquishMagickMemory(
+      contribution[i]=(ContributionInfo *) RelinquishAlignedMemory(
         contribution[i]);
   contribution=(ContributionInfo **) RelinquishMagickMemory(contribution);
   return(contribution);
@@ -2015,7 +2015,7 @@ static ContributionInfo **AcquireContributionThreadSet(const size_t count)
   (void) ResetMagickMemory(contribution,0,number_threads*sizeof(*contribution));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    contribution[i]=(ContributionInfo *) AcquireQuantumMemory(count,
+    contribution[i]=(ContributionInfo *) AcquireAlignedMemory(count,
       sizeof(**contribution));
     if (contribution[i] == (ContributionInfo *) NULL)
       return(DestroyContributionThreadSet(contribution));
