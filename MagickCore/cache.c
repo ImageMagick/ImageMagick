@@ -4305,10 +4305,10 @@ MagickExport Quantum *QueueAuthenticPixels(Image *image,const ssize_t x,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->methods.queue_authentic_pixels_handler !=
-       (QueueAuthenticPixelsHandler) NULL)
+      (QueueAuthenticPixelsHandler) NULL)
     {
-      q=cache_info->methods.queue_authentic_pixels_handler(image,x,y,
-        columns,rows,exception);
+      q=cache_info->methods.queue_authentic_pixels_handler(image,x,y,columns,
+        rows,exception);
       return(q);
     }
   assert(id < (int) cache_info->number_threads);
