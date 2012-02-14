@@ -2862,8 +2862,8 @@ MagickExport const void *GetVirtualMetacontent(const Image *image)
   if (cache_info->methods.get_virtual_metacontent_from_handler !=
        (GetVirtualMetacontentFromHandler) NULL)
     {
-      metacontent=cache_info->methods.
-        get_virtual_metacontent_from_handler(image);
+      metacontent=cache_info->methods.get_virtual_metacontent_from_handler(
+        image);
       return(metacontent);
     }
   assert(id < (int) cache_info->number_threads);
