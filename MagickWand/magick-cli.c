@@ -134,12 +134,13 @@ WandExport void MagickSpecialOption(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickCommandsProcessOptions() reads and processes arguments in the given
+%  MagickCommandProcessOptions() reads and processes arguments in the given
 %  command line argument array.
 %
 %  The format of the MagickImageCommand method is:
 %
-%      void MagickCommandArgs(MagickWand *wand,int argc,char **argv)
+%    void MagickCommandArgs(MagickWand *wand,int argc,char **argv,
+%           int *index, )
 %
 %  A description of each parameter follows:
 %
@@ -149,6 +150,9 @@ WandExport void MagickSpecialOption(MagickWand *wand,
 %
 %    o argv: A text array containing the command line arguments.
 %
+%    o index: where we are upto in processing given arguments
+%
+%    o flags: Allow or disallow specific options
 */
 #define MagickExceptionContinue(severity,tag,option,arg) \
   (void) ThrowMagickException(wand->exception,GetMagickModule(),severity,tag, \
@@ -160,7 +164,7 @@ WandExport void MagickSpecialOption(MagickWand *wand,
 }
 
 WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
-     char **argv)
+     char **argv, int *index, OptionProcessFlags process_flags )
 {
   const char
     *option,
@@ -175,7 +179,7 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
     count;
 
   CommandOptionFlags
-    flags;
+    option_type;
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -187,26 +191,38 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
     Parse command-line options.
   */
   count=0;
-  for (i=1; i < (ssize_t) (argc-1); i+=count+1)
+  for (i=*index; i < (ssize_t) (argc-1); i+=count+1)
     {
+      *index=i;
       option=argv[i];
       plus_alt_op = MagickFalse;
       arg1=(char *)NULL;
       arg2=(char *)NULL;
 
-      /* FUTURE: merge these into one call */
-      count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
-      flags=(CommandOptionFlags) GetCommandOptionFlags(
-                   MagickCommandOptions,MagickFalse,argv[i]);
-
 #define MagickCommandDebug 1
+#if 1
+      { const OptionInfo *option_info =
+          GetCommandOptionInfo(argv[i]);
+        count=option_info->type;
+        option_type=option_info->flags;
+#if MagickCommandDebug
+        (void) FormatLocaleFile(stderr, "Option: \"%s\"\n", option_info->mnemonic);
+#endif
+      }
+#else
+      count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
+      option_type=(CommandOptionFlags) GetCommandOptionFlags(
+                   MagickCommandOptions,MagickFalse,argv[i]);
+#endif
 
-      if ( count == -1 || flags == UndefinedOptionFlag ||
-           (flags & NonConvertOptionFlag) != 0 )
+
+      if ( count == -1 || option_type == UndefinedOptionFlag ||
+           (option_type & NonConvertOptionFlag) != 0 )
         {
 #if MagickCommandDebug
           (void) FormatLocaleFile(stderr, "CLI Non-Option: \"%s\"\n", option);
 #endif
+
           if (IsCommandOption(option) == MagickFalse)
             {
               /* non-option -- treat as a image read */
@@ -218,7 +234,13 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
             MagickExceptionReturn(OptionError,"UnrecognizedOption",option,i);
         }
 
-      if ( (flags & DeprecateOptionFlag) != 0 )
+#if MagickCommandDebug
+      (void) FormatLocaleFile(stderr,
+          "CLI Option: \"%s\" \tCount: %d  Flags: %04x Args: \"%s\" \"%s\"\n",
+          option,(int) count,option_type,arg1,arg2);
+#endif
+
+      if ( (option_type & DeprecateOptionFlag) != 0 )
         MagickExceptionContinue(OptionWarning,"DeprecatedOption",option,i);
         /* continue processing option anyway */
 
@@ -229,13 +251,7 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
       if ( count >= 1 ) arg1 = argv[i+1];
       if ( count >= 2 ) arg2 = argv[i+2];
 
-#if MagickCommandDebug
-      (void) FormatLocaleFile(stderr,
-          "CLI Option: \"%s\" \tCount: %d  Flags: %04x Args: \"%s\" \"%s\"\n",
-          option,(int) count,flags,arg1,arg2);
-#endif
-
-      if ( (flags & SpecialOptionFlag) != 0 )
+      if ( (option_type & SpecialOptionFlag) != 0 )
         {
           if (LocaleCompare(option,"-exit") == 0)
             return;
@@ -250,18 +266,18 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
           MagickSpecialOption(wand,option,arg1);
         }
 
-      if ( (flags & SettingOptionFlags) != 0 )
+      if ( (option_type & SettingOptionFlags) != 0 )
         {
           WandSettingOptionInfo(wand, option+1, arg1);
           // FUTURE: Sync Specific Settings into Images
         }
 
-      if ( (flags & SimpleOperatorOptionFlag) != 0)
+      if ( (option_type & SimpleOperatorOptionFlag) != 0)
         {
           WandSimpleOperatorImages(wand, plus_alt_op, option+1, arg1, arg2);
         }
 
-      if ( (flags & ListOperatorOptionFlag) != 0 )
+      if ( (option_type & ListOperatorOptionFlag) != 0 )
         {
           WandListOperatorImages(wand, plus_alt_op, option+1, arg1, arg2);
         }
@@ -279,6 +295,7 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
 
   assert(i==(ssize_t)(argc-1));
   option=argv[i];  /* the last argument - output filename! */
+
 #if MagickCommandDebug
   (void) FormatLocaleFile(stderr, "CLI Output: \"%s\"\n", option );
 #endif
@@ -461,10 +478,12 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
     ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
 #endif
+
+  /* Special hidden option for 'delegates' */
   if (LocaleCompare("-concatenate",argv[1]) == 0)
     return(ConcatenateImages(argc,argv,exception));
 
-  /* create a special CLI Wand to hold all working settings */
+  /* Create a special "CLI Wand" to hold images and settings */
   /* FUTURE: add this to 'operations.c' */
   wand=NewMagickWand();
   wand->image_info=DestroyImageInfo(wand->image_info);
@@ -476,8 +495,29 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
 
   if (LocaleCompare("-list",argv[1]) == 0)
     WandSettingOptionInfo(wand, argv[1]+1, argv[2]);
+#if 0
+  else if (LocaleCompare("-script",argv[1]) == 0)
+    {
+      /* Start processing from script, no pre-script options */
+      int
+        index;
+
+      index=2;
+      GetPathComponent(argv[2],TailPath,wand->name);
+      MagickScriptProcessOptions(wand,argc,argv,&index);
+    }
+#endif
   else
-    MagickCommandProcessOptions(wand,argc,argv);
+    {
+      /* Processing Command line, assuming output file as last option */
+      int
+        index;
+
+      index=1;
+      GetPathComponent(argv[0],TailPath,wand->name);
+      MagickCommandProcessOptions(wand,argc,argv, &index,
+             ProcessCommandOptions|ProcessOutputFile);
+    }
 
   assert(wand->exception == exception);
   assert(wand->image_info == image_info);
