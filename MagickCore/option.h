@@ -180,6 +180,9 @@ extern MagickExport void
   ResetImageOptions(const ImageInfo *),
   ResetImageOptionIterator(const ImageInfo *);
 
+extern MagickExport const OptionInfo
+  *GetCommandOptionInfo(const char *value);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
