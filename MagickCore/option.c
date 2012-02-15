@@ -157,16 +157,25 @@ static const OptionInfo
   },
   CommandOptions[] =
   {
+    /* WARNING: this must be sorted by name, then by switch character
+       So that it can be referanced using a binary search for speed.
+       See  GetCommandOptionInfo() below for details.
+
+       Check on sort...
+           magick -list command > t1
+           sort -k 1.2  t1 | diff t1 -
+       Should not show any differences...
+    */
     { "(", 0L, SpecialOptionFlag, MagickTrue },
     { ")", 0L, SpecialOptionFlag, MagickTrue },
-    { "+adjoin", 0L, ImageInfoOptionFlag, MagickFalse },
-    { "-adjoin", 0L, ImageInfoOptionFlag, MagickFalse },
     { "+adaptive-blur", 1L, DeprecateOptionFlag, MagickTrue },
     { "-adaptive-blur", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+adaptive-resize", 1L, DeprecateOptionFlag, MagickTrue },
     { "-adaptive-resize", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+adaptive-sharpen", 1L, DeprecateOptionFlag, MagickTrue },
     { "-adaptive-sharpen", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+adjoin", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "-adjoin", 0L, ImageInfoOptionFlag, MagickFalse },
     { "+affine", 0L, DrawInfoOptionFlag | DeprecateOptionFlag, MagickTrue },
     { "-affine", 1L, DrawInfoOptionFlag | DeprecateOptionFlag, MagickTrue },
     { "+affinity", 0L, DeprecateOptionFlag, MagickTrue },
@@ -247,12 +256,12 @@ static const OptionInfo
     { "-clut", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+coalesce", 0L, FireOptionFlag | DeprecateOptionFlag, MagickTrue },
     { "-coalesce", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
+    { "+color-matrix", 1L, DeprecateOptionFlag, MagickTrue },
+    { "-color-matrix", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+colorize", 1L, DeprecateOptionFlag, MagickTrue },
     { "-colorize", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+colormap", 0L, NonConvertOptionFlag, MagickFalse },
     { "-colormap", 1L, NonConvertOptionFlag, MagickFalse },
-    { "+color-matrix", 1L, DeprecateOptionFlag, MagickTrue },
-    { "-color-matrix", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+colors", 1L, DeprecateOptionFlag, MagickTrue },
     { "-colors", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+colorspace", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
@@ -358,10 +367,10 @@ static const OptionInfo
     { "-flatten", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+flip", 0L, DeprecateOptionFlag, MagickTrue },
     { "-flip", 0L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+flop", 0L, DeprecateOptionFlag, MagickTrue },
-    { "-flop", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "+floodfill", 2L, SimpleOperatorOptionFlag, MagickFalse },
     { "-floodfill", 2L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+flop", 0L, DeprecateOptionFlag, MagickTrue },
+    { "-flop", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "+font", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "-font", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "+foreground", 0L, NonConvertOptionFlag, MagickFalse },
@@ -414,10 +423,10 @@ static const OptionInfo
     { "-interline-spacing", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "+interpolate", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-interpolate", 1L, ImageInfoOptionFlag, MagickFalse },
-    { "+interword-spacing", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
-    { "-interword-spacing", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "+interpolative-resize", 1L, DeprecateOptionFlag, MagickTrue },
     { "-interpolative-resize", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+interword-spacing", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
+    { "-interword-spacing", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "+kerning", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "-kerning", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "+label", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -544,12 +553,12 @@ static const OptionInfo
     { "-regard-warnings", 0L, GenesisOptionFlag, MagickFalse },
     { "+region", 0L, SpecialOptionFlag, MagickFalse },
     { "-region", 1L, SpecialOptionFlag, MagickFalse },
+    { "+remap", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
+    { "-remap", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+remote", 0L, NonConvertOptionFlag, MagickFalse },
     { "-remote", 1L, NonConvertOptionFlag, MagickFalse },
     { "+render", 0L, DrawInfoOptionFlag, MagickFalse },
     { "-render", 0L, DrawInfoOptionFlag, MagickFalse },
-    { "+remap", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
-    { "-remap", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+repage", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "-repage", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+resample", 1L, DeprecateOptionFlag, MagickTrue },
@@ -1587,6 +1596,71 @@ static const OptionInfo
     { (char *) NULL, UndefinedVirtualPixelMethod, UndefinedOptionFlag, MagickFalse }
   };
 
+static const OptionInfo *GetOptionInfo(const CommandOption option)
+{
+  switch (option)
+  {
+    case MagickAlignOptions: return(AlignOptions);
+    case MagickAlphaOptions: return(AlphaOptions);
+    case MagickBooleanOptions: return(BooleanOptions);
+    case MagickChannelOptions: return(ChannelOptions);
+    case MagickClassOptions: return(ClassOptions);
+    case MagickClipPathOptions: return(ClipPathOptions);
+    case MagickColorspaceOptions: return(ColorspaceOptions);
+    case MagickCommandOptions: return(CommandOptions);
+    case MagickComposeOptions: return(ComposeOptions);
+    case MagickCompressOptions: return(CompressOptions);
+    case MagickDataTypeOptions: return(DataTypeOptions);
+    case MagickDebugOptions: return(LogEventOptions);
+    case MagickDecorateOptions: return(DecorateOptions);
+    case MagickDirectionOptions: return(DirectionOptions);
+    case MagickDisposeOptions: return(DisposeOptions);
+    case MagickDistortOptions: return(DistortOptions);
+    case MagickDitherOptions: return(DitherOptions);
+    case MagickEndianOptions: return(EndianOptions);
+    case MagickEvaluateOptions: return(EvaluateOptions);
+    case MagickFillRuleOptions: return(FillRuleOptions);
+    case MagickFilterOptions: return(FilterOptions);
+    case MagickFunctionOptions: return(FunctionOptions);
+    case MagickGravityOptions: return(GravityOptions);
+/*  case MagickImageListOptions: return(ImageListOptions); */
+    case MagickIntentOptions: return(IntentOptions);
+    case MagickInterlaceOptions: return(InterlaceOptions);
+    case MagickInterpolateOptions: return(InterpolateOptions);
+    case MagickKernelOptions: return(KernelOptions);
+    case MagickLayerOptions: return(LayerOptions);
+    case MagickLineCapOptions: return(LineCapOptions);
+    case MagickLineJoinOptions: return(LineJoinOptions);
+    case MagickListOptions: return(ListOptions);
+    case MagickLogEventOptions: return(LogEventOptions);
+    case MagickMetricOptions: return(MetricOptions);
+    case MagickMethodOptions: return(MethodOptions);
+    case MagickModeOptions: return(ModeOptions);
+    case MagickMorphologyOptions: return(MorphologyOptions);
+    case MagickNoiseOptions: return(NoiseOptions);
+    case MagickOrientationOptions: return(OrientationOptions);
+    case MagickPixelChannelOptions: return(PixelChannelOptions);
+    case MagickPixelTraitOptions: return(PixelTraitOptions);
+    case MagickPolicyDomainOptions: return(PolicyDomainOptions);
+    case MagickPolicyRightsOptions: return(PolicyRightsOptions);
+    case MagickPreviewOptions: return(PreviewOptions);
+    case MagickPrimitiveOptions: return(PrimitiveOptions);
+    case MagickQuantumFormatOptions: return(QuantumFormatOptions);
+    case MagickResolutionOptions: return(ResolutionOptions);
+    case MagickResourceOptions: return(ResourceOptions);
+    case MagickSparseColorOptions: return(SparseColorOptions);
+    case MagickStatisticOptions: return(StatisticOptions);
+    case MagickStorageOptions: return(StorageOptions);
+    case MagickStretchOptions: return(StretchOptions);
+    case MagickStyleOptions: return(StyleOptions);
+    case MagickTypeOptions: return(TypeOptions);
+    case MagickValidateOptions: return(ValidateOptions);
+    case MagickVirtualPixelOptions: return(VirtualPixelOptions);
+    default: break;
+  }
+  return((const OptionInfo *) NULL);
+}
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -1817,71 +1891,6 @@ MagickExport const char *GetImageOption(const ImageInfo *image_info,
 %
 */
 
-static const OptionInfo *GetOptionInfo(const CommandOption option)
-{
-  switch (option)
-  {
-    case MagickAlignOptions: return(AlignOptions);
-    case MagickAlphaOptions: return(AlphaOptions);
-    case MagickBooleanOptions: return(BooleanOptions);
-    case MagickChannelOptions: return(ChannelOptions);
-    case MagickClassOptions: return(ClassOptions);
-    case MagickClipPathOptions: return(ClipPathOptions);
-    case MagickColorspaceOptions: return(ColorspaceOptions);
-    case MagickCommandOptions: return(CommandOptions);
-    case MagickComposeOptions: return(ComposeOptions);
-    case MagickCompressOptions: return(CompressOptions);
-    case MagickDataTypeOptions: return(DataTypeOptions);
-    case MagickDebugOptions: return(LogEventOptions);
-    case MagickDecorateOptions: return(DecorateOptions);
-    case MagickDirectionOptions: return(DirectionOptions);
-    case MagickDisposeOptions: return(DisposeOptions);
-    case MagickDistortOptions: return(DistortOptions);
-    case MagickDitherOptions: return(DitherOptions);
-    case MagickEndianOptions: return(EndianOptions);
-    case MagickEvaluateOptions: return(EvaluateOptions);
-    case MagickFillRuleOptions: return(FillRuleOptions);
-    case MagickFilterOptions: return(FilterOptions);
-    case MagickFunctionOptions: return(FunctionOptions);
-    case MagickGravityOptions: return(GravityOptions);
-/*  case MagickImageListOptions: return(ImageListOptions); */
-    case MagickIntentOptions: return(IntentOptions);
-    case MagickInterlaceOptions: return(InterlaceOptions);
-    case MagickInterpolateOptions: return(InterpolateOptions);
-    case MagickKernelOptions: return(KernelOptions);
-    case MagickLayerOptions: return(LayerOptions);
-    case MagickLineCapOptions: return(LineCapOptions);
-    case MagickLineJoinOptions: return(LineJoinOptions);
-    case MagickListOptions: return(ListOptions);
-    case MagickLogEventOptions: return(LogEventOptions);
-    case MagickMetricOptions: return(MetricOptions);
-    case MagickMethodOptions: return(MethodOptions);
-    case MagickModeOptions: return(ModeOptions);
-    case MagickMorphologyOptions: return(MorphologyOptions);
-    case MagickNoiseOptions: return(NoiseOptions);
-    case MagickOrientationOptions: return(OrientationOptions);
-    case MagickPixelChannelOptions: return(PixelChannelOptions);
-    case MagickPixelTraitOptions: return(PixelTraitOptions);
-    case MagickPolicyDomainOptions: return(PolicyDomainOptions);
-    case MagickPolicyRightsOptions: return(PolicyRightsOptions);
-    case MagickPreviewOptions: return(PreviewOptions);
-    case MagickPrimitiveOptions: return(PrimitiveOptions);
-    case MagickQuantumFormatOptions: return(QuantumFormatOptions);
-    case MagickResolutionOptions: return(ResolutionOptions);
-    case MagickResourceOptions: return(ResourceOptions);
-    case MagickSparseColorOptions: return(SparseColorOptions);
-    case MagickStatisticOptions: return(StatisticOptions);
-    case MagickStorageOptions: return(StorageOptions);
-    case MagickStretchOptions: return(StretchOptions);
-    case MagickStyleOptions: return(StyleOptions);
-    case MagickTypeOptions: return(TypeOptions);
-    case MagickValidateOptions: return(ValidateOptions);
-    case MagickVirtualPixelOptions: return(VirtualPixelOptions);
-    default: break;
-  }
-  return((const OptionInfo *) NULL);
-}
-
 MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
   const MagickBooleanType list,const char *options)
 {
@@ -1966,6 +1975,83 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
       break;
   }
   return(option_types);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C o m m a n d O p t i o n I n f o                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetCommandOptionInfo() returns pointer to the matching OptionInfo entry
+%  for the "CommandOptions" table only. A specialised binary search is used,
+%  to speed up the lookup for that very large table, and returns both the
+%  type (arg count) and flags (arg type).
+%
+%  This search reduces linear search of over 500 options (250 tests of
+%  average) to about 10 lookups!
+%
+%  The format of the GetCommandOptionInfo method is:
+%
+%      const char **GetCommandOptions(const CommandOption value)
+%
+%  A description of each parameter follows:
+%
+%    o value: the value.
+%
+*/
+MagickExport const OptionInfo *GetCommandOptionInfo(const char *value)
+{
+  const OptionInfo
+    *option_info=CommandOptions;
+
+  static ssize_t
+    table_size = 0;
+
+  register ssize_t
+    i,l,h;
+
+  assert(value != (char *) NULL);
+  assert(*value != '\0');
+
+  /* count up table items - first time only */
+  if ( table_size == 0 )
+    {
+      l=-1;
+      for (i=0; option_info[i].mnemonic != (const char *) NULL; i++)
+        if ( LocaleCompare(value,option_info[i].mnemonic) == 0 )
+          l=i;
+      table_size = i;
+      return( &option_info[(l>=0?l:i)] );
+    }
+
+  /* faster binary search of command table, now that its length is known */
+  l=0;
+  h=table_size-1;
+  while ( l < h )
+  {
+    int cmp;
+    i = (l+h)/2; /* half the bounds */
+    /* compare string part, then switch character! */
+    cmp=LocaleCompare(value+1,option_info[i].mnemonic+1);
+    if ( cmp == 0 )
+      cmp = *value - *(option_info[i].mnemonic);
+
+fprintf(stderr, "%d --- %u < %u < %u --- \"%s\" < \"%s\" < \"%s\"\n",
+  cmp, l,i,h,
+  option_info[l].mnemonic, option_info[i].mnemonic, option_info[h].mnemonic);
+
+    if (cmp == 0)
+      return(&option_info[i]);
+    if (cmp > 0) l=i+1; else h=i;  /* reassign search bounds */
+  }
+  /* option was not found in table - return last 'null' entry. */
+  return(&option_info[table_size]);
 }
 
 /*

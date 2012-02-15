@@ -22,9 +22,28 @@
 extern "C" {
 #endif
 
+typedef enum
+{
+  /* What options should be processed */
+  ProcessNonOptionImageRead = 0x0001,  /* non-option is a image read */
+  ProcessUnknownOptionError = 0x0002,  /* unknown option produces error */
+
+  ProcessReadOption         = 0x0010,  /* allow '-read' to read images */
+
+  ProcessListOption         = 0x0040,  /* Process Image List Operators */
+
+  ProcessCommandOptions     = 0x0FFF,  /* Magick Command Flags */
+
+  /* Modify Option Handling */
+  ProcessOutputFile         = 0x1000,  /* Process the output file */
+  ProcessOneOptionOnly      = 0x8000   /* Process One Option Only */
+
+} OptionProcessFlags;
+
 extern WandExport void
   MagickSpecialOption(MagickWand *,const char *,const char *),
-  MagickCommandProcessOptions(MagickWand *,int,char **);
+  MagickCommandProcessOptions(MagickWand *,int,char **,
+       int *index, OptionProcessFlags flags);
 
 extern WandExport MagickBooleanType
   MagickImageCommand(ImageInfo *,int,char **,char **,ExceptionInfo *);
