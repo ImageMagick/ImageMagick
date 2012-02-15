@@ -8483,7 +8483,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       flags=ParseGeometry(threshold,&geometry_info);
       if ((flags & SigmaValue) == 0)
         geometry_info.sigma=1.0;
-      (void) SegmentImage(*image,RGBColorspace,MagickFalse,geometry_info.rho,
+      (void) SegmentImage(*image,sRGBColorspace,MagickFalse,geometry_info.rho,
         geometry_info.sigma,exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
