@@ -620,7 +620,7 @@
           image map requise
         </message>
         <message name="MissingArgument">
-          l'option a besoin d'un argument
+          manque argument obligatoire
         </message>
         <message name="MissingAnImageFilename">
           nom de fichier d'image absent
