@@ -629,7 +629,7 @@
           map image required
         </message>
         <message name="MissingArgument">
-          option requires an argument
+          missing required argument
         </message>
         <message name="MissingAnImageFilename">
           missing an image filename
