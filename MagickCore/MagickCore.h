@@ -55,6 +55,14 @@ extern "C" {
 #  define MAGICKCORE_POSIX_SUPPORT
 #endif 
 
+#if defined(__BORLANDC__) && defined(_DLL)
+#  pragma message("BCBMagick lib DLL export interface")
+#  define _MAGICKDLL_
+#  define _MAGICKLIB_
+#  define MAGICKCORE_MODULES_SUPPORT
+#  undef MAGICKCORE_BUILD_MODULES
+#endif
+
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
 # define MagickPrivate
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB) && !defined(MAGICK_STATIC_LINK)

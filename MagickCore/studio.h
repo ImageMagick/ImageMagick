@@ -62,92 +62,6 @@ extern "C" {
 #  define STDC
 #endif
 
-#if defined(__BORLANDC__) && defined(_DLL)
-#  pragma message("BCBMagick lib DLL export interface")
-#  define _MAGICKDLL_
-#  define _MAGICKLIB_
-#  define MAGICKCORE_MODULES_SUPPORT
-#  undef MAGICKCORE_BUILD_MODULES
-#endif
-
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
-# define MagickPrivate
-# if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
-#  define _MAGICKDLL_
-# endif
-# if defined(_MAGICKDLL_)
-#  if defined(_VISUALC_)
-#   pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
-#  endif
-#  if !defined(_MAGICKLIB_)
-#   if defined(__GNUC__)
-#    define MagickExport __attribute__ ((__dllimport__))
-#   else
-#    define MagickExport __declspec(dllimport)
-#   endif
-#   if defined(_VISUALC_)
-#    pragma message( "MagickCore lib DLL import interface" )
-#   endif
-#  else
-#   if defined(__GNUC__)
-#    define MagickExport __attribute__ ((__dllexport__))
-#   else
-#    define MagickExport __declspec(dllexport)
-#   endif
-#   if defined(_VISUALC_)
-#    pragma message( "MagickCore lib DLL export interface" )
-#   endif
-#  endif
-# else
-#  define MagickExport
-#  if defined(_VISUALC_)
-#   pragma message( "MagickCore lib static interface" )
-#  endif
-# endif
-
-# if defined(_DLL) && !defined(_LIB)
-#   if defined(__GNUC__)
-#    define ModuleExport __attribute__ ((__dllexport__))
-#   else
-#    define ModuleExport __declspec(dllexport)
-#   endif
-#  if defined(_VISUALC_)
-#   pragma message( "MagickCore module DLL export interface" )
-#  endif
-# else
-#  define ModuleExport
-#  if defined(_VISUALC_)
-#   pragma message( "MagickCore module static interface" )
-#  endif
-
-# endif
-# define MagickGlobal __declspec(thread)
-# if defined(_VISUALC_)
-#  pragma warning(disable : 4018)
-#  pragma warning(disable : 4068)
-#  pragma warning(disable : 4244)
-#  pragma warning(disable : 4142)
-#  pragma warning(disable : 4800)
-#  pragma warning(disable : 4786)
-#  pragma warning(disable : 4996)
-# endif
-#else
-# if __GNUC__ >= 4
-#  define MagickExport __attribute__ ((__visibility__ ("default")))
-#  define MagickPrivate  __attribute__ ((__visibility__ ("hidden")))
-# else
-#   define MagickExport
-#   define MagickPrivate
-# endif
-# define ModuleExport  MagickExport
-# define MagickGlobal
-#endif
-
-#define MagickSignature  0xabacadabUL
-#if !defined(MaxTextExtent)
-# define MaxTextExtent  4096
-#endif
-
 #include <stdarg.h>
 #include <stdio.h>
 #if defined(MAGICKCORE_HAVE_SYS_STAT_H)
@@ -246,28 +160,6 @@ extern size_t strlcpy(char *,const char *,size_t);
 extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
-#if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
-#  define magick_aligned(x)  __attribute__((__aligned__(x)))
-#  define magick_attribute  __attribute__
-#  define magick_unused(x)  magick_unused_ ## x __attribute__((__unused__))
-#else
-#  define magick_aligned(x)  /* nothing */
-#  define magick_attribute(x)  /* nothing */
-#  define magick_unused(x) x
-#endif
-
-#if defined(MAGICKCORE_HAVE___ALLOC_SIZE__)
-#  define magick_alloc_size(x)  __attribute__((__alloc_size__(x)))
-#  define magick_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
-#  define magick_cold  __attribute__((__cold__))
-#  define magick_hot  __attribute__((__hot__))
-#else
-#  define magick_alloc_size(x)  /* nothing */
-#  define magick_alloc_sizes(x,y)  /* nothing */
-#  define magick_cold
-#  define magick_hot
-#endif
-
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(MAGICKCORE_POSIX_SUPPORT)
 # include <sys/types.h>
 # include <sys/stat.h>
@@ -340,6 +232,8 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #if defined(vms)
 # include "MagickCore/vms.h"
 #endif
+
+#include "MagickCore/MagickCore.h"
 
 #undef HAVE_CONFIG_H
 #undef gamma
