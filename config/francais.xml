@@ -598,6 +598,9 @@
         <message name="GeometryDoesNotContainImage">
           image non incluse dans la géométrie
         </message>
+        <message name="InvalidUseOfOption">
+          Invalide utilisation de l'option
+        </message>
         <message name="ImagesAreNotTheSameSize">
           images diffèrent par la taille
         </message>

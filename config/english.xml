@@ -607,6 +607,9 @@
         <message name="GeometryDoesNotContainImage">
           geometry does not contain image
         </message>
+        <message name="InvalidUseOfOption">
+          invalif use of option
+        </message>
         <message name="ImagesAreNotTheSameSize">
           images are not the same size
         </message>
