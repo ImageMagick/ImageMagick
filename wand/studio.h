@@ -75,7 +75,7 @@ extern "C" {
 #  endif
 #  if !defined(_MAGICKLIB_)
 #   if defined(__GNUC__)
-#    define WandExport __attribute__ ((dllimport))
+#    define WandExport __attribute__ ((__dllimport__))
 #   else
 #    define WandExport __declspec(dllimport)
 #   endif
@@ -84,7 +84,7 @@ extern "C" {
 #   endif
 #  else
 #   if defined(__GNUC__)
-#    define WandExport __attribute__ ((dllexport))
+#    define WandExport __attribute__ ((__dllexport__))
 #   else
 #    define WandExport __declspec(dllexport)
 #   endif
@@ -110,8 +110,8 @@ extern "C" {
 # endif
 #else
 # if __GNUC__ >= 4
-#  define WandExport __attribute__ ((visibility ("default")))
-#  define WandPrivate  __attribute__ ((visibility ("hidden")))
+#  define WandExport __attribute__ ((__visibility__ ("default")))
+#  define WandPrivate  __attribute__ ((__visibility__ ("hidden")))
 # else
 #   define WandExport
 #   define WandPrivate
@@ -239,13 +239,25 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
 #if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
-#  define wand_aligned(x)  __attribute__((aligned(x)))
+#  define wand_aligned(x)  __attribute__((__aligned__(x)))
 #  define wand_attribute  __attribute__
-#  define wand_unused(x)  wand_unused_ ## x __attribute__((unused))
+#  define wand_unused(x)  wand_unused_ ## x __attribute__((__unused__))
 #else
 #  define wand_aligned(x)  /* nothing */
 #  define wand_attribute(x)  /* nothing */
 #  define wand_unused(x) x
+#endif
+
+#if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
+#  define wand_alloc_size(x)  __attribute__((__alloc_size__(x)))
+#  define wand_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
+#  define wand_cold  __attribute__((__cold__))
+#  define wand_hot  __attribute__((__hot__))
+#else
+#  define wand_alloc_size(x)  /* nothing */
+#  define wand_alloc_sizes(x)  /* nothing */
+#  define wand_cold
+#  define wand_hot
 #endif
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(MAGICKCORE_POSIX_SUPPORT)

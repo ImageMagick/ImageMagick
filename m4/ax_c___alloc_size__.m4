@@ -1,15 +1,15 @@
 # ===========================================================================
-#    http://www.gnu.org/software/autoconf-archive/ax_c___attribute__.html
+#    http://www.gnu.org/software/autoconf-archive/ax_c___alloc_size__.html
 # ===========================================================================
 #
 # SYNOPSIS
 #
-#   AX_C___ATTRIBUTE__
+#   AX_C___ALLOC_SIZE__
 #
 # DESCRIPTION
 #
-#   Provides a test for the compiler support of __attribute__ extensions.
-#   Defines HAVE___ATTRIBUTE__ if it is found.
+#   Provides a test for the compiler support of __alloc_size__ extensions.
+#   Defines HAVE___ALLOC_SIZE__ if it is found.
 #
 # LICENSE
 #
@@ -45,22 +45,22 @@
 
 #serial 8
 
-AC_DEFUN([AX_C___ATTRIBUTE__], [
-  AC_CACHE_CHECK([for __attribute__], [ax_cv___attribute__],
+AC_DEFUN([AX_C___ALLOC_SIZE__], [
+  AC_CACHE_CHECK([for __alloc_size__], [ax_cv___alloc_size__],
     [AC_COMPILE_IFELSE(
       [AC_LANG_PROGRAM(
 	[[#include <stdlib.h>
-	  static void foo(void) __attribute__ ((__unused__));
+	  static void foo(const size_t) __attribute__((__alloc_size__(1)));
 	  static void
-	  foo(void) {
+	  foo(const size_t bar) {
 	      exit(1);
 	  }
         ]], [])],
-      [ax_cv___attribute__=yes],
-      [ax_cv___attribute__=no]
+      [ax_cv___alloc_size__=yes],
+      [ax_cv___alloc_size__=no]
     )
   ])
-  if test "$ax_cv___attribute__" = "yes"; then
-    AC_DEFINE([HAVE___ATTRIBUTE__], 1, [define if your compiler has __attribute__])
+  if test "$ax_cv___alloc_size__" = "yes"; then
+    AC_DEFINE([HAVE___ALLOC_SIZE__], 1, [define if your compiler has __alloc_size__])
   fi
 ])

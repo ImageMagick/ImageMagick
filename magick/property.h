@@ -36,7 +36,7 @@ extern MagickExport MagickBooleanType
   DefineImageProperty(Image *,const char *),
   DeleteImageProperty(Image *,const char *),
   FormatImageProperty(Image *,const char *,const char *,...)
-    magick_attribute((format (printf,3,4))),
+    magick_attribute((__format__ (__printf__,3,4))),
   SetImageProperty(Image *,const char *,const char *);
 
 extern MagickExport void

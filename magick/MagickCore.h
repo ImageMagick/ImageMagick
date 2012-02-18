@@ -66,7 +66,7 @@ extern "C" {
 #  endif
 #  if !defined(_MAGICKLIB_)
 #   if defined(__GNUC__)
-#    define MagickExport __attribute__ ((dllimport))
+#    define MagickExport __attribute__ ((__dllimport__))
 #   else
 #    define MagickExport __declspec(dllimport)
 #   endif
@@ -75,7 +75,7 @@ extern "C" {
 #   endif
 #  else
 #   if defined(__GNUC__)
-#    define MagickExport __attribute__ ((dllexport))
+#    define MagickExport __attribute__ ((__dllexport__))
 #   else
 #    define MagickExport __declspec(dllexport)
 #   endif
@@ -92,7 +92,7 @@ extern "C" {
 
 # if defined(_DLL) && !defined(_LIB)
 #   if defined(__GNUC__)
-#    define ModuleExport __attribute__ ((dllexport))
+#    define ModuleExport __attribute__ ((__dllexport__))
 #   else
 #    define ModuleExport __declspec(dllexport)
 #   endif
@@ -118,8 +118,8 @@ extern "C" {
 # endif
 #else
 # if __GNUC__ >= 4
-#  define MagickExport __attribute__ ((visibility ("default")))
-#  define MagickPrivate  __attribute__ ((visibility ("hidden")))
+#  define MagickExport __attribute__ ((__visibility__ ("default")))
+#  define MagickPrivate  __attribute__ ((__visibility__ ("hidden")))
 # else
 #   define MagickExport
 #   define MagickPrivate

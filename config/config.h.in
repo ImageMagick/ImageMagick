@@ -761,6 +761,9 @@
 /* Define to 1 if you have the `_wstat' function. */
 #undef HAVE__WSTAT
 
+/* define if your compiler has __alloc_size__ */
+#undef HAVE___ALLOC_SIZE__
+
 /* define if your compiler has __attribute__ */
 #undef HAVE___ATTRIBUTE__
 
