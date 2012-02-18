@@ -2006,13 +2006,12 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         }
       jpeg_info=DestroyImageInfo(jpeg_info);
     }
+  quality=92;
   if ((image_info->compression != LosslessJPEGCompression) &&
       (image->quality <= 100))
     {
-      if (image->quality == UndefinedCompressionQuality)
-        jpeg_set_quality(&jpeg_info,92,MagickTrue);
-      else
-        jpeg_set_quality(&jpeg_info,(int) image->quality,MagickTrue);
+      if (image->quality != UndefinedCompressionQuality)
+        quality=(int) image->quality;
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: %.20g",
           (double) image->quality);
@@ -2020,7 +2019,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   else
     {
 #if !defined(C_LOSSLESS_SUPPORTED)
-      jpeg_set_quality(&jpeg_info,100,MagickTrue);
+      quality=100;
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: 100");
 #else
@@ -2048,6 +2047,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         }
 #endif
     }
+  jpeg_set_quality(&jpeg_info,quality,MagickTrue);
   sampling_factor=(const char *) NULL;
   value=GetImageProperty(image,"jpeg:sampling-factor");
   if (value != (char *) NULL)
@@ -2111,6 +2111,10 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       jpeg_info.comp_info[i].h_samp_factor=1;
       jpeg_info.comp_info[i].v_samp_factor=1;
     }
+  jpeg_add_quant_table(&jpeg_info,0,LuminanceQuantizationTable,
+    jpeg_quality_scaling(quality),0);
+  jpeg_add_quant_table(&jpeg_info,1,ChrominanceQuantizationTable,
+    jpeg_quality_scaling(quality),0);
   jpeg_start_compress(&jpeg_info,MagickTrue);
   if (image->debug != MagickFalse)
     {
