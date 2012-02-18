@@ -133,12 +133,26 @@ extern "C" {
 #endif
 #define MagickSignature  0xabacadabUL
 
-#if !defined(magick_attribute)
-#  if !defined(__GNUC__)
-#    define magick_attribute(x)  /* nothing */
-#  else
-#    define magick_attribute  __attribute__
-#  endif
+#if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
+#  define magick_aligned(x)  __attribute__((__aligned__(x)))
+#  define magick_attribute  __attribute__
+#  define magick_unused(x)  magick_unused_ ## x __attribute__((__unused__))
+#else
+#  define magick_aligned(x)  /* nothing */
+#  define magick_attribute(x)  /* nothing */
+#  define magick_unused(x) x
+#endif
+
+#if defined(MAGICKCORE_HAVE___ALLOC_SIZE__)
+#  define magick_alloc_size(x)  __attribute__((__alloc_size__(x)))
+#  define magick_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
+#  define magick_cold  __attribute__((__cold__))
+#  define magick_hot  __attribute__((__hot__))
+#else
+#  define magick_alloc_size(x)  /* nothing */
+#  define magick_alloc_sizes(x,y)  /* nothing */
+#  define magick_cold
+#  define magick_hot
 #endif
 
 #if defined(MAGICKCORE_NAMESPACE_PREFIX)
