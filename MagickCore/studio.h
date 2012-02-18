@@ -256,14 +256,14 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #  define magick_unused(x) x
 #endif
 
-#if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
+#if defined(MAGICKCORE_HAVE___ALLOC_SIZE__)
 #  define magick_alloc_size(x)  __attribute__((__alloc_size__(x)))
 #  define magick_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
 #  define magick_cold  __attribute__((__cold__))
 #  define magick_hot  __attribute__((__hot__))
 #else
 #  define magick_alloc_size(x)  /* nothing */
-#  define magick_alloc_sizes(x)  /* nothing */
+#  define magick_alloc_sizes(x,y)  /* nothing */
 #  define magick_cold
 #  define magick_hot
 #endif

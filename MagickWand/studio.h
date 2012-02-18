@@ -261,14 +261,14 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #  define wand_unused(x) x
 #endif
 
-#if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
+#if defined(MAGICKCORE_HAVE___ALLOC_SIZE__)
 #  define wand_alloc_size(x)  __attribute__((__alloc_size__(x)))
 #  define wand_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
 #  define wand_cold  __attribute__((__cold__))
 #  define wand_hot  __attribute__((__hot__))
 #else
 #  define wand_alloc_size(x)  /* nothing */
-#  define wand_alloc_sizes(x)  /* nothing */
+#  define wand_alloc_sizes(x,y)  /* nothing */
 #  define wand_cold
 #  define wand_hot
 #endif
