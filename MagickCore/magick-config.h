@@ -1166,6 +1166,11 @@
 /* Define to 1 if you have the `_wstat' function. */
 /* #undef HAVE__WSTAT */
 
+/* define if your compiler has __alloc_size__ */
+#ifndef MAGICKCORE_HAVE___ALLOC_SIZE__
+#define MAGICKCORE_HAVE___ALLOC_SIZE__ 1
+#endif
+
 /* define if your compiler has __attribute__ */
 #ifndef MAGICKCORE_HAVE___ATTRIBUTE__
 #define MAGICKCORE_HAVE___ATTRIBUTE__ 1

@@ -71,9 +71,9 @@ extern MagickExport MagickBooleanType
 
 extern MagickExport size_t
   ConcatenateMagickString(char *,const char *,const size_t)
-    magick_attribute((nonnull)),
+    magick_attribute((__nonnull__)),
   CopyMagickString(char *,const char *,const size_t)
-    magick_attribute((nonnull)),
+    magick_attribute((__nonnull__)),
   GetStringInfoLength(const StringInfo *);
 
 extern MagickExport ssize_t
@@ -95,7 +95,7 @@ extern MagickExport unsigned char
 
 extern MagickExport void
   ConcatenateStringInfo(StringInfo *,const StringInfo *)
-    magick_attribute((nonnull)),
+    magick_attribute((__nonnull__)),
   LocaleLower(char *),
   LocaleUpper(char *),
   PrintStringInfo(FILE *file,const char *,const StringInfo *),
