@@ -626,6 +626,7 @@
           manque argument obligatoire
         </message>
         <message name="MissingAnImageFilename">
+        <!-- FUTURE: Depreciate using MissingOutputFilename -->
           nom de fichier d'image absent
         </message>
         <message name="MissingExpression">
@@ -633,6 +634,9 @@
         </message>
         <message name="MissingNullSeparator">
           Séparateur nul pour liste d'image absent
+        </message>
+        <message name="MissingOutputFilename">
+          output filename absente
         </message>
         <message name="MustSpecifyAnImageName">
           Il faut spécifier un nom d'image
@@ -648,6 +652,9 @@
         </message>
         <message name="NoImagesDefined">
           pas d'images définies
+        </message>
+        <message name="NoImagesForFinalWrite">
+          pas d'images for final write
         </message>
         <message name="NoImageVectorGraphics">
           pas de graphiques vectoriels
