@@ -2013,7 +2013,7 @@ MagickExport const OptionInfo *GetCommandOptionInfo(const char *value)
   static ssize_t
     table_size = 0;
 
-  register ssize_t
+  register unsigned int
     i,l,h;
 
   assert(value != (char *) NULL);
@@ -2042,9 +2042,9 @@ MagickExport const OptionInfo *GetCommandOptionInfo(const char *value)
     if ( cmp == 0 )
       cmp = *value - *(option_info[i].mnemonic);
 
-fprintf(stderr, "%d --- %u < %u < %u --- \"%s\" < \"%s\" < \"%s\"\n",
-  cmp, l,i,h,
-  option_info[l].mnemonic, option_info[i].mnemonic, option_info[h].mnemonic);
+    (void) fprintf(stderr,"%d --- %u < %u < %u --- \"%s\" < \"%s\" < \"%s\"\n",
+      cmp,l,i,h,option_info[l].mnemonic,option_info[i].mnemonic,
+      option_info[h].mnemonic);
 
     if (cmp == 0)
       return(&option_info[i]);

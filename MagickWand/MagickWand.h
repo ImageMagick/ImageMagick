@@ -66,7 +66,7 @@ extern "C" {
 #  endif
 #  if !defined(_MAGICKLIB_)
 #   if defined(__GNUC__)
-#    define WandExport __attribute__ ((dllimport))
+#    define WandExport __attribute__ ((__dllimport__))
 #   else
 #    define WandExport __declspec(dllimport)
 #   endif
@@ -75,7 +75,7 @@ extern "C" {
 #   endif
 #  else
 #   if defined(__GNUC__)
-#    define WandExport __attribute__ ((dllexport))
+#    define WandExport __attribute__ ((__dllexport__))
 #   else
 #    define WandExport __declspec(dllexport)
 #   endif
@@ -113,8 +113,8 @@ extern "C" {
 # endif
 #else
 # if __GNUC__ >= 4
-#  define WandExport __attribute__ ((visibility ("default")))
-#  define WandPrivate  __attribute__ ((visibility ("hidden")))
+#  define WandExport __attribute__ ((__visibility__ ("default")))
+#  define WandPrivate  __attribute__ ((__visibility__ ("hidden")))
 # else
 #   define WandExport
 #   define WandPrivate

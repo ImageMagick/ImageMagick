@@ -81,7 +81,7 @@ extern "C" {
 #  endif
 #  if !defined(_MAGICKLIB_)
 #   if defined(__GNUC__)
-#    define MagickExport __attribute__ ((dllimport))
+#    define MagickExport __attribute__ ((__dllimport__))
 #   else
 #    define MagickExport __declspec(dllimport)
 #   endif
@@ -90,7 +90,7 @@ extern "C" {
 #   endif
 #  else
 #   if defined(__GNUC__)
-#    define MagickExport __attribute__ ((dllexport))
+#    define MagickExport __attribute__ ((__dllexport__))
 #   else
 #    define MagickExport __declspec(dllexport)
 #   endif
@@ -107,7 +107,7 @@ extern "C" {
 
 # if defined(_DLL) && !defined(_LIB)
 #   if defined(__GNUC__)
-#    define ModuleExport __attribute__ ((dllexport))
+#    define ModuleExport __attribute__ ((__dllexport__))
 #   else
 #    define ModuleExport __declspec(dllexport)
 #   endif
@@ -133,8 +133,8 @@ extern "C" {
 # endif
 #else
 # if __GNUC__ >= 4
-#  define MagickExport __attribute__ ((visibility ("default")))
-#  define MagickPrivate  __attribute__ ((visibility ("hidden")))
+#  define MagickExport __attribute__ ((__visibility__ ("default")))
+#  define MagickPrivate  __attribute__ ((__visibility__ ("hidden")))
 # else
 #   define MagickExport
 #   define MagickPrivate
@@ -247,13 +247,25 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
 #if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
-#  define magick_aligned(x)  __attribute__((aligned(x)))
+#  define magick_aligned(x)  __attribute__((__aligned__(x)))
 #  define magick_attribute  __attribute__
-#  define magick_unused(x)  magick_unused_ ## x __attribute__((unused))
+#  define magick_unused(x)  magick_unused_ ## x __attribute__((__unused__))
 #else
 #  define magick_aligned(x)  /* nothing */
 #  define magick_attribute(x)  /* nothing */
 #  define magick_unused(x) x
+#endif
+
+#if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
+#  define magick_alloc_size(x)  __attribute__((__alloc_size__(x)))
+#  define magick_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
+#  define magick_cold  __attribute__((__cold__))
+#  define magick_hot  __attribute__((__hot__))
+#else
+#  define magick_alloc_size(x)  /* nothing */
+#  define magick_alloc_sizes(x)  /* nothing */
+#  define magick_cold
+#  define magick_hot
 #endif
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(MAGICKCORE_POSIX_SUPPORT)

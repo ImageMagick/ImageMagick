@@ -60,9 +60,9 @@ extern MagickExport MagickBooleanType
 
 extern MagickExport ssize_t
   FormatLocaleFile(FILE *,const char *restrict,...)
-    magick_attribute((format (printf,2,3))),
+    magick_attribute((__format__ (__printf__,2,3))),
   FormatLocaleString(char *restrict,const size_t,const char *restrict,...)
-    magick_attribute((format (printf,3,4)));
+    magick_attribute((__format__ (__printf__,3,4)));
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
