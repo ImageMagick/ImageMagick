@@ -115,12 +115,16 @@ extern "C" {
 #endif
 #define WandSignature  0xabacadabUL
 
-#if !defined(wand_attribute)
-#  if !defined(__GNUC__)
-#    define wand_attribute(x)  /* nothing */
-#  else
-#    define wand_attribute  __attribute__
-#  endif
+#if defined(MAGICKCORE_HAVE___ALLOC_SIZE__)
+#  define wand_alloc_size(x)  __attribute__((__alloc_size__(x)))
+#  define wand_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
+#  define wand_cold  __attribute__((__cold__))
+#  define wand_hot  __attribute__((__hot__))
+#else
+#  define wand_alloc_size(x)  /* nothing */
+#  define wand_alloc_sizes(x,y)  /* nothing */
+#  define wand_cold
+#  define wand_hot
 #endif
 
 typedef struct _MagickWand
