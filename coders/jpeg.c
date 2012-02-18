@@ -1766,6 +1766,9 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   ErrorManager
     error_manager;
 
+  int
+    quality;
+
   JSAMPLE
     *jpeg_pixels;
 
@@ -1789,6 +1792,30 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
 
   struct jpeg_error_mgr
     jpeg_error;
+
+  static const unsigned int  /* Nicolas Robidoux's remix of ISO-IEC 10918-1 */
+    ChrominanceQuantizationTable[DCTSIZE2] =  /* 1993(E) Annex K */
+    {
+       17,   18,   24,   47,   97,   99,  128,  192,
+       18,   21,   26,   66,   97,   99,  128,  192,
+       24,   26,   56,   97,   99,  128,  192,  256,
+       47,   66,   97,   99,  128,  192,  256,  512,
+       97,   97,   99,  128,  192,  256,  512, 1024,
+       99,   99,  128,  192,  256,  512, 1024, 2048,
+      128,  128,  192,  256,  512, 1024, 2048, 4096,
+      192,  192,  256,  512, 1024, 2048, 4096, 8192
+    },
+    LuminanceQuantizationTable[DCTSIZE2] =
+    {
+       16,   11,   12,   15,   21,   32,   50,   66,
+       11,   12,   13,   18,   24,   46,   62,   73,
+       12,   13,   16,   23,   38,   56,   73,   75,
+       15,   18,   23,   29,   53,   75,   83,   80,
+       21,   24,   38,   53,   68,   95,  103,   94,
+       32,   46,   56,   75,   95,  104,  117,   96,
+       50,   62,   73,   83,  103,  117,  120,  102,
+       66,   73,   75,   80,   94,   96,  102,   87
+    };
 
   /*
     Open image file.
@@ -2010,13 +2037,12 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         }
       jpeg_info=DestroyImageInfo(jpeg_info);
     }
+  quality=92;
   if ((image_info->compression != LosslessJPEGCompression) &&
       (image->quality <= 100))
     {
-      if (image->quality == UndefinedCompressionQuality)
-        jpeg_set_quality(&jpeg_info,92,MagickTrue);
-      else
-        jpeg_set_quality(&jpeg_info,(int) image->quality,MagickTrue);
+      if (image->quality != UndefinedCompressionQuality)
+        quality=(int) image->quality;
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: %.20g",
           (double) image->quality);
@@ -2024,7 +2050,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   else
     {
 #if !defined(C_LOSSLESS_SUPPORTED)
-      jpeg_set_quality(&jpeg_info,100,MagickTrue);
+      quality=100;
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: 100");
 #else
@@ -2052,6 +2078,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         }
 #endif
     }
+  jpeg_set_quality(&jpeg_info,quality,MagickTrue);
   sampling_factor=(const char *) NULL;
   value=GetImageProperty(image,"jpeg:sampling-factor",exception);
   if (value != (char *) NULL)
@@ -2115,6 +2142,10 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       jpeg_info.comp_info[i].h_samp_factor=1;
       jpeg_info.comp_info[i].v_samp_factor=1;
     }
+  jpeg_add_quant_table(&jpeg_info,0,LuminanceQuantizationTable,
+    jpeg_quality_scaling(quality),0);
+  jpeg_add_quant_table(&jpeg_info,1,ChrominanceQuantizationTable,
+    jpeg_quality_scaling(quality),0);
   jpeg_start_compress(&jpeg_info,MagickTrue);
   if (image->debug != MagickFalse)
     {
