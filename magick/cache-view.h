@@ -65,8 +65,8 @@ extern MagickExport const IndexPacket
 
 extern MagickExport const PixelPacket
   *GetCacheViewVirtualPixels(const CacheView *,const ssize_t,const ssize_t,
-    const size_t,const size_t,ExceptionInfo *),
-  *GetCacheViewVirtualPixelQueue(const CacheView *);
+    const size_t,const size_t,ExceptionInfo *) magick_hot_spot,
+  *GetCacheViewVirtualPixelQueue(const CacheView *) magick_hot_spot;
 
 extern MagickExport ExceptionInfo
   *GetCacheViewException(const CacheView *);
@@ -84,7 +84,7 @@ extern MagickExport MagickBooleanType
     PixelPacket *,ExceptionInfo *),
   SetCacheViewStorageClass(CacheView *,const ClassType),
   SetCacheViewVirtualPixelMethod(CacheView *,const VirtualPixelMethod),
-  SyncCacheViewAuthenticPixels(CacheView *,ExceptionInfo *);
+  SyncCacheViewAuthenticPixels(CacheView *,ExceptionInfo *) magick_hot_spot;
 
 extern MagickExport MagickSizeType
   GetCacheViewExtent(const CacheView *);
@@ -93,11 +93,11 @@ extern MagickExport size_t
   GetCacheViewChannels(const CacheView *);
 
 extern MagickExport PixelPacket
-  *GetCacheViewAuthenticPixelQueue(CacheView *),
+  *GetCacheViewAuthenticPixelQueue(CacheView *) magick_hot_spot,
   *GetCacheViewAuthenticPixels(CacheView *,const ssize_t,const ssize_t,
-    const size_t,const size_t,ExceptionInfo *),
+    const size_t,const size_t,ExceptionInfo *) magick_hot_spot,
   *QueueCacheViewAuthenticPixels(CacheView *,const ssize_t,const ssize_t,
-    const size_t,const size_t,ExceptionInfo *);
+    const size_t,const size_t,ExceptionInfo *) magick_hot_spot;
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
