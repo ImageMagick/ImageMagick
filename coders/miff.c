@@ -1364,7 +1364,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 bzip_info.next_in=(char *) compress_pixels;
                 length=(size_t) BZipMaxExtent(packet_size*image->columns);
-                if (version != 0)
+                if (version != 0.0)
                   length=(size_t) ReadBlobMSBLong(image);
                 bzip_info.avail_in=(unsigned int) ReadBlob(image,length,
                   (unsigned char *) bzip_info.next_in);
@@ -1420,7 +1420,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 zip_info.next_in=compress_pixels;
                 length=(size_t) ZipMaxExtent(packet_size*image->columns);
-                if (version != 0)
+                if (version != 0.0)
                   length=(size_t) ReadBlobMSBLong(image);
                 zip_info.avail_in=(unsigned int) ReadBlob(image,length,
                   zip_info.next_in);
@@ -1474,7 +1474,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         int
           code;
 
-        if (version == 0)
+        if (version == 0.0)
           {
             MagickOffsetType
               offset;
@@ -1511,7 +1511,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         int
           code;
 
-        if (version == 0)
+        if (version == 0.0)
           {
             MagickOffsetType
               offset;
