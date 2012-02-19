@@ -980,7 +980,7 @@ MagickExport Image *ColorMatrixImage(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    MagickRealType
+    PixelInfo
       pixel;
 
     register const Quantum
@@ -1002,6 +1002,7 @@ MagickExport Image *ColorMatrixImage(const Image *image,
         status=MagickFalse;
         continue;
       }
+    GetPixelInfo(image,&pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
@@ -1010,35 +1011,31 @@ MagickExport Image *ColorMatrixImage(const Image *image,
       size_t
         height;
 
+      GetPixelInfoPixel(image,p,&pixel);
       height=color_matrix->height > 6 ? 6UL : color_matrix->height;
       for (v=0; v < (ssize_t) height; v++)
       {
-        pixel=ColorMatrix[v][0]*GetPixelRed(image,p)+ColorMatrix[v][1]*
+        MagickRealType
+          sum;
+
+        sum=ColorMatrix[v][0]*GetPixelRed(image,p)+ColorMatrix[v][1]*
           GetPixelGreen(image,p)+ColorMatrix[v][2]*GetPixelBlue(image,p);
         if (image->colorspace == CMYKColorspace)
-          pixel+=ColorMatrix[v][3]*GetPixelBlack(image,p);
+          sum+=ColorMatrix[v][3]*GetPixelBlack(image,p);
         if (image->matte != MagickFalse)
-          pixel+=ColorMatrix[v][4]*GetPixelAlpha(image,p);
-        pixel+=QuantumRange*ColorMatrix[v][5];
+          sum+=ColorMatrix[v][4]*GetPixelAlpha(image,p);
+        sum+=QuantumRange*ColorMatrix[v][5];
         switch (v)
         {
-          case 0: SetPixelRed(color_image,ClampToQuantum(pixel),q); break;
-          case 1: SetPixelGreen(color_image,ClampToQuantum(pixel),q); break;
-          case 2: SetPixelBlue(color_image,ClampToQuantum(pixel),q); break;
-          case 3:
-          {
-            if (image->colorspace == CMYKColorspace)
-              SetPixelBlack(color_image,ClampToQuantum(pixel),q);
-            break;
-          }
-          case 4:
-          {
-            if (image->matte != MagickFalse)
-              SetPixelAlpha(color_image,ClampToQuantum(pixel),q);
-            break;
-          }
+          case 0: pixel.red=sum; break;
+          case 1: pixel.green=sum; break;
+          case 2: pixel.blue=sum; break;
+          case 3: pixel.black=sum; break;
+          case 4: pixel.alpha=sum; break;
+          default: break;
         }
       }
+      SetPixelInfoPixel(color_image,&pixel,q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(color_image);
     }
