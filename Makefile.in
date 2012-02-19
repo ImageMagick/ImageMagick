@@ -1719,7 +1719,6 @@ am__objects_19 = wand/wand_libMagickWand_la-animate.lo \
 	wand/wand_libMagickWand_la-magick-image.lo \
 	wand/wand_libMagickWand_la-magick-property.lo \
 	wand/wand_libMagickWand_la-magick-wand.lo \
-	wand/wand_libMagickWand_la-method-attribute.lo \
 	wand/wand_libMagickWand_la-mogrify.lo \
 	wand/wand_libMagickWand_la-montage.lo \
 	wand/wand_libMagickWand_la-pixel-iterator.lo \
@@ -4320,7 +4319,7 @@ WAND_SOURCES = \
 	wand/magick-wand.c \
 	wand/magick-wand.h \
 	wand/magick-wand-private.h \
-	wand/method-attribute.c \
+	wand/method-attribute.h \
 	wand/mogrify.c \
 	wand/mogrify.h \
 	wand/mogrify-private.h \
@@ -6109,8 +6108,6 @@ wand/wand_libMagickWand_la-magick-property.lo: wand/$(am__dirstamp) \
 	wand/$(DEPDIR)/$(am__dirstamp)
 wand/wand_libMagickWand_la-magick-wand.lo: wand/$(am__dirstamp) \
 	wand/$(DEPDIR)/$(am__dirstamp)
-wand/wand_libMagickWand_la-method-attribute.lo: wand/$(am__dirstamp) \
-	wand/$(DEPDIR)/$(am__dirstamp)
 wand/wand_libMagickWand_la-mogrify.lo: wand/$(am__dirstamp) \
 	wand/$(DEPDIR)/$(am__dirstamp)
 wand/wand_libMagickWand_la-montage.lo: wand/$(am__dirstamp) \
@@ -7199,8 +7196,6 @@ mostlyclean-compile:
 	-rm -f wand/wand_libMagickWand_la-magick-property.lo
 	-rm -f wand/wand_libMagickWand_la-magick-wand.$(OBJEXT)
 	-rm -f wand/wand_libMagickWand_la-magick-wand.lo
-	-rm -f wand/wand_libMagickWand_la-method-attribute.$(OBJEXT)
-	-rm -f wand/wand_libMagickWand_la-method-attribute.lo
 	-rm -f wand/wand_libMagickWand_la-mogrify.$(OBJEXT)
 	-rm -f wand/wand_libMagickWand_la-mogrify.lo
 	-rm -f wand/wand_libMagickWand_la-montage.$(OBJEXT)
@@ -7627,7 +7622,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-magick-image.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-magick-property.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-magick-wand.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-method-attribute.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-mogrify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-montage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@wand/$(DEPDIR)/wand_libMagickWand_la-pixel-iterator.Plo@am__quote@
@@ -10117,13 +10111,6 @@ wand/wand_libMagickWand_la-magick-wand.lo: wand/magick-wand.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='wand/magick-wand.c' object='wand/wand_libMagickWand_la-magick-wand.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_libMagickWand_la-magick-wand.lo `test -f 'wand/magick-wand.c' || echo '$(srcdir)/'`wand/magick-wand.c
-
-wand/wand_libMagickWand_la-method-attribute.lo: wand/method-attribute.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_libMagickWand_la-method-attribute.lo -MD -MP -MF wand/$(DEPDIR)/wand_libMagickWand_la-method-attribute.Tpo -c -o wand/wand_libMagickWand_la-method-attribute.lo `test -f 'wand/method-attribute.c' || echo '$(srcdir)/'`wand/method-attribute.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) wand/$(DEPDIR)/wand_libMagickWand_la-method-attribute.Tpo wand/$(DEPDIR)/wand_libMagickWand_la-method-attribute.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='wand/method-attribute.c' object='wand/wand_libMagickWand_la-method-attribute.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wand/wand_libMagickWand_la-method-attribute.lo `test -f 'wand/method-attribute.c' || echo '$(srcdir)/'`wand/method-attribute.c
 
 wand/wand_libMagickWand_la-mogrify.lo: wand/mogrify.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(wand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wand/wand_libMagickWand_la-mogrify.lo -MD -MP -MF wand/$(DEPDIR)/wand_libMagickWand_la-mogrify.Tpo -c -o wand/wand_libMagickWand_la-mogrify.lo `test -f 'wand/mogrify.c' || echo '$(srcdir)/'`wand/mogrify.c
