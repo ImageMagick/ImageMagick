@@ -490,6 +490,7 @@ static StringInfo *GenerateEntropicChaos(RandomInfo *random_info)
     */
     SetStringInfoLength(chaos,MaxEntropyExtent);
     status=NTGatherRandomData(MaxEntropyExtent,GetStringInfoDatum(chaos));
+    (void) status;
     ConcatenateStringInfo(entropy,chaos);
   }
 #else
