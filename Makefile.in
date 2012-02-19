@@ -275,7 +275,6 @@ subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
 	$(top_srcdir)/m4/argz.m4 \
-	$(top_srcdir)/m4/ax_c___alloc_size__.m4 \
 	$(top_srcdir)/m4/ax_c___attribute__.m4 \
 	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
 	$(top_srcdir)/m4/ax_compare_version.m4 \
@@ -428,15 +427,16 @@ am__MagickCore_libMagickCore_la_SOURCES_DIST =  \
 	MagickCore/magick-config.h MagickCore/magick-type.h \
 	MagickCore/magick.h MagickCore/matrix.c MagickCore/matrix.h \
 	MagickCore/matrix-private.h MagickCore/memory.c \
-	MagickCore/memory_.h MagickCore/methods.h MagickCore/mime.c \
-	MagickCore/mime.h MagickCore/module.c MagickCore/module.h \
-	MagickCore/monitor.c MagickCore/monitor.h \
-	MagickCore/monitor-private.h MagickCore/montage.c \
-	MagickCore/montage.h MagickCore/morphology.c \
-	MagickCore/morphology.h MagickCore/morphology-private.h \
-	MagickCore/nt-base.h MagickCore/nt-base-private.h \
-	MagickCore/option.c MagickCore/option.h MagickCore/paint.c \
-	MagickCore/paint.h MagickCore/pixel.c MagickCore/pixel.h \
+	MagickCore/memory_.h MagickCore/method-attribute.h \
+	MagickCore/methods.h MagickCore/mime.c MagickCore/mime.h \
+	MagickCore/module.c MagickCore/module.h MagickCore/monitor.c \
+	MagickCore/monitor.h MagickCore/monitor-private.h \
+	MagickCore/montage.c MagickCore/montage.h \
+	MagickCore/morphology.c MagickCore/morphology.h \
+	MagickCore/morphology-private.h MagickCore/nt-base.h \
+	MagickCore/nt-base-private.h MagickCore/option.c \
+	MagickCore/option.h MagickCore/paint.c MagickCore/paint.h \
+	MagickCore/pixel.c MagickCore/pixel.h \
 	MagickCore/pixel-accessor.h MagickCore/policy.c \
 	MagickCore/policy.h MagickCore/PreRvIcccm.c \
 	MagickCore/PreRvIcccm.h MagickCore/prepress.c \
@@ -4041,6 +4041,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/matrix-private.h \
 	MagickCore/memory.c \
 	MagickCore/memory_.h \
+	MagickCore/method-attribute.h \
 	MagickCore/methods.h \
 	MagickCore/mime.c \
 	MagickCore/mime.h \
@@ -4204,6 +4205,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/magick-type.h \
 	MagickCore/matrix.h \
 	MagickCore/memory_.h \
+	MagickCore/method-attribute.h \
 	MagickCore/methods.h \
 	MagickCore/mime.h \
 	MagickCore/module.h \
@@ -4356,6 +4358,7 @@ MAGICKWAND_SOURCES = \
 	MagickWand/magick-cli.h \
 	MagickWand/magick-wand.c \
 	MagickWand/magick-wand-private.h \
+	MagickWand/method-attribute.h \
 	MagickWand/mogrify.c \
 	MagickWand/mogrify.h \
 	MagickWand/mogrify-private.h \
@@ -4391,6 +4394,7 @@ MAGICKWAND_INCLUDE_HDRS = \
 	MagickWand/magick-cli.h \
 	MagickWand/magick-image.h \
 	MagickWand/magick-property.h \
+	MagickWand/method-attribute.h \
 	MagickWand/mogrify.h \
 	MagickWand/montage.h \
 	MagickWand/operation.h \
