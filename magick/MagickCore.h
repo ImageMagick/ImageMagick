@@ -154,13 +154,13 @@ extern "C" {
 #if defined(MAGICKCORE_HAVE___ALLOC_SIZE__)
 #  define magick_alloc_size(x)  __attribute__((__alloc_size__(x)))
 #  define magick_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
-#  define magick_cold  __attribute__((__cold__))
-#  define magick_hot  __attribute__((__hot__))
+#  define magick_cold_spot  __attribute__((__cold__))
+#  define magick_hot_spot  __attribute__((__hot__))
 #else
 #  define magick_alloc_size(x)  /* nothing */
 #  define magick_alloc_sizes(x,y)  /* nothing */
-#  define magick_cold
-#  define magick_hot
+#  define magick_cold_spot
+#  define magick_hot_spot
 #endif
 
 #if defined(MAGICKCORE_NAMESPACE_PREFIX)
