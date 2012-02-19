@@ -164,6 +164,7 @@ MAGICK_BASE_SRCS = \
 	magick/memory.c \
 	magick/memory_.h \
 	magick/methods.h \
+	magick/method-attribute.h \
 	magick/mime.c \
 	magick/mime.h \
 	magick/module.c \
@@ -335,6 +336,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/matrix.h \
 	magick/memory_.h \
 	magick/methods.h \
+	magick/method-attribute.h \
 	magick/mime.h \
 	magick/module.h \
 	magick/monitor.h \

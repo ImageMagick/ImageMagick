@@ -8024,46 +8024,6 @@ $as_echo "#define HAVE___ATTRIBUTE__ 1" >>confdefs.h
   fi
 
 
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __alloc_size__" >&5
-$as_echo_n "checking for __alloc_size__... " >&6; }
-if ${ax_cv___alloc_size__+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <stdlib.h>
-	  static void foo(const size_t) __attribute__((__alloc_size__(1)));
-	  static void
-	  foo(const size_t bar) {
-	      exit(1);
-	  }
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ax_cv___alloc_size__=yes
-else
-  ax_cv___alloc_size__=no
-
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv___alloc_size__" >&5
-$as_echo "$ax_cv___alloc_size__" >&6; }
-  if test "$ax_cv___alloc_size__" = "yes"; then
-
-$as_echo "#define HAVE___ALLOC_SIZE__ 1" >>confdefs.h
-
-  fi
-
-
 
 if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
 	if test -n "$ac_tool_prefix"; then

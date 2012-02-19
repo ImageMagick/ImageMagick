@@ -46,6 +46,7 @@ WAND_SOURCES = \
 	wand/magick-wand.c \
 	wand/magick-wand.h \
 	wand/magick-wand-private.h \
+	wand/method-attribute.c \
 	wand/mogrify.c \
 	wand/mogrify.h \
 	wand/mogrify-private.h \
@@ -80,6 +81,7 @@ WAND_INCLUDE_HDRS = \
 	wand/magick-property.h \
 	wand/magick-wand.h \
 	wand/magick_wand.h \
+	wand/method-attribute.h \
 	wand/mogrify.h \
 	wand/montage.h \
 	wand/pixel-iterator.h \
