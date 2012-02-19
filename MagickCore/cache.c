@@ -117,6 +117,10 @@ struct _NexusInfo
 extern "C" {
 #endif
 
+static Cache
+  GetImagePixelCache(Image *,const MagickBooleanType,ExceptionInfo *)
+    magick_hot_spot;
+
 static const Quantum
   *GetVirtualPixelCache(const Image *,const VirtualPixelMethod,const ssize_t,
     const ssize_t,const size_t,const size_t,ExceptionInfo *),
@@ -143,7 +147,7 @@ static Quantum
   *QueueAuthenticPixelsCache(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,ExceptionInfo *),
   *SetPixelCacheNexusPixels(const Image *,const RectangleInfo *,NexusInfo *,
-    ExceptionInfo *);
+    ExceptionInfo *) magick_hot_spot;
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

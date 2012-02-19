@@ -217,7 +217,7 @@ extern MagickPrivate ColorspaceType
 extern MagickPrivate const Quantum
   *GetVirtualPixelsFromNexus(const Image *,const VirtualPixelMethod,
     const ssize_t,const ssize_t,const size_t,const size_t,NexusInfo *,
-    ExceptionInfo *),
+    ExceptionInfo *) magick_hot_spot,
   *GetVirtualPixelsNexus(const Cache,NexusInfo *);
 
 extern MagickPrivate const void
@@ -226,7 +226,7 @@ extern MagickPrivate const void
 
 extern MagickPrivate MagickBooleanType
   CacheComponentGenesis(void),
-  SyncAuthenticPixelCacheNexus(Image *,NexusInfo *,ExceptionInfo *),
+  SyncAuthenticPixelCacheNexus(Image *,NexusInfo *,ExceptionInfo *) magick_hot_spot,
   SyncImagePixelCache(Image *,ExceptionInfo *);
 
 extern MagickPrivate MagickSizeType
@@ -238,11 +238,11 @@ extern MagickPrivate NexusInfo
 
 extern MagickPrivate Quantum
   *GetAuthenticPixelCacheNexus(Image *,const ssize_t,const ssize_t,
-    const size_t,const size_t,NexusInfo *,ExceptionInfo *),
+    const size_t,const size_t,NexusInfo *,ExceptionInfo *) magick_hot_spot,
   *GetPixelCacheNexusPixels(const Cache,NexusInfo *),
   *QueueAuthenticPixelCacheNexus(Image *,const ssize_t,const ssize_t,
     const size_t,const size_t,const MagickBooleanType,NexusInfo *,
-    ExceptionInfo *);
+    ExceptionInfo *) magick_hot_spot;
 
 extern MagickPrivate size_t
   GetPixelCacheChannels(const Cache);
@@ -254,7 +254,7 @@ extern MagickPrivate VirtualPixelMethod
 extern MagickPrivate void
   CacheComponentTerminus(void),
   ClonePixelCacheMethods(Cache,const Cache),
-  *GetPixelCacheNexusMetacontent(const Cache,NexusInfo *),
+  *GetPixelCacheNexusMetacontent(const Cache,NexusInfo *) magick_hot_spot,
   *GetPixelCachePixels(Image *,MagickSizeType *,ExceptionInfo *),
   GetPixelCacheTileSize(const Image *,size_t *,size_t *),
   GetPixelCacheMethods(CacheMethods *),
