@@ -161,6 +161,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/matrix-private.h \
 	MagickCore/memory.c \
 	MagickCore/memory_.h \
+	MagickCore/method-attribute.h \
 	MagickCore/methods.h \
 	MagickCore/mime.c \
 	MagickCore/mime.h \
@@ -326,6 +327,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/magick-type.h \
 	MagickCore/matrix.h \
 	MagickCore/memory_.h \
+	MagickCore/method-attribute.h \
 	MagickCore/methods.h \
 	MagickCore/mime.h \
 	MagickCore/module.h \

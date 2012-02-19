@@ -55,114 +55,12 @@ extern "C" {
 #  define MAGICKCORE_POSIX_SUPPORT
 #endif 
 
-#if defined(__BORLANDC__) && defined(_DLL)
-#  pragma message("BCBMagick lib DLL export interface")
-#  define _MAGICKDLL_
-#  define _MAGICKLIB_
-#  define MAGICKCORE_MODULES_SUPPORT
-#  undef MAGICKCORE_BUILD_MODULES
-#endif
-
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
-# define MagickPrivate
-# if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB) && !defined(MAGICK_STATIC_LINK)
-#  define _MAGICKDLL_
-# endif
-# if defined(_MAGICKDLL_)
-#  if defined(_VISUALC_)
-#   pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
-#  endif
-#  if !defined(_MAGICKLIB_)
-#   if defined(__GNUC__)
-#    define MagickExport __attribute__ ((__dllimport__))
-#   else
-#    define MagickExport __declspec(dllimport)
-#   endif
-#   if defined(_VISUALC_)
-#    pragma message( "Magick lib DLL import interface" )
-#   endif
-#  else
-#   if defined(__GNUC__)
-#    define MagickExport __attribute__ ((__dllexport__))
-#   else
-#    define MagickExport __declspec(dllexport)
-#   endif
-#   if defined(_VISUALC_)
-#    pragma message( "Magick lib DLL export interface" )
-#   endif
-#  endif
-# else
-#  define MagickExport
-#  if defined(_VISUALC_)
-#   pragma message( "Magick lib static interface" )
-#  endif
-# endif
-
-# if defined(_DLL) && !defined(_LIB)
-#  define ModuleExport  __declspec(dllexport)
-#  if defined(_VISUALC_)
-#   pragma message( "Magick module DLL export interface" )
-#  endif
-# else
-#  define ModuleExport
-#  if defined(_VISUALC_)
-#   pragma message( "Magick module static interface" )
-#  endif
-
-# endif
-# define MagickGlobal __declspec(thread)
-# if defined(_VISUALC_)
-#  pragma warning(disable : 4018)
-#  pragma warning(disable : 4244)
-#  pragma warning(disable : 4142)
-#  pragma warning(disable : 4800)
-#  pragma warning(disable : 4786)
-#  pragma warning(disable : 4996)
-# endif
-#else
-# if __GNUC__ >= 4
-#  define MagickExport __attribute__ ((__visibility__ ("default")))
-#  define MagickPrivate  __attribute__ ((__visibility__ ("hidden")))
-# else
-#   define MagickExport
-#   define MagickPrivate
-# endif
-# define ModuleExport  MagickExport
-# define MagickGlobal
-#endif
-
-#if !defined(MaxTextExtent)
-#  define MaxTextExtent  4096
-#endif
-#define MagickSignature  0xabacadabUL
-
-#if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
-#  define magick_aligned(x)  __attribute__((__aligned__(x)))
-#  define magick_attribute  __attribute__
-#  define magick_unused(x)  magick_unused_ ## x __attribute__((__unused__))
-#else
-#  define magick_aligned(x)  /* nothing */
-#  define magick_attribute(x)  /* nothing */
-#  define magick_unused(x) x
-#endif
-
-#if defined(MAGICKCORE_HAVE___ALLOC_SIZE__)
-#  define magick_alloc_size(x)  __attribute__((__alloc_size__(x)))
-#  define magick_alloc_sizes(x,y)  __attribute__((__alloc_size__(x,y)))
-#  define magick_cold_spot  __attribute__((__cold__))
-#  define magick_hot_spot  __attribute__((__hot__))
-#else
-#  define magick_alloc_size(x)  /* nothing */
-#  define magick_alloc_sizes(x,y)  /* nothing */
-#  define magick_cold_spot
-#  define magick_hot_spot
-#endif
+#include "MagickCore/method-attribute.h"
 
 #if defined(MAGICKCORE_NAMESPACE_PREFIX)
 # include "MagickCore/methods.h"
 #endif
 #include "MagickCore/magick-type.h"
-#include "MagickCore/xwindow.h"
 #include "MagickCore/accelerate.h"
 #include "MagickCore/animate.h"
 #include "MagickCore/annotate.h"
@@ -184,6 +82,7 @@ extern "C" {
 #include "MagickCore/constitute.h"
 #include "MagickCore/decorate.h"
 #include "MagickCore/delegate.h"
+#include "MagickCore/deprecate.h"
 #include "MagickCore/display.h"
 #include "MagickCore/distort.h"
 #include "MagickCore/draw.h"
@@ -213,11 +112,9 @@ extern "C" {
 #include "MagickCore/monitor.h"
 #include "MagickCore/montage.h"
 #include "MagickCore/morphology.h"
-#include "MagickCore/nt-base.h"
 #include "MagickCore/option.h"
 #include "MagickCore/paint.h"
 #include "MagickCore/pixel.h"
-#include "MagickCore/pixel-accessor.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/prepress.h"
 #include "MagickCore/profile.h"
@@ -244,6 +141,7 @@ extern "C" {
 #include "MagickCore/utility.h"
 #include "MagickCore/version.h"
 #include "MagickCore/xml-tree.h"
+#include "MagickCore/xwindow.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

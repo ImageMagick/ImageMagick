@@ -47,6 +47,7 @@ MAGICKWAND_SOURCES = \
 	MagickWand/magick-cli.h \
 	MagickWand/magick-wand.c \
 	MagickWand/magick-wand-private.h \
+	MagickWand/method-attribute.h \
 	MagickWand/mogrify.c \
 	MagickWand/mogrify.h \
 	MagickWand/mogrify-private.h \
@@ -82,6 +83,7 @@ MAGICKWAND_INCLUDE_HDRS = \
 	MagickWand/magick-cli.h \
 	MagickWand/magick-image.h \
 	MagickWand/magick-property.h \
+	MagickWand/method-attribute.h \
 	MagickWand/mogrify.h \
 	MagickWand/montage.h \
 	MagickWand/operation.h \
