@@ -1765,28 +1765,39 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   struct jpeg_error_mgr
     jpeg_error;
 
-  static const unsigned int  /* Nicolas Robidoux's remix of ISO-IEC 10918-1 */
-    ChrominanceQuantizationTable[DCTSIZE2] =  /* 1993(E) Annex K */
+  static const unsigned int
+    CbQTable[DCTSIZE2] =
     {
-       17,   18,   24,   47,   97,   99,  128,  192,
-       18,   21,   26,   66,   97,   99,  128,  192,
-       24,   26,   56,   97,   99,  128,  192,  256,
-       47,   66,   97,   99,  128,  192,  256,  512,
-       97,   97,   99,  128,  192,  256,  512, 1024,
-       99,   99,  128,  192,  256,  512, 1024, 2048,
-      128,  128,  192,  256,  512, 1024, 2048, 4096,
-      192,  192,  256,  512, 1024, 2048, 4096, 8192
+         17,    19,    24,    37,    68,   148,   384,  1186,
+         19,    20,    26,    40,    74,   162,   419,  1293,
+         24,    26,    34,    52,    96,   210,   544,  1676,
+         37,    40,    52,    81,   148,   323,   838,  2585,
+         68,    74,    96,   148,   272,   593,  1537,  4741,
+        148,   162,   210,   323,   593,  1293,  3353, 10338,
+        384,   419,   544,   838,  1537,  3353,  8694, 12725,
+       1186,  1293,  1676,  2585,  4741, 10338, 12725, 12725
     },
-    LuminanceQuantizationTable[DCTSIZE2] =
+    CrQTable[DCTSIZE2] =
     {
-       16,   11,   12,   15,   21,   32,   50,   66,
-       11,   12,   13,   18,   24,   46,   62,   73,
-       12,   13,   16,   23,   38,   56,   73,   75,
-       15,   18,   23,   29,   53,   75,   83,   80,
-       21,   24,   38,   53,   68,   95,  103,   94,
-       32,   46,   56,   75,   95,  104,  117,   96,
-       50,   62,   73,   83,  103,  117,  120,  102,
-       66,   73,   75,   80,   94,   96,  102,   87
+         17,    18,    22,    31,    50,    92,   193,   465,
+         18,    19,    24,    33,    54,    98,   207,   498,
+         22,    24,    29,    41,    66,   120,   253,   609,
+         31,    33,    41,    57,    92,   169,   355,   854,
+         50,    54,    66,    92,   148,   271,   570,  1370,
+         92,    98,   120,   169,   271,   498,  1046,  2516,
+        193,   207,   253,   355,   570,  1046,  2198,  5289,
+        465,   498,   609,   854,  1370,  2516,  5289, 12725
+    },
+    LuminanceQTable[DCTSIZE2] =
+    {
+         16,    11,    11,    15,    21,    34,    50,    65,
+         11,    12,    13,    18,    24,    48,    62,    69,
+         13,    13,    16,    23,    38,    56,    72,    71,
+         15,    18,    23,    29,    53,    77,    83,    80,
+         21,    24,    38,    53,    68,    98,   104,   100,
+         30,    44,    56,    73,    92,   105,   117,   117,
+         50,    62,    74,    83,   104,   119,   121,   122,
+         67,    77,    79,    88,   108,   119,   122,   122
     };
 
   /*
@@ -2111,10 +2122,19 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       jpeg_info.comp_info[i].h_samp_factor=1;
       jpeg_info.comp_info[i].v_samp_factor=1;
     }
-  jpeg_add_quant_table(&jpeg_info,0,LuminanceQuantizationTable,
-    jpeg_quality_scaling(quality),0);
-  jpeg_add_quant_table(&jpeg_info,1,ChrominanceQuantizationTable,
-    jpeg_quality_scaling(quality),0);
+  if ((jpeg_info.comp_info[0].h_samp_factor > 1) &&
+      (jpeg_info.comp_info[0].v_samp_factor > 1))
+    {
+      /*
+        Nicolas Robidoux's remix of ISO-IEC 10918-1 : 1993(E) Annex K.
+      */
+      jpeg_add_quant_table(&jpeg_info,0,LuminanceQTable,jpeg_quality_scaling(
+        quality),0);
+      jpeg_add_quant_table(&jpeg_info,1,CbQTable,jpeg_quality_scaling(
+        quality),0);
+      jpeg_add_quant_table(&jpeg_info,2,CrQTable,jpeg_quality_scaling(
+        quality),0);
+    }
   jpeg_start_compress(&jpeg_info,MagickTrue);
   if (image->debug != MagickFalse)
     {
