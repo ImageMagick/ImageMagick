@@ -66,7 +66,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
-#include "MagickCore/nt-base-private.h"
+#include "MagickCore/nt-feature.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/resource_.h"

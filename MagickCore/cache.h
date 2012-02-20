@@ -26,8 +26,8 @@ extern "C" {
 
 extern MagickExport const Quantum
   *GetVirtualPixels(const Image *,const ssize_t,const ssize_t,const size_t,
-    const size_t,ExceptionInfo *),
-  *GetVirtualPixelQueue(const Image *);
+    const size_t,ExceptionInfo *) magick_hot_spot,
+  *GetVirtualPixelQueue(const Image *) magick_hot_spot;
 
 extern MagickExport const void
   *GetVirtualMetacontent(const Image *);
@@ -41,17 +41,17 @@ extern MagickExport MagickBooleanType
     ExceptionInfo *),
   PersistPixelCache(Image *,const char *,const MagickBooleanType,
     MagickOffsetType *,ExceptionInfo *),
-  SyncAuthenticPixels(Image *,ExceptionInfo *);
+  SyncAuthenticPixels(Image *,ExceptionInfo *) magick_hot_spot;
 
 extern MagickExport MagickSizeType
   GetImageExtent(const Image *);
 
 extern MagickExport Quantum
   *GetAuthenticPixels(Image *,const ssize_t,const ssize_t,const size_t,
-    const size_t,ExceptionInfo *),
-  *GetAuthenticPixelQueue(const Image *),
+    const size_t,ExceptionInfo *) magick_hot_spot,
+  *GetAuthenticPixelQueue(const Image *) magick_hot_spot,
   *QueueAuthenticPixels(Image *,const ssize_t,const ssize_t,const size_t,
-    const size_t,ExceptionInfo *);
+    const size_t,ExceptionInfo *) magick_hot_spot;
 
 extern MagickExport void
   *GetAuthenticMetacontent(const Image *);

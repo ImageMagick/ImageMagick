@@ -269,10 +269,19 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/xwindow.h 
 
 if WIN32_NATIVE_BUILD
-MAGICKCORE_PLATFORM_SRCS = \
-	MagickCore/nt-base.c \
-	MagickCore/nt-base.h \
-	MagickCore/nt-base-private.h
+MAGICK_PLATFORM_SRCS = \
+  magick/nt-base.c \
+  magick/nt-base.h \
+  magick/nt-feature.c \
+  magick/nt-feature.h
+else
+if CYGWIN_BUILD
+MAGICK_PLATFORM_SRCS = \
+  magick/nt-feature.c \
+  magick/nt-feature.h
+else
+MAGICK_PLATFORM_SRCS =
+endif # if CYGWIN_BUILD
 endif # if WIN32_NATIVE_BUILD
 
 MAGICKCORE_INCLUDE_HDRS = \
@@ -440,6 +449,7 @@ MAGICKCORE_EXTRA_DIST = \
 	MagickCore/config.h_vms \
 	MagickCore/mac.c \
 	MagickCore/nt-base.c \
+	MagickCore/nt-featur.c \
 	MagickCore/vms.c \
 	MagickCore/xwdfile.h_vms 
 
