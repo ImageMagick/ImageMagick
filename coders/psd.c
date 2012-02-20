@@ -986,14 +986,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       if (size != 0)
         {
+          MagickOffsetType
+            layer_offset;
+
           image->matte=psd_info.channels > psd_info.color_channels ?  MagickTrue : MagickFalse;
-          
+
           if (image->debug != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               image->matte ? "  image has matte" : "  image has no matte");
-          
-          MagickOffsetType
-            layer_offset;
 
           layer_offset=offset+length;
           number_layers=(short) ReadBlobMSBShort(image);
