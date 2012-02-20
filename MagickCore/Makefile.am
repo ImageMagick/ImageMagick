@@ -176,7 +176,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/morphology.h \
 	MagickCore/morphology-private.h \
 	MagickCore/nt-base.h \
-	MagickCore/nt-base-private.h \
+	MagickCore/nt-feature.h \
 	MagickCore/option.c \
 	MagickCore/option.h \
 	MagickCore/paint.c \
@@ -412,7 +412,8 @@ MAGICKCORE_NOINST_HDRS = \
  	MagickCore/module-private.h \
 	MagickCore/monitor-private.h \
 	MagickCore/morphology-private.h \
-	MagickCore/nt-base-private.h \
+	MagickCore/nt-base.h \
+	MagickCore/nt-feature.h \
  	MagickCore/policy-private.h \
  	MagickCore/profile-private.h \
 	MagickCore/quantum-private.h \
@@ -449,7 +450,7 @@ MAGICKCORE_EXTRA_DIST = \
 	MagickCore/config.h_vms \
 	MagickCore/mac.c \
 	MagickCore/nt-base.c \
-	MagickCore/nt-featur.c \
+	MagickCore/nt-feature.c \
 	MagickCore/vms.c \
 	MagickCore/xwdfile.h_vms 
 
