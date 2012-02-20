@@ -841,11 +841,20 @@
         </message>
       </error>
       <fatalerror>
+        <message name="FilenameTruncated">
+          image filename truncated
+        </message>
         <message name="MissingAnImageFilename">
           nom de fichier d'image absent
         </message>
-        <message name="FilenameTruncated">
-          image filename truncated
+        <message name="ScriptIsBinary">
+          de script en binaire
+        </message>
+        <message name="ScriptTokenTooBig">
+          de script token trop gros
+        </message>
+        <message name="ScriptUnbalancedQuotes">
+          de script token avec des citations asymétriques
         </message>
         <message name="UnrecognizedColormapType">
           type de table de couleurs non reconnnu

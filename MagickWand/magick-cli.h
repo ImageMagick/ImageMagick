@@ -25,25 +25,30 @@ extern "C" {
 typedef enum
 {
   /* What options should be processed */
-  ProcessNonOptionImageRead = 0x0001,  /* non-option is a image read */
-  ProcessUnknownOptionError = 0x0002,  /* unknown option produces error */
+  /* NonOption Handling */
+  ProcessNonOptionImageRead   = 0x0001,  /* non-option is a image read */
+  ProcessUnknownOptionError   = 0x0002,  /* unknown option produces error */
 
-  ProcessReadOption         = 0x0010,  /* allow '-read' to read images */
+  /* Special Option Handling */
+  ProcessExitOption           = 0x0100,  /* allow '-exit' use */
+  ProcessScriptOption         = 0x0200,  /* allow '-script' use */
 
-  ProcessListOption         = 0x0040,  /* Process Image List Operators */
+  /* Option Processing Flags */
+  ProcessOneOptionOnly        = 0x4000,  /* Process One Option Only */
+  ProcessOutputFile           = 0x8000,  /* Process the output file */
 
-  ProcessCommandOptions     = 0x0FFF,  /* Magick Command Flags */
+  /* Flag Groups for specific Situations */
+  MagickCommandOptionFlags    = 0x8FFF,  /* Magick Command Flags */
+  MagickScriptArgsFlags       = 0x00FF,  /* Script Args Flags */
+  MagickScriptReadFlags       = 0x01FF   /* Script Read Flags */
 
-  /* Modify Option Handling */
-  ProcessOutputFile         = 0x1000,  /* Process the output file */
-  ProcessOneOptionOnly      = 0x8000   /* Process One Option Only */
-
-} OptionProcessFlags;
+} ProcessOptionFlags;
 
 extern WandExport void
-  MagickSpecialOption(MagickWand *,const char *,const char *),
-  MagickCommandProcessOptions(MagickWand *,int,char **,
-       int *index, OptionProcessFlags flags);
+  ProcessSpecialOption(MagickWand *,const char *,const char *,
+       ProcessOptionFlags),
+  ProcessScriptOptions(MagickWand *,int,char **),
+  ProcessCommandOptions(MagickWand *,int,char **,ProcessOptionFlags);
 
 extern WandExport MagickBooleanType
   MagickImageCommand(ImageInfo *,int,char **,char **,ExceptionInfo *);

@@ -859,6 +859,15 @@
         <message name="MissingAnImageFilename">
           missing an image filename
         </message>
+        <message name="ScriptIsBinary">
+          script is binary
+        </message>
+        <message name="ScriptTokenTooBig">
+          script token too big
+        </message>
+        <message name="ScriptUnbalancedQuotes">
+          script token with unbalanced quotes
+        </message>
         <message name="UnrecognizedColormapType">
           unrecognized colormap type
         </message>

@@ -49,34 +49,285 @@
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/magick-wand-private.h"
-#include "MagickWand/operation.h"
-#include "MagickCore/version.h"
+#include "MagickCore/memory_.h"
 #include "MagickCore/string-private.h"
+#include "MagickWand/operation.h"
 #include "MagickCore/utility-private.h"
+#include "MagickCore/version.h"
+
+#define MagickCommandDebug 0
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t S c r i p t T o k e n                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetScriptToken() is fairly general, finite state token parser. That will
+%  divide a input file stream into tokens, in a way that is almost identical
+%  to a UNIX shell.
+%
+%  It returns 'MagickTrue' if a token was found. Even in the special case of
+%  a empty token followed immediatally by a EOF. For example:  ''{EOF}
+%
+%  A token is returned immediatally the end of token is found.  That is
+%  parsing is purely character by character, and not line-by-line. This
+%  should allow for mixed stream of tokens (options), and other data (images)
+%  without problems.  Assuming the other data has a well defined End-Of-Data
+%  handling (see complex example below).
+%
+%  Tokens are white space separated, and may be quoted, or even partially
+%  quoted by either single or double quotes, or the use of backslashes,
+%  or any mix of the three.
+%
+%  For example:    This\ is' a 'single" token"
+%
+%  Single quotes will preserve all characters including backslashes. Double
+%  quotes will also preserve backslashes unless escaping a double quote,
+%  or another backslashes.  Other shell meta-characters are not treated as
+%  special by this tokenizer.
+%
+%  For example Quoting the quote chars:
+%              \'  "'"       \"  '"'  "\""      \\  '\'  "\\"
+%
+%  Comments start with a '#' character at the start of a new token (generally
+%  at start of a line, or after a unquoted white space charcater) and continue
+%  to the end of line.  The are simply ignored.  You can escape a comment '#'
+%  character to return a token that starts with such a character.
+%
+%  More complex example...
+%  Sending a PGM image in the middle of a standard input script.
+%
+%  magick -script - <<END
+%    # read a stdin in-line image...
+%    "pgm:-[0]" P2 2 2 3   0 1 1 2
+%    # continue processing that image
+%    -resize 100x100
+%    -write enlarged.png
+%  END
+%
+%  Only a single space character separates the 'image read' from the
+%  'image data' after which the next operation is read.  This only works
+%  for image data formats with a well defined length or End-of-Data marker
+%  such as MIFF, and PbmPlus file formats.
+%
+%  The format of the MagickImageCommand method is:
+%
+%     MagickBooleanType GetScriptToken(ScriptTokenInfo *token_info)
+%
+%  A description of each parameter follows:
+%
+%    o token_info    pointer to a structure holding token details
+%
+*/
+
+/* States of the parser */
+#define IN_WHITE 0
+#define IN_TOKEN 1
+#define IN_QUOTE 2
+#define IN_COMMENT 3
+
+typedef enum {
+  TokenStatusOK = 0,
+  TokenStatusEOF,
+  TokenStatusBadQuotes,
+  TokenStatusTokenTooBig,
+  TokenStatusBinary
+} TokenStatus;
+
+typedef struct
+{
+  FILE
+    *stream;        /* the file stream we are reading from */
+
+  char
+    *token;         /* array of characters to holding details of he token */
+
+  size_t
+    length,         /* length of token char array */
+    curr_line,      /* current location in script file */
+    curr_column,
+    token_line,     /* location of the start of this token */
+    token_column;
+
+  TokenStatus
+    status;         /* Have we reached EOF? see Token Status */
+} ScriptTokenInfo;
+
+/* macro to read character from stream */
+#define GetChar(c) \
+{ \
+   c=fgetc(token_info->stream); \
+   token_info->curr_column++; \
+   if ( c == '\n' ) \
+     token_info->curr_line++, token_info->curr_column=0; \
+}
+/* macro to collect the token characters */
+#define SaveChar(c) \
+{ \
+  if ((size_t) offset >= (token_info->length-1)) \
+    { token_info->token[offset++]='\0'; \
+      token_info->status=TokenStatusTokenTooBig; \
+      return(MagickFalse); \
+    } \
+  token_info->token[offset++]=(char) (c); \
+}
+
+static MagickBooleanType GetScriptToken(ScriptTokenInfo *token_info)
+{
+
+  int
+    quote,
+    c;
+
+  int
+    state;
+
+  ssize_t
+    offset;
+
+  /* EOF - no more tokens! */
+  if (token_info->status != TokenStatusOK)
+    {
+      token_info->token[0]='\0';
+      return(MagickFalse);
+    }
+
+  state=IN_WHITE;
+  quote='\0';
+  offset=0;
+  while(1)
+  {
+    /* get character */
+    GetChar(c);
+    if (c == '\0' || c == EOF)
+      break;
+
+    /* hash comment handling */
+    if ( state == IN_COMMENT )
+      { if ( c == '\n' )
+          state=IN_WHITE;
+        continue;
+      }
+    if (c == '#' && state == IN_WHITE)
+      state=IN_COMMENT;
+    /* whitespace break character */
+    if (strchr(" \n\r\t",c) != (char *)NULL)
+      {
+        switch (state)
+        {
+          case IN_TOKEN:
+            token_info->token[offset]='\0';
+            return(MagickTrue);
+          case IN_QUOTE:
+            SaveChar(c);
+            break;
+        }
+        continue;
+      }
+    /* quote character */
+    if (strchr("'\"",c) != (char *)NULL)
+      {
+        switch (state)
+        {
+          case IN_WHITE:
+            token_info->token_line=token_info->curr_line;
+            token_info->token_column=token_info->curr_column;
+          case IN_TOKEN:
+            state=IN_QUOTE;
+            quote=c;
+            break;
+          case IN_QUOTE:
+            if (c == quote)
+              {
+                state=IN_TOKEN;
+                quote='\0';
+              }
+            else
+              SaveChar(c);
+            break;
+        }
+        continue;
+      }
+    /* escape char (preserve in quotes - unless escaping the same quote) */
+    if (c == '\\')
+      {
+        if ( state==IN_QUOTE && quote == '\'' )
+          {
+            SaveChar('\\');
+            continue;
+          }
+        GetChar(c);
+        if (c == '\0' || c == EOF)
+          {
+            SaveChar('\\');
+            break;
+          }
+        switch (state)
+        {
+          case IN_WHITE:
+            token_info->token_line=token_info->curr_line;
+            token_info->token_column=token_info->curr_column;
+            state=IN_TOKEN;
+            break;
+          case IN_QUOTE:
+            if (c != quote && c != '\\')
+              SaveChar('\\');
+            break;
+        }
+        SaveChar(c);
+        continue;
+      }
+    /* ordinary character */
+    switch (state)
+    {
+      case IN_WHITE:
+        token_info->token_line=token_info->curr_line;
+        token_info->token_column=token_info->curr_column;
+        state=IN_TOKEN;
+      case IN_TOKEN:
+      case IN_QUOTE:
+        SaveChar(c);
+        break;
+      case IN_COMMENT:
+        break;
+    }
+  }
+  /* stream has EOF or produced a fatal error */
+  token_info->token[offset]='\0';
+  token_info->status = TokenStatusEOF;
+  if (state == IN_QUOTE)
+    token_info->status = TokenStatusBadQuotes;
+  if (c == '\0' )
+    token_info->status = TokenStatusBinary;
+  if (state == IN_TOKEN && token_info->status == TokenStatusEOF)
+    return(MagickTrue);
+  return(MagickFalse);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   M a g i c k C o m m a n d S p e c i a l                                   %
++   P r o c e s s S p e c i a l O p t i o n                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickS() Reads the various reads various options defining how
-%  to read, process and write images. The options can be sourced from the
-%  command line, or from script files, or pipelines.
+%  ProcessSpecialOption() Apply certian options that are specific to Shell
+%  API interface.  Specifically reading images and handling image and
+%  image_info (settings) stacks.
 %
-%  Processing is performed using stack of expanded 'Wand' structures, which
-%  not only define 'image_info' store of current global options, but also the
-%  current input source of the options.
+%  The format of the ProcessSpecialOption method is:
 %
-%  The format of the MagickImageCommand method is:
-%
-%      void MagickSpecialOption(MagickWand *wand,
-%               const char *option, const char *arg)
+%      void ProcessSpecialOption(MagickWand *wand,const char *option,
+%           const char *arg, ProcessOptionFlags process_flags )
 %
 %  A description of each parameter follows:
 %
@@ -86,14 +337,14 @@
 %
 %    o arg: Argument for option, if required
 %
+%    o process_flags: Wether to process specific options or not.
+%
 */
-WandExport void MagickSpecialOption(MagickWand *wand,
-     const char *option, const char *arg)
+WandExport void ProcessSpecialOption(MagickWand *wand,
+     const char *option, const char *arg, ProcessOptionFlags process_flags)
 {
-  if (LocaleCompare("-read",option) == 0)
+  if ( LocaleCompare("-read",option) == 0 )
     {
-#if 1
-      /* MagickCore style of Read */
       Image *
         new_images;
 
@@ -103,14 +354,17 @@ WandExport void MagickSpecialOption(MagickWand *wand,
       else
         new_images=ReadImages(wand->image_info,wand->exception);
       AppendImageToList(&wand->images, new_images);
-#else
-      /* MagickWand style of Read - append new images -- FAILS */
-      MagickSetLastIterator(wand);
-      MagickReadImage(wand, arg);
-      MagickSetFirstIterator(wand);
-#endif
       return;
     }
+  if (LocaleCompare("-sans",option) == 0)
+    return;
+  if (LocaleCompare("-sans0",option) == 0)
+    return;
+  if (LocaleCompare("-sans2",option) == 0)
+    return;
+  if (LocaleCompare("-noop",option) == 0)
+    return;
+
 #if 0
   if (LocaleCompare(option,"(") == 0)
     // push images/settings
@@ -119,28 +373,41 @@ WandExport void MagickSpecialOption(MagickWand *wand,
   if (LocaleCompare(option,"respect_parenthesis") == 0)
     // adjust stack handling
   // Other 'special' options this should handle
-  //    "region" "clone"  "list" "version" "noop" "sans*"?
+  //    "region" "clone"  "list" "version"
   // It does not do "exit" however as due to its side-effect requirements
+
+  if ( ( process_flags & ProcessUnknownOptionError ) != 0 )
+    MagickExceptionReturn(OptionError,"InvalidUseOfOption",option);
 #endif
 }
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   M a g i c k C o m m a n d P r o c e s s O p t i o n s                     %
++   P r o c e s s S c r i p t O p t i o n s                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickCommandProcessOptions() reads and processes arguments in the given
-%  command line argument array.
+%  ProcessScriptOptions() reads options and processes options as they are
+%  found in the given file, or pipeline.  The filename to open and read
+%  options is given as the zeroth argument of the argument array given.
 %
-%  The format of the MagickImageCommand method is:
+%  A script not 'return' to the command line processing, nor can they
+%  call (and return from) other scripts. At least not at this time.
 %
-%    void MagickCommandArgs(MagickWand *wand,int argc,char **argv,
-%           int *index, )
+%  However special script options may used to read and process the other
+%  argument provided, typically those that followed a "-script" option on the
+%  command line. These extra script arguments may be interpreted as being
+%  images to read or write, settings (strings), or more options to be
+%  processed.  How they are treated is up to the script being processed.
+%
+%  The format of the ProcessScriptOptions method is:
+%
+%    void ProcessScriptOptions(MagickWand *wand,int argc,char **argv)
 %
 %  A description of each parameter follows:
 %
@@ -150,21 +417,292 @@ WandExport void MagickSpecialOption(MagickWand *wand,
 %
 %    o argv: A text array containing the command line arguments.
 %
-%    o index: where we are upto in processing given arguments
-%
-%    o flags: Allow or disallow specific options
 */
-#define MagickExceptionContinue(severity,tag,option,arg) \
+#define MagickExceptionScript(severity,tag,arg,line,col) \
   (void) ThrowMagickException(wand->exception,GetMagickModule(),severity,tag, \
-       "'%s' arg#%lu", option, (unsigned long)arg)
+       "'%s' : Line %u Column %u of script \"%s\"", arg, line, col, wand->name);
+
+WandExport void ProcessScriptOptions(MagickWand *wand,int argc,
+     char **argv)
+{
+  char
+    *option,
+    *arg1,
+    *arg2;
+
+  ssize_t
+    count;
+
+  size_t
+    option_line,       /* line and column of current option */
+    option_column;
+
+  CommandOptionFlags
+    option_type;
+
+  ScriptTokenInfo
+    token_info;
+
+  MagickBooleanType
+    plus_alt_op,
+    file_opened;
+
+  assert(argc>0 && argv[argc-1] != (char *)NULL);
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  assert(wand->draw_info != (DrawInfo *) NULL); /* ensure it is a CLI wand */
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
+  /* Initialize variables */
+  /* FUTURE handle file opening for '-' 'fd:N' or script filename */
+  file_opened=MagickFalse;
+  if ( LocaleCompare(argv[0],"-") == 0 )
+    {
+      CopyMagickString(wand->name,"stdin",MaxTextExtent);
+      token_info.stream=stdin;
+      file_opened=MagickFalse;
+    }
+  else
+    {
+      GetPathComponent(argv[0],TailPath,wand->name);
+      token_info.stream=fopen(argv[0], "r");
+      file_opened=MagickTrue;
+    }
+
+  option = arg1 = arg2 = (char*)NULL;
+  token_info.curr_line=1;
+  token_info.curr_column=0;
+  token_info.status=TokenStatusOK;
+  token_info.length=MaxTextExtent;
+  token_info.token=(char *) AcquireQuantumMemory(MaxTextExtent,sizeof(char));
+  if (token_info.token == (char *) NULL)
+    {
+      if ( file_opened != MagickFalse )
+        fclose(token_info.stream);
+      MagickExceptionScript(ResourceLimitError,"MemoryAllocationFailed","",0,0);
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),
+           ResourceLimitError,"MemoryAllocationFailed","script token buffer");
+      return;
+    }
+
+  /* Process Options from Script */
+  while (1)
+    {
+      /* Get a option */
+      if( GetScriptToken(&token_info) == MagickFalse )
+        break;
+
+      /* option length sanity check */
+      if( strlen(token_info.token) > 40 )
+        { token_info.token[37] = '.';
+          token_info.token[38] = '.';
+          token_info.token[39] = '.';
+          token_info.token[40] = '\0';
+          MagickExceptionScript(OptionFatalError,"UnrecognizedOption",
+               token_info.token,token_info.token_line,token_info.token_column);
+          break;
+        }
+
+      /* save option details */
+      CloneString(&option,token_info.token);
+      option_line=token_info.token_line;
+      option_column=token_info.token_column;
+
+#if MagickCommandDebug
+      (void) FormatLocaleFile(stderr, "Script Option Token: %u,%u: \"%s\"\n",
+               option_line, option_column, option );
+#endif
+      /* get option type and argument count */
+      { const OptionInfo *option_info = GetCommandOptionInfo(option);
+        count=option_info->type;
+        option_type=option_info->flags;
+#if MagickCommandDebug >= 2
+        (void) FormatLocaleFile(stderr, "option \"%s\" matched \"%s\"\n",
+             option, option_info->mnemonic );
+#endif
+      }
+
+      /* handle a undefined option - image read? */
+      if ( option_type == UndefinedOptionFlag ||
+           (option_type & NonMagickOptionFlag) != 0 )
+        {
+#if MagickCommandDebug
+          (void) FormatLocaleFile(stderr, "Script Non-Option: \"%s\"\n", option);
+#endif
+          if ( IsCommandOption(option) == MagickFalse)
+            {
+              /* non-option -- treat as a image read */
+              ProcessSpecialOption(wand,"-read",option,MagickScriptReadFlags);
+              count = 0;
+              continue;
+            }
+          MagickExceptionScript(OptionFatalError,"UnrecognizedOption",
+               option,option_line,option_column);
+          break;
+        }
+
+      plus_alt_op = MagickFalse;
+      if (*option=='+') plus_alt_op = MagickTrue;
+
+      if ( count >= 1 )
+        {
+          if( GetScriptToken(&token_info) == MagickFalse )
+            {
+              MagickExceptionScript(OptionError,"MissingArgument",option,
+                 option_line,option_column);
+              break;
+            }
+          CloneString(&arg1,token_info.token);
+        }
+      else
+        CloneString(&arg1,(*option!='+')?"true":(char *)NULL);
+
+      if ( count >= 2 )
+        {
+          if( GetScriptToken(&token_info) == MagickFalse )
+            {
+              MagickExceptionScript(OptionError,"MissingArgument",option,
+                 option_line,option_column);
+              break;
+            }
+          CloneString(&arg2,token_info.token);
+        }
+      else
+        CloneString(&arg2,(char *)NULL);
+
+      /* handle script special options */
+      //either continue processing command line
+      // or making use of the command line options.
+      //ProcessCommandOptions(wand,count+1,argv, MagickScriptArgsFlags);
+
+#if MagickCommandDebug
+      (void) FormatLocaleFile(stderr,
+          "Script Option: \"%s\" \tCount: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
+          option,(int) count,option_type,arg1,arg2);
+#endif
+
+      /* Process non-script specific option from file */
+      if ( (option_type & SpecialOptionFlag) != 0 )
+        {
+          if ( LocaleCompare(option,"-exit") == 0 )
+            break;
+          /* No "-script" from script at this time */
+          ProcessSpecialOption(wand,option,arg1,MagickScriptReadFlags);
+        }
+
+      if ( (option_type & SettingOptionFlags) != 0 )
+        {
+          WandSettingOptionInfo(wand, option+1, arg1);
+          // FUTURE: Sync Specific Settings into Images
+        }
+
+      if ( (option_type & SimpleOperatorOptionFlag) != 0)
+        WandSimpleOperatorImages(wand, plus_alt_op, option+1, arg1, arg2);
+
+      if ( (option_type & ListOperatorOptionFlag) != 0 )
+        WandListOperatorImages(wand, plus_alt_op, option+1, arg1, arg2);
+
+      // FUTURE: '-regard_warning' causes IM to exit more prematurely!
+      // Note pipelined options may like more control over this level
+      if (wand->exception->severity > ErrorException)
+        {
+          if (wand->exception->severity > ErrorException)
+              //(regard_warnings != MagickFalse))
+            break;                     /* FATAL - caller handles exception */
+          CatchException(wand->exception); /* output warnings and clear!!! */
+        }
+    }
+#if MagickCommandDebug
+  (void) FormatLocaleFile(stderr, "Script End: %d\n", token_info.status);
+#endif
+  /* token sanity for error report */
+  if( strlen(token_info.token) > 40 )
+    { token_info.token[37] = '.';
+      token_info.token[38] = '.';
+      token_info.token[39] = '.';
+      token_info.token[40] = '\0';
+    }
+
+   switch( token_info.status )
+    {
+      case TokenStatusBadQuotes:
+        MagickExceptionScript(OptionFatalError,"ScriptUnbalancedQuotes",
+             token_info.token,token_info.token_line,token_info.token_column);
+        break;
+      case TokenStatusTokenTooBig:
+        MagickExceptionScript(OptionFatalError,"ScriptTokenTooBig",
+             token_info.token,token_info.token_line,token_info.token_column);
+        break;
+      case TokenStatusBinary:
+        MagickExceptionScript(OptionFatalError,"ScriptIsBinary","",
+             token_info.curr_line,token_info.curr_column);
+        break;
+      case TokenStatusOK:
+      case TokenStatusEOF:
+        break;
+    }
+
+   /* Clean up */
+   if ( file_opened != MagickFalse )
+     fclose(token_info.stream);
+
+   CloneString(&option,(char *)NULL);
+   CloneString(&arg1,(char *)NULL);
+   CloneString(&arg2,(char *)NULL);
+
+   return;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  P r o c e s s C o m m a n d O p t i o n s                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ProcessCommandOptions() reads and processes arguments in the given
+%  command line argument array. The array does not contain the command
+%  being processed, only the options.
+%
+%  The 'process_flags' can be used to control and limit option processing.
+%  For example, to only process one option, or how unknown and special options
+%  are to be handled, and if the last argument in array is to be regarded as a
+%  final image write argument (filename or special coder).
+%
+%  The format of the ProcessCommandOptions method is:
+%
+%    int ProcessCommandOptions(MagickWand *wand,int argc,char **argv,
+%           int *index, ProcessOptionFlags process_flags )
+%
+%  A description of each parameter follows:
+%
+%    o wand: the main CLI Wand to use.
+%
+%    o argc: the number of elements in the argument vector.
+%
+%    o argv: A text array containing the command line arguments.
+%
+%    o process_flags: What type of arguments we are allowed to process
+%
+*/
+/* FUTURE: correctly identify option... CLI arg,  Script line,column  */
+#define MagickExceptionContinue(severity,tag,arg,index) \
+  (void) ThrowMagickException(wand->exception,GetMagickModule(),severity,tag, \
+       "'%s' : CLI Arg #%d", arg, (int) index); \
+
 #define MagickExceptionReturn(severity,tag,option,arg) \
 { \
   MagickExceptionContinue(severity,tag,option,arg); \
   return; \
 }
 
-WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
-     char **argv, int *index, OptionProcessFlags process_flags )
+WandExport void ProcessCommandOptions(MagickWand *wand,int argc,
+     char **argv, ProcessOptionFlags process_flags )
 {
   const char
     *option,
@@ -176,11 +714,13 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
 
   ssize_t
     i,
+    end,
     count;
 
   CommandOptionFlags
     option_type;
 
+  assert(argc>0 && argv[argc-1] != (char *)NULL);
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   assert(wand->draw_info != (DrawInfo *) NULL); /* ensure it is a CLI wand */
@@ -190,80 +730,89 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
   /*
     Parse command-line options.
   */
-  count=0;
-  for (i=*index; i < (ssize_t) (argc-1); i+=count+1)
+  end = argc;
+  if ( ( process_flags & ProcessOutputFile ) != 0 )
+    end--;
+  for (i=0; i < end; i += count +1)
     {
-      *index=i;
+#if MagickCommandDebug >= 2
+      (void) FormatLocaleFile(stderr, "index= %d\n", i );
+#endif
+      /* Finished processing one option? */
+      if ( ( process_flags & ProcessOneOptionOnly ) != 0 && i != 0 )
+        return;
+
       option=argv[i];
       plus_alt_op = MagickFalse;
       arg1=(char *)NULL;
       arg2=(char *)NULL;
 
-#define MagickCommandDebug 1
-#if 1
-      { const OptionInfo *option_info =
-          GetCommandOptionInfo(argv[i]);
+
+      { const OptionInfo *option_info = GetCommandOptionInfo(argv[i]);
         count=option_info->type;
         option_type=option_info->flags;
-#if MagickCommandDebug
-        (void) FormatLocaleFile(stderr, "Option: \"%s\"\n", option_info->mnemonic);
+#if MagickCommandDebug >= 2
+        (void) FormatLocaleFile(stderr, "option \"%s\" matched \"%s\"\n",
+             argv[i], option_info->mnemonic );
 #endif
       }
-#else
-      count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
-      option_type=(CommandOptionFlags) GetCommandOptionFlags(
-                   MagickCommandOptions,MagickFalse,argv[i]);
-#endif
 
-
-      if ( count == -1 || option_type == UndefinedOptionFlag ||
-           (option_type & NonConvertOptionFlag) != 0 )
+      if ( option_type == UndefinedOptionFlag ||
+           (option_type & NonMagickOptionFlag) != 0 )
         {
 #if MagickCommandDebug
           (void) FormatLocaleFile(stderr, "CLI Non-Option: \"%s\"\n", option);
 #endif
-
-          if (IsCommandOption(option) == MagickFalse)
+          if ( IsCommandOption(option) != MagickFalse )
             {
-              /* non-option -- treat as a image read */
-              MagickSpecialOption(wand,"-read",option);
-              count = 0;
-              continue;
+              if ( ( process_flags & ProcessNonOptionImageRead ) != 0 )
+               {
+                /* non-option -- treat as a image read */
+                ProcessSpecialOption(wand,"-read",option,process_flags);
+                count = 0;
+              }
             }
-          else
-            MagickExceptionReturn(OptionError,"UnrecognizedOption",option,i);
+          else if ( ( process_flags & ProcessUnknownOptionError ) != 0 )
+            {
+              MagickExceptionReturn(OptionFatalError,"UnrecognizedOption",
+                   option,i);
+              return;
+            }
+          continue;
         }
-
-#if MagickCommandDebug
-      (void) FormatLocaleFile(stderr,
-          "CLI Option: \"%s\" \tCount: %d  Flags: %04x Args: \"%s\" \"%s\"\n",
-          option,(int) count,option_type,arg1,arg2);
-#endif
 
       if ( (option_type & DeprecateOptionFlag) != 0 )
         MagickExceptionContinue(OptionWarning,"DeprecatedOption",option,i);
         /* continue processing option anyway */
 
-      if ((i+count) > (ssize_t) (argc-1))
+      if ((i+count) >= end )
         MagickExceptionReturn(OptionError,"MissingArgument",option,i);
+
       if (*option=='+') plus_alt_op = MagickTrue;
       if (*option!='+') arg1 = "true";
       if ( count >= 1 ) arg1 = argv[i+1];
       if ( count >= 2 ) arg2 = argv[i+2];
 
+#if MagickCommandDebug
+      (void) FormatLocaleFile(stderr,
+          "CLI Option: \"%s\" \tCount: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
+          option,(int) count,option_type,arg1,arg2);
+#endif
+
       if ( (option_type & SpecialOptionFlag) != 0 )
         {
-          if (LocaleCompare(option,"-exit") == 0)
+          if ( ( process_flags & ProcessExitOption ) != 0
+               && LocaleCompare(option,"-exit") == 0 )
             return;
-#if 0
-          if (LocaleCompare(option,"-script") == 0)
+          if ( ( process_flags & ProcessScriptOption ) != 0
+               && LocaleCompare(option,"-script") == 0)
             {
               // Unbalanced Parenthesis if stack not empty
-              // Call Script, with filename as argv[0]
+              // Call Script, with a filename as a zeroth argument
+              ProcessScriptOptions(wand,argc-(i+1),argv+(i+1));
               return;
             }
-#endif
-          MagickSpecialOption(wand,option,arg1);
+          ProcessSpecialOption(wand,option,arg1,process_flags);
         }
 
       if ( (option_type & SettingOptionFlags) != 0 )
@@ -273,14 +822,10 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
         }
 
       if ( (option_type & SimpleOperatorOptionFlag) != 0)
-        {
-          WandSimpleOperatorImages(wand, plus_alt_op, option+1, arg1, arg2);
-        }
+        WandSimpleOperatorImages(wand, plus_alt_op, option+1, arg1, arg2);
 
       if ( (option_type & ListOperatorOptionFlag) != 0 )
-        {
-          WandListOperatorImages(wand, plus_alt_op, option+1, arg1, arg2);
-        }
+        WandListOperatorImages(wand, plus_alt_op, option+1, arg1, arg2);
 
       // FUTURE: '-regard_warning' causes IM to exit more prematurely!
       // Note pipelined options may like more control over this level
@@ -288,13 +833,19 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
         {
           if (wand->exception->severity > ErrorException)
               //(regard_warnings != MagickFalse))
-            return;                        /* FATAL - let caller handle */
+            return;                    /* FATAL - caller handles exception */
           CatchException(wand->exception); /* output warnings and clear!!! */
         }
     }
 
-  assert(i==(ssize_t)(argc-1));
-  option=argv[i];  /* the last argument - output filename! */
+  if ( ( process_flags & ProcessOutputFile ) == 0 )
+    return;
+  assert(end==argc-1);
+
+  /*
+     Write out final image!
+  */
+  option=argv[i];
 
 #if MagickCommandDebug
   (void) FormatLocaleFile(stderr, "CLI Output: \"%s\"\n", option );
@@ -303,31 +854,24 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
   // if stacks are not empty
   //  ThrowConvertException(OptionError,"UnbalancedParenthesis",option,i);
 
-  /* FUTURE: in the following produce a better error report
-     -- Missing Output filename
-  */
-
-
-  /* This is the only value 'do no write' option for a CLI */
+  /* This is a valid 'do no write' option for a CLI */
   if (LocaleCompare(option,"-exit") == 0 )
     return;  /* just exit, no image write */
 
   /* If there is an option -- produce an error */
   if (IsCommandOption(option) != MagickFalse)
-    MagickExceptionReturn(OptionError,"MissingAnImageFilename",option,i);
+    /* FUTURE: Better Error - Output Filename not Found */
+    MagickExceptionReturn(OptionError,"MissingOutputFilename",option,i);
 
-  /* If no images */
+  /* If no images in MagickWand */
   if ( wand->images == (Image *) NULL )
     {
-      /* a "null:" output coder with no images is ok */
+      /* a "null:" output coder with no images is not an error! */
       if ( LocaleCompare(option,"null:") == 0 )
         return;
-      MagickExceptionReturn(OptionError,"MissingAnImageFilename",option,i);
+      MagickExceptionReturn(OptionError,"NoImagesForFinalWrite",option,i);
     }
 
-  /*
-     Write out final image!
-  */
   //WandListOperatorImages(wand,MagickFalse,"write",option,(const char *)NULL);
   (void) SyncImagesSettings(wand->image_info,wand->images,wand->exception);
   (void) WriteImages(wand->image_info,wand->images,option,wand->exception);
@@ -346,9 +890,12 @@ WandExport void MagickCommandProcessOptions(MagickWand *wand,int argc,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickImageCommand() Handle special 'once only' CLI arguments and
-%  prepare to process the command line using a special CLI Magick Wand
-%  via the MagickImageProcess() function.
+%  MagickImageCommand() Handle special use CLI arguments and prepare a
+%  CLI MagickWand to process the command line or directly specified script.
+%
+%  This is essentualy interface function between the MagickCore library
+%  initialization function MagickCommandGenesis(), and the option MagickWand
+%  processing functions  ProcessCommandOptions()  or  ProcessScriptOptions()
 %
 %  The format of the MagickImageCommand method is:
 %
@@ -469,21 +1016,26 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
           return(MagickFalse);
         }
     }
+  /* The "magick" command must have at least two arguments */
   if (argc < 3)
     return(MagickUsage());
   ReadCommandlLine(argc,&argv);
+
 #if 0
+  /* FUTURE: This does not make sense!  Remove it.
+     Only implied 'image read' needs to expand file name glob patterns
+  */
   status=ExpandFilenames(&argc,&argv);
   if (status == MagickFalse)
     ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
 #endif
 
-  /* Special hidden option for 'delegates' */
+  /* Special hidden option for 'delegates' - no wand needed */
   if (LocaleCompare("-concatenate",argv[1]) == 0)
     return(ConcatenateImages(argc,argv,exception));
 
-  /* Create a special "CLI Wand" to hold images and settings */
+  /* Initialize special "CLI Wand" to hold images and settings (empty) */
   /* FUTURE: add this to 'operations.c' */
   wand=NewMagickWand();
   wand->image_info=DestroyImageInfo(wand->image_info);
@@ -494,29 +1046,19 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
   wand->quantize_info=AcquireQuantizeInfo(image_info);
 
   if (LocaleCompare("-list",argv[1]) == 0)
+    /* Special option - list argument constants and other information */
+    /* FUTURE - this really should be a direct MagickCore Function */
     WandSettingOptionInfo(wand, argv[1]+1, argv[2]);
-#if 0
   else if (LocaleCompare("-script",argv[1]) == 0)
     {
       /* Start processing from script, no pre-script options */
-      int
-        index;
-
-      index=2;
       GetPathComponent(argv[2],TailPath,wand->name);
-      MagickScriptProcessOptions(wand,argc,argv,&index);
+      ProcessScriptOptions(wand,argc-2,argv+2);
     }
-#endif
   else
     {
       /* Processing Command line, assuming output file as last option */
-      int
-        index;
-
-      index=1;
-      GetPathComponent(argv[0],TailPath,wand->name);
-      MagickCommandProcessOptions(wand,argc,argv, &index,
-             ProcessCommandOptions|ProcessOutputFile);
+      ProcessCommandOptions(wand,argc-1,argv+1,MagickCommandOptionFlags);
     }
 
   assert(wand->exception == exception);
