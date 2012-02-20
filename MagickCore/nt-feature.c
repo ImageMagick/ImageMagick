@@ -40,27 +40,28 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
+#include "MagickCore/studio.h"
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__)
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <windows.h>
-#include "magick/cache.h"
-#include "magick/colorspace.h"
-#include "magick/colorspace-private.h"
-#include "magick/draw.h"
-#include "magick/exception.h"
-#include "magick/exception-private.h"
-#include "magick/image-private.h"
-#include "magick/memory_.h"
-#include "magick/monitor.h"
-#include "magick/monitor-private.h"
-#include "magick/quantum.h"
-#include "magick/string_.h"
-#include "magick/token.h"
-#include "magick/splay-tree.h"
-#include "magick/utility.h"
-#include "magick/nt-feature.h"
+#include "MagickCore/cache.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
+#include "MagickCore/draw.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/memory_.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
+#include "MagickCore/pixel-accessor.h"
+#include "MagickCore/quantum.h"
+#include "MagickCore/string_.h"
+#include "MagickCore/token.h"
+#include "MagickCore/splay-tree.h"
+#include "MagickCore/utility.h"
+#include "MagickCore/nt-feature.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,7 +114,7 @@ MagickExport void *CropImageToHBITMAP(Image *image,
   RectangleInfo
     page;
 
-  register const PixelPacket
+  register const Quantum
     *p;
 
   register RGBQUAD
@@ -177,39 +178,30 @@ MagickExport void *CropImageToHBITMAP(Image *image,
   if ( bitmap.bmBits == NULL )
     bitmap.bmBits = bitmap_bits;
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
-    TransformImageColorspace(image,sRGBColorspace);
+    TransformImageColorspace(image,sRGBColorspace,exception);
   /*
     Extract crop image.
   */
   q=bitmap_bits;
   for (y=0; y < (ssize_t) page.height; y++)
   {
+    register ssize_t
+      x;
+
     p=GetVirtualPixels(image,page.x,page.y+y,page.width,1,exception);
-    if (p == (const PixelPacket *) NULL)
+    if (p == (const Quantum *) NULL)
       break;
 
-#if MAGICKCORE_QUANTUM_DEPTH == 8
-      /* Form of PixelPacket is identical to RGBQUAD when MAGICKCORE_QUANTUM_DEPTH==8 */
-      CopyMagickMemory((void*)q,(const void*)p,page.width*sizeof(PixelPacket));
-      q += page.width;
-
-#else  /* 16 or 32 bit Quantum */
-      {
-        ssize_t
-          x;
-
-        /* Transfer pixels, scaling to Quantum */
-        for( x=(ssize_t) page.width ; x> 0 ; x-- )
-          {
-            q->rgbRed = ScaleQuantumToChar(GetPixelRed(p));
-            q->rgbGreen = ScaleQuantumToChar(GetPixelGreen(p));
-            q->rgbBlue = ScaleQuantumToChar(GetPixelBlue(p));
-            q->rgbReserved = 0;
-            ++q;
-            ++p;
-          }
-      }
-#endif
+    /* Transfer pixels, scaling to Quantum */
+    for( x=(ssize_t) page.width ; x> 0 ; x-- )
+    {
+      q->rgbRed = ScaleQuantumToChar(GetPixelRed(image,p));
+      q->rgbGreen = ScaleQuantumToChar(GetPixelGreen(image,p));
+      q->rgbBlue = ScaleQuantumToChar(GetPixelBlue(image,p));
+      q->rgbReserved = 0;
+      p+=GetPixelChannels(image);
+      q++;
+    }
     proceed=SetImageProgress(image,CropImageTag,y,page.height);
     if (proceed == MagickFalse)
       break;
@@ -593,7 +585,7 @@ MagickExport void *ImageToHBITMAP(Image *image,ExceptionInfo *exception)
   register ssize_t
     x;
 
-  register const PixelPacket
+  register const Quantum
     *p;
 
   register RGBQUAD
@@ -633,19 +625,19 @@ MagickExport void *ImageToHBITMAP(Image *image,ExceptionInfo *exception)
   q=bitmap_bits;
   if (bitmap.bmBits == NULL)
     bitmap.bmBits=bitmap_bits;
-  (void) TransformImageColorspace(image,sRGBColorspace);
+  (void) TransformImageColorspace(image,sRGBColorspace,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetVirtualPixels(image,0,y,image->columns,1,exception);
-    if (p == (const PixelPacket *) NULL)
+    if (p == (const Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      q->rgbRed=ScaleQuantumToChar(GetPixelRed(p));
-      q->rgbGreen=ScaleQuantumToChar(GetPixelGreen(p));
-      q->rgbBlue=ScaleQuantumToChar(GetPixelBlue(p));
+      q->rgbRed=ScaleQuantumToChar(GetPixelRed(image,p));
+      q->rgbGreen=ScaleQuantumToChar(GetPixelGreen(image,p));
+      q->rgbBlue=ScaleQuantumToChar(GetPixelBlue(image,p));
       q->rgbReserved=0;
-      p++;
+      p+=GetPixelChannels(image);
       q++;
     }
   }
