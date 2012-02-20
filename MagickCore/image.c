@@ -1808,9 +1808,6 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    PixelInfo
-      pixel;
-
     register const Quantum
       *p;
 
