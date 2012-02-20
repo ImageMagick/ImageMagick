@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include "MagickCore/nt-base-private.h"
+#include "MagickCore/nt-feature.h"
 
 #define MagickMinBlobExtent  32767L
 #if defined(MAGICKCORE_HAVE_FSEEKO)
