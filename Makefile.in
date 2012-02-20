@@ -475,36 +475,37 @@ am__MagickCore_libMagickCore_la_SOURCES_DIST =  \
 	MagickCore/widget.h MagickCore/widget-private.h \
 	MagickCore/xml-tree.c MagickCore/xml-tree.h \
 	MagickCore/xml-tree-private.h MagickCore/xwindow.c \
-	MagickCore/xwindow.h coders/aai.c coders/art.c coders/avs.c \
-	coders/bgr.c coders/bmp.c coders/braille.c coders/cals.c \
-	coders/caption.c coders/cin.c coders/cip.c coders/clip.c \
-	coders/cmyk.c coders/cut.c coders/dcm.c coders/dds.c \
-	coders/debug.c coders/dib.c coders/dng.c coders/dot.c \
-	coders/dpx.c coders/fax.c coders/fits.c coders/gif.c \
-	coders/gradient.c coders/gray.c coders/hald.c coders/hdr.c \
-	coders/histogram.c coders/hrz.c coders/html.c coders/icon.c \
-	coders/info.c coders/inline.c coders/ipl.c coders/label.c \
-	coders/mac.c coders/magick.c coders/map.c coders/mat.c \
-	coders/matte.c coders/meta.c coders/miff.c coders/mono.c \
-	coders/mpc.c coders/mpeg.c coders/mpr.c coders/msl.c \
-	coders/mtv.c coders/mvg.c coders/null.c coders/otb.c \
-	coders/palm.c coders/pattern.c coders/pcd.c coders/pcl.c \
-	coders/pcx.c coders/pdb.c coders/pdf.c coders/pes.c \
-	coders/pict.c coders/pix.c coders/plasma.c coders/pnm.c \
-	coders/preview.c coders/ps.c coders/ps2.c coders/ps3.c \
-	coders/psd.c coders/pwp.c coders/raw.c coders/rgb.c \
-	coders/rla.c coders/rle.c coders/scr.c coders/sct.c \
-	coders/sfw.c coders/sgi.c coders/stegano.c coders/sun.c \
-	coders/svg.c coders/tga.c coders/thumbnail.c coders/tile.c \
-	coders/tim.c coders/ttf.c coders/txt.c coders/uil.c \
-	coders/url.c coders/uyvy.c coders/vicar.c coders/vid.c \
-	coders/viff.c coders/wbmp.c coders/wpg.c coders/xbm.c \
-	coders/xc.c coders/xcf.c coders/xpm.c coders/xps.c \
-	coders/ycbcr.c coders/yuv.c coders/dps.c coders/djvu.c \
-	coders/exr.c coders/fpx.c coders/clipboard.c coders/emf.c \
-	coders/jbig.c coders/jpeg.c coders/jp2.c coders/png.c \
-	coders/ept.c coders/tiff.c coders/webp.c coders/wmf.c \
-	coders/x.c coders/xwd.c filters/analyze.c
+	MagickCore/xwindow.h magick/nt-feature.c magick/nt-feature.h \
+	magick/nt-base.c magick/nt-base.h coders/aai.c coders/art.c \
+	coders/avs.c coders/bgr.c coders/bmp.c coders/braille.c \
+	coders/cals.c coders/caption.c coders/cin.c coders/cip.c \
+	coders/clip.c coders/cmyk.c coders/cut.c coders/dcm.c \
+	coders/dds.c coders/debug.c coders/dib.c coders/dng.c \
+	coders/dot.c coders/dpx.c coders/fax.c coders/fits.c \
+	coders/gif.c coders/gradient.c coders/gray.c coders/hald.c \
+	coders/hdr.c coders/histogram.c coders/hrz.c coders/html.c \
+	coders/icon.c coders/info.c coders/inline.c coders/ipl.c \
+	coders/label.c coders/mac.c coders/magick.c coders/map.c \
+	coders/mat.c coders/matte.c coders/meta.c coders/miff.c \
+	coders/mono.c coders/mpc.c coders/mpeg.c coders/mpr.c \
+	coders/msl.c coders/mtv.c coders/mvg.c coders/null.c \
+	coders/otb.c coders/palm.c coders/pattern.c coders/pcd.c \
+	coders/pcl.c coders/pcx.c coders/pdb.c coders/pdf.c \
+	coders/pes.c coders/pict.c coders/pix.c coders/plasma.c \
+	coders/pnm.c coders/preview.c coders/ps.c coders/ps2.c \
+	coders/ps3.c coders/psd.c coders/pwp.c coders/raw.c \
+	coders/rgb.c coders/rla.c coders/rle.c coders/scr.c \
+	coders/sct.c coders/sfw.c coders/sgi.c coders/stegano.c \
+	coders/sun.c coders/svg.c coders/tga.c coders/thumbnail.c \
+	coders/tile.c coders/tim.c coders/ttf.c coders/txt.c \
+	coders/uil.c coders/url.c coders/uyvy.c coders/vicar.c \
+	coders/vid.c coders/viff.c coders/wbmp.c coders/wpg.c \
+	coders/xbm.c coders/xc.c coders/xcf.c coders/xpm.c \
+	coders/xps.c coders/ycbcr.c coders/yuv.c coders/dps.c \
+	coders/djvu.c coders/exr.c coders/fpx.c coders/clipboard.c \
+	coders/emf.c coders/jbig.c coders/jpeg.c coders/jp2.c \
+	coders/png.c coders/ept.c coders/tiff.c coders/webp.c \
+	coders/wmf.c coders/x.c coders/xwd.c filters/analyze.c
 am__objects_1 = MagickCore/MagickCore_libMagickCore_la-accelerate.lo \
 	MagickCore/MagickCore_libMagickCore_la-animate.lo \
 	MagickCore/MagickCore_libMagickCore_la-annotate.lo \
@@ -593,30 +594,33 @@ am__objects_1 = MagickCore/MagickCore_libMagickCore_la-accelerate.lo \
 	MagickCore/MagickCore_libMagickCore_la-widget.lo \
 	MagickCore/MagickCore_libMagickCore_la-xml-tree.lo \
 	MagickCore/MagickCore_libMagickCore_la-xwindow.lo
-@DPS_DELEGATE_TRUE@am__objects_2 =  \
+@CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 = magick/MagickCore_libMagickCore_la-nt-feature.lo
+@WIN32_NATIVE_BUILD_TRUE@am__objects_2 = magick/MagickCore_libMagickCore_la-nt-base.lo \
+@WIN32_NATIVE_BUILD_TRUE@	magick/MagickCore_libMagickCore_la-nt-feature.lo
+@DPS_DELEGATE_TRUE@am__objects_3 =  \
 @DPS_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_la-dps.lo
-@DJVU_DELEGATE_TRUE@am__objects_3 = coders/MagickCore_libMagickCore_la-djvu.lo
-@OPENEXR_DELEGATE_TRUE@am__objects_4 = coders/MagickCore_libMagickCore_la-exr.lo
-@FPX_DELEGATE_TRUE@am__objects_5 =  \
+@DJVU_DELEGATE_TRUE@am__objects_4 = coders/MagickCore_libMagickCore_la-djvu.lo
+@OPENEXR_DELEGATE_TRUE@am__objects_5 = coders/MagickCore_libMagickCore_la-exr.lo
+@FPX_DELEGATE_TRUE@am__objects_6 =  \
 @FPX_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_la-fpx.lo
-@WINGDI32_DELEGATE_TRUE@am__objects_6 = coders/MagickCore_libMagickCore_la-clipboard.lo \
+@WINGDI32_DELEGATE_TRUE@am__objects_7 = coders/MagickCore_libMagickCore_la-clipboard.lo \
 @WINGDI32_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_la-emf.lo
-@JBIG_DELEGATE_TRUE@am__objects_7 = coders/MagickCore_libMagickCore_la-jbig.lo
-@JPEG_DELEGATE_TRUE@am__objects_8 = coders/MagickCore_libMagickCore_la-jpeg.lo
-@JP2_DELEGATE_TRUE@am__objects_9 =  \
+@JBIG_DELEGATE_TRUE@am__objects_8 = coders/MagickCore_libMagickCore_la-jbig.lo
+@JPEG_DELEGATE_TRUE@am__objects_9 = coders/MagickCore_libMagickCore_la-jpeg.lo
+@JP2_DELEGATE_TRUE@am__objects_10 =  \
 @JP2_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_la-jp2.lo
-@PNG_DELEGATE_TRUE@am__objects_10 =  \
+@PNG_DELEGATE_TRUE@am__objects_11 =  \
 @PNG_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_la-png.lo
-@TIFF_DELEGATE_TRUE@am__objects_11 =  \
+@TIFF_DELEGATE_TRUE@am__objects_12 =  \
 @TIFF_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_la-ept.lo \
 @TIFF_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_la-tiff.lo
-@WEBP_DELEGATE_TRUE@am__objects_12 = coders/MagickCore_libMagickCore_la-webp.lo
-@WMF_DELEGATE_TRUE@am__objects_13 =  \
+@WEBP_DELEGATE_TRUE@am__objects_13 = coders/MagickCore_libMagickCore_la-webp.lo
+@WMF_DELEGATE_TRUE@am__objects_14 =  \
 @WMF_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_la-wmf.lo
-@X11_DELEGATE_TRUE@am__objects_14 =  \
+@X11_DELEGATE_TRUE@am__objects_15 =  \
 @X11_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_la-x.lo \
 @X11_DELEGATE_TRUE@	coders/MagickCore_libMagickCore_la-xwd.lo
-am__objects_15 = coders/MagickCore_libMagickCore_la-aai.lo \
+am__objects_16 = coders/MagickCore_libMagickCore_la-aai.lo \
 	coders/MagickCore_libMagickCore_la-art.lo \
 	coders/MagickCore_libMagickCore_la-avs.lo \
 	coders/MagickCore_libMagickCore_la-bgr.lo \
@@ -716,17 +720,17 @@ am__objects_15 = coders/MagickCore_libMagickCore_la-aai.lo \
 	coders/MagickCore_libMagickCore_la-xpm.lo \
 	coders/MagickCore_libMagickCore_la-xps.lo \
 	coders/MagickCore_libMagickCore_la-ycbcr.lo \
-	coders/MagickCore_libMagickCore_la-yuv.lo $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
-	$(am__objects_9) $(am__objects_10) $(am__objects_11) \
-	$(am__objects_12) $(am__objects_13) $(am__objects_14)
-am__objects_16 = filters/MagickCore_libMagickCore_la-analyze.lo
+	coders/MagickCore_libMagickCore_la-yuv.lo $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
+	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
+	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
+	$(am__objects_13) $(am__objects_14) $(am__objects_15)
+am__objects_17 = filters/MagickCore_libMagickCore_la-analyze.lo
 @WITH_MODULES_FALSE@am_MagickCore_libMagickCore_la_OBJECTS =  \
-@WITH_MODULES_FALSE@	$(am__objects_1) $(am__objects_15) \
-@WITH_MODULES_FALSE@	$(am__objects_16)
+@WITH_MODULES_FALSE@	$(am__objects_1) $(am__objects_2) \
+@WITH_MODULES_FALSE@	$(am__objects_16) $(am__objects_17)
 @WITH_MODULES_TRUE@am_MagickCore_libMagickCore_la_OBJECTS =  \
-@WITH_MODULES_TRUE@	$(am__objects_1)
+@WITH_MODULES_TRUE@	$(am__objects_1) $(am__objects_2)
 MagickCore_libMagickCore_la_OBJECTS =  \
 	$(am_MagickCore_libMagickCore_la_OBJECTS)
 MagickCore_libMagickCore_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -736,7 +740,7 @@ MagickCore_libMagickCore_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 MagickWand_libMagickWand_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am__objects_17 = MagickWand/MagickWand_libMagickWand_la-animate.lo \
+am__objects_18 = MagickWand/MagickWand_libMagickWand_la-animate.lo \
 	MagickWand/MagickWand_libMagickWand_la-compare.lo \
 	MagickWand/MagickWand_libMagickWand_la-composite.lo \
 	MagickWand/MagickWand_libMagickWand_la-conjure.lo \
@@ -758,7 +762,7 @@ am__objects_17 = MagickWand/MagickWand_libMagickWand_la-animate.lo \
 	MagickWand/MagickWand_libMagickWand_la-stream.lo \
 	MagickWand/MagickWand_libMagickWand_la-wand.lo \
 	MagickWand/MagickWand_libMagickWand_la-wand-view.lo
-am_MagickWand_libMagickWand_la_OBJECTS = $(am__objects_17)
+am_MagickWand_libMagickWand_la_OBJECTS = $(am__objects_18)
 MagickWand_libMagickWand_la_OBJECTS =  \
 	$(am_MagickWand_libMagickWand_la_OBJECTS)
 MagickWand_libMagickWand_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1718,12 +1722,12 @@ ltdl_libltdl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	-o $@
 @INSTALL_LTDL_TRUE@am_ltdl_libltdl_la_rpath = -rpath $(libdir)
 am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
-am__objects_18 = ltdl/loaders/ltdl_libltdlc_la-preopen.lo \
+am__objects_19 = ltdl/loaders/ltdl_libltdlc_la-preopen.lo \
 	ltdl/ltdl_libltdlc_la-lt__alloc.lo \
 	ltdl/ltdl_libltdlc_la-lt_dlloader.lo \
 	ltdl/ltdl_libltdlc_la-lt_error.lo \
 	ltdl/ltdl_libltdlc_la-ltdl.lo ltdl/ltdl_libltdlc_la-slist.lo
-am_ltdl_libltdlc_la_OBJECTS = $(am__objects_18)
+am_ltdl_libltdlc_la_OBJECTS = $(am__objects_19)
 ltdl_libltdlc_la_OBJECTS = $(am_ltdl_libltdlc_la_OBJECTS)
 ltdl_libltdlc_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -4146,12 +4150,12 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/xwindow.c \
 	MagickCore/xwindow.h 
 
-@CYGWIN_BUILD_FALSE@@WIN32_NATIVE_BUILD_FALSE@MAGICK_PLATFORM_SRCS = 
-@CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@MAGICK_PLATFORM_SRCS = \
+@CYGWIN_BUILD_FALSE@@WIN32_NATIVE_BUILD_FALSE@MAGICKCORE_PLATFORM_SRCS = 
+@CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@MAGICKCORE_PLATFORM_SRCS = \
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@  magick/nt-feature.c \
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@  magick/nt-feature.h
 
-@WIN32_NATIVE_BUILD_TRUE@MAGICK_PLATFORM_SRCS = \
+@WIN32_NATIVE_BUILD_TRUE@MAGICKCORE_PLATFORM_SRCS = \
 @WIN32_NATIVE_BUILD_TRUE@  magick/nt-base.c \
 @WIN32_NATIVE_BUILD_TRUE@  magick/nt-base.h \
 @WIN32_NATIVE_BUILD_TRUE@  magick/nt-feature.c \
@@ -5429,6 +5433,16 @@ MagickCore/MagickCore_libMagickCore_la-xml-tree.lo:  \
 MagickCore/MagickCore_libMagickCore_la-xwindow.lo:  \
 	MagickCore/$(am__dirstamp) \
 	MagickCore/$(DEPDIR)/$(am__dirstamp)
+magick/$(am__dirstamp):
+	@$(MKDIR_P) magick
+	@: > magick/$(am__dirstamp)
+magick/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) magick/$(DEPDIR)
+	@: > magick/$(DEPDIR)/$(am__dirstamp)
+magick/MagickCore_libMagickCore_la-nt-feature.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
+magick/MagickCore_libMagickCore_la-nt-base.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
 coders/$(am__dirstamp):
 	@$(MKDIR_P) coders
 	@: > coders/$(am__dirstamp)
@@ -7370,6 +7384,10 @@ mostlyclean-compile:
 	-rm -f ltdl/ltdl_libltdlc_la-ltdl.lo
 	-rm -f ltdl/ltdl_libltdlc_la-slist.$(OBJEXT)
 	-rm -f ltdl/ltdl_libltdlc_la-slist.lo
+	-rm -f magick/MagickCore_libMagickCore_la-nt-base.$(OBJEXT)
+	-rm -f magick/MagickCore_libMagickCore_la-nt-base.lo
+	-rm -f magick/MagickCore_libMagickCore_la-nt-feature.$(OBJEXT)
+	-rm -f magick/MagickCore_libMagickCore_la-nt-feature.lo
 	-rm -f tests/tests_validate-validate.$(OBJEXT)
 	-rm -f utilities/animate.$(OBJEXT)
 	-rm -f utilities/compare.$(OBJEXT)
@@ -7790,6 +7808,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/ltdl_libltdl_la-preopen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/ltdl_libltdlc_la-preopen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/shl_load.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/MagickCore_libMagickCore_la-nt-base.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/MagickCore_libMagickCore_la-nt-feature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_validate-validate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/animate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/compare.Po@am__quote@
@@ -8443,6 +8463,20 @@ MagickCore/MagickCore_libMagickCore_la-xwindow.lo: MagickCore/xwindow.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='MagickCore/xwindow.c' object='MagickCore/MagickCore_libMagickCore_la-xwindow.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickCore/MagickCore_libMagickCore_la-xwindow.lo `test -f 'MagickCore/xwindow.c' || echo '$(srcdir)/'`MagickCore/xwindow.c
+
+magick/MagickCore_libMagickCore_la-nt-feature.lo: magick/nt-feature.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/MagickCore_libMagickCore_la-nt-feature.lo -MD -MP -MF magick/$(DEPDIR)/MagickCore_libMagickCore_la-nt-feature.Tpo -c -o magick/MagickCore_libMagickCore_la-nt-feature.lo `test -f 'magick/nt-feature.c' || echo '$(srcdir)/'`magick/nt-feature.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/MagickCore_libMagickCore_la-nt-feature.Tpo magick/$(DEPDIR)/MagickCore_libMagickCore_la-nt-feature.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='magick/nt-feature.c' object='magick/MagickCore_libMagickCore_la-nt-feature.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/MagickCore_libMagickCore_la-nt-feature.lo `test -f 'magick/nt-feature.c' || echo '$(srcdir)/'`magick/nt-feature.c
+
+magick/MagickCore_libMagickCore_la-nt-base.lo: magick/nt-base.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/MagickCore_libMagickCore_la-nt-base.lo -MD -MP -MF magick/$(DEPDIR)/MagickCore_libMagickCore_la-nt-base.Tpo -c -o magick/MagickCore_libMagickCore_la-nt-base.lo `test -f 'magick/nt-base.c' || echo '$(srcdir)/'`magick/nt-base.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/MagickCore_libMagickCore_la-nt-base.Tpo magick/$(DEPDIR)/MagickCore_libMagickCore_la-nt-base.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='magick/nt-base.c' object='magick/MagickCore_libMagickCore_la-nt-base.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/MagickCore_libMagickCore_la-nt-base.lo `test -f 'magick/nt-base.c' || echo '$(srcdir)/'`magick/nt-base.c
 
 coders/MagickCore_libMagickCore_la-aai.lo: coders/aai.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT coders/MagickCore_libMagickCore_la-aai.lo -MD -MP -MF coders/$(DEPDIR)/MagickCore_libMagickCore_la-aai.Tpo -c -o coders/MagickCore_libMagickCore_la-aai.lo `test -f 'coders/aai.c' || echo '$(srcdir)/'`coders/aai.c
@@ -10386,6 +10420,7 @@ clean-libtool:
 	-rm -rf filters/.libs filters/_libs
 	-rm -rf ltdl/.libs ltdl/_libs
 	-rm -rf ltdl/loaders/.libs ltdl/loaders/_libs
+	-rm -rf magick/.libs magick/_libs
 	-rm -rf tests/.libs tests/_libs
 	-rm -rf utilities/.libs utilities/_libs
 
@@ -11052,6 +11087,8 @@ distclean-generic:
 	-rm -f ltdl/$(am__dirstamp)
 	-rm -f ltdl/loaders/$(DEPDIR)/$(am__dirstamp)
 	-rm -f ltdl/loaders/$(am__dirstamp)
+	-rm -f magick/$(DEPDIR)/$(am__dirstamp)
+	-rm -f magick/$(am__dirstamp)
 	-rm -f tests/$(DEPDIR)/$(am__dirstamp)
 	-rm -f tests/$(am__dirstamp)
 	-rm -f utilities/$(DEPDIR)/$(am__dirstamp)
@@ -11071,7 +11108,7 @@ clean-am: clean-binPROGRAMS clean-checkPROGRAMS \
 
 distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-	-rm -rf Magick++/demo/$(DEPDIR) Magick++/lib/$(DEPDIR) Magick++/tests/$(DEPDIR) MagickCore/$(DEPDIR) MagickWand/$(DEPDIR) coders/$(DEPDIR) filters/$(DEPDIR) ltdl/$(DEPDIR) ltdl/loaders/$(DEPDIR) tests/$(DEPDIR) utilities/$(DEPDIR)
+	-rm -rf Magick++/demo/$(DEPDIR) Magick++/lib/$(DEPDIR) Magick++/tests/$(DEPDIR) MagickCore/$(DEPDIR) MagickWand/$(DEPDIR) coders/$(DEPDIR) filters/$(DEPDIR) ltdl/$(DEPDIR) ltdl/loaders/$(DEPDIR) magick/$(DEPDIR) tests/$(DEPDIR) utilities/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-libtool distclean-local distclean-tags
@@ -11125,7 +11162,7 @@ installcheck-am:
 maintainer-clean: maintainer-clean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-	-rm -rf Magick++/demo/$(DEPDIR) Magick++/lib/$(DEPDIR) Magick++/tests/$(DEPDIR) MagickCore/$(DEPDIR) MagickWand/$(DEPDIR) coders/$(DEPDIR) filters/$(DEPDIR) ltdl/$(DEPDIR) ltdl/loaders/$(DEPDIR) tests/$(DEPDIR) utilities/$(DEPDIR)
+	-rm -rf Magick++/demo/$(DEPDIR) Magick++/lib/$(DEPDIR) Magick++/tests/$(DEPDIR) MagickCore/$(DEPDIR) MagickWand/$(DEPDIR) coders/$(DEPDIR) filters/$(DEPDIR) ltdl/$(DEPDIR) ltdl/loaders/$(DEPDIR) magick/$(DEPDIR) tests/$(DEPDIR) utilities/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic \
 	maintainer-clean-local

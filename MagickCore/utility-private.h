@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 #include "MagickCore/memory_.h"
-#include "MagickCore/nt-feature.h"
+#include "MagickCore/nt-base.h"
 
 extern MagickPrivate char
   **GetPathComponents(const char *,size_t *),

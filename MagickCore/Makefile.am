@@ -269,18 +269,18 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/xwindow.h 
 
 if WIN32_NATIVE_BUILD
-MAGICK_PLATFORM_SRCS = \
+MAGICKCORE_PLATFORM_SRCS = \
   magick/nt-base.c \
   magick/nt-base.h \
   magick/nt-feature.c \
   magick/nt-feature.h
 else
 if CYGWIN_BUILD
-MAGICK_PLATFORM_SRCS = \
+MAGICKCORE_PLATFORM_SRCS = \
   magick/nt-feature.c \
   magick/nt-feature.h
 else
-MAGICK_PLATFORM_SRCS =
+MAGICKCORE_PLATFORM_SRCS =
 endif # if CYGWIN_BUILD
 endif # if WIN32_NATIVE_BUILD
 
