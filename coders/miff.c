@@ -496,6 +496,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   *id='\0';
   (void) ResetMagickMemory(keyword,0,sizeof(keyword));
   version=0.0;
+  (void) version;
   do
   {
     /*
