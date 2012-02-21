@@ -47,6 +47,7 @@
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/resource_.h"
+#include "MagickCore/resource-private.h"
 #include "MagickCore/timer.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/utility.h"
