@@ -1297,15 +1297,15 @@ MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,const size_t length,
 }
 #else
 MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,
-  const size_t magick_unused(length),unsigned char *magick_unused(pixels))
+  const size_t magick_unused(length),unsigned char *magick_unused(pixels),
+  ExceptionInfo *exception)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  (void) ThrowMagickException(&image->exception,GetMagickModule(),
-    MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (ZIP)",
-    image->filename);
+  (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
+    "DelegateLibrarySupportNotBuiltIn","`%s' (ZIP)",image->filename);
   return(MagickFalse);
 }
 #endif
