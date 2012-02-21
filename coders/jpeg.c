@@ -1127,7 +1127,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   option=GetImageOption(image_info,"jpeg:colors");
   if (option != (const char *) NULL)
     {
-      /* Let the JPEG library quantize the image */
+      /*
+        Let the JPEG library quantize the image.
+      */
       jpeg_info.quantize_colors=MagickTrue;
       jpeg_info.desired_number_of_colors=(int) StringToUnsignedLong(option);
     }
@@ -1138,6 +1140,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       if (IsMagickTrue(option) != MagickFalse)
         jpeg_info.do_block_smoothing=MagickTrue;
     }
+  jpeg_info.dct_method=JDCT_FLOAT;
   option=GetImageOption(image_info,"jpeg:dct-method");
   if (option != (const char *) NULL)
     switch (*option)
@@ -1793,41 +1796,6 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   struct jpeg_error_mgr
     jpeg_error;
 
-  static const unsigned int
-    CbQTable[DCTSIZE2] =
-    {
-      17,   18,   22,   31,   50,   92,    193,   465,
-      18,   19,   24,   33,   54,   98,    207,   498,
-      22,   24,   29,   41,   66,   120,   253,   609,
-      31,   33,   41,   57,   92,   169,   355,   854,
-      50,   54,   66,   92,   148,  271,   570,   1370,
-      92,   98,   120,  169,  271,  498,   1046,  2516,
-      193,  207,  253,  355,  570,  1046,  2198,  5289,
-      465,  498,  609,  854,  1370, 2516,  5289,  12725
-    },
-    CrQTable[DCTSIZE2] =
-    {
-      17, 18, 21, 28, 42, 69, 129, 269,
-      18, 19, 23, 30, 44, 74, 137, 284,
-      21, 23, 27, 35, 52, 87, 162, 336,
-      28, 30, 35, 47, 69, 115, 214, 446,
-      42, 44, 52, 69, 103, 171, 318, 661,
-      69, 74, 87, 115, 171, 284, 528, 1098,
-      129, 137, 162, 214, 318, 528, 981, 2040,
-      269, 284, 336, 446, 661, 1098, 2040, 4242
-    },
-    LuminanceQTable[DCTSIZE2] =
-    {
-      16, 11, 13, 16, 20, 29, 44, 73,
-      11, 12, 13, 16, 21, 30, 46, 76,
-      13, 13, 15, 18, 24, 34, 52, 85,
-      16, 16, 18, 22, 29, 41, 63, 103,
-      20, 21, 24, 29, 38, 54, 82, 135,
-      29, 30, 34, 41, 54, 76, 116, 192,
-      44, 46, 52, 63, 82, 116, 177, 293,
-      73, 76, 85, 103, 135, 192, 293, 484
-    };
-
   /*
     Open image file.
   */
@@ -2154,9 +2122,44 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       jpeg_info.comp_info[i].h_samp_factor=1;
       jpeg_info.comp_info[i].v_samp_factor=1;
     }
-  if ((jpeg_info.comp_info[0].h_samp_factor >= 1) &&
-      (jpeg_info.comp_info[0].v_samp_factor >= 1))
+  if ((jpeg_info.comp_info[0].h_samp_factor >= 2) &&
+      (jpeg_info.comp_info[0].v_samp_factor >= 2))
     {
+      static const unsigned int
+        CbQTable[DCTSIZE2] =
+        {
+          17,   18,   22,   31,   50,   92,    193,   465,
+          18,   19,   24,   33,   54,   98,    207,   498,
+          22,   24,   29,   41,   66,   120,   253,   609,
+          31,   33,   41,   57,   92,   169,   355,   854,
+          50,   54,   66,   92,   148,  271,   570,   1370,
+          92,   98,   120,  169,  271,  498,   1046,  2516,
+          193,  207,  253,  355,  570,  1046,  2198,  5289,
+          465,  498,  609,  854,  1370, 2516,  5289,  12725
+        },
+        CrQTable[DCTSIZE2] =
+        {
+          17, 18, 21, 28, 42, 69, 129, 269,
+          18, 19, 23, 30, 44, 74, 137, 284,
+          21, 23, 27, 35, 52, 87, 162, 336,
+          28, 30, 35, 47, 69, 115, 214, 446,
+          42, 44, 52, 69, 103, 171, 318, 661,
+          69, 74, 87, 115, 171, 284, 528, 1098,
+          129, 137, 162, 214, 318, 528, 981, 2040,
+          269, 284, 336, 446, 661, 1098, 2040, 4242
+        },
+        LuminanceQTable[DCTSIZE2] =
+        {
+          16, 11, 13, 16, 20, 29, 44, 73,
+          11, 12, 13, 16, 21, 30, 46, 76,
+          13, 13, 15, 18, 24, 34, 52, 85,
+          16, 16, 18, 22, 29, 41, 63, 103,
+          20, 21, 24, 29, 38, 54, 82, 135,
+          29, 30, 34, 41, 54, 76, 116, 192,
+          44, 46, 52, 63, 82, 116, 177, 293,
+          73, 76, 85, 103, 135, 192, 293, 484
+        };
+
       /*
         Nicolas Robidoux's remix of ISO-IEC 10918-1 : 1993(E) Annex K.
       */
@@ -2167,6 +2170,55 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       jpeg_add_quant_table(&jpeg_info,2,CrQTable,jpeg_quality_scaling(
         quality),0);
     }
+  else
+    if ((jpeg_info.comp_info[0].h_samp_factor >= 1) &&
+        (jpeg_info.comp_info[0].v_samp_factor >= 1))
+      {
+        static const unsigned int
+          CbQTable[DCTSIZE2] =
+          {
+            17,  18,  27,   51,   124,  395,  1617, 8563,
+            18,  21,  30,   58,   141,  449,  1838, 9734,
+            27,  30,  45,   85,   208,  659,  2701, 12725,
+            51,  58,  85,   161,  395,  1251, 5127, 12725,
+            124, 141, 208,  395,  968,  3070, 12580,12725,
+            395, 449, 659,  1251, 3070, 9734, 12725,12725,
+            1617,1838,2701, 5127, 12580,12725,12725,12725,
+            8563,9734,12725,12725,12725,12725,12725,12725
+          },
+          CrQTable[DCTSIZE2] =
+          {
+            17,  18,  25,  43,  92,   245,  813,  3358,
+            18,  20,  28,  48,  102,  273,  907,  3745,
+            25,  28,  38,  66,  142,  379,  1258, 5195,
+            43,  48,  66,  114, 245,  654,  2170, 8965,
+            92,  102, 142, 245, 525,  1403, 4658, 12725,
+            245, 273, 379, 654, 1403, 3745, 12436,12725,
+            813, 907, 1258,2170,4658, 12436,12725,12725,
+            3358,3745,5195,8965,12725,12725,12725,12725
+          },
+          LuminanceQTable[DCTSIZE2] =
+          {
+            17, 12, 14, 17, 22, 30, 45, 72,
+            12, 13, 14, 17, 22, 31, 46, 74, 
+            14, 14, 16, 19, 25, 35, 52, 83, 
+            17, 17, 19, 23, 30, 41, 62, 100,  
+            22, 22, 25, 30, 39, 54, 80, 129,
+            30, 31, 35, 41, 54, 74, 111, 178,
+            45, 46, 52, 62, 80, 111, 166, 267,
+            72, 74, 83, 100, 129, 178, 267, 428
+          };
+
+        /*
+          Nicolas Robidoux's remix of ISO-IEC 10918-1 : 1993(E) Annex K.
+        */
+        jpeg_add_quant_table(&jpeg_info,0,LuminanceQTable,jpeg_quality_scaling(
+          quality),0);
+        jpeg_add_quant_table(&jpeg_info,1,CbQTable,jpeg_quality_scaling(
+          quality),0);
+        jpeg_add_quant_table(&jpeg_info,2,CrQTable,jpeg_quality_scaling(
+          quality),0);
+      }
   jpeg_start_compress(&jpeg_info,MagickTrue);
   if (image->debug != MagickFalse)
     {
