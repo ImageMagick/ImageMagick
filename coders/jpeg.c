@@ -1932,6 +1932,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       if (image->units == PixelsPerCentimeterResolution)
         jpeg_info.density_unit=(UINT8) 2;
     }
+  jpeg_info.dct_method=JDCT_FLOAT;
   option=GetImageOption(image_info,"jpeg:dct-method");
   if (option != (const char *) NULL)
     switch (*option)
@@ -2153,8 +2154,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       jpeg_info.comp_info[i].h_samp_factor=1;
       jpeg_info.comp_info[i].v_samp_factor=1;
     }
-  if ((jpeg_info.comp_info[0].h_samp_factor >= 2) &&
-      (jpeg_info.comp_info[0].v_samp_factor >= 2))
+  if ((jpeg_info.comp_info[0].h_samp_factor >= 1) &&
+      (jpeg_info.comp_info[0].v_samp_factor >= 1))
     {
       /*
         Nicolas Robidoux's remix of ISO-IEC 10918-1 : 1993(E) Annex K.
