@@ -61,7 +61,7 @@
 #include "MagickCore/token.h"
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/utility.h"
-#include "MagickCore/nt-feature.h"
+#include "MagickCore/nt-base-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
