@@ -2546,7 +2546,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
     case ConvolveMorphology:
     case DilateMorphology:
     case DilateIntensityMorphology:
-    /*case DistanceMorphology:*/
+    case IterativeDistanceMorphology:
       /* kernel needs to used with reflection about origin */
       offx = (ssize_t) kernel->width-offx-1;
       offy = (ssize_t) kernel->height-offy-1;
@@ -2981,15 +2981,15 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 if ( IsNan(*k) || (*k) < 0.5 ) continue;
                 Minimize(min.red,     (double)
                   GetPixelRed(image,k_pixels+u*GetPixelChannels(image)));
-                Minimize(min.green,   (double) 
+                Minimize(min.green,   (double)
                   GetPixelGreen(image,k_pixels+u*GetPixelChannels(image)));
                 Minimize(min.blue,    (double)
                   GetPixelBlue(image,k_pixels+u*GetPixelChannels(image)));
-                if (image->colorspace == CMYKColorspace)
-                  Minimize(min.black,(double)
-                    GetPixelBlack(image,k_pixels+u*GetPixelChannels(image)));
-                Minimize(min.alpha,(double)
+                Minimize(min.alpha,   (double)
                   GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
+                if (image->colorspace == CMYKColorspace)
+                  Minimize(min.black,  (double)
+                    GetPixelBlack(image,k_pixels+u*GetPixelChannels(image)));
               }
               k_pixels += virt_width*GetPixelChannels(image);
             }
@@ -3014,15 +3014,15 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 if ( IsNan(*k) || (*k) < 0.5 ) continue;
                 Maximize(max.red,     (double)
                   GetPixelRed(image,k_pixels+u*GetPixelChannels(image)));
-                Maximize(max.green,   (double) 
+                Maximize(max.green,   (double)
                   GetPixelGreen(image,k_pixels+u*GetPixelChannels(image)));
-                Maximize(max.blue,    (double) 
+                Maximize(max.blue,    (double)
                   GetPixelBlue(image,k_pixels+u*GetPixelChannels(image)));
+                Maximize(max.alpha,   (double)
+                  GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
                 if (image->colorspace == CMYKColorspace)
                   Maximize(max.black,   (double)
                     GetPixelBlack(image,k_pixels+u*GetPixelChannels(image)));
-                Maximize(max.alpha,(double) 
-                  GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
               }
               k_pixels += virt_width*GetPixelChannels(image);
             }
@@ -3055,11 +3055,11 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                     GetPixelGreen(image,k_pixels+u*GetPixelChannels(image)));
                   Minimize(min.blue,    (double)
                     GetPixelBlue(image,k_pixels+u*GetPixelChannels(image)));
+                  Minimize(min.alpha,(double)
+                    GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
                   if ( image->colorspace == CMYKColorspace)
                     Minimize(min.black,(double)
                       GetPixelBlack(image,k_pixels+u*GetPixelChannels(image)));
-                  Minimize(min.alpha,(double)
-                    GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
                 }
                 else if ( (*k) < 0.3 )
                 { /* maximum of background pixels */
@@ -3069,11 +3069,11 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                     GetPixelGreen(image,k_pixels+u*GetPixelChannels(image)));
                   Maximize(max.blue,    (double)
                     GetPixelBlue(image,k_pixels+u*GetPixelChannels(image)));
+                  Maximize(max.alpha,(double)
+                    GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
                   if (image->colorspace == CMYKColorspace)
                     Maximize(max.black,   (double)
                       GetPixelBlack(image,k_pixels+u*GetPixelChannels(image)));
-                  Maximize(max.alpha,(double)
-                    GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
                 }
               }
               k_pixels += virt_width*GetPixelChannels(image);
@@ -3153,43 +3153,52 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               k_pixels += virt_width*GetPixelChannels(image);
             }
             break;
-#if 0
-  This code has been obsoleted by the MorphologyPrimitiveDirect() function.
-  However it is still (almost) correct coding for Grayscale Morphology.
-  That is...
 
-  GrayErode    is equivalent but with kernel values subtracted from pixels
-               without the kernel rotation
-  GreyDilate   is equivalent but using Maximum() instead of Minimum()
-               using kernel rotation
-
-  It has thus been preserved for future implementation of those methods.
-
-        case DistanceMorphology:
-            /* Add kernel Value and select the minimum value found.
-            ** The result is a iterative distance from edge of image shape.
+        case IterativeDistanceMorphology:
+            /* Work out an iterative distance from black edge of a white image
+            ** shape.  Essentually white values are decreased to the smallest
+            ** 'distance from edge' it can find.
             **
-            ** All Distance Kernels are symetrical, but that may not always
-            ** be the case. For example how about a distance from left edges?
-            ** To work correctly with asymetrical kernels the reflected kernel
-            ** needs to be applied.
+            ** It works by adding kernel values to the neighbourhood, and and
+            ** select the minimum value found. The kernel is rotated before
+            ** use, so kernel distances match resulting distances, when a user
+            ** provided asymmetric kernel is applied.
+            **
+            **
+            ** This code is almost identical to True GrayScale Morphology But
+            ** not quite.
+            **
+            ** GreyDilate  Kernel values added, maximum value found Kernel is
+            ** rotated before use.
+            **
+            ** GrayErode:  Kernel values subtracted and minimum value found No
+            ** kernel rotation used.
+            **
+            ** Note the the Iterative Distance method is essentially a
+            ** GrayErode, but with negative kernel values, and kernel
+            ** rotation applied.
             */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNan(*k) ) continue;
-                Minimize(result.red,     (*k)+k_pixels[u].red);
-                Minimize(result.green,   (*k)+k_pixels[u].green);
-                Minimize(result.blue,    (*k)+k_pixels[u].blue);
-                Minimize(result.alpha, (*k)+k_pixels[u].alpha);
+                Minimize(result.red,     (*k)+(double)
+                     GetPixelRed(image,k_pixels+u*GetPixelChannels(image)));
+                Minimize(result.green,   (*k)+(double)
+                     GetPixelGreen(image,k_pixels+u*GetPixelChannels(image)));
+                Minimize(result.blue,    (*k)+(double)
+                     GetPixelBlue(image,k_pixels+u*GetPixelChannels(image)));
+                Minimize(result.alpha,   (*k)+(double)
+                     GetPixelAlpha(image,k_pixels+u*GetPixelChannels(image)));
                 if ( image->colorspace == CMYKColorspace)
-                  Minimize(result.black,(*k)+GetPixelBlack(p_image,k_indexes+u));
+                  Maximize(result.black, (*k)+(double)
+                      GetPixelBlack(image,k_pixels+u*GetPixelChannels(image)));
               }
               k_pixels += virt_width*GetPixelChannels(image);
             }
             break;
-#endif
+
         case UndefinedMorphology:
         default:
             break; /* Do nothing */
@@ -3215,7 +3224,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           result.green   -= min.green;
           result.blue    -= min.blue;
           result.black   -= min.black;
-          result.alpha -= min.alpha;
+          result.alpha   -= min.alpha;
           break;
         case ThickenMorphology:
           /* Add the pattern matchs to the original */
@@ -3223,7 +3232,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           result.green   += min.green;
           result.blue    += min.blue;
           result.black   += min.black;
-          result.alpha += min.alpha;
+          result.alpha   += min.alpha;
           break;
         default:
           /* result directly calculated or assigned */
@@ -3283,13 +3292,15 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 }
 
 /* This is almost identical to the MorphologyPrimative() function above,
-** but will apply the primitive directly to the image in two passes.
+** but will apply the primitive directly to the actual image using two
+** passes, once in each direction, with the results of the previous (and
+** current) row being re-used.
 **
 ** That is after each row is 'Sync'ed' into the image, the next row will
 ** make use of those values as part of the calculation of the next row.
 ** It then repeats, but going in the oppisite (bottom-up) direction.
 **
-** Because of this 'iterative' handling this function can not make use
+** Because of this 're-use of results' this function can not make use
 ** of multi-threaded, parellel processing.
 */
 static ssize_t MorphologyPrimitiveDirect(Image *image,
@@ -3455,7 +3466,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             /* Apply Distance to 'Matte' channel, coping the closest color.
             **
             ** This is experimental, and realy the 'alpha' component should
-            ** be completely separate 'masking' channel.
+            ** be completely separate 'masking' channel so that alpha can
+            ** also be used as part of the results.
             */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
@@ -3719,10 +3731,10 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
   return(status ? (ssize_t) changed : -1);
 }
 
-/* Apply a Morphology by calling theabove low level primitive application
-** functions.  This function handles any iteration loops, composition or
-** re-iteration of results, and compound morphology methods that is based
-** on multiple low-level (staged) morphology methods.
+/* Apply a Morphology by calling one of the above low level primitive
+** application functions.  This function handles any iteration loops,
+** composition or re-iteration of results, and compound morphology methods
+** that is based on multiple low-level (staged) morphology methods.
 **
 ** Basically this provides the complex grue between the requested morphology
 ** method and raw low-level implementation (above).
@@ -3831,7 +3843,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
       break;
     case DistanceMorphology:
     case VoronoiMorphology:
-      special = MagickTrue;
+      special = MagickTrue;         /* use special direct primative */
       break;
     default:
       break;
