@@ -55,7 +55,7 @@
 #if defined(MAGICKCORE_LTDL_DELEGATE)
 #  include "ltdl.h"
 #endif
-#include "MagickCore/nt-base.h"
+#include "MagickCore/nt-base-private.h"
 #if defined(MAGICKCORE_CIPHER_SUPPORT)
 #include <ntsecapi.h>
 #include <wincrypt.h>

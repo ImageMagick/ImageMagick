@@ -434,9 +434,9 @@ am__MagickCore_libMagickCore_la_SOURCES_DIST =  \
 	MagickCore/montage.c MagickCore/montage.h \
 	MagickCore/morphology.c MagickCore/morphology.h \
 	MagickCore/morphology-private.h MagickCore/nt-base.h \
-	MagickCore/nt-feature.h MagickCore/option.c \
-	MagickCore/option.h MagickCore/paint.c MagickCore/paint.h \
-	MagickCore/pixel.c MagickCore/pixel.h \
+	MagickCore/nt-base-private.h MagickCore/nt-feature.h \
+	MagickCore/option.c MagickCore/option.h MagickCore/paint.c \
+	MagickCore/paint.h MagickCore/pixel.c MagickCore/pixel.h \
 	MagickCore/pixel-accessor.h MagickCore/policy.c \
 	MagickCore/policy.h MagickCore/PreRvIcccm.c \
 	MagickCore/PreRvIcccm.h MagickCore/prepress.c \
@@ -4058,6 +4058,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/morphology.h \
 	MagickCore/morphology-private.h \
 	MagickCore/nt-base.h \
+  MagickCore/nt-base-private.h \
 	MagickCore/nt-feature.h \
 	MagickCore/option.c \
 	MagickCore/option.h \
@@ -4158,6 +4159,7 @@ MAGICKCORE_BASE_SRCS = \
 @WIN32_NATIVE_BUILD_TRUE@MAGICKCORE_PLATFORM_SRCS = \
 @WIN32_NATIVE_BUILD_TRUE@  MagickCore/nt-base.c \
 @WIN32_NATIVE_BUILD_TRUE@  MagickCore/nt-base.h \
+@WIN32_NATIVE_BUILD_TRUE@  MagickCore/nt-base-private.h \
 @WIN32_NATIVE_BUILD_TRUE@  MagickCore/nt-feature.c \
 @WIN32_NATIVE_BUILD_TRUE@  MagickCore/nt-feature.h
 

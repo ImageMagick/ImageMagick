@@ -176,6 +176,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/morphology.h \
 	MagickCore/morphology-private.h \
 	MagickCore/nt-base.h \
+  MagickCore/nt-base-private.h \
 	MagickCore/nt-feature.h \
 	MagickCore/option.c \
 	MagickCore/option.h \
@@ -272,6 +273,7 @@ if WIN32_NATIVE_BUILD
 MAGICKCORE_PLATFORM_SRCS = \
   MagickCore/nt-base.c \
   MagickCore/nt-base.h \
+  MagickCore/nt-base-private.h \
   MagickCore/nt-feature.c \
   MagickCore/nt-feature.h
 else

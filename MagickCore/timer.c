@@ -45,7 +45,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/nt-feature.h"
+#include "MagickCore/nt-base-private.h"
 #include "MagickCore/timer.h"
 
 /*
