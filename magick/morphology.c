@@ -2547,7 +2547,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
     case ConvolveMorphology:
     case DilateMorphology:
     case DilateIntensityMorphology:
-    /*case DistanceMorphology:*/
+    case IterativeDistanceMorphology:
       /* kernel needs to used with reflection about origin */
       offx = (ssize_t) kernel->width-offx-1;
       offy = (ssize_t) kernel->height-offy-1;
@@ -3136,26 +3136,30 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
               k_indexes += virt_width;
             }
             break;
-#if 0
-  This code has been obsoleted by the MorphologyPrimitiveDirect() function.
-  However it is still (almost) correct coding for Grayscale Morphology.
-  That is...
 
-  GrayErode    is equivalent but with kernel values subtracted from pixels
-               without the kernel rotation
-  GreyDilate   is equivalent but using Maximum() instead of Minimum()
-               using kernel rotation
-
-  It has thus been preserved for future implementation of those methods.
-
-        case DistanceMorphology:
-            /* Add kernel Value and select the minimum value found.
-            ** The result is a iterative distance from edge of image shape.
+        case IterativeDistanceMorphology:
+            /* Work out an iterative distance from black edge of a white image
+            ** shape.  Essentually white values are decreased to the smallest
+            ** 'distance from edge' it can find.
             **
-            ** All Distance Kernels are symetrical, but that may not always
-            ** be the case. For example how about a distance from left edges?
-            ** To work correctly with asymetrical kernels the reflected kernel
-            ** needs to be applied.
+            ** It works by adding kernel values to the neighbourhood, and and
+            ** select the minimum value found. The kernel is rotated before
+            ** use, so kernel distances match resulting distances, when a user
+            ** provided asymmetric kernel is applied.
+            **
+            **
+            ** This code is almost identical to True GrayScale Morphology But
+            ** not quite.
+            **
+            ** GreyDilate  Kernel values added, maximum value found Kernel is
+            ** rotated before use.
+            **
+            ** GrayErode:  Kernel values subtracted and minimum value found No
+            ** kernel rotation used.
+            **
+            ** Note the the Iterative Distance method is essentially a
+            ** GrayErode, but with negative kernel values, and kernel
+            ** rotation applied.
             */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
@@ -3175,7 +3179,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
               k_indexes += virt_width;
             }
             break;
-#endif
+
         case UndefinedMorphology:
         default:
             break; /* Do nothing */
@@ -3184,7 +3188,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
       **
       ** NOTE: Difference Morphology operators Edge* and *Hat could also
       ** be done here but works better with iteration as a image difference
-      ** in the controling function (below).  Thicken and Thinning however
+      ** in the controlling function (below).  Thicken and Thinning however
       ** should be done here so thay can be iterated correctly.
       */
       switch ( method ) {
@@ -3269,13 +3273,15 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
 }
 
 /* This is almost identical to the MorphologyPrimative() function above,
-** but will apply the primitive directly to the image in two passes.
+** but will apply the primitive directly to the actual image using two
+** passes, once in each direction, with the results of the previous (and
+** current) row being re-used.
 **
 ** That is after each row is 'Sync'ed' into the image, the next row will
 ** make use of those values as part of the calculation of the next row.
 ** It then repeats, but going in the oppisite (bottom-up) direction.
 **
-** Because of this 'iterative' handling this function can not make use
+** Because of this 're-use of results' this function can not make use
 ** of multi-threaded, parellel processing.
 */
 static ssize_t MorphologyPrimitiveDirect(Image *image,
@@ -3445,7 +3451,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
             /* Apply Distance to 'Matte' channel, coping the closest color.
             **
             ** This is experimental, and realy the 'alpha' component should
-            ** be completely separate 'masking' channel.
+            ** be completely separate 'masking' channel so that alpha can
+            ** also be used as part of the results.
             */
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
@@ -3717,10 +3724,10 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
   return(status ? (ssize_t) changed : -1);
 }
 
-/* Apply a Morphology by calling theabove low level primitive application
-** functions.  This function handles any iteration loops, composition or
-** re-iteration of results, and compound morphology methods that is based
-** on multiple low-level (staged) morphology methods.
+/* Apply a Morphology by calling one of the above low level primitive
+** application functions.  This function handles any iteration loops,
+** composition or re-iteration of results, and compound morphology methods
+** that is based on multiple low-level (staged) morphology methods.
 **
 ** Basically this provides the complex grue between the requested morphology
 ** method and raw low-level implementation (above).
@@ -3829,7 +3836,7 @@ MagickExport Image *MorphologyApply(const Image *image, const ChannelType
       break;
     case DistanceMorphology:
     case VoronoiMorphology:
-      special = MagickTrue;
+      special = MagickTrue;         /* use special direct primative */
       break;
     default:
       break;
