@@ -11210,7 +11210,7 @@ $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 @P7ZIP_DELEGATE_TRUE@	chmod 644 $(DIST_WINDOWS_SRC_7ZIP)
 	rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
 @RPM_DELEGATE_TRUE@.PHONY: srpm
-@RPM_DELEGATE_TRUE@$(DIST_ARCHIVE_SRPM) srpm: dist
+@RPM_DELEGATE_TRUE@$(DIST_ARCHIVE_SRPM) srpm: dist-bzip2
 @RPM_DELEGATE_TRUE@	rm -f $(DIST_ARCHIVE_SRPM)
 @RPM_DELEGATE_TRUE@	$(RPM) --define="_sourcedir `pwd`" --define="_srcrpmdir `pwd`" --nodeps --bs ImageMagick.spec
 @RPM_DELEGATE_TRUE@	@echo ==============================================================
@@ -11218,7 +11218,7 @@ $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 @RPM_DELEGATE_TRUE@	@echo ==============================================================
 
 @RPM_DELEGATE_TRUE@.PHONY: rpm
-@RPM_DELEGATE_TRUE@rpm:	dist
+@RPM_DELEGATE_TRUE@rpm:	dist-bzip2
 @RPM_DELEGATE_TRUE@	rm -rf $(RPMDIR)
 @RPM_DELEGATE_TRUE@	$(MKDIR_P) $(RPMDIR)
 @RPM_DELEGATE_TRUE@	$(MKDIR_P) $(RPMDIR)/BUILD
