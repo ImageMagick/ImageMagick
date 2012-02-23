@@ -840,8 +840,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=(size_t) MagickAbsoluteValue(bmp_info.width);
     image->rows=(size_t) MagickAbsoluteValue(bmp_info.height);
     image->depth=bmp_info.bits_per_pixel <= 8 ? bmp_info.bits_per_pixel : 8;
-    if ((bmp_info.bits_per_pixel == 16) ||
-        (bmp_info.bits_per_pixel == 32))
+    if ((bmp_info.bits_per_pixel == 16) || (bmp_info.bits_per_pixel == 32))
       image->matte=bmp_info.alpha_mask != 0 ? MagickTrue : MagickFalse;
     if ((bmp_info.number_colors != 0) || (bmp_info.bits_per_pixel < 16))
       {
