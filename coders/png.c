@@ -1758,21 +1758,8 @@ static void MagickPNGWarningHandler(png_struct *ping,png_const_charp message)
 #ifdef PNG_USER_MEM_SUPPORTED
 static png_voidp Magick_png_malloc(png_structp png_ptr,png_uint_32 size)
 {
-#if (PNG_LIBPNG_VER < 10011)
-  png_voidp
-    ret;
-
-  (void) png_ptr;
-  ret=((png_voidp) AcquireMagickMemory((size_t) size));
-
-  if (ret == NULL)
-    png_error("Insufficient memory.");
-
-  return(ret);
-#else
   (void) png_ptr;
   return((png_voidp) AcquireMagickMemory((size_t) size));
-#endif
 }
 
 /*
