@@ -321,7 +321,7 @@ if RPM_DELEGATE
 
 DIST_ARCHIVE_SRPM=$(distdir)-1.src.rpm
 .PHONY: srpm
-$(DIST_ARCHIVE_SRPM) srpm: dist
+$(DIST_ARCHIVE_SRPM) srpm: dist-bzip2
 	rm -f $(DIST_ARCHIVE_SRPM)
 	$(RPM) --define="_sourcedir `pwd`" --define="_srcrpmdir `pwd`" --nodeps --bs ImageMagick.spec
 	@echo ==============================================================
