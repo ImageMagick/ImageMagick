@@ -11218,7 +11218,7 @@ $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 @RPM_DELEGATE_TRUE@	@echo ==============================================================
 
 @RPM_DELEGATE_TRUE@.PHONY: rpm
-@RPM_DELEGATE_TRUE@rpm:	dist-bzip2
+@RPM_DELEGATE_TRUE@rpm:	dist
 @RPM_DELEGATE_TRUE@	rm -rf $(RPMDIR)
 @RPM_DELEGATE_TRUE@	$(MKDIR_P) $(RPMDIR)
 @RPM_DELEGATE_TRUE@	$(MKDIR_P) $(RPMDIR)/BUILD
