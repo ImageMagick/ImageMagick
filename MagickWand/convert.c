@@ -900,7 +900,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
-            channel=ParseChannelOption(argv[i]);
+            channel=ParsePixelChannelOption(argv[i]);
             if (channel < 0)
               ThrowConvertException(OptionError,"UnrecognizedChannelType",
                 argv[i]);
@@ -916,7 +916,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
-            channel=ParseChannelOption(argv[i]);
+            channel=ParsePixelChannelOption(argv[i]);
             if (channel < 0)
               ThrowConvertException(OptionError,"UnrecognizedChannelType",
                 argv[i]);
@@ -932,7 +932,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
-            channel=ParseChannelOption(argv[i]);
+            channel=ParsePixelChannelOption(argv[i]);
             if (channel < 0)
               ThrowConvertException(OptionError,"UnrecognizedChannelType",
                 argv[i]);

@@ -173,6 +173,7 @@ extern MagickExport ssize_t
   GetCommandOptionFlags(const CommandOption,const MagickBooleanType,
     const char *),
   ParseChannelOption(const char *),
+  ParsePixelChannelOption(const char *),
   ParseCommandOption(const CommandOption,const MagickBooleanType,const char *);
 
 extern MagickExport void
