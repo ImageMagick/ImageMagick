@@ -4058,7 +4058,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            channel=ParseChannelOption(argv[i]);
+            channel=ParsePixelChannelOption(argv[i]);
             if (channel < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedChannelType",
                 argv[i]);
@@ -4074,7 +4074,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            channel=ParseChannelOption(argv[i]);
+            channel=ParsePixelChannelOption(argv[i]);
             if (channel < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedChannelType",
                 argv[i]);
@@ -4090,7 +4090,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowMogrifyException(OptionError,"MissingArgument",option);
-            channel=ParseChannelOption(argv[i]);
+            channel=ParsePixelChannelOption(argv[i]);
             if (channel < 0)
               ThrowMogrifyException(OptionError,"UnrecognizedChannelType",
                 argv[i]);

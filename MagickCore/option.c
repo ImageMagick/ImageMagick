@@ -120,7 +120,7 @@ static const OptionInfo
   {
     { "Undefined", UndefinedChannel, UndefinedOptionFlag, MagickTrue },
     { "All", CompositeChannels, UndefinedOptionFlag, MagickFalse },
-    { "Alpha", OpacityChannel, UndefinedOptionFlag, MagickFalse },
+    { "Alpha", AlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Black", BlackChannel, UndefinedOptionFlag, MagickFalse },
     { "Blue", BlueChannel, UndefinedOptionFlag, MagickFalse },
     { "Cyan", CyanChannel, UndefinedOptionFlag, MagickFalse },
@@ -132,8 +132,8 @@ static const OptionInfo
     { "Luminance", BlueChannel, UndefinedOptionFlag, MagickFalse },
     { "Luminosity", BlueChannel, DeprecateOptionFlag, MagickTrue },
     { "Magenta", MagentaChannel, UndefinedOptionFlag, MagickFalse },
-    { "Matte", OpacityChannel, UndefinedOptionFlag, MagickFalse },
-    { "Opacity", OpacityChannel, UndefinedOptionFlag, MagickFalse },
+    { "Matte", AlphaChannel, UndefinedOptionFlag, MagickFalse },
+    { "Opacity", AlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Red", RedChannel, UndefinedOptionFlag, MagickFalse },
     { "Saturation", GreenChannel, UndefinedOptionFlag, MagickFalse },
     { "Yellow", YellowChannel, UndefinedOptionFlag, MagickFalse },
@@ -2313,7 +2313,7 @@ MagickExport ssize_t ParseChannelOption(const char *channels)
       case 'A':
       case 'a':
       {
-        channel|=OpacityChannel;
+        channel|=AlphaChannel;
         break;
       }
       case 'B':
@@ -2349,7 +2349,7 @@ MagickExport ssize_t ParseChannelOption(const char *channels)
       case 'o':
       case 'O':
       {
-        channel|=OpacityChannel;
+        channel|=AlphaChannel;
         break;
       }
       case 'R':
@@ -2498,6 +2498,121 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option_table,
       break;
   }
   return(option_types);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P a r s e P i x e l C h a n n e l O p t i o n                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ParsePixelChannelOption() parses a string and returns an enumerated pixel
+%  channel type(s).
+%
+%  The format of the ParsePixelChannelOption method is:
+%
+%      ssize_t ParsePixelChannelOption(const char *channels)
+%
+%  A description of each parameter follows:
+%
+%    o options: One or more values separated by commas.
+%
+*/
+MagickExport ssize_t ParsePixelChannelOption(const char *channels)
+{
+  register ssize_t
+    i;
+
+  ssize_t
+    channel;
+
+  channel=ParseCommandOption(MagickPixelChannelOptions,MagickTrue,channels);
+  if (channel >= 0)
+    return(channel);
+  channel=0;
+  for (i=0; i < (ssize_t) strlen(channels); i++)
+  {
+    switch (channels[i])
+    {
+      case 'A':
+      case 'a':
+      {
+        channel|=AlphaPixelChannel;
+        break;
+      }
+      case 'B':
+      case 'b':
+      {
+        channel|=BluePixelChannel;
+        break;
+      }
+      case 'C':
+      case 'c':
+      {
+        channel|=CyanPixelChannel;
+        break;
+      }
+      case 'g':
+      case 'G':
+      {
+        channel|=GreenPixelChannel;
+        break;
+      }
+      case 'K':
+      case 'k':
+      {
+        channel|=BlackPixelChannel;
+        break;
+      }
+      case 'M':
+      case 'm':
+      {
+        channel|=MagentaPixelChannel;
+        break;
+      }
+      case 'o':
+      case 'O':
+      {
+        channel|=AlphaPixelChannel;
+        break;
+      }
+      case 'R':
+      case 'r':
+      {
+        channel|=RedPixelChannel;
+        break;
+      }
+      case 'Y':
+      case 'y':
+      {
+        channel|=YellowPixelChannel;
+        break;
+      }
+      case ',':
+      {
+        ssize_t
+          type;
+
+        /*
+          Gather the additional channel flags and merge with shorthand.
+        */
+        type=ParseCommandOption(MagickPixelChannelOptions,MagickTrue,
+          channels+i+1);
+        if (type < 0)
+          return(type);
+        channel|=type;
+        return(channel);
+      }
+      default:
+        return(-1);
+    }
+  }
+  return(channel);
 }
 
 /*
