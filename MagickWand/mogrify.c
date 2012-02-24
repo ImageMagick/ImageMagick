@@ -1037,6 +1037,16 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               exception);
             break;
           }
+        if (LocaleCompare("channel-extract",option+1) == 0)
+          {
+            puts("stand by...");
+            break;
+          }
+        if (LocaleCompare("channel-swap",option+1) == 0)
+          {
+            puts("stand by...");
+            break;
+          }
         if (LocaleCompare("charcoal",option+1) == 0)
           {
             /*
@@ -3255,6 +3265,16 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
 static MagickBooleanType MogrifyUsage(void)
 {
   static const char
+    *channel_operators[]=
+    {
+      "-channel-extract channel-list",
+      "                     extract the channels in order",
+      "-channel-inject channel-list",
+      "                     inject the channels in order",
+      "-channel-swap channel,channel",
+      "                     swap channels",
+      (char *) NULL
+    },
     *miscellaneous[]=
     {
       "-debug events        display copious debugging information",
@@ -3559,6 +3579,9 @@ static MagickBooleanType MogrifyUsage(void)
     (void) printf("  %s\n",*p);
   (void) printf("\nImage Operators:\n");
   for (p=operators; *p != (char *) NULL; p++)
+    (void) printf("  %s\n",*p);
+  (void) printf("\nImage Channel Operators:\n");
+  for (p=channel_operators; *p != (char *) NULL; p++)
     (void) printf("  %s\n",*p);
   (void) printf("\nImage Sequence Operators:\n");
   for (p=sequence_operators; *p != (char *) NULL; p++)
@@ -4010,6 +4033,54 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("channel",option+1) == 0)
+          {
+            ssize_t
+              channel;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            channel=ParseChannelOption(argv[i]);
+            if (channel < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedChannelType",
+                argv[i]);
+            break;
+          }
+        if (LocaleCompare("channel-extract",option+1) == 0)
+          {
+            ssize_t
+              channel;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            channel=ParseChannelOption(argv[i]);
+            if (channel < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedChannelType",
+                argv[i]);
+            break;
+          }
+        if (LocaleCompare("channel-inject",option+1) == 0)
+          {
+            ssize_t
+              channel;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            channel=ParseChannelOption(argv[i]);
+            if (channel < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedChannelType",
+                argv[i]);
+            break;
+          }
+        if (LocaleCompare("channel-swap",option+1) == 0)
           {
             ssize_t
               channel;
@@ -7319,6 +7390,11 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
       }
       case 'c':
       {
+        if (LocaleCompare("channel-inject",option+1) == 0)
+          {
+            puts("stand by...");
+            break;
+          }
         if (LocaleCompare("clut",option+1) == 0)
           {
             Image

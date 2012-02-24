@@ -158,8 +158,8 @@ static const OptionInfo
   CommandOptions[] =
   {
     /* WARNING: this must be sorted by name, then by switch character
-       So that it can be referanced using a binary search for speed.
-       See  GetCommandOptionInfo() below for details.
+       So that it can be referenced using a binary search for speed.
+       See GetCommandOptionInfo() below for details.
 
        Check on sort...
            magick -list command > t1
@@ -239,6 +239,9 @@ static const OptionInfo
     { "-cdl", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+channel", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
     { "-channel", 1L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
+    { "-channel-extract", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "-channel-inject", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickTrue },
+    { "-channel-swap", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+charcoal", 0L, DeprecateOptionFlag, MagickTrue },
     { "-charcoal", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "+chop", 1L, DeprecateOptionFlag, MagickTrue },
