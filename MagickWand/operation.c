@@ -1771,6 +1771,16 @@ static void WandSimpleOperatorImage(MagickWand *wand,
           SetPixelChannelMapMask(image,image_info->channel);
           break;
         }
+      if (LocaleCompare("channel-extract",option) == 0)
+        {
+          puts("stand by...");
+          break;
+        }
+      if (LocaleCompare("channel-swap",option) == 0)
+        {
+          puts("stand by...");
+          break;
+        }
       if (LocaleCompare("charcoal",option) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
@@ -3423,19 +3433,24 @@ WandExport void WandListOperatorImages(MagickWand *wand,
     }
     case 'c':
     {
+      if (LocaleCompare("channel-inject",option) == 0)
+        {
+          puts("stand by...");
+          break;
+        }
       if (LocaleCompare("clut",option) == 0)
         {
-          /* FUTURE - make this a compose option (and thus layers compose )
-             or perhaps compose last image over all other images.
-          */
           Image
             *clut_image;
 
+          /* FUTURE - make this a compose option (and thus layers compose )
+             or perhaps compose last image over all other images.
+          */
           new_images=RemoveFirstImageFromList(&images);
           clut_image=RemoveLastImageFromList(&images);
           /* FUTURE - produce Exception, rather than silent fail */
           if (clut_image == (Image *) NULL)
-              break;
+            break;
           (void) ClutImage(new_images,clut_image,images->interpolate,exception);
           clut_image=DestroyImage(clut_image);
           break;

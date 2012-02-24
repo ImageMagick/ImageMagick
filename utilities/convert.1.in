@@ -225,6 +225,15 @@ Image Operators:
   \-white-threshold value
                        force all pixels above the threshold into white
 
+
+Image Channel Operators:
+  \-channel-extract channel-list
+                        extract the channels in order
+  \-channel-inject channel-list
+                        inject the channels in order
+  \-channel-swap channel,channel
+                        swap the channels
+
 Image Sequence Operators:
   \-affinity filename   transform image colors to match this set of colors
   \-append              append an image sequence top to bottom (use +append for left to right)

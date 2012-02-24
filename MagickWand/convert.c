@@ -135,6 +135,16 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
 static MagickBooleanType ConvertUsage(void)
 {
   static const char
+    *channel_operators[]=
+    {
+      "-channel-extract channel-list",
+      "                     extract the channels in order",
+      "-channel-inject channel-list",
+      "                     inject the channels in order",
+      "-channel-swap channel,channel",
+      "                     swap channels",
+      (char *) NULL
+    },
     *miscellaneous[]=
     {
       "-debug events        display copious debugging information",
@@ -440,6 +450,9 @@ static MagickBooleanType ConvertUsage(void)
     (void) printf("  %s\n",*p);
   (void) printf("\nImage Operators:\n");
   for (p=operators; *p != (char *) NULL; p++)
+    (void) printf("  %s\n",*p);
+  (void) printf("\nImage Channel Operators:\n");
+  for (p=channel_operators; *p != (char *) NULL; p++)
     (void) printf("  %s\n",*p);
   (void) printf("\nImage Sequence Operators:\n");
   for (p=sequence_operators; *p != (char *) NULL; p++)
@@ -862,6 +875,54 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("channel",option+1) == 0)
+          {
+            ssize_t
+              channel;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            channel=ParseChannelOption(argv[i]);
+            if (channel < 0)
+              ThrowConvertException(OptionError,"UnrecognizedChannelType",
+                argv[i]);
+            break;
+          }
+        if (LocaleCompare("channel-extract",option+1) == 0)
+          {
+            ssize_t
+              channel;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            channel=ParseChannelOption(argv[i]);
+            if (channel < 0)
+              ThrowConvertException(OptionError,"UnrecognizedChannelType",
+                argv[i]);
+            break;
+          }
+        if (LocaleCompare("channel-inject",option+1) == 0)
+          {
+            ssize_t
+              channel;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            channel=ParseChannelOption(argv[i]);
+            if (channel < 0)
+              ThrowConvertException(OptionError,"UnrecognizedChannelType",
+                argv[i]);
+            break;
+          }
+        if (LocaleCompare("channel-swap",option+1) == 0)
           {
             ssize_t
               channel;
