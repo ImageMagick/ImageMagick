@@ -23,8 +23,8 @@ Configure
   default options, and build from within the source directory, you can simply
   type:
   
-    $magick> cd ImageMagick-6.5.9
-     $magick> ./configure
+    $magick> cd ImageMagick-6.7.5
+    $magick> ./configure
   
   Watch the configure script output to verify that it finds everything that
   you think it should. Pay particular attention to the last lines of the script
