@@ -763,9 +763,6 @@ static MagickBooleanType CopyDelegateFile(const char *source,
     destination_file,
     source_file;
 
-  MagickBooleanType
-    status;
-
   register size_t
     i;
 
