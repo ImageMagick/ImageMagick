@@ -944,9 +944,12 @@ MagickExport Image *NewImageList(void)
 %    o image: the image.
 %
 */
-MagickExport void PrependImageToList(Image **images,Image *image)
+MagickExport void PrependImageToList(Image **images,Image *prepend)
 {
-  AppendImageToList(&image,*images);
+  if (*images == (Image *) NULL)
+    *images = prepend;
+  else
+    AppendImageToList(&prepend,*images);
 }
 
 /*
