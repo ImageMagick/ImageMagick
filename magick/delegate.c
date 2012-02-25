@@ -783,16 +783,10 @@ static MagickBooleanType CopyDelegateFile(const char *source,
     *buffer;
 
   /*
-    Return if destination file already exists.
+    Copy source file to destination.
   */
   assert(source != (const char *) NULL);
   assert(destination != (char *) NULL);
-  status=GetPathAttributes(destination,&attributes);
-  if (status != MagickFalse)
-    return(MagickTrue);
-  /*
-    Copy source file to destination.
-  */
   destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT,S_MODE);
   if (destination_file == -1)
     return(MagickFalse);
