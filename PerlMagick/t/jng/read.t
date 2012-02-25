@@ -16,32 +16,32 @@ chdir 't/jng' || die 'Cd failed';
 #
 # 1) Gray
 # 
-testReadCompare('input_gray.jng', '../reference/jng/read_gray.miff', q//, 0, 0);
+testReadCompare('input_gray.jng', '../reference/jng/read_gray.miff', q//, 0.002, 0.22);
 #
 # 2) Gray with IDAT encoding
 # 
 ++$test;
-testReadCompare('input_gray_idat.jng', '../reference/jng/read_gray_idat.miff', q//, 0, 0);
+testReadCompare('input_gray_idat.jng', '../reference/jng/read_gray_idat.miff', q//, 0.002, 0.22);
 #
 # 3) Gray with JDAA encoding
 # 
 ++$test;
-testReadCompare('input_gray_jdaa.jng', '../reference/jng/read_gray_jdaa.miff', q//, 0, 0);
+testReadCompare('input_gray_jdaa.jng', '../reference/jng/read_gray_jdaa.miff', q//, 0.002, 0.22);
 #
 # 4) Gray Progressive
 # 
 ++$test;
-testReadCompare('input_gray_prog.jng', '../reference/jng/read_gray_prog.miff', q//, 0, 0);
+testReadCompare('input_gray_prog.jng', '../reference/jng/read_gray_prog.miff', q//, 0.002, 0.22);
 #
 # 5) Gray progressive with IDAT encoding
 # 
 ++$test;
-testReadCompare('input_gray_prog_idat.jng', '../reference/jng/read_gray_prog_idat.miff', q//, 0, 0);
+testReadCompare('input_gray_prog_idat.jng', '../reference/jng/read_gray_prog_idat.miff', q//, 0.002, 0.22);
 #
 # 6) Gray progressive with JDAA encoding
 # 
 ++$test;
-testReadCompare('input_gray_prog_jdaa.jng', '../reference/jng/read_gray_prog_jdaa.miff', q//, 0, 0);
+testReadCompare('input_gray_prog_jdaa.jng', '../reference/jng/read_gray_prog_jdaa.miff', q//, 0.002, 0.22);
 #
 # 7) Color with JDAA encoding
 # 
