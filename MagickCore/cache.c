@@ -3730,10 +3730,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     length,
     number_pixels;
 
-  PixelChannelMap
-    *p,
-    *q;
-
   size_t
     columns,
     packet_size;
@@ -3781,26 +3777,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     ThrowBinaryException(ResourceLimitError,"PixelCacheAllocationFailed",
       image->filename);
   cache_info->length=length;
-  p=cache_info->channel_map;
-  q=source_info.channel_map;
-  if ((cache_info->type != UndefinedCache) &&
-      (cache_info->columns <= source_info.columns) &&
-      (cache_info->rows <= source_info.rows) &&
-      (cache_info->number_channels <= source_info.number_channels) &&
-      (memcmp(p,q,cache_info->number_channels*sizeof(*p)) == 0) &&
-      (cache_info->metacontent_extent <= source_info.metacontent_extent))
-    {
-      /*
-        Inline pixel cache clone optimization.
-      */
-      if ((cache_info->columns == source_info.columns) &&
-          (cache_info->rows == source_info.rows) &&
-          (cache_info->number_channels == source_info.number_channels) &&
-          (memcmp(p,q,cache_info->number_channels*sizeof(*p)) == 0) &&
-          (cache_info->metacontent_extent == source_info.metacontent_extent))
-        return(MagickTrue);
-      return(ClonePixelCachePixels(cache_info,&source_info,exception));
-    }
   status=AcquireMagickResource(AreaResource,cache_info->length);
   length=number_pixels*(cache_info->number_channels*sizeof(Quantum)+
     cache_info->metacontent_extent);
