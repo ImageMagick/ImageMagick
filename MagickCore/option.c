@@ -168,6 +168,8 @@ static const OptionInfo
     */
     { "(", 0L, SpecialOptionFlag, MagickTrue },
     { ")", 0L, SpecialOptionFlag, MagickTrue },
+    { "{", 0L, SpecialOptionFlag, MagickTrue },
+    { "}", 0L, SpecialOptionFlag, MagickTrue },
     { "--", 0L, SpecialOptionFlag, MagickTrue },
     { "+adaptive-blur", 1L, DeprecateOptionFlag, MagickTrue },
     { "-adaptive-blur", 1L, SimpleOperatorOptionFlag, MagickFalse },
