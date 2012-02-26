@@ -43,19 +43,13 @@ struct _MagickWand
   ImageInfo
     *image_info;      /* Global settings used for images in Wand */
 
-  QuantizeInfo
-    *quantize_info;   /* for CLI API usage, not used by MagickWand API */
-
-  DrawInfo
-    *draw_info;       /* for CLI API usage, not used by MagickWand API */
+  ExceptionInfo
+    *exception;
 
   MagickBooleanType
     set_first,        /* wand set to first image, prepend new images */
     image_pending,    /* this image is pending Next Iteration */
     debug;            /* Log calls to MagickWand library */
-
-  ExceptionInfo
-    *exception;
 
   size_t
     signature;

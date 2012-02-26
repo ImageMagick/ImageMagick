@@ -22,6 +22,9 @@
 extern "C" {
 #endif
 
+typedef struct _MagickCLI
+  MagickCLI;
+
 typedef enum
 {
   /* What options should be processed */
@@ -32,12 +35,14 @@ typedef enum
   /* Special Option Handling */
   ProcessExitOption           = 0x0100,  /* allow '-exit' use */
   ProcessScriptOption         = 0x0200,  /* allow '-script' use */
+  ProcessReadOption           = 0x0400,  /* allow '-read' use */
 
   /* Option Processing Flags */
   ProcessOneOptionOnly        = 0x4000,  /* Process One Option Only */
   ProcessOutputFile           = 0x8000,  /* Process the output file */
 
   /* Flag Groups for specific Situations */
+  CommandCommandOptionFlags   = 0x80FF,  /* Convert Command Flags */
   MagickCommandOptionFlags    = 0x8FFF,  /* Magick Command Flags */
   MagickScriptArgsFlags       = 0x00FF,  /* Script Args Flags */
   MagickScriptReadFlags       = 0x01FF   /* Script Read Flags */
@@ -45,10 +50,8 @@ typedef enum
 } ProcessOptionFlags;
 
 extern WandExport void
-  ProcessSpecialOption(MagickWand *,const char *,const char *,
-       ProcessOptionFlags),
-  ProcessScriptOptions(MagickWand *,int,char **),
-  ProcessCommandOptions(MagickWand *,int,char **,ProcessOptionFlags);
+  ProcessScriptOptions(MagickCLI *,int,char **),
+  ProcessCommandOptions(MagickCLI *,int,char **,ProcessOptionFlags);
 
 extern WandExport MagickBooleanType
   MagickImageCommand(ImageInfo *,int,char **,char **,ExceptionInfo *);

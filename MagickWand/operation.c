@@ -50,7 +50,9 @@
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/magick-wand-private.h"
+#include "MagickWand/magick-cli-private.h"
 #include "MagickWand/operation.h"
+#include "MagickWand/wand.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/string-private.h"
@@ -72,7 +74,7 @@ static const char
 */
 static MagickBooleanType MonitorProgress(const char *text,
   const MagickOffsetType offset,const MagickSizeType extent,
-  void *wand_unused(client_data))
+  void *wand_unused(cli_wandent_data))
 {
   char
     message[MaxTextExtent],
@@ -149,6 +151,8 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   specifications (or direct floating point numbers).  The number of floats
   needed to represent a color varies depending on teh current channel
   setting.
+
+  This really should be in MagickCore, so that other API's can make use of it.
 */
 static Image *SparseColorOption(const Image *image,
   const SparseColorMethod method,const char *arguments,
@@ -223,7 +227,7 @@ static Image *SparseColorOption(const Image *image,
   number_arguments=x;
   if ( error ) {
     (void) ThrowMagickException(exception,GetMagickModule(),
-               OptionError, "InvalidArgument", "`%s': %s", "sparse-color",
+               OptionError, "InvalidArgument", "'%s': %s", "sparse-color",
                "Invalid number of Arguments");
     return( (Image *)NULL);
   }
@@ -246,7 +250,7 @@ static Image *SparseColorOption(const Image *image,
     if ( token[0] == '\0' ) break;
     if ( isalpha((int) token[0]) || token[0] == '#' ) {
       (void) ThrowMagickException(exception,GetMagickModule(),
-            OptionError, "InvalidArgument", "`%s': %s", "sparse-color",
+            OptionError, "InvalidArgument", "'%s': %s", "sparse-color",
             "Color found, instead of X-coord");
       error = MagickTrue;
       break;
@@ -257,7 +261,7 @@ static Image *SparseColorOption(const Image *image,
     if ( token[0] == '\0' ) break;
     if ( isalpha((int) token[0]) || token[0] == '#' ) {
       (void) ThrowMagickException(exception,GetMagickModule(),
-            OptionError, "InvalidArgument", "`%s': %s", "sparse-color",
+            OptionError, "InvalidArgument", "'%s': %s", "sparse-color",
             "Color found, instead of Y-coord");
       error = MagickTrue;
       break;
@@ -332,7 +336,7 @@ static Image *SparseColorOption(const Image *image,
   }
   if ( number_arguments != x && !error ) {
     (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "InvalidArgument","`%s': %s","sparse-color","Argument Parsing Error");
+      "InvalidArgument","'%s': %s","sparse-color","Argument Parsing Error");
     sparse_arguments=(double *) RelinquishMagickMemory(sparse_arguments);
     return( (Image *)NULL);
   }
@@ -351,30 +355,172 @@ static Image *SparseColorOption(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W a n d S e t t i n g O p t i o n I n f o                                 %
++   A c q u i r e W a n d C L I                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WandSettingOptionInfo() applies a single settings option into a CLI wand
-%  holding the image_info, draw_info, quantize_info structures that will be
-%  used when processing the images also found within the wand.
+%  AcquireMagickCLI() creates a new CLI wand (an expanded form of Magick
+%  Wand). The given image_info and exception is included as is if provided.
 %
-%  These options do no require images to be present in the wand for them to be
-%  able to be set, in which case they will be applied to
+%  Use DestroyMagickCLI() to dispose of the CLI wand when it is no longer
+%  needed.
+%
+%  The format of the NewMagickWand method is:
+% 
+%      MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
+%           ExceptionInfo *exception)
+%
+*/
+WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
+    ExceptionInfo *exception)
+{
+  MagickCLI
+    *cli_wand;
+
+  /* precaution - as per NewMagickWand() */
+  {
+     size_t depth = MAGICKCORE_QUANTUM_DEPTH;
+     const char *quantum = GetMagickQuantumDepth(&depth);
+     if (depth != MAGICKCORE_QUANTUM_DEPTH)
+       ThrowWandFatalException(WandError,"QuantumDepthMismatch",quantum);
+  }
+
+  /* allocate memory for MgaickCLI */
+  cli_wand=(MagickCLI *) AcquireMagickMemory(sizeof(*cli_wand));
+  if (cli_wand == (MagickCLI *) NULL)
+    {
+      ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
+        GetExceptionMessage(errno));
+      return((MagickCLI *)NULL);
+    }
+
+  /* Initialize Wand Part of MagickCLI
+     FUTURE: this is a repeat of code from NewMagickWand()
+     However some parts may be given fro man external source!
+  */
+  cli_wand->wand.id=AcquireWandId();
+  (void) FormatLocaleString(cli_wand->wand.name,MaxTextExtent,
+           "%s-%.20g","MagickWandCLI", (double) cli_wand->wand.id);
+  cli_wand->wand.images=NewImageList();
+  if ( image_info == (ImageInfo *)NULL)
+    cli_wand->wand.image_info=AcquireImageInfo();
+  else
+    cli_wand->wand.image_info=image_info;
+  if ( exception == (ExceptionInfo *)NULL)
+    cli_wand->wand.exception=AcquireExceptionInfo();
+  else
+    cli_wand->wand.exception=exception;
+  cli_wand->wand.debug=IsEventLogging();
+  cli_wand->wand.signature=WandSignature;
+
+  /* Initialize CLI Part of MagickCLI */
+  cli_wand->draw_info=CloneDrawInfo(cli_wand->wand.image_info,(DrawInfo *) NULL);
+  cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
+  cli_wand->image_list_stack=(Stack *)NULL;
+  cli_wand->image_info_stack=(Stack *)NULL;
+  cli_wand->signature=WandSignature;
+
+  if (cli_wand->wand.debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
+  return(cli_wand);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   D e s t r o y W a n d C L I                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyMagickCLI() destorys everything in a CLI wand, including image_info
+%  and any exceptions, if still present in the wand.
+%
+%  The format of the NewMagickWand method is:
+% 
+%    MagickWand *DestroyMagickCLI()
+%            Exception *exception)
+%
+*/
+WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
+{
+  Stack
+    *node;
+
+  assert(cli_wand != (MagickCLI *) NULL);
+  assert(cli_wand->signature == WandSignature);
+  assert(cli_wand->wand.signature == WandSignature);
+  if (cli_wand->wand.debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
+
+  /* Destroy CLI part of MagickCLI */
+  if (cli_wand->draw_info != (DrawInfo *) NULL )
+    cli_wand->draw_info=DestroyDrawInfo(cli_wand->draw_info);
+  if (cli_wand->quantize_info != (QuantizeInfo *) NULL )
+    cli_wand->quantize_info=DestroyQuantizeInfo(cli_wand->quantize_info);
+  while(cli_wand->image_list_stack != (Stack *)NULL)
+    {
+      node=cli_wand->image_list_stack;
+      cli_wand->image_list_stack=node->next;
+      (void) DestroyImageList((Image *)node->data);
+      (void) RelinquishMagickMemory(node);
+    }
+  while(cli_wand->image_info_stack != (Stack *)NULL)
+    {
+      node=cli_wand->image_info_stack;
+      cli_wand->image_info_stack=node->next;
+      (void) DestroyImageInfo((ImageInfo *)node->data);
+      (void) RelinquishMagickMemory(node);
+    }
+  cli_wand->signature=(~WandSignature);
+
+  /* Destroy Wand part MagickCLI */
+  cli_wand->wand.images=DestroyImageList(cli_wand->wand.images);
+  if (cli_wand->wand.image_info != (ImageInfo *) NULL )
+    cli_wand->wand.image_info=DestroyImageInfo(cli_wand->wand.image_info);
+  if (cli_wand->wand.exception != (ExceptionInfo *) NULL )
+    cli_wand->wand.exception=DestroyExceptionInfo(cli_wand->wand.exception);
+  RelinquishWandId(cli_wand->wand.id);
+  cli_wand->wand.signature=(~WandSignature);
+
+  return((MagickCLI *)NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C L I S e t t i n g O p t i o n I n f o                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CLISettingOptionInfo() applies a single settings option into a CLI wand
+%  holding the image_info, draw_info, quantize_info structures that will be
+%  used when processing the images.
+%
+%  These options do no require images to be present in the CLI wand for them
+%  to be able to be set, in which case they will generally be applied to image
+%  that are read in later
 %
 %  Options handled by this function are listed in CommandOptions[] of
 %  "option.c" that is one of "SettingOptionFlags" option flags.
 %
 %  The format of the WandSettingOptionInfo method is:
 %
-%    void WandSettingOptionInfo(MagickWand *wand,const char *option,
+%    void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
 %               const char *arg)
 %
 %  A description of each parameter follows:
 %
-%    o wand: structure holding settings to be applied
+%    o cli_wand: structure holding settings to be applied
 %
 %    o option: The option string to be set
 %
@@ -384,9 +530,9 @@ static Image *SparseColorOption(const Image *image,
 %
 % Example usage...
 %
-%    WandSettingOptionInfo(wand, "background", MagickTrue, "Red");
-%    WandSettingOptionInfo(wand, "adjoin", "true");
-%    WandSettingOptionInfo(wand, "adjoin", NULL);
+%    CLISettingOptionInfo(cli_wand, "background", MagickTrue, "Red");
+%    CLISettingOptionInfo(cli_wand, "adjoin", "true");
+%    CLISettingOptionInfo(cli_wand, "adjoin", NULL);
 %
 % Or for handling command line arguments EG: +/-option ["arg"]
 %
@@ -396,25 +542,25 @@ static Image *SparseColorOption(const Image *image,
 %    count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
 %    flags=GetCommandOptionFlags(MagickCommandOptions,MagickFalse,argv[i]);
 %    if ( (flags & SettingOptionFlags) != 0 )
-%      WandSettingOptionInfo(wand, argv[i]+1,
+%      CLISettingOptionInfo(cli_wand, argv[i]+1,
 %            (((*argv[i])!='-') ? (char *)NULL
 %                   : (count>0) ? argv[i+1] : "true") );
 %    i += count+1;
 %
 */
-WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
+WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
      const char *arg)
 {
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
-  assert(wand->draw_info != (DrawInfo *) NULL); /* ensure it is a CLI wand */
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  assert(cli_wand != (MagickCLI *) NULL);
+  assert(cli_wand->signature == WandSignature);
+  assert(cli_wand->wand.signature == WandSignature);
+  if (cli_wand->wand.debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
-#define image_info      (wand->image_info)
-#define draw_info       (wand->draw_info)
-#define quantize_info   (wand->quantize_info)
-#define exception       (wand->exception)
+#define image_info      (cli_wand->wand.image_info)
+#define exception       (cli_wand->wand.exception)
+#define draw_info       (cli_wand->draw_info)
+#define quantize_info   (cli_wand->quantize_info)
 #define IfSetOption     (arg!=(char *)NULL)
 #define ArgOption(def)  (IfSetOption?arg:(const char *)(def))
 #define ArgBoolean      (IfSetOption?MagickTrue:MagickFalse)
@@ -527,7 +673,7 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
       if (LocaleCompare("box",option) == 0)
         {
           /* DEPRECIATED - now "undercolor" */
-          WandSettingOptionInfo(wand,"undercolor",arg);
+          CLISettingOptionInfo(cli_wand,"undercolor",arg);
           break;
         }
       break;
@@ -553,8 +699,9 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
         }
       if (LocaleCompare("channel",option) == 0)
         {
-          /* This is applied to images in SimpleImageOperator!!!
-             FUTURE: move it to SyncImageSettings() - or alternative
+          /* FUTURE:  -channel mask {vaules}
+             This is applied to images in SimpleImageOperator!!!
+             Move it to SyncImageSettings() - or alternative
           */
           image_info->channel=(ChannelType) (
                IfSetOption ? ParseChannelOption(arg) : DefaultChannels );
@@ -615,7 +762,7 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
           /* SyncImageSettings() used to set per-image attribute. */
           (void) SetLogEventMask(ArgOption("none"));
           image_info->debug=IsEventLogging(); /* extract logging*/
-          wand->debug=IsEventLogging();
+          cli_wand->wand.debug=IsEventLogging();
           break;
         }
       if (LocaleCompare("define",option) == 0)
@@ -898,97 +1045,6 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
           (void) SetImageOption(image_info,option,ArgOption(NULL));
           break;
         }
-      if (LocaleCompare("list",option) == 0)
-        {
-          ssize_t
-            list;
-
-          /* FUTURE: This is not really a Setting Option, but a Special
-           * The bulk of this should be turned into a MagickCore function
-           */
-          list=ParseCommandOption(MagickListOptions,MagickFalse,
-               ArgOption("list"));
-          switch (list)
-          {
-            case MagickCoderOptions:
-            {
-              (void) ListCoderInfo((FILE *) NULL,exception);
-              break;
-            }
-            case MagickColorOptions:
-            {
-              (void) ListColorInfo((FILE *) NULL,exception);
-              break;
-            }
-            case MagickConfigureOptions:
-            {
-              (void) ListConfigureInfo((FILE *) NULL,exception);
-              break;
-            }
-            case MagickDelegateOptions:
-            {
-              (void) ListDelegateInfo((FILE *) NULL,exception);
-              break;
-            }
-            case MagickFontOptions:
-            {
-              (void) ListTypeInfo((FILE *) NULL,exception);
-              break;
-            }
-            case MagickFormatOptions:
-            {
-              (void) ListMagickInfo((FILE *) NULL,exception);
-              break;
-            }
-            case MagickLocaleOptions:
-            {
-              (void) ListLocaleInfo((FILE *) NULL,exception);
-              break;
-            }
-            case MagickLogOptions:
-            {
-              (void) ListLogInfo((FILE *) NULL,exception);
-              break;
-            }
-            case MagickMagicOptions:
-            {
-              (void) ListMagicInfo((FILE *) NULL,exception);
-              break;
-            }
-            case MagickMimeOptions:
-            {
-              (void) ListMimeInfo((FILE *) NULL,exception);
-              break;
-            }
-            case MagickModuleOptions:
-            {
-              (void) ListModuleInfo((FILE *) NULL,exception);
-              break;
-            }
-            case MagickPolicyOptions:
-            {
-              (void) ListPolicyInfo((FILE *) NULL,exception);
-              break;
-            }
-            case MagickResourceOptions:
-            {
-              (void) ListMagickResourceInfo((FILE *) NULL,exception);
-              break;
-            }
-            case MagickThresholdOptions:
-            {
-              (void) ListThresholdMaps((FILE *) NULL,exception);
-              break;
-            }
-            default:
-            {
-              (void) ListCommandOptions((FILE *) NULL,(CommandOption) list,
-                exception);
-              break;
-            }
-          }
-          break;
-        }
       if (LocaleCompare("log",option) == 0)
         {
           if (IfSetOption)
@@ -1168,6 +1224,11 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
         {
           /* draw_info only setting */
           draw_info->render= IfSetOption ? MagickFalse : MagickTrue;
+          break;
+        }
+      if (LocaleCompare("respect-parenthesis",option) == 0)
+        {
+          (void) SetImageOption(image_info,option,ArgOption(NULL));
           break;
         }
       break;
@@ -1412,9 +1473,9 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
       break;
   }
 #undef image_info
+#undef exception
 #undef draw_info
 #undef quantize_info
-#undef exception
 #undef IfSetOption
 #undef ArgOption
 #undef ArgBoolean
@@ -1427,28 +1488,28 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     W a n d S i m p l e O p e r a t o r I m a g e s                         %
++     C L I S i m p l e O p e r a t o r I m a g e s                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  WandSimpleOperatorImages() applys one simple image operation given to all
-%  the images in the current wand,  with the settings that are saved in the
-%  CLI wand.
+%  the images in the CLI wand,  with the settings that was previously saved in
+%  the CLI wand.
 %
 %  It is assumed that any per-image settings are up-to-date with respect to
-%  extra settings that have been saved in the wand.
+%  extra settings that were already saved in the wand.
 %
 %  The format of the WandSimpleOperatorImage method is:
 %
-%    void WandSimpleOperatorImages(MagickWand *wand,
+%    void CLISimpleOperatorImages(MagickCLI *cli_wand,
 %        const MagickBooleanType plus_alt_op, const char *option,
 %        const char *arg1, const char *arg2)
 %
 %  A description of each parameter follows:
 %
-%    o wand: structure holding settings to be applied
+%    o cli_wand: structure holding settings and images to be operated on
 %
 %    o plus_alt_op:  request the 'plus' or alturnative form of the operation
 %
@@ -1460,23 +1521,24 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
 %
 % Example usage...
 %
-%  WandSimpleOperatorImages(wand, MagickFalse,"crop","100x100+20+30",NULL);
-%  WandSimpleOperatorImages(wand, MagickTrue, "repage",NULL,NULL);
-%  WandSimpleOperatorImages(wand, MagickTrue, "distort","SRT","45");
-%  if ( wand->exception->severity != UndefinedException ) {
+%  CLISimpleOperatorImages(cli_wand, MagickFalse,"crop","100x100+20+30",NULL);
+%  CLISimpleOperatorImages(cli_wand, MagickTrue, "repage",NULL,NULL);
+%  CLISimpleOperatorImages(cli_wand, MagickTrue, "distort","SRT","45");
+%  if ( cli_wand->wand.exception->severity != UndefinedException ) {
 %    CatchException(exception);
 %    exit(1);
 %  }
 %
 % Or for handling command line arguments EG: +/-option ["arg"]
 %
+%    cli_wand
 %    argc,argv
 %    i=index in argv
 %
 %    count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
 %    flags=GetCommandOptionFlags(MagickCommandOptions,MagickFalse,argv[i]);
 %    if ( (flags & SimpleOperatorOptionFlag) != 0 )
-%      WandSimpleOperatorImages(wand,
+%      CLISimpleOperatorImages(cli_wand,
 %          ((*argv[i])=='+')?MagickTrue:MagickFalse,argv[i]+1,
 %          count>=1 ? argv[i+1] : (char *)NULL,
 %          count>=2 ? argv[i+2] : (char *)NULL );
@@ -1486,7 +1548,7 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
 
 /*
   Internal subrountine to apply one simple image operation to the current
-  image pointed to by the wand.
+  image pointed to by the CLI wand.
 
   The image in the list may be modified in three different ways...
     * directly modified (EG: -negate, -gamma, -level, -annotate, -draw),
@@ -1501,7 +1563,7 @@ WandExport void WandSettingOptionInfo(MagickWand *wand,const char *option,
   also change.  GetFirstImageInList() should be used by caller if they wish
   return the Image pointer to the first image in list.
 */
-static void WandSimpleOperatorImage(MagickWand *wand,
+static void CLISimpleOperatorImage(MagickCLI *cli_wand,
   const MagickBooleanType plus_alt_op, const char *option,
   const char *arg1, const char *arg2)
 {
@@ -1517,21 +1579,19 @@ static void WandSimpleOperatorImage(MagickWand *wand,
   MagickStatusType
     flags;
 
-#define image_info      (wand->image_info)
-#define draw_info       (wand->draw_info)
-#define quantize_info   (wand->quantize_info)
-#define image           (wand->images)
-#define exception       (wand->exception)
+#define image_info      (cli_wand->wand.image_info)
+#define image           (cli_wand->wand.images)
+#define exception       (cli_wand->wand.exception)
+#define draw_info       (cli_wand->draw_info)
+#define quantize_info   (cli_wand->quantize_info)
 #define normal_op       (plus_alt_op?MagickFalse:MagickTrue)
 
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(draw_info != (DrawInfo *) NULL);      /* ensure it is a CLI wand */
-  assert(image != (Image *) NULL);             /* there is an image */
-  assert(image->signature == MagickSignature); /* and is a valid image */
-
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  assert(cli_wand != (MagickCLI *) NULL);
+  assert(cli_wand->signature == WandSignature);
+  assert(cli_wand->wand.signature == WandSignature);
+  assert(image != (Image *) NULL);             /* an image must be present */
+  if (cli_wand->wand.debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
   SetGeometryInfo(&geometry_info);
 
@@ -1803,15 +1863,15 @@ static void WandSimpleOperatorImage(MagickWand *wand,
           (void) ClampImage(image,exception);
           break;
         }
-      if (LocaleCompare("clip",option) == 0)
+      if (LocaleCompare("cli_wandp",option) == 0)
         {
           if (plus_alt_op == MagickFalse)
             (void) ClipImage(image,exception);
-          else /* "+clip" remove the write mask */
+          else /* "+mask" remove the write mask */
             (void) SetImageMask(image,(Image *) NULL,exception);
           break;
         }
-      if (LocaleCompare("clip-mask",option) == 0)
+      if (LocaleCompare("cli_wandp-mask",option) == 0)
         {
           CacheView
             *mask_view;
@@ -1829,7 +1889,7 @@ static void WandSimpleOperatorImage(MagickWand *wand,
             y;
 
           if (plus_alt_op != MagickFalse)
-          { /* "+clip-mask" Remove the write mask */
+          { /* "+cli_wandp-mask" Remove the write mask */
               (void) SetImageMask(image,(Image *) NULL,exception);
               break;
             }
@@ -1839,7 +1899,7 @@ static void WandSimpleOperatorImage(MagickWand *wand,
           if (SetImageStorageClass(mask_image,DirectClass,exception)
                == MagickFalse)
             break;
-          /* Create a write mask from clip-mask image */
+          /* Create a write mask from cli_wandp-mask image */
           /* FUTURE: use Alpha operations instead and create a Grey Image */
           mask_view=AcquireCacheView(mask_image);
           for (y=0; y < (ssize_t) mask_image->rows; y++)
@@ -1867,7 +1927,7 @@ static void WandSimpleOperatorImage(MagickWand *wand,
           mask_image=DestroyImage(mask_image);
           break;
         }
-      if (LocaleCompare("clip-path",option) == 0)
+      if (LocaleCompare("cli_wandp-path",option) == 0)
         {
           (void) ClipImagePath(image,arg1,
                (MagickBooleanType)(!(int)plus_alt_op),exception);
@@ -2940,6 +3000,7 @@ static void WandSimpleOperatorImage(MagickWand *wand,
       if (LocaleCompare("separate",option) == 0)
         {
           /* WARNING: This can generate multiple images! */
+          /* FUTURE - this may be replaced by a "-channel" method */
           new_image=SeparateImages(image,exception);
           break;
         }
@@ -3298,34 +3359,34 @@ static void WandSimpleOperatorImage(MagickWand *wand,
 #undef normal_op
 }
 
-WandExport void WandSimpleOperatorImages(MagickWand *wand,
+WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
   const MagickBooleanType plus_alt_op, const char *option,
   const char *arg1, const char *arg2)
 {
   size_t
-    n;
-
-  register ssize_t
+    n,
     i;
 
-  assert(wand->image_info != (const ImageInfo *) NULL);
-  assert(wand->image_info->signature == MagickSignature);
-  assert(wand->draw_info != (DrawInfo *) NULL);   /* ensure it is a CLI wand */
-  assert(wand->images != (Image *) NULL);         /* there is one image */
+  assert(cli_wand != (MagickCLI *) NULL);
+  assert(cli_wand->signature == WandSignature);
+  assert(cli_wand->wand.signature == WandSignature);
+  assert(cli_wand->wand.images != (Image *) NULL); /* images must be present */
+  if (cli_wand->wand.debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
   i=0;
-  n=GetImageListLength(wand->images);
-  (void) n;
-  wand->images=GetFirstImageInList(wand->images);
-  for ( ; ; )
+  n=GetImageListLength(cli_wand->wand.images);
+  cli_wand->wand.images=GetFirstImageInList(cli_wand->wand.images);
+  while (1)
   {
-    WandSimpleOperatorImage(wand, plus_alt_op, option, arg1, arg2);
-    if ( wand->images->next == (Image *) NULL )
-      break;
-    wand->images=wand->images->next;
     i++;
+    CLISimpleOperatorImage(cli_wand, plus_alt_op, option, arg1, arg2);
+    if ( cli_wand->wand.images->next == (Image *) NULL )
+      break;
+    cli_wand->wand.images=cli_wand->wand.images->next;
   }
-  wand->images=GetFirstImageInList(wand->images);
+  assert( i == n );
+  cli_wand->wand.images=GetFirstImageInList(cli_wand->wand.images);
   return;
 }
 
@@ -3334,25 +3395,25 @@ WandExport void WandSimpleOperatorImages(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     W a n d L i s t O p e r a t o r I m a g e s                             %
++     C L I L i s t O p e r a t o r I m a g e s                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WandListOperatorImages() applies a single operation that is apply to the
+%  CLIListOperatorImages() applies a single operation that is apply to the
 %  entire image list as a whole. The result is often a complete replacment
 %  of the image list with a completely new list, or just a single image.
 %
 %  The format of the MogrifyImage method is:
 %
-%    void WandListOperatorImages(MagickWand *wand,
+%    void CLIListOperatorImages(MagickCLI *cli_wand,
 %        const MagickBooleanType plus_alt_op,const char *option,
 %        const char *arg1, const char *arg2)
 %
 %  A description of each parameter follows:
 %
-%    o wand: structure holding settings to be applied
+%    o cli_wand: structure holding settings to be applied
 %
 %    o plus_alt_op:  request the 'plus' or alturnative form of the operation
 %
@@ -3364,50 +3425,49 @@ WandExport void WandSimpleOperatorImages(MagickWand *wand,
 %
 % Example usage...
 %
-%  WandListOperatorImages(wand,MagickFalse,"duplicate", "3",  NULL);
-%  WandListOperatorImages(wand,MagickTrue, "append",    NULL, NULL);
-%  if ( wand->exception->severity != UndefinedException ) {
+%  CLIListOperatorImages(cli_wand,MagickFalse,"duplicate", "3",  NULL);
+%  CLIListOperatorImages(cli_wand,MagickTrue, "append",    NULL, NULL);
+%  if ( cli_wand->wand.exception->severity != UndefinedException ) {
 %    CatchException(exception);
 %    exit(1);
 %  }
 %
 % Or for handling command line arguments EG: +/-option ["arg"]
 %
+%    cli_wand
 %    argc,argv
 %    i=index in argv
 %
 %    count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
 %    flags=GetCommandOptionFlags(MagickCommandOptions,MagickFalse,argv[i]);
 %    if ( (flags & ListOperatorOptionFlag) != 0 )
-%      WandListOperatorImages(wand,
+%      CLIListOperatorImages(cli_wand,
 %          ((*argv[i])=='+')?MagickTrue:MagickFalse,argv[i]+1,
 %          count>=1 ? argv[i+1] : (char *)NULL,
 %          count>=2 ? argv[i+2] : (char *)NULL );
 %    i += count+1;
 %
 */
-WandExport void WandListOperatorImages(MagickWand *wand,
+WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
      const MagickBooleanType plus_alt_op,const char *option,
      const char *arg1, const char *arg2)
 {
   Image
     *new_images;
 
-#define image_info      (wand->image_info)
-#define draw_info       (wand->draw_info)
-#define quantize_info   (wand->quantize_info)
-#define images          (wand->images)
-#define exception       (wand->exception)
+#define image_info      (cli_wand->wand.image_info)
+#define images          (cli_wand->wand.images)
+#define exception       (cli_wand->wand.exception)
+#define draw_info       (cli_wand->draw_info)
+#define quantize_info   (cli_wand->quantize_info)
 #define normal_op       (plus_alt_op?MagickFalse:MagickTrue)
 
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(draw_info != (DrawInfo *) NULL);       /* ensure it is a CLI wand */
-  assert(images != (Image *) NULL);             /* there is an image */
-  assert(images->signature == MagickSignature); /* and is a valid image */
-
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  assert(cli_wand != (MagickCLI *) NULL);
+  assert(cli_wand->signature == WandSignature);
+  assert(cli_wand->wand.signature == WandSignature);
+  assert(images != (Image *) NULL);             /* images must be present */
+  if (cli_wand->wand.debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
   (void) SyncImagesSettings(image_info,images,exception);
 
@@ -3425,7 +3485,7 @@ WandExport void WandListOperatorImages(MagickWand *wand,
       if (LocaleCompare("average",option) == 0)
         {
           /* DEPRECIATED - use -evaluate-sequence Mean */
-          WandListOperatorImages(wand,plus_alt_op,"evaluate-sequence","Mean",
+          CLIListOperatorImages(cli_wand,plus_alt_op,"evaluate-sequence","Mean",
                NULL);
           break;
         }
@@ -3462,6 +3522,7 @@ WandExport void WandListOperatorImages(MagickWand *wand,
         }
       if (LocaleCompare("combine",option) == 0)
         {
+          /* FUTURE - this may be replaced by a 'channel' method */
           new_images=CombineImages(images,exception);
           break;
         }
@@ -3535,7 +3596,7 @@ WandExport void WandListOperatorImages(MagickWand *wand,
       if (LocaleCompare("deconstruct",option) == 0)
         {
           /* DEPRECIATED - use -layers CompareAny */
-          WandListOperatorImages(wand,plus_alt_op,"layer","CompareAny",NULL);
+          CLIListOperatorImages(cli_wand,plus_alt_op,"layer","CompareAny",NULL);
           break;
         }
       if (LocaleCompare("delete",option) == 0)
@@ -3597,7 +3658,7 @@ WandExport void WandListOperatorImages(MagickWand *wand,
       if (LocaleCompare("flatten",option) == 0)
         {
           /* DEPRECIATED use -layers mosaic instead */
-          WandListOperatorImages(wand,plus_alt_op,"layer",option,NULL);
+          CLIListOperatorImages(cli_wand,plus_alt_op,"layer",option,NULL);
           break;
         }
       if (LocaleCompare("fx",option) == 0)
@@ -3659,22 +3720,22 @@ WandExport void WandListOperatorImages(MagickWand *wand,
           insert_image=RemoveLastImageFromList(&images);
           if (plus_alt_op == MagickFalse)
             index=(ssize_t) StringToLong(arg1);
+          index_image=insert_image;
           if (index == 0)
             PrependImageToList(&images,insert_image);
+          else if (index == (ssize_t) GetImageListLength(images))
+            AppendImageToList(&images,insert_image);
           else
-            if (index == (ssize_t) GetImageListLength(images))
-              AppendImageToList(&images,insert_image);
-            else
-              {
-                 index_image=GetImageFromList(images,index-1);
-                 if (index_image == (Image *) NULL)
-                   {
-                     (void) ThrowMagickException(exception,GetMagickModule(),
-                       OptionError,"NoSuchImage","`%s'",arg1);
-                     break;
-                   }
-                InsertImageInList(&index_image,insert_image);
-              }
+            {
+               index_image=GetImageFromList(images,index-1);
+               if (index_image == (Image *) NULL)
+                 {
+                   (void) ThrowMagickException(exception,GetMagickModule(),
+                     OptionError,"NoSuchImage","'%s'",arg1);
+                   break;
+                 }
+              InsertImageInList(&index_image,insert_image);
+            }
           images=GetFirstImageInList(index_image);
           break;
         }
@@ -3866,7 +3927,7 @@ WandExport void WandListOperatorImages(MagickWand *wand,
       if (LocaleCompare("mosaic",option) == 0)
         {
           /* DEPRECIATED use -layers mosaic instead */
-          WandListOperatorImages(wand,plus_alt_op,"layer",option,NULL);
+          CLIListOperatorImages(cli_wand,plus_alt_op,"layer",option,NULL);
           break;
         }
       break;
@@ -4020,7 +4081,7 @@ WandExport void WandListOperatorImages(MagickWand *wand,
           if ((p == (Image *) NULL) || (q == (Image *) NULL))
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"NoSuchImage","`%s'",images->filename);
+                OptionError,"NoSuchImage","'%s'",images->filename);
               break;
             }
           if (p == q)
@@ -4068,13 +4129,355 @@ WandExport void WandListOperatorImages(MagickWand *wand,
 
   if (images != (Image *) NULL)
     images=DestroyImageList(images);
-  images=new_images;
+  images=GetFirstImageInList(new_images);
   return;
 
 #undef image_info
-#undef draw_info
-#undef quantize_info
 #undef images
 #undef exception
+#undef draw_info
+#undef quantize_info
 #undef normal_op
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C L I S p e c i a l O p e r a t i o n s                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CLISpecialOption() Applies operations that may involve empty image lists
+%  and or stacks of image lists or image_info settings.
+%
+%  Note: inlike other Operators, these may involve other special 'option'
+%  character prefixes, other than simply '-' or '+' and as such the full
+%  original otpion must be passed.
+%
+%  The format of the CLISpecialOption method is:
+%
+%      void CLISpecialOption(MagickCLI *cli_wand,const char *option,
+%           const char *arg)
+%
+%  A description of each parameter follows:
+%
+%    o cli_wand: the main CLI Wand to use.
+%
+%    o option: The special option (with any switch char) to process
+%
+%    o arg: Argument for option, if required
+%
+*/
+
+#define MaxImageStackDepth  32
+
+WandExport void CLISpecialOperator(MagickCLI *cli_wand,
+  const char *option, const char *arg)
+{
+#define exception       (cli_wand->wand.exception)
+
+  assert(cli_wand != (MagickCLI *) NULL);
+  assert(cli_wand->signature == WandSignature);
+  assert(cli_wand->wand.signature == WandSignature);
+  if (cli_wand->wand.debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
+
+  if (LocaleCompare(option,"(") == 0)
+    {
+      /* stack 'push' images */
+      Stack
+        *node;
+
+      size_t
+        size;
+
+      const char*
+        value;
+
+      size=0;
+      node=cli_wand->image_list_stack;
+      for ( ; node != (Stack *)NULL; node=node->next)
+        size++;
+      if ( size >= MaxImageStackDepth )
+        {
+          ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"ParenthesisNestedTooDeeply", option);
+          return;
+        }
+      node=(Stack *) AcquireMagickMemory(sizeof(*node));
+      if (node == (Stack *) NULL)
+        {
+          ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitFatalError,"MemoryAllocationFailed", "PushImages");
+          return;
+        }
+      node->data = (void *)cli_wand->wand.images;
+      cli_wand->wand.images = NewImageList();
+      node->next = cli_wand->image_list_stack;
+      cli_wand->image_list_stack = node;
+
+      /* handle respect-parenthesis */
+      value=GetImageOption(cli_wand->wand.image_info,"respect-parenthesis");
+      if (value != (const char *) NULL)
+        option="{";
+      else
+        return;
+    }
+  if (LocaleCompare(option,"{") == 0)
+    {
+      /* stack 'push' of image_info settings */
+      Stack
+        *node;
+
+      size_t
+        size;
+
+      size=0;
+      node=cli_wand->image_info_stack;
+      for ( ; node != (Stack *)NULL; node=node->next)
+        size++;
+      if ( size >= MaxImageStackDepth )
+        {
+          ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"ParenthesisNestedTooDeeply", option);
+          return;
+        }
+      node=(Stack *) AcquireMagickMemory(sizeof(*node));
+      if (node == (Stack *) NULL)
+        {
+          ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitFatalError,"MemoryAllocationFailed", "PushSettings");
+          return;
+        }
+
+      node->data = (void *)cli_wand->wand.image_info;
+      cli_wand->wand.image_info = CloneImageInfo(cli_wand->wand.image_info);
+      if (cli_wand->wand.image_info == (ImageInfo *)NULL)
+        {
+          ThrowMagickException(exception,GetMagickModule(),
+              ResourceLimitFatalError,"MemoryAllocationFailed", "PushSettings");
+          cli_wand->wand.image_info = (ImageInfo *)node->data;
+          node = (Stack *)RelinquishMagickMemory(node);
+          return;
+        }
+
+      node->next = cli_wand->image_info_stack;
+      cli_wand->image_info_stack = node;
+
+      return;
+    }
+  if (LocaleCompare(option,")") == 0)
+    {
+      /* pop images from stack */
+      Stack
+        *node;
+
+      const char*
+        value;
+
+      node = (void *)cli_wand->image_list_stack;
+      if ( node == (Stack *)NULL)
+        {
+          ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"UnbalancedParenthesis", option);
+          return;
+        }
+      cli_wand->image_list_stack = node->next;
+
+      AppendImageToList((Image **)&node->data,cli_wand->wand.images);
+      cli_wand->wand.images= (Image *)node->data;
+      node = (Stack *)RelinquishMagickMemory(node);
+
+      /* handle respect-parenthesis - of the previous 'push' settings */
+      node = cli_wand->image_info_stack;
+      if ( node != (Stack *)NULL)
+        {
+          value=GetImageOption((ImageInfo *)node->data,"respect-parenthesis");
+          if (value != (const char *) NULL)
+            option="}";
+          else
+            return;
+        }
+      else
+        return;
+    }
+  if (LocaleCompare(option,"}") == 0)
+    {
+      /* pop image_info settings from stack */
+      Stack
+        *node;
+
+      node = (void *)cli_wand->image_info_stack;
+      if ( node == (Stack *)NULL)
+        {
+          ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"UnbalancedParenthesis", option);
+          return;
+        }
+      cli_wand->image_info_stack = node->next;
+
+      (void) DestroyImageInfo(cli_wand->wand.image_info);
+      cli_wand->wand.image_info = (ImageInfo *)node->data;
+      node = (Stack *)RelinquishMagickMemory(node);
+
+      GetDrawInfo(cli_wand->wand.image_info, cli_wand->draw_info);
+      cli_wand->quantize_info=DestroyQuantizeInfo(cli_wand->quantize_info);
+      cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
+
+      return;
+    }
+  if (LocaleCompare(option+1,"clone") == 0)
+    {
+      Image
+        *new_images;
+
+      if (*option == '+')
+        arg="-1";
+      if (IsSceneGeometry(arg,MagickFalse) == MagickFalse)
+        {
+          ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"InvalidArgument", "'%s': %s", option, arg);
+          return;
+        }
+      if ( cli_wand->image_list_stack == (Stack *)NULL)
+        {
+          ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"UnableToCloneImage", option);
+          return;
+        }
+      new_images = (Image *)cli_wand->image_list_stack->data;
+      if (new_images == (Image *) NULL)
+        {
+          ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"UnableToCloneImage", option);
+          return;
+        }
+      new_images=CloneImages(new_images,arg,exception);
+      if (new_images == (Image *) NULL)
+        {
+          ThrowMagickException(exception,GetMagickModule(),
+                OptionError,"NoSuchImage",option);
+          return;
+        }
+      AppendImageToList(&cli_wand->wand.images,new_images);
+      return;
+    }
+  if ( LocaleCompare("-read",option) == 0 )
+    {
+#if 1
+      Image *
+        new_images;
+
+      CopyMagickString(cli_wand->wand.image_info->filename,arg,MaxTextExtent);
+      if (cli_wand->wand.image_info->ping != MagickFalse)
+        new_images=PingImages(cli_wand->wand.image_info,exception);
+      else
+        new_images=ReadImages(cli_wand->wand.image_info,exception);
+      AppendImageToList(&cli_wand->wand.images, new_images);
+#else
+      /* read images using MagickWand method - no ping */
+      /* This is not working! - it locks up in a CPU loop! */
+      MagickSetLastIterator(&cli_wand->wand);
+      MagickReadImage(&cli_wand->wand,arg);
+      MagickSetFirstIterator(&cli_wand->wand);
+#endif
+      return;
+    }
+  if (LocaleCompare("-noop",option) == 0)
+    return;
+  if (LocaleCompare("-sans",option) == 0)
+    return;
+  if (LocaleCompare("-sans0",option) == 0)
+    return;
+  if (LocaleCompare("-sans2",option) == 0)
+    return;
+  if (LocaleCompare("-list",option) == 0)
+    {
+      /* FUTURE: This should really be built into the MagickCore
+         It does not actually require any wand or images at all!
+       */
+      ssize_t
+        list;
+
+      list=ParseCommandOption(MagickListOptions,MagickFalse, arg);
+      switch (list)
+      {
+        case MagickCoderOptions:
+        {
+          (void) ListCoderInfo((FILE *) NULL,exception);
+          break;
+        }
+        case MagickColorOptions:
+        {
+          (void) ListColorInfo((FILE *) NULL,exception);
+          break;
+        }
+        case MagickConfigureOptions:
+        {
+          (void) ListConfigureInfo((FILE *) NULL,exception);
+          break;
+        }
+        case MagickDelegateOptions:
+        {
+          (void) ListDelegateInfo((FILE *) NULL,exception);
+          break;
+        }
+        case MagickFontOptions:
+        {
+          (void) ListTypeInfo((FILE *) NULL,exception);
+          break;
+        }
+        case MagickFormatOptions:
+          (void) ListMagickInfo((FILE *) NULL,exception);
+          break;
+        case MagickLocaleOptions:
+          (void) ListLocaleInfo((FILE *) NULL,exception);
+          break;
+        case MagickLogOptions:
+          (void) ListLogInfo((FILE *) NULL,exception);
+          break;
+        case MagickMagicOptions:
+          (void) ListMagicInfo((FILE *) NULL,exception);
+          break;
+        case MagickMimeOptions:
+          (void) ListMimeInfo((FILE *) NULL,exception);
+          break;
+        case MagickModuleOptions:
+          (void) ListModuleInfo((FILE *) NULL,exception);
+          break;
+        case MagickPolicyOptions:
+          (void) ListPolicyInfo((FILE *) NULL,exception);
+          break;
+        case MagickResourceOptions:
+          (void) ListMagickResourceInfo((FILE *) NULL,exception);
+          break;
+        case MagickThresholdOptions:
+          (void) ListThresholdMaps((FILE *) NULL,exception);
+          break;
+        default:
+          (void) ListCommandOptions((FILE *) NULL,(CommandOption) list,
+            exception);
+          break;
+      }
+      return;
+    }
+
+#if 0
+    // adjust stack handling
+  // Other 'special' options this should handle
+  //    "region" "list" "version"
+  // It does not do "exit" however as due to its side-effect requirements
+#endif
+#if 0
+  if ( ( process_flags & ProcessUnknownOptionError ) != 0 )
+    MagickExceptionReturn(OptionError,"InvalidUseOfOption",option);
+#endif
+
+#undef image_info
+#undef images
+#undef exception
 }

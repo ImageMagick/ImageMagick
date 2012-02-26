@@ -91,10 +91,6 @@ WandExport void ClearMagickWand(MagickWand *wand)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   wand->images=DestroyImageList(wand->images);
-  if (wand->quantize_info != (QuantizeInfo *) NULL )
-    wand->quantize_info=DestroyQuantizeInfo(wand->quantize_info);
-  if (wand->draw_info != (DrawInfo *) NULL )
-    wand->draw_info=DestroyDrawInfo(wand->draw_info);
   wand->image_info=AcquireImageInfo();
   ClearMagickException(wand->exception);
   wand->debug=IsEventLogging();
@@ -142,14 +138,6 @@ WandExport MagickWand *CloneMagickWand(const MagickWand *wand)
   clone_wand->exception=AcquireExceptionInfo();
   InheritException(clone_wand->exception,wand->exception);
   clone_wand->image_info=CloneImageInfo(wand->image_info);
-  if ( wand->quantize_info == (QuantizeInfo *) NULL )
-    clone_wand->quantize_info=(QuantizeInfo *) NULL;
-  else
-    clone_wand->quantize_info=CloneQuantizeInfo(wand->quantize_info);
-  if ( wand->draw_info == (DrawInfo *) NULL )
-    clone_wand->draw_info=(DrawInfo *) NULL;
-  else
-    clone_wand->draw_info=CloneDrawInfo(wand->image_info,wand->draw_info);
   clone_wand->images=CloneImageList(wand->images,clone_wand->exception);
   clone_wand->debug=IsEventLogging();
   if (clone_wand->debug != MagickFalse)
@@ -187,10 +175,6 @@ WandExport MagickWand *DestroyMagickWand(MagickWand *wand)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   wand->images=DestroyImageList(wand->images);
-  if (wand->quantize_info != (QuantizeInfo *) NULL )
-    wand->quantize_info=DestroyQuantizeInfo(wand->quantize_info);
-  if (wand->draw_info != (DrawInfo *) NULL )
-    wand->draw_info=DestroyDrawInfo(wand->draw_info);
   if (wand->image_info != (ImageInfo *) NULL )
     wand->image_info=DestroyImageInfo(wand->image_info);
   if (wand->exception != (ExceptionInfo *) NULL )
@@ -1063,8 +1047,6 @@ WandExport MagickWand *NewMagickWand(void)
     (double) wand->id);
   wand->images=NewImageList();
   wand->image_info=AcquireImageInfo();
-  wand->quantize_info=(QuantizeInfo *) NULL; /* not used in MagickWand API */
-  wand->draw_info=(DrawInfo *) NULL;         /* not used in MagickWand API */
   wand->exception=AcquireExceptionInfo();
   wand->debug=IsEventLogging();
   if (wand->debug != MagickFalse)
