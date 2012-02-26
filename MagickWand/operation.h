@@ -23,12 +23,17 @@ extern "C" {
 #endif
 
 
+extern WandExport MagickCLI
+  *AcquireMagickCLI(ImageInfo *,ExceptionInfo *),
+  *DestroyMagickCLI(MagickCLI *);
+
 extern WandExport void
-  WandSettingOptionInfo(MagickWand *,const char *,const char *),
-  WandSimpleOperatorImages(MagickWand *,const MagickBooleanType,
+  CLISettingOptionInfo(MagickCLI *,const char *,const char *),
+  CLISimpleOperatorImages(MagickCLI *,const MagickBooleanType,
        const char *,const char *,const char *),
-  WandListOperatorImages(MagickWand *,const MagickBooleanType,
-       const char *,const char *,const char *);
+  CLIListOperatorImages(MagickCLI *,const MagickBooleanType,
+       const char *,const char *,const char *),
+  CLISpecialOperator(MagickCLI *,const char *,const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

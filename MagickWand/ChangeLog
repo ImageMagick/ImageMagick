@@ -1,3 +1,10 @@
+2012-02-26 7.0.0-0 Anthony  <anthony@griffith...>
+  * A super-struct MagickCLI which includes a MagicWand is used to add the
+    extra requirements needed for Command Land and Script handling of CLI
+    options.  This structure allows CLI options to use either MagickWand or
+    MagickCore API's to implement the CLI options.
+  * Adding stacking options to "magick"
+
 2012-02-12  7.0.0-0 Anthony  <anthony@griffith...>
   * new module "magick-cli" providing base for new "magick" command
 
