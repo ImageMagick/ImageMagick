@@ -22,9 +22,6 @@
 extern "C" {
 #endif
 
-typedef struct _MagickCLI
-  MagickCLI;
-
 typedef enum
 {
   /* What options should be processed */

@@ -157,6 +157,7 @@ typedef struct _MagickWand
 #include "MagickWand/drawing-wand.h"
 #include "MagickWand/identify.h"
 #include "MagickWand/import.h"
+#include "MagickWand/operation.h"
 #include "MagickWand/magick-cli.h"
 #include "MagickWand/magick-property.h"
 #include "MagickWand/magick-image.h"
