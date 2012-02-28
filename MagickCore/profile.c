@@ -6597,9 +6597,6 @@ MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
   EndianType
     endian;
 
-  int
-    offset;
-
   size_t
     entry,
     length,
@@ -6607,7 +6604,8 @@ MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
 
   ssize_t
     id,
-    level;
+    level,
+    offset;
 
   static int
     format_bytes[] = {0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8};
@@ -6659,8 +6657,8 @@ MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
   /*
     This the offset to the first IFD.
   */
-  offset=(int) ReadProfileLong(endian,exif+4);
-  if ((size_t) offset >= length)
+  offset=(ssize_t) ((int) ReadProfileLong(endian,exif+4));
+  if (offset >= length)
     return(MagickFalse);
   directory=exif+offset;
   level=0;
@@ -6704,14 +6702,14 @@ MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
         p=q+8;
       else
         {
-          int
+          ssize_t
             offset;
 
           /*
             The directory entry contains an offset.
           */
-          offset=(int) ReadProfileLong(endian,q+8);
-          if ((size_t) (offset+number_bytes) > length)
+          offset=(ssize_t) ((int) ReadProfileLong(endian,q+8));
+          if ((offset+number_bytes) > length)
             continue;
           p=(unsigned char *) (exif+offset);
         }
@@ -6719,28 +6717,25 @@ MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
       {
         case 0x011a:
         {
-          (void) WriteProfileLong(endian,(size_t)
-            (image->resolution.x+0.5),p);
+          (void) WriteProfileLong(endian,(size_t) (image->resolution.x+0.5),p);
           (void) WriteProfileLong(endian,1UL,p+4);
           break;
         }
         case 0x011b:
         {
-          (void) WriteProfileLong(endian,(size_t)
-            (image->resolution.y+0.5),p);
+          (void) WriteProfileLong(endian,(size_t) (image->resolution.y+0.5),p);
           (void) WriteProfileLong(endian,1UL,p+4);
           break;
         }
         case 0x0112:
         {
-          (void) WriteProfileShort(endian,(unsigned short)
-            image->orientation,p);
+          (void) WriteProfileShort(endian,(unsigned short) image->orientation,
+            p);
           break;
         }
         case 0x0128:
         {
-          (void) WriteProfileShort(endian,(unsigned short)
-            (image->units+1),p);
+          (void) WriteProfileShort(endian,(unsigned short) (image->units+1),p);
           break;
         }
         default:
@@ -6748,10 +6743,10 @@ MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
       }
       if ((tag_value == TAG_EXIF_OFFSET) || (tag_value == TAG_INTEROP_OFFSET))
         {
-          size_t
+          ssize_t
             offset;
 
-          offset=(size_t) ReadProfileLong(endian,p);
+          offset=(ssize_t) ((int) ReadProfileLong(endian,p));
           if ((offset < length) && (level < (MaxDirectoryStack-2)))
             {
               directory_stack[level].directory=directory;
@@ -6763,8 +6758,8 @@ MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
               level++;
               if ((directory+2+(12*number_entries)) > (exif+length))
                 break;
-              offset=(size_t) ReadProfileLong(endian,directory+2+(12*
-                number_entries));
+              offset=(ssize_t) ((int) ReadProfileLong(endian,directory+2+(12*
+                number_entries)));
               if ((offset != 0) && (offset < length) &&
                   (level < (MaxDirectoryStack-2)))
                 {
