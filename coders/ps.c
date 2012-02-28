@@ -758,9 +758,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   *options='\0';
   (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",
     image->resolution.x,image->resolution.y);
-  if (image_info->page != (char *) NULL)
-    (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
-      page.width,(double) page.height);
+  (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
+    page.width,(double) page.height);
   read_info=CloneImageInfo(image_info);
   *read_info->magick='\0';
   if (read_info->number_scenes != 0)
