@@ -49,9 +49,9 @@
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/magick-wand-private.h"
-#include "MagickWand/magick-cli-private.h"
-#include "MagickWand/magick-cli.h"
 #include "MagickWand/operation.h"
+#include "MagickWand/operation-private.h"
+#include "MagickWand/magick-cli.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/utility-private.h"
@@ -475,15 +475,9 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
             MagickExceptionScript(OptionFatalError,"UnrecognizedOption",
                  option,option_line,option_column);
 
-          // FUTURE: '-regard_warning' causes IM to exit more prematurely!
-          // Note pipelined options may like more control over this level
-          if (cli_wand->wand.exception->severity > ErrorException)
-            {
-              if (cli_wand->wand.exception->severity > ErrorException)
-                  //(regard_warnings != MagickFalse))
-                break;                     /* FATAL - caller handles exception */
-              CatchException(cli_wand->wand.exception); /* output warnings and clear!!! */
-            }
+          if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+            break;
+
           continue;
         }
 
@@ -548,16 +542,10 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
       if ( (option_type & ListOperatorOptionFlag) != 0 )
         CLIListOperatorImages(cli_wand, plus_alt_op, option+1, arg1, arg2);
 
-      // FUTURE: '-regard_warning' causes IM to exit more prematurely!
-      // Note pipelined options may like more control over this level
-      if (cli_wand->wand.exception->severity > ErrorException)
-        {
-          if (cli_wand->wand.exception->severity > ErrorException)
-              //(regard_warnings != MagickFalse))
-            break;                     /* FATAL - caller handles exception */
-          CatchException(cli_wand->wand.exception); /* output warnings and clear!!! */
-        }
+      if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+        break;
     }
+
 #if MagickCommandDebug
   (void) FormatLocaleFile(stderr, "Script End: %d\n", token_info.status);
 #endif
@@ -718,25 +706,28 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
             MagickExceptionReturn(OptionFatalError,"UnrecognizedOption",
                  option,i);
 
-          // FUTURE: '-regard_warning' causes IM to exit more prematurely!
-          // Note pipelined options may like more control over this level
-          if (cli_wand->wand.exception->severity > ErrorException)
-            {
-              if (cli_wand->wand.exception->severity > ErrorException)
-                  //(regard_warnings != MagickFalse))
-                break;                     /* FATAL - caller handles exception */
-              CatchException(cli_wand->wand.exception); /* output warnings and clear!!! */
-            }
+          if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+            break;
+
           continue;
         }
 
 
       if ( (option_type & DeprecateOptionFlag) != 0 )
-        MagickExceptionContinue(OptionWarning,"DeprecatedOption",option,i);
-        /* continue processing option anyway */
+        {
+          MagickExceptionContinue(OptionWarning,"DeprecatedOption",option,i);
+          if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+            break;
+          /* FALLTHRU - continue processing */
+        }
 
       if ((i+count) >= end )
-        MagickExceptionReturn(OptionError,"MissingArgument",option,i);
+        {
+          MagickExceptionReturn(OptionError,"MissingArgument",option,i);
+          if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+            break;
+          continue; /* unable to proceed */
+        }
 
       if (*option=='+') plus_alt_op = MagickTrue;
       if (*option!='+') arg1 = "true";
@@ -765,6 +756,7 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
           CLISpecialOperator(cli_wand,option,arg1);
         }
 
+
       if ( (option_type & SettingOptionFlags) != 0 )
         {
           CLISettingOptionInfo(cli_wand, option+1, arg1);
@@ -777,16 +769,13 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
       if ( (option_type & ListOperatorOptionFlag) != 0 )
         CLIListOperatorImages(cli_wand, plus_alt_op, option+1, arg1, arg2);
 
-      // FUTURE: '-regard_warning' causes IM to exit more prematurely!
-      // Note pipelined options may like more control over this level
-      if (cli_wand->wand.exception->severity > ErrorException)
-        {
-          if (cli_wand->wand.exception->severity > ErrorException)
-              //(regard_warnings != MagickFalse))
-            return;                    /* FATAL - caller handles exception */
-          CatchException(cli_wand->wand.exception); /* output warnings and clear!!! */
-        }
+      if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+        break;
+
     }
+
+  if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+    return;
 
   if ( ( process_flags & ProcessOutputFile ) == 0 )
     return;
@@ -1011,10 +1000,10 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
     /* Processing Command line, assuming output file as last option */
     ProcessCommandOptions(cli_wand,argc-1,argv+1,MagickCommandOptionFlags);
 
-
   /* recover original image_info - check we get the right image_info */
   while (cli_wand->image_info_stack != (Stack *)NULL)
     CLISpecialOperator(cli_wand,"}",(const char *)NULL);
+
   assert(cli_wand->wand.image_info == image_info);
   assert(cli_wand->wand.exception == exception);
 

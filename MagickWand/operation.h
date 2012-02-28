@@ -22,10 +22,15 @@
 extern "C" {
 #endif
 
+typedef struct _MagickCLI
+  MagickCLI;
 
 extern WandExport MagickCLI
   *AcquireMagickCLI(ImageInfo *,ExceptionInfo *),
   *DestroyMagickCLI(MagickCLI *);
+
+extern WandExport MagickBooleanType
+  CLICatchException(MagickCLI *,const MagickBooleanType);
 
 extern WandExport void
   CLISettingOptionInfo(MagickCLI *,const char *,const char *),

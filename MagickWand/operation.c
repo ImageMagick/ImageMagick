@@ -50,8 +50,8 @@
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/magick-wand-private.h"
-#include "MagickWand/magick-cli-private.h"
 #include "MagickWand/operation.h"
+#include "MagickWand/operation-private.h"
 #include "MagickWand/wand.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/thread-private.h"
@@ -496,6 +496,57 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   C L I C a t c h E x c e p t i o n                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CLICatchException() will report exceptions, either just non-fatal warnings
+%  only, or all errors, according to 'all_execeptions' boolean argument.
+%
+%  The function returns true is errors are fatal, in which case the caller
+%  should abort and re-call with an 'all_exceptions' argument of true before
+%  quitting.
+%
+%  The cut-off level between fatal and non-fatal may be controlled by options
+%  (FUTURE), but defaults to 'Error' exceptions.
+%
+%  The format of the CLICatchException method is:
+%
+%    MagickBooleanType CLICatchException(MagickCLI *cli_wand,
+%              const MagickBooleanType all_exceptions );
+%
+*/
+WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
+     const MagickBooleanType all_exceptions )
+{
+  MagickBooleanType
+    status;
+  assert(cli_wand != (MagickCLI *) NULL);
+  assert(cli_wand->signature == WandSignature);
+  assert(cli_wand->wand.signature == WandSignature);
+  if (cli_wand->wand.debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
+
+  // FUTURE: '-regard_warning' should make this more sensitive.
+  // Note pipelined options may like more control over this level
+
+  status = MagickFalse;
+  if (cli_wand->wand.exception->severity > ErrorException)
+    status = MagickTrue;
+
+  if ( status == MagickFalse || all_exceptions != MagickFalse )
+    CatchException(cli_wand->wand.exception); /* output and clear exceptions */
+
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   C L I S e t t i n g O p t i o n I n f o                                   %
 %                                                                             %
 %                                                                             %
@@ -513,7 +564,7 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
 %  Options handled by this function are listed in CommandOptions[] of
 %  "option.c" that is one of "SettingOptionFlags" option flags.
 %
-%  The format of the WandSettingOptionInfo method is:
+%  The format of the CLISettingOptionInfo method is:
 %
 %    void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
 %               const char *arg)
@@ -530,7 +581,7 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
 %
 % Example usage...
 %
-%    CLISettingOptionInfo(cli_wand, "background", MagickTrue, "Red");
+%    CLISettingOptionInfo(cli_wand, "background", "Red");
 %    CLISettingOptionInfo(cli_wand, "adjoin", "true");
 %    CLISettingOptionInfo(cli_wand, "adjoin", NULL);
 %
@@ -539,9 +590,11 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
 %    argc,argv
 %    i=index in argv
 %
-%    count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
-%    flags=GetCommandOptionFlags(MagickCommandOptions,MagickFalse,argv[i]);
-%    if ( (flags & SettingOptionFlags) != 0 )
+%    option_info = GetCommandOptionInfo(argv[i]);
+%    count=option_info->type;
+%    option_type=option_info->flags;
+%
+%    if ( (option_type & SettingOperatorOptionFlags) != 0 )
 %      CLISettingOptionInfo(cli_wand, argv[i]+1,
 %            (((*argv[i])!='-') ? (char *)NULL
 %                   : (count>0) ? argv[i+1] : "true") );
@@ -1535,9 +1588,11 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
 %    argc,argv
 %    i=index in argv
 %
-%    count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
-%    flags=GetCommandOptionFlags(MagickCommandOptions,MagickFalse,argv[i]);
-%    if ( (flags & SimpleOperatorOptionFlag) != 0 )
+%    option_info = GetCommandOptionInfo(argv[i]);
+%    count=option_info->type;
+%    option_type=option_info->flags;
+%
+%    if ( (option_type & SimpleOperatorOptionFlag) != 0 )
 %      CLISimpleOperatorImages(cli_wand,
 %          ((*argv[i])=='+')?MagickTrue:MagickFalse,argv[i]+1,
 %          count>=1 ? argv[i+1] : (char *)NULL,
@@ -3438,9 +3493,11 @@ WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
 %    argc,argv
 %    i=index in argv
 %
-%    count=ParseCommandOption(MagickCommandOptions,MagickFalse,argv[i]);
-%    flags=GetCommandOptionFlags(MagickCommandOptions,MagickFalse,argv[i]);
-%    if ( (flags & ListOperatorOptionFlag) != 0 )
+%    option_info = GetCommandOptionInfo(argv[i]);
+%    count=option_info->type;
+%    option_type=option_info->flags;
+%
+%    if ( (option_type & ListOperatorOptionFlag) != 0 )
 %      CLIListOperatorImages(cli_wand,
 %          ((*argv[i])=='+')?MagickTrue:MagickFalse,argv[i]+1,
 %          count>=1 ? argv[i+1] : (char *)NULL,
@@ -4170,6 +4227,29 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 %    o option: The special option (with any switch char) to process
 %
 %    o arg: Argument for option, if required
+% 
+% Example Usage...
+%
+%  CLISpecialOperator(cli_wand,"-read", "rose:");
+%  if ( cli_wand->wand.exception->severity != UndefinedException ) {
+%    CatchException(exception);
+%    exit(1);
+%  }
+%
+% Or for handling command line arguments EG: +/-option ["arg"]
+%
+%    cli_wand
+%    argc,argv
+%    i=index in argv
+%
+%    option_info = GetCommandOptionInfo(argv[i]);
+%    count=option_info->type;
+%    option_type=option_info->flags;
+%
+%    if ( (option_type & SpecialOptionFlag) != 0 )
+%      CLISpecialOperator(cli_wand,argv[i],
+%          count>=1 ? argv[i+1] : (char *)NULL);
+%    i += count+1;
 %
 */
 
@@ -4368,7 +4448,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
     }
   if ( LocaleCompare("-read",option) == 0 )
     {
-#if 1
+#if 0
       Image *
         new_images;
 
