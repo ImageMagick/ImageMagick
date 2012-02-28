@@ -55,6 +55,7 @@ MAGICKWAND_SOURCES = \
 	MagickWand/montage.h \
 	MagickWand/operation.c \
 	MagickWand/operation.h \
+	MagickWand/operation-private.h \
 	MagickWand/pixel-iterator.c \
 	MagickWand/pixel-iterator.h \
 	MagickWand/pixel-wand.c \
@@ -95,6 +96,7 @@ MAGICKWAND_INCLUDE_HDRS = \
 MAGICKWAND_NOINST_HDRS = \
 	MagickWand/mogrify-private.h \
 	MagickWand/magick-wand-private.h \
+	MagickWand/operation-private.h \
 	MagickWand/pixel-wand-private.h \
 	MagickWand/studio.h \
 	MagickWand/wand.h
