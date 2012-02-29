@@ -6658,7 +6658,7 @@ MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
     This the offset to the first IFD.
   */
   offset=(ssize_t) ((int) ReadProfileLong(endian,exif+4));
-  if (offset >= length)
+  if ((size_t) offset >= length)
     return(MagickFalse);
   directory=exif+offset;
   level=0;
@@ -6709,8 +6709,10 @@ MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
             The directory entry contains an offset.
           */
           offset=(ssize_t) ((int) ReadProfileLong(endian,q+8));
-          if ((offset+number_bytes) > length)
+          if ((size_t) (offset+number_bytes) > length)
             continue;
+          if (~length < number_bytes)
+            continue;  /* prevent overflow */
           p=(unsigned char *) (exif+offset);
         }
       switch (tag_value)
@@ -6747,7 +6749,7 @@ MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
             offset;
 
           offset=(ssize_t) ((int) ReadProfileLong(endian,p));
-          if ((offset < length) && (level < (MaxDirectoryStack-2)))
+          if (((size_t) offset < length) && (level < (MaxDirectoryStack-2)))
             {
               directory_stack[level].directory=directory;
               entry++;
@@ -6760,7 +6762,7 @@ MagickPrivate MagickBooleanType SyncImageProfiles(Image *image)
                 break;
               offset=(ssize_t) ((int) ReadProfileLong(endian,directory+2+(12*
                 number_entries)));
-              if ((offset != 0) && (offset < length) &&
+              if ((offset != 0) && ((size_t) offset < length) &&
                   (level < (MaxDirectoryStack-2)))
                 {
                   directory_stack[level].directory=exif+offset;
