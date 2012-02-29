@@ -6681,7 +6681,7 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
     This the offset to the first IFD.
   */
   offset=(ssize_t) ((int) ReadProfileLong(endian,exif+4));
-  if ((size_t) offset >= length)
+  if ((offset < 0) || ((size_t) offset >= length))
     return(MagickFalse);
   directory=exif+offset;
   level=0;
