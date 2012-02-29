@@ -780,7 +780,9 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       *directory;
 
     size_t
-      entry,
+      entry;
+
+    ssize_t
       offset;
   } DirectoryInfo;
 
@@ -1092,7 +1094,6 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     entry,
     length,
     number_entries,
-    tag_offset,
     tag;
 
   SplayTreeInfo
@@ -1103,6 +1104,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     id,
     level,
     offset,
+    tag_offset,
     tag_value;
 
   static int
@@ -1297,6 +1299,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
           offset=(ssize_t) ((int) ReadPropertyLong(endian,q+8));
           if ((size_t) (offset+number_bytes) > length)
             continue;
+          if (~length < number_bytes)
+            continue;  /* prevent overflow */
           p=(unsigned char *) (exif+offset);
         }
       if ((all != 0) || (tag == (size_t) tag_value))
@@ -1447,16 +1451,17 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
         if ((tag_value == TAG_EXIF_OFFSET) ||
             (tag_value == TAG_INTEROP_OFFSET) || (tag_value == TAG_GPS_OFFSET))
           {
-            size_t
+            ssize_t
               offset;
 
-            offset=(size_t) ((int) ReadPropertyLong(endian,p));
-            if ((offset < length) && (level < (MaxDirectoryStack-2)))
+            offset=(ssize_t) ((int) ReadPropertyLong(endian,p));
+            if (((size_t) offset < length) && (level < (MaxDirectoryStack-2)))
               {
-                size_t
+                ssize_t
                   tag_offset1;
 
-                tag_offset1=(tag_value == TAG_GPS_OFFSET) ? 0x10000UL : 0UL;
+                tag_offset1=(ssize_t) ((tag_value == TAG_GPS_OFFSET) ? 0x10000 :
+                  0);
                 directory_stack[level].directory=directory;
                 entry++;
                 directory_stack[level].entry=entry;
@@ -1468,9 +1473,9 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
                 level++;
                 if ((directory+2+(12*number_entries)) > (exif+length))
                   break;
-                offset=(size_t) ((int) ReadPropertyLong(endian,directory+2+(12*
+                offset=(ssize_t) ((int) ReadPropertyLong(endian,directory+2+(12*
                   number_entries)));
-                if ((offset != 0) && (offset < length) &&
+                if ((offset != 0) && ((size_t) offset < length) &&
                     (level < (MaxDirectoryStack-2)))
                   {
                     directory_stack[level].directory=exif+offset;
