@@ -172,6 +172,8 @@ extern size_t strlcpy(char *,const char *,size_t);
 extern int vsnprintf(char *,size_t,const char *,va_list);
 #endif
 
+#include "MagickWand/method-attribute.h"
+
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(MAGICKCORE_POSIX_SUPPORT)
 # include <sys/types.h>
 # include <sys/stat.h>
@@ -224,7 +226,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #  endif
 #  include <unix.h>
 # endif
-# include "MagickWand/MagickWand.h"
 #endif
 
 #if defined(S_IRUSR) && defined(S_IWUSR)
@@ -244,8 +245,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #if defined(vms)
 # include "MagickCore/vms.h"
 #endif
-
-#include "MagickWand/MagickWand.h"
 
 #undef HAVE_CONFIG_H
 #undef gamma
