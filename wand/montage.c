@@ -213,8 +213,12 @@ static MagickBooleanType MontageUsage(void)
     *stack_operators[]=
     {
       "-clone indexes       clone an image",
+      "-delete indexes      delete the image from the image sequence",
       "-duplicate count,indexes",
       "                     duplicate an image one or more times",
+      "-insert index        insert last image into the image sequence",
+      "-reverse             reverse image sequence",
+      "-swap indexes        swap two images in the image sequence",
       (char *) NULL
     };
 
@@ -770,6 +774,17 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("delete",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMontageException(OptionError,"MissingArgument",option);
+            if (IsSceneGeometry(argv[i],MagickFalse) == MagickFalse)
+              ThrowMontageInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("density",option+1) == 0)
           {
             if (*option == '+')
@@ -1050,6 +1065,17 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("identify",option+1) == 0)
           break;
+        if (LocaleCompare("insert",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMontageException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMontageInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("interlace",option+1) == 0)
           {
             ssize_t
@@ -1382,6 +1408,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             respect_parenthesis=(*option == '-') ? MagickTrue : MagickFalse;
             break;
           }
+        if (LocaleCompare("reverse",option+1) == 0)
+          break;
         if (LocaleCompare("rotate",option+1) == 0)
           {
             i++;
@@ -1511,6 +1539,17 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
         if (LocaleCompare("support",option+1) == 0)
           {
             i++;  /* deprecated */
+            break;
+          }
+        if (LocaleCompare("swap",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMontageException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMontageInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("synchronize",option+1) == 0)
