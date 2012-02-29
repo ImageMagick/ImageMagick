@@ -16,8 +16,8 @@
   MagickWand Application Programming Interface declarations.
 */
 
-#ifndef _MAGICK_WAND_H
-#define _MAGICK_WAND_H
+#ifndef _MAGICKWAND_MAGICKWAND_H
+#define _MAGICKWAND_MAGICKWAND_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -60,6 +60,8 @@ extern "C" {
 #  define _MAGICKDLL_
 #  define _MAGICKLIB_
 #endif
+
+#include "MagickWand/method-attribute.h"
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__)
 # define WandPrivate
@@ -115,11 +117,6 @@ extern "C" {
 # endif
 # define WandGlobal
 #endif
-
-#if !defined(MaxTextExtent)
-# define MaxTextExtent  4096
-#endif
-#define WandSignature  0xabacadabUL
 
 #if defined(MAGICKCORE_HAVE___ATTRIBUTE__)
 #  define wand_aligned(x)  __attribute__((__aligned__(x)))
