@@ -1235,7 +1235,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
     This the offset to the first IFD.
   */
   offset=(ssize_t) ((int) ReadPropertyLong(endian,exif+4));
-  if ((size_t) offset >= length)
+  if ((offset < 0) || (size_t) offset >= length)
     return(MagickFalse);
   /*
     Set the pointer to the first IFD and follow it were it leads.
