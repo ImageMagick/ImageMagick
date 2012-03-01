@@ -6625,6 +6625,9 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
     length,
     number_entries;
 
+  SplayTreeInfo
+    *exif_resources;
+
   ssize_t
     id,
     level,
@@ -6686,6 +6689,8 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
   directory=exif+offset;
   level=0;
   entry=0;
+  exif_resources=NewSplayTree((int (*)(const void *,const void *)) NULL,
+    (void *(*)(void *)) NULL,(void *(*)(void *)) NULL);
   do
   {
     if (level > 0)
@@ -6715,6 +6720,9 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
         tag_value;
 
       q=(unsigned char *) (directory+2+(12*entry));
+      if (GetValueFromSplayTree(exif_resources,q) == q)
+        break;
+      (void) AddValueToSplayTree(exif_resources,q,q);
       tag_value=(ssize_t) ReadProfileShort(endian,q);
       format=(ssize_t) ReadProfileShort(endian,q+2);
       if ((format-1) >= EXIF_NUM_FORMATS)
@@ -6732,10 +6740,10 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
             The directory entry contains an offset.
           */
           offset=(ssize_t) ((int) ReadProfileLong(endian,q+8));
+          if ((offset+number_bytes) < offset)
+            continue;  /* prevent overflow */
           if ((size_t) (offset+number_bytes) > length)
             continue;
-          if (~length < number_bytes)
-            continue;  /* prevent overflow */
           p=(unsigned char *) (exif+offset);
         }
       switch (tag_value)
@@ -6797,5 +6805,6 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
         }
     }
   } while (level > 0);
+  exif_resources=DestroySplayTree(exif_resources);
   return(MagickTrue);
 }

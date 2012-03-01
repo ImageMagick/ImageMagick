@@ -408,6 +408,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           filename=argv[i];
           if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
             filename=argv[++i];
+          (void) SetImageOption(image_info,"filename",filename);
           (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
           if (first_scene != last_scene)
             {

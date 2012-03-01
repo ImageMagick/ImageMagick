@@ -266,7 +266,11 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   pango_font_description_set_size(description,PANGO_SCALE*draw_info->pointsize);
   pango_layout_set_font_description(layout,description);
   pango_font_description_free(description);
-  property=InterpretImageProperties(image_info,image,image_info->filename);
+  option=GetImageOption(image_info,"filename");
+  if (option != (const char *) NULL)
+    property=InterpretImageProperties(image_info,image,option);
+  else
+    property=InterpretImageProperties(image_info,image,image_info->filename);
   (void) SetImageProperty(image,"caption",property);
   property=DestroyString(property);
   caption=ConstantString(GetImageProperty(image,"caption"));
