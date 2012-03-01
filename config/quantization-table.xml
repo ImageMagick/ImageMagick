@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE quantization-tables [
+<!ELEMENT quantization-tables (table)+>
+<!ELEMENT table (description , levels)>
+<!ELEMENT description (CDATA)>
+<!ELEMENT levels (CDATA)>
+<!ATTLIST table slot ID #REQUIRED>
+<!ATTLIST levels width CDATA #REQUIRED>
+<!ATTLIST levels height CDATA #REQUIRED>
+<!ATTLIST levels divisor CDATA #REQUIRED>
+]>
+<!--
+  JPEG quantization tables.
+-->
+<quantization-tables>
+  <table slot="0" alias="luminance">
+    <description>Luminance Quantization Table</description>
+    <levels width="8" height="8" divisor="1">
+      16, 12, 14, 17, 22, 30, 45, 72,
+      12, 13, 14, 17, 22, 31, 46, 74,
+      14, 14, 16, 19, 25, 35, 52, 83,
+      17, 17, 19, 23, 30, 41, 62, 100,
+      22, 22, 25, 30, 39, 54, 80, 129,
+      30, 31, 35, 41, 54, 74, 111, 178,
+      45, 46, 52, 62, 80, 111, 166, 267,
+      72, 74, 83, 100, 129, 178, 267, 428
+    </levels>
+  </table>
+
+  <table slot="1" alias="chrominance">
+    <description>Chrominance Quantization Table</description>
+    <levels width="8" height="8" divisor="1">
+      17,  18,  22,  31,  50,  92,   193,  465,
+      18,  19,  24,  33,  54,  98,   207,  498,
+      22,  24,  29,  41,  66,  120,  253,  609,
+      31,  33,  41,  57,  92,  169,  355,  854,
+      50,  54,  66,  92,  148, 271,  570,  1370,
+      92,  98,  120, 169, 271, 498,  1046, 2516,
+      193, 207, 253, 355, 570, 1046, 2198, 5289,
+      465, 498, 609, 854, 1370,2516, 5289, 12725
+    </levels>
+  </table>
+</quantization-tables>
