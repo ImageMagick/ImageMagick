@@ -98,7 +98,7 @@ extern "C" {
 
 #define WandSignature  0xabacadabUL
 #if !defined(MaxTextExtent)
-# define MaxTextExtent  8192
+# define MaxTextExtent  4096
 #endif
 
 #if defined(MAGICKCORE_HAVE___ATTRIBUTE__)

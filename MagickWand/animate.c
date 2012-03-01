@@ -452,11 +452,10 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             option=argv[++i];
             filename=option;
           }
-        (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
         if (image_info->ping != MagickFalse)
-          images=PingImages(image_info,exception);
+          images=PingImages(image_info,filename,exception);
         else
-          images=ReadImages(image_info,exception);
+          images=ReadImages(image_info,filename,exception);
         status&=(images != (Image *) NULL) &&
           (exception->severity < ErrorException);
         if (images == (Image *) NULL)

@@ -28,9 +28,9 @@ extern MagickExport Image
   *ConstituteImage(const size_t,const size_t,const char *,const StorageType,
     const void *,ExceptionInfo *),
   *PingImage(const ImageInfo *,ExceptionInfo *),
-  *PingImages(const ImageInfo *,ExceptionInfo *),
+  *PingImages(ImageInfo *,const char *,ExceptionInfo *),
   *ReadImage(const ImageInfo *,ExceptionInfo *),
-  *ReadImages(const ImageInfo *,ExceptionInfo *),
+  *ReadImages(ImageInfo *,const char *,ExceptionInfo *),
   *ReadInlineImage(const ImageInfo *,const char *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
