@@ -313,11 +313,10 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
         filename=argv[i];
         if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
           filename=argv[++i];
-        (void) CopyMagickString(identify_info->filename,filename,MaxTextExtent);
         if (identify_info->ping != MagickFalse)
-          images=PingImages(identify_info,exception);
+          images=PingImages(identify_info,filename,exception);
         else
-          images=ReadImages(identify_info,exception);
+          images=ReadImages(identify_info,filename,exception);
         identify_info=DestroyImageInfo(identify_info);
         status&=(images != (Image *) NULL) &&
           (exception->severity < ErrorException);

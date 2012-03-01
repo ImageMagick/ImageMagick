@@ -296,20 +296,23 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
 %
 %  The format of the PingImage method is:
 %
-%      Image *PingImages(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *PingImages(ImageInfo *image_info,const char *filename,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: the image info.
 %
+%    o filename: the image filename.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *PingImages(const ImageInfo *image_info,
+MagickExport Image *PingImages(ImageInfo *image_info,const char *filename,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    ping_filename[MaxTextExtent];
 
   Image
     *image,
@@ -327,9 +330,11 @@ MagickExport Image *PingImages(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
+  (void) SetImageOption(image_info,"filename",filename);
+  (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
   (void) InterpretImageFilename(image_info,(Image *) NULL,image_info->filename,
-    (int) image_info->scene,filename,exception);
-  if (LocaleCompare(filename,image_info->filename) != 0)
+    (int) image_info->scene,ping_filename,exception);
+  if (LocaleCompare(ping_filename,image_info->filename) != 0)
     {
       ExceptionInfo
         *sans;
@@ -345,13 +350,13 @@ MagickExport Image *PingImages(const ImageInfo *image_info,
       sans=AcquireExceptionInfo();
       (void) SetImageInfo(read_info,0,sans);
       sans=DestroyExceptionInfo(sans);
-      (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
+      (void) CopyMagickString(ping_filename,read_info->filename,MaxTextExtent);
       images=NewImageList();
       extent=(ssize_t) (read_info->scene+read_info->number_scenes);
       for (scene=(ssize_t) read_info->scene; scene < (ssize_t) extent; scene++)
       {
-        (void) InterpretImageFilename(image_info,(Image *) NULL,filename,(int)
-          scene,read_info->filename,exception);
+        (void) InterpretImageFilename(image_info,(Image *) NULL,ping_filename,
+          (int) scene,read_info->filename,exception);
         image=PingImage(read_info,exception);
         if (image == (Image *) NULL)
           continue;
@@ -810,20 +815,23 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 %
 %  The format of the ReadImage method is:
 %
-%      Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadImages(ImageInfo *image_info,const char *filename,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: the image info.
 %
+%    o filename: the image filename.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *ReadImages(const ImageInfo *image_info,
+MagickExport Image *ReadImages(ImageInfo *image_info,const char *filename,
   ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    read_filename[MaxTextExtent];
 
   Image
     *image,
@@ -841,9 +849,11 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  (void) InterpretImageFilename(image_info,(Image *) NULL,image_info->filename,
-    (int) image_info->scene,filename,exception);
-  if (LocaleCompare(filename,image_info->filename) != 0)
+  (void) SetImageOption(image_info,"filename",filename);
+  (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
+  (void) InterpretImageFilename(image_info,(Image *) NULL,filename,
+    (int) image_info->scene,read_filename,exception);
+  if (LocaleCompare(read_filename,image_info->filename) != 0)
     {
       ExceptionInfo
         *sans;
@@ -864,13 +874,13 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
           read_info=DestroyImageInfo(read_info);
           return(ReadImage(image_info,exception));
         }
-      (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
+      (void) CopyMagickString(read_filename,read_info->filename,MaxTextExtent);
       images=NewImageList();
       extent=(ssize_t) (read_info->scene+read_info->number_scenes);
       for (scene=(ssize_t) read_info->scene; scene < (ssize_t) extent; scene++)
       {
-        (void) InterpretImageFilename(image_info,(Image *) NULL,filename,(int)
-          scene,read_info->filename,exception);
+        (void) InterpretImageFilename(image_info,(Image *) NULL,read_filename,
+          (int) scene,read_info->filename,exception);
         image=ReadImage(read_info,exception);
         if (image == (Image *) NULL)
           continue;

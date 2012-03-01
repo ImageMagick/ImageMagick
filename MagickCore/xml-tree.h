@@ -29,12 +29,14 @@ extern MagickExport char
   *XMLTreeInfoToXML(XMLTreeInfo *);
 
 extern MagickExport const char
+  *GetXMLTreeAttribute(XMLTreeInfo *,const char *),
   *GetXMLTreeContent(XMLTreeInfo *),
   *GetXMLTreeTag(XMLTreeInfo *);
 
 extern MagickExport XMLTreeInfo
   *AddChildToXMLTree(XMLTreeInfo *,const char *,const size_t),
   *DestroyXMLTree(XMLTreeInfo *),
+  *GetNextXMLTreeTag(XMLTreeInfo *),
   *GetXMLTreeChild(XMLTreeInfo *,const char *),
   *GetXMLTreeSibling(XMLTreeInfo *),
   *NewXMLTree(const char *,ExceptionInfo *),

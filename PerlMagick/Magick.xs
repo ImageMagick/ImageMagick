@@ -9326,10 +9326,9 @@ Mogrify(ref,...)
           /*
             Associate a profile with the image.
           */
-          profile_info=
-            CloneImageInfo(info ? info->image_info : (ImageInfo *) NULL);
-          (void) CopyMagickString(profile_info->filename,name,MaxTextExtent);
-          profile_image=ReadImages(profile_info,exception);
+          profile_info=CloneImageInfo(info ? info->image_info :
+            (ImageInfo *) NULL);
+          profile_image=ReadImages(profile_info,name,exception);
           if (profile_image == (Image *) NULL)
             break;
           ResetImageProfileIterator(profile_image);
@@ -13183,18 +13182,15 @@ Read(ref,...)
     number_images=0;
     for (i=0; i < n; i++)
     {
-      if ((package_info->image_info->file != (FILE *) NULL) ||
-          (package_info->image_info->blob != (void *) NULL))
-        {
-          image=ReadImages(package_info->image_info,exception);
-          if (image != (Image *) NULL)
-            DisassociateImageStream(image);
-        }
+      if ((package_info->image_info->file == (FILE *) NULL) &&
+          (package_info->image_info->blob == (void *) NULL))
+        image=ReadImages(package_info->image_info,list[i],exception);
       else
         {
-          (void) CopyMagickString(package_info->image_info->filename,list[i],
-            MaxTextExtent);
-          image=ReadImages(package_info->image_info,exception);
+          image=ReadImages(package_info->image_info,
+            package_info->image_info->filename,exception);
+          if (image != (Image *) NULL)
+            DisassociateImageStream(image);
         }
       if (image == (Image *) NULL)
         break;

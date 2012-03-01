@@ -550,7 +550,7 @@ MagickExport XMLTreeInfo *DestroyXMLTree(XMLTreeInfo *xml_info)
 %    o xml_info: the xml info.
 %
 */
-MagickPrivate XMLTreeInfo *GetNextXMLTreeTag(XMLTreeInfo *xml_info)
+MagickExport XMLTreeInfo *GetNextXMLTreeTag(XMLTreeInfo *xml_info)
 {
   assert(xml_info != (XMLTreeInfo *) NULL);
   assert((xml_info->signature == MagickSignature) ||
@@ -584,7 +584,7 @@ MagickPrivate XMLTreeInfo *GetNextXMLTreeTag(XMLTreeInfo *xml_info)
 %    o tag: the attribute tag.
 %
 */
-MagickPrivate const char *GetXMLTreeAttribute(XMLTreeInfo *xml_info,
+MagickExport const char *GetXMLTreeAttribute(XMLTreeInfo *xml_info,
   const char *tag)
 {
   register ssize_t

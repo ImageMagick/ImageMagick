@@ -408,8 +408,10 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
           filename=argv[i];
           if ((LocaleCompare(filename,"--") == 0) && (i < (ssize_t) (argc-1)))
             filename=argv[++i];
-          (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
-          if (first_scene != last_scene)
+          (void) CloneString(&image_info->font,montage_info->font);
+          if (first_scene == last_scene)
+            images=ReadImages(image_info,filename,exception);
+          else
             {
               char
                 filename[MaxTextExtent];
@@ -422,11 +424,8 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               if (LocaleCompare(filename,image_info->filename) == 0)
                 (void) FormatLocaleString(filename,MaxTextExtent,"%s.%.20g",
                   image_info->filename,(double) scene);
-              (void) CopyMagickString(image_info->filename,filename,
-                MaxTextExtent);
+              images=ReadImages(image_info,filename,exception);
             }
-          (void) CloneString(&image_info->font,montage_info->font);
-          images=ReadImages(image_info,exception);
           status&=(images != (Image *) NULL) &&
             (exception->severity < ErrorException);
           if (images == (Image *) NULL)

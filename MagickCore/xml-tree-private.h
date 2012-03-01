@@ -29,7 +29,6 @@ extern MagickPrivate char
   *CanonicalXMLContent(const char *,const MagickBooleanType);
 
 extern MagickPrivate const char
-  *GetXMLTreeAttribute(XMLTreeInfo *,const char *),
   **GetXMLTreeProcessingInstructions(XMLTreeInfo *,const char *);
 
 extern MagickPrivate MagickBooleanType
@@ -37,7 +36,6 @@ extern MagickPrivate MagickBooleanType
 
 extern MagickPrivate XMLTreeInfo
   *AddPathToXMLTree(XMLTreeInfo *,const char *,const size_t),
-  *GetNextXMLTreeTag(XMLTreeInfo *),
   *GetXMLTreeOrdered(XMLTreeInfo *),
   *GetXMLTreePath(XMLTreeInfo *,const char *),
   *InsertTagIntoXMLTree(XMLTreeInfo *,XMLTreeInfo *,const size_t),
