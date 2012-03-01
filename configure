@@ -8035,7 +8035,7 @@ $as_echo "#define HAVE___ATTRIBUTE__ 1" >>confdefs.h
 if test "${with_gcc_arch+set}" = set; then :
   withval=$with_gcc_arch; ax_gcc_arch=$withval
 else
-  ax_gcc_arch=yes
+  ax_gcc_arch=no
 fi
 
 
