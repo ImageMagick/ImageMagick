@@ -10,8 +10,8 @@
   <configure name="VERSION" value="6.7.5"/>
   <configure name="LIB_VERSION" value="0x675"/>
   <configure name="LIB_VERSION_NUMBER" value="6,7,5,8"/>
-  <configure name="SVN_REVISION" value="6997" />
-  <configure name="RELEASE_DATE" value="2012-02-29"/>
+  <configure name="SVN_REVISION" value="7001" />
+  <configure name="RELEASE_DATE" value="2012-03-01"/>
   <configure name="CONFIGURE" value="./configure "/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
@@ -24,7 +24,7 @@
   <configure name="CODER_PATH" value="/usr/local/lib/ImageMagick-6.7.5/modules-Q16/coders"/>
   <configure name="FILTER_PATH" value="/usr/local/lib/ImageMagick-6.7.5/modules-Q16/filters"/>
   <configure name="CC" value="gcc -std=gnu99 -std=gnu99"/>
-  <configure name="CFLAGS" value="-fopenmp -g -O2 -Wall -pthread"/>
+  <configure name="CFLAGS" value="-fopenmp -g -O2 -Wall -mtune=amdfam10 -pthread"/>
   <configure name="CPPFLAGS" value="-I/usr/local/include/ImageMagick"/>
   <configure name="PCFLAGS" value="-fopenmp"/>
   <configure name="DEFS" value="-DHAVE_CONFIG_H"/>

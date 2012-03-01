@@ -283,6 +283,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
 	$(top_srcdir)/m4/ax_cxx_bool.m4 \
 	$(top_srcdir)/m4/ax_cxx_namespace_std.m4 \
 	$(top_srcdir)/m4/ax_cxx_namespaces.m4 \
+	$(top_srcdir)/m4/ax_gcc_archflag.m4 \
 	$(top_srcdir)/m4/ax_lang_compiler_ms.m4 \
 	$(top_srcdir)/m4/ax_opencl.m4 \
 	$(top_srcdir)/m4/ax_prefix_config_h.m4 \
@@ -2543,6 +2544,7 @@ PNG_LIBS = @PNG_LIBS@
 POVDelegate = @POVDelegate@
 POW_LIB = @POW_LIB@
 PREFIX_DIR = @PREFIX_DIR@
+PRTDIAG = @PRTDIAG@
 PSDelegate = @PSDelegate@
 PTHREAD_CC = @PTHREAD_CC@
 PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
