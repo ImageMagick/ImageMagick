@@ -1,3 +1,8 @@
+2012-02-29  6.7.5-8 Cristy  <quetzlzacatenango@image...>
+  * Support infinite caption lengths.
+  * Permit custome JPEG quantization tables (e.g.
+	  -define jpeg:q-table=quantization-table.xml).
+
 2012-02-29  6.7.5-8 Anthony Thyssen <A.Thyssen@griffith...>
   * Added Image list options (like "-delete" and "-swap") to "montage".
 

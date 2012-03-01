@@ -450,6 +450,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             option=argv[++i];
             filename=option;
           }
+        (void) SetImageOption(image_info,"filename",filename);
         (void) CopyMagickString(image_info->filename,filename,MaxTextExtent);
         if (image_info->ping != MagickFalse)
           images=PingImages(image_info,exception);

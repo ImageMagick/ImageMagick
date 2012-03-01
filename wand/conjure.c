@@ -295,6 +295,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
       ThrowConjureException(ImageError,"UnableToPersistKey",argv[i]);
     (void) FormatLocaleString(image_info->filename,MaxTextExtent,"msl:%s",
       argv[i]);
+    (void) SetImageOption(image_info,"filename",argv[i]);
     image=ReadImages(image_info,exception);
     CatchException(exception);
     if (image != (Image *) NULL)
