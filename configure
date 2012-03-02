@@ -3616,7 +3616,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=7001
+MAGICK_SVN_REVISION=7019
 
 
 
@@ -8035,7 +8035,7 @@ $as_echo "#define HAVE___ATTRIBUTE__ 1" >>confdefs.h
 if test "${with_gcc_arch+set}" = set; then :
   withval=$with_gcc_arch; ax_gcc_arch=$withval
 else
-  ax_gcc_arch=yes
+  ax_gcc_arch=no
 fi
 
 
@@ -8371,7 +8371,7 @@ fi # guess arch
 
 if test "x$ax_gcc_arch" != x -a "x$ax_gcc_arch" != xno; then
 for arch in $ax_gcc_arch; do
-  if test "xyes" = xyes; then # if we require portable code
+  if test "xno" = xyes; then # if we require portable code
     flags="-mtune=$arch"
     # -mcpu=$arch and m$arch generate nonportable code on every arch except
     # x86.  And some other arches (e.g. Alpha) don't accept -mtune.  Grrr.
