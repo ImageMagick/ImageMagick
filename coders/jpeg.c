@@ -1597,6 +1597,9 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   QuantizationTable
     *table;
 
+  size_t
+    length;
+
   XMLTreeInfo
     *description,
     *levels,
@@ -1732,8 +1735,11 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
       xml=DestroyString(xml);
       return(table);
     }
-  table->levels=(unsigned int *) AcquireQuantumMemory((size_t) table->width,
-    table->height*sizeof(*table->levels));
+  length=(size_t) table->width*table->height;
+  if (length < 64)
+    length=64;
+  table->levels=(unsigned int *) AcquireQuantumMemory(length*
+    sizeof(*table->levels));
   if (table->levels == (unsigned int *) NULL)
     ThrowFatalException(ResourceLimitFatalError,
       "UnableToAcquireQuantizationTable");
@@ -2634,8 +2640,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         q=jpeg_pixels;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelIntensity(image,p)) >>
-            4);
+          *q++=(JSAMPLE) (ScaleQuantumToShort(GetPixelIntensity(image,p)) >> 4);
           p+=GetPixelChannels(image);
         }
         (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
