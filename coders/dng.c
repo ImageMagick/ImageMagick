@@ -335,6 +335,14 @@ ModuleExport size_t RegisterDNGImage(void)
   entry->description=ConstantString("Nikon Digital SLR Camera Raw Image File");
   entry->module=ConstantString("DNG");
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("NRW");
+  entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->blob_support=MagickFalse;
+  entry->seekable_stream=MagickTrue;
+  entry->format_type=ExplicitFormatType;
+  entry->description=ConstantString("Nikon Digital SLR Camera Raw Image File");
+  entry->module=ConstantString("DNG");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("ORF");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
   entry->blob_support=MagickFalse;
@@ -413,6 +421,7 @@ ModuleExport void UnregisterDNGImage(void)
   (void) UnregisterMagickInfo("RAF");
   (void) UnregisterMagickInfo("PEF");
   (void) UnregisterMagickInfo("ORF");
+  (void) UnregisterMagickInfo("NRW");
   (void) UnregisterMagickInfo("NEF");
   (void) UnregisterMagickInfo("MRW");
   (void) UnregisterMagickInfo("MEF");
