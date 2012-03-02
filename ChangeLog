@@ -1,3 +1,9 @@
+2012-03-02  6.7.5-9 Glenn Randers-Pehrson <glennrp@image...>
+  * non-verbose identify now reports DirectClass for transparent PNG images 
+    to agree with the report by identify -verbose.  (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20448 and
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=15482).
+
 2012-03-02  6.7.5-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.5-8, SVN revision 7014.
 
