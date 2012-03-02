@@ -163,6 +163,7 @@ static const CoderMapInfo
     { "MSVG", "SVG" },
     { "NEF", "DNG" },
     { "NETSCAPE", "MAGICK" },
+    { "NRW", "DNG" },
     { "O", "RAW" },
     { "ORF", "DNG" },
     { "OTF", "TTF" },
