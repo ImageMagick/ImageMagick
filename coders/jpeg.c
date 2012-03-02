@@ -1738,14 +1738,14 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
   length=(size_t) table->width*table->height;
   if (length < 64)
     length=64;
-  table->levels=(unsigned int *) AcquireQuantumMemory(length*
+  table->levels=(unsigned int *) AcquireQuantumMemory(length,
     sizeof(*table->levels));
   if (table->levels == (unsigned int *) NULL)
     ThrowFatalException(ResourceLimitFatalError,
       "UnableToAcquireQuantizationTable");
   for (i=0; i < (ssize_t) (table->width*table->height); i++)
   {
-    table->levels[i]=(unsigned int) strtol(content,&p,10);
+    table->levels[i]=(unsigned int) (InterpretLocaleValue(content,&p)+0.5);
     if (table->divisor != 1)
       table->levels[i]/=table->divisor;
     while (isspace((int) ((unsigned char) *p)) != 0)
