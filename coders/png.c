@@ -2809,6 +2809,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       (image_info->number_scenes != 0) && (mng_info->scenes_found > (ssize_t)
       (image_info->first_scene+image_info->number_scenes))))
     {
+      /* This happens later in non-ping decodes */
+      if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
+        image->storage_class=DirectClass;
+
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Skipping PNG image data for scene %.20g",(double)
