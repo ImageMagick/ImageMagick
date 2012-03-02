@@ -1,3 +1,6 @@
+2012-03-02  6.7.5-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.5-8, SVN revision 7014.
+
 2012-02-29  6.7.5-8 Cristy  <quetzlzacatenango@image...>
   * Support infinite caption lengths.
   * Permit custome JPEG quantization tables (e.g.
@@ -9,7 +12,7 @@
   * Added Image list options (like "-delete" and "-swap") to "montage".
 
 2012-02-25  6.7.5-7 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.5-6, SVN revision 6965.
+  * New version 6.7.5-7, SVN revision 6965.
 
 2012-02-23  6.7.5-7 Cristy  <quetzlzacatenango@image...>
   * Add support for the EMFPlus delegate program.
