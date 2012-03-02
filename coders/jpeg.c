@@ -159,8 +159,10 @@ typedef struct _QuantizationTable
     width,
     height;
 
+  double
+    divisor;
+
   unsigned int
-    divisor,
     *levels;
 } QuantizationTable;
 
@@ -1715,8 +1717,8 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
       xml=DestroyString(xml);
       return(table);
     }
-  table->divisor=(unsigned int) StringToLong(attribute);
-  if (table->divisor < 1)
+  table->divisor=InterpretLocaleValue(attribute,(char **) NULL);
+  if (table->divisor == 0.0)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
         "XmlInvalidAttribute", "<levels divisor>, table \"%s\"",slot);
@@ -1745,18 +1747,15 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
       "UnableToAcquireQuantizationTable");
   for (i=0; i < (ssize_t) (table->width*table->height); i++)
   {
-    table->levels[i]=(unsigned int) (InterpretLocaleValue(content,&p)+0.5);
-    if (table->divisor != 1)
-      table->levels[i]/=table->divisor;
+    table->levels[i]=(unsigned int) (InterpretLocaleValue(content,&p)/
+      table->divisor+0.5);
     while (isspace((int) ((unsigned char) *p)) != 0)
       p++;
     if (*p == ',')
       p++;
     content=p;
   }
-  for (j=i; i < 64; i++)
-    table->levels[j]=table->levels[j-1];
-  value=(double) strtol(content,&p,10);
+  value=InterpretLocaleValue(content,&p);
   (void) value;
   if (p != content)
     {
@@ -1767,6 +1766,8 @@ static QuantizationTable *GetQuantizationTable(const char *filename,
      xml=DestroyString(xml);
      return(table);
    }
+  for (j=i; j < 64; j++)
+    table->levels[j]=table->levels[j-1];
   quantization_tables=DestroyXMLTree(quantization_tables);
   xml=DestroyString(xml);
   return(table);
