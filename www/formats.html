@@ -173,6 +173,9 @@
   <a rel="follow" title="Entertainment News &amp; Photos" href="http://www.zimbio.com">Entertainment News &amp; Photos</a><!-- 201211010540 bd@zimb... -->
 </div>
 <div class="sponsor">
+  <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201206010270 info@pkwte... -->
+</div>
+<div class="sponsor">
   <a rel="follow" title="Druckerei Günstig" href="http://www.druck-expert.com">Druckerei Günstig</a><!-- 201104010450 info@druck... -->
 </div>
 <div class="sponsor">
@@ -215,7 +218,7 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
+   <a rel="follow" title="Sponsor: Photo Sharing Websites" href="http://www.zoofoo.com">Photo Sharing Websites</a><!-- 2012050100150 dancu@dans...-->
 </div>
 <div class="sponsor">
    <a rel="follow" title="Sponsor: Schlüsseldienst Berlin BSD" href="http://www.schluesseldienst-berlin.de">Schlüsseldienst Berlin BSD</a><!-- 2012050100025 info@schlues-->
@@ -635,7 +638,7 @@ the supported image formats.</p>
     <td valign="top"><a href="http://www.jpeg.org/">JPEG</a></td>
     <td valign="top">RW</td>
     <td valign="top">Joint Photographic Experts Group JFIF format</td>
-    <td valign="top">Note, JPEG is a lossy compression.  In addition, you cannot create black and white images with JPEG nor can you save transparency.<br /><br /> Requires <a href="http://www.ijg.org/files/">jpegsrc.v8c.tar.gz</a>.  You can optionally define the DCT method, for example to specify the float method, use <a href="../www/command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="../www/command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Two other options include <a href="../www/command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="../www/command-line-options.html#define">-define jpeg:fancy-upsampling</a>. Set the sampling factor with <a href="../www/command-line-options.html#define">-define jpeg:sampling-factor</a>. You can size the image with <kbd>jpeg:size</kbd>, for example <a href="../www/command-line-options.html#define">-define jpeg:size=128x128</a>. Finally, to restrict the maximum file size, use <kbd>jpeg:extent</kbd>, for example <a href="../www/command-line-options.html#define">-define jpeg:extent=400kb</a>.</td>
+    <td valign="top">Note, JPEG is a lossy compression.  In addition, you cannot create black and white images with JPEG nor can you save transparency.<br /><br /> Requires <a href="http://www.ijg.org/files/">jpegsrc.v8c.tar.gz</a>.  You can optionally define the DCT method, for example to specify the float method, use <a href="../www/command-line-options.html#define">-define jpeg:dct-method=float</a>. By default we compute optimal Huffman coding tables.  Specify <a href="../www/command-line-options.html#define">-define jpeg:optimize-coding=false</a> to use the default Huffman tables. Two other options include <a href="../www/command-line-options.html#define">-define jpeg:block-smoothing</a> and <a href="../www/command-line-options.html#define">-define jpeg:fancy-upsampling</a>. Set the sampling factor with <a href="../www/command-line-options.html#define">-define jpeg:sampling-factor</a>. You can size the image with <kbd>jpeg:size</kbd>, for example <a href="../www/command-line-options.html#define">-define jpeg:size=128x128</a>. To restrict the maximum file size, use <kbd>jpeg:extent</kbd>, for example <a href="../www/command-line-options.html#define">-define jpeg:extent=400kb</a>.  Finally, to define one or more custom quantization tables, use <a href="../www/command-line-options.html#define">-define jpeg:q-table=<i>filename</i>.</a></td>
   </tr>
 
   <tr>
@@ -691,7 +694,7 @@ the supported image formats.</p>
     <td valign="top">MPC</td>
     <td valign="top">RW</td>
     <td valign="top">Magick Persistent Cache image file format</td>
-    <td valign="top"> The native <em>in-memory</em> ImageMagick uncompressed file format. This file format is identical to that used by ImageMagick to represent images in memory and is read by mapping the file directly into memory. The MPC format is not portable and is not suitable as an archive format. It is suitable as an intermediate format for high-performance image processing.  The MPC format requires two files to support one image. Image attributes are written to a file with the extension <kbd>.mpc</kbd>, whereas, image pixels are written to a file with the extension <kbd>.cache</kbd>.</td>
+    <td valign="top">The most efficient data processing pattern is a write-once, read-many-times pattern. The image is generated or copied from source, then various analyses are performed on the image pixels over time.  MPC supports this pattern. MPC is the native <em>in-memory</em> ImageMagick uncompressed file format. This file format is identical to that used by ImageMagick to represent images in memory and is read by mapping the file directly into memory. The MPC format is not portable and is not suitable as an archive format. It is suitable as an intermediate format for high-performance image processing.  The MPC format requires two files to support one image. Image attributes are written to a file with the extension <kbd>.mpc</kbd>, whereas, image pixels are written to a file with the extension <kbd>.cache</kbd>.</td>
   </tr>
 
   <tr>
