@@ -1037,16 +1037,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               exception);
             break;
           }
-        if (LocaleCompare("channel-extract",option+1) == 0)
-          {
-            puts("stand by...");
-            break;
-          }
-        if (LocaleCompare("channel-swap",option+1) == 0)
-          {
-            puts("stand by...");
-            break;
-          }
         if (LocaleCompare("charcoal",option+1) == 0)
           {
             /*
@@ -3267,12 +3257,8 @@ static MagickBooleanType MogrifyUsage(void)
   static const char
     *channel_operators[]=
     {
-      "-channel-extract channel-list",
-      "                     extract the channels in order",
-      "-channel-inject channel-list",
-      "                     inject the channels in order",
-      "-channel-swap channel,channel",
-      "                     swap channels",
+      "-channel-ops expression",
+      "                     exchange, extract, or transfer one or more image channels",
       (char *) NULL
     },
     *miscellaneous[]=
@@ -4047,39 +4033,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
-        if (LocaleCompare("channel-extract",option+1) == 0)
-          {
-            ssize_t
-              channel;
-
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) (argc-1))
-              ThrowMogrifyException(OptionError,"MissingArgument",option);
-            channel=ParsePixelChannelOption(argv[i]);
-            if (channel < 0)
-              ThrowMogrifyException(OptionError,"UnrecognizedChannelType",
-                argv[i]);
-            break;
-          }
-        if (LocaleCompare("channel-inject",option+1) == 0)
-          {
-            ssize_t
-              channel;
-
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) (argc-1))
-              ThrowMogrifyException(OptionError,"MissingArgument",option);
-            channel=ParsePixelChannelOption(argv[i]);
-            if (channel < 0)
-              ThrowMogrifyException(OptionError,"UnrecognizedChannelType",
-                argv[i]);
-            break;
-          }
-        if (LocaleCompare("channel-swap",option+1) == 0)
+        if (LocaleCompare("channel-ops",option+1) == 0)
           {
             ssize_t
               channel;
@@ -7389,9 +7343,20 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
       }
       case 'c':
       {
-        if (LocaleCompare("channel-inject",option+1) == 0)
+        if (LocaleCompare("channel-ops",option+1) == 0)
           {
-            puts("stand by...");
+            Image
+              *channel_image;
+
+            (void) SyncImagesSettings(mogrify_info,*images,exception);
+            channel_image=ChannelOperationImage(*images,argv[i+1],exception);
+            if (channel_image == (Image *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            *images=DestroyImageList(*images);
+            *images=channel_image;
             break;
           }
         if (LocaleCompare("clut",option+1) == 0)

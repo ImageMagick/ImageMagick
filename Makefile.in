@@ -391,44 +391,45 @@ am__MagickCore_libMagickCore_la_SOURCES_DIST =  \
 	MagickCore/blob.c MagickCore/blob.h MagickCore/blob-private.h \
 	MagickCore/cache.c MagickCore/cache.h \
 	MagickCore/cache-private.h MagickCore/cache-view.c \
-	MagickCore/cache-view.h MagickCore/cipher.c \
-	MagickCore/cipher.h MagickCore/client.c MagickCore/client.h \
-	MagickCore/coder.c MagickCore/coder.h MagickCore/color.c \
-	MagickCore/color.h MagickCore/color-private.h \
-	MagickCore/colormap.c MagickCore/colormap.h \
-	MagickCore/colormap-private.h MagickCore/colorspace.c \
-	MagickCore/colorspace.h MagickCore/colorspace-private.h \
-	MagickCore/compare.c MagickCore/compare.h \
-	MagickCore/composite.c MagickCore/composite.h \
-	MagickCore/composite-private.h MagickCore/compress.c \
-	MagickCore/compress.h MagickCore/configure.c \
-	MagickCore/configure.h MagickCore/constitute.c \
-	MagickCore/constitute.h MagickCore/decorate.c \
-	MagickCore/decorate.h MagickCore/delegate.c \
-	MagickCore/delegate.h MagickCore/delegate-private.h \
-	MagickCore/deprecate.c MagickCore/deprecate.h \
-	MagickCore/display.c MagickCore/display.h \
-	MagickCore/display-private.h MagickCore/distort.c \
-	MagickCore/distort.h MagickCore/draw.c MagickCore/draw.h \
-	MagickCore/draw-private.h MagickCore/effect.c \
-	MagickCore/effect.h MagickCore/enhance.c MagickCore/enhance.h \
-	MagickCore/exception.c MagickCore/exception.h \
-	MagickCore/exception-private.h MagickCore/feature.c \
-	MagickCore/feature.h MagickCore/fourier.c MagickCore/fourier.h \
-	MagickCore/fx.c MagickCore/fx.h MagickCore/fx-private.h \
-	MagickCore/gem.c MagickCore/gem.h MagickCore/gem-private.h \
-	MagickCore/geometry.c MagickCore/geometry.h \
-	MagickCore/hashmap.c MagickCore/hashmap.h \
-	MagickCore/histogram.c MagickCore/histogram.h \
-	MagickCore/identify.c MagickCore/identify.h MagickCore/image.c \
-	MagickCore/image.h MagickCore/image-private.h \
-	MagickCore/image-view.c MagickCore/image-view.h \
-	MagickCore/layer.c MagickCore/layer.h MagickCore/list.c \
-	MagickCore/list.h MagickCore/locale.c MagickCore/locale_.h \
-	MagickCore/log.c MagickCore/log.h MagickCore/mac.h \
-	MagickCore/magic.c MagickCore/magic.h MagickCore/magick.c \
-	MagickCore/magick-config.h MagickCore/magick-type.h \
-	MagickCore/magick.h MagickCore/matrix.c MagickCore/matrix.h \
+	MagickCore/cache-view.h MagickCore/channel.c \
+	MagickCore/channel.h MagickCore/cipher.c MagickCore/cipher.h \
+	MagickCore/client.c MagickCore/client.h MagickCore/coder.c \
+	MagickCore/coder.h MagickCore/color.c MagickCore/color.h \
+	MagickCore/color-private.h MagickCore/colormap.c \
+	MagickCore/colormap.h MagickCore/colormap-private.h \
+	MagickCore/colorspace.c MagickCore/colorspace.h \
+	MagickCore/colorspace-private.h MagickCore/compare.c \
+	MagickCore/compare.h MagickCore/composite.c \
+	MagickCore/composite.h MagickCore/composite-private.h \
+	MagickCore/compress.c MagickCore/compress.h \
+	MagickCore/configure.c MagickCore/configure.h \
+	MagickCore/constitute.c MagickCore/constitute.h \
+	MagickCore/decorate.c MagickCore/decorate.h \
+	MagickCore/delegate.c MagickCore/delegate.h \
+	MagickCore/delegate-private.h MagickCore/deprecate.c \
+	MagickCore/deprecate.h MagickCore/display.c \
+	MagickCore/display.h MagickCore/display-private.h \
+	MagickCore/distort.c MagickCore/distort.h MagickCore/draw.c \
+	MagickCore/draw.h MagickCore/draw-private.h \
+	MagickCore/effect.c MagickCore/effect.h MagickCore/enhance.c \
+	MagickCore/enhance.h MagickCore/exception.c \
+	MagickCore/exception.h MagickCore/exception-private.h \
+	MagickCore/feature.c MagickCore/feature.h MagickCore/fourier.c \
+	MagickCore/fourier.h MagickCore/fx.c MagickCore/fx.h \
+	MagickCore/fx-private.h MagickCore/gem.c MagickCore/gem.h \
+	MagickCore/gem-private.h MagickCore/geometry.c \
+	MagickCore/geometry.h MagickCore/hashmap.c \
+	MagickCore/hashmap.h MagickCore/histogram.c \
+	MagickCore/histogram.h MagickCore/identify.c \
+	MagickCore/identify.h MagickCore/image.c MagickCore/image.h \
+	MagickCore/image-private.h MagickCore/image-view.c \
+	MagickCore/image-view.h MagickCore/layer.c MagickCore/layer.h \
+	MagickCore/list.c MagickCore/list.h MagickCore/locale.c \
+	MagickCore/locale_.h MagickCore/log.c MagickCore/log.h \
+	MagickCore/mac.h MagickCore/magic.c MagickCore/magic.h \
+	MagickCore/magick.c MagickCore/magick-config.h \
+	MagickCore/magick-type.h MagickCore/magick.h \
+	MagickCore/matrix.c MagickCore/matrix.h \
 	MagickCore/matrix-private.h MagickCore/memory.c \
 	MagickCore/memory_.h MagickCore/method-attribute.h \
 	MagickCore/methods.h MagickCore/mime.c MagickCore/mime.h \
@@ -517,6 +518,7 @@ am__objects_1 = MagickCore/MagickCore_libMagickCore_la-accelerate.lo \
 	MagickCore/MagickCore_libMagickCore_la-blob.lo \
 	MagickCore/MagickCore_libMagickCore_la-cache.lo \
 	MagickCore/MagickCore_libMagickCore_la-cache-view.lo \
+	MagickCore/MagickCore_libMagickCore_la-channel.lo \
 	MagickCore/MagickCore_libMagickCore_la-cipher.lo \
 	MagickCore/MagickCore_libMagickCore_la-client.lo \
 	MagickCore/MagickCore_libMagickCore_la-coder.lo \
@@ -753,6 +755,7 @@ am__objects_18 = MagickWand/MagickWand_libMagickWand_la-animate.lo \
 	MagickWand/MagickWand_libMagickWand_la-drawing-wand.lo \
 	MagickWand/MagickWand_libMagickWand_la-identify.lo \
 	MagickWand/MagickWand_libMagickWand_la-import.lo \
+	MagickWand/MagickWand_libMagickWand_la-magick-cli.lo \
 	MagickWand/MagickWand_libMagickWand_la-magick-image.lo \
 	MagickWand/MagickWand_libMagickWand_la-magick-property.lo \
 	MagickWand/MagickWand_libMagickWand_la-magick-cli.lo \
@@ -762,6 +765,7 @@ am__objects_18 = MagickWand/MagickWand_libMagickWand_la-animate.lo \
 	MagickWand/MagickWand_libMagickWand_la-operation.lo \
 	MagickWand/MagickWand_libMagickWand_la-pixel-iterator.lo \
 	MagickWand/MagickWand_libMagickWand_la-pixel-wand.lo \
+	MagickWand/MagickWand_libMagickWand_la-script-token.lo \
 	MagickWand/MagickWand_libMagickWand_la-stream.lo \
 	MagickWand/MagickWand_libMagickWand_la-wand.lo \
 	MagickWand/MagickWand_libMagickWand_la-wand-view.lo
@@ -3958,6 +3962,8 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/cache-private.h \
 	MagickCore/cache-view.c \
 	MagickCore/cache-view.h \
+	MagickCore/channel.c \
+	MagickCore/channel.h \
 	MagickCore/cipher.c \
 	MagickCore/cipher.h \
 	MagickCore/client.c \
@@ -4180,6 +4186,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/blob.h \
 	MagickCore/cache.h \
 	MagickCore/cache-view.h \
+	MagickCore/channel.h \
 	MagickCore/cipher.h \
 	MagickCore/client.h \
 	MagickCore/coder.h \
@@ -4368,6 +4375,8 @@ MAGICKWAND_SOURCES = \
 	MagickWand/identify.h \
 	MagickWand/import.c \
 	MagickWand/import.h \
+	MagickWand/magick-cli.c \
+	MagickWand/magick-cli.h \
 	MagickWand/magick-image.c \
 	MagickWand/magick-image.h \
 	MagickWand/magick-property.c \
@@ -4390,6 +4399,8 @@ MAGICKWAND_SOURCES = \
 	MagickWand/pixel-wand.c \
 	MagickWand/pixel-wand.h \
 	MagickWand/pixel-wand-private.h \
+	MagickWand/script-token.c \
+	MagickWand/script-token.h \
 	MagickWand/stream.c \
 	MagickWand/stream.h \
 	MagickWand/studio.h \
@@ -4427,6 +4438,7 @@ MAGICKWAND_NOINST_HDRS = \
 	MagickWand/magick-wand-private.h \
 	MagickWand/operation-private.h \
 	MagickWand/pixel-wand-private.h \
+	MagickWand/script-token.h \
 	MagickWand/studio.h \
 	MagickWand/wand.h
 
@@ -5203,6 +5215,9 @@ MagickCore/MagickCore_libMagickCore_la-cache.lo:  \
 MagickCore/MagickCore_libMagickCore_la-cache-view.lo:  \
 	MagickCore/$(am__dirstamp) \
 	MagickCore/$(DEPDIR)/$(am__dirstamp)
+MagickCore/MagickCore_libMagickCore_la-channel.lo:  \
+	MagickCore/$(am__dirstamp) \
+	MagickCore/$(DEPDIR)/$(am__dirstamp)
 MagickCore/MagickCore_libMagickCore_la-cipher.lo:  \
 	MagickCore/$(am__dirstamp) \
 	MagickCore/$(DEPDIR)/$(am__dirstamp)
@@ -5735,13 +5750,13 @@ MagickWand/MagickWand_libMagickWand_la-identify.lo:  \
 MagickWand/MagickWand_libMagickWand_la-import.lo:  \
 	MagickWand/$(am__dirstamp) \
 	MagickWand/$(DEPDIR)/$(am__dirstamp)
+MagickWand/MagickWand_libMagickWand_la-magick-cli.lo:  \
+	MagickWand/$(am__dirstamp) \
+	MagickWand/$(DEPDIR)/$(am__dirstamp)
 MagickWand/MagickWand_libMagickWand_la-magick-image.lo:  \
 	MagickWand/$(am__dirstamp) \
 	MagickWand/$(DEPDIR)/$(am__dirstamp)
 MagickWand/MagickWand_libMagickWand_la-magick-property.lo:  \
-	MagickWand/$(am__dirstamp) \
-	MagickWand/$(DEPDIR)/$(am__dirstamp)
-MagickWand/MagickWand_libMagickWand_la-magick-cli.lo:  \
 	MagickWand/$(am__dirstamp) \
 	MagickWand/$(DEPDIR)/$(am__dirstamp)
 MagickWand/MagickWand_libMagickWand_la-magick-wand.lo:  \
@@ -5760,6 +5775,9 @@ MagickWand/MagickWand_libMagickWand_la-pixel-iterator.lo:  \
 	MagickWand/$(am__dirstamp) \
 	MagickWand/$(DEPDIR)/$(am__dirstamp)
 MagickWand/MagickWand_libMagickWand_la-pixel-wand.lo:  \
+	MagickWand/$(am__dirstamp) \
+	MagickWand/$(DEPDIR)/$(am__dirstamp)
+MagickWand/MagickWand_libMagickWand_la-script-token.lo:  \
 	MagickWand/$(am__dirstamp) \
 	MagickWand/$(DEPDIR)/$(am__dirstamp)
 MagickWand/MagickWand_libMagickWand_la-stream.lo:  \
@@ -6678,6 +6696,8 @@ mostlyclean-compile:
 	-rm -f MagickCore/MagickCore_libMagickCore_la-cache-view.lo
 	-rm -f MagickCore/MagickCore_libMagickCore_la-cache.$(OBJEXT)
 	-rm -f MagickCore/MagickCore_libMagickCore_la-cache.lo
+	-rm -f MagickCore/MagickCore_libMagickCore_la-channel.$(OBJEXT)
+	-rm -f MagickCore/MagickCore_libMagickCore_la-channel.lo
 	-rm -f MagickCore/MagickCore_libMagickCore_la-cipher.$(OBJEXT)
 	-rm -f MagickCore/MagickCore_libMagickCore_la-cipher.lo
 	-rm -f MagickCore/MagickCore_libMagickCore_la-client.$(OBJEXT)
@@ -6878,6 +6898,8 @@ mostlyclean-compile:
 	-rm -f MagickWand/MagickWand_libMagickWand_la-pixel-iterator.lo
 	-rm -f MagickWand/MagickWand_libMagickWand_la-pixel-wand.$(OBJEXT)
 	-rm -f MagickWand/MagickWand_libMagickWand_la-pixel-wand.lo
+	-rm -f MagickWand/MagickWand_libMagickWand_la-script-token.$(OBJEXT)
+	-rm -f MagickWand/MagickWand_libMagickWand_la-script-token.lo
 	-rm -f MagickWand/MagickWand_libMagickWand_la-stream.$(OBJEXT)
 	-rm -f MagickWand/MagickWand_libMagickWand_la-stream.lo
 	-rm -f MagickWand/MagickWand_libMagickWand_la-wand-view.$(OBJEXT)
@@ -7457,6 +7479,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@MagickCore/$(DEPDIR)/MagickCore_libMagickCore_la-blob.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickCore/$(DEPDIR)/MagickCore_libMagickCore_la-cache-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickCore/$(DEPDIR)/MagickCore_libMagickCore_la-cache.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@MagickCore/$(DEPDIR)/MagickCore_libMagickCore_la-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickCore/$(DEPDIR)/MagickCore_libMagickCore_la-cipher.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickCore/$(DEPDIR)/MagickCore_libMagickCore_la-client.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickCore/$(DEPDIR)/MagickCore_libMagickCore_la-coder.Plo@am__quote@
@@ -7557,6 +7580,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-operation.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-pixel-iterator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-pixel-wand.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-script-token.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-wand-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-wand.Plo@am__quote@
@@ -7909,6 +7933,13 @@ MagickCore/MagickCore_libMagickCore_la-cache-view.lo: MagickCore/cache-view.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='MagickCore/cache-view.c' object='MagickCore/MagickCore_libMagickCore_la-cache-view.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickCore/MagickCore_libMagickCore_la-cache-view.lo `test -f 'MagickCore/cache-view.c' || echo '$(srcdir)/'`MagickCore/cache-view.c
+
+MagickCore/MagickCore_libMagickCore_la-channel.lo: MagickCore/channel.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickCore/MagickCore_libMagickCore_la-channel.lo -MD -MP -MF MagickCore/$(DEPDIR)/MagickCore_libMagickCore_la-channel.Tpo -c -o MagickCore/MagickCore_libMagickCore_la-channel.lo `test -f 'MagickCore/channel.c' || echo '$(srcdir)/'`MagickCore/channel.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) MagickCore/$(DEPDIR)/MagickCore_libMagickCore_la-channel.Tpo MagickCore/$(DEPDIR)/MagickCore_libMagickCore_la-channel.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='MagickCore/channel.c' object='MagickCore/MagickCore_libMagickCore_la-channel.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickCore/MagickCore_libMagickCore_la-channel.lo `test -f 'MagickCore/channel.c' || echo '$(srcdir)/'`MagickCore/channel.c
 
 MagickCore/MagickCore_libMagickCore_la-cipher.lo: MagickCore/cipher.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickCore_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickCore/MagickCore_libMagickCore_la-cipher.lo -MD -MP -MF MagickCore/$(DEPDIR)/MagickCore_libMagickCore_la-cipher.Tpo -c -o MagickCore/MagickCore_libMagickCore_la-cipher.lo `test -f 'MagickCore/cipher.c' || echo '$(srcdir)/'`MagickCore/cipher.c
@@ -9380,6 +9411,13 @@ MagickWand/MagickWand_libMagickWand_la-import.lo: MagickWand/import.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickWand/MagickWand_libMagickWand_la-import.lo `test -f 'MagickWand/import.c' || echo '$(srcdir)/'`MagickWand/import.c
 
+MagickWand/MagickWand_libMagickWand_la-magick-cli.lo: MagickWand/magick-cli.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickWand/MagickWand_libMagickWand_la-magick-cli.lo -MD -MP -MF MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-cli.Tpo -c -o MagickWand/MagickWand_libMagickWand_la-magick-cli.lo `test -f 'MagickWand/magick-cli.c' || echo '$(srcdir)/'`MagickWand/magick-cli.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-cli.Tpo MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-cli.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='MagickWand/magick-cli.c' object='MagickWand/MagickWand_libMagickWand_la-magick-cli.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickWand/MagickWand_libMagickWand_la-magick-cli.lo `test -f 'MagickWand/magick-cli.c' || echo '$(srcdir)/'`MagickWand/magick-cli.c
+
 MagickWand/MagickWand_libMagickWand_la-magick-image.lo: MagickWand/magick-image.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickWand/MagickWand_libMagickWand_la-magick-image.lo -MD -MP -MF MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-image.Tpo -c -o MagickWand/MagickWand_libMagickWand_la-magick-image.lo `test -f 'MagickWand/magick-image.c' || echo '$(srcdir)/'`MagickWand/magick-image.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-image.Tpo MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-image.Plo
@@ -9393,13 +9431,6 @@ MagickWand/MagickWand_libMagickWand_la-magick-property.lo: MagickWand/magick-pro
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='MagickWand/magick-property.c' object='MagickWand/MagickWand_libMagickWand_la-magick-property.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickWand/MagickWand_libMagickWand_la-magick-property.lo `test -f 'MagickWand/magick-property.c' || echo '$(srcdir)/'`MagickWand/magick-property.c
-
-MagickWand/MagickWand_libMagickWand_la-magick-cli.lo: MagickWand/magick-cli.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickWand/MagickWand_libMagickWand_la-magick-cli.lo -MD -MP -MF MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-cli.Tpo -c -o MagickWand/MagickWand_libMagickWand_la-magick-cli.lo `test -f 'MagickWand/magick-cli.c' || echo '$(srcdir)/'`MagickWand/magick-cli.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-cli.Tpo MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-cli.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='MagickWand/magick-cli.c' object='MagickWand/MagickWand_libMagickWand_la-magick-cli.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickWand/MagickWand_libMagickWand_la-magick-cli.lo `test -f 'MagickWand/magick-cli.c' || echo '$(srcdir)/'`MagickWand/magick-cli.c
 
 MagickWand/MagickWand_libMagickWand_la-magick-wand.lo: MagickWand/magick-wand.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickWand/MagickWand_libMagickWand_la-magick-wand.lo -MD -MP -MF MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-magick-wand.Tpo -c -o MagickWand/MagickWand_libMagickWand_la-magick-wand.lo `test -f 'MagickWand/magick-wand.c' || echo '$(srcdir)/'`MagickWand/magick-wand.c
@@ -9442,6 +9473,13 @@ MagickWand/MagickWand_libMagickWand_la-pixel-wand.lo: MagickWand/pixel-wand.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='MagickWand/pixel-wand.c' object='MagickWand/MagickWand_libMagickWand_la-pixel-wand.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickWand/MagickWand_libMagickWand_la-pixel-wand.lo `test -f 'MagickWand/pixel-wand.c' || echo '$(srcdir)/'`MagickWand/pixel-wand.c
+
+MagickWand/MagickWand_libMagickWand_la-script-token.lo: MagickWand/script-token.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickWand/MagickWand_libMagickWand_la-script-token.lo -MD -MP -MF MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-script-token.Tpo -c -o MagickWand/MagickWand_libMagickWand_la-script-token.lo `test -f 'MagickWand/script-token.c' || echo '$(srcdir)/'`MagickWand/script-token.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-script-token.Tpo MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-script-token.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='MagickWand/script-token.c' object='MagickWand/MagickWand_libMagickWand_la-script-token.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o MagickWand/MagickWand_libMagickWand_la-script-token.lo `test -f 'MagickWand/script-token.c' || echo '$(srcdir)/'`MagickWand/script-token.c
 
 MagickWand/MagickWand_libMagickWand_la-stream.lo: MagickWand/stream.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(MagickWand_libMagickWand_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT MagickWand/MagickWand_libMagickWand_la-stream.lo -MD -MP -MF MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-stream.Tpo -c -o MagickWand/MagickWand_libMagickWand_la-stream.lo `test -f 'MagickWand/stream.c' || echo '$(srcdir)/'`MagickWand/stream.c
