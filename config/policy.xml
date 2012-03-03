@@ -39,9 +39,10 @@
 
     <policy domain="resource" name="area" value="1GB"/>
 
-  Note, resource policies are maximums for each instance of ImageMagick (e.g.
-  policy memory limit 1GB, -limit 2GB exceeds policy maximum so memory limit
-  is 1GB).
+  Define arguments for the memory, map, area, and disk resources with
+  SI prefixes (.e.g 100MB).  In addition, resource policies are maximums for
+  each instance of ImageMagick (e.g. policy memory limit 1GB, -limit 2GB
+  exceeds policy maximum so memory limit is 1GB).
 -->
 <policymap>
   <!-- <policy domain="system" name="precision" value="6"/> -->
