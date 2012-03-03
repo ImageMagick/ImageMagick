@@ -742,7 +742,7 @@ static inline ssize_t MagickRound(MagickRealType x)
 }
 
 MagickExport Image *CropImageToTiles(const Image *image,
-  const char *crop_geometry, ExceptionInfo *exception)
+  const char *crop_geometry,ExceptionInfo *exception)
 {
   Image
     *next,
@@ -795,8 +795,10 @@ MagickExport Image *CropImageToTiles(const Image *image,
         }
       delta.x=(double) width/geometry.width;
       delta.y=(double) height/geometry.height;
-      if ( delta.x < 1.0 ) delta.x = 1.0;
-      if ( delta.y < 1.0 ) delta.y = 1.0;
+      if (delta.x < 1.0)
+        delta.x=1.0;
+      if (delta.y < 1.0)
+        delta.y=1.0;
       for (offset.y=0; offset.y < (double) height; )
       {
         if ((flags & AspectValue) == 0)
@@ -863,7 +865,7 @@ MagickExport Image *CropImageToTiles(const Image *image,
           crop_image->page.y-=geometry.y;
         }
       return(crop_image);
-     }
+    }
   if ((image->columns > geometry.width) || (image->rows > geometry.height))
     {
       RectangleInfo
