@@ -22,6 +22,23 @@
 extern "C" {
 #endif
 
+#define CLIWandException(severity,tag,option) \
+  (void) ThrowMagickException(cli_wand->wand.exception,GetMagickModule(), \
+       severity,tag, cli_wand->location, option, cli_wand->filename, \
+       cli_wand->line, cli_wand->column);
+
+#define CLIWandExceptionBreak(severity,tag,option) \
+{ \
+  CLIWandException(severity,tag,option); \
+  break; \
+}
+
+#define CLIWandExceptionReturn(severity,tag,option) \
+{ \
+  CLIWandException(severity,tag,option); \
+  return; \
+}
+
 /* Define a generic stack linked list, for pushing and popping
    user defined ImageInfo settings, and Image lists.
    See '(' ')' and '-clone' CLI options.

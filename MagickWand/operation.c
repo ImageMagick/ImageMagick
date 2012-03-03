@@ -60,7 +60,10 @@
 /*
   Define declarations.
 */
-#define UndefinedCompressionQuality  0UL
+#define USE_WAND_METHODS  0
+#define MAX_STACK_DEPTH  32
+#define UNDEFINED_COMPRESSION_QUALITY  0UL
+
 /*
   Constant declaration. (temporary exports)
 */
@@ -368,7 +371,7 @@ static Image *SparseColorOption(const Image *image,
 %  needed.
 %
 %  The format of the NewMagickWand method is:
-% 
+%
 %      MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
 %           ExceptionInfo *exception)
 %
@@ -420,7 +423,7 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
   cli_wand->image_list_stack=(Stack *)NULL;
   cli_wand->image_info_stack=(Stack *)NULL;
-  cli_wand->location="'%s' @ unset location";
+  cli_wand->location="'%s' at unknown location";
   cli_wand->filename="";
   cli_wand->line=0;
   cli_wand->column=0;
@@ -446,7 +449,7 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
 %  and any exceptions, if still present in the wand.
 %
 %  The format of the NewMagickWand method is:
-% 
+%
 %    MagickWand *DestroyMagickCLI()
 %            Exception *exception)
 %
@@ -570,8 +573,8 @@ WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
 %
 %  The format of the CLISettingOptionInfo method is:
 %
-%    void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
-%               const char *arg)
+%    void CLISettingOptionInfo(MagickCLI *cli_wand,
+%               const char *option, const char *arg)
 %
 %  A description of each parameter follows:
 %
@@ -580,14 +583,12 @@ WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
 %    o option: The option string to be set
 %
 %    o arg: The single argument used to set this option.
-%           If NULL the setting is reset to its default value.
-%           For boolean (no argument) settings false=NULL, true=any_string
 %
 % Example usage...
 %
-%    CLISettingOptionInfo(cli_wand, "background", "Red");
-%    CLISettingOptionInfo(cli_wand, "adjoin", "true");
-%    CLISettingOptionInfo(cli_wand, "adjoin", NULL);
+%    CLISettingOptionInfo(cli_wand, "-background", "Red");  // set value
+%    CLISettingOptionInfo(cli_wand, "-adjoin", NULL);       // set boolean
+%    CLISettingOptionInfo(cli_wand, "+adjoin", NULL);       // unset
 %
 % Or for handling command line arguments EG: +/-option ["arg"]
 %
@@ -599,14 +600,13 @@ WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
 %    option_type=option_info->flags;
 %
 %    if ( (option_type & SettingOperatorOptionFlags) != 0 )
-%      CLISettingOptionInfo(cli_wand, argv[i]+1,
-%            (((*argv[i])!='-') ? (char *)NULL
-%                   : (count>0) ? argv[i+1] : "true") );
+%      CLISettingOptionInfo(cli_wand, argv[i],
+%                   (count>0) ? argv[i+1] : (char *)NULL);
 %    i += count+1;
 %
 */
-WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
-     const char *arg)
+WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
+     const char *option,const char *arg)
 {
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
@@ -618,20 +618,21 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
 #define exception       (cli_wand->wand.exception)
 #define draw_info       (cli_wand->draw_info)
 #define quantize_info   (cli_wand->quantize_info)
-#define IfSetOption     (arg!=(char *)NULL)
+#define IfSetOption     (*option=='-')
 #define ArgOption(def)  (IfSetOption?arg:(const char *)(def))
 #define ArgBoolean      (IfSetOption?MagickTrue:MagickFalse)
+#define ArgBooleanNot   (IfSetOption?MagickFalse:MagickTrue)
 
-  switch (*option)
+  switch (*(option+1))
   {
     case 'a':
     {
-      if (LocaleCompare("adjoin",option) == 0)
+      if (LocaleCompare("adjoin",option+1) == 0)
         {
           image_info->adjoin = ArgBoolean;
           break;
         }
-      if (LocaleCompare("affine",option) == 0)
+      if (LocaleCompare("affine",option+1) == 0)
         {
           /* DEPRECIATED: draw_info setting only: for -draw and -transform */
           if (IfSetOption)
@@ -640,7 +641,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
             GetAffineMatrix(&draw_info->affine);
           break;
         }
-      if (LocaleCompare("antialias",option) == 0)
+      if (LocaleCompare("antialias",option+1) == 0)
         {
           image_info->antialias =
             draw_info->stroke_antialias =
@@ -649,19 +650,19 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
         }
       if (LocaleCompare("attenuate",option+1) == 0)
         {
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           break;
         }
-      if (LocaleCompare("authenticate",option) == 0)
+      if (LocaleCompare("authenticate",option+1) == 0)
         {
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           break;
         }
       break;
     }
     case 'b':
     {
-      if (LocaleCompare("background",option) == 0)
+      if (LocaleCompare("background",option+1) == 0)
         {
           /* FUTURE: both image_info attribute & ImageOption in use!
              image_info only used directly for generating new images.
@@ -672,12 +673,12 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
              Note that +background, means fall-back to image background
              and only if not set fall back to BackgroundColor const.
           */
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           (void) QueryColorCompliance(ArgOption(BackgroundColor),AllCompliance,
              &image_info->background_color,exception);
           break;
         }
-      if (LocaleCompare("bias",option) == 0)
+      if (LocaleCompare("bias",option+1) == 0)
         {
           /* FUTURE: bias OBSOLETED, replaced by "convolve:bias"
              as it is actually rarely used except in direct convolve operations
@@ -685,49 +686,49 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
 
              SyncImageSettings() used to set per-image attribute.
           */
-          (void) SetImageOption(image_info,option,ArgOption("0"));
+          (void) SetImageOption(image_info,option+1,ArgOption("0"));
           break;
         }
-      if (LocaleCompare("black-point-compensation",option) == 0)
+      if (LocaleCompare("black-point-compensation",option+1) == 0)
         {
           /* Used as a image chromaticity setting
              SyncImageSettings() used to set per-image attribute.
           */
-          (void) SetImageOption(image_info,option,
-               IfSetOption ? "true" : "false" );
+          (void) SetImageOption(image_info,option+1,
+                           IfSetOption ? "true" : "false" );
           break;
         }
-      if (LocaleCompare("blue-primary",option) == 0)
+      if (LocaleCompare("blue-primary",option+1) == 0)
         {
           /* Image chromaticity X,Y  NB: Y=X if Y not defined
              Used by many coders including PNG
              SyncImageSettings() used to set per-image attribute.
           */
-          (void) SetImageOption(image_info,option,ArgOption("0.0"));
+          (void) SetImageOption(image_info,option+1,ArgOption("0.0"));
           break;
         }
-      if (LocaleCompare("bordercolor",option) == 0)
+      if (LocaleCompare("bordercolor",option+1) == 0)
         {
           /* FUTURE: both image_info attribute & ImageOption in use!
              SyncImageSettings() used to set per-image attribute.
           */
           if (IfSetOption)
             {
-              (void) SetImageOption(image_info,option,arg);
+              (void) SetImageOption(image_info,option+1,arg);
               (void) QueryColorCompliance(arg,AllCompliance,
                   &image_info->border_color,exception);
               (void) QueryColorCompliance(arg,AllCompliance,
                   &draw_info->border_color,exception);
               break;
             }
-          (void) DeleteImageOption(image_info,option);
+          (void) DeleteImageOption(image_info,option+1);
           (void) QueryColorCompliance(BorderColor,AllCompliance,
             &image_info->border_color,exception);
           (void) QueryColorCompliance(BorderColor,AllCompliance,
             &draw_info->border_color,exception);
           break;
         }
-      if (LocaleCompare("box",option) == 0)
+      if (LocaleCompare("box",option+1) == 0)
         {
           /* DEPRECIATED - now "undercolor" */
           CLISettingOptionInfo(cli_wand,"undercolor",arg);
@@ -737,7 +738,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
     }
     case 'c':
     {
-      if (LocaleCompare("cache",option) == 0)
+      if (LocaleCompare("cache",option+1) == 0)
         {
           MagickSizeType
             limit;
@@ -749,12 +750,12 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
           (void) SetMagickResourceLimit(MapResource,2*limit);
           break;
         }
-      if (LocaleCompare("caption",option) == 0)
+      if (LocaleCompare("caption",option+1) == 0)
         {
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           break;
         }
-      if (LocaleCompare("channel",option) == 0)
+      if (LocaleCompare("channel",option+1) == 0)
         {
           /* FUTURE:  -channel mask {vaules}
              This is applied to images in SimpleImageOperator!!!
@@ -764,7 +765,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
                IfSetOption ? ParseChannelOption(arg) : DefaultChannels );
           break;
         }
-      if (LocaleCompare("colorspace",option) == 0)
+      if (LocaleCompare("colorspace",option+1) == 0)
         {
           /* Setting used for new images via AquireImage()
              But also used as a SimpleImageOperator
@@ -774,12 +775,12 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
                MagickColorspaceOptions,MagickFalse,ArgOption("undefined"));
           break;
         }
-      if (LocaleCompare("comment",option) == 0)
+      if (LocaleCompare("comment",option+1) == 0)
         {
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           break;
         }
-      if (LocaleCompare("compose",option) == 0)
+      if (LocaleCompare("compose",option+1) == 0)
         {
           /* FUTURE: image_info should be used,
              SyncImageSettings() used to set per-image attribute. - REMOVE
@@ -788,12 +789,12 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
              "-layer" operators shoud use image_info if defined otherwise
              they should use a per-image compose setting.
           */
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           image_info->compose=(CompositeOperator) ParseCommandOption(
                MagickComposeOptions,MagickFalse,ArgOption("undefined"));
           break;
         }
-      if (LocaleCompare("compress",option) == 0)
+      if (LocaleCompare("compress",option+1) == 0)
         {
           /* FUTURE: What should be used?  image_info  or ImageOption ???
              The former is more efficent, but Crisy prefers the latter!
@@ -805,7 +806,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
 
              Note that "undefined" is a different setting to "none".
           */
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           image_info->compression=(CompressionType) ParseCommandOption(
                 MagickCompressOptions,MagickFalse,ArgOption("undefined"));
           break;
@@ -814,7 +815,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
     }
     case 'd':
     {
-      if (LocaleCompare("debug",option) == 0)
+      if (LocaleCompare("debug",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute. */
           (void) SetLogEventMask(ArgOption("none"));
@@ -822,17 +823,16 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
           cli_wand->wand.debug=IsEventLogging();
           break;
         }
-      if (LocaleCompare("define",option) == 0)
+      if (LocaleCompare("define",option+1) == 0)
         {
           /* DefineImageOption() equals SetImageOption() but with '='
              It does not however set individual image options.
-             -set will set individual image options as well!
+             "-set" will set individual image options as well!
           */
           if (LocaleNCompare(arg,"registry:",9) == 0)
             {
               if (IfSetOption)
-                (void) DefineImageRegistry(StringRegistryType,arg+9,
-                    exception);
+                (void) DefineImageRegistry(StringRegistryType,arg+9,exception);
               else
                 (void) DeleteImageRegistry(arg+9);
               break;
@@ -843,27 +843,27 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
             (void) DeleteImageOption(image_info,arg);
           break;
         }
-      if (LocaleCompare("delay",option) == 0)
+      if (LocaleCompare("delay",option+1) == 0)
         {
           /* Only used for new images via AcquireImage()
              FUTURE: Option should also be used for "-morph" (color morphing)
           */
-          (void) SetImageOption(image_info,option,ArgOption("0"));
+          (void) SetImageOption(image_info,option+1,ArgOption("0"));
           break;
         }
-      if (LocaleCompare("density",option) == 0)
+      if (LocaleCompare("density",option+1) == 0)
         {
           /* FUTURE: strings used in image_info attr and draw_info!
              Basically as density can be in a XxY form!
 
              SyncImageSettings() used to set per-image attribute.
           */
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           (void) CloneString(&image_info->density,ArgOption(NULL));
           (void) CloneString(&draw_info->density,image_info->density);
           break;
         }
-      if (LocaleCompare("depth",option) == 0)
+      if (LocaleCompare("depth",option+1) == 0)
         {
           /* This is also a SimpleImageOperator! for 8->16 vaule trunc !!!!
              SyncImageSettings() used to set per-image attribute.
@@ -872,35 +872,35 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
                                        :MAGICKCORE_QUANTUM_DEPTH;
           break;
         }
-      if (LocaleCompare("direction",option) == 0)
+      if (LocaleCompare("direction",option+1) == 0)
         {
           /* Image Option is only used to set draw_info */
-          (void) SetImageOption(image_info,option,ArgOption("undefined"));
+          (void) SetImageOption(image_info,option+1,ArgOption("undefined"));
           draw_info->direction=(DirectionType) ParseCommandOption(
                          MagickDirectionOptions,MagickFalse,
                          ArgOption("undefined"));
           break;
         }
-      if (LocaleCompare("display",option) == 0)
+      if (LocaleCompare("display",option+1) == 0)
         {
           (void) CloneString(&image_info->server_name,ArgOption(NULL));
           (void) CloneString(&draw_info->server_name,image_info->server_name);
           break;
         }
-      if (LocaleCompare("dispose",option) == 0)
+      if (LocaleCompare("dispose",option+1) == 0)
         {
           /* only used in setting new images */
-          (void) SetImageOption(image_info,option,ArgOption("undefined"));
+          (void) SetImageOption(image_info,option+1,ArgOption("undefined"));
           break;
         }
-      if (LocaleCompare("dither",option) == 0)
+      if (LocaleCompare("dither",option+1) == 0)
         {
           /* image_info attr (on/off), quantize_info attr (on/off)
              but also ImageInfo and quantize_info method!
              FUTURE: merge the duality of the dithering options
           */
           image_info->dither = quantize_info->dither = ArgBoolean;
-          (void) SetImageOption(image_info,option,ArgOption("none"));
+          (void) SetImageOption(image_info,option+1,ArgOption("none"));
           quantize_info->dither_method=(DitherMethod) ParseCommandOption(
                     MagickDitherOptions,MagickFalse,ArgOption("none"));
           if (quantize_info->dither_method == NoDitherMethod)
@@ -911,21 +911,21 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
     }
     case 'e':
     {
-      if (LocaleCompare("encoding",option) == 0)
+      if (LocaleCompare("encoding",option+1) == 0)
         {
           (void) CloneString(&draw_info->encoding,ArgOption("undefined"));
-          (void) SetImageOption(image_info,option,draw_info->encoding);
+          (void) SetImageOption(image_info,option+1,draw_info->encoding);
           break;
         }
-      if (LocaleCompare("endian",option) == 0)
+      if (LocaleCompare("endian",option+1) == 0)
         {
           /* Both image_info attr and ImageInfo */
-          (void) SetImageOption(image_info,option,ArgOption("undefined"));
+          (void) SetImageOption(image_info,option+1,ArgOption("undefined"));
           image_info->endian=(EndianType) ParseCommandOption(
               MagickEndianOptions,MagickFalse,ArgOption("undefined"));
           break;
         }
-      if (LocaleCompare("extract",option) == 0)
+      if (LocaleCompare("extract",option+1) == 0)
         {
           (void) CloneString(&image_info->extract,ArgOption(NULL));
           break;
@@ -934,12 +934,12 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
     }
     case 'f':
     {
-      if (LocaleCompare("family",option) == 0)
+      if (LocaleCompare("family",option+1) == 0)
         {
           (void) CloneString(&draw_info->family,ArgOption(NULL));
           break;
         }
-      if (LocaleCompare("fill",option) == 0)
+      if (LocaleCompare("fill",option+1) == 0)
         {
           /* Set "fill" OR "fill-pattern" in draw_info
              The original fill color is preserved if a fill-pattern is given.
@@ -959,7 +959,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
             color;
 
           value = ArgOption("none");
-          (void) SetImageOption(image_info,option,value);
+          (void) SetImageOption(image_info,option+1,value);
           if (draw_info->fill_pattern != (Image *) NULL)
             draw_info->fill_pattern=DestroyImage(draw_info->fill_pattern);
 
@@ -974,19 +974,19 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
             draw_info->fill=color;
           break;
         }
-      if (LocaleCompare("filter",option) == 0)
+      if (LocaleCompare("filter",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute. */
-          (void) SetImageOption(image_info,option,ArgOption("undefined"));
+          (void) SetImageOption(image_info,option+1,ArgOption("undefined"));
           break;
         }
-      if (LocaleCompare("font",option) == 0)
+      if (LocaleCompare("font",option+1) == 0)
         {
           (void) CloneString(&draw_info->font,ArgOption(NULL));
           (void) CloneString(&image_info->font,draw_info->font);
           break;
         }
-      if (LocaleCompare("format",option) == 0)
+      if (LocaleCompare("format",option+1) == 0)
         {
           /* FUTURE: why the ping test, you could set ping after this! */
           /*
@@ -997,10 +997,10 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
             if (strchr("Agkrz@[#",*(q+1)) != (char *) NULL)
               image_info->ping=MagickFalse;
           */
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           break;
         }
-      if (LocaleCompare("fuzz",option) == 0)
+      if (LocaleCompare("fuzz",option+1) == 0)
         {
           /* Option used to set image fuzz! unless blank canvas (from color)
              Image attribute used for color compare operations
@@ -1012,73 +1012,73 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
             {
               image_info->fuzz=StringToDoubleInterval(arg,(double)
                 QuantumRange+1.0);
-              (void) SetImageOption(image_info,option,arg);
+              (void) SetImageOption(image_info,option+1,arg);
               break;
             }
           image_info->fuzz=0.0;
-          (void) SetImageOption(image_info,option,"0");
+          (void) SetImageOption(image_info,option+1,"0");
           break;
         }
       break;
     }
     case 'g':
     {
-      if (LocaleCompare("gravity",option) == 0)
+      if (LocaleCompare("gravity",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute. */
-          (void) SetImageOption(image_info,option,ArgOption("none"));
+          (void) SetImageOption(image_info,option+1,ArgOption("none"));
           draw_info->gravity=(GravityType) ParseCommandOption(
                    MagickGravityOptions,MagickFalse,ArgOption("none"));
           break;
         }
-      if (LocaleCompare("green-primary",option) == 0)
+      if (LocaleCompare("green-primary",option+1) == 0)
         {
           /* Image chromaticity X,Y  NB: Y=X if Y not defined
              SyncImageSettings() used to set per-image attribute.
              Used directly by many coders
           */
-          (void) SetImageOption(image_info,option,ArgOption("0.0"));
+          (void) SetImageOption(image_info,option+1,ArgOption("0.0"));
           break;
         }
       break;
     }
     case 'i':
     {
-      if (LocaleCompare("intent",option) == 0)
+      if (LocaleCompare("intent",option+1) == 0)
         {
           /* Only used by coders: MIFF, MPC, BMP, PNG
              and for image profile call to AcquireTransformThreadSet()
              SyncImageSettings() used to set per-image attribute.
           */
-          (void) SetImageOption(image_info,option,ArgOption("undefined"));
+          (void) SetImageOption(image_info,option+1,ArgOption("undefined"));
           break;
         }
-      if (LocaleCompare("interlace",option) == 0)
+      if (LocaleCompare("interlace",option+1) == 0)
         {
           /* image_info is directly used by coders (so why an image setting?)
              SyncImageSettings() used to set per-image attribute.
           */
-          (void) SetImageOption(image_info,option,ArgOption("undefined"));
+          (void) SetImageOption(image_info,option+1,ArgOption("undefined"));
           image_info->interlace=(InterlaceType) ParseCommandOption(
                 MagickInterlaceOptions,MagickFalse,ArgOption("undefined"));
           break;
         }
-      if (LocaleCompare("interline-spacing",option) == 0)
+      if (LocaleCompare("interline-spacing",option+1) == 0)
         {
-          (void) SetImageOption(image_info,option, ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1, ArgOption(NULL));
           draw_info->interline_spacing=StringToDouble(ArgOption("0"),
                (char **) NULL);
           break;
         }
-      if (LocaleCompare("interpolate",option) == 0)
+      if (LocaleCompare("interpolate",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute. */
-          (void) SetImageOption(image_info,option,ArgOption("undefined"));
+          (void) SetImageOption(image_info,option+1,ArgOption("undefined"));
           break;
         }
-      if (LocaleCompare("interword-spacing",option) == 0)
+      if (LocaleCompare("interword-spacing",option+1) == 0)
         {
-          (void) SetImageOption(image_info,option, ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1, ArgOption(NULL));
           draw_info->interword_spacing=StringToDouble(ArgOption("0"),(char **) NULL);
           break;
         }
@@ -1086,9 +1086,9 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
     }
     case 'k':
     {
-      if (LocaleCompare("kerning",option) == 0)
+      if (LocaleCompare("kerning",option+1) == 0)
         {
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           draw_info->kerning=StringToDouble(ArgOption("0"),(char **) NULL);
           break;
         }
@@ -1096,43 +1096,43 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
     }
     case 'l':
     {
-      if (LocaleCompare("label",option) == 0)
+      if (LocaleCompare("label",option+1) == 0)
         {
           /* only used for new images - not in SyncImageOptions() */
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           break;
         }
-      if (LocaleCompare("log",option) == 0)
+      if (LocaleCompare("log",option+1) == 0)
         {
           if (IfSetOption)
             (void) SetLogFormat(arg);
           break;
         }
-      if (LocaleCompare("loop",option) == 0)
+      if (LocaleCompare("loop",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute. */
-          (void) SetImageOption(image_info,option,ArgOption("0"));
+          (void) SetImageOption(image_info,option+1,ArgOption("0"));
           break;
         }
       break;
     }
     case 'm':
     {
-      if (LocaleCompare("mattecolor",option) == 0)
+      if (LocaleCompare("mattecolor",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute. */
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           (void) QueryColorCompliance(ArgOption(MatteColor),AllCompliance,
              &image_info->matte_color,exception);
           break;
         }
-      if (LocaleCompare("monitor",option) == 0)
+      if (LocaleCompare("monitor",option+1) == 0)
         {
           (void) SetImageInfoProgressMonitor(image_info, IfSetOption?
                 MonitorProgress: (MagickProgressMonitor) NULL, (void *) NULL);
           break;
         }
-      if (LocaleCompare("monochrome",option) == 0)
+      if (LocaleCompare("monochrome",option+1) == 0)
         {
           /* Setting (for some input coders)
              But also a special 'type' operator
@@ -1144,14 +1144,14 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
     }
     case 'o':
     {
-      if (LocaleCompare("orient",option) == 0)
+      if (LocaleCompare("orient",option+1) == 0)
         {
           /* Is not used when defining for new images.
              This makes it more of a 'operation' than a setting
              FUTURE: make set meta-data operator instead.
              SyncImageSettings() used to set per-image attribute.
           */
-          (void) SetImageOption(image_info,option, ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1, ArgOption(NULL));
           image_info->orientation=(InterlaceType) ParseCommandOption(
             MagickOrientationOptions,MagickFalse,ArgOption("undefined"));
           break;
@@ -1159,7 +1159,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
     }
     case 'p':
     {
-      if (LocaleCompare("page",option) == 0)
+      if (LocaleCompare("page",option+1) == 0)
         {
           /* Only used for new images and image generators
              SyncImageSettings() used to set per-image attribute. ?????
@@ -1180,7 +1180,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
 
           if (!IfSetOption)
             {
-              (void) DeleteImageOption(image_info,option);
+              (void) DeleteImageOption(image_info,option+1);
               (void) CloneString(&image_info->page,(char *) NULL);
               break;
             }
@@ -1197,29 +1197,29 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
             (void) FormatLocaleString(page,MaxTextExtent,"%lux%lu%+ld%+ld",
               (unsigned long) geometry.width,(unsigned long) geometry.height,
               (long) geometry.x,(long) geometry.y);
-          (void) SetImageOption(image_info,option,page);
+          (void) SetImageOption(image_info,option+1,page);
           (void) CloneString(&image_info->page,page);
           break;
         }
-      if (LocaleCompare("ping",option) == 0)
+      if (LocaleCompare("ping",option+1) == 0)
         {
           image_info->ping = ArgBoolean;
           break;
         }
-      if (LocaleCompare("pointsize",option) == 0)
+      if (LocaleCompare("pointsize",option+1) == 0)
         {
           image_info->pointsize=draw_info->pointsize=
                    StringToDouble(ArgOption("12"),(char **) NULL);
           break;
         }
-      if (LocaleCompare("precision",option) == 0)
+      if (LocaleCompare("precision",option+1) == 0)
         {
           (void) SetMagickPrecision(StringToInteger(ArgOption("-1")));
           break;
         }
       /* FUTURE: Only the 'preview' coder appears to use this
        * Depreciate the coder?  Leaving only the 'preview' operator.
-      if (LocaleCompare("preview",option) == 0)
+      if (LocaleCompare("preview",option+1) == 0)
         {
           image_info->preview_type=UndefinedPreview;
           if (IfSetOption)
@@ -1232,15 +1232,15 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
     }
     case 'q':
     {
-      if (LocaleCompare("quality",option) == 0)
+      if (LocaleCompare("quality",option+1) == 0)
         {
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
-          image_info->quality=UndefinedCompressionQuality;
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
+          image_info->quality=UNDEFINED_COMPRESSION_QUALITY;
           if (IfSetOption)
             image_info->quality=StringToUnsignedLong(arg);
           break;
         }
-      if (LocaleCompare("quantize",option) == 0)
+      if (LocaleCompare("quantize",option+1) == 0)
         {
           /* Just a set direct in quantize_info */
           quantize_info->colorspace=UndefinedColorspace;
@@ -1249,7 +1249,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
                  MagickColorspaceOptions,MagickFalse,arg);
           break;
         }
-      if (LocaleCompare("quiet",option) == 0)
+      if (LocaleCompare("quiet",option+1) == 0)
         {
           /* FUTURE: if two -quiet is performed you can not do +quiet! */
           static WarningHandler
@@ -1268,53 +1268,53 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
     }
     case 'r':
     {
-      if (LocaleCompare("red-primary",option) == 0)
+      if (LocaleCompare("red-primary",option+1) == 0)
         {
           /* Image chromaticity X,Y  NB: Y=X if Y not defined
              Used by many coders
              SyncImageSettings() used to set per-image attribute.
           */
-          (void) SetImageOption(image_info,option,ArgOption("0.0"));
+          (void) SetImageOption(image_info,option+1,ArgOption("0.0"));
           break;
         }
-      if (LocaleCompare("render",option) == 0)
+      if (LocaleCompare("render",option+1) == 0)
         {
           /* draw_info only setting */
-          draw_info->render= IfSetOption ? MagickFalse : MagickTrue;
+          draw_info->render= ArgBooleanNot;
           break;
         }
-      if (LocaleCompare("respect-parenthesis",option) == 0)
+      if (LocaleCompare("respect-parenthesis",option+1) == 0)
         {
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           break;
         }
       break;
     }
     case 's':
     {
-      if (LocaleCompare("sampling-factor",option) == 0)
+      if (LocaleCompare("sampling-factor",option+1) == 0)
         {
           /* FUTURE: should be converted to jpeg:sampling_factor */
           (void) CloneString(&image_info->sampling_factor,ArgOption(NULL));
           break;
         }
-      if (LocaleCompare("scene",option) == 0)
+      if (LocaleCompare("scene",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute.
              What ??? Why ????
           */
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           image_info->scene=StringToUnsignedLong(ArgOption("0"));
           break;
         }
-      if (LocaleCompare("seed",option) == 0)
+      if (LocaleCompare("seed",option+1) == 0)
         {
           SeedPseudoRandomGenerator(
                IfSetOption ? (size_t) StringToUnsignedLong(arg)
                            : (size_t) time((time_t *) NULL) );
           break;
         }
-      if (LocaleCompare("size",option) == 0)
+      if (LocaleCompare("size",option+1) == 0)
         {
           /* FUTURE: string in image_info -- convert to Option ???
              Look at the special handling for "size" in SetImageOption()
@@ -1322,13 +1322,13 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
           (void) CloneString(&image_info->size,ArgOption(NULL));
           break;
         }
-      if (LocaleCompare("stretch",option) == 0)
+      if (LocaleCompare("stretch",option+1) == 0)
         {
           draw_info->stretch=(StretchType) ParseCommandOption(
               MagickStretchOptions,MagickFalse,ArgOption("undefined"));
           break;
         }
-      if (LocaleCompare("stroke",option) == 0)
+      if (LocaleCompare("stroke",option+1) == 0)
         {
           /* set stroke color OR stroke-pattern
              UPDATE: ensure stroke color is not destroyed is a pattern
@@ -1347,7 +1347,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
             color;
 
           value = ArgOption("none");
-          (void) SetImageOption(image_info,option,value);
+          (void) SetImageOption(image_info,option+1,value);
           if (draw_info->stroke_pattern != (Image *) NULL)
             draw_info->stroke_pattern=DestroyImage(draw_info->stroke_pattern);
 
@@ -1362,20 +1362,20 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
             draw_info->stroke=color;
           break;
         }
-      if (LocaleCompare("strokewidth",option) == 0)
+      if (LocaleCompare("strokewidth",option+1) == 0)
         {
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           draw_info->stroke_width=StringToDouble(ArgOption("1.0"),
                (char **) NULL);
           break;
         }
-      if (LocaleCompare("style",option) == 0)
+      if (LocaleCompare("style",option+1) == 0)
         {
           draw_info->style=(StyleType) ParseCommandOption(MagickStyleOptions,
                MagickFalse,ArgOption("undefined"));
           break;
         }
-      if (LocaleCompare("synchronize",option) == 0)
+      if (LocaleCompare("synchronize",option+1) == 0)
         {
           image_info->synchronize = ArgBoolean;
           break;
@@ -1384,33 +1384,33 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
     }
     case 't':
     {
-      if (LocaleCompare("taint",option) == 0)
+      if (LocaleCompare("taint",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute. */
-          (void) SetImageOption(image_info,option,
+          (void) SetImageOption(image_info,option+1,
                IfSetOption ? "true" : "false");
           break;
         }
-      if (LocaleCompare("texture",option) == 0)
+      if (LocaleCompare("texture",option+1) == 0)
         {
           /* FUTURE: move image_info string to option splay-tree */
           (void) CloneString(&image_info->texture,ArgOption(NULL));
           break;
         }
-      if (LocaleCompare("tile",option) == 0)
+      if (LocaleCompare("tile",option+1) == 0)
         {
           draw_info->fill_pattern=IfSetOption
                                  ?GetImageCache(image_info,arg,exception)
                                  :DestroyImage(draw_info->fill_pattern);
           break;
         }
-      if (LocaleCompare("tile-offset",option) == 0)
+      if (LocaleCompare("tile-offset",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute. ??? */
-          (void) SetImageOption(image_info,option,ArgOption("0"));
+          (void) SetImageOption(image_info,option+1,ArgOption("0"));
           break;
         }
-      if (LocaleCompare("transparent-color",option) == 0)
+      if (LocaleCompare("transparent-color",option+1) == 0)
         {
           /* FUTURE: both image_info attribute & ImageOption in use!
              image_info only used for generating new images.
@@ -1419,21 +1419,21 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
              Note that +transparent-color, means fall-back to image
              attribute so ImageOption is deleted, not set to a default.
           */
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           (void) QueryColorCompliance(ArgOption("none"),AllCompliance,
               &image_info->transparent_color,exception);
           break;
         }
-      if (LocaleCompare("treedepth",option) == 0)
+      if (LocaleCompare("treedepth",option+1) == 0)
         {
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           quantize_info->tree_depth=StringToUnsignedLong(ArgOption("0"));
           break;
         }
-      if (LocaleCompare("type",option) == 0)
+      if (LocaleCompare("type",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute. */
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           image_info->type=(ImageType) ParseCommandOption(MagickTypeOptions,
                  MagickFalse,ArgOption("undefined"));
           break;
@@ -1442,20 +1442,20 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
     }
     case 'u':
     {
-      if (LocaleCompare("undercolor",option) == 0)
+      if (LocaleCompare("undercolor",option+1) == 0)
         {
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           (void) QueryColorCompliance(ArgOption("none"),AllCompliance,
                &draw_info->undercolor,exception);
           break;
         }
-      if (LocaleCompare("units",option) == 0)
+      if (LocaleCompare("units",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute.
              Should this effect draw_info X and Y resolution?
              FUTURE: this probably should be part of the density setting
           */
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           image_info->units=(ResolutionType) ParseCommandOption(
                 MagickResolutionOptions,MagickFalse,ArgOption("undefined"));
           break;
@@ -1464,17 +1464,17 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
     }
     case 'v':
     {
-      if (LocaleCompare("verbose",option) == 0)
+      if (LocaleCompare("verbose",option+1) == 0)
         {
           /* FUTURE: Also an image artifact, set in Simple Operators.
              But artifact is only used in verbose output.
           */
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           image_info->verbose= ArgBoolean;
           image_info->ping=MagickFalse; /* verbose can't be a ping */
           break;
         }
-      if (LocaleCompare("view",option) == 0)
+      if (LocaleCompare("view",option+1) == 0)
         {
           /* FUTURE: Convert from image_info to ImageOption
              Only used by coder FPX
@@ -1482,19 +1482,19 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
           (void) CloneString(&image_info->view,ArgOption(NULL));
           break;
         }
-      if (LocaleCompare("virtual-pixel",option) == 0)
+      if (LocaleCompare("virtual-pixel",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute.
              This is VERY deep in the image caching structure.
           */
-          (void) SetImageOption(image_info,option,ArgOption(NULL));
+          (void) SetImageOption(image_info,option+1,ArgOption(NULL));
           break;
         }
       break;
     }
     case 'w':
     {
-      if (LocaleCompare("weight",option) == 0)
+      if (LocaleCompare("weight",option+1) == 0)
         {
           /* Just what does using a font 'weight' do ???
              There is no "-list weight" output (reference manual says there is)
@@ -1516,12 +1516,12 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
             draw_info->weight=400;
           break;
         }
-      if (LocaleCompare("white-point",option) == 0)
+      if (LocaleCompare("white-point",option+1) == 0)
         {
           /* Used as a image chromaticity setting
              SyncImageSettings() used to set per-image attribute.
           */
-          (void) SetImageOption(image_info,option,ArgOption("0.0"));
+          (void) SetImageOption(image_info,option+1,ArgOption("0.0"));
           break;
         }
       break;
@@ -1561,14 +1561,11 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
 %  The format of the WandSimpleOperatorImage method is:
 %
 %    void CLISimpleOperatorImages(MagickCLI *cli_wand,
-%        const MagickBooleanType plus_alt_op, const char *option,
-%        const char *arg1, const char *arg2)
+%        const char *option, const char *arg1, const char *arg2)
 %
 %  A description of each parameter follows:
 %
 %    o cli_wand: structure holding settings and images to be operated on
-%
-%    o plus_alt_op:  request the 'plus' or alturnative form of the operation
 %
 %    o option:  The option string for the operation
 %
@@ -1578,13 +1575,9 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
 %
 % Example usage...
 %
-%  CLISimpleOperatorImages(cli_wand, MagickFalse,"crop","100x100+20+30",NULL);
-%  CLISimpleOperatorImages(cli_wand, MagickTrue, "repage",NULL,NULL);
-%  CLISimpleOperatorImages(cli_wand, MagickTrue, "distort","SRT","45");
-%  if ( cli_wand->wand.exception->severity != UndefinedException ) {
-%    CatchException(exception);
-%    exit(1);
-%  }
+%  CLISimpleOperatorImages(cli_wand, "-crop","100x100+20+30",NULL);
+%  CLISimpleOperatorImages(cli_wand, "+repage",NULL,NULL);
+%  CLISimpleOperatorImages(cli_wand, "+distort","SRT","45");
 %
 % Or for handling command line arguments EG: +/-option ["arg"]
 %
@@ -1597,8 +1590,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
 %    option_type=option_info->flags;
 %
 %    if ( (option_type & SimpleOperatorOptionFlag) != 0 )
-%      CLISimpleOperatorImages(cli_wand,
-%          ((*argv[i])=='+')?MagickTrue:MagickFalse,argv[i]+1,
+%      CLISimpleOperatorImages(cli_wand, argv[i],
 %          count>=1 ? argv[i+1] : (char *)NULL,
 %          count>=2 ? argv[i+2] : (char *)NULL );
 %    i += count+1;
@@ -1614,17 +1606,16 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,const char *option,
     * replaced by a new image (EG: -spread, -resize, -rotate, -morphology)
     * one image replace by a list of images (-separate and -crop only!)
 
-  In each case the result replaces the original image in the list, as well as
-  the pointer to the modified image (last image added if replaced by a list
-  of images) is returned.
+  In each case the result replaces the single original image in the list, as
+  well as the pointer to the modified image (last image added if replaced by a
+  list of images) is returned.
 
   As the image pointed to may be replaced, the first image in the list may
   also change.  GetFirstImageInList() should be used by caller if they wish
   return the Image pointer to the first image in list.
 */
 static void CLISimpleOperatorImage(MagickCLI *cli_wand,
-  const MagickBooleanType plus_alt_op, const char *option,
-  const char *arg1, const char *arg2)
+  const char *option, const char *arg1, const char *arg2)
 {
   Image *
     new_image;
@@ -1643,7 +1634,10 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
 #define exception       (cli_wand->wand.exception)
 #define draw_info       (cli_wand->draw_info)
 #define quantize_info   (cli_wand->quantize_info)
-#define normal_op       (plus_alt_op?MagickFalse:MagickTrue)
+#define IfNormalOp      (*option=='-')
+#define IfPlusOp        (*option!='-')
+#define normal_op       (IfNormalOp?MagickTrue:MagickFalse)
+#define plus_alt_op     (IfNormalOp?MagickFalse:MagickTrue)
 
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
@@ -1661,11 +1655,11 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
   */
   (void) SyncImageSettings(image_info,image,exception);
 
-  switch (*option)
+  switch (*(option+1))
   {
     case 'a':
     {
-      if (LocaleCompare("adaptive-blur",option) == 0)
+      if (LocaleCompare("adaptive-blur",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -1676,14 +1670,14 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,geometry_info.xi,exception);
           break;
         }
-      if (LocaleCompare("adaptive-resize",option) == 0)
+      if (LocaleCompare("adaptive-resize",option+1) == 0)
         {
           (void) ParseRegionGeometry(image,arg1,&geometry,exception);
           new_image=AdaptiveResizeImage(image,geometry.width,geometry.height,
                exception);
           break;
         }
-      if (LocaleCompare("adaptive-sharpen",option) == 0)
+      if (LocaleCompare("adaptive-sharpen",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -1694,7 +1688,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,geometry_info.xi,exception);
           break;
         }
-      if (LocaleCompare("alpha",option) == 0)
+      if (LocaleCompare("alpha",option+1) == 0)
         {
           AlphaChannelType
             alpha_type;
@@ -1704,7 +1698,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) SetImageAlphaChannel(image,alpha_type,exception);
           break;
         }
-      if (LocaleCompare("annotate",option) == 0)
+      if (LocaleCompare("annotate",option+1) == 0)
         {
           char
             *text,
@@ -1735,18 +1729,19 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           GetAffineMatrix(&draw_info->affine);
           break;
         }
-      if (LocaleCompare("auto-gamma",option) == 0)
+      if (LocaleCompare("auto-gamma",option+1) == 0)
         {
           (void) AutoGammaImage(image,exception);
           break;
         }
-      if (LocaleCompare("auto-level",option) == 0)
+      if (LocaleCompare("auto-level",option+1) == 0)
         {
           (void) AutoLevelImage(image,exception);
           break;
         }
-      if (LocaleCompare("auto-orient",option) == 0)
+      if (LocaleCompare("auto-orient",option+1) == 0)
         {
+          /* This should probbaly be a MagickCore function */
           switch (image->orientation)
           {
             case TopRightOrientation:
@@ -1795,20 +1790,20 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'b':
     {
-      if (LocaleCompare("black-threshold",option) == 0)
+      if (LocaleCompare("black-threshold",option+1) == 0)
         {
           (void) BlackThresholdImage(image,arg1,exception);
           break;
         }
-      if (LocaleCompare("blue-shift",option) == 0)
+      if (LocaleCompare("blue-shift",option+1) == 0)
         {
           geometry_info.rho=1.5;
-          if (plus_alt_op == MagickFalse)
+          if (IfNormalOp)
             flags=ParseGeometry(arg1,&geometry_info);
           new_image=BlueShiftImage(image,geometry_info.rho,exception);
           break;
         }
-      if (LocaleCompare("blur",option) == 0)
+      if (LocaleCompare("blur",option+1) == 0)
         {
           /* FUTURE: use of "bias" in a blur is non-sensible */
           flags=ParseGeometry(arg1,&geometry_info);
@@ -1820,7 +1815,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,geometry_info.xi,exception);
           break;
         }
-      if (LocaleCompare("border",option) == 0)
+      if (LocaleCompare("border",option+1) == 0)
         {
           CompositeOperator
             compose;
@@ -1841,7 +1836,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           new_image=BorderImage(image,&geometry,compose,exception);
           break;
         }
-      if (LocaleCompare("brightness-contrast",option) == 0)
+      if (LocaleCompare("brightness-contrast",option+1) == 0)
         {
           double
             brightness,
@@ -1866,7 +1861,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'c':
     {
-      if (LocaleCompare("cdl",option) == 0)
+      if (LocaleCompare("cdl",option+1) == 0)
         {
           char
             *color_correction_collection;
@@ -1881,7 +1876,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             exception);
           break;
         }
-      if (LocaleCompare("channel",option) == 0)
+      if (LocaleCompare("channel",option+1) == 0)
         {
           /* The "channel" setting has already been set
              FUTURE: This probably should be part of WandSettingOptionInfo()
@@ -1890,17 +1885,17 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           SetPixelChannelMapMask(image,image_info->channel);
           break;
         }
-      if (LocaleCompare("channel-extract",option) == 0)
+      if (LocaleCompare("channel-extract",option+1) == 0)
         {
           puts("stand by...");
           break;
         }
-      if (LocaleCompare("channel-swap",option) == 0)
+      if (LocaleCompare("channel-swap",option+1) == 0)
         {
           puts("stand by...");
           break;
         }
-      if (LocaleCompare("charcoal",option) == 0)
+      if (LocaleCompare("charcoal",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -1911,26 +1906,26 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,geometry_info.xi,exception);
           break;
         }
-      if (LocaleCompare("chop",option) == 0)
+      if (LocaleCompare("chop",option+1) == 0)
         {
           (void) ParseGravityGeometry(image,arg1,&geometry,exception);
           new_image=ChopImage(image,&geometry,exception);
           break;
         }
-      if (LocaleCompare("clamp",option) == 0)
+      if (LocaleCompare("clamp",option+1) == 0)
         {
           (void) ClampImage(image,exception);
           break;
         }
-      if (LocaleCompare("cli_wandp",option) == 0)
+      if (LocaleCompare("clip",option+1) == 0)
         {
-          if (plus_alt_op == MagickFalse)
+          if (IfNormalOp)
             (void) ClipImage(image,exception);
           else /* "+mask" remove the write mask */
             (void) SetImageMask(image,(Image *) NULL,exception);
           break;
         }
-      if (LocaleCompare("cli_wandp-mask",option) == 0)
+      if (LocaleCompare("clip-mask",option+1) == 0)
         {
           CacheView
             *mask_view;
@@ -1947,11 +1942,11 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           ssize_t
             y;
 
-          if (plus_alt_op != MagickFalse)
-          { /* "+cli_wandp-mask" Remove the write mask */
-              (void) SetImageMask(image,(Image *) NULL,exception);
-              break;
-            }
+          if (IfPlusOp) {
+            /* "+clip-mask" Remove the write mask */
+            (void) SetImageMask(image,(Image *) NULL,exception);
+            break;
+          }
           mask_image=GetImageCache(image_info,arg1,exception);
           if (mask_image == (Image *) NULL)
             break;
@@ -1986,18 +1981,17 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           mask_image=DestroyImage(mask_image);
           break;
         }
-      if (LocaleCompare("cli_wandp-path",option) == 0)
+      if (LocaleCompare("clip-path",option+1) == 0)
         {
-          (void) ClipImagePath(image,arg1,
-               (MagickBooleanType)(!(int)plus_alt_op),exception);
+          (void) ClipImagePath(image,arg1,normal_op,exception);
           break;
         }
-      if (LocaleCompare("colorize",option) == 0)
+      if (LocaleCompare("colorize",option+1) == 0)
         {
           new_image=ColorizeImage(image,arg1,&draw_info->fill,exception);
           break;
         }
-      if (LocaleCompare("color-matrix",option) == 0)
+      if (LocaleCompare("color-matrix",option+1) == 0)
         {
           KernelInfo
             *kernel;
@@ -2009,7 +2003,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           kernel=DestroyKernelInfo(kernel);
           break;
         }
-      if (LocaleCompare("colors",option) == 0)
+      if (LocaleCompare("colors",option+1) == 0)
         {
           /* Reduce the number of colors in the image.
              FUTURE: also provide 'plus version with image 'color counts'
@@ -2024,7 +2018,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             (void) CompressImageColormap(image,exception);
           break;
         }
-      if (LocaleCompare("colorspace",option) == 0)
+      if (LocaleCompare("colorspace",option+1) == 0)
         {
           /* WARNING: this is both a image_info setting (already done)
                       and a operator to change image colorspace.
@@ -2037,17 +2031,16 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
              That seems to be a little strange!
           */
           (void) TransformImageColorspace(image,
-                    plus_alt_op ? RGBColorspace : image_info->colorspace,
+                    IfNormalOp ? image_info->colorspace : RGBColorspace,
                     exception);
           break;
         }
-      if (LocaleCompare("contrast",option) == 0)
+      if (LocaleCompare("contrast",option+1) == 0)
         {
-          (void) ContrastImage(image,
-               (MagickBooleanType)(!(int)plus_alt_op),exception);
+          (void) ContrastImage(image,normal_op,exception);
           break;
         }
-      if (LocaleCompare("contrast-stretch",option) == 0)
+      if (LocaleCompare("contrast-stretch",option+1) == 0)
         {
           double
             black_point,
@@ -2071,7 +2064,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             exception);
           break;
         }
-      if (LocaleCompare("convolve",option) == 0)
+      if (LocaleCompare("convolve",option+1) == 0)
         {
           KernelInfo
             *kernel_info;
@@ -2084,13 +2077,13 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           kernel_info=DestroyKernelInfo(kernel_info);
           break;
         }
-      if (LocaleCompare("crop",option) == 0)
+      if (LocaleCompare("crop",option+1) == 0)
         {
           /* WARNING: This can generate multiple images! */
           new_image=CropImageToTiles(image,arg1,exception);
           break;
         }
-      if (LocaleCompare("cycle",option) == 0)
+      if (LocaleCompare("cycle",option+1) == 0)
         {
           (void) CycleColormapImage(image,(ssize_t) StringToLong(arg1),
             exception);
@@ -2100,7 +2093,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'd':
     {
-      if (LocaleCompare("decipher",option) == 0)
+      if (LocaleCompare("decipher",option+1) == 0)
         {
           StringInfo
             *passkey;
@@ -2113,7 +2106,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             }
           break;
         }
-      if (LocaleCompare("depth",option) == 0)
+      if (LocaleCompare("depth",option+1) == 0)
         {
           /* The image_info->depth setting has already been set
              We just need to apply it to all images in current sequence
@@ -2126,24 +2119,24 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) SetImageDepth(image,image_info->depth,exception);
           break;
         }
-      if (LocaleCompare("deskew",option) == 0)
+      if (LocaleCompare("deskew",option+1) == 0)
         {
           double
             threshold;
 
-          if (plus_alt_op != MagickFalse)
-            threshold=40.0*QuantumRange/100.0;
-          else
+          if (IfNormalOp)
             threshold=StringToDoubleInterval(arg1,(double) QuantumRange+1.0);
+          else
+            threshold=40.0*QuantumRange/100.0;
           new_image=DeskewImage(image,threshold,exception);
           break;
         }
-      if (LocaleCompare("despeckle",option) == 0)
+      if (LocaleCompare("despeckle",option+1) == 0)
         {
           new_image=DespeckleImage(image,exception);
           break;
         }
-      if (LocaleCompare("distort",option) == 0)
+      if (LocaleCompare("distort",option+1) == 0)
         {
           char
             *args,
@@ -2221,7 +2214,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           arguments=(double *) RelinquishMagickMemory(arguments);
           break;
         }
-      if (LocaleCompare("draw",option) == 0)
+      if (LocaleCompare("draw",option+1) == 0)
         {
           (void) CloneString(&draw_info->primitive,arg1);
           (void) DrawImage(image,draw_info,exception);
@@ -2232,7 +2225,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'e':
     {
-      if (LocaleCompare("edge",option) == 0)
+      if (LocaleCompare("edge",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -2241,7 +2234,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,exception);
           break;
         }
-      if (LocaleCompare("emboss",option) == 0)
+      if (LocaleCompare("emboss",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -2250,7 +2243,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,exception);
           break;
         }
-      if (LocaleCompare("encipher",option) == 0)
+      if (LocaleCompare("encipher",option+1) == 0)
         {
           StringInfo
             *passkey;
@@ -2263,17 +2256,17 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             }
           break;
         }
-      if (LocaleCompare("enhance",option) == 0)
+      if (LocaleCompare("enhance",option+1) == 0)
         {
           new_image=EnhanceImage(image,exception);
           break;
         }
-      if (LocaleCompare("equalize",option) == 0)
+      if (LocaleCompare("equalize",option+1) == 0)
         {
           (void) EqualizeImage(image,exception);
           break;
         }
-      if (LocaleCompare("evaluate",option) == 0)
+      if (LocaleCompare("evaluate",option+1) == 0)
         {
           double
             constant;
@@ -2287,7 +2280,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) EvaluateImage(image,op,constant,exception);
           break;
         }
-      if (LocaleCompare("extent",option) == 0)
+      if (LocaleCompare("extent",option+1) == 0)
         {
           flags=ParseGravityGeometry(image,arg1,&geometry,exception);
           if (geometry.width == 0)
@@ -2301,11 +2294,10 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'f':
     {
-      if (LocaleCompare("features",option) == 0)
+      if (LocaleCompare("features",option+1) == 0)
         {
           /* FUTURE: move to SyncImageSettings() and AcqireImage()??? */
-          if (plus_alt_op != MagickFalse)
-            {
+          if (IfPlusOp) {
               (void) DeleteImageArtifact(image,"identify:features");
               break;
             }
@@ -2313,17 +2305,17 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) SetImageArtifact(image,"verbose","true");
           break;
         }
-      if (LocaleCompare("flip",option) == 0)
+      if (LocaleCompare("flip",option+1) == 0)
         {
           new_image=FlipImage(image,exception);
           break;
         }
-      if (LocaleCompare("flop",option) == 0)
+      if (LocaleCompare("flop",option+1) == 0)
         {
           new_image=FlopImage(image,exception);
           break;
         }
-      if (LocaleCompare("floodfill",option) == 0)
+      if (LocaleCompare("floodfill",option+1) == 0)
         {
           PixelInfo
             target;
@@ -2334,7 +2326,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                     geometry.y,plus_alt_op,exception);
           break;
         }
-      if (LocaleCompare("frame",option) == 0)
+      if (LocaleCompare("frame",option+1) == 0)
         {
           FrameInfo
             frame_info;
@@ -2366,7 +2358,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           new_image=FrameImage(image,&frame_info,compose,exception);
           break;
         }
-      if (LocaleCompare("function",option) == 0)
+      if (LocaleCompare("function",option+1) == 0)
         {
           char
             *arguments,
@@ -2430,17 +2422,17 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'g':
     {
-      if (LocaleCompare("gamma",option) == 0)
+      if (LocaleCompare("gamma",option+1) == 0)
         {
-          if (plus_alt_op != MagickFalse)
-            image->gamma=StringToDouble(arg1,(char **) NULL);
-          else
+          if (IfNormalOp)
             (void) GammaImage(image,StringToDouble(arg1,(char **) NULL),
                  exception);
+          else
+            image->gamma=StringToDouble(arg1,(char **) NULL);
           break;
         }
-      if ((LocaleCompare("gaussian-blur",option) == 0) ||
-          (LocaleCompare("gaussian",option) == 0))
+      if ((LocaleCompare("gaussian-blur",option+1) == 0) ||
+          (LocaleCompare("gaussian",option+1) == 0))
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -2449,7 +2441,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,exception);
           break;
         }
-      if (LocaleCompare("geometry",option) == 0)
+      if (LocaleCompare("geometry",option+1) == 0)
         {
           /*
             Record Image offset for composition. (A Setting)
@@ -2457,7 +2449,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             FUTURE: Why if no 'offset' does this resize ALL images?
             Also why is the setting recorded in the IMAGE non-sense!
           */
-          if (plus_alt_op != MagickFalse)
+          if (IfPlusOp)
             { /* remove the previous composition geometry offset! */
               if (image->geometry != (char *) NULL)
                 image->geometry=DestroyString(image->geometry);
@@ -2475,16 +2467,16 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'h':
     {
-      if (LocaleCompare("highlight-color",option) == 0)
+      if (LocaleCompare("highlight-color",option+1) == 0)
         {
-          (void) SetImageArtifact(image,option,arg1);
+          (void) SetImageArtifact(image,option+1,arg1);
           break;
         }
       break;
     }
     case 'i':
     {
-      if (LocaleCompare("identify",option) == 0)
+      if (LocaleCompare("identify",option+1) == 0)
         {
           const char
             *format,
@@ -2505,14 +2497,14 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           text=DestroyString((char *)text);
           break;
         }
-      if (LocaleCompare("implode",option) == 0)
+      if (LocaleCompare("implode",option+1) == 0)
         {
           (void) ParseGeometry(arg1,&geometry_info);
           new_image=ImplodeImage(image,geometry_info.rho,
             image->interpolate,exception);
           break;
         }
-      if (LocaleCompare("interpolative-resize",option) == 0)
+      if (LocaleCompare("interpolative-resize",option+1) == 0)
         {
           (void) ParseRegionGeometry(image,arg1,&geometry,exception);
           new_image=InterpolativeResizeImage(image,geometry.width,
@@ -2523,7 +2515,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'l':
     {
-      if (LocaleCompare("lat",option) == 0)
+      if (LocaleCompare("lat",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & PercentValue) != 0)
@@ -2533,7 +2525,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                exception);
           break;
         }
-      if (LocaleCompare("level",option) == 0)
+      if (LocaleCompare("level",option+1) == 0)
         {
           MagickRealType
             black_point,
@@ -2558,15 +2550,13 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             }
           if ((flags & SigmaValue) == 0)
             white_point=(MagickRealType) QuantumRange-black_point;
-          if (plus_alt_op || ((flags & AspectValue) != 0))
-            (void) LevelizeImage(image,black_point,white_point,gamma,
-              exception);
+          if (IfPlusOp || ((flags & AspectValue) != 0))
+            (void) LevelizeImage(image,black_point,white_point,gamma,exception);
           else
-            (void) LevelImage(image,black_point,white_point,gamma,
-              exception);
+            (void) LevelImage(image,black_point,white_point,gamma,exception);
           break;
         }
-      if (LocaleCompare("level-colors",option) == 0)
+      if (LocaleCompare("level-colors",option+1) == 0)
         {
           char
             token[MaxTextExtent];
@@ -2605,7 +2595,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                      plus_alt_op,exception);
           break;
         }
-      if (LocaleCompare("linear-stretch",option) == 0)
+      if (LocaleCompare("linear-stretch",option+1) == 0)
         {
           double
             black_point,
@@ -2630,7 +2620,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) LinearStretchImage(image,black_point,white_point,exception);
           break;
         }
-      if (LocaleCompare("liquid-rescale",option) == 0)
+      if (LocaleCompare("liquid-rescale",option+1) == 0)
         {
           flags=ParseRegionGeometry(image,arg1,&geometry,exception);
           if ((flags & XValue) == 0)
@@ -2641,16 +2631,16 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry.height,1.0*geometry.x,1.0*geometry.y,exception);
           break;
         }
-      if (LocaleCompare("lowlight-color",option) == 0)
+      if (LocaleCompare("lowlight-color",option+1) == 0)
         {
-          (void) SetImageArtifact(image,option,arg1);
+          (void) SetImageArtifact(image,option+1,arg1);
           break;
         }
       break;
     }
     case 'm':
     {
-      if (LocaleCompare("map",option) == 0)
+      if (LocaleCompare("map",option+1) == 0)
         {
           Image
             *remap_image;
@@ -2663,12 +2653,12 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           remap_image=DestroyImage(remap_image);
           break;
         }
-      if (LocaleCompare("mask",option) == 0)
+      if (LocaleCompare("mask",option+1) == 0)
         {
           Image
             *mask;
 
-          if (plus_alt_op != MagickFalse)
+          if (IfPlusOp)
             { /* Remove a mask. */
               (void) SetImageMask(image,(Image *) NULL,exception);
               break;
@@ -2681,14 +2671,14 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           mask=DestroyImage(mask);
           break;
         }
-      if (LocaleCompare("matte",option) == 0)
+      if (LocaleCompare("matte",option+1) == 0)
         {
           /* DEPRECIATED */
-          (void) SetImageAlphaChannel(image,plus_alt_op ?
-            DeactivateAlphaChannel:SetAlphaChannel ,exception);
+          (void) SetImageAlphaChannel(image,IfNormalOp ? SetAlphaChannel :
+                         DeactivateAlphaChannel, exception);
           break;
         }
-      if (LocaleCompare("mode",option) == 0)
+      if (LocaleCompare("mode",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -2697,23 +2687,23 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.rho,(size_t) geometry_info.sigma,exception);
           break;
         }
-      if (LocaleCompare("modulate",option) == 0)
+      if (LocaleCompare("modulate",option+1) == 0)
         {
           (void) ModulateImage(image,arg1,exception);
           break;
         }
-      if (LocaleCompare("monitor",option) == 0)
+      if (LocaleCompare("monitor",option+1) == 0)
         {
-          (void) SetImageProgressMonitor(image, plus_alt_op?
-                (MagickProgressMonitor) NULL:MonitorProgress,(void *) NULL);
+          (void) SetImageProgressMonitor(image, IfNormalOp ? MonitorProgress :
+                (MagickProgressMonitor) NULL,(void *) NULL);
           break;
         }
-      if (LocaleCompare("monochrome",option) == 0)
+      if (LocaleCompare("monochrome",option+1) == 0)
         {
           (void) SetImageType(image,BilevelType,exception);
           break;
         }
-      if (LocaleCompare("morphology",option) == 0)
+      if (LocaleCompare("morphology",option+1) == 0)
         {
           char
             token[MaxTextExtent];
@@ -2751,7 +2741,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           kernel=DestroyKernelInfo(kernel);
           break;
         }
-      if (LocaleCompare("motion-blur",option) == 0)
+      if (LocaleCompare("motion-blur",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -2765,14 +2755,14 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'n':
     {
-      if (LocaleCompare("negate",option) == 0)
+      if (LocaleCompare("negate",option+1) == 0)
         {
           (void) NegateImage(image, plus_alt_op, exception);
           break;
         }
-      if (LocaleCompare("noise",option) == 0)
+      if (LocaleCompare("noise",option+1) == 0)
         {
-          if (plus_alt_op == MagickFalse)
+          if (IfNormalOp)
             {
               flags=ParseGeometry(arg1,&geometry_info);
               if ((flags & SigmaValue) == 0)
@@ -2804,7 +2794,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             }
           break;
         }
-      if (LocaleCompare("normalize",option) == 0)
+      if (LocaleCompare("normalize",option+1) == 0)
         {
           (void) NormalizeImage(image,exception);
           break;
@@ -2813,7 +2803,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'o':
     {
-      if (LocaleCompare("opaque",option) == 0)
+      if (LocaleCompare("opaque",option+1) == 0)
         {
           PixelInfo
             target;
@@ -2823,7 +2813,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                exception);
           break;
         }
-      if (LocaleCompare("ordered-dither",option) == 0)
+      if (LocaleCompare("ordered-dither",option+1) == 0)
         {
           (void) OrderedPosterizeImage(image,arg1,exception);
           break;
@@ -2832,14 +2822,14 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'p':
     {
-      if (LocaleCompare("paint",option) == 0)
+      if (LocaleCompare("paint",option+1) == 0)
         {
           (void) ParseGeometry(arg1,&geometry_info);
           new_image=OilPaintImage(image,geometry_info.rho,geometry_info.sigma,
                exception);
           break;
         }
-      if (LocaleCompare("polaroid",option) == 0)
+      if (LocaleCompare("polaroid",option+1) == 0)
         {
           const char
             *caption;
@@ -2847,7 +2837,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           double
             angle;
 
-          if (plus_alt_op != MagickFalse)
+          if (IfPlusOp)
             {
               RandomInfo
               *random_info;
@@ -2867,14 +2857,14 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             image->interpolate,exception);
           break;
         }
-      if (LocaleCompare("posterize",option) == 0)
+      if (LocaleCompare("posterize",option+1) == 0)
         {
           (void) ParseGeometry(arg1,&geometry_info);
           (void) PosterizeImage(image,(size_t) geometry_info.rho,
                quantize_info->dither,exception);
           break;
         }
-      if (LocaleCompare("preview",option) == 0)
+      if (LocaleCompare("preview",option+1) == 0)
         {
           PreviewType
             preview_type;
@@ -2883,13 +2873,13 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
              Option however is also in WandSettingOptionInfo()
           */
           preview_type=UndefinedPreview;
-          if (plus_alt_op == MagickFalse)
+          if (IfNormalOp)
             preview_type=(PreviewType) ParseCommandOption(MagickPreviewOptions,
                   MagickFalse,arg1);
           new_image=PreviewImage(image,preview_type,exception);
           break;
         }
-      if (LocaleCompare("profile",option) == 0)
+      if (LocaleCompare("profile",option+1) == 0)
         {
           const char
             *name;
@@ -2903,7 +2893,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           ImageInfo
             *profile_info;
 
-          if (plus_alt_op != MagickFalse)
+          if (IfPlusOp)
             { /* Remove a profile from the image.  */
               (void) ProfileImage(image,arg1,(const unsigned char *)
                 NULL,0,exception);
@@ -2952,14 +2942,14 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'r':
     {
-      if (LocaleCompare("radial-blur",option) == 0)
+      if (LocaleCompare("radial-blur",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           new_image=RadialBlurImage(image,geometry_info.rho,
             geometry_info.sigma,exception);
           break;
         }
-      if (LocaleCompare("raise",option) == 0)
+      if (LocaleCompare("raise",option+1) == 0)
         {
           flags=ParsePageGeometry(image,arg1,&geometry,exception);
           if ((flags & SigmaValue) == 0)
@@ -2967,12 +2957,12 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) RaiseImage(image,&geometry,normal_op,exception);
           break;
         }
-      if (LocaleCompare("random-threshold",option) == 0)
+      if (LocaleCompare("random-threshold",option+1) == 0)
         {
           (void) RandomThresholdImage(image,arg1,exception);
           break;
         }
-      if (LocaleCompare("remap",option) == 0)
+      if (LocaleCompare("remap",option+1) == 0)
         {
           Image
             *remap_image;
@@ -2984,15 +2974,15 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           remap_image=DestroyImage(remap_image);
           break;
         }
-      if (LocaleCompare("repage",option) == 0)
+      if (LocaleCompare("repage",option+1) == 0)
         {
-          if (plus_alt_op == MagickFalse)
+          if (IfNormalOp)
             (void) ResetImagePage(image,arg1);
           else
             (void) ParseAbsoluteGeometry("0x0+0+0",&image->page);
           break;
         }
-      if (LocaleCompare("resample",option) == 0)
+      if (LocaleCompare("resample",option+1) == 0)
         {
           /* FUTURE: remove blur arguemnt - no longer used */
           flags=ParseGeometry(arg1,&geometry_info);
@@ -3002,7 +2992,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,image->filter,image->blur,exception);
           break;
         }
-      if (LocaleCompare("resize",option) == 0)
+      if (LocaleCompare("resize",option+1) == 0)
         {
           /* FUTURE: remove blur argument - no longer used */
           (void) ParseRegionGeometry(image,arg1,&geometry,exception);
@@ -3010,13 +3000,13 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             image->filter,image->blur,exception);
           break;
         }
-      if (LocaleCompare("roll",option) == 0)
+      if (LocaleCompare("roll",option+1) == 0)
         {
           (void) ParsePageGeometry(image,arg1,&geometry,exception);
           new_image=RollImage(image,geometry.x,geometry.y,exception);
           break;
         }
-      if (LocaleCompare("rotate",option) == 0)
+      if (LocaleCompare("rotate",option+1) == 0)
         {
           if (strchr(arg1,'>') != (char *) NULL)
             if (image->columns <= image->rows)
@@ -3033,21 +3023,21 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 's':
     {
-      if (LocaleCompare("sample",option) == 0)
+      if (LocaleCompare("sample",option+1) == 0)
         {
           (void) ParseRegionGeometry(image,arg1,&geometry,exception);
           new_image=SampleImage(image,geometry.width,geometry.height,
             exception);
           break;
         }
-      if (LocaleCompare("scale",option) == 0)
+      if (LocaleCompare("scale",option+1) == 0)
         {
           (void) ParseRegionGeometry(image,arg1,&geometry,exception);
           new_image=ScaleImage(image,geometry.width,geometry.height,
             exception);
           break;
         }
-      if (LocaleCompare("selective-blur",option) == 0)
+      if (LocaleCompare("selective-blur",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & PercentValue) != 0)
@@ -3056,14 +3046,14 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
           break;
         }
-      if (LocaleCompare("separate",option) == 0)
+      if (LocaleCompare("separate",option+1) == 0)
         {
           /* WARNING: This can generate multiple images! */
           /* FUTURE - this may be replaced by a "-channel" method */
           new_image=SeparateImages(image,exception);
           break;
         }
-      if (LocaleCompare("sepia-tone",option) == 0)
+      if (LocaleCompare("sepia-tone",option+1) == 0)
         {
           double
             threshold;
@@ -3072,7 +3062,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           new_image=SepiaToneImage(image,threshold,exception);
           break;
         }
-      if (LocaleCompare("segment",option) == 0)
+      if (LocaleCompare("segment",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -3082,12 +3072,12 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             exception);
           break;
         }
-      if (LocaleCompare("set",option) == 0)
+      if (LocaleCompare("set",option+1) == 0)
         {
           char
             *value;
 
-          if (plus_alt_op != MagickFalse)
+          if (IfPlusOp)
             {
               if (LocaleNCompare(arg1,"registry:",9) == 0)
                 (void) DeleteImageRegistry(arg1+9);
@@ -3119,7 +3109,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           value=DestroyString(value);
           break;
         }
-      if (LocaleCompare("shade",option) == 0)
+      if (LocaleCompare("shade",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -3128,7 +3118,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                geometry_info.sigma,exception);
           break;
         }
-      if (LocaleCompare("shadow",option) == 0)
+      if (LocaleCompare("shadow",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -3143,7 +3133,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             exception);
           break;
         }
-      if (LocaleCompare("sharpen",option) == 0)
+      if (LocaleCompare("sharpen",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -3154,13 +3144,13 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,geometry_info.xi,exception);
           break;
         }
-      if (LocaleCompare("shave",option) == 0)
+      if (LocaleCompare("shave",option+1) == 0)
         {
           flags=ParsePageGeometry(image,arg1,&geometry,exception);
           new_image=ShaveImage(image,&geometry,exception);
           break;
         }
-      if (LocaleCompare("shear",option) == 0)
+      if (LocaleCompare("shear",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -3169,7 +3159,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,exception);
           break;
         }
-      if (LocaleCompare("sigmoidal-contrast",option) == 0)
+      if (LocaleCompare("sigmoidal-contrast",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -3182,7 +3172,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             exception);
           break;
         }
-      if (LocaleCompare("sketch",option) == 0)
+      if (LocaleCompare("sketch",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -3191,13 +3181,13 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,geometry_info.xi,geometry_info.psi,exception);
           break;
         }
-      if (LocaleCompare("solarize",option) == 0)
+      if (LocaleCompare("solarize",option+1) == 0)
         {
           (void) SolarizeImage(image,StringToDoubleInterval(arg1,(double)
                  QuantumRange+1.0),exception);
           break;
         }
-      if (LocaleCompare("sparse-color",option) == 0)
+      if (LocaleCompare("sparse-color",option+1) == 0)
         {
           SparseColorMethod
             method;
@@ -3214,20 +3204,20 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           arguments=DestroyString(arguments);
           break;
         }
-      if (LocaleCompare("splice",option) == 0)
+      if (LocaleCompare("splice",option+1) == 0)
         {
           (void) ParseGravityGeometry(image,arg1,&geometry,exception);
           new_image=SpliceImage(image,&geometry,exception);
           break;
         }
-      if (LocaleCompare("spread",option) == 0)
+      if (LocaleCompare("spread",option+1) == 0)
         {
           (void) ParseGeometry(arg1,&geometry_info);
           new_image=SpreadImage(image,geometry_info.rho,image->interpolate,
                exception);
           break;
         }
-      if (LocaleCompare("statistic",option) == 0)
+      if (LocaleCompare("statistic",option+1) == 0)
         {
           StatisticType
             type;
@@ -3239,12 +3229,12 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             (size_t) geometry_info.sigma,exception);
           break;
         }
-      if (LocaleCompare("strip",option) == 0)
+      if (LocaleCompare("strip",option+1) == 0)
         {
           (void) StripImage(image,exception);
           break;
         }
-      if (LocaleCompare("swirl",option) == 0)
+      if (LocaleCompare("swirl",option+1) == 0)
         {
           (void) ParseGeometry(arg1,&geometry_info);
           new_image=SwirlImage(image,geometry_info.rho,
@@ -3255,38 +3245,38 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 't':
     {
-      if (LocaleCompare("threshold",option) == 0)
+      if (LocaleCompare("threshold",option+1) == 0)
         {
           double
             threshold;
 
-          if (plus_alt_op != MagickFalse)
+          if (!normal_op)
             threshold=(double) QuantumRange/2;
           else
             threshold=StringToDoubleInterval(arg1,(double) QuantumRange+1.0);
           (void) BilevelImage(image,threshold,exception);
           break;
         }
-      if (LocaleCompare("thumbnail",option) == 0)
+      if (LocaleCompare("thumbnail",option+1) == 0)
         {
           (void) ParseRegionGeometry(image,arg1,&geometry,exception);
           new_image=ThumbnailImage(image,geometry.width,geometry.height,
             exception);
           break;
         }
-      if (LocaleCompare("tint",option) == 0)
+      if (LocaleCompare("tint",option+1) == 0)
         {
           new_image=TintImage(image,arg1,&draw_info->fill,exception);
           break;
         }
-      if (LocaleCompare("transform",option) == 0)
+      if (LocaleCompare("transform",option+1) == 0)
         {
           /* DEPRECIATED */
           new_image=AffineTransformImage(image,&draw_info->affine,
             exception);
           break;
         }
-      if (LocaleCompare("transparent",option) == 0)
+      if (LocaleCompare("transparent",option+1) == 0)
         {
           PixelInfo
             target;
@@ -3296,22 +3286,22 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             TransparentAlpha,plus_alt_op,exception);
           break;
         }
-      if (LocaleCompare("transpose",option) == 0)
+      if (LocaleCompare("transpose",option+1) == 0)
         {
           new_image=TransposeImage(image,exception);
           break;
         }
-      if (LocaleCompare("transverse",option) == 0)
+      if (LocaleCompare("transverse",option+1) == 0)
         {
           new_image=TransverseImage(image,exception);
           break;
         }
-      if (LocaleCompare("trim",option) == 0)
+      if (LocaleCompare("trim",option+1) == 0)
         {
           new_image=TrimImage(image,exception);
           break;
         }
-      if (LocaleCompare("type",option) == 0)
+      if (LocaleCompare("type",option+1) == 0)
         {
           /* Note that "type" setting should have already been defined */
           (void) SetImageType(image,image_info->type,exception);
@@ -3321,10 +3311,10 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'u':
     {
-      if (LocaleCompare("unique",option) == 0)
+      if (LocaleCompare("unique",option+1) == 0)
         {
           /* FUTURE: move to SyncImageSettings() and AcqireImage()??? */
-          if (plus_alt_op != MagickFalse)
+          if (!normal_op)
             {
               (void) DeleteImageArtifact(image,"identify:unique-colors");
               break;
@@ -3333,12 +3323,12 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) SetImageArtifact(image,"verbose","true");
           break;
         }
-      if (LocaleCompare("unique-colors",option) == 0)
+      if (LocaleCompare("unique-colors",option+1) == 0)
         {
           new_image=UniqueImageColors(image,exception);
           break;
         }
-      if (LocaleCompare("unsharp",option) == 0)
+      if (LocaleCompare("unsharp",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -3355,17 +3345,17 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'v':
     {
-      if (LocaleCompare("verbose",option) == 0)
+      if (LocaleCompare("verbose",option+1) == 0)
         {
-          /* FUTURE: move to SyncImageSettings() and AcqireImage()???
+          /* FUTURE: move to SyncImageSettings() and AcquireImage()???
              three places!   ImageArtifact   ImageOption  image_info->verbose
-             Some how new images also get this artifact -- how???
+             Some how new images also get this artifact presumably here
           */
-          (void) SetImageArtifact(image,option,
-                 (plus_alt_op != MagickFalse) ? "false" : "true" );
+          (void) SetImageArtifact(image,option+1,
+                           IfNormalOp ? "true" : "false" );
           break;
         }
-      if (LocaleCompare("vignette",option) == 0)
+      if (LocaleCompare("vignette",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -3383,7 +3373,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     }
     case 'w':
     {
-      if (LocaleCompare("wave",option) == 0)
+      if (LocaleCompare("wave",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
@@ -3392,7 +3382,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                image->interpolate,exception);
           break;
         }
-      if (LocaleCompare("white-threshold",option) == 0)
+      if (LocaleCompare("white-threshold",option+1) == 0)
         {
           (void) WhiteThresholdImage(image,arg1,exception);
           break;
@@ -3415,12 +3405,14 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
 #undef quantize_info
 #undef image
 #undef exception
+#undef IfNormalOp
+#undef IfPlusOp
 #undef normal_op
+#undef plus_alt_op
 }
 
 WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
-  const MagickBooleanType plus_alt_op, const char *option,
-  const char *arg1, const char *arg2)
+  const char *option, const char *arg1, const char *arg2)
 {
   size_t
     n,
@@ -3433,19 +3425,26 @@ WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
   if (cli_wand->wand.debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
+#if !USE_WAND_METHODS
+  /* FUTURE add appropriate tracing */
   i=0;
   n=GetImageListLength(cli_wand->wand.images);
   cli_wand->wand.images=GetFirstImageInList(cli_wand->wand.images);
-  while (1)
-  {
+  while (1) {
     i++;
-    CLISimpleOperatorImage(cli_wand, plus_alt_op, option, arg1, arg2);
+    CLISimpleOperatorImage(cli_wand, option, arg1, arg2);
     if ( cli_wand->wand.images->next == (Image *) NULL )
       break;
     cli_wand->wand.images=cli_wand->wand.images->next;
   }
   assert( i == n );
   cli_wand->wand.images=GetFirstImageInList(cli_wand->wand.images);
+#else
+  MagickResetIterator(&cli_wand->wand);
+  while ( MagickNextImage(&cli_wand->wand) != MagickFalse )
+    CLISimpleOperatorImage(cli_wand, option, arg1, arg2);
+  MagickResetIterator(&cli_wand->wand);
+#endif
   return;
 }
 
@@ -3467,14 +3466,11 @@ WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
 %  The format of the MogrifyImage method is:
 %
 %    void CLIListOperatorImages(MagickCLI *cli_wand,
-%        const MagickBooleanType plus_alt_op,const char *option,
-%        const char *arg1, const char *arg2)
+%        const char *option, const char *arg1, const char *arg2)
 %
 %  A description of each parameter follows:
 %
 %    o cli_wand: structure holding settings to be applied
-%
-%    o plus_alt_op:  request the 'plus' or alturnative form of the operation
 %
 %    o option:  The option string for the operation
 %
@@ -3484,12 +3480,8 @@ WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
 %
 % Example usage...
 %
-%  CLIListOperatorImages(cli_wand,MagickFalse,"duplicate", "3",  NULL);
-%  CLIListOperatorImages(cli_wand,MagickTrue, "append",    NULL, NULL);
-%  if ( cli_wand->wand.exception->severity != UndefinedException ) {
-%    CatchException(exception);
-%    exit(1);
-%  }
+%  CLIListOperatorImages(cli_wand,MagickFalse,"-duplicate", "3",  NULL);
+%  CLIListOperatorImages(cli_wand,MagickTrue, "+append",    NULL, NULL);
 %
 % Or for handling command line arguments EG: +/-option ["arg"]
 %
@@ -3502,16 +3494,14 @@ WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
 %    option_type=option_info->flags;
 %
 %    if ( (option_type & ListOperatorOptionFlag) != 0 )
-%      CLIListOperatorImages(cli_wand,
-%          ((*argv[i])=='+')?MagickTrue:MagickFalse,argv[i]+1,
+%      CLIListOperatorImages(cli_wand,argv[i],
 %          count>=1 ? argv[i+1] : (char *)NULL,
 %          count>=2 ? argv[i+2] : (char *)NULL );
 %    i += count+1;
 %
 */
 WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
-     const MagickBooleanType plus_alt_op,const char *option,
-     const char *arg1, const char *arg2)
+     const char *option,const char *arg1, const char *arg2)
 {
   Image
     *new_images;
@@ -3521,7 +3511,9 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 #define exception       (cli_wand->wand.exception)
 #define draw_info       (cli_wand->draw_info)
 #define quantize_info   (cli_wand->quantize_info)
-#define normal_op       (plus_alt_op?MagickFalse:MagickTrue)
+#define IfNormalOp      (*option=='-')
+#define IfPlusOp        (*option!='-')
+#define normal_op       (IfNormalOp?MagickTrue:MagickFalse)
 
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
@@ -3534,38 +3526,38 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 
   new_images=NewImageList();
 
-  switch (*option)
+  switch (*(option+1))
   {
     case 'a':
     {
-      if (LocaleCompare("append",option) == 0)
+      if (LocaleCompare("append",option+1) == 0)
         {
           new_images=AppendImages(images,normal_op,exception);
           break;
         }
-      if (LocaleCompare("average",option) == 0)
+      if (LocaleCompare("average",option+1) == 0)
         {
           /* DEPRECIATED - use -evaluate-sequence Mean */
-          CLIListOperatorImages(cli_wand,plus_alt_op,"evaluate-sequence","Mean",
-               NULL);
+          CLIListOperatorImages(cli_wand,"-evaluate-sequence","Mean",NULL);
           break;
         }
       break;
     }
     case 'c':
     {
-      if (LocaleCompare("channel-inject",option) == 0)
+      if (LocaleCompare("channel-inject",option+1) == 0)
         {
           puts("stand by...");
           break;
         }
-      if (LocaleCompare("clut",option) == 0)
+      if (LocaleCompare("clut",option+1) == 0)
         {
           Image
             *clut_image;
 
-          /* FUTURE - make this a compose option (and thus layers compose )
-             or perhaps compose last image over all other images.
+          /* FUTURE - make this a compose option, and thus can be used
+             with layers compose or even compose last image over all other
+             images.
           */
           new_images=RemoveFirstImageFromList(&images);
           clut_image=RemoveLastImageFromList(&images);
@@ -3576,18 +3568,18 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           clut_image=DestroyImage(clut_image);
           break;
         }
-      if (LocaleCompare("coalesce",option) == 0)
+      if (LocaleCompare("coalesce",option+1) == 0)
         {
           new_images=CoalesceImages(images,exception);
           break;
         }
-      if (LocaleCompare("combine",option) == 0)
+      if (LocaleCompare("combine",option+1) == 0)
         {
           /* FUTURE - this may be replaced by a 'channel' method */
           new_images=CombineImages(images,exception);
           break;
         }
-      if (LocaleCompare("composite",option) == 0)
+      if (LocaleCompare("composite",option+1) == 0)
         {
           Image
             *mask_image,
@@ -3654,25 +3646,23 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 'd':
     {
-      if (LocaleCompare("deconstruct",option) == 0)
+      if (LocaleCompare("deconstruct",option+1) == 0)
         {
           /* DEPRECIATED - use -layers CompareAny */
-          CLIListOperatorImages(cli_wand,plus_alt_op,"layer","CompareAny",NULL);
+          CLIListOperatorImages(cli_wand,"-layer","CompareAny",NULL);
           break;
         }
-      if (LocaleCompare("delete",option) == 0)
+      if (LocaleCompare("delete",option+1) == 0)
         {
-          if (plus_alt_op != MagickFalse)
-            DeleteImages(&images,"-1",exception);
-          else
+          if (IfNormalOp)
             DeleteImages(&images,arg1,exception);
+          else
+            DeleteImages(&images,"-1",exception);
           break;
         }
-      if (LocaleCompare("duplicate",option) == 0)
+      if (LocaleCompare("duplicate",option+1) == 0)
         {
-          if (plus_alt_op != MagickFalse)
-            new_images=DuplicateImages(images,1,"-1",exception);
-          else
+          if (IfNormalOp)
             {
               const char
                 *p;
@@ -3689,6 +3679,8 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
                 new_images=DuplicateImages(images,number_duplicates,p,
                   exception);
             }
+          else
+            new_images=DuplicateImages(images,1,"-1",exception);
           AppendImageToList(&images, new_images);
           new_images=(Image *)NULL;
           break;
@@ -3697,7 +3689,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 'e':
     {
-      if (LocaleCompare("evaluate-sequence",option) == 0)
+      if (LocaleCompare("evaluate-sequence",option+1) == 0)
         {
           MagickEvaluateOperator
             method;
@@ -3711,18 +3703,18 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 'f':
     {
-      if (LocaleCompare("fft",option) == 0)
+      if (LocaleCompare("fft",option+1) == 0)
         {
           new_images=ForwardFourierTransformImage(images,normal_op,exception);
           break;
         }
-      if (LocaleCompare("flatten",option) == 0)
+      if (LocaleCompare("flatten",option+1) == 0)
         {
           /* DEPRECIATED use -layers mosaic instead */
-          CLIListOperatorImages(cli_wand,plus_alt_op,"layer",option,NULL);
+          CLIListOperatorImages(cli_wand,"-layer",option+1,NULL);
           break;
         }
-      if (LocaleCompare("fx",option) == 0)
+      if (LocaleCompare("fx",option+1) == 0)
         {
           new_images=FxImage(images,arg1,exception);
           break;
@@ -3731,7 +3723,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 'h':
     {
-      if (LocaleCompare("hald-clut",option) == 0)
+      if (LocaleCompare("hald-clut",option+1) == 0)
         {
           /* FUTURE - make this a compose option (and thus layers compose )
              or perhaps compose last image over all other images.
@@ -3751,7 +3743,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 'i':
     {
-      if (LocaleCompare("ift",option) == 0)
+      if (LocaleCompare("ift",option+1) == 0)
         {
           Image
             *magnitude_image,
@@ -3768,7 +3760,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
            phase_image=DestroyImage(phase_image);
           break;
         }
-      if (LocaleCompare("insert",option) == 0)
+      if (LocaleCompare("insert",option+1) == 0)
         {
           Image
             *insert_image,
@@ -3779,7 +3771,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 
           index=0;
           insert_image=RemoveLastImageFromList(&images);
-          if (plus_alt_op == MagickFalse)
+          if (IfNormalOp)
             index=(ssize_t) StringToLong(arg1);
           index_image=insert_image;
           if (index == 0)
@@ -3804,7 +3796,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 'l':
     {
-      if (LocaleCompare("layers",option) == 0)
+      if (LocaleCompare("layers",option+1) == 0)
         {
           ImageLayerMethod
             method;
@@ -3946,7 +3938,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           }
           break;
         }
-      if (LocaleCompare("limit",option) == 0)
+      if (LocaleCompare("limit",option+1) == 0)
         {
           MagickSizeType
             limit;
@@ -3966,13 +3958,13 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 'm':
     {
-      if (LocaleCompare("map",option) == 0)
+      if (LocaleCompare("map",option+1) == 0)
         {
           /* DEPRECIATED use +remap */
           (void) RemapImages(quantize_info,images,(Image *) NULL,exception);
           break;
         }
-      if (LocaleCompare("morph",option) == 0)
+      if (LocaleCompare("morph",option+1) == 0)
         {
           Image
             *morph_image;
@@ -3985,17 +3977,17 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           images=morph_image;
           break;
         }
-      if (LocaleCompare("mosaic",option) == 0)
+      if (LocaleCompare("mosaic",option+1) == 0)
         {
           /* DEPRECIATED use -layers mosaic instead */
-          CLIListOperatorImages(cli_wand,plus_alt_op,"layer",option,NULL);
+          CLIListOperatorImages(cli_wand,"-layer",option+1,NULL);
           break;
         }
       break;
     }
     case 'p':
     {
-      if (LocaleCompare("print",option) == 0)
+      if (LocaleCompare("print",option+1) == 0)
         {
           char
             *string;
@@ -4007,7 +3999,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           (void) FormatLocaleFile(stdout,"%s",string);
           string=DestroyString(string);
         }
-      if (LocaleCompare("process",option) == 0)
+      if (LocaleCompare("process",option+1) == 0)
         {
           char
             **arguments;
@@ -4079,13 +4071,13 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 'r':
     {
-      if (LocaleCompare("remap",option) == 0)
+      if (LocaleCompare("remap",option+1) == 0)
         {
               (void) RemapImages(quantize_info,images,(Image *) NULL,exception);
           (void) RemapImages(quantize_info,images,(Image *) NULL,exception);
           break;
         }
-      if (LocaleCompare("reverse",option) == 0)
+      if (LocaleCompare("reverse",option+1) == 0)
         {
           ReverseImageList(&images);
           break;
@@ -4094,7 +4086,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 's':
     {
-      if (LocaleCompare("smush",option) == 0)
+      if (LocaleCompare("smush",option+1) == 0)
         {
           Image
             *smush_image;
@@ -4110,7 +4102,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           images=smush_image;
           break;
         }
-      if (LocaleCompare("swap",option) == 0)
+      if (LocaleCompare("swap",option+1) == 0)
         {
           Image
             *p,
@@ -4123,7 +4115,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 
           index=-1;
           swap_index=-2;
-          if (plus_alt_op == MagickFalse)
+          if (IfNormalOp)
             {
               GeometryInfo
                 geometry_info;
@@ -4157,7 +4149,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 'w':
     {
-      if (LocaleCompare("write",option) == 0)
+      if (LocaleCompare("write",option+1) == 0)
         {
           char
             key[MaxTextExtent];
@@ -4171,12 +4163,12 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           (void) FormatLocaleString(key,MaxTextExtent,"cache:%s",arg1);
           (void) DeleteImageRegistry(key);
           write_images=images;
-          if (plus_alt_op != MagickFalse)
+          if (IfPlusOp)
             write_images=CloneImageList(images,exception);
           write_info=CloneImageInfo(image_info);
           (void) WriteImages(write_info,write_images,arg1,exception);
           write_info=DestroyImageInfo(write_info);
-          if (plus_alt_op != MagickFalse)
+          if (IfPlusOp)
             write_images=DestroyImageList(write_images);
           break;
         }
@@ -4198,6 +4190,8 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 #undef exception
 #undef draw_info
 #undef quantize_info
+#undef IfNormalOp
+#undef IfPlusOp
 #undef normal_op
 }
 
@@ -4215,9 +4209,11 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 %  CLISpecialOption() Applies operations that may involve empty image lists
 %  and or stacks of image lists or image_info settings.
 %
-%  Note: inlike other Operators, these may involve other special 'option'
-%  character prefixes, other than simply '-' or '+' and as such the full
-%  original otpion must be passed.
+%  The classic operators of this type is -read, and image stack operators,
+%  which can be applied to empty image lists.
+%
+%  Note: unlike other Operators, these may involve other special 'option'
+%  character prefixes, other than simply '-' or '+'.
 %
 %  The format of the CLISpecialOption method is:
 %
@@ -4231,14 +4227,10 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 %    o option: The special option (with any switch char) to process
 %
 %    o arg: Argument for option, if required
-% 
+%
 % Example Usage...
 %
 %  CLISpecialOperator(cli_wand,"-read", "rose:");
-%  if ( cli_wand->wand.exception->severity != UndefinedException ) {
-%    CatchException(exception);
-%    exit(1);
-%  }
 %
 % Or for handling command line arguments EG: +/-option ["arg"]
 %
@@ -4257,8 +4249,6 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 %
 */
 
-#define MaxImageStackDepth  32
-
 WandExport void CLISpecialOperator(MagickCLI *cli_wand,
   const char *option, const char *arg)
 {
@@ -4270,7 +4260,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
   if (cli_wand->wand.debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
-  if (LocaleCompare(option,"(") == 0)
+  if (LocaleCompare("(",option) == 0)
     {
       /* stack 'push' images */
       Stack
@@ -4286,7 +4276,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       node=cli_wand->image_list_stack;
       for ( ; node != (Stack *)NULL; node=node->next)
         size++;
-      if ( size >= MaxImageStackDepth )
+      if ( size >= MAX_STACK_DEPTH )
         {
           ThrowMagickException(exception,GetMagickModule(),
                OptionError,"ParenthesisNestedTooDeeply", option);
@@ -4311,7 +4301,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       else
         return;
     }
-  if (LocaleCompare(option,"{") == 0)
+  if (LocaleCompare("{",option) == 0)
     {
       /* stack 'push' of image_info settings */
       Stack
@@ -4324,37 +4314,34 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       node=cli_wand->image_info_stack;
       for ( ; node != (Stack *)NULL; node=node->next)
         size++;
-      if ( size >= MaxImageStackDepth )
-        {
-          ThrowMagickException(exception,GetMagickModule(),
-               OptionError,"ParenthesisNestedTooDeeply", option);
-          return;
-        }
+      if ( size >= MAX_STACK_DEPTH ) {
+        ThrowMagickException(exception,GetMagickModule(),
+             OptionError,"ParenthesisNestedTooDeeply", option);
+        return;
+      }
       node=(Stack *) AcquireMagickMemory(sizeof(*node));
-      if (node == (Stack *) NULL)
-        {
-          ThrowMagickException(exception,GetMagickModule(),
-              ResourceLimitFatalError,"MemoryAllocationFailed", "PushSettings");
-          return;
-        }
+      if (node == (Stack *) NULL) {
+        ThrowMagickException(exception,GetMagickModule(),
+            ResourceLimitFatalError,"MemoryAllocationFailed", "PushSettings");
+        return;
+      }
 
       node->data = (void *)cli_wand->wand.image_info;
       cli_wand->wand.image_info = CloneImageInfo(cli_wand->wand.image_info);
-      if (cli_wand->wand.image_info == (ImageInfo *)NULL)
-        {
-          ThrowMagickException(exception,GetMagickModule(),
-              ResourceLimitFatalError,"MemoryAllocationFailed", "PushSettings");
-          cli_wand->wand.image_info = (ImageInfo *)node->data;
-          node = (Stack *)RelinquishMagickMemory(node);
-          return;
-        }
+      if (cli_wand->wand.image_info == (ImageInfo *)NULL) {
+        ThrowMagickException(exception,GetMagickModule(),
+            ResourceLimitFatalError,"MemoryAllocationFailed", "PushSettings");
+        cli_wand->wand.image_info = (ImageInfo *)node->data;
+        node = (Stack *)RelinquishMagickMemory(node);
+        return;
+      }
 
       node->next = cli_wand->image_info_stack;
       cli_wand->image_info_stack = node;
 
       return;
     }
-  if (LocaleCompare(option,")") == 0)
+  if (LocaleCompare(")",option) == 0)
     {
       /* pop images from stack */
       Stack
@@ -4389,7 +4376,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       else
         return;
     }
-  if (LocaleCompare(option,"}") == 0)
+  if (LocaleCompare("}",option) == 0)
     {
       /* pop image_info settings from stack */
       Stack
@@ -4414,7 +4401,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
 
       return;
     }
-  if (LocaleCompare(option+1,"clone") == 0)
+  if (LocaleCompare("clone",option+1) == 0)
     {
       Image
         *new_images;
@@ -4450,17 +4437,16 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       AppendImageToList(&cli_wand->wand.images,new_images);
       return;
     }
-  if ( LocaleCompare("-read",option) == 0 )
+  if ( LocaleCompare("read",option+1) == 0 )
     {
-#if 0
+#if !USE_WAND_METHODS
       Image *
         new_images;
 
-      CopyMagickString(cli_wand->wand.image_info->filename,arg,MaxTextExtent);
       if (cli_wand->wand.image_info->ping != MagickFalse)
-        new_images=PingImages(cli_wand->wand.image_info,exception);
+        new_images=PingImages(cli_wand->wand.image_info,arg,exception);
       else
-        new_images=ReadImages(cli_wand->wand.image_info,exception);
+        new_images=ReadImages(cli_wand->wand.image_info,arg,exception);
       AppendImageToList(&cli_wand->wand.images, new_images);
 #else
       /* read images using MagickWand method - no ping */
@@ -4471,15 +4457,16 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
 #endif
       return;
     }
-  if (LocaleCompare("-noop",option) == 0)
+  /* No-op options */
+  if (LocaleCompare("noop",option+1) == 0)
     return;
-  if (LocaleCompare("-sans",option) == 0)
+  if (LocaleCompare("sans",option+1) == 0)
     return;
-  if (LocaleCompare("-sans0",option) == 0)
+  if (LocaleCompare("sans0",option+1) == 0)
     return;
-  if (LocaleCompare("-sans2",option) == 0)
+  if (LocaleCompare("sans2",option+1) == 0)
     return;
-  if (LocaleCompare("-list",option) == 0)
+  if (LocaleCompare("list",option+1) == 0)
     {
       /* FUTURE: This should really be built into the MagickCore
          It does not actually require any wand or images at all!

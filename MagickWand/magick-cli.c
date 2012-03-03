@@ -64,13 +64,13 @@
 
 #define ThrowFileException(exception,severity,tag,context) \
 { \
-    char \
-      *message; \
-   \
-    message=GetExceptionMessage(errno); \
-    (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-             tag == (const char *) NULL ? "unknown" : tag,"`%s': %s",context,message); \
-    message=DestroyString(message); \
+  char \
+    *message; \
+ \
+  message=GetExceptionMessage(errno); \
+  (void) ThrowMagickException(exception,GetMagickModule(),severity, \
+    tag == (const char *) NULL ? "unknown" : tag,"`%s': %s",context,message); \
+  message=DestroyString(message); \
 }
 
 /*
@@ -110,19 +110,10 @@
 %    o argv: A text array containing the command line arguments.
 %
 */
-#define MagickExceptionScript(severity,tag,arg,line,col) \
-  (void) ThrowMagickException(cli_wand->wand.exception,GetMagickModule(), \
-       severity,tag, "'%s' : Line %u Column %u of script \"%s\"", \
-       arg, line, col, cli_wand->wand.name);
-
 WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
 {
   ScriptTokenInfo
     *token_info;
-
-  size_t
-    option_line,       /* line and column of current option */
-    option_column;
 
   CommandOptionFlags
     option_type;
@@ -130,14 +121,10 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
   ssize_t
     count;
 
-  MagickBooleanType
-    plus_alt_op;
-
   char
     *option,
     *arg1,
     *arg2;
-
 
   assert(argc>0 && argv[argc-1] != (char *)NULL);
   assert(cli_wand != (MagickCLI *) NULL);
@@ -148,19 +135,24 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
 
   token_info = AcquireScriptTokenInfo(argv[0]);
   if (token_info->token == (char *) NULL) {
-    ThrowFileException(cli_wand->wand.exception,OptionError,
+    ThrowFileException(cli_wand->wand.exception,OptionFatalError,
                "UnableToOpenScript",argv[0]);
     return;
   }
 
+  /* Process Options from Script */
+  cli_wand->location="'%s' in \"%s\" line %d column %d";
+  cli_wand->filename=cli_wand->wand.name;
   option = arg1 = arg2 = (char*)NULL;
 
-  /* Process Options from Script */
   while (1) {
 
     /* Get a option */
     if( GetScriptToken(token_info) == MagickFalse )
       break;
+
+    cli_wand->line=token_info->token_line;
+    cli_wand->column=token_info->token_column;
 
     /* Sanity check: option is larger than what should be posible */
     if( strlen(token_info->token) > INITAL_TOKEN_LENGTH-1 ) {
@@ -168,15 +160,12 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
       token_info->token[INITAL_TOKEN_LENGTH-3] = '.';
       token_info->token[INITAL_TOKEN_LENGTH-2] = '.';
       token_info->token[INITAL_TOKEN_LENGTH-1] = '\0';
-      MagickExceptionScript(OptionFatalError,"UnrecognizedOption",
-           token_info->token,token_info->token_line,token_info->token_column);
+      CLIWandException(OptionFatalError,"UnrecognizedOption",token_info->token);
       break;
-  }
+    }
 
     /* save option details */
     CloneString(&option,token_info->token);
-    option_line=token_info->token_line;
-    option_column=token_info->token_column;
 #if MagickCommandDebug >=2
     (void) FormatLocaleFile(stderr, "Script Option Token: %u,%u: \"%s\"\n",
              option_line, option_column, option );
@@ -196,48 +185,38 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
     if ( option_type == UndefinedOptionFlag ||
          (option_type & NonMagickOptionFlag) != 0 ) {
 #if MagickCommandDebug
-        (void) FormatLocaleFile(stderr, "Script Non-Option: \"%s\"\n", option);
+      (void) FormatLocaleFile(stderr, "Script Non-Option: \"%s\"\n", option);
 #endif
-        if ( IsCommandOption(option) == MagickFalse) {
-            /* non-option -- treat as a image read */
-            CLISpecialOperator(cli_wand,"-read",option);
-            count = 0;
-          }
-        else
-          MagickExceptionScript(OptionFatalError,"UnrecognizedOption",
-               option,option_line,option_column);
-
-        if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-          break;
-        continue;
+      if ( IsCommandOption(option) == MagickFalse) {
+        /* non-option -- treat as a image read */
+        CLISpecialOperator(cli_wand,"-read",option);
+        count = 0;
       }
+      else
+        CLIWandExceptionBreak(OptionFatalError,"UnrecognizedOption",option);
 
-    plus_alt_op = MagickFalse;
-    if (*option=='+') plus_alt_op = MagickTrue;
+      if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+        break;
+      continue;
+    }
 
     if ( count >= 1 ) {
-        if( GetScriptToken(token_info) == MagickFalse ) {
-            MagickExceptionScript(OptionError,"MissingArgument",option,
-               option_line,option_column);
-            break;
-          }
-        CloneString(&arg1,token_info->token);
-      }
+      if( GetScriptToken(token_info) == MagickFalse )
+        CLIWandExceptionBreak(OptionFatalError,"MissingArgument",option);
+      CloneString(&arg1,token_info->token);
+    }
     else
-      CloneString(&arg1,(*option!='+')?"true":(char *)NULL);
+      CloneString(&arg1,(char *)NULL);
 
     if ( count >= 2 ) {
-        if( GetScriptToken(token_info) == MagickFalse ) {
-            MagickExceptionScript(OptionError,"MissingArgument",option,
-               option_line,option_column);
-            break;
-          }
-        CloneString(&arg2,token_info->token);
-      }
+      if( GetScriptToken(token_info) == MagickFalse )
+        CLIWandExceptionBreak(OptionFatalError,"MissingArgument",option);
+      CloneString(&arg2,token_info->token);
+    }
     else
       CloneString(&arg2,(char *)NULL);
 
-    /* handle script special options */
+    /* handle script special options here */
     //either continue processing command line
     // or making use of the command line options.
     //CLICommandOptions(cli_wand,count+1,argv, MagickScriptArgsFlags);
@@ -249,25 +228,23 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
 #endif
 
     /* Process non-script specific option from file */
-    if ( (option_type & SpecialOptionFlag) != 0 )
-      {
-        if ( LocaleCompare(option,"-exit") == 0 )
-          break;
-        /* No "-script" from script at this time */
-        CLISpecialOperator(cli_wand,option,arg1);
-      }
+    if ( (option_type & SpecialOptionFlag) != 0 ) {
+      if ( LocaleCompare(option,"-exit") == 0 )
+        break;
+      /* No "-script" from script at this time */
+      CLISpecialOperator(cli_wand,option,arg1);
+    }
 
-    if ( (option_type & SettingOptionFlags) != 0 )
-      {
-        CLISettingOptionInfo(cli_wand, option+1, arg1);
-        // FUTURE: Sync Specific Settings into Images
-      }
+    if ( (option_type & SettingOptionFlags) != 0 ) {
+      CLISettingOptionInfo(cli_wand, option, arg1);
+      // FUTURE: Sync Specific Settings into Images
+    }
 
     if ( (option_type & SimpleOperatorOptionFlag) != 0)
-      CLISimpleOperatorImages(cli_wand, plus_alt_op, option+1, arg1, arg2);
+      CLISimpleOperatorImages(cli_wand, option, arg1, arg2);
 
     if ( (option_type & ListOperatorOptionFlag) != 0 )
-      CLIListOperatorImages(cli_wand, plus_alt_op, option+1, arg1, arg2);
+      CLIListOperatorImages(cli_wand, option, arg1, arg2);
 
     if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
       break;
@@ -288,16 +265,14 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
         token_info->token[INITAL_TOKEN_LENGTH-2] = '.';
         token_info->token[INITAL_TOKEN_LENGTH-1] = '\0';
       }
-      MagickExceptionScript(OptionFatalError,"ScriptUnbalancedQuotes",
-           token_info->token,token_info->token_line,token_info->token_column);
+      CLIWandException(OptionFatalError,"ScriptUnbalancedQuotes",
+           token_info->token);
       break;
     case TokenStatusMemoryFailed:
-      MagickExceptionScript(OptionFatalError,"ScriptTokenMemoryFailed","",
-           token_info->token_line,token_info->token_column);
+      CLIWandException(OptionFatalError,"ScriptTokenMemoryFailed","");
       break;
     case TokenStatusBinary:
-      MagickExceptionScript(OptionFatalError,"ScriptIsBinary","",
-           token_info->curr_line,token_info->curr_column);
+      CLIWandException(OptionFatalError,"ScriptIsBinary","");
       break;
   }
 
@@ -334,7 +309,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
 %  The format of the ProcessCommandOptions method is:
 %
 %    int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
-%           int *index, ProcessOptionFlags process_flags )
+%           ProcessOptionFlags process_flags )
 %
 %  A description of each parameter follows:
 %
@@ -347,17 +322,6 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
 %    o process_flags: What type of arguments we are allowed to process
 %
 */
-/* FUTURE: correctly identify option... CLI arg,  Script line,column  */
-#define MagickExceptionContinue(severity,tag,arg,index) \
-  (void) ThrowMagickException(cli_wand->wand.exception,GetMagickModule(),severity,tag, \
-       "'%s' : CLI Arg #%d", arg, (int) index); \
-
-#define MagickExceptionReturn(severity,tag,option,arg) \
-{ \
-  MagickExceptionContinue(severity,tag,option,arg); \
-  return; \
-}
-
 WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
      char **argv, ProcessOptionFlags process_flags )
 {
@@ -365,9 +329,6 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
     *option,
     *arg1,
     *arg2;
-
-  MagickBooleanType
-    plus_alt_op;
 
   ssize_t
     i,
@@ -386,105 +347,99 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
   /*
     Parse command-line options.
   */
+  cli_wand->location="'%s' %s arg %d";
+  cli_wand->filename="CLI";
+
   end = argc;
   if ( ( process_flags & ProcessOutputFile ) != 0 )
     end--;
   for (i=0; i < end; i += count +1) {
-      /* Finished processing one option? */
-      if ( ( process_flags & ProcessOneOptionOnly ) != 0 && i != 0 )
-        return;
+    /* Finished processing one option? */
+    if ( ( process_flags & ProcessOneOptionOnly ) != 0 && i != 0 )
+      return;
 
-      option=argv[i];
-      plus_alt_op = MagickFalse;
-      arg1=(char *)NULL;
-      arg2=(char *)NULL;
+    option=argv[i];
+    cli_wand->line=i;
 
-
-      { const OptionInfo *option_info = GetCommandOptionInfo(argv[i]);
-        count=option_info->type;
-        option_type=option_info->flags;
+    { const OptionInfo *option_info = GetCommandOptionInfo(argv[i]);
+      count=option_info->type;
+      option_type=option_info->flags;
 #if MagickCommandDebug >= 3
-        (void) FormatLocaleFile(stderr, "option \"%s\" matched \"%s\"\n",
-             argv[i], option_info->mnemonic );
+      (void) FormatLocaleFile(stderr, "option \"%s\" matched \"%s\"\n",
+           argv[i], option_info->mnemonic );
 #endif
-      }
+    }
 
-      if ( option_type == UndefinedOptionFlag ||
-           (option_type & NonMagickOptionFlag) != 0 ) {
+    if ( option_type == UndefinedOptionFlag ||
+         (option_type & NonMagickOptionFlag) != 0 ) {
 #if MagickCommandDebug
-        (void) FormatLocaleFile(stderr, "CLI Non-Option: \"%s\"\n", option);
+      (void) FormatLocaleFile(stderr, "CLI Non-Option: \"%s\"\n", option);
 #endif
-        if ( ( IsCommandOption(option) == MagickFalse ) &&
-           ( (process_flags & ProcessNonOptionImageRead) != 0 ) ) {
-          /* non-option -- treat as a image read */
-          CLISpecialOperator(cli_wand,"-read",option);
-          count = 0;
-        }
-        else if ( (process_flags & ProcessUnknownOptionError) != 0 )
-          MagickExceptionReturn(OptionFatalError,"UnrecognizedOption",
-               option,i);
-
-        if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-          break;
-
-        continue;
+      if ( ( IsCommandOption(option) == MagickFalse ) &&
+         ( (process_flags & ProcessNonOptionImageRead) != 0 ) ) {
+        /* non-option -- treat as a image read */
+        CLISpecialOperator(cli_wand,"-read",option);
+        count = 0;
       }
-
-
-      if ( (option_type & DeprecateOptionFlag) != 0 ) {
-        MagickExceptionContinue(OptionWarning,"DeprecatedOption",option,i);
-        if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-          break;
-        /* FALLTHRU - continue processing depreciated option */
-      }
-
-      if ((i+count) >= end ) {
-        MagickExceptionReturn(OptionError,"MissingArgument",option,i);
-        if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-          break;
-        continue; /* no arguments unable to proceed */
-      }
-
-      if (*option=='+') plus_alt_op = MagickTrue;
-      if (*option!='+') arg1 = "true";
-      if ( count >= 1 ) arg1 = argv[i+1];
-      if ( count >= 2 ) arg2 = argv[i+2];
-
-#if MagickCommandDebug
-      (void) FormatLocaleFile(stderr,
-          "CLI Option: \"%s\" \tCount: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
-          option,(int) count,option_type,arg1,arg2);
-#endif
-
-      if ( (option_type & SpecialOptionFlag) != 0 ) {
-          if ( ( process_flags & ProcessExitOption ) != 0
-               && LocaleCompare(option,"-exit") == 0 )
-            return;
-          if ( ( process_flags & ProcessScriptOption ) != 0
-               && LocaleCompare(option,"-script") == 0)
-            {
-              // Unbalanced Parenthesis if stack not empty
-              // Call Script, with a filename as a zeroth argument
-              ProcessScriptOptions(cli_wand,argc-(i+1),argv+(i+1));
-              return;
-            }
-          CLISpecialOperator(cli_wand,option,arg1);
-        }
-
-      if ( (option_type & SettingOptionFlags) != 0 ) {
-          CLISettingOptionInfo(cli_wand, option+1, arg1);
-          // FUTURE: Sync Specific Settings into Images
-        }
-
-      if ( (option_type & SimpleOperatorOptionFlag) != 0)
-        CLISimpleOperatorImages(cli_wand, plus_alt_op, option+1, arg1, arg2);
-
-      if ( (option_type & ListOperatorOptionFlag) != 0 )
-        CLIListOperatorImages(cli_wand, plus_alt_op, option+1, arg1, arg2);
+      else if ( (process_flags & ProcessUnknownOptionError) != 0 )
+        CLIWandException(OptionFatalError,"UnrecognizedOption",option);
 
       if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
         break;
+
+      continue;
     }
+
+    if ( (option_type & DeprecateOptionFlag) != 0 ) {
+      CLIWandException(OptionWarning,"DeprecatedOption",option);
+      if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+        break;
+    }
+    if ((i+count) >= end ) {
+      CLIWandException(OptionError,"MissingArgument",option);
+      if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+        break;
+      continue; /* no arguments unable to proceed */
+    }
+
+    arg1 = ( count >= 1 ) ? argv[i+1] : (char *)NULL;
+    arg2 = ( count >= 2 ) ? argv[i+2] : (char *)NULL;
+
+#if MagickCommandDebug
+    (void) FormatLocaleFile(stderr,
+        "CLI Option: \"%s\" \tCount: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
+        option,(int) count,option_type,arg1,arg2);
+#endif
+
+    if ( (option_type & SpecialOptionFlag) != 0 ) {
+      if ( ( process_flags & ProcessExitOption ) != 0
+           && LocaleCompare(option,"-exit") == 0 )
+        return;
+      if ( ( process_flags & ProcessScriptOption ) != 0
+           && LocaleCompare(option,"-script") == 0)
+        {
+          // Unbalanced Parenthesis if stack not empty
+          // Call Script, with a filename as a zeroth argument
+          ProcessScriptOptions(cli_wand,argc-(i+1),argv+(i+1));
+          return;
+        }
+      CLISpecialOperator(cli_wand,option,arg1);
+    }
+
+    if ( (option_type & SettingOptionFlags) != 0 ) {
+      CLISettingOptionInfo(cli_wand, option, arg1);
+      // FUTURE: Sync Specific Settings into Images
+    }
+
+    if ( (option_type & SimpleOperatorOptionFlag) != 0)
+      CLISimpleOperatorImages(cli_wand, option, arg1, arg2);
+
+    if ( (option_type & ListOperatorOptionFlag) != 0 )
+      CLIListOperatorImages(cli_wand, option, arg1, arg2);
+
+    if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+      break;
+  }
 
   if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
     return;
@@ -511,19 +466,18 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
 
   /* If there is an option -- produce an error */
   if (IsCommandOption(option) != MagickFalse)
-    /* FUTURE: Better Error - Output Filename not Found */
-    MagickExceptionReturn(OptionError,"MissingOutputFilename",option,i);
+    CLIWandExceptionReturn(OptionError,"MissingOutputFilename",option);
 
   /* If no images in MagickCLI */
   if ( cli_wand->wand.images == (Image *) NULL ) {
-      /* a "null:" output coder with no images is not an error! */
-      if ( LocaleCompare(option,"null:") == 0 )
-        return;
-      MagickExceptionReturn(OptionError,"NoImagesForFinalWrite",option,i);
-    }
+    /* a "null:" output coder with no images is not an error! */
+    if ( LocaleCompare(option,"null:") == 0 )
+      return;
+    CLIWandExceptionReturn(OptionError,"NoImagesForFinalWrite",option);
+  }
 
 #if 0
-  WandListOperatorImages(cli_wand,MagickFalse,"write",option,(const char *)NULL);
+  WandListOperatorImages(cli_wand,"-write",option,(const char *)NULL);
 #else
   (void) SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
        cli_wand->wand.exception);
@@ -600,17 +554,6 @@ static MagickBooleanType MagickUsage(void)
    This is much like the UNIX "cat" command, but for both UNIX and Windows,
    however the last argument provides the output filename.
 */
-#define ThrowFileException(exception,severity,tag,context) \
-{ \
-  char \
-    *message; \
- \
-  message=GetExceptionMessage(errno); \
-  (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"`%s': %s",context,message); \
-  message=DestroyString(message); \
-}
-
 static MagickBooleanType ConcatenateImages(int argc,char **argv,
   ExceptionInfo *exception)
 {
@@ -625,14 +568,12 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
     i;
 
   output=fopen_utf8(argv[argc-1],"wb");
-  if (output == (FILE *) NULL)
-    {
-      ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
-        argv[argc-1]);
-      return(MagickFalse);
-    }
-  for (i=2; i < (ssize_t) (argc-1); i++)
-  {
+  if (output == (FILE *) NULL) {
+    ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
+      argv[argc-1]);
+    return(MagickFalse);
+  }
+  for (i=2; i < (ssize_t) (argc-1); i++) {
     input=fopen_utf8(argv[i],"rb");
     if (input == (FILE *) NULL)
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",argv[i]);
@@ -655,21 +596,19 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
     *option;
 
   /* Handle special single use options */
-  if (argc == 2)
-    {
-      option=argv[1];
-      if ((LocaleCompare("-version",option+1) == 0) ||
-          (LocaleCompare("--version",option+1) == 0) )
-        {
-          (void) FormatLocaleFile(stdout,"Version: %s\n",
-            GetMagickVersion((size_t *) NULL));
-          (void) FormatLocaleFile(stdout,"Copyright: %s\n",
-            GetMagickCopyright());
-          (void) FormatLocaleFile(stdout,"Features: %s\n\n",
-            GetMagickFeatures());
-          return(MagickFalse);
-        }
+  if (argc == 2) {
+    option=argv[1];
+    if ((LocaleCompare("-version",option+1) == 0) ||
+        (LocaleCompare("--version",option+1) == 0) ) {
+      (void) FormatLocaleFile(stdout,"Version: %s\n",
+        GetMagickVersion((size_t *) NULL));
+      (void) FormatLocaleFile(stdout,"Copyright: %s\n",
+        GetMagickCopyright());
+      (void) FormatLocaleFile(stdout,"Features: %s\n\n",
+        GetMagickFeatures());
+      return(MagickFalse);
     }
+  }
   /* The "magick" command must have at least two arguments */
   if (argc < 3)
     return(MagickUsage());
@@ -698,15 +637,14 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
        FUTURE: this should be a MagickCore option,
        especially as no wand is actually needed!
     */
-    CLISpecialOperator(cli_wand, argv[1]+1, argv[2]);
-  else if (LocaleCompare("-script",argv[1]) == 0)
-    {
-      /* Start processing directly from script, no pre-script options
-        Replace wand command name with script name
-      */
-      GetPathComponent(argv[2],TailPath,cli_wand->wand.name);
-      ProcessScriptOptions(cli_wand,argc-2,argv+2);
-    }
+    CLISpecialOperator(cli_wand, argv[1], argv[2]);
+  else if (LocaleCompare("-script",argv[1]) == 0) {
+    /* Start processing directly from script, no pre-script options
+      Replace wand command name with script name
+    */
+    GetPathComponent(argv[2],TailPath,cli_wand->wand.name);
+    ProcessScriptOptions(cli_wand,argc-2,argv+2);
+  }
   else
     /* Processing Command line, assuming output file as last option */
     ProcessCommandOptions(cli_wand,argc-1,argv+1,MagickCommandOptionFlags);
@@ -720,27 +658,25 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
   assert(cli_wand->wand.exception == exception);
 
   /* Handle metadata for ImageMagickObject COM object for Windows VBS */
-  if (metadata != (char **) NULL)
-    {
-      const char
-        *format;
+  if (metadata != (char **) NULL) {
+    const char
+      *format;
 
-      char
-        *text;
+    char
+      *text;
 
-      format="%w,%h,%m";   // Get this from image_info Option splaytree
+    format="%w,%h,%m";   // Get this from image_info Option splaytree
 
-      text=InterpretImageProperties(image_info,cli_wand->wand.images,format,
-           exception);
-      if (text == (char *) NULL)
-        ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-             "MemoryAllocationFailed","`%s'", GetExceptionMessage(errno));
-      else
-        {
-          (void) ConcatenateString(&(*metadata),text);
-          text=DestroyString(text);
-        }
+    text=InterpretImageProperties(image_info,cli_wand->wand.images,format,
+         exception);
+    if (text == (char *) NULL)
+      ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
+           "MemoryAllocationFailed","`%s'", GetExceptionMessage(errno));
+    else {
+      (void) ConcatenateString(&(*metadata),text);
+      text=DestroyString(text);
     }
+  }
   /* Destroy the special CLI Wand */
   cli_wand->wand.image_info = (ImageInfo *)NULL; /* not these */
   cli_wand->wand.exception = (ExceptionInfo *)NULL;
