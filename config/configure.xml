@@ -12,7 +12,7 @@
   <configure name="LIB_VERSION_NUMBER" value="7,0,0,0"/>
   <configure name="SVN_REVISION" value="7036" />
   <configure name="RELEASE_DATE" value="2012-03-03"/>
-  <configure name="CONFIGURE" value="./configure "/>
+  <configure name="CONFIGURE" value="./configure  '--enable-maintainer-mode'"/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
   <configure name="INCLUDE_PATH" value="/usr/local/include/ImageMagick"/>

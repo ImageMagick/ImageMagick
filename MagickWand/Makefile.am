@@ -45,8 +45,6 @@ MAGICKWAND_SOURCES = \
 	MagickWand/magick-image.h \
 	MagickWand/magick-property.c \
 	MagickWand/magick-property.h \
-	MagickWand/magick-cli.c \
-	MagickWand/magick-cli.h \
 	MagickWand/magick-wand.c \
 	MagickWand/magick-wand-private.h \
 	MagickWand/method-attribute.h \
