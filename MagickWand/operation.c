@@ -420,6 +420,10 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
   cli_wand->image_list_stack=(Stack *)NULL;
   cli_wand->image_info_stack=(Stack *)NULL;
+  cli_wand->location="'%s' @ unset location";
+  cli_wand->filename="";
+  cli_wand->line=0;
+  cli_wand->column=0;
   cli_wand->signature=WandSignature;
 
   if (cli_wand->wand.debug != MagickFalse)

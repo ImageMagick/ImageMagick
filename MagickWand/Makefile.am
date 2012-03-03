@@ -39,6 +39,8 @@ MAGICKWAND_SOURCES = \
 	MagickWand/identify.h \
 	MagickWand/import.c \
 	MagickWand/import.h \
+	MagickWand/magick-cli.c \
+	MagickWand/magick-cli.h \
 	MagickWand/magick-image.c \
 	MagickWand/magick-image.h \
 	MagickWand/magick-property.c \
@@ -61,6 +63,8 @@ MAGICKWAND_SOURCES = \
 	MagickWand/pixel-wand.c \
 	MagickWand/pixel-wand.h \
 	MagickWand/pixel-wand-private.h \
+	MagickWand/script-token.c \
+	MagickWand/script-token.h \
 	MagickWand/stream.c \
 	MagickWand/stream.h \
 	MagickWand/studio.h \
@@ -98,6 +102,7 @@ MAGICKWAND_NOINST_HDRS = \
 	MagickWand/magick-wand-private.h \
 	MagickWand/operation-private.h \
 	MagickWand/pixel-wand-private.h \
+	MagickWand/script-token.h \
 	MagickWand/studio.h \
 	MagickWand/wand.h
 
