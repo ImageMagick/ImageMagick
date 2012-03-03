@@ -758,7 +758,6 @@ am__objects_18 = MagickWand/MagickWand_libMagickWand_la-animate.lo \
 	MagickWand/MagickWand_libMagickWand_la-magick-cli.lo \
 	MagickWand/MagickWand_libMagickWand_la-magick-image.lo \
 	MagickWand/MagickWand_libMagickWand_la-magick-property.lo \
-	MagickWand/MagickWand_libMagickWand_la-magick-cli.lo \
 	MagickWand/MagickWand_libMagickWand_la-magick-wand.lo \
 	MagickWand/MagickWand_libMagickWand_la-mogrify.lo \
 	MagickWand/MagickWand_libMagickWand_la-montage.lo \
@@ -4381,8 +4380,6 @@ MAGICKWAND_SOURCES = \
 	MagickWand/magick-image.h \
 	MagickWand/magick-property.c \
 	MagickWand/magick-property.h \
-	MagickWand/magick-cli.c \
-	MagickWand/magick-cli.h \
 	MagickWand/magick-wand.c \
 	MagickWand/magick-wand-private.h \
 	MagickWand/method-attribute.h \
