@@ -13903,26 +13903,6 @@ Transform(ref,...)
               geometry=SvPV(ST(i),na);
               break;
             }
-         if (LocaleCompare(attribute,"gravity") == 0)
-           {
-             Image
-               *next;
-
-             ssize_t
-               in;
-
-             in=!SvPOK(ST(i)) ? SvIV(ST(i)) : ParseCommandOption(
-               MagickGravityOptions,MagickFalse,SvPV(ST(i),na));
-             if (in < 0)
-               {
-                 ThrowPerlException(exception,OptionError,"UnrecognizedType",
-                   SvPV(ST(i),na));
-                 return;
-               }
-             for (next=image; next; next=next->next)
-               next->gravity=(GravityType) in;
-             break;
-           }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
             attribute);
           break;
