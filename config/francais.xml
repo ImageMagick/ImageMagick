@@ -850,7 +850,7 @@
         <message name="ScriptIsBinary">
           de script en binaire
         </message>
-        <message name="ScriptTokenTooBig">
+        <message name="ScriptTokenMemoryFailed">
           de script token trop gros
         </message>
         <message name="ScriptUnbalancedQuotes">

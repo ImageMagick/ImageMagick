@@ -52,6 +52,14 @@ struct _MagickCLI       /* CLI interface version of MagickWand */
     *image_list_stack,  /* Stacks of Image Lists and Image Info settings */
     *image_info_stack;
 
+  const char
+    *location,          /* Location string for exception reporting */
+    *filename;          /*  EG: "'%s' @ \"%s\" line %d column %d"
+                                    option, filename, line, column */
+  size_t
+    line,               /* location of current option for error above */
+    column;
+
   size_t
     signature;
 };

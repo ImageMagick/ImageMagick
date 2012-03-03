@@ -862,7 +862,7 @@
         <message name="ScriptIsBinary">
           script is binary
         </message>
-        <message name="ScriptTokenTooBig">
+        <message name="ScriptTokenMemoryFailed">
           script token too big
         </message>
         <message name="ScriptUnbalancedQuotes">
