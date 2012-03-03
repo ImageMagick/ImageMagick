@@ -69,6 +69,7 @@ extern "C" {
 #include "MagickCore/blob.h"
 #include "MagickCore/cache.h"
 #include "MagickCore/cache-view.h"
+#include "MagickCore/channel.h"
 #include "MagickCore/cipher.h"
 #include "MagickCore/client.h"
 #include "MagickCore/coder.h"

@@ -1885,16 +1885,6 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           SetPixelChannelMapMask(image,image_info->channel);
           break;
         }
-      if (LocaleCompare("channel-extract",option+1) == 0)
-        {
-          puts("stand by...");
-          break;
-        }
-      if (LocaleCompare("channel-swap",option+1) == 0)
-        {
-          puts("stand by...");
-          break;
-        }
       if (LocaleCompare("charcoal",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
@@ -3545,9 +3535,9 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 'c':
     {
-      if (LocaleCompare("channel-inject",option+1) == 0)
+      if (LocaleCompare("channel-ops",option+1) == 0)
         {
-          puts("stand by...");
+          new_images=ChannelOperationImage(images,arg1,exception);
           break;
         }
       if (LocaleCompare("clut",option+1) == 0)

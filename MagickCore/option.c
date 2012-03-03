@@ -241,9 +241,8 @@ static const OptionInfo
     { "-cdl", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+channel", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
     { "-channel", 1L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
-    { "-channel-extract", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "-channel-inject", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickTrue },
-    { "-channel-swap", 1L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+channel-ops", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
+    { "-channel-ops", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+charcoal", 0L, DeprecateOptionFlag, MagickTrue },
     { "-charcoal", 0L, SimpleOperatorOptionFlag, MagickFalse },
     { "+chop", 1L, DeprecateOptionFlag, MagickTrue },
@@ -2522,13 +2521,13 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option_table,
 %
 %  A description of each parameter follows:
 %
-%    o options: One or more values separated by commas.
+%    o channels: One or more channels separated by commas.
 %
 */
 MagickExport ssize_t ParsePixelChannelOption(const char *channels)
 {
-  register ssize_t
-    i;
+  char
+    *q;
 
   ssize_t
     channel;
@@ -2536,84 +2535,10 @@ MagickExport ssize_t ParsePixelChannelOption(const char *channels)
   channel=ParseCommandOption(MagickPixelChannelOptions,MagickTrue,channels);
   if (channel >= 0)
     return(channel);
-  channel=0;
-  for (i=0; i < (ssize_t) strlen(channels); i++)
-  {
-    switch (channels[i])
-    {
-      case 'A':
-      case 'a':
-      {
-        channel|=AlphaPixelChannel;
-        break;
-      }
-      case 'B':
-      case 'b':
-      {
-        channel|=BluePixelChannel;
-        break;
-      }
-      case 'C':
-      case 'c':
-      {
-        channel|=CyanPixelChannel;
-        break;
-      }
-      case 'g':
-      case 'G':
-      {
-        channel|=GreenPixelChannel;
-        break;
-      }
-      case 'K':
-      case 'k':
-      {
-        channel|=BlackPixelChannel;
-        break;
-      }
-      case 'M':
-      case 'm':
-      {
-        channel|=MagentaPixelChannel;
-        break;
-      }
-      case 'o':
-      case 'O':
-      {
-        channel|=AlphaPixelChannel;
-        break;
-      }
-      case 'R':
-      case 'r':
-      {
-        channel|=RedPixelChannel;
-        break;
-      }
-      case 'Y':
-      case 'y':
-      {
-        channel|=YellowPixelChannel;
-        break;
-      }
-      case ',':
-      {
-        ssize_t
-          type;
-
-        /*
-          Gather the additional channel flags and merge with shorthand.
-        */
-        type=ParseCommandOption(MagickPixelChannelOptions,MagickTrue,
-          channels+i+1);
-        if (type < 0)
-          return(type);
-        channel|=type;
-        return(channel);
-      }
-      default:
-        return(-1);
-    }
-  }
+  q=(char *) channels;
+  channel=InterpretLocaleValue(channels,&q);
+  if ((q == channels) || (channel < 0) || (channel >= MaxPixelChannels))
+    return(-1);
   return(channel);
 }
 

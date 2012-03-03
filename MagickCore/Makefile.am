@@ -70,6 +70,8 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/cache-private.h \
 	MagickCore/cache-view.c \
 	MagickCore/cache-view.h \
+	MagickCore/channel.c \
+	MagickCore/channel.h \
 	MagickCore/cipher.c \
 	MagickCore/cipher.h \
 	MagickCore/client.c \
@@ -297,6 +299,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/blob.h \
 	MagickCore/cache.h \
 	MagickCore/cache-view.h \
+	MagickCore/channel.h \
 	MagickCore/cipher.h \
 	MagickCore/client.h \
 	MagickCore/coder.h \

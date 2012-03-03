@@ -137,12 +137,8 @@ static MagickBooleanType ConvertUsage(void)
   static const char
     *channel_operators[]=
     {
-      "-channel-extract channel-list",
-      "                     extract the channels in order",
-      "-channel-inject channel-list",
-      "                     inject the channels in order",
-      "-channel-swap channel,channel",
-      "                     swap channels",
+      "-channel-ops expression",
+      "                     exchange, extract, or transfer one or more image channels",
       (char *) NULL
     },
     *miscellaneous[]=
@@ -889,39 +885,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
-        if (LocaleCompare("channel-extract",option+1) == 0)
-          {
-            ssize_t
-              channel;
-
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) (argc-1))
-              ThrowConvertException(OptionError,"MissingArgument",option);
-            channel=ParsePixelChannelOption(argv[i]);
-            if (channel < 0)
-              ThrowConvertException(OptionError,"UnrecognizedChannelType",
-                argv[i]);
-            break;
-          }
-        if (LocaleCompare("channel-inject",option+1) == 0)
-          {
-            ssize_t
-              channel;
-
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) (argc-1))
-              ThrowConvertException(OptionError,"MissingArgument",option);
-            channel=ParsePixelChannelOption(argv[i]);
-            if (channel < 0)
-              ThrowConvertException(OptionError,"UnrecognizedChannelType",
-                argv[i]);
-            break;
-          }
-        if (LocaleCompare("channel-swap",option+1) == 0)
+        if (LocaleCompare("channel-ops",option+1) == 0)
           {
             ssize_t
               channel;
