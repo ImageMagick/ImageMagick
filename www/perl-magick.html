@@ -217,10 +217,10 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Names List" href="http://www.listofnames.info">Names List</a><!-- 2012110100180 grimshrat@busyb-->
+   <a rel="follow" title="Sponsor: Free Catalogs" href="http://www.who-sells-it.com/">Free Catalogs</a><!-- 20120801000600 -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Hosting Web" href="http://www.hostalia.com">Hosting Web</a><!-- 20120401000150 david@carre... -->
+   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
 </div>
 </div>
 </div>
@@ -2402,6 +2402,10 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
 
 <p>Finally, the Transform() method accepts a fully-qualified geometry specification for cropping or resizing one or more images.  For example,</p>
 
+<pre class="code">
+  $p = $images-&gt;Transform(crop=>'100x100+10+60');
+</pre>
+
 <p>The Flatten() method flattens a set of images and returns it. For example,</p>
 
 <pre class="code">
@@ -2547,7 +2551,7 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
 <p>Finally, the Transform() method accepts a fully-qualified geometry specification for cropping or resizing one or more images.  For example,</p>
 
 <pre class="code">
-  $p = $image-&gt;Transform(crop=&gt;'100x100+0+0', gravity=&gt;'Center');
+  $p = $image-&gt;Transform(crop=&gt;'100x100+0+0');
 </pre>
 
 <p>You can optionally add <i>Image</i> to any method name above. For example, PingImage() is an alias for method Ping().</p>
