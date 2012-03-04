@@ -1,8 +1,9 @@
 2012-03-02  6.7.5-9 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.5-9, SVN revision 7043.
+  * New version 6.7.5-9, SVN revision 7046.
 
 2012-02-29  6.7.5-9 Cristy  <quetzlzacatenango@image...>
   * Caption no long includes the prefix "caption:" in the rendered text.
+  * Auto scale pointsize for -size 100x100 caption:
 
 2012-03-02  6.7.5-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.5-8, SVN revision 7027.
