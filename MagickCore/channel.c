@@ -44,7 +44,10 @@
 #include "MagickCore/image.h"
 #include "MagickCore/list.h"
 #include "MagickCore/log.h"
+#include "MagickCore/monitor.h"
+#include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
+#include "MagickCore/pixel-accessor.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/version.h"
@@ -61,15 +64,28 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ChannelOperationImage() applies a channel expression to the specified image.
+%  The expression consists of one or more channels, either mnemonic or numeric
+%  (e.g. red, 1), separated by certain operation symbols as follows:
+%
+%    <=>     exchange two channels (e.g. red<=>blue)
+%    =>      transfer a channel to another (e.g. red=>green)
+%    ,       separate channel operations (e.g. red, green)
+%    |       read channels from next input image (e.g. red | green)
+%    ;       write channels to next output image (e.g. red; green; blue)
+%
+%  A channel without a operation symbol implies extract. For example, to create
+%  3 grayscale images from the red, green, and blue channels of an image, use:
+%
+%    -channel-ops "red; green; blue"
 %
 %  The format of the ChannelOperationImage method is:
 %
-%      Image *ChannelOperationImage(const Image *images,
+%      Image *ChannelOperationImage(const Image *image,
 %        const char *expression,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o images: the images.
+%    o image: the image.
 %
 %    o expression: A channel expression.
 %
@@ -84,16 +100,97 @@ typedef enum
   TransferChannelOp
 } ChannelOperation;
 
-static MagickBooleanType ChannelImage(Image *channel_image,const Image *image,
-  const ChannelOperation channel_op,const PixelChannel p_channel,
-  const PixelChannel q_channel,ExceptionInfo *exception)
+static inline size_t MagickMin(const size_t x,const size_t y)
 {
-  return(MagickTrue);
+  if (x < y)
+    return(x);
+  return(y);
 }
 
-MagickExport Image *ChannelOperationImage(const Image *images,
+static MagickBooleanType ChannelImage(Image *destination_image,
+  const Image *source_image,const ChannelOperation channel_op,
+  const PixelChannel source_channel,const PixelChannel destination_channel,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *source_view,
+    *destination_view;
+
+  MagickBooleanType
+    status;
+
+  size_t
+    height;
+
+  ssize_t
+    y;
+
+  status=MagickTrue;
+  source_view=AcquireCacheView(source_image);
+  destination_view=AcquireCacheView(destination_image);
+  height=MagickMin(source_image->rows,destination_image->rows);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(status)
+#endif
+  for (y=0; y < (ssize_t) height; y++)
+  {
+    register const Quantum
+      *restrict p;
+
+    register Quantum
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    size_t
+      width;
+
+    if (status == MagickFalse)
+      continue;
+    p=GetCacheViewVirtualPixels(source_view,0,y,source_image->columns,1,
+      exception);
+    q=QueueCacheViewAuthenticPixels(destination_view,0,y,
+      destination_image->columns,1,exception);
+    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
+      {
+        status=MagickFalse;
+        continue;
+      }
+    width=MagickMin(source_image->columns,destination_image->columns);
+    for (x=0; x < (ssize_t) width; x++)
+    {
+      PixelTrait
+        destination_traits,
+        source_traits;
+
+      ssize_t
+        offset;
+
+      source_traits=GetPixelChannelMapTraits(source_image,source_channel);
+      destination_traits=GetPixelChannelMapTraits(destination_image,
+        destination_channel);
+      if ((source_traits == UndefinedPixelTrait) ||
+          (destination_traits == UndefinedPixelTrait))
+        continue;
+      offset=GetPixelChannelMapOffset(source_image,source_channel);
+      SetPixelChannel(destination_image,destination_channel,p[offset],q);
+      p+=GetPixelChannels(source_image);
+      q+=GetPixelChannels(destination_image);
+    }
+    if (SyncCacheViewAuthenticPixels(destination_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  destination_view=DestroyCacheView(destination_view);
+  source_view=DestroyCacheView(source_view);
+  return(status);
+}
+
+MagickExport Image *ChannelOperationImage(const Image *image,
   const char *expression,ExceptionInfo *exception)
 {
+#define ChannelOperationImageTag  "ChannelOperation/Image"
+
   char
     token[MaxTextExtent];
 
@@ -103,22 +200,40 @@ MagickExport Image *ChannelOperationImage(const Image *images,
   const char
     *p;
 
+  const Image
+    *source_image;
+
   Image
-    *channel_images;
+    *destination_image;
 
   PixelChannel
-    p_channel,
-    q_channel;
+    source_channel,
+    destination_channel;
 
-  assert(images != (Image *) NULL);
-  assert(images->signature == MagickSignature);
-  if (images->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
-  channel_images=CloneImage(images,images->columns,images->columns,MagickTrue,
-     exception);
+  ssize_t
+    channels;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  source_image=image;
+  destination_image=CloneImage(source_image,0,0,MagickTrue,exception);
+  if (destination_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageBackgroundColor(destination_image,exception) == MagickFalse)
+    {
+      destination_image=GetLastImageInList(destination_image);
+      return((Image *) NULL);
+    }
+  if (expression == (const char *) NULL)
+    return(destination_image);
+  destination_channel=RedPixelChannel;
   p=(char *) expression;
   GetMagickToken(p,&p,token);
-  for (q_channel=RedPixelChannel; *p != '\0'; )
+  for (channels=0; *p != '\0'; )
   {
     MagickBooleanType
       status;
@@ -131,33 +246,50 @@ MagickExport Image *ChannelOperationImage(const Image *images,
     */
     if (*token == ',')
       {
-        q_channel=(PixelChannel) ((ssize_t) q_channel+1);
+        destination_channel=(PixelChannel) ((ssize_t) destination_channel+1);
         GetMagickToken(p,&p,token);
       }
     if (*token == '|')
       {
-        if (GetNextImageInList(images) != (Image *) NULL)
-          images=GetNextImageInList(images);
+        if (GetNextImageInList(source_image) != (Image *) NULL)
+          source_image=GetNextImageInList(source_image);
         else
-          images=GetFirstImageInList(images);
+          source_image=GetFirstImageInList(source_image);
         GetMagickToken(p,&p,token);
       }
     if (*token == ';')
       {
-        AppendImageToList(&channel_images,CloneImage(images,
-          channel_images->columns,channel_images->rows,MagickTrue,exception));
-        channel_images=GetLastImageInList(channel_images);
+        Image
+          *canvas;
+
+        if (channels == 1)
+          destination_image->colorspace=GRAYColorspace;
+        canvas=CloneImage(source_image,0,0,MagickTrue,exception);
+        if (canvas == (Image *) NULL)
+          {
+            destination_image=GetLastImageInList(destination_image);
+            return((Image *) NULL);
+          }
+        AppendImageToList(&destination_image,canvas);
+        destination_image=GetLastImageInList(destination_image);
+        if (SetImageBackgroundColor(destination_image,exception) == MagickFalse)
+          {
+            destination_image=GetLastImageInList(destination_image);
+            return((Image *) NULL);
+          }
         GetMagickToken(p,&p,token);
+        channels=0;
+        destination_channel=RedPixelChannel;
       }
     i=ParsePixelChannelOption(token);
     if (i < 0)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
           "UnableToParseExpression","`%s'",p);
-        channel_images=DestroyImageList(channel_images);
+        destination_image=DestroyImageList(destination_image);
         break;
       }
-    p_channel=(PixelChannel) i;
+    source_channel=(PixelChannel) i;
     channel_op=ExtractChannelOp;
     GetMagickToken(p,&p,token);
     if (*token == '<')
@@ -180,18 +312,25 @@ MagickExport Image *ChannelOperationImage(const Image *images,
           {
             (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
               "UnableToParseExpression","`%s'",p);
-            channel_images=DestroyImageList(channel_images);
+            destination_image=DestroyImageList(destination_image);
             break;
           }
-        q_channel=(PixelChannel) i;
+        destination_channel=(PixelChannel) i;
       }
-    status=ChannelImage(channel_images,images,channel_op,p_channel,q_channel,
-      exception);
+    status=ChannelImage(destination_image,source_image,channel_op,
+      source_channel,destination_channel,exception);
     if (status == MagickFalse)
       {
-        channel_images=DestroyImageList(channel_images);
+        destination_image=DestroyImageList(destination_image);
         break;
       }
+    channels++;
+    status=SetImageProgress(source_image,ChannelOperationImageTag,p-expression,
+      strlen(expression));
+    if (status == MagickFalse)
+      break;
   }
-  return(channel_images);
+  if (channels == 1)
+    destination_image->colorspace=GRAYColorspace;
+  return(destination_image);
 }
