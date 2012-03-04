@@ -109,8 +109,8 @@ static void PangoSubstitute(FcPattern *pattern,void *context)
   FcPatternAddBool(pattern,FC_AUTOHINT,LocaleCompare(option,"auto") == 0);
 }
 
-static Image *ReadCAPTIONImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
+  const DrawInfo *draw_info,ExceptionInfo *exception)
 {
   char
     *caption,
@@ -119,14 +119,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   const char
     *option;
 
-  DrawInfo
-    *draw_info;
-
   FT_Bitmap
     *canvas;
-
-  Image
-    *image;
 
   PangoAlignment
     align;
@@ -165,18 +159,6 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     y;
 
   /*
-    Initialize Image structure.
-  */
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  if (image_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image_info->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  image=AcquireImage(image_info);
-  (void) ResetImagePage(image,"0x0+0+0");
-  /*
     Get context.
   */
   fontmap=(PangoFontMap *) pango_ft2_font_map_new();
@@ -189,7 +171,6 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   option=GetImageOption(image_info,"caption:language");
   if (option != (const char *) NULL)
     pango_context_set_language(context,pango_language_from_string(option));
-  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   pango_context_set_base_dir(context,draw_info->direction ==
     RightToLeftDirection ? PANGO_DIRECTION_RTL : PANGO_DIRECTION_LTR);
   switch (draw_info->gravity)
@@ -263,7 +244,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   pango_layout_set_alignment(layout,align);
   description=pango_font_description_from_string(draw_info->font ==
     (char *) NULL ? "helvetica" : draw_info->font);
-  pango_font_description_set_size(description,PANGO_SCALE*draw_info->pointsize);
+  pango_font_description_set_size(description,(int) (0.9*PANGO_SCALE*
+    draw_info->pointsize+0.5));
   pango_layout_set_font_description(layout,description);
   pango_font_description_free(description);
   option=GetImageOption(image_info,"filename");
@@ -317,10 +299,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   */
   canvas=(FT_Bitmap *) AcquireMagickMemory(sizeof(*canvas));
   if (canvas == (FT_Bitmap *) NULL)
-    {
-      draw_info=DestroyDrawInfo(draw_info);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-    }
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
   canvas->width=image->columns;
   canvas->pitch=(canvas->width+3) & ~3;
   canvas->rows=image->rows;
@@ -328,9 +308,9 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     canvas->rows*sizeof(*canvas->buffer));
   if (canvas->buffer == (unsigned char *) NULL)
     {
-      draw_info=DestroyDrawInfo(draw_info);
       canvas=(FT_Bitmap *) RelinquishMagickMemory(canvas);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
     }
   canvas->num_grays=256;
   canvas->pixel_mode=ft_pixel_mode_grays;
@@ -343,12 +323,11 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   image->rows+=2*page.y;
   if (SetImageBackgroundColor(image) == MagickFalse)
     {
-      draw_info=DestroyDrawInfo(draw_info);
       canvas->buffer=(unsigned char *) RelinquishMagickMemory(canvas->buffer);
       canvas=(FT_Bitmap *) RelinquishMagickMemory(canvas);
       caption=DestroyString(caption);
       image=DestroyImageList(image);
-      return((Image *) NULL);
+      return(MagickFalse);
     }
   p=canvas->buffer;
   for (y=page.y; y < (ssize_t) (image->rows-page.y); y++)
@@ -380,13 +359,13 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   /*
     Relinquish resources.
   */
-  draw_info=DestroyDrawInfo(draw_info);
   canvas->buffer=(unsigned char *) RelinquishMagickMemory(canvas->buffer);
   canvas=(FT_Bitmap *) RelinquishMagickMemory(canvas);
   caption=DestroyString(caption);
-  return(GetFirstImageInList(image));
+  return(MagickTrue);
 }
-#else
+#endif
+
 static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -396,7 +375,8 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     *property;
 
   const char
-    *gravity;
+    *gravity,
+    *option;
 
   DrawInfo
     *draw_info;
@@ -435,6 +415,14 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     Format caption.
   */
   property=InterpretImageProperties(image_info,image,image_info->filename);
+  option=GetImageOption(image_info,"filename");
+  if (option == (const char *) NULL)
+    property=InterpretImageProperties(image_info,image,image_info->filename);
+  else
+    if (LocaleNCompare(option,"caption:",8) == 0)
+      property=InterpretImageProperties(image_info,image,option+8);
+    else
+      property=InterpretImageProperties(image_info,image,option);
   (void) SetImageProperty(image,"caption",property);
   property=DestroyString(property);
   caption=ConstantString(GetImageProperty(image,"caption"));
@@ -523,12 +511,20 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           metrics.ascent+draw_info->stroke_width/2.0);
       draw_info->geometry=AcquireString(geometry);
     }
-  (void) AnnotateImage(image,draw_info);
+#if defined(MAGICKCORE_PANGOFT2_DELEGATE)
+  status=PangoImage(image_info,image,draw_info,exception);
+#else
+  status=AnnotateImage(image,draw_info,exception);
+#endif
   draw_info=DestroyDrawInfo(draw_info);
   caption=DestroyString(caption);
+  if (status == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
   return(GetFirstImageInList(image));
 }
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
