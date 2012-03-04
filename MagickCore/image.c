@@ -1598,9 +1598,8 @@ MagickExport VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 %
 %  The format of the InterpretImageFilename method is:
 %
-%      size_t InterpretImageFilename(const ImageInfo *image_info,
-%        Image *image,const char *format,int value,char *filename,
-%        ExceptionInfo *exception)
+%      size_t InterpretImageFilename(const ImageInfo *image_info,Image *image,
+%        const char *format,int value,char *filename,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
