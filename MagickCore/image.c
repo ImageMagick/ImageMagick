@@ -2244,7 +2244,7 @@ MagickExport Image *SeparateImage(const Image *image,
     y;
 
   /*
-    Initialize spread image attributes.
+    Initialize seaprate image attributes.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
