@@ -5,7 +5,7 @@
     <name>ImageMagick</name>
     <shortdesc xml:lang="en">ImageMagick: convert, edit, and compose images.</shortdesc>
     <homepage rdf:resource="http://www.imagemagick.org/"/>
-    <created>2012-03-02</created>
+    <created>2012-03-04</created>
 
     <description xml:lang="en">
 ImageMagick® is a software suite to create, edit, compose, or convert bitmap images. It can read and write images in a variety of formats (over 100) including DPX, EXR, GIF, JPEG, JPEG-2000, PDF, PhotoCD, PNG, Postscript, SVG, and TIFF. Use ImageMagick to resize, flip, mirror, rotate, distort, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and Bézier curves.
@@ -57,7 +57,7 @@ Examples of ImageMagick Usage shows how to use ImageMagick from the command-line
     <release>
       <Version>
           <name>stable</name>
-          <created>2012-03-02</created>
+          <created>2012-03-04</created>
           <revision>6.7.5</revision>
       </Version>
     </release>
