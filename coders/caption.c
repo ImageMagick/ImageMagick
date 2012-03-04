@@ -267,10 +267,13 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   pango_layout_set_font_description(layout,description);
   pango_font_description_free(description);
   option=GetImageOption(image_info,"filename");
-  if (option != (const char *) NULL)
-    property=InterpretImageProperties(image_info,image,option);
-  else
+  if (option == (const char *) NULL)
     property=InterpretImageProperties(image_info,image,image_info->filename);
+  else
+    if (LocaleNCompare(option,"caption:",8) == 0)
+      property=InterpretImageProperties(image_info,image,option+8);
+    else
+      property=InterpretImageProperties(image_info,image,option);
   (void) SetImageProperty(image,"caption",property);
   property=DestroyString(property);
   caption=ConstantString(GetImageProperty(image,"caption"));
