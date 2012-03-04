@@ -112,10 +112,6 @@ static void PangoSubstitute(FcPattern *pattern,void *context)
 static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
   const DrawInfo *draw_info,ExceptionInfo *exception)
 {
-  char
-    *caption,
-    *property;
-
   const char
     *option;
 
@@ -244,30 +240,18 @@ static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
   pango_layout_set_alignment(layout,align);
   description=pango_font_description_from_string(draw_info->font ==
     (char *) NULL ? "helvetica" : draw_info->font);
-  pango_font_description_set_size(description,(int) (0.9*PANGO_SCALE*
-    draw_info->pointsize+0.5));
+  pango_font_description_set_size(description,PANGO_SCALE*(int)
+    (draw_info->pointsize+0.5));
   pango_layout_set_font_description(layout,description);
   pango_font_description_free(description);
-  option=GetImageOption(image_info,"filename");
-  if (option == (const char *) NULL)
-    property=InterpretImageProperties(image_info,image,image_info->filename,
-      exception);
-  else
-    if (LocaleNCompare(option,"caption:",8) == 0)
-      property=InterpretImageProperties(image_info,image,option+8,exception);
-    else
-      property=InterpretImageProperties(image_info,image,option,exception);
-  (void) SetImageProperty(image,"caption",property,exception);
-  property=DestroyString(property);
-  caption=ConstantString(GetImageProperty(image,"caption",exception));
   /*
     Render caption.
   */
   option=GetImageOption(image_info,"caption:markup");
   if ((option != (const char *) NULL) && (IsMagickTrue(option) != MagickFalse))
-    pango_layout_set_markup(layout,caption,-1);
+    pango_layout_set_markup(layout,draw_info->text,-1);
   else
-    pango_layout_set_text(layout,caption,-1);
+    pango_layout_set_text(layout,draw_info->text,-1);
   pango_layout_context_changed(layout);
   page.x=0;
   page.y=0;
@@ -326,7 +310,6 @@ static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
     {
       canvas->buffer=(unsigned char *) RelinquishMagickMemory(canvas->buffer);
       canvas=(FT_Bitmap *) RelinquishMagickMemory(canvas);
-      caption=DestroyString(caption);
       image=DestroyImageList(image);
       return(MagickFalse);
     }
@@ -364,7 +347,6 @@ static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
   */
   canvas->buffer=(unsigned char *) RelinquishMagickMemory(canvas->buffer);
   canvas=(FT_Bitmap *) RelinquishMagickMemory(canvas);
-  caption=DestroyString(caption);
   return(MagickTrue);
 }
 #endif
