@@ -2527,16 +2527,18 @@ MagickExport ssize_t ParseCommandOption(const CommandOption option_table,
 MagickExport ssize_t ParsePixelChannelOption(const char *channels)
 {
   char
-    *q;
+    *q,
+    token[MaxTextExtent];
 
   ssize_t
     channel;
 
-  channel=ParseCommandOption(MagickPixelChannelOptions,MagickTrue,channels);
+  GetMagickToken(channels,NULL,token);
+  channel=ParseCommandOption(MagickPixelChannelOptions,MagickTrue,token);
   if (channel >= 0)
     return(channel);
-  q=(char *) channels;
-  channel=InterpretLocaleValue(channels,&q);
+  q=(char *) token;
+  channel=InterpretLocaleValue(token,&q);
   if ((q == channels) || (channel < 0) || (channel >= MaxPixelChannels))
     return(-1);
   return(channel);
