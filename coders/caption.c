@@ -496,7 +496,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
 #if defined(MAGICKCORE_PANGOFT2_DELEGATE)
   status=PangoImage(image_info,image,draw_info,exception);
 #else
-  status=AnnotateImage(image,draw_info,exception);
+  status=AnnotateImage(image,draw_info);
 #endif
   draw_info=DestroyDrawInfo(draw_info);
   caption=DestroyString(caption);
