@@ -487,15 +487,12 @@ extern MagickExport Image
   *AppendImages(const Image *,const MagickBooleanType,ExceptionInfo *),
   *CloneImage(const Image *,const size_t,const size_t,const MagickBooleanType,
     ExceptionInfo *),
-  *CombineImages(const Image *,ExceptionInfo *),
   *DestroyImage(Image *),
   *GetImageClipMask(const Image *,ExceptionInfo *),
   *GetImageMask(const Image *,ExceptionInfo *),
   *NewMagickImage(const ImageInfo *,const size_t,const size_t,const PixelInfo *,
     ExceptionInfo *),
   *ReferenceImage(Image *),
-  *SeparateImage(const Image *,const ChannelType,ExceptionInfo *),
-  *SeparateImages(const Image *,ExceptionInfo *),
   *SmushImages(const Image *,const MagickBooleanType,const ssize_t,
     ExceptionInfo *);
 

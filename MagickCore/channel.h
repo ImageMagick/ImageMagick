@@ -23,7 +23,14 @@ extern "C" {
 #endif
 
 extern MagickExport Image
-  *ChannelOperationImage(const Image *,const char *,ExceptionInfo *);
+  *ChannelOperationImage(const Image *,const char *,ExceptionInfo *),
+  *CombineImages(const Image *,ExceptionInfo *),
+  *SeparateImage(const Image *,const ChannelType,ExceptionInfo *),
+  *SeparateImages(const Image *,ExceptionInfo *);
+
+extern MagickExport MagickBooleanType
+  GetImageAlphaChannel(const Image *),
+  SetImageAlphaChannel(Image *,const AlphaChannelType,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
