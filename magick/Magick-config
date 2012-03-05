@@ -35,7 +35,7 @@ while test $# -gt 0; do
       echo $exec_prefix
       ;;
     --version)
-      echo '6.7.5 Q16 '
+      echo '6.7.6 Q16 '
       ;;
     --cflags)
       pkg-config --cflags MagickCore
