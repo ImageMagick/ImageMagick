@@ -288,7 +288,7 @@ MagickExport Image *ChannelOperationImage(const Image *image,
     if (i < 0)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "UnableToParseExpression","`%s'",p);
+          "UnrecognizedChannelType","`%s'",token);
         destination_image=DestroyImageList(destination_image);
         break;
       }
@@ -314,7 +314,7 @@ MagickExport Image *ChannelOperationImage(const Image *image,
         if (i < 0)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-              "UnableToParseExpression","`%s'",p);
+              "UnrecognizedChannelType","`%s'",token);
             destination_image=DestroyImageList(destination_image);
             break;
           }
