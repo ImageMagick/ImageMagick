@@ -424,7 +424,7 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   cli_wand->image_list_stack=(Stack *)NULL;
   cli_wand->image_info_stack=(Stack *)NULL;
   cli_wand->location="'%s' at unknown location";
-  cli_wand->filename="";
+  cli_wand->filename=cli_wand->wand.name;
   cli_wand->line=0;
   cli_wand->column=0;
   cli_wand->signature=WandSignature;
@@ -3537,7 +3537,8 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("channel-ops",option+1) == 0)
         {
-          new_images=ChannelOperationImage(images,arg1,exception);
+          (void) SyncImagesSettings(mogrify_info,*images,exception);
+          new_images=ChannelOperationImage(*images,argv[i+1],exception);
           break;
         }
       if (LocaleCompare("clut",option+1) == 0)
@@ -3700,7 +3701,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
         }
       if (LocaleCompare("flatten",option+1) == 0)
         {
-          /* DEPRECIATED use -layers mosaic instead */
+          /* REDIRECTED to use -layers flatten instead */
           CLIListOperatorImages(cli_wand,"-layer",option+1,NULL);
           break;
         }
@@ -3969,7 +3970,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
         }
       if (LocaleCompare("mosaic",option+1) == 0)
         {
-          /* DEPRECIATED use -layers mosaic instead */
+          /* REDIRECTED to use -layers mosaic instead */
           CLIListOperatorImages(cli_wand,"-layer",option+1,NULL);
           break;
         }
@@ -4427,7 +4428,8 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       AppendImageToList(&cli_wand->wand.images,new_images);
       return;
     }
-  if ( LocaleCompare("read",option+1) == 0 )
+  if ( ( LocaleCompare("read",option+1) == 0 ) ||
+       ( LocaleCompare("--",option) == 0 ) )
     {
 #if !USE_WAND_METHODS
       Image *
