@@ -71,7 +71,7 @@ struct _MagickCLI       /* CLI interface version of MagickWand */
 
   const char
     *location,          /* Location string for exception reporting */
-    *filename;          /*  EG: "'%s' @ \"%s\" line %d column %d"
+    *filename;          /*  EG: "'%s' @ \"%s\" line %u column %u"
                                     option, filename, line, column */
   size_t
     line,               /* location of current option for error above */
