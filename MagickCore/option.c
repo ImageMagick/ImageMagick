@@ -2539,7 +2539,7 @@ MagickExport ssize_t ParsePixelChannelOption(const char *channels)
     return(channel);
   q=(char *) token;
   channel=InterpretLocaleValue(token,&q);
-  if ((q == channels) || (channel < 0) || (channel >= MaxPixelChannels))
+  if ((q == token) || (channel < 0) || (channel >= MaxPixelChannels))
     return(-1);
   return(channel);
 }
