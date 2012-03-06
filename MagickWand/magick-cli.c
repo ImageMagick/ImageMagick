@@ -203,7 +203,6 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
         count = 0;
       }
       else
-      else {
         CLIWandExceptionBreak(OptionFatalError,"UnrecognizedOption",option);
 
       if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
