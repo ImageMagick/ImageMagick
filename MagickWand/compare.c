@@ -729,15 +729,6 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       }
       case 'p':
       {
-        if (LocaleCompare("passphrase",option+1) == 0)
-          {
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) argc)
-              ThrowCompareException(OptionError,"MissingArgument",option);
-            break;
-          }
         if (LocaleCompare("profile",option+1) == 0)
           {
             i++;

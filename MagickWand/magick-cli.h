@@ -47,8 +47,10 @@ typedef enum
 } ProcessOptionFlags;
 
 extern WandExport void
-  ProcessScriptOptions(MagickCLI *,int,char **),
-  ProcessCommandOptions(MagickCLI *,int,char **,ProcessOptionFlags);
+  ProcessScriptOptions(MagickCLI *,int,char **,int);
+
+extern WandExport int
+  ProcessCommandOptions(MagickCLI *,int,char **,int,ProcessOptionFlags);
 
 extern WandExport MagickBooleanType
   MagickImageCommand(ImageInfo *,int,char **,char **,ExceptionInfo *);

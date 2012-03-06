@@ -169,7 +169,6 @@ static MagickBooleanType MontageUsage(void)
       "-mattecolor color    frame color",
       "-mode type           framing style",
       "-monitor             monitor progress",
-      "-origin geometry     image origin",
       "-page geometry       size and location of an image canvas (setting)",
       "-pointsize value     font point size",
       "-profile filename    add, delete, or apply an image profile",
@@ -1269,21 +1268,6 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("noop",option+1) == 0)
           break;
-        ThrowMontageException(OptionError,"UnrecognizedOption",option)
-      }
-      case 'o':
-      {
-        if (LocaleCompare("origin",option+1) == 0)
-          {
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) argc)
-              ThrowMontageException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowMontageInvalidArgumentException(option,argv[i]);
-            break;
-          }
         ThrowMontageException(OptionError,"UnrecognizedOption",option)
       }
       case 'p':

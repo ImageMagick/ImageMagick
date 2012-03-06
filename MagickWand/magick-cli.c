@@ -86,20 +86,21 @@
 %
 %  ProcessScriptOptions() reads options and processes options as they are
 %  found in the given file, or pipeline.  The filename to open and read
-%  options is given as the zeroth argument of the argument array given.
+%  options is given as the 'index' argument of the argument array given.
 %
-%  A script not 'return' to the command line processing, nor can they
-%  call (and return from) other scripts. At least not at this time.
+%  Other arguments following index may be read by special script options
+%  as settings (strings), images, or as operations to be processed in various
+%  ways.   How they are treated is up to the script being processed.
 %
-%  However special script options may used to read and process the other
-%  argument provided, typically those that followed a "-script" option on the
-%  command line. These extra script arguments may be interpreted as being
-%  images to read or write, settings (strings), or more options to be
-%  processed.  How they are treated is up to the script being processed.
+%  Note that a script not 'return' to the command line processing, nor can
+%  they call (and return from) other scripts. At least not at this time.
+%
+%  There are no 'ProcessOptionFlags' control flags at this time.
 %
 %  The format of the ProcessScriptOptions method is:
 %
-%    void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
+%    void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
+%               int index)
 %
 %  A description of each parameter follows:
 %
@@ -109,8 +110,11 @@
 %
 %    o argv: A text array containing the command line arguments.
 %
+%    o index: offset for argc to CLI argumnet count
+%
 */
-WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
+WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
+     int index)
 {
   ScriptTokenInfo
     *token_info;
@@ -118,7 +122,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
   CommandOptionFlags
     option_type;
 
-  ssize_t
+  int
     count;
 
   char
@@ -126,35 +130,45 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
     *arg1,
     *arg2;
 
-  assert(argc>0 && argv[argc-1] != (char *)NULL);
+  assert(argc>index); /* at least one argument - script name */
+  assert(argv != (char **)NULL);
+  assert(argv[index] != (char *)NULL);
+  assert(argv[argc-1] != (char *)NULL);
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
   if (cli_wand->wand.debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
-
-  token_info = AcquireScriptTokenInfo(argv[0]);
+  /* open file script or stream, and set up tokenizer */
+  token_info = AcquireScriptTokenInfo(argv[index]);
   if (token_info->token == (char *) NULL) {
     ThrowFileException(cli_wand->wand.exception,OptionFatalError,
-               "UnableToOpenScript",argv[0]);
+               "UnableToOpenScript",argv[index]);
     return;
   }
 
-  /* Process Options from Script */
-  cli_wand->location="'%s' in \"%s\" line %d column %d";
-  cli_wand->filename=cli_wand->wand.name;
-  option = arg1 = arg2 = (char*)NULL;
+  /* define the error location string for use in exceptions
+     order of input escapes: option, filename, line, column
+  */
+  cli_wand->location="'%s' in \"%s\" line %u column %u";
+  if ( LocaleCompare("-", argv[index]) == 0 )
+    cli_wand->filename="stdin";
+  else
+    cli_wand->filename=argv[index];
 
+  /* Process Options from Script */
+  option = arg1 = arg2 = (char*)NULL;
   while (1) {
 
     /* Get a option */
-    if( GetScriptToken(token_info) == MagickFalse )
-      break;
+    { MagickBooleanType status = GetScriptToken(token_info);
+      cli_wand->line=token_info->token_line;
+      cli_wand->column=token_info->token_column;
+      if( status == MagickFalse )
+        break;
+    }
 
-    cli_wand->line=token_info->token_line;
-    cli_wand->column=token_info->token_column;
-
-    /* Sanity check: option is larger than what should be posible */
+    /* Sanity check: option is larger than anything that should be posible */
     if( strlen(token_info->token) > INITAL_TOKEN_LENGTH-1 ) {
       token_info->token[INITAL_TOKEN_LENGTH-4] = '.';
       token_info->token[INITAL_TOKEN_LENGTH-3] = '.';
@@ -166,22 +180,18 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
 
     /* save option details */
     CloneString(&option,token_info->token);
-#if MagickCommandDebug >=2
-    (void) FormatLocaleFile(stderr, "Script Option Token: %u,%u: \"%s\"\n",
-             option_line, option_column, option );
-#endif
 
     { /* get option type and argument count */
       const OptionInfo *option_info = GetCommandOptionInfo(option);
       count=option_info->type;
       option_type=option_info->flags;
-#if MagickCommandDebug >= 3
-      (void) FormatLocaleFile(stderr, "option \"%s\" matched \"%s\"\n",
-           option, option_info->mnemonic );
+#if MagickCommandDebug >= 2
+      (void) FormatLocaleFile(stderr, "Script: %u,%u: \"%s\" matched \"%s\"\n",
+             cli_wand->line, cli_wand->line, option, option_info->mnemonic );
 #endif
     }
 
-      /* handle a undefined option - image read? */
+    /* handle a undefined option - image read? */
     if ( option_type == UndefinedOptionFlag ||
          (option_type & NonMagickOptionFlag) != 0 ) {
 #if MagickCommandDebug
@@ -193,6 +203,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
         count = 0;
       }
       else
+      else {
         CLIWandExceptionBreak(OptionFatalError,"UnrecognizedOption",option);
 
       if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
@@ -231,7 +242,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
     if ( (option_type & SpecialOptionFlag) != 0 ) {
       if ( LocaleCompare(option,"-exit") == 0 )
         break;
-      /* No "-script" from script at this time */
+      /* No "-script" option from script at this time */
       CLISpecialOperator(cli_wand,option,arg1);
     }
 
@@ -309,7 +320,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
 %  The format of the ProcessCommandOptions method is:
 %
 %    int ProcessCommandOptions(MagickCLI *cli_wand,int argc,char **argv,
-%           ProcessOptionFlags process_flags )
+%           int index, ProcessOptionFlags process_flags )
 %
 %  A description of each parameter follows:
 %
@@ -321,16 +332,22 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv)
 %
 %    o process_flags: What type of arguments we are allowed to process
 %
+%    o index: index in the argv array to start processing from
+%
+% The function returns the index ot the next option to be processed. This
+% is really only releven if process_flags contains a ProcessOneOptionOnly
+% flag.
+%
 */
-WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
-     char **argv, ProcessOptionFlags process_flags )
+WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
+     char **argv, int index, ProcessOptionFlags process_flags )
 {
   const char
     *option,
     *arg1,
     *arg2;
 
-  ssize_t
+  int
     i,
     end,
     count;
@@ -338,7 +355,10 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
   CommandOptionFlags
     option_type;
 
-  assert(argc>0 && argv[argc-1] != (char *)NULL);
+  assert(argc>=index); /* you may have no arguments left! */
+  assert(argv != (char **)NULL);
+  assert(argv[index] != (char *)NULL);
+  assert(argv[argc-1] != (char *)NULL);
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
   if (cli_wand->wand.debug != MagickFalse)
@@ -353,10 +373,11 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
   end = argc;
   if ( ( process_flags & ProcessOutputFile ) != 0 )
     end--;
-  for (i=0; i < end; i += count +1) {
+
+  for (i=index; i < end; i += count +1) {
     /* Finished processing one option? */
-    if ( ( process_flags & ProcessOneOptionOnly ) != 0 && i != 0 )
-      return;
+    if ( ( process_flags & ProcessOneOptionOnly ) != 0 && i != index )
+      return(i);
 
     option=argv[i];
     cli_wand->line=i;
@@ -364,9 +385,9 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
     { const OptionInfo *option_info = GetCommandOptionInfo(argv[i]);
       count=option_info->type;
       option_type=option_info->flags;
-#if MagickCommandDebug >= 3
-      (void) FormatLocaleFile(stderr, "option \"%s\" matched \"%s\"\n",
-           argv[i], option_info->mnemonic );
+#if MagickCommandDebug >= 2
+      (void) FormatLocaleFile(stderr, "CLI %d: \"%s\" matched \"%s\"\n",
+            i, argv[i], option_info->mnemonic );
 #endif
     }
 
@@ -385,7 +406,7 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
         CLIWandException(OptionFatalError,"UnrecognizedOption",option);
 
       if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-        break;
+        return(i+1);
 
       continue;
     }
@@ -393,12 +414,12 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
     if ( (option_type & DeprecateOptionFlag) != 0 ) {
       CLIWandException(OptionWarning,"DeprecatedOption",option);
       if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-        break;
+        return(i+count+1);
     }
     if ((i+count) >= end ) {
-      CLIWandException(OptionError,"MissingArgument",option);
+      CLIWandException(OptionFatalError,"MissingArgument",option);
       if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-        break;
+        return(end);
       continue; /* no arguments unable to proceed */
     }
 
@@ -414,15 +435,14 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
     if ( (option_type & SpecialOptionFlag) != 0 ) {
       if ( ( process_flags & ProcessExitOption ) != 0
            && LocaleCompare(option,"-exit") == 0 )
-        return;
+        return(i+count);
       if ( ( process_flags & ProcessScriptOption ) != 0
-           && LocaleCompare(option,"-script") == 0)
-        {
-          // Unbalanced Parenthesis if stack not empty
-          // Call Script, with a filename as a zeroth argument
-          ProcessScriptOptions(cli_wand,argc-(i+1),argv+(i+1));
-          return;
-        }
+           && LocaleCompare(option,"-script") == 0) {
+        // Unbalanced Parenthesis if stack not empty
+        // Call Script, with a filename as a zeroth argument
+        ProcessScriptOptions(cli_wand,argc,argv,i+1);
+        return(argc); /* no more options after script process! */
+      }
       CLISpecialOperator(cli_wand,option,arg1);
     }
 
@@ -438,14 +458,13 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
       CLIListOperatorImages(cli_wand, option, arg1, arg2);
 
     if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-      break;
+      return(i+count);
   }
-
-  if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-    return;
+  assert(i==end);
 
   if ( ( process_flags & ProcessOutputFile ) == 0 )
-    return;
+    return(end);
+
   assert(end==argc-1);
 
   /*
@@ -462,18 +481,21 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
 
   /* This is a valid 'do no write' option for a CLI */
   if (LocaleCompare(option,"-exit") == 0 )
-    return;  /* just exit, no image write */
+    return(argc);  /* just exit, no image write */
 
   /* If there is an option -- produce an error */
-  if (IsCommandOption(option) != MagickFalse)
-    CLIWandExceptionReturn(OptionError,"MissingOutputFilename",option);
+  if (IsCommandOption(option) != MagickFalse) {
+    CLIWandException(OptionError,"MissingOutputFilename",option);
+    return(argc);
+  }
 
   /* If no images in MagickCLI */
   if ( cli_wand->wand.images == (Image *) NULL ) {
     /* a "null:" output coder with no images is not an error! */
     if ( LocaleCompare(option,"null:") == 0 )
-      return;
-    CLIWandExceptionReturn(OptionError,"NoImagesForFinalWrite",option);
+      return(argc);
+    CLIWandException(OptionError,"NoImagesForFinalWrite",option);
+    return(argc);
   }
 
 #if 0
@@ -484,7 +506,7 @@ WandExport void ProcessCommandOptions(MagickCLI *cli_wand,int argc,
   (void) WriteImages(cli_wand->wand.image_info,cli_wand->wand.images,option,
        cli_wand->wand.exception);
 #endif
-  return;
+  return(argc);
 }
 
 /*
@@ -640,14 +662,17 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
     CLISpecialOperator(cli_wand, argv[1], argv[2]);
   else if (LocaleCompare("-script",argv[1]) == 0) {
     /* Start processing directly from script, no pre-script options
-      Replace wand command name with script name
+       Replace wand command name with script name
+       First argument in the argv array is the script name to read.
     */
     GetPathComponent(argv[2],TailPath,cli_wand->wand.name);
-    ProcessScriptOptions(cli_wand,argc-2,argv+2);
+    ProcessScriptOptions(cli_wand,argc,argv,2);
   }
-  else
+  else {
     /* Processing Command line, assuming output file as last option */
-    ProcessCommandOptions(cli_wand,argc-1,argv+1,MagickCommandOptionFlags);
+    GetPathComponent(argv[0],TailPath,cli_wand->wand.name);
+    ProcessCommandOptions(cli_wand,argc,argv,1,MagickCommandOptionFlags);
+  }
 
   /* recover original image_info from bottom of stack */
   while (cli_wand->image_info_stack != (Stack *)NULL)
