@@ -3537,7 +3537,6 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("channel-ops",option+1) == 0)
         {
-          (void) SyncImagesSettings(mogrify_info,*images,exception);
           new_images=ChannelOperationImage(*images,argv[i+1],exception);
           break;
         }
