@@ -137,7 +137,7 @@ static MagickBooleanType ConvertUsage(void)
   static const char
     *channel_operators[]=
     {
-      "-channel-ops expression",
+      "-channel-fx expression",
       "                     exchange, extract, or transfer one or more image channels",
       (char *) NULL
     },
@@ -885,7 +885,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
                 argv[i]);
             break;
           }
-        if (LocaleCompare("channel-ops",option+1) == 0)
+        if (LocaleCompare("channel-fx",option+1) == 0)
           {
             ssize_t
               channel;

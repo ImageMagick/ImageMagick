@@ -2849,6 +2849,169 @@ BlobToImage(ref,...)
 #                                                                             #
 #                                                                             #
 #                                                                             #
+#   C h a n n e l F x                                                         #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#
+void
+ChannelFx(ref,...)
+  Image::Magick ref=NO_INIT
+  ALIAS:
+    ChannelFxImage  = 1
+    channelfx       = 2
+    channelfximage  = 3
+  PPCODE:
+  {
+    AV
+      *av;
+
+    char
+      *attribute,
+      expression[MaxTextExtent];
+
+    ChannelType
+      channel,
+      channel_mask;
+
+    ExceptionInfo
+      *exception;
+
+    HV
+      *hv;
+
+    Image
+      *image;
+
+    register ssize_t
+      i;
+
+    struct PackageInfo
+      *info;
+
+    SV
+      *av_reference,
+      *perl_exception,
+      *reference,
+      *rv,
+      *sv;
+
+    PERL_UNUSED_VAR(ref);
+    PERL_UNUSED_VAR(ix);
+    exception=AcquireExceptionInfo();
+    perl_exception=newSVpv("",0);
+    sv=NULL;
+    attribute=NULL;
+    av=NULL;
+    if (sv_isobject(ST(0)) == 0)
+      {
+        ThrowPerlException(exception,OptionError,"ReferenceIsNotMyType",
+          PackageName);
+        goto PerlException;
+      }
+    reference=SvRV(ST(0));
+    hv=SvSTASH(reference);
+    av=newAV();
+    av_reference=sv_2mortal(sv_bless(newRV((SV *) av),hv));
+    SvREFCNT_dec(av);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL,exception);
+    if (image == (Image *) NULL)
+      {
+        ThrowPerlException(exception,OptionError,"NoImagesDefined",
+          PackageName);
+        goto PerlException;
+      }
+    info=GetPackageInfo(aTHX_ (void *) av,info,exception);
+    /*
+      Get options.
+    */
+    channel=DefaultChannels;
+    (void) CopyMagickString(expression,"u",MaxTextExtent);
+    if (items == 2)
+      (void) CopyMagickString(expression,(char *) SvPV(ST(1),na),MaxTextExtent);
+    else
+      for (i=2; i < items; i+=2)
+      {
+        attribute=(char *) SvPV(ST(i-1),na);
+        switch (*attribute)
+        {
+          case 'C':
+          case 'c':
+          {
+            if (LocaleCompare(attribute,"channel") == 0)
+              {
+                ssize_t
+                  option;
+
+                option=ParseChannelOption(SvPV(ST(i),na));
+                if (option < 0)
+                  {
+                    ThrowPerlException(exception,OptionError,
+                      "UnrecognizedType",SvPV(ST(i),na));
+                    return;
+                  }
+                channel=(ChannelType) option;
+                break;
+              }
+            ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
+              attribute);
+            break;
+          }
+          case 'E':
+          case 'e':
+          {
+            if (LocaleCompare(attribute,"expression") == 0)
+              {
+                (void) CopyMagickString(expression,SvPV(ST(i),na),
+                  MaxTextExtent);
+                break;
+              }
+            ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
+              attribute);
+            break;
+          }
+          default:
+          {
+            ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
+              attribute);
+            break;
+          }
+        }
+      }
+    channel_mask=SetPixelChannelMask(image,channel);
+    image=ChannelFxImage(image,expression,exception);
+    if (image != (Image *) NULL)
+      (void) SetPixelChannelMask(image,channel_mask);
+    if (image == (Image *) NULL)
+      goto PerlException;
+    for ( ; image; image=image->next)
+    {
+      AddImageToRegistry(sv,image);
+      rv=newRV(sv);
+      av_push(av,sv_bless(rv,hv));
+      SvREFCNT_dec(sv);
+    }
+    exception=DestroyExceptionInfo(exception);
+    ST(0)=av_reference;
+    SvREFCNT_dec(perl_exception);  /* can't return warning messages */
+    XSRETURN(1);
+
+  PerlException:
+    InheritPerlException(exception,perl_exception);
+    exception=DestroyExceptionInfo(exception);
+    sv_setiv(perl_exception,(IV) SvCUR(perl_exception) != 0);
+    SvPOK_on(perl_exception);
+    ST(0)=sv_2mortal(perl_exception);
+    XSRETURN(1);
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
 #   C l o n e                                                                 #
 #                                                                             #
 #                                                                             #

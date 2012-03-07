@@ -57,15 +57,15 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%     C h a n n e l O p e r a t i o n I m a g e                               %
+%     C h a n n e l F x I m a g e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ChannelOperationImage() applies a channel expression to the specified image.
-%  The expression consists of one or more channels, either mnemonic or numeric
-%  (e.g. red, 1), separated by certain operation symbols as follows:
+%  ChannelFxImage() applies a channel expression to the specified image.  The
+%  expression consists of one or more channels, either mnemonic or numeric (e.g.
+%  red, 1), separated by actions as follows:
 %
 %    <=>     exchange two channels (e.g. red<=>blue)
 %    =>      transfer a channel to another (e.g. red=>green)
@@ -76,12 +76,12 @@
 %  A channel without a operation symbol implies extract. For example, to create
 %  3 grayscale images from the red, green, and blue channels of an image, use:
 %
-%    -channel-ops "red; green; blue"
+%    -channel-fx "red; green; blue"
 %
-%  The format of the ChannelOperationImage method is:
+%  The format of the ChannelFxImage method is:
 %
-%      Image *ChannelOperationImage(const Image *image,
-%        const char *expression,ExceptionInfo *exception)
+%      Image *ChannelFxImage(const Image *image,const char *expression,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -98,7 +98,7 @@ typedef enum
   ExtractChannelOp,
   ExchangeChannelOp,
   TransferChannelOp
-} ChannelOperation;
+} ChannelFx;
 
 static inline size_t MagickMin(const size_t x,const size_t y)
 {
@@ -108,7 +108,7 @@ static inline size_t MagickMin(const size_t x,const size_t y)
 }
 
 static MagickBooleanType ChannelImage(Image *destination_image,
-  const Image *source_image,const ChannelOperation channel_op,
+  const Image *source_image,const ChannelFx channel_op,
   const PixelChannel source_channel,const PixelChannel destination_channel,
   ExceptionInfo *exception)
 {
@@ -186,15 +186,15 @@ static MagickBooleanType ChannelImage(Image *destination_image,
   return(status);
 }
 
-MagickExport Image *ChannelOperationImage(const Image *image,
-  const char *expression,ExceptionInfo *exception)
+MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
+  ExceptionInfo *exception)
 {
-#define ChannelOperationImageTag  "ChannelOperation/Image"
+#define ChannelFxImageTag  "ChannelFx/Image"
 
   char
     token[MaxTextExtent];
 
-  ChannelOperation
+  ChannelFx
     channel_op;
 
   const char
@@ -328,7 +328,7 @@ MagickExport Image *ChannelOperationImage(const Image *image,
         break;
       }
     channels++;
-    status=SetImageProgress(source_image,ChannelOperationImageTag,p-expression,
+    status=SetImageProgress(source_image,ChannelFxImageTag,p-expression,
       strlen(expression));
     if (status == MagickFalse)
       break;
