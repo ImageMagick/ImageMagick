@@ -1223,7 +1223,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
 MagickExport Image *ConvolveImage(const Image *image,
   const KernelInfo *kernel_info,ExceptionInfo *exception)
 {
-  return(MorphologyImage(image,ConvolveMorphology,0,kernel_info,exception));
+  return(MorphologyImage(image,ConvolveMorphology,1,kernel_info,exception));
 }
 
 /*
