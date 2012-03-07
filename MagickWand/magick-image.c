@@ -1059,6 +1059,61 @@ WandExport MagickBooleanType MagickBrightnessContrastImage(
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k C h a n n e l F x I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickChannelFxImage() applies a channel expression to the specified image.
+%  The expression consists of one or more channels, either mnemonic or numeric
+%  (e.g. red, 1), separated by actions as follows:
+%
+%    <=>     exchange two channels (e.g. red<=>blue)
+%    =>      transfer a channel to another (e.g. red=>green)
+%    ,       separate channel operations (e.g. red, green)
+%    |       read channels from next input image (e.g. red | green)
+%    ;       write channels to next output image (e.g. red; green; blue)
+%
+%  A channel without a operation symbol implies extract. For example, to create
+%  3 grayscale images from the red, green, and blue channels of an image, use:
+%
+%    -channel-fx "red; green; blue"
+%
+%  The format of the MagickChannelFxImage method is:
+%
+%      MagickWand *MagickChannelFxImage(MagickWand *wand,const char *expression)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o expression: the expression.
+%
+*/
+WandExport MagickWand *MagickChannelFxImage(MagickWand *wand,
+  const char *expression)
+{
+  Image
+    *fx_image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return((MagickWand *) NULL);
+  fx_image=ChannelFxImage(wand->images,expression,wand->exception);
+  if (fx_image == (Image *) NULL)
+    return((MagickWand *) NULL);
+  return(CloneMagickWandFromImages(wand,fx_image));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k C h a r c o a l I m a g e                                     %
 %                                                                             %
 %                                                                             %

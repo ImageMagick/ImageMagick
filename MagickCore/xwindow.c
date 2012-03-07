@@ -4542,6 +4542,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
           y_offset=0;
         (void) CompositeImage(image,CopyCompositeOp,composite_image,(ssize_t)
           x_offset,(ssize_t) y_offset,exception);
+        composite_image=DestroyImage(composite_image);
       }
       /*
         Relinquish resources.

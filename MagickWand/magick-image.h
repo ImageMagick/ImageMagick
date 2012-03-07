@@ -321,6 +321,7 @@ WandExport MagickProgressMonitor
 
 extern WandExport MagickWand
   *MagickAppendImages(MagickWand *,const MagickBooleanType),
+  *MagickChannelFxImage(MagickWand *,const char *),
   *MagickCoalesceImages(MagickWand *),
   *MagickCombineImages(MagickWand *),
   *MagickCompareImages(MagickWand *,const MagickWand *,const MetricType,

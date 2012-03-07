@@ -3535,9 +3535,9 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     }
     case 'c':
     {
-      if (LocaleCompare("channel-ops",option+1) == 0)
+      if (LocaleCompare("channel-fx",option+1) == 0)
         {
-          new_images=ChannelOperationImage(images,arg1,exception);
+          new_images=ChannelFxImage(images,arg1,exception);
           break;
         }
       if (LocaleCompare("clut",option+1) == 0)
