@@ -70,7 +70,7 @@
 %
 %    <=>     exchange two channels (e.g. red<=>blue)
 %    =>      transfer a channel to another (e.g. red=>green)
-%    =       assign a constant (e.g. red=>50%)
+%    =       assign a constant (e.g. red=50%)
 %    ,       separate channel operations (e.g. red, green)
 %    |       read channels from next input image (e.g. red | green)
 %    ;       write channels to next output image (e.g. red; green; blue)
