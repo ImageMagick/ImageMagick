@@ -48,6 +48,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/version.h"
@@ -69,6 +70,7 @@
 %
 %    <=>     exchange two channels (e.g. red<=>blue)
 %    =>      transfer a channel to another (e.g. red=>green)
+%    =       assign a constant (e.g. red=>50%)
 %    ,       separate channel operations (e.g. red, green)
 %    |       read channels from next input image (e.g. red | green)
 %    ;       write channels to next output image (e.g. red; green; blue)
@@ -96,6 +98,7 @@
 typedef enum
 {
   ExtractChannelOp,
+  AssignChannelOp,
   ExchangeChannelOp,
   TransferChannelOp
 } ChannelFx;
@@ -108,9 +111,9 @@ static inline size_t MagickMin(const size_t x,const size_t y)
 }
 
 static MagickBooleanType ChannelImage(Image *destination_image,
-  const Image *source_image,const ChannelFx channel_op,
-  const PixelChannel source_channel,const PixelChannel destination_channel,
-  ExceptionInfo *exception)
+  const Image *source_image,const PixelChannel source_channel,
+  const PixelChannel destination_channel,const ChannelFx channel_op,
+  const Quantum pixel,ExceptionInfo *exception)
 {
   CacheView
     *source_view,
@@ -174,7 +177,10 @@ static MagickBooleanType ChannelImage(Image *destination_image,
           (destination_traits == UndefinedPixelTrait))
         continue;
       offset=GetPixelChannelMapOffset(source_image,source_channel);
-      SetPixelChannel(destination_image,destination_channel,p[offset],q);
+      if (channel_op == AssignChannelOp)
+        SetPixelChannel(destination_image,destination_channel,pixel,q);
+      else
+        SetPixelChannel(destination_image,destination_channel,p[offset],q);
       p+=GetPixelChannels(source_image);
       q+=GetPixelChannels(destination_image);
     }
@@ -202,6 +208,9 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
 
   const Image
     *source_image;
+
+  double
+    pixel;
 
   Image
     *destination_image;
@@ -231,6 +240,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
   if (expression == (const char *) NULL)
     return(destination_image);
   destination_channel=RedPixelChannel;
+  pixel=0.0;
   p=(char *) expression;
   GetMagickToken(p,&p,token);
   for (channels=0; *p != '\0'; )
@@ -301,14 +311,26 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         GetMagickToken(p,&p,token);
       }
     if (*token == '=')
-      GetMagickToken(p,&p,token);
+      {
+        if (channel_op != ExchangeChannelOp)
+          channel_op=AssignChannelOp;
+        GetMagickToken(p,&p,token);
+      }
     if (*token == '>')
       {
         if (channel_op != ExchangeChannelOp)
           channel_op=TransferChannelOp;
         GetMagickToken(p,&p,token);
       }
-    if (channel_op != ExtractChannelOp)
+    switch (channel_op)
+    {
+      case AssignChannelOp:
+      {
+        pixel=StringToDoubleInterval(token,(double) QuantumRange+1.0);
+        break;
+      }
+      case ExchangeChannelOp:
+      case TransferChannelOp:
       {
         i=ParsePixelChannelOption(token);
         if (i < 0)
@@ -319,13 +341,27 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             break;
           }
         destination_channel=(PixelChannel) i;
+        break;
       }
-    status=ChannelImage(destination_image,source_image,channel_op,
-      source_channel,destination_channel,exception);
+      case ExtractChannelOp:
+        break;
+     }
+    status=ChannelImage(destination_image,source_image,source_channel,
+      destination_channel,channel_op,ClampToQuantum(pixel),exception);
     if (status == MagickFalse)
       {
         destination_image=DestroyImageList(destination_image);
         break;
+      }
+    if (channel_op == ExchangeChannelOp)
+      {
+        status=ChannelImage(destination_image,source_image,destination_channel,
+          source_channel,channel_op,ClampToQuantum(pixel),exception);
+        if (status == MagickFalse)
+          {
+            destination_image=DestroyImageList(destination_image);
+            break;
+          }
       }
     channels++;
     status=SetImageProgress(source_image,ChannelFxImageTag,p-expression,
