@@ -111,8 +111,8 @@ static inline size_t MagickMin(const size_t x,const size_t y)
 }
 
 static MagickBooleanType ChannelImage(Image *destination_image,
-  const Image *source_image,const PixelChannel source_channel,
   const PixelChannel destination_channel,const ChannelFx channel_op,
+  const Image *source_image,const PixelChannel source_channel,
   const Quantum pixel,ExceptionInfo *exception)
 {
   CacheView
@@ -170,18 +170,21 @@ static MagickBooleanType ChannelImage(Image *destination_image,
       ssize_t
         offset;
 
-      source_traits=GetPixelChannelMapTraits(source_image,source_channel);
       destination_traits=GetPixelChannelMapTraits(destination_image,
         destination_channel);
-      if ((source_traits == UndefinedPixelTrait) ||
-          (destination_traits == UndefinedPixelTrait))
+      if (destination_traits == UndefinedPixelTrait)
         continue;
-      offset=GetPixelChannelMapOffset(source_image,source_channel);
       if (channel_op == AssignChannelOp)
         SetPixelChannel(destination_image,destination_channel,pixel,q);
       else
-        SetPixelChannel(destination_image,destination_channel,p[offset],q);
-      p+=GetPixelChannels(source_image);
+        {
+          source_traits=GetPixelChannelMapTraits(source_image,source_channel);
+          if (source_traits == UndefinedPixelTrait)
+            continue;
+          offset=GetPixelChannelMapOffset(source_image,source_channel);
+          SetPixelChannel(destination_image,destination_channel,p[offset],q);
+          p+=GetPixelChannels(source_image);
+        }
       q+=GetPixelChannels(destination_image);
     }
     if (SyncCacheViewAuthenticPixels(destination_view,exception) == MagickFalse)
@@ -326,7 +329,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     {
       case AssignChannelOp:
       {
-        pixel=StringToDoubleInterval(token,(double) QuantumRange+1.0);
+        pixel=StringToDouble(token);
+        GetMagickToken(p,&p,token);
         break;
       }
       case ExchangeChannelOp:
@@ -341,13 +345,14 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             break;
           }
         destination_channel=(PixelChannel) i;
+        GetMagickToken(p,&p,token);
         break;
       }
       case ExtractChannelOp:
         break;
      }
-    status=ChannelImage(destination_image,source_image,source_channel,
-      destination_channel,channel_op,ClampToQuantum(pixel),exception);
+    status=ChannelImage(destination_image,destination_channel,channel_op,
+      source_image,source_channel,ClampToQuantum(pixel),exception);
     if (status == MagickFalse)
       {
         destination_image=DestroyImageList(destination_image);
@@ -355,8 +360,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
       }
     if (channel_op == ExchangeChannelOp)
       {
-        status=ChannelImage(destination_image,source_image,destination_channel,
-          source_channel,channel_op,ClampToQuantum(pixel),exception);
+        status=ChannelImage(destination_image,destination_channel,channel_op,
+          source_image,source_channel,ClampToQuantum(pixel),exception);
         if (status == MagickFalse)
           {
             destination_image=DestroyImageList(destination_image);
