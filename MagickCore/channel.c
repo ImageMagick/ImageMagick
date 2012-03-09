@@ -329,7 +329,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     {
       case AssignChannelOp:
       {
-        pixel=StringToDouble(token,(char **) NULL);
+        pixel=StringToDoubleInterval(token,(double) QuantumRange+1.0);
         GetMagickToken(p,&p,token);
         break;
       }
