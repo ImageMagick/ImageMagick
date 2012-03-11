@@ -59,7 +59,9 @@
 /* verbose debugging,
       1 - option type
       2 - source of option
-      3 - mnemonic lookup  */
+      3 - mnemonic lookup
+      4 - output options/artifacts
+*/
 #define MagickCommandDebug 0
 
 #define ThrowFileException(exception,severity,tag,context) \
@@ -72,6 +74,43 @@
     tag == (const char *) NULL ? "unknown" : tag,"`%s': %s",context,message); \
   message=DestroyString(message); \
 }
+
+#if MagickCommandDebug >= 4
+static void OutputOptions(ImageInfo *image_info)
+{
+  const char
+    *option,
+    *value;
+
+  (void) FormatLocaleFile(stdout,"  Image_Info Options:\n");
+  ResetImageOptionIterator(image_info);
+  while ((option=GetNextImageOption(image_info)) != (const char *) NULL ) {
+    (void) FormatLocaleFile(stdout,"    %s: ",option);
+    value=GetImageOption(image_info,option);
+    if (value != (const char *) NULL)
+      (void) FormatLocaleFile(stdout,"%s\n",value);
+  }
+  ResetImageOptionIterator(image_info); 
+}
+
+static void OutputArtifacts(Image *image)
+{
+  const char
+    *artifact,
+    *value;
+
+  (void) FormatLocaleFile(stdout,"  Image Artifacts:\n");
+  ResetImageArtifactIterator(image);
+  while ((artifact=GetNextImageArtifact(image)) != (const char *) NULL ) {
+    (void) FormatLocaleFile(stdout,"    %s: ",artifact);
+    value=GetImageArtifact(image,artifact);
+    if (value != (const char *) NULL)
+      (void) FormatLocaleFile(stdout,"%s\n",value);
+  }
+  ResetImageArtifactIterator(image);
+}
+#endif
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -197,22 +236,18 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
 #if MagickCommandDebug
       (void) FormatLocaleFile(stderr, "Script Non-Option: \"%s\"\n", option);
 #endif
-      if ( IsCommandOption(option) == MagickFalse) {
+      if ( IsCommandOption(option) == MagickFalse)
         /* non-option -- treat as a image read */
         CLISpecialOperator(cli_wand,"-read",option);
-        count = 0;
-      }
       else
         CLIWandExceptionBreak(OptionFatalError,"UnrecognizedOption",option);
-
-      if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-        break;
-      continue;
+      count = 0;
+      goto next_token;
     }
 
     if ( count >= 1 ) {
       if( GetScriptToken(token_info) == MagickFalse )
-        CLIWandExceptionBreak(OptionFatalError,"MissingArgument",option);
+        CLIWandException(OptionFatalError,"MissingArgument",option);
       CloneString(&arg1,token_info->token);
     }
     else
@@ -247,7 +282,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
 
     if ( (option_type & SettingOptionFlags) != 0 ) {
       CLISettingOptionInfo(cli_wand, option, arg1);
-      // FUTURE: Sync Specific Settings into Images
+      // FUTURE: Sync Specific Settings into Image Properities (not global)
     }
 
     if ( (option_type & SimpleOperatorOptionFlag) != 0)
@@ -256,6 +291,12 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
     if ( (option_type & ListOperatorOptionFlag) != 0 )
       CLIListOperatorImages(cli_wand, option, arg1, arg2);
 
+next_token:
+#if MagickCommandDebug >= 4
+    OutputOptions(cli_wand->wand.image_info);
+    if ( cli_wand->wand.images != (Image *)NULL )
+      OutputArtifacts(cli_wand->wand.images);
+#endif
     if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
       break;
   }
@@ -396,18 +437,13 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
       (void) FormatLocaleFile(stderr, "CLI Non-Option: \"%s\"\n", option);
 #endif
       if ( ( IsCommandOption(option) == MagickFalse ) &&
-         ( (process_flags & ProcessNonOptionImageRead) != 0 ) ) {
+         ( (process_flags & ProcessNonOptionImageRead) != 0 ) )
         /* non-option -- treat as a image read */
         CLISpecialOperator(cli_wand,"-read",option);
-        count = 0;
-      }
       else if ( (process_flags & ProcessUnknownOptionError) != 0 )
         CLIWandException(OptionFatalError,"UnrecognizedOption",option);
-
-      if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-        return(i+1);
-
-      continue;
+      count = 0;
+      goto next_argument;
     }
 
     if ( (option_type & DeprecateOptionFlag) != 0 ) {
@@ -419,7 +455,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
       CLIWandException(OptionFatalError,"MissingArgument",option);
       if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
         return(end);
-      continue; /* no arguments unable to proceed */
+      goto next_argument; /* no more arguments unable to proceed */
     }
 
     arg1 = ( count >= 1 ) ? argv[i+1] : (char *)NULL;
@@ -447,7 +483,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
 
     if ( (option_type & SettingOptionFlags) != 0 ) {
       CLISettingOptionInfo(cli_wand, option, arg1);
-      // FUTURE: Sync Specific Settings into Images
+      // FUTURE: Sync Specific Settings into Image Properities (not global)
     }
 
     if ( (option_type & SimpleOperatorOptionFlag) != 0)
@@ -456,6 +492,12 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
     if ( (option_type & ListOperatorOptionFlag) != 0 )
       CLIListOperatorImages(cli_wand, option, arg1, arg2);
 
+next_argument:
+#if MagickCommandDebug >= 4
+    OutputOptions(cli_wand->wand.image_info);
+    if ( cli_wand->wand.images != (Image *)NULL )
+      OutputArtifacts(cli_wand->wand.images);
+#endif
     if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
       return(i+count);
   }

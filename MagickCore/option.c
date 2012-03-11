@@ -451,7 +451,7 @@ static const OptionInfo
     { "+liquid-rescale", 1L, DeprecateOptionFlag, MagickTrue },
     { "-liquid-rescale", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+list", 0L, DeprecateOptionFlag, MagickTrue },
-    { "-list", 1L, GlobalOptionFlag | ImageInfoOptionFlag, MagickFalse },
+    { "-list", 1L, SpecialOptionFlag, MagickFalse },
     { "+log", 0L, DeprecateOptionFlag, MagickFalse },
     { "-log", 1L, GlobalOptionFlag, MagickFalse },
     { "+loop", 0L, ImageInfoOptionFlag, MagickFalse },
@@ -2017,7 +2017,7 @@ MagickExport const OptionInfo *GetCommandOptionInfo(const char *value)
   static ssize_t
     table_size = 0;
 
-  register unsigned int
+  register int
     i,l,h;
 
   assert(value != (char *) NULL);
@@ -2031,7 +2031,7 @@ MagickExport const OptionInfo *GetCommandOptionInfo(const char *value)
         if ( LocaleCompare(value,option_info[i].mnemonic) == 0 )
           l=i;
       table_size = i;
-      return( &option_info[(l>=0?l:i)] );
+      return( &option_info[(l>=0)?l:i] );
     }
 
   /* faster binary search of command table, now that its length is known */
