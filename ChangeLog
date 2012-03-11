@@ -1,6 +1,7 @@
 2012-03-06  6.7.6-0 Cristy  <quetzlzacatenango@image...>
   * Importing from the X11 root windows no longer leaks memory (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20470).
+  * Check to see if delegate file exists before copying.
 
 2012-03-05  6.7.5-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.5-109, SVN revision 7056.
