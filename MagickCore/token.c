@@ -249,7 +249,8 @@ MagickExport void GetMagickToken(const char *start,const char **end,char *token)
         for ( ; *p != '\0'; p++)
         {
           if (((isspace((int) ((unsigned char) *p)) != 0) || (*p == '=') ||
-              (*p == ',') || (*p == ':') || (*p == ';')) && (*(p-1) != '\\'))
+              (*p == ':') || (*p == ',') || (*p == '|') || (*p == ';')) &&
+              (*(p-1) != '\\'))
             break;
           if ((i > 0) && (*p == '<'))
             break;

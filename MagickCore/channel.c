@@ -232,6 +232,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
   destination_image=CloneImage(source_image,0,0,MagickTrue,exception);
   if (destination_image == (Image *) NULL)
     return((Image *) NULL);
+  if (destination_image->colorspace == GRAYColorspace)
+    destination_image->colorspace=RGBColorspace;
   if (expression == (const char *) NULL)
     return(destination_image);
   destination_channel=RedPixelChannel;
@@ -268,8 +270,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         status=SetImageStorageClass(destination_image,DirectClass,exception);
         if (status == MagickFalse)
           {
-            destination_image=GetLastImageInList(destination_image);
-            return((Image *) NULL);
+            destination_image=DestroyImageList(destination_image);
+            return(destination_image);
           }
         if ((channel_op == ExtractChannelOp) && (channels == 1))
           {
@@ -279,9 +281,11 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         canvas=CloneImage(source_image,0,0,MagickTrue,exception);
         if (canvas == (Image *) NULL)
           {
-            destination_image=GetLastImageInList(destination_image);
-            return((Image *) NULL);
+            destination_image=DestroyImageList(destination_image);
+            return(destination_image);
           }
+        if (canvas->colorspace == GRAYColorspace)
+          canvas->colorspace=RGBColorspace;
         AppendImageToList(&destination_image,canvas);
         destination_image=GetLastImageInList(destination_image);
         GetMagickToken(p,&p,token);
@@ -294,7 +298,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
           "UnrecognizedChannelType","`%s'",token);
         destination_image=DestroyImageList(destination_image);
-        break;
+        return(destination_image);
       }
     source_channel=(PixelChannel) i;
     channel_op=ExtractChannelOp;
@@ -333,7 +337,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
               "UnrecognizedChannelType","`%s'",token);
             destination_image=DestroyImageList(destination_image);
-            break;
+            return(destination_image);
           }
         destination_channel=(PixelChannel) i;
         GetMagickToken(p,&p,token);
