@@ -62,7 +62,7 @@
       3 - mnemonic lookup
       4 - output options/artifacts
 */
-#define MagickCommandDebug 0
+#define MagickCommandDebug 3
 
 #define ThrowFileException(exception,severity,tag,context) \
 { \
@@ -205,16 +205,6 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
       cli_wand->column=token_info->token_column;
       if( status == MagickFalse )
         break;
-    }
-
-    /* Sanity check: option is larger than anything that should be posible */
-    if( strlen(token_info->token) > INITAL_TOKEN_LENGTH-1 ) {
-      token_info->token[INITAL_TOKEN_LENGTH-4] = '.';
-      token_info->token[INITAL_TOKEN_LENGTH-3] = '.';
-      token_info->token[INITAL_TOKEN_LENGTH-2] = '.';
-      token_info->token[INITAL_TOKEN_LENGTH-1] = '\0';
-      CLIWandException(OptionFatalError,"UnrecognizedOption",token_info->token);
-      break;
     }
 
     /* save option details */
@@ -512,6 +502,7 @@ next_argument:
      Implicit Write of images to final CLI argument
   */
   option=argv[i];
+  cli_wand->line=i;
 
 #if MagickCommandDebug
   (void) FormatLocaleFile(stderr, "CLI Write File: \"%s\"\n", option );

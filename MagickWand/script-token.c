@@ -213,11 +213,22 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
 #define IN_QUOTE 2
 #define IN_COMMENT 3
 
-/* macro to read character from stream */
+/* Macro to read character from stream
+
+   This also keeps track of the line and column counts.
+   The EOL is defined as either '\r\n', or '\r', or '\n'.
+   A '\r' on its own is converted into a '\n' to correctly handle
+   raw input, typically due to 'copy-n-paste' of text files.
+*/
 #define GetChar(c) \
 { \
   c=fgetc(token_info->stream); \
   token_info->curr_column++; \
+  if ( c == '\r' ) { \
+    c=fgetc(token_info->stream); \
+    ungetc(c,token_info->stream); \
+    c = (c!='\n')?'\n':'\r'; \
+  } \
   if ( c == '\n' ) \
     token_info->curr_line++, token_info->curr_column=0; \
   if (c == EOF ) \
