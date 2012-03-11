@@ -20,7 +20,7 @@ chdir 't/jpeg' || die 'Cd failed';
 print( "Non-interlaced JPEG ...\n" );
 testReadWriteCompare( 'input.jpg', 'output_tmp.jpg',
                       '../reference/jpeg/write_non_interlaced.miff',
-                      q//, q//, 0.02, 0.27);
+                      q//, q//, 0.0, 0.0);
 
 #
 # 2) Test with plane-interlaced image
@@ -29,5 +29,5 @@ testReadWriteCompare( 'input.jpg', 'output_tmp.jpg',
 print( "Plane-interlaced JPEG ...\n" );
 testReadWriteCompare( 'input.jpg', 'output_plane_tmp.jpg',
                       '../reference/jpeg/write_plane_interlaced.miff',
-                      q//, q//, 0.02, 0.27);
+                      q//, q//, 0.0, 0.0);
 
