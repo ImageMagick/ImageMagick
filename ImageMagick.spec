@@ -1,41 +1,56 @@
 %global VERSION  6.7.6
-%global Patchlevel  0
+%global Patchlevel  1
 
-Name:		ImageMagick
-Version:		%{VERSION}.%{Patchlevel}
-Release:		3%{?dist}
-Summary:		An X application for displaying and manipulating images
-Group:		Applications/Multimedia
-License:		ImageMagick
-Url:			http://www.imagemagick.org/
-Source0:		ftp://ftp.ImageMagick.org/pub/%{name}/%{name}-%{VERSION}-%{Patchlevel}.tar.xz
+Name:           ImageMagick
+Version:        %{VERSION}
+Release:        %{Patchlevel}
+Summary:        Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images.
+Group:          Applications/Multimedia
+License:        http://www.imagemagick.org/script/license.php
+Url:            http://www.imagemagick.org/
+Source0:        http://www.imagemagick.org/download/%{name}/%{name}-%{VERSION}-%{Patchlevel}.tar.bz2
 
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:	bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
-BuildRequires:	libtiff-devel, giflib-devel, zlib-devel, perl-devel >= 5.8.1
-BuildRequires:	ghostscript-devel, djvulibre-devel
-BuildRequires:	libwmf-devel, jasper-devel, libtool-ltdl-devel
-BuildRequires:	libX11-devel, libXext-devel, libXt-devel
-BuildRequires:	lcms-devel, libxml2-devel, librsvg2-devel, OpenEXR-devel
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRequires:  bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
+BuildRequires:  libtiff-devel, giflib-devel, zlib-devel, perl-devel >= 5.8.1
+BuildRequires:  ghostscript-devel, djvulibre-devel
+BuildRequires:  libwmf-devel, jasper-devel, libtool-ltdl-devel
+BuildRequires:  libX11-devel, libXext-devel, libXt-devel
+BuildRequires:  lcms-devel, libxml2-devel, librsvg2-devel, OpenEXR-devel
 
 %description
-ImageMagick is an image display and manipulation tool for the X
-Window System. ImageMagick can read and write JPEG, TIFF, PNM, GIF,
-and Photo CD image formats. It can resize, rotate, sharpen, color
-reduce, or add special effects to an image, and when finished you can
-either save the completed work in the original format or a different
-one. ImageMagick also includes command line programs for creating
-animated or transparent .gifs, creating composite images, creating
-thumbnail images, and more.
+ImageMagick is a software suite to create, edit, and compose bitmap images. It
+can read, convert and write images in a variety of formats (about 100)
+including DPX, GIF, JPEG, JPEG-2000, PDF, PhotoCD, PNG, Postscript, SVG,
+and TIFF. Use ImageMagick to translate, flip, mirror, rotate, scale, shear
+and transform images, adjust image colors, apply various special effects,
+or draw text, lines, polygons, ellipses and Bézier curves.
 
-ImageMagick is one of your choices if you need a program to manipulate
-and display images. If you want to develop your own applications
-which use ImageMagick code or APIs, you need to install
-ImageMagick-devel as well.
+The functionality of ImageMagick is typically utilized from the command line
+or you can use the features from programs written in your favorite programming
+language. Choose from these interfaces: G2F (Ada), MagickCore (C), MagickWand
+(C), ChMagick (Ch), Magick++ (C++), JMagick (Java), L-Magick (Lisp), nMagick
+(Neko/haXe), PascalMagick (Pascal), PerlMagick (Perl), MagickWand for PHP
+(PHP), PythonMagick (Python), RMagick (Ruby), or TclMagick (Tcl/TK). With a
+language interface, use ImageMagick to modify or create images automagically
+and dynamically.
+
+ImageMagick is free software delivered as a ready-to-run binary distribution
+or as source code that you may freely use, copy, modify, and distribute in
+both open and proprietary applications. It is distributed under an Apache
+2.0-style license, approved by the OSI.
+
+The ImageMagick development process ensures a stable API and ABI. Before
+each ImageMagick release, we perform a comprehensive security assessment that
+includes memory and thread error detection to help prevent exploits.ImageMagick
+is free software delivered as a ready-to-run binary distribution or as source
+code that you may freely use, copy, modify, and distribute in both open and
+proprietary applications. It is distributed under an Apache 2.0-style license,
+approved by the OSI.
 
 
 %package devel
-Summary: Library links and header files for ImageMagick app development
+Summary: Library links and header files for ImageMagick application development
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
 Requires: libX11-devel, libXext-devel, libXt-devel
@@ -59,6 +74,11 @@ You do not need to install it if you just want to use ImageMagick,
 however.
 
 
+%package doc
+Summary: ImageMagick HTML documentation
+Group: Documentation
+
+
 %package djvu
 Summary: DjVu plugin for ImageMagick
 Group: Applications/Multimedia
@@ -69,15 +89,11 @@ This packages contains a plugin for ImageMagick which makes it possible to
 save and load DjvU files from ImageMagick and libMagickCore using applications.
 
 
-%package doc
-Summary: ImageMagick html documentation
-Group: Documentation
-
 %description doc
 ImageMagick documentation, this package contains usage (for the
-commandline tools) and API (for the libraries) documentation in html format.
+commandline tools) and API (for the libraries) documentation in HTML format.
 Note this documentation can also be found on the ImageMagick website:
-http://www.imagemagick.org/
+http://www.imagemagick.org/.
 
 
 %package perl
@@ -85,6 +101,7 @@ Summary: ImageMagick perl bindings
 Group: System Environment/Libraries
 Requires: %{name} = %{version}-%{release}
 Requires: perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
+
 
 %description perl
 Perl bindings to ImageMagick.
@@ -119,6 +136,7 @@ ImageMagick is an image manipulation program.
 If you want to create applications that will use Magick++ code
 or APIs, you'll need to install ImageMagick-c++-devel, ImageMagick-devel and
 ImageMagick.
+
 You don't need to install it if you just want to use ImageMagick, or if you
 want to develop/compile applications using the ImageMagick C interface,
 however.
@@ -130,10 +148,9 @@ sed -i 's/libltdl.la/libltdl.so/g' configure
 iconv -f ISO-8859-1 -t UTF-8 README.txt > README.txt.tmp
 touch -r README.txt README.txt.tmp
 mv README.txt.tmp README.txt
-# for %doc
+# for %%doc
 mkdir Magick++/examples
 cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
-
 
 %build
 %configure --enable-shared \
@@ -148,7 +165,7 @@ cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
            --with-lcms \
            --with-rsvg \
            --with-xml \
-           --with-perl-options="INSTALLDIRS=vendor %{?perl_prefix} CC='%__cc -L$PWD/magick/.libs' LDDLFLAGS='-shared -L$PWD/magick/.libs'" \
+           --with-perl-options='INSTALLDIRS=vendor' \
            --without-dps \
            --without-included-ltdl --with-ltdl-include=%{_includedir} \
            --with-ltdl-lib=%{_libdir}
@@ -160,30 +177,29 @@ make
 
 
 %install
-rm -rf %{buildroot}
+rm -rf $RPM_BUILD_ROOT
 
-make install DESTDIR=%{buildroot} INSTALL="install -p"
-cp -a www/source %{buildroot}%{_datadir}/doc/%{name}-%{VERSION}
-# Delete *ONLY* _libdir/*.la files! .la files used internally to handle plugins - BUG#185237!!!
-rm %{buildroot}%{_libdir}/*.la
+make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
+cp -a www/source $RPM_BUILD_ROOT%{_datadir}/doc/%{name}
+rm $RPM_BUILD_ROOT%{_libdir}/*.la
 
 # fix weird perl Magick.so permissions
-chmod 755 %{buildroot}%{perl_vendorarch}/auto/Image/Magick/Magick.so
+chmod 755 $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Image/Magick/Magick.so
 
 # perlmagick: fix perl path of demo files
 %{__perl} -MExtUtils::MakeMaker -e 'MY->fixin(@ARGV)' PerlMagick/demo/*.pl
 
 # perlmagick: cleanup various perl tempfiles from the build which get installed
-find %{buildroot} -name "*.bs" |xargs rm -f
-find %{buildroot} -name ".packlist" |xargs rm -f
-find %{buildroot} -name "perllocal.pod" |xargs rm -f
+find $RPM_BUILD_ROOT -name "*.bs" |xargs rm -f
+find $RPM_BUILD_ROOT -name ".packlist" |xargs rm -f
+find $RPM_BUILD_ROOT -name "perllocal.pod" |xargs rm -f
 
 # perlmagick: build files list
 echo "%defattr(-,root,root,-)" > perl-pkg-files
-find %{buildroot}/%{_libdir}/perl* -type f -print \
-        | sed "s@^%{buildroot}@@g" > perl-pkg-files 
-find %{buildroot}%{perl_vendorarch} -type d -print \
-        | sed "s@^%{buildroot}@%dir @g" \
+find $RPM_BUILD_ROOT/%{_libdir}/perl* -type f -print \
+        | sed "s@^$RPM_BUILD_ROOT@@g" > perl-pkg-files 
+find $RPM_BUILD_ROOT%{perl_vendorarch} -type d -print \
+        | sed "s@^$RPM_BUILD_ROOT@%dir @g" \
         | grep -v '^%dir %{perl_vendorarch}$' \
         | grep -v '/auto$' >> perl-pkg-files 
 if [ -z perl-pkg-files ] ; then
@@ -198,10 +214,10 @@ fi
 %define wordsize 32
 %endif
 
-mv %{buildroot}%{_includedir}/%{name}/magick/magick-config.h \
-   %{buildroot}%{_includedir}/%{name}/magick/magick-config-%{wordsize}.h
+mv $RPM_BUILD_ROOT%{_includedir}/%{name}/magick/magick-config.h \
+   $RPM_BUILD_ROOT%{_includedir}/%{name}/magick/magick-config-%{wordsize}.h
 
-cat >%{buildroot}%{_includedir}/%{name}/magick/magick-config.h <<EOF
+cat >$RPM_BUILD_ROOT%{_includedir}/%{name}/magick/magick-config.h <<EOF
 #ifndef IMAGEMAGICK_MULTILIB
 #define IMAGEMAGICK_MULTILIB
 
@@ -218,14 +234,8 @@ cat >%{buildroot}%{_includedir}/%{name}/magick/magick-config.h <<EOF
 #endif
 EOF
 
-# Fonts must be packaged separately. It does nothave matter and demos work without it.
-rm PerlMagick/demo/Generic.ttf
-
-# From version around 6.7.5-6 docs go to unversioned dir. Fixing
-mv %{buildroot}/%{_datadir}/doc/%{name} %{buildroot}/%{_datadir}/doc/%{name}-%{VERSION}
-
 %clean
-rm -rf %{buildroot}
+rm -rf $RPM_BUILD_ROOT
 
 
 %post -p /sbin/ldconfig
@@ -241,15 +251,17 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc QuickStart.txt ChangeLog Platforms.txt
 %doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt
-%{_libdir}/libMagickCore.so.5*
-%{_libdir}/libMagickWand.so.5*
+%{_libdir}/libMagickCore.so*
+%{_libdir}/libMagickWand.so*
+%{_libdir}/%{name}-%{VERSION}
 %{_bindir}/[a-z]*
+%{_sysconfdir}/%{name}
 %{_libdir}/%{name}-%{VERSION}
 %{_datadir}/%{name}-%{VERSION}
-%{_mandir}/man[145]/[a-z]*
+%{_mandir}/man[145]/[a-zA-Z]*
 %{_mandir}/man1/%{name}.*
 %exclude %{_libdir}/%{name}-%{VERSION}/modules-Q16/coders/djvu.*
-%{_sysconfdir}/%{name}
+
 
 %files devel
 %defattr(-,root,root,-)
@@ -257,8 +269,8 @@ rm -rf %{buildroot}
 %{_bindir}/Magick-config
 %{_bindir}/MagickWand-config
 %{_bindir}/Wand-config
-%{_libdir}/libMagickCore.so
-%{_libdir}/libMagickWand.so
+%{_libdir}/libMagickCore.so*
+%{_libdir}/libMagickWand.so*
 %{_libdir}/pkgconfig/MagickCore.pc
 %{_libdir}/pkgconfig/ImageMagick.pc
 %{_libdir}/pkgconfig/MagickWand.pc
@@ -273,18 +285,18 @@ rm -rf %{buildroot}
 
 %files djvu
 %defattr(-,root,root,-)
-%{_libdir}/%{name}-%{VERSION}/modules-Q16/coders/djvu.*
+%{_libdir}/%{name}-%{version}/modules-Q16/coders/djvu.*
 
 %files doc
 %defattr(-,root,root,-)
-%doc %{_datadir}/doc/%{name}-%{VERSION}
+%doc %{_datadir}/doc/%{name}
 %doc LICENSE
 
 %files c++
 %defattr(-,root,root,-)
 %doc Magick++/AUTHORS Magick++/ChangeLog Magick++/NEWS Magick++/README
 %doc www/Magick++/COPYING
-%{_libdir}/libMagick++.so.5*
+%{_libdir}/libMagick++.so*
 
 %files c++-devel
 %defattr(-,root,root,-)
@@ -292,7 +304,7 @@ rm -rf %{buildroot}
 %{_bindir}/Magick++-config
 %{_includedir}/%{name}/Magick++
 %{_includedir}/%{name}/Magick++.h
-%{_libdir}/libMagick++.so
+%{_libdir}/libMagick++.so*
 %{_libdir}/pkgconfig/Magick++.pc
 %{_libdir}/pkgconfig/ImageMagick++.pc
 %{_mandir}/man1/Magick++-config.*
@@ -301,6 +313,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_mandir}/man3/*
 %doc PerlMagick/demo/ PerlMagick/Changelog PerlMagick/README.txt
+
 
 %changelog
 * Sun May 01 2005 Cristy <cristy@mystic.es.dupont.com> 1.0-0
