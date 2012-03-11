@@ -55,7 +55,7 @@ testReadWrite( 'input.mng',
 testReadWrite( 'input_16.png',
   'output_16.png',
   q/quality=>55/,
-  'fa6b164245b385b3dea5764074be2c959a503dde90ecb1d4ba9c76a46bb8e4e6',
+  'd4bed86abb1849f69f1a5afb7c5cf8798e8192ba228357f189c277198c14f5a0',
   '30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58');
 
 

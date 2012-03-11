@@ -43,6 +43,7 @@ testRead( 'input_16_matte.tiff',
 ++$test;
 print("PseudoColor (256 color) ...\n");
 testRead( 'input_256.tiff',
+  'ec6408aba63b43dfc594b4bd766e43457754bb2382a02c170e3d085366e9a6f4',
   '1280e7ed7094aaae47c0be1cb0b6d33660e59483a5500f5f40e34940346f7847' );
 
 #
@@ -51,6 +52,7 @@ testRead( 'input_256.tiff',
 ++$test;
 print("PseudoColor (256 color + matte channel) ...\n");
 testRead( 'input_256_matte.tiff',
+        '824af58cdd8a8accffee3dab1ed9d28b34a8b183d3e5f5f13caeaab03bcadd13',
 	'f3dc959e76f722bbc0a4338e2ed6650d73be3a81774c55210118531333fe6daa' );
 
 #
@@ -59,6 +61,7 @@ testRead( 'input_256_matte.tiff',
 ++$test;
 print("PseudoColor (256 color) contiguous planes ...\n");
 testRead( 'input_256_planar_contig.tiff',
+  'ec6408aba63b43dfc594b4bd766e43457754bb2382a02c170e3d085366e9a6f4',
   '1280e7ed7094aaae47c0be1cb0b6d33660e59483a5500f5f40e34940346f7847' );
 
 #
@@ -67,6 +70,7 @@ testRead( 'input_256_planar_contig.tiff',
 ++$test;
 print("PseudoColor (256 color) seperate planes ...\n");
 testRead( 'input_256_planar_separate.tiff',
+  'ec6408aba63b43dfc594b4bd766e43457754bb2382a02c170e3d085366e9a6f4',
   '1280e7ed7094aaae47c0be1cb0b6d33660e59483a5500f5f40e34940346f7847' );
 
 #
@@ -83,7 +87,7 @@ testRead( 'input_truecolor.tiff',
 ++$test;
 print("TrueColor (16-bit) image ...\n");
 testRead( 'input_truecolor_16.tiff',
-  '0adb551c0d521ce9e502e7242040463543f1c84b55c6349d3aa4cbd093b1a410',
+  '9897466dce6a47db3530821056c0a1c6e20f20d5bbfce837addfbede63bdecab',
   '4c5c847c9e40a3ffc082f9fabadc29f87279008c9092fa749a9504c61f5e172a' );
 
 #
@@ -116,6 +120,8 @@ testRead( 'input_gray_4bit.tiff',
 ++$test;
 print("Grayscale (8-bit) ...\n");
 testRead( 'input_gray_8bit.tiff',
+  '9bd950a80339e260c491025f5c58a21ca70c38e2c498914feda6558bfa1ffe35',
+  'f056659e30e514325b8843d88f7bfa7a59c8b0496134ad0e66ea46eeece068d6',
   '9bd950a80339e260c491025f5c58a21ca70c38e2c498914feda6558bfa1ffe35');
 
 #
@@ -132,8 +138,6 @@ testRead( 'input_gray_8bit_matte.tiff',
 ++$test;
 print("Grayscale (12-bit) ...\n");
 testRead( 'input_gray_12bit.tiff',
-  'c29789db13969ddbfc9b588066d6578d87628566a60ffc33dbd43e6c4f747f51',
-  'ff6335069b6e140eb47149d847aea80bf7e2b06bd80ae9708aa382efb3ae21ee',
   'ff6335069b6e140eb47149d847aea80bf7e2b06bd80ae9708aa382efb3ae21ee');
 
 #
@@ -142,6 +146,6 @@ testRead( 'input_gray_12bit.tiff',
 ++$test;
 print("Grayscale (16-bit) ...\n");
 testRead( 'input_gray_16bit.tiff',
-  '7cc1f9e909cd671d0a4d32018fa885997a43de202eafdf4e0bec3dbff9f24a4e',
-  '9bd950a80339e260c491025f5c58a21ca70c38e2c498914feda6558bfa1ffe35',
+  'f056659e30e514325b8843d88f7bfa7a59c8b0496134ad0e66ea46eeece068d6',
+  'f056659e30e514325b8843d88f7bfa7a59c8b0496134ad0e66ea46eeece068d6',
   '9bd950a80339e260c491025f5c58a21ca70c38e2c498914feda6558bfa1ffe35');

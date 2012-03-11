@@ -31,6 +31,7 @@ print("PseudoColor image (8 bits/sample) ...\n");
 testReadWrite( 'input_256.tiff',
   'output_256.tiff',
   q//,
+  'ec6408aba63b43dfc594b4bd766e43457754bb2382a02c170e3d085366e9a6f4',
   '1280e7ed7094aaae47c0be1cb0b6d33660e59483a5500f5f40e34940346f7847');
 
 #
@@ -51,6 +52,7 @@ print("PseudoColor image (8 bits/sample + matte channel) ...\n");
 testReadWrite( 'input_256_matte.tiff',
   'output_256_matte.tiff',
   q//,
+  '824af58cdd8a8accffee3dab1ed9d28b34a8b183d3e5f5f13caeaab03bcadd13',
   'f3dc959e76f722bbc0a4338e2ed6650d73be3a81774c55210118531333fe6daa' );
 
 #
