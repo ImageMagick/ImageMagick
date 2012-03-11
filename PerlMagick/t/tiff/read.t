@@ -120,8 +120,6 @@ testRead( 'input_gray_4bit.tiff',
 ++$test;
 print("Grayscale (8-bit) ...\n");
 testRead( 'input_gray_8bit.tiff',
-  '9bd950a80339e260c491025f5c58a21ca70c38e2c498914feda6558bfa1ffe35',
-  'f056659e30e514325b8843d88f7bfa7a59c8b0496134ad0e66ea46eeece068d6',
   '9bd950a80339e260c491025f5c58a21ca70c38e2c498914feda6558bfa1ffe35');
 
 #
@@ -146,6 +144,4 @@ testRead( 'input_gray_12bit.tiff',
 ++$test;
 print("Grayscale (16-bit) ...\n");
 testRead( 'input_gray_16bit.tiff',
-  'f056659e30e514325b8843d88f7bfa7a59c8b0496134ad0e66ea46eeece068d6',
-  'f056659e30e514325b8843d88f7bfa7a59c8b0496134ad0e66ea46eeece068d6',
   '9bd950a80339e260c491025f5c58a21ca70c38e2c498914feda6558bfa1ffe35');
