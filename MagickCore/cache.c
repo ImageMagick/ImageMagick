@@ -4867,6 +4867,9 @@ static Quantum *SetPixelCacheNexusPixels(const Image *image,
 static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
   ExceptionInfo *exception)
 {
+  CacheView
+    *image_view;
+
   CacheInfo
     *cache_info;
 
@@ -4885,14 +4888,12 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
   assert(cache_info->signature == MagickSignature);
   image->matte=MagickTrue;
   status=MagickTrue;
+  image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    const int
-      id = GetOpenMPThreadId();
-
     register Quantum
       *restrict q;
 
@@ -4901,8 +4902,7 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
 
     if (status == MagickFalse)
       continue;
-    q=GetAuthenticPixelCacheNexus(image,0,y,image->columns,1,
-      cache_info->nexus_info[id],exception);
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
@@ -4913,9 +4913,9 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
       SetPixelAlpha(image,alpha,q);
       q+=GetPixelChannels(image);
     }
-    status=SyncAuthenticPixelCacheNexus(image,cache_info->nexus_info[id],
-      exception);
+    status=SyncCacheViewAuthenticPixels(image_view,exception);
   }
+  image_view=DestroyCacheView(image_view);
   return(status);
 }
 
