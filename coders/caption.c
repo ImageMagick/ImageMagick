@@ -249,8 +249,8 @@ static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
   pango_layout_set_alignment(layout,align);
   description=pango_font_description_from_string(draw_info->font ==
     (char *) NULL ? "helvetica" : draw_info->font);
-  pango_font_description_set_size(description,PANGO_SCALE*(int)
-    (draw_info->pointsize+0.5));
+  pango_font_description_set_size(description,(int) (0.815*PANGO_SCALE*
+    draw_info->pointsize+0.5));
   pango_layout_set_font_description(layout,description);
   pango_font_description_free(description);
   /*
