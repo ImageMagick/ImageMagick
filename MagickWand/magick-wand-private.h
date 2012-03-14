@@ -47,8 +47,8 @@ struct _MagickWand
     *exception;
 
   MagickBooleanType
-    set_first,        /* wand set to first image, prepend new images */
-    image_pending,    /* this image is pending Next Iteration */
+    insert_before,    /* wand set to first image, prepend new images */
+    image_pending,    /* this image is pending Next/Previous Iteration */
     debug;            /* Log calls to MagickWand library */
 
   size_t
