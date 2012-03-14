@@ -231,8 +231,17 @@ static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
   {
     case CenterAlign: align=PANGO_ALIGN_CENTER; break;
     case RightAlign: align=PANGO_ALIGN_RIGHT; break;
-    case LeftAlign:
-    default: align=PANGO_ALIGN_LEFT; break;
+    case LeftAlign: align=PANGO_ALIGN_LEFT; break;
+    default:
+    {
+      if (draw_info->gravity == CenterGravity)
+        {
+          align=PANGO_ALIGN_CENTER;
+          break;
+        }
+      align=PANGO_ALIGN_LEFT;
+      break;
+    }
   }
   if ((align != PANGO_ALIGN_CENTER) &&
       (draw_info->direction == RightToLeftDirection))
