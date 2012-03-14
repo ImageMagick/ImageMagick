@@ -3,6 +3,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20526).
   * Ghostscript 32/64 bit detection patch (contributed by
     axeld@pinc-...).
+  * Honor center gravity for caption: with Pango support (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20517).
 
 2012-03-10  6.7.6-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-0, SVN revision 7090.
