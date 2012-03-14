@@ -1436,14 +1436,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
       case ReadStripMethod:
       {
-        register unsigned char
+        register uint32
           *p;
 
         /*
           Convert stripped TIFF image to DirectClass MIFF image.
         */
         i=0;
-        p=(unsigned char *) NULL;
+        p=(uint32 *) NULL;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register ssize_t
@@ -1463,7 +1463,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 image->rows-y);
             }
           i--;
-          p=(unsigned char *) (((uint32 *) pixels)+image->columns*i);
+          p=((uint32 *) pixels)+image->columns*i;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
             SetPixelRed(q,ScaleCharToQuantum((unsigned char)
