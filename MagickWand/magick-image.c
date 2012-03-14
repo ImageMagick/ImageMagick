@@ -375,8 +375,16 @@ WandExport MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
 %  MagickAddImage() adds a clone of the images in the second wand and
 %  inserts them into the first wand, at the current image location.
 %
-%  Use MagickSetFirstIterator(), to insert new images before all the current
-%  images in the wand, otherwise image is placed after the current image.
+%  Use MagickSetLastIterator(), to append new images into an existing wand,
+%  current image will be set to last image so later adds with also be
+%  appened to end of wand.
+%
+%  Use MagickSetFirstIterator() to prepend new images into wand. Later images
+%  added will also be prepended.
+%
+%  Otherwise the new images will be inserted just after the current image,
+%  and later image will also be added after current image but before the
+%  just added images.
 %
 %  The format of the MagickAddImage method is:
 %
@@ -387,65 +395,44 @@ WandExport MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
 %
 %    o wand: the magick wand.
 %
-%    o add_wand: A wand that contains images to add at the current image
-%      location.
+%    o add_wand: A wand that contains image list to be added
 %
 */
 
 static inline MagickBooleanType InsertImageInWand(MagickWand *wand,
   Image *images)
 {
-  Image
-    *current;
-
-  current=wand->images;  /* note the current image */
-
-  /* if no images in wand, just add them and set first image as current */
-  if (current == (Image *) NULL)
+  /* if no images in wand, just add them, set wand->images as appropriate */
+  if (wand->images == (Image *) NULL)
     {
-      wand->images=GetFirstImageInList(images);
+      if (wand->insert_before != MagickFalse)
+        wand->images=GetFirstImageInList(images);
+      else
+        wand->images=GetLastImageInList(images);
       return(MagickTrue);
     }
 
   /* user jumped to first image, so prepend new images - remain active */
-  if ((wand->set_first != MagickFalse) &&
-       (current->previous == (Image *) NULL) )
+  if ((wand->insert_before != MagickFalse) &&
+       (wand->images->previous == (Image *) NULL) )
     {
-      PrependImageToList(&current,images);
+      PrependImageToList(&wand->images,images);
       wand->images=GetFirstImageInList(images);
       return(MagickTrue);
     }
-  wand->set_first = MagickFalse; /* flag no longer valid */
-
-  /* Current image was flagged as 'pending' iterative processing. */
-  if (wand->image_pending != MagickFalse)
-    {
-      /* current pending image is the last, append new images */
-      if (current->next == (Image *) NULL)
-        {
-          AppendImageToList(&current,images);
-          wand->images=GetLastImageInList(images);
-          return(MagickTrue);
-        }
-      /* current pending image is the first image, prepend it */
-      if (current->previous == (Image *) NULL)
-        {
-          PrependImageToList(&current,images);
-          wand->images=GetFirstImageInList(images);
-          return(MagickTrue);
-        }
-    }
+  /* Note you should never have 'insert_before' true when wand->images image
+     is not the first image in the wand!  That is no insert before
+     wand->images image, only after current image */
 
   /* if at last image append new images */
-  if (current->next == (Image *) NULL)
+  if (wand->images->next == (Image *) NULL)
     {
-      InsertImageInList(&current,images);
+      InsertImageInList(&wand->images,images);
       wand->images=GetLastImageInList(images);
       return(MagickTrue);
     }
-  /* otherwise just insert image, just after the current image */
-  InsertImageInList(&current,images);
-  wand->images=GetFirstImageInList(images);
+  /* otherwise insert new images, just after the wand->images image */
+  InsertImageInList(&wand->images,images);
   return(MagickTrue);
 }
 
@@ -6845,9 +6832,13 @@ WandExport MagickBooleanType MagickNewImage(MagickWand *wand,const size_t width,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickNextImage() associates the next image in the image list with a magick
-%  wand.  It returns true if the it succeeds, meaning the current image is the
-%  next image to be iterated over.
+%  MagickNextImage() sets the next image in the wand as the current image.
+%  It returns MagickTrue if their is another image to be processed.
+%  
+%  Returns MagickFalse when current image is already the last image
+%  in the wand (no more next images), at whcih point you can use
+%  MagickPreviousImage() to again iterate over the images in the reverse
+%  direction, starting with the last image (again).
 %
 %  The format of the MagickNextImage method is:
 %
@@ -6866,16 +6857,17 @@ WandExport MagickBooleanType MagickNextImage(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  /* If current image is 'pending' just return true.  */
+  wand->insert_before=MagickFalse; /* Inserts is now appended */
   if (wand->image_pending != MagickFalse)
     {
       wand->image_pending=MagickFalse;
       return(MagickTrue);
     }
-  /* If there is no next image, (Iterator is finished) */
   if (GetNextImageInList(wand->images) == (Image *) NULL)
+    {
+      wand->image_pending=MagickTrue; /* No image, PreviousImage re-gets */
       return(MagickFalse);
-  /* just move to next image - current image is not 'pending' */
+    }
   wand->images=GetNextImageInList(wand->images);
   return(MagickTrue);
 }
@@ -7445,6 +7437,11 @@ WandExport MagickWand *MagickPreviewImages(MagickWand *wand,
 %  MagickPreviousImage() assocates the previous image in an image list with
 %  the magick wand.
 %
+%  Returns MagickFalse when current image is the first image (no more previous
+%  images). The Iterator is than reset (as per MagickResetIterator()) ready
+%  to again process images in the forward direction, again starting with the
+%  first image in list. Images added at this point are prepended.
+%
 %  The format of the MagickPreviousImage method is:
 %
 %      MagickBooleanType MagickPreviousImage(MagickWand *wand)
@@ -7463,11 +7460,17 @@ WandExport MagickBooleanType MagickPreviousImage(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
 
-  wand->image_pending=MagickFalse;  /* pending status has no meaning */
-  /* If there is no prev image, return false (Iterator is finished) */
+  if (wand->image_pending != MagickFalse)
+    {
+      wand->image_pending=MagickFalse;  /* image returned no longer pending */
+      return(MagickTrue);
+    }
   if (GetPreviousImageInList(wand->images) == (Image *) NULL)
+    {
+      wand->image_pending=MagickTrue;   /* Next now re-gets first image */
+      wand->insert_before=MagickTrue;   /* insert/add prepends new images */
       return(MagickFalse);
-  /* just do it - current image is not 'pending' */
+    }
   wand->images=GetPreviousImageInList(wand->images);
   return(MagickTrue);
 }

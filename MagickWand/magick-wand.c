@@ -825,8 +825,8 @@ WandExport void MagickResetIterator(MagickWand *wand)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   wand->images=GetFirstImageInList(wand->images);
-  wand->set_first=MagickFalse;    /* we did not jump to the first image */
-  wand->image_pending=MagickTrue; /* pointed image is the 'next' image */
+  wand->insert_before=MagickFalse; /* Insert/add after current (first) image */
+  wand->image_pending=MagickTrue;  /* NextImage will remain this image */
 }
 
 /*
@@ -843,8 +843,8 @@ WandExport void MagickResetIterator(MagickWand *wand)
 %  MagickSetFirstIterator() sets the wand iterator to the first image.
 %
 %  Flags are set to point not only to the 'next' image to be processed,
-%  but also define where InsertImageInWand() (such as from MagickReadImage())
-%  should instert new images.
+%  but also sets that MagickAddImage() (such as from MagickReadImage())
+%  should add prepend images.
 %
 %  The format of the MagickSetFirstIterator method is:
 %
@@ -862,8 +862,8 @@ WandExport void MagickSetFirstIterator(MagickWand *wand)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   wand->images=GetFirstImageInList(wand->images);
-  wand->set_first=MagickTrue;       /* we did jumped to the first image */
-  wand->image_pending=MagickFalse;  /* but we are not iterating */
+  wand->insert_before=MagickTrue;   /* Insert/add before the first image */
+  wand->image_pending=MagickFalse;  /* NextImage will set next image */
 }
 
 /*
@@ -912,8 +912,8 @@ WandExport MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
       return(MagickFalse);
     }
   wand->images=image;
-  wand->set_first=MagickFalse;     /* we are not at very start of list */
-  wand->image_pending=MagickFalse;  /* but we are not directly iterating */
+  wand->insert_before=MagickFalse;  /* Insert/Add after (this) image */
+  wand->image_pending=MagickFalse;  /* NextImage will set next image */
   return(MagickTrue);
 }
 /*
@@ -949,8 +949,8 @@ WandExport void MagickSetLastIterator(MagickWand *wand)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   wand->images=GetLastImageInList(wand->images);
-  wand->set_first=MagickFalse;     /* we are not at very start of list */
-  wand->image_pending=MagickFalse;  /* but we are not iterating */
+  wand->insert_before=MagickFalse;  /* Insert/add after current (last) image */
+  wand->image_pending=MagickFalse;  /* PreviousImage will set previous image */
 }
 
 /*
