@@ -887,7 +887,7 @@ MagickExport MagickBooleanType NTGetModulePath(const char *module,char *path)
 %
 */
 
-static int NTGetRegistryValue(HKEY root,const char *key,const char *name,
+static int NTGetRegistryValue(HKEY root,const char *key,DWORD flags,const char *name,
   char *value,int *length)
 {
   BYTE
@@ -907,7 +907,7 @@ static int NTGetRegistryValue(HKEY root,const char *key,const char *name,
   /*
     Get a registry value: key = root\\key, named value = name.
   */
-  if (RegOpenKeyExA(root,key,0,KEY_READ,&hkey) != ERROR_SUCCESS)
+  if (RegOpenKeyExA(root,key,0,KEY_READ | flags,&hkey) != ERROR_SUCCESS)
     return(1);  /* no match */
   p=(BYTE *) value;
   type=REG_SZ;
@@ -929,7 +929,7 @@ static int NTGetRegistryValue(HKEY root,const char *key,const char *name,
   return(1);  /* not found */
 }
 
-static int NTLocateGhostscript(const char **product_family,int *major_version,
+static int NTLocateGhostscript(DWORD flags,const char **product_family,int *major_version,
   int *minor_version)
 {
   int
@@ -968,7 +968,7 @@ static int NTLocateGhostscript(const char **product_family,int *major_version,
 
     (void) FormatLocaleString(key,MaxTextExtent,"SOFTWARE\\%s",products[i]);
     root=HKEY_LOCAL_MACHINE;
-    mode=KEY_READ;
+    mode=KEY_READ | flags;
     if (RegOpenKeyExA(root,key,0,mode,&hkey) == ERROR_SUCCESS)
       {
         DWORD
@@ -1013,7 +1013,17 @@ static int NTLocateGhostscript(const char **product_family,int *major_version,
   return(status);
 }
 
-static int NTGhostscriptGetString(const char *name,char *value,
+static BOOL NTIs64BitPlatform()
+{
+#if defined(_WIN64)
+  return(TRUE);
+#else
+  BOOL is64=FALSE;
+  return(IsWow64Process(GetCurrentProcess(), &is64) && is64);
+#endif
+}
+
+static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
   const size_t length)
 {
   char
@@ -1026,7 +1036,11 @@ static int NTGhostscriptGetString(const char *name,char *value,
   static const char
     *product_family = (const char *) NULL;
 
+  static BOOL
+    is_64_bit_version = FALSE;
+
   static int
+    flags=0,
     major_version=0,
     minor_version=0;
 
@@ -1047,9 +1061,27 @@ static int NTGhostscriptGetString(const char *name,char *value,
   /*
     Get a string from the installed Ghostscript.
   */
+  if (is_64_bit!=NULL)
+    *is_64_bit=FALSE;
   *value='\0';
   if (product_family == NULL)
-    (void) NTLocateGhostscript(&product_family,&major_version,&minor_version);
+  {
+    flags=NTIs64BitPlatform() ? KEY_WOW64_64KEY : 0;
+    (void) NTLocateGhostscript(flags,&product_family,&major_version,&minor_version);
+    if (product_family == NULL)
+    {
+      if (flags!=0)
+      {
+        /* We are running on a 64 bit platform - check for a 32 bit Ghostscript, too */
+        flags=KEY_WOW64_32KEY;
+        (void) NTLocateGhostscript(flags,&product_family,&major_version,&minor_version);
+  	  }
+    }
+    else
+      is_64_bit_version=NTIs64BitPlatform();
+  }
+  if (is_64_bit!=NULL)
+    *is_64_bit=is_64_bit_version;
   if (product_family == NULL)
     return(FALSE);
   (void) FormatLocaleString(key,MaxTextExtent,"SOFTWARE\\%s\\%d.%02d",
@@ -1057,7 +1089,7 @@ static int NTGhostscriptGetString(const char *name,char *value,
   for (i=0; i < (ssize_t) (sizeof(hkeys)/sizeof(hkeys[0])); i++)
   {
     extent=(int) length;
-    if (NTGetRegistryValue(hkeys[i].hkey,key,name,value,&extent) == 0)
+    if (NTGetRegistryValue(hkeys[i].hkey,key,flags,name,value,&extent) == 0)
       {
         (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
           "registry: \"%s\\%s\\%s\"=\"%s\"",hkeys[i].name,key,name,value);
@@ -1074,10 +1106,21 @@ MagickExport int NTGhostscriptDLL(char *path,int length)
   static char
     dll[MaxTextExtent] = { "" };
 
+  static BOOL
+    is_64_bit_version;
+
   *path='\0';
   if ((*dll == '\0') &&
-      (NTGhostscriptGetString("GS_DLL",dll,sizeof(dll)) == FALSE))
+      (NTGhostscriptGetString("GS_DLL",&is_64_bit_version,dll,sizeof(dll)) == FALSE))
     return(FALSE);
+
+#if defined(_WIN64)
+  if (!is_64_bit_version)
+    return(FALSE);
+#else
+  if (is_64_bit_version)
+    return(FALSE);
+#endif
   (void) CopyMagickString(path,dll,length);
   return(TRUE);
 }
@@ -1144,16 +1187,19 @@ MagickExport int NTGhostscriptEXE(char *path,int length)
   static char
     program[MaxTextExtent] = { "" };
 
+  static BOOL
+    is_64_bit_version = FALSE;
+
   (void) CopyMagickString(path,"gswin32c.exe",length);
   if ((*program == '\0') &&
-      (NTGhostscriptGetString("GS_DLL",program,sizeof(program)) == FALSE))
+      (NTGhostscriptGetString("GS_DLL",&is_64_bit_version,program,sizeof(program)) == FALSE))
     return(FALSE);
   p=strrchr(program,'\\');
   if (p != (char *) NULL)
     {
       p++;
       *p='\0';
-      (void) ConcatenateMagickString(program,"gswin32c.exe",sizeof(program));
+      (void) ConcatenateMagickString(program,is_64_bit_version ? "gswin64c.exe" : "gswin32c.exe",sizeof(program));
     }
   (void) CopyMagickString(path,program,length);
   return(TRUE);
@@ -1195,7 +1241,7 @@ MagickExport int NTGhostscriptFonts(char *path,int length)
     *q;
 
   *path='\0';
-  if (NTGhostscriptGetString("GS_LIB",buffer,MaxTextExtent) == FALSE)
+  if (NTGhostscriptGetString("GS_LIB",NULL,buffer,MaxTextExtent) == FALSE)
     return(FALSE);
   for (p=buffer-1; p != (char *) NULL; p=strchr(p+1,DirectoryListSeparator))
   {
