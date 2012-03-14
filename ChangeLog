@@ -22,7 +22,7 @@
   * New version 6.7.5-9, SVN revision 7046.
 
 2012-02-29  6.7.5-9 Cristy  <quetzlzacatenango@image...>
-  * Caption no long includes the prefix "caption:" in the rendered text.
+  * Caption no longer includes the prefix "caption:" in the rendered text.
   * Auto scale pointsize for -size 100x100 caption:
 
 2012-03-02  6.7.5-8 Cristy  <quetzlzacatenango@image...>
@@ -53,7 +53,7 @@
 2012-02-22  6.7.5-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Re-added the Iterative Distance function in morphology (as apposed to the
     faster more direct 2-pass Distance Function that replaced it) so it can be
-    used in the special situation of  Constrainted Distance Morphology.
+    used in the special situation of Constrainted Distance Morphology.
     http://www.imagemagick.org/discourse-server/viewtopic.php??f=2&t=18032
 
 2012-02-13  6.7.5-6 Cristy  <quetzlzacatenango@image...>
@@ -86,7 +86,7 @@
 
 2012-02-03  6.7.5-2 Cristy  <quetzlzacatenango@image...>
   * Add SyncImagePixelCache() to ensure cache morphology is consistent.
-  * Patch so two -colorspace options return correct results for rowund-trip.
+  * Patch so two -colorspace options return correct results for round-trip.
 
 2012-02-02  6.7.5-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.5-1, SVN revision 6684.
