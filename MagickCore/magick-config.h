@@ -20,9 +20,7 @@
 #endif
 
 /* Define if you have CAIRO library */
-#ifndef MAGICKCORE_CAIRO_DELEGATE
-#define MAGICKCORE_CAIRO_DELEGATE 1
-#endif
+/* #undef CAIRO_DELEGATE */
 
 /* permit enciphering and deciphering image pixels */
 #ifndef MAGICKCORE_CIPHER_SUPPORT
@@ -54,9 +52,7 @@
 #endif
 
 /* Define if you have DJVU library */
-#ifndef MAGICKCORE_DJVU_DELEGATE
-#define MAGICKCORE_DJVU_DELEGATE 1
-#endif
+/* #undef DJVU_DELEGATE */
 
 /* Directory where ImageMagick documents live. */
 #ifndef MAGICKCORE_DOCUMENTATION_PATH
@@ -75,9 +71,7 @@
 #endif
 
 /* Define if you have FFTW library */
-#ifndef MAGICKCORE_FFTW_DELEGATE
-#define MAGICKCORE_FFTW_DELEGATE 1
-#endif
+/* #undef FFTW_DELEGATE */
 
 /* Location of filter modules */
 #ifndef MAGICKCORE_FILTER_PATH
@@ -90,25 +84,19 @@
 #endif
 
 /* Define if you have FONTCONFIG library */
-#ifndef MAGICKCORE_FONTCONFIG_DELEGATE
-#define MAGICKCORE_FONTCONFIG_DELEGATE 1
-#endif
+/* #undef FONTCONFIG_DELEGATE */
 
 /* Define if you have FlashPIX library */
 /* #undef FPX_DELEGATE */
 
 /* Define if you have FreeType (TrueType font) library */
-#ifndef MAGICKCORE_FREETYPE_DELEGATE
-#define MAGICKCORE_FREETYPE_DELEGATE 1
-#endif
+/* #undef FREETYPE_DELEGATE */
 
 /* Define if you have Ghostscript library or framework */
 /* #undef GS_DELEGATE */
 
 /* Define if you have GVC library */
-#ifndef MAGICKCORE_GVC_DELEGATE
-#define MAGICKCORE_GVC_DELEGATE 1
-#endif
+/* #undef GVC_DELEGATE */
 
 /* Define to 1 if you have the `acosh' function. */
 #ifndef MAGICKCORE_HAVE_ACOSH
@@ -238,7 +226,9 @@
 
 /* Define to 1 if you have the declaration of `cygwin_conv_path', and to 0 if
    you don't. */
-/* #undef HAVE_DECL_CYGWIN_CONV_PATH */
+#ifndef MAGICKCORE_HAVE_DECL_CYGWIN_CONV_PATH
+#define MAGICKCORE_HAVE_DECL_CYGWIN_CONV_PATH 1
+#endif
 
 /* Define to 1 if you have the declaration of `pread', and to 0 if you don't.
    */
@@ -266,7 +256,9 @@
 
 /* Define to 1 if you have the declaration of `tzname', and to 0 if you don't.
    */
-/* #undef HAVE_DECL_TZNAME */
+#ifndef MAGICKCORE_HAVE_DECL_TZNAME
+#define MAGICKCORE_HAVE_DECL_TZNAME 1
+#endif
 
 /* Define to 1 if you have the declaration of `vsnprintf', and to 0 if you
    don't. */
@@ -349,9 +341,7 @@
 #endif
 
 /* Define to 1 if you have the <ft2build.h> header file. */
-#ifndef MAGICKCORE_HAVE_FT2BUILD_H
-#define MAGICKCORE_HAVE_FT2BUILD_H 1
-#endif
+/* #undef HAVE_FT2BUILD_H */
 
 /* Define to 1 if you have the `ftime' function. */
 #ifndef MAGICKCORE_HAVE_FTIME
@@ -442,9 +432,7 @@
 #endif
 
 /* Define if you have the <lcms2.h> header file. */
-#ifndef MAGICKCORE_HAVE_LCMS2_H
-#define MAGICKCORE_HAVE_LCMS2_H 1
-#endif
+/* #undef HAVE_LCMS2_H */
 
 /* Define if you have the <lcms2/lcms2.h> header file. */
 /* #undef HAVE_LCMS2_LCMS2_H */
@@ -474,9 +462,7 @@
 #endif
 
 /* Define to 1 if you have the <linux/unistd.h> header file. */
-#ifndef MAGICKCORE_HAVE_LINUX_UNISTD_H
-#define MAGICKCORE_HAVE_LINUX_UNISTD_H 1
-#endif
+/* #undef HAVE_LINUX_UNISTD_H */
 
 /* Define to 1 if you have the `lltostr' function. */
 /* #undef HAVE_LLTOSTR */
@@ -513,12 +499,12 @@
 #endif
 
 /* Define this if a modern libltdl is already installed */
-#ifndef MAGICKCORE_HAVE_LTDL
-#define MAGICKCORE_HAVE_LTDL 1
-#endif
+/* #undef HAVE_LTDL */
 
 /* Define to 1 if you have the <machine/param.h> header file. */
-/* #undef HAVE_MACHINE_PARAM_H */
+#ifndef MAGICKCORE_HAVE_MACHINE_PARAM_H
+#define MAGICKCORE_HAVE_MACHINE_PARAM_H 1
+#endif
 
 /* Define to 1 if you have the <mach-o/dyld.h> header file. */
 /* #undef HAVE_MACH_O_DYLD_H */
@@ -582,9 +568,7 @@
 /* #undef HAVE_NDIR_H */
 
 /* Define to 1 if you have the `newlocale' function. */
-#ifndef MAGICKCORE_HAVE_NEWLOCALE
-#define MAGICKCORE_HAVE_NEWLOCALE 1
-#endif
+/* #undef HAVE_NEWLOCALE */
 
 /* Define to 1 if you have the <OpenCL/cl.h> header file. */
 /* #undef HAVE_OPENCL_CL_H */
@@ -633,9 +617,7 @@
 #endif
 
 /* Define to 1 if you have the `posix_spawnp' function. */
-#ifndef MAGICKCORE_HAVE_POSIX_SPAWNP
-#define MAGICKCORE_HAVE_POSIX_SPAWNP 1
-#endif
+/* #undef HAVE_POSIX_SPAWNP */
 
 /* Define to 1 if you have the `pow' function. */
 #ifndef MAGICKCORE_HAVE_POW
@@ -653,7 +635,9 @@
 #endif
 
 /* Define to 1 if you have the <process.h> header file. */
-/* #undef HAVE_PROCESS_H */
+#ifndef MAGICKCORE_HAVE_PROCESS_H
+#define MAGICKCORE_HAVE_PROCESS_H 1
+#endif
 
 /* Define if you have POSIX threads libraries and header files. */
 #ifndef MAGICKCORE_HAVE_PTHREAD
@@ -661,9 +645,7 @@
 #endif
 
 /* Have PTHREAD_PRIO_INHERIT. */
-#ifndef MAGICKCORE_HAVE_PTHREAD_PRIO_INHERIT
-#define MAGICKCORE_HAVE_PTHREAD_PRIO_INHERIT 1
-#endif
+/* #undef HAVE_PTHREAD_PRIO_INHERIT */
 
 /* Define to 1 if you have the `pwrite' function. */
 #ifndef MAGICKCORE_HAVE_PWRITE
@@ -671,9 +653,7 @@
 #endif
 
 /* Define to 1 if you have the `qsort_r' function. */
-#ifndef MAGICKCORE_HAVE_QSORT_R
-#define MAGICKCORE_HAVE_QSORT_R 1
-#endif
+/* #undef HAVE_QSORT_R */
 
 /* Define to 1 if you have the `raise' function. */
 #ifndef MAGICKCORE_HAVE_RAISE
@@ -726,14 +706,10 @@
 #endif
 
 /* X11 server supports shape extension */
-#ifndef MAGICKCORE_HAVE_SHAPE
-#define MAGICKCORE_HAVE_SHAPE 1
-#endif
+/* #undef HAVE_SHAPE */
 
 /* X11 server supports shared memory extension */
-#ifndef MAGICKCORE_HAVE_SHARED_MEMORY
-#define MAGICKCORE_HAVE_SHARED_MEMORY 1
-#endif
+/* #undef HAVE_SHARED_MEMORY */
 
 /* Define if you have the shl_load function. */
 /* #undef HAVE_SHL_LOAD */
@@ -749,7 +725,9 @@
 #endif
 
 /* Define to 1 if you have the `spawnvp' function. */
-/* #undef HAVE_SPAWNVP */
+#ifndef MAGICKCORE_HAVE_SPAWNVP
+#define MAGICKCORE_HAVE_SPAWNVP 1
+#endif
 
 /* Define to 1 if you have the `sqrt' function. */
 #ifndef MAGICKCORE_HAVE_SQRT
@@ -832,10 +810,14 @@
 #endif
 
 /* Define to 1 if you have the `strlcat' function. */
-/* #undef HAVE_STRLCAT */
+#ifndef MAGICKCORE_HAVE_STRLCAT
+#define MAGICKCORE_HAVE_STRLCAT 1
+#endif
 
 /* Define to 1 if you have the `strlcpy' function. */
-/* #undef HAVE_STRLCPY */
+#ifndef MAGICKCORE_HAVE_STRLCPY
+#define MAGICKCORE_HAVE_STRLCPY 1
+#endif
 
 /* Define to 1 if you have the `strncasecmp' function. */
 #ifndef MAGICKCORE_HAVE_STRNCASECMP
@@ -868,9 +850,7 @@
 #endif
 
 /* Define to 1 if you have the `strtod_l' function. */
-#ifndef MAGICKCORE_HAVE_STRTOD_L
-#define MAGICKCORE_HAVE_STRTOD_L 1
-#endif
+/* #undef HAVE_STRTOD_L */
 
 /* Define to 1 if you have the `strtol' function. */
 #ifndef MAGICKCORE_HAVE_STRTOL
@@ -883,9 +863,7 @@
 #endif
 
 /* Define to 1 if `tm_zone' is a member of `struct tm'. */
-#ifndef MAGICKCORE_HAVE_STRUCT_TM_TM_ZONE
-#define MAGICKCORE_HAVE_STRUCT_TM_TM_ZONE 1
-#endif
+/* #undef HAVE_STRUCT_TM_TM_ZONE */
 
 /* Define to 1 if you have the `symlink' function. */
 #ifndef MAGICKCORE_HAVE_SYMLINK
@@ -977,49 +955,31 @@
 #endif
 
 /* Define to 1 if you have the <tiffconf.h> header file. */
-#ifndef MAGICKCORE_HAVE_TIFFCONF_H
-#define MAGICKCORE_HAVE_TIFFCONF_H 1
-#endif
+/* #undef HAVE_TIFFCONF_H */
 
 /* Define to 1 if you have the `TIFFIsBigEndian' function. */
-#ifndef MAGICKCORE_HAVE_TIFFISBIGENDIAN
-#define MAGICKCORE_HAVE_TIFFISBIGENDIAN 1
-#endif
+/* #undef HAVE_TIFFISBIGENDIAN */
 
 /* Define to 1 if you have the `TIFFIsCODECConfigured' function. */
-#ifndef MAGICKCORE_HAVE_TIFFISCODECCONFIGURED
-#define MAGICKCORE_HAVE_TIFFISCODECCONFIGURED 1
-#endif
+/* #undef HAVE_TIFFISCODECCONFIGURED */
 
 /* Define to 1 if you have the `TIFFMergeFieldInfo' function. */
-#ifndef MAGICKCORE_HAVE_TIFFMERGEFIELDINFO
-#define MAGICKCORE_HAVE_TIFFMERGEFIELDINFO 1
-#endif
+/* #undef HAVE_TIFFMERGEFIELDINFO */
 
 /* Define to 1 if you have the `TIFFReadEXIFDirectory' function. */
-#ifndef MAGICKCORE_HAVE_TIFFREADEXIFDIRECTORY
-#define MAGICKCORE_HAVE_TIFFREADEXIFDIRECTORY 1
-#endif
+/* #undef HAVE_TIFFREADEXIFDIRECTORY */
 
 /* Define to 1 if you have the `TIFFSetErrorHandlerExt' function. */
-#ifndef MAGICKCORE_HAVE_TIFFSETERRORHANDLEREXT
-#define MAGICKCORE_HAVE_TIFFSETERRORHANDLEREXT 1
-#endif
+/* #undef HAVE_TIFFSETERRORHANDLEREXT */
 
 /* Define to 1 if you have the `TIFFSetTagExtender' function. */
-#ifndef MAGICKCORE_HAVE_TIFFSETTAGEXTENDER
-#define MAGICKCORE_HAVE_TIFFSETTAGEXTENDER 1
-#endif
+/* #undef HAVE_TIFFSETTAGEXTENDER */
 
 /* Define to 1 if you have the `TIFFSetWarningHandlerExt' function. */
-#ifndef MAGICKCORE_HAVE_TIFFSETWARNINGHANDLEREXT
-#define MAGICKCORE_HAVE_TIFFSETWARNINGHANDLEREXT 1
-#endif
+/* #undef HAVE_TIFFSETWARNINGHANDLEREXT */
 
 /* Define to 1 if you have the `TIFFSwabArrayOfTriples' function. */
-#ifndef MAGICKCORE_HAVE_TIFFSWABARRAYOFTRIPLES
-#define MAGICKCORE_HAVE_TIFFSWABARRAYOFTRIPLES 1
-#endif
+/* #undef HAVE_TIFFSWABARRAYOFTRIPLES */
 
 /* Define to 1 if you have the `times' function. */
 #ifndef MAGICKCORE_HAVE_TIMES
@@ -1028,13 +988,13 @@
 
 /* Define to 1 if your `struct tm' has `tm_zone'. Deprecated, use
    `HAVE_STRUCT_TM_TM_ZONE' instead. */
-#ifndef MAGICKCORE_HAVE_TM_ZONE
-#define MAGICKCORE_HAVE_TM_ZONE 1
-#endif
+/* #undef HAVE_TM_ZONE */
 
 /* Define to 1 if you don't have `tm_zone' but do have the external array
    `tzname'. */
-/* #undef HAVE_TZNAME */
+#ifndef MAGICKCORE_HAVE_TZNAME
+#define MAGICKCORE_HAVE_TZNAME 1
+#endif
 
 /* Define to 1 if the system has the type `uintmax_t'. */
 #ifndef MAGICKCORE_HAVE_UINTMAX_T
@@ -1060,9 +1020,7 @@
 #endif
 
 /* Define to 1 if you have the `uselocale' function. */
-#ifndef MAGICKCORE_HAVE_USELOCALE
-#define MAGICKCORE_HAVE_USELOCALE 1
-#endif
+/* #undef HAVE_USELOCALE */
 
 /* Define to 1 if you have the `usleep' function. */
 #ifndef MAGICKCORE_HAVE_USLEEP
@@ -1119,7 +1077,9 @@
 #endif
 
 /* Define to 1 if you have the <windows.h> header file. */
-/* #undef HAVE_WINDOWS_H */
+#ifndef MAGICKCORE_HAVE_WINDOWS_H
+#define MAGICKCORE_HAVE_WINDOWS_H 1
+#endif
 
 /* This value is set to 1 to indicate that the system argz facility works */
 #ifndef MAGICKCORE_HAVE_WORKING_ARGZ
@@ -1137,9 +1097,7 @@
 #endif
 
 /* Define to 1 if you have the <xlocale.h> header file. */
-#ifndef MAGICKCORE_HAVE_XLOCALE_H
-#define MAGICKCORE_HAVE_XLOCALE_H 1
-#endif
+/* #undef HAVE_XLOCALE_H */
 
 /* Define to 1 if the system has the type `_Bool'. */
 #ifndef MAGICKCORE_HAVE__BOOL
@@ -1155,10 +1113,14 @@
 /* #undef HAVE__NSGETEXECUTABLEPATH */
 
 /* Define to 1 if you have the `_pclose' function. */
-/* #undef HAVE__PCLOSE */
+#ifndef MAGICKCORE_HAVE__PCLOSE
+#define MAGICKCORE_HAVE__PCLOSE 1
+#endif
 
 /* Define to 1 if you have the `_popen' function. */
-/* #undef HAVE__POPEN */
+#ifndef MAGICKCORE_HAVE__POPEN
+#define MAGICKCORE_HAVE__POPEN 1
+#endif
 
 /* Define to 1 if you have the `_wfopen' function. */
 /* #undef HAVE__WFOPEN */
@@ -1191,19 +1153,13 @@
 /* #undef JBIG_DELEGATE */
 
 /* Define if you have JPEG version 2 "Jasper" library */
-#ifndef MAGICKCORE_JP2_DELEGATE
-#define MAGICKCORE_JP2_DELEGATE 1
-#endif
+/* #undef JP2_DELEGATE */
 
 /* Define if you have JPEG library */
-#ifndef MAGICKCORE_JPEG_DELEGATE
-#define MAGICKCORE_JPEG_DELEGATE 1
-#endif
+/* #undef JPEG_DELEGATE */
 
 /* Define if you have LCMS (v1.11 or later) library */
-#ifndef MAGICKCORE_LCMS_DELEGATE
-#define MAGICKCORE_LCMS_DELEGATE 1
-#endif
+/* #undef LCMS_DELEGATE */
 
 /* Directory where architecture-dependent files live. */
 #ifndef MAGICKCORE_LIBRARY_PATH
@@ -1225,11 +1181,13 @@
 #endif
 
 /* Define if the OS needs help to load dependent libraries for dlopen(). */
-/* #undef LTDL_DLOPEN_DEPLIBS */
+#ifndef MAGICKCORE_LTDL_DLOPEN_DEPLIBS
+#define MAGICKCORE_LTDL_DLOPEN_DEPLIBS 1
+#endif
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib/llvm:/usr/lib64/llvm:/usr/local/lib:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.5/tclx8.4:/usr/lib64/tcl8.5:/usr/lib64/tracker-0.12:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-2"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib:/usr/lib"
 #endif
 
 /* The archive extension */
@@ -1244,13 +1202,13 @@
 
 /* Define to the extension used for runtime loadable modules, say, ".so". */
 #ifndef MAGICKCORE_LT_MODULE_EXT
-#define MAGICKCORE_LT_MODULE_EXT ".so"
+#define MAGICKCORE_LT_MODULE_EXT ".dll"
 #endif
 
 /* Define to the name of the environment variable that determines the run-time
    module search path. */
 #ifndef MAGICKCORE_LT_MODULE_PATH_VAR
-#define MAGICKCORE_LT_MODULE_PATH_VAR "LD_LIBRARY_PATH"
+#define MAGICKCORE_LT_MODULE_PATH_VAR "PATH"
 #endif
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
@@ -1263,9 +1221,7 @@
 /* #undef LT_SHARED_EXT */
 
 /* Define if you have LZMA library */
-#ifndef MAGICKCORE_LZMA_DELEGATE
-#define MAGICKCORE_LZMA_DELEGATE 1
-#endif
+/* #undef LZMA_DELEGATE */
 
 /* Define to prepend to default font search path. */
 /* #undef MAGICK_FONT_PATH */
@@ -1321,19 +1277,13 @@
 #endif
 
 /* Define if you have PANGOFT2 library */
-#ifndef MAGICKCORE_PANGOFT2_DELEGATE
-#define MAGICKCORE_PANGOFT2_DELEGATE 1
-#endif
+/* #undef PANGOFT2_DELEGATE */
 
 /* Define if you have PANGO library */
-#ifndef MAGICKCORE_PANGO_DELEGATE
-#define MAGICKCORE_PANGO_DELEGATE 1
-#endif
+/* #undef PANGO_DELEGATE */
 
 /* Define if you have PNG library */
-#ifndef MAGICKCORE_PNG_DELEGATE
-#define MAGICKCORE_PNG_DELEGATE 1
-#endif
+/* #undef PNG_DELEGATE */
 
 /* Define to necessary symbol if this constant uses a non-standard name on
    your system. */
@@ -1404,7 +1354,7 @@
 
 /* The size of `signed long', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_SIGNED_LONG
-#define MAGICKCORE_SIZEOF_SIGNED_LONG 8
+#define MAGICKCORE_SIZEOF_SIGNED_LONG 4
 #endif
 
 /* The size of `signed long long', as computed by sizeof. */
@@ -1419,12 +1369,12 @@
 
 /* The size of `size_t', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_SIZE_T
-#define MAGICKCORE_SIZEOF_SIZE_T 8
+#define MAGICKCORE_SIZEOF_SIZE_T 4
 #endif
 
 /* The size of `ssize_t', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_SSIZE_T
-#define MAGICKCORE_SIZEOF_SSIZE_T 8
+#define MAGICKCORE_SIZEOF_SSIZE_T 4
 #endif
 
 /* The size of `unsigned int', as computed by sizeof. */
@@ -1434,12 +1384,12 @@
 
 /* The size of `unsigned int*', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_UNSIGNED_INTP
-#define MAGICKCORE_SIZEOF_UNSIGNED_INTP 8
+#define MAGICKCORE_SIZEOF_UNSIGNED_INTP 4
 #endif
 
 /* The size of `unsigned long', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_UNSIGNED_LONG
-#define MAGICKCORE_SIZEOF_UNSIGNED_LONG 8
+#define MAGICKCORE_SIZEOF_UNSIGNED_LONG 4
 #endif
 
 /* The size of `unsigned long long', as computed by sizeof. */
@@ -1471,9 +1421,7 @@
 #endif
 
 /* Define if you have TIFF library */
-#ifndef MAGICKCORE_TIFF_DELEGATE
-#define MAGICKCORE_TIFF_DELEGATE 1
-#endif
+/* #undef TIFF_DELEGATE */
 
 /* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
 #ifndef MAGICKCORE_TIME_WITH_SYS_TIME
@@ -1514,7 +1462,9 @@
 /* #undef WEBP_DELEGATE */
 
 /* Define to use the Windows GDI32 library */
-/* #undef WINGDI32_DELEGATE */
+#ifndef MAGICKCORE_WINGDI32_DELEGATE
+#define MAGICKCORE_WINGDI32_DELEGATE 1
+#endif
 
 /* Define if using the dmalloc debugging malloc package */
 /* #undef WITH_DMALLOC */
@@ -1543,20 +1493,20 @@
 #endif
 
 /* Define if you have X11 library */
-#ifndef MAGICKCORE_X11_DELEGATE
-#define MAGICKCORE_X11_DELEGATE 1
-#endif
+/* #undef X11_DELEGATE */
 
 /* Define if you have XML library */
-#ifndef MAGICKCORE_XML_DELEGATE
-#define MAGICKCORE_XML_DELEGATE 1
-#endif
+/* #undef XML_DELEGATE */
 
 /* Define to 1 if the X Window System is missing or not being used. */
-/* #undef X_DISPLAY_MISSING */
+#ifndef MAGICKCORE_X_DISPLAY_MISSING
+#define MAGICKCORE_X_DISPLAY_MISSING 1
+#endif
 
 /* Build self-contained, embeddable, zero-configuration ImageMagick */
-/* #undef ZERO_CONFIGURATION_SUPPORT */
+#ifndef MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
+#define MAGICKCORE_ZERO_CONFIGURATION_SUPPORT 1
+#endif
 
 /* Define if you have zlib compression library */
 #ifndef MAGICKCORE_ZLIB_DELEGATE
