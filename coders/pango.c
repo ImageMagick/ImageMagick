@@ -5,16 +5,16 @@
 %                                                                             %
 %                     PPPP    AAA   N   N   GGGG   OOO                        %
 %                     P   P  A   A  NN  N  G      O   O                       %
-%                     PPPP   AAAAA  N N N  G  GG  O   O                       %
-%                     P      A   A  N  NN  G   G  O   O                       %
-%                     P      A   A  N   N   GGG    OOO                        %
+%                     PPPP   AAAAA  N N N  G GGG  O   O                       %
+%                     P   M  A   A  N  NN  G   G  O   O                       %
+%                     P      A   A  N   N   GGGG   OOO                        %
 %                                                                             %
 %                                                                             %
-%                             Read Text Caption.                              %
+%                     Read Pango Markup Language Format                       %
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                               February 2002                                 %
+%                                 March 2012                                  %
 %                                                                             %
 %                                                                             %
 %  Copyright 1999-2012 ImageMagick Studio LLC, a non-profit organization      %
@@ -52,9 +52,10 @@
 #include "MagickCore/image-private.h"
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
-#include "MagickCore/memory_.h"
 #include "MagickCore/module.h"
+#include "MagickCore/memory_.h"
 #include "MagickCore/option.h"
+#include "MagickCore/pixel-accessor.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/static.h"
@@ -67,6 +68,7 @@
 #include <pango/pango-features.h>
 #endif
 
+#if defined(MAGICKCORE_PANGOFT2_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -78,9 +80,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadPANGOImage() reads a PANGO image file and returns it.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
+%  ReadPANGOImage() reads an image in the Pango Markup Language Format.
 %
 %  The format of the ReadPANGOImage method is:
 %
@@ -94,7 +94,7 @@
 %    o exception: return any errors or warnings in this structure.
 %
 */
-#if defined(MAGICKCORE_PANGOFT2_DELEGATE)
+
 static void PangoSubstitute(FcPattern *pattern,void *context)
 {
   const char
@@ -109,14 +109,24 @@ static void PangoSubstitute(FcPattern *pattern,void *context)
   FcPatternAddBool(pattern,FC_AUTOHINT,LocaleCompare(option,"auto") == 0);
 }
 
-static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
-  const DrawInfo *draw_info,ExceptionInfo *exception)
+static Image *ReadPANGOImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
+  char
+    *caption,
+    *property;
+
   const char
     *option;
 
+  DrawInfo
+    *draw_info;
+
   FT_Bitmap
     *canvas;
+
+  Image
+    *image;
 
   PangoAlignment
     align;
@@ -155,6 +165,18 @@ static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
     y;
 
   /*
+    Initialize Image structure.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  if (image_info->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image_info->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  image=AcquireImage(image_info,exception);
+  (void) ResetImagePage(image,"0x0+0+0");
+  /*
     Get context.
   */
   fontmap=(PangoFontMap *) pango_ft2_font_map_new();
@@ -167,6 +189,7 @@ static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
   option=GetImageOption(image_info,"pango:language");
   if (option != (const char *) NULL)
     pango_context_set_language(context,pango_language_from_string(option));
+  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   pango_context_set_base_dir(context,draw_info->direction ==
     RightToLeftDirection ? PANGO_DIRECTION_RTL : PANGO_DIRECTION_LTR);
   switch (draw_info->gravity)
@@ -235,7 +258,7 @@ static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
     default:
     {
       if (draw_info->gravity == CenterGravity)
-        {  
+        {
           align=PANGO_ALIGN_CENTER;
           break;
         }
@@ -249,18 +272,22 @@ static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
   pango_layout_set_alignment(layout,align);
   description=pango_font_description_from_string(draw_info->font ==
     (char *) NULL ? "helvetica" : draw_info->font);
-  pango_font_description_set_size(description,(int) (0.815*PANGO_SCALE*
-    draw_info->pointsize+0.5));
+  pango_font_description_set_size(description,PANGO_SCALE*draw_info->pointsize);
   pango_layout_set_font_description(layout,description);
   pango_font_description_free(description);
+  property=InterpretImageProperties(image_info,image,image_info->filename,
+    exception);
+  (void) SetImageProperty(image,"caption",property,exception);
+  property=DestroyString(property);
+  caption=ConstantString(GetImageProperty(image,"caption",exception));
   /*
     Render caption.
   */
   option=GetImageOption(image_info,"pango:markup");
   if ((option != (const char *) NULL) && (IsMagickTrue(option) != MagickFalse))
-    pango_layout_set_markup(layout,draw_info->text,-1);
+    pango_layout_set_markup(layout,caption,-1);
   else
-    pango_layout_set_text(layout,draw_info->text,-1);
+    pango_layout_set_text(layout,caption,-1);
   pango_layout_context_changed(layout);
   page.x=0;
   page.y=0;
@@ -293,8 +320,10 @@ static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
   */
   canvas=(FT_Bitmap *) AcquireMagickMemory(sizeof(*canvas));
   if (canvas == (FT_Bitmap *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
+    {
+      draw_info=DestroyDrawInfo(draw_info);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   canvas->width=image->columns;
   canvas->pitch=(canvas->width+3) & ~3;
   canvas->rows=image->rows;
@@ -302,9 +331,9 @@ static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
     canvas->rows*sizeof(*canvas->buffer));
   if (canvas->buffer == (unsigned char *) NULL)
     {
+      draw_info=DestroyDrawInfo(draw_info);
       canvas=(FT_Bitmap *) RelinquishMagickMemory(canvas);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        image->filename);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     }
   canvas->num_grays=256;
   canvas->pixel_mode=ft_pixel_mode_grays;
@@ -317,10 +346,12 @@ static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
   image->rows+=2*page.y;
   if (SetImageBackgroundColor(image,exception) == MagickFalse)
     {
+      draw_info=DestroyDrawInfo(draw_info);
       canvas->buffer=(unsigned char *) RelinquishMagickMemory(canvas->buffer);
       canvas=(FT_Bitmap *) RelinquishMagickMemory(canvas);
+      caption=DestroyString(caption);
       image=DestroyImageList(image);
-      return(MagickFalse);
+      return((Image *) NULL);
     }
   GetPixelInfo(image,&fill_color);
   p=canvas->buffer;
@@ -354,174 +385,13 @@ static MagickBooleanType PangoImage(const ImageInfo *image_info,Image *image,
   /*
     Relinquish resources.
   */
+  draw_info=DestroyDrawInfo(draw_info);
   canvas->buffer=(unsigned char *) RelinquishMagickMemory(canvas->buffer);
   canvas=(FT_Bitmap *) RelinquishMagickMemory(canvas);
-  return(MagickTrue);
-}
-#endif
-
-static Image *ReadPANGOImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
-{
-  char
-    *caption,
-    geometry[MaxTextExtent],
-    *property;
-
-  const char
-    *gravity,
-    *option;
-
-  DrawInfo
-    *draw_info;
-
-  Image
-    *image;
-
-  MagickBooleanType
-    status;
-
-  register ssize_t
-    i;
-
-  size_t
-    height,
-    width;
-
-  TypeMetric
-    metrics;
-
-  /*
-    Initialize Image structure.
-  */
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  if (image_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image_info->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  image=AcquireImage(image_info,exception);
-  if (image->columns == 0)
-    ThrowReaderException(OptionError,"MustSpecifyImageSize");
-  (void) ResetImagePage(image,"0x0+0+0");
-  /*
-    Format caption.
-  */
-  property=InterpretImageProperties(image_info,image,image_info->filename,
-    exception);
-  option=GetImageOption(image_info,"filename");
-  if (option == (const char *) NULL)
-    property=InterpretImageProperties(image_info,image,image_info->filename,
-      exception);
-  else
-    if (LocaleNCompare(option,"pango:",8) == 0)
-      property=InterpretImageProperties(image_info,image,option+8,exception);
-    else
-      property=InterpretImageProperties(image_info,image,option,exception);
-  (void) SetImageProperty(image,"caption",property,exception);
-  property=DestroyString(property);
-  caption=ConstantString(GetImageProperty(image,"caption",exception));
-  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  (void) CloneString(&draw_info->text,caption);
-  gravity=GetImageOption(image_info,"gravity");
-  if (gravity != (char *) NULL)
-    draw_info->gravity=(GravityType) ParseCommandOption(MagickGravityOptions,
-      MagickFalse,gravity);
-  if ((*caption != '\0') && (image->rows != 0) &&
-      (image_info->pointsize == 0.0))
-    {
-      char
-        *text;
-
-      /*
-        Scale text to fit bounding box.
-      */
-      for ( ; ; )
-      {
-        text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
-          exception);
-        (void) CloneString(&draw_info->text,text);
-        text=DestroyString(text);
-        (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-          -metrics.bounds.x1,metrics.ascent);
-        if (draw_info->gravity == UndefinedGravity)
-          (void) CloneString(&draw_info->geometry,geometry);
-        status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
-        (void) status;
-        width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
-        height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
-        if ((width > (image->columns+1)) || (height > (image->rows+1)))
-          break;
-        draw_info->pointsize*=2.0;
-      }
-      draw_info->pointsize/=2.0;
-      for ( ; ; )
-      {
-        text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
-          exception);
-        (void) CloneString(&draw_info->text,text);
-        text=DestroyString(text);
-        (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-          -metrics.bounds.x1,metrics.ascent);
-        if (draw_info->gravity == UndefinedGravity)
-          (void) CloneString(&draw_info->geometry,geometry);
-        status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
-        width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
-        height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
-        if ((width > (image->columns+1)) || (height > (image->rows+1)))
-          break;
-        draw_info->pointsize++;
-      }
-      draw_info->pointsize--;
-    }
-  i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&caption,exception);
-  if (image->rows == 0)
-    image->rows=(size_t) ((i+1)*(metrics.ascent-metrics.descent+
-      draw_info->interline_spacing+draw_info->stroke_width)+0.5);
-  if (image->rows == 0)
-    image->rows=(size_t) ((i+1)*draw_info->pointsize+
-      draw_info->interline_spacing+draw_info->stroke_width+0.5);
-  if (SetImageBackgroundColor(image,exception) == MagickFalse)
-    {
-      image=DestroyImageList(image);
-      return((Image *) NULL);
-    }
-  /*
-    Draw caption.
-  */
-  (void) CloneString(&draw_info->text,caption);
-  status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
-  if ((draw_info->gravity != UndefinedGravity) &&
-      (draw_info->direction != RightToLeftDirection))
-    image->page.x=(ssize_t) (metrics.bounds.x1-draw_info->stroke_width/2.0);
-  else
-    {
-      (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-        -metrics.bounds.x1+draw_info->stroke_width/2.0,metrics.ascent+
-        draw_info->stroke_width/2.0);
-      if (draw_info->direction == RightToLeftDirection)
-        (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
-          image->columns-(metrics.bounds.x2+draw_info->stroke_width/2.0),
-          metrics.ascent+draw_info->stroke_width/2.0);
-      draw_info->geometry=AcquireString(geometry);
-    }
-#if defined(MAGICKCORE_PANGOFT2_DELEGATE)
-  status=PangoImage(image_info,image,draw_info,exception);
-#else
-  status=AnnotateImage(image,draw_info,exception);
-#endif
-  draw_info=DestroyDrawInfo(draw_info);
   caption=DestroyString(caption);
-  if (status == MagickFalse)
-    {
-      image=DestroyImageList(image);
-      return((Image *) NULL);
-    }
   return(GetFirstImageInList(image));
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -534,7 +404,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RegisterPANGOImage() adds attributes for the PANGO image format to
+%  RegisterPANGOImage() adds attributes for the Pango Markup Language format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
@@ -556,12 +426,14 @@ ModuleExport size_t RegisterPANGOImage(void)
 
   *version='\0';
 #if defined(PANGO_VERSION_STRING)
-  (void) FormatLocaleString(version,MaxTextExtent,"Pangoft2 %s",
+  (void) FormatLocaleString(version,MaxTextExtent,"(Pangoft2 %s)",
     PANGO_VERSION_STRING);
 #endif
   entry=SetMagickInfo("PANGO");
+#if defined(MAGICKCORE_PANGOFT2_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadPANGOImage;
-  entry->description=ConstantString("Caption");
+#endif
+  entry->description=ConstantString("Pango Markup Language");
   if (*version != '\0')
     entry->version=ConstantString(version);
   entry->adjoin=MagickFalse;
@@ -581,8 +453,8 @@ ModuleExport size_t RegisterPANGOImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  UnregisterPANGOImage() removes format registrations made by the
-%  PANGO module from the list of supported formats.
+%  UnregisterPANGOImage() removes format registrations made by the Pango module
+%  from the list of supported formats.
 %
 %  The format of the UnregisterPANGOImage method is:
 %
