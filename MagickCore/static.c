@@ -247,6 +247,7 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterNULLImage();
   (void) RegisterOTBImage();
   (void) RegisterPALMImage();
+  (void) RegisterPANGOImage();
   (void) RegisterPATTERNImage();
   (void) RegisterPCDImage();
   (void) RegisterPCLImage();
@@ -422,6 +423,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterNULLImage();
   UnregisterOTBImage();
   UnregisterPALMImage();
+  UnregisterPANGOImage();
   UnregisterPATTERNImage();
   UnregisterPCDImage();
   UnregisterPCLImage();

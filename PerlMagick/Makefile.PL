@@ -156,11 +156,11 @@ foreach my $delegate (@tested_delegates) {
 }
 
 # defaults for LIBS & INC & CCFLAGS params that we later pass to Writemakefile
-my $INC_magick = '-I../ -I.. -I/home/cristy/ImageMagick-7.0.0-0/fpx -I/home/cristy/ImageMagick-7.0.0-0/webp -I/usr/include/freetype2 -I/usr/include/libxml2 -I"' . $Config{'usrinc'} . '/ImageMagick"';
+my $INC_magick = '-I../ -I.. -pthread -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -pthread -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/graphviz -I/usr/include/freetype2 -I/usr/include/libxml2 -I"' . $Config{'usrinc'} . '/ImageMagick"';
 my $LIBS_magick = '-L../MagickCore/.libs -lMagickCore -lperl -lm';
-my $CCFLAGS_magick = "$Config{'ccflags'} -I/usr/include/lqr-1 -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -pthread -fopenmp -g -O2 -Wall -pthread";
-my $LDFLAGS_magick   = "-L../MagickCore/.libs -lMagickCore $Config{'ldflags'} -L/home/cristy/ImageMagick-7.0.0-0/fpx/.libs -L/home/cristy/ImageMagick-7.0.0-0/fpx -L/home/cristy/ImageMagick-7.0.0-0/webp -L/usr/lib";
-my $LDDLFLAGS_magick = "-L../MagickCore/.libs -lMagickCore $Config{'lddlflags'} -L/home/cristy/ImageMagick-7.0.0-0/fpx/.libs -L/home/cristy/ImageMagick-7.0.0-0/fpx -L/home/cristy/ImageMagick-7.0.0-0/webp -L/usr/lib";
+my $CCFLAGS_magick = "$Config{'ccflags'} -fopenmp -g -O2 -Wall -pthread";
+my $LDFLAGS_magick   = "-L../MagickCore/.libs -lMagickCore $Config{'ldflags'} -L/usr/lib";
+my $LDDLFLAGS_magick = "-L../MagickCore/.libs -lMagickCore $Config{'lddlflags'} -L/usr/lib";
 
 if (($^O eq 'MSWin32') && ($Config{cc} =~ /gcc/)) {
   my($Ipaths, $Lpaths) = AutodetectWin32gcc();
@@ -201,7 +201,7 @@ WriteMakefile
    #'CC' => 'gcc -std=gnu99 -std=gnu99',
 
    # C pre-processor flags (e.g. -I & -D options)
-   # 'CPPFLAGS' => "$Config{'cppflags'} -I/home/cristy/ImageMagick-7.0.0-0/fpx -I/home/cristy/ImageMagick-7.0.0-0/webp -I/usr/include/freetype2 -I/usr/include/libxml2",
+   # 'CPPFLAGS' => "$Config{'cppflags'} -pthread -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/usr/include/libpng12 -pthread -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/graphviz -I/usr/include/freetype2 -I/usr/include/libxml2",
 
    # C compiler flags (e.g. -O -g)
    'CCFLAGS' => $CCFLAGS_magick,
@@ -228,7 +228,7 @@ WriteMakefile
    # 'OPTIMIZE'	=> '',
 
    # Use same compiler as ImageMagick
-   'PERLMAINCC'	=> 'g++ -fopenmp',
+   'PERLMAINCC'	=> ' -fopenmp',
 
    # Set Perl installation prefix to ImageMagick installation prefix
 #   'PREFIX'	=> '/usr/local',
