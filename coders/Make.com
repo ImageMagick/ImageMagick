@@ -79,6 +79,7 @@ $call Make mvg.c
 $call Make null.c
 $call Make otb.c
 $call Make palm.c
+$call Make pango.c
 $call Make pattern.c
 $call Make pcd.c
 $call Make pcl.c
@@ -141,7 +142,7 @@ $deass wand
 $library/create libCoders.olb aai,art,avs,bgr,bmp,braille,clip,clipboard,cip, -
   cmyk,cut,dcm,dds,debug,dib,dng,dps,dpx,emf,ept,exr,fax,fits,fpx,gif, -
   gradient,gray,hald,histogram,hrz,html,icon,info,inline,ipl,jbig,jpeg,jp2, -
-  label,cals,caption,palm,mac,magick,map,mat,matte, -
+  label,cals,caption,palm,pango,mac,magick,map,mat,matte, -
   meta,miff,mpc,mpr,msl,mpeg,mono,mtv,mvg,null,otb,pattern,pcd,pcl,pcx,pdb, -
   pdf,pes,pict,pix,plasma,png,pnm,preview,ps,ps2,ps3,psd,pwp,raw,rgb,rla,rle, -
   sct,sfw,sgi,stegano,sun,svg,tga,thumbnail,tiff,tile,tim,ttf,txt,uil,url, -
