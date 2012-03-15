@@ -52,8 +52,8 @@ struct _MagickWand
     *images;
 
   MagickBooleanType
-    active,
-    pend,
+    insert_before,
+    image_pending,
     debug;
 
   size_t

@@ -419,38 +419,37 @@ WandExport MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
 static inline MagickBooleanType InsertImageInWand(MagickWand *wand,
   Image *images)
 {
-  Image
-    *sentinel;
-
-  sentinel=wand->images;
-  if (sentinel == (Image *) NULL)
+  /* if no images in wand, just add them, set current as appropriate */
+  if (wand->images == (Image *) NULL)
     {
+      if (wand->insert_before != MagickFalse)
+        wand->images=GetFirstImageInList(images);
+      else
+        wand->images=GetLastImageInList(images);
+      return(MagickTrue);
+    }
+
+  /* user jumped to first image, so prepend new images - remain active */
+  if ((wand->insert_before != MagickFalse) &&
+       (wand->images->previous == (Image *) NULL) )
+    {
+      PrependImageToList(&wand->images,images);
       wand->images=GetFirstImageInList(images);
       return(MagickTrue);
     }
-  if (wand->active == MagickFalse)
+  /* Note you should never have 'insert_before' true when current image
+     is not the first image in the wand!  That is no insert before
+     current image, only after current image */
+
+  /* if at last image append new images */
+  if (wand->images->next == (Image *) NULL)
     {
-      if ((wand->pend != MagickFalse) && (sentinel->next == (Image *) NULL))
-        {
-          AppendImageToList(&sentinel,images);
-          wand->images=GetLastImageInList(images);
-          return(MagickTrue);
-        }
-      if ((wand->pend != MagickFalse) && (sentinel->previous == (Image *) NULL))
-        {
-          PrependImageToList(&sentinel,images);
-          wand->images=GetFirstImageInList(images);
-          return(MagickTrue);
-        }
-    }
-  if (sentinel->next == (Image *) NULL)
-    {
-      InsertImageInList(&sentinel,images);
+      InsertImageInList(&wand->images,images);
       wand->images=GetLastImageInList(images);
       return(MagickTrue);
     }
-  InsertImageInList(&sentinel,images);
-  wand->images=GetFirstImageInList(images);
+  /* otherwise insert new images, just after the current image */
+  InsertImageInList(&wand->images,images);
   return(MagickTrue);
 }
 
@@ -468,6 +467,8 @@ WandExport MagickBooleanType MagickAddImage(MagickWand *wand,
   assert(add_wand->signature == WandSignature);
   if (add_wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",add_wand->name);
+
+  /* clone images in second wand, and insert into first */
   images=CloneImageList(add_wand->images,wand->exception);
   if (images == (Image *) NULL)
     return(MagickFalse);
@@ -7415,14 +7416,15 @@ WandExport MagickBooleanType MagickNextImage(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  if (wand->pend != MagickFalse)
+  wand->insert_before=MagickFalse; /* Inserts is now appended */
+  if (wand->image_pending != MagickFalse)
     {
-      wand->pend=MagickFalse;
+      wand->image_pending=MagickFalse;
       return(MagickTrue);
     }
   if (GetNextImageInList(wand->images) == (Image *) NULL)
     {
-      wand->pend=MagickTrue;
+      wand->image_pending=MagickTrue; /* No image, PreviousImage re-gets */
       return(MagickFalse);
     }
   wand->images=GetNextImageInList(wand->images);
@@ -8057,14 +8059,15 @@ WandExport MagickBooleanType MagickPreviousImage(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  if (wand->pend != MagickFalse)
+  if (wand->image_pending != MagickFalse)
     {
-      wand->pend=MagickFalse;
+      wand->image_pending=MagickFalse;  /* image returned no longer pending */
       return(MagickTrue);
     }
   if (GetPreviousImageInList(wand->images) == (Image *) NULL)
     {
-      wand->pend=MagickTrue;
+      wand->image_pending=MagickTrue;   /* Next now re-gets first image */
+      wand->insert_before=MagickTrue;   /* insert/add prepends new images */
       return(MagickFalse);
     }
   wand->images=GetPreviousImageInList(wand->images);
