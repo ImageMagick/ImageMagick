@@ -402,7 +402,7 @@ WandExport MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
 static inline MagickBooleanType InsertImageInWand(MagickWand *wand,
   Image *images)
 {
-  /* if no images in wand, just add them, set wand->images as appropriate */
+  /* if no images in wand, just add them, set current as appropriate */
   if (wand->images == (Image *) NULL)
     {
       if (wand->insert_before != MagickFalse)
@@ -420,9 +420,9 @@ static inline MagickBooleanType InsertImageInWand(MagickWand *wand,
       wand->images=GetFirstImageInList(images);
       return(MagickTrue);
     }
-  /* Note you should never have 'insert_before' true when wand->images image
+  /* Note you should never have 'insert_before' true when current image
      is not the first image in the wand!  That is no insert before
-     wand->images image, only after current image */
+     current image, only after current image */
 
   /* if at last image append new images */
   if (wand->images->next == (Image *) NULL)
@@ -431,7 +431,7 @@ static inline MagickBooleanType InsertImageInWand(MagickWand *wand,
       wand->images=GetLastImageInList(images);
       return(MagickTrue);
     }
-  /* otherwise insert new images, just after the wand->images image */
+  /* otherwise insert new images, just after the current image */
   InsertImageInList(&wand->images,images);
   return(MagickTrue);
 }
@@ -6834,7 +6834,7 @@ WandExport MagickBooleanType MagickNewImage(MagickWand *wand,const size_t width,
 %
 %  MagickNextImage() sets the next image in the wand as the current image.
 %  It returns MagickTrue if their is another image to be processed.
-%  
+%
 %  Returns MagickFalse when current image is already the last image
 %  in the wand (no more next images), at whcih point you can use
 %  MagickPreviousImage() to again iterate over the images in the reverse
