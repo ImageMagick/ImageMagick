@@ -1,3 +1,6 @@
+2012-03-15  7.0.0-0 Anthony  <anthony@griffith...>
+  * Fix the MagickWand add/read insertion of new images into wands
+
 2012-02-26 7.0.0-0 Anthony  <anthony@griffith...>
   * A super-struct MagickCLI which includes a MagicWand is used to add the
     extra requirements needed for Command Land and Script handling of CLI
@@ -9,7 +12,7 @@
   * new module "magick-cli" providing base for new "magick" command
 
 2011-10-04  7.0.0-0 Anthony  <anthony@griffith...>
-  * Rename adjust handling of wand iteration flags to be more logical
+  * Rename wand iteration flags to more logical names
 
 2011-09-21  7.0.0-0 Anthony  <anthony@griffith...>
   * new module "operator.c" which will holds the standard CLI options
@@ -44,7 +47,7 @@
 
 2008-10-27  6.4.5-1 Cristy  <quetzlzacatenango@image...>
   * Add MagickSparseColorImage() API method.
-    
+
 2008-02-23  6.3.9-0 Cristy  <quetzlzacatenango@image...>
   * Patch MagickReadImageBlob() to support Postscript which does not have
     native blob support.
@@ -62,7 +65,7 @@
 
 2007-11-06  6.3.6-10 Cristy  <quetzlzacatenango@image...>
   * New MagickSetImageAlphaChannel() method to activate, deactivate, reset, or
-	  set the image alpha channel.
+          set the image alpha channel.
 
 2007-10-27  6.3.6-4 Cristy  <quetzlzacatenango@image...>
   * Added get/set font and pointsize methods to magick-property.c (reference
@@ -95,9 +98,9 @@
 
 2007-01-08  6.3.1-7 Cristy  <stentz@image...>
   * MagickOrtderedPosterizeImage() performs an ordered dither based on a number
-  	of pre-defined dithering threshold maps, but over multiple intensity levels,
-  	which can be different for different channels, according to the input
-  	arguments.
+        of pre-defined dithering threshold maps, but over multiple intensity levels,
+        which can be different for different channels, according to the input
+        arguments.
   * Added MagickSetImageClipMask(), MagickGetImageClipMask() methods.
   * Add MagickSetImageProperty()/MagickGetImageProperty() and deprecate
     MagickSetImageAttribute()/MagickGetImageAttribute().
@@ -120,7 +123,7 @@
     PixelGetColorAsNormalizedString() correctly (bug report by O. Watson).
 
 2005-12-28  Cristy  <stentz@image...>
-  * DrawSetGravity() actually sets the gravity when ForgetGravity is 
+  * DrawSetGravity() actually sets the gravity when ForgetGravity is
     specified (bug report by O. Watson).
   * Added MagickSetIteratorIndex() and MagickGetIteratorIndex() and
     deprecated MagickSetImageIndex() and MagickGetImageIndex().
@@ -134,7 +137,7 @@
   * Add PixelGetIteratorRow() and PixelGetCurrentIteratorRow() methods
     (suggested by O. Watson).
   * Add PixelGetColorAsNormalizedString() method (suggested by O. Watson).
- 
+
 2005-11-14  Cristy  <stentz@image...>
   * Add MagickSigmoidalContrastImage() method.
   * Set the pixel depth in MagickSetPixelColor().
