@@ -5,6 +5,7 @@
     axeld@pinc-...).
   * Honor center gravity for caption: with Pango support (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20517).
+  * Add support for pango: coder to render captions with Pango.
 
 2012-03-10  6.7.6-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-0, SVN revision 7090.
