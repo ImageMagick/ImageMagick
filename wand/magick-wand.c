@@ -92,8 +92,10 @@ WandExport void ClearMagickWand(MagickWand *wand)
   wand->quantize_info=DestroyQuantizeInfo(wand->quantize_info);
   wand->image_info=DestroyImageInfo(wand->image_info);
   wand->images=DestroyImageList(wand->images);
-  wand->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
   wand->image_info=AcquireImageInfo();
+  wand->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
+  wand->insert_before=MagickFalse;
+  wand->image_pending=MagickFalse;
   ClearMagickException(wand->exception);
   wand->debug=IsEventLogging();
 }
@@ -142,6 +144,8 @@ WandExport MagickWand *CloneMagickWand(const MagickWand *wand)
   clone_wand->image_info=CloneImageInfo(wand->image_info);
   clone_wand->quantize_info=CloneQuantizeInfo(wand->quantize_info);
   clone_wand->images=CloneImageList(wand->images,clone_wand->exception);
+  clone_wand->insert_before=MagickFalse;
+  clone_wand->image_pending=MagickFalse;
   clone_wand->debug=IsEventLogging();
   if (clone_wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",clone_wand->name);
@@ -830,9 +834,9 @@ WandExport void MagickResetIterator(MagickWand *wand)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->active=MagickFalse;
-  wand->pend=MagickTrue;
   wand->images=GetFirstImageInList(wand->images);
+  wand->insert_before=MagickFalse; /* Insert/add after current (first) image */
+  wand->image_pending=MagickTrue;  /* NextImage will set first image */
 }
 
 /*
@@ -863,9 +867,9 @@ WandExport void MagickSetFirstIterator(MagickWand *wand)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->active=MagickTrue;
-  wand->pend=MagickFalse;
   wand->images=GetFirstImageInList(wand->images);
+  wand->insert_before=MagickTrue;   /* Insert/add before the first image */
+  wand->image_pending=MagickFalse;  /* NextImage will set next image */
 }
 
 /*
@@ -880,7 +884,8 @@ WandExport void MagickSetFirstIterator(MagickWand *wand)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickSetIteratorIndex() set the iterator to the position in the image list
-%  specified with the index parameter.
+%  specified with the index parameter.  Negative indexes count from
+%  end of the list.
 %
 %  The format of the MagickSetIteratorIndex method is:
 %
@@ -912,9 +917,9 @@ WandExport MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
       InheritException(wand->exception,&wand->images->exception);
       return(MagickFalse);
     }
-  wand->active=MagickTrue;
-  wand->pend=MagickFalse;
   wand->images=image;
+  wand->insert_before=MagickFalse;  /* Insert/Add after (this) image */
+  wand->image_pending=MagickFalse;  /* NextImage will set next image */
   return(MagickTrue);
 }
 /*
@@ -945,9 +950,9 @@ WandExport void MagickSetLastIterator(MagickWand *wand)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->active=MagickFalse;
-  wand->pend=MagickTrue;
   wand->images=GetLastImageInList(wand->images);
+  wand->insert_before=MagickFalse;  /* Insert/add after current (last) image */
+  wand->image_pending=MagickFalse;  /* PreviousImage will set previous image */
 }
 
 /*

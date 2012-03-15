@@ -1,3 +1,7 @@
+2012-03-15  6.7.5-10 Anthony  <anthony@griffith...>
+  * Rename wand iteration flags to more logical names
+  * Fix the MagickWand add/read insertion of new images into wands
+
 2010-11-21  6.6.6-0 Cristy  <quetzlzacatenango@image...>
   * Add DrawGetFontResolution() / DrawSetFontResolution().
 
