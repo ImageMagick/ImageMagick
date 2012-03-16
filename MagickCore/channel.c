@@ -69,16 +69,20 @@
 %  red, 1), separated by actions as follows:
 %
 %    <=>     exchange two channels (e.g. red<=>blue)
-%    =>      transfer a channel to another (e.g. red=>green)
-%    =       assign a constant (e.g. red=50%)
-%    ,       separate channel operations (e.g. red, green)
-%    |       read channels from next input image (e.g. red | green)
-%    ;       write channels to next output image (e.g. red; green; blue)
+%    =>      copy one channel to another channel (e.g. red=>green)
+%    =       assign a constant value to a channel (e.g. red=50%)
+%    ,       write new image channels in the specified order (e.g. red, green)
+%    |       extract channels from next image in the sequence (e.g.
+%              green=>red|red=>green).
+%    ;       separate each specified channel to its own image (e.g.
+%              red; green; blue)
 %
-%  A channel without a operation symbol implies extract. For example, to create
-%  3 grayscale images from the red, green, and blue channels of an image, use:
+%  For example, to create 3 grayscale images from the red, green, and blue
+%  channels of an image, use:
 %
-%    -channel-fx "red; green; blue"
+%  -channel-fx "red; green; blue"
+%
+%  A channel without an operation symbol implies separate (i.e, semicolon).
 %
 %  The format of the ChannelFxImage method is:
 %
@@ -344,8 +348,11 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         break;
       }
       case ExtractChannelOp:
+      {
         break;
-     }
+        destination_channel++;
+      }
+    }
     status=ChannelImage(destination_image,destination_channel,channel_op,
       source_image,source_channel,ClampToQuantum(pixel),exception);
     if (status == MagickFalse)
