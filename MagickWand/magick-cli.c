@@ -62,7 +62,7 @@
       3 - mnemonic lookup
       4 - output options/artifacts
 */
-#define MagickCommandDebug 3
+#define MagickCommandDebug 0
 
 #define ThrowFileException(exception,severity,tag,context) \
 { \
