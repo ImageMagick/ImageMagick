@@ -72,15 +72,13 @@
 %    =>      copy one channel to another channel (e.g. red=>green)
 %    =       assign a constant value to a channel (e.g. red=50%)
 %    ,       write new image channels in the specified order (e.g. red, green)
-%    |       extract channels from next image in the sequence (e.g.
-%              green=>red|red=>green).
-%    ;       separate each specified channel to its own image (e.g.
-%              red; green; blue)
+%    |       add a new output image for the next set of channel operations
+%    ;       move to the next input image for the source of channel data
 %
 %  For example, to create 3 grayscale images from the red, green, and blue
 %  channels of an image, use:
 %
-%  -channel-fx "red; green; blue"
+%    -channel-fx "red; green; blue"
 %
 %  A channel without an operation symbol implies separate (i.e, semicolon).
 %
@@ -349,8 +347,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
       }
       case ExtractChannelOp:
       {
-        break;
         destination_channel++;
+        break;
       }
     }
     status=ChannelImage(destination_image,destination_channel,channel_op,
