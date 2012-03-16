@@ -372,19 +372,21 @@ WandExport MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickAddImage() adds a clone of the images in the second wand and
-%  inserts them into the first wand, at the current image location.
+%  MagickAddImage() adds a clone of the images from the second wand and
+%  inserts them into the first wand.
 %
 %  Use MagickSetLastIterator(), to append new images into an existing wand,
 %  current image will be set to last image so later adds with also be
 %  appened to end of wand.
 %
-%  Use MagickSetFirstIterator() to prepend new images into wand. Later images
-%  added will also be prepended.
+%  Use MagickSetFirstIterator() to prepend new images into wand, any more
+%  images added will also be prepended before other images in the wand.
+%  However the order of a list of new images will not change.
 %
 %  Otherwise the new images will be inserted just after the current image,
-%  and later image will also be added after current image but before the
-%  just added images.
+%  and any later image will also be added after this current image but
+%  before the previously added images.  Caution is advised when multiple
+%  image adds are inserted into the middle of the wand image list.
 %
 %  The format of the MagickAddImage method is:
 %
@@ -395,10 +397,9 @@ WandExport MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
 %
 %    o wand: the magick wand.
 %
-%    o add_wand: A wand that contains image list to be added
+%    o add_wand: A wand that contains the image list to be added
 %
 */
-
 static inline MagickBooleanType InsertImageInWand(MagickWand *wand,
   Image *images)
 {
@@ -677,7 +678,13 @@ WandExport MagickBooleanType MagickAnimateImages(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickAppendImages() append a set of images.
+%  MagickAppendImages() append the images in a wand from the current image
+%  onwards, creating a new wand with the single image result.  This is
+%  affected by the gravity and background settings of the first image.
+%
+%  Typically you would call either MagickResetIterator() or
+%  MagickSetFirstImage() before calling this function to ensure that all
+%  the images in the wand's image list will be appended together.
 %
 %  The format of the MagickAppendImages method is:
 %
@@ -6833,12 +6840,19 @@ WandExport MagickBooleanType MagickNewImage(MagickWand *wand,const size_t width,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagickNextImage() sets the next image in the wand as the current image.
-%  It returns MagickTrue if their is another image to be processed.
 %
-%  Returns MagickFalse when current image is already the last image
-%  in the wand (no more next images), at whcih point you can use
-%  MagickPreviousImage() to again iterate over the images in the reverse
-%  direction, starting with the last image (again).
+%  It is typically used after MagickResetIterator(), after which its first use
+%  will set the first image as the current image (unless the wand is empty).
+%
+%  It will return MagickFalse when no more images are left to be returned
+%  which happens when the wand is empty, or the current image is the last
+%  image.
+%
+%  When the above condition (end of image list) is reached, the iterator is
+%  automaticall set so that you can start using MagickPreviousImage() to
+%  again iterate over the images in the reverse direction, starting with the
+%  last image (again).  You can jump to this condition immeditally using
+%  MagickSetLastIterator().
 %
 %  The format of the MagickNextImage method is:
 %
@@ -7434,13 +7448,21 @@ WandExport MagickWand *MagickPreviewImages(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickPreviousImage() assocates the previous image in an image list with
-%  the magick wand.
+%  MagickPreviousImage() sets the previous image in the wand as the current
+%  image.
 %
-%  Returns MagickFalse when current image is the first image (no more previous
-%  images). The Iterator is than reset (as per MagickResetIterator()) ready
-%  to again process images in the forward direction, again starting with the
-%  first image in list. Images added at this point are prepended.
+%  It is typically used after MagickSetLastIterator(), after which its first
+%  use will set the last image as the current image (unless the wand is empty).
+%
+%  It will return MagickFalse when no more images are left to be returned
+%  which happens when the wand is empty, or the current image is the first
+%  image.  At that point the iterator is than reset to again process images in
+%  the forward direction, again starting with the first image in list. Images
+%  added at this point are prepended.
+%
+%  Also at that point any images added to the wand using MagickAddImages() or
+%  MagickReadImages() will be prepended before the first image. In this sense
+%  the condition is not quite exactly the same as MagickResetIterator().
 %
 %  The format of the MagickPreviousImage method is:
 %
