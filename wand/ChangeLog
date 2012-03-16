@@ -1,4 +1,4 @@
-2012-03-15  6.7.5-10 Anthony  <anthony@griffith...>
+2012-03-15  6.7.6-1 Anthony  <anthony@griffith...>
   * Rename wand iteration flags to more logical names
   * Fix the MagickWand add/read insertion of new images into wands
 
