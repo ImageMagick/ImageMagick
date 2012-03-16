@@ -1,3 +1,8 @@
+2012-03-16  6.7.6-1 Glenn Randers-Pehrson <glennrp@image...>
+  * Reduce the scope of quantum_info in the PNG decoder to avoid a possible
+    memory leak (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20522).
+
 2012-03-13  6.7.6-1 Cristy  <quetzlzacatenango@image...>
   * Use uint32 pointer for ReadStripMethod in coders/tiff.c (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20526).

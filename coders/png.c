@@ -2011,9 +2011,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     x_resolution,
     y_resolution;
 
-  QuantumInfo
-    *quantum_info;
-
   unsigned char
     *ping_pixels;
 
@@ -2077,8 +2074,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #  endif
 #endif
 
-
-  quantum_info = (QuantumInfo *) NULL;
   image=mng_info->image;
 
   if (logging != MagickFalse)
@@ -2823,8 +2818,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
-      if (quantum_info != (QuantumInfo *) NULL)
-        quantum_info = DestroyQuantumInfo(quantum_info);
 
       if (ping_pixels != (unsigned char *) NULL)
         ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
@@ -2842,10 +2835,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       return(GetFirstImageInList(image));
     }
 
-  quantum_info=AcquireQuantumInfo(image_info,image);
-
-  if (quantum_info == (QuantumInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
 
   {
 
@@ -2874,6 +2863,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
         for (y=0; y < (ssize_t) image->rows; y++)
         {
+
           if (num_passes > 1)
             row_offset=ping_rowbytes*y;
 
@@ -2886,25 +2876,38 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           if (q == (PixelPacket *) NULL)
             break;
 
-          if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY)
-            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              GrayQuantum,ping_pixels+row_offset,exception);
+          else
+          {
+            QuantumInfo
+              *quantum_info;
 
-          else if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              GrayAlphaQuantum,ping_pixels+row_offset,exception);
+            quantum_info=AcquireQuantumInfo(image_info,image);
 
-          else if ((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              RGBAQuantum,ping_pixels+row_offset,exception);
+            if (quantum_info == (QuantumInfo *) NULL)
+              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
 
-          else if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
-            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              IndexQuantum,ping_pixels+row_offset,exception);
+            if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY)
+              (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+                GrayQuantum,ping_pixels+row_offset,exception);
 
-          else /* ping_color_type == PNG_COLOR_TYPE_RGB */
-            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-              RGBQuantum,ping_pixels+row_offset,exception);
+            else if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+              (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+                GrayAlphaQuantum,ping_pixels+row_offset,exception);
+
+            else if ((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+              (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+                RGBAQuantum,ping_pixels+row_offset,exception);
+
+            else if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
+              (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+                IndexQuantum,ping_pixels+row_offset,exception);
+
+            else /* ping_color_type == PNG_COLOR_TYPE_RGB */
+              (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+                RGBQuantum,ping_pixels+row_offset,exception);
+
+            quantum_info=DestroyQuantumInfo(quantum_info);
+          }
 
           if (found_transparent_pixel == MagickFalse)
             {
@@ -3194,9 +3197,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           }
       }
     }
-
-  if (quantum_info != (QuantumInfo *) NULL)
-    quantum_info=DestroyQuantumInfo(quantum_info);
 
   if (image->storage_class == PseudoClass)
     {
