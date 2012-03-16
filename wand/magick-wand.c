@@ -72,7 +72,8 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ClearMagickWand() clears resources associated with the wand.
+%  ClearMagickWand() clears resources associated with the wand, leaving the
+%  wand blank, and ready to be used for a new set of images.
 %
 %  The format of the ClearMagickWand method is:
 %
@@ -323,7 +324,7 @@ WandExport char *MagickGetException(const MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t  E x c e p t i o n T y p e                              %
+%   M a g i c k G e t E x c e p t i o n T y p e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -815,9 +816,17 @@ WandExport void *MagickRelinquishMemory(void *memory)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickResetIterator() resets the wand iterator.  Use it in conjunction
-%  with MagickNextImage() to iterate over all the images in a wand
-%  container.
+%  MagickResetIterator() resets the wand iterator.
+%
+%  It is typically used either before iterating though images, or before
+%  calling specific functions such as  MagickAppendImages() to append all
+%  images together.
+%
+%  Afterward you can use MagickNextImage() to iterate over all the images
+%  in a wand container, starting with the first image.
+%
+%  Using this before MagickAddImages() or MagickReadImages() will cause
+%  new images to be inserted between the first and second image.
 %
 %  The format of the MagickResetIterator method is:
 %
@@ -852,6 +861,17 @@ WandExport void MagickResetIterator(MagickWand *wand)
 %
 %  MagickSetFirstIterator() sets the wand iterator to the first image.
 %
+%  After using any images added to the wand using MagickAddImage() or
+%  MagickReadImage() will be prepended before any image in the wand.
+%
+%  Also the current image has been set to the first image (if any) in the
+%  Magick Wand.  Using MagickNextImage() will then set teh current image
+%  to the second image in the list (if present).
+%
+%  This operation is similar to MagickResetIterator() but differs in how
+%  MagickAddImage(), MagickReadImage(), and MagickNextImage() behaves
+%  afterward.
+%
 %  The format of the MagickSetFirstIterator method is:
 %
 %      void MagickSetFirstIterator(MagickWand *wand)
@@ -883,9 +903,23 @@ WandExport void MagickSetFirstIterator(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetIteratorIndex() set the iterator to the position in the image list
-%  specified with the index parameter.  Negative indexes count from
-%  end of the list.
+%  MagickSetIteratorIndex() set the iterator to the given position in the
+%  image list specified with the index parameter.  A zero index will set
+%  the first image as current, and so on.  Negative indexes can be used
+%  to specify an image relative to the end of the images in the wand, with
+%  -1 being the last image in the wand.
+%
+%  If the index is invalid (range too large for number of images in wand)
+%  the function will return magickFalse, but no 'exception' will be raised,
+%  as it is not actually an error.  In that case the current image will not
+%  change.
+%
+%  After using any images added to the wand using MagickAddImage() or
+%  MagickReadImage() will be added after the image indexed, regardless
+%  of if a zero (first image in list) or negative index (from end) is used.
+%
+%  Jumping to index 0 is similar to MagickResetIterator() but differs in how
+%  MagickNextImage() behaves afterward.
 %
 %  The format of the MagickSetIteratorIndex method is:
 %
@@ -935,6 +969,15 @@ WandExport MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
 %
 %  MagickSetLastIterator() sets the wand iterator to the last image.
 %
+%  The last image is actually the current image, and the next use of
+%  MagickPreviousImage() will not change this allowing this function to be
+%  used to iterate over the images in the reverse direction. In this sense it
+%  is more like  MagickResetIterator() than MagickSetFirstIterator().
+%
+%  Typically this function is used before MagickAddImage(), MagickReadImage()
+%  functions to ensure new images are appended to the very end of wand's image
+%  list.
+%
 %  The format of the MagickSetLastIterator method is:
 %
 %      void MagickSetLastIterator(MagickWand *wand)
@@ -952,7 +995,7 @@ WandExport void MagickSetLastIterator(MagickWand *wand)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   wand->images=GetLastImageInList(wand->images);
   wand->insert_before=MagickFalse;  /* Insert/add after current (last) image */
-  wand->image_pending=MagickFalse;  /* PreviousImage will set previous image */
+  wand->image_pending=MagickTrue;   /* PreviousImage will return last image */
 }
 
 /*
@@ -1047,10 +1090,10 @@ WandExport MagickWand *NewMagickWand(void)
   wand->id=AcquireWandId();
   (void) FormatLocaleString(wand->name,MaxTextExtent,"%s-%.20g",MagickWandId,
     (double) wand->id);
-  wand->exception=AcquireExceptionInfo();
-  wand->image_info=AcquireImageInfo();
-  wand->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
   wand->images=NewImageList();
+  wand->image_info=AcquireImageInfo();
+  wand->exception=AcquireExceptionInfo();
+  wand->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
   wand->debug=IsEventLogging();
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
