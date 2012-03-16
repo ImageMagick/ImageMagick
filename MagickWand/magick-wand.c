@@ -941,7 +941,11 @@ WandExport MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
     return(MagickFalse);
   image=GetImageFromList(wand->images,index);
   if (image == (Image *) NULL)
-    return(MagickFalse);
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
+        "NoSuchImage","`%s'",wand->name);
+      return(MagickFalse);
+    }
   wand->images=image;
   wand->insert_before=MagickFalse;  /* Insert/Add after (this) image */
   wand->image_pending=MagickFalse;  /* NextImage will set next image */
