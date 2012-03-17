@@ -109,7 +109,6 @@ TOP_EXTRA_DIST = \
 	Install-windows.txt \
 	magick.sh.in \
 	Magickshr.opt \
-	Make.com \
 	NEWS.txt \
 	Platforms.txt \
 	README.txt \
