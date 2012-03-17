@@ -1706,34 +1706,38 @@ MagickExport void RemoveZeroDelayLayers(Image **images,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CompositeLayers() compose first image sequence (source) over the second
-%  image sequence (destination), using the given compose method and offsets.
+%  CompositeLayers() compose the source image sequence over the destination
+%  image sequence, starting with the current image in both lists.
 %
-%  The pointers to the image list does not have to be the start of that image
-%  list, but may start somewhere in the middle.  Each layer from the two image
-%  lists are composted together until the end of one of the image lists is
-%  reached.  The offset of each composition is also adjusted to match the
-%  virtual canvas offsets of each layer. As such the given offset is relative
-%  to the virtual canvas, and not the actual image.
+%  Each layer from the two image lists are composted together until the end of
+%  one of the image lists is reached.  The offset of each composition is also
+%  adjusted to match the virtual canvas offsets of each layer. As such the
+%  given offset is relative to the virtual canvas, and not the actual image.
 %
-%  No GIF disposal handling is performed, so GIF animations should be
-%  coalesced before use.  However this not a requirement, and individual
-%  layer images may have any size or offset, for special compositions.
+%  Composition uses given x and y offsets, as the 'origin' location of the
+%  source images virtual canvas (not the real image) allowing you to compose a
+%  list of 'layer images' into the destiantioni images.  This makes it well
+%  sutiable for directly composing 'Clears Frame Animations' or 'Coaleased
+%  Animations' onto a static or other 'Coaleased Animation' destination image
+%  list.  GIF disposal handling is not looked at.
 %
-%  Special case:- If one of the image sequences is just a single image that
-%  image is repeatally composed with all the images in the other image list.
-%  Either the source or destination lists may be the single image, for this
-%  situation.
+%  Special case:- If one of the image sequences is the last image (just a
+%  single image remaining), that image is repeatally composed with all the
+%  images in the other image list.  Either the source or destination lists may
+%  be the single image, for this situation.
 %
-%  The destination list will be expanded as needed to match number of source
-%  image overlaid (from current position to end of list).
+%  In the case of a single destination image (or last image given), that image
+%  will ve cloned to match the number of images remaining in the source image
+%  list.
+%
+%  This is equivelent to the "-layer Composite" Shell API operator.
+%
 %
 %  The format of the CompositeLayers method is:
 %
-%      void CompositeLayers(Image *destination,
-%          const CompositeOperator compose, Image *source,
-%          const ssize_t x_offset, const ssize_t y_offset,
-%          ExceptionInfo *exception);
+%      void CompositeLayers(Image *destination, const CompositeOperator
+%      compose, Image *source, const ssize_t x_offset, const ssize_t y_offset,
+%      ExceptionInfo *exception);
 %
 %  A description of each parameter follows:
 %
@@ -1774,7 +1778,7 @@ MagickExport void CompositeLayers(Image *destination,
   /*
     Overlay single source image over destation image/list
   */
-  if ( source->previous == (Image *) NULL && source->next == (Image *) NULL )
+  if ( source->next == (Image *) NULL )
     while ( destination != (Image *) NULL )
     {
       CompositeCanvas(destination, compose, source, x_offset, y_offset,
@@ -1783,14 +1787,13 @@ MagickExport void CompositeLayers(Image *destination,
     }
 
   /*
-    Overlay source image list over single destination
-    Generating multiple clones of destination image to match source list.
+    Overlay source image list over single destination.
+    Multiple clones of destination image are created to match source list.
     Original Destination image becomes first image of generated list.
     As such the image list pointer does not require any change in caller.
     Some animation attributes however also needs coping in this case.
   */
-  else if ( destination->previous == (Image *) NULL &&
-            destination->next == (Image *) NULL )
+  else if ( destination->next == (Image *) NULL )
   {
     Image *dest = CloneImage(destination,0,0,MagickTrue,exception);
 
