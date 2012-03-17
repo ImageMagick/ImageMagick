@@ -33,12 +33,12 @@ extern MagickExport const void
   *GetVirtualMetacontent(const Image *);
 
 extern MagickExport MagickBooleanType
-  GetOneVirtualPixelInfo(const Image *,const VirtualPixelMethod,
-    const ssize_t,const ssize_t,PixelInfo *,ExceptionInfo *),
-  GetOneVirtualPixel(const Image *,const ssize_t,const ssize_t,Quantum *,
-    ExceptionInfo *),
   GetOneAuthenticPixel(Image *,const ssize_t,const ssize_t,Quantum *,
     ExceptionInfo *),
+  GetOneVirtualPixel(const Image *,const ssize_t,const ssize_t,Quantum *,
+    ExceptionInfo *),
+  GetOneVirtualPixelInfo(const Image *,const VirtualPixelMethod,
+    const ssize_t,const ssize_t,PixelInfo *,ExceptionInfo *),
   PersistPixelCache(Image *,const char *,const MagickBooleanType,
     MagickOffsetType *,ExceptionInfo *),
   SyncAuthenticPixels(Image *,ExceptionInfo *) magick_hot_spot;

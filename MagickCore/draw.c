@@ -4196,15 +4196,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             pixel,
             target;
 
-          Quantum
-            virtual_pixel[CompositePixelChannel];
-
-          (void) GetOneCacheViewVirtualPixel(image_view,x,y,virtual_pixel,
+          (void) GetOneCacheViewVirtualPixelInfo(image_view,x,y,&target,
             exception);
-          target.red=(double) virtual_pixel[RedPixelChannel];
-          target.green=(double) virtual_pixel[GreenPixelChannel];
-          target.blue=(double) virtual_pixel[BluePixelChannel];
-          target.alpha=(double) virtual_pixel[AlphaPixelChannel];
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register Quantum
@@ -4319,15 +4312,8 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
             pixel,
             target;
 
-          Quantum
-            virtual_pixel[CompositePixelChannel];
-
-          (void) GetOneCacheViewVirtualPixel(image_view,x,y,virtual_pixel,
+          (void) GetOneCacheViewVirtualPixelInfo(image_view,x,y,&target,
             exception);
-          target.red=(double) virtual_pixel[RedPixelChannel];
-          target.green=(double) virtual_pixel[GreenPixelChannel];
-          target.blue=(double) virtual_pixel[BluePixelChannel];
-          target.alpha=(double) virtual_pixel[AlphaPixelChannel];
           for (y=0; y < (ssize_t) image->rows; y++)
           {
             register Quantum

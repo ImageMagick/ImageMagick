@@ -3760,18 +3760,11 @@ static MagickBooleanType XColorEditImage(Display *display,
               pixel,
               target;
 
-            Quantum
-              virtual_pixel[CompositePixelChannel];
-
             /*
               Update color information using replace algorithm.
             */
-            (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t) x_offset,
-              (ssize_t) y_offset,virtual_pixel,exception);
-            target.red=(double) virtual_pixel[RedPixelChannel];
-            target.green=(double) virtual_pixel[GreenPixelChannel];
-            target.blue=(double) virtual_pixel[BluePixelChannel];
-            target.alpha=(double) virtual_pixel[AlphaPixelChannel];
+            (void) GetOneCacheViewVirtualPixelInfo(image_view,(ssize_t)
+              x_offset,(ssize_t) y_offset,&target,exception);
             if ((*image)->storage_class == DirectClass)
               {
                 for (y=0; y < (int) (*image)->rows; y++)
@@ -10124,18 +10117,11 @@ static MagickBooleanType XMatteEditImage(Display *display,
               pixel,
               target;
 
-            Quantum
-              virtual_pixel[CompositePixelChannel];
-
             /*
               Update matte information using replace algorithm.
             */
-            (void) GetOneCacheViewVirtualPixel(image_view,(ssize_t) x_offset,
-              (ssize_t) y_offset,virtual_pixel,exception);
-            target.red=(double) virtual_pixel[RedPixelChannel];
-            target.green=(double) virtual_pixel[GreenPixelChannel];
-            target.blue=(double) virtual_pixel[BluePixelChannel];
-            target.alpha=(double) virtual_pixel[AlphaPixelChannel];
+            (void) GetOneCacheViewVirtualPixelInfo(image_view,(ssize_t)
+              x_offset,(ssize_t) y_offset,&target,exception);
             for (y=0; y < (int) (*image)->rows; y++)
             {
               q=GetCacheViewAuthenticPixels(image_view,0,(ssize_t) y,
@@ -13249,9 +13235,6 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       PixelInfo
         pixel;
 
-      Quantum
-        virtual_pixel[CompositePixelChannel];
-
       register int
         j;
 
@@ -13284,12 +13267,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         x_offset=(int) (width*(tile % (((int) image->columns-x)/width))+x);
         y_offset=(int) (height*(tile/(((int) image->columns-x)/width))+y);
         image_view=AcquireCacheView(image);
-        (void) GetOneCacheViewVirtualPixel(image_view,0,0,virtual_pixel,
-          exception);
-        pixel.red=(double) virtual_pixel[RedPixelChannel];
-        pixel.green=(double) virtual_pixel[GreenPixelChannel];
-        pixel.blue=(double) virtual_pixel[BluePixelChannel];
-        pixel.alpha=(double) virtual_pixel[AlphaPixelChannel];
+        (void) GetOneCacheViewVirtualPixelInfo(image_view,0,0,&pixel,exception);
         for (i=0; i < (int) height; i++)
         {
           s=GetCacheViewAuthenticPixels(image_view,(ssize_t) x_offset,(ssize_t)

@@ -333,6 +333,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
       case ExchangeChannelOp:
       case TransferChannelOp:
       {
+        if (LocaleCompare(token,"black") == 0)
+          SetImageColorspace(destination_image,CMYKColorspace,exception);
         i=ParsePixelChannelOption(token);
         if (i < 0)
           {

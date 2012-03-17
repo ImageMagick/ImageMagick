@@ -484,9 +484,6 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
   Pixmap
     annotate_pixmap;
 
-  Quantum
-    virtual_pixel[CompositePixelChannel];
-
   unsigned int
     depth,
     height,
@@ -559,16 +556,8 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
   x=0;
   y=0;
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
-  (void) GetOneVirtualPixel(image,(ssize_t) x,(ssize_t) y,virtual_pixel,
-    exception);
-  annotate_image->background_color.red=(double)
-    virtual_pixel[RedPixelChannel];
-  annotate_image->background_color.green=(double)
-    virtual_pixel[GreenPixelChannel];
-  annotate_image->background_color.blue=(double)
-    virtual_pixel[BluePixelChannel];
-  annotate_image->background_color.alpha=(double)
-    virtual_pixel[AlphaPixelChannel];
+  (void) GetOneVirtualPixelInfo(image,UndefinedVirtualPixelMethod,(ssize_t) x,
+    (ssize_t) y,&annotate_image->background_color,exception);
   if (annotate_info->stencil == ForegroundStencil)
     annotate_image->matte=MagickTrue;
   annotate_view=AcquireCacheView(annotate_image);
@@ -2331,9 +2320,6 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
   MagickBooleanType
     matte;
 
-  Quantum
-    virtual_pixel[CompositePixelChannel];
-
   Pixmap
     draw_pixmap;
 
@@ -2492,12 +2478,8 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
   x=0;
   y=0;
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
-  (void) GetOneVirtualPixel(image,(ssize_t) x,(ssize_t) y,virtual_pixel,
-    exception);
-  draw_image->background_color.red=(double) virtual_pixel[RedPixelChannel];
-  draw_image->background_color.green=(double) virtual_pixel[GreenPixelChannel];
-  draw_image->background_color.blue=(double) virtual_pixel[BluePixelChannel];
-  draw_image->background_color.alpha=(double) virtual_pixel[AlphaPixelChannel];
+  (void) GetOneVirtualPixelInfo(image,UndefinedVirtualPixelMethod,(ssize_t) x,
+    (ssize_t) y,&draw_image->background_color,exception);
   if (SetImageStorageClass(draw_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   draw_image->matte=MagickTrue;

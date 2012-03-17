@@ -181,17 +181,11 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
       x=0;
       for ( ; (x < (ssize_t) image->columns) && (j < (ssize_t) depth); x++)
       {
-        Quantum
-          virtual_pixel[MaxPixelChannels];
-
         if ((k/(ssize_t) watermark->columns) >= (ssize_t) watermark->rows)
           break;
-        (void) GetOneVirtualPixel(watermark,k % (ssize_t) watermark->columns,
-          k/(ssize_t) watermark->columns,virtual_pixel,exception);
-        pixel.red=virtual_pixel[RedPixelChannel];
-        pixel.green=virtual_pixel[GreenPixelChannel];
-        pixel.blue=virtual_pixel[BluePixelChannel];
-        pixel.alpha=virtual_pixel[AlphaPixelChannel];
+        (void) GetOneVirtualPixelInfo(watermark,UndefinedVirtualPixelMethod,
+          k % (ssize_t) watermark->columns,k/(ssize_t) watermark->columns,
+          &pixel,exception);
         q=GetAuthenticPixels(image,x,y,1,1,exception);
         if (q == (Quantum *) NULL)
           break;
