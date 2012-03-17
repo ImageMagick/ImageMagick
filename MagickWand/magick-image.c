@@ -1803,17 +1803,18 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
 %  The format of the MagickCompositeImage method is:
 %
 %      MagickBooleanType MagickCompositeImage(MagickWand *wand,
-%        const MagickWand *composite_wand,const CompositeOperator compose,
+%        const MagickWand *source_wand,const CompositeOperator compose,
 %        const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
-%    o wand: the magick wand.
+%    o wand: the magick wand holding the destination images
 %
-%    o composite_image: the composite image.
+%    o source_image: the magick wand holding source image.
 %
 %    o compose: This operator affects how the composite is applied to the
-%      image.  The default is Over.  Choose from these operators:
+%      image.  The default is Over.  These are some of the compose methods
+%      availble.
 %
 %        OverCompositeOp       InCompositeOp         OutCompositeOp
 %        AtopCompositeOp       XorCompositeOp        PlusCompositeOp
@@ -1827,7 +1828,7 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickCompositeImage(MagickWand *wand,
-  const MagickWand *composite_wand,const CompositeOperator compose,
+  const MagickWand *source_wand,const CompositeOperator compose,
   const ssize_t x,const ssize_t y)
 {
   MagickBooleanType
@@ -1838,10 +1839,83 @@ WandExport MagickBooleanType MagickCompositeImage(MagickWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->images == (Image *) NULL) ||
-      (composite_wand->images == (Image *) NULL))
+      (source_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=CompositeImage(wand->images,compose,composite_wand->images,x,y,
+  status=CompositeImage(wand->images,compose,source_wand->images,x,y,
     wand->exception);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k C o m p o s i t e L a y e r s                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickCompositeLayers() composite the images in the source wand over the
+%  images in the destination wand in sequence, starting with the current
+%  image in both lists.
+%
+%  Each layer from the two image lists are composted together until the end of
+%  one of the image lists is reached.  The offset of each composition is also
+%  adjusted to match the virtual canvas offsets of each layer. As such the
+%  given offset is relative to the virtual canvas, and not the actual image.
+%
+%  Composition uses given x and y offsets, as the 'origin' location of the
+%  source images virtual canvas (not the real image) allowing you to compose a
+%  list of 'layer images' into the destiantioni images.  This makes it well
+%  sutiable for directly composing 'Clears Frame Animations' or 'Coaleased
+%  Animations' onto a static or other 'Coaleased Animation' destination image
+%  list.  GIF disposal handling is not looked at.
+%
+%  Special case:- If one of the image sequences is the last image (just a
+%  single image remaining), that image is repeatally composed with all the
+%  images in the other image list.  Either the source or destination lists may
+%  be the single image, for this situation.
+%
+%  In the case of a single destination image (or last image given), that image
+%  will ve cloned to match the number of images remaining in the source image
+%  list.
+%
+%  This is equivelent to the "-layer Composite" Shell API operator.
+%
+%  The format of the MagickCompositeLayers method is:
+%
+%      MagickBooleanType MagickCompositeLayers(MagickWand *wand,
+%        const MagickWand *source_wand, const CompositeOperator compose,
+%        const ssize_t x,const ssize_t y)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand holding destaintion images
+%
+%    o source_wand: the wand holding the source images
+%
+%    o compose, x, y:  composition arguments
+%
+*/
+WandExport MagickBooleanType MagickCompositeLayers(MagickWand *wand,
+  const MagickWand *source_wand,const CompositeOperator compose,
+  const ssize_t x,const ssize_t y)
+{
+  MagickBooleanType
+    status;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if ((wand->images == (Image *) NULL) ||
+      (source_wand->images == (Image *) NULL))
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  CompositeLayers(wand->images,compose,source_wand->images,x,y,
+        wand->exception);
+  status=MagickTrue;  /* FUTURE: determine status from exceptions */
   return(status);
 }
 
