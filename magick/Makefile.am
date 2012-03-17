@@ -419,7 +419,6 @@ MAGICK_EXTRA_DIST = \
 	$(MAGICK_MANS) \
 	magick/ImageMagick.pc.in \
 	magick/MagickCore.pc.in \
-	magick/Make.com \
 	magick/config.h_vms \
 	magick/mac.c \
 	magick/nt-base.c \

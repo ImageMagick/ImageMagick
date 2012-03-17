@@ -6740,7 +6740,7 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
             The directory entry contains an offset.
           */
           offset=(ssize_t) ((int) ReadProfileLong(endian,q+8));
-          if ((offset+number_bytes) < offset)
+          if ((ssize_t) (offset+number_bytes) < offset)
             continue;  /* prevent overflow */
           if ((size_t) (offset+number_bytes) > length)
             continue;
