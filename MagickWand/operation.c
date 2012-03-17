@@ -1215,7 +1215,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           break;
         }
       /* FUTURE: Only the 'preview' coder appears to use this
-       * Depreciate the coder?  Leaving only the 'preview' operator.
+       * DEPRECIATE the coder?  Leaving only the 'preview' operator.
       if (LocaleCompare("preview",option+1) == 0)
         {
           image_info->preview_type=UndefinedPreview;
@@ -2666,6 +2666,12 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                          DeactivateAlphaChannel, exception);
           break;
         }
+      if (LocaleCompare("median",option+1) == 0)
+        {
+          /* DEPRECIATED - use -statistic Median */
+          CLISimpleOperatorImage(cli_wand,"-statistic","Median",arg1);
+          break;
+        }
       if (LocaleCompare("mode",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
@@ -3259,7 +3265,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("transform",option+1) == 0)
         {
-          /* DEPRECIATED */
+          /* DEPRECIATED -- should really use Distort AffineProjection */
           new_image=AffineTransformImage(image,&draw_info->affine,
             exception);
           break;

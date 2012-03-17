@@ -251,22 +251,28 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
     else
       CloneString(&arg2,(char *)NULL);
 
-    /* handle script special options here */
-    //either continue processing command line
-    // or making use of the command line options.
-    //CLICommandOptions(cli_wand,count+1,argv, MagickScriptArgsFlags);
-
 #if MagickCommandDebug
     (void) FormatLocaleFile(stderr,
         "Script Option: \"%s\" \tCount: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
         option,(int) count,option_type,arg1,arg2);
 #endif
 
-    /* Process non-script specific option from file */
+    if ( (option_type & DeprecateOptionFlag) != 0 ) {
+      CLIWandException(OptionWarning,"DeprecatedOption",option);
+      if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+        break;
+    }
+
+    /* handle special script-argument options here */
+    //either continue processing command line
+    // or making use of the command line options.
+    //CLICommandOptions(cli_wand,count+1,argv, MagickScriptArgsFlags);
+
+    /* Process Option from file */
     if ( (option_type & SpecialOptionFlag) != 0 ) {
       if ( LocaleCompare(option,"-exit") == 0 )
         break;
-      /* No "-script" option from script at this time */
+      /* No "-script" option from script at this time - though posible */
       CLISpecialOperator(cli_wand,option,arg1);
     }
 
