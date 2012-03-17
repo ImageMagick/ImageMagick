@@ -7690,15 +7690,8 @@ Mogrify(ref,...)
           PixelInfo
             target;
 
-          Quantum
-            virtual_pixel[MaxPixelChannels];
-
-          GetPixelInfo(image,&target);
-          (void) GetOneVirtualPixel(image,0,0,virtual_pixel,exception);
-          target.red=virtual_pixel[RedPixelChannel];
-          target.green=virtual_pixel[GreenPixelChannel];
-          target.blue=virtual_pixel[BluePixelChannel];
-          target.alpha=virtual_pixel[AlphaPixelChannel];
+          (void) GetOneVirtualPixelInfo(image,UndefinedVirtualPixelMethod,
+            0,0,&target,exception);
           if (attribute_flag[0] != 0)
             (void) QueryColorCompliance(argument_list[0].string_reference,
               AllCompliance,&target,exception);
@@ -8367,9 +8360,6 @@ Mogrify(ref,...)
           PixelInfo
             target;
 
-          Quantum
-            virtual_pixel[MaxPixelChannels];
-
           draw_info=CloneDrawInfo(info ? info->image_info :
             (ImageInfo *) NULL,(DrawInfo *) NULL);
           if (attribute_flag[0] != 0)
@@ -8382,12 +8372,8 @@ Mogrify(ref,...)
           if (attribute_flag[3] != 0)
             (void) QueryColorCompliance(argument_list[3].string_reference,
               AllCompliance,&draw_info->fill,exception);
-          (void) GetOneVirtualPixel(image,geometry.x,geometry.y,virtual_pixel,
-            exception);
-          target.red=virtual_pixel[RedPixelChannel];
-          target.green=virtual_pixel[GreenPixelChannel];
-          target.blue=virtual_pixel[BluePixelChannel];
-          target.alpha=virtual_pixel[AlphaPixelChannel];
+          (void) GetOneVirtualPixelInfo(image,UndefinedVirtualPixelMethod,
+            geometry.x,geometry.y,&target,exception);
           invert=MagickFalse;
           if (attribute_flag[4] != 0)
             {
@@ -8946,9 +8932,6 @@ Mogrify(ref,...)
           PixelInfo
             target;
 
-          Quantum
-            virtual_pixel[MaxPixelChannels];
-
           draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
             (DrawInfo *) NULL);
           if (attribute_flag[0] != 0)
@@ -8960,12 +8943,8 @@ Mogrify(ref,...)
             geometry.y=argument_list[2].integer_reference;
           if (image->matte == MagickFalse)
             (void) SetImageAlpha(image,OpaqueAlpha,exception);
-          (void) GetOneVirtualPixel(image,geometry.x,geometry.y,virtual_pixel,
-            exception);
-          target.red=virtual_pixel[RedPixelChannel];
-          target.green=virtual_pixel[GreenPixelChannel];
-          target.blue=virtual_pixel[BluePixelChannel];
-          target.alpha=virtual_pixel[AlphaPixelChannel];
+          (void) GetOneVirtualPixelInfo(image,UndefinedVirtualPixelMethod,
+            geometry.x,geometry.y,&target,exception);
           if (attribute_flag[4] != 0)
             QueryColorCompliance(argument_list[4].string_reference,
               AllCompliance,&target,exception);
@@ -10475,9 +10454,6 @@ Mogrify(ref,...)
           PixelInfo
             target;
 
-          Quantum
-            virtual_pixel[MaxPixelChannels];
-
           draw_info=CloneDrawInfo(info ? info->image_info :
             (ImageInfo *) NULL,(DrawInfo *) NULL);
           if (attribute_flag[0] != 0)
@@ -10490,12 +10466,8 @@ Mogrify(ref,...)
           if (attribute_flag[3] != 0)
             (void) QueryColorCompliance(argument_list[3].string_reference,
               AllCompliance,&draw_info->fill,exception);
-          (void) GetOneVirtualPixel(image,geometry.x,geometry.y,virtual_pixel,
-            exception);
-          target.red=virtual_pixel[RedPixelChannel];
-          target.green=virtual_pixel[GreenPixelChannel];
-          target.blue=virtual_pixel[BluePixelChannel];
-          target.alpha=virtual_pixel[AlphaPixelChannel];
+          (void) GetOneVirtualPixelInfo(image,UndefinedVirtualPixelMethod,
+            geometry.x,geometry.y,&target,exception);
           if (attribute_flag[4] != 0)
             QueryColorCompliance(argument_list[4].string_reference,
               AllCompliance,&target,exception);

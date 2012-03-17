@@ -4794,18 +4794,11 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
     {
       for (x=0; (x < (ssize_t) watermark->columns) && (j < (ssize_t) depth); x++)
       {
-        Quantum
-          virtual_pixel[CompositePixelChannel];
-
         ssize_t
           offset;
 
-        (void) GetOneCacheViewVirtualPixel(watermark_view,x,y,virtual_pixel,
+        (void) GetOneCacheViewVirtualPixelInfo(watermark_view,x,y,&pixel,
           exception);
-        pixel.red=(double) virtual_pixel[RedPixelChannel];
-        pixel.green=(double) virtual_pixel[GreenPixelChannel];
-        pixel.blue=(double) virtual_pixel[BluePixelChannel];
-        pixel.alpha=(double) virtual_pixel[AlphaPixelChannel];
         offset=k/(ssize_t) stegano_image->columns;
         if (offset >= (ssize_t) stegano_image->rows)
           break;
