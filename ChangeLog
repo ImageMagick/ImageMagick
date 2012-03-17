@@ -1,5 +1,5 @@
 2012-03-18  6.7.6-1 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.6-1, SVN revision 7138.
+  * New version 6.7.6-1, SVN revision 7140.
 
 2012-03-16  6.7.6-1 Glenn Randers-Pehrson <glennrp@image...>
   * Reduce the scope of quantum_info in the PNG decoder to avoid a possible
