@@ -3560,7 +3560,6 @@ coders_pango_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS) $(PANGO_CFLAGS)
 coders_pango_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_pango_la_LIBADD = $(MAGICKCORE_LIBS) $(PANGO_LIBS)
 
-# CINEON coder module
 # Pattern module
 coders_pattern_la_SOURCES = coders/pattern.c
 coders_pattern_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
