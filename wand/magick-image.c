@@ -2075,8 +2075,8 @@ WandExport MagickBooleanType MagickCompositeLayers(MagickWand *wand,
   if ((wand->images == (Image *) NULL) ||
       (source_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  CompositeLayers(wand->images,compose,source_wand->images,x,y);
-  InheritException(wand->exception,&wand->images->exception);
+  CompositeLayers(wand->images,compose,source_wand->images,x,y,
+    &wand->images->exception);
   status=MagickTrue;  /* FUTURE: determine status from exceptions */
   return(status);
 }
