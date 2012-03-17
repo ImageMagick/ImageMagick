@@ -426,7 +426,7 @@ ModuleExport size_t RegisterPANGOImage(void)
 
   *version='\0';
 #if defined(PANGO_VERSION_STRING)
-  (void) FormatLocaleString(version,MaxTextExtent,"(Pangoft2 %s)",
+  (void) FormatLocaleString(version,MaxTextExtent,"Pangoft2 %s",
     PANGO_VERSION_STRING);
 #endif
   entry=SetMagickInfo("PANGO");
