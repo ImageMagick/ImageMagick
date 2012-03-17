@@ -169,25 +169,28 @@
   <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201204010120 mickey@163... -->
 <div class="sponsbox">
 <div class="sponsor">
+  <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.top-cheap-web-hosting.com">Best Web Hosting</a><!-- 201304010090 eunge.liu-->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201207010090 barsh@inter... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 201206010090 golestan -->
+</div>
+<div class="sponsor">
   <a rel="follow" title="Entertainment News &amp; Photos" href="http://www.zimbio.com">Entertainment News &amp; Photos</a><!-- 201211010540 bd@zimb... -->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201206010270 info@pkwte... -->
 </div>
 <div class="sponsor">
-  <a rel="follow" title="Druckerei Günstig" href="http://www.druck-expert.com">Druckerei Günstig</a><!-- 201104010450 info@druck... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
+  <a rel="follow" title="Druckerei Günstig" href="http://www.druck-expert.com">Druckerei Günstig</a><!-- 201204010450 info@druck... -->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: Web Site Hosting" href="http://webhostinggeeks.com">Web Site Hosting</a><!-- 201302010900 funds@enmob... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201205010090 barsh@inter... -->
 </div>
 <div class="sponsor">
    <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
@@ -217,10 +220,10 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Turbolader Online kaufen" href="http://www.autoteile-carparts.de">Turbolader Online kaufen</a><!-- 2012060100150 t.temurbas...-->
+   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012090100150 brooks@stripes...-->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Waschmaschinen Reparatur Berlin" href="http://www.waschmaschinen-reparaturen-berlin.de">Waschmaschinen Reparatur Berlin</a><!-- 2012070100030 Temurbas@autoteile-->
+   <a rel="follow" title="Sponsor: Schlüsseldienst Berlin BSD" href="http://www.schluesseldienst-berlin.de">Schlüsseldienst Berlin BSD</a><!-- 2012050100025 info@schlues-->
 </div>
 </div>
 </div>
@@ -451,15 +454,18 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="CompositeLayers">CompositeLayers</a></h2>
 <div class="doc-section">
 
-<p>CompositeLayers() compose first image sequence (source) over the second image sequence (destination), using the given compose method and offsets.</p>
+<p>CompositeLayers() compose the source image sequence over the destination image sequence, starting with the current image in both lists.</p>
 
-<p>The pointers to the image list does not have to be the start of that image list, but may start somewhere in the middle.  Each layer from the two image lists are composted together until the end of one of the image lists is reached.  The offset of each composition is also adjusted to match the virtual canvas offsets of each layer. As such the given offset is relative to the virtual canvas, and not the actual image.</p>
+<p>Each layer from the two image lists are composted together until the end of one of the image lists is reached.  The offset of each composition is also adjusted to match the virtual canvas offsets of each layer. As such the given offset is relative to the virtual canvas, and not the actual image.</p>
 
-<p>No GIF disposal handling is performed, so GIF animations should be coalesced before use.  However this not a requirement, and individual layer images may have any size or offset, for special compositions.</p>
+<p>Composition uses given x and y offsets, as the 'origin' location of the source images virtual canvas (not the real image) allowing you to compose a list of 'layer images' into the destiantioni images.  This makes it well sutiable for directly composing 'Clears Frame Animations' or 'Coaleased Animations' onto a static or other 'Coaleased Animation' destination image list.  GIF disposal handling is not looked at.</p>
 
-<p>Special case:- If one of the image sequences is just a single image that image is repeatally composed with all the images in the other image list. Either the source or destination lists may be the single image, for this situation.</p>
+<p>Special case:- If one of the image sequences is the last image (just a single image remaining), that image is repeatally composed with all the images in the other image list.  Either the source or destination lists may be the single image, for this situation.</p>
 
-<p>The destination list will be expanded as needed to match number of source image overlaid (from current position to end of list).</p>
+<p>In the case of a single destination image (or last image given), that image will ve cloned to match the number of images remaining in the source image list.</p>
+
+<p>This is equivelent to the "-layer Composite" Shell API operator.</p>
+
 
 <p>The format of the CompositeLayers method is:</p>
 

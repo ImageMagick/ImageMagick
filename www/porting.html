@@ -170,25 +170,28 @@
   <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201204010120 mickey@163... -->
 <div class="sponsbox">
 <div class="sponsor">
+  <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.top-cheap-web-hosting.com">Best Web Hosting</a><!-- 201304010090 eunge.liu-->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201207010090 barsh@inter... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 201206010090 golestan -->
+</div>
+<div class="sponsor">
   <a rel="follow" title="Entertainment News &amp; Photos" href="http://www.zimbio.com">Entertainment News &amp; Photos</a><!-- 201211010540 bd@zimb... -->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201206010270 info@pkwte... -->
 </div>
 <div class="sponsor">
-  <a rel="follow" title="Druckerei Günstig" href="http://www.druck-expert.com">Druckerei Günstig</a><!-- 201104010450 info@druck... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
+  <a rel="follow" title="Druckerei Günstig" href="http://www.druck-expert.com">Druckerei Günstig</a><!-- 201204010450 info@druck... -->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: Web Site Hosting" href="http://webhostinggeeks.com">Web Site Hosting</a><!-- 201302010900 funds@enmob... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201205010090 barsh@inter... -->
 </div>
 <div class="sponsor">
    <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
@@ -220,8 +223,8 @@
 <div class="sponsor">
    <a rel="follow" title="Sponsor: Notebook Reparatur" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur</a><!-- 2012060100300 atlas.multimedia-->
 </div>
-<div  class="sponsor">
-   <a rel="follow" title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2012060100030 atlas.multimedia-->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.hostucan.com">Web Hosting</a><!-- 2012120100150 racent marketing@webhosting...-->
 </div>
 </div>
 </div>
@@ -641,24 +644,27 @@ scripts.</p>
 
 <dt>-channel-fx <em class="arg">expression</em> </dt>
 <dd>
-<p>exchange, extract, or transfer one or more image channels.</p>
+<p>exchange, extract, or copy one or more image channels.</p>
 
 <p>The expression consists of one or more channels, either mnemonic or numeric (e.g. red, 1), separated by certain operation symbols as follows:</p>
 
 <pre class="text">
-  <=>     exchange two channels (e.g. red<=>blue)
-  =>      transfer a channel to another (e.g. red=>green)
-  =       assign a constant (e.g. red=50%)
-  ,       separate channel operations (e.g. red, green)
-  |       read channels from next input image (e.g. red | green)
-  ;       write channels to next output image (e.g. red; green; blue)
+  &lt;=&gt;     exchange two channels (e.g. red&lt;=&gt;blue)
+  =&gt;      copy one channel to another channel (e.g. red=&gt;green)
+  =       assign a constant value to a channel (e.g. red=50%)
+  ,       write new image with channels in the specified order (e.g. red, green)
+  ;       add a new output image for the next set of channel operations
+  |       move to the next input image for the source of channel data
 </pre>
 
-<p>A channel without an operation symbol implies extract.  For example, to create 3 grayscale images from the red, green, and blue channels of an image, use:</p>
+<p>For example, to create 3 grayscale images from the red, green, and blue channels of an image, use:</p>
 
 <pre class="text">
   -channel-fx "red; green; blue"
 </pre>
+
+<p>A channel without an operation symbol implies separate (i.e, semicolon).</p>
+
 </dd>
 
 <dt>-exit</dt>
@@ -796,6 +802,7 @@ example "+annotate", "+resize", "+clut", and "+draw" .</p>
 <li>The FilterImage() method has been removed.  Use ConvolveImage() instead.</li>
 </dl>
 </div>
+
 
 </div>
 
