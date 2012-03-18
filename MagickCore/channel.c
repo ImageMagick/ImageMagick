@@ -351,6 +351,9 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             (LocaleCompare(token,"y") == 0) ||
             (LocaleCompare(token,"yellow") == 0))
           SetImageColorspace(destination_image,CMYKColorspace,exception);
+        if ((LocaleCompare(token,"Cb") == 0) ||
+            (LocaleCompare(token,"Cr") == 0))
+          SetImageColorspace(destination_image,YCbCrColorspace,exception);
         GetMagickToken(p,&p,token);
         break;
       }
