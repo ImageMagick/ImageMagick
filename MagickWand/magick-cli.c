@@ -655,6 +655,19 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
   const char
     *option;
 
+  /* For specific OS command line requirements */
+  ReadCommandlLine(argc,&argv);
+
+#if 0
+  /* FUTURE: This does not make sense!  Remove it.
+     Only a 'image read' needs to expand file name glob patterns
+  */
+  status=ExpandFilenames(&argc,&argv);
+  if (status == MagickFalse)
+    ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
+      GetExceptionMessage(errno));
+#endif
+
   /* Handle special single use options */
   if (argc == 2) {
     option=argv[1];
@@ -669,27 +682,25 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
       return(MagickFalse);
     }
   }
-  /* The "magick" command must have at least two arguments */
+
+  if (argc >= 2) {
+    /* Special "concatenate option (hidden) for delegate usage */
+    if (LocaleCompare("-concatenate",argv[1]) == 0)
+      return(ConcatenateImages(argc,argv,exception));
+
+    /* Special Handling for a "#!/usr/bin/env magick-script" script */
+    if (LocaleCompare("-script",argv[0]+strlen(argv[0])-7) == 0) {
+      cli_wand=AcquireMagickCLI(image_info,exception);
+      GetPathComponent(argv[1],TailPath,cli_wand->wand.name);
+      ProcessScriptOptions(cli_wand,argc,argv,1);
+      goto Magick_Command_Cleanup;
+    }
+  }
+
   if (argc < 3)
     return(MagickUsage());
-  ReadCommandlLine(argc,&argv);
-
-#if 0
-  /* FUTURE: This does not make sense!  Remove it.
-     Only a 'image read' needs to expand file name glob patterns
-  */
-  status=ExpandFilenames(&argc,&argv);
-  if (status == MagickFalse)
-    ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
-#endif
-
-  /* Special option (hidden) for delegate usage - no wand needed */
-  if (LocaleCompare("-concatenate",argv[1]) == 0)
-    return(ConcatenateImages(argc,argv,exception));
 
   /* Initialize special "CLI Wand" to hold images and settings (empty) */
-  /* FUTURE: add this to 'operations.c' */
   cli_wand=AcquireMagickCLI(image_info,exception);
 
   if (LocaleCompare("-list",argv[1]) == 0)
@@ -707,11 +718,14 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
     ProcessScriptOptions(cli_wand,argc,argv,2);
   }
   else {
-    /* Processing Command line, assuming output file as last option */
+    /* Noraml Command Line, Assumes output file as last option */
     GetPathComponent(argv[0],TailPath,cli_wand->wand.name);
-    ProcessCommandOptions(cli_wand,argc,argv,1,MagickCommandOptionFlags);
+    ProcessCommandOptions(cli_wand,argc,argv,1,
+       (LocaleCompare("magick",cli_wand->wand.name) == 0)?
+           MagickCommandOptionFlags : ConvertCommandOptionFlags);
   }
 
+Magick_Command_Cleanup:
   /* recover original image_info from bottom of stack */
   while (cli_wand->image_info_stack != (Stack *)NULL)
     CLISpecialOperator(cli_wand,"}",(const char *)NULL);
@@ -740,6 +754,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
       text=DestroyString(text);
     }
   }
+
   /* Destroy the special CLI Wand */
   cli_wand->wand.image_info = (ImageInfo *)NULL; /* not these */
   cli_wand->wand.exception = (ExceptionInfo *)NULL;
