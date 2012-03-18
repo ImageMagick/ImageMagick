@@ -184,7 +184,8 @@ extern MagickExport MagickBooleanType
     ExceptionInfo *),
   IsFuzzyEquivalencePixel(const Image *,const Quantum *,const Image *,
     const Quantum *),
-  IsFuzzyEquivalencePixelInfo(const PixelInfo *,const PixelInfo *);
+  IsFuzzyEquivalencePixelInfo(const PixelInfo *,const PixelInfo *),
+  SetPixelMetaChannels(Image *,const size_t,ExceptionInfo *);
 
 extern MagickExport PixelChannelMap
   *AcquirePixelChannelMap(void),

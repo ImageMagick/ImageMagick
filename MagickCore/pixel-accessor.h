@@ -23,6 +23,7 @@ extern "C" {
 #endif
 
 #include <math.h>
+#include <MagickCore/cache.h>
 #include <MagickCore/cache-view.h>
 #include <MagickCore/color.h>
 #include <MagickCore/image.h>
@@ -648,12 +649,6 @@ static inline void SetPixelMask(const Image *restrict image,
 {
   if (image->channel_map[MaskPixelChannel].traits != UndefinedPixelTrait)
     pixel[image->channel_map[MaskPixelChannel].offset]=mask;
-}
-
-static inline void SetPixelMetaChannels(Image *image,
-  const size_t number_meta_channels)
-{
-  image->number_meta_channels=number_meta_channels;
 }
 
 static inline void SetPixelMetacontentExtent(Image *image,const size_t extent)

@@ -42,6 +42,7 @@
 #include "MagickCore/property.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
+#include "MagickCore/cache-private.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/exception.h"
@@ -5710,4 +5711,38 @@ MagickExport ChannelType SetPixelChannelMask(Image *image,
   image->channel_mask=channel_mask;
   SetPixelChannelMapMask(image,channel_mask);
   return(mask);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t P i x e l M e t a C h a n n e l s                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetPixelMetaChannels() sets the image meta channels.
+%
+%  The format of the SetPixelMetaChannels method is:
+%
+%      MagickBooleanType SetPixelMetaChannels(Image *image,
+%        const size_t number_meta_channels,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o number_meta_channels:  the number of meta channels.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport MagickBooleanType SetPixelMetaChannels(Image *image,
+  const size_t number_meta_channels,ExceptionInfo *exception)
+{
+  image->number_meta_channels=number_meta_channels;
+  return(SyncImagePixelCache(image,exception));
 }

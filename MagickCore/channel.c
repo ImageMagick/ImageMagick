@@ -350,10 +350,16 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             (LocaleCompare(token,"magenta") == 0) ||
             (LocaleCompare(token,"y") == 0) ||
             (LocaleCompare(token,"yellow") == 0))
-          SetImageColorspace(destination_image,CMYKColorspace,exception);
+          (void) SetImageColorspace(destination_image,CMYKColorspace,exception);
         if ((LocaleCompare(token,"Cb") == 0) ||
             (LocaleCompare(token,"Cr") == 0))
-          SetImageColorspace(destination_image,YCbCrColorspace,exception);
+          (void) SetImageColorspace(destination_image,YCbCrColorspace,
+            exception);
+        if (LocaleCompare(token,"alpha") == 0)
+          (void) SetImageAlpha(destination_image,OpaqueAlpha,exception);
+        if (i >= GetPixelChannels(destination_image))
+          SetPixelMetaChannels(destination_image,i-
+            GetPixelChannels(destination_image)+1,exception);
         GetMagickToken(p,&p,token);
         break;
       }
