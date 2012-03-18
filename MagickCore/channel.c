@@ -357,8 +357,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             exception);
         if (LocaleCompare(token,"alpha") == 0)
           (void) SetImageAlpha(destination_image,OpaqueAlpha,exception);
-        if (i >= GetPixelChannels(destination_image))
-          SetPixelMetaChannels(destination_image,i-
+        if (i >= (ssize_t) GetPixelChannels(destination_image))
+          (void) SetPixelMetaChannels(destination_image,i-
             GetPixelChannels(destination_image)+1,exception);
         GetMagickToken(p,&p,token);
         break;
