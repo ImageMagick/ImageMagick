@@ -180,7 +180,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
 
   /* open file script or stream, and set up tokenizer */
   token_info = AcquireScriptTokenInfo(argv[index]);
-  if (token_info->token == (char *) NULL) {
+  if (token_info == (ScriptTokenInfo *) NULL) {
     ThrowFileException(cli_wand->wand.exception,OptionFatalError,
                "UnableToOpenScript",argv[index]);
     return;
