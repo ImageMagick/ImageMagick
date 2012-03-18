@@ -942,8 +942,7 @@ WandExport MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
   image=GetImageFromList(wand->images,index);
   if (image == (Image *) NULL)
     {
-      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "NoSuchImage","`%s'",wand->name);
+      InheritException(wand->exception,&wand->images->exception);
       return(MagickFalse);
     }
   wand->images=image;
