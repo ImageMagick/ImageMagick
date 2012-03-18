@@ -2538,6 +2538,8 @@ MagickExport ssize_t ParsePixelChannelOption(const char *channels)
     channel;
 
   GetMagickToken(channels,NULL,token);
+  if ((*token == ';') || (*token == '|'))
+    return(RedPixelChannel);
   channel=ParseCommandOption(MagickPixelChannelOptions,MagickTrue,token);
   if (channel >= 0)
     return(channel);
