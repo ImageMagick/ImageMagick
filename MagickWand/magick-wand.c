@@ -904,7 +904,7 @@ WandExport void MagickSetFirstIterator(MagickWand *wand)
 %  -1 being the last image in the wand.
 %
 %  If the index is invalid (range too large for number of images in wand)
-%  the function will return magickFalse, but no 'exception' will be raised,
+%  the function will return MagickFalse, but no 'exception' will be raised,
 %  as it is not actually an error.  In that case the current image will not
 %  change.
 %
@@ -941,10 +941,7 @@ WandExport MagickBooleanType MagickSetIteratorIndex(MagickWand *wand,
     return(MagickFalse);
   image=GetImageFromList(wand->images,index);
   if (image == (Image *) NULL)
-    {
-      InheritException(wand->exception,&wand->images->exception);
-      return(MagickFalse);
-    }
+    return(MagickFalse);    /* this is not an exception! Just range error. */
   wand->images=image;
   wand->insert_before=MagickFalse;  /* Insert/Add after (this) image */
   wand->image_pending=MagickFalse;  /* NextImage will set next image */
