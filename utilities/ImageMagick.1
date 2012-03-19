@@ -2,7 +2,8 @@
 .SH NAME
 ImageMagick \- is a free software suite for the creation, modification and display of bitmap images.
 .SH SYNOPSIS
-\fBconvert\fP \fIinput-file\fP [\fIoptions\fP] \fIoutput-file\fP
+\fBmagick\fP [\fIoptions\fP|\fIinput-file\fP]... \fIoutput-file\fP
+\fBmagick-script\fP \fIscript-file\fP [\fIscript-arguments\fP]...
 .SH OVERVIEW
 
 ImageMagick\[rg], is a software suite to create, edit, and compose bitmap images. It can read, convert and write images in a variety of formats (about 100) including GIF, JPEG, JPEG-2000, PNG, PDF, PhotoCD, TIFF, and DPX. Use ImageMagick to translate, flip, mirror, rotate, scale, shear and transform images, adjust image colors, apply various special effects, or draw text, lines, polygons, ellipses and B\\['e]zier curves.
@@ -21,17 +22,35 @@ uainted with ImageMagick, start at the top of the list, the convert program, and
  use ImageMagick utilities to convert, compose, or edit images from the command-
 line.
 .TP
+.B magick
+
+Read images into memory, and perform operations on those images, and write
+then out to either the same of some other image file format.
+
+The "-script" option can be switch from processing command line options,
+to reading options from a file or pipeline.
+.TP
+.B magick-script
+
+As "magick" command but with an implied "-script" option. Allows it to be used
+in special "#!/usr/bin/env magick-script" scripts that will search for the
+"magick-script" command anywhere along the users command path, rather than in
+a hardcorded command location.
+
+.TP
 .B convert
 
-convert between image formats as well as resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more.
-.TP
-.B identify
-
-describes the format and characteristics of one or more image files.
+Backwards compatiblity for ImageMagick version 6 "convert". Essentually an
+alias to a restrictive form of the "magick" command, which should be used
+instead.
 .TP
 .B mogrify
 
 resize an image, blur, crop, despeckle, dither, draw on, flip, join, re-sample, and much more. Mogrify overwrites the original image file, whereas, convert writes to a different image file.
+.TP
+.B identify
+
+describes the format and characteristics of one or more image files.
 .TP
 .B composite
 
