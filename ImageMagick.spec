@@ -165,7 +165,7 @@ cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
            --with-lcms \
            --with-rsvg \
            --with-xml \
-           --with-perl-options='INSTALLDIRS=vendor' \
+           --with-perl-options="INSTALLDIRS=vendor %{?perl_prefix} CC='%__cc -L$PWD/magick/.libs' LDDLFLAGS='-shared -L$PWD/magick/.libs'" \
            --without-dps \
            --without-included-ltdl --with-ltdl-include=%{_includedir} \
            --with-ltdl-lib=%{_libdir}
@@ -177,29 +177,29 @@ make
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
-make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
-cp -a www/source $RPM_BUILD_ROOT%{_datadir}/doc/%{name}
-rm $RPM_BUILD_ROOT%{_libdir}/*.la
+make install DESTDIR=%{buildroot} INSTALL="install -p"
+cp -a www/source %{buildroot}%{_datadir}/doc/%{name}
+rm %{buildroot}%{_libdir}/*.la
 
 # fix weird perl Magick.so permissions
-chmod 755 $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Image/Magick/Magick.so
+chmod 755 %{buildroot}%{perl_vendorarch}/auto/Image/Magick/Magick.so
 
 # perlmagick: fix perl path of demo files
 %{__perl} -MExtUtils::MakeMaker -e 'MY->fixin(@ARGV)' PerlMagick/demo/*.pl
 
 # perlmagick: cleanup various perl tempfiles from the build which get installed
-find $RPM_BUILD_ROOT -name "*.bs" |xargs rm -f
-find $RPM_BUILD_ROOT -name ".packlist" |xargs rm -f
-find $RPM_BUILD_ROOT -name "perllocal.pod" |xargs rm -f
+find %{buildroot} -name "*.bs" |xargs rm -f
+find %{buildroot} -name ".packlist" |xargs rm -f
+find %{buildroot} -name "perllocal.pod" |xargs rm -f
 
 # perlmagick: build files list
 echo "%defattr(-,root,root,-)" > perl-pkg-files
-find $RPM_BUILD_ROOT/%{_libdir}/perl* -type f -print \
-        | sed "s@^$RPM_BUILD_ROOT@@g" > perl-pkg-files 
-find $RPM_BUILD_ROOT%{perl_vendorarch} -type d -print \
-        | sed "s@^$RPM_BUILD_ROOT@%dir @g" \
+find %{buildroot}/%{_libdir}/perl* -type f -print \
+        | sed "s@^%{buildroot}@@g" > perl-pkg-files 
+find %{buildroot}%{perl_vendorarch} -type d -print \
+        | sed "s@^%{buildroot}@%dir @g" \
         | grep -v '^%dir %{perl_vendorarch}$' \
         | grep -v '/auto$' >> perl-pkg-files 
 if [ -z perl-pkg-files ] ; then
@@ -214,10 +214,10 @@ fi
 %define wordsize 32
 %endif
 
-mv $RPM_BUILD_ROOT%{_includedir}/%{name}/magick/magick-config.h \
-   $RPM_BUILD_ROOT%{_includedir}/%{name}/magick/magick-config-%{wordsize}.h
+mv %{buildroot}%{_includedir}/%{name}/magick/magick-config.h \
+   %{buildroot}%{_includedir}/%{name}/magick/magick-config-%{wordsize}.h
 
-cat >$RPM_BUILD_ROOT%{_includedir}/%{name}/magick/magick-config.h <<EOF
+cat >%{buildroot}%{_includedir}/%{name}/magick/magick-config.h <<EOF
 #ifndef IMAGEMAGICK_MULTILIB
 #define IMAGEMAGICK_MULTILIB
 
@@ -235,8 +235,7 @@ cat >$RPM_BUILD_ROOT%{_includedir}/%{name}/magick/magick-config.h <<EOF
 EOF
 
 %clean
-rm -rf $RPM_BUILD_ROOT
-
+rm -rf %{buildroot}
 
 %post -p /sbin/ldconfig
 
@@ -245,7 +244,6 @@ rm -rf $RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %postun c++ -p /sbin/ldconfig
-
 
 %files
 %defattr(-,root,root,-)
