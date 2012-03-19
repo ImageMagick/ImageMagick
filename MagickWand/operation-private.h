@@ -24,20 +24,23 @@ extern "C" {
 
 #define CLIWandException(severity,tag,option) \
   (void) ThrowMagickException(cli_wand->wand.exception,GetMagickModule(), \
-       severity,tag, cli_wand->location, option, cli_wand->filename, \
-       cli_wand->line, cli_wand->column);
+       severity,tag,cli_wand->location,option,cli_wand->filename, \
+       cli_wand->line,cli_wand->column)
+
+#define CLIWandExceptionArg(severity,tag,option,arg) \
+  (void) ThrowMagickException(cli_wand->wand.exception,GetMagickModule(), \
+       severity,tag,cli_wand->location2,option,arg,cli_wand->filename, \
+       cli_wand->line,cli_wand->column)
 
 #define CLIWandExceptionBreak(severity,tag,option) \
-{ \
-  CLIWandException(severity,tag,option); \
-  break; \
-}
+  { CLIWandException(severity,tag,option); break; }
 
 #define CLIWandExceptionReturn(severity,tag,option) \
-{ \
-  CLIWandException(severity,tag,option); \
-  return; \
-}
+   { CLIWandException(severity,tag,option); return; }
+
+#define CLIWandExceptArgBreak(severity,tag,option,arg) \
+   { CLIWandExceptionArg(severity,tag,option,arg); break; }
+
 
 /* Define a generic stack linked list, for pushing and popping
    user defined ImageInfo settings, and Image lists.
@@ -69,10 +72,13 @@ struct _MagickCLI       /* CLI interface version of MagickWand */
     *image_list_stack,  /* Stacks of Image Lists and Image Info settings */
     *image_info_stack;
 
-  const char
-    *location,          /* Location string for exception reporting */
-    *filename;          /*  EG: "'%s' @ \"%s\" line %u column %u"
-                                    option, filename, line, column */
+  const char            /* Location string for exception reporting */
+    *filename,          /* See CLIWandException() macro above */
+    *location,          /* EG: "'%s' @ \"%s\" line %u column %u"
+                               option, filename, line, column   */
+    *location2;         /* EG: "'%s' '%s' @ \"%s\" line %u column %u"
+                               option, arg, filename, line, column   */
+
   size_t
     line,               /* location of current option for error above */
     column;
