@@ -181,11 +181,11 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   fontmap=(PangoFontMap *) pango_ft2_font_map_new();
   pango_ft2_font_map_set_resolution((PangoFT2FontMap *) fontmap,
     image->x_resolution,image->y_resolution);
-  option=GetImageOption(image_info,"caption:hinting");
+  option=GetImageOption(image_info,"pango:hinting");
   pango_ft2_font_map_set_default_substitute((PangoFT2FontMap *) fontmap,
     PangoSubstitute,(char *) option,NULL);
   context=pango_font_map_create_context(fontmap);
-  option=GetImageOption(image_info,"caption:language");
+  option=GetImageOption(image_info,"pango:language");
   if (option != (const char *) NULL)
     pango_context_set_language(context,pango_language_from_string(option));
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
@@ -200,7 +200,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     default: gravity=PANGO_GRAVITY_AUTO; break;
   }
   pango_context_set_base_gravity(context,gravity);
-  option=GetImageOption(image_info,"caption:gravity-hint");
+  option=GetImageOption(image_info,"pango:gravity-hint");
   if (option != (const char *) NULL)
     {
       if (LocaleCompare(option,"line") == 0)
@@ -214,10 +214,10 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     Configure layout.
   */
   layout=pango_layout_new(context);
-  option=GetImageOption(image_info,"caption:auto-dir");
+  option=GetImageOption(image_info,"pango:auto-dir");
   if (option != (const char *) NULL)
     pango_layout_set_auto_dir(layout,1);
-  option=GetImageOption(image_info,"caption:ellipsize");
+  option=GetImageOption(image_info,"pango:ellipsize");
   if (option != (const char *) NULL)
     {
       if (LocaleCompare(option,"end") == 0)
@@ -229,13 +229,13 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
       if (LocaleCompare(option,"start") == 0)
         pango_layout_set_ellipsize(layout,PANGO_ELLIPSIZE_START);
     }
-  option=GetImageOption(image_info,"caption:justify");
+  option=GetImageOption(image_info,"pango:justify");
   if ((option != (const char *) NULL) && (IsMagickTrue(option) != MagickFalse))
     pango_layout_set_justify(layout,1);
-  option=GetImageOption(image_info,"caption:single-paragraph");
+  option=GetImageOption(image_info,"pango:single-paragraph");
   if ((option != (const char *) NULL) && (IsMagickTrue(option) != MagickFalse))
     pango_layout_set_single_paragraph_mode(layout,1);
-  option=GetImageOption(image_info,"caption:wrap");
+  option=GetImageOption(image_info,"pango:wrap");
   if (option != (const char *) NULL)
     {
       if (LocaleCompare(option,"char") == 0)
@@ -245,7 +245,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
       if (LocaleCompare(option,"word-char") == 0)
         pango_layout_set_wrap(layout,PANGO_WRAP_WORD_CHAR);
     }
-  option=GetImageOption(image_info,"caption:indent");
+  option=GetImageOption(image_info,"pango:indent");
   if (option != (const char *) NULL)
     pango_layout_set_indent(layout,(StringToLong(option)*image->x_resolution*
       PANGO_SCALE+36)/72);
@@ -281,8 +281,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   /*
     Render caption.
   */
-  option=GetImageOption(image_info,"caption:markup");
-  if ((option == (const char *) NULL) || (IsMagickTrue(option) == MagickFalse))
+  option=GetImageOption(image_info,"pango:markup");
+  if ((option != (const char *) NULL) && (IsMagickTrue(option) != MagickFalse))
     pango_layout_set_text(layout,caption,-1);
   else
     {
