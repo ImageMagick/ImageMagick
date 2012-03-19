@@ -192,7 +192,7 @@ static const OptionInfo
     { "+append", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "-append", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+attenuate", 0L, ImageInfoOptionFlag, MagickFalse },
-    { "-attenuate", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "-attenuate", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+authenticate", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-authenticate", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+auto-gamma", 0L, DeprecateOptionFlag, MagickTrue },

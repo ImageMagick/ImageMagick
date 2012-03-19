@@ -703,11 +703,11 @@ MagickExport MagickStatusType ParseAffineGeometry(const char *geometry,
       }
     }
   }
-  determinant=(affine_matrix->sx*affine_matrix->sy-affine_matrix->rx*
-    affine_matrix->ry);
+  determinant=(affine_matrix->sx*affine_matrix->sy
+                 - affine_matrix->rx*affine_matrix->ry);
   if (fabs(determinant) < MagickEpsilon)
     (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "InvalidGeometry","`%s'",geometry);
+      "InvalidArgument","'%s' : 'Indeterminate Matrix'",geometry);
   return(flags);
 }
 

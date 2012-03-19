@@ -187,9 +187,9 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
   }
 
   /* define the error location string for use in exceptions
-     order of input escapes: option, filename, line, column
-  */
+     order of input escapes: option, (arg), filename, line, column */
   cli_wand->location="'%s' in \"%s\" line %u column %u";
+  cli_wand->location2="'%s' '%s' in \"%s\" line %u column %u";
   if ( LocaleCompare("-", argv[index]) == 0 )
     cli_wand->filename="stdin";
   else
@@ -400,10 +400,10 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
   if (cli_wand->wand.debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
-  /*
-    Parse command-line options.
-  */
-  cli_wand->location="'%s' %s arg %d";
+  /* define the error location string for use in exceptions
+     order of input escapes: option, (arg), filename, line, column */
+  cli_wand->location="'%s' %s arg %u";
+  cli_wand->location2="'%s' '%s' %s arg %u";
   cli_wand->filename="CLI";
 
   end = argc;
