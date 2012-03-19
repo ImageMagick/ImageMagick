@@ -39,7 +39,7 @@ typedef enum
   ProcessOutputFile           = 0x8000,  /* Process the output file */
 
   /* Flag Groups for specific Situations */
-  CommandCommandOptionFlags   = 0x80FF,  /* Convert Command Flags */
+  ConvertCommandOptionFlags   = 0x80FF,  /* Convert Command Flags */
   MagickCommandOptionFlags    = 0x8FFF,  /* Magick Command Flags */
   MagickScriptArgsFlags       = 0x00FF,  /* Script Args Flags */
   MagickScriptReadFlags       = 0x01FF   /* Script Read Flags */
