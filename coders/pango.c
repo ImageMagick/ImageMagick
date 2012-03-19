@@ -247,8 +247,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     }
   option=GetImageOption(image_info,"pango:indent");
   if (option != (const char *) NULL)
-    pango_layout_set_indent(layout,(StringToLong(option)*image->x_resolution*
-      PANGO_SCALE+36)/72);
+    pango_layout_set_indent(layout,(int) ((StringToLong(option)*
+      image->x_resolution*PANGO_SCALE+36)/72.0+0.5));
   switch (draw_info->align)
   {
     case CenterAlign: align=PANGO_ALIGN_CENTER; break;
@@ -271,7 +271,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   pango_layout_set_alignment(layout,align);
   description=pango_font_description_from_string(draw_info->font ==
     (char *) NULL ? "helvetica" : draw_info->font);
-  pango_font_description_set_size(description,PANGO_SCALE*draw_info->pointsize);
+  pango_font_description_set_size(description,(int) (PANGO_SCALE*
+    draw_info->pointsize+0.5));
   pango_layout_set_font_description(layout,description);
   pango_font_description_free(description);
   property=InterpretImageProperties(image_info,image,image_info->filename);
@@ -308,8 +309,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   else
     {
       image->columns-=2*page.x;
-      pango_layout_set_width(layout,(PANGO_SCALE*image->columns*
-        image->x_resolution+36.0)/72.0);
+      pango_layout_set_width(layout,(int) ((PANGO_SCALE*image->columns*
+        image->x_resolution+36.0)/72.0+0.5));
     }
   if (image->rows == 0)
     {
@@ -319,8 +320,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   else
     {
       image->rows-=2*page.y;
-      pango_layout_set_height(layout,(PANGO_SCALE*image->rows*
-        image->y_resolution+36.0)/72.0);
+      pango_layout_set_height(layout,(int) ((PANGO_SCALE*image->rows*
+        image->y_resolution+36.0)/72.0+0.5));
     }
   /*
     Create canvas.
