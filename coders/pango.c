@@ -284,7 +284,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     Render caption.
   */
   option=GetImageOption(image_info,"pango:markup");
-  if ((option == (const char *) NULL) || (IsMagickTrue(option) == MagickFalse))
+  if ((option != (const char *) NULL) && (IsMagickTrue(option) == MagickFalse))
     pango_layout_set_text(layout,caption,-1);
   else
     {
