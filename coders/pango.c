@@ -284,10 +284,19 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     Render caption.
   */
   option=GetImageOption(image_info,"pango:markup");
-  if ((option != (const char *) NULL) && (IsMagickTrue(option) != MagickFalse))
-    pango_layout_set_markup(layout,caption,-1);
-  else
+  if ((option == (const char *) NULL) || (IsMagickTrue(option) == MagickFalse))
     pango_layout_set_text(layout,caption,-1);
+  else
+    {
+      GError
+        *error;
+
+      error=(GError *) NULL;
+      if (pango_parse_markup(caption,-1,0,NULL,NULL,NULL,&error) == 0)
+        (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
+          error->message,"`%s'",image_info->filename);
+      pango_layout_set_markup(layout,caption,-1);
+    }
   pango_layout_context_changed(layout);
   page.x=0;
   page.y=0;
