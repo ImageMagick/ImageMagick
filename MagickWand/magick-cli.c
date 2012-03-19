@@ -689,7 +689,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
       return(ConcatenateImages(argc,argv,exception));
 
     /* Special Handling for a "#!/usr/bin/env magick-script" script */
-    if (LocaleCompare("-script",argv[0]+strlen(argv[0])-7) == 0) {
+    if (LocaleCompare("magick-script",argv[0]+strlen(argv[0])-13) == 0) {
       cli_wand=AcquireMagickCLI(image_info,exception);
       GetPathComponent(argv[1],TailPath,cli_wand->wand.name);
       ProcessScriptOptions(cli_wand,argc,argv,1);
@@ -721,7 +721,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
     /* Noraml Command Line, Assumes output file as last option */
     GetPathComponent(argv[0],TailPath,cli_wand->wand.name);
     ProcessCommandOptions(cli_wand,argc,argv,1,
-       (LocaleCompare("magick",cli_wand->wand.name) == 0)?
+       (LocaleCompare("magick",argv[0]+strlen(argv[0])-6) == 0)?
            MagickCommandOptionFlags : ConvertCommandOptionFlags);
   }
 
