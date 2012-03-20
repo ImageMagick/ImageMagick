@@ -764,6 +764,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
     GetPathComponent(option,MagickPath,magick);
     if ((LocaleCompare(magick,"CAPTION") == 0) ||
         (LocaleCompare(magick,"LABEL") == 0) ||
+        (LocaleCompare(magick,"PANGO") == 0) ||
         (LocaleCompare(magick,"VID") == 0))
       continue;
     if ((IsGlob(filename) == MagickFalse) && (*filename != '@'))

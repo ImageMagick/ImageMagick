@@ -175,6 +175,18 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AcquireImage(image_info);
   (void) ResetImagePage(image,"0x0+0+0");
+  option=GetImageOption(image_info,"filename");
+  if (option == (const char *) NULL)
+    property=InterpretImageProperties(image_info,image,image_info->filename,
+      exception);
+  else
+    if (LocaleNCompare(option,"pango:",6) == 0)
+      property=InterpretImageProperties(image_info,image,option+6,exception);
+    else
+      property=InterpretImageProperties(image_info,image,option,exception);
+  (void) SetImageProperty(image,"caption",property,exception);
+  property=DestroyString(property);
+  caption=ConstantString(GetImageProperty(image,"caption",exception));
   /*
     Get context.
   */
