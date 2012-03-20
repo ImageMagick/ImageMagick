@@ -137,7 +137,6 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   /*
     Format caption.
   */
-  property=InterpretImageProperties(image_info,image,image_info->filename);
   option=GetImageOption(image_info,"filename");
   if (option == (const char *) NULL)
     property=InterpretImageProperties(image_info,image,image_info->filename);

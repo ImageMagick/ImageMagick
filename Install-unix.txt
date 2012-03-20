@@ -576,7 +576,7 @@ Linux-specific Build instructions
   After the build you, locate the RPMS folder and install the ImageMagick
   binary RPM distribution:
   
-    $magick> rpm -ivh ImageMagick-6.5.9-?.*.rpm
+    $magick> rpm -ivh ImageMagick-6.7.6-?.*.rpm
   
 MinGW-specific Build instructions
   
@@ -586,8 +586,8 @@ MinGW-specific Build instructions
   sure you specify the development headers when you install a package. Next
   type,
   
-    $magick> tar jxvf ImageMagick-6.5.9-?.tar.bz2
-    $magick> cd ImageMagick-6.5.9
+    $magick> tar jxvf ImageMagick-6.7.6-?.tar.bz2
+    $magick> cd ImageMagick-6.7.6
     $magick> export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"
     $magick> export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"
     $magick> ./configure --without-perl
