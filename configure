@@ -866,6 +866,8 @@ MODULE_EXTRA_CPPFLAGS
 LIBSTDCLDFLAGS
 PERL_MAKE_OPTIONS
 QUANTUM_DEPTH
+LEGACY_SUPPORT_FALSE
+LEGACY_SUPPORT_TRUE
 MAINT
 MAINTAINER_MODE_FALSE
 MAINTAINER_MODE_TRUE
@@ -1125,6 +1127,7 @@ enable_prof
 enable_gprof
 enable_gcov
 with_method_prefix
+enable_legacy_support
 with_quantum_depth
 with_cache
 with_frozenpaths
@@ -1857,6 +1860,7 @@ Optional Features:
   --enable-prof           enable 'prof' profiling support
   --enable-gprof          enable 'gprof' profiling support
   --enable-gcov           enable 'gcov' profiling support
+  --enable-legacy-support  install ImageMagick utility shortcuts (default disabled)
   --disable-assert        turn off assertions
 
 Optional Packages:
@@ -3616,7 +3620,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=7154
+MAGICK_SVN_REVISION=7163
 
 
 
@@ -21871,6 +21875,23 @@ _ACEOF
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-method-prefix "
 fi
 
+# Enable ImageMagick utilities legacy support (default no)
+# Check whether --enable-legacy-support was given.
+if test "${enable_legacy_support+set}" = set; then :
+  enableval=$enable_legacy_support; with_legacy_support=$enableval
+else
+  with_legacy_support='no'
+fi
+
+ if test "$with_legacy_support" != 'no'; then
+  LEGACY_SUPPORT_TRUE=
+  LEGACY_SUPPORT_FALSE='#'
+else
+  LEGACY_SUPPORT_TRUE='#'
+  LEGACY_SUPPORT_FALSE=
+fi
+
+
 # Number of bits in a Quantum
 
 # Check whether --with-quantum-depth was given.
@@ -35915,6 +35936,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${MAINTAINER_MODE_TRUE}" && test -z "${MAINTAINER_MODE_FALSE}"; then
   as_fn_error $? "conditional \"MAINTAINER_MODE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${LEGACY_SUPPORT_TRUE}" && test -z "${LEGACY_SUPPORT_FALSE}"; then
+  as_fn_error $? "conditional \"LEGACY_SUPPORT\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
