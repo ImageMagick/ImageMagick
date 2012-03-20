@@ -423,8 +423,8 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
   cli_wand->image_list_stack=(Stack *)NULL;
   cli_wand->image_info_stack=(Stack *)NULL;
-  cli_wand->location="'%s' at unknown";
-  cli_wand->location2="'%s' '%s' at unknown";
+  cli_wand->location="'%s'";      /* option location not known by default */
+  cli_wand->location2="'%s' '%s'";
   cli_wand->filename=cli_wand->wand.name;
   cli_wand->line=0;
   cli_wand->column=0;
@@ -690,6 +690,8 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
 
              SyncImageSettings() used to set per-image attribute.
           */
+          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) SetImageOption(_image_info,option+1,ArgOption("0"));
           break;
         }
@@ -707,6 +709,8 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              Used by many coders including PNG
              SyncImageSettings() used to set per-image attribute.
           */
+          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) SetImageOption(_image_info,option+1,ArgOption("0.0"));
           break;
         }
@@ -746,6 +750,8 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           MagickSizeType
             limit;
 
+          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           limit=MagickResourceInfinity;
           if (LocaleCompare("unlimited",arg1) != 0)
             limit=(MagickSizeType) SiPrefixToDoubleInterval(arg1,100.0);
@@ -764,8 +770,15 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              This is also applied to images in SimpleImageOperator!!!
              Move it to SyncImageSettings() - or alternative
           */
-          _image_info->channel=(ChannelType) (
-               IfSetOption ? ParseChannelOption(arg1) : DefaultChannels );
+          ssize_t
+            channel = DefaultChannels;
+          if ( IfSetOption ) {
+            channel=ParseChannelOption(arg1);
+            if (channel < 0)
+              CLIWandExceptArgBreak(OptionError,"UnrecognizedChannelType",
+                   option,arg1);
+          }
+          _image_info->channel=(ChannelType) channel;
           break;
         }
       if (LocaleCompare("colorspace",option+1) == 0)
@@ -774,8 +787,13 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              But also used as a SimpleImageOperator
              Undefined colorspace means don't modify images on
              read or as a operation */
-          _image_info->colorspace=(ColorspaceType) ParseCommandOption(
-               MagickColorspaceOptions,MagickFalse,ArgOption("undefined"));
+          ssize_t
+            colorspace = ParseCommandOption(MagickColorspaceOptions,
+                 MagickFalse,ArgOption("undefined"));
+          if (colorspace < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedColorspace",
+                                    option,arg1);
+          _image_info->colorspace=(ColorspaceType) colorspace;
           break;
         }
       if (LocaleCompare("comment",option+1) == 0)
@@ -1647,7 +1665,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
   assert(cli_wand->wand.signature == WandSignature);
-  assert(_image != (Image *) NULL);             /* an _image must be present */
+  assert(_image != (Image *) NULL);             /* an image must be present */
   if (cli_wand->wand.debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
@@ -1655,7 +1673,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
 
   SetGeometryInfo(&geometry_info);
 
-  new_image = (Image *)NULL; /* the replacement _image, if not null at end */
+  new_image = (Image *)NULL; /* the replacement image, if not null at end */
 
   /* FUTURE: We may need somthing a little more optimized than this!
      Perhaps, do the 'sync' if 'settings tainted' before next operator.
@@ -1753,7 +1771,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("auto-orient",option+1) == 0)
         {
-          /* This should probbaly be a MagickCore function */
+          /* This should probably be a MagickCore function */
           switch (_image->orientation)
           {
             case TopRightOrientation:
@@ -1804,20 +1822,27 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("black-threshold",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) BlackThresholdImage(_image,arg1,_exception);
           break;
         }
       if (LocaleCompare("blue-shift",option+1) == 0)
         {
           geometry_info.rho=1.5;
-          if (IfNormalOp)
+          if (IfNormalOp) {
+            if (IsGeometry(arg1) == MagickFalse)
+              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
             flags=ParseGeometry(arg1,&geometry_info);
+          }
           new_image=BlueShiftImage(_image,geometry_info.rho,_exception);
           break;
         }
       if (LocaleCompare("blur",option+1) == 0)
         {
           /* FUTURE: use of "bias" in a blur is non-sensible */
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
@@ -1834,6 +1859,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
 
           const char*
             value;
+
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
 
           value=GetImageOption(_image_info,"compose");
           if (value != (const char *) NULL)
@@ -1860,6 +1888,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           MagickStatusType
             flags;
 
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           brightness=geometry_info.rho;
           contrast=0.0;
@@ -1892,12 +1922,15 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           /* The "channel" setting has already been set
              FUTURE: This probably should be part of SyncImageSettings().
+             How is it applied to new images?
           */
           SetPixelChannelMapMask(_image,_image_info->channel);
           break;
         }
       if (LocaleCompare("charcoal",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
@@ -1909,6 +1942,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("chop",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParseGravityGeometry(_image,arg1,&geometry,_exception);
           new_image=ChopImage(_image,&geometry,_exception);
           break;
@@ -1954,7 +1989,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (SetImageStorageClass(mask_image,DirectClass,_exception)
                == MagickFalse)
             break;
-          /* Create a write mask from cli_wandp-mask _image */
+          /* Create a write mask from cli_wand mask image */
           /* FUTURE: use Alpha operations instead and create a Grey Image */
           mask_view=AcquireCacheView(mask_image);
           for (y=0; y < (ssize_t) mask_image->rows; y++)
@@ -1989,6 +2024,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("colorize",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           new_image=ColorizeImage(_image,arg1,&_draw_info->fill,_exception);
           break;
         }
@@ -1999,19 +2036,19 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
 
           kernel=AcquireKernelInfo(arg1);
           if (kernel == (KernelInfo *) NULL)
-            break;
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           new_image=ColorMatrixImage(_image,kernel,_exception);
           kernel=DestroyKernelInfo(kernel);
           break;
         }
       if (LocaleCompare("colors",option+1) == 0)
         {
-          /* Reduce the number of colors in the _image.
-             FUTURE: also provide 'plus version with _image 'color counts'
+          /* Reduce the number of colors in the image.
+             FUTURE: also provide 'plus version with image 'color counts'
           */
           _quantize_info->number_colors=StringToUnsignedLong(arg1);
           if (_quantize_info->number_colors == 0)
-            break;
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((_image->storage_class == DirectClass) ||
               _image->colors > _quantize_info->number_colors)
             (void) QuantizeImage(_quantize_info,_image,_exception);
@@ -2021,8 +2058,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("colorspace",option+1) == 0)
         {
-          /* WARNING: this is both a _image_info setting (already done)
-                      and a operator to change _image colorspace.
+          /* WARNING: this is both a image_info setting (already done)
+                      and a operator to change image colorspace.
 
              FUTURE: default colorspace should be sRGB!
              Unless some type of 'linear colorspace' mode is set.
@@ -2664,7 +2701,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
               (void) SetImageMask(_image,(Image *) NULL,_exception);
               break;
             }
-          /* Set the _image mask. */
+          /* Set the image mask. */
           mask=GetImageCache(_image_info,arg1,_exception);
           if (mask == (Image *) NULL)
             break;
@@ -3357,7 +3394,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           /* FUTURE: move to SyncImageSettings() and AcquireImage()???
              three places!   ImageArtifact   ImageOption  _image_info->verbose
-             Some how new images also get this artifact presumably here
+             Some how new images also get this artifact!
           */
           (void) SetImageArtifact(_image,option+1,
                            IfNormalOp ? "true" : "false" );
