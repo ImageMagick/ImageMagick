@@ -251,6 +251,9 @@ Configure
       compilation options for large files in order to use the library.
   
   Here are the optional packages you can configure:
+
+    --enable-legacy-support
+      install legacy command-line utilities (default disabled).
   
     --with-quantum-depth
       number of bits in a pixel quantum (default 16).
