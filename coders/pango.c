@@ -177,6 +177,21 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   image=AcquireImage(image_info,exception);
   (void) ResetImagePage(image,"0x0+0+0");
   /*
+    Format caption.
+  */
+  option=GetImageOption(image_info,"filename");
+  if (option == (const char *) NULL)
+    property=InterpretImageProperties(image_info,image,image_info->filename,
+      exception);
+  else
+    if (LocaleNCompare(option,"pango:",6) == 0)
+      property=InterpretImageProperties(image_info,image,option+6,exception);
+    else
+      property=InterpretImageProperties(image_info,image,option,exception);
+  (void) SetImageProperty(image,"caption",property,exception);
+  property=DestroyString(property);
+  caption=ConstantString(GetImageProperty(image,"caption",exception));
+  /*
     Get context.
   */
   fontmap=(PangoFontMap *) pango_ft2_font_map_new();
@@ -276,14 +291,6 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     draw_info->pointsize+0.5));
   pango_layout_set_font_description(layout,description);
   pango_font_description_free(description);
-  property=InterpretImageProperties(image_info,image,image_info->filename,
-    exception);
-  (void) SetImageProperty(image,"caption",property,exception);
-  property=DestroyString(property);
-  caption=ConstantString(GetImageProperty(image,"caption",exception));
-  /*
-    Render caption.
-  */
   option=GetImageOption(image_info,"pango:markup");
   if ((option != (const char *) NULL) && (IsMagickTrue(option) == MagickFalse))
     pango_layout_set_text(layout,caption,-1);
