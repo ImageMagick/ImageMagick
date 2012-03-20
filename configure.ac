@@ -689,6 +689,13 @@ if test "$with_method_prefix" != 'no'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-method-prefix "
 fi
 
+# Enable legacy support (default no)
+AC_ARG_ENABLE(legacy-support,
+              [  --enable-legacy-support  install legacy command-line utilities (default disabled)],
+              [with_legacy_support=$enableval],
+              [with_legacy_support='no'])
+AM_CONDITIONAL(LEGACY_SUPPORT, test "$with_legacy_support" != 'no')
+
 # Number of bits in a Quantum
 AC_ARG_WITH([quantum-depth],
     [AC_HELP_STRING([--with-quantum-depth=DEPTH],
