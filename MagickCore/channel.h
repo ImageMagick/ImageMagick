@@ -26,7 +26,7 @@ extern MagickExport Image
   *ChannelFxImage(const Image *,const char *,ExceptionInfo *),
   *CombineImages(const Image *,ExceptionInfo *),
   *SeparateImage(const Image *,const ChannelType,ExceptionInfo *),
-  *SeparateImages(const Image *,const ChannelType,ExceptionInfo *);
+  *SeparateImages(const Image *,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   GetImageAlphaChannel(const Image *),

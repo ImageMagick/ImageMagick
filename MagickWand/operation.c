@@ -776,6 +776,9 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
             if (channel < 0)
               CLIWandExceptArgBreak(OptionError,"UnrecognizedChannelType",
                    option,arg1);
+            (void) SetImageOption(_image_info,option+1,arg1);
+          } else {
+            (void) SetImageOption(_image_info,option+1,"default");
           }
           _image_info->channel=(ChannelType) channel;
           break;
@@ -3088,7 +3091,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           /* WARNING: This can generate multiple images! */
           /* FUTURE - this may be replaced by a "-channel" method */
-          new_image=SeparateImages(_image,_image_info->channel,_exception);
+          new_image=SeparateImages(_image,_exception);
           break;
         }
       if (LocaleCompare("sepia-tone",option+1) == 0)

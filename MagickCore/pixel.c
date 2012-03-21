@@ -5644,7 +5644,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
 %
 %    o image: the image.
 %
-%    o mask: the channel mask.
+%    o channel_mask: the channel mask.
 %
 */
 MagickExport void SetPixelChannelMapMask(Image *image,

@@ -139,6 +139,7 @@ static MagickBooleanType ConvertUsage(void)
     {
       "-channel-fx expression",
       "                     exchange, extract, or transfer one or more image channels",
+      "-separate            separate an image channel into a grayscale image",
       (char *) NULL
     },
     *miscellaneous[]=
@@ -322,7 +323,6 @@ static MagickBooleanType ConvertUsage(void)
       "-mosaic              create a mosaic from an image sequence",
       "-print string        interpret string and print to console",
       "-process arguments   process the image with a custom image filter",
-      "-separate            separate an image channel into a grayscale image",
       "-smush geometry      smush an image sequence together",
       "-write filename      write images to this file",
       (char *) NULL
