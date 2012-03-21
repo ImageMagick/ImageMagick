@@ -358,8 +358,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         if (LocaleCompare(token,"alpha") == 0)
           (void) SetImageAlpha(destination_image,OpaqueAlpha,exception);
         if (i >= (ssize_t) GetPixelChannels(destination_image))
-          (void) SetPixelMetaChannels(destination_image,i-
-            GetPixelChannels(destination_image)+1,exception);
+          (void) SetPixelMetaChannels(destination_image,(size_t) (i-
+            GetPixelChannels(destination_image)+1),exception);
         GetMagickToken(p,&p,token);
         break;
       }
@@ -730,20 +730,16 @@ MagickExport Image *SeparateImage(const Image *image,
 %
 %  The format of the SeparateImages method is:
 %
-%      Image *SeparateImages(const Image *image,const ChannelType channels,
-%        ExceptionInfo *exception)
+%      Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
-%    o channels: the image channels.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *SeparateImages(const Image *image,
-  const ChannelType channels,ExceptionInfo *exception)
+MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
 {
   Image
     *images,

@@ -2614,7 +2614,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Break channels into separate images.
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            mogrify_image=SeparateImages(*image,image_info->channel,exception);
+            mogrify_image=SeparateImages(*image,exception);
             break;
           }
         if (LocaleCompare("sepia-tone",option+1) == 0)
@@ -3259,6 +3259,7 @@ static MagickBooleanType MogrifyUsage(void)
     {
       "-channel-fx expression",
       "                     exchange, extract, or transfer one or more image channels",
+      "-separate            separate an image channel into a grayscale image",
       (char *) NULL
     },
     *miscellaneous[]=
@@ -3442,7 +3443,6 @@ static MagickBooleanType MogrifyUsage(void)
       "-mosaic              create a mosaic from an image sequence",
       "-print string        interpret string and print to console",
       "-process arguments   process the image with a custom image filter",
-      "-separate            separate an image channel into a grayscale image",
       "-smush geometry      smush an image sequence together",
       "-write filename      write images to this file",
       (char *) NULL
@@ -6288,9 +6288,11 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             if (*option == '+')
               {
                 image_info->channel=DefaultChannels;
+                (void) SetImageOption(image_info,option+1,"default");
                 break;
               }
             image_info->channel=(ChannelType) ParseChannelOption(argv[i+1]);
+            (void) SetImageOption(image_info,option+1,argv[i+1]);
             break;
           }
         if (LocaleCompare("colorspace",option+1) == 0)
