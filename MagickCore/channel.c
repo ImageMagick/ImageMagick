@@ -730,17 +730,20 @@ MagickExport Image *SeparateImage(const Image *image,
 %
 %  The format of the SeparateImages method is:
 %
-%      MagickBooleanType SeparateImages(const Image *image,
+%      Image *SeparateImages(const Image *image,const ChannelType channels,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
+%    o channels: the image channels.
+%
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
+MagickExport Image *SeparateImages(const Image *image,
+  const ChannelType channels,ExceptionInfo *exception)
 {
   Image
     *images,
