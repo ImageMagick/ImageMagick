@@ -22,7 +22,7 @@ warn("$w")  if $w;
 exit  if $w =~ /^Exception/;
 
 
-# make a clone of the image for modifications
+# make a clone of the image (preserve input, modify output)
 my $dest = $orig->Clone();
 
 # You could enlarge destination image here if you like.
