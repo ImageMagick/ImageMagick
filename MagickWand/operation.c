@@ -1917,8 +1917,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           /* The "channel" setting has already been set
              FUTURE: This probably should be part of SyncImageSettings().
              How is it applied to new images?
-          */
           SetPixelChannelMapMask(_image,_image_info->channel);
+          */
           break;
         }
       if (LocaleCompare("charcoal",option+1) == 0)
@@ -3088,7 +3088,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           /* WARNING: This can generate multiple images! */
           /* FUTURE - this may be replaced by a "-channel" method */
-          new_image=SeparateImages(_image,_exception);
+          new_image=SeparateImages(_image,_image_info->channel,_exception);
           break;
         }
       if (LocaleCompare("sepia-tone",option+1) == 0)

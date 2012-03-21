@@ -2614,7 +2614,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Break channels into separate images.
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            mogrify_image=SeparateImages(*image,exception);
+            mogrify_image=SeparateImages(*image,image_info->channel,exception);
             break;
           }
         if (LocaleCompare("sepia-tone",option+1) == 0)
