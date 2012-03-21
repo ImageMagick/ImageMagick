@@ -220,9 +220,8 @@ static Image *SparseColorOption(const Image *image,
     if ( token[0] == ',' ) continue;
     if ( isalpha((int) token[0]) || token[0] == '#' )
       x += number_colors;  /* color argument found */
-    else {
+    else
       x++;   /* floating point argument */
-    }
   }
   error=MagickTrue;
   /* control points and color values */
@@ -1299,11 +1298,6 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         {
           /* _draw_info only setting */
           _draw_info->render= ArgBooleanNot;
-          break;
-        }
-      if (LocaleCompare("respect-parenthesis",option+1) == 0)
-        {
-          (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           break;
         }
       break;
@@ -4275,7 +4269,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 %
 % Example Usage...
 %
-%  CLISpecialOperator(cli_wand,"-read", "rose:");
+%  CLISpecialOperator(cli_wand,"-read","rose:");
 %
 % Or for handling command line arguments EG: +/-option ["arg1"]
 %
@@ -4309,17 +4303,19 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
     (void) SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
          _exception);
 
-  if (LocaleCompare("(",option) == 0)
-    {
+  if (LocaleCompare("respect-parenthesis",option+1) == 0) {
+      /* image-setting stack linkage */
+      (void) SetImageOption(cli_wand->wand.image_info,option+1,
+           *option == '-' ? "true" : (char *) NULL);
+      return;
+    }
+  if (LocaleCompare("(",option) == 0) {
       /* stack 'push' images */
       Stack
         *node;
 
       size_t
         size;
-
-      const char*
-        value;
 
       size=0;
       node=cli_wand->image_list_stack;
@@ -4337,14 +4333,13 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       cli_wand->image_list_stack = node;
 
       /* handle respect-parenthesis */
-      value=GetImageOption(cli_wand->wand.image_info,"respect-parenthesis");
-      if (value != (const char *) NULL)
+      if ( IsMagickTrue(GetImageOption(cli_wand->wand.image_info,
+               "respect-parenthesis")) != MagickFalse )
         option="{";
       else
         return;
     }
-  if (LocaleCompare("{",option) == 0)
-    {
+  if (LocaleCompare("{",option) == 0) {
       /* stack 'push' of image_info settings */
       Stack
         *node;
@@ -4378,14 +4373,10 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
 
       return;
     }
-  if (LocaleCompare(")",option) == 0)
-    {
+  if (LocaleCompare(")",option) == 0) {
       /* pop images from stack */
       Stack
         *node;
-
-      const char*
-        value;
 
       node = (void *)cli_wand->image_list_stack;
       if ( node == (Stack *)NULL)
@@ -4400,17 +4391,16 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       node = cli_wand->image_info_stack;
       if ( node != (Stack *)NULL)
         {
-          value=GetImageOption((ImageInfo *)node->data,"respect-parenthesis");
-          if (value != (const char *) NULL)
-            option="}";
+          if (IsMagickTrue(GetImageOption((ImageInfo *)node->data,
+                 "respect-parenthesis")) != MagickFalse )
+          { option="}"; fprintf(stderr, "close\n"); }
           else
             return;
         }
       else
         return;
     }
-  if (LocaleCompare("}",option) == 0)
-    {
+  if (LocaleCompare("}",option) == 0) {
       /* pop image_info settings from stack */
       Stack
         *node;
@@ -4430,8 +4420,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
 
       return;
     }
-  if (LocaleCompare("clone",option+1) == 0)
-    {
+  if (LocaleCompare("clone",option+1) == 0) {
       Image
         *new_images;
 
@@ -4451,8 +4440,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       return;
     }
   if ( ( LocaleCompare("read",option+1) == 0 ) ||
-       ( LocaleCompare("--",option) == 0 ) )
-    {
+       ( LocaleCompare("--",option) == 0 ) ) {
 #if !USE_WAND_METHODS
       Image *
         new_images;
@@ -4480,8 +4468,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
     return;
   if (LocaleCompare("sans2",option+1) == 0)
     return;
-  if (LocaleCompare("list",option+1) == 0)
-    {
+  if (LocaleCompare("list",option+1) == 0) {
       /* FUTURE: This should really be built into the MagickCore
          It does not actually require any wand or images at all!
        */
