@@ -15,8 +15,8 @@ require 't/subroutines.pl';
 chdir 't/wmf' || die 'Cd failed';
 
 testReadCompare('wizard.wmf', '../reference/wmf/wizard.miff',
-                q//, 0.000001, 0.004);
+                q//, 0.000001, 0.15);
 ++$test;
 testReadCompare('clock.wmf', '../reference/wmf/clock.miff',
-                q//, 0.000001, 0.004);
+                q//, 0.000001, 0.15);
 
