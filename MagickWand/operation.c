@@ -664,7 +664,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'b':
     {
@@ -747,7 +747,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           CLISettingOptionInfo(cli_wand,"undercolor",arg1);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'c':
     {
@@ -809,9 +809,13 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              "-layer" operators shoud use _image_info if defined otherwise
              they should use a per-image compose setting.
           */
+          parse = ParseCommandOption(MagickComposeOptions,MagickFalse,
+                          ArgOption("undefined"));
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedComposeOperator",
+                                      option,arg1);
+          _image_info->compose=(CompositeOperator) parse;
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
-          _image_info->compose=(CompositeOperator) ParseCommandOption(
-               MagickComposeOptions,MagickFalse,ArgOption("undefined"));
           break;
         }
       if (LocaleCompare("compress",option+1) == 0)
@@ -826,20 +830,29 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
 
              Note that "undefined" is a different setting to "none".
           */
+          parse = ParseCommandOption(MagickCompressOptions,MagickFalse,
+                     ArgOption("undefined"));
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedImageCompression",
+                                      option,arg1);
+          _image_info->compression=(CompressionType) parse;
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
-          _image_info->compression=(CompressionType) ParseCommandOption(
-                MagickCompressOptions,MagickFalse,ArgOption("undefined"));
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'd':
     {
       if (LocaleCompare("debug",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute. */
-          (void) SetLogEventMask(ArgOption("none"));
-          _image_info->debug=IsEventLogging(); /* extract logging*/
+          arg1=ArgOption("none");
+          parse = ParseCommandOption(MagickLogEventOptions,MagickFalse,arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedEventType",
+                                      option,arg1);
+          (void) SetLogEventMask(arg1);
+          _image_info->debug=IsEventLogging();   /* extract logging*/
           cli_wand->wand.debug=IsEventLogging();
           break;
         }
@@ -856,8 +869,8 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           /* DefineImageOption() equals SetImageOption() but with '=' */
           if (IfSetOption)
             (void) DefineImageOption(_image_info,arg1);
-          else
-            (void) DeleteImageOption(_image_info,arg1);
+          else if ( DeleteImageOption(_image_info,arg1) == MagickFalse )
+            CLIWandExceptArgBreak(OptionError,"NoSuchOption",option,arg1);
           break;
         }
       if (LocaleCompare("delay",option+1) == 0)
@@ -865,7 +878,10 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           /* Only used for new images via AcquireImage()
              FUTURE: Option should also be used for "-morph" (color morphing)
           */
-          (void) SetImageOption(_image_info,option+1,ArgOption("0"));
+          arg1=ArgOption("0");
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
       if (LocaleCompare("density",option+1) == 0)
@@ -875,6 +891,8 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
 
              SyncImageSettings() used to set per-image attribute.
           */
+          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           (void) CloneString(&_image_info->density,ArgOption(NULL));
           (void) CloneString(&_draw_info->density,_image_info->density);
@@ -885,6 +903,8 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           /* This is also a SimpleImageOperator! for 8->16 vaule trunc !!!!
              SyncImageSettings() used to set per-image attribute.
           */
+          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           _image_info->depth=IfSetOption?StringToUnsignedLong(arg1)
                                        :MAGICKCORE_QUANTUM_DEPTH;
           break;
@@ -892,10 +912,13 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("direction",option+1) == 0)
         {
           /* Image Option is only used to set _draw_info */
-          (void) SetImageOption(_image_info,option+1,ArgOption("undefined"));
-          _draw_info->direction=(DirectionType) ParseCommandOption(
-                         MagickDirectionOptions,MagickFalse,
-                         ArgOption("undefined"));
+          arg1=ArgOption("undefined");
+          parse = ParseCommandOption(MagickDirectionOptions,MagickFalse,arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedDirectionType",
+                                      option,arg1);
+          _draw_info->direction=(DirectionType) parse;
+          (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
       if (LocaleCompare("display",option+1) == 0)
@@ -907,6 +930,11 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("dispose",option+1) == 0)
         {
           /* only used in setting new images */
+          arg1=ArgOption("undefined");
+          parse = ParseCommandOption(MagickDisposeOptions,MagickFalse,arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedDisposeMethod",
+                                      option,arg1);
           (void) SetImageOption(_image_info,option+1,ArgOption("undefined"));
           break;
         }
@@ -924,7 +952,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
             _image_info->dither = _quantize_info->dither = MagickFalse;
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'e':
     {
@@ -947,7 +975,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) CloneString(&_image_info->extract,ArgOption(NULL));
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'f':
     {
@@ -1036,7 +1064,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) SetImageOption(_image_info,option+1,"0");
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'g':
     {
@@ -1057,7 +1085,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) SetImageOption(_image_info,option+1,ArgOption("0.0"));
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'i':
     {
@@ -1099,7 +1127,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           _draw_info->interword_spacing=StringToDouble(ArgOption("0"),(char **) NULL);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'k':
     {
@@ -1109,7 +1137,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           _draw_info->kerning=StringToDouble(ArgOption("0"),(char **) NULL);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'l':
     {
@@ -1131,7 +1159,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) SetImageOption(_image_info,option+1,ArgOption("0"));
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'm':
     {
@@ -1157,7 +1185,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           _image_info->monochrome= ArgBoolean;
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'o':
     {
@@ -1173,6 +1201,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
             MagickOrientationOptions,MagickFalse,ArgOption("undefined"));
           break;
         }
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'p':
     {
@@ -1245,7 +1274,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           break;
         }
       */
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'q':
     {
@@ -1281,7 +1310,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
             warning_handler=SetWarningHandler(warning_handler);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'r':
     {
@@ -1300,7 +1329,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           _draw_info->render= ArgBooleanNot;
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 's':
     {
@@ -1392,7 +1421,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           _image_info->synchronize = ArgBoolean;
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 't':
     {
@@ -1449,7 +1478,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
                  MagickFalse,ArgOption("undefined"));
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'u':
     {
@@ -1471,7 +1500,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
                 MagickResolutionOptions,MagickFalse,ArgOption("undefined"));
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'v':
     {
@@ -1501,7 +1530,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'w':
     {
@@ -1535,10 +1564,10 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) SetImageOption(_image_info,option+1,ArgOption("0.0"));
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     default:
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
   }
 
 #undef _image_info
@@ -1810,7 +1839,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             new_image->orientation=TopLeftOrientation;
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'b':
     {
@@ -1893,7 +1922,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             _exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'c':
     {
@@ -2058,11 +2087,16 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                     _exception);
           break;
         }
+#if 0
+      /* this is a stupid and pretty usless operation
+       * -level 10% produces much better and more controlled result
+       */
       if (LocaleCompare("contrast",option+1) == 0)
         {
           (void) ContrastImage(_image,normal_op,_exception);
           break;
         }
+#endif
       if (LocaleCompare("contrast-stretch",option+1) == 0)
         {
           double
@@ -2072,12 +2106,13 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           MagickStatusType
             flags;
 
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           black_point=geometry_info.rho;
           white_point=(flags & SigmaValue) != 0 ? geometry_info.sigma :
             black_point;
-          if ((flags & PercentValue) != 0)
-            {
+          if ((flags & PercentValue) != 0) {
               black_point*=(double) _image->columns*_image->rows/100.0;
               white_point*=(double) _image->columns*_image->rows/100.0;
             }
@@ -2094,7 +2129,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
 
           kernel_info=AcquireKernelInfo(arg1);
           if (kernel_info == (KernelInfo *) NULL)
-            break;
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           kernel_info->bias=_image->bias;
           new_image=ConvolveImage(_image,kernel_info,_exception);
           kernel_info=DestroyKernelInfo(kernel_info);
@@ -2103,16 +2138,20 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("crop",option+1) == 0)
         {
           /* WARNING: This can generate multiple images! */
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           new_image=CropImageToTiles(_image,arg1,_exception);
           break;
         }
       if (LocaleCompare("cycle",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) CycleColormapImage(_image,(ssize_t) StringToLong(arg1),
             _exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'd':
     {
@@ -2122,11 +2161,11 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             *passkey;
 
           passkey=FileToStringInfo(arg1,~0,_exception);
-          if (passkey != (StringInfo *) NULL)
-            {
-              (void) PasskeyDecipherImage(_image,passkey,_exception);
-              passkey=DestroyStringInfo(passkey);
-            }
+          if (passkey == (StringInfo *) NULL)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+
+          (void) PasskeyDecipherImage(_image,passkey,_exception);
+          passkey=DestroyStringInfo(passkey);
           break;
         }
       if (LocaleCompare("depth",option+1) == 0)
@@ -2147,8 +2186,11 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           double
             threshold;
 
-          if (IfNormalOp)
+          if (IfNormalOp) {
+            if (IsGeometry(arg1) == MagickFalse)
+              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
             threshold=StringToDoubleInterval(arg1,(double) QuantumRange+1.0);
+          }
           else
             threshold=40.0*QuantumRange/100.0;
           new_image=DeskewImage(_image,threshold,_exception);
@@ -2180,8 +2222,11 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           size_t
             number_arguments;
 
-          method=(DistortImageMethod) ParseCommandOption(MagickDistortOptions,
-            MagickFalse,arg1);
+          x = ParseCommandOption(MagickDistortOptions,MagickFalse,arg1);
+          if ( x < 0 )
+             CLIWandExceptArgBreak(OptionError,"UnrecognizedDistortMethod",
+                                      option,arg1);
+          method = (DistortImageMethod) x;
           if (method == ResizeDistortion)
             {
                double
@@ -2190,8 +2235,10 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                ** Convert that to an appropriate distortion argument array.
                ** FUTURE: make a separate special resize operator
                */
-               (void) ParseRegionGeometry(_image,arg2,&geometry,
-                 _exception);
+               if (IsGeometry(arg2) == MagickFalse)
+                 CLIWandExceptArgBreak(OptionError,"InvalidGeometry",
+                                           option,arg2);
+               (void) ParseRegionGeometry(_image,arg2,&geometry,_exception);
                resize_args[0]=(double) geometry.width;
                resize_args[1]=(double) geometry.height;
                new_image=DistortImage(_image,method,(size_t)2,
@@ -2199,8 +2246,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                break;
             }
           /* handle percent arguments */
-          args=InterpretImageProperties(_image_info,_image,arg2,
-            _exception);
+          args=InterpretImageProperties(_image_info,_image,arg2,_exception);
           if (args == (char *) NULL)
             break;
           /* convert arguments into an array of doubles
@@ -2219,10 +2265,10 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           arguments=(double *) AcquireQuantumMemory(number_arguments,
             sizeof(*arguments));
           if (arguments == (double *) NULL)
-            ThrowWandFatalException(ResourceLimitFatalError,
-              "MemoryAllocationFailed",_image->filename);
+            CLIWandExceptionBreak(ResourceLimitFatalError,
+                                "MemoryAllocationFailed",option);
           (void) ResetMagickMemory(arguments,0,number_arguments*
-            sizeof(*arguments));
+                        sizeof(*arguments));
           p=(char *) args;
           for (x=0; (x < (ssize_t) number_arguments) && (*p != '\0'); x++)
           {
@@ -2244,7 +2290,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) CloneString(&_draw_info->primitive,(char *)NULL);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'e':
     {
@@ -2313,7 +2359,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           new_image=ExtentImage(_image,&geometry,_exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'f':
     {
@@ -2441,7 +2487,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           parameters=(double *) RelinquishMagickMemory(parameters);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'g':
     {
@@ -2486,7 +2532,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
               _image->filter,_image->blur,_exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'h':
     {
@@ -2495,7 +2541,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) SetImageArtifact(_image,option+1,arg1);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'i':
     {
@@ -2534,7 +2580,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                geometry.height,_image->interpolate,_exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'l':
     {
@@ -2659,7 +2705,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) SetImageArtifact(_image,option+1,arg1);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'm':
     {
@@ -2780,7 +2826,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
               _exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'n':
     {
@@ -2828,7 +2874,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) NormalizeImage(_image,_exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'o':
     {
@@ -2847,7 +2893,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) OrderedPosterizeImage(_image,arg1,_exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'p':
     {
@@ -2967,7 +3013,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           profile_image=DestroyImage(profile_image);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'r':
     {
@@ -3048,7 +3094,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           new_image=RotateImage(_image,geometry_info.rho,_exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 's':
     {
@@ -3270,7 +3316,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             _image->interpolate,_exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 't':
     {
@@ -3336,7 +3382,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) SetImageType(_image,_image_info->type,_exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'u':
     {
@@ -3371,7 +3417,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma,geometry_info.xi,geometry_info.psi,_exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'v':
     {
@@ -3399,7 +3445,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             (ssize_t) ceil(geometry_info.psi-0.5),_exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'w':
     {
@@ -3417,10 +3463,10 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) WhiteThresholdImage(_image,arg1,_exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     default:
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
   }
   /*
      Replace current image with any image that was generated
@@ -3571,7 +3617,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           CLIListOperatorImages(cli_wand,"-evaluate-sequence","Mean",NULL);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'c':
     {
@@ -3672,7 +3718,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           source_image=DestroyImage(source_image);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'd':
     {
@@ -3700,11 +3746,14 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
               size_t
                 number_duplicates;
 
+              if (IsGeometry(arg1) == MagickFalse)
+                CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,
+                      arg1);
               number_duplicates=(size_t) StringToLong(arg1);
               p=strchr(arg1,',');
               if (p == (const char *) NULL)
-                new_images=DuplicateImages(_images,number_duplicates,
-                  "-1",_exception);
+                new_images=DuplicateImages(_images,number_duplicates,"-1",
+                  _exception);
               else
                 new_images=DuplicateImages(_images,number_duplicates,p,
                   _exception);
@@ -3715,7 +3764,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           new_images=(Image *)NULL;
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'e':
     {
@@ -3729,7 +3778,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           new_images=EvaluateImages(_images,method,_exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'f':
     {
@@ -3749,7 +3798,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           new_images=FxImage(_images,arg1,_exception);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'h':
     {
@@ -3769,7 +3818,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           hald_image=DestroyImage(hald_image);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'i':
     {
@@ -3822,7 +3871,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           _images=GetFirstImageInList(index_image);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'l':
     {
@@ -3984,7 +4033,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           (void) SetMagickResourceLimit(type,limit);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'm':
     {
@@ -4013,7 +4062,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           CLIListOperatorImages(cli_wand,"-layer",option+1,NULL);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'p':
     {
@@ -4097,7 +4146,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           arguments=(char **) RelinquishMagickMemory(arguments);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'r':
     {
@@ -4112,7 +4161,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           ReverseImageList(&_images);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 's':
     {
@@ -4175,7 +4224,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           _images=GetFirstImageInList(q);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'w':
     {
@@ -4202,10 +4251,10 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
             write_images=DestroyImageList(write_images);
           break;
         }
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     default:
-      break;
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
   }
   if (new_images == (Image *) NULL)
     return;
@@ -4537,8 +4586,8 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
 #endif
 #if 0
   if ( ( process_flags & ProcessUnknownOptionError ) != 0 )
-    MagickExceptionReturn(OptionError,"InvalidUseOfOption",option);
 #endif
+    CLIWandException(OptionError,"UnrecognizedOption",option);
 
 #undef _exception
 }
