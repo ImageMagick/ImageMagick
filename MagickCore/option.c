@@ -293,10 +293,10 @@ static const OptionInfo
     { "-composite", 0L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+compress", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-compress", 1L, ImageInfoOptionFlag, MagickFalse },
-    { "+concurrent", 0L, GenesisOptionFlag, MagickTrue },
-    { "-concurrent", 0L, GenesisOptionFlag, MagickTrue },
-    { "+contrast", 0L, SimpleOperatorOptionFlag, MagickFalse },
-    { "-contrast", 0L, SimpleOperatorOptionFlag, MagickFalse },
+    { "+concurrent", 0L, GenesisOptionFlag, MagickFalse },
+    { "-concurrent", 0L, GenesisOptionFlag, MagickFalse },
+    { "+contrast", 0L, DeprecateOptionFlag, MagickTrue },
+    { "-contrast", 0L, DeprecateOptionFlag, MagickTrue },
     { "+contrast-stretch", 1L, DeprecateOptionFlag, MagickTrue },
     { "-contrast-stretch", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+convolve", 1L, DeprecateOptionFlag, MagickTrue },
@@ -730,8 +730,8 @@ static const OptionInfo
     { "-view", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+vignette", 1L, DeprecateOptionFlag, MagickTrue },
     { "-vignette", 1L, SimpleOperatorOptionFlag, MagickFalse },
-    { "+virtual-pixel", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
-    { "-virtual-pixel", 1L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
+    { "+virtual-pixel", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "-virtual-pixel", 1L, ImageInfoOptionFlag, MagickFalse },
     { "+visual", 0L, NonMagickOptionFlag, MagickFalse },
     { "-visual", 1L, NonMagickOptionFlag, MagickFalse },
     { "+watermark", 0L, NonMagickOptionFlag, MagickFalse },
@@ -924,7 +924,6 @@ static const OptionInfo
   },
   DistortOptions[] =
   {
-    { "Undefined", UndefinedDistortion, UndefinedOptionFlag, MagickTrue },
     { "Affine", AffineDistortion, UndefinedOptionFlag, MagickFalse },
     { "AffineProjection", AffineProjectionDistortion, UndefinedOptionFlag, MagickFalse },
     { "ScaleRotateTranslate", ScaleRotateTranslateDistortion, UndefinedOptionFlag, MagickFalse },
@@ -1787,6 +1786,8 @@ MagickExport MagickBooleanType DefineImageOption(ImageInfo *image_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DeleteImageOption() deletes an key from the image map.
+%
+%  Returns MagickTrue is the option is found and deleted from the Options.
 %
 %  The format of the DeleteImageOption method is:
 %
