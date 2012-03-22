@@ -608,6 +608,9 @@ WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
 WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
      const char *option,const char *arg1)
 {
+  ssize_t
+    parse;     /* option argument parsing (string to value table lookup) */
+
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
   assert(cli_wand->wand.signature == WandSignature);
@@ -672,9 +675,12 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              SyncImageSettings() used to set per-image attribute.
 
              FUTURE: if _image_info->background_color is not set then
-             we should fall back to image
-             Note that +background, means fall-back to image background
-             and only if not set fall back to BackgroundColor const.
+             we should fall back to per-image background_color
+
+             At this time -background will 'wipe out' the per-image
+             background color!
+
+             Better error handling of QueryColorCompliance() needed.
           */
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           (void) QueryColorCompliance(ArgOption(BackgroundColor),AllCompliance,
@@ -717,6 +723,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         {
           /* FUTURE: both _image_info attribute & ImageOption in use!
              SyncImageSettings() used to set per-image attribute.
+             Better error checking of QueryColorCompliance().
           */
           if (IfSetOption)
             {
@@ -765,22 +772,13 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("channel",option+1) == 0)
         {
-          /* FUTURE:  -channel mask {vaules}
-             This is also applied to images in SimpleImageOperator!!!
-             Move it to SyncImageSettings() - or alternative
-          */
-          ssize_t
-            channel = DefaultChannels;
-          if ( IfSetOption ) {
-            channel=ParseChannelOption(arg1);
-            if (channel < 0)
-              CLIWandExceptArgBreak(OptionError,"UnrecognizedChannelType",
-                   option,arg1);
-            (void) SetImageOption(_image_info,option+1,arg1);
-          } else {
-            (void) SetImageOption(_image_info,option+1,"default");
-          }
-          _image_info->channel=(ChannelType) channel;
+          arg1=ArgOption("default");
+          parse=ParseChannelOption(arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedChannelType",
+                 option,arg1);
+          _image_info->channel=(ChannelType) parse;
+          (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
       if (LocaleCompare("colorspace",option+1) == 0)
@@ -789,13 +787,12 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              But also used as a SimpleImageOperator
              Undefined colorspace means don't modify images on
              read or as a operation */
-          ssize_t
-            colorspace = ParseCommandOption(MagickColorspaceOptions,
-                 MagickFalse,ArgOption("undefined"));
-          if (colorspace < 0)
+          parse = ParseCommandOption(MagickColorspaceOptions,MagickFalse,
+                        ArgOption("undefined"));
+          if (parse < 0)
             CLIWandExceptArgBreak(OptionError,"UnrecognizedColorspace",
                                     option,arg1);
-          _image_info->colorspace=(ColorspaceType) colorspace;
+          _image_info->colorspace=(ColorspaceType) parse;
           break;
         }
       if (LocaleCompare("comment",option+1) == 0)

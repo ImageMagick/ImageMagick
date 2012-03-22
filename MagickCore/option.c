@@ -119,25 +119,38 @@ static const OptionInfo
   ChannelOptions[] =
   {
     { "Undefined", UndefinedChannel, UndefinedOptionFlag, MagickTrue },
+    /* special */
     { "All", CompositeChannels, UndefinedOptionFlag, MagickFalse },
+    { "Sync", SyncChannels, UndefinedOptionFlag, MagickFalse },
+    { "Default", DefaultChannels, UndefinedOptionFlag, MagickFalse },
+    /* individual channel */
+    { "A", AlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Alpha", AlphaChannel, UndefinedOptionFlag, MagickFalse },
     { "Black", BlackChannel, UndefinedOptionFlag, MagickFalse },
+    { "B", BlueChannel, UndefinedOptionFlag, MagickFalse },
     { "Blue", BlueChannel, UndefinedOptionFlag, MagickFalse },
+    { "C", CyanChannel, UndefinedOptionFlag, MagickFalse },
     { "Cyan", CyanChannel, UndefinedOptionFlag, MagickFalse },
-    { "Default", DefaultChannels, UndefinedOptionFlag, MagickFalse },
     { "Gray", GrayChannel, UndefinedOptionFlag, MagickFalse },
+    { "G", GreenChannel, UndefinedOptionFlag, MagickFalse },
     { "Green", GreenChannel, UndefinedOptionFlag, MagickFalse },
+    { "H", RedChannel, UndefinedOptionFlag, MagickFalse },
     { "Hue", RedChannel, UndefinedOptionFlag, MagickFalse },
+    { "K", BlackChannel, UndefinedOptionFlag, MagickFalse },
+    { "L", BlueChannel, UndefinedOptionFlag, MagickFalse },
     { "Lightness", BlueChannel, UndefinedOptionFlag, MagickFalse },
     { "Luminance", BlueChannel, UndefinedOptionFlag, MagickFalse },
     { "Luminosity", BlueChannel, DeprecateOptionFlag, MagickTrue },
+    { "M", MagentaChannel, UndefinedOptionFlag, MagickFalse },
     { "Magenta", MagentaChannel, UndefinedOptionFlag, MagickFalse },
-    { "Matte", AlphaChannel, UndefinedOptionFlag, MagickFalse },
-    { "Opacity", AlphaChannel, UndefinedOptionFlag, MagickFalse },
+    { "Matte", AlphaChannel, DeprecateOptionFlag, MagickTrue },/*depreciate*/
+    { "Opacity", AlphaChannel, DeprecateOptionFlag, MagickTrue },/*depreciate*/
+    { "R", RedChannel, UndefinedOptionFlag, MagickFalse },
     { "Red", RedChannel, UndefinedOptionFlag, MagickFalse },
+    { "S", GreenChannel, UndefinedOptionFlag, MagickFalse },
     { "Saturation", GreenChannel, UndefinedOptionFlag, MagickFalse },
+    { "Y", YellowChannel, UndefinedOptionFlag, MagickFalse },
     { "Yellow", YellowChannel, UndefinedOptionFlag, MagickFalse },
-    { "Sync", SyncChannels, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedChannel, UndefinedOptionFlag, MagickFalse }
   },
   ClassOptions[] =
@@ -1361,6 +1374,7 @@ static const OptionInfo
     { "A", AlphaPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Alpha", AlphaPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "B", BluePixelChannel, UndefinedOptionFlag, MagickFalse },
+    { "Bk", BlackPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Black", BlackPixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Blue", BluePixelChannel, UndefinedOptionFlag, MagickFalse },
     { "Cb", CbPixelChannel, UndefinedOptionFlag, MagickFalse },
@@ -2354,7 +2368,7 @@ MagickExport ssize_t ParseChannelOption(const char *channels)
       case 'o':
       case 'O':
       {
-        channel|=AlphaChannel;
+        channel|=AlphaChannel; /* depreciate */
         break;
       }
       case 'R':

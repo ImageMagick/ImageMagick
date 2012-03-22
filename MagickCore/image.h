@@ -201,7 +201,7 @@ struct _Image
     *geometry;
 
   ssize_t
-    offset;
+    offset;         /* ??? */
 
   PointInfo
     resolution;     /* image resolution/density */
@@ -241,11 +241,11 @@ struct _Image
     ticks_per_second;  /* units for delay time, default 100 for GIF */
 
   size_t
-    iterations,
+    iterations,        /* ??? */
     total_colors;
 
   ssize_t
-    start_loop;
+    start_loop;        /* ??? */
 
   PixelInterpolateMethod
     interpolate;       /* Interpolation of color for between pixel lookups */
@@ -270,7 +270,7 @@ struct _Image
     extent;            /* Size of image read from disk */
 
   MagickBooleanType
-    ping;
+    ping;              /* no image data read, just attributes */
 
   MagickBooleanType
     mask;
@@ -313,7 +313,7 @@ struct _Image
     magick[MaxTextExtent];          /* images file format (file magic) */
 
   size_t
-    magick_columns,
+    magick_columns,     /* size of image when read/created */
     magick_rows;
 
   BlobInfo
