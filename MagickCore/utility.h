@@ -47,7 +47,6 @@ extern MagickExport MagickBooleanType
   AcquireUniqueSymbolicLink(const char *,char *),
   ExpandFilenames(int *,char ***),
   GetPathAttributes(const char *,void *),
-  IsMagickTrue(const char *),
   IsPathAccessible(const char *);
 
 extern MagickExport size_t
