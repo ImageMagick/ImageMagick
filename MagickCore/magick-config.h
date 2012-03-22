@@ -12,9 +12,7 @@
 /* #undef AUTOTRACE_DELEGATE */
 
 /* Define if coders and filters are to be built as modules. */
-#ifndef MAGICKCORE_BUILD_MODULES
-#define MAGICKCORE_BUILD_MODULES 1
-#endif
+/* #undef BUILD_MODULES */
 
 /* Define if you have the bzip2 library */
 #ifndef MAGICKCORE_BZLIB_DELEGATE
@@ -97,9 +95,7 @@
 #endif
 
 /* Define if you have FlashPIX library */
-#ifndef MAGICKCORE_FPX_DELEGATE
-#define MAGICKCORE_FPX_DELEGATE 1
-#endif
+/* #undef FPX_DELEGATE */
 
 /* Define if you have FreeType (TrueType font) library */
 #ifndef MAGICKCORE_FREETYPE_DELEGATE
@@ -223,9 +219,7 @@
 #endif
 
 /* Define to 1 if you have the <CL/cl.h> header file. */
-#ifndef MAGICKCORE_HAVE_CL_CL_H
-#define MAGICKCORE_HAVE_CL_CL_H 1
-#endif
+/* #undef HAVE_CL_CL_H */
 
 /* Define to 1 if you have the <complex.h> header file. */
 #ifndef MAGICKCORE_HAVE_COMPLEX_H
@@ -448,15 +442,15 @@
 #endif
 
 /* Define if you have the <lcms2.h> header file. */
-/* #undef HAVE_LCMS2_H */
+#ifndef MAGICKCORE_HAVE_LCMS2_H
+#define MAGICKCORE_HAVE_LCMS2_H 1
+#endif
 
 /* Define if you have the <lcms2/lcms2.h> header file. */
 /* #undef HAVE_LCMS2_LCMS2_H */
 
 /* Define if you have the <lcms.h> header file. */
-#ifndef MAGICKCORE_HAVE_LCMS_H
-#define MAGICKCORE_HAVE_LCMS_H 1
-#endif
+/* #undef HAVE_LCMS_H */
 
 /* Define if you have the <lcms/lcms.h> header file. */
 /* #undef HAVE_LCMS_LCMS_H */
@@ -1194,9 +1188,7 @@
 #endif
 
 /* Define if you have JBIG library */
-#ifndef MAGICKCORE_JBIG_DELEGATE
-#define MAGICKCORE_JBIG_DELEGATE 1
-#endif
+/* #undef JBIG_DELEGATE */
 
 /* Define if you have JPEG version 2 "Jasper" library */
 #ifndef MAGICKCORE_JP2_DELEGATE
@@ -1225,9 +1217,7 @@
 #endif
 
 /* Define if you have LQR library */
-#ifndef MAGICKCORE_LQR_DELEGATE
-#define MAGICKCORE_LQR_DELEGATE 1
-#endif
+/* #undef LQR_DELEGATE */
 
 /* Define if using libltdl to support dynamically loadable modules */
 #ifndef MAGICKCORE_LTDL_DELEGATE
@@ -1239,7 +1229,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/R/lib:/usr/lib64/atlas:/usr/lib64/freetype-freeworld:/opt/modules/pkg/intel/f77/10.0.025/lib:/opt/intel/lib/intel64:/usr/lib/llvm:/usr/lib64/llvm:/usr/local/lib:/usr/lib64/mysql:/usr/lib64/nvidia:/usr/lib64/openmotif:/usr/lib64/qt-3.3/lib:/usr/lib64/tracker-0.12:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-2"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib/llvm:/usr/lib64/llvm:/usr/local/lib:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.5/tclx8.4:/usr/lib64/tcl8.5:/usr/lib64/tracker-0.12:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-2"
 #endif
 
 /* The archive extension */
@@ -1293,9 +1283,7 @@
 /* #undef NO_MINUS_C_MINUS_O */
 
 /* Define if you have OPENEXR library */
-#ifndef MAGICKCORE_OPENEXR_DELEGATE
-#define MAGICKCORE_OPENEXR_DELEGATE 1
-#endif
+/* #undef OPENEXR_DELEGATE */
 
 /* Name of package */
 #ifndef MAGICKCORE_PACKAGE
@@ -1523,9 +1511,7 @@
 #endif
 
 /* Define if you have WEBP library */
-#ifndef MAGICKCORE_WEBP_DELEGATE
-#define MAGICKCORE_WEBP_DELEGATE 1
-#endif
+/* #undef WEBP_DELEGATE */
 
 /* Define to use the Windows GDI32 library */
 /* #undef WINGDI32_DELEGATE */
@@ -1534,9 +1520,7 @@
 /* #undef WITH_DMALLOC */
 
 /* Define if you have wmflite library */
-#ifndef MAGICKCORE_WMFLITE_DELEGATE
-#define MAGICKCORE_WMFLITE_DELEGATE 1
-#endif
+/* #undef WMFLITE_DELEGATE */
 
 /* Define if you have wmf library */
 /* #undef WMF_DELEGATE */
@@ -1595,9 +1579,7 @@
 /* #undef _MINIX */
 
 /* Define this for the OpenCL Accelerator */
-#ifndef MAGICKCORE__OPENCL
-#define MAGICKCORE__OPENCL 1
-#endif
+/* #undef _OPENCL */
 
 /* Define to 2 if the system does not provide POSIX.1 features except with
    this defined. */

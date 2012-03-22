@@ -34,7 +34,6 @@ UTILITIES_PGMS = \
 	utilities/compare \
 	utilities/composite \
 	utilities/conjure \
-	utilities/convert \
 	utilities/display \
 	utilities/identify \
 	utilities/import \
