@@ -580,8 +580,14 @@
     </module>
     <option>
       <error>
+        <message name="ClutImageRequired">
+          color lookup table image requise
+        </message>
         <message name="CompositeImageRequired">
           image composite requise
+        </message>
+        <message name="CurlyBrasesNestedTooDeeply">
+          trop d'imbrication de curly braces
         </message>
         <message name="DepreciatedOption">
           option est obsolète

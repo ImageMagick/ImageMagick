@@ -4335,7 +4335,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       /* handle respect-parenthesis */
       if ( IsMagickTrue(GetImageOption(cli_wand->wand.image_info,
                "respect-parenthesis")) != MagickFalse )
-        option="{";
+        option="{"; /* push image settings too */
       else
         return;
     }
@@ -4352,7 +4352,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       for ( ; node != (Stack *)NULL; node=node->next)
         size++;
       if ( size >= MAX_STACK_DEPTH )
-        CLIWandExceptionReturn(OptionError,"ParenthesisNestedTooDeeply",option);
+        CLIWandExceptionReturn(OptionError,"CurlyBracesNestedTooDeeply",option);
       node=(Stack *) AcquireMagickMemory(sizeof(*node));
       if (node == (Stack *) NULL)
         CLIWandExceptionReturn(ResourceLimitFatalError,
@@ -4387,13 +4387,13 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       cli_wand->wand.images= (Image *)node->data;
       node = (Stack *)RelinquishMagickMemory(node);
 
-      /* handle respect-parenthesis - of the previous 'push' settings */
+      /* handle respect-parenthesis - of the previous 'pushed' settings */
       node = cli_wand->image_info_stack;
       if ( node != (Stack *)NULL)
         {
           if (IsMagickTrue(GetImageOption((ImageInfo *)node->data,
                  "respect-parenthesis")) != MagickFalse )
-          { option="}"; fprintf(stderr, "close\n"); }
+            option="}"; /* pop image settings too */
           else
             return;
         }
@@ -4407,7 +4407,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
 
       node = (void *)cli_wand->image_info_stack;
       if ( node == (Stack *)NULL)
-        CLIWandExceptionReturn(OptionError,"UnbalancedParenthesis",option);
+        CLIWandExceptionReturn(OptionError,"UnbalancedCurlyBraces",option);
       cli_wand->image_info_stack = node->next;
 
       (void) DestroyImageInfo(cli_wand->wand.image_info);
