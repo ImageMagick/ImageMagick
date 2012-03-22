@@ -47,11 +47,14 @@ typedef enum
   AllChannels = 0x7ffffff,
   /*
     Special purpose channel types.
+    FUTURE: are these needed any more - they are more like hacks
+    SyncChannels for example is NOT a real channel but a 'flag'
+    It really says -- "User has not defined channels"
   */
   TrueAlphaChannel = 0x0100, /* extract actual alpha channel from opacity */
   RGBChannels = 0x0200,      /* set alpha from grayscale mask in RGB */
   GrayChannels = 0x0400,
-  SyncChannels = 0x1000,     /* channels should be modified equally */
+  SyncChannels = 0x20000,    /* channels modified as a single unit */
   DefaultChannels = ((AllChannels | SyncChannels) &~ AlphaChannel)
 } ChannelType;  /* must correspond to PixelChannel */
 
@@ -84,9 +87,9 @@ typedef enum
   BlackPixelChannel = 3,
   AlphaPixelChannel = 4,
   IndexPixelChannel = 5,
-  MaskPixelChannel = 6,
-  MetaPixelChannel = 7,
-  IntensityPixelChannel = MaxPixelChannels,
+  MaskPixelChannel = 6,                 /* Image Write Mask */
+  MetaPixelChannel = 7,                 /* ??? */
+  IntensityPixelChannel = MaxPixelChannels,  /* what are these ??? */
   CompositePixelChannel = MaxPixelChannels,
   SyncPixelChannel = MaxPixelChannels+1
 } PixelChannel;  /* must correspond to ChannelType */
