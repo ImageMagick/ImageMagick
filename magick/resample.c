@@ -61,6 +61,7 @@
 #include "magick/resize-private.h"
 #include "magick/transform.h"
 #include "magick/signature-private.h"
+#include "magick/token.h"
 #include "magick/utility.h"
 /*
   EWA Resampling Options

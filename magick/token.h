@@ -34,7 +34,8 @@ extern MagickExport int
 
 extern MagickExport MagickBooleanType
   GlobExpression(const char *,const char *,const MagickBooleanType),
-  IsGlob(const char *);
+  IsGlob(const char *),
+  IsMagickTrue(const char *);
 
 extern MagickExport TokenInfo
   *AcquireTokenInfo(void),

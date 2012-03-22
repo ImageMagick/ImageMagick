@@ -50,7 +50,6 @@ extern MagickExport MagickBooleanType
   ExpandFilenames(int *,char ***),
   GetPathAttributes(const char *,void *),
   GetExecutionPath(char *,const size_t),
-  IsMagickTrue(const char *),
   IsPathAccessible(const char *);
 
 extern MagickExport size_t
