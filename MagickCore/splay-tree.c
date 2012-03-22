@@ -581,7 +581,7 @@ MagickExport MagickBooleanType DeleteNodeByValueFromSplayTree(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DeleteNodeFromSplayTree() deletes a node from the splay-tree.  Returns
+%  DeleteNodeFromSplayTree() deletes a node from the splay-tree.  It returns
 %  MagickTrue if the option is found and successfully deleted from the
 %  splay-tree.
 %
