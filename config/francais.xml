@@ -651,10 +651,10 @@
           pas de chemin de coupe défini
         </message>
         <message name="NoImagesDefined">
-          pas d'images définies
+          pas d'images définies pour un fonctionnement
         </message>
         <message name="NoImagesForFinalWrite">
-          pas d'images for final write
+          pas d'images pour écriture finales
         </message>
         <message name="NoImageVectorGraphics">
           pas de graphiques vectoriels

@@ -660,10 +660,10 @@
           no clip path defined
         </message>
         <message name="NoImagesDefined">
-          no images defined
+          no images defined for operation
         </message>
         <message name="NoImagesForFinalWrite">
-          pas d'images pour écriture finales
+          no images for final write
         </message>
         <message name="NoImageVectorGraphics">
           no image vector graphics
