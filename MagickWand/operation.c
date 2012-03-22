@@ -1912,15 +1912,6 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             _exception);
           break;
         }
-      if (LocaleCompare("channel",option+1) == 0)
-        {
-          /* The "channel" setting has already been set
-             FUTURE: This probably should be part of SyncImageSettings().
-             How is it applied to new images?
-          SetPixelChannelMapMask(_image,_image_info->channel);
-          */
-          break;
-        }
       if (LocaleCompare("charcoal",option+1) == 0)
         {
           if (IsGeometry(arg1) == MagickFalse)
