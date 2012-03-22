@@ -1774,7 +1774,6 @@ ltdl_shl_load_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @LEGACY_SUPPORT_FALSE@	utilities/compare$(EXEEXT) \
 @LEGACY_SUPPORT_FALSE@	utilities/composite$(EXEEXT) \
 @LEGACY_SUPPORT_FALSE@	utilities/conjure$(EXEEXT) \
-@LEGACY_SUPPORT_FALSE@	utilities/convert$(EXEEXT) \
 @LEGACY_SUPPORT_FALSE@	utilities/display$(EXEEXT) \
 @LEGACY_SUPPORT_FALSE@	utilities/identify$(EXEEXT) \
 @LEGACY_SUPPORT_FALSE@	utilities/import$(EXEEXT) \
@@ -4848,7 +4847,6 @@ filters_analyze_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 @LEGACY_SUPPORT_FALSE@	utilities/compare \
 @LEGACY_SUPPORT_FALSE@	utilities/composite \
 @LEGACY_SUPPORT_FALSE@	utilities/conjure \
-@LEGACY_SUPPORT_FALSE@	utilities/convert \
 @LEGACY_SUPPORT_FALSE@	utilities/display \
 @LEGACY_SUPPORT_FALSE@	utilities/identify \
 @LEGACY_SUPPORT_FALSE@	utilities/import \
