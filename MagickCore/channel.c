@@ -199,6 +199,9 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
   ChannelFx
     channel_op;
 
+  ChannelType
+    channel_mask;
+
   char
     token[MaxTextExtent];
 
@@ -239,6 +242,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
   if (expression == (const char *) NULL)
     return(destination_image);
   destination_channel=RedPixelChannel;
+  channel_mask=UndefinedChannel;
   pixel=0.0;
   p=(char *) expression;
   GetMagickToken(p,&p,token);
@@ -269,6 +273,9 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         Image
           *canvas;
 
+        SetPixelChannelMapMask(destination_image,channel_mask);
+        if ((channel_op == ExtractChannelOp) && (destination_channel == 1))
+          (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
         status=SetImageStorageClass(destination_image,DirectClass,exception);
         if (status == MagickFalse)
           {
@@ -288,6 +295,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         GetMagickToken(p,&p,token);
         channels=0;
         destination_channel=RedPixelChannel;
+        channel_mask=UndefinedChannel;
       }
     i=ParsePixelChannelOption(token);
     if (i < 0)
@@ -337,8 +345,9 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             return(destination_image);
           }
         destination_channel=(PixelChannel) i;
+        channel_mask|=ParseChannelOption(token);
         if (LocaleCompare(token,"gray") == 0)
-          (void) SetImageAlpha(destination_image,GrayColorspace,exception);
+          (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
         if ((LocaleCompare(token,"black") == 0) ||
             (LocaleCompare(token,"c") == 0) ||
             (LocaleCompare(token,"cyan") == 0) ||
@@ -360,11 +369,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         GetMagickToken(p,&p,token);
         break;
       }
-      case ExtractChannelOp:
-      {
-        destination_channel++;
+      default:
         break;
-      }
     }
     status=ChannelImage(destination_image,destination_channel,channel_op,
       source_image,source_channel,ClampToQuantum(pixel),exception);
@@ -385,11 +391,25 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
           }
         channels++;
       }
+    switch (channel_op)
+    {
+      case ExtractChannelOp:
+      {
+        channel_mask|=(1 << destination_channel);
+        destination_channel++;
+        break;
+      }
+      default:
+        break;
+    }
     status=SetImageProgress(source_image,ChannelFxImageTag,p-expression,
       strlen(expression));
     if (status == MagickFalse)
       break;
   }
+  SetPixelChannelMapMask(destination_image,channel_mask);
+  if ((channel_op == ExtractChannelOp) && (destination_channel == 1))
+    (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
   status=SetImageStorageClass(destination_image,DirectClass,exception);
   if (status == MagickFalse)
     {
