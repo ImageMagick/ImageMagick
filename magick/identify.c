@@ -91,6 +91,7 @@
 #include "magick/string_.h"
 #include "magick/string-private.h"
 #include "magick/timer.h"
+#include "magick/token.h"
 #include "magick/utility.h"
 #include "magick/version.h"
 #if defined(MAGICKCORE_LCMS_DELEGATE)

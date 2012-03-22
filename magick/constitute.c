@@ -70,6 +70,7 @@
 #include "magick/string_.h"
 #include "magick/string-private.h"
 #include "magick/timer.h"
+#include "magick/token.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
 

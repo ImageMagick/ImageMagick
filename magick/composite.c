@@ -70,6 +70,7 @@
 #include "magick/resource_.h"
 #include "magick/string_.h"
 #include "magick/thread-private.h"
+#include "magick/token.h"
 #include "magick/utility.h"
 #include "magick/version.h"
 
