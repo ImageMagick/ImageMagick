@@ -2087,16 +2087,12 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                     _exception);
           break;
         }
-#if 0
-      /* this is a stupid and pretty usless operation
-       * -level 10% produces much better and more controlled result
-       */
       if (LocaleCompare("contrast",option+1) == 0)
         {
+          /* DEPRECIATED: The -/+level provides far more controlled form */
           (void) ContrastImage(_image,normal_op,_exception);
           break;
         }
-#endif
       if (LocaleCompare("contrast-stretch",option+1) == 0)
         {
           double
