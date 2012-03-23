@@ -61,6 +61,7 @@
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
+#include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #if defined(MAGICKCORE_PANGOFT2_DELEGATE)
 #include <pango/pango.h>
