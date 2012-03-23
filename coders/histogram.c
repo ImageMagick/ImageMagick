@@ -64,6 +64,7 @@
 #include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
+#include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 
 /*
