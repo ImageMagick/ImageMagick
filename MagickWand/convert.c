@@ -1836,15 +1836,6 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
-        if (LocaleCompare("liquid-rescale",option+1) == 0)
-          {
-            i++;
-            if (i == (ssize_t) (argc-1))
-              ThrowConvertException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowConvertInvalidArgumentException(option,argv[i]);
-            break;
-          }
         if (LocaleCompare("limit",option+1) == 0)
           {
             char
@@ -1876,6 +1867,15 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("linear-stretch",option+1) == 0)
+          {
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("liquid-rescale",option+1) == 0)
           {
             i++;
             if (i == (ssize_t) (argc-1))
