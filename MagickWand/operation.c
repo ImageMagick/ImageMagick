@@ -965,9 +965,13 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("endian",option+1) == 0)
         {
           /* Both _image_info attr and ImageInfo */
-          (void) SetImageOption(_image_info,option+1,ArgOption("undefined"));
-          _image_info->endian=(EndianType) ParseCommandOption(
-              MagickEndianOptions,MagickFalse,ArgOption("undefined"));
+          arg1 = ArgOption("undefined");
+          parse = ParseCommandOption(MagickEndianOptions,MagickFalse,arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedEndianType",
+                                      option,arg1);
+          _image_info->endian=(EndianType) arg1;
+          (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
       if (LocaleCompare("extract",option+1) == 0)
@@ -991,9 +995,6 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              That way it does not effect other operations that directly using
              the fill color and, can be retored using "+tile".
           */
-          const char
-            *value;
-
           MagickBooleanType
             status;
 
@@ -1003,18 +1004,18 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           PixelInfo
             color;
 
-          value = ArgOption("none");
-          (void) SetImageOption(_image_info,option+1,value);
+          arg1 = ArgOption("none");  /* +fill turns it off! */
+          (void) SetImageOption(_image_info,option+1,arg1);
           if (_draw_info->fill_pattern != (Image *) NULL)
             _draw_info->fill_pattern=DestroyImage(_draw_info->fill_pattern);
 
           /* is it a color or a image? -- ignore exceptions */
           sans=AcquireExceptionInfo();
-          status=QueryColorCompliance(value,AllCompliance,&color,sans);
+          status=QueryColorCompliance(arg1,AllCompliance,&color,sans);
           sans=DestroyExceptionInfo(sans);
 
           if (status == MagickFalse)
-            _draw_info->fill_pattern=GetImageCache(_image_info,value,_exception);
+            _draw_info->fill_pattern=GetImageCache(_image_info,arg1,_exception);
           else
             _draw_info->fill=color;
           break;
@@ -1022,7 +1023,12 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("filter",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute. */
-          (void) SetImageOption(_image_info,option+1,ArgOption("undefined"));
+          arg1 = ArgOption("undefined");
+          parse = ParseCommandOption(MagickFilterOptions,MagickFalse,arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedImageFilter",
+                                      option,arg1);
+          (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
       if (LocaleCompare("font",option+1) == 0)
@@ -1051,17 +1057,15 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              Image attribute used for color compare operations
              SyncImageSettings() used to set per-image attribute.
 
-             Can't find anything else using _image_info->fuzz directly!
+             FUTURE: Can't find anything else using _image_info->fuzz directly!
+                     remove direct sttribute from image_info
           */
-          if (IfSetOption)
-            {
-              _image_info->fuzz=StringToDoubleInterval(arg1,(double)
+          arg1=ArgOption("0");
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          _image_info->fuzz=StringToDoubleInterval(arg1,(double)
                 QuantumRange+1.0);
-              (void) SetImageOption(_image_info,option+1,arg1);
-              break;
-            }
-          _image_info->fuzz=0.0;
-          (void) SetImageOption(_image_info,option+1,"0");
+          (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -1375,9 +1379,6 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              UPDATE: ensure stroke color is not destroyed is a pattern
              is given. Just in case the color is also used for other purposes.
            */
-          const char
-            *value;
-
           MagickBooleanType
             status;
 
@@ -1387,18 +1388,18 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           PixelInfo
             color;
 
-          value = ArgOption("none");
-          (void) SetImageOption(_image_info,option+1,value);
+          arg1 = ArgOption("none");  /* +fill turns it off! */
+          (void) SetImageOption(_image_info,option+1,arg1);
           if (_draw_info->stroke_pattern != (Image *) NULL)
             _draw_info->stroke_pattern=DestroyImage(_draw_info->stroke_pattern);
 
           /* is it a color or a image? -- ignore exceptions */
           sans=AcquireExceptionInfo();
-          status=QueryColorCompliance(value,AllCompliance,&color,sans);
+          status=QueryColorCompliance(arg1,AllCompliance,&color,sans);
           sans=DestroyExceptionInfo(sans);
 
           if (status == MagickFalse)
-            _draw_info->stroke_pattern=GetImageCache(_image_info,value,_exception);
+            _draw_info->stroke_pattern=GetImageCache(_image_info,arg1,_exception);
           else
             _draw_info->stroke=color;
           break;
@@ -1673,7 +1674,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     flags;
 
   ssize_t
-    type;
+    parse;
 
 #define _image_info      (cli_wand->wand.image_info)
 #define _image           (cli_wand->wand.images)
@@ -1742,11 +1743,12 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("alpha",option+1) == 0)
         {
-          type=ParseCommandOption(MagickAlphaOptions,MagickFalse,arg1);
-          if (type < 0)
+          parse=ParseCommandOption(MagickAlphaOptions,MagickFalse,arg1);
+          if (parse < 0)
             CLIWandExceptArgBreak(OptionError,"UnrecognizedAlphaChannelType",
                  option,arg1);
-          (void) SetImageAlphaChannel(_image,(AlphaChannelType)type,_exception);
+          (void) SetImageAlphaChannel(_image,(AlphaChannelType)parse,
+               _exception);
           break;
         }
       if (LocaleCompare("annotate",option+1) == 0)
@@ -2206,9 +2208,6 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           const char
             *p;
 
-          DistortImageMethod
-            method;
-
           double
             *arguments;
 
@@ -2218,12 +2217,11 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           size_t
             number_arguments;
 
-          x = ParseCommandOption(MagickDistortOptions,MagickFalse,arg1);
-          if ( x < 0 )
+          parse = ParseCommandOption(MagickDistortOptions,MagickFalse,arg1);
+          if ( parse < 0 )
              CLIWandExceptArgBreak(OptionError,"UnrecognizedDistortMethod",
                                       option,arg1);
-          method = (DistortImageMethod) x;
-          if (method == ResizeDistortion)
+          if ((DistortImageMethod) parse == ResizeDistortion)
             {
                double
                  resize_args[2];
@@ -2237,8 +2235,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                (void) ParseRegionGeometry(_image,arg2,&geometry,_exception);
                resize_args[0]=(double) geometry.width;
                resize_args[1]=(double) geometry.height;
-               new_image=DistortImage(_image,method,(size_t)2,
-                 resize_args,MagickTrue,_exception);
+               new_image=DistortImage(_image,(DistortImageMethod) parse,
+                    (size_t)2,resize_args,MagickTrue,_exception);
                break;
             }
           /* handle percent arguments */
@@ -2274,8 +2272,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             arguments[x]=StringToDouble(token,(char **) NULL);
           }
           args=DestroyString(args);
-          new_image=DistortImage(_image,method,number_arguments,arguments,
-                        plus_alt_op,_exception);
+          new_image=DistortImage(_image,(DistortImageMethod) parse,
+               number_arguments,arguments,plus_alt_op,_exception);
           arguments=(double *) RelinquishMagickMemory(arguments);
           break;
         }
@@ -2292,15 +2290,19 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("edge",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
-          new_image=EdgeImage(_image,geometry_info.rho,
-            geometry_info.sigma,_exception);
+          new_image=EdgeImage(_image,geometry_info.rho,geometry_info.sigma,
+               _exception);
           break;
         }
       if (LocaleCompare("emboss",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
@@ -2336,17 +2338,21 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           double
             constant;
 
-          MagickEvaluateOperator
-            op;
-
-          op=(MagickEvaluateOperator) ParseCommandOption(
-            MagickEvaluateOptions,MagickFalse,arg1);
+          parse = ParseCommandOption(MagickEvaluateOptions,MagickFalse,arg1);
+          if ( parse < 0 )
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedEvaluateOperator",
+                 option,arg1);
+          if (IsGeometry(arg2) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg2);
           constant=StringToDoubleInterval(arg2,(double) QuantumRange+1.0);
-          (void) EvaluateImage(_image,op,constant,_exception);
+          (void) EvaluateImage(_image,(MagickEvaluateOperator)parse,constant,
+               _exception);
           break;
         }
       if (LocaleCompare("extent",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGravityGeometry(_image,arg1,&geometry,_exception);
           if (geometry.width == 0)
             geometry.width=_image->columns;
@@ -2385,6 +2391,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           PixelInfo
             target;
 
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParsePageGeometry(_image,arg1,&geometry,_exception);
           (void) QueryColorCompliance(arg2,AllCompliance,&target,_exception);
           (void) FloodfillPaintImage(_image,_draw_info,&target,geometry.x,
@@ -2409,6 +2417,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           else
             compose=OverCompositeOp;  /* use Over not _image->compose */
 
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParsePageGeometry(_image,arg1,&geometry,_exception);
           frame_info.width=geometry.width;
           frame_info.height=geometry.height;
@@ -2435,9 +2445,6 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           double
             *parameters;
 
-          MagickFunction
-            function;
-
           register ssize_t
             x;
 
@@ -2448,12 +2455,14 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             Function Modify Image Values
             FUTURE: code should be almost a duplicate of that is "distort"
           */
-          function=(MagickFunction) ParseCommandOption(MagickFunctionOptions,
-            MagickFalse,arg1);
+          parse=ParseCommandOption(MagickFunctionOptions,MagickFalse,arg1);
+          if ( parse < 0 )
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedFunction",
+                 option,arg1);
           arguments=InterpretImageProperties(_image_info,_image,arg2,
             _exception);
           if (arguments == (char *) NULL)
-            break;
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg2);
           p=(char *) arguments;
           for (x=0; *p != '\0'; x++)
           {
@@ -2470,16 +2479,15 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) ResetMagickMemory(parameters,0,number_parameters*
             sizeof(*parameters));
           p=(char *) arguments;
-          for (x=0; (x < (ssize_t) number_parameters) && (*p != '\0'); x++)
-          {
+          for (x=0; (x < (ssize_t) number_parameters) && (*p != '\0'); x++) {
             GetMagickToken(p,&p,token);
             if (*token == ',')
               GetMagickToken(p,&p,token);
             parameters[x]=StringToDouble(token,(char **) NULL);
           }
           arguments=DestroyString(arguments);
-          (void) FunctionImage(_image,function,number_parameters,parameters,
-            _exception);
+          (void) FunctionImage(_image,(MagickFunction)parse,number_parameters,
+                  parameters,_exception);
           parameters=(double *) RelinquishMagickMemory(parameters);
           break;
         }
@@ -3575,6 +3583,9 @@ WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
 WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
      const char *option,const char *arg1, const char *arg2)
 {
+  ssize_t
+    parse;
+
   Image
     *new_images;
 
@@ -3766,12 +3777,12 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("evaluate-sequence",option+1) == 0)
         {
-          MagickEvaluateOperator
-            method;
-
-          method=(MagickEvaluateOperator) ParseCommandOption(
-            MagickEvaluateOptions,MagickFalse,arg1);
-          new_images=EvaluateImages(_images,method,_exception);
+          parse = ParseCommandOption(MagickEvaluateOptions,MagickFalse,arg1);
+          if ( parse < 0 )
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedEvaluateOperator",
+                 option,arg1);
+          new_images=EvaluateImages(_images,(MagickEvaluateOperator)parse,
+               _exception);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
