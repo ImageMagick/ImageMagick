@@ -1075,9 +1075,13 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("gravity",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute. */
-          (void) SetImageOption(_image_info,option+1,ArgOption("none"));
-          _draw_info->gravity=(GravityType) ParseCommandOption(
-                   MagickGravityOptions,MagickFalse,ArgOption("none"));
+          arg1 = ArgOption("none");
+          parse = ParseCommandOption(MagickGravityOptions,MagickFalse,arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedGravityType",
+                                      option,arg1);
+          (void) SetImageOption(_image_info,option+1,arg1);
+          _draw_info->gravity=(GravityType) parse;
           break;
         }
       if (LocaleCompare("green-primary",option+1) == 0)
@@ -1086,6 +1090,8 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              SyncImageSettings() used to set per-image attribute.
              Used directly by many coders
           */
+          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) SetImageOption(_image_info,option+1,ArgOption("0.0"));
           break;
         }
@@ -1099,7 +1105,12 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              and for image profile call to AcquireTransformThreadSet()
              SyncImageSettings() used to set per-image attribute.
           */
-          (void) SetImageOption(_image_info,option+1,ArgOption("undefined"));
+          arg1 = ArgOption("indefined");
+          parse = ParseCommandOption(MagickIntentOptions,MagickFalse,arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedIntentType",
+                                      option,arg1);
+          (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
       if (LocaleCompare("interlace",option+1) == 0)
@@ -1107,13 +1118,19 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           /* _image_info is directly used by coders (so why an image setting?)
              SyncImageSettings() used to set per-image attribute.
           */
-          (void) SetImageOption(_image_info,option+1,ArgOption("undefined"));
-          _image_info->interlace=(InterlaceType) ParseCommandOption(
-                MagickInterlaceOptions,MagickFalse,ArgOption("undefined"));
+          arg1 = ArgOption("undefined");
+          parse = ParseCommandOption(MagickInterlaceOptions,MagickFalse,arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedInterlaceType",
+                                      option,arg1);
+          _image_info->interlace=(InterlaceType) parse;
+          (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
       if (LocaleCompare("interline-spacing",option+1) == 0)
         {
+          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) SetImageOption(_image_info,option+1, ArgOption(NULL));
           _draw_info->interline_spacing=StringToDouble(ArgOption("0"),
                (char **) NULL);
@@ -1122,11 +1139,18 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("interpolate",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute. */
-          (void) SetImageOption(_image_info,option+1,ArgOption("undefined"));
+          arg1 = ArgOption("undefined");
+          parse = ParseCommandOption(MagickInterpolateOptions,MagickFalse,arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedInterpolateMethod",
+                                      option,arg1);
+          (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
       if (LocaleCompare("interword-spacing",option+1) == 0)
         {
+          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) SetImageOption(_image_info,option+1, ArgOption(NULL));
           _draw_info->interword_spacing=StringToDouble(ArgOption("0"),(char **) NULL);
           break;
@@ -1137,6 +1161,8 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
     {
       if (LocaleCompare("kerning",option+1) == 0)
         {
+          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           _draw_info->kerning=StringToDouble(ArgOption("0"),(char **) NULL);
           break;
@@ -1153,14 +1179,20 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("log",option+1) == 0)
         {
-          if (IfSetOption)
+          if (IfSetOption) {
+            if ((strchr(arg1,'%') == (char *) NULL))
+              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
             (void) SetLogFormat(arg1);
+          }
           break;
         }
       if (LocaleCompare("loop",option+1) == 0)
         {
           /* SyncImageSettings() used to set per-image attribute. */
-          (void) SetImageOption(_image_info,option+1,ArgOption("0"));
+          arg1=ArgOption("0");
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -1324,6 +1356,8 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              Used by many coders
              SyncImageSettings() used to set per-image attribute.
           */
+          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) SetImageOption(_image_info,option+1,ArgOption("0.0"));
           break;
         }
@@ -1721,6 +1755,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("adaptive-resize",option+1) == 0)
         {
+          /* FUTURE: Roll into a resize special operator */
           if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParseRegionGeometry(_image,arg1,&geometry,_exception);
@@ -2228,7 +2263,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                /* Special Case - Argument is actually a resize geometry!
                ** Convert that to an appropriate distortion argument array.
                ** FUTURE: make a separate special resize operator
-               */
+                    Roll into a resize special operator */
                if (IsGeometry(arg2) == MagickFalse)
                  CLIWandExceptArgBreak(OptionError,"InvalidGeometry",
                                            option,arg2);
@@ -2497,6 +2532,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("gamma",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if (IfNormalOp)
             (void) GammaImage(_image,StringToDouble(arg1,(char **) NULL),
                  _exception);
@@ -2507,6 +2544,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
       if ((LocaleCompare("gaussian-blur",option+1) == 0) ||
           (LocaleCompare("gaussian",option+1) == 0))
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
@@ -2518,7 +2557,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           /*
             Record Image offset for composition. (A Setting)
-            Resize last _image. (ListOperator)
+            Resize last _image. (ListOperator)  -- DEPRECIATE
             FUTURE: Why if no 'offset' does this resize ALL images?
             Also why is the setting recorded in the IMAGE non-sense!
           */
@@ -2528,6 +2567,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                 _image->geometry=DestroyString(_image->geometry);
               break;
             }
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseRegionGeometry(_image,arg1,&geometry,_exception);
           if (((flags & XValue) != 0) || ((flags & YValue) != 0))
             (void) CloneString(&_image->geometry,arg1);
@@ -2572,6 +2613,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("implode",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParseGeometry(arg1,&geometry_info);
           new_image=ImplodeImage(_image,geometry_info.rho,
             _image->interpolate,_exception);
@@ -2579,6 +2622,10 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("interpolative-resize",option+1) == 0)
         {
+          /* FUTURE: New to IMv7
+               Roll into a resize special operator */
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParseRegionGeometry(_image,arg1,&geometry,_exception);
           new_image=InterpolativeResizeImage(_image,geometry.width,
                geometry.height,_image->interpolate,_exception);
@@ -2590,6 +2637,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("lat",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & PercentValue) != 0)
             geometry_info.xi=(double) QuantumRange*geometry_info.xi/100.0;
@@ -2608,6 +2657,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           MagickStatusType
             flags;
 
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           black_point=geometry_info.rho;
           white_point=(MagickRealType) QuantumRange;
@@ -2677,6 +2728,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           MagickStatusType
             flags;
 
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           black_point=geometry_info.rho;
           white_point=(MagickRealType) _image->columns*_image->rows;
@@ -2695,6 +2748,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("liquid-rescale",option+1) == 0)
         {
+          /* FUTURE: Roll into a resize special operator */
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseRegionGeometry(_image,arg1,&geometry,_exception);
           if ((flags & XValue) == 0)
             geometry.x=1;
@@ -3104,6 +3160,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("sample",option+1) == 0)
         {
+          /* FUTURE: Roll into a resize special operator */
           (void) ParseRegionGeometry(_image,arg1,&geometry,_exception);
           new_image=SampleImage(_image,geometry.width,geometry.height,
             _exception);
@@ -3111,6 +3168,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("scale",option+1) == 0)
         {
+          /* FUTURE: Roll into a resize special operator */
           (void) ParseRegionGeometry(_image,arg1,&geometry,_exception);
           new_image=ScaleImage(_image,geometry.width,geometry.height,
             _exception);
@@ -3556,7 +3614,7 @@ WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
 %
 %    o arg1, arg2: optional argument strings to the operation
 %
-% NOTE: only "limit" currently uses two arguments.
+% NOTE: only "limit" uses two arguments.
 %
 % Example usage...
 %
@@ -3855,6 +3913,8 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           ssize_t
             index;
 
+          if (IfNormalOp && IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           index=0;
           insert_image=RemoveLastImageFromList(&_images);
           if (IfNormalOp)
@@ -3868,11 +3928,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
             {
                index_image=GetImageFromList(_images,index-1);
                if (index_image == (Image *) NULL)
-                 {
-                   (void) ThrowMagickException(_exception,GetMagickModule(),
-                     OptionError,"NoSuchImage","'%s'",arg1);
-                   break;
-                 }
+                 CLIWandExceptArgBreak(OptionError,"NoSuchImage",option,arg1);
               InsertImageInList(&index_image,insert_image);
             }
           _images=GetFirstImageInList(index_image);
@@ -3884,12 +3940,11 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("layers",option+1) == 0)
         {
-          ImageLayerMethod
-            method;
-
-          method=(ImageLayerMethod) ParseCommandOption(MagickLayerOptions,
-            MagickFalse,arg1);
-          switch (method)
+          parse=ParseCommandOption(MagickLayerOptions,MagickFalse,arg1);
+          if ( parse < 0 )
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedLayerMethod",
+                 option,arg1);
+          switch ((ImageLayerMethod) parse)
           {
             case CoalesceLayer:
             {
@@ -3901,7 +3956,8 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
             case CompareOverlayLayer:
             default:
             {
-              new_images=CompareImagesLayers(_images,method,_exception);
+              new_images=CompareImagesLayers(_images,(ImageLayerMethod) parse,
+                   _exception);
               break;
             }
             case MergeLayer:
@@ -3909,7 +3965,8 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
             case MosaicLayer:
             case TrimBoundsLayer:
             {
-              new_images=MergeImageLayers(_images,method,_exception);
+              new_images=MergeImageLayers(_images,(ImageLayerMethod) parse,
+                   _exception);
               break;
             }
             case DisposeLayer:
@@ -4029,15 +4086,14 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           MagickSizeType
             limit;
 
-          ResourceType
-            type;
-
-          type=(ResourceType) ParseCommandOption(MagickResourceOptions,
-            MagickFalse,arg1);
           limit=MagickResourceInfinity;
+          parse= ParseCommandOption(MagickResourceOptions,MagickFalse,arg1);
+          if ( parse < 0 )
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedResourceType",
+                 option,arg1);
           if (LocaleCompare("unlimited",arg2) != 0)
             limit=(MagickSizeType) SiPrefixToDoubleInterval(arg2,100.0);
-          (void) SetMagickResourceLimit(type,limit);
+          (void) SetMagickResourceLimit((ResourceType)parse,limit);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -4523,6 +4579,10 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
         list;
 
       list=ParseCommandOption(MagickListOptions,MagickFalse, arg1);
+      if ( list < 0 ) {
+        CLIWandExceptionArg(OptionError,"UnrecognizedListType",option,arg1);
+        return;
+      }
       switch (list)
       {
         case MagickCoderOptions:
