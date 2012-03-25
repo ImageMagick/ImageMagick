@@ -60,6 +60,7 @@
 #include "magick/static.h"
 #include "magick/string_.h"
 #include "magick/string-private.h"
+#include "magick/token.h"
 #include "magick/utility.h"
 #if defined(MAGICKCORE_PANGOFT2_DELEGATE)
 #include <pango/pango.h>
@@ -177,16 +178,15 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   (void) ResetImagePage(image,"0x0+0+0");
   option=GetImageOption(image_info,"filename");
   if (option == (const char *) NULL)
-    property=InterpretImageProperties(image_info,image,image_info->filename,
-      exception);
+    property=InterpretImageProperties(image_info,image,image_info->filename);
   else
     if (LocaleNCompare(option,"pango:",6) == 0)
-      property=InterpretImageProperties(image_info,image,option+6,exception);
+      property=InterpretImageProperties(image_info,image,option+6);
     else
-      property=InterpretImageProperties(image_info,image,option,exception);
-  (void) SetImageProperty(image,"caption",property,exception);
+      property=InterpretImageProperties(image_info,image,option);
+  (void) SetImageProperty(image,"caption",property);
   property=DestroyString(property);
-  caption=ConstantString(GetImageProperty(image,"caption",exception));
+  caption=ConstantString(GetImageProperty(image,"caption"));
   /*
     Get context.
   */
