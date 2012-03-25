@@ -813,6 +813,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   if (resize_filter == (ResizeFilter *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(resize_filter,0,sizeof(*resize_filter));
+  resize_filter->blur=1.0;
   /*
     Defaults for the requested filter.
   */
