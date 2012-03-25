@@ -187,7 +187,6 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->interlace=NoInterlace;
   image->ticks_per_second=UndefinedTicksPerSecond;
   image->compose=OverCompositeOp;
-  image->blur=1.0;
   (void) QueryColorCompliance(BackgroundColor,AllCompliance,
     &image->background_color,exception);
   (void) QueryColorCompliance(BorderColor,AllCompliance,&image->border_color,
@@ -3854,9 +3853,6 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   if (option != (const char *) NULL)
     (void) QueryColorCompliance(option,AllCompliance,&image->background_color,
       exception);
-  option=GetImageOption(image_info,"bias");
-  if (option != (const char *) NULL)
-    image->bias=StringToDoubleInterval(option,(double) QuantumRange+1.0);
   option=GetImageOption(image_info,"black-point-compensation");
   if (option != (const char *) NULL)
     image->black_point_compensation=(MagickBooleanType) ParseCommandOption(
@@ -3876,7 +3872,8 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       exception);
   option=GetImageOption(image_info,"channel");
   if (option != (const char *) NULL)
-    (void) SetPixelChannelMapMask(image,ParseChannelOption(option));
+    (void) SetPixelChannelMapMask(image,(ChannelType)
+      ParseChannelOption(option));
   /* FUTURE: do not sync compose to per-image compose setting here */
   option=GetImageOption(image_info,"compose");
   if (option != (const char *) NULL)

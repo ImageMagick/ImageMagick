@@ -300,7 +300,7 @@ void Magick::Image::adaptiveBlur( const double radius_, const double sigma_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    AdaptiveBlurImage( image(), radius_, sigma_, image()->bias, &exceptionInfo);
+    AdaptiveBlurImage( image(), radius_, sigma_, &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -487,7 +487,7 @@ void Magick::Image::blur( const double radius_, const double sigma_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    BlurImage( image(), radius_, sigma_, image()->bias, &exceptionInfo);
+    BlurImage( image(), radius_, sigma_, &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -500,7 +500,7 @@ void Magick::Image::blurChannel( const ChannelType channel_,
   GetExceptionInfo( &exceptionInfo );
   ChannelType channel_mask = SetPixelChannelMask( image(), channel_ );
   MagickCore::Image* newImage =
-    BlurImage( image(), radius_, sigma_, image()->bias, &exceptionInfo);
+    BlurImage( image(), radius_, sigma_, &exceptionInfo);
   (void) SetPixelChannelMapMask( image(), channel_mask );
   replaceImage( newImage );
   throwException( exceptionInfo );
@@ -563,7 +563,7 @@ void Magick::Image::charcoal( const double radius_, const double sigma_ )
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    CharcoalImage( image(), radius_, sigma_, image()->bias, &exceptionInfo );
+    CharcoalImage( image(), radius_, sigma_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -761,7 +761,6 @@ void Magick::Image::convolve ( const size_t order_,
   kernel_info->width=order_;
   kernel_info->height=order_;
   kernel_info->values=(MagickRealType *) kernel_;
-  kernel_info->bias=image()->bias;
   MagickCore::Image* newImage =
     ConvolveImage ( image(), kernel_info, &exceptionInfo );
   kernel_info->values=(MagickRealType *) NULL;
@@ -1428,7 +1427,7 @@ void            Magick::Image::motionBlur ( const double radius_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage =
-    MotionBlurImage( image(), radius_, sigma_, angle_, 0.0, &exceptionInfo);
+    MotionBlurImage( image(), radius_, sigma_, angle_, &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1824,7 +1823,6 @@ void Magick::Image::resize( const Geometry &geometry_ )
                width,
                height,
                image()->filter,
-               1.0,
                &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
@@ -1961,7 +1959,7 @@ void Magick::Image::shadow( const double percent_opacity_, const double sigma_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickCore::Image* newImage = ShadowImage( image(), percent_opacity_, sigma_,
-    image()->bias, x_, y_, &exceptionInfo );
+    x_, y_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1976,7 +1974,6 @@ void Magick::Image::sharpen ( const double radius_, const double sigma_ )
     SharpenImage( image(),
                   radius_,
                   sigma_,
-                  image()->bias,
                   &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
@@ -1993,7 +1990,6 @@ void Magick::Image::sharpenChannel ( const ChannelType channel_,
     SharpenImage( image(),
                          radius_,
                          sigma_,
-                  image()->bias,
                          &exceptionInfo );
   (void) SetPixelChannelMapMask( image(), channel_mask );
   replaceImage( newImage );
@@ -2416,7 +2412,6 @@ void Magick::Image::zoom( const Geometry &geometry_ )
                width,
                height,
                image()->filter,
-               image()->blur,
                &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );

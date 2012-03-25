@@ -2168,8 +2168,7 @@ static MagickBooleanType WritePTIFImage(const ImageInfo *image_info,
       rows/=2;
       resolution.x/=2;
       resolution.y/=2;
-      pyramid_image=ResizeImage(next,columns,rows,image->filter,image->blur,
-        exception);
+      pyramid_image=ResizeImage(next,columns,rows,image->filter,exception);
       if (pyramid_image == (Image *) NULL)
         break;
       pyramid_image->resolution=resolution;

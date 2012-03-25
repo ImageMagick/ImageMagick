@@ -30,7 +30,7 @@ extern "C" {
 
 extern MagickPrivate Image
   *MorphologyApply(const Image *,const MorphologyMethod,const ssize_t,
-    const KernelInfo *,const CompositeOperator,const double,ExceptionInfo *);
+    const KernelInfo *,const CompositeOperator,ExceptionInfo *);
 
 extern MagickPrivate void
   ShowKernelInfo(const KernelInfo *),

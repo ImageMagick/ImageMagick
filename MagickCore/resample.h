@@ -86,7 +86,7 @@ extern MagickExport ResampleFilter
 extern MagickExport void
   ScaleResampleFilter(ResampleFilter *,const double,const double,const double,
     const double),
-  SetResampleFilter(ResampleFilter *,const FilterTypes,const double);
+  SetResampleFilter(ResampleFilter *,const FilterTypes);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -636,7 +636,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   SetGeometry(image,&geometry);
   (void) ParseMetaGeometry(PiconGeometry,&geometry.x,&geometry.y,
     &geometry.width,&geometry.height);
-  picon=ResizeImage(image,geometry.width,geometry.height,TriangleFilter,1.0,
+  picon=ResizeImage(image,geometry.width,geometry.height,TriangleFilter,
     exception);
   blob_info=CloneImageInfo(image_info);
   (void) AcquireUniqueFilename(blob_info->filename);

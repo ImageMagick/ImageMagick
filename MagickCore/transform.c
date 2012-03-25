@@ -2071,7 +2071,7 @@ MagickExport MagickBooleanType TransformImage(Image **image,
       (transform_image->rows == geometry.height))
     return(MagickTrue);
   resize_image=ResizeImage(transform_image,geometry.width,geometry.height,
-    transform_image->filter,transform_image->blur,exception);
+    transform_image->filter,exception);
   if (resize_image == (Image *) NULL)
     return(MagickFalse);
   transform_image=DestroyImage(transform_image);

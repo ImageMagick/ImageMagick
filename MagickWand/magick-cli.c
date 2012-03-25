@@ -213,7 +213,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
     { /* get option type and argument count */
       const OptionInfo *option_info = GetCommandOptionInfo(option);
       count=option_info->type;
-      option_type=option_info->flags;
+      option_type=(CommandOptionFlags) option_info->flags;
 #if MagickCommandDebug >= 2
       (void) FormatLocaleFile(stderr, "Script: %u,%u: \"%s\" matched \"%s\"\n",
              cli_wand->line, cli_wand->line, option, option_info->mnemonic );
@@ -420,7 +420,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
 
     { const OptionInfo *option_info = GetCommandOptionInfo(argv[i]);
       count=option_info->type;
-      option_type=option_info->flags;
+      option_type=(CommandOptionFlags) option_info->flags;
 #if MagickCommandDebug >= 2
       (void) FormatLocaleFile(stderr, "CLI %d: \"%s\" matched \"%s\"\n",
             i, argv[i], option_info->mnemonic );

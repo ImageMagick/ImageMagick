@@ -143,9 +143,7 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
   image->page=clone_image->page;
   image->tile_offset=clone_image->tile_offset;
   image->extract_info=clone_image->extract_info;
-  image->bias=clone_image->bias;
   image->filter=clone_image->filter;
-  image->blur=clone_image->blur;
   image->fuzz=clone_image->fuzz;
   image->interlace=clone_image->interlace;
   image->interpolate=clone_image->interpolate;
@@ -3215,11 +3213,6 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         {
           (void) QueryColorCompliance(value,AllCompliance,
             &image->background_color,exception);
-          break;
-        }
-      if (LocaleCompare(property,"bias") == 0)
-        {
-          image->bias=StringToDoubleInterval(value,(double) QuantumRange+1.0);
           break;
         }
       status=AddValueToSplayTree((SplayTreeInfo *) image->properties,

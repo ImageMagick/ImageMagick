@@ -304,7 +304,7 @@ static MagickBooleanType WriteHRZImage(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  hrz_image=ResizeImage(image,256,240,image->filter,image->blur,exception);
+  hrz_image=ResizeImage(image,256,240,image->filter,exception);
   if (hrz_image == (Image *) NULL)
     return(MagickFalse);
   if (IsRGBColorspace(hrz_image->colorspace) == MagickFalse)

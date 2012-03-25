@@ -1241,8 +1241,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             }
           channel_mask=SetPixelChannelMask(msl_info->image[n],channel);
           blur_image=BlurImage(msl_info->image[n],geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,
-            msl_info->exception);
+            geometry_info.sigma,msl_info->exception);
           (void) SetPixelChannelMapMask(msl_info->image[n],channel_mask);
           if (blur_image == (Image *) NULL)
             break;
@@ -1440,7 +1439,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         }
       if (LocaleCompare((const char *) tag, "charcoal") == 0)
       {
-        double bias = 0.0,
+        double 
             radius = 0.0,
             sigma = 1.0;
 
@@ -1462,17 +1461,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             msl_info->attributes[n],(const char *) attributes[i],&exception));
           switch (*keyword)
           {
-            case 'B':
-            case 'b':
-            {
-              if (LocaleCompare(keyword, "bias") == 0)
-                {
-                  bias=StringToDouble(value,(char **) NULL);
-                  break;
-                }
-              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-              break;
-            }
             case 'R':
             case 'r':
             {
@@ -1511,7 +1499,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         Image
           *newImage;
 
-        newImage=CharcoalImage(msl_info->image[n],radius,sigma,bias,
+        newImage=CharcoalImage(msl_info->image[n],radius,sigma,
           msl_info->exception);
         if (newImage == (Image *) NULL)
           break;
@@ -5278,17 +5266,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           msl_info->attributes[n],(const char *) attributes[i],&exception));
         switch (*keyword)
         {
-          case 'b':
-          {
-            if (LocaleCompare(keyword,"blur") == 0)
-              {
-                msl_info->image[n]->blur=StringToDouble(value,
-                        (char **) NULL);
-                break;
-              }
-            ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-            break;
-          }
           case 'G':
           case 'g':
           {
@@ -5356,8 +5333,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
           (factor*(msl_info->image[n]->resolution.y == 0.0 ? DefaultResolution :
           msl_info->image[n]->resolution.y))+0.5);
         resample_image=ResizeImage(msl_info->image[n],width,height,
-          msl_info->image[n]->filter,msl_info->image[n]->blur,
-          msl_info->exception);
+          msl_info->image[n]->filter,msl_info->exception);
         if (resample_image == (Image *) NULL)
           break;
         msl_info->image[n]=DestroyImage(msl_info->image[n]);
@@ -5367,9 +5343,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
     }
       if (LocaleCompare((const char *) tag,"resize") == 0)
         {
-          double
-            blur;
-
           FilterTypes
             filter;
 
@@ -5386,7 +5359,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               break;
             }
           filter=UndefinedFilter;
-          blur=1.0;
           if (attributes != (const xmlChar **) NULL)
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
             {
@@ -5439,18 +5411,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                     keyword);
                   break;
                 }
-                case 'S':
-                case 's':
-                {
-                  if (LocaleCompare(keyword,"support") == 0)
-                    {
-                      blur=StringToDouble(value,(char **) NULL);
-                      break;
-                    }
-                  ThrowMSLException(OptionError,"UnrecognizedAttribute",
-                    keyword);
-                  break;
-                }
                 case 'W':
                 case 'w':
                 {
@@ -5472,7 +5432,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           resize_image=ResizeImage(msl_info->image[n],geometry.width,
-            geometry.height,filter,blur,msl_info->exception);
+            geometry.height,filter,msl_info->exception);
           if (resize_image == (Image *) NULL)
             break;
           msl_info->image[n]=DestroyImage(msl_info->image[n]);
@@ -6366,7 +6326,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           shadow_image=ShadowImage(msl_info->image[n],geometry_info.rho,
-            geometry_info.sigma,0.0,(ssize_t) ceil(geometry_info.xi-0.5),
+            geometry_info.sigma,(ssize_t) ceil(geometry_info.xi-0.5),
             (ssize_t) ceil(geometry_info.psi-0.5),msl_info->exception);
           if (shadow_image == (Image *) NULL)
             break;
@@ -6376,7 +6336,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         }
       if (LocaleCompare((const char *) tag,"sharpen") == 0)
       {
-        double bias = 0.0,
+        double 
             radius = 0.0,
             sigma = 1.0;
 
@@ -6398,17 +6358,6 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             msl_info->attributes[n],(const char *) attributes[i],&exception));
           switch (*keyword)
           {
-            case 'B':
-            case 'b':
-            {
-              if (LocaleCompare(keyword, "bias") == 0)
-              {
-                bias = StringToDouble(value,(char **) NULL);
-                break;
-              }
-              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
-              break;
-            }
             case 'R':
             case 'r':
             {
@@ -6447,7 +6396,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         Image
           *newImage;
 
-        newImage=SharpenImage(msl_info->image[n],radius,sigma,bias,
+        newImage=SharpenImage(msl_info->image[n],radius,sigma,
           msl_info->exception);
         if (newImage == (Image *) NULL)
           break;
@@ -8023,13 +7972,6 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
         {
           (void) QueryColorCompliance(value,AllCompliance,
             &image_info->background_color,exception);
-          break;
-        }
-      if (LocaleCompare(keyword,"bias") == 0)
-        {
-          if (image == (Image *) NULL)
-            break;
-          image->bias=StringToDoubleInterval(value,QuantumRange);
           break;
         }
       if (LocaleCompare(keyword,"blue-primary") == 0)

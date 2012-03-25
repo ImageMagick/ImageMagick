@@ -807,7 +807,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         Blur Image by resampling.
       */
       resample_filter=AcquireResampleFilter(image,exception);
-      SetResampleFilter(resample_filter,CubicFilter,2.0);
+      SetResampleFilter(resample_filter,CubicFilter);
       destination_view=AcquireCacheView(destination_image);
       composite_view=AcquireCacheView(composite_image);
       for (y=0; y < (ssize_t) composite_image->rows; y++)

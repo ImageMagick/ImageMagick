@@ -140,7 +140,7 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
     fclose(token_info->stream);
 
   if (token_info->token != (char *) NULL )
-      token_info->token=RelinquishMagickMemory(token_info->token);
+    token_info->token=(char *) RelinquishMagickMemory(token_info->token);
   token_info=(ScriptTokenInfo *) RelinquishMagickMemory(token_info);
   return(token_info);
 }

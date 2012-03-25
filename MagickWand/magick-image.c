@@ -176,7 +176,7 @@ WandExport Image *GetImageFromMagickWand(const MagickWand *wand)
 %  The format of the MagickAdaptiveBlurImage method is:
 %
 %      MagickBooleanType MagickAdaptiveBlurImage(MagickWand *wand,
-%        const double radius,const double sigma,const double bias)
+%        const double radius,const double sigma)
 %
 %  A description of each parameter follows:
 %
@@ -187,11 +187,9 @@ WandExport Image *GetImageFromMagickWand(const MagickWand *wand)
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o bias: the bias.
-%
 */
 WandExport MagickBooleanType MagickAdaptiveBlurImage(MagickWand *wand,
-  const double radius,const double sigma,const double bias)
+  const double radius,const double sigma)
 {
   Image
     *sharp_image;
@@ -202,7 +200,7 @@ WandExport MagickBooleanType MagickAdaptiveBlurImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  sharp_image=AdaptiveBlurImage(wand->images,radius,sigma,bias,wand->exception);
+  sharp_image=AdaptiveBlurImage(wand->images,radius,sigma,wand->exception);
   if (sharp_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,sharp_image);
@@ -275,7 +273,7 @@ WandExport MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand,
 %  The format of the MagickAdaptiveSharpenImage method is:
 %
 %      MagickBooleanType MagickAdaptiveSharpenImage(MagickWand *wand,
-%        const double radius,const double sigma,const double bias)
+%        const double radius,const double sigma)
 %
 %  A description of each parameter follows:
 %
@@ -286,11 +284,9 @@ WandExport MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o bias: the bias.
-%
 */
 WandExport MagickBooleanType MagickAdaptiveSharpenImage(MagickWand *wand,
-  const double radius,const double sigma,const double bias)
+  const double radius,const double sigma)
 {
   Image
     *sharp_image;
@@ -301,8 +297,7 @@ WandExport MagickBooleanType MagickAdaptiveSharpenImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  sharp_image=AdaptiveSharpenImage(wand->images,radius,sigma,bias,
-    wand->exception);
+  sharp_image=AdaptiveSharpenImage(wand->images,radius,sigma,wand->exception);
   if (sharp_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,sharp_image);
@@ -907,7 +902,7 @@ WandExport MagickBooleanType MagickBlueShiftImage(MagickWand *wand,
 %  The format of the MagickBlurImage method is:
 %
 %      MagickBooleanType MagickBlurImage(MagickWand *wand,const double radius,
-%        const double sigmaconst double bias)
+%        const double sigma)
 %
 %  A description of each parameter follows:
 %
@@ -918,11 +913,9 @@ WandExport MagickBooleanType MagickBlueShiftImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the , in pixels.
 %
-%    o bias: the bias.
-%
 */
 WandExport MagickBooleanType MagickBlurImage(MagickWand *wand,
-  const double radius,const double sigma,const double bias)
+  const double radius,const double sigma)
 {
   Image
     *blur_image;
@@ -933,7 +926,7 @@ WandExport MagickBooleanType MagickBlurImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=BlurImage(wand->images,radius,sigma,bias,wand->exception);
+  blur_image=BlurImage(wand->images,radius,sigma,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);
@@ -1119,7 +1112,7 @@ WandExport MagickWand *MagickChannelFxImage(MagickWand *wand,
 %  The format of the MagickCharcoalImage method is:
 %
 %      MagickBooleanType MagickCharcoalImage(MagickWand *wand,
-%        const double radius,const double sigma,const double bias)
+%        const double radius,const double sigma)
 %
 %  A description of each parameter follows:
 %
@@ -1130,11 +1123,9 @@ WandExport MagickWand *MagickChannelFxImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o bias: the bias.
-%
 */
 WandExport MagickBooleanType MagickCharcoalImage(MagickWand *wand,
-  const double radius,const double sigma,const double bias)
+  const double radius,const double sigma)
 {
   Image
     *charcoal_image;
@@ -1145,7 +1136,7 @@ WandExport MagickBooleanType MagickCharcoalImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  charcoal_image=CharcoalImage(wand->images,radius,sigma,bias,wand->exception);
+  charcoal_image=CharcoalImage(wand->images,radius,sigma,wand->exception);
   if (charcoal_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,charcoal_image);
@@ -6770,8 +6761,7 @@ WandExport MagickBooleanType MagickMorphologyImage(MagickWand *wand,
 %  The format of the MagickMotionBlurImage method is:
 %
 %      MagickBooleanType MagickMotionBlurImage(MagickWand *wand,
-%        const double radius,const double sigma,const double angle,
-%        const double bias)
+%        const double radius,const double sigma,const double angle)
 %
 %  A description of each parameter follows:
 %
@@ -6786,7 +6776,7 @@ WandExport MagickBooleanType MagickMorphologyImage(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickMotionBlurImage(MagickWand *wand,
-  const double radius,const double sigma,const double angle,const double bias)
+  const double radius,const double sigma,const double angle)
 {
   Image
     *blur_image;
@@ -6797,8 +6787,7 @@ WandExport MagickBooleanType MagickMotionBlurImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=MotionBlurImage(wand->images,radius,sigma,angle,bias,
-    wand->exception);
+  blur_image=MotionBlurImage(wand->images,radius,sigma,angle,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);
@@ -7745,7 +7734,7 @@ WandExport MagickBooleanType MagickQuantizeImages(MagickWand *wand,
 %  The format of the MagickRadialBlurImage method is:
 %
 %      MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
-%        const double angle,const double bias)
+%        const double angle)
 %
 %  A description of each parameter follows:
 %
@@ -7753,11 +7742,9 @@ WandExport MagickBooleanType MagickQuantizeImages(MagickWand *wand,
 %
 %    o angle: the angle of the blur in degrees.
 %
-%    o bias: the bias.
-%
 */
 WandExport MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
-  const double angle,const double bias)
+  const double angle)
 {
   Image
     *blur_image;
@@ -7768,7 +7755,7 @@ WandExport MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=RadialBlurImage(wand->images,angle,bias,wand->exception);
+  blur_image=RadialBlurImage(wand->images,angle,wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,blur_image);
@@ -8136,7 +8123,7 @@ WandExport MagickBooleanType MagickRemoveImage(MagickWand *wand)
 %
 %      MagickBooleanType MagickResampleImage(MagickWand *wand,
 %        const double x_resolution,const double y_resolution,
-%        const FilterTypes filter,const double blur)
+%        const FilterTypes filter)
 %
 %  A description of each parameter follows:
 %
@@ -8148,12 +8135,9 @@ WandExport MagickBooleanType MagickRemoveImage(MagickWand *wand)
 %
 %    o filter: Image filter to use.
 %
-%    o blur: the blur factor where > 1 is blurry, < 1 is sharp.
-%
 */
 WandExport MagickBooleanType MagickResampleImage(MagickWand *wand,
-  const double x_resolution,const double y_resolution,const FilterTypes filter,
-  const double blur)
+  const double x_resolution,const double y_resolution,const FilterTypes filter)
 {
   Image
     *resample_image;
@@ -8165,7 +8149,7 @@ WandExport MagickBooleanType MagickResampleImage(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   resample_image=ResampleImage(wand->images,x_resolution,y_resolution,filter,
-    blur,wand->exception);
+    wand->exception);
   if (resample_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,resample_image);
@@ -8241,8 +8225,7 @@ WandExport MagickBooleanType MagickResetImagePage(MagickWand *wand,
 %  The format of the MagickResizeImage method is:
 %
 %      MagickBooleanType MagickResizeImage(MagickWand *wand,
-%        const size_t columns,const size_t rows,
-%        const FilterTypes filter,const double blur)
+%        const size_t columns,const size_t rows,const FilterTypes filter)
 %
 %  A description of each parameter follows:
 %
@@ -8254,12 +8237,9 @@ WandExport MagickBooleanType MagickResetImagePage(MagickWand *wand,
 %
 %    o filter: Image filter to use.
 %
-%    o blur: the blur factor where > 1 is blurry, < 1 is sharp.
-%
 */
 WandExport MagickBooleanType MagickResizeImage(MagickWand *wand,
-  const size_t columns,const size_t rows,const FilterTypes filter,
-  const double blur)
+  const size_t columns,const size_t rows,const FilterTypes filter)
 {
   Image
     *resize_image;
@@ -8270,8 +8250,7 @@ WandExport MagickBooleanType MagickResizeImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  resize_image=ResizeImage(wand->images,columns,rows,filter,blur,
-    wand->exception);
+  resize_image=ResizeImage(wand->images,columns,rows,filter,wand->exception);
   if (resize_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,resize_image);
@@ -8546,8 +8525,7 @@ MagickExport MagickBooleanType MagickSegmentImage(MagickWand *wand,
 %  The format of the MagickSelectiveBlurImage method is:
 %
 %      MagickBooleanType MagickSelectiveBlurImage(MagickWand *wand,
-%        const double radius,const double sigma,const double threshold,
-%        const double bias)
+%        const double radius,const double sigma,const double threshold)
 %
 %  A description of each parameter follows:
 %
@@ -8561,12 +8539,9 @@ MagickExport MagickBooleanType MagickSegmentImage(MagickWand *wand,
 %    o threshold: only pixels within this contrast threshold are included
 %      in the blur operation.
 %
-%    o bias: the bias.
-%
 */
 WandExport MagickBooleanType MagickSelectiveBlurImage(MagickWand *wand,
-  const double radius,const double sigma,const double threshold,
-  const double bias)
+  const double radius,const double sigma,const double threshold)
 {
   Image
     *blur_image;
@@ -8577,7 +8552,7 @@ WandExport MagickBooleanType MagickSelectiveBlurImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  blur_image=SelectiveBlurImage(wand->images,radius,sigma,threshold,bias,
+  blur_image=SelectiveBlurImage(wand->images,radius,sigma,threshold,
     wand->exception);
   if (blur_image == (Image *) NULL)
     return(MagickFalse);
@@ -8802,45 +8777,6 @@ WandExport MagickBooleanType MagickSetImageBackgroundColor(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   PixelGetQuantumPacket(background,&wand->images->background_color);
-  return(MagickTrue);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k S e t I m a g e B i a s                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickSetImageBias() sets the image bias for any method that convolves an
-%  image (e.g. MagickConvolveImage()).
-%
-%  The format of the MagickSetImageBias method is:
-%
-%      MagickBooleanType MagickSetImageBias(MagickWand *wand,
-%        const double bias)
-%
-%  A description of each parameter follows:
-%
-%    o wand: the magick wand.
-%
-%    o bias: the image bias.
-%
-*/
-WandExport MagickBooleanType MagickSetImageBias(MagickWand *wand,
-  const double bias)
-{
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  wand->images->bias=bias;
   return(MagickTrue);
 }
 
@@ -10409,9 +10345,8 @@ WandExport MagickBooleanType MagickShadeImage(MagickWand *wand,
 %
 %  The format of the MagickShadowImage method is:
 %
-%      MagickBooleanType MagickShadowImage(MagickWand *wand,
-%        const double alpha,const double sigma,const double bias,
-%        const ssize_t x,const ssize_t y)
+%      MagickBooleanType MagickShadowImage(MagickWand *wand,const double alpha,
+%        const double sigma,const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -10421,16 +10356,13 @@ WandExport MagickBooleanType MagickShadeImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o bias: the bias.
-%
 %    o x: the shadow x-offset.
 %
 %    o y: the shadow y-offset.
 %
 */
 WandExport MagickBooleanType MagickShadowImage(MagickWand *wand,
-  const double alpha,const double sigma,const double bias,const ssize_t x,
-  const ssize_t y)
+  const double alpha,const double sigma,const ssize_t x,const ssize_t y)
 {
   Image
     *shadow_image;
@@ -10441,7 +10373,7 @@ WandExport MagickBooleanType MagickShadowImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  shadow_image=ShadowImage(wand->images,alpha,sigma,bias,x,y,wand->exception);
+  shadow_image=ShadowImage(wand->images,alpha,sigma,x,y,wand->exception);
   if (shadow_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,shadow_image);
@@ -10467,7 +10399,7 @@ WandExport MagickBooleanType MagickShadowImage(MagickWand *wand,
 %  The format of the MagickSharpenImage method is:
 %
 %      MagickBooleanType MagickSharpenImage(MagickWand *wand,
-%        const double radius,const double sigma,const double bias)
+%        const double radius,const double sigma)
 %
 %  A description of each parameter follows:
 %
@@ -10478,11 +10410,9 @@ WandExport MagickBooleanType MagickShadowImage(MagickWand *wand,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o bias: the bias.
-%
 */
 WandExport MagickBooleanType MagickSharpenImage(MagickWand *wand,
-  const double radius,const double sigma,const double bias)
+  const double radius,const double sigma)
 {
   Image
     *sharp_image;
@@ -10493,7 +10423,7 @@ WandExport MagickBooleanType MagickSharpenImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  sharp_image=SharpenImage(wand->images,radius,sigma,bias,wand->exception);
+  sharp_image=SharpenImage(wand->images,radius,sigma,wand->exception);
   if (sharp_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,sharp_image);
@@ -10745,8 +10675,7 @@ WandExport MagickWand *MagickSimilarityImage(MagickWand *wand,
 %  The format of the MagickSketchImage method is:
 %
 %      MagickBooleanType MagickSketchImage(MagickWand *wand,
-%        const double radius,const double sigma,const double angle,
-%        const double bias)
+%        const double radius,const double sigma,const double angle)
 %
 %  A description of each parameter follows:
 %
@@ -10759,11 +10688,9 @@ WandExport MagickWand *MagickSimilarityImage(MagickWand *wand,
 %
 %    o angle: apply the effect along this angle.
 %
-%    o bias: the bias.
-%
 */
 WandExport MagickBooleanType MagickSketchImage(MagickWand *wand,
-  const double radius,const double sigma,const double angle,const double bias)
+  const double radius,const double sigma,const double angle)
 {
   Image
     *sketch_image;
@@ -10774,8 +10701,7 @@ WandExport MagickBooleanType MagickSketchImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  sketch_image=SketchImage(wand->images,radius,sigma,angle,bias,
-    wand->exception);
+  sketch_image=SketchImage(wand->images,radius,sigma,angle,wand->exception);
   if (sketch_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,sketch_image);
@@ -11928,8 +11854,8 @@ WandExport MagickBooleanType MagickUnsharpMaskImage(MagickWand *wand,
 %  The format of the MagickVignetteImage method is:
 %
 %      MagickBooleanType MagickVignetteImage(MagickWand *wand,
-%        const double radius,const double sigma,const double bias,
-%        const ssize_t x,const ssize_t y)
+%        const double radius,const double sigma,const ssize_t x,
+%        const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -11939,14 +11865,11 @@ WandExport MagickBooleanType MagickUnsharpMaskImage(MagickWand *wand,
 %
 %    o sigma: the sigma.
 %
-%    o bias: the bias.
-%
 %    o x, y:  Define the x and y ellipse offset.
 %
 */
 WandExport MagickBooleanType MagickVignetteImage(MagickWand *wand,
-  const double radius,const double sigma,const double bias,const ssize_t x,
-  const ssize_t y)
+  const double radius,const double sigma,const ssize_t x,const ssize_t y)
 {
   Image
     *vignette_image;
@@ -11957,8 +11880,7 @@ WandExport MagickBooleanType MagickVignetteImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  vignette_image=VignetteImage(wand->images,radius,sigma,bias,x,y,
-    wand->exception);
+  vignette_image=VignetteImage(wand->images,radius,sigma,x,y,wand->exception);
   if (vignette_image == (Image *) NULL)
     return(MagickFalse);
   ReplaceImageInList(&wand->images,vignette_image);
