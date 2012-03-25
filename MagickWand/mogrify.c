@@ -54,7 +54,7 @@
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/utility-private.h"
-cache
+
 /*
  Constant declaration.
 */
