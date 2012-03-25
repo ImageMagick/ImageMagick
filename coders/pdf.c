@@ -71,6 +71,7 @@
 #include "magick/static.h"
 #include "magick/string_.h"
 #include "magick/module.h"
+#include "magick/token.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
 #include "magick/module.h"
