@@ -5359,7 +5359,7 @@ int main(int argc,char **argv)
         }
   }
   (void) MagickSetIteratorIndex(magick_wand,3);
-  status=MagickResizeImage(magick_wand,50,50,UndefinedFilter,1.0);
+  status=MagickResizeImage(magick_wand,50,50,UndefinedFilter);
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
   MagickResetIterator(magick_wand);
