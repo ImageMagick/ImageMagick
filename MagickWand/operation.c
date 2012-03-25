@@ -3165,9 +3165,12 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("repage",option+1) == 0)
         {
           if (IfNormalOp)
-            if (IsGeometry(arg1) == MagickFalse)
-              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-            (void) ResetImagePage(_image,arg1);
+            {
+              if (IsGeometry(arg1) == MagickFalse)
+                CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,
+                  arg1);
+              (void) ResetImagePage(_image,arg1);
+            }
           else
             (void) ParseAbsoluteGeometry("0x0+0+0",&_image->page);
           break;
