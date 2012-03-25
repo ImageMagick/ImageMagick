@@ -345,7 +345,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             return(destination_image);
           }
         destination_channel=(PixelChannel) i;
-        channel_mask|=ParseChannelOption(token);
+        channel_mask=(ChannelType) (channel_mask | ParseChannelOption(token));
         if (LocaleCompare(token,"gray") == 0)
           (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
         if ((LocaleCompare(token,"black") == 0) ||
@@ -395,8 +395,8 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     {
       case ExtractChannelOp:
       {
-        channel_mask|=(1 << destination_channel);
-        destination_channel++;
+        channel_mask=(ChannelType) (channel_mask | (1 << destination_channel));
+        destination_channel=(PixelChannel) (destination_channel+1);
         break;
       }
       default:

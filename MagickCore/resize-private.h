@@ -30,8 +30,8 @@ extern MagickPrivate MagickRealType
   GetResizeFilterWeight(const ResizeFilter *,const MagickRealType);
 
 extern MagickPrivate ResizeFilter
-  *AcquireResizeFilter(const Image *,const FilterTypes,const MagickRealType,
-     const MagickBooleanType,ExceptionInfo *),
+  *AcquireResizeFilter(const Image *,const FilterTypes,const MagickBooleanType,
+    ExceptionInfo *),
   *DestroyResizeFilter(ResizeFilter *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

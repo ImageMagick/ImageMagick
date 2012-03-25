@@ -981,7 +981,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   if ((geometry.height % 2) != 0)
     geometry.height--;
   tile_image=ResizeImage(image,geometry.width,geometry.height,TriangleFilter,
-    1.0,exception);
+    exception);
   if (tile_image == (Image *) NULL)
     return(MagickFalse);
   flags=ParseGeometry(page_geometry,&geometry_info);
@@ -1014,7 +1014,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(tile_image,YCCColorspace,exception);
   downsample_image=ResizeImage(tile_image,tile_image->columns/2,
-    tile_image->rows/2,TriangleFilter,1.0,exception);
+    tile_image->rows/2,TriangleFilter,exception);
   if (downsample_image == (Image *) NULL)
     return(MagickFalse);
   /*

@@ -4297,8 +4297,7 @@ static MagickBooleanType XCompositeImage(Display *display,
         Scale composite image.
       */
       resize_image=ResizeImage(composite_image,composite_info.width,
-        composite_info.height,composite_image->filter,composite_image->blur,
-        exception);
+        composite_info.height,composite_image->filter,exception);
       composite_image=DestroyImage(composite_image);
       if (resize_image == (Image *) NULL)
         {
@@ -8236,7 +8235,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       flags=ParseGeometry(radius,&geometry_info);
       sharp_image=SharpenImage(*image,geometry_info.rho,geometry_info.sigma,
-        geometry_info.xi,exception);
+        exception);
       if (sharp_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);
@@ -8272,7 +8271,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       flags=ParseGeometry(radius,&geometry_info);
       blur_image=BlurImage(*image,geometry_info.rho,geometry_info.sigma,
-        geometry_info.xi,exception);
+        exception);
       if (blur_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);
@@ -8651,9 +8650,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         geometry_info.xi=0.1*(*image)->columns;
       if ((flags & PsiValue) == 0)
         geometry_info.psi=0.1*(*image)->rows;
-      vignette_image=VignetteImage(*image,geometry_info.rho,geometry_info.sigma,
-        0.0,(ssize_t) ceil(geometry_info.xi-0.5),(ssize_t)
-        ceil(geometry_info.psi-0.5),exception);
+      vignette_image=VignetteImage(*image,geometry_info.rho,0.0,(ssize_t)
+        ceil(geometry_info.xi-0.5),(ssize_t) ceil(geometry_info.psi-0.5),
+        exception);
       if (vignette_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);
@@ -8767,7 +8766,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if ((flags & SigmaValue) == 0)
         geometry_info.sigma=geometry_info.rho;
       charcoal_image=CharcoalImage(*image,geometry_info.rho,geometry_info.sigma,
-        geometry_info.xi,exception);
+        exception);
       if (charcoal_image != (Image *) NULL)
         {
           *image=DestroyImage(*image);

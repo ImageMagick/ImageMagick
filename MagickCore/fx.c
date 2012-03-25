@@ -560,7 +560,7 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
 %  The format of the CharcoalImage method is:
 %
 %      Image *CharcoalImage(const Image *image,const double radius,
-%        const double sigma,const double bias,ExceptionInfo *exception)
+%        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -570,13 +570,11 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o bias: the bias.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *CharcoalImage(const Image *image,const double radius,
-  const double sigma,const double bias,ExceptionInfo *exception)
+  const double sigma,ExceptionInfo *exception)
 {
   Image
     *charcoal_image,
@@ -597,7 +595,7 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
   clone_image=DestroyImage(clone_image);
   if (edge_image == (Image *) NULL)
     return((Image *) NULL);
-  charcoal_image=BlurImage(edge_image,radius,sigma,bias,exception);
+  charcoal_image=BlurImage(edge_image,radius,sigma,exception);
   edge_image=DestroyImage(edge_image);
   if (charcoal_image == (Image *) NULL)
     return((Image *) NULL);
@@ -3482,9 +3480,8 @@ MagickExport Image *MorphImages(const Image *image,
       beta=(MagickRealType) (i+1.0)/(MagickRealType) (number_frames+1.0);
       alpha=1.0-beta;
       morph_image=ResizeImage(next,(size_t) (alpha*next->columns+beta*
-        GetNextImageInList(next)->columns+0.5),(size_t) (alpha*
-        next->rows+beta*GetNextImageInList(next)->rows+0.5),
-        next->filter,next->blur,exception);
+        GetNextImageInList(next)->columns+0.5),(size_t) (alpha*next->rows+beta*
+        GetNextImageInList(next)->rows+0.5),next->filter,exception);
       if (morph_image == (Image *) NULL)
         {
           morph_images=DestroyImageList(morph_images);
@@ -3499,8 +3496,7 @@ MagickExport Image *MorphImages(const Image *image,
       AppendImageToList(&morph_images,morph_image);
       morph_images=GetLastImageInList(morph_images);
       morph_image=ResizeImage(GetNextImageInList(next),morph_images->columns,
-        morph_images->rows,GetNextImageInList(next)->filter,
-        GetNextImageInList(next)->blur,exception);
+        morph_images->rows,GetNextImageInList(next)->filter,exception);
       if (morph_image == (Image *) NULL)
         {
           morph_images=DestroyImageList(morph_images);
@@ -4050,7 +4046,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
     return((Image *) NULL);
   picture_image=rotate_image;
   picture_image->background_color=image->background_color;
-  polaroid_image=ShadowImage(picture_image,80.0,2.0,0.0,quantum/3,quantum/3,
+  polaroid_image=ShadowImage(picture_image,80.0,0.0,quantum/3,quantum/3,
     exception);
   if (polaroid_image == (Image *) NULL)
     {
@@ -4246,8 +4242,8 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
 %  The format of the ShadowImage method is:
 %
 %      Image *ShadowImage(const Image *image,const double alpha,
-%        const double sigma,const double bias,const ssize_t x_offset,
-%        const ssize_t y_offset,ExceptionInfo *exception)
+%        const double sigma,const ssize_t x_offset,const ssize_t y_offset,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4257,8 +4253,6 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o bias: the bias.
-%
 %    o x_offset: the shadow x-offset.
 %
 %    o y_offset: the shadow y-offset.
@@ -4267,8 +4261,8 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
 %
 */
 MagickExport Image *ShadowImage(const Image *image,const double alpha,
-  const double sigma,const double bias,const ssize_t x_offset,
-  const ssize_t y_offset,ExceptionInfo *exception)
+  const double sigma,const ssize_t x_offset,const ssize_t y_offset,
+  ExceptionInfo *exception)
 {
 #define ShadowImageTag  "Shadow/Image"
 
@@ -4360,7 +4354,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
       return((Image *) NULL);
     }
   channel_mask=SetPixelChannelMask(border_image,AlphaChannel);
-  shadow_image=BlurImage(border_image,0.0,sigma,bias,exception);
+  shadow_image=BlurImage(border_image,0.0,sigma,exception);
   border_image=DestroyImage(border_image);
   if (shadow_image == (Image *) NULL)
     return((Image *) NULL);
@@ -4396,8 +4390,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
 %  The format of the SketchImage method is:
 %
 %    Image *SketchImage(const Image *image,const double radius,
-%      const double sigma,const double angle,const double bias,
-%      ExceptionInfo *exception)
+%      const double sigma,const double angle,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4410,14 +4403,11 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
 %
 %    o angle: apply the effect along this angle.
 %
-%    o bias: the bias.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *SketchImage(const Image *image,const double radius,
-  const double sigma,const double angle,const double bias,
-  ExceptionInfo *exception)
+  const double sigma,const double angle,ExceptionInfo *exception)
 {
   CacheView
     *random_view;
@@ -4511,7 +4501,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       random_image=DestroyImage(random_image);
       return(random_image);
     }
-  blur_image=MotionBlurImage(random_image,radius,sigma,angle,bias,exception);
+  blur_image=MotionBlurImage(random_image,radius,sigma,angle,exception);
   random_image=DestroyImage(random_image);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
@@ -5457,7 +5447,7 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
 %  The format of the VignetteImage method is:
 %
 %      Image *VignetteImage(const Image *image,const double radius,
-%        const double sigma,const double bias,const ssize_t x,const ssize_t y,
+%        const double sigma,const ssize_t x,const ssize_t y,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -5468,16 +5458,13 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
-%    o bias: the bias.
-%
 %    o x, y:  Define the x and y ellipse offset.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *VignetteImage(const Image *image,const double radius,
-  const double sigma,const double bias,const ssize_t x,const ssize_t y,
-  ExceptionInfo *exception)
+  const double sigma,const ssize_t x,const ssize_t y,ExceptionInfo *exception)
 {
   char
     ellipse[MaxTextExtent];
@@ -5527,7 +5514,7 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
   draw_info->primitive=AcquireString(ellipse);
   (void) DrawImage(oval_image,draw_info,exception);
   draw_info=DestroyDrawInfo(draw_info);
-  blur_image=BlurImage(oval_image,radius,sigma,bias,exception);
+  blur_image=BlurImage(oval_image,radius,sigma,exception);
   oval_image=DestroyImage(oval_image);
   if (blur_image == (Image *) NULL)
     {

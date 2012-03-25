@@ -31,9 +31,9 @@ extern MagickExport Image
   *MagnifyImage(const Image *,ExceptionInfo *),
   *MinifyImage(const Image *,ExceptionInfo *),
   *ResampleImage(const Image *,const double,const double,const FilterTypes,
-    const double,ExceptionInfo *),
+    ExceptionInfo *),
   *ResizeImage(const Image *,const size_t,const size_t,const FilterTypes,
-    const double,ExceptionInfo *),
+    ExceptionInfo *),
   *SampleImage(const Image *,const size_t,const size_t,ExceptionInfo *),
   *ScaleImage(const Image *,const size_t,const size_t,ExceptionInfo *),
   *ThumbnailImage(const Image *,const size_t,const size_t,ExceptionInfo *);

@@ -232,12 +232,10 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
   resample_filter->average_defined = MagickFalse;
 
   /* initialise the resampling filter settings */
-  SetResampleFilter(resample_filter, image->filter, image->blur);
-  (void) SetResampleFilterInterpolateMethod(resample_filter,
-    image->interpolate);
+  SetResampleFilter(resample_filter, image->filter);
+  (void) SetResampleFilterInterpolateMethod(resample_filter,image->interpolate);
   (void) SetResampleFilterVirtualPixelMethod(resample_filter,
     GetImageVirtualPixelMethod(image));
-
   return(resample_filter);
 }
 
@@ -469,7 +467,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
           resample_filter->average_defined=MagickTrue;
 
           /* Try to get an averaged pixel color of whole image */
-          average_image=ResizeImage(resample_filter->image,1,1,BoxFilter,1.0,
+          average_image=ResizeImage(resample_filter->image,1,1,BoxFilter,
             resample_filter->exception);
           if (average_image == (Image *) NULL)
             {
@@ -1216,7 +1214,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 %  The format of the SetResampleFilter method is:
 %
 %    void SetResampleFilter(ResampleFilter *resample_filter,
-%      const FilterTypes filter,const double blur)
+%      const FilterTypes filter)
 %
 %  A description of each parameter follows:
 %
@@ -1224,11 +1222,9 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 %
 %    o filter: the resize filter for elliptical weighting LUT
 %
-%    o blur: filter blur factor (radial scaling) for elliptical weighting LUT
-%
 */
 MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
-  const FilterTypes filter,const double blur)
+  const FilterTypes filter)
 {
   ResizeFilter
      *resize_filter;
@@ -1250,7 +1246,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
     resample_filter->filter = RobidouxFilter;
 
   resize_filter = AcquireResizeFilter(resample_filter->image,
-       resample_filter->filter,blur,MagickTrue,resample_filter->exception);
+    resample_filter->filter,MagickTrue,resample_filter->exception);
   if (resize_filter == (ResizeFilter *) NULL)
     {
       (void) ThrowMagickException(resample_filter->exception,GetMagickModule(),

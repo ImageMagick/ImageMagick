@@ -108,7 +108,7 @@
 %  The format of the AdaptiveBlurImage method is:
 %
 %      Image *AdaptiveBlurImage(const Image *image,const double radius,
-%        const double sigma,const double bias,ExceptionInfo *exception)
+%        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -118,8 +118,6 @@
 %      pixel.
 %
 %    o sigma: the standard deviation of the Laplacian, in pixels.
-%
-%    o bias: the bias.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -170,7 +168,7 @@ MagickExport MagickBooleanType AdaptiveLevelImage(Image *image,
 }
 
 MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
-  const double sigma,const double bias,ExceptionInfo *exception)
+  const double sigma,ExceptionInfo *exception)
 {
 #define AdaptiveBlurImageTag  "Convolve/Image"
 #define MagickSigma  (fabs(sigma) <= MagickEpsilon ? 1.0 : sigma)
@@ -386,7 +384,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
           }
         k=kernel[j];
         pixels=p;
-        pixel=bias;
+        pixel=0.0;
         gamma=0.0;
         if ((blur_traits & BlendPixelTrait) == 0)
           {
@@ -476,7 +474,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
 %  The format of the AdaptiveSharpenImage method is:
 %
 %      Image *AdaptiveSharpenImage(const Image *image,const double radius,
-%        const double sigma,const double bias,ExceptionInfo *exception)
+%        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -487,13 +485,11 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
 %
 %    o sigma: the standard deviation of the Laplacian, in pixels.
 %
-%    o bias: the bias.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
-  const double sigma,const double bias,ExceptionInfo *exception)
+  const double sigma,ExceptionInfo *exception)
 {
 #define AdaptiveSharpenImageTag  "Convolve/Image"
 #define MagickSigma  (fabs(sigma) <= MagickEpsilon ? 1.0 : sigma)
@@ -709,7 +705,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
           }
         k=kernel[j];
         pixels=p;
-        pixel=bias;
+        pixel=0.0;
         gamma=0.0;
         if ((sharp_traits & BlendPixelTrait) == 0)
           {
@@ -802,7 +798,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
 %  The format of the BlurImage method is:
 %
 %      Image *BlurImage(const Image *image,const double radius,
-%        const double sigma,const double bias,ExceptionInfo *exception)
+%        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -812,8 +808,6 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
 %      pixel.
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
-%
-%    o bias: the bias.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -855,7 +849,7 @@ static double *GetBlurKernel(const size_t width,const double sigma)
 }
 
 MagickExport Image *BlurImage(const Image *image,const double radius,
-  const double sigma,const double bias,ExceptionInfo *exception)
+  const double sigma,ExceptionInfo *exception)
 {
 #define BlurImageTag  "Blur/Image"
 
@@ -1597,7 +1591,6 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     }
   }
   kernel_info->values[i/2]=(double) (width*width-1.0);
-  kernel_info->bias=image->bias;   /* FUTURE: User bias on a edge image? */
   edge_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(edge_image);
@@ -1692,7 +1685,6 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     }
     k--;
   }
-  kernel_info->bias=image->bias;  /* FUTURE: user bias on an edge image */
   emboss_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   if (emboss_image != (Image *) NULL)
@@ -1812,8 +1804,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
 %  The format of the MotionBlurImage method is:
 %
 %    Image *MotionBlurImage(const Image *image,const double radius,
-%      const double sigma,const double angle,const double bias,
-%      ExceptionInfo *exception)
+%      const double sigma,const double angle,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1825,8 +1816,6 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
 %    o angle: Apply the effect along this angle.
-%
-%    o bias: the bias.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -1861,8 +1850,7 @@ static double *GetMotionBlurKernel(const size_t width,const double sigma)
 }
 
 MagickExport Image *MotionBlurImage(const Image *image,const double radius,
-  const double sigma,const double angle,const double bias,
-  ExceptionInfo *exception)
+  const double sigma,const double angle,ExceptionInfo *exception)
 {
   CacheView
     *blur_view,
@@ -2005,7 +1993,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
             continue;
           }
         k=kernel;
-        pixel=bias;
+        pixel=0.0;
         if ((blur_traits & BlendPixelTrait) == 0)
           {
             for (j=0; j < (ssize_t) width; j++)
@@ -2373,17 +2361,14 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case SharpenPreview:
       {
-        /* FUTURE: user bias on sharpen! This is non-sensical! */
-        preview_image=SharpenImage(thumbnail,radius,sigma,image->bias,
-          exception);
+        preview_image=SharpenImage(thumbnail,radius,sigma,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"sharpen %gx%g",
           radius,sigma);
         break;
       }
       case BlurPreview:
       {
-        /* FUTURE: user bias on blur! This is non-sensical! */
-        preview_image=BlurImage(thumbnail,radius,sigma,image->bias,exception);
+        preview_image=BlurImage(thumbnail,radius,sigma,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"blur %gx%g",radius,
           sigma);
         break;
@@ -2495,9 +2480,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       }
       case CharcoalDrawingPreview:
       {
-        /* FUTURE: user bias on charcoal! This is non-sensical! */
         preview_image=CharcoalImage(thumbnail,(double) radius,(double) sigma,
-          image->bias,exception);
+          exception);
         (void) FormatLocaleString(label,MaxTextExtent,"charcoal %gx%g",
           radius,sigma);
         break;
@@ -2621,7 +2605,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
 %  The format of the RadialBlurImage method is:
 %
 %    Image *RadialBlurImage(const Image *image,const double angle,
-%      const double blur,ExceptionInfo *exception)
+%      ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2635,7 +2619,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
 %
 */
 MagickExport Image *RadialBlurImage(const Image *image,const double angle,
-  const double bias,ExceptionInfo *exception)
+  ExceptionInfo *exception)
 {
   CacheView
     *blur_view,
@@ -2800,7 +2784,7 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
             continue;
           }
         gamma=0.0;
-        pixel=bias;
+        pixel=0.0;
         if ((blur_traits & BlendPixelTrait) == 0)
           {
             for (j=0; j < (ssize_t) n; j+=(ssize_t) step)
@@ -2884,8 +2868,7 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
 %  The format of the SelectiveBlurImage method is:
 %
 %      Image *SelectiveBlurImage(const Image *image,const double radius,
-%        const double sigma,const double threshold,const double bias,
-%        ExceptionInfo *exception)
+%        const double sigma,const double threshold,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2899,14 +2882,11 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
 %    o threshold: only pixels within this contrast threshold are included
 %      in the blur operation.
 %
-%    o bias: the bias.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
-  const double sigma,const double threshold,const double bias,
-  ExceptionInfo *exception)
+  const double sigma,const double threshold,ExceptionInfo *exception)
 {
 #define SelectiveBlurImageTag  "SelectiveBlur/Image"
 
@@ -3085,7 +3065,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
             continue;
           }
         k=kernel;
-        pixel=bias;
+        pixel=0.0;
         pixels=p;
         intensity=(MagickRealType) GetPixelIntensity(image,p+center);
         gamma=0.0;
@@ -3412,7 +3392,7 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
 %  The format of the SharpenImage method is:
 %
 %    Image *SharpenImage(const Image *image,const double radius,
-%      const double sigma,const double bias,ExceptionInfo *exception)
+%      const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -3423,13 +3403,11 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
 %
 %    o sigma: the standard deviation of the Laplacian, in pixels.
 %
-%    o bias: bias.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *SharpenImage(const Image *image,const double radius,
-  const double sigma,const double bias,ExceptionInfo *exception)
+  const double sigma,ExceptionInfo *exception)
 {
   double
     normalize;
@@ -3464,7 +3442,6 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->bias=bias;   /* FUTURE: user bias - non-sensical! */
   kernel_info->signature=MagickSignature;
   kernel_info->values=(MagickRealType *) AcquireAlignedMemory(
     kernel_info->width,kernel_info->width*sizeof(*kernel_info->values));
@@ -3704,7 +3681,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
-  unsharp_image=BlurImage(image,radius,sigma,image->bias,exception);
+  unsharp_image=BlurImage(image,radius,sigma,exception);
   if (unsharp_image == (Image *) NULL)
     return((Image *) NULL);
   quantum_threshold=(MagickRealType) QuantumRange*threshold;

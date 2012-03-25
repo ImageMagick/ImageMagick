@@ -748,7 +748,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
                   flags=ParseRegionGeometry(next,read_info->extract,&geometry,
                     exception);
                   size_image=ResizeImage(next,geometry.width,geometry.height,
-                    next->filter,next->blur,exception);
+                    next->filter,exception);
                   if (size_image != (Image *) NULL)
                     ReplaceImageInList(&next,size_image);
                 }

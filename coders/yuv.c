@@ -391,7 +391,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Scale image.
     */
     resize_image=ResizeImage(chroma_image,image->columns,image->rows,
-      TriangleFilter,1.0,exception);
+      TriangleFilter,exception);
     chroma_image=DestroyImage(chroma_image);
     if (resize_image == (Image *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
@@ -641,7 +641,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
     image->depth=(size_t) (quantum == 1 ? 8 : 16);
     width=image->columns+(image->columns & (horizontal_factor-1));
     height=image->rows+(image->rows & (vertical_factor-1));
-    yuv_image=ResizeImage(image,width,height,TriangleFilter,1.0,exception);
+    yuv_image=ResizeImage(image,width,height,TriangleFilter,exception);
     if (yuv_image == (Image *) NULL)
       {
         (void) CloseBlob(image);
@@ -652,7 +652,7 @@ static MagickBooleanType WriteYUVImage(const ImageInfo *image_info,Image *image,
       Downsample image.
     */
     chroma_image=ResizeImage(image,width/horizontal_factor,
-      height/vertical_factor,TriangleFilter,1.0,exception);
+      height/vertical_factor,TriangleFilter,exception);
     if (chroma_image == (Image *) NULL)
       {
         (void) CloseBlob(image);

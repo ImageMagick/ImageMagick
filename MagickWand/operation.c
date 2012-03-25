@@ -971,7 +971,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           if (parse < 0)
             CLIWandExceptArgBreak(OptionError,"UnrecognizedEndianType",
                                       option,arg1);
-          _image_info->endian=(EndianType) arg1;
+          _image_info->endian=(EndianType) (*arg1);
           (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
@@ -1789,10 +1789,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
-          if ((flags & XiValue) == 0)
-            geometry_info.xi=0.0;
           new_image=AdaptiveBlurImage(_image,geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,_exception);
+            geometry_info.sigma,_exception);
           break;
         }
       if (LocaleCompare("adaptive-resize",option+1) == 0)
@@ -1802,7 +1800,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParseRegionGeometry(_image,arg1,&geometry,_exception);
           new_image=AdaptiveResizeImage(_image,geometry.width,geometry.height,
-               _exception);
+            _exception);
           break;
         }
       if (LocaleCompare("adaptive-sharpen",option+1) == 0)
@@ -1812,10 +1810,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
-          if ((flags & XiValue) == 0)
-            geometry_info.xi=0.0;
           new_image=AdaptiveSharpenImage(_image,geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,_exception);
+            geometry_info.sigma,_exception);
           break;
         }
       if (LocaleCompare("alpha",option+1) == 0)
@@ -1942,16 +1938,13 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("blur",option+1) == 0)
         {
-          /* FUTURE: use of "bias" in a blur is non-sensible */
           if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
-          if ((flags & XiValue) == 0)
-            geometry_info.xi=0.0;
-          new_image=BlurImage(_image,geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,_exception);
+          new_image=BlurImage(_image,geometry_info.rho,geometry_info.sigma,
+           _exception);
           break;
         }
       if (LocaleCompare("border",option+1) == 0)
@@ -2030,7 +2023,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & XiValue) == 0)
             geometry_info.xi=1.0;
           new_image=CharcoalImage(_image,geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,_exception);
+            geometry_info.sigma,_exception);
           break;
         }
       if (LocaleCompare("chop",option+1) == 0)
@@ -2205,7 +2198,6 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           kernel_info=AcquireKernelInfo(arg1);
           if (kernel_info == (KernelInfo *) NULL)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          kernel_info->bias=_image->bias;
           new_image=ConvolveImage(_image,kernel_info,_exception);
           kernel_info=DestroyKernelInfo(kernel_info);
           break;
@@ -2616,7 +2608,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             (void) CloneString(&_image->geometry,arg1);
           else
             new_image=ResizeImage(_image,geometry.width,geometry.height,
-              _image->filter,_image->blur,_exception);
+              _image->filter,_exception);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -2929,8 +2921,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           new_image=MotionBlurImage(_image,geometry_info.rho,
-              geometry_info.sigma,geometry_info.xi,geometry_info.psi,
-              _exception);
+            geometry_info.sigma,geometry_info.xi,_exception);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -3129,8 +3120,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
-          new_image=RadialBlurImage(_image,geometry_info.rho,
-            geometry_info.sigma,_exception);
+          new_image=RadialBlurImage(_image,geometry_info.rho,_exception);
           break;
         }
       if (LocaleCompare("raise",option+1) == 0)
@@ -3177,25 +3167,23 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("resample",option+1) == 0)
         {
-          /* FUTURE: remove blur arguemnt - no longer used
-             Roll into a resize special operation */
+          /* Roll into a resize special operation */
           if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=geometry_info.rho;
           new_image=ResampleImage(_image,geometry_info.rho,
-            geometry_info.sigma,_image->filter,_image->blur,_exception);
+            geometry_info.sigma,_image->filter,_exception);
           break;
         }
       if (LocaleCompare("resize",option+1) == 0)
         {
-          /* FUTURE: remove blur argument - no longer used */
           if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParseRegionGeometry(_image,arg1,&geometry,_exception);
           new_image=ResizeImage(_image,geometry.width,geometry.height,
-            _image->filter,_image->blur,_exception);
+            _image->filter,_exception);
           break;
         }
       if (LocaleCompare("roll",option+1) == 0)
@@ -3264,7 +3252,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & PercentValue) != 0)
             geometry_info.xi=(double) QuantumRange*geometry_info.xi/100.0;
           new_image=SelectiveBlurImage(_image,geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,geometry_info.psi,_exception);
+            geometry_info.sigma,geometry_info.xi,_exception);
           break;
         }
       if (LocaleCompare("separate",option+1) == 0)
@@ -3338,10 +3326,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.xi=4.0;
           if ((flags & PsiValue) == 0)
             geometry_info.psi=4.0;
-          new_image=ShadowImage(_image,geometry_info.rho,
-            geometry_info.sigma,_image->bias,(ssize_t)
-            ceil(geometry_info.xi-0.5),(ssize_t) ceil(geometry_info.psi-0.5),
-            _exception);
+          new_image=ShadowImage(_image,geometry_info.rho,geometry_info.sigma,
+            (ssize_t) ceil(geometry_info.xi-0.5),(ssize_t)
+            ceil(geometry_info.psi-0.5),_exception);
           break;
         }
       if (LocaleCompare("sharpen",option+1) == 0)
@@ -3353,8 +3340,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma=1.0;
           if ((flags & XiValue) == 0)
             geometry_info.xi=0.0;
-          new_image=SharpenImage(_image,geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,_exception);
+          new_image=SharpenImage(_image,geometry_info.rho,geometry_info.sigma,
+           _exception);
           break;
         }
       if (LocaleCompare("shave",option+1) == 0)
@@ -3399,7 +3386,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           new_image=SketchImage(_image,geometry_info.rho,
-            geometry_info.sigma,geometry_info.xi,geometry_info.psi,_exception);
+            geometry_info.sigma,geometry_info.xi,_exception);
           break;
         }
       if (LocaleCompare("solarize",option+1) == 0)
@@ -3597,8 +3584,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & PsiValue) == 0)
             geometry_info.psi=0.1*_image->rows;
           new_image=VignetteImage(_image,geometry_info.rho,geometry_info.sigma,
-            _image->bias,(ssize_t) ceil(geometry_info.xi-0.5),
-            (ssize_t) ceil(geometry_info.psi-0.5),_exception);
+            (ssize_t) ceil(geometry_info.xi-0.5),(ssize_t)
+            ceil(geometry_info.psi-0.5),_exception);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -4576,7 +4563,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       Stack
         *node;
 
-      node = (void *)cli_wand->image_list_stack;
+      node = (Stack *)cli_wand->image_list_stack;
       if ( node == (Stack *)NULL)
         CLIWandExceptionReturn(OptionError,"UnbalancedParenthesis",option);
       cli_wand->image_list_stack = node->next;
@@ -4603,7 +4590,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       Stack
         *node;
 
-      node = (void *)cli_wand->image_info_stack;
+      node = (Stack *)cli_wand->image_info_stack;
       if ( node == (Stack *)NULL)
         CLIWandExceptionReturn(OptionError,"UnbalancedCurlyBraces",option);
       cli_wand->image_info_stack = node->next;

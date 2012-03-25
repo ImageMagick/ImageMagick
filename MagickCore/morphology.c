@@ -2463,8 +2463,7 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %
 %      Image *MorphologyApply(const Image *image,MorphologyMethod method,
 %        const ssize_t iterations,const KernelInfo *kernel,
-%        const CompositeMethod compose,const double bias,
-%        ExceptionInfo *exception)
+%        const CompositeMethod compose,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2486,8 +2485,6 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %          If 'NoCompositeOp' force image to be re-iterated by each kernel.
 %          Otherwise merge the results using the compose method given.
 %
-%    o bias: Convolution Output Bias.
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
@@ -2498,7 +2495,7 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 ** for result convergence determination.
 */
 static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
-  const MorphologyMethod method,const KernelInfo *kernel,const double bias,
+  const MorphologyMethod method,const KernelInfo *kernel,
   ExceptionInfo *exception)
 {
 #define MorphologyTag  "Morphology/Image"
@@ -2645,7 +2642,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         result.green   =
         result.blue    =
         result.alpha =
-        result.black   = bias;
+        result.black   = 0.0;
 
 
         /* Weighted Average of pixels using reflected kernel
@@ -2847,7 +2844,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           result.green   =
           result.blue    =
           result.alpha =
-          result.black   = bias;
+          result.black   = 0.0;
           break;
         case DilateIntensityMorphology:
         case ErodeIntensityMorphology:
@@ -3741,7 +3738,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
 */
 MagickPrivate Image *MorphologyApply(const Image *image,
   const MorphologyMethod method, const ssize_t iterations,
-  const KernelInfo *kernel, const CompositeOperator compose,const double bias,
+  const KernelInfo *kernel, const CompositeOperator compose,
   ExceptionInfo *exception)
 {
   CompositeOperator
@@ -4045,7 +4042,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           /* APPLY THE MORPHOLOGICAL PRIMITIVE (curr -> work) */
           count++;
           changed = MorphologyPrimitive(curr_image, work_image, primitive,
-                       this_kernel, bias, exception);
+             this_kernel, exception);
 
           if ( verbose == MagickTrue ) {
             if ( kernel_loop > 1 )
@@ -4293,8 +4290,8 @@ MagickExport Image *MorphologyImage(const Image *image,
         MagickFalse,artifact);
   }
   /* Apply the Morphology */
-  morphology_image = MorphologyApply(image, method, iterations,
-    curr_kernel, compose, image->bias, exception);
+  morphology_image=MorphologyApply(image,method,iterations,curr_kernel,compose,
+    exception);
 
   /* Cleanup and Exit */
   if ( curr_kernel != kernel )

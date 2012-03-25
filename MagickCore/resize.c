@@ -630,7 +630,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %  The format of the AcquireResizeFilter method is:
 %
 %      ResizeFilter *AcquireResizeFilter(const Image *image,
-%        const FilterTypes filter_type, const MagickBooleanType radial,
+%        const FilterTypes filter_type,const MagickBooleanType radial,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -651,8 +651,8 @@ static MagickRealType Welsh(const MagickRealType x,
 %
 */
 MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
-  const FilterTypes filter,const MagickRealType blur,
-  const MagickBooleanType cylindrical,ExceptionInfo *exception)
+  const FilterTypes filter,const MagickBooleanType cylindrical,
+  ExceptionInfo *exception)
 {
   const char
     *artifact;
@@ -818,7 +818,6 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   */
   filter_type=mapping[filter].filter;
   window_type=mapping[filter].window;
-  resize_filter->blur = blur;   /* function argument blur factor */
   /* Promote 1D Windowed Sinc Filters to a 2D Windowed Jinc filters */
   if ((cylindrical != MagickFalse) && (filter_type == SincFastFilter) &&
       (filter != SincFastFilter))
@@ -1739,7 +1738,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,0,0,MagickTrue,exception));
   if ((columns <= 2) || (rows <= 2))
-    return(ResizeImage(image,columns,rows,image->filter,image->blur,exception));
+    return(ResizeImage(image,columns,rows,image->filter,exception));
   if ((columns >= (2*image->columns)) || (rows >= (2*image->rows)))
     {
       Image
@@ -1754,8 +1753,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       */
       for (width=image->columns; columns >= (2*width-1); width*=2);
       for (height=image->rows; rows >= (2*height-1); height*=2);
-      resize_image=ResizeImage(image,width,height,image->filter,image->blur,
-        exception);
+      resize_image=ResizeImage(image,width,height,image->filter,exception);
       if (resize_image == (Image *) NULL)
         return((Image *) NULL);
       rescale_image=LiquidRescaleImage(resize_image,columns,rows,delta_x,
@@ -1914,7 +1912,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   magnify_image=ResizeImage(image,2*image->columns,2*image->rows,CubicFilter,
-    1.0,exception);
+    exception);
   return(magnify_image);
 }
 
@@ -1954,7 +1952,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  minify_image=ResizeImage(image,image->columns/2,image->rows/2,CubicFilter,1.0,
+  minify_image=ResizeImage(image,image->columns/2,image->rows/2,CubicFilter,
     exception);
   return(minify_image);
 }
@@ -1977,7 +1975,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 %  The format of the ResampleImage method is:
 %
 %      Image *ResampleImage(Image *image,const double x_resolution,
-%        const double y_resolution,const FilterTypes filter,const double blur,
+%        const double y_resolution,const FilterTypes filter,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1990,12 +1988,11 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 %
 %    o filter: Image filter to use.
 %
-%    o blur: the blur factor where > 1 is blurry, < 1 is sharp.
+%    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
-  const double y_resolution,const FilterTypes filter,const double blur,
-  ExceptionInfo *exception)
+  const double y_resolution,const FilterTypes filter,ExceptionInfo *exception)
 {
 #define ResampleImageTag  "Resample/Image"
 
@@ -2019,7 +2016,7 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
     72.0 : image->resolution.x)+0.5);
   height=(size_t) (y_resolution*image->rows/(image->resolution.y == 0.0 ?
     72.0 : image->resolution.y)+0.5);
-  resample_image=ResizeImage(image,width,height,filter,blur,exception);
+  resample_image=ResizeImage(image,width,height,filter,exception);
   if (resample_image != (Image *) NULL)
     {
       resample_image->resolution.x=x_resolution;
@@ -2559,8 +2556,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
 }
 
 MagickExport Image *ResizeImage(const Image *image,const size_t columns,
-  const size_t rows,const FilterTypes filter,const double blur,
-  ExceptionInfo *exception)
+  const size_t rows,const FilterTypes filter,ExceptionInfo *exception)
 {
 #define WorkLoadFactor  0.265
 
@@ -2599,7 +2595,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
   if ((columns == 0) || (rows == 0))
     ThrowImageException(ImageError,"NegativeOrZeroImageSize");
   if ((columns == image->columns) && (rows == image->rows) &&
-      (filter == UndefinedFilter) && (blur == 1.0))
+      (filter == UndefinedFilter))
     return(CloneImage(image,0,0,MagickTrue,exception));
   resize_image=CloneImage(image,columns,rows,MagickTrue,exception);
   if (resize_image == (Image *) NULL)
@@ -2625,8 +2621,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
       if ((image->storage_class == PseudoClass) ||
           (image->matte != MagickFalse) || ((x_factor*y_factor) > 1.0))
         filter_type=MitchellFilter;
-  resize_filter=AcquireResizeFilter(image,filter_type,blur,MagickFalse,
-    exception);
+  resize_filter=AcquireResizeFilter(image,filter_type,MagickFalse,exception);
   /*
     Resize image.
   */
@@ -3358,12 +3353,10 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   x_factor=(MagickRealType) columns/(MagickRealType) image->columns;
   y_factor=(MagickRealType) rows/(MagickRealType) image->rows;
   if ((x_factor*y_factor) > 0.1)
-    thumbnail_image=ResizeImage(image,columns,rows,image->filter,image->blur,
-      exception);
+    thumbnail_image=ResizeImage(image,columns,rows,image->filter,exception);
   else
     if (((SampleFactor*columns) < 128) || ((SampleFactor*rows) < 128))
-      thumbnail_image=ResizeImage(image,columns,rows,image->filter,
-        image->blur,exception);
+      thumbnail_image=ResizeImage(image,columns,rows,image->filter,exception);
     else
       {
         Image
@@ -3374,7 +3367,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
         if (sample_image == (Image *) NULL)
           return((Image *) NULL);
         thumbnail_image=ResizeImage(sample_image,columns,rows,image->filter,
-          image->blur,exception);
+          exception);
         sample_image=DestroyImage(sample_image);
       }
   if (thumbnail_image == (Image *) NULL)

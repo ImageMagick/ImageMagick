@@ -4185,8 +4185,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
           status=MagickFalse;
           break;
         }
-      filter_image=ResizeImage(excerpt_image,1,1,image->filter,image->blur,
-        exception);
+      filter_image=ResizeImage(excerpt_image,1,1,image->filter,exception);
       excerpt_image=DestroyImage(excerpt_image);
       if (filter_image == (Image *) NULL)
         break;
@@ -4635,8 +4634,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
             status=MagickFalse;
             continue;
           }
-        filter_source=ResizeImage(excerpt_source,1,1,source->filter,
-          source->blur,exception);
+        filter_source=ResizeImage(excerpt_source,1,1,source->filter,exception);
         excerpt_source=DestroyImage(excerpt_source);
         if (filter_source == (Image *) NULL)
           continue;
@@ -5164,8 +5162,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           status=MagickFalse;
           break;
         }
-      filter_image=ResizeImage(excerpt_image,1,1,image->filter,image->blur,
-        exception);
+      filter_image=ResizeImage(excerpt_image,1,1,image->filter,exception);
       excerpt_image=DestroyImage(excerpt_image);
       if (filter_image == (Image *) NULL)
         break;

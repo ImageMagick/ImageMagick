@@ -211,8 +211,6 @@ struct _Image
     extract_info;
 
   double
-    bias,           /* FUTURE: depreciated -- convolve bias */
-    blur,           /* FUTURE: depreciated -- resize file blur */
     fuzz;           /* current color fuzz attribute - make image_info */
 
   FilterTypes
