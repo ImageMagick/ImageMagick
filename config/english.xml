@@ -827,6 +827,9 @@
         <message name="UnrecognizedStretchType">
           unrecognized stretch type
         </message>
+        <message name="UnrecognizedStyleType">
+          unrecognized style type
+        </message>
         <message name="UnrecognizedType">
           unrecognized type
         </message>

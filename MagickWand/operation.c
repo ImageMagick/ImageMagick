@@ -714,9 +714,10 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              Used by many coders including PNG
              SyncImageSettings() used to set per-image attribute.
           */
-          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+          arg1=ArgOption("0.0");
+          if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          (void) SetImageOption(_image_info,option+1,ArgOption("0.0"));
+          (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
       if (LocaleCompare("bordercolor",option+1) == 0)
@@ -1090,9 +1091,10 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              SyncImageSettings() used to set per-image attribute.
              Used directly by many coders
           */
-          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+          arg1=ArgOption("0.0");
+          if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          (void) SetImageOption(_image_info,option+1,ArgOption("0.0"));
+          (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -1295,15 +1297,25 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("pointsize",option+1) == 0)
         {
-          if (IsGeometry(arg1) == MagickFalse)
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          _image_info->pointsize=_draw_info->pointsize=
-                   StringToDouble(ArgOption("12"),(char **) NULL);
+          if (IfSetOption) {
+            if (IsGeometry(arg1) == MagickFalse)
+              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+            _image_info->pointsize =
+            _draw_info->pointsize =
+              StringToDouble(arg1,(char **) NULL);
+          }
+          else {
+            _image_info->pointsize=0.0; /* unset pointsize */
+            _draw_info->pointsize=12.0;
+          }
           break;
         }
       if (LocaleCompare("precision",option+1) == 0)
         {
-          (void) SetMagickPrecision(StringToInteger(ArgOption("-1")));
+          arg1=ArgOption("-1");
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          (void) SetMagickPrecision(StringToInteger(arg1));
           break;
         }
       /* FUTURE: Only the 'preview' coder appears to use this
@@ -1325,10 +1337,9 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         {
           if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          _image_info->quality= IfSetOption ? StringToUnsignedLong(arg1)
+                                            : UNDEFINED_COMPRESSION_QUALITY;
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
-          _image_info->quality=UNDEFINED_COMPRESSION_QUALITY;
-          if (IfSetOption)
-            _image_info->quality=StringToUnsignedLong(arg1);
           break;
         }
       if (LocaleCompare("quantize",option+1) == 0)
@@ -1344,7 +1355,9 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("quiet",option+1) == 0)
         {
-          /* FUTURE: if two -quiet is performed you can not do +quiet! */
+          /* FUTURE: if two -quiet is performed you can not do +quiet!
+             This needs to be checked over thoughly.
+          */
           static WarningHandler
             warning_handler = (WarningHandler) NULL;
 
@@ -1367,9 +1380,10 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
              Used by many coders
              SyncImageSettings() used to set per-image attribute.
           */
-          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+          arg1=ArgOption("0.0");
+          if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          (void) SetImageOption(_image_info,option+1,ArgOption("0.0"));
+          (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
       if (LocaleCompare("render",option+1) == 0)
@@ -1385,20 +1399,26 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("sampling-factor",option+1) == 0)
         {
           /* FUTURE: should be converted to jpeg:sampling_factor */
+          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) CloneString(&_image_info->sampling_factor,ArgOption(NULL));
           break;
         }
       if (LocaleCompare("scene",option+1) == 0)
         {
-          /* SyncImageSettings() used to set per-image attribute.
+          /* SyncImageSettings() used to set this as a per-image attribute.
              What ??? Why ????
           */
+          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           _image_info->scene=StringToUnsignedLong(ArgOption("0"));
           break;
         }
       if (LocaleCompare("seed",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           SeedPseudoRandomGenerator(
                IfSetOption ? (size_t) StringToUnsignedLong(arg1)
                            : (size_t) time((time_t *) NULL) );
@@ -1414,8 +1434,12 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("stretch",option+1) == 0)
         {
-          _draw_info->stretch=(StretchType) ParseCommandOption(
-              MagickStretchOptions,MagickFalse,ArgOption("undefined"));
+          arg1=ArgOption("undefined");
+          parse = ParseCommandOption(MagickStretchOptions,MagickFalse,arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedStretchType",
+                 option,arg1);
+          _draw_info->stretch=(StretchType) parse;
           break;
         }
       if (LocaleCompare("stroke",option+1) == 0)
@@ -1451,6 +1475,8 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("strokewidth",option+1) == 0)
         {
+          if (IfSetOption && IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           _draw_info->stroke_width=StringToDouble(ArgOption("1.0"),
                (char **) NULL);
@@ -1458,12 +1484,17 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("style",option+1) == 0)
         {
-          _draw_info->style=(StyleType) ParseCommandOption(MagickStyleOptions,
-               MagickFalse,ArgOption("undefined"));
+          arg1=ArgOption("undefined");
+          parse = ParseCommandOption(MagickStyleOptions,MagickFalse,arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedStyleType",
+                 option,arg1);
+          _draw_info->style=(StyleType) parse;
           break;
         }
       if (LocaleCompare("synchronize",option+1) == 0)
         {
+          /* FUTURE: syncronize to storage - but what does that mean? */
           _image_info->synchronize = ArgBoolean;
           break;
         }
@@ -2990,20 +3021,19 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             angle;
 
           if (IfPlusOp) {
-              RandomInfo
-              *random_info;
+            RandomInfo
+            *random_info;
 
-              random_info=AcquireRandomInfo();
-              angle=22.5*(GetPseudoRandomValue(random_info)-0.5);
-              random_info=DestroyRandomInfo(random_info);
-            }
+            random_info=AcquireRandomInfo();
+            angle=22.5*(GetPseudoRandomValue(random_info)-0.5);
+            random_info=DestroyRandomInfo(random_info);
+          }
           else {
-              if (IsGeometry(arg1) == MagickFalse)
-                CLIWandExceptArgBreak(OptionError,"InvalidArgument",option
-                     ,arg1);
-              flags=ParseGeometry(arg1,&geometry_info);
-              angle=geometry_info.rho;
-            }
+            if (IsGeometry(arg1) == MagickFalse)
+              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+            flags=ParseGeometry(arg1,&geometry_info);
+            angle=geometry_info.rho;
+          }
           caption=GetImageProperty(_image,"caption",_exception);
           new_image=PolaroidImage(_image,_draw_info,caption,angle,
             _image->interpolate,_exception);
@@ -3096,6 +3126,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("radial-blur",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           new_image=RadialBlurImage(_image,geometry_info.rho,
             geometry_info.sigma,_exception);
@@ -3103,6 +3135,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("raise",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParsePageGeometry(_image,arg1,&geometry,_exception);
           if ((flags & SigmaValue) == 0)
             geometry.height=geometry.width;
@@ -3111,6 +3145,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("random-threshold",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) RandomThresholdImage(_image,arg1,_exception);
           break;
         }
@@ -3129,6 +3165,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("repage",option+1) == 0)
         {
           if (IfNormalOp)
+            if (IsGeometry(arg1) == MagickFalse)
+              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
             (void) ResetImagePage(_image,arg1);
           else
             (void) ParseAbsoluteGeometry("0x0+0+0",&_image->page);
@@ -3136,7 +3174,10 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("resample",option+1) == 0)
         {
-          /* FUTURE: remove blur arguemnt - no longer used */
+          /* FUTURE: remove blur arguemnt - no longer used
+             Roll into a resize special operation */
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=geometry_info.rho;
@@ -3147,6 +3188,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("resize",option+1) == 0)
         {
           /* FUTURE: remove blur argument - no longer used */
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParseRegionGeometry(_image,arg1,&geometry,_exception);
           new_image=ResizeImage(_image,geometry.width,geometry.height,
             _image->filter,_image->blur,_exception);
@@ -3154,19 +3197,22 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("roll",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParsePageGeometry(_image,arg1,&geometry,_exception);
           new_image=RollImage(_image,geometry.x,geometry.y,_exception);
           break;
         }
       if (LocaleCompare("rotate",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if (strchr(arg1,'>') != (char *) NULL)
             if (_image->columns <= _image->rows)
               break;
           if (strchr(arg1,'<') != (char *) NULL)
             if (_image->columns >= _image->rows)
               break;
-
           (void) ParseGeometry(arg1,&geometry_info);
           new_image=RotateImage(_image,geometry_info.rho,_exception);
           break;
@@ -3178,6 +3224,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("sample",option+1) == 0)
         {
           /* FUTURE: Roll into a resize special operator */
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParseRegionGeometry(_image,arg1,&geometry,_exception);
           new_image=SampleImage(_image,geometry.width,geometry.height,
             _exception);
@@ -3186,13 +3234,29 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("scale",option+1) == 0)
         {
           /* FUTURE: Roll into a resize special operator */
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParseRegionGeometry(_image,arg1,&geometry,_exception);
           new_image=ScaleImage(_image,geometry.width,geometry.height,
             _exception);
           break;
         }
+      if (LocaleCompare("segment",option+1) == 0)
+        {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & SigmaValue) == 0)
+            geometry_info.sigma=1.0;
+          (void) SegmentImage(_image,_image->colorspace,
+            _image_info->verbose,geometry_info.rho,geometry_info.sigma,
+            _exception);
+          break;
+        }
       if (LocaleCompare("selective-blur",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & PercentValue) != 0)
             geometry_info.xi=(double) QuantumRange*geometry_info.xi/100.0;
@@ -3209,21 +3273,10 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("sepia-tone",option+1) == 0)
         {
-          double
-            threshold;
-
-          threshold=StringToDoubleInterval(arg1,(double) QuantumRange+1.0);
-          new_image=SepiaToneImage(_image,threshold,_exception);
-          break;
-        }
-      if (LocaleCompare("segment",option+1) == 0)
-        {
-          flags=ParseGeometry(arg1,&geometry_info);
-          if ((flags & SigmaValue) == 0)
-            geometry_info.sigma=1.0;
-          (void) SegmentImage(_image,_image->colorspace,
-            _image_info->verbose,geometry_info.rho,geometry_info.sigma,
-            _exception);
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          new_image=SepiaToneImage(_image,StringToDoubleInterval(arg1,
+                 (double) QuantumRange+1.0),_exception);
           break;
         }
       if (LocaleCompare("set",option+1) == 0)
@@ -3231,8 +3284,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           char
             *value;
 
-          if (IfPlusOp)
-            {
+          if (IfPlusOp) {
               if (LocaleNCompare(arg1,"registry:",9) == 0)
                 (void) DeleteImageRegistry(arg1+9);
               else
@@ -3245,13 +3297,11 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                   (void) DeleteImageProperty(_image,arg1);
               break;
             }
-          value=InterpretImageProperties(_image_info,_image,arg2,
-            _exception);
+          value=InterpretImageProperties(_image_info,_image,arg2,_exception);
           if (value == (char *) NULL)
             break;
           if (LocaleNCompare(arg1,"registry:",9) == 0)
-            (void) SetImageRegistry(StringRegistryType,arg1+9,value,
-              _exception);
+            (void) SetImageRegistry(StringRegistryType,arg1+9,value,_exception);
           else
             if (LocaleNCompare(arg1,"option:",7) == 0)
               {
@@ -3265,6 +3315,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("shade",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
@@ -3274,6 +3326,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("shadow",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
@@ -3289,6 +3343,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("sharpen",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
@@ -3300,12 +3356,16 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("shave",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParsePageGeometry(_image,arg1,&geometry,_exception);
           new_image=ShaveImage(_image,&geometry,_exception);
           break;
         }
       if (LocaleCompare("shear",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=geometry_info.rho;
@@ -3315,6 +3375,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("sigmoidal-contrast",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=(double) QuantumRange/2.0;
@@ -3328,6 +3390,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("sketch",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
@@ -3337,35 +3401,41 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("solarize",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) SolarizeImage(_image,StringToDoubleInterval(arg1,(double)
                  QuantumRange+1.0),_exception);
           break;
         }
       if (LocaleCompare("sparse-color",option+1) == 0)
         {
-          SparseColorMethod
-            method;
-
           char
             *arguments;
 
-          method=(SparseColorMethod) ParseCommandOption(
-            MagickSparseColorOptions,MagickFalse,arg1);
+          parse= ParseCommandOption(MagickSparseColorOptions,MagickFalse,arg1);
+          if ( parse < 0 )
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedSparseColorMethod",
+                option,arg1);
           arguments=InterpretImageProperties(_image_info,_image,arg2,_exception);
           if (arguments == (char *) NULL)
-            break;
-          new_image=SparseColorOption(_image,method,arguments,_exception);
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg2);
+          new_image=SparseColorOption(_image,(SparseColorMethod)parse,
+               arguments,_exception);
           arguments=DestroyString(arguments);
           break;
         }
       if (LocaleCompare("splice",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParseGravityGeometry(_image,arg1,&geometry,_exception);
           new_image=SpliceImage(_image,&geometry,_exception);
           break;
         }
       if (LocaleCompare("spread",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParseGeometry(arg1,&geometry_info);
           new_image=SpreadImage(_image,geometry_info.rho,_image->interpolate,
                _exception);
@@ -3375,7 +3445,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           parse=ParseCommandOption(MagickStatisticOptions,MagickFalse,arg1);
           if ( parse < 0 )
-            CLIWandExceptArgBreak(OptionError,"UnrecognizedFunction",
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedStatisticType",
                  option,arg1);
           if (IsGeometry(arg2) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg2);
@@ -3392,6 +3462,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("swirl",option+1) == 0)
         {
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) ParseGeometry(arg1,&geometry_info);
           new_image=SwirlImage(_image,geometry_info.rho,
             _image->interpolate,_exception);
@@ -4236,7 +4308,6 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("remap",option+1) == 0)
         {
-              (void) RemapImages(_quantize_info,_images,(Image *) NULL,_exception);
           (void) RemapImages(_quantize_info,_images,(Image *) NULL,_exception);
           break;
         }
@@ -4257,6 +4328,8 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           ssize_t
             offset;
 
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           offset=(ssize_t) StringToLong(arg1);
           smush_image=SmushImages(_images,normal_op,offset,_exception);
           if (smush_image == (Image *) NULL)
@@ -4276,6 +4349,8 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
             index,
             swap_index;
 
+          if (IsGeometry(arg1) == MagickFalse)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           index=-1;
           swap_index=-2;
           if (IfNormalOp)
@@ -4295,13 +4370,9 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           p=GetImageFromList(_images,index);
           q=GetImageFromList(_images,swap_index);
           if ((p == (Image *) NULL) || (q == (Image *) NULL))
-            {
-              (void) ThrowMagickException(_exception,GetMagickModule(),
-                OptionError,"NoSuchImage","'%s'",_images->filename);
-              break;
-            }
+            CLIWandExceptArgBreak(OptionError,"NoSuchImage",option,arg1);
           if (p == q)
-            break;
+            break;  /* same image - no-op - not an error */
           swap=CloneImage(p,0,0,MagickTrue,_exception);
           ReplaceImageInList(&p,CloneImage(q,0,0,MagickTrue,_exception));
           ReplaceImageInList(&q,swap);
@@ -4428,7 +4499,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
          _exception);
 
   if (LocaleCompare("respect-parenthesis",option+1) == 0) {
-      /* image-setting stack linkage */
+      /* link image and setting stacks - option is itself saved on stack! */
       (void) SetImageOption(cli_wand->wand.image_info,option+1,
            *option == '-' ? "true" : (char *) NULL);
       return;
@@ -4457,9 +4528,9 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       cli_wand->image_list_stack = node;
 
       /* handle respect-parenthesis */
-      if ( IsMagickTrue(GetImageOption(cli_wand->wand.image_info,
+      if (IsMagickTrue(GetImageOption(cli_wand->wand.image_info,
                "respect-parenthesis")) != MagickFalse )
-        option="{"; /* push image settings too */
+        option="{"; /* fall-thru so as to push image settings too */
       else
         return;
     }
@@ -4517,7 +4588,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
         {
           if (IsMagickTrue(GetImageOption((ImageInfo *)node->data,
                  "respect-parenthesis")) != MagickFalse )
-            option="}"; /* pop image settings too */
+            option="}"; /* fall-thru so as to pop image settings too */
           else
             return;
         }
