@@ -62,13 +62,14 @@
 #include "magick/string-private.h"
 #include "magick/token.h"
 #include "magick/utility.h"
-#if defined(MAGICKCORE_PANGOFT2_DELEGATE)
+#undef MAGICKCORE_PANGOCAIRO_DELEGATE
+#if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
 #include <pango/pango.h>
-#include <pango/pangoft2.h>
+#include <pango/pangocairo.h>
 #include <pango/pango-features.h>
 #endif
 
-#if defined(MAGICKCORE_PANGOFT2_DELEGATE)
+#if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -444,11 +445,11 @@ ModuleExport size_t RegisterPANGOImage(void)
 
   *version='\0';
 #if defined(PANGO_VERSION_STRING)
-  (void) FormatLocaleString(version,MaxTextExtent,"Pangoft2 %s",
+  (void) FormatLocaleString(version,MaxTextExtent,"Pangocairo %s",
     PANGO_VERSION_STRING);
 #endif
   entry=SetMagickInfo("PANGO");
-#if defined(MAGICKCORE_PANGOFT2_DELEGATE)
+#if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadPANGOImage;
 #endif
   entry->description=ConstantString("Pango Markup Language");
