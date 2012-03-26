@@ -1,4 +1,7 @@
-2012-03-21  6.7.6-1 Glenn Randers-Pehrson <glennrp@image...>
+2012-03-26  6.7.6-2 Anthony Thyssen <A.Thyssen@griffith...>
+  * Added "Nearest" as a synonym for "Nearest-Neighbor" iterpolate setting
+
+2012-03-21  6.7.6-2 Glenn Randers-Pehrson <glennrp@image...>
   * coders/png.c: stored "file_gamma" for later use by identify.
 
 2012-03-19  6.7.6-2 Cristy  <quetzlzacatenango@image...>
