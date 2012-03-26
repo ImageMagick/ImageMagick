@@ -1095,6 +1095,7 @@ static const OptionInfo
     { "filter", FilterInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { "Integer", IntegerInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { "Mesh", MeshInterpolatePixel, UndefinedOptionFlag, MagickFalse },
+    { "Nearest", NearestNeighborInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { "NearestNeighbor", NearestNeighborInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { "Spline", SplineInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedInterpolatePixel, UndefinedOptionFlag, MagickFalse }

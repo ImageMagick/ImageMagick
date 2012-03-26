@@ -697,7 +697,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           */
           if (IfSetOption && IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          (void) SetImageOption(_image_info,option+1,ArgOption("0"));
+          (void) SetImageOption(_image_info,"convolve:bias",ArgOption(NULL));
           break;
         }
       if (LocaleCompare("black-point-compensation",option+1) == 0)
@@ -971,6 +971,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           if (parse < 0)
             CLIWandExceptArgBreak(OptionError,"UnrecognizedEndianType",
                                       option,arg1);
+          /* FUTURE: check alloc/free of endian string!  - remove? */
           _image_info->endian=(EndianType) (*arg1);
           (void) SetImageOption(_image_info,option+1,arg1);
           break;
@@ -2198,6 +2199,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           kernel_info=AcquireKernelInfo(arg1);
           if (kernel_info == (KernelInfo *) NULL)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          /* kernel_info->bias=_image->bias; -- FUTURE: check this path! */
           new_image=ConvolveImage(_image,kernel_info,_exception);
           kernel_info=DestroyKernelInfo(kernel_info);
           break;
@@ -3167,7 +3169,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("resample",option+1) == 0)
         {
-          /* Roll into a resize special operation */
+          /* FUTURE: Roll into a resize special operation */
           if (IsGeometry(arg1) == MagickFalse)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);

@@ -805,9 +805,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         }
       /*
         Blur Image by resampling.
+	FUTURE: this is currently broken, especially for small sigma blurs
+        This needs to be fixed to use a non-user filter setup that provides
+        far more control than currently available.
       */
       resample_filter=AcquireResampleFilter(image,exception);
-      SetResampleFilter(resample_filter,CubicFilter);
+      SetResampleFilter(resample_filter,CubicFilter); /* was blur*2 */
       destination_view=AcquireCacheView(destination_image);
       composite_view=AcquireCacheView(composite_image);
       for (y=0; y < (ssize_t) composite_image->rows; y++)
