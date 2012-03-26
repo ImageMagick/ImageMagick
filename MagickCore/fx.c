@@ -4046,7 +4046,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
     return((Image *) NULL);
   picture_image=rotate_image;
   picture_image->background_color=image->background_color;
-  polaroid_image=ShadowImage(picture_image,80.0,0.0,quantum/3,quantum/3,
+  polaroid_image=ShadowImage(picture_image,80.0,2.0,quantum/3,quantum/3,
     exception);
   if (polaroid_image == (Image *) NULL)
     {
