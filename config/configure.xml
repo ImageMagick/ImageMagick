@@ -12,7 +12,7 @@
   <configure name="LIB_VERSION_NUMBER" value="7,0,0,0"/>
   <configure name="SVN_REVISION" value="7227" />
   <configure name="RELEASE_DATE" value="2012-03-26"/>
-  <configure name="CONFIGURE" value="./configure "/>
+  <configure name="CONFIGURE" value="./configure  '--enable-maintainer-mode'"/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
   <configure name="INCLUDE_PATH" value="/usr/local/include/ImageMagick"/>
@@ -29,7 +29,7 @@
   <configure name="PCFLAGS" value="-fopenmp"/>
   <configure name="DEFS" value="-DHAVE_CONFIG_H"/>
   <configure name="LDFLAGS" value="-L/usr/local/lib -L/usr/lib"/>
-  <configure name="LIBS" value="-lMagickCore -llcms2 -ltiff -lfreetype -ljasper -ljpeg -lpng12 -ldjvulibre -lfftw3 -lfontconfig -lXext -lXt -lSM -lICE -lX11 -llzma -lbz2 -pthread -lpangoft2-1.0 -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lxml2 -lgvc -lgraph -lcdt -lz -lm -lgomp -lpthread -lltdl"/>
+  <configure name="LIBS" value="-lMagickCore -llcms2 -ltiff -lfreetype -ljasper -ljpeg -lpng12 -ldjvulibre -lfftw3 -lfontconfig -lXext -lXt -lSM -lICE -lX11 -llzma -lbz2 -pthread -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lxml2 -lgvc -lgraph -lcdt -lz -lm -lgomp -lpthread -lltdl"/>
   <configure name="CXX" value="g++"/>
   <configure name="CXXFLAGS" value="-g -O2 -pthread"/>
   <configure name="DISTCHECK_CONFIG_FLAGS" value="--disable-deprecated --with-quantum-depth=16 --with-umem=no --with-autotrace=no --with-gslib=no --with-fontpath= --with-wmf=no --with-perl=no"/>

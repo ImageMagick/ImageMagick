@@ -1320,9 +1320,9 @@
 #define MAGICKCORE_PACKAGE_VERSION "7.0.0-0"
 #endif
 
-/* Define if you have PANGOFT2 library */
-#ifndef MAGICKCORE_PANGOFT2_DELEGATE
-#define MAGICKCORE_PANGOFT2_DELEGATE 1
+/* Define if you have PANGOCAIRO library */
+#ifndef MAGICKCORE_PANGOCAIRO_DELEGATE
+#define MAGICKCORE_PANGOCAIRO_DELEGATE 1
 #endif
 
 /* Define if you have PANGO library */

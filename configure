@@ -756,8 +756,8 @@ RSVG_CFLAGS
 PNG_LIBS
 PNG_DELEGATE_FALSE
 PNG_DELEGATE_TRUE
-PANGOFT2_DELEGATE_FALSE
-PANGOFT2_DELEGATE_TRUE
+PANGOCAIRO_DELEGATE_FALSE
+PANGOCAIRO_DELEGATE_TRUE
 PANGO_DELEGATE_FALSE
 PANGO_DELEGATE_TRUE
 PANGO_LIBS
@@ -30894,7 +30894,7 @@ if test "$with_pango" != 'yes'; then
 fi
 
 have_pango='no'
-have_pangoft2='no'
+have_pangocairo='no'
 PANGO_CFLAGS=""
 PANGO_LIBS=""
 PANGO_PKG=""
@@ -30910,12 +30910,12 @@ if test -n "$PANGO_CFLAGS"; then
     pkg_cv_PANGO_CFLAGS="$PANGO_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangoft2 >= 1.28.1\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "pangoft2 >= 1.28.1") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangocairo >= 1.28.1\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pangocairo >= 1.28.1") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_PANGO_CFLAGS=`$PKG_CONFIG --cflags "pangoft2 >= 1.28.1" 2>/dev/null`
+  pkg_cv_PANGO_CFLAGS=`$PKG_CONFIG --cflags "pangocairo >= 1.28.1" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -30926,12 +30926,12 @@ if test -n "$PANGO_LIBS"; then
     pkg_cv_PANGO_LIBS="$PANGO_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangoft2 >= 1.28.1\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "pangoft2 >= 1.28.1") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"pangocairo >= 1.28.1\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "pangocairo >= 1.28.1") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_PANGO_LIBS=`$PKG_CONFIG --libs "pangoft2 >= 1.28.1" 2>/dev/null`
+  pkg_cv_PANGO_LIBS=`$PKG_CONFIG --libs "pangocairo >= 1.28.1" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -30949,24 +30949,24 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        PANGO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "pangoft2 >= 1.28.1" 2>&1`
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "pangocairo >= 1.28.1" 2>&1`
         else
-	        PANGO_PKG_ERRORS=`$PKG_CONFIG --print-errors "pangoft2 >= 1.28.1" 2>&1`
+	        PANGO_PKG_ERRORS=`$PKG_CONFIG --print-errors "pangocairo >= 1.28.1" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$PANGO_PKG_ERRORS" >&5
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-                have_pangoft2=no
+                have_pangocairo=no
 elif test $pkg_failed = untried; then
-	have_pangoft2=no
+	have_pangocairo=no
 else
 	PANGO_CFLAGS=$pkg_cv_PANGO_CFLAGS
 	PANGO_LIBS=$pkg_cv_PANGO_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-	have_pangoft2=yes
+	have_pangocairo=yes
 fi
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
@@ -31050,12 +31050,12 @@ $as_echo "#define PANGO_DELEGATE 1" >>confdefs.h
     fi
 fi
 
-if test "$have_pangoft2" = 'yes'; then
+if test "$have_pangocairo" = 'yes'; then
 
-$as_echo "#define PANGOFT2_DELEGATE 1" >>confdefs.h
+$as_echo "#define PANGOCAIRO_DELEGATE 1" >>confdefs.h
 
     if test "$with_modules" = 'no'; then
-        CPPFLAGS="$PANGOFT2_CFLAGS $CPPFLAGS"
+        CPPFLAGS="$PANGOCAIRO_CFLAGS $CPPFLAGS"
     fi
 fi
 
@@ -31067,12 +31067,12 @@ else
   PANGO_DELEGATE_FALSE=
 fi
 
- if test "$have_pangoft2" = 'yes'; then
-  PANGOFT2_DELEGATE_TRUE=
-  PANGOFT2_DELEGATE_FALSE='#'
+ if test "$have_pangocairo" = 'yes'; then
+  PANGOCAIRO_DELEGATE_TRUE=
+  PANGOCAIRO_DELEGATE_FALSE='#'
 else
-  PANGOFT2_DELEGATE_TRUE='#'
-  PANGOFT2_DELEGATE_FALSE=
+  PANGOCAIRO_DELEGATE_TRUE='#'
+  PANGOCAIRO_DELEGATE_FALSE=
 fi
 
 
@@ -36035,8 +36035,8 @@ if test -z "${PANGO_DELEGATE_TRUE}" && test -z "${PANGO_DELEGATE_FALSE}"; then
   as_fn_error $? "conditional \"PANGO_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${PANGOFT2_DELEGATE_TRUE}" && test -z "${PANGOFT2_DELEGATE_FALSE}"; then
-  as_fn_error $? "conditional \"PANGOFT2_DELEGATE\" was never defined.
+if test -z "${PANGOCAIRO_DELEGATE_TRUE}" && test -z "${PANGOCAIRO_DELEGATE_FALSE}"; then
+  as_fn_error $? "conditional \"PANGOCAIRO_DELEGATE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${PNG_DELEGATE_TRUE}" && test -z "${PNG_DELEGATE_FALSE}"; then
