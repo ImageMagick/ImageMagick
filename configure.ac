@@ -2458,13 +2458,13 @@ if test "$with_pango" != 'yes'; then
 fi
 
 have_pango='no'
-have_pangoft2='no'
+have_pangocairo='no'
 PANGO_CFLAGS=""
 PANGO_LIBS=""
 PANGO_PKG=""
 if test "x$with_pango" = "xyes"; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-    PKG_CHECK_MODULES(PANGO, [pangoft2 >= 1.28.1], have_pangoft2=yes, have_pangoft2=no)
+    PKG_CHECK_MODULES(PANGO, [pangocairo >= 1.28.1], have_pangocairo=yes, have_pangocairo=no)
     AC_MSG_RESULT([])
     PKG_CHECK_MODULES(PANGO, [pango >= 1.28.1], have_pango=yes, have_pango=no)
     AC_MSG_RESULT([])
@@ -2477,15 +2477,15 @@ if test "$have_pango" = 'yes'; then
     fi
 fi
 
-if test "$have_pangoft2" = 'yes'; then
-    AC_DEFINE(PANGOFT2_DELEGATE,1,Define if you have PANGOFT2 library)
+if test "$have_pangocairo" = 'yes'; then
+    AC_DEFINE(PANGOCAIRO_DELEGATE,1,Define if you have PANGOCAIRO library)
     if test "$with_modules" = 'no'; then
-        CPPFLAGS="$PANGOFT2_CFLAGS $CPPFLAGS"
+        CPPFLAGS="$PANGOCAIRO_CFLAGS $CPPFLAGS"
     fi
 fi
 
 AM_CONDITIONAL(PANGO_DELEGATE, test "$have_pango" = 'yes')
-AM_CONDITIONAL(PANGOFT2_DELEGATE, test "$have_pangoft2" = 'yes')
+AM_CONDITIONAL(PANGOCAIRO_DELEGATE, test "$have_pangocairo" = 'yes')
 AC_SUBST(PANGO_CFLAGS)
 AC_SUBST(PANGO_LIBS)
 
