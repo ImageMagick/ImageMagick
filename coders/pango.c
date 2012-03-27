@@ -149,9 +149,6 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   RectangleInfo
     page;
 
-  register Quantum
-    *q;
-
   register unsigned char
     *p;
 
@@ -349,7 +346,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
         image->resolution.y+36.0)/72.0+0.5));
     }
   /*
-    Create surface.
+    Render markup.
   */
   stride=(size_t) cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
     image->columns);
@@ -364,13 +361,13 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   surface=cairo_image_surface_create_for_data(pixels,CAIRO_FORMAT_ARGB32,
     image->columns,image->rows,stride);
   cairo_image=cairo_create(surface);
-  cairo_set_operator (cairo_image,CAIRO_OPERATOR_CLEAR);
+  cairo_set_operator(cairo_image,CAIRO_OPERATOR_CLEAR);
   cairo_paint(cairo_image);
   cairo_set_operator(cairo_image,CAIRO_OPERATOR_OVER);
   pango_cairo_show_layout(cairo_image,layout);
-cairo_surface_write_to_png(surface,"out.png");
   cairo_destroy(cairo_image);
   cairo_surface_destroy(surface);
+  g_object_unref(layout);
   g_object_unref(fontmap);
   /*
     Convert surface to image.
@@ -380,6 +377,9 @@ cairo_surface_write_to_png(surface,"out.png");
   GetPixelInfo(image,&fill_color);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    register Quantum
+      *q;
+
     register ssize_t
       x;
 
