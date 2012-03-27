@@ -324,7 +324,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   if (image->columns == 0)
     {
       pango_layout_get_pixel_extents(layout,NULL,&extent);
-      image->columns=extent.x+extent.width;
+      image->columns=extent.x+extent.width+2*page.x;
     }
   else
     {
@@ -335,7 +335,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   if (image->rows == 0)
     {
       pango_layout_get_pixel_extents(layout,NULL,&extent);
-      image->rows=extent.y+extent.height;
+      image->rows=extent.y+extent.height+2*page.y;
     }
   else
     {
@@ -362,6 +362,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   cairo_set_operator(cairo_image,CAIRO_OPERATOR_CLEAR);
   cairo_paint(cairo_image);
   cairo_set_operator(cairo_image,CAIRO_OPERATOR_OVER);
+  cairo_translate(cairo_image,page.x,page.y);
   pango_cairo_show_layout(cairo_image,layout);
   cairo_destroy(cairo_image);
   cairo_surface_destroy(surface);
