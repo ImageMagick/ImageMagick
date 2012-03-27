@@ -214,11 +214,35 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     RightToLeftDirection ? PANGO_DIRECTION_RTL : PANGO_DIRECTION_LTR);
   switch (draw_info->gravity)
   {
-    case NorthGravity: gravity=PANGO_GRAVITY_NORTH; break;
-    case WestGravity: gravity=PANGO_GRAVITY_WEST; break;
-    case EastGravity: gravity=PANGO_GRAVITY_EAST; break;
-    case SouthGravity: gravity=PANGO_GRAVITY_SOUTH; break;
-    default: gravity=PANGO_GRAVITY_AUTO; break;
+    case NorthGravity:
+    {
+      gravity=PANGO_GRAVITY_NORTH;
+      break;
+    }
+    case NorthWestGravity:
+    case WestGravity:
+    case SouthWestGravity:
+    {
+      gravity=PANGO_GRAVITY_WEST;
+      break;
+    }
+    case NorthEastGravity:
+    case EastGravity:
+    case SouthEastGravity:
+    {
+      gravity=PANGO_GRAVITY_EAST;
+      break;
+    }
+    case SouthGravity:
+    {
+      gravity=PANGO_GRAVITY_SOUTH;
+      break;
+    }
+    default:
+    {
+      gravity=PANGO_GRAVITY_AUTO;
+      break;
+    }
   }
   pango_context_set_base_gravity(context,gravity);
   option=GetImageOption(image_info,"pango:gravity-hint");
