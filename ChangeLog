@@ -1,3 +1,6 @@
+2012-03-28  6.7.6-2 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.6-2, SVN revision 7245.
+
 2012-03-26  6.7.6-2 Anthony Thyssen <A.Thyssen@griffith...>
   * Added "Nearest" as a synonym for "Nearest-Neighbor" iterpolate setting
 
