@@ -5,6 +5,7 @@
   * coders/png.c: stored "file_gamma" for later use by identify.
 
 2012-03-19  6.7.6-2 Cristy  <quetzlzacatenango@image...>
+  * Add full support for Pango markup.
   * Pango namespace is 'pango:', not 'caption:'.
   * Correct for EXR images with broken display windows.
 
