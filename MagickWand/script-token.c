@@ -197,15 +197,15 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
 %  end of the line.  You can escape a comment '#', using quotes or backlsashes
 %  just as you can in a shell.
 %
-%  As a special case a ';' at the start of a line is also treated as a comment
+%  As a special case a ':' at the start of a line is also treated as a comment
 %  This allows a magick script to ignore a line that is parsed by the shell
 %  and can be used as a 'launcher' for magick scripts. For example
 %
 %    #!/bin/sh
 %    #
 %    # Shell Launcher for Magick Script
-%    ; echo "This part is run in the shell"
-%    ; exec magick -script "$0" "$@"; exit 10
+%    : echo "This part is run in the shell"
+%    : exec magick -script "$0" "$@"; exit 10
 %    #
 %    # The rest of the script is magick script
 %    -read label:"This is a Magick Script!"
