@@ -2752,7 +2752,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
-        if (LocaleCompare("thumbnail",option+1) == 0)
+        if (LocaleCompare("threshold",option+1) == 0)
           {
             if (*option == '+')
               break;
@@ -2763,7 +2763,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
-        if (LocaleCompare("threshold",option+1) == 0)
+        if (LocaleCompare("thumbnail",option+1) == 0)
           {
             if (*option == '+')
               break;

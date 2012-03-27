@@ -660,56 +660,60 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
 
 #if 0
   /* FUTURE: This does not make sense!  Remove it.
-     Only a 'image read' needs to expand file name glob patterns
+     Only "-read" needs to expand file name glob patterns
   */
   status=ExpandFilenames(&argc,&argv);
   if (status == MagickFalse)
     ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
 #endif
-
-  /* Handle special single use options */
-  if (argc == 2) {
-    option=argv[1];
-    if ((LocaleCompare("-version",option+1) == 0) ||
-        (LocaleCompare("--version",option+1) == 0) ) {
-      (void) FormatLocaleFile(stdout,"Version: %s\n",
-        GetMagickVersion((size_t *) NULL));
-      (void) FormatLocaleFile(stdout,"Copyright: %s\n",
-        GetMagickCopyright());
-      (void) FormatLocaleFile(stdout,"Features: %s\n\n",
-        GetMagickFeatures());
-      return(MagickFalse);
-    }
-  }
-
-  if (argc >= 2) {
-    /* Special "concatenate option (hidden) for delegate usage */
-    if (LocaleCompare("-concatenate",argv[1]) == 0)
-      return(ConcatenateImages(argc,argv,exception));
-
-    /* Special Handling for a "#!/usr/bin/env magick-script" script */
-    if (LocaleCompare("magick-script",argv[0]+strlen(argv[0])-13) == 0) {
-      cli_wand=AcquireMagickCLI(image_info,exception);
-      GetPathComponent(argv[1],TailPath,cli_wand->wand.name);
-      ProcessScriptOptions(cli_wand,argc,argv,1);
-      goto Magick_Command_Cleanup;
-    }
-  }
-
-  if (argc < 3)
-    return(MagickUsage());
-
   /* Initialize special "CLI Wand" to hold images and settings (empty) */
   cli_wand=AcquireMagickCLI(image_info,exception);
 
-  if (LocaleCompare("-list",argv[1]) == 0)
-    /* Special option, list information and exit
-       FUTURE: this should be a MagickCore option,
-       especially as no wand is actually needed!
-    */
+  /* Special Case:  If command name ends with "script" then run it as is
+     a "-script" option is implied.  This allows you to name the "magick"
+     command "magick-script", and create scripts of the form...
+           #!/usr/bin/env magick-script
+  */
+  if (LocaleCompare("script",argv[0]+strlen(argv[0])-6) == 0) {
+    cli_wand=AcquireMagickCLI(image_info,exception);
+    GetPathComponent(argv[1],TailPath,cli_wand->wand.name);
+    ProcessScriptOptions(cli_wand,argc,argv,1);
+    goto Magick_Command_Cleanup;
+  }
+
+  /* Special Case: Version Information and Abort */
+  if (argc == 2) {
+    option=argv[1];
+    if ((LocaleCompare("-version",option) == 0) ||
+        (LocaleCompare("--version",option) == 0) ) {
+      CLISpecialOperator(cli_wand, "-version", (char *)NULL);
+      goto Magick_Command_Exit;
+    }
+  }
+
+  /* not enough arguments -- including -help */
+  if (argc < 3) {
+    MagickUsage();
+    goto Magick_Command_Exit;
+  }
+
+  /* Special "concatenate option (hidden) for delegate usage */
+  if (LocaleCompare("-concatenate",argv[1]) == 0) {
+    ConcatenateImages(argc,argv,exception);
+    goto Magick_Command_Exit;
+  }
+
+  /* List Information and Abort */
+  if (LocaleCompare("-list",argv[1]) == 0) {
     CLISpecialOperator(cli_wand, argv[1], argv[2]);
-  else if (LocaleCompare("-script",argv[1]) == 0) {
+    goto Magick_Command_Exit;
+  }
+
+  /* ------------- */
+  /* The Main Call */
+
+  if (LocaleCompare("-script",argv[1]) == 0) {
     /* Start processing directly from script, no pre-script options
        Replace wand command name with script name
        First argument in the argv array is the script name to read.
@@ -718,12 +722,13 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
     ProcessScriptOptions(cli_wand,argc,argv,2);
   }
   else {
-    /* Noraml Command Line, Assumes output file as last option */
+    /* Normal Command Line, assumes output file as last option */
     GetPathComponent(argv[0],TailPath,cli_wand->wand.name);
     ProcessCommandOptions(cli_wand,argc,argv,1,
        (LocaleCompare("magick",argv[0]+strlen(argv[0])-6) == 0)?
            MagickCommandOptionFlags : ConvertCommandOptionFlags);
   }
+  /* ------------- */
 
 Magick_Command_Cleanup:
   /* recover original image_info from bottom of stack */
@@ -755,6 +760,7 @@ Magick_Command_Cleanup:
     }
   }
 
+Magick_Command_Exit:
   /* Destroy the special CLI Wand */
   cli_wand->wand.image_info = (ImageInfo *)NULL; /* not these */
   cli_wand->wand.exception = (ExceptionInfo *)NULL;

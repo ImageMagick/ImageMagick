@@ -197,6 +197,21 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
 %  end of the line.  You can escape a comment '#', using quotes or backlsashes
 %  just as you can in a shell.
 %
+%  As a special case a ':' at the start of a line is also treated as a comment
+%  This allows a magick script to ignore a line that is parsed by the shell
+%  and can be used as a 'launcher' for magick scripts. For example
+%
+%    #!/bin/sh
+%    #
+%    # Shell Launcher for Magick Script
+%    :; echo "This part is run in the shell"
+%    :; exec magick -script "$0" "$@"; exit 10
+%    #
+%    # The rest of the script is magick script
+%    -read label:"This is a Magick Script!"
+%    -write show: -exit
+%
+%
 %  The format of the GetScriptToken method is:
 %
 %     MagickBooleanType GetScriptToken(ScriptTokenInfo *token_info)
@@ -288,8 +303,9 @@ WandExport MagickBooleanType GetScriptToken(ScriptTokenInfo *token_info)
         state=IN_WHITE;
       continue;
     }
-    if (c == '#' && state == IN_WHITE)
-      state=IN_COMMENT;
+    if ( state == IN_WHITE )
+      if (c == '#' || (c == ':' && token_info->curr_column==1))
+        state=IN_COMMENT;
     /* whitespace break character */
     if (strchr(" \n\r\t",c) != (char *)NULL) {
       switch (state) {
