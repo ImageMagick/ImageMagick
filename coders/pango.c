@@ -111,7 +111,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     *property;
 
   cairo_t
-    *cairo_info;
+    *cairo_image;
 
   const char
     *option;
@@ -154,6 +154,9 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
 
   register unsigned char
     *p;
+
+  size_t
+    stride;
 
   ssize_t
     y;
@@ -205,6 +208,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     }
   context=pango_font_map_create_context(fontmap);
   pango_cairo_context_set_font_options(context,font_options);
+  cairo_font_options_destroy(font_options);
   option=GetImageOption(image_info,"pango:language");
   if (option != (const char *) NULL)
     pango_context_set_language(context,pango_language_from_string(option));
@@ -345,58 +349,60 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
         image->resolution.y+36.0)/72.0+0.5));
     }
   /*
-    Create canvas.
+    Create surface.
   */
-  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,4*
-    image->rows*sizeof(*pixels));
+  stride=(size_t) cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
+    image->columns);
+  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,stride*
+    sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    {
+      draw_info=DestroyDrawInfo(draw_info);
+      caption=DestroyString(caption);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
   surface=cairo_image_surface_create_for_data(pixels,CAIRO_FORMAT_ARGB32,
-    image->columns,image->rows,4*image->columns);
-  cairo_info=cairo_create(surface);
-  cairo_set_operator(cairo_info,CAIRO_OPERATOR_CLEAR);
-  cairo_paint(cairo_info);
-  cairo_set_operator(cairo_info,CAIRO_OPERATOR_OVER);
-  if (draw_info->fill.matte == MagickFalse)
-    cairo_set_source_rgb(cairo_info,QuantumScale*draw_info->fill.red,
-      QuantumScale*draw_info->fill.green,QuantumScale*draw_info->fill.blue);
-  else
-    cairo_set_source_rgba(cairo_info,QuantumScale*draw_info->fill.red,
-      QuantumScale*draw_info->fill.green,QuantumScale*draw_info->fill.blue,
-      QuantumScale*draw_info->fill.alpha);
-  pango_cairo_show_layout(cairo_info,layout);
-  cairo_destroy(cairo_info);
+    image->columns,image->rows,stride);
+  cairo_image=cairo_create(surface);
+  cairo_set_operator (cairo_image,CAIRO_OPERATOR_CLEAR);
+  cairo_paint(cairo_image);
+  cairo_set_operator(cairo_image,CAIRO_OPERATOR_OVER);
+  pango_cairo_show_layout(cairo_image,layout);
+cairo_surface_write_to_png(surface,"out.png");
+  cairo_destroy(cairo_image);
   cairo_surface_destroy(surface);
   g_object_unref(fontmap);
   /*
-    Convert caption to image.
+    Convert surface to image.
   */
   (void) SetImageBackgroundColor(image,exception);
   p=pixels;
   GetPixelInfo(image,&fill_color);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    register ssize_t x;
+    register ssize_t
+      x;
 
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      fill_color.blue=ScaleCharToQuantum(*p++);
-      fill_color.green=ScaleCharToQuantum(*p++);
-      fill_color.red=ScaleCharToQuantum(*p++);
-      fill_color.alpha=ScaleCharToQuantum(*p++);
-      {
-        double
-          gamma;
-    
-        gamma=1.0-QuantumScale*fill_color.alpha;
-        gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-        fill_color.blue*=gamma;
-        fill_color.green*=gamma;
-        fill_color.red*=gamma;
-      }
+      double
+        gamma;
+
+      fill_color.blue=(MagickRealType) ScaleCharToQuantum(*p++);
+      fill_color.green=(MagickRealType) ScaleCharToQuantum(*p++);
+      fill_color.red=(MagickRealType) ScaleCharToQuantum(*p++);
+      fill_color.alpha=(MagickRealType) ScaleCharToQuantum(*p++);
+      /*
+        Disassociate alpha.
+      */
+      gamma=1.0-QuantumScale*fill_color.alpha;
+      gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+      fill_color.blue*=gamma;
+      fill_color.green*=gamma;
+      fill_color.red*=gamma;
       CompositePixelOver(image,&fill_color,fill_color.alpha,q,(MagickRealType)
         GetPixelAlpha(image,q),q);
       q+=GetPixelChannels(image);

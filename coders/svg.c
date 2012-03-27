@@ -2805,7 +2805,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         *cairo_surface;
 
       cairo_t
-        *cairo_info;
+        *cairo_image;
 
       register unsigned char
         *p;
@@ -2910,12 +2910,12 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               g_object_unref(svg_handle);
               ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
             }
-          cairo_info=cairo_create(cairo_surface);
-          cairo_set_operator(cairo_info,CAIRO_OPERATOR_CLEAR);
-          cairo_paint(cairo_info);
-          cairo_set_operator(cairo_info,CAIRO_OPERATOR_OVER);
-          rsvg_handle_render_cairo(svg_handle,cairo_info);
-          cairo_destroy(cairo_info);
+          cairo_image=cairo_create(cairo_surface);
+          cairo_set_operator(cairo_image,CAIRO_OPERATOR_CLEAR);
+          cairo_paint(cairo_image);
+          cairo_set_operator(cairo_image,CAIRO_OPERATOR_OVER);
+          rsvg_handle_render_cairo(svg_handle,cairo_image);
+          cairo_destroy(cairo_image);
           cairo_surface_destroy(cairo_surface);
           g_object_unref(svg_handle);
           p=pixels;
