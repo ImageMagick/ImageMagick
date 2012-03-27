@@ -19,11 +19,11 @@
 set -e # Exit on any error
 . ${srcdir}/tests/common.sh
 
-${CONVERT} pnm:- 'null:' < ${REFERENCE_IMAGE}
-${CONVERT} pnm:- miff:-  < ${REFERENCE_IMAGE} | ${IDENTIFY} -
-${CONVERT} pnm:- -  < ${REFERENCE_IMAGE} | ${IDENTIFY} -
-${CONVERT} - 'null:' < ${REFERENCE_IMAGE}
-${CONVERT} - miff:-  < ${REFERENCE_IMAGE} | ${IDENTIFY} -
-${CONVERT} - -  < ${REFERENCE_IMAGE} | ${IDENTIFY} -
-${CONVERT} ${REFERENCE_IMAGE} - | ${IDENTIFY} -
-${CONVERT} ${REFERENCE_IMAGE} miff:- | ${IDENTIFY} -
+${MAGICK} pnm:- 'null:' < ${REFERENCE_IMAGE}
+${MAGICK} pnm:- miff:-  < ${REFERENCE_IMAGE} | ${IDENTIFY} -
+${MAGICK} pnm:- -  < ${REFERENCE_IMAGE} | ${IDENTIFY} -
+${MAGICK} - 'null:' < ${REFERENCE_IMAGE}
+${MAGICK} - miff:-  < ${REFERENCE_IMAGE} | ${IDENTIFY} -
+${MAGICK} - -  < ${REFERENCE_IMAGE} | ${IDENTIFY} -
+${MAGICK} ${REFERENCE_IMAGE} - | ${IDENTIFY} -
+${MAGICK} ${REFERENCE_IMAGE} miff:- | ${IDENTIFY} -
