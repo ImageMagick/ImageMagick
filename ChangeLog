@@ -1,3 +1,9 @@
+2012-03-29  6.7.6-3 Cristy  <quetzlzacatenango@image...>
+  * Don't copy invalid memory when reading TIFF EXIF IFD (CERT-FI case 634116,
+    CVE-2012-1798).
+  * Bail if we receive excessive JPEG warnings (CERT-FI case 634117,
+    CVE-2012-0260).
+
 2012-03-28  6.7.6-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-2, SVN revision 7245.
 
