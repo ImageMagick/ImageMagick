@@ -38,12 +38,11 @@
 /*
   Include declarations.
 */
-#ifndef SCRIPT_TOKEN_TESTING
 #include "MagickWand/studio.h"
-#include "MagickCore/memory_.h"
-#include "MagickCore/string-private.h"
+#include "MagickWand/MagickWand.h"
 #include "MagickWand/script-token.h"
-#endif
+#include "MagickCore/string-private.h"
+#include "MagickCore/utility-private.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
