@@ -1309,6 +1309,8 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             buffer[MaxTextExtent],
             *value;
 
+          value=(char *) NULL;
+          *buffer='\0';
           switch (format)
           {
             case EXIF_FMT_BYTE:
