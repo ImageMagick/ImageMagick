@@ -649,7 +649,7 @@ static void TIFFGetEXIFProperties(TIFF *tiff,Image *image,
         ascii=(char *) NULL;
         if ((TIFFGetField(tiff,exif_info[i].tag,&ascii,&sans,&sans) != 0) &&
             (ascii != (char *) NULL) && (*ascii != '\0'))
-          (void) CopyMagickMemory(value,ascii,MaxTextExtent);
+          (void) CopyMagickString(value,ascii,MaxTextExtent);
         break;
       }
       case TIFF_SHORT:
