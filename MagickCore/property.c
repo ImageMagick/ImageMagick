@@ -784,7 +784,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
    for (component=0; component < components; component++) \
    { \
      length+=FormatLocaleString(buffer+length,MaxTextExtent-length, \
-       format", ",arg1,arg2); \
+       format", ",(arg1),(arg2)); \
      if (length >= (MaxTextExtent-1)) \
        length=MaxTextExtent-1; \
      p1+=size; \
