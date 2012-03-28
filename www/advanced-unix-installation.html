@@ -166,8 +166,11 @@
   <a rel="follow" title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
 
   <a href="http://www.networkredux.com"> <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
-  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201204010120 mickey@163... -->
+  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201208010120 mickey@163... -->
 <div class="sponsbox">
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: LED24" href="http://led24.de/">LED24</a><!-- 201207010270 info@led24... -->
+</div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.top-cheap-web-hosting.com">Best Web Hosting</a><!-- 201304010090 eunge.liu-->
 </div>
@@ -187,7 +190,7 @@
   <a rel="follow" title="Druckerei Günstig" href="http://www.druck-expert.com">Druckerei Günstig</a><!-- 201204010450 info@druck... -->
 </div>
 <div class="sponsor">
-  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
+  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201208010120 mickey@163... -->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: Web Site Hosting" href="http://webhostinggeeks.com">Web Site Hosting</a><!-- 201302010900 funds@enmob... -->
@@ -219,11 +222,11 @@
 <div class="sponsor">
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Turbolader Online kaufen" href="http://www.autoteile-carparts.de">Turbolader Online kaufen</a><!-- 2012060100150 t.temurbas...-->
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2012060100030 Temurbas atlas.multimedia-->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.hostucan.com">Web Hosting</a><!-- 2012120100150 racent marketing@webhosting...-->
+   <a rel="follow" title="Sponsor: Schlüsseldienst Berlin BSD" href="http://www.schluesseldienst-berlin.de">Schlüsseldienst Berlin BSD</a><!-- 2012050100025 info@schlues-->
 </div>
 </div>
 </div>
@@ -271,7 +274,7 @@
 
 <p>The configure script looks at your environment and decides what it can cobble together to get ImageMagick compiled and installed on your system.  This includes finding a compiler, where your compiler header files are located (e.g. stdlib.h), and if any delegate libraries are available for ImageMagick to use (e.g. JPEG, PNG, TIFF, etc.).  If you are willing to accept configure's default options, and build from within the source directory, you can simply type:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.6-1</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.6-2</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure</span></p>
 <p>Watch the configure script output to verify that it finds everything that
  you think it should.  Pay particular attention to the last lines of the script output.  For example, here is a recent report from our system:</p>
 
@@ -623,7 +626,7 @@ Options used to compile and link:
 	<div class="doc-section">
 	  <p><a href="../www/download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="http://www.imagemagick.org/download/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
-		<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvfz ImageMagick-6.7.6-1.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.6-1</span></p>	  <p>Configure ImageMagick:</p>
+		<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvfz ImageMagick-6.7.6-2.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.6-2</span></p>	  <p>Configure ImageMagick:</p>
 	<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>./configure --prefix=/opt --with-quantum-depth=16 \ <br/>
 		--disable-dependency-tracking --with-x=yes \ <br/>
 		--x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \ <br/>
@@ -643,7 +646,7 @@ Options used to compile and link:
 
 <p>Although you can download and install delegate libraries yourself, many are already available in the <a href="http://gnuwin32.sourceforge.net/">GnuWin32</a> distribution.  Download and install whichever delegate libraries you require such as JPEG, PNG, TIFF, etc.  Make sure you specify the development headers when you install a package.  Next type,</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar jxvf ImageMagick-6.7.6-?.tar.bz2</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.6-1</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>sudo make install</span></p></div>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar jxvf ImageMagick-6.7.6-?.tar.bz2</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.6-2</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>sudo make install</span></p></div>
 
 <h2><a id="problems"></a>Dealing with Unexpected Problems</h2>
 <div class="doc-section">
