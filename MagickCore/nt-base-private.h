@@ -399,8 +399,6 @@ extern MagickPrivate MagickBooleanType
   NTGatherRandomData(const size_t,unsigned char *),
   NTGetExecutionPath(char *,const size_t),
   NTGetModulePath(const char *,char *),
-  NTIsMagickConflict(const char *),
-  NTLoadTypeLists(SplayTreeInfo *,ExceptionInfo *),
   NTReportEvent(const char *,const MagickBooleanType),
   NTReportException(const char *,const MagickBooleanType);
 
