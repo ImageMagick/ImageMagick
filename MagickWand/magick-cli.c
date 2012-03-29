@@ -280,6 +280,9 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
       CLISettingOptionInfo(cli_wand, option, arg1);
       // FUTURE: Sync Specific Settings into Image Properities (not global)
     }
+    if ( cli_wand->wand.images != (Image *)NULL )
+      SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
+           cli_wand->wand.exception);
 
     if ( (option_type & SimpleOperatorOptionFlag) != 0)
       CLISimpleOperatorImages(cli_wand, option, arg1, arg2);
@@ -481,6 +484,9 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
       CLISettingOptionInfo(cli_wand, option, arg1);
       // FUTURE: Sync Specific Settings into Image Properities (not global)
     }
+    if ( cli_wand->wand.images != (Image *)NULL )
+      SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
+          cli_wand->wand.exception);
 
     if ( (option_type & SimpleOperatorOptionFlag) != 0)
       CLISimpleOperatorImages(cli_wand, option, arg1, arg2);
@@ -667,8 +673,21 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
     ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
 #endif
+
   /* Initialize special "CLI Wand" to hold images and settings (empty) */
   cli_wand=AcquireMagickCLI(image_info,exception);
+
+  GetPathComponent(argv[0],TailPath,cli_wand->wand.name);
+  ConcatenateMagickString(cli_wand->wand.name,"-CLI",MaxTextExtent);
+
+#if 0
+  /* "convert" command - give a "depreciation" warning" */
+  if ( (LocaleCompare("convert",argv[0]+strlen((argv[0])-7) == 0) ||
+       (LocaleNCompare("convert",argv[0],7) == 0) ||
+       (LocaleNCompare("lt-convert",argv[0],10) == 0) ) {
+       /* output warning */
+  }
+#endif
 
   /* Special Case:  If command name ends with "script" then run it as is
      a "-script" option is implied.  This allows you to name the "magick"
@@ -676,7 +695,6 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
            #!/usr/bin/env magick-script
   */
   if (LocaleCompare("script",argv[0]+strlen(argv[0])-6) == 0) {
-    cli_wand=AcquireMagickCLI(image_info,exception);
     GetPathComponent(argv[1],TailPath,cli_wand->wand.name);
     ProcessScriptOptions(cli_wand,argc,argv,1);
     goto Magick_Command_Cleanup;
@@ -723,7 +741,6 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
   }
   else {
     /* Normal Command Line, assumes output file as last option */
-    GetPathComponent(argv[0],TailPath,cli_wand->wand.name);
     ProcessCommandOptions(cli_wand,argc,argv,1,
        (LocaleCompare("magick",argv[0]+strlen(argv[0])-6) == 0)?
            MagickCommandOptionFlags : ConvertCommandOptionFlags);
