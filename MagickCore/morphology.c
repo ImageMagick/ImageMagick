@@ -3876,8 +3876,8 @@ MagickPrivate Image *MorphologyApply(const Image *image,
         /* Preserve the alpha channel of input image - but turned off */
         (void) SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel,
           exception);
-        (void) CompositeImage(rslt_image, CopyAlphaCompositeOp, image, 0, 0,
-          exception);
+        (void) CompositeImage(rslt_image,image,CopyAlphaCompositeOp,
+          MagickFalse,0,0,exception);
         (void) SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel,
           exception);
       }
@@ -4103,16 +4103,16 @@ MagickPrivate Image *MorphologyApply(const Image *image,
             (void) FormatLocaleFile(stderr,
               "\n%s: Difference with original image",CommandOptionToMnemonic(
               MagickMorphologyOptions, method) );
-          (void) CompositeImage(curr_image,DifferenceCompositeOp,image,0,0,
-            exception);
+          (void) CompositeImage(curr_image,image,DifferenceCompositeOp,
+            MagickFalse,0,0,exception);
           break;
         case EdgeMorphology:
           if ( verbose == MagickTrue )
             (void) FormatLocaleFile(stderr,
               "\n%s: Difference of Dilate and Erode",CommandOptionToMnemonic(
               MagickMorphologyOptions, method) );
-          (void) CompositeImage(curr_image,DifferenceCompositeOp,save_image,0,
-            0,exception);
+          (void) CompositeImage(curr_image,save_image,DifferenceCompositeOp,
+            MagickFalse,0,0,exception);
           save_image = DestroyImage(save_image); /* finished with save image */
           break;
         default:
@@ -4147,9 +4147,9 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           */
           if ( verbose == MagickTrue )
             (void) FormatLocaleFile(stderr, " (compose \"%s\")",
-                 CommandOptionToMnemonic(MagickComposeOptions, rslt_compose) );
-          (void) CompositeImage(rslt_image, rslt_compose, curr_image, 0, 0,
-            exception);
+              CommandOptionToMnemonic(MagickComposeOptions, rslt_compose) );
+          (void) CompositeImage(rslt_image,curr_image,rslt_compose,MagickFalse,
+            0,0,exception);
           curr_image = DestroyImage(curr_image);
           curr_image = (Image *) image;  /* continue with original image */
         }

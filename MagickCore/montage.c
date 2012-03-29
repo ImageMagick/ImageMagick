@@ -823,14 +823,14 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
               shadow_image=ShadowImage(image,80.0,2.0,5,5,exception);
               if (shadow_image != (Image *) NULL)
                 {
-                  (void) CompositeImage(shadow_image,OverCompositeOp,image,0,0,
-                    exception);
+                  (void) CompositeImage(shadow_image,image,OverCompositeOp,
+                    MagickFalse,0,0,exception);
                   image=DestroyImage(image);
                   image=shadow_image;
                 }
           }
-          (void) CompositeImage(montage,image->compose,image,x_offset+x,
-            y_offset+y,exception);
+          (void) CompositeImage(montage,image,image->compose,MagickFalse,
+            x_offset+x,y_offset+y,exception);
           value=GetImageProperty(image,"label",exception);
           if (value != (const char *) NULL)
             {

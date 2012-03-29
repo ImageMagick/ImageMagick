@@ -2448,8 +2448,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 /*
                   Composite region.
                 */
-                (void) CompositeImage(region_image,region_image->matte !=
-                   MagickFalse ? CopyCompositeOp : OverCompositeOp,*image,
+                (void) CompositeImage(region_image,*image,region_image->matte !=
+                   MagickFalse ? CopyCompositeOp : OverCompositeOp,MagickFalse,
                    region_geometry.x,region_geometry.y,exception);
                 *image=DestroyImage(*image);
                 *image=region_image;
@@ -3194,8 +3194,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         Composite transformed region onto image.
       */
       (void) SyncImageSettings(mogrify_info,*image,exception);
-      (void) CompositeImage(region_image,region_image->matte !=
-         MagickFalse ? CopyCompositeOp : OverCompositeOp,*image,
+      (void) CompositeImage(region_image,*image,region_image->matte !=
+         MagickFalse ? CopyCompositeOp : OverCompositeOp,MagickFalse,
          region_geometry.x,region_geometry.y,exception);
       *image=DestroyImage(*image);
       *image=region_image;
@@ -7408,10 +7408,16 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
           }
         if (LocaleCompare("composite",option+1) == 0)
           {
+            const char
+              *value;
+
             Image
               *mask_image,
               *composite_image,
               *image;
+
+            MagickBooleanType
+              clip_to_self;
 
             RectangleInfo
               geometry;
@@ -7439,8 +7445,8 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                     /*
                       Merge Y displacement into X displacement image.
                     */
-                    (void) CompositeImage(composite_image,CopyGreenCompositeOp,
-                      mask_image,0,0,exception);
+                    (void) CompositeImage(composite_image,mask_image,
+                      CopyGreenCompositeOp,MagickFalse,0,0,exception);
                     mask_image=DestroyImage(mask_image);
                   }
                 else
@@ -7453,8 +7459,13 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                     mask_image=DestroyImage(mask_image);
                   }
               }
-            (void) CompositeImage(image,image->compose,composite_image,
-              geometry.x,geometry.y,exception);
+            clip_to_self=MagickFalse;
+            value=GetImageArtifact(composite_image,"compose:outside-overlay");
+            if (value != (const char *) NULL)
+              clip_to_self=IsMagickTrue(value) == MagickFalse ? MagickTrue :
+                MagickFalse;
+            (void) CompositeImage(image,composite_image,image->compose,
+              clip_to_self,geometry.x,geometry.y,exception);
             (void) SetImageMask(image,(Image *) NULL,exception);
             composite_image=DestroyImage(composite_image);
             *images=DestroyImageList(*images);

@@ -94,18 +94,21 @@
 %  The format of the CompositeImage method is:
 %
 %      MagickBooleanType CompositeImage(Image *image,
-%        const CompositeOperator compose,Image *composite_image,
-%        const ssize_t x_offset,const ssize_t y_offset,ExceptionInfo *exception)
+%        const Image *composite_image,const CompositeOperator compose,
+%        const MagickBooleanType clip_to_self,const ssize_t x_offset,
+%        const ssize_t y_offset,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the destination image, modified by he composition
 %
+%    o composite_image: the composite (source) image.
+%
 %    o compose: This operator affects how the composite is applied to
 %      the image.  The operators and how they are utilized are listed here
 %      http://www.w3.org/TR/SVG12/#compositing.
 %
-%    o composite_image: the composite (source) image.
+%    o clip_to_self: set to MagickTrue to limit composition to area composed.
 %
 %    o x_offset: the column offset of the composited image.
 %
@@ -270,8 +273,8 @@ static inline double MagickMax(const double x,const double y)
 }
 
 static MagickBooleanType CompositeOverImage(Image *image,
-  const Image *composite_image,const ssize_t x_offset,const ssize_t y_offset,
-  ExceptionInfo *exception)
+  const Image *composite_image,const MagickBooleanType clip_to_self,
+  const ssize_t x_offset,const ssize_t y_offset,ExceptionInfo *exception)
 {
 #define CompositeImageTag  "Composite/Image"
 
@@ -279,11 +282,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
     *composite_view,
     *image_view;
 
-  const char
-    *value;
-
   MagickBooleanType
-    clip_to_self,
     status;
 
   MagickOffsetType
@@ -292,13 +291,6 @@ static MagickBooleanType CompositeOverImage(Image *image,
   ssize_t
     y;
 
-  /*
-    Prepare composite image.
-  */
-  clip_to_self=MagickTrue;
-  value=GetImageArtifact(composite_image,"compose:outside-overlay");
-  if (value != (const char *) NULL)
-    clip_to_self=IsMagickTrue(value) == MagickFalse ? MagickTrue : MagickFalse;
   /*
     Composite image.
   */
@@ -328,7 +320,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
 
     if (status == MagickFalse)
       continue;
-    if (clip_to_self == MagickTrue)
+    if (clip_to_self != MagickFalse)
       {
         if (y < y_offset)
           continue;
@@ -372,7 +364,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
       register ssize_t
         i;
 
-      if (clip_to_self == MagickTrue)
+      if (clip_to_self != MagickFalse)
         {
           if (x < x_offset)
             {
@@ -505,17 +497,14 @@ static MagickBooleanType CompositeOverImage(Image *image,
 }
 
 MagickExport MagickBooleanType CompositeImage(Image *image,
-  const CompositeOperator compose,const Image *composite_image,
-  const ssize_t x_offset,const ssize_t y_offset,ExceptionInfo *exception)
+  const Image *composite_image,const CompositeOperator compose,
+  const MagickBooleanType clip_to_self,const ssize_t x_offset,const ssize_t y_offset,ExceptionInfo *exception)
 {
 #define CompositeImageTag  "Composite/Image"
 
   CacheView
     *composite_view,
     *image_view;
-
-  const char
-    *value;
 
   GeometryInfo
     geometry_info;
@@ -524,7 +513,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     *destination_image;
 
   MagickBooleanType
-    clip_to_self,
     status;
 
   MagickOffsetType
@@ -602,35 +590,19 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     return(MagickFalse);
   if ((compose == OverCompositeOp) || (compose == SrcOverCompositeOp))
     {
-      status=CompositeOverImage(image,composite_image,x_offset,y_offset,
-        exception);
+      status=CompositeOverImage(image,composite_image,clip_to_self,x_offset,
+        y_offset,exception);
       return(status);
     }
   destination_image=(Image *) NULL;
   amount=0.5;
   destination_dissolve=1.0;
-  clip_to_self=MagickFalse;
   percent_brightness=100.0;
   percent_saturation=100.0;
   source_dissolve=1.0;
   threshold=0.05f;
   switch (compose)
   {
-    case ClearCompositeOp:
-    case DstAtopCompositeOp:
-    case DstInCompositeOp:
-    case InCompositeOp:
-    case OutCompositeOp:
-    case SrcCompositeOp:
-    case SrcInCompositeOp:
-    case SrcOutCompositeOp:
-    {
-      /*
-        Modify destination outside the overlaid region.
-      */
-      clip_to_self=MagickTrue;
-      break;
-    }
     case CopyCompositeOp:
     {
       if ((x_offset < 0) || (y_offset < 0))
@@ -732,7 +704,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       */
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
-      clip_to_self=MagickTrue;
       break;
     }
     case BlurCompositeOp:
@@ -740,6 +711,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       CacheView
         *composite_view,
         *destination_view;
+
+      const char
+        *value;
 
       PixelInfo
         pixel;
@@ -882,6 +856,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         *composite_view,
         *destination_view,
         *image_view;
+
+      const char
+        *value;
 
       PixelInfo
         pixel;
@@ -1048,6 +1025,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     }
     case DissolveCompositeOp:
     {
+      const char
+        *value;
+
       /*
         Geometry arguments to dissolve factors.
       */
@@ -1068,17 +1048,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             destination_dissolve=geometry_info.sigma/100.0;
           if ((destination_dissolve-MagickEpsilon) < 0.0)
             destination_dissolve=0.0;
-          clip_to_self=MagickTrue;
-          if ((destination_dissolve+MagickEpsilon) > 1.0 )
-            {
-              destination_dissolve=1.0;
-              clip_to_self=MagickFalse;
-            }
         }
       break;
     }
     case BlendCompositeOp:
     {
+      const char
+        *value;
+
       value=GetImageArtifact(composite_image,"compose:args");
       if (value != (char *) NULL)
         {
@@ -1087,14 +1064,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           destination_dissolve=1.0-source_dissolve;
           if ((flags & SigmaValue) != 0)
             destination_dissolve=geometry_info.sigma/100.0;
-          clip_to_self=MagickTrue;
-          if ((destination_dissolve+MagickEpsilon) > 1.0)
-            clip_to_self=MagickFalse;
         }
       break;
     }
     case MathematicsCompositeOp:
     {
+      const char
+        *value;
+
       /*
         Just collect the values from "compose:args", setting.
         Unused values are set to zero automagically.
@@ -1111,6 +1088,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     }
     case ModulateCompositeOp:
     {
+      const char
+        *value;
+
       /*
         Determine the brightness and saturation scale.
       */
@@ -1126,6 +1106,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     }
     case ThresholdCompositeOp:
     {
+      const char
+        *value;
+
       /*
         Determine the amount and threshold.
       */
@@ -1144,9 +1127,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     default:
       break;
   }
-  value=GetImageArtifact(composite_image,"compose:outside-overlay");
-  if (value != (const char *) NULL)
-    clip_to_self=IsMagickTrue(value);
   /*
     Composite image.
   */
@@ -1182,7 +1162,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
     if (status == MagickFalse)
       continue;
-    if (clip_to_self == MagickFalse)
+    if (clip_to_self != MagickFalse)
       {
         if (y < y_offset)
           continue;
@@ -1234,7 +1214,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       size_t
         channels;
 
-      if (clip_to_self == MagickFalse)
+      if (clip_to_self != MagickFalse)
         {
           if (x < x_offset)
             {
@@ -2351,9 +2331,9 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
           MagickBooleanType
             thread_status;
 
-          thread_status=CompositeImage(image,image->compose,texture_image,x+
-            texture_image->tile_offset.x,y+texture_image->tile_offset.y,
-            exception);
+          thread_status=CompositeImage(image,texture_image,image->compose,
+            MagickFalse,x+texture_image->tile_offset.x,y+
+            texture_image->tile_offset.y,exception);
           if (thread_status == MagickFalse)
             {
               status=thread_status;

@@ -1844,7 +1844,7 @@ static MagickBooleanType RenderPostscript(Image *image,
           break;
       }
       annotate_view=DestroyCacheView(annotate_view);
-      (void) CompositeImage(image,OverCompositeOp,annotate_image,
+      (void) CompositeImage(image,annotate_image,OverCompositeOp,MagickFalse,
         (ssize_t) ceil(offset->x-0.5),(ssize_t) ceil(offset->y-(metrics->ascent+
         metrics->descent)-0.5),exception);
     }

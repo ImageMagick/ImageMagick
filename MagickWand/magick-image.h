@@ -102,7 +102,7 @@ extern WandExport MagickBooleanType
   MagickColorMatrixImage(MagickWand *,const KernelInfo *),
   MagickCommentImage(MagickWand *,const char *),
   MagickCompositeImage(MagickWand *,const MagickWand *,const CompositeOperator,
-    const ssize_t,const ssize_t),
+    const MagickBooleanType,const ssize_t,const ssize_t),
   MagickCompositeLayers(MagickWand *,const MagickWand *,const CompositeOperator,
     const ssize_t,const ssize_t),
   MagickConstituteImage(MagickWand *,const size_t,const size_t,const char *,
