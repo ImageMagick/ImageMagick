@@ -79,6 +79,7 @@
 #include "magick/string_.h"
 #include "magick/string-private.h"
 #include "magick/thread_.h"
+#include "magick/token.h"
 #include "magick/utility.h"
 #if defined(MAGICKCORE_TIFF_DELEGATE)
 # if defined(MAGICKCORE_HAVE_TIFFCONF_H)
