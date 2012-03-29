@@ -283,7 +283,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
     *value;
 
   MagickBooleanType
-    modify_outside_overlay,
+    bounded,
     status;
 
   MagickOffsetType
@@ -295,10 +295,10 @@ static MagickBooleanType CompositeOverImage(Image *image,
   /*
     Prepare composite image.
   */
-  modify_outside_overlay=MagickFalse;
+  bounded=MagickTrue;
   value=GetImageArtifact(composite_image,"compose:outside-overlay");
   if (value != (const char *) NULL)
-    modify_outside_overlay=IsMagickTrue(value);
+    bounded=IsMagickTrue(value) == MagickFalse ? MagickTrue : MagickFalse;
   /*
     Composite image.
   */
@@ -328,7 +328,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
 
     if (status == MagickFalse)
       continue;
-    if (modify_outside_overlay == MagickFalse)
+    if (bounded == MagickTrue)
       {
         if (y < y_offset)
           continue;
@@ -372,7 +372,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
       register ssize_t
         i;
 
-      if (modify_outside_overlay == MagickFalse)
+      if (bounded == MagickTrue)
         {
           if (x < x_offset)
             {
@@ -524,7 +524,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     *destination_image;
 
   MagickBooleanType
-    modify_outside_overlay,
+    bounded,
     status;
 
   MagickOffsetType
@@ -609,7 +609,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   destination_image=(Image *) NULL;
   amount=0.5;
   destination_dissolve=1.0;
-  modify_outside_overlay=MagickFalse;
+  bounded=MagickFalse;
   percent_brightness=100.0;
   percent_saturation=100.0;
   source_dissolve=1.0;
@@ -628,7 +628,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       /*
         Modify destination outside the overlaid region.
       */
-      modify_outside_overlay=MagickTrue;
+      bounded=MagickTrue;
       break;
     }
     case CopyCompositeOp:
@@ -732,7 +732,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       */
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
-      modify_outside_overlay=MagickTrue;
+      bounded=MagickTrue;
       break;
     }
     case BlurCompositeOp:
@@ -1068,11 +1068,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             destination_dissolve=geometry_info.sigma/100.0;
           if ((destination_dissolve-MagickEpsilon) < 0.0)
             destination_dissolve=0.0;
-          modify_outside_overlay=MagickTrue;
+          bounded=MagickTrue;
           if ((destination_dissolve+MagickEpsilon) > 1.0 )
             {
               destination_dissolve=1.0;
-              modify_outside_overlay=MagickFalse;
+              bounded=MagickFalse;
             }
         }
       break;
@@ -1087,9 +1087,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           destination_dissolve=1.0-source_dissolve;
           if ((flags & SigmaValue) != 0)
             destination_dissolve=geometry_info.sigma/100.0;
-          modify_outside_overlay=MagickTrue;
+          bounded=MagickTrue;
           if ((destination_dissolve+MagickEpsilon) > 1.0)
-            modify_outside_overlay=MagickFalse;
+            bounded=MagickFalse;
         }
       break;
     }
@@ -1146,7 +1146,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   }
   value=GetImageArtifact(composite_image,"compose:outside-overlay");
   if (value != (const char *) NULL)
-    modify_outside_overlay=IsMagickTrue(value);
+    bounded=IsMagickTrue(value);
   /*
     Composite image.
   */
@@ -1182,7 +1182,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
     if (status == MagickFalse)
       continue;
-    if (modify_outside_overlay == MagickFalse)
+    if (bounded == MagickFalse)
       {
         if (y < y_offset)
           continue;
@@ -1234,7 +1234,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       size_t
         channels;
 
-      if (modify_outside_overlay == MagickFalse)
+      if (bounded == MagickFalse)
         {
           if (x < x_offset)
             {
