@@ -37,6 +37,9 @@
 
 /*
   Include declarations.
+
+  NOTE: Do not include if being compiled into the "test/script-token-test.c"
+  module, for low level token testing.
 */
 #ifndef SCRIPT_TOKEN_TESTING
 #  include "MagickWand/studio.h"
