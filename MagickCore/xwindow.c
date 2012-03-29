@@ -696,9 +696,9 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
   */
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
   matte=image->matte;
-  (void) CompositeImage(image,annotate_image->matte != MagickFalse ?
-    OverCompositeOp : CopyCompositeOp,annotate_image,(ssize_t) x,(ssize_t) y,
-    exception);
+  (void) CompositeImage(image,annotate_image,
+    annotate_image->matte != MagickFalse ? OverCompositeOp : CopyCompositeOp,
+    MagickFalse,(ssize_t) x,(ssize_t) y,exception);
   image->matte=matte;
   annotate_image=DestroyImage(annotate_image);
   return(MagickTrue);
@@ -2635,13 +2635,13 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
   draw_view=DestroyCacheView(draw_view);
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
   if (draw_info->stencil == TransparentStencil)
-    (void) CompositeImage(image,CopyAlphaCompositeOp,draw_image,(ssize_t) x,
-      (ssize_t) y,exception);
+    (void) CompositeImage(image,draw_image,CopyAlphaCompositeOp,MagickFalse,
+      (ssize_t) x,(ssize_t) y,exception);
   else
     {
       matte=image->matte;
-      (void) CompositeImage(image,OverCompositeOp,draw_image,(ssize_t) x,
-        (ssize_t) y,exception);
+      (void) CompositeImage(image,draw_image,OverCompositeOp,MagickFalse,
+        (ssize_t) x,(ssize_t) y,exception);
       image->matte=matte;
     }
   draw_image=DestroyImage(draw_image);
@@ -4523,8 +4523,8 @@ static Image *XGetWindowImage(Display *display,const Window window,
         y_offset-=(int) crop_info.y;
         if (y_offset < 0)
           y_offset=0;
-        (void) CompositeImage(image,CopyCompositeOp,composite_image,(ssize_t)
-          x_offset,(ssize_t) y_offset,exception);
+        (void) CompositeImage(image,composite_image,CopyCompositeOp,MagickFalse,
+          (ssize_t) x_offset,(ssize_t) y_offset,exception);
         composite_image=DestroyImage(composite_image);
       }
       /*
@@ -5935,8 +5935,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         {
           canvas=CloneImage(image,0,0,MagickTrue,exception);
           if (canvas != (Image *) NULL)
-            (void) CompositeImage(canvas,DstOverCompositeOp,pattern,0,0,
-              exception);
+            (void) CompositeImage(canvas,pattern,DstOverCompositeOp,MagickFalse,
+              0,0,exception);
           pattern=DestroyImage(pattern);
         }
     }
@@ -6567,8 +6567,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         {
           canvas=CloneImage(image,0,0,MagickTrue,exception);
           if (canvas != (Image *) NULL)
-            (void) CompositeImage(canvas,DstOverCompositeOp,pattern,0,0,
-              exception);
+            (void) CompositeImage(canvas,pattern,DstOverCompositeOp,MagickFalse,
+              0,0,exception);
           pattern=DestroyImage(pattern);
         }
     }

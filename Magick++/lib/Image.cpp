@@ -683,8 +683,8 @@ void Magick::Image::composite ( const Image &compositeImage_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   CompositeImage( image(),
-		  compose_,
 		  compositeImage_.constImage(),
+		  compose_, MagickFalse,
 		  xOffset_,
                   yOffset_, &exceptionInfo );
   throwException( exceptionInfo );
@@ -708,8 +708,8 @@ void Magick::Image::composite ( const Image &compositeImage_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   CompositeImage( image(),
-		  compose_,
 		  compositeImage_.constImage(),
+		  compose_, MagickFalse,
 		  x, y, &exceptionInfo );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -728,8 +728,8 @@ void Magick::Image::composite ( const Image &compositeImage_,
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   CompositeImage( image(),
-		  compose_,
 		  compositeImage_.constImage(),
+		  compose_, MagickFalse,
 		  geometry.x, geometry.y, &exceptionInfo );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
@@ -1617,8 +1617,8 @@ void Magick::Image::quantumOperator ( const ssize_t x_,const ssize_t y_,
   ChannelType channel_mask = SetPixelChannelMask( image(), channel_);
   EvaluateImage( crop_image, operator_, rvalue_, &exceptionInfo );
   (void) SetPixelChannelMapMask( image(), channel_mask );
-  (void) CompositeImage( image(), image()->matte != MagickFalse ?
-    OverCompositeOp : CopyCompositeOp, crop_image, geometry.x, geometry.y,
+  (void) CompositeImage( image(), crop_image, image()->matte != MagickFalse ?
+    OverCompositeOp : CopyCompositeOp, MagickFalse, geometry.x, geometry.y,
     &exceptionInfo );
   crop_image = DestroyImageList(crop_image);
   throwException( exceptionInfo );

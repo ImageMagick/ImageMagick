@@ -4018,12 +4018,12 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
     }
   picture_image->background_color=image->border_color;
   (void) SetImageBackgroundColor(picture_image,exception);
-  (void) CompositeImage(picture_image,OverCompositeOp,image,quantum,quantum,
-    exception);
+  (void) CompositeImage(picture_image,image,OverCompositeOp,MagickFalse,quantum,
+    quantum,exception);
   if (caption_image != (Image *) NULL)
     {
-      (void) CompositeImage(picture_image,OverCompositeOp,caption_image,quantum,
-        (ssize_t) (image->rows+3*quantum/2),exception);
+      (void) CompositeImage(picture_image,caption_image,OverCompositeOp,
+        MagickFalse,quantum,(ssize_t) (image->rows+3*quantum/2),exception);
       caption_image=DestroyImage(caption_image);
     }
   (void) QueryColorCompliance("none",AllCompliance,
@@ -4061,8 +4061,8 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
       return(picture_image);
     }
   polaroid_image=flop_image;
-  (void) CompositeImage(polaroid_image,OverCompositeOp,picture_image,(ssize_t)
-    (-0.01*picture_image->columns/2.0),0L,exception);
+  (void) CompositeImage(polaroid_image,picture_image,OverCompositeOp,
+    MagickFalse,(ssize_t) (-0.01*picture_image->columns/2.0),0L,exception);
   picture_image=DestroyImage(picture_image);
   (void) QueryColorCompliance("none",AllCompliance,
     &polaroid_image->background_color,exception);
@@ -4518,8 +4518,8 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       dodge_image=DestroyImage(dodge_image);
       return((Image *) NULL);
     }
-  (void) CompositeImage(sketch_image,ColorDodgeCompositeOp,dodge_image,0,0,
-    exception);
+  (void) CompositeImage(sketch_image,dodge_image,ColorDodgeCompositeOp,
+    MagickFalse,0,0,exception);
   dodge_image=DestroyImage(dodge_image);
   blend_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blend_image == (Image *) NULL)
@@ -4528,8 +4528,8 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   (void) SetImageArtifact(blend_image,"compose:args","20x80");
-  (void) CompositeImage(sketch_image,BlendCompositeOp,blend_image,0,0,
-    exception);
+  (void) CompositeImage(sketch_image,blend_image,BlendCompositeOp,MagickFalse,
+    0,0,exception);
   blend_image=DestroyImage(blend_image);
   return(sketch_image);
 }
@@ -5522,8 +5522,8 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
       return((Image *) NULL);
     }
   blur_image->matte=MagickFalse;
-  (void) CompositeImage(canvas_image,IntensityCompositeOp,blur_image,0,0,
-    exception);
+  (void) CompositeImage(canvas_image,blur_image,IntensityCompositeOp,
+    MagickFalse,0,0,exception);
   blur_image=DestroyImage(blur_image);
   vignette_image=MergeImageLayers(canvas_image,FlattenLayer,exception);
   canvas_image=DestroyImage(canvas_image);

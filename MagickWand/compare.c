@@ -959,8 +959,8 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             &distortion,exception);
         else
           {
-            (void) CompositeImage(composite_image,CopyCompositeOp,
-              reconstruct_image,offset.x,offset.y,exception);
+            (void) CompositeImage(composite_image,reconstruct_image,
+              CopyCompositeOp,MagickFalse,offset.x,offset.y,exception);
             difference_image=CompareImages(image,composite_image,metric,
               &distortion,exception);
             if (difference_image != (Image *) NULL)

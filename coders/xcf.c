@@ -682,8 +682,8 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
       }
 
       /* composite the tile onto the layer's image, and then destroy it */
-      (void) CompositeImage(inLayerInfo->image,CopyCompositeOp,tile_image,
-        destLeft * TILE_WIDTH,destTop*TILE_HEIGHT,exception);
+      (void) CompositeImage(inLayerInfo->image,tile_image,CopyCompositeOp,
+        MagickFalse,destLeft*TILE_WIDTH,destTop*TILE_HEIGHT,exception);
       tile_image=DestroyImage(tile_image);
 
       /* adjust tile position */
@@ -1310,8 +1310,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Composite the layer data onto the main image, dispose the layer.
         */
-        (void) CompositeImage(image,OverCompositeOp,layer_info[0].image,
-          layer_info[0].offset_x,layer_info[0].offset_y,exception);
+        (void) CompositeImage(image,layer_info[0].image,OverCompositeOp,
+          MagickFalse,layer_info[0].offset_x,layer_info[0].offset_y,exception);
         layer_info[0].image =DestroyImage( layer_info[0].image);
       }
     else
@@ -1344,12 +1344,11 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         signed int  j;
 
         /* first we copy the last layer on top of the main image */
-        (void) CompositeImage(image,CopyCompositeOp,
-          layer_info[number_layers-1].image,
-          layer_info[number_layers-1].offset_x,
+        (void) CompositeImage(image,layer_info[number_layers-1].image,
+          CopyCompositeOp,MagickFalse,layer_info[number_layers-1].offset_x,
           layer_info[number_layers-1].offset_y,exception);
-          layer_info[number_layers-1].image=DestroyImage(
-            layer_info[number_layers-1].image);
+        layer_info[number_layers-1].image=DestroyImage(
+          layer_info[number_layers-1].image);
 
         /* now reverse the order of the layers as they are put
            into subimages

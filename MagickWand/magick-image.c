@@ -1795,7 +1795,7 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
 %
 %      MagickBooleanType MagickCompositeImage(MagickWand *wand,
 %        const MagickWand *source_wand,const CompositeOperator compose,
-%        const ssize_t x,const ssize_t y)
+%        const MagickBooleanType clip_to_self,const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -1813,6 +1813,8 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
 %        DifferenceCompositeOp BumpmapCompositeOp    CopyCompositeOp
 %        DisplaceCompositeOp
 %
+%    o clip_to_self: set to MagickTrue to limit composition to area composed.
+%
 %    o x: the column offset of the composited image.
 %
 %    o y: the row offset of the composited image.
@@ -1820,7 +1822,7 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
 */
 WandExport MagickBooleanType MagickCompositeImage(MagickWand *wand,
   const MagickWand *source_wand,const CompositeOperator compose,
-  const ssize_t x,const ssize_t y)
+  const MagickBooleanType clip_to_self,const ssize_t x,const ssize_t y)
 {
   MagickBooleanType
     status;
@@ -1832,8 +1834,8 @@ WandExport MagickBooleanType MagickCompositeImage(MagickWand *wand,
   if ((wand->images == (Image *) NULL) ||
       (source_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=CompositeImage(wand->images,compose,source_wand->images,x,y,
-    wand->exception);
+  status=CompositeImage(wand->images,source_wand->images,compose,clip_to_self,
+    x,y,wand->exception);
   return(status);
 }
 

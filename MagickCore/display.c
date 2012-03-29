@@ -4355,8 +4355,8 @@ static MagickBooleanType XCompositeImage(Display *display,
   /*
     Composite image with X Image window.
   */
-  (void) CompositeImage(image,compose,composite_image,composite_info.x,
-    composite_info.y,exception);
+  (void) CompositeImage(image,composite_image,compose,MagickFalse,
+    composite_info.x,composite_info.y,exception);
   composite_image=DestroyImage(composite_image);
   XSetCursorState(display,windows,MagickFalse);
   /*
@@ -10928,8 +10928,8 @@ static MagickBooleanType XPasteImage(Display *display,
   /*
     Paste image with X Image window.
   */
-  (void) CompositeImage(image,compose,paste_image,paste_info.x,paste_info.y,
-    exception);
+  (void) CompositeImage(image,paste_image,compose,MagickFalse,paste_info.x,
+    paste_info.y,exception);
   paste_image=DestroyImage(paste_image);
   XSetCursorState(display,windows,MagickFalse);
   /*
@@ -11662,8 +11662,8 @@ static MagickBooleanType XROIImage(Display *display,
               (void) XMagickCommand(display,resource_info,windows,
                 SaveToUndoBufferCommand,image,exception);
               windows->image.orphan=MagickFalse;
-              (void) CompositeImage(*image,CopyCompositeOp,roi_image,
-                crop_info.x,crop_info.y,exception);
+              (void) CompositeImage(*image,roi_image,CopyCompositeOp,
+                MagickFalse,crop_info.x,crop_info.y,exception);
               roi_image=DestroyImage(roi_image);
               (void) SetImageProgressMonitor(*image,progress_monitor,
                 (*image)->client_data);

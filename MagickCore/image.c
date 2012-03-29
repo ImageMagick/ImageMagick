@@ -2200,7 +2200,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       /*
         Copy pixel intensity to the alpha channel.
       */
-      status=CompositeImage(image,IntensityCompositeOp,image,0,0,exception);
+      status=CompositeImage(image,image,IntensityCompositeOp,MagickFalse,0,0,
+        exception);
       if (alpha_type == ShapeAlphaChannel)
         (void) LevelImageColors(image,&image->background_color,
           &image->background_color,MagickTrue,exception);
@@ -2213,7 +2214,8 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case ExtractAlphaChannel:
     {
-      status=CompositeImage(image,AlphaCompositeOp,image,0,0,exception);
+      status=CompositeImage(image,image,AlphaCompositeOp,MagickFalse,0,0,
+        exception);
       image->matte=MagickFalse;
       break;
     }
@@ -3610,8 +3612,8 @@ MagickExport Image *SmushImages(const Image *images,
         x_offset-=SmushXGap(smush_image,image,offset,exception);
         y_offset-=geometry.y;
       }
-    status=CompositeImage(smush_image,OverCompositeOp,image,x_offset,y_offset,
-      exception);
+    status=CompositeImage(smush_image,image,OverCompositeOp,MagickFalse,
+      x_offset,y_offset,exception);
     proceed=SetImageProgress(image,SmushImageTag,n,number_images);
     if (proceed == MagickFalse)
       break;

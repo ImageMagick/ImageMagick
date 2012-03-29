@@ -3842,18 +3842,21 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
         }
       if (LocaleCompare("composite",option+1) == 0)
         {
+          CompositeOperator
+            compose;
+
+          const char*
+            value;
+
+          MagickBooleanType
+            clip_to_self;
+
           Image
             *mask_image,
             *source_image;
 
           RectangleInfo
             geometry;
-
-          CompositeOperator
-            compose;
-
-          const char*
-            value;
 
           value=GetImageOption(_image_info,"compose");
           if (value != (const char *) NULL)
@@ -3883,8 +3886,8 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
               if ((compose == DisplaceCompositeOp) ||
                   (compose == DistortCompositeOp))
                 { /* Merge Y displacement into X displace/distort map. */
-                  (void) CompositeImage(source_image,CopyGreenCompositeOp,
-                    mask_image,0,0,_exception);
+                  (void) CompositeImage(source_image,mask_image,
+                    CopyGreenCompositeOp,MagickFalse,0,0,_exception);
                   mask_image=DestroyImage(mask_image);
                 }
               else
@@ -3897,8 +3900,13 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
                   mask_image=DestroyImage(mask_image);
                 }
             }
-          (void) CompositeImage(new_images,compose,source_image,geometry.x,
-                     geometry.y,_exception);
+          clip_to_self=MagickFalse;
+          value=GetImageArtifact(source_image,"compose:outside-overlay");
+          if (value != (const char *) NULL)
+            clip_to_self=IsMagickTrue(value) == MagickFalse ? MagickTrue :
+              MagickFalse;
+          (void) CompositeImage(new_images,source_image,compose,clip_to_self,
+            geometry.x,geometry.y,_exception);
           (void) SetImageMask(new_images,(Image *) NULL,_exception);
           source_image=DestroyImage(source_image);
           break;
