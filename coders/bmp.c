@@ -840,6 +840,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=(size_t) MagickAbsoluteValue(bmp_info.width);
     image->rows=(size_t) MagickAbsoluteValue(bmp_info.height);
     image->depth=bmp_info.bits_per_pixel <= 8 ? bmp_info.bits_per_pixel : 8;
+    image->resolution.x=(double) bmp_info.x_pixels/100.0;
+    image->resolution.y=(double) bmp_info.y_pixels/100.0;
+    image->units=PixelsPerCentimeterResolution;
     if ((bmp_info.bits_per_pixel == 16) || (bmp_info.bits_per_pixel == 32))
       image->matte=bmp_info.alpha_mask != 0 ? MagickTrue : MagickFalse;
     if ((bmp_info.number_colors != 0) || (bmp_info.bits_per_pixel < 16))
@@ -938,12 +941,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               "UnableToRunlengthDecodeImage");
           }
       }
-    /*
-      Initialize image structure.
-    */
-    image->resolution.x=(double) bmp_info.x_pixels/100.0;
-    image->resolution.y=(double) bmp_info.y_pixels/100.0;
-    image->units=PixelsPerCentimeterResolution;
     /*
       Convert BMP raster image to pixel packets.
     */
