@@ -38,11 +38,13 @@
 /*
   Include declarations.
 */
-#include "MagickWand/studio.h"
-#include "MagickWand/MagickWand.h"
-#include "MagickWand/script-token.h"
-#include "MagickCore/string-private.h"
-#include "MagickCore/utility-private.h"
+#ifndef SCRIPT_TOKEN_TESTING
+#  include "MagickWand/studio.h"
+#  include "MagickWand/MagickWand.h"
+#  include "MagickWand/script-token.h"
+#  include "MagickCore/string-private.h"
+#  include "MagickCore/utility-private.h"
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
