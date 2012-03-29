@@ -63,6 +63,7 @@
 #include "magick/statistic.h"
 #include "magick/string_.h"
 #include "magick/module.h"
+#include "magick/token.h"
 #include "magick/utility.h"
 
 /*
