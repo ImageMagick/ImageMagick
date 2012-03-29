@@ -896,6 +896,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         bmp_colormap=(unsigned char *) RelinquishMagickMemory(bmp_colormap);
       }
+    image->x_resolution=(double) bmp_info.x_pixels/100.0;
+    image->y_resolution=(double) bmp_info.y_pixels/100.0;
+    image->units=PixelsPerCentimeterResolution;
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
@@ -940,12 +943,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
               "UnableToRunlengthDecodeImage");
           }
       }
-    /*
-      Initialize image structure.
-    */
-    image->x_resolution=(double) bmp_info.x_pixels/100.0;
-    image->y_resolution=(double) bmp_info.y_pixels/100.0;
-    image->units=PixelsPerCentimeterResolution;
     /*
       Convert BMP raster image to pixel packets.
     */
