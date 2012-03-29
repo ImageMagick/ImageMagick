@@ -1609,7 +1609,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     *destination_image;
 
   MagickBooleanType
-    bounded,
+    clip_to_self,
     status;
 
   MagickOffsetType
@@ -1648,7 +1648,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   destination_image=(Image *) NULL;
   amount=0.5;
   destination_dissolve=1.0;
-  bounded=MagickTrue;
+  clip_to_self=MagickTrue;
   percent_brightness=100.0;
   percent_saturation=100.0;
   source_dissolve=1.0;
@@ -1667,7 +1667,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       /*
         Modify destination outside the overlaid region.
       */
-      bounded=MagickFalse;
+      clip_to_self=MagickFalse;
       break;
     }
     case OverCompositeOp:
@@ -1757,7 +1757,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       */
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
-      bounded=MagickFalse;
+      clip_to_self=MagickFalse;
       break;
     }
     case BlurCompositeOp:
@@ -2101,11 +2101,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
             destination_dissolve=geometry_info.sigma/100.0;
           if ((destination_dissolve-MagickEpsilon) < 0.0)
             destination_dissolve=0.0;
-          bounded=MagickFalse;
+          clip_to_self=MagickFalse;
           if ((destination_dissolve+MagickEpsilon) > 1.0 )
             {
               destination_dissolve=1.0;
-              bounded=MagickTrue;
+              clip_to_self=MagickTrue;
             }
         }
       break;
@@ -2120,9 +2120,9 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           destination_dissolve=1.0-source_dissolve;
           if ((flags & SigmaValue) != 0)
             destination_dissolve=geometry_info.sigma/100.0;
-          bounded=MagickFalse;
+          clip_to_self=MagickFalse;
           if ((destination_dissolve+MagickEpsilon) > 1.0)
-            bounded=MagickTrue;
+            clip_to_self=MagickTrue;
         }
       break;
     }
@@ -2180,7 +2180,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   }
   value=GetImageArtifact(composite_image,"compose:outside-overlay");
   if (value != (const char *) NULL)
-    bounded=IsMagickTrue(value) == MagickFalse ? MagickTrue : MagickFalse;
+    clip_to_self=IsMagickTrue(value) == MagickFalse ? MagickTrue : MagickFalse;
   /*
     Composite image.
   */
@@ -2227,7 +2227,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
 
     if (status == MagickFalse)
       continue;
-    if (bounded != MagickFalse)
+    if (clip_to_self != MagickFalse)
       {
         if (y < y_offset)
           continue;
@@ -2267,7 +2267,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     brightness=0.0;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (bounded != MagickFalse)
+      if (clip_to_self != MagickFalse)
         {
           if (x < x_offset)
             {
