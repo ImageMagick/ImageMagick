@@ -786,7 +786,6 @@ static const OptionInfo
     { "DstIn", DstInCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "DstOut", DstOutCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "DstOver", DstOverCompositeOp, UndefinedOptionFlag, MagickFalse },
-    { "Dst", DstCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Exclusion", ExclusionCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "HardLight", HardLightCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Hue", HueCompositeOp, UndefinedOptionFlag, MagickFalse },
