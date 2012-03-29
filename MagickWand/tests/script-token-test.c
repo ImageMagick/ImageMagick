@@ -71,6 +71,7 @@
 #define LocaleCompare(p,q)        strcasecmp(p,q)
 #define LocaleNCompare(p,q,l)     strncasecmp(p,q,l)
 #define WandSignature             0xabacadabUL
+#define fopen_utf8(p,q)           fopen(p,q)
 #define WandExport
 
 /* Include the actual code for ScriptToken functions */
