@@ -821,7 +821,6 @@ static const OptionInfo
     { "SrcIn", SrcInCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "SrcOut", SrcOutCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "SrcOver", SrcOverCompositeOp, UndefinedOptionFlag, MagickFalse },
-    { "Src", SrcCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "VividLight", VividLightCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Xor", XorCompositeOp, UndefinedOptionFlag, MagickFalse },
     { "Divide", DivideDstCompositeOp, DeprecateOptionFlag, MagickTrue },
