@@ -203,8 +203,8 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
     { MagickBooleanType status = GetScriptToken(token_info);
       cli_wand->line=token_info->token_line;
       cli_wand->column=token_info->token_column;
-      if( status == MagickFalse )
-        break;
+      if( IfMagickFalse(status) )
+        break; /* error or end of options */
     }
 
     /* save option details */
@@ -226,7 +226,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
 #if MagickCommandDebug
       (void) FormatLocaleFile(stderr, "Script Non-Option: \"%s\"\n", option);
 #endif
-      if ( IsCommandOption(option) == MagickFalse)
+      if ( IfMagickFalse(IsCommandOption(option)))
         /* non-option -- treat as a image read */
         CLISpecialOperator(cli_wand,"-read",option);
       else
@@ -236,7 +236,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
     }
 
     if ( count >= 1 ) {
-      if( GetScriptToken(token_info) == MagickFalse )
+      if( IfMagickFalse(GetScriptToken(token_info)) )
         CLIWandException(OptionFatalError,"MissingArgument",option);
       CloneString(&arg1,token_info->token);
     }
@@ -244,7 +244,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
       CloneString(&arg1,(char *)NULL);
 
     if ( count >= 2 ) {
-      if( GetScriptToken(token_info) == MagickFalse )
+      if( IfMagickFalse(GetScriptToken(token_info)) )
         CLIWandExceptionBreak(OptionFatalError,"MissingArgument",option);
       CloneString(&arg2,token_info->token);
     }
@@ -435,8 +435,8 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
 #if MagickCommandDebug
       (void) FormatLocaleFile(stderr, "CLI Non-Option: \"%s\"\n", option);
 #endif
-      if ( ( IsCommandOption(option) == MagickFalse ) &&
-         ( (process_flags & ProcessNonOptionImageRead) != 0 ) )
+      if ( IfMagickFalse(IsCommandOption(option) ) &&
+           (process_flags & ProcessNonOptionImageRead) != 0 )
         /* non-option -- treat as a image read */
         CLISpecialOperator(cli_wand,"-read",option);
       else if ( (process_flags & ProcessUnknownOptionError) != 0 )
@@ -669,7 +669,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
      Only "-read" needs to expand file name glob patterns
   */
   status=ExpandFilenames(&argc,&argv);
-  if (status == MagickFalse)
+  if ( IfMagickFalse(status))
     ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
 #endif
@@ -783,5 +783,5 @@ Magick_Command_Exit:
   cli_wand->wand.exception = (ExceptionInfo *)NULL;
   cli_wand=DestroyMagickCLI(cli_wand);
 
-  return((exception->severity > ErrorException) ? MagickFalse : MagickTrue);
+  return(IsMagickFalse(exception->severity > ErrorException));
 }
