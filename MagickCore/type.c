@@ -1208,7 +1208,7 @@ static MagickBooleanType LoadTypeList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"stealth") == 0)
           {
-            type_info->stealth=IsMagickTrue(token);
+            type_info->stealth=IsStringTrue(token);
             break;
           }
         if (LocaleCompare((char *) keyword,"stretch") == 0)

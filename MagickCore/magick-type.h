@@ -159,6 +159,36 @@ typedef enum
   MagickTrue = 1
 } MagickBooleanType;
 
+/*
+   Define some short-hand macros for handling MagickBooleanType
+   Some of these assume MagickBooleanType uses values 0 and 1,
+   and uses fast C typing with C boolean operations
+
+     Is  -- returns MagickBooleanType
+     If  -- returns C integer boolean (for if's and while's)
+
+   IsTrue()  converts a C integer boolean to a MagickBooleanType
+   IsFalse() is a  MagickBooleanType 'not' operation
+
+   IfTrue()   converts MagickBooleanType to C integer Boolean
+   IfFalse()  Not the MagickBooleanType to C integer Boolean
+
+   IsNULL() and IsNotNULL() converts C pointers to MagickBooleanType
+*/
+#if 1
+#  define IsTrue(v)  ((MagickBooleanType)((int)(v) != 0))
+#  define IsFalse(v) ((MagickBooleanType)(!(int)(v)))
+#  define IfTrue(v)  ((int)(v))
+#  define IfFalse(v) (!(int)(v))
+#else
+#  define IsTrue(v)  ((MagickBooleanType)(v)!=MagickFalse?MagickTrue:MagickFalse)
+#  define IsFalse(v) ((MagickBooleanType)(v)==MagickFalse?MagickTrue:MagickFalse)
+#  define IfTrue(v)  ((v) != MagickFalse)
+#  define IfFalse(v) ((v) == MagickFalse)
+#endif
+#define IsNULL(v) (((void *)(v) == NULL)?MagickTrue:MagickFalse)
+#define IsNotNULL(v) (((void *)(v) != NULL)?MagickTrue:MagickFalse)
+
 typedef struct _BlobInfo BlobInfo;
 
 typedef struct _ExceptionInfo ExceptionInfo;

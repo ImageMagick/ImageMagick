@@ -3493,7 +3493,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
   resource_info->client_name=AcquireString(client_name);
   resource_value=XGetResourceClass(database,client_name,"backdrop",
     (char *) "False");
-  resource_info->backdrop=IsMagickTrue(resource_value);
+  resource_info->backdrop=IsStringTrue(resource_value);
   resource_info->background_color=XGetResourceInstance(database,client_name,
     "background",(char *) "#d6d6d6d6d6d6");
   resource_info->border_color=XGetResourceInstance(database,client_name,
@@ -3514,20 +3514,20 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
       resource_value);
   resource_value=XGetResourceClass(database,client_name,
     "colorRecovery",(char *) "False");
-  resource_info->color_recovery=IsMagickTrue(resource_value);
+  resource_info->color_recovery=IsStringTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,"confirmExit",
     (char *) "False");
-  resource_info->confirm_exit=IsMagickTrue(resource_value);
+  resource_info->confirm_exit=IsStringTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,"confirmEdit",
     (char *) "False");
-  resource_info->confirm_edit=IsMagickTrue(resource_value);
+  resource_info->confirm_edit=IsStringTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,"delay",(char *) "1");
   resource_info->delay=(unsigned int) StringToUnsignedLong(resource_value);
   resource_info->display_gamma=XGetResourceClass(database,client_name,
     "displayGamma",(char *) "2.2");
   resource_value=XGetResourceClass(database,client_name,"displayWarnings",
     (char *) "True");
-  resource_info->display_warnings=IsMagickTrue(resource_value);
+  resource_info->display_warnings=IsStringTrue(resource_value);
   resource_info->font=XGetResourceClass(database,client_name,"font",
     (char *) NULL);
   resource_info->font=XGetResourceClass(database,client_name,"fontList",
@@ -3558,7 +3558,7 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
     "foreground",ForegroundColor);
   resource_value=XGetResourceClass(database,client_name,"gammaCorrect",
     (char *) "True");
-  resource_info->gamma_correct=IsMagickTrue(resource_value);
+  resource_info->gamma_correct=IsStringTrue(resource_value);
   resource_info->image_geometry=ConstantString(XGetResourceClass(database,
     client_name,"geometry",(char *) NULL));
   resource_value=XGetResourceClass(database,client_name,"gravity",
@@ -3571,11 +3571,11 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
     "iconGeometry",(char *) NULL);
   resource_value=XGetResourceClass(database,client_name,"iconic",
     (char *) "False");
-  resource_info->iconic=IsMagickTrue(resource_value);
+  resource_info->iconic=IsStringTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,"immutable",
     LocaleCompare(client_name,"PerlMagick") == 0 ? (char *) "True" :
     (char *) "False");
-  resource_info->immutable=IsMagickTrue(resource_value);
+  resource_info->immutable=IsStringTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,"magnify",
     (char *) "3");
   resource_info->magnify=(unsigned int) StringToUnsignedLong(resource_value);
@@ -3622,13 +3622,13 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
   resource_info->undo_cache=(unsigned int) StringToUnsignedLong(resource_value);
   resource_value=XGetResourceClass(database,client_name,"update",
     (char *) "False");
-  resource_info->update=IsMagickTrue(resource_value);
+  resource_info->update=IsStringTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,"usePixmap",
     (char *) "True");
-  resource_info->use_pixmap=IsMagickTrue(resource_value);
+  resource_info->use_pixmap=IsStringTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,"sharedMemory",
     (char *) "True");
-  resource_info->use_shared_memory=IsMagickTrue(resource_value);
+  resource_info->use_shared_memory=IsStringTrue(resource_value);
   resource_info->visual_type=XGetResourceClass(database,client_name,"visual",
     (char *) NULL);
   resource_info->window_group=XGetResourceClass(database,client_name,

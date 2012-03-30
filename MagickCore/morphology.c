@@ -3802,7 +3802,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
   if ( iterations < 0 )  /* negative interations = infinite (well alomst) */
      kernel_limit = image->columns>image->rows ? image->columns : image->rows;
 
-  verbose = IsMagickTrue(GetImageArtifact(image,"verbose"));
+  verbose = IsStringTrue(GetImageArtifact(image,"verbose"));
 
   /* initialise for cleanup */
   curr_image = (Image *) image;
@@ -3863,7 +3863,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
       changed = MorphologyPrimitiveDirect(rslt_image, method,
          kernel, exception);
 
-      if ( verbose == MagickTrue )
+      if ( IfTrue(verbose) )
         (void) (void) FormatLocaleFile(stderr,
           "%s:%.20g.%.20g #%.20g => Changed %.20g\n",
           CommandOptionToMnemonic(MagickMorphologyOptions, method),
@@ -4011,7 +4011,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
         assert( this_kernel != (KernelInfo *) NULL );
 
         /* Extra information for debugging compound operations */
-        if ( verbose == MagickTrue ) {
+        if ( IfTrue(verbose) ) {
           if ( stage_limit > 1 )
             (void) FormatLocaleString(v_info,MaxTextExtent,"%s:%.20g.%.20g -> ",
              CommandOptionToMnemonic(MagickMorphologyOptions,method),(double)
@@ -4047,7 +4047,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           changed = MorphologyPrimitive(curr_image, work_image, primitive,
                        this_kernel, bias, exception);
 
-          if ( verbose == MagickTrue ) {
+          if ( IfTrue(verbose) ) {
             if ( kernel_loop > 1 )
               (void) FormatLocaleFile(stderr, "\n"); /* add end-of-line from previous */
             (void) (void) FormatLocaleFile(stderr,
@@ -4072,9 +4072,9 @@ MagickPrivate Image *MorphologyApply(const Image *image,
 
         } /* End Loop 4: Iterate the kernel with primitive */
 
-        if ( verbose == MagickTrue && kernel_changed != (size_t)changed )
+        if ( IfTrue(verbose) && kernel_changed != (size_t)changed )
           (void) FormatLocaleFile(stderr, "   Total %.20g",(double) kernel_changed);
-        if ( verbose == MagickTrue && stage_loop < stage_limit )
+        if ( IfTrue(verbose) && stage_loop < stage_limit )
           (void) FormatLocaleFile(stderr, "\n"); /* add end-of-line before looping */
 
 #if 0
@@ -4099,7 +4099,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
         case EdgeInMorphology:
         case TopHatMorphology:
         case BottomHatMorphology:
-          if ( verbose == MagickTrue )
+          if ( IfTrue(verbose) )
             (void) FormatLocaleFile(stderr,
               "\n%s: Difference with original image",CommandOptionToMnemonic(
               MagickMorphologyOptions, method) );
@@ -4107,7 +4107,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
             MagickFalse,0,0,exception);
           break;
         case EdgeMorphology:
-          if ( verbose == MagickTrue )
+          if ( IfTrue(verbose) )
             (void) FormatLocaleFile(stderr,
               "\n%s: Difference of Dilate and Erode",CommandOptionToMnemonic(
               MagickMorphologyOptions, method) );
@@ -4123,7 +4123,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
       if ( kernel->next == (KernelInfo *) NULL )
         rslt_image = curr_image;   /* just return the resulting image */
       else if ( rslt_compose == NoCompositeOp )
-        { if ( verbose == MagickTrue ) {
+        { if ( IfTrue(verbose) ) {
             if ( this_kernel->next != (KernelInfo *) NULL )
               (void) FormatLocaleFile(stderr, " (re-iterate)");
             else
@@ -4132,7 +4132,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           rslt_image = curr_image; /* return result, and re-iterate */
         }
       else if ( rslt_image == (Image *) NULL)
-        { if ( verbose == MagickTrue )
+        { if ( IfTrue(verbose) )
             (void) FormatLocaleFile(stderr, " (save for compose)");
           rslt_image = curr_image;
           curr_image = (Image *) image;  /* continue with original image */
@@ -4145,7 +4145,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           ** purely mathematical way, and only to the selected channels.
           ** IE: Turn off SVG composition 'alpha blending'.
           */
-          if ( verbose == MagickTrue )
+          if ( IfTrue(verbose) )
             (void) FormatLocaleFile(stderr, " (compose \"%s\")",
               CommandOptionToMnemonic(MagickComposeOptions, rslt_compose) );
           (void) CompositeImage(rslt_image,curr_image,rslt_compose,MagickFalse,
@@ -4153,7 +4153,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           curr_image = DestroyImage(curr_image);
           curr_image = (Image *) image;  /* continue with original image */
         }
-      if ( verbose == MagickTrue )
+      if ( IfTrue(verbose) )
         (void) FormatLocaleFile(stderr, "\n");
 
       /* loop to the next kernel in a multi-kernel list */
@@ -4282,9 +4282,9 @@ MagickExport Image *MorphologyImage(const Image *image,
     }
 
   /* display the (normalized) kernel via stderr */
-  if ( IsMagickTrue(GetImageArtifact(image,"showkernel"))
-    || IsMagickTrue(GetImageArtifact(image,"convolve:showkernel"))
-    || IsMagickTrue(GetImageArtifact(image,"morphology:showkernel")) )
+  if ( IfTrue(IsStringTrue(GetImageArtifact(image,"showkernel")))
+    || IfTrue(IsStringTrue(GetImageArtifact(image,"convolve:showkernel")))
+    || IfTrue(IsStringTrue(GetImageArtifact(image,"morphology:showkernel"))) )
     ShowKernelInfo(curr_kernel);
 
   /* Override the default handling of multi-kernel morphology results

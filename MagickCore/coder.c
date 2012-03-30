@@ -836,7 +836,7 @@ static MagickBooleanType LoadCoderList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"stealth") == 0)
           {
-            coder_info->stealth=IsMagickTrue(token);
+            coder_info->stealth=IsStringTrue(token);
             break;
           }
         break;

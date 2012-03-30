@@ -1198,9 +1198,6 @@ MagickExport MagickBooleanType GetImageAlphaChannel(const Image *image)
 */
 MagickExport void GetImageInfo(ImageInfo *image_info)
 {
-  const char
-    *synchronize;
-
   ExceptionInfo
     *exception;
 
@@ -1216,9 +1213,8 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->quality=UndefinedCompressionQuality;
   image_info->antialias=MagickTrue;
   image_info->dither=MagickTrue;
-  synchronize=GetEnvironmentValue("MAGICK_SYNCHRONIZE");
-  if (synchronize != (const char *) NULL)
-    image_info->synchronize=IsMagickTrue(synchronize);
+  image_info->synchronize=IsStringTrue(GetEnvironmentValue(
+         "MAGICK_SYNCHRONIZE"));
   exception=AcquireExceptionInfo();
   (void) QueryColorCompliance(BackgroundColor,AllCompliance,
     &image_info->background_color,exception);
