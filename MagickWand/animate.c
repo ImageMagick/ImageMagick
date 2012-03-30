@@ -386,10 +386,10 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
     ParseCommandOption(MagickInterlaceOptions,MagickFalse,resource_value);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "verbose","False");
-  image_info->verbose=IsMagickTrue(resource_value);
+  image_info->verbose=IsStringTrue(resource_value);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "dither","True");
-  quantize_info->dither=IsMagickTrue(resource_value);
+  quantize_info->dither=IsStringTrue(resource_value);
   /*
     Parse command line.
   */
