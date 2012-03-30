@@ -4498,7 +4498,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         (void) DrawAffineImage(image,composite_image,&affine,exception);
       else
         (void) CompositeImage(image,composite_image,draw_info->compose,
-          MagickFalse,geometry.x,geometry.y,exception);
+          MagickTrue,geometry.x,geometry.y,exception);
       composite_image=DestroyImage(composite_image);
       break;
     }

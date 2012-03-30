@@ -3891,7 +3891,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
                   (compose == DistortCompositeOp))
                 { /* Merge Y displacement into X displace/distort map. */
                   (void) CompositeImage(source_image,mask_image,
-                    CopyGreenCompositeOp,MagickFalse,0,0,_exception);
+                    CopyGreenCompositeOp,MagickTrue,0,0,_exception);
                   mask_image=DestroyImage(mask_image);
                 }
               else

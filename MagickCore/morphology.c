@@ -3877,7 +3877,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
         (void) SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel,
           exception);
         (void) CompositeImage(rslt_image,image,CopyAlphaCompositeOp,
-          MagickFalse,0,0,exception);
+          MagickTrue,0,0,exception);
         (void) SetImageAlphaChannel(rslt_image, DeactivateAlphaChannel,
           exception);
       }
@@ -4104,7 +4104,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
               "\n%s: Difference with original image",CommandOptionToMnemonic(
               MagickMorphologyOptions, method) );
           (void) CompositeImage(curr_image,image,DifferenceCompositeOp,
-            MagickFalse,0,0,exception);
+            MagickTrue,0,0,exception);
           break;
         case EdgeMorphology:
           if ( IfTrue(verbose) )
@@ -4112,7 +4112,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
               "\n%s: Difference of Dilate and Erode",CommandOptionToMnemonic(
               MagickMorphologyOptions, method) );
           (void) CompositeImage(curr_image,save_image,DifferenceCompositeOp,
-            MagickFalse,0,0,exception);
+            MagickTrue,0,0,exception);
           save_image = DestroyImage(save_image); /* finished with save image */
           break;
         default:
@@ -4148,7 +4148,7 @@ MagickPrivate Image *MorphologyApply(const Image *image,
           if ( IfTrue(verbose) )
             (void) FormatLocaleFile(stderr, " (compose \"%s\")",
               CommandOptionToMnemonic(MagickComposeOptions, rslt_compose) );
-          (void) CompositeImage(rslt_image,curr_image,rslt_compose,MagickFalse,
+          (void) CompositeImage(rslt_image,curr_image,rslt_compose,MagickTrue,
             0,0,exception);
           curr_image = DestroyImage(curr_image);
           curr_image = (Image *) image;  /* continue with original image */

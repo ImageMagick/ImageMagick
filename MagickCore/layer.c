@@ -276,7 +276,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     Coalesce rest of the images.
   */
   dispose_image=CloneImage(coalesce_image,0,0,MagickTrue,exception);
-  (void) CompositeImage(coalesce_image,next,CopyCompositeOp,MagickFalse,
+  (void) CompositeImage(coalesce_image,next,CopyCompositeOp,MagickTrue,
     next->page.x,next->page.y,exception);
   next=GetNextImageInList(next);
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
@@ -328,7 +328,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     previous=coalesce_image;
     coalesce_image=GetNextImageInList(coalesce_image);
     (void) CompositeImage(coalesce_image,next,next->matte != MagickFalse ?
-      OverCompositeOp : CopyCompositeOp,MagickFalse,next->page.x,next->page.y,
+      OverCompositeOp : CopyCompositeOp,MagickTrue,next->page.x,next->page.y,
       exception);
     (void) CloneImageProfiles(coalesce_image,next);
     (void) CloneImageProperties(coalesce_image,next);
@@ -423,7 +423,7 @@ MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
         return((Image *) NULL);
       }
     (void) CompositeImage(current_image,next,next->matte != MagickFalse ?
-      OverCompositeOp : CopyCompositeOp,MagickFalse,next->page.x,next->page.y,
+      OverCompositeOp : CopyCompositeOp,MagickTrue,next->page.x,next->page.y,
       exception);
     /*
       Handle Background dispose: image is displayed for the delay period.
@@ -794,7 +794,7 @@ MagickExport Image *CompareImagesLayers(const Image *image,
   image_a->page=next->page;
   image_a->page.x=0;
   image_a->page.y=0;
-  (void) CompositeImage(image_a,next,CopyCompositeOp,MagickFalse,next->page.x,
+  (void) CompositeImage(image_a,next,CopyCompositeOp,MagickTrue,next->page.x,
     next->page.y,exception);
   /*
     Compute the bounding box of changes for the later images
@@ -810,7 +810,7 @@ MagickExport Image *CompareImagesLayers(const Image *image,
         bounds=(RectangleInfo *) RelinquishMagickMemory(bounds);
         return((Image *) NULL);
       }
-    (void) CompositeImage(image_a,next,CopyCompositeOp,MagickFalse,next->page.x,
+    (void) CompositeImage(image_a,next,CopyCompositeOp,MagickTrue,next->page.x,
       next->page.y,exception);
     bounds[i]=CompareImagesBounds(image_b,image_a,method,exception);
 
@@ -1499,7 +1499,7 @@ MagickExport void OptimizeImageTransparency(const Image *image,
         return;
       }
     (void) CompositeImage(current_image,next,next->matte != MagickFalse ?
-      OverCompositeOp : CopyCompositeOp,MagickFalse,next->page.x,next->page.y,
+      OverCompositeOp : CopyCompositeOp,MagickTrue,next->page.x,next->page.y,
       exception);
     /*
       At this point the image would be displayed, for the delay period
@@ -1543,7 +1543,7 @@ MagickExport void OptimizeImageTransparency(const Image *image,
     next=GetNextImageInList(next);
     if (next != (Image *) NULL) {
       (void) CompositeImage(next,dispose_image,ChangeMaskCompositeOp,
-        MagickFalse,-(next->page.x),-(next->page.y),exception);
+        MagickTrue,-(next->page.x),-(next->page.y),exception);
     }
   }
   dispose_image=DestroyImage(dispose_image);
@@ -1758,7 +1758,7 @@ static inline void CompositeCanvas(Image *destination,
 {
   x_offset+=source->page.x-destination->page.x;
   y_offset+=source->page.y-destination->page.y;
-  (void) CompositeImage(destination,source,compose,MagickFalse,x_offset,
+  (void) CompositeImage(destination,source,compose,MagickTrue,x_offset,
     y_offset,exception);
 }
 
@@ -2032,7 +2032,7 @@ MagickExport Image *MergeImageLayers(Image *image,const ImageLayerMethod method,
   number_images=GetImageListLength(image);
   for (scene=0; scene < (ssize_t) number_images; scene++)
   {
-    (void) CompositeImage(canvas,image,image->compose,MagickFalse,image->page.x-
+    (void) CompositeImage(canvas,image,image->compose,MagicTrue,image->page.x-
       canvas->page.x,image->page.y-canvas->page.y,exception);
     proceed=SetImageProgress(image,MergeLayersTag,(MagickOffsetType) scene,
       number_images);

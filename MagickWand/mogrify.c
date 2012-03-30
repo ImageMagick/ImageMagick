@@ -2449,7 +2449,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                   Composite region.
                 */
                 (void) CompositeImage(region_image,*image,region_image->matte !=
-                   MagickFalse ? CopyCompositeOp : OverCompositeOp,MagickFalse,
+                   MagickFalse ? CopyCompositeOp : OverCompositeOp,MagickTrue,
                    region_geometry.x,region_geometry.y,exception);
                 *image=DestroyImage(*image);
                 *image=region_image;
@@ -3195,7 +3195,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
       */
       (void) SyncImageSettings(mogrify_info,*image,exception);
       (void) CompositeImage(region_image,*image,region_image->matte !=
-         MagickFalse ? CopyCompositeOp : OverCompositeOp,MagickFalse,
+         MagickFalse ? CopyCompositeOp : OverCompositeOp,MagickTrue,
          region_geometry.x,region_geometry.y,exception);
       *image=DestroyImage(*image);
       *image=region_image;
@@ -7423,11 +7423,10 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               geometry;
 
             clip_to_self=IsStringTrue(GetImageOption(mogrify_info,
-                   "compose:clip-to-self"));
+              "compose:clip-to-self"));
             value=GetImageOption(mogrify_info,"compose:outside-overlay");
             if (value != (const char *) NULL)
               clip_to_self=IsFalse(IsStringTrue(value));
-
             (void) SyncImagesSettings(mogrify_info,*images,exception);
             image=RemoveFirstImageFromList(images);
             composite_image=RemoveFirstImageFromList(images);
@@ -7452,7 +7451,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                       Merge Y displacement into X displacement image.
                     */
                     (void) CompositeImage(composite_image,mask_image,
-                      CopyGreenCompositeOp,MagickFalse,0,0,exception);
+                      CopyGreenCompositeOp,MagickTrue,0,0,exception);
                     mask_image=DestroyImage(mask_image);
                   }
                 else
@@ -7466,7 +7465,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                   }
               }
             (void) CompositeImage(image,composite_image,image->compose,
-                  clip_to_self,geometry.x,geometry.y,exception);
+              clip_to_self,geometry.x,geometry.y,exception);
             (void) SetImageMask(image,(Image *) NULL,exception);
             composite_image=DestroyImage(composite_image);
             *images=DestroyImageList(*images);

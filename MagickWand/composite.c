@@ -194,7 +194,7 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
               for (y=0; y < (ssize_t) (*image)->rows; y+=(ssize_t) composite_image->rows)
                 for (x=0; x < (ssize_t) (*image)->columns; x+=(ssize_t) columns)
                   status&=CompositeImage(*image,composite_image,
-                    composite_options->compose,MagickFalse,x,y,exception);
+                    composite_options->compose,MagickTrue,x,y,exception);
             }
           else
             {
@@ -216,7 +216,7 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
                 Digitally composite image.
               */
               status&=CompositeImage(*image,composite_image,
-                composite_options->compose,MagickFalse,geometry.x,geometry.y,
+                composite_options->compose,MagickTrue,geometry.x,geometry.y,
                 exception);
             }
     }
@@ -1639,7 +1639,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
             Merge Y displacement into X displacement image.
           */
           (void) CompositeImage(composite_image,mask_image,CopyGreenCompositeOp,
-            MagickFalse,0,0,exception);
+            MagickTrue,0,0,exception);
           mask_image=DestroyImage(mask_image);
         }
       else

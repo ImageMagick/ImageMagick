@@ -264,7 +264,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
   reconstruct_view=DestroyCacheView(reconstruct_view);
   image_view=DestroyCacheView(image_view);
   (void) CompositeImage(difference_image,highlight_image,image->compose,
-    MagickFalse,0,0,exception);
+    MagickTrue,0,0,exception);
   highlight_image=DestroyImage(highlight_image);
   if (status == MagickFalse)
     difference_image=DestroyImage(difference_image);
