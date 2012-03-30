@@ -271,7 +271,7 @@ PKG_PROG_PKG_CONFIG
 # Enable run-time checking.
 #
 AC_ARG_ENABLE([bounds-checking],
-    [AC_HELP_STRING([--bounds-checking],
+    [AC_HELP_STRING([--enable-bounds-checking],
                     [enable run-time bounds-checking])],
     [enable_bounds_checking=$enableval],
     [enable_bounds_checking='no'])
