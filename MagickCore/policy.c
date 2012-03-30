@@ -825,7 +825,7 @@ static MagickBooleanType LoadPolicyList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"stealth") == 0)
           {
-            policy_info->stealth=IsMagickTrue(token);
+            policy_info->stealth=IsStringTrue(token);
             break;
           }
         break;

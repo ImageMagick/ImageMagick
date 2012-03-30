@@ -275,10 +275,10 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
         pango_layout_set_ellipsize(layout,PANGO_ELLIPSIZE_START);
     }
   option=GetImageOption(image_info,"pango:justify");
-  if ((option != (const char *) NULL) && (IsMagickTrue(option) != MagickFalse))
+  if (IfTrue(IsStringTrue(option)))
     pango_layout_set_justify(layout,1);
   option=GetImageOption(image_info,"pango:single-paragraph");
-  if ((option != (const char *) NULL) && (IsMagickTrue(option) != MagickFalse))
+  if (IfTrue(IsStringTrue(option)))
     pango_layout_set_single_paragraph_mode(layout,1);
   option=GetImageOption(image_info,"pango:wrap");
   if (option != (const char *) NULL)
@@ -329,7 +329,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
       pango_font_description_free(description);
     }
   option=GetImageOption(image_info,"pango:markup");
-  if ((option != (const char *) NULL) && (IsMagickTrue(option) == MagickFalse))
+  if (IfTrue(IsStringNotFalse(option))) /* enabled by default */
     pango_layout_set_text(layout,caption,-1);
   else
     {

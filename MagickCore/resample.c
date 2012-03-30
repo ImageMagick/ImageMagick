@@ -1326,7 +1326,8 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
 
     /* Scale radius so the filter LUT covers the full support range */
     r_scale = resample_filter->support*sqrt(1.0/(double)WLUT_WIDTH);
-    if (IsMagickTrue(GetImageArtifact(resample_filter->image,"resample:verbose")) )
+    if (IfTrue(IsStringTrue(GetImageArtifact(resample_filter->image,
+             "resample:verbose"))) )
       {
         /* Debug output of the filter weighting LUT
           Gnuplot the LUT with hoizontal adjusted to 'r' using...

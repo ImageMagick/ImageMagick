@@ -1405,12 +1405,12 @@ static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"spawn") == 0)
           {
-            delegate_info->spawn=IsMagickTrue(token);
+            delegate_info->spawn=IsStringTrue(token);
             break;
           }
         if (LocaleCompare((char *) keyword,"stealth") == 0)
           {
-            delegate_info->stealth=IsMagickTrue(token);
+            delegate_info->stealth=IsStringTrue(token);
             break;
           }
         break;
@@ -1420,7 +1420,7 @@ static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"thread-support") == 0)
           {
-            delegate_info->thread_support=IsMagickTrue(token);
+            delegate_info->thread_support=IsStringTrue(token);
             break;
           }
         break;

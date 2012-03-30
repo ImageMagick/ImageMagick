@@ -1156,7 +1156,7 @@ static MagickBooleanType LoadConfigureList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"stealth") == 0)
           {
-            configure_info->stealth=IsMagickTrue(token);
+            configure_info->stealth=IsStringTrue(token);
             break;
           }
         break;

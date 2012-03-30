@@ -186,9 +186,6 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   char
     filename[MaxTextExtent];
 
-  const char
-    *option;
-
   Image
     *histogram_image;
 
@@ -337,12 +334,11 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   }
-  /*
-    Relinquish resources.
-  */
   histogram=(PixelInfo *) RelinquishMagickMemory(histogram);
-  option=GetImageOption(image_info,"histogram:unique-colors");
-  if ((option == (const char *) NULL) || (IsMagickTrue(option) != MagickFalse))
+
+  /* output unique colors?  IMv6 is on by default, IMv7 is off by default */
+  if (IfTrue((IsStringTrue(GetImageOption(image_info,
+               "histogram:unique-colors")))))
     {
       FILE
         *file;

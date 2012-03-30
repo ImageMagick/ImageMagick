@@ -913,8 +913,7 @@ static MagickBooleanType LoadMimeList(const char *xml,const char *filename,
     if (attribute != (const char *) NULL)
       mime_info->priority=(ssize_t) strtol(attribute,(char **) NULL,0);
     attribute=GetXMLTreeAttribute(mime,"stealth");
-    if (attribute != (const char *) NULL)
-      mime_info->stealth=IsMagickTrue(attribute);
+    mime_info->stealth=IsStringTrue(attribute);
     attribute=GetXMLTreeAttribute(mime,"type");
     if (attribute != (const char *) NULL)
       mime_info->type=ConstantString(attribute);

@@ -1995,7 +1995,7 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
       {
         if (LocaleCompare((char *) keyword,"stealth") == 0)
           {
-            color_info->stealth=IsMagickTrue(token);
+            color_info->stealth=IsStringTrue(token);
             break;
           }
         break;

@@ -612,47 +612,6 @@ MagickPrivate MagickBooleanType IsGlob(const char *path)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I s M a g i c k T r u e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsMagickTrue() returns MagickTrue if the value is "true", "on", "yes" or
-%  "1".
-%
-%  The format of the IsMagickTrue method is:
-%
-%      MagickBooleanType IsMagickTrue(const char *value)
-%
-%  A description of each parameter follows:
-%
-%    o option: either MagickTrue or MagickFalse depending on the value
-%      parameter.
-%
-%    o value: Specifies a pointer to a character array.
-%
-*/
-MagickExport MagickBooleanType IsMagickTrue(const char *value)
-{
-  if (value == (const char *) NULL)
-    return(MagickFalse);
-  if (LocaleCompare(value,"true") == 0)
-    return(MagickTrue);
-  if (LocaleCompare(value,"on") == 0)
-    return(MagickTrue);
-  if (LocaleCompare(value,"yes") == 0)
-    return(MagickTrue);
-  if (LocaleCompare(value,"1") == 0)
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   T o k e n i z e r                                                         %
 %                                                                             %
 %                                                                             %

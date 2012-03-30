@@ -1408,6 +1408,89 @@ MagickExport double InterpretSiPrefixValue(const char *restrict string,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s S t r i n g T r u e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsStringTrue() returns MagickTrue if the value is "true", "on", "yes" or
+%  "1". Any other string or undefined returns MagickFalse.
+%
+%  Typically this is used to look at strings (options or artifacts) which
+%  has a default value of "false", when not defined.
+%
+%  The format of the IsStringTrue method is:
+%
+%      MagickBooleanType IsStringTrue(const char *value)
+%
+%  A description of each parameter follows:
+%
+%    o value: Specifies a pointer to a character array.
+%
+*/
+MagickExport MagickBooleanType IsStringTrue(const char *value)
+{
+  if (value == (const char *) NULL)
+    return(MagickFalse);
+  if (LocaleCompare(value,"true") == 0)
+    return(MagickTrue);
+  if (LocaleCompare(value,"on") == 0)
+    return(MagickTrue);
+  if (LocaleCompare(value,"yes") == 0)
+    return(MagickTrue);
+  if (LocaleCompare(value,"1") == 0)
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s S t r i n g N o t F a l s e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsStringNotFalse() returns MagickTrue, unless the string specifically
+%  has a value that makes this false.  that is if it has a value of
+%  "false", "off", "no" or "0".
+%
+%  Typically this is used to look at strings (options or artifacts) which
+%  has a default value of "true", when it has not been defined.
+%
+%  The format of the IsStringNotFalse method is:
+%
+%      MagickBooleanType IsStringNotFalse(const char *value)
+%
+%  A description of each parameter follows:
+%
+%    o value: Specifies a pointer to a character array.
+%
+*/
+MagickExport MagickBooleanType IsStringNotFalse(const char *value)
+{
+  if (value == (const char *) NULL)
+    return(MagickTrue);
+  if (LocaleCompare(value,"false") == 0)
+    return(MagickFalse);
+  if (LocaleCompare(value,"off") == 0)
+    return(MagickFalse);
+  if (LocaleCompare(value,"no") == 0)
+    return(MagickFalse);
+  if (LocaleCompare(value,"0") == 0)
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   L o c a l e C o m p a r e                                                 %
 %                                                                             %
 %                                                                             %
