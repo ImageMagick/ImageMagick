@@ -7422,12 +7422,14 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             RectangleInfo
               geometry;
 
-            clip_to_self=IsStringTrue(GetImageOption(mogrify_info,
-              "compose:clip-to-self"));
-            value=GetImageOption(mogrify_info,"compose:outside-overlay");
-            if (value != (const char *) NULL)
-              clip_to_self=IsFalse(IsStringTrue(value));
             (void) SyncImagesSettings(mogrify_info,*images,exception);
+
+            clip_to_self=IsStringTrue(GetImageOption(mogrify_info,
+                  "compose:clip-to-self")); /* if this is true */
+            if (IsMagickFalse(clip_to_self)) /* or */
+              clip_to_self=IfMagickFalse(IsStringNotFalse(GetImageOption(
+                  mogrify_info,"compose:outside-overlay"))); /* this false */
+
             image=RemoveFirstImageFromList(images);
             composite_image=RemoveFirstImageFromList(images);
             if (composite_image == (Image *) NULL)

@@ -1034,7 +1034,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         status=SystemCommand(delegate_info->spawn,image_info->verbose,command,
           exception) != 0 ? MagickTrue : MagickFalse;
         if (delegate_info->spawn != MagickFalse)
-          (void) sleep(2);
+          (void) sleep(2);    /* FUTURE: A better way is needed! */
         command=DestroyString(command);
       }
     if (LocaleCompare(decode,"SCAN") != 0)

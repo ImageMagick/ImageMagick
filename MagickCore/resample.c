@@ -1326,7 +1326,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
 
     /* Scale radius so the filter LUT covers the full support range */
     r_scale = resample_filter->support*sqrt(1.0/(double)WLUT_WIDTH);
-    if (IfTrue(IsStringTrue(GetImageArtifact(resample_filter->image,
+    if (IfMagickTrue(IsStringTrue(GetImageArtifact(resample_filter->image,
              "resample:verbose"))) )
       {
         /* Debug output of the filter weighting LUT

@@ -772,7 +772,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (read_info->scenes != (char *) NULL)
         *read_info->scenes='\0';
     }
-  if (IfTrue(IsStringTrue(GetImageOption(image_info,"ps:use-cropbox"))))
+  if (IfMagickTrue(IsStringTrue(GetImageOption(image_info,"ps:use-cropbox"))))
     (void) ConcatenateMagickString(options,"-dEPSCrop ",MaxTextExtent);
   (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
   (void) AcquireUniqueFilename(filename);

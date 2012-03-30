@@ -623,7 +623,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
       else {
           artifact=GetImageArtifact(image,"identify:unique-colors");
-          if (IfTrue(IsStringTrue(artifact)))
+          if (IfMagickTrue(IsStringTrue(artifact)))
             (void) FormatLocaleFile(file,"  Colors: %.20g\n",(double)
               GetNumberColors(image,(FILE *) NULL,exception));
         }
