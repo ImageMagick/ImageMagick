@@ -8460,7 +8460,7 @@ Mogrify(ref,...)
           if (attribute_flag[14] != 0)   /* "blend=>"  depreciated */
             (void) SetImageArtifact(composite_image,"compose:args",
               argument_list[14].string_reference);
-          clip_to_self=MagickFalse;
+          clip_to_self=MagickTrue;
           if (attribute_flag[15] != 0)
             clip_to_self=(MagickBooleanType)
               argument_list[15].integer_reference;
