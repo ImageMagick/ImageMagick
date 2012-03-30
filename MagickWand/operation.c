@@ -4564,7 +4564,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
 #if !USE_WAND_METHODS
       Image *
         new_images;
-      if (IfFalse(cli_wand->wand.image_info->ping))
+      if (IfTrue(cli_wand->wand.image_info->ping))
         new_images=PingImages(cli_wand->wand.image_info,arg1,_exception);
       else
         new_images=ReadImages(cli_wand->wand.image_info,arg1,_exception);
