@@ -1106,7 +1106,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     TIFFGetProfiles(tiff,image,exception);
     TIFFGetProperties(tiff,image,exception);
     option=GetImageOption(image_info,"tiff:exif-properties");
-    if (IfTrue(IsStringNotFalse(option))) /* enabled by default */
+    if (IfMagickTrue(IsStringNotFalse(option))) /* enabled by default */
       TIFFGetEXIFProperties(tiff,image,exception);
     /*
       Allocate memory for the image and pixel buffer.

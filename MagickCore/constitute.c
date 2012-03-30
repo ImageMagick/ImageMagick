@@ -1075,11 +1075,11 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
     }
   (void) SyncImageProfiles(image);
   option=GetImageOption(image_info,"delegate:bimodal");
-  if ((IfTrue(IsStringTrue(option))) &&
+  if ((IfMagickTrue(IsStringTrue(option))) &&
       (write_info->page == (char *) NULL) &&
       (GetPreviousImageInList(image) == (Image *) NULL) &&
       (GetNextImageInList(image) == (Image *) NULL) &&
-      (IfFalse(IsTaintImage(image))) )
+      (IfMagickFalse(IsTaintImage(image))) )
     {
       delegate_info=GetDelegateInfo(image->magick,write_info->magick,exception);
       if ((delegate_info != (const DelegateInfo *) NULL) &&

@@ -410,7 +410,7 @@ MagickExport void AcquireNextImage(const ImageInfo *image_info,Image *image,
 %  of the image list and appends them to each other top-to-bottom if the
 %  stack parameter is true, otherwise left-to-right.
 %
-%  The current gravity setting now effects how the image is justified in the
+%  The current gravity setting effects how the image is justified in the
 %  final image.
 %
 %  The format of the AppendImages method is:

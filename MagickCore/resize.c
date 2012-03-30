@@ -1054,7 +1054,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   {
 #endif
     artifact=GetImageArtifact(image,"filter:verbose");
-    if (IfTrue(IsStringTrue(artifact)))
+    if (IfMagickTrue(IsStringTrue(artifact)))
       {
         double
           support,

@@ -176,18 +176,18 @@ typedef enum
    IsNULL() and IsNotNULL() converts C pointers to MagickBooleanType
 */
 #if 1
-#  define IsTrue(v)  ((MagickBooleanType)((int)(v) != 0))
-#  define IsFalse(v) ((MagickBooleanType)(!(int)(v)))
-#  define IfTrue(v)  ((int)(v))
-#  define IfFalse(v) (!(int)(v))
+#  define IsMagickTrue(v)  ((MagickBooleanType)((int)(v)!= 0))
+#  define IsMagickFalse(v) ((MagickBooleanType)(!(int)(v)))
+#  define IfMagickTrue(v)  ((int)(v))
+#  define IfMagickFalse(v) (!(int)(v))
 #else
-#  define IsTrue(v)  ((MagickBooleanType)(v)!=MagickFalse?MagickTrue:MagickFalse)
-#  define IsFalse(v) ((MagickBooleanType)(v)==MagickFalse?MagickTrue:MagickFalse)
-#  define IfTrue(v)  ((v) != MagickFalse)
-#  define IfFalse(v) ((v) == MagickFalse)
+#  define IsMagickTrue(v)  (((MagickBooleanType)(v))!=MagickFalse?MagickTrue:MagickFalse)
+#  define IsMagickFalse(v) (((MagickBooleanType)(v))==MagickFalse?MagickTrue:MagickFalse)
+#  define IfMagickTrue(v)  ((v) != MagickFalse)
+#  define IfMagickFalse(v) ((v) == MagickFalse)
 #endif
-#define IsNULL(v) (((void *)(v) == NULL)?MagickTrue:MagickFalse)
-#define IsNotNULL(v) (((void *)(v) != NULL)?MagickTrue:MagickFalse)
+#define IsMagickNULL(v) (((void *)(v) == NULL)?MagickTrue:MagickFalse)
+#define IsMagickNotNULL(v) (((void *)(v) != NULL)?MagickTrue:MagickFalse)
 
 typedef struct _BlobInfo BlobInfo;
 

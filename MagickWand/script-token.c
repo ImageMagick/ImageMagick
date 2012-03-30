@@ -94,7 +94,7 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(char *filename)
   }
 #endif
   else {
-    token_info->stream=fopen(filename, "r");
+    token_info->stream=fopen_utf8(filename, "r");
   }
   if ( token_info->stream == (FILE *)NULL ) {
     token_info=(ScriptTokenInfo *) RelinquishMagickMemory(token_info);
