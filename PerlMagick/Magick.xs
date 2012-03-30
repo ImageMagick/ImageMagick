@@ -8499,10 +8499,10 @@ Mogrify(ref,...)
                 {
                   if (attribute_flag[8] != 0) /* rotate */
                     (void) CompositeImage(image,rotate_image,compose,
-                      MagickFalse,x,y,exception);
+                      MagickTrue,x,y,exception);
                   else
                     (void) CompositeImage(image,composite_image,compose,
-                      MagickFalse,x,y,exception);
+                      MagickTrue,x,y,exception);
                 }
               if (attribute_flag[8] != 0) /* rotate */
                 rotate_image=DestroyImage(rotate_image);
@@ -8537,7 +8537,7 @@ Mogrify(ref,...)
                     exception);
                   (void) CompositeImage(composite_image,
                     argument_list[10].image_reference,CopyGreenCompositeOp,
-                    MagickFalse,0,0,exception);
+                    MagickTrue,0,0,exception);
                 }
               else
                 {
@@ -10925,7 +10925,7 @@ Mogrify(ref,...)
           /*
             Composite region.
           */ 
-          status=CompositeImage(region_image,image,CopyCompositeOp,MagickFalse,
+          status=CompositeImage(region_image,image,CopyCompositeOp,MagickTrue,
             region_info.x,region_info.y,exception);
           (void) status;
           (void) CatchImageException(region_image);
