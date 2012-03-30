@@ -92,8 +92,9 @@ WandExport MagickBooleanType MagickDeleteImageArtifact(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -133,8 +134,9 @@ WandExport MagickBooleanType MagickDeleteImageProperty(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -174,8 +176,9 @@ WandExport MagickBooleanType MagickDeleteOption(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   return(DeleteImageOption(wand->image_info,option));
 }
 
@@ -206,8 +209,9 @@ WandExport MagickBooleanType MagickGetAntialias(const MagickWand *wand)
 {
   assert(wand != (const MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   return(wand->image_info->antialias);
 }
 
@@ -240,8 +244,9 @@ WandExport PixelWand *MagickGetBackgroundColor(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   background_color=NewPixelWand();
   PixelSetPixelColor(background_color,&wand->image_info->background_color);
   return(background_color);
@@ -273,8 +278,9 @@ WandExport ColorspaceType MagickGetColorspace(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   return(wand->image_info->colorspace);
 }
 
@@ -304,8 +310,9 @@ WandExport CompressionType MagickGetCompression(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   return(wand->image_info->compression);
 }
 
@@ -335,8 +342,9 @@ WandExport size_t MagickGetCompressionQuality(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   return(wand->image_info->quality);
 }
 
@@ -390,8 +398,9 @@ WandExport char *MagickGetFilename(const MagickWand *wand)
 {
   assert(wand != (const MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   return(AcquireString(wand->image_info->filename));
 }
 
@@ -421,8 +430,9 @@ WandExport char *MagickGetFont(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->image_info->font == (char *) NULL)
     return((char *) NULL);
   return(AcquireString(wand->image_info->font));
@@ -454,8 +464,9 @@ WandExport char *MagickGetFormat(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   return(AcquireString(wand->image_info->magick));
 }
 
@@ -491,8 +502,9 @@ WandExport GravityType MagickGetGravity(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   option=GetImageOption(wand->image_info,"gravity");
   if (option == (const char *) NULL)
     return(UndefinedGravity);
@@ -556,8 +568,9 @@ WandExport char *MagickGetImageArtifact(MagickWand *wand,const char *artifact)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -617,8 +630,9 @@ WandExport char **MagickGetImageArtifacts(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -635,7 +649,7 @@ WandExport char **MagickGetImageArtifacts(MagickWand *wand,
   for (i=0; artifact != (const char *) NULL; )
   {
     if ((*artifact != '[') &&
-        (GlobExpression(artifact,pattern,MagickFalse) != MagickFalse))
+        (IfMagickTrue(GlobExpression(artifact,pattern,MagickFalse))))
       {
         if ((i+1) >= (ssize_t) length)
           {
@@ -698,8 +712,9 @@ WandExport unsigned char *MagickGetImageProfile(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -769,8 +784,9 @@ WandExport char **MagickGetImageProfiles(MagickWand *wand,const char *pattern,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -787,7 +803,7 @@ WandExport char **MagickGetImageProfiles(MagickWand *wand,const char *pattern,
   for (i=0; property != (const char *) NULL; )
   {
     if ((*property != '[') &&
-        (GlobExpression(property,pattern,MagickFalse) != MagickFalse))
+        (IfMagickTrue(GlobExpression(property,pattern,MagickFalse))))
       {
         if ((i+1) >= (ssize_t) length)
           {
@@ -845,8 +861,9 @@ WandExport char *MagickGetImageProperty(MagickWand *wand,const char *property)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -906,8 +923,9 @@ WandExport char **MagickGetImageProperties(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -924,7 +942,7 @@ WandExport char **MagickGetImageProperties(MagickWand *wand,
   for (i=0; property != (const char *) NULL; )
   {
     if ((*property != '[') &&
-        (GlobExpression(property,pattern,MagickFalse) != MagickFalse))
+        (IfMagickTrue(GlobExpression(property,pattern,MagickFalse))))
       {
         if ((i+1) >= (ssize_t) length)
           {
@@ -975,8 +993,9 @@ WandExport InterlaceType MagickGetInterlaceScheme(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   return(wand->image_info->interlace);
 }
 
@@ -1012,8 +1031,9 @@ WandExport PixelInterpolateMethod MagickGetInterpolateMethod(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   option=GetImageOption(wand->image_info,"interpolate");
   if (option == (const char *) NULL)
     return(UndefinedInterpolatePixel);
@@ -1055,8 +1075,9 @@ WandExport char *MagickGetOption(MagickWand *wand,const char *key)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   option=GetImageOption(wand->image_info,key);
   return(ConstantString(option));
 }
@@ -1107,8 +1128,9 @@ WandExport char **MagickGetOptions(MagickWand *wand,const char *pattern,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -1124,7 +1146,7 @@ WandExport char **MagickGetOptions(MagickWand *wand,const char *pattern,
   for (i=0; option != (const char *) NULL; )
   {
     if ((*option != '[') &&
-        (GlobExpression(option,pattern,MagickFalse) != MagickFalse))
+        (IfMagickTrue(GlobExpression(option,pattern,MagickFalse))))
       {
         if ((i+1) >= (ssize_t) length)
           {
@@ -1175,8 +1197,9 @@ WandExport OrientationType MagickGetOrientation(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   return(wand->image_info->orientation);
 }
 
@@ -1244,8 +1267,9 @@ WandExport MagickBooleanType MagickGetPage(const MagickWand *wand,
 
   assert(wand != (const MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
   (void) ParseAbsoluteGeometry(wand->image_info->page,&geometry);
   *width=geometry.width;
@@ -1282,8 +1306,9 @@ WandExport double MagickGetPointsize(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   return(wand->image_info->pointsize);
 }
 
@@ -1399,8 +1424,9 @@ WandExport MagickBooleanType MagickGetResolution(const MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   *x=72.0;
   *y=72.0;
   if (wand->image_info->density != (char *) NULL)
@@ -1414,7 +1440,7 @@ WandExport MagickBooleanType MagickGetResolution(const MagickWand *wand,
       flags=ParseGeometry(wand->image_info->density,&geometry_info);
       *x=geometry_info.rho;
       *y=geometry_info.sigma;
-      if ((flags & SigmaValue) == MagickFalse)
+      if ((flags & SigmaValue) == 0)
         *y=(*x);
     }
   return(MagickTrue);
@@ -1513,8 +1539,9 @@ WandExport double *MagickGetSamplingFactors(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   *number_factors=0;
   sampling_factors=(double *) NULL;
   if (wand->image_info->sampling_factor == (char *) NULL)
@@ -1580,8 +1607,9 @@ WandExport MagickBooleanType MagickGetSize(const MagickWand *wand,
 
   assert(wand != (const MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
   (void) ParseAbsoluteGeometry(wand->image_info->size,&geometry);
   *columns=geometry.width;
@@ -1623,8 +1651,9 @@ WandExport MagickBooleanType MagickGetSizeOffset(const MagickWand *wand,
 
   assert(wand != (const MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   (void) ResetMagickMemory(&geometry,0,sizeof(geometry));
   (void) ParseAbsoluteGeometry(wand->image_info->size,&geometry);
   *offset=geometry.x;
@@ -1657,8 +1686,9 @@ WandExport ImageType MagickGetType(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   return(wand->image_info->type);
 }
 
@@ -1727,8 +1757,9 @@ WandExport MagickBooleanType MagickProfileImage(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(ProfileImage(wand->images,name,profile,length,wand->exception));
@@ -1772,8 +1803,9 @@ WandExport unsigned char *MagickRemoveImageProfile(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -1825,8 +1857,9 @@ WandExport MagickBooleanType MagickSetAntialias(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   wand->image_info->antialias=antialias;
   return(MagickTrue);
 }
@@ -1861,8 +1894,9 @@ WandExport MagickBooleanType MagickSetBackgroundColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   PixelGetQuantumPacket(background,&wand->image_info->background_color);
   return(MagickTrue);
 }
@@ -1897,8 +1931,9 @@ WandExport MagickBooleanType MagickSetColorspace(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   wand->image_info->colorspace=colorspace;
   return(MagickTrue);
 }
@@ -1933,8 +1968,9 @@ WandExport MagickBooleanType MagickSetCompression(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   wand->image_info->compression=compression;
   return(MagickTrue);
 }
@@ -1969,8 +2005,9 @@ WandExport MagickBooleanType MagickSetCompressionQuality(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   wand->image_info->quality=quality;
   return(MagickTrue);
 }
@@ -2005,8 +2042,9 @@ WandExport MagickBooleanType MagickSetDepth(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   wand->image_info->depth=depth;
   return(MagickTrue);
 }
@@ -2043,8 +2081,9 @@ WandExport MagickBooleanType MagickSetExtract(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (geometry != (const char *) NULL)
     (void) CopyMagickString(wand->image_info->extract,geometry,MaxTextExtent);
   return(MagickTrue);
@@ -2080,8 +2119,9 @@ WandExport MagickBooleanType MagickSetFilename(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (filename != (const char *) NULL)
     (void) CopyMagickString(wand->image_info->filename,filename,MaxTextExtent);
   return(MagickTrue);
@@ -2117,8 +2157,9 @@ WandExport MagickBooleanType MagickSetFont(MagickWand *wand,const char *font)
     return(MagickFalse);
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   (void) CloneString(&wand->image_info->font,font);
   return(MagickTrue);
 }
@@ -2155,8 +2196,9 @@ WandExport MagickBooleanType MagickSetFormat(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if ((format == (char *) NULL) || (*format == '\0'))
     {
       *wand->image_info->magick='\0';
@@ -2203,8 +2245,9 @@ WandExport MagickBooleanType MagickSetGravity(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   status=SetImageOption(wand->image_info,"gravity",CommandOptionToMnemonic(
     MagickGravityOptions,(ssize_t) type));
   return(status);
@@ -2242,8 +2285,9 @@ WandExport MagickBooleanType MagickSetImageArtifact(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(SetImageArtifact(wand->images,artifact,value));
@@ -2292,8 +2336,9 @@ WandExport MagickBooleanType MagickSetImageProfile(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   profile_info=AcquireStringInfo((size_t) length);
@@ -2338,8 +2383,9 @@ WandExport MagickBooleanType MagickSetImageProperty(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SetImageProperty(wand->images,property,value,wand->exception);
@@ -2377,8 +2423,9 @@ WandExport MagickBooleanType MagickSetInterlaceScheme(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   wand->image_info->interlace=interlace_scheme;
   return(MagickTrue);
 }
@@ -2416,8 +2463,9 @@ WandExport MagickBooleanType MagickSetInterpolateMethod(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   status=SetImageOption(wand->image_info,"interpolate",
     CommandOptionToMnemonic(MagickInterpolateOptions,(ssize_t) method));
   return(status);
@@ -2456,8 +2504,9 @@ WandExport MagickBooleanType MagickSetOption(MagickWand *wand,const char *key,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   return(SetImageOption(wand->image_info,key,value));
 }
 
@@ -2491,8 +2540,9 @@ WandExport MagickBooleanType MagickSetOrientation(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   wand->image_info->orientation=orientation;
   return(MagickTrue);
 }
@@ -2538,8 +2588,9 @@ WandExport MagickBooleanType MagickSetPage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   (void) FormatLocaleString(geometry,MaxTextExtent,"%.20gx%.20g%+.20g%+.20g",
     (double) width,(double) height,(double) x,(double) y);
   (void) CloneString(&wand->image_info->page,geometry);
@@ -2576,8 +2627,9 @@ WandExport MagickBooleanType MagickSetPassphrase(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   (void) SetImageOption(wand->image_info,"authenticate",passphrase);
   return(MagickTrue);
 }
@@ -2612,8 +2664,9 @@ WandExport MagickBooleanType MagickSetPointsize(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   wand->image_info->pointsize=pointsize;
   return(MagickTrue);
 }
@@ -2663,8 +2716,9 @@ WandExport MagickProgressMonitor MagickSetProgressMonitor(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   previous_monitor=SetImageInfoProgressMonitor(wand->image_info,
     progress_monitor,client_data);
   return(previous_monitor);
@@ -2738,8 +2792,9 @@ WandExport MagickBooleanType MagickSetResolution(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",x_resolution,
     y_resolution);
   (void) CloneString(&wand->image_info->density,density);
@@ -2785,8 +2840,9 @@ WandExport MagickBooleanType MagickSetSamplingFactors(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   if (wand->image_info->sampling_factor != (char *) NULL)
     wand->image_info->sampling_factor=(char *)
       RelinquishMagickMemory(wand->image_info->sampling_factor);
@@ -2841,8 +2897,9 @@ WandExport MagickBooleanType MagickSetSize(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   (void) FormatLocaleString(geometry,MaxTextExtent,"%.20gx%.20g",(double)
     columns,(double) rows);
   (void) CloneString(&wand->image_info->size,geometry);
@@ -2888,8 +2945,9 @@ WandExport MagickBooleanType MagickSetSizeOffset(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   (void) FormatLocaleString(geometry,MaxTextExtent,"%.20gx%.20g%+.20g",
     (double) columns,(double) rows,(double) offset);
   (void) CloneString(&wand->image_info->size,geometry);
@@ -2929,8 +2987,9 @@ WandExport MagickBooleanType MagickSetType(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
+  if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+
   wand->image_info->type=image_type;
   return(MagickTrue);
 }
