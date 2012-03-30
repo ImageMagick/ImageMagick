@@ -2032,7 +2032,7 @@ MagickExport Image *MergeImageLayers(Image *image,const ImageLayerMethod method,
   number_images=GetImageListLength(image);
   for (scene=0; scene < (ssize_t) number_images; scene++)
   {
-    (void) CompositeImage(canvas,image,image->compose,MagicTrue,image->page.x-
+    (void) CompositeImage(canvas,image,image->compose,MagickTrue,image->page.x-
       canvas->page.x,image->page.y-canvas->page.y,exception);
     proceed=SetImageProgress(image,MergeLayersTag,(MagickOffsetType) scene,
       number_images);
