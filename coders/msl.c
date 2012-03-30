@@ -1915,7 +1915,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                           SetImageType(composite_image,TrueColorMatteType,
                             &exception);
                           (void) CompositeImage(composite_image,
-                            msl_info->image[j],CopyAlphaCompositeOp,MagickFalse,
+                            msl_info->image[j],CopyAlphaCompositeOp,MagickTrue,
                             0,0,&exception);
                           break;
                         }
@@ -2018,10 +2018,10 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                          {
                            if (rotate_image != (Image *) NULL)
                              (void) CompositeImage(image,rotate_image,compose,
-                               MagickFalse,x,y,&exception);
+                               MagickTrue,x,y,&exception);
                            else
                              (void) CompositeImage(image,composite_image,
-                               compose,MagickFalse,x,y,&exception);
+                               compose,MagickTrue,x,y,&exception);
                          }
                       if (rotate_image != (Image *) NULL)
                         rotate_image=DestroyImage(rotate_image);
@@ -2072,7 +2072,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             &exception);
           channel_mask=SetPixelChannelMask(image,channel);
           if (rotate_image == (Image *) NULL)
-            CompositeImage(image,composite_image,compose,MagickFalse,geometry.x,
+            CompositeImage(image,composite_image,compose,MagickTrue,geometry.x,
               geometry.y,&exception);
           else
             {
@@ -2083,7 +2083,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 composite_image->columns)/2;
               geometry.y-=(ssize_t) (rotate_image->rows-
                 composite_image->rows)/2;
-              CompositeImage(image,rotate_image,compose,MagickFalse,geometry.x,
+              CompositeImage(image,rotate_image,compose,MagickTrue,geometry.x,
                 geometry.y,&exception);
               rotate_image=DestroyImage(rotate_image);
             }

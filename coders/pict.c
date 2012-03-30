@@ -1242,7 +1242,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               if ((code == 0x9a) || (code == 0x9b) ||
                   ((bytes_per_line & 0x8000) != 0))
                 (void) CompositeImage(image,tile_image,CopyCompositeOp,
-                  MagickFalse,destination.left,destination.top,exception);
+                  MagickTrue,destination.left,destination.top,exception);
             tile_image=DestroyImage(tile_image);
             break;
           }
@@ -1388,7 +1388,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         if (IsRGBColorspace(image->colorspace) == MagickFalse)
           (void) TransformImageColorspace(image,tile_image->colorspace,
             exception);
-        (void) CompositeImage(image,tile_image,CopyCompositeOp,MagickFalse,
+        (void) CompositeImage(image,tile_image,CopyCompositeOp,MagickTrue,
           frame.left,frame.right,exception);
         image->compression=tile_image->compression;
         tile_image=DestroyImage(tile_image);
