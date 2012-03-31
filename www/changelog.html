@@ -222,11 +222,11 @@
 <div class="sponsor">
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Turbolader Online kaufen" href="http://www.autoteile-carparts.de">Turbolader Online kaufen</a><!-- 2012060100150 t.temurbas...-->
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2012060100030 Temurbas atlas.multimedia-->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Schlüsseldienst Berlin BSD" href="http://www.schluesseldienst-berlin.de">Schlüsseldienst Berlin BSD</a><!-- 2012050100025 info@schlues-->
+   <a rel="follow" title="Sponsor: Hosting Web" href="http://www.hostalia.com">Hosting Web</a><!-- 20120401000150 david@carre... -->
 </div>
 </div>
 </div>
@@ -250,7 +250,11 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2012-03-28  6.7.6-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2012-03-29  6.7.6-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Don't copy invalid memory when reading TIFF EXIF IFD (CERT-FI case 634116,    CVE-2012-1798).</dd>
+  <dd> Bail if we receive excessive JPEG warnings (CERT-FI case 634117,    CVE-2012-0260).</dd>
+  <dd> Properly initialize EXIF buffers to prevent JPEG EXIF tag crash (CERT-FI    case 634118, CVE-2012-0259).</dd>
+<dt>2012-03-28  6.7.6-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.6-2, SVN revision 7245.</dd>
 <dt>2012-03-26  6.7.6-2 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Added "Nearest" as a synonym for "Nearest-Neighbor" iterpolate setting</dd>

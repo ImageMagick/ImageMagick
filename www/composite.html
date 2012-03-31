@@ -224,10 +224,10 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Notebook Reparatur" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur</a><!-- 2012060100300 atlas.multimedia-->
+   <a rel="follow" title="Sponsor: Turbolader Online kaufen" href="http://www.autoteile-carparts.de">Turbolader Online kaufen</a><!-- 2012060100150 t.temurbas...-->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Hosting Web" href="http://www.hostalia.com">Hosting Web</a><!-- 20120401000150 david@carre... -->
+   <a rel="follow" title="Sponsor: Schlüsseldienst Berlin BSD" href="http://www.schluesseldienst-berlin.de">Schlüsseldienst Berlin BSD</a><!-- 2012050100025 info@schlues-->
 </div>
 </div>
 </div>
@@ -253,23 +253,24 @@
 <h1>ImageMagick Composite Command-line Tool</h1>
 <p class="navigation-index">[<a href="#usage">Example Usage</a> &bull; <a href="#options">Option Summary</a>]</p>
 
+<div class="doc-section">
 <p>Use the <kbd>composite</kbd> program to overlap one image over another.  See <a href="../www/command-line-processing.html">Command Line Processing</a> for advice on how to structure your <kbd>composite</kbd> command or see below for example usages of the command.</p>
-
-<div style="margin: auto;">
-  <h2><a id="usage"></a>Example Usage</h2>
 </div>
+
+<h2><a id="usage"></a>Example Usage</h2>
+<div class="doc-section">
 
 <p>We list a few examples of the <kbd>composite</kbd> command here to illustrate its usefulness and ease of use.  To get started, lets overlay a smiley face over a rose:</p>
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>composite -gravity center smile.gif  rose: rose-over.png</span></p>
 <div class="image">
-<p>
+<ul>
   <a href="../images/smile.gif"><img src="../images/smile.gif" width="48" height="48" alt="smile" /></a>
   <img src="../images/over.gif" width="56" height="46" alt="over" />
   <a href="../images/rose.jpg"><img src="../images/rose.jpg" width="70" height="46" alt="rose" /></a>
   <img style="margin-top:13px; margin-bottom:13px;" src="../images/right.gif" width="20" height="20" alt="==>" />
   <a href="../images/rose-over.png"><img src="../images/rose-over.png" width="70" height="46" alt="rose" /></a>
-</p>
+</ul>
 </div>
 
 <p>You can create three-dimensional effect with the <em>Atop</em>:</p>
@@ -278,20 +279,20 @@
   -channel A -gaussian-blur 0x8 white-highlight.png</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>composite -compose atop -geometry -13-17 white-highlight.png red-circle.png red-ball.png</span></p>
 
 <div class="image">
-<p>
+<ul>
   <a href="../images/white-highlight.png"><img src="../images/white-highlight.png" width="70" height="70" alt="white highlight" /></a>
   <img src="../images/atop.gif" width="56" height="70" alt="atop" />
   <a href="../images/red-circle.png"><img src="../images/red-circle.png" width="70" height="70" alt="red circle" /></a>
   <img style="margin-top:25px; margin-bottom:25px;" src="../images/right.gif" width="20" height="20" alt="==>" />
   <a href="../images/red-ball.png"><img src="../images/red-ball.png" width="70" height="70" alt="red ball" /></a>
-</p>
+</ul>
 </div>
 
 <p>You can find additional examples of using <kbd>composite</kbd> in <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>.  You can find out more about them and the mathematics by looking at <a href="http://www.w3.org/TR/SVG12/rendering.html">SVG Alpha Compositing</a></p>
-
-<div style="margin: auto;">
-  <h2><a id="options"></a>Option Summary</h2>
 </div>
+
+<h2><a id="options"></a>Option Summary</h2>
+<div class="doc-section">
 
 <p>The <kbd>composite</kbd> command recognizes these options.  Click on an option to get more details about how that option works.</p>
 
@@ -701,6 +702,7 @@ transparent, extract, background, or shape the alpha channel</td>
 
   </tbody>
 </table>
+</div>
 
 </div>
 
