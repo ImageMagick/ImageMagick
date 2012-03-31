@@ -1377,7 +1377,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
       image->next=layer_info[number_layers-2].image;
       layer_info[number_layers-2].image->previous=image;
-      for (j=number_layers-2; j>=0; j--)
+      for (j=(ssize_t) number_layers-2; j>=0; j--)
       {
         if (j > 0)
           layer_info[j].image->next=layer_info[j-1].image;
