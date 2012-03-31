@@ -124,17 +124,6 @@
 %        Compose methods needing such arguments include "BlendCompositeOp" and
 %        "DisplaceCompositeOp".
 %
-%    o "compose:outside-overlay"
-%        Modify how the composition is to effect areas not directly covered
-%        by the 'composite_image' at the offset given.  Normally this is
-%        dependant on the 'compose' method, especially Duff-Porter methods.
-%
-%        If set to "false" then disable all normal handling of pixels not
-%        covered by the composite_image.  Typically used for repeated tiling
-%        of the composite_image by the calling API.
-%
-%        Previous to IM v6.5.3-3  this was called "modify-outside-overlay"
-%
 %    o exception: return any errors or warnings in this structure.
 %
 */
@@ -498,7 +487,8 @@ static MagickBooleanType CompositeOverImage(Image *image,
 
 MagickExport MagickBooleanType CompositeImage(Image *image,
   const Image *composite_image,const CompositeOperator compose,
-  const MagickBooleanType clip_to_self,const ssize_t x_offset,const ssize_t y_offset,ExceptionInfo *exception)
+  const MagickBooleanType clip_to_self,const ssize_t x_offset,
+  const ssize_t y_offset,ExceptionInfo *exception)
 {
 #define CompositeImageTag  "Composite/Image"
 
