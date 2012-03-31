@@ -388,7 +388,7 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
             SetPixelRed(tile_image,ScaleCharToQuantum(xcfdata->red),q);
             SetPixelGreen(tile_image,ScaleCharToQuantum(xcfdata->green),q);
             SetPixelBlue(tile_image,ScaleCharToQuantum(xcfdata->blue),q);
-            SetPixelAlpha(tile_image,xcfdata->alpha == 0U ? OpaqueAlpha :
+            SetPixelAlpha(tile_image,xcfdata->alpha == 0U ? TransparentAlpha :
               ScaleCharToQuantum((unsigned char) inLayerInfo->alpha),q);
             xcfdata++;
             q+=GetPixelChannels(tile_image);
@@ -497,7 +497,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                 }
                 case 3:
                 {
-                  SetPixelAlpha(tile_image,data == 0 ? OpaqueAlpha :
+                  SetPixelAlpha(tile_image,data == 0U ? TransparentAlpha :
                     ScaleCharToQuantum((unsigned char) inLayerInfo->alpha),q);
                   break;
                 }
@@ -556,7 +556,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                 }
                 case 3:
                 {
-                  SetPixelAlpha(tile_image,data == 0 ? OpaqueAlpha :
+                  SetPixelAlpha(tile_image,data == 0U ? TransparentAlpha :
                     ScaleCharToQuantum((unsigned char) inLayerInfo->alpha),q);
                   break;
                 }
@@ -683,7 +683,7 @@ static MagickBooleanType load_level(Image *image,XCFDocInfo *inDocInfo,
 
       /* composite the tile onto the layer's image, and then destroy it */
       (void) CompositeImage(inLayerInfo->image,tile_image,CopyCompositeOp,
-        MagickTrue,destLeft*TILE_WIDTH,destTop*TILE_HEIGHT,exception);
+        MagickTrue,destLeft * TILE_WIDTH,destTop*TILE_HEIGHT,exception);
       tile_image=DestroyImage(tile_image);
 
       /* adjust tile position */
@@ -879,7 +879,7 @@ static MagickBooleanType ReadOneLayer(Image* image,XCFDocInfo* inDocInfo,
     return(MagickFalse);
   /* clear the image based on the layer opacity */
   outLayer->image->background_color.alpha=
-    ScaleCharToQuantum((unsigned char) (255-outLayer->alpha));    
+    ScaleCharToQuantum((unsigned char) outLayer->alpha);
   (void) SetImageBackgroundColor(outLayer->image,exception);
 
   /* set the compositing mode */
@@ -1040,6 +1040,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     else
       if (image_type == GIMP_INDEXED)
         ThrowReaderException(CoderError,"ColormapTypeNotSupported");
+  (void) SetImageBackgroundColor(image,exception);
   image->matte=MagickTrue;
   /*
     Read properties.
@@ -1194,8 +1195,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*BOGUS: ignored for now */
         /*float  factor = (float) */ (void) ReadBlobMSBLong(image);
         /* size_t digits =  */ (void) ReadBlobMSBLong(image);
-        for (i=0; i < 5; i++)
-         (void) ReadBlobStringWithLongSize(image,unit_string,
+        for (i=0; i<5; i++)
+         (void) ReadBlobStringWithLongSize(image, unit_string,
            sizeof(unit_string),exception);
       }
      break;
@@ -1228,16 +1229,12 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     {
       int
-        number_layers = 0,
-        num_layers = 0,
         current_layer = 0,
-        first_layer = 0,
-        last_layer = 0,
-        last = 0,
-        foundAllLayers = MagickFalse;
+        foundAllLayers = MagickFalse,
+        number_layers = 0;
 
       MagickOffsetType
-        oldPos;
+        oldPos=TellBlob(image);
 
       XCFLayerInfo
         *layer_info;
@@ -1245,7 +1242,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /* 
         the read pointer
       */
-      oldPos=TellBlob(image);
       do
       {
         ssize_t offset = (int) ReadBlobMSBLong(image);
@@ -1263,20 +1259,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset=SeekBlob(image,oldPos,SEEK_SET); /* restore the position! */
     if (offset < 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    first_layer=image_info->scene;
-    num_layers=number_layers;
-    /* number_scenes==0 means read all the images */
-    if ((image_info->number_scenes > 0) &&
-        (image_info->number_scenes < number_layers))
-      num_layers=image_info->scene;
-    last_layer=first_layer+num_layers-1;
-
-    /* XCF has layers backwards. */
-    last=last_layer;
-    last_layer=number_layers-first_layer - 1;
-    first_layer=number_layers-last-1;
-    number_layers=num_layers;
-
     /* allocate our array of layer info blocks */
     length=(size_t) number_layers;
     layer_info=(XCFLayerInfo *) AcquireQuantumMemory(length,
@@ -1304,29 +1286,25 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       *  next layer offset is stored.
       */
       saved_pos=TellBlob(image);
-      if ((first_layer <= current_layer) && (current_layer <= last_layer))
+      /* seek to the layer offset */
+      offset=SeekBlob(image,offset,SEEK_SET);
+      /* read in the layer */
+      layer_ok=ReadOneLayer(image,&doc_info,&layer_info[current_layer],
+        exception);
+      if (layer_ok == MagickFalse)
         {
-          /* seek to the layer offset */
-          offset=SeekBlob(image,offset,SEEK_SET);
-          /* read in the layer */
-          layer_ok=ReadOneLayer(image,&doc_info,&layer_info[current_layer],
-            exception);
-          if (layer_ok == MagickFalse)
-            {
-              int j;
-    
-              for (j=0; j < current_layer; j++)
-                layer_info[j].image=DestroyImage(layer_info[j].image);
-              layer_info=(XCFLayerInfo *) RelinquishMagickMemory(layer_info);
-              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-            }
-          /* restore the saved position so we'll be ready to
-          *  read the next offset.
-          */
-          offset=SeekBlob(image, saved_pos, SEEK_SET);
-        }
-        current_layer++;
+          int j;
+
+          for (j=0; j < current_layer; j++)
+            layer_info[j].image=DestroyImage(layer_info[j].image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
+      /* restore the saved position so we'll be ready to
+      *  read the next offset.
+      */
+      offset=SeekBlob(image, saved_pos, SEEK_SET);
+      current_layer++;
+    }
     if (number_layers == 1)
       {
         /*
@@ -1334,7 +1312,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         (void) CompositeImage(image,layer_info[0].image,OverCompositeOp,
           MagickTrue,layer_info[0].offset_x,layer_info[0].offset_y,exception);
-        layer_info[0].image=DestroyImage( layer_info[0].image);
+        layer_info[0].image =DestroyImage( layer_info[0].image);
       }
     else
       {
@@ -1346,11 +1324,11 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /* BOGUS: need to consider layer blending modes!! */
 
           if ( layer_info[j].visible ) { /* only visible ones, please! */
-            CompositeImage(image, layer_info[j].image, OverCompositeOp,
-               MagickTrue, layer_info[j].offset_x, layer_info[j].offset_y );
+            CompositeImage(image, OverCompositeOp, layer_info[j].image,
+                     layer_info[j].offset_x, layer_info[j].offset_y );
              layer_info[j].image =DestroyImage( layer_info[j].image );
 
-            /*  If we do this, we'll get REAL gray images! */
+            /* Bob says that if we do this, we'll get REAL gray images! */
             if ( image_type == GIMP_GRAY ) {
               QuantizeInfo  qi;
               GetQuantizeInfo(&qi);
@@ -1369,24 +1347,29 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) CompositeImage(image,layer_info[number_layers-1].image,
           CopyCompositeOp,MagickTrue,layer_info[number_layers-1].offset_x,
           layer_info[number_layers-1].offset_y,exception);
-        layer_info[number_layers-1].image=DestroyImage(
-          layer_info[number_layers-1].image);
+          layer_info[number_layers-1].image=DestroyImage(
+            layer_info[number_layers-1].image);
 
         /* now reverse the order of the layers as they are put
            into subimages
         */
-      image->next=layer_info[number_layers-2].image;
-      layer_info[number_layers-2].image->previous=image;
-      for (j=(ssize_t) number_layers-2; j>=0; j--)
-      {
-        if (j > 0)
-          layer_info[j].image->next=layer_info[j-1].image;
-        if (j < (number_layers-1))
-          layer_info[j].image->previous=layer_info[j+1].image;
-        layer_info[j].image->page.x = layer_info[j].offset_x;
-        layer_info[j].image->page.y = layer_info[j].offset_y;
-        layer_info[j].image->page.width = layer_info[j].width;
-        layer_info[j].image->page.height = layer_info[j].height;
+        j=number_layers-2;
+        image->next=layer_info[j].image;
+        layer_info[j].image->previous=image;
+        layer_info[j].image->page.x=layer_info[j].offset_x;
+        layer_info[j].image->page.y=layer_info[j].offset_y;
+        layer_info[j].image->page.width=layer_info[j].width;
+        layer_info[j].image->page.height=layer_info[j].height;
+        for (j=number_layers-3; j>=0; j--)
+        {
+          if (j > 0)
+            layer_info[j].image->next=layer_info[j-1].image;
+          if (j < (number_layers-1))
+            layer_info[j].image->previous=layer_info[j+1].image;
+          layer_info[j].image->page.x=layer_info[j].offset_x;
+          layer_info[j].image->page.y=layer_info[j].offset_y;
+          layer_info[j].image->page.width=layer_info[j].width;
+          layer_info[j].image->page.height=layer_info[j].height;
         }
       }
 #endif
