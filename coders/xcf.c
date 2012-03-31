@@ -277,16 +277,13 @@ static CompositeOperator GIMPBlendModeToCompositeOperator(
 %
 %  The format of the ReadBlobStringWithLongSize method is:
 %
-%      char *ReadBlobStringWithLongSize(Image *image,char *string,
-%        ExceptionInfo *exception)
+%      char *ReadBlobStringWithLongSize(Image *image,char *string)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 %    o string: the address of a character buffer.
-%
-%    o exception: return any errors or warnings in this structure.
 %
 */
 
@@ -297,8 +294,7 @@ static inline size_t MagickMin(const size_t x,const size_t y)
   return(y);
 }
 
-static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max,
-  ExceptionInfo *exception)
+static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max)
 {
   int
     c;
@@ -328,8 +324,8 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string,size_t max,
   string[i]='\0';
   offset=SeekBlob(image,(MagickOffsetType) (length-i),SEEK_CUR);
   if (offset < 0)
-    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-      "ImproperImageHeader","`%s'",image->filename);
+    (void) ThrowMagickException(&image->exception,GetMagickModule(),
+      CorruptImageError,"ImproperImageHeader","`%s'",image->filename);
   return(string);
 }
 
@@ -771,7 +767,7 @@ static MagickBooleanType load_hierarchy(Image *image,XCFDocInfo *inDocInfo,
 }
 
 static MagickBooleanType ReadOneLayer(Image* image,XCFDocInfo* inDocInfo,
-  XCFLayerInfo *outLayer, ExceptionInfo *exception )
+  XCFLayerInfo *outLayer )
 {
   MagickOffsetType
     offset;
@@ -790,10 +786,10 @@ static MagickBooleanType ReadOneLayer(Image* image,XCFDocInfo* inDocInfo,
   outLayer->height = ReadBlobMSBLong(image);
   outLayer->type = ReadBlobMSBLong(image);
   (void) ReadBlobStringWithLongSize(image, outLayer->name,
-    sizeof(outLayer->name),exception);
+    sizeof(outLayer->name));
   /* allocate the image for this layer */
   outLayer->image=CloneImage(image,outLayer->width, outLayer->height,MagickTrue,
-     exception);
+     &image->exception);
   if (outLayer->image == (Image *) NULL)
     return MagickFalse;
   /* read the layer properties! */
@@ -846,7 +842,7 @@ static MagickBooleanType ReadOneLayer(Image* image,XCFDocInfo* inDocInfo,
      case PROP_PARASITES:
      {
        if (DiscardBlobBytes(image,prop_size) == MagickFalse)
-         ThrowFileException(exception,CorruptImageError,
+         ThrowFileException(&image->exception,CorruptImageError,
            "UnexpectedEndOfFile",image->filename);
 
         /*
@@ -908,8 +904,8 @@ static MagickBooleanType ReadOneLayer(Image* image,XCFDocInfo* inDocInfo,
   /* read in the hierarchy */
   offset=SeekBlob(image, (MagickOffsetType) hierarchy_offset, SEEK_SET);
   if (offset < 0)
-    (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-      "InvalidImageHeader","`%s'",image->filename);
+    (void) ThrowMagickException(&image->exception,GetMagickModule(),
+      CorruptImageError,"InvalidImageHeader","`%s'",image->filename);
   if (load_hierarchy (image, inDocInfo, outLayer) == 0)
     return(MagickFalse);
 
@@ -973,6 +969,7 @@ static MagickBooleanType ReadOneLayer(Image* image,XCFDocInfo* inDocInfo,
 %    o image_info: the image info.
 %
 %    o exception: return any errors or warnings in this structure.
+%
 %
 */
 static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -1071,7 +1068,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         size_t num_colours = ReadBlobMSBLong(image);
         if (DiscardBlobBytes(image,3*num_colours) == MagickFalse)
-          ThrowFileException(exception,CorruptImageError,
+          ThrowFileException(&image->exception,CorruptImageError,
             "UnexpectedEndOfFile",image->filename);
     /*
       if (info->file_version == 0)
@@ -1119,7 +1116,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
          /* just skip it - we don't care about guides */
         if (DiscardBlobBytes(image,prop_size) == MagickFalse)
-          ThrowFileException(exception,CorruptImageError,
+          ThrowFileException(&image->exception,CorruptImageError,
             "UnexpectedEndOfFile",image->filename);
       }
       break;
@@ -1142,8 +1139,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         /* BOGUS: we don't write these yet because we aren't
               reading them properly yet :(
-              image->resolution.x = xres;
-              image->resolution.y = yres;
+              image->x_resolution = xres;
+              image->y_resolution = yres;
         */
       }
       break;
@@ -1159,7 +1156,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         /* BOGUS: we may need these for IPTC stuff */
         if (DiscardBlobBytes(image,prop_size) == MagickFalse)
-          ThrowFileException(exception,CorruptImageError,
+          ThrowFileException(&image->exception,CorruptImageError,
             "UnexpectedEndOfFile",image->filename);
         /*
       gssize_t         base = info->cp;
@@ -1188,8 +1185,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
       /* BOGUS: just skip it for now */
         if (DiscardBlobBytes(image,prop_size) == MagickFalse)
-          ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
-            image->filename);
+          ThrowFileException(&image->exception,CorruptImageError,
+            "UnexpectedEndOfFile",image->filename);
 
         /*
       PathList *paths = xcf_load_bzpaths (gimage, info);
@@ -1204,9 +1201,9 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*BOGUS: ignored for now */
         /*float  factor = (float) */ (void) ReadBlobMSBLong(image);
         /* size_t digits =  */ (void) ReadBlobMSBLong(image);
-        for (i=0; i < 5; i++)
-         (void) ReadBlobStringWithLongSize(image,unit_string,
-           sizeof(unit_string),exception);
+        for (i=0; i<5; i++)
+         (void) ReadBlobStringWithLongSize(image, unit_string,
+           sizeof(unit_string));
       }
      break;
 
@@ -1238,16 +1235,12 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     {
       int
-        number_layers = 0,
-        num_layers = 0,
         current_layer = 0,
-        first_layer = 0,
-        last_layer = 0,
-        last = 0,
-        foundAllLayers = MagickFalse;
+        foundAllLayers = MagickFalse,
+        number_layers = 0;
 
       MagickOffsetType
-        oldPos;
+        oldPos=TellBlob(image);
 
       XCFLayerInfo
         *layer_info;
@@ -1255,7 +1248,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /* 
         the read pointer
       */
-      oldPos=TellBlob(image);
       do
       {
         ssize_t offset = (int) ReadBlobMSBLong(image);
@@ -1273,20 +1265,6 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset=SeekBlob(image,oldPos,SEEK_SET); /* restore the position! */
     if (offset < 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    first_layer=image_info->scene;
-    num_layers=number_layers;
-    /* number_scenes==0 means read all the images */
-    if ((image_info->number_scenes > 0) &&
-        (image_info->number_scenes < number_layers))
-      num_layers=image_info->scene;
-    last_layer=first_layer+num_layers-1;
-
-    /* XCF has layers backwards. */
-    last=last_layer;
-    last_layer=number_layers-first_layer - 1;
-    first_layer=number_layers-last-1;
-    number_layers=num_layers;
-
     /* allocate our array of layer info blocks */
     length=(size_t) number_layers;
     layer_info=(XCFLayerInfo *) AcquireQuantumMemory(length,
@@ -1314,29 +1292,24 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       *  next layer offset is stored.
       */
       saved_pos=TellBlob(image);
-      if ((first_layer <= current_layer) && (current_layer <= last_layer))
+      /* seek to the layer offset */
+      offset=SeekBlob(image,offset,SEEK_SET);
+      /* read in the layer */
+      layer_ok=ReadOneLayer(image,&doc_info,&layer_info[current_layer]);
+      if (layer_ok == MagickFalse)
         {
-          /* seek to the layer offset */
-          offset=SeekBlob(image,offset,SEEK_SET);
-          /* read in the layer */
-          layer_ok=ReadOneLayer(image,&doc_info,&layer_info[current_layer],
-            exception);
-          if (layer_ok == MagickFalse)
-            {
-              int j;
-    
-              for (j=0; j < current_layer; j++)
-                layer_info[j].image=DestroyImage(layer_info[j].image);
-              layer_info=(XCFLayerInfo *) RelinquishMagickMemory(layer_info);
-              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-            }
-          /* restore the saved position so we'll be ready to
-          *  read the next offset.
-          */
-          offset=SeekBlob(image, saved_pos, SEEK_SET);
-        }
-        current_layer++;
+          int j;
+
+          for (j=0; j < current_layer; j++)
+            layer_info[j].image=DestroyImage(layer_info[j].image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       }
+      /* restore the saved position so we'll be ready to
+      *  read the next offset.
+      */
+      offset=SeekBlob(image, saved_pos, SEEK_SET);
+      current_layer++;
+    }
     if (number_layers == 1)
       {
         /*
@@ -1344,7 +1317,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         (void) CompositeImage(image,OverCompositeOp,layer_info[0].image,
           layer_info[0].offset_x,layer_info[0].offset_y);
-        layer_info[0].image=DestroyImage( layer_info[0].image);
+        layer_info[0].image =DestroyImage( layer_info[0].image);
       }
     else
       {
@@ -1356,11 +1329,11 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /* BOGUS: need to consider layer blending modes!! */
 
           if ( layer_info[j].visible ) { /* only visible ones, please! */
-            CompositeImage(image, layer_info[j].image, OverCompositeOp,
-               MagickTrue, layer_info[j].offset_x, layer_info[j].offset_y );
+            CompositeImage(image, OverCompositeOp, layer_info[j].image,
+                     layer_info[j].offset_x, layer_info[j].offset_y );
              layer_info[j].image =DestroyImage( layer_info[j].image );
 
-            /*  If we do this, we'll get REAL gray images! */
+            /* Bob says that if we do this, we'll get REAL gray images! */
             if ( image_type == GIMP_GRAY ) {
               QuantizeInfo  qi;
               GetQuantizeInfo(&qi);
@@ -1377,26 +1350,32 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         /* first we copy the last layer on top of the main image */
         (void) CompositeImage(image,CopyCompositeOp,
-          layer_info[number_layers-1].image,layer_info[number_layers-1].offset_x,
+          layer_info[number_layers-1].image,
+          layer_info[number_layers-1].offset_x,
           layer_info[number_layers-1].offset_y);
-        layer_info[number_layers-1].image=DestroyImage(
-          layer_info[number_layers-1].image);
+          layer_info[number_layers-1].image=DestroyImage(
+            layer_info[number_layers-1].image);
 
         /* now reverse the order of the layers as they are put
            into subimages
         */
-      image->next=layer_info[number_layers-2].image;
-      layer_info[number_layers-2].image->previous=image;
-      for (j=(ssize_t) number_layers-2; j>=0; j--)
-      {
-        if (j > 0)
-          layer_info[j].image->next=layer_info[j-1].image;
-        if (j < (number_layers-1))
-          layer_info[j].image->previous=layer_info[j+1].image;
-        layer_info[j].image->page.x = layer_info[j].offset_x;
-        layer_info[j].image->page.y = layer_info[j].offset_y;
-        layer_info[j].image->page.width = layer_info[j].width;
-        layer_info[j].image->page.height = layer_info[j].height;
+        j=number_layers-2;
+        image->next=layer_info[j].image;
+        layer_info[j].image->previous=image;
+        layer_info[j].image->page.x=layer_info[j].offset_x;
+        layer_info[j].image->page.y=layer_info[j].offset_y;
+        layer_info[j].image->page.width=layer_info[j].width;
+        layer_info[j].image->page.height=layer_info[j].height;
+        for (j=number_layers-3; j>=0; j--)
+        {
+          if (j > 0)
+            layer_info[j].image->next=layer_info[j-1].image;
+          if (j < (number_layers-1))
+            layer_info[j].image->previous=layer_info[j+1].image;
+          layer_info[j].image->page.x=layer_info[j].offset_x;
+          layer_info[j].image->page.y=layer_info[j].offset_y;
+          layer_info[j].image->page.width=layer_info[j].width;
+          layer_info[j].image->page.height=layer_info[j].height;
         }
       }
 #endif
