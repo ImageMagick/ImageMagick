@@ -2392,6 +2392,22 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         }
       break;
     }
+    case 'r':
+    {
+      if (LocaleNCompare("resolution.x",property,11) == 0)
+        {
+          (void) FormatLocaleString(value,MaxTextExtent,"%g",
+            image->resolution.x);
+          break;
+        }
+      if (LocaleNCompare("resolution.y",property,11) == 0)
+        {
+          (void) FormatLocaleString(value,MaxTextExtent,"%g",
+            image->resolution.y);
+          break;
+        }
+      break;
+    }
     case 's':
     {
       if (LocaleNCompare("size",property,4) == 0)
@@ -2470,26 +2486,6 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
             (image->magick_columns != 0 ? image->magick_columns : 256));
-          break;
-        }
-      break;
-    }
-    case 'x':
-    {
-      if (LocaleNCompare("xresolution",property,11) == 0)
-        {
-          (void) FormatLocaleString(value,MaxTextExtent,"%g",
-            image->resolution.x);
-          break;
-        }
-      break;
-    }
-    case 'y':
-    {
-      if (LocaleNCompare("yresolution",property,11) == 0)
-        {
-          (void) FormatLocaleString(value,MaxTextExtent,"%g",
-            image->resolution.y);
           break;
         }
       break;
