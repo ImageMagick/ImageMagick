@@ -2383,13 +2383,13 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
       if (LocaleNCompare("resolution.x",property,11) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%g",
-            image->resolution.x);
+            image->x_resolution);
           break;
         }
       if (LocaleNCompare("resolution.y",property,11) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%g",
-            image->resolution.y);
+            image->y_resolution);
           break;
         }
       break;
