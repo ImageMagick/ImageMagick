@@ -1,3 +1,7 @@
+2012-04-01  6.7.6-4 Cristy  <quetzlzacatenango@image...>
+  * Properly set the XCF alpha channel values (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20642).
+
 2012-03-30  6.7.6-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-3, SVN revision 7290.
 
