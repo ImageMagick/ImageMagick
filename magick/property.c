@@ -2378,6 +2378,22 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         }
       break;
     }
+    case 'r':
+    {
+      if (LocaleNCompare("resolution.x",property,11) == 0)
+        {
+          (void) FormatLocaleString(value,MaxTextExtent,"%g",
+            image->resolution.x);
+          break;
+        }
+      if (LocaleNCompare("resolution.y",property,11) == 0)
+        {
+          (void) FormatLocaleString(value,MaxTextExtent,"%g",
+            image->resolution.y);
+          break;
+        }
+      break;
+    }
     case 's':
     {
       if (LocaleNCompare("size",property,4) == 0)
