@@ -4761,12 +4761,12 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   stegano_image=CloneImage(image,0,0,MagickTrue,exception);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
+  stegano_image->depth=MAGICKCORE_QUANTUM_DEPTH;
   if (SetImageStorageClass(stegano_image,DirectClass,exception) == MagickFalse)
     {
       stegano_image=DestroyImage(stegano_image);
       return((Image *) NULL);
     }
-  stegano_image->depth=MAGICKCORE_QUANTUM_DEPTH;
   /*
     Hide watermark in low-order bits of image.
   */
@@ -4774,7 +4774,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   i=0;
   j=0;
   depth=stegano_image->depth;
-  k=image->offset;
+  k=stegano_image->offset;
   status=MagickTrue;
   watermark_view=AcquireCacheView(watermark);
   stegano_view=AcquireCacheView(stegano_image);
@@ -4801,20 +4801,20 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
         {
           case 0:
           {
-            SetPixelRed(image,SetBit(GetPixelRed(image,q),j,GetBit(
-              GetPixelInfoIntensity(&pixel),i)),q);
+            SetPixelRed(stegano_image,SetBit(GetPixelRed(stegano_image,q),j,
+              GetBit(GetPixelInfoIntensity(&pixel),i)),q);
             break;
           }
           case 1:
           {
-            SetPixelGreen(image,SetBit(GetPixelGreen(image,q),j,GetBit(
-              GetPixelInfoIntensity(&pixel),i)),q);
+            SetPixelGreen(stegano_image,SetBit(GetPixelGreen(stegano_image,q),j,
+              GetBit(GetPixelInfoIntensity(&pixel),i)),q);
             break;
           }
           case 2:
           {
-            SetPixelBlue(image,SetBit(GetPixelBlue(image,q),j,GetBit(
-              GetPixelInfoIntensity(&pixel),i)),q);
+            SetPixelBlue(stegano_image,SetBit(GetPixelBlue(stegano_image,q),j,
+              GetBit(GetPixelInfoIntensity(&pixel),i)),q);
             break;
           }
         }
@@ -4826,7 +4826,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
         k++;
         if (k == (ssize_t) (stegano_image->columns*stegano_image->columns))
           k=0;
-        if (k == image->offset)
+        if (k == stegano_image->offset)
           j++;
       }
     }
@@ -4843,8 +4843,6 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   }
   stegano_view=DestroyCacheView(stegano_view);
   watermark_view=DestroyCacheView(watermark_view);
-  if (stegano_image->storage_class == PseudoClass)
-    (void) SyncImage(stegano_image,exception);
   if (status == MagickFalse)
     {
       stegano_image=DestroyImage(stegano_image);
