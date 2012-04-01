@@ -435,7 +435,6 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
   xcfodata=xcfdata;
   count=ReadBlob(image, (size_t) data_length, xcfdata);
   xcfdatalimit = xcfodata+count-1;
-  exception=(exception);
   for (i=0; i < (ssize_t) bytes_per_pixel; i++)
   {
     q=GetAuthenticPixels(tile_image,0,0,tile_image->columns,tile_image->rows,
