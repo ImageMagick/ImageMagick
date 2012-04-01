@@ -2354,6 +2354,13 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             "true",MaxTextExtent);
           break;
         }
+      if (LocaleNCompare("orientation",property,11) == 0)
+        {
+          (void) FormatLocaleString(value,MaxTextExtent,"%s",
+            CommandOptionToMnemonic(MagickOrientationOptions,(ssize_t)
+            image->orientation));
+          break;
+        }
       if (LocaleNCompare("output",property,6) == 0)
         {
           (void) CopyMagickString(value,image_info->filename,MaxTextExtent);
