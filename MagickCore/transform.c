@@ -278,7 +278,6 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
               continue;
             SetPixelChannel(chop_image,channel,p[i],q);
           }
-          p+=GetPixelChannels(chop_image);
           q+=GetPixelChannels(chop_image);
         }
       p+=GetPixelChannels(image);
