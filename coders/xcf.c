@@ -139,7 +139,7 @@ typedef struct
     width,
     height,
     type,
-    opacity,
+    alpha,
     visible,
     linked,
     preserve_trans,
@@ -169,7 +169,7 @@ typedef struct
     red,
     green,
     blue,
-    opacity;
+    alpha;
 } XCFPixelPacket;
 
 /*
@@ -381,7 +381,7 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
           SetPixelGreen(q,GetPixelRed(q));
           SetPixelBlue(q,GetPixelRed(q));
           SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
-            inLayerInfo->opacity));
+            inLayerInfo->alpha));
           graydata++;
           q++;
         }
@@ -394,8 +394,8 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
             SetPixelRed(q,ScaleCharToQuantum(xcfdata->red));
             SetPixelGreen(q,ScaleCharToQuantum(xcfdata->green));
             SetPixelBlue(q,ScaleCharToQuantum(xcfdata->blue));
-            SetPixelAlpha(q,xcfdata->opacity == 0U ?  OpaqueOpacity :
-              ScaleCharToQuantum((unsigned char) inLayerInfo->opacity));
+            SetPixelAlpha(q,xcfdata->alpha == 255U ? TransparentOpacity :
+              ScaleCharToQuantum((unsigned char) inLayerInfo->alpha));
             xcfdata++;
             q++;
           }
@@ -447,7 +447,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
   count=ReadBlob(image, (size_t) data_length, xcfdata);
   xcfdatalimit = xcfodata+count-1;
   exception=(&image->exception);
-  alpha=ScaleCharToQuantum((unsigned char) (255-inLayerInfo->opacity));
+  alpha=ScaleCharToQuantum((unsigned char) inLayerInfo->alpha);
   for (i=0; i < (ssize_t) bytes_per_pixel; i++)
   {
     q=QueueAuthenticPixels(tile_image,0,0,tile_image->columns,tile_image->rows,
@@ -489,14 +489,14 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                       SetPixelGreen(q,ScaleCharToQuantum(data));
                       SetPixelBlue(q,ScaleCharToQuantum(data));
                       SetPixelAlpha(q,data == 255U ? alpha :
-                        ScaleCharToQuantum(255-data));
+                        ScaleCharToQuantum(data));
                     }
                   else
                     {
                       SetPixelGreen(q,GetPixelRed(q));
                       SetPixelBlue(q,GetPixelRed(q));
                       SetPixelAlpha(q,data == 255U ? alpha :
-                        ScaleCharToQuantum(255-data));
+                        ScaleCharToQuantum(data));
                     }
                   break;
                 }
@@ -513,7 +513,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                 case 3:
                 {
                   SetPixelAlpha(q,data == 255U ? alpha :
-                    ScaleCharToQuantum(255-data));
+                    ScaleCharToQuantum(data));
                   break;
                 }
               }
@@ -536,7 +536,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
             if (xcfdata > xcfdatalimit)
               goto bogus_rle;
             pixel=(*xcfdata++);
-            for (j= 0; j < (ssize_t) length; j++)
+            for (j=0; j < (ssize_t) length; j++)
             {
               data=pixel;
               switch (i)
@@ -549,14 +549,14 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                       SetPixelGreen(q,ScaleCharToQuantum(data));
                       SetPixelBlue(q,ScaleCharToQuantum(data));
                       SetPixelAlpha(q,data == 255U ? alpha :
-                        ScaleCharToQuantum(255-data));
+                        ScaleCharToQuantum(data));
                     }
                   else
                     {
                       SetPixelGreen(q,GetPixelRed(q));
                       SetPixelBlue(q,GetPixelRed(q));
                       SetPixelAlpha(q,data == 255U ? alpha :
-                        ScaleCharToQuantum(255-data));
+                        ScaleCharToQuantum(data));
                     }
                   break;
                 }
@@ -573,7 +573,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
                 case 3:
                 {
                   SetPixelAlpha(q,data == 255U ? alpha :
-                    ScaleCharToQuantum(255-data));
+                    ScaleCharToQuantum(data));
                   break;
                 }
               }
@@ -813,7 +813,7 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
       outLayer->floating_offset = ReadBlobMSBLong(image);
       break;
     case PROP_OPACITY:
-      outLayer->opacity = ReadBlobMSBLong(image);
+      outLayer->alpha = ReadBlobMSBLong(image);
       break;
     case PROP_VISIBLE:
       outLayer->visible = ReadBlobMSBLong(image);
@@ -908,7 +908,7 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
     return MagickFalse;
   /* clear the image based on the layer opacity */
   outLayer->image->background_color.opacity=
-    ScaleCharToQuantum((unsigned char) (255-outLayer->opacity));    
+    ScaleCharToQuantum((unsigned char) (255-outLayer->alpha));    
   (void) SetImageBackgroundColor(outLayer->image);
 
   /* set the compositing mode */
@@ -1377,8 +1377,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           layer_info[number_layers-1].image,
           layer_info[number_layers-1].offset_x,
           layer_info[number_layers-1].offset_y);
-          layer_info[number_layers-1].image=DestroyImage(
-            layer_info[number_layers-1].image);
+        layer_info[number_layers-1].image=DestroyImage(
+          layer_info[number_layers-1].image);
 
         /* now reverse the order of the layers as they are put
            into subimages
