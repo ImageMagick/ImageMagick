@@ -388,7 +388,7 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
             SetPixelRed(tile_image,ScaleCharToQuantum(xcfdata->red),q);
             SetPixelGreen(tile_image,ScaleCharToQuantum(xcfdata->green),q);
             SetPixelBlue(tile_image,ScaleCharToQuantum(xcfdata->blue),q);
-            SetPixelAlpha(tile_image,xcfdata->alpha == 0U ? TransparentAlpha :
+            SetPixelAlpha(tile_image,xcfdata->alpha == 255U ? TransparentAlpha :
               ScaleCharToQuantum((unsigned char) inLayerInfo->alpha),q);
             xcfdata++;
             q+=GetPixelChannels(tile_image);
