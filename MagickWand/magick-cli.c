@@ -57,10 +57,8 @@
 #include "MagickCore/version.h"
 
 /* verbose debugging,
-      1 - option type
-      2 - source of option
-      3 - mnemonic lookup
-      4 - output options/artifacts
+      3 - option type details
+      9 - output options/artifacts/propertys
 */
 #define MagickCommandDebug 0
 
@@ -75,14 +73,14 @@
   message=DestroyString(message); \
 }
 
-#if MagickCommandDebug >= 4
+#if MagickCommandDebug >= 9
 static void OutputOptions(ImageInfo *image_info)
 {
   const char
     *option,
     *value;
 
-  (void) FormatLocaleFile(stdout,"  Image_Info Options:\n");
+  (void) FormatLocaleFile(stdout,"  Global Options:\n");
   ResetImageOptionIterator(image_info);
   while ((option=GetNextImageOption(image_info)) != (const char *) NULL ) {
     (void) FormatLocaleFile(stdout,"    %s: ",option);
@@ -108,6 +106,23 @@ static void OutputArtifacts(Image *image)
       (void) FormatLocaleFile(stdout,"%s\n",value);
   }
   ResetImageArtifactIterator(image);
+}
+
+static void OutputProperties(Image *image,ExceptionInfo *exception)
+{
+  const char
+    *property,
+    *value;
+
+  (void) FormatLocaleFile(stdout,"  Image Properity:\n");
+  ResetImagePropertyIterator(image);
+  while ((property=GetNextImageProperty(image)) != (const char *) NULL ) {
+    (void) FormatLocaleFile(stdout,"    %s: ",property);
+    value=GetImageProperty(image,property,exception);
+    if (value != (const char *) NULL)
+      (void) FormatLocaleFile(stdout,"%s\n",value);
+  }
+  ResetImagePropertyIterator(image);
 }
 #endif
 
@@ -214,7 +229,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
       const OptionInfo *option_info = GetCommandOptionInfo(option);
       count=option_info->type;
       option_type=(CommandOptionFlags) option_info->flags;
-#if MagickCommandDebug >= 2
+#if 0
       (void) FormatLocaleFile(stderr, "Script: %u,%u: \"%s\" matched \"%s\"\n",
              cli_wand->line, cli_wand->line, option, option_info->mnemonic );
 #endif
@@ -223,8 +238,9 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
     /* handle a undefined option - image read? */
     if ( option_type == UndefinedOptionFlag ||
          (option_type & NonMagickOptionFlag) != 0 ) {
-#if MagickCommandDebug
-      (void) FormatLocaleFile(stderr, "Script Non-Option: \"%s\"\n", option);
+#if MagickCommandDebug >= 3
+      (void) FormatLocaleFile(stderr, "Script %u,%u Non-Option: \"%s\"\n",
+                  cli_wand->line, cli_wand->line, option);
 #endif
       if ( IfMagickFalse(IsCommandOption(option)))
         /* non-option -- treat as a image read */
@@ -251,10 +267,10 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
     else
       CloneString(&arg2,(char *)NULL);
 
-#if MagickCommandDebug
+#if MagickCommandDebug >= 3
     (void) FormatLocaleFile(stderr,
-        "Script Option: \"%s\" \tCount: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
-        option,(int) count,option_type,arg1,arg2);
+      "Script %u,%u Option: \"%s\"  Count: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
+          cli_wand->line,cli_wand->line,option,count,option_type,arg1,arg2);
 #endif
 
     if ( (option_type & DeprecateOptionFlag) != 0 ) {
@@ -291,16 +307,18 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
       CLIListOperatorImages(cli_wand, option, arg1, arg2);
 
 next_token:
-#if MagickCommandDebug >= 4
+#if MagickCommandDebug >= 9
     OutputOptions(cli_wand->wand.image_info);
-    if ( cli_wand->wand.images != (Image *)NULL )
+    if ( cli_wand->wand.images != (Image *)NULL ) {
       OutputArtifacts(cli_wand->wand.images);
+      OutputProperties(cli_wand->wand.images,cli_wand->wand.exception);
+    }
 #endif
     if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
       break;
   }
 
-#if MagickCommandDebug
+#if MagickCommandDebug >= 3
   (void) FormatLocaleFile(stderr, "Script End: %d\n", token_info->status);
 #endif
   switch( token_info->status ) {
@@ -425,7 +443,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
     { const OptionInfo *option_info = GetCommandOptionInfo(argv[i]);
       count=option_info->type;
       option_type=(CommandOptionFlags) option_info->flags;
-#if MagickCommandDebug >= 2
+#if 0
       (void) FormatLocaleFile(stderr, "CLI %d: \"%s\" matched \"%s\"\n",
             i, argv[i], option_info->mnemonic );
 #endif
@@ -433,8 +451,8 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
 
     if ( option_type == UndefinedOptionFlag ||
          (option_type & NonMagickOptionFlag) != 0 ) {
-#if MagickCommandDebug
-      (void) FormatLocaleFile(stderr, "CLI Non-Option: \"%s\"\n", option);
+#if MagickCommandDebug >= 3
+      (void) FormatLocaleFile(stderr, "CLI %d Non-Option: \"%s\"\n", i, option);
 #endif
       if ( IfMagickFalse(IsCommandOption(option) ) &&
            (process_flags & ProcessNonOptionImageRead) != 0 )
@@ -461,10 +479,10 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
     arg1 = ( count >= 1 ) ? argv[i+1] : (char *)NULL;
     arg2 = ( count >= 2 ) ? argv[i+2] : (char *)NULL;
 
-#if MagickCommandDebug
+#if MagickCommandDebug >= 3
     (void) FormatLocaleFile(stderr,
-        "CLI Option: \"%s\" \tCount: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
-        option,(int) count,option_type,arg1,arg2);
+      "CLI %u Option: \"%s\"  Count: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
+          i,option,count,option_type,arg1,arg2);
 #endif
 
     if ( (option_type & SpecialOptionFlag) != 0 ) {
@@ -496,10 +514,12 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
       CLIListOperatorImages(cli_wand, option, arg1, arg2);
 
 next_argument:
-#if MagickCommandDebug >= 4
+#if MagickCommandDebug >= 9
     OutputOptions(cli_wand->wand.image_info);
-    if ( cli_wand->wand.images != (Image *)NULL )
+    if ( cli_wand->wand.images != (Image *)NULL ) {
       OutputArtifacts(cli_wand->wand.images);
+      OutputProperties(cli_wand->wand.images,cli_wand->wand.exception);
+    }
 #endif
     if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
       return(i+count);
@@ -517,8 +537,8 @@ next_argument:
   option=argv[i];
   cli_wand->line=i;
 
-#if MagickCommandDebug
-  (void) FormatLocaleFile(stderr, "CLI Write File: \"%s\"\n", option );
+#if MagickCommandDebug >= 3
+  (void) FormatLocaleFile(stderr, "CLI %d Write File: \"%s\"\n", i, option );
 #endif
 
   // if stacks are not empty
