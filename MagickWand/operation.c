@@ -1079,8 +1079,8 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           if (parse < 0)
             CLIWandExceptArgBreak(OptionError,"UnrecognizedGravityType",
                                       option,arg1);
-          (void) SetImageOption(_image_info,option+1,arg1);
           _draw_info->gravity=(GravityType) parse;
+          (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
       if (LocaleCompare("green-primary",option+1) == 0)
