@@ -204,6 +204,7 @@ MagickExport void RegisterStaticModules(void)
   (void) RegisterEXRImage();
 #endif
   (void) RegisterFAXImage();
+  (void) RegisterFDImage();
   (void) RegisterFITSImage();
 #if defined(MAGICKCORE_FPX_DELEGATE)
   (void) RegisterFPXImage();
@@ -380,6 +381,7 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterEXRImage();
 #endif
   UnregisterFAXImage();
+  UnregisterFDImage();
   UnregisterFITSImage();
 #if defined(MAGICKCORE_FPX_DELEGATE)
   UnregisterFPXImage();
