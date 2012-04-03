@@ -366,7 +366,7 @@ static MagickBooleanType load_tile(Image *image,Image *tile_image,
       image->filename);
   for (y=0; y < (ssize_t) tile_image->rows; y++)
   {
-    q=QueueAuthenticPixels(tile_image,0,y,tile_image->columns,1,exception);
+    q=GetAuthenticPixels(tile_image,0,y,tile_image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
     if (inDocInfo->image_type == GIMP_GRAY)
@@ -441,7 +441,7 @@ static MagickBooleanType load_tile_rle(Image *image,Image *tile_image,
   alpha=ScaleCharToQuantum((unsigned char) inLayerInfo->alpha);
   for (i=0; i < (ssize_t) bytes_per_pixel; i++)
   {
-    q=QueueAuthenticPixels(tile_image,0,0,tile_image->columns,tile_image->rows,
+    q=GetAuthenticPixels(tile_image,0,0,tile_image->columns,tile_image->rows,
       exception);
     if (q == (Quantum *) NULL)
       continue;
@@ -884,18 +884,28 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
       if (scene > (image_info->scene+image_info->number_scenes-1))
         {
           outLayer->image=CloneImage(image,0,0,MagickTrue,exception);
+          if (outLayer->image == (Image *) NULL)
+            return(MagickFalse);
+          outLayer->image->page.x=outLayer->offset_x;
+          outLayer->image->page.y=outLayer->offset_y;
+          outLayer->image->page.width=outLayer->width;
+          outLayer->image->page.height=outLayer->height;
           return(MagickTrue);
         }
     }
   outLayer->image=CloneImage(image,outLayer->width, outLayer->height,MagickTrue,
     exception);
   if (outLayer->image == (Image *) NULL)
-    return MagickFalse;
+    return(MagickFalse);
   /* clear the image based on the layer opacity */
   outLayer->image->background_color.alpha=
     ScaleCharToQuantum((unsigned char) outLayer->alpha);
   (void) SetImageBackgroundColor(outLayer->image,exception);
 
+  outLayer->image->page.x=outLayer->offset_x;
+  outLayer->image->page.y=outLayer->offset_y;
+  outLayer->image->page.width=outLayer->width;
+  outLayer->image->page.height=outLayer->height;
   /* set the compositing mode */
   outLayer->image->compose = GIMPBlendModeToCompositeOperator( outLayer->mode );
   if ( outLayer->visible == MagickFalse )
@@ -1355,7 +1365,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #else
       {
         /* NOTE: XCF layers are REVERSED from composite order! */
-        signed int  j;
+        ssize_t  j;
 
         /* first we copy the last layer on top of the main image */
         (void) CompositeImage(image,layer_info[number_layers-1].image,
@@ -1367,24 +1377,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /* now reverse the order of the layers as they are put
            into subimages
         */
-        j=number_layers-2;
-        image->next=layer_info[j].image;
-        layer_info[j].image->previous=image;
-        layer_info[j].image->page.x=layer_info[j].offset_x;
-        layer_info[j].image->page.y=layer_info[j].offset_y;
-        layer_info[j].image->page.width=layer_info[j].width;
-        layer_info[j].image->page.height=layer_info[j].height;
-        for (j=number_layers-3; j>=0; j--)
-        {
-          if (j > 0)
-            layer_info[j].image->next=layer_info[j-1].image;
-          if (j < (number_layers-1))
-            layer_info[j].image->previous=layer_info[j+1].image;
-          layer_info[j].image->page.x=layer_info[j].offset_x;
-          layer_info[j].image->page.y=layer_info[j].offset_y;
-          layer_info[j].image->page.width=layer_info[j].width;
-          layer_info[j].image->page.height=layer_info[j].height;
-        }
+        for (j=(ssize_t) number_layers-2; j >= 0; j--)
+          AppendImageToList(&image,layer_info[j].image);
       }
 #endif
     }
