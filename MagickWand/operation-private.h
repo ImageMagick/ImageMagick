@@ -41,6 +41,9 @@ extern "C" {
 #define CLIWandExceptArgBreak(severity,tag,option,arg) \
    { CLIWandExceptionArg(severity,tag,option,arg); break; }
 
+#define CLIWandExceptArgReturn(severity,tag,option,arg) \
+   { CLIWandExceptionArg(severity,tag,option,arg); return; }
+
 
 /* Define a generic stack linked list, for pushing and popping
    user defined ImageInfo settings, and Image lists.

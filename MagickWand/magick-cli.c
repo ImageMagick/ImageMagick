@@ -369,7 +369,8 @@ next_token:
 %
 %    o argv: A text array containing the command line arguments.
 %
-%    o process_flags: What type of arguments we are allowed to process
+%    o process_flags: What type of arguments will be processed, ignored
+%                     or return errors.
 %
 %    o index: index in the argv array to start processing from
 %
@@ -585,7 +586,7 @@ next_argument:
 %
 %    o argv: A text array containing the command line arguments.
 %
-%    o metadata: any metadata is returned here.
+%    o metadata: any metadata (for VBS) is returned here.
 %         (for compatibilty with MagickCommandGenisis())
 %
 %    o exception: return any errors or warnings in this structure.
@@ -594,19 +595,11 @@ next_argument:
 
 static MagickBooleanType MagickUsage(void)
 {
-  printf("Version: %s\n",GetMagickVersion((size_t *) NULL));
-  printf("Copyright: %s\n",GetMagickCopyright());
-  printf("Features: %s\n\n",GetMagickFeatures());
-  printf("\n");
-
   printf("Usage: %s [(options|images) ...] output_image\n", GetClientName());
   printf("       %s -script filename [script args...]\n", GetClientName());
-  printf("       ... | %s -script - | ...\n", GetClientName());
   printf("\n");
-
   printf("  For more information on usage, options, examples, and technqiues\n");
   printf("  see the ImageMagick website at\n    %s\n", MagickAuthoritativeURL);
-  printf("  Or the web pages in ImageMagick Sources\n");
   return(MagickFalse);
 }
 
@@ -661,15 +654,15 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
   const char
     *option;
 
+  ProcessOptionFlags
+    process_flags = MagickCommandOptionFlags;
+
   /* For specific OS command line requirements */
   ReadCommandlLine(argc,&argv);
 
 #if 0
-  /* FUTURE: This does not make sense!  Remove it.
-     Only "-read" needs to expand file name glob patterns
-  */
   status=ExpandFilenames(&argc,&argv);
-  if ( IfMagickFalse(status))
+  if ( IfMagickFalse(status) )
     ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
 #endif
@@ -680,14 +673,14 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
   GetPathComponent(argv[0],TailPath,cli_wand->wand.name);
   ConcatenateMagickString(cli_wand->wand.name,"-CLI",MaxTextExtent);
 
-#if 0
   /* "convert" command - give a "depreciation" warning" */
-  if ( (LocaleCompare("convert",argv[0]+strlen((argv[0])-7) == 0) ||
+  if ( (LocaleCompare("convert",argv[0]+strlen((argv[0])-7)) == 0) ||
        (LocaleNCompare("convert",argv[0],7) == 0) ||
        (LocaleNCompare("lt-convert",argv[0],10) == 0) ) {
-       /* output warning */
+    process_flags = ConvertCommandOptionFlags;
+    /*(void) FormatLocaleFile(stderr,"WARNING: %s\n",
+             "The convert is depreciated in IMv7, use \"magick\"\n");*/
   }
-#endif
 
   /* Special Case:  If command name ends with "script" then run it as is
      a "-script" option is implied.  This allows you to name the "magick"
@@ -712,19 +705,20 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
 
   /* not enough arguments -- including -help */
   if (argc < 3) {
+    CLISpecialOperator(cli_wand, "-version", (char *)NULL);
     MagickUsage();
-    goto Magick_Command_Exit;
-  }
-
-  /* Special "concatenate option (hidden) for delegate usage */
-  if (LocaleCompare("-concatenate",argv[1]) == 0) {
-    ConcatenateImages(argc,argv,exception);
     goto Magick_Command_Exit;
   }
 
   /* List Information and Abort */
   if (LocaleCompare("-list",argv[1]) == 0) {
     CLISpecialOperator(cli_wand, argv[1], argv[2]);
+    goto Magick_Command_Exit;
+  }
+
+  /* Special "concatenate option (hidden) for delegate usage */
+  if (LocaleCompare("-concatenate",argv[1]) == 0) {
+    ConcatenateImages(argc,argv,exception);
     goto Magick_Command_Exit;
   }
 
@@ -741,9 +735,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
   }
   else {
     /* Normal Command Line, assumes output file as last option */
-    ProcessCommandOptions(cli_wand,argc,argv,1,
-       (LocaleCompare("magick",argv[0]+strlen(argv[0])-6) == 0)?
-           MagickCommandOptionFlags : ConvertCommandOptionFlags);
+    ProcessCommandOptions(cli_wand,argc,argv,1, process_flags);
   }
   /* ------------- */
 
