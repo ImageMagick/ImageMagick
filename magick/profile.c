@@ -6727,7 +6727,7 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
       format=(ssize_t) ReadProfileShort(endian,q+2);
       if ((format-1) >= EXIF_NUM_FORMATS)
         break;
-      components=(int) ReadProfileLong(endian,q+4);
+      components=(ssize_t) ((int) ReadProfileLong(endian,q+4));
       number_bytes=(size_t) components*format_bytes[format];
       if (number_bytes < components)
         break;  /* prevent overflow */
