@@ -335,8 +335,7 @@ static MagickBooleanType WriteHTMLImage(const ImageInfo *image_info,
       (void) FormatLocaleString(buffer,MaxTextExtent,
         "<map id=\"%s\" name=\"%s\">\n",mapname,mapname);
       (void) WriteBlobString(image,buffer);
-      (void) FormatLocaleString(buffer,MaxTextExtent,"  <area href=\"%s",
-        url);
+      (void) FormatLocaleString(buffer,MaxTextExtent,"  <area href=\"%s",url);
       (void) WriteBlobString(image,buffer);
       if (image->directory == (char *) NULL)
         {
