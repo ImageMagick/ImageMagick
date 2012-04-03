@@ -4372,47 +4372,45 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           _images=smush_image;
           break;
         }
-      if (LocaleCompare("swap",option+1) == 0)
-        {
-          Image
-            *p,
-            *q,
-            *swap;
+      if (LocaleCompare("swap",option+1) == 0) {
+        Image
+          *p,
+          *q,
+          *swap;
 
-          ssize_t
-            index,
-            swap_index;
+        ssize_t
+          index,
+          swap_index;
 
+        index=-1;
+        swap_index=-2;
+        if (IfNormalOp) {
+          GeometryInfo
+            geometry_info;
+
+          MagickStatusType
+            flags;
+
+          swap_index=(-1);
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          index=-1;
-          swap_index=-2;
-          if (IfNormalOp)
-            {
-              GeometryInfo
-                geometry_info;
-
-              MagickStatusType
-                flags;
-
-              swap_index=(-1);
-              flags=ParseGeometry(arg1,&geometry_info);
-              index=(ssize_t) geometry_info.rho;
-              if ((flags & SigmaValue) != 0)
-                swap_index=(ssize_t) geometry_info.sigma;
-            }
-          p=GetImageFromList(_images,index);
-          q=GetImageFromList(_images,swap_index);
-          if ((p == (Image *) NULL) || (q == (Image *) NULL))
-            CLIWandExceptArgBreak(OptionError,"NoSuchImage",option,arg1);
-          if (p == q)
-            break;  /* same image - no-op - not an error */
-          swap=CloneImage(p,0,0,MagickTrue,_exception);
-          ReplaceImageInList(&p,CloneImage(q,0,0,MagickTrue,_exception));
-          ReplaceImageInList(&q,swap);
-          _images=GetFirstImageInList(q);
-          break;
+          flags=ParseGeometry(arg1,&geometry_info);
+          index=(ssize_t) geometry_info.rho;
+          if ((flags & SigmaValue) != 0)
+            swap_index=(ssize_t) geometry_info.sigma;
         }
+        p=GetImageFromList(_images,index);
+        q=GetImageFromList(_images,swap_index);
+        if ((p == (Image *) NULL) || (q == (Image *) NULL))
+          CLIWandExceptArgBreak(OptionError,"NoSuchImage",option,arg1);
+        if (p == q)
+          break;  /* same image - no-op - not an error */
+        swap=CloneImage(p,0,0,MagickTrue,_exception);
+        ReplaceImageInList(&p,CloneImage(q,0,0,MagickTrue,_exception));
+        ReplaceImageInList(&q,swap);
+        _images=GetFirstImageInList(q);
+        break;
+      }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'w':
@@ -4547,25 +4545,34 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
     Image Reading
   */
   if ( ( LocaleCompare("read",option+1) == 0 ) ||
-       ( LocaleCompare("--",option) == 0 ) ) {
-/*
-      int argc = 1
-      char **argv = &arg1;
-      MagickBooleanType
-        status=ExpandFilenames(&argc,&argv);
+     ( LocaleCompare("--",option) == 0 ) ) {
+    int
+      argc;
+    char
+      **argv;
 
-      if (IfMagickFalse(status))
-        ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
-             GetExceptionMessage(errno));
-      ...loop over images to read...
-*/
+    ssize_t
+      i;
+
+    /* Expand the filename argument (meta-characters or "@filelist" ) */
+    argc = 1;
+    argv = &arg1;
+    MagickBooleanType
+      status=ExpandFilenames(&argc,&argv);
+
+    if (IfMagickFalse(status))
+      CLIWandExceptArgReturn(ResourceLimitError,"MemoryAllocationFailed",
+          option,GetExceptionMessage(errno));
+
+    /* loop over expanded list reading images */
+    for (i=0; i<argc; i++) {
 #if !USE_WAND_METHODS
       Image *
         new_images;
       if (IfMagickTrue(cli_wand->wand.image_info->ping))
-        new_images=PingImages(cli_wand->wand.image_info,arg1,_exception);
+        new_images=PingImages(cli_wand->wand.image_info,argv[i],_exception);
       else
-        new_images=ReadImages(cli_wand->wand.image_info,arg1,_exception);
+        new_images=ReadImages(cli_wand->wand.image_info,argv[i],_exception);
       AppendImageToList(&cli_wand->wand.images, new_images);
 #else
       /* read images using MagickWand method - no ping */
@@ -4574,8 +4581,11 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       MagickReadImage(&cli_wand->wand,arg1);
       MagickSetFirstIterator(&cli_wand->wand);
 #endif
-      return;
     }
+    /* FUTURE: how do I free the expanded filename arguments??? */
+
+    return;
+  }
   /*
     Parenthesis and Brace operations
   */
@@ -4718,7 +4728,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
   /*
     Informational Operations
   */
-  if (LocaleCompare("verbose",option+1) == 0) {
+  if (LocaleCompare("version",option+1) == 0) {
       (void) FormatLocaleFile(stdout,"Version: %s\n",
         GetMagickVersion((size_t *) NULL));
       (void) FormatLocaleFile(stdout,"Copyright: %s\n",
