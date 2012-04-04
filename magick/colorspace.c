@@ -1732,7 +1732,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+      if (SetImageColorspace(image,sRGBColorspace) == MagickFalse)
         return(MagickFalse);
       return(status);
     }
@@ -1796,7 +1796,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+      if (SetImageColorspace(image,sRGBColorspace) == MagickFalse)
         return(MagickFalse);
       return(status);
     }
@@ -1862,7 +1862,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+      if (SetImageColorspace(image,sRGBColorspace) == MagickFalse)
         return(MagickFalse);
       return(status);
     }
@@ -1928,7 +1928,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+      if (SetImageColorspace(image,sRGBColorspace) == MagickFalse)
         return(MagickFalse);
       return(status);
     }
@@ -1994,7 +1994,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+      if (SetImageColorspace(image,sRGBColorspace) == MagickFalse)
         return(MagickFalse);
       return(status);
     }
@@ -2165,7 +2165,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       }
       image_view=DestroyCacheView(image_view);
       logmap=(Quantum *) RelinquishMagickMemory(logmap);
-      if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+      if (SetImageColorspace(image,sRGBColorspace) == MagickFalse)
         return(MagickFalse);
       return(status);
     }
@@ -2705,7 +2705,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
   z_map=(TransformPacket *) RelinquishMagickMemory(z_map);
   y_map=(TransformPacket *) RelinquishMagickMemory(y_map);
   x_map=(TransformPacket *) RelinquishMagickMemory(x_map);
-  if (SetImageColorspace(image,RGBColorspace) == MagickFalse)
+  if (SetImageColorspace(image,sRGBColorspace) == MagickFalse)
     return(MagickFalse);
   return(MagickTrue);
 }
