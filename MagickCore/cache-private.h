@@ -226,7 +226,8 @@ extern MagickPrivate const void
 
 extern MagickPrivate MagickBooleanType
   CacheComponentGenesis(void),
-  SyncAuthenticPixelCacheNexus(Image *,NexusInfo *,ExceptionInfo *) magick_hot_spot,
+  SyncAuthenticPixelCacheNexus(Image *,NexusInfo *,ExceptionInfo *)
+    magick_hot_spot,
   SyncImagePixelCache(Image *,ExceptionInfo *);
 
 extern MagickPrivate MagickSizeType
