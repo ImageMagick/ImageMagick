@@ -2042,7 +2042,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      if (SetImageColorspace(image,RGBColorspace,exception) == MagickFalse)
+      if (SetImageColorspace(image,sRGBColorspace,exception) == MagickFalse)
         return(MagickFalse);
       return(status);
     }
