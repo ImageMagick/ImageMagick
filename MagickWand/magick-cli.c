@@ -613,14 +613,39 @@ next_argument:
 %
 */
 
-static MagickBooleanType MagickUsage(void)
+static void MagickUsage(MagickBooleanType verbose)
 {
-  printf("Usage: %s [(options|images) ...] output_image\n", GetClientName());
-  printf("       %s -script filename [script args...]\n", GetClientName());
-  printf("\n");
-  printf("  For more information on usage, options, examples, and technqiues\n");
-  printf("  see the ImageMagick website at\n    %s\n", MagickAuthoritativeURL);
-  return(MagickFalse);
+  (void) FormatLocaleFile(stdout,
+       "Usage: %s [{option}|{image}...] {output_image}\n",GetClientName());
+  (void) FormatLocaleFile(stdout,
+       "       %s [{option}|{image}...] -script {filename} [{script_args}...]\n",
+       GetClientName());
+  (void) FormatLocaleFile(stdout,
+       "       %s -help|-version|-usage|-list {option}\n",
+       GetClientName());
+
+  if (IfMagickFalse(verbose))
+    return;
+
+  (void) FormatLocaleFile(stdout,"\n%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n",
+    "All options are performed in a strict 'as you see them' order\n",
+    "You must read-in images before you can operate on them.\n",
+    "\n",
+    "Magick Script files can use any of the following forms...\n",
+    "     #!/path/to/magick -script\n",
+    "or\n",
+    "     #!/bin/sh\n",
+    "     :; exec magick -script \"$0\" \"$@\"; exit 10\n",
+    "     # Magick script from here...\n",
+    "or\n",
+    "     #!/usr/bin/env  magick-script\n",
+    "The latter two forms do not require the path to the command hard coded.\n",
+    "Note: \"magick-script\" needs to be linked to the \"magick\" command.\n",
+    "\n",
+    "For more information on usage, options, examples, and techniques\n",
+    "see the ImageMagick website at    ", MagickAuthoritativeURL);
+
+  return;
 }
 
 /*
@@ -716,17 +741,27 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
   /* Special Case: Version Information and Abort */
   if (argc == 2) {
     option=argv[1];
-    if ((LocaleCompare("-version",option) == 0) ||
-        (LocaleCompare("--version",option) == 0) ) {
+    if (LocaleCompare("-version",option) == 0) {
       CLISpecialOperator(cli_wand, "-version", (char *)NULL);
+      goto Magick_Command_Exit;
+    }
+    if ((LocaleCompare("-help",option) == 0)   || /* GNU standard option */
+        (LocaleCompare("--help",option) == 0) ) {
+      MagickUsage(MagickFalse);
+      goto Magick_Command_Exit;
+    }
+    if (LocaleCompare("-usage",option) == 0) {
+      CLISpecialOperator(cli_wand, "-version", (char *)NULL);
+      MagickUsage(MagickTrue);
       goto Magick_Command_Exit;
     }
   }
 
   /* not enough arguments -- including -help */
   if (argc < 3) {
-    CLISpecialOperator(cli_wand, "-version", (char *)NULL);
-    MagickUsage();
+    (void) FormatLocaleFile(stderr,
+       "Error: Invalid argument or not enough arguments\n\n");
+    MagickUsage(MagickFalse);
     goto Magick_Command_Exit;
   }
 
