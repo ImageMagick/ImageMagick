@@ -4560,7 +4560,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
 
     /* Expand the filename argument (meta-characters or "@filelist" ) */
     argc = 1;
-    argv = &arg1;
+    argv = (char **) &arg1;
     MagickBooleanType
       status=ExpandFilenames(&argc,&argv);
 
