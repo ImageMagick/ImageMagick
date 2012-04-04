@@ -699,6 +699,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   pixel.red=geometry_info.rho;
   pixel.green=geometry_info.rho;
   pixel.blue=geometry_info.rho;
+  pixel.black=geometry_info.rho;
   pixel.alpha=100.0;
   if ((flags & SigmaValue) != 0)
     pixel.green=geometry_info.sigma;
@@ -708,12 +709,14 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     pixel.alpha=geometry_info.psi;
   if (pixel.colorspace == CMYKColorspace)
     {
-      pixel.black=geometry_info.rho;
       if ((flags & PsiValue) != 0)
         pixel.black=geometry_info.psi;
       if ((flags & ChiValue) != 0)
         pixel.alpha=geometry_info.chi;
     }
+  if ((colorize_image->colorspace == GRAYColorspace) &&
+      (IsPixelInfoGray(&pixel) != MagickFalse))
+    (void) SetImageColorspace(colorize_image,sRGBColorspace,exception);
   /*
     Colorize DirectClass image.
   */
