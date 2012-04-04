@@ -3785,14 +3785,46 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
   {
     if (sharpen != MagickFalse)
       {
+#define sigmoidal(a,b,x)  (1/(1+exp((a)*((b)-(x)))))
+#if 1
+        /* Simpilified function scaling,
+         * with better 'contrast=0' or 'flatline' handling (greyscale)
+         */
+        double
+          u0 = sigmoidal(contrast,QuantumScale*midpoint,0.0),
+          u1 = sigmoidal(contrast,QuantumScale*midpoint,1.0);
+        sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum(
+           (MagickRealType)(MaxMap*(
+               (sigmoidal(contrast,QuantumScale*midpoint,(double)i/MaxMap)
+                  -(u0+u1)/2.0)/(u1-u0+MagickEpsilon)+0.5)   ));
+#else
+        /* Scaled sigmoidal formula...
+             (1/(1+exp(a*(b-u))) - 1/(1+exp(a))) /
+                     (1/(1+exp(a*(b-1)))/(1+exp(a)))) */
         sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
           (MaxMap*((1.0/(1.0+exp(contrast*(midpoint/(double) QuantumRange-
           (double) i/MaxMap))))-(1.0/(1.0+exp(contrast*(midpoint/
           (double) QuantumRange)))))/((1.0/(1.0+exp(contrast*(midpoint/
           (double) QuantumRange-1.0))))-(1.0/(1.0+exp(contrast*(midpoint/
           (double) QuantumRange)))))+0.5));
+#endif
         continue;
       }
+#if 1
+    {
+      /* Inverse -- See
+         http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html
+      */
+      double
+        min = sigmoidal(contrast,1.0,0.0),
+        max = sigmoidal(contrast,QuantumScale*midpoint,1.0),
+        xi  = min+(double)i/MaxMap*(max-min);
+      sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum(
+         (MagickRealType)(MaxMap*(
+             QuantumScale*midpoint-log((1-xi)/xi)/contrast) ));
+    }
+#else
+    /* expanded form of the above */
     sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
       (MaxMap*(QuantumScale*midpoint-log((1.0-(1.0/(1.0+exp(midpoint/
       (double) QuantumRange*contrast))+((double) i/MaxMap)*((1.0/
@@ -3802,6 +3834,7 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
       ((double) i/MaxMap)*((1.0/(1.0+exp(contrast*(midpoint/
       (double) QuantumRange-1.0))))-(1.0/(1.0+exp(midpoint/
       (double) QuantumRange*contrast))))))/contrast)));
+#endif
   }
   if (image->storage_class == PseudoClass)
     {
