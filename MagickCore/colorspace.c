@@ -2276,10 +2276,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
     {
       /*
         Nonlinear sRGB to linear RGB.
-
-          R = 1.0*R+0.0*G+0.0*B
-          G = 0.0*R+1.0*G+0.0*B
-          B = 0.0*R+0.0*G+1.0*B
+        Mostly removal of a gamma function, but with a linear component
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static)
