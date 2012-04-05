@@ -629,7 +629,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
             if (k != 0)
               clone_images=image_stack[k-1].image;
             if (clone_images == (Image *) NULL)
-              ThrowMontageException(ImageError,"ImageSequenceRequired",option);
+              ThrowMontageException(ImageError,"UnableToCloneImage",option);
             FireImageStack(MagickTrue,MagickTrue,MagickTrue);
             if (*option == '+')
               clone_images=CloneImages(clone_images,"-1",exception);

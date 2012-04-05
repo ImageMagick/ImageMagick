@@ -495,8 +495,8 @@
         <message name="ImageDepthNotSupported">
           profondeur d'image non supportée
         </message>
-        <message name="ImageSequenceRequired">
-          une séquence d'images est requise
+        <message name="ImageListRequired">
+          une liste d'images est requise
         </message>
         <message name="ImageSizeDiffers">
           différences dans la taille de l'image
@@ -607,6 +607,15 @@
         <message name="InvalidUseOfOption">
           Invalide utilisation de l'option
         </message>
+        <message name="InvalidArgument">
+          argument invalide pour l'option
+        </message>
+        <message name="InvalidGeometry">
+          géométrie invalide
+        </message>
+        <message name="InvalidImageIndex">
+          index de l'image non valide
+        </message>
         <message name="ImagesAreNotTheSameSize">
           images diffèrent par la taille
         </message>
@@ -615,12 +624,6 @@
         </message>
         <message name="ImageWidthsOrHeightsDiffer">
           différences dans la hauteur ou la largeur de l'image
-        </message>
-        <message name="InvalidArgument">
-          argument invalide pour l'option
-        </message>
-        <message name="InvalidGeometry">
-          géométrie invalide
         </message>
         <message name="KernelWidthMustBeAnOddNumber">
           la largeur du grain doit être un nombre impair
@@ -656,11 +659,11 @@
         <message name="NoClipPathDefined">
           pas de chemin de coupe défini
         </message>
-        <message name="NoImagesDefined">
-          pas d'images définies pour un fonctionnement
+        <message name="NoImagesForWrite">
+          pas d'images pour écriture
         </message>
-        <message name="NoImagesForFinalWrite">
-          pas d'images pour écriture finales
+        <message name="NoImagesFound">
+          pas d'image pour un fonctionnement
         </message>
         <message name="NoImageVectorGraphics">
           pas de graphiques vectoriels
@@ -695,6 +698,9 @@
         <message name="SubimageSpecificationReturnsNoImages">
           la spécification de sous-image ne permet pas de fournir des images
         </message>
+        <message name="TwoOrMoreImagesRequired">
+          deux ou plusieurs images nécessaires
+        </message>
         <message name="UnableToOpenFile">
           impossible d'ouvrir le fichier
         </message>
@@ -703,6 +709,9 @@
         </message>
         <message name="UnableToParseKernel">
           impossible d'analyser l'kernel string
+        </message>
+        <message name="UnbalancedBraces">
+          brace non fermée
         </message>
         <message name="UnbalancedParenthesis">
           parenthèse non fermée

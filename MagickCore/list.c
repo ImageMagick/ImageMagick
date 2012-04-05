@@ -599,10 +599,9 @@ MagickExport Image *GetImageFromList(const Image *images,const ssize_t index)
 
   /*
     Designed to efficiently find first image (index == 0), or last image
-    (index == -1) as appropriate, without to go through the whole image list,
-    unless the offset is outside of the list length range.
-
-    That is it tries to avoid 'counting the whole list' to handle the index.
+    (index == -1) as appropriate, without to go through the whole image list.
+    That is it tries to avoid 'counting the whole list' to  handle the
+    most common image indexes.
   */
   if ( index < 0 )
     {

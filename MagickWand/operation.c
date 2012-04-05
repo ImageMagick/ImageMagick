@@ -4405,43 +4405,20 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
         }
         p=GetImageFromList(_images,index);
         q=GetImageFromList(_images,swap_index);
-        if ((p == (Image *) NULL) || (q == (Image *) NULL))
-          CLIWandExceptArgBreak(OptionError,"NoSuchImage",option,arg1);
+        if ((p == (Image *) NULL) || (q == (Image *) NULL)) {
+          if (IfNormalOp)
+            CLIWandExceptArgBreak(OptionError,"InvalidImageIndex",option,arg1)
+          else
+            CLIWandExceptionBreak(OptionError,"TwoOrMoreImagesRequired",option);
+        }
         if (p == q)
-          break;  /* same image - no-op - not an error */
+          CLIWandExceptArgBreak(OptionError,"InvalidImageIndex",option,arg1);
         swap=CloneImage(p,0,0,MagickTrue,_exception);
         ReplaceImageInList(&p,CloneImage(q,0,0,MagickTrue,_exception));
         ReplaceImageInList(&q,swap);
         _images=GetFirstImageInList(q);
         break;
       }
-      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
-    }
-    case 'w':
-    {
-      if (LocaleCompare("write",option+1) == 0)
-        {
-          char
-            key[MaxTextExtent];
-
-          Image
-            *write_images;
-
-          ImageInfo
-            *write_info;
-
-          (void) FormatLocaleString(key,MaxTextExtent,"cache:%s",arg1);
-          (void) DeleteImageRegistry(key);
-          write_images=_images;
-          if (IfPlusOp)
-            write_images=CloneImageList(_images,_exception);
-          write_info=CloneImageInfo(_image_info);
-          (void) WriteImages(write_info,write_images,arg1,_exception);
-          write_info=DestroyImageInfo(write_info);
-          if (IfPlusOp)
-            write_images=DestroyImageList(write_images);
-          break;
-        }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     default:
@@ -4522,7 +4499,11 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 WandExport void CLISpecialOperator(MagickCLI *cli_wand,
   const char *option, const char *arg1)
 {
-#define _exception       (cli_wand->wand.exception)
+#define _image_info     (cli_wand->wand.image_info)
+#define _images         (cli_wand->wand.images)
+#define _exception      (cli_wand->wand.exception)
+#define IfNormalOp      (*option=='-')
+#define IfPlusOp        (*option!='-')
 
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
@@ -4530,9 +4511,8 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
-  if(cli_wand->wand.images != (Image *)NULL)
-    (void) SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
-         _exception);
+  if(_images != (Image *)NULL)
+    (void) SyncImagesSettings(cli_wand->wand.image_info,_images,_exception);
 
   /*
     No-op options
@@ -4573,11 +4553,11 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
 #if !USE_WAND_METHODS
       Image *
         new_images;
-      if (IfMagickTrue(cli_wand->wand.image_info->ping))
-        new_images=PingImages(cli_wand->wand.image_info,argv[i],_exception);
+      if (IfMagickTrue(_image_info->ping))
+        new_images=PingImages(_image_info,argv[i],_exception);
       else
-        new_images=ReadImages(cli_wand->wand.image_info,argv[i],_exception);
-      AppendImageToList(&cli_wand->wand.images, new_images);
+        new_images=ReadImages(_image_info,argv[i],_exception);
+      AppendImageToList(&_images, new_images);
 #else
       /* read images using MagickWand method - no ping */
       /* This is not working! - it locks up in a CPU loop! */
@@ -4591,125 +4571,157 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
     return;
   }
   /*
+    Image Writing
+  */
+  if (LocaleCompare("write",option+1) == 0) {
+    char
+      key[MaxTextExtent];
+
+    Image
+      *write_images;
+
+    ImageInfo
+      *write_info;
+
+    /* Need images, unless a "null:" output coder is used */
+    if ( cli_wand->wand.images == (Image *) NULL ) {
+      if ( LocaleCompare(option,"null:") == 0 )
+        return;
+      CLIWandExceptArgReturn(OptionError,"NoImagesForWrite",option,arg1);
+    }
+
+    (void) FormatLocaleString(key,MaxTextExtent,"cache:%s",arg1);
+    (void) DeleteImageRegistry(key);
+    write_images=_images;
+    if (IfPlusOp)
+      write_images=CloneImageList(_images,_exception);
+    write_info=CloneImageInfo(_image_info);
+    (void) WriteImages(write_info,write_images,arg1,_exception);
+    write_info=DestroyImageInfo(write_info);
+    if (IfPlusOp)
+      write_images=DestroyImageList(write_images);
+    return;
+  }
+  /*
     Parenthesis and Brace operations
   */
   if (LocaleCompare("respect-parenthesis",option+1) == 0) {
       /* link image and setting stacks - option is itself saved on stack! */
       (void) SetImageOption(cli_wand->wand.image_info,option+1,
-           *option == '-' ? "true" : (char *) NULL);
+           IfNormalOp ? "true" : (char *) NULL);
       return;
     }
   if (LocaleCompare("(",option) == 0) {
-      /* stack 'push' images */
-      Stack
-        *node;
+    /* stack 'push' images */
+    Stack
+      *node;
 
-      size_t
-        size;
+    size_t
+      size;
 
-      size=0;
-      node=cli_wand->image_list_stack;
-      for ( ; node != (Stack *)NULL; node=node->next)
-        size++;
-      if ( size >= MAX_STACK_DEPTH )
-        CLIWandExceptionReturn(OptionError,"ParenthesisNestedTooDeeply",option);
-      node=(Stack *) AcquireMagickMemory(sizeof(*node));
-      if (node == (Stack *) NULL)
-        CLIWandExceptionReturn(ResourceLimitFatalError,
-             "MemoryAllocationFailed",option);
-      node->data = (void *)cli_wand->wand.images;
-      cli_wand->wand.images = NewImageList();
-      node->next = cli_wand->image_list_stack;
-      cli_wand->image_list_stack = node;
+    size=0;
+    node=cli_wand->image_list_stack;
+    for ( ; node != (Stack *)NULL; node=node->next)
+      size++;
+    if ( size >= MAX_STACK_DEPTH )
+      CLIWandExceptionReturn(OptionError,"ParenthesisNestedTooDeeply",option);
+    node=(Stack *) AcquireMagickMemory(sizeof(*node));
+    if (node == (Stack *) NULL)
+      CLIWandExceptionReturn(ResourceLimitFatalError,
+           "MemoryAllocationFailed",option);
+    node->data = (void *)cli_wand->wand.images;
+    cli_wand->wand.images = NewImageList();
+    node->next = cli_wand->image_list_stack;
+    cli_wand->image_list_stack = node;
 
-      /* handle respect-parenthesis */
-      if (IfMagickTrue(IsStringTrue(GetImageOption(cli_wand->wand.image_info,
-                    "respect-parenthesis"))))
-        option="{"; /* fall-thru so as to push image settings too */
-      else
-        return;
-    }
-  if (LocaleCompare("{",option) == 0) {
-      /* stack 'push' of image_info settings */
-      Stack
-        *node;
-
-      size_t
-        size;
-
-      size=0;
-      node=cli_wand->image_info_stack;
-      for ( ; node != (Stack *)NULL; node=node->next)
-        size++;
-      if ( size >= MAX_STACK_DEPTH )
-        CLIWandExceptionReturn(OptionError,"CurlyBracesNestedTooDeeply",option);
-      node=(Stack *) AcquireMagickMemory(sizeof(*node));
-      if (node == (Stack *) NULL)
-        CLIWandExceptionReturn(ResourceLimitFatalError,
-             "MemoryAllocationFailed",option);
-
-      node->data = (void *)cli_wand->wand.image_info;
-      cli_wand->wand.image_info = CloneImageInfo(cli_wand->wand.image_info);
-      if (cli_wand->wand.image_info == (ImageInfo *)NULL) {
-        CLIWandException(ResourceLimitFatalError,"MemoryAllocationFailed",
-             option);
-        cli_wand->wand.image_info = (ImageInfo *)node->data;
-        node = (Stack *)RelinquishMagickMemory(node);
-        return;
-      }
-
-      node->next = cli_wand->image_info_stack;
-      cli_wand->image_info_stack = node;
-
+    /* handle respect-parenthesis */
+    if (IfMagickTrue(IsStringTrue(GetImageOption(cli_wand->wand.image_info,
+                  "respect-parenthesis"))))
+      option="{"; /* fall-thru so as to push image settings too */
+    else
       return;
-    }
-  if (LocaleCompare(")",option) == 0) {
-      /* pop images from stack */
-      Stack
-        *node;
+  }
+  if (LocaleCompare("{",option) == 0) {
+    /* stack 'push' of image_info settings */
+    Stack
+      *node;
 
-      node = (Stack *)cli_wand->image_list_stack;
-      if ( node == (Stack *)NULL)
-        CLIWandExceptionReturn(OptionError,"UnbalancedParenthesis",option);
-      cli_wand->image_list_stack = node->next;
+    size_t
+      size;
 
-      AppendImageToList((Image **)&node->data,cli_wand->wand.images);
-      cli_wand->wand.images= (Image *)node->data;
-      node = (Stack *)RelinquishMagickMemory(node);
+    size=0;
+    node=cli_wand->image_info_stack;
+    for ( ; node != (Stack *)NULL; node=node->next)
+      size++;
+    if ( size >= MAX_STACK_DEPTH )
+      CLIWandExceptionReturn(OptionError,"CurlyBracesNestedTooDeeply",option);
+    node=(Stack *) AcquireMagickMemory(sizeof(*node));
+    if (node == (Stack *) NULL)
+      CLIWandExceptionReturn(ResourceLimitFatalError,
+           "MemoryAllocationFailed",option);
 
-      /* handle respect-parenthesis - of the previous 'pushed' settings */
-      node = cli_wand->image_info_stack;
-      if ( node != (Stack *)NULL)
-        {
-          if (IfMagickTrue(IsStringTrue(GetImageOption(
-                 cli_wand->wand.image_info,"respect-parenthesis"))))
-            option="}"; /* fall-thru so as to pop image settings too */
-          else
-            return;
-        }
-      else
-        return;
-    }
-  if (LocaleCompare("}",option) == 0) {
-      /* pop image_info settings from stack */
-      Stack
-        *node;
-
-      node = (Stack *)cli_wand->image_info_stack;
-      if ( node == (Stack *)NULL)
-        CLIWandExceptionReturn(OptionError,"UnbalancedCurlyBraces",option);
-      cli_wand->image_info_stack = node->next;
-
-      (void) DestroyImageInfo(cli_wand->wand.image_info);
+    node->data = (void *)cli_wand->wand.image_info;
+    cli_wand->wand.image_info = CloneImageInfo(cli_wand->wand.image_info);
+    if (cli_wand->wand.image_info == (ImageInfo *)NULL) {
+      CLIWandException(ResourceLimitFatalError,"MemoryAllocationFailed",
+           option);
       cli_wand->wand.image_info = (ImageInfo *)node->data;
       node = (Stack *)RelinquishMagickMemory(node);
-
-      GetDrawInfo(cli_wand->wand.image_info, cli_wand->draw_info);
-      cli_wand->quantize_info=DestroyQuantizeInfo(cli_wand->quantize_info);
-      cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
-
       return;
     }
+
+    node->next = cli_wand->image_info_stack;
+    cli_wand->image_info_stack = node;
+
+    return;
+  }
+  if (LocaleCompare(")",option) == 0) {
+    /* pop images from stack */
+    Stack
+      *node;
+
+    node = (Stack *)cli_wand->image_list_stack;
+    if ( node == (Stack *)NULL)
+      CLIWandExceptionReturn(OptionError,"UnbalancedParenthesis",option);
+    cli_wand->image_list_stack = node->next;
+
+    AppendImageToList((Image **)&node->data,cli_wand->wand.images);
+    cli_wand->wand.images= (Image *)node->data;
+    node = (Stack *)RelinquishMagickMemory(node);
+
+    /* handle respect-parenthesis - of the previous 'pushed' settings */
+    node = cli_wand->image_info_stack;
+    if ( node != (Stack *)NULL)
+      {
+        if (IfMagickTrue(IsStringTrue(GetImageOption(
+               cli_wand->wand.image_info,"respect-parenthesis"))))
+          option="}"; /* fall-thru so as to pop image settings too */
+        else
+          return;
+      }
+    else
+      return;
+  }
+  if (LocaleCompare("}",option) == 0) {
+    /* pop image_info settings from stack */
+    Stack
+      *node;
+
+    node = (Stack *)cli_wand->image_info_stack;
+    if ( node == (Stack *)NULL)
+      CLIWandExceptionReturn(OptionError,"UnbalancedCurlyBraces",option);
+    cli_wand->image_info_stack = node->next;
+
+    (void) DestroyImageInfo(cli_wand->wand.image_info);
+    cli_wand->wand.image_info = (ImageInfo *)node->data;
+    node = (Stack *)RelinquishMagickMemory(node);
+
+    GetDrawInfo(cli_wand->wand.image_info, cli_wand->draw_info);
+    cli_wand->quantize_info=DestroyQuantizeInfo(cli_wand->quantize_info);
+    cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
+
+    return;
+  }
   if (LocaleCompare("clone",option+1) == 0) {
       Image
         *new_images;
@@ -4726,105 +4738,105 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
       new_images=CloneImages(new_images,arg1,_exception);
       if (new_images == (Image *) NULL)
         CLIWandExceptionReturn(OptionError,"NoSuchImage",option);
-      AppendImageToList(&cli_wand->wand.images,new_images);
+      AppendImageToList(&_images,new_images);
       return;
     }
   /*
     Informational Operations
   */
   if (LocaleCompare("version",option+1) == 0) {
-      (void) FormatLocaleFile(stdout,"Version: %s\n",
-        GetMagickVersion((size_t *) NULL));
-      (void) FormatLocaleFile(stdout,"Copyright: %s\n",
-        GetMagickCopyright());
-      (void) FormatLocaleFile(stdout,"Features: %s\n\n",
-        GetMagickFeatures());
-      return;
-    }
+    (void) FormatLocaleFile(stdout,"Version: %s\n",
+      GetMagickVersion((size_t *) NULL));
+    (void) FormatLocaleFile(stdout,"Copyright: %s\n",
+      GetMagickCopyright());
+    (void) FormatLocaleFile(stdout,"Features: %s\n\n",
+      GetMagickFeatures());
+    return;
+  }
   if (LocaleCompare("list",option+1) == 0) {
-      /* FUTURE: This should really be built into the MagickCore
-         It does not actually require any wand or images at all!
-       */
-      ssize_t
-        list;
+    /* FUTURE: This should really be built into the MagickCore
+       It does not actually require a cli-wand or and images!
+     */
+    ssize_t
+      list;
 
-      list=ParseCommandOption(MagickListOptions,MagickFalse,arg1);
-      if ( list < 0 ) {
-        CLIWandExceptionArg(OptionError,"UnrecognizedListType",option,arg1);
-        return;
-      }
-      switch (list)
-      {
-        case MagickCoderOptions:
-        {
-          (void) ListCoderInfo((FILE *) NULL,_exception);
-          break;
-        }
-        case MagickColorOptions:
-        {
-          (void) ListColorInfo((FILE *) NULL,_exception);
-          break;
-        }
-        case MagickConfigureOptions:
-        {
-          (void) ListConfigureInfo((FILE *) NULL,_exception);
-          break;
-        }
-        case MagickDelegateOptions:
-        {
-          (void) ListDelegateInfo((FILE *) NULL,_exception);
-          break;
-        }
-        case MagickFontOptions:
-        {
-          (void) ListTypeInfo((FILE *) NULL,_exception);
-          break;
-        }
-        case MagickFormatOptions:
-          (void) ListMagickInfo((FILE *) NULL,_exception);
-          break;
-        case MagickLocaleOptions:
-          (void) ListLocaleInfo((FILE *) NULL,_exception);
-          break;
-        case MagickLogOptions:
-          (void) ListLogInfo((FILE *) NULL,_exception);
-          break;
-        case MagickMagicOptions:
-          (void) ListMagicInfo((FILE *) NULL,_exception);
-          break;
-        case MagickMimeOptions:
-          (void) ListMimeInfo((FILE *) NULL,_exception);
-          break;
-        case MagickModuleOptions:
-          (void) ListModuleInfo((FILE *) NULL,_exception);
-          break;
-        case MagickPolicyOptions:
-          (void) ListPolicyInfo((FILE *) NULL,_exception);
-          break;
-        case MagickResourceOptions:
-          (void) ListMagickResourceInfo((FILE *) NULL,_exception);
-          break;
-        case MagickThresholdOptions:
-          (void) ListThresholdMaps((FILE *) NULL,_exception);
-          break;
-        default:
-          (void) ListCommandOptions((FILE *) NULL,(CommandOption) list,
-            _exception);
-          break;
-      }
+    list=ParseCommandOption(MagickListOptions,MagickFalse,arg1);
+    if ( list < 0 ) {
+      CLIWandExceptionArg(OptionError,"UnrecognizedListType",option,arg1);
       return;
     }
+    switch (list)
+    {
+      case MagickCoderOptions:
+      {
+        (void) ListCoderInfo((FILE *) NULL,_exception);
+        break;
+      }
+      case MagickColorOptions:
+      {
+        (void) ListColorInfo((FILE *) NULL,_exception);
+        break;
+      }
+      case MagickConfigureOptions:
+      {
+        (void) ListConfigureInfo((FILE *) NULL,_exception);
+        break;
+      }
+      case MagickDelegateOptions:
+      {
+        (void) ListDelegateInfo((FILE *) NULL,_exception);
+        break;
+      }
+      case MagickFontOptions:
+      {
+        (void) ListTypeInfo((FILE *) NULL,_exception);
+        break;
+      }
+      case MagickFormatOptions:
+        (void) ListMagickInfo((FILE *) NULL,_exception);
+        break;
+      case MagickLocaleOptions:
+        (void) ListLocaleInfo((FILE *) NULL,_exception);
+        break;
+      case MagickLogOptions:
+        (void) ListLogInfo((FILE *) NULL,_exception);
+        break;
+      case MagickMagicOptions:
+        (void) ListMagicInfo((FILE *) NULL,_exception);
+        break;
+      case MagickMimeOptions:
+        (void) ListMimeInfo((FILE *) NULL,_exception);
+        break;
+      case MagickModuleOptions:
+        (void) ListModuleInfo((FILE *) NULL,_exception);
+        break;
+      case MagickPolicyOptions:
+        (void) ListPolicyInfo((FILE *) NULL,_exception);
+        break;
+      case MagickResourceOptions:
+        (void) ListMagickResourceInfo((FILE *) NULL,_exception);
+        break;
+      case MagickThresholdOptions:
+        (void) ListThresholdMaps((FILE *) NULL,_exception);
+        break;
+      default:
+        (void) ListCommandOptions((FILE *) NULL,(CommandOption) list,
+          _exception);
+        break;
+    }
+    return;
+  }
 
 #if 0
-    // adjust stack handling
   // Other 'special' options this should handle
-  //    "region" "list" "version"
-  // It does not do "exit" however as due to its side-effect requirements
-#endif
-#if 0
+  //    "region"
   if ( ( process_flags & ProcessUnknownOptionError ) != 0 )
 #endif
     CLIWandException(OptionError,"UnrecognizedOption",option);
 
+#undef _image_info
+#undef _images
 #undef _exception
+#undef IfNormalOp
+#undef IfPlusOp
 }

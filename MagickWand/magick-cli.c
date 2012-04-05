@@ -69,11 +69,16 @@
  \
   message=GetExceptionMessage(errno); \
   (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"`%s': %s",context,message); \
+    tag == (const char *) NULL ? "unknown" : tag,"'%s': %s",context,message); \
   message=DestroyString(message); \
 }
 
 #if MagickCommandDebug >= 9
+/*
+  Temporary Debugging Information
+  FUTURE: these should be able to be printed out using 'percent escapes'
+  Actually 'Properities' can already be output with  "%[*]"
+*/
 static void OutputOptions(ImageInfo *image_info)
 {
   const char
@@ -273,10 +278,21 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
           cli_wand->line,cli_wand->line,option,count,option_type,arg1,arg2);
 #endif
 
+    if ( (option_type & GenesisOptionFlag) != 0 ) {
+      /* Genesis Options have no place in a magick script */
+      CLIWandExceptionBreak(OptionError,"InvalidUseOfOption",option);
+      goto next_token;
+    }
     if ( (option_type & DeprecateOptionFlag) != 0 ) {
       CLIWandException(OptionWarning,"DeprecatedOption",option);
       if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
         break;
+      /* fall through - do the depreciated option */
+    }
+    if (((option_type & ImageRequiredFlags) != 0 ) &&
+        ( cli_wand->wand.images != (Image *)NULL ) ) {
+      CLIWandException(OptionError,"NoImagesFound",option);
+      goto next_token;
     }
 
     /* handle special script-argument options here */
@@ -284,11 +300,18 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
     // or making use of the command line options.
     //CLICommandOptions(cli_wand,count+1,argv, MagickScriptArgsFlags);
 
-    /* Process Option from file */
+    /*
+      Process Option from file
+    */
     if ( (option_type & SpecialOptionFlag) != 0 ) {
-      if ( LocaleCompare(option,"-exit") == 0 )
-        break;
-      /* No "-script" option from script at this time - though posible */
+      if ( LocaleCompare(option,"-exit") == 0 ) {
+        break; /* forced end of script */
+      }
+      if ( LocaleCompare(option,"-script") == 0 ) {
+        CLIWandExceptionBreak(OptionError,"InvalidUseOfOption",option);
+        goto next_token;
+      }
+      /* handle any other special operators now */
       CLISpecialOperator(cli_wand,option,arg1);
     }
 
@@ -324,6 +347,10 @@ next_token:
   switch( token_info->status ) {
     case TokenStatusOK:
     case TokenStatusEOF:
+      if (cli_wand->image_list_stack != (Stack *)NULL)
+        CLIWandException(OptionError,"UnbalancedParenthesis", "(eof)");
+      else if (cli_wand->image_info_stack != (Stack *)NULL)
+        CLIWandException(OptionError,"UnbalancedBraces", "(eof)");
       break;
     case TokenStatusBadQuotes:
       /* Ensure last token has a sane length for error report */
@@ -464,11 +491,6 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
       goto next_argument;
     }
 
-    if ( (option_type & DeprecateOptionFlag) != 0 ) {
-      CLIWandException(OptionWarning,"DeprecatedOption",option);
-      if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-        return(i+count+1);
-    }
     if ((i+count) >= end ) {
       CLIWandException(OptionFatalError,"MissingArgument",option);
       if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
@@ -485,17 +507,32 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
           i,option,count,option_type,arg1,arg2);
 #endif
 
+    if ( (option_type & DeprecateOptionFlag) != 0 ) {
+      CLIWandException(OptionWarning,"DeprecatedOption",option);
+      if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+        return(end);
+      /* fall through - do the depreciated option */
+    }
+    if ( (option_type & GenesisOptionFlag) != 0 ) {
+      goto next_argument;  /* ignore genesis options */
+    }
+    if (((option_type & ImageRequiredFlags) != 0 ) &&
+        ( cli_wand->wand.images == (Image *)NULL ) ) {
+      CLIWandException(OptionError,"NoImagesFound",option);
+      goto next_argument;
+    }
+
     if ( (option_type & SpecialOptionFlag) != 0 ) {
       if ( ( process_flags & ProcessExitOption ) != 0
            && LocaleCompare(option,"-exit") == 0 )
         return(i+count);
       if ( ( process_flags & ProcessScriptOption ) != 0
            && LocaleCompare(option,"-script") == 0) {
-        // Unbalanced Parenthesis if stack not empty
         // Call Script, with a filename as a zeroth argument
         ProcessScriptOptions(cli_wand,argc,argv,i+1);
         return(argc); /* no more options after script process! */
       }
+      /* handle any other special operators now */
       CLISpecialOperator(cli_wand,option,arg1);
     }
 
@@ -541,36 +578,27 @@ next_argument:
   (void) FormatLocaleFile(stderr, "CLI %d Write File: \"%s\"\n", i, option );
 #endif
 
-  // if stacks are not empty
-  //  ThrowConvertException(OptionError,"UnbalancedParenthesis",option,i);
+  /* check that stacks are empty */
+  if (cli_wand->image_list_stack != (Stack *)NULL)
+    CLIWandException(OptionError,"UnbalancedParenthesis", "(eof)");
+  else if (cli_wand->image_info_stack != (Stack *)NULL)
+    CLIWandException(OptionError,"UnbalancedBraces", "(eof)");
+  if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+    return(argc);
 
-  /* This is a valid 'do no write' option for a CLI */
+  /* This is a valid 'do no write' option - no images needed */
   if (LocaleCompare(option,"-exit") == 0 )
     return(argc);  /* just exit, no image write */
 
-  /* If there is an option -- produce an error */
+  /* If filename looks like an option -- produce an error */
   if (IsCommandOption(option) != MagickFalse) {
     CLIWandException(OptionError,"MissingOutputFilename",option);
     return(argc);
   }
 
-  /* If no images in MagickCLI */
-  if ( cli_wand->wand.images == (Image *) NULL ) {
-    /* a "null:" output coder with no images is not an error! */
-    if ( LocaleCompare(option,"null:") == 0 )
-      return(argc);
-    CLIWandException(OptionError,"NoImagesForFinalWrite",option);
-    return(argc);
-  }
-
-#if 0
-  WandListOperatorImages(cli_wand,"-write",option,(const char *)NULL);
-#else
   (void) SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
        cli_wand->wand.exception);
-  (void) WriteImages(cli_wand->wand.image_info,cli_wand->wand.images,option,
-       cli_wand->wand.exception);
-#endif
+  CLISpecialOperator(cli_wand,"-write",option);
   return(argc);
 }
 
@@ -714,6 +742,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
 
   /* Initialize special "CLI Wand" to hold images and settings (empty) */
   cli_wand=AcquireMagickCLI(image_info,exception);
+  cli_wand->line=1;
 
   GetPathComponent(argv[0],TailPath,cli_wand->wand.name);
   ConcatenateMagickString(cli_wand->wand.name,"-CLI",MaxTextExtent);
@@ -727,11 +756,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
              "The convert is depreciated in IMv7, use \"magick\"\n");*/
   }
 
-  /* Special Case:  If command name ends with "script" then run it as is
-     a "-script" option is implied.  This allows you to name the "magick"
-     command "magick-script", and create scripts of the form...
-           #!/usr/bin/env magick-script
-  */
+  /* Special Case:  If command name ends with "script" implied "-script" */
   if (LocaleCompare("script",argv[0]+strlen(argv[0])-6) == 0) {
     GetPathComponent(argv[1],TailPath,cli_wand->wand.name);
     ProcessScriptOptions(cli_wand,argc,argv,1);
@@ -795,7 +820,9 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
   /* ------------- */
 
 Magick_Command_Cleanup:
-  /* recover original image_info from bottom of stack */
+  /* recover original image_info and clean up stacks */
+  while (cli_wand->image_list_stack != (Stack *)NULL)
+    CLISpecialOperator(cli_wand,")",(const char *)NULL);
   while (cli_wand->image_info_stack != (Stack *)NULL)
     CLISpecialOperator(cli_wand,"}",(const char *)NULL);
 
