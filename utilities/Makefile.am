@@ -19,7 +19,6 @@ UTILITIES_PGMS = \
 	utilities/compare \
 	utilities/composite \
 	utilities/conjure \
-	utilities/convert \
 	utilities/display \
 	utilities/identify \
 	utilities/import \
@@ -47,10 +46,6 @@ utilities_composite_SOURCES	= utilities/composite.c
 utilities_conjure_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 utilities_conjure_LDFLAGS	= $(LDFLAGS)
 utilities_conjure_SOURCES	= utilities/conjure.c
-
-utilities_convert_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
-utilities_convert_LDFLAGS	= $(LDFLAGS)
-utilities_convert_SOURCES	= utilities/convert.c
 
 utilities_display_LDADD	= $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 utilities_display_LDFLAGS	= $(LDFLAGS)
@@ -117,7 +112,7 @@ UTILITIES_EXTRA_DIST = \
 UTILITIES_CLEANFILES = 
 
 # Link these utilities to 'magick'.
-MAGICK_UTILITIES=magick-script
+MAGICK_UTILITIES=convert magick-script
 UTILITIES_INSTALL_EXEC_LOCAL_TARGETS=install-exec-local-utilities
 install-exec-local-utilities:
 	$(mkdir_p) $(DESTDIR)$(bindir)
