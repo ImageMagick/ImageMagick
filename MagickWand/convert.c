@@ -951,9 +951,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             clone_images=image;
             if (k != 0)
               clone_images=image_stack[k-1].image;
-            /* FUTURE: Change error report to something more meaningful */
             if (clone_images == (Image *) NULL)
-              ThrowConvertException(ImageError,"ImageSequenceRequired",option);
+              ThrowConvertException(ImageError,"UnableToCloneImage",option);
             FireImageStack(MagickTrue,MagickTrue,MagickTrue);
             if (*option == '+')
               clone_images=CloneImages(clone_images,"-1",exception);

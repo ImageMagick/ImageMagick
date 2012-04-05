@@ -145,6 +145,8 @@ typedef enum
   SpecialOptionFlag         = 0x0040,  /* Special handled Option */
   GenesisOptionFlag         = 0x0080,  /* Genesis Command Wrapper Option  */
 
+  ImageRequiredFlags        = 0x0030,  /* Flags also means Images Required */
+
   NonMagickOptionFlag       = 0x1000,  /* Option not used by Magick Command */
   FireOptionFlag            = 0x4000,  /* Convert operation seq firing point */
   DeprecateOptionFlag       = 0x8000   /* Deprecate option, give warning */

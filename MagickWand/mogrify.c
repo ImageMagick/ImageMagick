@@ -146,15 +146,15 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
     option=argv[i];
     if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
       continue;
-    if (LocaleCompare("bench",option+1) == 0)
+    if (LocaleCompare("-bench",option) == 0)
       iterations=StringToUnsignedLong(argv[++i]);
-    if (LocaleCompare("concurrent",option+1) == 0)
+    if (LocaleCompare("-concurrent",option) == 0)
       concurrent=MagickTrue;
-    if (LocaleCompare("debug",option+1) == 0)
+    if (LocaleCompare("-debug",option) == 0)
       (void) SetLogEventMask(argv[++i]);
-    if (LocaleCompare("duration",option+1) == 0)
+    if (LocaleCompare("-duration",option) == 0)
       duration=StringToDouble(argv[++i],(char **) NULL);
-    if (LocaleCompare("regard-warnings",option+1) == 0)
+    if (LocaleCompare("-regard-warnings",option) == 0)
       regard_warnings=MagickTrue;
   }
   if (iterations == 1)

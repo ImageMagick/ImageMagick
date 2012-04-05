@@ -249,7 +249,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   if (phase_image == (Image *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "ImageSequenceRequired","`%s'",image->filename);
+        "TwoOrMoreImagesRequired","`%s'",image->filename);
       return(MagickFalse);
     }
   /*
@@ -1194,7 +1194,7 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
   if (phase_image == (Image *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "ImageSequenceRequired","`%s'",magnitude_image->filename);
+        "TwoOrMoreImagesRequired","`%s'",magnitude_image->filename);
       return((Image *) NULL);
     }
 #if !defined(MAGICKCORE_FFTW_DELEGATE)

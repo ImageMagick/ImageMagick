@@ -488,8 +488,8 @@
         <message name="ImageDepthNotSupported">
           image depth not supported
         </message>
-        <message name="ImageSequenceRequired">
-          image sequence is required
+        <message name="ImageListRequired">
+          image list is required
         </message>
         <message name="ImageSizeDiffers">
           image size differs
@@ -611,7 +611,16 @@
           geometry does not contain image
         </message>
         <message name="InvalidUseOfOption">
-          invalif use of option
+          invalid use of option
+        </message>
+        <message name="InvalidArgument">
+          invalid argument for option
+        </message>
+        <message name="InvalidGeometry">
+          invalid geometry
+        </message>
+        <message name="InvalidImageIndex">
+          invalid image index
         </message>
         <message name="ImagesAreNotTheSameSize">
           images are not the same size
@@ -621,12 +630,6 @@
         </message>
         <message name="ImageWidthsOrHeightsDiffer">
           image widths or heights differ
-        </message>
-        <message name="InvalidArgument">
-          invalid argument for option
-        </message>
-        <message name="InvalidGeometry">
-          invalid geometry
         </message>
         <message name="KernelWidthMustBeAnOddNumber">
           kernel width must be an odd number
@@ -662,11 +665,11 @@
         <message name="NoClipPathDefined">
           no clip path defined
         </message>
-        <message name="NoImagesDefined">
-          no images defined for operation
+        <message name="NoImagesForWrite">
+          no images for write
         </message>
-        <message name="NoImagesForFinalWrite">
-          no images for final write
+        <message name="NoImagesFound">
+          no images found for operation
         </message>
         <message name="NoImageVectorGraphics">
           no image vector graphics
@@ -701,6 +704,9 @@
         <message name="SubimageSpecificationReturnsNoImages">
           subimage specification returns no images
         </message>
+        <message name="TwoOrMoreImagesRequired">
+          two or more images required
+        </message>
         <message name="UnableToOpenFile">
           unable to open file
         </message>
@@ -709,6 +715,9 @@
         </message>
         <message name="UnableToParseKernel">
           unable to parse kernel string
+        </message>
+        <message name="UnbalancedBraces">
+          unbalanced braces
         </message>
         <message name="UnbalancedParenthesis">
           unbalanced parenthesis

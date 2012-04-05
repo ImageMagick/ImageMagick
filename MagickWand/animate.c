@@ -574,7 +574,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
             if (k != 0)
               clone_images=image_stack[k-1].image;
             if (clone_images == (Image *) NULL)
-              ThrowAnimateException(ImageError,"ImageSequenceRequired",option);
+              ThrowAnimateException(ImageError,"UnableToCloneImage",option);
             FireImageStack(MagickFalse,MagickTrue,MagickTrue);
             if (*option == '+')
               clone_images=CloneImages(clone_images,"-1",exception);
