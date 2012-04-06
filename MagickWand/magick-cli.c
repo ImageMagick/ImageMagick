@@ -60,7 +60,7 @@
       3 - option type details
       9 - output options/artifacts/propertys
 */
-#define MagickCommandDebug 0
+#define MagickCommandDebug 3
 
 #define ThrowFileException(exception,severity,tag,context) \
 { \
@@ -290,7 +290,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
       /* fall through - do the depreciated option */
     }
     if (((option_type & ImageRequiredFlags) != 0 ) &&
-        ( cli_wand->wand.images != (Image *)NULL ) ) {
+        ( cli_wand->wand.images == (Image *)NULL ) ) {
       CLIWandException(OptionError,"NoImagesFound",option);
       goto next_token;
     }
