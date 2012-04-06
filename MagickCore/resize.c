@@ -2215,7 +2215,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
 
     if (status == MagickFalse)
       continue;
-    bisect=(MagickRealType) (x+0.5)/x_factor;
+    bisect=(MagickRealType) (x+0.5)/x_factor+MagickEpsilon;
     start=(ssize_t) MagickMax(bisect-support+0.5,0.0);
     stop=(ssize_t) MagickMin(bisect+support+0.5,(double) image->columns);
     density=0.0;
@@ -2428,7 +2428,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
 
     if (status == MagickFalse)
       continue;
-    bisect=(MagickRealType) (y+0.5)/y_factor;
+    bisect=(MagickRealType) (y+0.5)/y_factor+MagickEpsilon;
     start=(ssize_t) MagickMax(bisect-support+0.5,0.0);
     stop=(ssize_t) MagickMin(bisect+support+0.5,(double) image->rows);
     density=0.0;
