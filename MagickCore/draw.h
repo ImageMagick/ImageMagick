@@ -139,7 +139,7 @@ typedef struct _StopInfo
   PixelInfo
     color;
 
-  MagickRealType
+  double
     offset;
 } StopInfo;
 
@@ -172,7 +172,7 @@ typedef struct _GradientInfo
   PointInfo
     center;
 
-  MagickRealType
+  double
     radius;
 } GradientInfo;
 
