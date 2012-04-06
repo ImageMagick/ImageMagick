@@ -4456,7 +4456,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
         { /* Rotate a square array of values by 90 degrees */
           { register size_t
               i,j,x,y;
-            register MagickRealType
+            register double
               *k,t;
             k=kernel->values;
             for( i=0, x=kernel->width-1;  i<=x;   i++, x--)
@@ -4491,7 +4491,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
       MagickRealType
         t;
 
-      register MagickRealType
+      register double
         *k;
 
       size_t
