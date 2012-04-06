@@ -2627,7 +2627,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
         register ssize_t
           v;
 
-        register const MagickRealType
+        register const double
           *restrict k;
 
         register const PixelPacket
@@ -2812,7 +2812,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
       register ssize_t
         u;
 
-      register const MagickRealType
+      register const double
         *restrict k;
 
       register const PixelPacket
@@ -3395,7 +3395,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       register ssize_t
         u;
 
-      register const MagickRealType
+      register const double
         *restrict k;
 
       register const PixelPacket
@@ -3586,7 +3586,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       register ssize_t
         u;
 
-      register const MagickRealType
+      register const double
         *restrict k;
 
       register const PixelPacket
