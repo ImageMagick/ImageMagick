@@ -1,6 +1,7 @@
 2012-04-06  6.7.6-5 Cristy  <quetzlzacatenango@image...>
   * Avoid fault in SetCacheAlphaChannel() (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20681).
+  * Some EXIF orientation tags are 4 bytes.
 
 2012-04-04  6.7.6-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-4, SVN revision 7356.
