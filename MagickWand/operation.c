@@ -3822,7 +3822,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           /* FUTURE - produce Exception, rather than silent fail */
           if (clut_image == (Image *) NULL)
             break;
-          (void) ClutImage(new_images,clut_image,_images->interpolate,_exception);
+          (void) ClutImage(new_images,clut_image,new_images->interpolate,_exception);
           clut_image=DestroyImage(clut_image);
           break;
         }
