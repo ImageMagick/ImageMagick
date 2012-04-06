@@ -87,12 +87,10 @@ WandExport ScriptTokenInfo *AcquireScriptTokenInfo(char *filename)
     token_info->stream=stdin;
     token_info->opened=MagickFalse;
   }
-#if 0  /* FUTURE POSIBILITIES */
   else if ( LocaleNCompare(filename,"fd:",3) == 0 ) {
     token_info->stream=fdopen(StringToLong(filename+3),"r");
     token_info->opened=MagickFalse;
   }
-#endif
   else {
     token_info->stream=fopen_utf8(filename, "r");
   }
