@@ -2621,7 +2621,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         register ssize_t
           v;
 
-        register const MagickRealType
+        register const double
           *restrict k;
 
         register const Quantum
@@ -2796,7 +2796,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       register ssize_t
         u;
 
-      register const MagickRealType
+      register const double
         *restrict k;
 
       register const Quantum
@@ -3406,7 +3406,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       register ssize_t
         u;
 
-      register const MagickRealType
+      register const double
         *restrict k;
 
       register const Quantum
@@ -3591,7 +3591,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
       register ssize_t
         u;
 
-      register const MagickRealType
+      register const double
         *restrict k;
 
       register const Quantum
@@ -4452,7 +4452,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
         { /* Rotate a square array of values by 90 degrees */
           { register size_t
               i,j,x,y;
-            register MagickRealType
+            register double
               *k,t;
             k=kernel->values;
             for( i=0, x=kernel->width-1;  i<=x;   i++, x--)
@@ -4487,7 +4487,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
       double
         t;
 
-      register MagickRealType
+      register double
         *k;
 
       ssize_t
