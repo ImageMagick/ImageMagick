@@ -2209,8 +2209,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
                 alpha=contribution[i].weight;
                 pixel.index+=alpha*GetPixelIndex(indexes+j);
               }
-              SetPixelIndex(resize_indexes+y,ClampToQuantum(
-                pixel.index));
+              SetPixelIndex(resize_indexes+y,ClampToQuantum(pixel.index));
             }
         }
       else
@@ -2223,8 +2222,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
           {
             j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
               (contribution[i].pixel-contribution[0].pixel);
-            alpha=contribution[i].weight*QuantumScale*
-              GetPixelAlpha(p+j);
+            alpha=contribution[i].weight*QuantumScale*GetPixelAlpha(p+j);
             pixel.red+=alpha*GetPixelRed(p+j);
             pixel.green+=alpha*GetPixelGreen(p+j);
             pixel.blue+=alpha*GetPixelBlue(p+j);
@@ -2243,12 +2241,10 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
               {
                 j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
                   (contribution[i].pixel-contribution[0].pixel);
-                alpha=contribution[i].weight*QuantumScale*
-                  GetPixelAlpha(p+j);
+                alpha=contribution[i].weight*QuantumScale*GetPixelAlpha(p+j);
                 pixel.index+=alpha*GetPixelIndex(indexes+j);
               }
-              SetPixelIndex(resize_indexes+y,ClampToQuantum(gamma*
-                pixel.index));
+              SetPixelIndex(resize_indexes+y,ClampToQuantum(gamma*pixel.index));
             }
         }
       if ((resize_image->storage_class == PseudoClass) &&
@@ -2258,8 +2254,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
             1.0)+0.5);
           j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
             (contribution[i-start].pixel-contribution[0].pixel);
-          SetPixelIndex(resize_indexes+y,GetPixelIndex(
-            indexes+j));
+          SetPixelIndex(resize_indexes+y,GetPixelIndex(indexes+j));
         }
       q++;
     }
@@ -2454,8 +2449,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
                 alpha=contribution[i].weight;
                 pixel.index+=alpha*GetPixelIndex(indexes+j);
               }
-              SetPixelIndex(resize_indexes+x,ClampToQuantum(
-                pixel.index));
+              SetPixelIndex(resize_indexes+x,ClampToQuantum(pixel.index));
             }
         }
       else
@@ -2468,8 +2462,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
           {
             j=(ssize_t) ((contribution[i].pixel-contribution[0].pixel)*
               image->columns+x);
-            alpha=contribution[i].weight*QuantumScale*
-              GetPixelAlpha(p+j);
+            alpha=contribution[i].weight*QuantumScale*GetPixelAlpha(p+j);
             pixel.red+=alpha*GetPixelRed(p+j);
             pixel.green+=alpha*GetPixelGreen(p+j);
             pixel.blue+=alpha*GetPixelBlue(p+j);
@@ -2488,12 +2481,10 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
               {
                 j=(ssize_t) ((contribution[i].pixel-contribution[0].pixel)*
                   image->columns+x);
-                alpha=contribution[i].weight*QuantumScale*
-                  GetPixelAlpha(p+j);
+                alpha=contribution[i].weight*QuantumScale*GetPixelAlpha(p+j);
                 pixel.index+=alpha*GetPixelIndex(indexes+j);
               }
-              SetPixelIndex(resize_indexes+x,ClampToQuantum(gamma*
-                pixel.index));
+              SetPixelIndex(resize_indexes+x,ClampToQuantum(gamma*pixel.index));
             }
         }
       if ((resize_image->storage_class == PseudoClass) &&
@@ -2503,8 +2494,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
             1.0)+0.5);
           j=(ssize_t) ((contribution[i-start].pixel-contribution[0].pixel)*
             image->columns+x);
-          SetPixelIndex(resize_indexes+x,
-            GetPixelIndex(indexes+j));
+          SetPixelIndex(resize_indexes+x,GetPixelIndex(indexes+j));
         }
       q++;
     }
