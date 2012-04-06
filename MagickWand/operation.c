@@ -1384,6 +1384,8 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) SetImageOption(_image_info,option+1,arg1);
           break;
         }
+      if (LocaleCompare("regard-warnings",option+1) == 0)
+        break;
       if (LocaleCompare("render",option+1) == 0)
         {
           /* _draw_info only setting */
