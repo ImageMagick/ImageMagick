@@ -527,8 +527,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
           for (p=comment; comment != (char *) NULL; p++)
           {
             c=ReadBlobByte(image);
-            if ((c == EOF) || (c == (int) '}'))
-              break;
+            if (c == (int) '\\')
+              c=ReadBlobByte(image);
+            else
+              if ((c == EOF) || (c == (int) '}'))
+                break;
             if ((size_t) (p-comment+1) >= length)
               {
                 *p='\0';
@@ -590,6 +593,15 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       "MemoryAllocationFailed");
                   *p++=(char) c;
                   c=ReadBlobByte(image);
+                  if (c == '\\')
+                    {
+                      c=ReadBlobByte(image);
+                      if (c == (int) '}')
+                        {
+                          *p++=(char) c;
+                          c=ReadBlobByte(image);
+                        }
+                    }
                   if (*options != '{')
                     if (isspace((int) ((unsigned char) c)) != 0)
                       break;
@@ -2166,11 +2178,19 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           for (i=0; i < (ssize_t) strlen(value); i++)
             if (isspace((int) ((unsigned char) value[i])) != 0)
               break;
-          if (i < (ssize_t) strlen(value))
-            (void) WriteBlobByte(image,'{');
-          (void) WriteBlob(image,strlen(value),(const unsigned char *) value);
-          if (i < (ssize_t) strlen(value))
-            (void) WriteBlobByte(image,'}');
+          if (i == (ssize_t) strlen(value))
+            (void) WriteBlob(image,strlen(value),(const unsigned char *) value);
+          else
+            {
+              (void) WriteBlobByte(image,'{');
+              for (i=0; i < (ssize_t) strlen(value); i++)
+              {
+                if (value[i] == (int) '}')
+                  (void) WriteBlobByte(image,'\\');
+                (void) WriteBlobByte(image,value[i]);
+              }
+              (void) WriteBlobByte(image,'}');
+            }
         }
       (void) WriteBlobByte(image,'\n');
       property=GetNextImageProperty(image);
