@@ -642,6 +642,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   const PixelInfo *colorize,ExceptionInfo *exception)
 {
 #define ColorizeImageTag  "Colorize/Image"
+#define Colorize(pixel,fill_color,colorize)  \
+  (pixel)=((pixel)*(100.0-(fill_color))+(colorize)*(fill_color))/100.0;
 
   CacheView
     *colorize_view,
@@ -758,16 +760,11 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       GetPixelInfoPixel(image,p,&pixel);
-      pixel.red=(pixel.red*(100.0-fill_color.red)+colorize->red*
-        fill_color.red)/100.0;
-      pixel.green=(pixel.green*(100.0-fill_color.green)+colorize->green*
-        fill_color.green)/100.0;
-      pixel.blue=(pixel.blue*(100.0-fill_color.blue)+colorize->blue*
-        fill_color.blue)/100.0;
-      pixel.black=(pixel.black*(100.0-fill_color.black)+colorize->black*
-        fill_color.black)/100.0;
-      pixel.alpha=(pixel.alpha*(100.0-fill_color.alpha)+colorize->alpha*
-        fill_color.alpha)/100.0;
+      Colorize(pixel.red,fill_color.red,colorize->red);
+      Colorize(pixel.green,fill_color.green,colorize->green);
+      Colorize(pixel.blue,fill_color.blue,colorize->blue);
+      Colorize(pixel.black,fill_color.black,colorize->black);
+      Colorize(pixel.alpha,fill_color.alpha,colorize->alpha);
       SetPixelInfoPixel(colorize_image,&pixel,q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(colorize_image);
