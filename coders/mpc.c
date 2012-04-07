@@ -1289,10 +1289,10 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
           for (i=0; i < (ssize_t) strlen(value); i++)
             if (isspace((int) ((unsigned char) value[i])) != 0)
               break;
-          if (i <= (ssize_t) strlen(value))
+          if (i < (ssize_t) strlen(value))
             (void) WriteBlobByte(image,'{');
           (void) WriteBlob(image,strlen(value),(unsigned char *) value);
-          if (i <= (ssize_t) strlen(value))
+          if (i < (ssize_t) strlen(value))
             (void) WriteBlobByte(image,'}');
         }
       (void) WriteBlobByte(image,'\n');
