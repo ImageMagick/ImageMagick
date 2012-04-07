@@ -140,6 +140,8 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
       pixel;
 
     pixel=(double) (i*(QuantumRange/MagickMax(colors-1,1)));
+    GetPixelInfo(image,image->colormap+i);
+    image->colormap[i].matte=MagickTrue;
     image->colormap[i].red=pixel;
     image->colormap[i].green=pixel;
     image->colormap[i].blue=pixel;
@@ -200,7 +202,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
     (void) SetImageType(image,PaletteType,exception);
   status=MagickTrue;
   image_view=AcquireCacheView(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
