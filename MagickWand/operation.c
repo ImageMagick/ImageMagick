@@ -50,9 +50,10 @@
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/magick-wand-private.h"
-#include "MagickWand/operation.h"
-#include "MagickWand/operation-private.h"
 #include "MagickWand/wand.h"
+#include "MagickWand/wandcli.h"
+#include "MagickWand/wandcli-private.h"
+#include "MagickWand/operation.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/string-private.h"
@@ -145,6 +146,27 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   if (image != (Image *) NULL)
     (void) SetImageRegistry(ImageRegistryType,key,image,exception);
   return(image);
+}
+
+/*
+  FloatListOption() converts a string option of space or comma seperated
+  numbers into a list of floating point numbers, required by some operations.
+*/
+static MagickBooleanType FloatListOption(const char *option,
+     size_t *number_arguments, double **arguments, ExceptionInfo *exception)
+{
+  char
+    token[MaxTextExtent];
+
+  const char
+    *p;
+
+  MagickBooleanType
+    error;
+
+  register size_t
+    x;
+
 }
 
 /*
@@ -349,201 +371,6 @@ static Image *SparseColorOption(const Image *image,
     exception);
   sparse_arguments=(double *) RelinquishMagickMemory(sparse_arguments);
   return( sparse_image );
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   A c q u i r e W a n d C L I                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  AcquireMagickCLI() creates a new CLI wand (an expanded form of Magick
-%  Wand). The given image_info and exception is included as is if provided.
-%
-%  Use DestroyMagickCLI() to dispose of the CLI wand when it is no longer
-%  needed.
-%
-%  The format of the NewMagickWand method is:
-%
-%      MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
-%           ExceptionInfo *exception)
-%
-*/
-WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
-    ExceptionInfo *exception)
-{
-  MagickCLI
-    *cli_wand;
-
-  /* precaution - as per NewMagickWand() */
-  {
-     size_t depth = MAGICKCORE_QUANTUM_DEPTH;
-     const char *quantum = GetMagickQuantumDepth(&depth);
-     if (depth != MAGICKCORE_QUANTUM_DEPTH)
-       ThrowWandFatalException(WandError,"QuantumDepthMismatch",quantum);
-  }
-
-  /* allocate memory for MgaickCLI */
-  cli_wand=(MagickCLI *) AcquireMagickMemory(sizeof(*cli_wand));
-  if (cli_wand == (MagickCLI *) NULL)
-    {
-      ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
-        GetExceptionMessage(errno));
-      return((MagickCLI *)NULL);
-    }
-
-  /* Initialize Wand Part of MagickCLI
-     FUTURE: this is a repeat of code from NewMagickWand()
-     However some parts may be given fro man external source!
-  */
-  cli_wand->wand.id=AcquireWandId();
-  (void) FormatLocaleString(cli_wand->wand.name,MaxTextExtent,
-           "%s-%.20g","MagickWandCLI", (double) cli_wand->wand.id);
-  cli_wand->wand.images=NewImageList();
-  if ( image_info == (ImageInfo *)NULL)
-    cli_wand->wand.image_info=AcquireImageInfo();
-  else
-    cli_wand->wand.image_info=image_info;
-  if ( exception == (ExceptionInfo *)NULL)
-    cli_wand->wand.exception=AcquireExceptionInfo();
-  else
-    cli_wand->wand.exception=exception;
-  cli_wand->wand.debug=IsEventLogging();
-  cli_wand->wand.signature=WandSignature;
-
-  /* Initialize CLI Part of MagickCLI */
-  cli_wand->draw_info=CloneDrawInfo(cli_wand->wand.image_info,(DrawInfo *) NULL);
-  cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
-  cli_wand->image_list_stack=(Stack *)NULL;
-  cli_wand->image_info_stack=(Stack *)NULL;
-  cli_wand->location="'%s'";      /* option location not known by default */
-  cli_wand->location2="'%s' '%s'";
-  cli_wand->filename=cli_wand->wand.name;
-  cli_wand->line=0;
-  cli_wand->column=0;
-  cli_wand->signature=WandSignature;
-
-  if (IfMagickTrue(cli_wand->wand.debug))
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
-  return(cli_wand);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   D e s t r o y W a n d C L I                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DestroyMagickCLI() destorys everything in a CLI wand, including image_info
-%  and any exceptions, if still present in the wand.
-%
-%  The format of the NewMagickWand method is:
-%
-%    MagickWand *DestroyMagickCLI()
-%            Exception *exception)
-%
-*/
-WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
-{
-  Stack
-    *node;
-
-  assert(cli_wand != (MagickCLI *) NULL);
-  assert(cli_wand->signature == WandSignature);
-  assert(cli_wand->wand.signature == WandSignature);
-  if (IfMagickTrue(cli_wand->wand.debug))
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
-
-  /* Destroy CLI part of MagickCLI */
-  if (cli_wand->draw_info != (DrawInfo *) NULL )
-    cli_wand->draw_info=DestroyDrawInfo(cli_wand->draw_info);
-  if (cli_wand->quantize_info != (QuantizeInfo *) NULL )
-    cli_wand->quantize_info=DestroyQuantizeInfo(cli_wand->quantize_info);
-  while(cli_wand->image_list_stack != (Stack *)NULL)
-    {
-      node=cli_wand->image_list_stack;
-      cli_wand->image_list_stack=node->next;
-      (void) DestroyImageList((Image *)node->data);
-      (void) RelinquishMagickMemory(node);
-    }
-  while(cli_wand->image_info_stack != (Stack *)NULL)
-    {
-      node=cli_wand->image_info_stack;
-      cli_wand->image_info_stack=node->next;
-      (void) DestroyImageInfo((ImageInfo *)node->data);
-      (void) RelinquishMagickMemory(node);
-    }
-  cli_wand->signature=(~WandSignature);
-
-  /* Destroy Wand part MagickCLI */
-  cli_wand->wand.images=DestroyImageList(cli_wand->wand.images);
-  if (cli_wand->wand.image_info != (ImageInfo *) NULL )
-    cli_wand->wand.image_info=DestroyImageInfo(cli_wand->wand.image_info);
-  if (cli_wand->wand.exception != (ExceptionInfo *) NULL )
-    cli_wand->wand.exception=DestroyExceptionInfo(cli_wand->wand.exception);
-  RelinquishWandId(cli_wand->wand.id);
-  cli_wand->wand.signature=(~WandSignature);
-
-  return((MagickCLI *)NULL);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   C L I C a t c h E x c e p t i o n                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  CLICatchException() will report exceptions, either just non-fatal warnings
-%  only, or all errors, according to 'all_execeptions' boolean argument.
-%
-%  The function returns true is errors are fatal, in which case the caller
-%  should abort and re-call with an 'all_exceptions' argument of true before
-%  quitting.
-%
-%  The cut-off level between fatal and non-fatal may be controlled by options
-%  (FUTURE), but defaults to 'Error' exceptions.
-%
-%  The format of the CLICatchException method is:
-%
-%    MagickBooleanType CLICatchException(MagickCLI *cli_wand,
-%              const MagickBooleanType all_exceptions );
-%
-*/
-WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
-     const MagickBooleanType all_exceptions )
-{
-  MagickBooleanType
-    status;
-  assert(cli_wand != (MagickCLI *) NULL);
-  assert(cli_wand->signature == WandSignature);
-  assert(cli_wand->wand.signature == WandSignature);
-  if (IfMagickTrue(cli_wand->wand.debug))
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
-
-  // FUTURE: '-regard_warning' should make this more sensitive.
-  // Note pipelined options may like more control over this level
-
-  status = IsMagickTrue(cli_wand->wand.exception->severity > ErrorException);
-
-  if ( IfMagickFalse(status) || IfMagickTrue(all_exceptions) )
-    CatchException(cli_wand->wand.exception); /* output and clear exceptions */
-
-  return(status);
 }
 
 /*
@@ -1177,6 +1004,21 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           break;
         }
+      if (LocaleCompare("limit",option+1) == 0)
+        {
+          MagickSizeType
+            limit;
+
+          limit=MagickResourceInfinity;
+          parse= ParseCommandOption(MagickResourceOptions,MagickFalse,arg1);
+          if ( parse < 0 )
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedResourceType",
+                option,arg1);
+          if (LocaleCompare("unlimited",arg2) != 0)
+            limit=(MagickSizeType) SiPrefixToDoubleInterval(arg2,100.0);
+          (void) SetMagickResourceLimit((ResourceType)parse,limit);
+          break;
+        }
       if (LocaleCompare("log",option+1) == 0)
         {
           if (IfSetOption) {
@@ -1390,6 +1232,12 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         {
           /* _draw_info only setting */
           _draw_info->render= ArgBooleanNot;
+          break;
+        }
+      if (LocaleCompare("respect-parenthesis",option+1) == 0)
+        {
+          /* link image and setting stacks - option is itself saved on stack! */
+          (void) SetImageOption(_image_info,option+1,ArgBooleanString);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -4213,21 +4061,6 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           }
           break;
         }
-      if (LocaleCompare("limit",option+1) == 0)
-        {
-          MagickSizeType
-            limit;
-
-          limit=MagickResourceInfinity;
-          parse= ParseCommandOption(MagickResourceOptions,MagickFalse,arg1);
-          if ( parse < 0 )
-            CLIWandExceptArgBreak(OptionError,"UnrecognizedResourceType",
-                 option,arg1);
-          if (LocaleCompare("unlimited",arg2) != 0)
-            limit=(MagickSizeType) SiPrefixToDoubleInterval(arg2,100.0);
-          (void) SetMagickResourceLimit((ResourceType)parse,limit);
-          break;
-        }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'm':
@@ -4456,11 +4289,12 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CLISpecialOption() Applies operations that may involve empty image lists
-%  and or stacks of image lists or image_info settings.
+%  CLISpecialOperator() Applies operations that may not actually need images
+%  in an image list wen it is applied.
 %
-%  The classic operators of this type is -read, and image stack operators,
-%  which can be applied to empty image lists.
+%  The classic operators of this type is -read, which actually creates images
+%  even when no images are present.  Or image stack operators, which can be
+%  applied to empty image lists.
 %
 %  Note: unlike other Operators, these may involve other special 'option'
 %  character prefixes, other than simply '-' or '+'.
@@ -4518,15 +4352,15 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
     (void) SyncImagesSettings(cli_wand->wand.image_info,_images,_exception);
 
   /*
-    No-op options
+    No-op options  (ignore these)
   */
-  if (LocaleCompare("noop",option+1) == 0)
+  if (LocaleCompare("noop",option+1) == 0)   /* no argument */
     return;
-  if (LocaleCompare("sans",option+1) == 0)
+  if (LocaleCompare("sans",option+1) == 0)   /* one argument */
     return;
-  if (LocaleCompare("sans0",option+1) == 0)
+  if (LocaleCompare("sans0",option+1) == 0)  /* no argument */
     return;
-  if (LocaleCompare("sans2",option+1) == 0)
+  if (LocaleCompare("sans2",option+1) == 0)  /* two arguments */
     return;
   /*
     Image Reading
@@ -4574,7 +4408,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
     return;
   }
   /*
-    Image Writing
+    Image Writing  (no-images present is valid in specific cases)
   */
   if (LocaleCompare("write",option+1) == 0) {
     char
@@ -4608,12 +4442,6 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
   /*
     Parenthesis and Brace operations
   */
-  if (LocaleCompare("respect-parenthesis",option+1) == 0) {
-      /* link image and setting stacks - option is itself saved on stack! */
-      (void) SetImageOption(cli_wand->wand.image_info,option+1,
-           IfNormalOp ? "true" : (char *) NULL);
-      return;
-    }
   if (LocaleCompare("(",option) == 0) {
     /* stack 'push' images */
     Stack

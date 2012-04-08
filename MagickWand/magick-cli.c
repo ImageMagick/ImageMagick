@@ -49,8 +49,9 @@
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/magick-wand-private.h"
+#include "MagickWand/wandcli.h"
+#include "MagickWand/wandcli-private.h"
 #include "MagickWand/operation.h"
-#include "MagickWand/operation-private.h"
 #include "MagickWand/magick-cli.h"
 #include "MagickWand/script-token.h"
 #include "MagickCore/utility-private.h"
@@ -247,13 +248,20 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
       (void) FormatLocaleFile(stderr, "Script %u,%u Non-Option: \"%s\"\n",
                   cli_wand->line, cli_wand->line, option);
 #endif
-      if ( IfMagickFalse(IsCommandOption(option)))
+      if ( IfMagickFalse(IsCommandOption(option))) {
         /* non-option -- treat as a image read */
         CLISpecialOperator(cli_wand,"-read",option);
-      else
+        goto next_token;
+      }
+      if ( LocaleCompare(option,"-script") == 0 ) {
+        option_type=SpecialOptionFlag;
+        count=1;
+        /* fall thru - collect one argument */
+      }
+      else {
         CLIWandExceptionBreak(OptionFatalError,"UnrecognizedOption",option);
-      count = 0;
-      goto next_token;
+        goto next_token;
+      }
     }
 
     if ( count >= 1 ) {
@@ -307,7 +315,8 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
       if ( LocaleCompare(option,"-exit") == 0 ) {
         break; /* forced end of script */
       }
-      if ( LocaleCompare(option,"-script") == 0 ) {
+      else if ( LocaleCompare(option,"-script") == 0 ) {
+        /* FUTURE: call new script from this script */
         CLIWandExceptionBreak(OptionError,"InvalidUseOfOption",option);
         goto next_token;
       }
@@ -481,13 +490,24 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
 #if MagickCommandDebug >= 3
       (void) FormatLocaleFile(stderr, "CLI %d Non-Option: \"%s\"\n", i, option);
 #endif
-      if ( IfMagickFalse(IsCommandOption(option) ) &&
-           (process_flags & ProcessNonOptionImageRead) != 0 )
-        /* non-option -- treat as a image read */
-        CLISpecialOperator(cli_wand,"-read",option);
-      else if ( (process_flags & ProcessUnknownOptionError) != 0 )
-        CLIWandException(OptionFatalError,"UnrecognizedOption",option);
-      count = 0;
+      if ( IfMagickFalse(IsCommandOption(option)) ) {
+         if ( (process_flags & ProcessNonOptionImageRead) != 0 )
+           /* non-option -- treat as a image read */
+           CLISpecialOperator(cli_wand,"-read",option);
+         else
+           CLIWandException(OptionFatalError,"UnrecognizedOption",option);
+         goto next_argument;
+      }
+      if ( ((process_flags & ProcessScriptOption) != 0) &&
+           (LocaleCompare(option,"-script") == 0) ) {
+        /* Call Script from CLI, with a filename as a zeroth argument.
+           NOTE: -script may need to use 'implict write filename' so it
+           must be handled here to prevent 'missing argument' error.
+        */
+        ProcessScriptOptions(cli_wand,argc,argv,i+1);
+        return(argc);  /* Script does not return to CLI -- Yet -- FUTURE */
+      }
+      CLIWandException(OptionFatalError,"UnrecognizedOption",option);
       goto next_argument;
     }
 
@@ -526,19 +546,13 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
       if ( ( process_flags & ProcessExitOption ) != 0
            && LocaleCompare(option,"-exit") == 0 )
         return(i+count);
-      if ( ( process_flags & ProcessScriptOption ) != 0
-           && LocaleCompare(option,"-script") == 0) {
-        // Call Script, with a filename as a zeroth argument
-        ProcessScriptOptions(cli_wand,argc,argv,i+1);
-        return(argc); /* no more options after script process! */
-      }
       /* handle any other special operators now */
       CLISpecialOperator(cli_wand,option,arg1);
     }
 
     if ( (option_type & SettingOptionFlags) != 0 ) {
       CLISettingOptionInfo(cli_wand, option, arg1);
-      // FUTURE: Sync Specific Settings into Image Properities (not global)
+      // FUTURE: Sync individual Settings into images (no SyncImageSettings())
     }
     if ( cli_wand->wand.images != (Image *)NULL )
       SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
@@ -596,8 +610,6 @@ next_argument:
     return(argc);
   }
 
-  (void) SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
-       cli_wand->wand.exception);
   CLISpecialOperator(cli_wand,"-write",option);
   return(argc);
 }
