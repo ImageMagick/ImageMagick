@@ -1561,6 +1561,7 @@ void Magick::Image::process( std::string name_, const ssize_t argc, const char *
   size_t status = 
     InvokeDynamicImageFilter( name_.c_str(), &image(), argc, argv,
       &exceptionInfo );
+  (void) status;
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -3573,6 +3574,7 @@ Magick::Color Magick::Image::pixelColor ( const ssize_t x_,
 {
   ClassType storage_class;
   storage_class = classType();
+  (void) storage_class;
   // DirectClass
   const Quantum* pixel = getConstPixels( x_, y_, 1, 1 );
   if ( pixel )
@@ -3615,6 +3617,7 @@ void Magick::Image::profile( const std::string name_,
   ssize_t result = ProfileImage( image(), name_.c_str(),
                              (unsigned char *)profile_.data(),
                              profile_.length(), &exceptionInfo);
+  (void) result;
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 
