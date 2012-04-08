@@ -55,7 +55,6 @@ MAGICKWAND_SOURCES = \
 	MagickWand/montage.h \
 	MagickWand/operation.c \
 	MagickWand/operation.h \
-	MagickWand/operation-private.h \
 	MagickWand/pixel-iterator.c \
 	MagickWand/pixel-iterator.h \
 	MagickWand/pixel-wand.c \
@@ -68,6 +67,9 @@ MAGICKWAND_SOURCES = \
 	MagickWand/studio.h \
 	MagickWand/wand.c \
 	MagickWand/wand.h \
+	MagickWand/wandcli.c \
+	MagickWand/wandcli.h \
+	MagickWand/wandcli-private.h \
 	MagickWand/wand-view.c \
 	MagickWand/wand-view.h 
 
@@ -93,16 +95,17 @@ MAGICKWAND_INCLUDE_HDRS = \
 	MagickWand/pixel-iterator.h \
 	MagickWand/pixel-wand.h \
 	MagickWand/stream.h \
+	MagickWand/wandcli.h \
 	MagickWand/wand-view.h
 
 MAGICKWAND_NOINST_HDRS = \
 	MagickWand/mogrify-private.h \
 	MagickWand/magick-wand-private.h \
-	MagickWand/operation-private.h \
 	MagickWand/pixel-wand-private.h \
 	MagickWand/script-token.h \
 	MagickWand/studio.h \
 	MagickWand/wand.h
+	MagickWand/wandcli-private.h \
 
 # Headers which are installed
 MagickWandinc_HEADERS = \

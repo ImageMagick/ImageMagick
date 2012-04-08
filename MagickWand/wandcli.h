@@ -15,18 +15,22 @@
 
   MagickWand command-line option process.
 */
-#ifndef _MAGICKWAND_OPERATION_H
-#define _MAGICKWAND_OPERATION_H
+#ifndef _MAGICKWAND_WAND_CLI_H
+#define _MAGICKWAND_WAND_CLI_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-extern WandExport void
-  CLISettingOptionInfo(MagickCLI *,const char *,const char *),
-  CLISimpleOperatorImages(MagickCLI *,const char *,const char *,const char *),
-  CLIListOperatorImages(MagickCLI *, const char *,const char *,const char *),
-  CLISpecialOperator(MagickCLI *,const char *,const char *);
+typedef struct _MagickCLI
+  MagickCLI;
+
+extern WandExport MagickCLI
+  *AcquireMagickCLI(ImageInfo *,ExceptionInfo *),
+  *DestroyMagickCLI(MagickCLI *);
+
+extern WandExport MagickBooleanType
+  CLICatchException(MagickCLI *,const MagickBooleanType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

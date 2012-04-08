@@ -26,8 +26,11 @@ typedef enum
 {
   /* What options should be processed */
   /* NonOption Handling */
-  ProcessNonOptionImageRead   = 0x0001,  /* non-option is a image read */
-  ProcessUnknownOptionError   = 0x0002,  /* unknown option produces error */
+  ProcessNonOptionImageRead   = 0x0001,  /* non-option is a image read
+                                            If not set then skip implied read
+                                            without producing an error.
+                                            For use with "mogrify" handling
+                                         */
 
   /* Special Option Handling */
   ProcessExitOption           = 0x0100,  /* allow '-exit' use */

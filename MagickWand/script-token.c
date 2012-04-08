@@ -8,7 +8,7 @@
 %       S  C     R R     I   P       T        T   O   O  K K   E     N  NN    %
 %   SSSS    CCC  R  RR  III  P       T        T    OOO   K  K  EEEE  N   N    %
 %                                                                             %
-%       Perform "Magick" on Images via the Command Line Interface             %
+%                    Tokenize Magick Script into Options                      %
 %                                                                             %
 %                             Dragon Computing                                %
 %                             Anthony Thyssen                                 %
@@ -31,7 +31,79 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Read a stream of characters and return tokens one at a time
+%  Read a stream of characters and return tokens one at a time.
+%
+%  The input stream is dived into individual 'tokens' (representing 'words' or
+%  'options'), in a way that is as close to a UNIX shell, as is feasable.
+%  Only shell variable, and command substitutions will not be performed.
+%  Tokens can be any length.
+%
+%  The main function call is GetScriptToken() (see below) whcih returns one
+%  and only one token at a time.  The other functions provide support to this
+%  function, opening scripts, and seting up the required structures.
+%
+%  More specifically...
+%
+%  Tokens are white space separated, and may be quoted, or even partially
+%  quoted by either single or double quotes, or the use of backslashes,
+%  or any mix of the three.
+%
+%  For example:    This\ is' a 'single" token"
+%
+%  A token is returned immediatally the end of token is found. That is as soon
+%  as a unquoted white-space or EOF condition has been found.  That is to say
+%  the file stream is parsed purely character-by-character, regardless any
+%  buffering constraints set by the system.  It is not parsed line-by-line.
+%
+%  The function will return 'MagickTrue' if a valid token was found, while
+%  the token status will be set accordingally to 'OK' or 'EOF', according to
+%  the cause of the end of token.  The token may be an empty string if the
+%  input was a quoted empty string.  Other error conditions return a value of
+%  MagickFalse, indicating any token found but was incomplete due to some
+%  error condition.
+%
+%  Single quotes will preserve all characters including backslashes. Double
+%  quotes will also preserve backslashes unless escaping a double quote,
+%  or another backslashes.  Other shell meta-characters are not treated as
+%  special by this tokenizer.
+%
+%  For example Quoting the quote chars:
+%              \'  "'"       \"  '"'  "\""      \\  '\'  "\\"
+%
+%  Outside quotes, backslash characters will make spaces, tabs and quotes part
+%  of a token returned. However a backslash at the end of a line (and outside
+%  quotes) will cause the newline to be completely ignored (as per the shell
+%  line continuation).
+%
+%  Comments start with a '#' character at the start of a new token, will be
+%  completely ignored upto the end of line, regardless of any backslash at the
+%  end of the line.  You can escape a comment '#', using quotes or backlsashes
+%  just as you can in a shell.
+%
+%  This allows the normal UNIX 'scripting' to be used to call on the magick
+%  command to parse the tokens from a file
+%
+%    #!/path/to/command/magick -script
+%
+%  or
+%
+%    #!/usr/bin/env magick-script
+%
+%  As a special case a ':' at the start of a line is also treated as a comment
+%  This allows a magick script to ignore a line that can be parsed by the shell
+%  and not by the magick script (tokenizer).  This allows for an alternative
+%  script 'launcher' to be used for magick scripts, and posibly windows DOS
+%  scripts.
+%
+%    #!/bin/sh
+%    #
+%    # Shell Launcher for Magick Script
+%    : echo "This part is run in the shell"
+%    : exec magick -script "$0" "$@"; exit 10
+%    #
+%    # The rest of the script is magick script
+%    -read label:"This is a Magick Script!"
+%    -write show: -exit
 %
 */
 
@@ -158,60 +230,8 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetScriptToken() is fairly general, finite state token parser. That will
-%  divide a input file stream into tokens, in a way that is as close to a
-%  UNIX shell, as is feasable.  Only shell variable, and command
-%  substitutions will not be performed.  Tokens can be any length.
-%
-%  Tokens are white space separated, and may be quoted, or even partially
-%  quoted by either single or double quotes, or the use of backslashes,
-%  or any mix of the three.
-%
-%  For example:    This\ is' a 'single" token"
-%
-%  A token is returned immediatally the end of token is found. That is as soon
-%  as a unquoted white-space or EOF condition has been found.  That is to say
-%  the file stream is parsed purely character-by-character, regardless any
-%  buffering constraints set by the system.  It is not parsed line-by-line.
-%
-%  The function will return 'MagickTrue' if a valid token was found, while
-%  the token status will be set accordingally to 'OK' or 'EOF', according to
-%  the cause of the end of token.  The token may be an empty string if the
-%  input was a quoted empty string.  Other error conditions return a value of
-%  MagickFalse, indicating any token found but was incomplete due to some
-%  error condition.
-%
-%  Single quotes will preserve all characters including backslashes. Double
-%  quotes will also preserve backslashes unless escaping a double quote,
-%  or another backslashes.  Other shell meta-characters are not treated as
-%  special by this tokenizer.
-%
-%  For example Quoting the quote chars:
-%              \'  "'"       \"  '"'  "\""      \\  '\'  "\\"
-%
-%  Outside quotes, backslash characters will make spaces, tabs and quotes part
-%  of a token returned. However a backslash at the end of a line (and outside
-%  quotes) will cause the newline to be completely ignored (as per the shell
-%  line continuation).
-%
-%  Comments start with a '#' character at the start of a new token, will be
-%  completely ignored upto the end of line, regardless of any backslash at the
-%  end of the line.  You can escape a comment '#', using quotes or backlsashes
-%  just as you can in a shell.
-%
-%  As a special case a ':' at the start of a line is also treated as a comment
-%  This allows a magick script to ignore a line that is parsed by the shell
-%  and can be used as a 'launcher' for magick scripts. For example
-%
-%    #!/bin/sh
-%    #
-%    # Shell Launcher for Magick Script
-%    : echo "This part is run in the shell"
-%    : exec magick -script "$0" "$@"; exit 10
-%    #
-%    # The rest of the script is magick script
-%    -read label:"This is a Magick Script!"
-%    -write show: -exit
+%  GetScriptToken() a fairly general, finite state token parser. That returns
+%  tokens one at a time, as soon as posible.
 %
 %
 %  The format of the GetScriptToken method is:
