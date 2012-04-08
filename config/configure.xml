@@ -18,7 +18,7 @@
   <configure name="INCLUDE_PATH" value="/usr/local/include/ImageMagick"/>
   <configure name="CONFIGURE_PATH" value="/usr/local/etc/ImageMagick/"/>
   <configure name="SHARE_PATH" value="/usr/local/share/ImageMagick-6.7.6"/>
-  <configure name="DOCUMENTATION_PATH" value="/usr/local/share/doc/ImageMagick/"/>
+  <configure name="DOCUMENTATION_PATH" value="/usr/local/share/doc/ImageMagick-6.7.6"/>
   <configure name="EXECUTABLE_PATH" value="/usr/local/bin"/>
   <configure name="LIBRARY_PATH" value="/usr/local/lib/ImageMagick-6.7.6"/>
   <configure name="CODER_PATH" value="/usr/local/lib/ImageMagick-6.7.6/modules-Q16/coders"/>

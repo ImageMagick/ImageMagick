@@ -4243,7 +4243,7 @@ eval "eval LIBEXEC_DIR=$libexecdir"
 
 eval "eval DATA_DIR=$datadir"
 
-eval "eval DOC_DIR=$docdir"
+eval "eval DOC_DIR=$datadir/doc"
 
 eval "eval SYSCONF_DIR=$sysconfdir"
 
@@ -32626,7 +32626,7 @@ _ACEOF
 
 #
 # Path to ImageMagick documentation files
-DOCUMENTATION_RELATIVE_PATH=""
+DOCUMENTATION_RELATIVE_PATH="${PACKAGE_NAME}-${PACKAGE_VERSION}"
 DOCUMENTATION_PATH="${DOC_DIR}/${DOCUMENTATION_RELATIVE_PATH}"
 DEFINE_DOCUMENTATION_PATH="${DOC_DIR}/${DOCUMENTATION_RELATIVE_PATH}/"
 case "${build_os}" in

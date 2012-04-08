@@ -58,7 +58,7 @@ extern "C" {
 #define MagickZeroConfigurationFeature  " "
 #endif
 #define MagickFeatures MagickOpenMPFeature MagickOpenCLFeature MagickHDRIFeature MagickZeroConfigurationFeature
-#define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick//index.html"
+#define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6.7.6/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"
 #define MagickQuantumRange  "255"
