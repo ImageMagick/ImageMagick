@@ -60,7 +60,7 @@
 
 /* Directory where ImageMagick documents live. */
 #ifndef MAGICKCORE_DOCUMENTATION_PATH
-#define MAGICKCORE_DOCUMENTATION_PATH "/usr/local/share/doc/ImageMagick//"
+#define MAGICKCORE_DOCUMENTATION_PATH "/usr/local/share/doc/ImageMagick-7.0.0/"
 #endif
 
 /* Define if you have Display Postscript */
