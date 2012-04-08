@@ -48,6 +48,7 @@
 #include "MagickCore/cache-view.h"
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/composite.h"
 #include "MagickCore/decorate.h"
 #include "MagickCore/distort.h"
@@ -716,7 +717,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
       if ((flags & ChiValue) != 0)
         fill_color.alpha=geometry_info.chi;
     }
-  if ((image->colorspace == GRAYColorspace) &&
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsPixelInfoGray(&fill_color) != MagickFalse))
     colorize_image->colorspace=sRGBColorspace;
   /*
