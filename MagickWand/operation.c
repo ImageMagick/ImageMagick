@@ -148,6 +148,7 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   return(image);
 }
 
+#if 0
 /*
   FloatListOption() converts a string option of space or comma seperated
   numbers into a list of floating point numbers, required by some operations.
@@ -168,6 +169,7 @@ static MagickBooleanType FloatListOption(const char *option,
     x;
 
 }
+#endif
 
 /*
   SparseColorOption() parse the complex -sparse-color argument into an
@@ -398,7 +400,7 @@ static Image *SparseColorOption(const Image *image,
 %  The format of the CLISettingOptionInfo method is:
 %
 %    void CLISettingOptionInfo(MagickCLI *cli_wand,
-%               const char *option, const char *arg1)
+%               const char *option, const char *arg1, const char *arg2)
 %
 %  A description of each parameter follows:
 %
@@ -406,13 +408,14 @@ static Image *SparseColorOption(const Image *image,
 %
 %    o option: The option string to be set
 %
-%    o arg1: The single argument used to set this option.
+%    o arg1, arg2: optional argument strings to the operation
+%        arg2 is currently only used by "-limit"
 %
 % Example usage...
 %
-%    CLISettingOptionInfo(cli_wand, "-background", "Red");  // set value
-%    CLISettingOptionInfo(cli_wand, "-adjoin", NULL);       // set boolean
-%    CLISettingOptionInfo(cli_wand, "+adjoin", NULL);       // unset
+%    CLISettingOptionInfo(cli_wand, "-background", "Red", NULL); // set value
+%    CLISettingOptionInfo(cli_wand, "-adjoin", NULL, NULL);      // set boolean
+%    CLISettingOptionInfo(cli_wand, "+adjoin", NULL, NULL);      // unset
 %
 % Or for handling command line arguments EG: +/-option ["arg1"]
 %
@@ -425,12 +428,13 @@ static Image *SparseColorOption(const Image *image,
 %
 %    if ( (option_type & SettingOperatorOptionFlags) != 0 )
 %      CLISettingOptionInfo(cli_wand, argv[i],
-%                   (count>0) ? argv[i+1] : (char *)NULL);
+%                   (count>=1) ? argv[i+1] : (char *)NULL,
+%                   (count>=2) ? argv[i+2] : (char *)NULL);
 %    i += count+1;
 %
 */
 WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
-     const char *option,const char *arg1)
+     const char *option,const char *arg1, const char *arg2)
 {
   ssize_t
     parse;     /* option argument parsing (string to value table lookup) */
@@ -569,7 +573,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
       if (LocaleCompare("box",option+1) == 0)
         {
           /* DEPRECIATED - now "undercolor" */
-          CLISettingOptionInfo(cli_wand,"undercolor",arg1);
+          CLISettingOptionInfo(cli_wand,"undercolor",arg1, arg2);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -1227,6 +1231,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           break;
         }
       if (LocaleCompare("regard-warnings",option+1) == 0)
+        /* FUTURE: to be replaced by a 'fatal-level' type setting */
         break;
       if (LocaleCompare("render",option+1) == 0)
         {
@@ -3580,8 +3585,7 @@ WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
 %    o option:  The option string for the operation
 %
 %    o arg1, arg2: optional argument strings to the operation
-%
-% NOTE: only "limit" uses two arguments.
+%        arg2 is currently not used
 %
 % Example usage...
 %
@@ -3606,7 +3610,7 @@ WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
 %
 */
 WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
-     const char *option,const char *arg1, const char *arg2)
+     const char *option,const char *arg1, const char *magick_unused(arg2))
 {
   ssize_t
     parse;
@@ -3714,12 +3718,8 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
               MagickFalse,value);
 
           /* Get "clip-to-self" expert setting (false is normal) */
-          value=GetImageOption(_image_info,"compose:clip-to-self");
-          if (value == (const char *) NULL)
-            clip_to_self=MagickTrue;
-          else
-            clip_to_self=IsStringTrue(GetImageOption(_image_info,
-              "compose:clip-to-self"));       /* if this is true */
+          clip_to_self=IsStringTrue(GetImageOption(_image_info,
+                "compose:clip-to-self"));       /* if this is true */
           value=GetImageOption(_image_info,"compose:outside-overlay");
           if (value != (const char *) NULL) {   /* or this false */
             /* FUTURE: depreciate warning for "compose:outside-overlay"*/

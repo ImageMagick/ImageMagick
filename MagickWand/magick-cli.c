@@ -325,7 +325,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
     }
 
     if ( (option_type & SettingOptionFlags) != 0 ) {
-      CLISettingOptionInfo(cli_wand, option, arg1);
+      CLISettingOptionInfo(cli_wand, option, arg1, arg2);
       // FUTURE: Sync Specific Settings into Image Properities (not global)
     }
     if ( cli_wand->wand.images != (Image *)NULL )
@@ -551,7 +551,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
     }
 
     if ( (option_type & SettingOptionFlags) != 0 ) {
-      CLISettingOptionInfo(cli_wand, option, arg1);
+      CLISettingOptionInfo(cli_wand, option, arg1, arg2);
       // FUTURE: Sync individual Settings into images (no SyncImageSettings())
     }
     if ( cli_wand->wand.images != (Image *)NULL )
@@ -655,14 +655,37 @@ next_argument:
 
 static void MagickUsage(MagickBooleanType verbose)
 {
-  (void) FormatLocaleFile(stdout,
-       "Usage: %s [{option}|{image}...] {output_image}\n",GetClientName());
-  (void) FormatLocaleFile(stdout,
+  const char
+    *name;
+
+  size_t
+    len;
+
+  name=GetClientName();
+  len=strlen(name);
+
+  if (len>=6 && LocaleCompare("script",name+len-6) == 0) {
+    /* magick-script usage */
+    (void) FormatLocaleFile(stdout,
+       "Usage: %s {filename} [{script_args}...]\n",name);
+  }
+  else if (len>=7 && LocaleCompare("convert",name+len-7) == 0) {
+    /* convert usage */
+    (void) FormatLocaleFile(stdout,
+       "Usage: %s [{option}|{image}...] {output_image}\n",name);
+    (void) FormatLocaleFile(stdout,
+       "       %s -help|-version|-usage|-list {option}\n",name);
+  }
+  else {
+    /* magick usage */
+    (void) FormatLocaleFile(stdout,
+       "Usage: %s [{option}|{image}...] {output_image}\n",name);
+    (void) FormatLocaleFile(stdout,
        "       %s [{option}|{image}...] -script {filename} [{script_args}...]\n",
-       GetClientName());
-  (void) FormatLocaleFile(stdout,
-       "       %s -help|-version|-usage|-list {option}\n",
-       GetClientName());
+       name);
+    (void) FormatLocaleFile(stdout,
+       "       %s -help|-version|-usage|-list {option}\n",name);
+  }
 
   if (IfMagickFalse(verbose))
     return;
@@ -739,6 +762,9 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
   const char
     *option;
 
+  size_t
+    len;
+
   ProcessOptionFlags
     process_flags = MagickCommandOptionFlags;
 
@@ -757,22 +783,25 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
   cli_wand->line=1;
 
   GetPathComponent(argv[0],TailPath,cli_wand->wand.name);
+  SetClientName(cli_wand->wand.name);
   ConcatenateMagickString(cli_wand->wand.name,"-CLI",MaxTextExtent);
 
+  len=strlen(argv[0]);  /* precaution */
+
   /* "convert" command - give a "depreciation" warning" */
-  if ( (LocaleCompare("convert",argv[0]+strlen((argv[0])-7)) == 0) ||
-       (LocaleNCompare("convert",argv[0],7) == 0) ||
-       (LocaleNCompare("lt-convert",argv[0],10) == 0) ) {
+  if (len>=7 && LocaleCompare("convert",argv[0]+len-7) == 0) {
     process_flags = ConvertCommandOptionFlags;
     /*(void) FormatLocaleFile(stderr,"WARNING: %s\n",
              "The convert is depreciated in IMv7, use \"magick\"\n");*/
   }
 
   /* Special Case:  If command name ends with "script" implied "-script" */
-  if (LocaleCompare("script",argv[0]+strlen(argv[0])-6) == 0) {
-    GetPathComponent(argv[1],TailPath,cli_wand->wand.name);
-    ProcessScriptOptions(cli_wand,argc,argv,1);
-    goto Magick_Command_Cleanup;
+  if (len>=6 && LocaleCompare("script",argv[0]+len-6) == 0) {
+    if (argc >= 2 && *(argv[1]) != '-') {
+      GetPathComponent(argv[1],TailPath,cli_wand->wand.name);
+      ProcessScriptOptions(cli_wand,argc,argv,1);
+      goto Magick_Command_Cleanup;
+    }
   }
 
   /* Special Case: Version Information and Abort */
