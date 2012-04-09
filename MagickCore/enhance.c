@@ -47,6 +47,7 @@
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/composite-private.h"
 #include "MagickCore/enhance.h"
 #include "MagickCore/exception.h"
@@ -327,6 +328,8 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
   assert(clut_image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   clut_map=(double *) AcquireQuantumMemory(MaxMap+1UL,GetPixelChannels(image)*
     sizeof(*clut_map));
   if (clut_map == (double *) NULL)
@@ -2007,6 +2010,8 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
   assert(hald_image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   if (image->matte == MagickFalse)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   /*
