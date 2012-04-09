@@ -3643,6 +3643,7 @@ if test "$have_lqr"        = 'yes'; then DELEGATES="$DELEGATES lqr"; fi
 if test "$have_lzma"       = 'yes'; then DELEGATES="$DELEGATES lzma"; fi
 if test "$have_ffmpeg"     = 'yes'; then DELEGATES="$DELEGATES mpeg"; fi
 if test "$have_openexr"    = 'yes'; then DELEGATES="$DELEGATES openexr"; fi
+if test "$have_pango"      = 'yes'; then DELEGATES="$DELEGATES pango"; fi
 if test "$have_png"        = 'yes'; then DELEGATES="$DELEGATES png"; fi
 if test "$have_rsvg"       = 'yes'; then DELEGATES="$DELEGATES rsvg"; fi
 if test "$have_tiff"       = 'yes'; then DELEGATES="$DELEGATES tiff"; fi
