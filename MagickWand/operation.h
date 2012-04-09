@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include "MagickWand//wandcli.h"
+
 extern WandExport void
   CLISettingOptionInfo(MagickCLI *,const char *,const char *, const char *),
   CLISimpleOperatorImages(MagickCLI *,const char *,const char *,const char *),
