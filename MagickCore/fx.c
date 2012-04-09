@@ -680,23 +680,6 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  colorize_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-    exception);
-  if (colorize_image == (Image *) NULL)
-    return((Image *) NULL);
-  if (SetImageStorageClass(colorize_image,DirectClass,exception) == MagickFalse)
-    {
-      colorize_image=DestroyImage(colorize_image);
-      return((Image *) NULL);
-    }
-  if ((colorize->matte != MagickFalse) &&
-      (colorize_image->matte == MagickFalse))
-    (void) SetImageAlpha(colorize_image,OpaqueAlpha,exception);
-  if (blend == (const char *) NULL)
-    return(colorize_image);
-  /*
-    Determine RGB values of the fill color for pixel
-  */
   GetPixelInfo(image,&fill_color);
   flags=ParseGeometry(blend,&geometry_info);
   fill_color.red=geometry_info.rho;
@@ -717,9 +700,23 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
       if ((flags & ChiValue) != 0)
         fill_color.alpha=geometry_info.chi;
     }
+  colorize_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
+  if (colorize_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(colorize_image,DirectClass,exception) == MagickFalse)
+    {
+      colorize_image=DestroyImage(colorize_image);
+      return((Image *) NULL);
+    }
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsPixelInfoGray(&fill_color) != MagickFalse))
-    colorize_image->colorspace=sRGBColorspace;
+    SetImageColorspace(colorize_image,sRGBColorspace,exception);
+  if ((colorize->matte != MagickFalse) &&
+      (colorize_image->matte == MagickFalse))
+    (void) SetImageAlpha(colorize_image,OpaqueAlpha,exception);
+  if (blend == (const char *) NULL)
+    return(colorize_image);
   /*
     Colorize DirectClass image.
   */
