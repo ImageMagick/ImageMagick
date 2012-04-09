@@ -910,7 +910,7 @@ WandExport void MagickSetFirstIterator(MagickWand *wand)
 %  -1 being the last image in the wand.
 %
 %  If the index is invalid (range too large for number of images in wand)
-%  the function will return magickFalse, but no 'exception' will be raised,
+%  the function will return MagickFalse, but no 'exception' will be raised,
 %  as it is not actually an error.  In that case the current image will not
 %  change.
 %
