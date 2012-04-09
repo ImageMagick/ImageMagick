@@ -284,9 +284,9 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
       if ( args.xi  < 0.0 || args.psi < 0.0 )
         return(DestroyKernelInfo(kernel));
       kernel->x = ((flags & XValue)!=0) ? (ssize_t)args.xi
-                                               : (ssize_t) (kernel->width-1)/2;
+                                        : (ssize_t) (kernel->width-1)/2;
       kernel->y = ((flags & YValue)!=0) ? (ssize_t)args.psi
-                                               : (ssize_t) (kernel->height-1)/2;
+                                        : (ssize_t) (kernel->height-1)/2;
       if ( kernel->x >= (ssize_t) kernel->width ||
            kernel->y >= (ssize_t) kernel->height )
         return(DestroyKernelInfo(kernel));
@@ -328,7 +328,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
       GetMagickToken(p,&p,token);
     if (    LocaleCompare("nan",token) == 0
         || LocaleCompare("-",token) == 0 ) {
-      kernel->values[i] = nan; /* do not include this value in kernel */
+      kernel->values[i] = nan; /* this value is not part of neighbourhood */
     }
     else {
       kernel->values[i]=StringToDouble(token,(char **) NULL);
@@ -3463,7 +3463,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               }
             break;
         case VoronoiMorphology:
-            /* Apply Distance to 'Matte' channel, coping the closest color.
+            /* Apply Distance to 'Matte' channel, while coping the color
+            ** values of the closest pixel.
             **
             ** This is experimental, and realy the 'alpha' component should
             ** be completely separate 'masking' channel so that alpha can
