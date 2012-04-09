@@ -331,7 +331,7 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
       kernel->values[i] = nan; /* this value is not part of neighbourhood */
     }
     else {
-      kernel->values[i]=StringToDouble(token,(char **) NULL);
+      kernel->values[i] = StringToDouble(token,(char **) NULL);
       ( kernel->values[i] < 0)
           ?  ( kernel->negative_range += kernel->values[i] )
           :  ( kernel->positive_range += kernel->values[i] );
@@ -2113,7 +2113,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
           for ( u=-kernel->x; u <= (ssize_t)kernel->x; u++, i++)
             kernel->positive_range += ( kernel->values[i] =
-                 args->sigma*sqrt((double)(u*u+v*v)) );
+              args->sigma*sqrt((double)(u*u+v*v)) );
         kernel->maximum = kernel->values[0];
         break;
       }
@@ -2144,7 +2144,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 %
 %  CloneKernelInfo() creates a new clone of the given Kernel List so that its
 %  can be modified without effecting the original.  The cloned kernel should
-%  be destroyed using DestroyKernelInfo() when no longer needed.
+%  be destroyed using DestoryKernelInfo() when no longer needed.
 %
 %  The format of the CloneKernelInfo method is:
 %
@@ -2656,9 +2656,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         */
         k = &kernel->values[ kernel->height-1 ];
         k_pixels = p;
-        if ( (image->channel_mask != DefaultChannels) || (image->matte == MagickFalse) )
+        if ( (image->channel_mask != DefaultChannels) ||
+             (image->matte == MagickFalse) )
           { /* No 'Sync' involved.
-            ** Convolution is simple greyscale channel operation
+            ** Convolution is just a simple greyscale channel operation
             */
             for (v=0; v < (ssize_t) kernel->height; v++) {
               if ( IsNan(*k) ) continue;
@@ -2696,8 +2697,9 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             gamma=0.0;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               if ( IsNan(*k) ) continue;
-              alpha=(*k)*(QuantumScale*GetPixelAlpha(image,k_pixels));
-              gamma += alpha;
+              alpha=QuantumScale*GetPixelAlpha(image,k_pixels);
+              gamma += alpha; /* normalize alpha weights only */
+              alpha*=(*k);    /* include kernel weighting now */
               result.red     += alpha*GetPixelRed(image,k_pixels);
               result.green   += alpha*GetPixelGreen(image,k_pixels);
               result.blue    += alpha*GetPixelBlue(image,k_pixels);
@@ -2709,17 +2711,12 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             }
             /* Sync'ed channels, all channels are modified */
             gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
-            SetPixelRed(morphology_image,
-              ClampToQuantum(gamma*result.red),q);
-            SetPixelGreen(morphology_image,
-              ClampToQuantum(gamma*result.green),q);
-            SetPixelBlue(morphology_image,
-              ClampToQuantum(gamma*result.blue),q);
+            SetPixelRed(morphology_image,ClampToQuantum(gamma*result.red),q);
+            SetPixelGreen(morphology_image,ClampToQuantum(gamma*result.green),q);
+            SetPixelBlue(morphology_image,ClampToQuantum(gamma*result.blue),q);
             if (image->colorspace == CMYKColorspace)
-              SetPixelBlack(morphology_image,
-                ClampToQuantum(gamma*result.black),q);
-            SetPixelAlpha(morphology_image,
-              ClampToQuantum(result.alpha),q);
+              SetPixelBlack(morphology_image,ClampToQuantum(gamma*result.black),q);
+            SetPixelAlpha(morphology_image,ClampToQuantum(result.alpha),q);
           }
 
         /* Count up changed pixels */
@@ -2933,9 +2930,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 for (v=0; v < (ssize_t) kernel->height; v++) {
                   for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                     if ( IsNan(*k) ) continue;
-                    alpha=(*k)*(QuantumScale*GetPixelAlpha(image,k_pixels+u*
-                      GetPixelChannels(image)));
-                    gamma += alpha;
+                    alpha=QuantumScale*GetPixelAlpha(image,
+                                k_pixels+u*GetPixelChannels(image));
+                    gamma += alpha; /* normalize alpha weights only */
+                    alpha*=(*k);    /* include kernel weighting now */
                     result.red     += alpha*
                       GetPixelRed(image,k_pixels+u*GetPixelChannels(image));
                     result.green   += alpha*
