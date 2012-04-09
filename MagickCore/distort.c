@@ -2824,6 +2824,8 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   distort_image=CloneImage(image,0,0,MagickTrue,exception);
   if (distort_image == (Image *) NULL)
     return((Image *) NULL);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(distort_image,sRGBColorspace,exception);
   (void) SetImageVirtualPixelMethod(distort_image,BackgroundVirtualPixelMethod,
     exception);
   rotate_image=DistortImage(distort_image,ScaleRotateTranslateDistortion,1,
