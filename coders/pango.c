@@ -374,7 +374,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   */
   stride=(size_t) cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
     image->columns);
-  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,stride*
+  pixels=(unsigned char *) AcquireQuantumMemory(image->rows,stride*
     sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     {
