@@ -516,6 +516,9 @@ MagickExport Image *AppendImages(const Image *images,
   append_view=AcquireCacheView(append_image);
   for (n=0; n < (MagickOffsetType) number_images; n++)
   {
+    if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+        (IsGrayColorspace(append_image->colorspace) != MagickFalse))
+      (void) TransformImageColorspace(append_image,sRGBColorspace,exception);
     SetGeometry(append_image,&geometry);
     GravityAdjustGeometry(image->columns,image->rows,image->gravity,&geometry);
     if (stack != MagickFalse)
@@ -2334,6 +2337,9 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   assert(image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      (IsPixelInfoGray(&image->background_color) == MagickFalse))
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   if ((image->background_color.matte != MagickFalse) &&
       (image->matte == MagickFalse))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
