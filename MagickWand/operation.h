@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 extern WandExport void
-  CLISettingOptionInfo(MagickCLI *,const char *,const char *),
+  CLISettingOptionInfo(MagickCLI *,const char *,const char *, const char *),
   CLISimpleOperatorImages(MagickCLI *,const char *,const char *,const char *),
   CLIListOperatorImages(MagickCLI *, const char *,const char *,const char *),
   CLISpecialOperator(MagickCLI *,const char *,const char *);
