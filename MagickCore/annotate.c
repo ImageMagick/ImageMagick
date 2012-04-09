@@ -50,6 +50,7 @@
 #include "MagickCore/client.h"
 #include "MagickCore/color.h"
 #include "MagickCore/color-private.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/composite.h"
 #include "MagickCore/composite-private.h"
 #include "MagickCore/constitute.h"
