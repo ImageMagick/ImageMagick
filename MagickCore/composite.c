@@ -128,6 +128,53 @@
 %
 */
 
+/*
+   Composition based on the SVG specification:
+
+   A Composition is defined by...
+      Color Function :  f(Sc,Dc)  where Sc and Dc are the normizalized colors
+      Blending areas :  X = 1     for area of overlap, ie: f(Sc,Dc)
+                        Y = 1     for source preserved
+                        Z = 1     for destination preserved
+
+   Conversion to transparency (then optimized)
+      Dca' = f(Sc, Dc)*Sa*Da + Y*Sca*(1-Da) + Z*Dca*(1-Sa)
+      Da'  = X*Sa*Da + Y*Sa*(1-Da) + Z*Da*(1-Sa)
+
+   Where...
+      Sca = Sc*Sa     normalized Source color divided by Source alpha
+      Dca = Dc*Da     normalized Dest color divided by Dest alpha
+      Dc' = Dca'/Da'  the desired color value for this channel.
+
+   Da' in in the follow formula as 'gamma'  The resulting alpla value.
+
+   Most functions use a blending mode of over (X=1,Y=1,Z=1) this results in
+   the following optimizations...
+      gamma = Sa+Da-Sa*Da;
+      gamma = 1 - QuantiumScale*alpha * QuantiumScale*beta;
+      opacity = QuantiumScale*alpha*beta;  // over blend, optimized 1-Gamma
+
+   The above SVG definitions also definate that Mathematical Composition
+   methods should use a 'Over' blending mode for Alpha Channel.
+   It however was not applied for composition modes of 'Plus', 'Minus',
+   the modulus versions of 'Add' and 'Subtract'.
+
+   Mathematical operator changes to be applied from IM v6.7...
+
+    1) Modulus modes 'Add' and 'Subtract' are obsoleted and renamed
+       'ModulusAdd' and 'ModulusSubtract' for clarity.
+
+    2) All mathematical compositions work as per the SVG specification
+       with regard to blending.  This now includes 'ModulusAdd' and
+       'ModulusSubtract'.
+
+    3) When the special channel flag 'sync' (syncronize channel updates)
+       is turned off (enabled by default) then mathematical compositions are
+       only performed on the channels specified, and are applied
+       independantally of each other.  In other words the mathematics is
+       performed as 'pure' mathematical operations, rather than as image
+       operations.
+*/
 static void CompositeHSB(const Quantum red,const Quantum green,
   const Quantum blue,double *hue,double *saturation,double *brightness)
 {
@@ -523,53 +570,6 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   ssize_t
     y;
 
-  /*
-     Composition based on the SVG specification:
-
-     A Composition is defined by...
-        Color Function :  f(Sc,Dc)  where Sc and Dc are the normizalized colors
-        Blending areas :  X = 1     for area of overlap, ie: f(Sc,Dc)
-                          Y = 1     for source preserved
-                          Z = 1     for destination preserved
-
-     Conversion to transparency (then optimized)
-        Dca' = f(Sc, Dc)*Sa*Da + Y*Sca*(1-Da) + Z*Dca*(1-Sa)
-        Da'  = X*Sa*Da + Y*Sa*(1-Da) + Z*Da*(1-Sa)
-
-     Where...
-        Sca = Sc*Sa     normalized Source color divided by Source alpha
-        Dca = Dc*Da     normalized Dest color divided by Dest alpha
-        Dc' = Dca'/Da'  the desired color value for this channel.
-
-     Da' in in the follow formula as 'gamma'  The resulting alpla value.
-
-     Most functions use a blending mode of over (X=1,Y=1,Z=1) this results in
-     the following optimizations...
-        gamma = Sa+Da-Sa*Da;
-        gamma = 1 - QuantiumScale*alpha * QuantiumScale*beta;
-        opacity = QuantiumScale*alpha*beta;  // over blend, optimized 1-Gamma
-
-     The above SVG definitions also definate that Mathematical Composition
-     methods should use a 'Over' blending mode for Alpha Channel.
-     It however was not applied for composition modes of 'Plus', 'Minus',
-     the modulus versions of 'Add' and 'Subtract'.
-
-     Mathematical operator changes to be applied from IM v6.7...
-
-      1) Modulus modes 'Add' and 'Subtract' are obsoleted and renamed
-         'ModulusAdd' and 'ModulusSubtract' for clarity.
-
-      2) All mathematical compositions work as per the SVG specification
-         with regard to blending.  This now includes 'ModulusAdd' and
-         'ModulusSubtract'.
-
-      3) When the special channel flag 'sync' (syncronize channel updates)
-         is turned off (enabled by default) then mathematical compositions are
-         only performed on the channels specified, and are applied
-         independantally of each other.  In other words the mathematics is
-         performed as 'pure' mathematical operations, rather than as image
-         operations.
-  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
@@ -772,7 +772,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         }
       /*
         Blur Image by resampling.
-	FUTURE: this is currently broken, especially for small sigma blurs
+        FUTURE: this is currently broken, especially for small sigma blurs
         This needs to be fixed to use a non-user filter setup that provides
         far more control than currently available.
       */

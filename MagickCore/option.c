@@ -457,7 +457,7 @@ static const OptionInfo
     { "+level-colors", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "-level-colors", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+limit", 0L, DeprecateOptionFlag, MagickTrue },
-    { "-limit", 2L, GlobalOptionFlag | ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
+    { "-limit", 2L, GlobalOptionFlag | FireOptionFlag, MagickFalse },
     { "+linear-stretch", 1L, DeprecateOptionFlag, MagickTrue },
     { "-linear-stretch", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+liquid-rescale", 1L, DeprecateOptionFlag, MagickTrue },
@@ -606,6 +606,7 @@ static const OptionInfo
     { "-scenes", 1L, NonMagickOptionFlag, MagickFalse },
     { "+screen", 0L, NonMagickOptionFlag, MagickFalse },
     { "-screen", 1L, NonMagickOptionFlag, MagickFalse },
+    { "-script", 1L, UndefinedOptionFlag, MagickFalse }, /* special handling */
     { "+seed", 0L, GlobalOptionFlag, MagickFalse },
     { "-seed", 1L, GlobalOptionFlag, MagickFalse },
     { "+segment", 1L, DeprecateOptionFlag, MagickTrue },
@@ -825,6 +826,7 @@ static const OptionInfo
     { "Divide", DivideDstCompositeOp, DeprecateOptionFlag, MagickTrue },
     { "Minus", MinusDstCompositeOp, DeprecateOptionFlag, MagickTrue },
     { "Threshold", ThresholdCompositeOp, DeprecateOptionFlag, MagickTrue },
+    { "CopyOpacity", CopyAlphaCompositeOp, UndefinedOptionFlag, MagickTrue },
     { (char *) NULL, UndefinedCompositeOp, UndefinedOptionFlag, MagickFalse }
   },
   CompressOptions[] =

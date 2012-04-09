@@ -43,6 +43,7 @@
 */
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
+#include "MagickWand/wand.h"
 #include "MagickWand/magick-wand-private.h"
 #include "MagickWand/wandcli.h"
 #include "MagickWand/wandcli-private.h"

@@ -874,6 +874,9 @@
         <message name="ScriptUnbalancedQuotes">
           de script token avec des citations asymétriques
         </message>
+        <message name="UnableToOpenScript">
+          impossible d'ouvrir le script
+        </message>
         <message name="UnrecognizedColormapType">
           type de table de couleurs non reconnnu
         </message>
