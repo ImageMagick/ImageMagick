@@ -4418,7 +4418,6 @@ MAGICKWAND_SOURCES = \
 	MagickWand/montage.h \
 	MagickWand/operation.c \
 	MagickWand/operation.h \
-	MagickWand/operation-private.h \
 	MagickWand/pixel-iterator.c \
 	MagickWand/pixel-iterator.h \
 	MagickWand/pixel-wand.c \
@@ -4459,7 +4458,7 @@ MAGICKWAND_INCLUDE_HDRS = \
 	MagickWand/pixel-iterator.h \
 	MagickWand/pixel-wand.h \
 	MagickWand/stream.h \
-	MagickWand/wandcli.h
+	MagickWand/wandcli.h \
 	MagickWand/wand-view.h
 
 MAGICKWAND_NOINST_HDRS = \
@@ -4469,7 +4468,6 @@ MAGICKWAND_NOINST_HDRS = \
 	MagickWand/script-token.h \
 	MagickWand/studio.h \
 	MagickWand/wand.h
-	MagickWand/wandcli-private.h
 
 
 # Headers which are installed
@@ -7635,6 +7633,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-wand-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-wand.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-wandcli.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/drawtest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/wandtest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_la-aai.Plo@am__quote@
@@ -11377,6 +11376,7 @@ MagickCore-install-data-local:
 	$(INSTALL_HEADER) MagickCore/magick-config.h $(DESTDIR)$(MagickCoreincdir)/magick-config.h
 MagickCore-uninstall-local:
 	rm -f $(DESTDIR)$(MagickCoreincdir)/magick-config.h
+	MagickWand/wandcli-private.h
 install-exec-local-utilities:
 	$(mkdir_p) $(DESTDIR)$(bindir)
 	cd $(DESTDIR)$(bindir) ; \
