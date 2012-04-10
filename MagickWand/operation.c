@@ -2074,7 +2074,6 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (kernel_info == (KernelInfo *) NULL)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           /* kernel_info->bias=_image->bias; -- FUTURE: check this path! */
-          ScaleKernelInfo(kernel_info,1.0,NormalizeValue);  /* normalize */
           new_image=ConvolveImage(_image,kernel_info,_exception);
           kernel_info=DestroyKernelInfo(kernel_info);
           break;
