@@ -10,8 +10,8 @@
   <configure name="VERSION" value="6.7.6"/>
   <configure name="LIB_VERSION" value="0x676"/>
   <configure name="LIB_VERSION_NUMBER" value="6,7,6,6"/>
-  <configure name="SVN_REVISION" value="7380" />
-  <configure name="RELEASE_DATE" value="2012-04-07"/>
+  <configure name="SVN_REVISION" value="7432" />
+  <configure name="RELEASE_DATE" value="2012-04-10"/>
   <configure name="CONFIGURE" value="./configure "/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
@@ -38,7 +38,7 @@
   <configure name="TARGET_OS" value="linux-gnu"/>
   <configure name="HOST" value="x86_64-unknown-linux-gnu"/>
   <configure name="FEATURES" value="OpenMP "/>
-  <configure name="DELEGATES" value="bzlib djvu fftw fontconfig freetype gvc jpeg jng jp2 lcms2 lzma png tiff x11 xml zlib"/>
+  <configure name="DELEGATES" value="bzlib djvu fftw fontconfig freetype gvc jpeg jng jp2 lcms2 lzma pango png tiff x11 xml zlib"/>
   <configure name="COPYRIGHT" value="Copyright (C) 1999-2012 ImageMagick Studio LLC"/>
   <configure name="WEBSITE" value="http://www.imagemagick.org"/>
   <configure name="QuantumDepth" value="16"/>
