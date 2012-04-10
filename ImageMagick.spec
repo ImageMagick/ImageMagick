@@ -2,8 +2,8 @@
 %global Patchlevel  6
 
 Name:           ImageMagick
-Version:        %{VERSION}.%{Patchlevel}
-Release:        3%{?dist}
+Version:        %{VERSION}
+Release:        %{Patchlevel}
 Summary:        Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images.
 Group:          Applications/Multimedia
 License:        http://www.imagemagick.org/script/license.php
@@ -252,12 +252,11 @@ rm -rf %{buildroot}
 %{_libdir}/libMagickWand.so*
 %{_bindir}/[a-z]*
 %{_libdir}/%{name}-%{VERSION}
-%{_sysconfdir}/%{name}
-%{_libdir}/%{name}-%{VERSION}
 %{_datadir}/%{name}-%{VERSION}
-%{_mandir}/man[145]/[a-zA-Z]*
+%{_mandir}/man[145]/[a-z]*
 %{_mandir}/man1/%{name}.*
 %exclude %{_libdir}/%{name}-%{VERSION}/modules-Q16/coders/djvu.*
+%{_sysconfdir}/%{name}
 
 
 %files devel
