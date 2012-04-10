@@ -1,5 +1,5 @@
 2012-04-10  6.7.6-6 Anthony Thyssen <A.Thyssen@griffith...>
-  * Fixed log knonw alpha*kenerl normalization bug in morphology convolve.
+  * Fixed log known alpha*kernel normalization bug in morphology convolve.
 
     Convolve kernel weights have been separated from alpha blend handling.
     Un-normalized kernels applied to images with active alpha will nolonger
