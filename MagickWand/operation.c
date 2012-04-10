@@ -3717,8 +3717,12 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
               MagickFalse,value);
 
           /* Get "clip-to-self" expert setting (false is normal) */
-          clip_to_self=IsStringTrue(GetImageOption(_image_info,
-                "compose:clip-to-self"));       /* if this is true */
+          value=GetImageOption(_image_info,"compose:clip-to-self");
+          if (value == (const char *) NULL)
+            clip_to_self=MagickTrue;
+          else
+            clip_to_self=IsStringTrue(GetImageOption(_image_info,
+              "compose:clip-to-self")); /* if this is true */
           value=GetImageOption(_image_info,"compose:outside-overlay");
           if (value != (const char *) NULL) {   /* or this false */
             /* FUTURE: depreciate warning for "compose:outside-overlay"*/
