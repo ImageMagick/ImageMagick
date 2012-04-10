@@ -757,6 +757,12 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     GetPixelInfo(image,&pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      if (GetPixelMask(colorize_image,q) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(colorize_image);
+          continue;
+        }
       GetPixelInfoPixel(image,p,&pixel);
       Colorize(pixel.red,blend_percentage.red,colorize->red);
       Colorize(pixel.green,blend_percentage.green,colorize->green);
