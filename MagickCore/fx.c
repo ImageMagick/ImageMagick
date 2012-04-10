@@ -711,7 +711,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     }
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsPixelInfoGray(&fill_color) != MagickFalse))
-    SetImageColorspace(colorize_image,sRGBColorspace,exception);
+    (void) SetImageColorspace(colorize_image,sRGBColorspace,exception);
   if ((colorize->matte != MagickFalse) &&
       (colorize_image->matte == MagickFalse))
     (void) SetImageAlpha(colorize_image,OpaqueAlpha,exception);
