@@ -153,6 +153,8 @@ extern MagickExport FatalErrorHandler
 extern MagickExport MagickBooleanType
   ThrowException(ExceptionInfo *,const ExceptionType,const char *,
     const char *),
+  ThrowMagickExceptionList(ExceptionInfo *,const char *,const char *,const size_t,
+    const ExceptionType,const char *,const char *,va_list),
   ThrowMagickException(ExceptionInfo *,const char *,const char *,const size_t,
     const ExceptionType,const char *,const char *,...)
     magick_attribute((__format__ (__printf__,7,8)));

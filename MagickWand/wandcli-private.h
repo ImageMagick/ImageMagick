@@ -23,26 +23,56 @@ extern "C" {
 #endif
 
 #define CLIWandException(severity,tag,option) \
-  (void) ThrowMagickException(cli_wand->wand.exception,GetMagickModule(), \
-       severity,tag,cli_wand->location,option,cli_wand->filename, \
-       cli_wand->line,cli_wand->column)
+  (void) CLIThrowException(cli_wand,GetMagickModule(),severity,tag, \
+       "'%s'",option)
 
 #define CLIWandExceptionArg(severity,tag,option,arg) \
-  (void) ThrowMagickException(cli_wand->wand.exception,GetMagickModule(), \
-       severity,tag,cli_wand->location2,option,arg,cli_wand->filename, \
-       cli_wand->line,cli_wand->column)
+  (void) CLIThrowException(cli_wand,GetMagickModule(),severity,tag, \
+       "'%s' '%s'",option, arg)
+
+#define CLIWandExceptionFile(severity,tag,context) \
+{ char *message=GetExceptionMessage(errno); \
+  (void) CLIThrowException(cli_wand,GetMagickModule(),severity,tag, \
+       "'%s': %s",context,message); \
+  message=DestroyString(message); \
+}
 
 #define CLIWandExceptionBreak(severity,tag,option) \
   { CLIWandException(severity,tag,option); break; }
 
 #define CLIWandExceptionReturn(severity,tag,option) \
-   { CLIWandException(severity,tag,option); return; }
+  { CLIWandException(severity,tag,option); return; }
 
 #define CLIWandExceptArgBreak(severity,tag,option,arg) \
-   { CLIWandExceptionArg(severity,tag,option,arg); break; }
+  { CLIWandExceptionArg(severity,tag,option,arg); break; }
 
 #define CLIWandExceptArgReturn(severity,tag,option,arg) \
-   { CLIWandExceptionArg(severity,tag,option,arg); return; }
+  { CLIWandExceptionArg(severity,tag,option,arg); return; }
+
+
+/* Define how options should be processed */
+typedef enum
+{
+  /* NonOption Handling */
+  ProcessNonOptionImageRead   = 0x0001,  /* A non-option is a image read
+                                            If not set then skip implied read
+                                            without producing an error.
+                                            For use with "mogrify" handling */
+
+  /* Special Option Handling */
+  ProcessExitOption           = 0x0100,  /* allow '-exit' use */
+  ProcessScriptOption         = 0x0200,  /* allow '-script' use */
+  ProcessReadOption           = 0x0400,  /* allow '-read' use */
+
+  /* Option Processing Flags */
+  ProcessOneOptionOnly        = 0x4000,  /* Process one option only */
+  ProcessImpliedWrite         = 0x8000,  /* Last arg is an implied write */
+
+  /* Flag Groups for specific Situations */
+  MagickCommandOptionFlags    = 0x8F0F,  /* Magick Command Flags */
+  ConvertCommandOptionFlags   = 0x800F,  /* Convert Command Flags */
+  MagickScriptArgsFlags       = 0x000F,  /* Script CLI Process Args Flags */
+} ProcessOptionFlags;
 
 
 /* Define a generic stack linked list, for pushing and popping
@@ -75,20 +105,21 @@ struct _MagickCLI       /* CLI interface version of MagickWand */
     *image_list_stack,  /* Stacks of Image Lists and Image Info settings */
     *image_info_stack;
 
-  const char            /* Location string for exception reporting */
-    *filename,          /* See CLIWandException() macro above */
-    *location,          /* EG: "'%s' @ \"%s\" line %u column %u"
-                               option, filename, line, column   */
-    *location2;         /* EG: "'%s' '%s' @ \"%s\" line %u column %u"
-                               option, arg, filename, line, column   */
+  ProcessOptionFlags
+    process_flags;      /* when handling CLI, what options do we process? */
+
+  const char            /* Location of option being processed for exception */
+    *location,          /* location format string for exception reports */
+    *filename;          /* "CLI", "unknown", or script filename */
 
   size_t
-    line,               /* location of current option for error above */
-    column;
+    line,               /* location of current option from source */
+    column;             /* note: line also used for cli argument count */
 
   size_t
     signature;
 };
+
 
 
 #if defined(__cplusplus) || defined(c_plusplus)
