@@ -22,38 +22,11 @@
 extern "C" {
 #endif
 
-typedef enum
-{
-  /* What options should be processed */
-  /* NonOption Handling */
-  ProcessNonOptionImageRead   = 0x0001,  /* non-option is a image read
-                                            If not set then skip implied read
-                                            without producing an error.
-                                            For use with "mogrify" handling
-                                         */
-
-  /* Special Option Handling */
-  ProcessExitOption           = 0x0100,  /* allow '-exit' use */
-  ProcessScriptOption         = 0x0200,  /* allow '-script' use */
-  ProcessReadOption           = 0x0400,  /* allow '-read' use */
-
-  /* Option Processing Flags */
-  ProcessOneOptionOnly        = 0x4000,  /* Process One Option Only */
-  ProcessOutputFile           = 0x8000,  /* Process the output file */
-
-  /* Flag Groups for specific Situations */
-  MagickCommandOptionFlags    = 0x8FFF,  /* Magick Command Flags */
-  ConvertCommandOptionFlags   = 0x80FF,  /* Convert Command Flags */
-  MagickScriptArgsFlags       = 0x00FF,  /* Script Args Flags */
-  MagickScriptReadFlags       = 0x01FF   /* Script Read Flags - unused */
-
-} ProcessOptionFlags;
-
 extern WandExport void
   ProcessScriptOptions(MagickCLI *,int,char **,int);
 
 extern WandExport int
-  ProcessCommandOptions(MagickCLI *,int,char **,int,ProcessOptionFlags);
+  ProcessCommandOptions(MagickCLI *,int,char **,int);
 
 extern WandExport MagickBooleanType
   MagickImageCommand(ImageInfo *,int,char **,char **,ExceptionInfo *);

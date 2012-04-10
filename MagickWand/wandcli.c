@@ -47,6 +47,7 @@
 #include "MagickWand/magick-wand-private.h"
 #include "MagickWand/wandcli.h"
 #include "MagickWand/wandcli-private.h"
+#include "MagickCore/exception.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -118,13 +119,17 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
   cli_wand->image_list_stack=(Stack *)NULL;
   cli_wand->image_info_stack=(Stack *)NULL;
-  cli_wand->location="'%s'";      /* option location not known by default */
-  cli_wand->location2="'%s' '%s'";
-  cli_wand->filename=cli_wand->wand.name;
+  cli_wand->process_flags=MagickCommandOptionFlags;  /* assume "magick" CLI */
+
+  /* default exception location...
+     EG: sprintf(locaiton, filename, line, column);
+  */
+  cli_wand->location="from \"%s\"";   /* location format: */
+  cli_wand->filename="unknown";       /* unknown source */
   cli_wand->line=0;
   cli_wand->column=0;
-  cli_wand->signature=WandSignature;
 
+  cli_wand->signature=WandSignature;
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
   return(cli_wand);
@@ -240,5 +245,56 @@ WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,
   if ( IfMagickFalse(status) || IfMagickTrue(all_exceptions) )
     CatchException(cli_wand->wand.exception); /* output and clear exceptions */
 
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C L I T h r o w E x c e p t i o n                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CLIThrowException() formats and records an exception condition, adding to
+% it the location of the option that caused the exception to occur.
+*/
+WandExport MagickBooleanType CLIThrowException(MagickCLI *cli_wand,
+       const char *module,const char *function,const size_t line,
+       const ExceptionType severity,const char *tag,const char *format,...)
+{
+  char
+    new_format[MaxTextExtent];
+
+  size_t
+    len;
+
+  MagickBooleanType
+    status;
+
+  va_list
+    operands;
+
+  /* HACK - append location to format string.
+     The better way would be append location formats and add more arguments to
+     operands, but that does not appear to be posible!
+     Note:  ThrowMagickExceptionList() was exported specifically for
+     the use of this function.
+  */
+  (void) CopyMagickString(new_format,format,MaxTextExtent);
+  (void) ConcatenateMagickString(new_format," ",MaxTextExtent);
+
+  len=strlen(new_format);
+  (void) FormatLocaleString(new_format+len,MaxTextExtent-len,cli_wand->location,
+       cli_wand->filename, cli_wand->line, cli_wand->column);
+
+  va_start(operands,format);
+  status=ThrowMagickExceptionList(cli_wand->wand.exception,
+              module,function,line,
+              severity,tag,new_format,operands);
+  va_end(operands);
   return(status);
 }

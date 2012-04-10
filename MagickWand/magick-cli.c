@@ -55,6 +55,7 @@
 #include "MagickWand/magick-cli.h"
 #include "MagickWand/script-token.h"
 #include "MagickCore/utility-private.h"
+#include "MagickCore/exception-private.h"
 #include "MagickCore/version.h"
 
 /* verbose debugging,
@@ -63,16 +64,6 @@
 */
 #define MagickCommandDebug 0
 
-#define ThrowFileException(exception,severity,tag,context) \
-{ \
-  char \
-    *message; \
- \
-  message=GetExceptionMessage(errno); \
-  (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"'%s': %s",context,message); \
-  message=DestroyString(message); \
-}
 
 #if MagickCommandDebug >= 9
 /*
@@ -94,7 +85,7 @@ static void OutputOptions(ImageInfo *image_info)
     if (value != (const char *) NULL)
       (void) FormatLocaleFile(stdout,"%s\n",value);
   }
-  ResetImageOptionIterator(image_info); 
+  ResetImageOptionIterator(image_info);
 }
 
 static void OutputArtifacts(Image *image)
@@ -202,15 +193,13 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
   /* open file script or stream, and set up tokenizer */
   token_info = AcquireScriptTokenInfo(argv[index]);
   if (token_info == (ScriptTokenInfo *) NULL) {
-    ThrowFileException(cli_wand->wand.exception,OptionFatalError,
-               "UnableToOpenScript",argv[index]);
+    CLIWandExceptionFile(OptionFatalError,"UnableToOpenScript",argv[index]);
     return;
   }
 
   /* define the error location string for use in exceptions
-     order of input escapes: option, (arg), filename, line, column */
-  cli_wand->location="'%s' in \"%s\" line %u column %u";
-  cli_wand->location2="'%s' '%s' in \"%s\" line %u column %u";
+     order of localtion format escapes: filename, line, column */
+  cli_wand->location="in \"%s\" at line %u,column %u";
   if ( LocaleCompare("-", argv[index]) == 0 )
     cli_wand->filename="stdin";
   else
@@ -434,7 +423,7 @@ next_token:
 %
 */
 WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
-     char **argv, int index, ProcessOptionFlags process_flags )
+     char **argv, int index )
 {
   const char
     *option,
@@ -459,22 +448,21 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
   /* define the error location string for use in exceptions
-     order of input escapes: option, (arg), filename, line, column */
-  cli_wand->location="'%s' %s arg %u";
-  cli_wand->location2="'%s' '%s' %s arg %u";
+     order of localtion format escapes: filename, line, column */
+  cli_wand->location="at %s argument %u";
   cli_wand->filename="CLI";
 
   end = argc;
-  if ( ( process_flags & ProcessOutputFile ) != 0 )
-    end--;
+  if ( (cli_wand->process_flags & ProcessImpliedWrite) != 0 )
+    end--; /* the last arument is an implied write, do not process directly */
 
   for (i=index; i < end; i += count +1) {
     /* Finished processing one option? */
-    if ( ( process_flags & ProcessOneOptionOnly ) != 0 && i != index )
+    if ( (cli_wand->process_flags & ProcessOneOptionOnly) != 0 && i != index )
       return(i);
 
     option=argv[i];
-    cli_wand->line=i;
+    cli_wand->line=i;  /* note the argument for this option */
 
     { const OptionInfo *option_info = GetCommandOptionInfo(argv[i]);
       count=option_info->type;
@@ -491,14 +479,14 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
       (void) FormatLocaleFile(stderr, "CLI %d Non-Option: \"%s\"\n", i, option);
 #endif
       if ( IfMagickFalse(IsCommandOption(option)) ) {
-         if ( (process_flags & ProcessNonOptionImageRead) != 0 )
+         if ( (cli_wand->process_flags & ProcessNonOptionImageRead) != 0 )
            /* non-option -- treat as a image read */
            CLISpecialOperator(cli_wand,"-read",option);
          else
            CLIWandException(OptionFatalError,"UnrecognizedOption",option);
          goto next_argument;
       }
-      if ( ((process_flags & ProcessScriptOption) != 0) &&
+      if ( ((cli_wand->process_flags & ProcessScriptOption) != 0) &&
            (LocaleCompare(option,"-script") == 0) ) {
         /* Call Script from CLI, with a filename as a zeroth argument.
            NOTE: -script may need to use 'implict write filename' so it
@@ -543,7 +531,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
     }
 
     if ( (option_type & SpecialOptionFlag) != 0 ) {
-      if ( ( process_flags & ProcessExitOption ) != 0
+      if ( (cli_wand->process_flags & ProcessExitOption) != 0
            && LocaleCompare(option,"-exit") == 0 )
         return(i+count);
       /* handle any other special operators now */
@@ -577,10 +565,10 @@ next_argument:
   }
   assert(i==end);
 
-  if ( ( process_flags & ProcessOutputFile ) == 0 )
-    return(end);
+  if ( (cli_wand->process_flags & ProcessImpliedWrite) == 0 )
+    return(end); /* no implied write -- just return to caller */
 
-  assert(end==argc-1);
+  assert(end==argc-1); /* end should not include last argument */
 
   /*
      Implicit Write of images to final CLI argument
@@ -723,7 +711,7 @@ static void MagickUsage(MagickBooleanType verbose)
    however the last argument provides the output filename.
 */
 static MagickBooleanType ConcatenateImages(int argc,char **argv,
-  ExceptionInfo *exception)
+     ExceptionInfo *exception )
 {
   FILE
     *input,
@@ -737,8 +725,7 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
 
   output=fopen_utf8(argv[argc-1],"wb");
   if (output == (FILE *) NULL) {
-    ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
-      argv[argc-1]);
+    ThrowFileException(exception,FileOpenError,"UnableToOpenFile",argv[argc-1]);
     return(MagickFalse);
   }
   for (i=2; i < (ssize_t) (argc-1); i++) {
@@ -760,14 +747,8 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
   MagickCLI
     *cli_wand;
 
-  const char
-    *option;
-
   size_t
     len;
-
-  ProcessOptionFlags
-    process_flags = MagickCommandOptionFlags;
 
   /* For specific OS command line requirements */
   ReadCommandlLine(argc,&argv);
@@ -791,7 +772,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
 
   /* "convert" command - give a "depreciation" warning" */
   if (len>=7 && LocaleCompare("convert",argv[0]+len-7) == 0) {
-    process_flags = ConvertCommandOptionFlags;
+    cli_wand->process_flags = ConvertCommandOptionFlags;
     /*(void) FormatLocaleFile(stderr,"WARNING: %s\n",
              "The convert is depreciated in IMv7, use \"magick\"\n");*/
   }
@@ -807,17 +788,16 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
 
   /* Special Case: Version Information and Abort */
   if (argc == 2) {
-    option=argv[1];
-    if (LocaleCompare("-version",option) == 0) {
+    if (LocaleCompare("-version",argv[1]) == 0) {
       CLISpecialOperator(cli_wand, "-version", (char *)NULL);
       goto Magick_Command_Exit;
     }
-    if ((LocaleCompare("-help",option) == 0)   || /* GNU standard option */
-        (LocaleCompare("--help",option) == 0) ) {
+    if ((LocaleCompare("-help",argv[1]) == 0)   || /* GNU standard option */
+        (LocaleCompare("--help",argv[1]) == 0) ) {
       MagickUsage(MagickFalse);
       goto Magick_Command_Exit;
     }
-    if (LocaleCompare("-usage",option) == 0) {
+    if (LocaleCompare("-usage",argv[1]) == 0) {
       CLISpecialOperator(cli_wand, "-version", (char *)NULL);
       MagickUsage(MagickTrue);
       goto Magick_Command_Exit;
@@ -857,12 +837,13 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
   }
   else {
     /* Normal Command Line, assumes output file as last option */
-    ProcessCommandOptions(cli_wand,argc,argv,1, process_flags);
+    ProcessCommandOptions(cli_wand,argc,argv,1);
   }
   /* ------------- */
 
 Magick_Command_Cleanup:
-  /* recover original image_info and clean up stacks */
+  /* recover original image_info and clean up stacks
+     FUTURE: "-reset stacks" option  */
   while (cli_wand->image_list_stack != (Stack *)NULL)
     CLISpecialOperator(cli_wand,")",(const char *)NULL);
   while (cli_wand->image_info_stack != (Stack *)NULL)

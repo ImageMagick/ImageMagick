@@ -30,7 +30,11 @@ extern WandExport MagickCLI
   *DestroyMagickCLI(MagickCLI *);
 
 extern WandExport MagickBooleanType
-  CLICatchException(MagickCLI *,const MagickBooleanType);
+  CLICatchException(MagickCLI *,const MagickBooleanType),
+  CLIThrowException(MagickCLI *,const char *,const char *,const size_t,
+    const ExceptionType,const char *,const char *,...)
+    magick_attribute((__format__ (__printf__,7,8)));
+
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

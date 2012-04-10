@@ -4663,7 +4663,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
 
 #if 0
   // Other 'special' options this should handle
-  //    "region"
+  //    "region"  "reset"  "arg"
   if ( ( process_flags & ProcessUnknownOptionError ) != 0 )
 #endif
     CLIWandException(OptionError,"UnrecognizedOption",option);
