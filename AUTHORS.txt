@@ -51,6 +51,7 @@ Christopher R. Hawks
 
 Paul Heckbert, Carnegie Mellon University
      Image resizing is loosely based on Paul Heckbert's Zoom program.
+     As is the basic EWA resampling used for image distortions.
 
 Peder Langlo, Hewlett Packard
      Made hundreds of suggestions and bug reports. Without Peder, this software
@@ -91,7 +92,7 @@ Paul Raveling, USC Information Sciences Institute
 
 Nicolas Robidoux, Laurentian University
      New ellipse clamping method and vertical/horizontal line preserving
-     filters for EWA resampling. Sped up resampling filter kernels.
+     filters for EWA resampling. Sped up of resampling filter kernels.
 
 Leonard Rosenthol
      Authored the 'conjure' utility and associated MSL execution environment.
@@ -115,11 +116,15 @@ Michael Still and IBM developer Works
      published by IBM DeveloperWorks.
 
 Anthony Thyssen
-     Designed the ImageMagick 6.0 command line processing with parenthesis,
-     image sequence operators, and GIF animation processing.  Wrote the
-     image perspective distortions (-distort) and resampling methods.
+     Designed the ImageMagick 6 command line processing with parenthesis,
+     image sequence operators, and GIF animation processing. Checking and
+     update of the Composition Methods.  Wrote the image distortions
+     (-distort) and EWA resampling methods.  Redesign and formalization of
+     Resize Filters. Addition of the morphology operators, built in kernels
+     for morphology and convolution processing.  Redesign of ImageMagick
+     7 command line, to allow scripting and pipelining of options.
      Maintains a comprehensive set of examples of using ImageMagick at
-     http://www.imagemagick.org/Usage/. 
+     http://www.imagemagick.org/Usage/.
 
 Milan Votava
      Contributed support for Wireless BitMap, used in WAP - Wireless Access
@@ -127,8 +132,9 @@ Milan Votava
 
 Fred Weinhaus
      Contributed support and documentation for the discrete Fourier transform.
+     Comments and testing of Convolution and Distortion Operations.
      Also provides scripts that perform some out-of-the ordinary image
-     processing operations @ http://www.fmwconcepts.com/imagemagick/.
+     processing operations at http://www.fmwconcepts.com/imagemagick/.
 
 Alexander Zimmermann
      Responsible for the ImageMagick Linux binary distributions for many years.
