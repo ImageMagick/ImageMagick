@@ -104,7 +104,7 @@ MAGICKWAND_NOINST_HDRS = \
 	MagickWand/pixel-wand-private.h \
 	MagickWand/script-token.h \
 	MagickWand/studio.h \
-	MagickWand/wand.h
+	MagickWand/wand.h \
 	MagickWand/wandcli-private.h
 
 # Headers which are installed
