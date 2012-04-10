@@ -1,3 +1,22 @@
+2012-04-10  6.7.6-6 Anthony Thyssen <A.Thyssen@griffith...>
+  * Fixed log knonw alpha*kenerl normalization bug in morphology convolve.
+
+    Convolve kernel weights have been separated from alpha blend handling.
+    Un-normalized kernels applied to images with active alpha will nolonger
+    be auto-normalized due to the effect of alpha blanding.
+
+    The bug causes images using the default channel setting and having an
+    alpha channel to automatically 'normalize' the results of a convolve
+    during the handling of alpha blending.  This probably would cause sever
+    effects when a zero-summing kernel is being used on an image contining
+    a active (though likely fully-opaque) alpha channel, as division by near
+    zero weights would cause extreme color values in results.
+
+    This bug is not normally seen as convolution is normally applied only
+    to fully-opaque images. And using a zero-summing kernel on a image with
+    alpha also results in a transparent image!  This is why it was not fixed
+    up until now.
+
 2012-04-08  6.7.6-6 Cristy  <quetzlzacatenango@image...>
   * Pixel allocation for Pango is stride*rows not stride*columns.
 
