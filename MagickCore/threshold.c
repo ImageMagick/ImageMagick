@@ -484,7 +484,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
 {
 #define ThresholdImageTag  "Threshold/Image"
 #define BlackThreshold(pixel,threshold_percentage) \
-  if (pixel < threshold_percentage) pixel=QuantumRange;
+  if (pixel < threshold_percentage) pixel=0;
 
   CacheView
     *image_view;
