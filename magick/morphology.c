@@ -2700,14 +2700,18 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             ** transparent pixels are not part of the results.
             */
             MagickRealType
-              alpha,  /* alpha weighting of colors : kernel*alpha  */
-              gamma;  /* divisor, sum of color weighting values */
+              alpha,  /* alpha weighting for colors : alpha  */
+              gamma;  /* divisor, sum of color alpha weighting */
+            size_t
+              count;  /* alpha valus collected, number kernel values */
 
+            count=0;
             gamma=0.0;
             for (v=0; v < (ssize_t) kernel->height; v++) {
               if ( IsNan(*k) ) continue;
               alpha=QuantumScale*(QuantumRange-GetPixelOpacity(k_pixels));
               gamma += alpha; /* normalize alpha weights only */
+              count++;        /* number of alpha values collected */
               alpha*=(*k);    /* include kernel weighting now */
               result.red     += alpha*GetPixelRed(k_pixels);
               result.green   += alpha*GetPixelGreen(k_pixels);
@@ -2720,7 +2724,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
               k_indexes++;
             }
             /* Sync'ed channels, all channels are modified */
-            gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+            gamma=(double)count/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
             SetPixelRed(q,ClampToQuantum(gamma*result.red));
             SetPixelGreen(q,ClampToQuantum(gamma*result.green));
             SetPixelBlue(q,ClampToQuantum(gamma*result.blue));
@@ -2933,16 +2937,20 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                 ** transparent pixels are not part of the results.
                 */
                 MagickRealType
-                  alpha,  /* alpha weighting of colors : kernel*alpha  */
-                  gamma;  /* divisor, sum of color weighting values */
+                  alpha,  /* alpha weighting for colors : alpha  */
+                  gamma;  /* divisor, sum of color alpha weighting */
+                size_t
+                  count;  /* alpha valus collected, number kernel values */
 
+                count=0;
                 gamma=0.0;
                 for (v=0; v < (ssize_t) kernel->height; v++) {
                   for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                     if ( IsNan(*k) ) continue;
                     alpha=QuantumScale*(QuantumRange-k_pixels[u].opacity);
-                    gamma += alpha; /* normalize alpha weights only */
-                    alpha*=(*k);    /* include kernel weighting now */
+                    gamma += alpha;    /* normalize alpha weights only */
+                    count++;           /* number of alpha values collected */
+                    alpha=alpha*(*k);  /* include kernel weighting now */
                     result.red     += alpha*k_pixels[u].red;
                     result.green   += alpha*k_pixels[u].green;
                     result.blue    += alpha*k_pixels[u].blue;
@@ -2954,7 +2962,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                   k_indexes += virt_width;
                 }
                 /* Sync'ed channels, all channels are modified */
-                gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+                gamma=(double)count/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
                 SetPixelRed(q,ClampToQuantum(gamma*result.red));
                 SetPixelGreen(q,ClampToQuantum(gamma*result.green));
                 SetPixelBlue(q,ClampToQuantum(gamma*result.blue));
