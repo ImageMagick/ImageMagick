@@ -664,17 +664,18 @@ static void MagickUsage(MagickBooleanType verbose)
   name=GetClientName();
   len=strlen(name);
 
-  if (len>=6 && LocaleCompare("script",name+len-6) == 0) {
-    /* magick-script usage */
-    (void) FormatLocaleFile(stdout,
-       "Usage: %s {filename} [{script_args}...]\n",name);
-  }
-  else if (len>=7 && LocaleCompare("convert",name+len-7) == 0) {
+  if (len>=7 && LocaleCompare("convert",name+len-7) == 0) {
     /* convert usage */
     (void) FormatLocaleFile(stdout,
        "Usage: %s [{option}|{image}...] {output_image}\n",name);
     (void) FormatLocaleFile(stdout,
-       "       %s -help|-version|-usage|-list {option}\n",name);
+       "       %s -help|-version|-usage|-list {option}\n\n",name);
+    return;
+  }
+  else if (len>=6 && LocaleCompare("script",name+len-6) == 0) {
+    /* magick-script usage */
+    (void) FormatLocaleFile(stdout,
+       "Usage: %s {filename} [{script_args}...]\n",name);
   }
   else {
     /* magick usage */
@@ -683,14 +684,14 @@ static void MagickUsage(MagickBooleanType verbose)
     (void) FormatLocaleFile(stdout,
        "       %s [{option}|{image}...] -script {filename} [{script_args}...]\n",
        name);
-    (void) FormatLocaleFile(stdout,
-       "       %s -help|-version|-usage|-list {option}\n",name);
   }
+  (void) FormatLocaleFile(stdout,
+       "       %s -help|-version|-usage|-list {option}\n\n",name);
 
   if (IfMagickFalse(verbose))
     return;
 
-  (void) FormatLocaleFile(stdout,"\n%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n",
+  (void) FormatLocaleFile(stdout,"%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n",
     "All options are performed in a strict 'as you see them' order\n",
     "You must read-in images before you can operate on them.\n",
     "\n",
@@ -797,7 +798,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
 
   /* Special Case:  If command name ends with "script" implied "-script" */
   if (len>=6 && LocaleCompare("script",argv[0]+len-6) == 0) {
-    if (argc >= 2 && *(argv[1]) != '-') {
+    if (argc >= 2 && (  (*(argv[1]) != '-') || (strlen(argv[1]) == 1) )) {
       GetPathComponent(argv[1],TailPath,cli_wand->wand.name);
       ProcessScriptOptions(cli_wand,argc,argv,1);
       goto Magick_Command_Cleanup;
