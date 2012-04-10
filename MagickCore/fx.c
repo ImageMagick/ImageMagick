@@ -643,8 +643,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   const PixelInfo *colorize,ExceptionInfo *exception)
 {
 #define ColorizeImageTag  "Colorize/Image"
-#define Colorize(pixel,fill_color,colorize)  \
-  (pixel)=((pixel)*(100.0-(fill_color))+(colorize)*(fill_color))/100.0;
+#define Colorize(pixel,blend_percentage,colorize)  \
+  (pixel)=((pixel)*(100.0-(blend_percentage))+(colorize)*(blend_percentage))/100.0;
 
   CacheView
     *colorize_view,
@@ -666,7 +666,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     flags;
 
   PixelInfo
-    fill_color;
+    blend_percentage;
 
   ssize_t
     y;
@@ -680,26 +680,6 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  GetPixelInfo(image,&fill_color);
-  flags=ParseGeometry(blend,&geometry_info);
-  fill_color.red=geometry_info.rho;
-  fill_color.green=geometry_info.rho;
-  fill_color.blue=geometry_info.rho;
-  fill_color.black=geometry_info.rho;
-  fill_color.alpha=100.0;
-  if ((flags & SigmaValue) != 0)
-    fill_color.green=geometry_info.sigma;
-  if ((flags & XiValue) != 0)
-    fill_color.blue=geometry_info.xi;
-  if ((flags & PsiValue) != 0)
-    fill_color.alpha=geometry_info.psi;
-  if (fill_color.colorspace == CMYKColorspace)
-    {
-      if ((flags & PsiValue) != 0)
-        fill_color.black=geometry_info.psi;
-      if ((flags & ChiValue) != 0)
-        fill_color.alpha=geometry_info.chi;
-    }
   colorize_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (colorize_image == (Image *) NULL)
@@ -710,13 +690,33 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
       return((Image *) NULL);
     }
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
-      (IsPixelInfoGray(&fill_color) != MagickFalse))
+      (IsPixelInfoGray(colorize) != MagickFalse))
     (void) SetImageColorspace(colorize_image,sRGBColorspace,exception);
-  if ((colorize->matte != MagickFalse) &&
-      (colorize_image->matte == MagickFalse))
+  if ((colorize_image->matte == MagickFalse) &&
+      (colorize->matte != MagickFalse))
     (void) SetImageAlpha(colorize_image,OpaqueAlpha,exception);
   if (blend == (const char *) NULL)
     return(colorize_image);
+  GetPixelInfo(image,&blend_percentage);
+  flags=ParseGeometry(blend,&geometry_info);
+  blend_percentage.red=geometry_info.rho;
+  blend_percentage.green=geometry_info.rho;
+  blend_percentage.blue=geometry_info.rho;
+  blend_percentage.black=geometry_info.rho;
+  blend_percentage.alpha=100.0;
+  if ((flags & SigmaValue) != 0)
+    blend_percentage.green=geometry_info.sigma;
+  if ((flags & XiValue) != 0)
+    blend_percentage.blue=geometry_info.xi;
+  if ((flags & PsiValue) != 0)
+    blend_percentage.alpha=geometry_info.psi;
+  if (blend_percentage.colorspace == CMYKColorspace)
+    {
+      if ((flags & PsiValue) != 0)
+        blend_percentage.black=geometry_info.psi;
+      if ((flags & ChiValue) != 0)
+        blend_percentage.alpha=geometry_info.chi;
+    }
   /*
     Colorize DirectClass image.
   */
@@ -758,11 +758,11 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       GetPixelInfoPixel(image,p,&pixel);
-      Colorize(pixel.red,fill_color.red,colorize->red);
-      Colorize(pixel.green,fill_color.green,colorize->green);
-      Colorize(pixel.blue,fill_color.blue,colorize->blue);
-      Colorize(pixel.black,fill_color.black,colorize->black);
-      Colorize(pixel.alpha,fill_color.alpha,colorize->alpha);
+      Colorize(pixel.red,blend_percentage.red,colorize->red);
+      Colorize(pixel.green,blend_percentage.green,colorize->green);
+      Colorize(pixel.blue,blend_percentage.blue,colorize->blue);
+      Colorize(pixel.black,blend_percentage.black,colorize->black);
+      Colorize(pixel.alpha,blend_percentage.alpha,colorize->alpha);
       SetPixelInfoPixel(colorize_image,&pixel,q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(colorize_image);
