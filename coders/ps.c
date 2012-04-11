@@ -373,7 +373,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     flags;
 
   PointInfo
-    delta;
+    delta,
+    resolution;
 
   RectangleInfo
     page;
@@ -485,10 +486,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ParseAbsoluteGeometry(PSPageGeometry,&page);
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
-  page.width=(size_t) ceil((double) (page.width*image->resolution.x/delta.x)-
-    0.5);
-  page.height=(size_t) ceil((double) (page.height*image->resolution.y/delta.y)-
-    0.5);
+  resolution=image->resolution;
+  page.width=(size_t) ceil((double) (page.width*resolution.x/delta.x)-0.5);
+  page.height=(size_t) ceil((double) (page.height*resolution.y/delta.y)-0.5);
   /*
     Determine page geometry from the Postscript bounding box.
   */
@@ -703,9 +703,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         hires_bounds.x1,hires_bounds.y1);
       (void) SetImageProperty(image,"ps:HiResBoundingBox",geometry,exception);
       page.width=(size_t) ceil((double) ((hires_bounds.x2-hires_bounds.x1)*
-        image->resolution.x/delta.x)-0.5);
+        resolution.x/delta.x)-0.5);
       page.height=(size_t) ceil((double) ((hires_bounds.y2-hires_bounds.y1)*
-        image->resolution.y/delta.y)-0.5);
+        resolution.y/delta.y)-0.5);
     }
   (void) CloseBlob(image);
   if (IsRGBColorspace(image_info->colorspace) != MagickFalse)
@@ -753,8 +753,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   *options='\0';
-  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",
-    image->resolution.x,image->resolution.y);
+  (void) FormatLocaleString(density,MaxTextExtent,"%gx%g",resolution.x,
+    resolution.y);
   (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
     page.width,(double) page.height);
   read_info=CloneImageInfo(image_info);
