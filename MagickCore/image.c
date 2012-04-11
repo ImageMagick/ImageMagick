@@ -534,6 +534,9 @@ MagickExport Image *AppendImages(const Image *images,
       MagickBooleanType
         sync;
 
+      PixelInfo
+        pixel;
+
       register const Quantum
         *restrict p;
 
@@ -553,34 +556,17 @@ MagickExport Image *AppendImages(const Image *images,
           status=MagickFalse;
           continue;
         }
+      GetPixelInfo(image,&pixel);
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        register ssize_t
-          i;
-
         if (GetPixelMask(image,p) != 0)
           {
             p+=GetPixelChannels(image);
             q+=GetPixelChannels(append_image);
             continue;
           }
-        for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-        {
-          PixelChannel
-            channel;
-
-          PixelTrait
-            append_traits,
-            traits;
-
-          channel=GetPixelChannelMapChannel(image,i);
-          traits=GetPixelChannelMapTraits(image,channel);
-          append_traits=GetPixelChannelMapTraits(append_image,channel);
-          if ((traits == UndefinedPixelTrait) ||
-              (append_traits == UndefinedPixelTrait))
-            continue;
-          SetPixelChannel(append_image,channel,p[i],q);
-        }
+        GetPixelInfoPixel(image,p,&pixel);
+        SetPixelInfoPixel(append_image,&pixel,q);
         p+=GetPixelChannels(image);
         q+=GetPixelChannels(append_image);
       }
