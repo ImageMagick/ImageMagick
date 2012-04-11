@@ -330,8 +330,8 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  clut_map=(double *) AcquireQuantumMemory(MaxMap+1UL,GetPixelChannels(image)*
-    sizeof(*clut_map));
+  clut_map=(double *) AcquireQuantumMemory(MaxMap+1UL,
+    GetPixelChannels(clut_image)*sizeof(*clut_map));
   if (clut_map == (double *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
