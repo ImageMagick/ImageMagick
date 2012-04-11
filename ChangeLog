@@ -19,6 +19,8 @@
 
 2012-04-08  6.7.6-6 Cristy  <quetzlzacatenango@image...>
   * Pixel allocation for Pango is stride*rows not stride*columns.
+  * Set the image resolution for Postscript files with an embedded Photoshop
+    profile.
 
 2012-04-07  6.7.6-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-5, SVN revision 7483.
