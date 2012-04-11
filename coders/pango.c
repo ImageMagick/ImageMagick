@@ -329,7 +329,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
       pango_font_description_free(description);
     }
   option=GetImageOption(image_info,"pango:markup");
-  if ((option != (const char *) NULL) && (IsMagickTrue(option) == MagickFalse))
+  if ((option != (const char *) NULL) && (IsStringTrue(option) == MagickFalse))
     pango_layout_set_text(layout,caption,-1);
   else
     {
