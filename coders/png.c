@@ -584,7 +584,7 @@
 #define PNG_SETJMP_NOT_THREAD_SAFE
 #endif
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#ifdef PNG_SETJMP_NOT_THREAD_SAFE
 static SemaphoreInfo
   *ping_semaphore = (SemaphoreInfo *) NULL;
 #endif
@@ -1808,8 +1808,8 @@ static png_free_ptr Magick_png_free(png_structp png_ptr,png_voidp ptr)
 #endif
 
 static int
-Magick_png_read_raw_profile(Image *image, const ImageInfo *image_info,
-   png_textp text,int ii,ExceptionInfo *exception)
+Magick_png_read_raw_profile(png_struct *ping,Image *image,
+   const ImageInfo *image_info, png_textp text,int ii,ExceptionInfo *exception)
 {
   register ssize_t
     i;
@@ -1855,8 +1855,7 @@ Magick_png_read_raw_profile(Image *image, const ImageInfo *image_info,
   /* allocate space */
   if (length == 0)
   {
-    (void) ThrowMagickException(exception,GetMagickModule(),
-      CoderWarning,"UnableToCopyProfile","`%s'","invalid profile length");
+    png_warning(ping,"invalid profile length");
     return(MagickFalse);
   }
 
@@ -1864,9 +1863,7 @@ Magick_png_read_raw_profile(Image *image, const ImageInfo *image_info,
 
   if (profile == (StringInfo *) NULL)
   {
-    (void) ThrowMagickException(exception,GetMagickModule(),
-      ResourceLimitError,"MemoryAllocationFailed","`%s'",
-      "unable to copy profile");
+    png_warning(ping, "unable to copy profile");
     return(MagickFalse);
   }
 
@@ -1880,8 +1877,7 @@ Magick_png_read_raw_profile(Image *image, const ImageInfo *image_info,
     {
       if (*sp == '\0')
         {
-          (void) ThrowMagickException(exception,GetMagickModule(),
-            CoderWarning,"UnableToCopyProfile","`%s'","ran out of data");
+          png_warning(ping, "ran out of profile data");
           profile=DestroyStringInfo(profile);
           return(MagickFalse);
         }
@@ -2086,10 +2082,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
     "  Enter ReadOnePNGImage()");
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  LockSemaphoreInfo(ping_semaphore);
-#endif
-
 #if (PNG_LIBPNG_VER < 10200)
   if (image_info->verbose)
     printf("Your PNG library (libpng-%s) is rather old.\n",
@@ -2165,9 +2157,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         PNG image is corrupt.
       */
       png_destroy_read_struct(&ping,&ping_info,&end_info);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+
+#ifdef PNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
+
+      if (ping_pixels != (unsigned char *) NULL)
+        ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
+
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  exit ReadOnePNGImage() with error.");
@@ -2180,6 +2177,16 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       return(GetFirstImageInList(image));
     }
+
+  /* {  For navigation to end of SETJMP-protected block.  Within this
+   *    block, use png_error() instead of Throwing an Exception, to ensure
+   *    that libpng is able to clean up, and that the semaphore is unlocked.
+   */
+
+#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+  LockSemaphoreInfo(ping_semaphore);
+#endif
+
   /*
     Prepare PNG for reading.
   */
@@ -2314,15 +2321,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               "    Reading PNG iCCP chunk.");
           profile=BlobToStringInfo(info,profile_length);
           if (profile == (StringInfo *) NULL)
-          {
-            (void) ThrowMagickException(exception,GetMagickModule(),
-              ResourceLimitError,"MemoryAllocationFailed","`%s'",
-              "unable to copy profile");
-            return((Image *) NULL);
-          }
-          SetStringInfoDatum(profile,(const unsigned char *) info);
-          (void) SetImageProfile(image,"icc",profile,exception);
-          profile=DestroyStringInfo(profile);
+            {
+              png_warning(ping, "ICC profile is NULL");
+              profile=DestroyStringInfo(profile);
+            }
+          else
+            {
+              (void) SetImageProfile(image,"icc",profile,exception);
+              profile=DestroyStringInfo(profile);
+            }
       }
     }
 #endif
@@ -2469,17 +2476,18 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 (int) mng_info->global_plte_length);
 
               if (!png_get_valid(ping,ping_info,PNG_INFO_tRNS))
+              {
                 if (mng_info->global_trns_length)
                   {
-                    if (mng_info->global_trns_length >
-                        mng_info->global_plte_length)
-                      (void) ThrowMagickException(exception,
-                        GetMagickModule(),CoderError,
-                        "global tRNS has more entries than global PLTE",
-                        "`%s'",image_info->filename);
-                    png_set_tRNS(ping,ping_info,mng_info->global_trns,
-                      (int) mng_info->global_trns_length,NULL);
+                    png_warning(ping,
+                      "global tRNS has more entries than global PLTE");
                   }
+                else
+                  {
+                     png_set_tRNS(ping,ping_info,mng_info->global_trns,
+                       (int) mng_info->global_trns_length,NULL);
+                  }
+               }
 #ifdef PNG_READ_bKGD_SUPPORTED
               if (
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
@@ -2514,9 +2522,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
                 }
               else
-                (void) ThrowMagickException(exception,GetMagickModule(),
-                  CoderError,"No global PLTE in file","`%s'",
-                  image_info->filename);
+                png_error(ping,"No global PLTE in file");
             }
         }
 
@@ -2731,7 +2737,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         Initialize image colormap.
       */
       if (AcquireImageColormap(image,image->colors,exception) == MagickFalse)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        png_error(ping,"Memory allocation failed");
 
       if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
         {
@@ -2819,9 +2825,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           "    Skipping PNG image data for scene %.20g",(double)
           mng_info->scenes_found-1);
       png_destroy_read_struct(&ping,&ping_info,&end_info);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+
+#ifdef PNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
+
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  exit ReadOnePNGImage().");
@@ -2842,7 +2850,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       sizeof(*ping_pixels));
 
   if (ping_pixels == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    png_error(ping,"Memory allocation failed");
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2850,38 +2858,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   /*
     Convert PNG pixels to pixel packets.
   */
-  if (setjmp(png_jmpbuf(ping)))
-    {
-      /*
-        PNG image is corrupt.
-      */
-      png_destroy_read_struct(&ping,&ping_info,&end_info);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      UnlockSemaphoreInfo(ping_semaphore);
-#endif
-      if (quantum_info != (QuantumInfo *) NULL)
-        quantum_info = DestroyQuantumInfo(quantum_info);
-
-      if (ping_pixels != (unsigned char *) NULL)
-        ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
-
-      if (logging != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "  exit ReadOnePNGImage() with error.");
-
-      if (image != (Image *) NULL)
-        {
-          InheritException(exception,exception);
-          image->columns=0;
-        }
-
-      return(GetFirstImageInList(image));
-    }
-
   quantum_info=AcquireQuantumInfo(image_info,image);
 
   if (quantum_info == (QuantumInfo *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+     png_error(ping,"Failed to allocate quantum_info");
 
   {
 
@@ -3026,7 +3006,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (image->matte ?  2 : 1)*sizeof(*quantum_scanline));
 
       if (quantum_scanline == (Quantum *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+        png_error(ping,"Memory allocation failed");
 
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -3253,7 +3233,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
       image->colors=2;
       (void) SetImageBackgroundColor(image,exception);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#ifdef PNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
       if (logging != MagickFalse)
@@ -3370,8 +3350,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
         if (memcmp(text[i].key, "Raw profile type ",17) == 0)
           {
-            (void) Magick_png_read_raw_profile(image,image_info,text,(int) i,
-              exception);
+            (void) Magick_png_read_raw_profile(ping,image,image_info,text,
+               (int) i,exception);
             num_raw_profiles++;
           }
 
@@ -3385,9 +3365,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               sizeof(*value));
             if (value == (char *) NULL)
               {
-                (void) ThrowMagickException(exception,GetMagickModule(),
-                  ResourceLimitError,"MemoryAllocationFailed","`%s'",
-                  image->filename);
+                png_error(ping,"Memory allocation failed");
                 break;
               }
             *value='\0';
@@ -3440,14 +3418,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           mng_info->ob[object_id]->frozen)
         {
           if (mng_info->ob[object_id] == (MngBuffer *) NULL)
-            (void) ThrowMagickException(exception,GetMagickModule(),
-              ResourceLimitError,"MemoryAllocationFailed","`%s'",
-              image->filename);
+             png_error(ping,"Memory allocation failed");
 
           if (mng_info->ob[object_id]->frozen)
-            (void) ThrowMagickException(exception,GetMagickModule(),
-              ResourceLimitError,"Cannot overwrite frozen MNG object buffer",
-              "`%s'",image->filename);
+            png_error(ping,"Cannot overwrite frozen MNG object buffer");
         }
 
       else
@@ -3464,9 +3438,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             mng_info->ob[object_id]->image->file=(FILE *) NULL;
 
           else
-            (void) ThrowMagickException(exception,GetMagickModule(),
-              ResourceLimitError,"Cloning image for object buffer failed",
-              "`%s'",image->filename);
+            png_error(ping, "Cloning image for object buffer failed");
 
           if (ping_width > 250000L || ping_height > 250000L)
              png_error(ping,"PNG Image dimensions are too large.");
@@ -3621,13 +3593,18 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   png_destroy_read_struct(&ping,&ping_info,&end_info);
 
   ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  UnlockSemaphoreInfo(ping_semaphore);
-#endif
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  exit ReadOnePNGImage()");
+
+#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+  UnlockSemaphoreInfo(ping_semaphore);
+#endif
+
+  /* }  for navigation to beginning of SETJMP-protected block, revert to
+   *    Throwing an Exception when an error occurs.
+   */
 
   return(image);
 
@@ -4993,7 +4970,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (object_id > MNG_MAX_OBJECTS)
               {
                 /*
-                  Instead ofsuing a warning we should allocate a larger
+                  Instead of using a warning we should allocate a larger
                   MngInfo structure and continue.
                 */
                 (void) ThrowMagickException(exception,GetMagickModule(),
@@ -7207,7 +7184,7 @@ ModuleExport size_t RegisterPNGImage(void)
   entry->note=ConstantString(JNGNote);
   (void) RegisterMagickInfo(entry);
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#ifdef PNG_SETJMP_NOT_THREAD_SAFE
   ping_semaphore=AllocateSemaphoreInfo();
 #endif
 
@@ -7242,7 +7219,7 @@ ModuleExport void UnregisterPNGImage(void)
   (void) UnregisterMagickInfo("PNG32");
   (void) UnregisterMagickInfo("JNG");
 
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#ifdef PNG_SETJMP_NOT_THREAD_SAFE
   if (ping_semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&ping_semaphore);
 #endif
@@ -7591,10 +7568,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   image_info=(ImageInfo *) CloneImageInfo(IMimage_info);
   if (image_info == (ImageInfo *) NULL)
      ThrowWriterException(ResourceLimitError, "MemoryAllocationFailed");
-
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  LockSemaphoreInfo(ping_semaphore);
-#endif
 
   /* Initialize some stuff */
   ping_bit_depth=0,
@@ -8874,9 +8847,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       (void) ThrowMagickException(exception,GetMagickModule(),CoderError,
           "Cannot write PNG8 or color-type 3; colormap is NULL",
           "`%s'",IMimage->filename);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      UnlockSemaphoreInfo(ping_semaphore);
-#endif
       return(MagickFalse);
     }
 
@@ -8919,15 +8889,32 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         (void) printf("PNG write has failed.\n");
 #endif
       png_destroy_write_struct(&ping,&ping_info);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+#ifdef PNG_SETJMP_NOT_THREAD_SAFE
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
+
+      if (ping_pixels != (unsigned char *) NULL)
+        ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
+
+      if (quantum_info != (QuantumInfo *) NULL)
+        quantum_info=DestroyQuantumInfo(quantum_info);
+
       if (ping_have_blob != MagickFalse)
           (void) CloseBlob(image);
       image_info=DestroyImageInfo(image_info);
       image=DestroyImage(image);
       return(MagickFalse);
     }
+
+  /* {  For navigation to end of SETJMP-protected block.  Within this
+   *    block, use png_error() instead of Throwing an Exception, to ensure
+   *    that libpng is able to clean up, and that the semaphore is unlocked.
+   */
+
+#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+  LockSemaphoreInfo(ping_semaphore);
+#endif
+
   /*
     Prepare PNG for writing.
   */
@@ -9282,9 +9269,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
            if (image->colors == 0)
            {
               /* DO SOMETHING */
-              (void) ThrowMagickException(exception,
-                 GetMagickModule(),CoderError,
-                "image has 0 colors", "`%s'","");
+                png_error(ping,"image has 0 colors");
            }
 
            while ((int) (one << ping_bit_depth) < (ssize_t) image_colors)
@@ -10310,37 +10295,14 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     sizeof(*ping_pixels));
 
   if (ping_pixels == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    png_error(ping,"Allocation of memory for pixels failed");
 
   /*
     Initialize image scanlines.
   */
-  if (setjmp(png_jmpbuf(ping)))
-    {
-      /*
-        PNG write failed.
-      */
-#ifdef PNG_DEBUG
-     if (image_info->verbose)
-        (void) printf("PNG write has failed.\n");
-#endif
-      png_destroy_write_struct(&ping,&ping_info);
-      if (quantum_info != (QuantumInfo *) NULL)
-        quantum_info=DestroyQuantumInfo(quantum_info);
-      if (ping_pixels != (unsigned char *) NULL)
-        ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      UnlockSemaphoreInfo(ping_semaphore);
-#endif
-      if (ping_have_blob != MagickFalse)
-          (void) CloseBlob(image);
-      image_info=DestroyImageInfo(image_info);
-      image=DestroyImage(image);
-      return(MagickFalse);
-    }
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+    png_error(ping,"Memory allocation for quantum_info failed");
   quantum_info->format=UndefinedQuantumFormat;
   quantum_info->depth=image_depth;
   num_passes=png_set_interlace_handling(ping);
@@ -10756,9 +10718,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
   if (mng_info->write_mng && !mng_info->need_fram &&
       ((int) image->dispose == 3))
-     (void) ThrowMagickException(exception,GetMagickModule(),
-       CoderError,"Cannot convert GIF with disposal method 3 to MNG-LC",
-       "`%s'",image->filename);
+     png_error(ping, "Cannot convert GIF with disposal method 3 to MNG-LC");
 
   /*
     Free PNG resources.
@@ -10767,10 +10727,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   png_destroy_write_struct(&ping,&ping_info);
 
   ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
-
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-  UnlockSemaphoreInfo(ping_semaphore);
-#endif
 
   if (ping_have_blob != MagickFalse)
      (void) CloseBlob(image);
@@ -10788,8 +10744,17 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "  exit WriteOnePNGImage()");
 
+#ifdef PNG_SETJMP_NOT_THREAD_SAFE
+  UnlockSemaphoreInfo(ping_semaphore);
+#endif
+
+   /* }  for navigation to beginning of SETJMP-protected block. Revert to
+    *    Throwing an Exception when an error occurs.
+    */
+
   return(MagickTrue);
 /*  End write one PNG image */
+
 }
 
 /*
