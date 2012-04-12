@@ -35,10 +35,11 @@ ${MAGICK} ${REFERENCE_IMAGE} -write -      null: | ${IDENTIFY} -
 ${MAGICK} ${REFERENCE_IMAGE} -write info: -exit
 # null: does not require an image during write
 ${MAGICK} -write null: -exit
+# implied write null: without image
 ${MAGICK} ${REFERENCE_IMAGE} -write info: +delete null:
-# Using file decriptors (write)
+# Write to file decriptor
 ${MAGICK} ${REFERENCE_IMAGE} fd:6  6>&1 | ${IDENTIFY} -
-# Using file decriptors (read)
+# Read from file decriptor
 exec 5<${REFERENCE_IMAGE}
 ${MAGICK} fd:5 info:
 exec 5<&-
