@@ -595,8 +595,8 @@
         <message name="CurlyBrasesNestedTooDeeply">
           curly braces nested too deeply
         </message>
-        <message name="DeprecatedOption">
-          option is deprecated
+        <message name="DeprecatedOptionNoCode">
+          option deprecated, unable to execute
         </message>
         <message name="DivideByZero">
           divide by zero
@@ -921,6 +921,9 @@
         </message>
       </fatalerror>
       <warning>
+        <message name="DeprecatedOption">
+          option is deprecated
+        </message>
         <message name="GeometryDoesNotContainImage">
           geometry does not contain image
         </message>

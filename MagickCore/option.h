@@ -148,8 +148,9 @@ typedef enum
   ImageRequiredFlags        = 0x0030,  /* Flags also means Images Required */
 
   NonMagickOptionFlag       = 0x1000,  /* Option not used by Magick Command */
-  FireOptionFlag            = 0x4000,  /* Convert operation seq firing point */
-  DeprecateOptionFlag       = 0x8000   /* Deprecate option, give warning */
+  FireOptionFlag            = 0x2000,  /* Convert operation seq firing point */
+  DeprecateOptionFlag       = 0x4000,  /* Deprecate option (no code) */
+  ReplacedOptionFlag        = 0x8000   /* Replaced Option (still works) */
 
 } CommandOptionFlags;
 
