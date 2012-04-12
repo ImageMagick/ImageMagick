@@ -175,13 +175,11 @@
        performed as 'pure' mathematical operations, rather than as image
        operations.
 */
-static void CompositeHSB(const Quantum red,const Quantum green,
-  const Quantum blue,double *hue,double *saturation,double *brightness)
+static void CompositeHSB(const double red,const double green,
+  const double blue,double *hue,double *saturation,double *brightness)
 {
   double
-    delta;
-
-  Quantum
+    delta,
     max,
     min;
 
@@ -301,6 +299,7 @@ static inline double MagickMin(const double x,const double y)
     return(x);
   return(y);
 }
+
 static inline double MagickMax(const double x,const double y)
 {
   if (x > y)
@@ -1144,6 +1143,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       red,
       saturation;
 
+    PixelInfo
+      destination_pixel,
+      source_pixel;
+
     register const Quantum
       *restrict p;
 
@@ -1189,6 +1192,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     hue=0.0;
     saturation=0.0;
     brightness=0.0;
+    GetPixelInfo(image,&destination_pixel);
+    GetPixelInfo(composite_image,&source_pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       MagickRealType
@@ -1408,6 +1413,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           q+=GetPixelChannels(image);
           continue;
         }
+      GetPixelInfoPixel(composite_image,p,&source_pixel);
+      GetPixelInfoPixel(image,q,&destination_pixel);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -1682,10 +1689,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Sc;
                 break;
               }
-            CompositeHSB(GetPixelRed(image,q),GetPixelGreen(image,q),
-              GetPixelBlue(image,q),&sans,&sans,&brightness);
-            CompositeHSB(GetPixelRed(composite_image,p),
-              GetPixelGreen(composite_image,p),GetPixelBlue(composite_image,p),
+            CompositeHSB(destination_pixel.red,destination_pixel.green,
+              destination_pixel.blue,&sans,&sans,&brightness);
+            CompositeHSB(source_pixel.red,source_pixel.green,source_pixel.blue,
               &hue,&saturation,&sans);
             HSBComposite(hue,saturation,brightness,&red,&green,&blue);
             switch (channel)
@@ -1849,10 +1855,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Sc;
                 break;
               }
-            CompositeHSB(GetPixelRed(image,q),GetPixelGreen(image,q),
-              GetPixelBlue(image,q),&hue,&saturation,&brightness);
-            CompositeHSB(GetPixelRed(composite_image,p),
-              GetPixelGreen(composite_image,p),GetPixelBlue(composite_image,p),
+            CompositeHSB(destination_pixel.red,destination_pixel.green,
+              destination_pixel.blue,&hue,&saturation,&brightness);
+            CompositeHSB(source_pixel.red,source_pixel.green,source_pixel.blue,
               &hue,&sans,&sans);
             HSBComposite(hue,saturation,brightness,&red,&green,&blue);
             switch (channel)
@@ -1930,10 +1935,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Sc;
                 break;
               }
-            CompositeHSB(GetPixelRed(image,q),GetPixelGreen(image,q),
-              GetPixelBlue(image,q),&hue,&saturation,&brightness);
-            CompositeHSB(GetPixelRed(composite_image,p),
-              GetPixelGreen(composite_image,p),GetPixelBlue(composite_image,p),
+            CompositeHSB(destination_pixel.red,destination_pixel.green,
+              destination_pixel.blue,&hue,&saturation,&brightness);
+            CompositeHSB(source_pixel.red,source_pixel.green,source_pixel.blue,
               &sans,&sans,&brightness);
             HSBComposite(hue,saturation,brightness,&red,&green,&blue);
             switch (channel)
@@ -2002,8 +2006,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Dc;
                 break;
               }
-            CompositeHSB(GetPixelRed(image,q),GetPixelGreen(image,q),
-              GetPixelBlue(image,q),&hue,&saturation,&brightness);
+            CompositeHSB(destination_pixel.red,destination_pixel.green,
+              destination_pixel.blue,&hue,&saturation,&brightness);
             brightness+=(0.01*percent_brightness*offset)/midpoint;
             saturation*=0.01*percent_saturation;
             HSBComposite(hue,saturation,brightness,&red,&green,&blue);
@@ -2118,10 +2122,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Sc;
                 break;
               }
-            CompositeHSB(GetPixelRed(image,q),GetPixelGreen(image,q),
-              GetPixelBlue(image,q),&hue,&saturation,&brightness);
-            CompositeHSB(GetPixelRed(composite_image,p),
-              GetPixelGreen(composite_image,p),GetPixelBlue(composite_image,p),
+            CompositeHSB(destination_pixel.red,destination_pixel.green,
+              destination_pixel.blue,&hue,&saturation,&brightness);
+            CompositeHSB(source_pixel.red,source_pixel.green,source_pixel.blue,
               &sans,&saturation,&sans);
             HSBComposite(hue,saturation,brightness,&red,&green,&blue);
             switch (channel)
