@@ -347,7 +347,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     GetPixelInfo(clut_image,clut_map+i);
-    (void) InterpolatePixelInfo(clut_image,clut_view,UndefinedInterpolatePixel,
+    (void) InterpolatePixelInfo(clut_image,clut_view,method,
       QuantumScale*i*(clut_image->columns-adjust),QuantumScale*i*
       (clut_image->rows-adjust),clut_map+i,exception);
   }
