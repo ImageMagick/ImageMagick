@@ -143,7 +143,7 @@ typedef enum
   SimpleOperatorOptionFlag  = 0x0010,  /* Simple Image processing operator */
   ListOperatorOptionFlag    = 0x0020,  /* Multi-Image processing operator */
   SpecialOptionFlag         = 0x0040,  /* Special handled Option */
-  GenesisOptionFlag         = 0x0080,  /* Genesis Command Wrapper Option  */
+  GenesisOptionFlag         = 0x0080,  /* MagickCommandGenesis() Only Option */
 
   ImageRequiredFlags        = 0x0030,  /* Flags also means Images Required */
 
