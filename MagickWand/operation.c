@@ -4425,7 +4425,7 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
 
     /* Need images, unless a "null:" output coder is used */
     if ( cli_wand->wand.images == (Image *) NULL ) {
-      if ( LocaleCompare(option,"null:") == 0 )
+      if ( LocaleCompare(arg1,"null:") == 0 )
         return;
       CLIWandExceptArgReturn(OptionError,"NoImagesForWrite",option,arg1);
     }

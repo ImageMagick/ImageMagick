@@ -17,6 +17,7 @@
 #  Test for 'validate' utility.
 #
 set -e # Exit on any error
+[ "X$srcdir" = "X" ] && srcdir=`pwd`
 . ${srcdir}/tests/common.sh
 
 ${MAGICK} pnm:- null:   < ${REFERENCE_IMAGE}
