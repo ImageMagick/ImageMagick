@@ -1758,8 +1758,21 @@ static void MagickPNGWarningHandler(png_struct *ping,png_const_charp message)
 #ifdef PNG_USER_MEM_SUPPORTED
 static png_voidp Magick_png_malloc(png_structp png_ptr,png_uint_32 size)
 {
+#if (PNG_LIBPNG_VER < 10011)
+  png_voidp
+    ret;
+
+  (void) png_ptr;
+  ret=((png_voidp) AcquireMagickMemory((size_t) size));
+
+  if (ret == NULL)
+    png_error("Insufficient memory.");
+
+  return(ret);
+#else
   (void) png_ptr;
   return((png_voidp) AcquireMagickMemory((size_t) size));
+#endif
 }
 
 /*
@@ -2011,6 +2024,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     x_resolution,
     y_resolution;
 
+  QuantumInfo
+    *quantum_info;
+
   unsigned char
     *ping_pixels;
 
@@ -2074,6 +2090,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #  endif
 #endif
 
+
+  quantum_info = (QuantumInfo *) NULL;
   image=mng_info->image;
 
   if (logging != MagickFalse)
@@ -2291,10 +2309,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_READ_sRGB_SUPPORTED)
   {
     if (mng_info->have_global_srgb)
-      {
-        image->rendering_intent=Magick_RenderingIntent_from_PNG_RenderingIntent
-          (mng_info->global_srgb_intent);
-      }
+      image->rendering_intent=Magick_RenderingIntent_from_PNG_RenderingIntent
+        (mng_info->global_srgb_intent);
 
     if (png_get_sRGB(ping,ping_info,&intent))
       {
@@ -2359,7 +2375,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          Magick_RenderingIntent_to_PNG_RenderingIntent
          (image->rendering_intent));
       png_set_gAMA(ping,ping_info,0.45455f);
-      file_gamma=0.45455;
       png_set_cHRM(ping,ping_info,
                   0.6400f, 0.3300f, 0.3000f, 0.6000f,
                   0.1500f, 0.0600f, 0.3127f, 0.3290f);
@@ -2770,10 +2785,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       (image_info->number_scenes != 0) && (mng_info->scenes_found > (ssize_t)
       (image_info->first_scene+image_info->number_scenes))))
     {
-      /* This happens later in non-ping decodes */
-      if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
-        image->storage_class=DirectClass;
-
       if (logging != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    Skipping PNG image data for scene %.20g",(double)
@@ -2819,6 +2830,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #if defined(PNG_SETJMP_NOT_THREAD_SAFE)
       UnlockSemaphoreInfo(ping_semaphore);
 #endif
+      if (quantum_info != (QuantumInfo *) NULL)
+        quantum_info = DestroyQuantumInfo(quantum_info);
 
       if (ping_pixels != (unsigned char *) NULL)
         ping_pixels=(unsigned char *) RelinquishMagickMemory(ping_pixels);
@@ -2836,6 +2849,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       return(GetFirstImageInList(image));
     }
 
+  quantum_info=AcquireQuantumInfo(image_info,image);
+
+  if (quantum_info == (QuantumInfo *) NULL)
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
 
   {
 
@@ -2864,7 +2881,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
         for (y=0; y < (ssize_t) image->rows; y++)
         {
-
           if (num_passes > 1)
             row_offset=ping_rowbytes*y;
 
@@ -2877,38 +2893,25 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           if (q == (PixelPacket *) NULL)
             break;
 
-          else
-          {
-            QuantumInfo
-              *quantum_info;
+          if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY)
+            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              GrayQuantum,ping_pixels+row_offset,exception);
 
-            quantum_info=AcquireQuantumInfo(image_info,image);
+          else if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              GrayAlphaQuantum,ping_pixels+row_offset,exception);
 
-            if (quantum_info == (QuantumInfo *) NULL)
-              ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+          else if ((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              RGBAQuantum,ping_pixels+row_offset,exception);
 
-            if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY)
-              (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-                GrayQuantum,ping_pixels+row_offset,exception);
+          else if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
+            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              IndexQuantum,ping_pixels+row_offset,exception);
 
-            else if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-              (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-                GrayAlphaQuantum,ping_pixels+row_offset,exception);
-
-            else if ((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-              (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-                RGBAQuantum,ping_pixels+row_offset,exception);
-
-            else if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
-              (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-                IndexQuantum,ping_pixels+row_offset,exception);
-
-            else /* ping_color_type == PNG_COLOR_TYPE_RGB */
-              (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-                RGBQuantum,ping_pixels+row_offset,exception);
-
-            quantum_info=DestroyQuantumInfo(quantum_info);
-          }
+          else /* ping_color_type == PNG_COLOR_TYPE_RGB */
+            (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
+              RGBQuantum,ping_pixels+row_offset,exception);
 
           if (found_transparent_pixel == MagickFalse)
             {
@@ -3198,6 +3201,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           }
       }
     }
+
+  if (quantum_info != (QuantumInfo *) NULL)
+    quantum_info=DestroyQuantumInfo(quantum_info);
 
   if (image->storage_class == PseudoClass)
     {
@@ -3539,7 +3545,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      if (png_get_valid(ping,ping_info,PNG_INFO_gAMA))
        {
          (void) FormatLocaleString(msg,MaxTextExtent,
-            "gamma=%.8g (See Gamma, above)", file_gamma);
+            "gamma=%.8g (See Gamma, above)",
+            file_gamma);
          (void) SetImageProperty(image,"png:gAMA                 ",msg);
        }
 
@@ -7685,7 +7692,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) TransformImageColorspace(image,RGBColorspace);
 
   /*
     Sometimes we get PseudoClass images whose RGB values don't match
@@ -11136,7 +11143,7 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       if (LocaleCompare(value,"0") == 0)
         mng_info->write_png_compression_level = 1;
 
-      else if (LocaleCompare(value,"1") == 0)
+      if (LocaleCompare(value,"1") == 0)
         mng_info->write_png_compression_level = 2;
 
       else if (LocaleCompare(value,"2") == 0)
