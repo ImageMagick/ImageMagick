@@ -232,6 +232,10 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
       signature_info=AcquireSignatureInfo();
       key=AcquireStringInfo(sizeof(random_seed));
       SetStringInfoDatum(key,(unsigned char *) &random_seed);
+      if ((random_seed << 1) > random_seed)
+        random_seed<<=1;
+      else
+        random_seed>>=1;
       UpdateSignature(signature_info,key);
       key=DestroyStringInfo(key);
       FinalizeSignature(signature_info);
