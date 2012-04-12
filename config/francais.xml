@@ -589,8 +589,8 @@
         <message name="CurlyBrasesNestedTooDeeply">
           trop d'imbrication de curly braces
         </message>
-        <message name="DepreciatedOption">
-          option est obsolète
+        <message name="DepreciatedOptionNoCode">
+          l'option dépréciée, incapable d'exécuter
         </message>
         <message name="DivideByZero">
           division par zéro
@@ -912,6 +912,9 @@
         </message>
       </fatalerror>
       <warning>
+        <message name="DepreciatedOption">
+          option est obsolète
+        </message>
         <message name="GeometryDoesNotContainImage">
           image non incluse dans la géométrie
         </message>

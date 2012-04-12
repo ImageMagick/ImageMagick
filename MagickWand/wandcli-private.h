@@ -30,6 +30,11 @@ extern "C" {
   (void) CLIThrowException(cli_wand,GetMagickModule(),severity,tag, \
        "'%s' '%s'",option, arg)
 
+#define CLIWandWarnDepreciated(message) \
+  if ( (cli_wand->process_flags & ProcessWarnDepreciated) != 0 ) \
+    (void) CLIThrowException(cli_wand,GetMagickModule(),OptionWarning, \
+       "DeprecatedOption", "'%s' use \"%s\" instead",option,message)
+
 #define CLIWandExceptionFile(severity,tag,context) \
 { char *message=GetExceptionMessage(errno); \
   (void) CLIThrowException(cli_wand,GetMagickModule(),severity,tag, \
@@ -50,6 +55,7 @@ extern "C" {
   { CLIWandExceptionArg(severity,tag,option,arg); return; }
 
 
+
 /* Define how options should be processed */
 typedef enum
 {
@@ -63,7 +69,7 @@ typedef enum
   ProcessExitOption           = 0x0100,  /* allow '-exit' use */
   ProcessScriptOption         = 0x0200,  /* allow '-script' use */
   ProcessReadOption           = 0x0400,  /* allow '-read' use */
-  ProcessReportDepreciated    = 0x0800,  /* report depreciated options */
+  ProcessWarnDepreciated      = 0x0800,  /* warn about depreciated options */
 
   /* Option Processing Flags */
   ProcessOneOptionOnly        = 0x4000,  /* Process one option only */

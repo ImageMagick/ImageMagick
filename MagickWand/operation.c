@@ -466,7 +466,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("affine",option+1) == 0)
         {
-          /* DEPRECIATED: _draw_info setting only: for -draw and -transform */
+          CLIWandWarnDepreciated("-draw 'affine ...'");
           if (IfSetOption)
             (void) ParseAffineGeometry(arg1,&_draw_info->affine,_exception);
           else
@@ -572,8 +572,8 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("box",option+1) == 0)
         {
-          /* DEPRECIATED - now "undercolor" */
-          CLISettingOptionInfo(cli_wand,"undercolor",arg1, arg2);
+          CLIWandWarnDepreciated("-undercolor");
+          CLISettingOptionInfo(cli_wand,"-undercolor",arg1, arg2);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -1030,6 +1030,11 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
               CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
             (void) SetLogFormat(arg1);
           }
+          break;
+        }
+      if (LocaleCompare("lowlight-color",option+1) == 0)
+        {
+          (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           break;
         }
       if (LocaleCompare("loop",option+1) == 0)
@@ -2036,7 +2041,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("contrast",option+1) == 0)
         {
-          /* DEPRECIATED: The -/+level provides far more controlled form */
+          CLIWandWarnDepreciated(normal_op?"-level":"+level");
           (void) ContrastImage(_image,normal_op,_exception);
           break;
         }
@@ -2451,8 +2456,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             _image->gamma=StringToDouble(arg1,(char **) NULL);
           break;
         }
-      if ((LocaleCompare("gaussian-blur",option+1) == 0) ||
-          (LocaleCompare("gaussian",option+1) == 0))
+      if (LocaleCompare("gaussian-blur",option+1) == 0)
         {
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
@@ -2462,6 +2466,11 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           new_image=GaussianBlurImage(_image,geometry_info.rho,
             geometry_info.sigma,_exception);
           break;
+        }
+      if (LocaleCompare("gaussian",option+1) == 0)
+        {
+          CLIWandWarnDepreciated("-gaussian-blur");
+          CLISimpleOperatorImage(cli_wand,"-gaussian-blur",arg1,NULL);
         }
       if (LocaleCompare("geometry",option+1) == 0)
         {
@@ -2670,26 +2679,14 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry.height,1.0*geometry.x,1.0*geometry.y,_exception);
           break;
         }
-      if (LocaleCompare("lowlight-color",option+1) == 0)
-        {
-          (void) SetImageArtifact(_image,option+1,arg1);
-          break;
-        }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
     case 'm':
     {
       if (LocaleCompare("map",option+1) == 0)
         {
-          Image
-            *remap_image;
-
-          /* DEPRECIATED use -remap */
-          remap_image=GetImageCache(_image_info,arg1,_exception);
-          if (remap_image == (Image *) NULL)
-            break;
-          (void) RemapImage(_quantize_info,_image,remap_image,_exception);
-          remap_image=DestroyImage(remap_image);
+          CLIWandWarnDepreciated("-remap");
+          CLISimpleOperatorImage(cli_wand,"-remap",NULL,NULL);
           break;
         }
       if (LocaleCompare("mask",option+1) == 0)
@@ -2712,28 +2709,22 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("matte",option+1) == 0)
         {
-          /* DEPRECIATED */
+          CLIWandWarnDepreciated(IfNormalOp?"-alpha Set":"-alpha Off");
           (void) SetImageAlphaChannel(_image,IfNormalOp ? SetAlphaChannel :
                          DeactivateAlphaChannel, _exception);
           break;
         }
       if (LocaleCompare("median",option+1) == 0)
         {
-          /* DEPRECIATED - use -statistic Median */
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          CLIWandWarnDepreciated("-statistic Median");
           CLISimpleOperatorImage(cli_wand,"-statistic","Median",arg1);
           break;
         }
       if (LocaleCompare("mode",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          flags=ParseGeometry(arg1,&geometry_info);
-          if ((flags & SigmaValue) == 0)
-            geometry_info.sigma=geometry_info.rho;
-          new_image=StatisticImage(_image,ModeStatistic,(size_t)
-            geometry_info.rho,(size_t) geometry_info.sigma,_exception);
+          /* FUTURE: note this is also a special "montage" option */
+          CLIWandWarnDepreciated("-statistic Mode");
+          CLISimpleOperatorImage(cli_wand,"-statistic","Mode",arg1);
           break;
         }
       if (LocaleCompare("modulate",option+1) == 0)
@@ -2811,37 +2802,28 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("noise",option+1) == 0)
         {
+          double
+            attenuate;
+
+          const char*
+            value;
+
           if (IfNormalOp)
             {
-              if (IfMagickFalse(IsGeometry(arg1)))
-                CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-              flags=ParseGeometry(arg1,&geometry_info);
-              if ((flags & SigmaValue) == 0)
-                geometry_info.sigma=geometry_info.rho;
-              new_image=StatisticImage(_image,NonpeakStatistic,(size_t)
-                geometry_info.rho,(size_t) geometry_info.sigma,_exception);
+              CLIWandWarnDepreciated("-statistic NonPeak");
+              CLISimpleOperatorImage(cli_wand,"-statistic","NonPeak",arg1);
+              break;
             }
-          else
-            {
-              double
-                attenuate;
-
-              const char*
-                value;
-
-              parse=ParseCommandOption(MagickNoiseOptions,MagickFalse,arg1);
-              if ( parse < 0 )
-                CLIWandExceptArgBreak(OptionError,"UnrecognizedNoiseType",
-                    option,arg1);
-              value=GetImageOption(_image_info,"attenuate");
-              if  (value != (const char *) NULL)
-                attenuate=StringToDouble(value,(char **) NULL);
-              else
-                attenuate=1.0;
-
-              new_image=AddNoiseImage(_image,(NoiseType)parse,attenuate,
-                   _exception);
-            }
+          parse=ParseCommandOption(MagickNoiseOptions,MagickFalse,arg1);
+          if ( parse < 0 )
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedNoiseType",
+                option,arg1);
+          attenuate=1.0;
+          value=GetImageOption(_image_info,"attenuate");
+          if  (value != (const char *) NULL)
+            attenuate=StringToDouble(value,(char **) NULL);
+          new_image=AddNoiseImage(_image,(NoiseType)parse,attenuate,
+               _exception);
           break;
         }
       if (LocaleCompare("normalize",option+1) == 0)
@@ -3015,6 +2997,11 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) RandomThresholdImage(_image,arg1,_exception);
           break;
+        }
+      if (LocaleCompare("recolor",option+1) == 0)
+        {
+          CLIWandWarnDepreciated("-color-matrix");
+          CLISimpleOperatorImage(cli_wand,"-color-matrix",arg1,NULL);
         }
       if (LocaleCompare("remap",option+1) == 0)
         {
@@ -3315,7 +3302,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                  option,arg1);
           if (IfMagickFalse(IsGeometry(arg2)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg2);
-          (void) ParseGeometry(arg2,&geometry_info);
+          flags=ParseGeometry(arg2,&geometry_info);
+          if ((flags & SigmaValue) == 0)
+            geometry_info.sigma=geometry_info.rho;
           new_image=StatisticImage(_image,(StatisticType)parse,
                (size_t) geometry_info.rho,(size_t) geometry_info.sigma,
                _exception);
@@ -3371,7 +3360,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("transform",option+1) == 0)
         {
-          /* DEPRECIATED -- should really use Distort AffineProjection */
+          CLIWandWarnDepreciated("+distort AffineProjection");
           new_image=AffineTransformImage(_image,&_draw_info->affine,_exception);
           break;
         }
@@ -3648,7 +3637,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
         }
       if (LocaleCompare("average",option+1) == 0)
         {
-          /* DEPRECIATED - use -evaluate-sequence Mean */
+          CLIWandWarnDepreciated("-evaluate-sequence Mean");
           CLIListOperatorImages(cli_wand,"-evaluate-sequence","Mean",NULL);
           break;
         }
@@ -3772,7 +3761,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("deconstruct",option+1) == 0)
         {
-          /* DEPRECIATED - use -layers CompareAny */
+          CLIWandWarnDepreciated("-layer CompareAny");
           CLIListOperatorImages(cli_wand,"-layer","CompareAny",NULL);
           break;
         }
@@ -4070,7 +4059,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("map",option+1) == 0)
         {
-          /* DEPRECIATED use +remap */
+          CLIWandWarnDepreciated("+remap");
           (void) RemapImages(_quantize_info,_images,(Image *) NULL,_exception);
           break;
         }

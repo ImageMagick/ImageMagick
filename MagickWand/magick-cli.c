@@ -516,12 +516,8 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
 #endif
 
     if ( (option_type & DeprecateOptionFlag) != 0 ) {
-      if ( (cli_wand->process_flags & ProcessReportDepreciated) != 0 ) {
-        CLIWandException(OptionWarning,"DeprecatedOption",option);
-        if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-          return(end);
-        /* fall through - do the depreciated option */
-      }
+      CLIWandException(OptionError,"DeprecatedOptionNoCode",option);
+      goto next_argument;
     }
     if ( (option_type & GenesisOptionFlag) != 0 ) {
       goto next_argument;  /* ignore MagickCommandGenesis() Only Option */
