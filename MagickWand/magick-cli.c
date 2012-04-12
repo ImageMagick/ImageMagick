@@ -516,13 +516,15 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
 #endif
 
     if ( (option_type & DeprecateOptionFlag) != 0 ) {
-      CLIWandException(OptionWarning,"DeprecatedOption",option);
-      if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-        return(end);
-      /* fall through - do the depreciated option */
+      if ( (cli_wand->process_flags & ProcessReportDepreciated) != 0 ) {
+        CLIWandException(OptionWarning,"DeprecatedOption",option);
+        if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+          return(end);
+        /* fall through - do the depreciated option */
+      }
     }
     if ( (option_type & GenesisOptionFlag) != 0 ) {
-      goto next_argument;  /* ignore genesis options */
+      goto next_argument;  /* ignore MagickCommandGenesis() Only Option */
     }
     if (((option_type & ImageRequiredFlags) != 0 ) &&
         ( cli_wand->wand.images == (Image *)NULL ) ) {
