@@ -2642,9 +2642,9 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
           black_point,white_point,gamma,(MagickRealType)
           image->colormap[i].blue));
       if ((channel & OpacityChannel) != 0)
-        image->colormap[i].opacity=(Quantum) ClampToQuantum(LevelPixel(
-          black_point,white_point,gamma,(MagickRealType)
-          image->colormap[i].opacity));
+        image->colormap[i].opacity=QuantumRange-(Quantum) ClampToQuantum(
+          LevelPixel(black_point,white_point,gamma,(MagickRealType)
+          (QuantumRange-image->colormap[i].opacity)));
       }
   /*
     Level image.
@@ -2690,7 +2690,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
       if (((channel & OpacityChannel) != 0) &&
           (image->matte == MagickTrue))
         SetPixelAlpha(q,ClampToQuantum(LevelPixel(black_point,white_point,gamma,
-          (MagickRealType) GetPixelOpacity(q))));
+          (MagickRealType) GetPixelAlpha(q))));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetPixelIndex(indexes+x,ClampToQuantum(LevelPixel(black_point,
