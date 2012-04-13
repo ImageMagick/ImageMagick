@@ -121,15 +121,26 @@ MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
 %      SemaphoreInfo *AllocateSemaphoreInfo(void)
 %
 */
+
+static inline size_t MagickMax(const size_t x,const size_t y)
+{
+  if (x > y)
+    return(x);
+  return(y);
+}
+
 MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
 {
+#define AlignedSize  (16*sizeof(void *))
+
   SemaphoreInfo
     *semaphore_info;
 
   /*
     Allocate semaphore.
   */
-  semaphore_info=(SemaphoreInfo *) malloc(sizeof(SemaphoreInfo));
+  semaphore_info=(SemaphoreInfo *) malloc(MagickMax(sizeof(*semaphore_info),
+    AlignedSize));
   if (semaphore_info == (SemaphoreInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(semaphore_info,0,sizeof(SemaphoreInfo));
