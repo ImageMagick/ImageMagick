@@ -280,7 +280,7 @@ static const OptionInfo
     { "+colormap", 0L, NonMagickOptionFlag, MagickFalse },
     { "-colormap", 1L, NonMagickOptionFlag, MagickFalse },
     { "+colors", 1L, DeprecateOptionFlag, MagickTrue },
-    { "-colors", 1L, ImageInfoOptionFlag, MagickFalse },
+    { "-colors", 1L, SimpleOperatorOptionFlag, MagickFalse },
     { "+colorspace", 0L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
     { "-colorspace", 1L, ImageInfoOptionFlag | SimpleOperatorOptionFlag, MagickFalse },
     { "+combine", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
