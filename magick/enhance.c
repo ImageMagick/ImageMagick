@@ -2820,7 +2820,8 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
       if ((channel & BlueChannel) != 0)
         image->colormap[i].blue=LevelizeValue(image->colormap[i].blue);
       if ((channel & OpacityChannel) != 0)
-        image->colormap[i].opacity=LevelizeValue(image->colormap[i].opacity);
+        image->colormap[i].opacity=QuantumRange-LevelizeValue(
+             QuantumRange-image->colormap[i].opacity);
     }
   /*
     Level image.
@@ -2862,7 +2863,7 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
         SetPixelBlue(q,LevelizeValue(GetPixelBlue(q)));
       if (((channel & OpacityChannel) != 0) &&
           (image->matte == MagickTrue))
-        SetPixelOpacity(q,LevelizeValue(GetPixelOpacity(q)));
+        SetPixelAlpha(q,LevelizeValue(GetPixelAlpha(q)));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetPixelIndex(indexes+x,LevelizeValue(
