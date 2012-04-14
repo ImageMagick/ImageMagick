@@ -2560,10 +2560,8 @@ MagickExport char *GetNextImageProperty(const Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  InterpretImageProperties() replaces any embedded formatting characters with
-%  the appropriate image property and returns the interpreted text.
-%
-%  The returned interpreted text shoud be freed using DestoryString() or
-%  RelinquishMagickMemory() when finished.
+%  the appropriate image property and returns the interpreted text.  Free with
+%  DestoryString() or RelinquishMagickMemory().
 %
 %  The format of the InterpretImageProperties method is:
 %
