@@ -125,7 +125,7 @@ static SemaphoreInfo
   *random_semaphore = (SemaphoreInfo *) NULL;
 
 static unsigned long
-  random_seed = ~0UL;
+  secret_key = ~0UL;
 
 static MagickBooleanType
   gather_true_random = MagickFalse;
@@ -187,7 +187,7 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
     random_info->signature_info));
   ResetStringInfo(random_info->reservoir);
   random_info->normalize=1.0/(~0UL);
-  random_info->secret_key=random_seed;
+  random_info->secret_key=secret_key;
   random_info->protocol_major=RandomProtocolMajorVersion;
   random_info->protocol_minor=RandomProtocolMinorVersion;
   random_info->semaphore=AllocateSemaphoreInfo();
@@ -769,34 +769,6 @@ MagickExport void RandomComponentTerminus(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e e d P s e u d o R a n d o m G e n e r a t o r                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SeedPseudoRandomGenerator() initializes the pseudo-random number generator
-%  with a random seed.
-%
-%  The format of the SeedPseudoRandomGenerator method is:
-%
-%      void SeedPseudoRandomGenerator(const unsigned long seed)
-%
-%  A description of each parameter follows:
-%
-%    o seed: the seed.
-%
-*/
-MagickExport void SeedPseudoRandomGenerator(const unsigned long seed)
-{
-  random_seed=seed;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   S e t R a n d o m K e y                                                   %
 %                                                                             %
 %                                                                             %
@@ -891,6 +863,39 @@ MagickExport void SetRandomKey(RandomInfo *random_info,const size_t length,
         p[i]=datum[i];
     }
   UnlockSemaphoreInfo(random_info->semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t R a n d o m S e c r e t K e y                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetRandomSecretKey() sets the pseudo-random number generator secret key.
+%
+%  The format of the SetRandomSecretKey method is:
+%
+%      void SetRandomSecretKey(const unsigned long key)
+%
+%  A description of each parameter follows:
+%
+%    o key: the secret key.
+%
+*/
+
+MagickExport void SeedPseudoRandomGenerator(const unsigned long seed)
+{
+  SetRandomSecretKey(seed);
+}
+
+MagickExport void SetRandomSecretKey(const unsigned long key)
+{
+  secret_key=key;
 }
 
 /*

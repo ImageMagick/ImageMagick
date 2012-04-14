@@ -1035,7 +1035,7 @@ extern "C" {
 #define SampleImage  PrependMagickMethod(SampleImage)
 #define ScaleImage  PrependMagickMethod(ScaleImage)
 #define ScaleResampleFilter  PrependMagickMethod(ScaleResampleFilter)
-#define SeedPseudoRandomGenerator  PrependMagickMethod(SeedPseudoRandomGenerator)
+#define SetRandomSecretKey  PrependMagickMethod(SetRandomSecretKey)
 #define SeekBlob  PrependMagickMethod(SeekBlob)
 #define SegmentImage  PrependMagickMethod(SegmentImage)
 #define SelectiveBlurImageChannel  PrependMagickMethod(SelectiveBlurImageChannel)
