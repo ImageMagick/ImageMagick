@@ -174,9 +174,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     return(MagickFalse);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
-  if ((target->opacity != OpaqueOpacity) && (image->matte == MagickFalse))
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
-  if (image->matte == MagickFalse)
+  if ((image->matte == MagickFalse) &&
+      (draw_info->fill.opacity != OpaqueOpacity))
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
   /*
     Set floodfill state.
