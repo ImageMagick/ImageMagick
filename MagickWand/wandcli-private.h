@@ -33,7 +33,7 @@ extern "C" {
 #define CLIWandWarnDepreciated(message) \
   if ( (cli_wand->process_flags & ProcessWarnDepreciated) != 0 ) \
     (void) CLIThrowException(cli_wand,GetMagickModule(),OptionWarning, \
-       "DeprecatedOption", "'%s' use \"%s\" instead",option,message)
+       "DeprecatedOption", "'%s', use \"%s\"",option,message)
 
 #define CLIWandExceptionFile(severity,tag,context) \
 { char *message=GetExceptionMessage(errno); \

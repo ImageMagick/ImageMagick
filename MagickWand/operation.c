@@ -65,6 +65,9 @@
 #define MAX_STACK_DEPTH  32
 #define UNDEFINED_COMPRESSION_QUALITY  0UL
 
+/* FUTURE: why is this default so specific? */
+#define DEFAULT_DISSIMILARITY_THRESHOLD "0.31830988618379067154"
+
 /*
   Constant declaration. (temporary exports)
 */
@@ -148,29 +151,6 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   return(image);
 }
 
-#if 0
-/*
-  FloatListOption() converts a string option of space or comma seperated
-  numbers into a list of floating point numbers, required by some operations.
-*/
-static MagickBooleanType FloatListOption(const char *option,
-     size_t *number_arguments, double **arguments, ExceptionInfo *exception)
-{
-  char
-    token[MaxTextExtent];
-
-  const char
-    *p;
-
-  MagickBooleanType
-    error;
-
-  register size_t
-    x;
-
-}
-#endif
-
 /*
   SparseColorOption() parse the complex -sparse-color argument into an
   an array of floating point values than call SparseColorImage().
@@ -217,7 +197,8 @@ static Image *SparseColorOption(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   /*
-    Limit channels according to image - and add up number of color channel.
+    Limit channels according to image
+    add up number of values needed per color.
   */
   number_colors=0;
   if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
@@ -767,6 +748,16 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) SetImageOption(_image_info,option+1,ArgOption("undefined"));
           break;
         }
+      if (LocaleCompare("dissimilarity-threshold",option+1) == 0)
+        {
+          /* FUTURE: this is only used by CompareImages() which is used
+             only by the "compare" CLI program at this time.  */
+          arg1=ArgOption(DEFAULT_DISSIMILARITY_THRESHOLD);
+          if (IfMagickFalse(IsGeometry(arg1)))
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          (void) SetImageOption(_image_info,option+1,arg1);
+          break;
+        }
       if (LocaleCompare("dither",option+1) == 0)
         {
           /* _image_info attr (on/off), _quantize_info attr (on/off)
@@ -928,6 +919,17 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
     }
+    case 'h':
+    {
+      if (LocaleCompare("highlight-color",option+1) == 0)
+        {
+          /* FUTURE: this is only used by CompareImages() which is used
+             only by the "compare" CLI program at this time.  */
+          (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
+          break;
+        }
+      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
+    }
     case 'i':
     {
       if (LocaleCompare("intent",option+1) == 0)
@@ -1034,6 +1036,8 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("lowlight-color",option+1) == 0)
         {
+          /* FUTURE: this is only used by CompareImages() which is used
+             only by the "compare" CLI program at this time.  */
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
           break;
         }
@@ -1057,6 +1061,16 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) QueryColorCompliance(ArgOption(MatteColor),AllCompliance,
              &_image_info->matte_color,_exception);
           break;
+        } 
+      if (LocaleCompare("metric",option+1) == 0)
+        {
+          /* FUTURE: this is only used by CompareImages() which is used
+             only by the "compare" CLI program at this time.  */
+          parse=ParseCommandOption(MagickMetricOptions,MagickFalse,arg1);
+          if ( parse < 0 )
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedMetricType",
+                option,arg1);
+          (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
         }
       if (LocaleCompare("monitor",option+1) == 0)
         {
@@ -1348,6 +1362,13 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
             CLIWandExceptArgBreak(OptionError,"UnrecognizedStyleType",
                  option,arg1);
           _draw_info->style=(StyleType) parse;
+          break;
+        }
+      if (LocaleCompare("subimage-search",option+1) == 0)
+        {
+        /* FUTURE: this is only used by CompareImages() which is used
+            only by the "compare" CLI program at this time.  */
+          (void) SetImageOption(_image_info,option+1,ArgBooleanString);
           break;
         }
       if (LocaleCompare("synchronize",option+1) == 0)
@@ -2152,20 +2173,13 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("distort",option+1) == 0)
         {
           char
-            *args,
-            token[MaxTextExtent];
-
-          const char
-            *p;
+            *arg;
 
           double
-            *arguments;
+            *args;
 
-          register ssize_t
-            x;
-
-          size_t
-            number_arguments;
+          ssize_t
+            count;
 
           parse = ParseCommandOption(MagickDistortOptions,MagickFalse,arg1);
           if ( parse < 0 )
@@ -2189,42 +2203,19 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                     (size_t)2,resize_args,MagickTrue,_exception);
                break;
             }
-          /* handle percent arguments */
-          args=InterpretImageProperties(_image_info,_image,arg2,_exception);
-          if (args == (char *) NULL)
+          /* allow percent escapes in argument string */
+          arg=InterpretImageProperties(_image_info,_image,arg2,_exception);
+          if (arg == (char *) NULL)
             break;
-          /* convert arguments into an array of doubles
-             FUTURE: make this a separate function.
-             Also make use of new 'sentinal' feature to avoid need for
-             tokenization.
-          */
-          p=(char *) args;
-          for (x=0; *p != '\0'; x++)
-          {
-            GetMagickToken(p,&p,token);
-            if (*token == ',')
-              GetMagickToken(p,&p,token);
-          }
-          number_arguments=(size_t) x;
-          arguments=(double *) AcquireQuantumMemory(number_arguments,
-            sizeof(*arguments));
-          if (arguments == (double *) NULL)
-            CLIWandExceptionBreak(ResourceLimitFatalError,
-                                "MemoryAllocationFailed",option);
-          (void) ResetMagickMemory(arguments,0,number_arguments*
-                        sizeof(*arguments));
-          p=(char *) args;
-          for (x=0; (x < (ssize_t) number_arguments) && (*p != '\0'); x++)
-          {
-            GetMagickToken(p,&p,token);
-            if (*token == ',')
-              GetMagickToken(p,&p,token);
-            arguments[x]=StringToDouble(token,(char **) NULL);
-          }
-          args=DestroyString(args);
-          new_image=DistortImage(_image,(DistortImageMethod) parse,
-               number_arguments,arguments,plus_alt_op,_exception);
-          arguments=(double *) RelinquishMagickMemory(arguments);
+          /* convert argument string into an array of doubles */
+          args = StringToArrayOfDoubles(arg,&count,_exception);
+          arg=DestroyString(arg);
+          if (args == (double *)NULL )
+            CLIWandExceptArgBreak(OptionError,"InvalidNumberList",option,arg2);
+
+          new_image=DistortImage(_image,(DistortImageMethod) parse,count,args,
+               plus_alt_op,_exception);
+          args=(double *) RelinquishMagickMemory(args);
           break;
         }
       if (LocaleCompare("draw",option+1) == 0)
@@ -2386,59 +2377,31 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("function",option+1) == 0)
         {
           char
-            *arguments,
-            token[MaxTextExtent];
-
-          const char
-            *p;
+            *arg;
 
           double
-            *parameters;
+            *args;
 
-          register ssize_t
-            x;
+          ssize_t
+            count;
 
-          size_t
-            number_parameters;
-
-          /*
-            Function Modify Image Values
-            FUTURE: code should be almost a duplicate of that is "distort"
-          */
           parse=ParseCommandOption(MagickFunctionOptions,MagickFalse,arg1);
           if ( parse < 0 )
             CLIWandExceptArgBreak(OptionError,"UnrecognizedFunction",
                  option,arg1);
-          arguments=InterpretImageProperties(_image_info,_image,arg2,
-            _exception);
-          if (arguments == (char *) NULL)
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg2);
-          p=(char *) arguments;
-          for (x=0; *p != '\0'; x++)
-          {
-            GetMagickToken(p,&p,token);
-            if (*token == ',')
-              GetMagickToken(p,&p,token);
-          }
-          number_parameters=(size_t) x;
-          parameters=(double *) AcquireQuantumMemory(number_parameters,
-            sizeof(*parameters));
-          if (parameters == (double *) NULL)
-            ThrowWandFatalException(ResourceLimitFatalError,
-              "MemoryAllocationFailed",_image->filename);
-          (void) ResetMagickMemory(parameters,0,number_parameters*
-            sizeof(*parameters));
-          p=(char *) arguments;
-          for (x=0; (x < (ssize_t) number_parameters) && (*p != '\0'); x++) {
-            GetMagickToken(p,&p,token);
-            if (*token == ',')
-              GetMagickToken(p,&p,token);
-            parameters[x]=StringToDouble(token,(char **) NULL);
-          }
-          arguments=DestroyString(arguments);
-          (void) FunctionImage(_image,(MagickFunction)parse,number_parameters,
-                  parameters,_exception);
-          parameters=(double *) RelinquishMagickMemory(parameters);
+          /* allow percent escapes in argument string */
+          arg=InterpretImageProperties(_image_info,_image,arg2,_exception);
+          if (arg == (char *) NULL)
+            break;
+          /* convert argument string into an array of doubles */
+          args = StringToArrayOfDoubles(arg,&count,_exception);
+          arg=DestroyString(arg);
+          if (args == (double *)NULL )
+            CLIWandExceptArgBreak(OptionError,"InvalidNumberList",option,arg2);
+
+          (void) FunctionImage(_image,(MagickFunction)parse,count,args,
+               _exception);
+          args=(double *) RelinquishMagickMemory(args);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -2494,15 +2457,6 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           else
             new_image=ResizeImage(_image,geometry.width,geometry.height,
               _image->filter,_exception);
-          break;
-        }
-      CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
-    }
-    case 'h':
-    {
-      if (LocaleCompare("highlight-color",option+1) == 0)
-        {
-          (void) SetImageArtifact(_image,option+1,arg1);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -3237,8 +3191,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma=(double) QuantumRange*geometry_info.sigma/
               100.0;
           (void) SigmoidalContrastImage(_image,normal_op,geometry_info.rho,
-               geometry_info.sigma,
-            _exception);
+               geometry_info.sigma,_exception);
           break;
         }
       if (LocaleCompare("sketch",option+1) == 0)
@@ -4102,6 +4055,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
         }
       if (LocaleCompare("process",option+1) == 0)
         {
+          /* FUTURE: better parsing using ScriptToken() from string ??? */
           char
             **arguments;
 

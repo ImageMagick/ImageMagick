@@ -616,6 +616,9 @@
         <message name="InvalidImageIndex">
           index de l'image non valide
         </message>
+        <message name="InvalidNumberList">
+          liste des numéros non valide
+        </message>
         <message name="ImagesAreNotTheSameSize">
           images diffèrent par la taille
         </message>

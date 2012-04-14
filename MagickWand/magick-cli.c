@@ -269,37 +269,28 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
     else
       CloneString(&arg2,(char *)NULL);
 
+    /*
+      Process Options
+    */
 #if MagickCommandDebug >= 3
     (void) FormatLocaleFile(stderr,
       "Script %u,%u Option: \"%s\"  Count: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
           cli_wand->line,cli_wand->line,option,count,option_type,arg1,arg2);
 #endif
+    /* Hard Depreciated Options, no code to execute - error */
+    if ( (option_type & DeprecateOptionFlag) != 0 ) {
+      CLIWandException(OptionError,"DeprecatedOptionNoCode",option);
+      if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+        break;
+      goto next_token;
+    }
 
+    /* MagickCommandGenesis() options have no place in a magick script */
     if ( (option_type & GenesisOptionFlag) != 0 ) {
-      /* Genesis Options have no place in a magick script */
       CLIWandExceptionBreak(OptionError,"InvalidUseOfOption",option);
       goto next_token;
     }
-    if ( (option_type & DeprecateOptionFlag) != 0 ) {
-      CLIWandException(OptionWarning,"DeprecatedOption",option);
-      if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-        break;
-      /* fall through - do the depreciated option */
-    }
-    if (((option_type & ImageRequiredFlags) != 0 ) &&
-        ( cli_wand->wand.images == (Image *)NULL ) ) {
-      CLIWandException(OptionError,"NoImagesFound",option);
-      goto next_token;
-    }
 
-    /* handle special script-argument options here */
-    //either continue processing command line
-    // or making use of the command line options.
-    //CLICommandOptions(cli_wand,count+1,argv, MagickScriptArgsFlags);
-
-    /*
-      Process Option from file
-    */
     if ( (option_type & SpecialOptionFlag) != 0 ) {
       if ( LocaleCompare(option,"-exit") == 0 ) {
         break; /* forced end of script */
@@ -309,6 +300,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
         CLIWandExceptionBreak(OptionError,"InvalidUseOfOption",option);
         goto next_token;
       }
+      /* FUTURE: handle special script-argument options here */
       /* handle any other special operators now */
       CLISpecialOperator(cli_wand,option,arg1);
     }
@@ -317,9 +309,21 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
       CLISettingOptionInfo(cli_wand, option, arg1, arg2);
       // FUTURE: Sync Specific Settings into Image Properities (not global)
     }
-    if ( cli_wand->wand.images != (Image *)NULL )
-      SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
-           cli_wand->wand.exception);
+
+    /* FUTURE: The not a setting part below is a temporary hack to stop gap
+     * measure for options that are BOTH settings and optional 'Simple/List'
+     * operators.  Specifically -monitor  and  -colorspace */
+    if ( cli_wand->wand.images == (Image *)NULL ) {
+      if (((option_type & ImageRequiredFlags) != 0 ) &&
+          ((option_type & SettingOptionFlags) == 0 ))  /* temp hack */
+        CLIWandException(OptionError,"NoImagesFound",option);
+      goto next_token;
+    }
+
+    /* FUTURE: this is temporary - get 'settings' to handle
+       distribution of settings to images attributes,proprieties,artifacts */
+    SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
+          cli_wand->wand.exception);
 
     if ( (option_type & SimpleOperatorOptionFlag) != 0)
       CLISimpleOperatorImages(cli_wand, option, arg1, arg2);
@@ -509,24 +513,23 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
     arg1 = ( count >= 1 ) ? argv[i+1] : (char *)NULL;
     arg2 = ( count >= 2 ) ? argv[i+2] : (char *)NULL;
 
+    /*
+      Process Known Options
+    */
 #if MagickCommandDebug >= 3
     (void) FormatLocaleFile(stderr,
       "CLI %u Option: \"%s\"  Count: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
           i,option,count,option_type,arg1,arg2);
 #endif
-
+    /* Hard Depreciated Options, no code to execute - error */
     if ( (option_type & DeprecateOptionFlag) != 0 ) {
       CLIWandException(OptionError,"DeprecatedOptionNoCode",option);
       goto next_argument;
     }
-    if ( (option_type & GenesisOptionFlag) != 0 ) {
-      goto next_argument;  /* ignore MagickCommandGenesis() Only Option */
-    }
-    if (((option_type & ImageRequiredFlags) != 0 ) &&
-        ( cli_wand->wand.images == (Image *)NULL ) ) {
-      CLIWandException(OptionError,"NoImagesFound",option);
+
+    /* Ignore MagickCommandGenesis() only option on CLI */
+    if ( (option_type & GenesisOptionFlag) != 0 )
       goto next_argument;
-    }
 
     if ( (option_type & SpecialOptionFlag) != 0 ) {
       if ( (cli_wand->process_flags & ProcessExitOption) != 0
@@ -540,8 +543,20 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
       CLISettingOptionInfo(cli_wand, option, arg1, arg2);
       // FUTURE: Sync individual Settings into images (no SyncImageSettings())
     }
-    if ( cli_wand->wand.images != (Image *)NULL )
-      SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
+
+    /* FUTURE: The not a setting part below is a temporary hack to stop gap
+     * measure for options that are BOTH settings and optional 'Simple/List'
+     * operators.  Specifically -monitor  and  -colorspace */
+    if ( cli_wand->wand.images == (Image *)NULL ) {
+      if (((option_type & ImageRequiredFlags) != 0 ) &&
+          ((option_type & SettingOptionFlags) == 0 )  )  /* temp hack */
+        CLIWandException(OptionError,"NoImagesFound",option);
+      goto next_argument;
+    }
+
+    /* FUTURE: this is temporary - get 'settings' to handle
+       distribution of settings to images attributes,proprieties,artifacts */
+    SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
           cli_wand->wand.exception);
 
     if ( (option_type & SimpleOperatorOptionFlag) != 0)

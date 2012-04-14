@@ -58,18 +58,21 @@ extern MagickExport const char
   *GetStringInfoPath(const StringInfo *);
 
 extern MagickExport double
-  InterpretSiPrefixValue(const char *restrict,char **restrict);
+  InterpretSiPrefixValue(const char *restrict,char **restrict),
+  *StringToArrayOfDoubles(const char *,ssize_t *, ExceptionInfo *);
 
 extern MagickExport int
   CompareStringInfo(const StringInfo *,const StringInfo *),
   LocaleCompare(const char *,const char *),
   LocaleNCompare(const char *,const char *,const size_t);
 
+
 extern MagickExport MagickBooleanType
   ConcatenateString(char **,const char *),
   IsStringTrue(const char *),
   IsStringNotFalse(const char *),
   SubstituteString(char **,const char *,const char *);
+
 
 extern MagickExport size_t
   ConcatenateMagickString(char *,const char *,const size_t)
