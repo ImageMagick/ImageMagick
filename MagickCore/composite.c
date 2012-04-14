@@ -1413,8 +1413,21 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           q+=GetPixelChannels(image);
           continue;
         }
-      GetPixelInfoPixel(composite_image,p,&source_pixel);
-      GetPixelInfoPixel(image,q,&destination_pixel);
+      switch (compose)
+      {
+        case ColorizeCompositeOp:
+        case HueCompositeOp:
+        case LuminizeCompositeOp:
+        case ModulateCompositeOp:
+        case SaturateCompositeOp:
+        {
+          GetPixelInfoPixel(composite_image,p,&source_pixel);
+          GetPixelInfoPixel(image,q,&destination_pixel);
+          break;
+        }
+        default:
+          break;
+      }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
