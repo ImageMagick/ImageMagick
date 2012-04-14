@@ -2259,7 +2259,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %
 %    o count: returns number of arguments in returned array
 %
-%    o exception: return 'mamory failure' exceptions
+%    o exception: return 'memory failure' exceptions
 %
 */
 MagickExport double *StringToArrayOfDoubles(const char *string,

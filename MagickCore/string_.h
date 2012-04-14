@@ -66,13 +66,11 @@ extern MagickExport int
   LocaleCompare(const char *,const char *),
   LocaleNCompare(const char *,const char *,const size_t);
 
-
 extern MagickExport MagickBooleanType
   ConcatenateString(char **,const char *),
   IsStringTrue(const char *),
   IsStringNotFalse(const char *),
   SubstituteString(char **,const char *,const char *);
-
 
 extern MagickExport size_t
   ConcatenateMagickString(char *,const char *,const size_t)
