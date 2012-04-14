@@ -54,6 +54,7 @@ extern MagickExport void
   RandomComponentTerminus(void),
   SeedPseudoRandomGenerator(const unsigned long),
   SetRandomKey(RandomInfo *,const size_t,unsigned char *),
+  SetRandomSecretKey(const unsigned long),
   SetRandomTrueRandom(const MagickBooleanType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
