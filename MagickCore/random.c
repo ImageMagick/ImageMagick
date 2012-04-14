@@ -92,6 +92,9 @@ struct _RandomInfo
   double
     normalize;
 
+  unsigned long
+    secret_key;
+
   unsigned short
     protocol_major,
     protocol_minor;
@@ -186,9 +189,10 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
     random_info->signature_info));
   ResetStringInfo(random_info->reservoir);
   random_info->normalize=1.0/(~0UL);
-  random_info->semaphore=AllocateSemaphoreInfo();
+  random_info->secret_key=random_seed;
   random_info->protocol_major=RandomProtocolMajorVersion;
   random_info->protocol_minor=RandomProtocolMinorVersion;
+  random_info->semaphore=AllocateSemaphoreInfo();
   random_info->timestamp=(ssize_t) time(0);
   random_info->signature=MagickSignature;
   /*
@@ -219,9 +223,9 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
   /*
     Seed pseudo random number generator.
   */
-  if (random_seed == ~0UL)
+  if (random_info->secret_key == ~0UL)
     {
-      key=GetRandomKey(random_info,sizeof(random_seed));
+      key=GetRandomKey(random_info,sizeof(random_info->secret_key));
       (void) CopyMagickMemory(random_info->seed,GetStringInfoDatum(key),
         GetStringInfoLength(key));
       key=DestroyStringInfo(key);
@@ -232,12 +236,8 @@ MagickExport RandomInfo *AcquireRandomInfo(void)
         *signature_info;
 
       signature_info=AcquireSignatureInfo();
-      key=AcquireStringInfo(sizeof(random_seed));
-      SetStringInfoDatum(key,(unsigned char *) &random_seed);
-      if ((random_seed << 1) > random_seed)
-        random_seed<<=1;
-      else
-        random_seed>>=1;
+      key=AcquireStringInfo(sizeof(random_info->secret_key));
+      SetStringInfoDatum(key,(unsigned char *) &random_info->secret_key);
       UpdateSignature(signature_info,key);
       key=DestroyStringInfo(key);
       FinalizeSignature(signature_info);
@@ -655,6 +655,32 @@ MagickExport StringInfo *GetRandomKey(RandomInfo *random_info,
   key=AcquireStringInfo(length);
   SetRandomKey(random_info,length,GetStringInfoDatum(key));
   return(key);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t R a n d o m S e c r e t K e y                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetRandomSecretKey() returns the random secet key.
+%
+%  The format of the GetRandomSecretKey method is:
+%
+%      unsigned long GetRandomSecretKey(const RandomInfo *random_info)
+%
+%  A description of each parameter follows:
+%
+%    o random_info: the random info.
+*/
+MagickExport unsigned long GetRandomSecretKey(const RandomInfo *random_info)
+{
+  return(random_info->secret_key);
 }
 
 /*

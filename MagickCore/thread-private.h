@@ -31,6 +31,8 @@ extern "C" {
 #define MagickCachePrefetch(address,mode,locality)
 #endif
 
+#define omp_concurrent(concurrent) \
+  num_threads((concurrent) != MagickFalse ? omp_get_max_threads() : 1)
 #define omp_throttle(factor)  num_threads(omp_get_max_threads() >> \
    (factor) == 0 ? 1 : omp_get_max_threads() >> (factor))
 
