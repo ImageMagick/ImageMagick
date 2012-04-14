@@ -424,11 +424,7 @@ MagickExport Image *AppendImages(const Image *images,
 #define AppendImageTag  "Append/Image"
 
   CacheView
-    *append_view,
-    *image_view;
-
-  const Image
-    *image;
+    *append_view;
 
   Image
     *append_image;
@@ -466,12 +462,11 @@ MagickExport Image *AppendImages(const Image *images,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=images;
-  matte=image->matte;
+  matte=images->matte;
   number_images=1;
-  width=image->columns;
-  height=image->rows;
-  next=GetNextImageInList(image);
+  width=images->columns;
+  height=images->rows;
+  next=GetNextImageInList(images);
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     if (next->matte != MagickFalse)
@@ -491,7 +486,7 @@ MagickExport Image *AppendImages(const Image *images,
   /*
     Append images.
   */
-  append_image=CloneImage(image,width,height,MagickTrue,exception);
+  append_image=CloneImage(images,width,height,MagickTrue,exception);
   if (append_image == (Image *) NULL)
     return((Image *) NULL);
   if (SetImageStorageClass(append_image,DirectClass) == MagickFalse)
@@ -505,9 +500,22 @@ MagickExport Image *AppendImages(const Image *images,
   status=MagickTrue;
   x_offset=0;
   y_offset=0;
+  next=images;
   append_view=AcquireCacheView(append_image);
   for (n=0; n < (MagickOffsetType) number_images; n++)
   {
+    CacheView
+      *image_view;
+
+    Image
+      *image;
+
+    image=CloneImage(next,0,0,MagickTrue,exception);
+    if (image == (Image *) NULL)
+      break;
+    status=TransformImageColorspace(image,append_image->colorspace);
+    if (status == MagickFalse)
+      break;
     SetGeometry(append_image,&geometry);
     GravityAdjustGeometry(image->columns,image->rows,image->gravity,&geometry);
     if (stack != MagickFalse)
@@ -569,9 +577,6 @@ MagickExport Image *AppendImages(const Image *images,
         status=MagickFalse;
     }
     image_view=DestroyCacheView(image_view);
-    proceed=SetImageProgress(image,AppendImageTag,n,number_images);
-    if (proceed == MagickFalse)
-      break;
     if (stack == MagickFalse)
       {
         x_offset+=(ssize_t) image->columns;
@@ -582,7 +587,11 @@ MagickExport Image *AppendImages(const Image *images,
         x_offset=0;
         y_offset+=(ssize_t) image->rows;
       }
-    image=GetNextImageInList(image);
+    image=DestroyImage(image);
+    proceed=SetImageProgress(image,AppendImageTag,n,number_images);
+    if (proceed == MagickFalse)
+      break;
+    next=GetNextImageInList(next);
   }
   append_view=DestroyCacheView(append_view);
   if (status == MagickFalse)
