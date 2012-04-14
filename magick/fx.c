@@ -275,6 +275,7 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
     *noise_image;
 
   MagickBooleanType
+    concurrent,
     status;
 
   MagickOffsetType
@@ -317,10 +318,12 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
   status=MagickTrue;
   progress=0;
   random_info=AcquireRandomInfoThreadSet();
+  concurrent=GetRandomSecretKey(random_info[0]) == ~0UL ? MagickTrue :
+    MagickFalse;
   image_view=AcquireCacheView(image);
   noise_view=AcquireCacheView(noise_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_concurrent(concurrent)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -4361,6 +4364,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
     *sketch_image;
 
   MagickBooleanType
+    concurrent,
     status;
 
   MagickPixelPacket
@@ -4382,9 +4386,11 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
   status=MagickTrue;
   GetMagickPixelPacket(random_image,&zero);
   random_info=AcquireRandomInfoThreadSet();
+  concurrent=GetRandomSecretKey(random_info[0]) == ~0UL ? MagickTrue :
+    MagickFalse;
   random_view=AcquireCacheView(random_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status) omp_concurrent(concurrent)
 #endif
   for (y=0; y < (ssize_t) random_image->rows; y++)
   {

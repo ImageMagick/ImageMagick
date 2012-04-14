@@ -47,6 +47,9 @@ extern MagickExport RandomInfo
 extern MagickExport StringInfo
   *GetRandomKey(RandomInfo *,const size_t);
 
+extern MagickExport unsigned long
+  GetRandomSecretKey(const RandomInfo *);
+
 extern MagickExport void
   RandomComponentTerminus(void),
   SeedPseudoRandomGenerator(const unsigned long),

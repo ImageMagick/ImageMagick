@@ -136,9 +136,6 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
   SemaphoreInfo
     *semaphore_info;
 
-  SemaphoreInfo
-    *semaphore_info;
-
   /*
     Allocate semaphore.
   */
