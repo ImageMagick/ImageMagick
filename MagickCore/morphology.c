@@ -260,7 +260,9 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   /* clear flags - for Expanding kernel lists thorugh rotations */
    flags = NoValue;
 
-  /* Has a ':' in argument - New user kernel specification */
+  /* Has a ':' in argument - New user kernel specification
+     FUTURE: this split on ':' could be done by StringToken()
+   */
   p = strchr(kernel_string, ':');
   if ( p != (char *) NULL && p < end)
     {
