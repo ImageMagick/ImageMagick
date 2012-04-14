@@ -622,6 +622,9 @@
         <message name="InvalidImageIndex">
           invalid image index
         </message>
+        <message name="InvalidNumberList">
+          invalid list of numbers
+        </message>
         <message name="ImagesAreNotTheSameSize">
           images are not the same size
         </message>
