@@ -1435,6 +1435,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
     flags;
 
   MagickBooleanType
+    concurrent,
     status;
 
   MagickOffsetType
@@ -1461,6 +1462,8 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
   assert(exception->signature == MagickSignature);
   if (thresholds == (const char *) NULL)
     return(MagickTrue);
+  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+    return(MagickFalse);
   GetPixelInfo(image,&threshold);
   min_threshold=0.0;
   max_threshold=(MagickRealType) QuantumRange;
@@ -1479,12 +1482,12 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
-    return(MagickFalse);
   random_info=AcquireRandomInfoThreadSet();
+  concurrent=GetRandomSecretKey(random_info[0]) == ~0UL ? MagickTrue :
+    MagickFalse;
   image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(progress,status)
+  #pragma omp parallel for schedule(static,8) shared(progress,status) omp_concurrent(concurrent)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
