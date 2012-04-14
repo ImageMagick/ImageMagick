@@ -886,7 +886,7 @@ MagickExport void SetRandomKey(RandomInfo *random_info,const size_t length,
 %
 %  A description of each parameter follows:
 %
-%    o seed: the seed.
+%    o key: the secret seed.
 %
 */
 MagickExport void SetRandomSecretKey(const unsigned long key)
