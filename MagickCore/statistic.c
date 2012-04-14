@@ -809,8 +809,6 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
-  concurrent=GetRandomSecretKey(random_info[0]) == ~0UL ? MagickTrue :
-    MagickFalse;
   random_info=AcquireRandomInfoThreadSet();
   concurrent=GetRandomSecretKey(random_info[0]) == ~0UL ? MagickTrue :
     MagickFalse;
