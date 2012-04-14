@@ -777,19 +777,19 @@ MagickPrivate void RandomComponentTerminus(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SeedPseudoRandomGenerator() initializes the pseudo-random number generator
+%  SetRandomSecretKey() initializes the pseudo-random number generator
 %  with a random seed.
 %
-%  The format of the SeedPseudoRandomGenerator method is:
+%  The format of the SetRandomSecretKey method is:
 %
-%      void SeedPseudoRandomGenerator(const unsigned long seed)
+%      void SetRandomSecretKey(const unsigned long seed)
 %
 %  A description of each parameter follows:
 %
 %    o seed: the seed.
 %
 */
-MagickExport void SeedPseudoRandomGenerator(const unsigned long seed)
+MagickExport void SetRandomSecretKey(const unsigned long seed)
 {
   random_seed=seed;
 }

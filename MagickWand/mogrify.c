@@ -7004,11 +7004,11 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
             if (*option == '+')
               {
                 seed=(size_t) time((time_t *) NULL);
-                SeedPseudoRandomGenerator(seed);
+                SetRandomSecretKey(seed);
                 break;
               }
             seed=StringToUnsignedLong(argv[i+1]);
-            SeedPseudoRandomGenerator(seed);
+            SetRandomSecretKey(seed);
             break;
           }
         if (LocaleCompare("size",option+1) == 0)

@@ -1277,7 +1277,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         {
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          SeedPseudoRandomGenerator(
+          SetRandomSecretKey(
                IfSetOption ? (size_t) StringToUnsignedLong(arg1)
                            : (size_t) time((time_t *) NULL) );
           break;
