@@ -20,16 +20,16 @@
 %  Copyright 1999-2012 ImageMagick Studio LLC, a non-profit organization      %
 %  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
-%  You may not use this file except in compliance with the License.  You may  %
-%  obtain a copy of the License at                                            %
+%  You may not use this file except in compliance with the license.  You may  %
+%  obtain a copy of the license at                                            %
 %                                                                             %
 %    http://www.imagemagick.org/script/license.php                            %
 %                                                                             %
-%  Unless required by applicable law or agreed to in writing, software        %
-%  distributed under the License is distributed on an "AS IS" BASIS,          %
-%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   %
-%  See the License for the specific language governing permissions and        %
-%  limitations under the License.                                             %
+%  unless required by applicable law or agreed to in writing, software        %
+%  distributed under the license is distributed on an "as is" basis,          %
+%  without warranties or conditions of any kind, either express or implied.   %
+%  See the license for the specific language governing permissions and        %
+%  limitations under the license.                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -37,7 +37,7 @@
 */
 
 /*
-  Include declarations.
+  include declarations.
 */
 #include "magick/studio.h"
 #include "magick/blob.h"
@@ -48,18 +48,20 @@
 #include "magick/locale_.h"
 #include "magick/log.h"
 #include "magick/memory_.h"
+#include "magick/nt-base.h"
 #include "magick/property.h"
 #include "magick/resource_.h"
 #include "magick/signature-private.h"
 #include "magick/string_.h"
+#include "magick/string-private.h"
 #include "magick/utility-private.h"
 
 /*
-  Static declarations.
+  static declarations.
 */
 #if !defined(MAGICKCORE_HAVE_STRCASECMP) || !defined(MAGICKCORE_HAVE_STRNCASECMP)
 static const unsigned char
-  AsciiMap[] =
+  asciimap[] =
   {
     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
     0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
@@ -99,6 +101,9 @@ static const unsigned char
 %
 %  AcquireString() allocates memory for a string and copies the source string
 %  to that memory location (and returns it).
+%
+%  The returned string shoud be freed using DestoryString() or
+%  RelinquishMagickMemory() when finished.
 %
 %  The format of the AcquireString method is:
 %
@@ -223,7 +228,7 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
 }
 
 /*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -239,6 +244,8 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
 %  If source is a NULL pointer the destination will also be set to a NULL
 %  point (any existing string is freed).  Otherwise the memory is allocated
 %  (or resized) and the source string copied into it.
+%
+%  A pointer to the copy of the source string, or NULL is returned.
 %
 %  The format of the CloneString method is:
 %
@@ -1405,6 +1412,89 @@ MagickExport double InterpretSiPrefixValue(const char *restrict string,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s S t r i n g T r u e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsStringTrue() returns MagickTrue if the value is "true", "on", "yes" or
+%  "1". Any other string or undefined returns MagickFalse.
+%
+%  Typically this is used to look at strings (options or artifacts) which
+%  has a default value of "false", when not defined.
+%
+%  The format of the IsStringTrue method is:
+%
+%      MagickBooleanType IsStringTrue(const char *value)
+%
+%  A description of each parameter follows:
+%
+%    o value: Specifies a pointer to a character array.
+%
+*/
+MagickExport MagickBooleanType IsStringTrue(const char *value)
+{
+  if (value == (const char *) NULL)
+    return(MagickFalse);
+  if (LocaleCompare(value,"true") == 0)
+    return(MagickTrue);
+  if (LocaleCompare(value,"on") == 0)
+    return(MagickTrue);
+  if (LocaleCompare(value,"yes") == 0)
+    return(MagickTrue);
+  if (LocaleCompare(value,"1") == 0)
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s S t r i n g N o t F a l s e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsStringNotFalse() returns MagickTrue, unless the string specifically
+%  has a value that makes this false.  that is if it has a value of
+%  "false", "off", "no" or "0".
+%
+%  Typically this is used to look at strings (options or artifacts) which
+%  has a default value of "true", when it has not been defined.
+%
+%  The format of the IsStringNotFalse method is:
+%
+%      MagickBooleanType IsStringNotFalse(const char *value)
+%
+%  A description of each parameter follows:
+%
+%    o value: Specifies a pointer to a character array.
+%
+*/
+MagickExport MagickBooleanType IsStringNotFalse(const char *value)
+{
+  if (value == (const char *) NULL)
+    return(MagickTrue);
+  if (LocaleCompare(value,"false") == 0)
+    return(MagickFalse);
+  if (LocaleCompare(value,"off") == 0)
+    return(MagickFalse);
+  if (LocaleCompare(value,"no") == 0)
+    return(MagickFalse);
+  if (LocaleCompare(value,"0") == 0)
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   L o c a l e C o m p a r e                                                 %
 %                                                                             %
 %                                                                             %
@@ -1952,6 +2042,82 @@ MagickExport char *StringInfoToString(const StringInfo *string_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S t r i n g I n f o T o H e x S t r i n g                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  StringInfoToHexString() converts a string info string to a C string.
+%
+%  The format of the StringInfoToHexString method is:
+%
+%      char *StringInfoToHexString(const StringInfo *string_info)
+%
+%  A description of each parameter follows:
+%
+%    o string_info: the string.
+%
+*/
+MagickExport char *StringInfoToHexString(const StringInfo *string_info)
+{
+  char
+    *string;
+
+  register const unsigned char
+    *p;
+
+  register ssize_t
+    i;
+
+  register unsigned char
+    *q;
+
+  size_t
+    length;
+
+  unsigned char
+    hex_digits[16];
+
+  length=string_info->length;
+  if (~length < MaxTextExtent)
+    ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
+  string=(char *) AcquireQuantumMemory(length+MaxTextExtent,2*sizeof(*string));
+  if (string == (char *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
+  hex_digits[0]='0';
+  hex_digits[1]='1';
+  hex_digits[2]='2';
+  hex_digits[3]='3';
+  hex_digits[4]='4';
+  hex_digits[5]='5';
+  hex_digits[6]='6';
+  hex_digits[7]='7';
+  hex_digits[8]='8';
+  hex_digits[9]='9';
+  hex_digits[10]='a';
+  hex_digits[11]='b';
+  hex_digits[12]='c';
+  hex_digits[13]='d';
+  hex_digits[14]='e';
+  hex_digits[15]='f';
+  p=string_info->datum;
+  q=(unsigned char *) string;
+  for (i=0; i < (ssize_t) string_info->length; i++)
+  {
+    *q++=hex_digits[(*p >> 4) & 0x0f];
+    *q++=hex_digits[*p & 0x0f];
+    p++;
+  }
+  *q='\0';
+  return(string);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  S t r i n g T o A r g v                                                    %
 %                                                                             %
 %                                                                             %
@@ -1959,6 +2125,12 @@ MagickExport char *StringInfoToString(const StringInfo *string_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  StringToArgv() converts a text string into command line arguments.
+%  The 'argv' array of arguments, is returned while the number of arguments
+%  is returned via the provided integer variable pointer.
+%
+%  Simple 'word' tokenizer, which allows for each word to be optionally
+%  quoted.  However it will not allow use of partial quotes, or escape
+%  characters.
 %
 %  The format of the StringToArgv method is:
 %
@@ -2060,75 +2232,85 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S t r i n g I n f o T o H e x S t r i n g                                 %
+%   S t r i n g T o A r r a y O f D o u b l e s                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  StringInfoToHexString() converts a string info string to a C string.
+%  StringToArrayOfDoubles() converts a string of space or comma seperated
+%  numbers into array of floating point numbers (doubles). Any number that
+%  failes to parse properly will produce a syntax error. As will two commas
+%  without a  number between them.  However a final comma at the end will
+%  not be regarded as an error so as to simplify automatic list generation.
 %
-%  The format of the StringInfoToHexString method is:
+%  A NULL value is returned on syntax or memory errors.
 %
-%      char *StringInfoToHexString(const StringInfo *string_info)
+%  Use RelinquishMagickMemory() to free returned array when finished.
+%
+%  The format of the StringToArrayOfDoubles method is:
+%
+%     double *StringToArrayOfDoubles(const char *string,
+%          size_t *count, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o string_info: the string.
+%    o string: the string containing the comma/space seperated values.
+%
+%    o count: returns number of arguments in returned array
+%
+%    o exception: return 'memory failure' exceptions
 %
 */
-MagickExport char *StringInfoToHexString(const StringInfo *string_info)
+MagickExport double *StringToArrayOfDoubles(const char *string,
+     ssize_t *count, ExceptionInfo *exception)
 {
-  char
-    *string;
-
-  register const unsigned char
+  const char
     *p;
+
+  char
+    *q;
+
+  double
+    *array;
 
   register ssize_t
     i;
 
-  register unsigned char
-    *q;
-
-  size_t
-    length;
-
-  unsigned char
-    hex_digits[16];
-
-  length=string_info->length;
-  if (~length < MaxTextExtent)
-    ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
-  string=(char *) AcquireQuantumMemory(length+MaxTextExtent,2*sizeof(*string));
-  if (string == (char *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"UnableToAcquireString");
-  hex_digits[0]='0';
-  hex_digits[1]='1';
-  hex_digits[2]='2';
-  hex_digits[3]='3';
-  hex_digits[4]='4';
-  hex_digits[5]='5';
-  hex_digits[6]='6';
-  hex_digits[7]='7';
-  hex_digits[8]='8';
-  hex_digits[9]='9';
-  hex_digits[10]='a';
-  hex_digits[11]='b';
-  hex_digits[12]='c';
-  hex_digits[13]='d';
-  hex_digits[14]='e';
-  hex_digits[15]='f';
-  p=string_info->datum;
-  q=(unsigned char *) string;
-  for (i=0; i < (ssize_t) string_info->length; i++)
+  /* Determine count of values, and check syntax */
+  *count=0;
+  p=string;
+  i=0;
+  while( *p != '\0' )
   {
-    *q++=hex_digits[(*p >> 4) & 0x0f];
-    *q++=hex_digits[*p & 0x0f];
-    p++;
+    (void) StringToDouble(p, &q);       /* get value - ignores leading space */
+    if (p == q) return((double *)NULL); /* no value found */
+    p=q; i++;                           /* inc value count */
+    while ( isspace((int)*p) ) p++;     /* skip spaces */
+    if ( *p == ',' )           p++;     /* skip comma */
+    while ( isspace((int)*p) ) p++;     /* and more spaces */
   }
-  *q='\0';
-  return(string);
+
+  /* Allocate floating point argument list */
+  *count=i;
+  array=(double *) AcquireQuantumMemory(i,sizeof(*array));
+  if (array == (double *) NULL) {
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+    (void) ThrowMagickException(exception,GetMagickModule(),
+         ResourceLimitFatalError,"MemoryAllocationFailed"," ");
+    return((double *)NULL);
+  }
+
+  /* Fill in the floating point values */
+  p=string;
+  i=0;
+  while( *p != '\0' && i < *count ) {
+    array[i++]=StringToDouble(p,&q);
+    p=q;
+    while ( isspace((int)*p) || *p == ',' ) p++;
+  }
+
+  return(array);
 }
 
 /*
@@ -2136,13 +2318,22 @@ MagickExport char *StringInfoToHexString(const StringInfo *string_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S t r i n g T o k e n                                                     %
++   S t r i n g T o k e n                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  StringToken() extracts a token a from the string.
+%  StringToken() Looks for any one of given delimiters and splits the string
+%  into two separate strings by replacing the delimiter character found with a
+%  nul character.
+%
+%  The given string pointer is changed to point to the string following the
+%  delimiter character found, or NULL.  A pointer to the start of the
+%  string is returned, representing the token before the delimiter.
+%
+%  In may ways this is equivent to the strtok() C library function, but with
+%  multiple delimiter characters rather than a delimiter string.
 %
 %  The format of the StringToken method is:
 %
@@ -2174,7 +2365,8 @@ MagickExport char *StringToken(const char *delimiters,char **string)
   p=(*string);
   if (p == (char *) NULL)
     return((char *) NULL);
-  for (q=p; ; )
+  q=p;
+  for ( ; ; )
   {
     c=(*p++);
     r=delimiters;
