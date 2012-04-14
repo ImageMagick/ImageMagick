@@ -588,7 +588,7 @@ MagickExport Image *AppendImages(const Image *images,
         y_offset+=(ssize_t) image->rows;
       }
     image=DestroyImage(image);
-    proceed=SetImageProgress(image,AppendImageTag,n,number_images);
+    proceed=SetImageProgress(append_image,AppendImageTag,n,number_images);
     if (proceed == MagickFalse)
       break;
     next=GetNextImageInList(next);
