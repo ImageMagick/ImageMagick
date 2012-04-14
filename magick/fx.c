@@ -708,8 +708,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
       colorize_image=DestroyImage(colorize_image);
       return((Image *) NULL);
     }
-  if ((colorize.opacity != OpaqueOpacity) &&
-      (colorize_image->matte == MagickFalse))
+  if ((colorize_image->matte == MagickFalse) &&
+      (colorize.opacity != OpaqueOpacity))
     (void) SetImageAlphaChannel(colorize_image,OpaqueAlphaChannel);
   if (opacity == (const char *) NULL)
     return(colorize_image);
@@ -769,8 +769,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
         colorize.green*pixel.green)/100.0));
       SetPixelBlue(q,((GetPixelBlue(p)*(100.0-pixel.blue)+
         colorize.blue*pixel.blue)/100.0));
-      SetPixelOpacity(q,((GetPixelOpacity(p)*(100.0-
-        pixel.opacity)+colorize.opacity*pixel.opacity)/100.0));
+      SetPixelOpacity(q,((GetPixelOpacity(p)*(100.0-pixel.opacity)+
+        colorize.opacity*pixel.opacity)/100.0));
       p++;
       q++;
     }
