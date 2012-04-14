@@ -757,7 +757,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
         status=MagickFalse;
         continue;
       }
-    GetPixelInfo(image,&pixel);
+    GetPixelInfo(colorize_image,&pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (GetPixelMask(colorize_image,q) != 0)
