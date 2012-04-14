@@ -173,7 +173,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  if ((target->matte != MagickFalse) && (image->matte == MagickFalse))
+  if ((image->matte == MagickFalse) && (draw_info->fill.matte != MagickFalse))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
   /*
     Set floodfill state.
