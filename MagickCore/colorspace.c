@@ -211,7 +211,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(colorspace != RGBColorspace);
+  assert(colorspace != sRGBColorspace);
   assert(colorspace != TransparentColorspace);
   assert(colorspace != UndefinedColorspace);
   if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
@@ -1250,7 +1250,7 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   /*
     Convert the reference image from an alternate colorspace to RGB.
   */
-  if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))
+  if ((colorspace == sRGBColorspace) || (colorspace == TransparentColorspace))
     return(TransformRGBImage(image,colorspace,exception));
   status=MagickTrue;
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
