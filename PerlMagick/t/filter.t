@@ -111,7 +111,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Level.miff', 'Level', q/
 testFilterCompare('input.miff',  q//, 'reference/filter/Magnify.miff', 'Magnify', q//, 0.00001, 0.004);
 ++$test;
 
-testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/MatteFloodfill.miff', 'MatteFloodfill', q/geometry=>"+25+45"/, 0.0, 0.0);
+testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/MatteFloodfill.miff', 'MatteFloodfill', q/geometry=>"+25+45"/, 0.2, 1.0);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/MedianFilter.miff', 'MedianFilter', q//, 0.0, 0.0);
