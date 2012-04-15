@@ -339,6 +339,12 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(noise_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -354,8 +360,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
         if ((traits == UndefinedPixelTrait) ||
             (noise_traits == UndefinedPixelTrait))
           continue;
-        if (((noise_traits & CopyPixelTrait) != 0) ||
-            (GetPixelMask(image,p) != 0))
+        if ((noise_traits & CopyPixelTrait) != 0)
           {
             SetPixelChannel(noise_image,channel,p[i],q);
             continue;
@@ -3058,6 +3063,12 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
       register ssize_t
         i;
 
+      if (GetPixelMask(image,p) != 0)
+        {
+          p+=GetPixelChannels(image);
+          q+=GetPixelChannels(fx_image);
+          continue;
+        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         MagickRealType
@@ -3076,8 +3087,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
         if ((traits == UndefinedPixelTrait) ||
             (fx_traits == UndefinedPixelTrait))
           continue;
-        if (((fx_traits & CopyPixelTrait) != 0) ||
-            (GetPixelMask(image,p) != 0))
+        if ((fx_traits & CopyPixelTrait) != 0)
           {
             SetPixelChannel(fx_image,channel,p[i],q);
             continue;
@@ -3497,6 +3507,12 @@ MagickExport Image *MorphImages(const Image *image,
           register ssize_t
             i;
 
+          if (GetPixelMask(image,p) != 0)
+            {
+              p+=GetPixelChannels(image);
+              q+=GetPixelChannels(morph_image);
+              continue;
+            }
           for (i=0; i < (ssize_t) GetPixelChannels(morph_image); i++)
           {
             PixelChannel
@@ -3512,8 +3528,7 @@ MagickExport Image *MorphImages(const Image *image,
             if ((traits == UndefinedPixelTrait) ||
                 (morph_traits == UndefinedPixelTrait))
               continue;
-            if (((morph_traits & CopyPixelTrait) != 0) ||
-                (GetPixelMask(image,p) != 0))
+            if ((morph_traits & CopyPixelTrait) != 0)
               {
                 SetPixelChannel(morph_image,channel,p[i],q);
                 continue;
