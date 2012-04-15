@@ -2628,7 +2628,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
           } while (isxdigit((int) ((unsigned char) *name)) != MagickFalse);
           depth=4*(n/4);
         }
-      color->colorspace=RGBColorspace;
+      color->colorspace=sRGBColorspace;
       color->matte=MagickFalse;
       range=GetQuantumRange(depth);
       color->red=(MagickRealType) ScaleAnyToQuantum(pixel.red,range);
@@ -2734,7 +2734,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
               ConvertHWBToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,360.0)/
                 360.0,geometry_info.sigma,geometry_info.xi,&pixel.red,
                 &pixel.green,&pixel.blue);
-          color->colorspace=RGBColorspace;
+          color->colorspace=sRGBColorspace;
           color->red=(MagickRealType) pixel.red;
           color->green=(MagickRealType) pixel.green;
           color->blue=(MagickRealType) pixel.blue;
@@ -2747,7 +2747,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
   p=GetColorCompliance(name,compliance,exception);
   if (p == (const ColorInfo *) NULL)
     return(MagickFalse);
-  color->colorspace=RGBColorspace;
+  color->colorspace=sRGBColorspace;
   color->matte=p->color.opacity != OpaqueOpacity ? MagickTrue : MagickFalse;
   color->red=(MagickRealType) p->color.red;
   color->green=(MagickRealType) p->color.green;
