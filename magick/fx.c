@@ -720,7 +720,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   pixel.red=geometry_info.rho;
   pixel.green=geometry_info.rho;
   pixel.blue=geometry_info.rho;
-  pixel.opacity=(MagickRealType) OpaqueOpacity;
+  pixel.opacity=geometry_info.rho;
   if ((flags & SigmaValue) != 0)
     pixel.green=geometry_info.sigma;
   if ((flags & XiValue) != 0)
