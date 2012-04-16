@@ -99,4 +99,4 @@ test_color Lab   sRGB
 test_color YIQ   sRGB
 test_color YCbCr sRGB
 
-$error
+eval ! $error
