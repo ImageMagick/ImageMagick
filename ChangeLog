@@ -1,3 +1,6 @@
+2012-04-16  6.7.6-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.6-6, SVN revision 7536.
+
 2012-04-11  6.7.6-6 Glenn Randers-Pehrson <glennrp@image...>
   * Always unlock the semaphore before returning from the png codec, either
     by a "return" or png_error(); changed all Magick*Exception() calls
