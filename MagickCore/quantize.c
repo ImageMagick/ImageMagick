@@ -516,7 +516,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
     if ((image->colorspace != GRAYColorspace) &&
         (IsRGBColorspace(image->colorspace) == MagickFalse) &&
         (image->colorspace != CMYColorspace))
-      (void) TransformImageColorspace((Image *) image,RGBColorspace,exception);
+      (void) TransformImageColorspace((Image *) image,sRGBColorspace,exception);
   if (AcquireImageColormap(image,cube_info->colors,exception) == MagickFalse)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
@@ -682,7 +682,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
   (void) SyncImage(image,exception);
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
       (cube_info->quantize_info->colorspace != CMYKColorspace))
-    (void) TransformImageColorspace((Image *) image,RGBColorspace,exception);
+    (void) TransformImageColorspace((Image *) image,sRGBColorspace,exception);
   return(MagickTrue);
 }
 
@@ -805,7 +805,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
     if ((image->colorspace != GRAYColorspace) &&
         (image->colorspace != CMYColorspace) &&
         (IsRGBColorspace(image->colorspace) == MagickFalse))
-      (void) TransformImageColorspace((Image *) image,RGBColorspace,exception);
+      (void) TransformImageColorspace((Image *) image,sRGBColorspace,exception);
   midpoint.red=(MagickRealType) QuantumRange/2.0;
   midpoint.green=(MagickRealType) QuantumRange/2.0;
   midpoint.blue=(MagickRealType) QuantumRange/2.0;
@@ -1000,7 +1000,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
   image_view=DestroyCacheView(image_view);
   if ((cube_info->quantize_info->colorspace != UndefinedColorspace) &&
       (cube_info->quantize_info->colorspace != CMYKColorspace))
-    (void) TransformImageColorspace((Image *) image,RGBColorspace,exception);
+    (void) TransformImageColorspace((Image *) image,sRGBColorspace,exception);
   return(MagickTrue);
 }
 

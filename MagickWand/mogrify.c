@@ -1191,7 +1191,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image,exception);
             if (*option == '+')
               {
-                (void) TransformImageColorspace(*image,RGBColorspace,exception);
+                (void) TransformImageColorspace(*image,sRGBColorspace,
+                  exception);
                 break;
               }
             colorspace=(ColorspaceType) ParseCommandOption(
