@@ -2664,7 +2664,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
 #endif
             break;
           }
-          case sRGBColorspace:
+          case RGBColorspace:
           {
             if ((QuantumScale*pixel.red) <= 0.0031308)
               pixel.red*=12.92f;
