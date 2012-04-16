@@ -196,7 +196,7 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
   (void) ResetMagickMemory(cache_info,0,sizeof(*cache_info));
   cache_info->type=UndefinedCache;
   cache_info->mode=IOMode;
-  cache_info->colorspace=RGBColorspace;
+  cache_info->colorspace=sRGBColorspace;
   cache_info->file=(-1);
   cache_info->id=GetMagickThreadId();
   cache_info->number_threads=number_threads;
