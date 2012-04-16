@@ -18,7 +18,7 @@
 
 # how to generate a one pixel (average rose) color and output its values
 in="rose: -scale 1x1"    # a one pixel image of the average color.
-out="-format '%[fx:int(255*r)],%[fx:int(255*g)],%[fx:int(255*b)]' info:-"
+out="-format '%[fx:int(255*r+.5)],%[fx:int(255*g+.5)],%[fx:int(255*b+.5)]' info:-"
 
 # ----------------
 
@@ -36,15 +36,15 @@ printf "$format2" "Too Dark Color"  "$too_dark"  "RGB(rose)->sRGB result"
 echo ''
 
 # Sanity checks
-if [ "X$average" != "X145,89,80" ]; then
+if [ "X$average" != "X146,89,80" ]; then
   echo "Sanity Failure: Average expected to be 145,89,80 - ABORTING"
   error=true
 fi
-if [ "X$too_light" != "X72,25,20" ]; then
-  echo "Sanity Failure: Too Light expected to be 72,25,20 - ABORTING"
+if [ "X$too_light" != "X73,26,21" ]; then
+  echo "Sanity Failure: Too Light expected to be 73,26,21 - ABORTING"
   error=true
 fi
-if [ "X$too_dark" != "X199,159,152" ]; then
+if [ "X$too_dark" != "X199,160,152" ]; then
   echo "Sanity Failure: Too Dark expected to be 199,159,152 - ABORTING"
   error=true
 fi
