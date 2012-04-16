@@ -41,6 +41,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/image.h"
 #include "MagickCore/list.h"
 #include "MagickCore/log.h"
@@ -482,6 +483,8 @@ MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
       combine_image=DestroyImage(combine_image);
       return((Image *) NULL);
     }
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) SetImageColorspace(combine_image,sRGBColorspace,exception);
   if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
     combine_image->matte=MagickTrue;
   /*
@@ -520,13 +523,12 @@ MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
         continue;
       }
     next=image;
-    for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+    for (i=0; i < (ssize_t) GetPixelChannels(combine_image); i++)
     {
       PixelChannel
         channel;
 
       PixelTrait
-        combine_traits,
         traits;
 
       register ssize_t
@@ -534,11 +536,9 @@ MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
 
       if (next == (Image *) NULL)
         continue;
-      channel=GetPixelChannelMapChannel(image,i);
-      traits=GetPixelChannelMapTraits(image,channel);
-      combine_traits=GetPixelChannelMapTraits(combine_image,channel);
-      if ((traits == UndefinedPixelTrait) ||
-          (combine_traits == UndefinedPixelTrait))
+      channel=GetPixelChannelMapChannel(combine_image,i);
+      traits=GetPixelChannelMapTraits(combine_image,channel);
+      if (traits == UndefinedPixelTrait)
         continue;
       image_view=AcquireCacheView(next);
       p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
