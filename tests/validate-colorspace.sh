@@ -89,7 +89,6 @@ test_color() {
 
 test_color RGB sRGB
 test_color XYZ sRGB
-test_color RGB XYZ sRGB
 test_color XYZ RGB sRGB
 
 test_color CMY   sRGB
