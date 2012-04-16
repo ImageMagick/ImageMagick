@@ -31,6 +31,7 @@ TESTS_TESTS = \
 	tests/validate-import.sh \
 	tests/validate-montage.sh \
 	tests/validate-pipe.sh \
+	tests/validate-colorspace.sh \
 	tests/validate-stream.sh \
 	tests/validate-formats-in-memory.sh \
 	tests/validate-formats-on-disk.sh
