@@ -3195,7 +3195,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         if (preview_image == (Image *) NULL)
           break;
         threshold+=0.4f;
-        (void) SegmentImage(preview_image,RGBColorspace,MagickFalse,threshold,
+        (void) SegmentImage(preview_image,sRGBColorspace,MagickFalse,threshold,
           threshold);
         (void) FormatLocaleString(label,MaxTextExtent,"segment %gx%g",
           threshold,threshold);

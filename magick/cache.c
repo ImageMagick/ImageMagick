@@ -195,7 +195,7 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
   (void) ResetMagickMemory(cache_info,0,sizeof(*cache_info));
   cache_info->type=UndefinedCache;
   cache_info->mode=IOMode;
-  cache_info->colorspace=RGBColorspace;
+  cache_info->colorspace=sRGBColorspace;
   cache_info->channels=4;
   cache_info->file=(-1);
   cache_info->id=GetMagickThreadId();
@@ -2089,7 +2089,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
       image->taint=MagickTrue;
       image->type=UndefinedType;
       if (image->colorspace == GRAYColorspace)
-        image->colorspace=RGBColorspace;
+        image->colorspace=sRGBColorspace;
       if (ValidatePixelCacheMorphology(image) == MagickFalse)
         {
           status=OpenPixelCache(image,IOMode,exception);

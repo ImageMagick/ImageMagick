@@ -5850,7 +5850,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               }
               case cmsSigRgbData:
               {
-                source_colorspace=RGBColorspace;
+                source_colorspace=sRGBColorspace;
                 source_type=(cmsUInt32Number) TYPE_RGB_16;
                 source_channels=3;
                 break;
@@ -5912,7 +5912,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               }
               case cmsSigRgbData:
               {
-                target_colorspace=RGBColorspace;
+                target_colorspace=sRGBColorspace;
                 target_type=(cmsUInt32Number) TYPE_RGB_16;
                 target_channels=3;
                 break;

@@ -241,11 +241,11 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   SetMagickPixelPacket(frame_image,&image->border_color,(IndexPacket *) NULL,
     &interior);
   GetMagickPixelPacket(frame_image,&matte);
-  matte.colorspace=RGBColorspace;
+  matte.colorspace=sRGBColorspace;
   SetMagickPixelPacket(frame_image,&image->matte_color,(IndexPacket *) NULL,
     &matte);
   GetMagickPixelPacket(frame_image,&border);
-  border.colorspace=RGBColorspace;
+  border.colorspace=sRGBColorspace;
   SetMagickPixelPacket(frame_image,&image->border_color,(IndexPacket *) NULL,
     &border);
   GetMagickPixelPacket(frame_image,&accentuate);
