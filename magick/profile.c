@@ -5970,7 +5970,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               case PerceptualIntent: intent=INTENT_PERCEPTUAL; break;
               case RelativeIntent: intent=INTENT_RELATIVE_COLORIMETRIC; break;
               case SaturationIntent: intent=INTENT_SATURATION; break;
-              default: intent=INTENT_RELATIVE_COLORIMETRIC; break;
+              default: intent=INTENT_PERCEPTUAL; break;
             }
             flags=cmsFLAGS_HIGHRESPRECALC;
 #if defined(cmsFLAGS_BLACKPOINTCOMPENSATION)
