@@ -2593,7 +2593,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
               else
                 pixel.blue=(MagickRealType) QuantumRange*(1.055*pow(
                   QuantumScale*pixel.blue,(1.0/2.4))-0.055);
-          }
+            }
             default:
               break;
           }
