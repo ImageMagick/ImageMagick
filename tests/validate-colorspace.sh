@@ -35,7 +35,15 @@ printf "$format2" "Too Light Color" "$too_light" "sRGB(rose)->RGB result"
 printf "$format2" "Too Dark Color"  "$too_dark"  "RGB(rose)->sRGB result"
 echo ''
 
+#
 # Sanity checks
+#
+# NOTE: as a extra validation on sanity checks below...
+#    eval ${MAGICK} "$in" -gamma .454545 "$out"
+# produces a value of  74,25,20   which is close to 73,26,21 below.
+#    eval ${MAGICK} "$in" -gamma 2.2 "$out"
+# produces a value of  198,158,151  whcih is close to 199,160,152 below.
+#
 if [ "X$average" != "X146,89,80" ]; then
   echo "Sanity Failure: Average expected to be 146,89,80 - ABORTING"
   error=true
