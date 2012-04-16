@@ -1018,7 +1018,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       break;
     }
     case YUVColorspace:
-    default:
     {
       /*
         Initialize YUV tables:
@@ -1046,6 +1045,28 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         x_map[i].z=0.61500f*(MagickRealType) i;
         y_map[i].z=(-0.51500f)*(MagickRealType) i;
         z_map[i].z=(-0.10000f)*(MagickRealType) i;
+      }
+      break;
+    }
+    default:
+    {
+      /*
+        Linear conversion tables.
+      */
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static)
+#endif
+      for (i=0; i <= (ssize_t) MaxMap; i++)
+      {
+        x_map[i].x=(MagickRealType) i;
+        y_map[i].x=0.0f;
+        z_map[i].x=0.0f;
+        x_map[i].y=0.0f;
+        y_map[i].y=(MagickRealType) i;
+        z_map[i].y=0.0f;
+        x_map[i].z=0.0f;
+        y_map[i].z=0.0f;
+        z_map[i].z=(MagickRealType) i;
       }
       break;
     }
