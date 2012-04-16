@@ -87,7 +87,7 @@ typedef struct _TransformPacket
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RGBTransformImage() converts the reference image from RGB to an alternate
+%  RGBTransformImage() converts the reference image from sRGB to an alternate
 %  colorspace.  The transformation matrices are not the standard ones: the
 %  weights are rescaled to normalized the range of the transformed values to
 %  be [0..QuantumRange].
@@ -333,11 +333,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       image_view=DestroyCacheView(image_view);
       image->type=image->matte == MagickFalse ? ColorSeparationType :
         ColorSeparationMatteType;
-      return(status);
-    }
-    case Rec601LumaColorspace:
-    case GRAYColorspace:
-    {
       return(status);
     }
     case HSBColorspace:
@@ -864,14 +859,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       }
       break;
     }
-    case sRGBColorspace:
+    case RGBColorspace:
     {
       /*
-        Nonlinear sRGB to linear RGB (http://www.w3.org/Graphics/Color/sRGB):
-
-          R = 1.0*R+0.0*G+0.0*B
-          G = 0.0*R+1.0*G+0.0*B
-          B = 0.0*R+0.0*G+1.0*B
+        Nonlinear sRGB to linear RGB.
+        Mostly removal of a gamma function, but with a linear component
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static)
@@ -882,10 +874,10 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           v;
 
         v=(MagickRealType) i/(MagickRealType) MaxMap;
-        if (((MagickRealType) i/(MagickRealType) MaxMap) <= 0.0031308)
-          v*=12.92f;
+        if (((MagickRealType) i/(MagickRealType) MaxMap) <= 0.04045f)
+          v/=12.92f;
         else
-          v=(MagickRealType) (1.055*pow((double) i/MaxMap,1.0/2.4)-0.055);
+          v=(MagickRealType) pow((((double) i/MaxMap)+0.055)/1.055,2.4);
         x_map[i].x=1.0f*MaxMap*v;
         y_map[i].x=0.0f*MaxMap*v;
         z_map[i].x=0.0f*MaxMap*v;
@@ -1280,7 +1272,7 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  TransformRGBImage() converts the reference image from an alternate
-%  colorspace to RGB.  The transformation matrices are not the standard ones:
+%  colorspace to sRGB.  The transformation matrices are not the standard ones:
 %  the weights are rescaled to normalize the range of the transformed values to
 %  be [0..QuantumRange].
 %
@@ -2277,11 +2269,14 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       }
       break;
     }
-    case sRGBColorspace:
+    case RGBColorspace:
     {
       /*
-        Nonlinear sRGB to linear RGB.
-        Mostly removal of a gamma function, but with a linear component
+        Nonlinear sRGB to linear RGB (http://www.w3.org/Graphics/Color/sRGB):
+
+          R = 1.0*R+0.0*G+0.0*B
+          G = 0.0*R+1.0*G+0.0*B
+          B = 0.0*R+0.0*G+1.0*B
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static)
@@ -2292,10 +2287,10 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           v;
 
         v=(MagickRealType) i/(MagickRealType) MaxMap;
-        if (((MagickRealType) i/(MagickRealType) MaxMap) <= 0.04045f)
-          v/=12.92f;
+        if (((MagickRealType) i/(MagickRealType) MaxMap) <= 0.0031308)
+          v*=12.92f;
         else
-          v=(MagickRealType) pow((((double) i/MaxMap)+0.055)/1.055,2.4);
+          v=(MagickRealType) (1.055*pow((double) i/MaxMap,1.0/2.4)-0.055);
         x_map[i].x=1.0f*MaxMap*v;
         y_map[i].x=0.0f*MaxMap*v;
         z_map[i].x=0.0f*MaxMap*v;
@@ -2555,24 +2550,23 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
 #endif
               break;
             }
-            case sRGBColorspace:
+            case RGBColorspace:
             {
               if ((QuantumScale*pixel.red) <= 0.0031308)
                 pixel.red*=12.92f;
               else
-                pixel.red=(MagickRealType) QuantumRange*(1.055*
-                  pow(QuantumScale*pixel.red,(1.0/2.4))-0.055);
+                pixel.red=(MagickRealType) QuantumRange*(1.055*pow(
+                  QuantumScale*pixel.red,(1.0/2.4))-0.055);
               if ((QuantumScale*pixel.green) <= 0.0031308)
                 pixel.green*=12.92f;
               else
-                pixel.green=(MagickRealType) QuantumRange*(1.055*
-                  pow(QuantumScale*pixel.green,(1.0/2.4))-0.055);
+                pixel.green=(MagickRealType) QuantumRange*(1.055*pow(
+                  QuantumScale*pixel.green,(1.0/2.4))-0.055);
               if ((QuantumScale*pixel.blue) <= 0.0031308)
                 pixel.blue*=12.92f;
               else
-                pixel.blue=(MagickRealType) QuantumRange*(1.055*
-                  pow(QuantumScale*pixel.blue,(1.0/2.4))-0.055);
-              break;
+                pixel.blue=(MagickRealType) QuantumRange*(1.055*pow(
+                  QuantumScale*pixel.blue,(1.0/2.4))-0.055);
             }
             default:
               break;
@@ -2644,23 +2638,24 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
 #endif
             break;
           }
-          case sRGBColorspace:
+          case RGBColorspace:
           {
             if ((QuantumScale*pixel.red) <= 0.0031308)
               pixel.red*=12.92f;
             else
-              pixel.red=(MagickRealType) QuantumRange*(1.055*pow(QuantumScale*
-                pixel.red,(1.0/2.4))-0.055);
+              pixel.red=(MagickRealType) QuantumRange*(1.055*
+                pow(QuantumScale*pixel.red,(1.0/2.4))-0.055);
             if ((QuantumScale*pixel.green) <= 0.0031308)
               pixel.green*=12.92f;
             else
-              pixel.green=(MagickRealType) QuantumRange*(1.055*pow(QuantumScale*
-                pixel.green,(1.0/2.4))-0.055);
+              pixel.green=(MagickRealType) QuantumRange*(1.055*
+                pow(QuantumScale*pixel.green,(1.0/2.4))-0.055);
             if ((QuantumScale*pixel.blue) <= 0.0031308)
               pixel.blue*=12.92f;
             else
-              pixel.blue=(MagickRealType) QuantumRange*(1.055*pow(QuantumScale*
-                pixel.blue,(1.0/2.4))-0.055);
+              pixel.blue=(MagickRealType) QuantumRange*(1.055*
+                pow(QuantumScale*pixel.blue,(1.0/2.4))-0.055);
+            break;
           }
           default:
           {
