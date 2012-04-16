@@ -1800,6 +1800,11 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         return(MagickFalse);
       return(status);
     }
+    case Rec601LumaColorspace:
+    case GRAYColorspace:
+    {
+      return(status);
+    }
     case HSBColorspace:
     {
       /*
