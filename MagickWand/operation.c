@@ -1061,7 +1061,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) QueryColorCompliance(ArgOption(MatteColor),AllCompliance,
              &_image_info->matte_color,_exception);
           break;
-        } 
+        }
       if (LocaleCompare("metric",option+1) == 0)
         {
           /* FUTURE: this is only used by CompareImages() which is used
@@ -1071,6 +1071,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
             CLIWandExceptArgBreak(OptionError,"UnrecognizedMetricType",
                 option,arg1);
           (void) SetImageOption(_image_info,option+1,ArgOption(NULL));
+          break;
         }
       if (LocaleCompare("monitor",option+1) == 0)
         {
@@ -1364,6 +1365,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           _draw_info->style=(StyleType) parse;
           break;
         }
+#if 0
       if (LocaleCompare("subimage-search",option+1) == 0)
         {
         /* FUTURE: this is only used by CompareImages() which is used
@@ -1371,6 +1373,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
           (void) SetImageOption(_image_info,option+1,ArgBooleanString);
           break;
         }
+#endif
       if (LocaleCompare("synchronize",option+1) == 0)
         {
           /* FUTURE: syncronize to storage - but what does that mean? */
@@ -4142,20 +4145,68 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("smush",option+1) == 0)
         {
-          Image
-            *smush_image;
-
+          /* FUTURE: this option needs more work to make better */
           ssize_t
             offset;
 
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           offset=(ssize_t) StringToLong(arg1);
-          smush_image=SmushImages(_images,normal_op,offset,_exception);
-          if (smush_image == (Image *) NULL)
-            break;
-          _images=DestroyImageList(_images);
-          _images=smush_image;
+          new_images=SmushImages(_images,normal_op,offset,_exception);
+          break;
+        }
+      if (LocaleCompare("subimage",option+1) == 0)
+        {
+          Image
+            *base_image,
+            *compare_image;
+
+          const char *
+            value;
+
+          MetricType
+            metric;
+
+          double
+            similarity;
+
+          RectangleInfo
+            offset;
+
+          base_image=GetImageFromList(_images,0);
+          compare_image=GetImageFromList(_images,1);
+
+          /* Comparision Metric */
+          metric=UndefinedMetric;
+          value=GetImageOption(_image_info,"metric");
+          if (value != (const char *) NULL)
+            metric=(MetricType) ParseCommandOption(MagickMetricOptions,
+              MagickFalse,value);
+
+          new_images=SimilarityImage(base_image,compare_image,metric,
+               &offset,&similarity,_exception);
+
+          if ( new_images != (Image *)NULL ) {
+            char
+              result[MaxTextExtent];
+
+            (void) FormatLocaleString(result,MaxTextExtent,"%lf",similarity);
+            (void) SetImageProperty(new_images,"subimage:similarity",result,
+                 _exception);
+            (void) FormatLocaleString(result,MaxTextExtent,"%+ld",
+                (long) offset.x);
+            (void) SetImageProperty(new_images,"subimage:x",result,
+                 _exception);
+            (void) FormatLocaleString(result,MaxTextExtent,"%+ld",
+                (long) offset.y);
+            (void) SetImageProperty(new_images,"subimage:y",result,
+                 _exception);
+            (void) FormatLocaleString(result,MaxTextExtent,"%lux%lu%+ld%+ld",
+                (unsigned long) offset.width,(unsigned long) offset.height,
+                (long) offset.x,(long) offset.y);
+            (void) SetImageProperty(new_images,"subimage:offset",result,
+                 _exception);
+          }
           break;
         }
       if (LocaleCompare("swap",option+1) == 0) {
