@@ -44,6 +44,8 @@ echo ''
 #    eval ${CONVERT} "$in" -gamma 2.2 "$out"
 # produces a value of  198,158,151  whcih is close to 199,160,152 below.
 #
+# Actual values used below come from IM v6.5.4-7 colorspace conversions
+#
 if [ "X$average" != "X146,89,80" ]; then
   echo "Sanity Failure: Average expected to be 145,89,80 - ABORTING"
   error=true
