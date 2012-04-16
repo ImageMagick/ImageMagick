@@ -4467,7 +4467,8 @@ MAGICKWAND_NOINST_HDRS = \
 	MagickWand/pixel-wand-private.h \
 	MagickWand/script-token.h \
 	MagickWand/studio.h \
-	MagickWand/wand.h
+	MagickWand/wand.h \
+	MagickWand/wandcli-private.h
 
 
 # Headers which are installed
@@ -11377,7 +11378,6 @@ MagickCore-install-data-local:
 	$(INSTALL_HEADER) MagickCore/magick-config.h $(DESTDIR)$(MagickCoreincdir)/magick-config.h
 MagickCore-uninstall-local:
 	rm -f $(DESTDIR)$(MagickCoreincdir)/magick-config.h
-	MagickWand/wandcli-private.h
 install-exec-local-utilities:
 	$(mkdir_p) $(DESTDIR)$(bindir)
 	cd $(DESTDIR)$(bindir) ; \
