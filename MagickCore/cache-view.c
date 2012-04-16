@@ -786,7 +786,6 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixelInfo(
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
   assert(id < (int) cache_view->number_threads);
-  (void) memset(pixel,0,MaxPixelChannels*sizeof(*pixel));
   p=GetVirtualPixelsFromNexus(cache_view->image,
     cache_view->virtual_pixel_method,x,y,1,1,cache_view->nexus_info[id],
     exception);
