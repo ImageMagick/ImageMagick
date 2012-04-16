@@ -160,7 +160,8 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   *L=0.0;
   *a=0.5;
   *b=0.5;
-  if ((X == 0.0) && (Y == 0.0) && (Z == 0.0))
+  if ((fabs(X) < MagickEpsilon) && (fabs(Y) < MagickEpsilon) &&
+      (fabs(Z) < MagickEpsilon))
     return;
   fx=LabF1(X/D50X);
   fy=LabF1(Y/D50Y);
@@ -1139,7 +1140,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
               proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp critical (MagickCore_RGBTransformImage)
+            #pragma omp critical (MagickCore_RGBTransformImage)
 #endif
             proceed=SetImageProgress(image,RGBTransformImageTag,progress++,
               image->rows);
@@ -1266,8 +1267,7 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   /*
     Convert the reference image from an alternate colorspace to RGB.
   */
-  if ((colorspace == sRGBColorspace) ||
-      (colorspace == TransparentColorspace))
+  if ((colorspace == sRGBColorspace) || (colorspace == TransparentColorspace))
     return(TransformRGBImage(image,colorspace));
   status=MagickTrue;
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
@@ -2298,7 +2298,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
     case RGBColorspace:
     {
       /*
-        Linear RGB to nonlinear sRGB (http://www.w3.org/Graphics/Color/sRGB):
+        Nonlinear sRGB to linear RGB (http://www.w3.org/Graphics/Color/sRGB):
 
           R = 1.0*R+0.0*G+0.0*B
           G = 0.0*R+1.0*G+0.0*B
