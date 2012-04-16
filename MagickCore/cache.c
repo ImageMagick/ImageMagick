@@ -2326,9 +2326,9 @@ MagickExport MagickBooleanType GetOneVirtualPixelInfo(const Image *image,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   assert(id < (int) cache_info->number_threads);
+  GetPixelInfo(image,pixel);
   p=GetVirtualPixelsFromNexus(image,virtual_pixel_method,x,y,1UL,1UL,
     cache_info->nexus_info[id],exception);
-  GetPixelInfo(image,pixel);
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
   GetPixelInfoPixel(image,p,pixel);

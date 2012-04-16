@@ -786,10 +786,10 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixelInfo(
   assert(cache_view != (CacheView *) NULL);
   assert(cache_view->signature == MagickSignature);
   assert(id < (int) cache_view->number_threads);
+  GetPixelInfo(cache_view->image,pixel);
   p=GetVirtualPixelsFromNexus(cache_view->image,
     cache_view->virtual_pixel_method,x,y,1,1,cache_view->nexus_info[id],
     exception);
-  GetPixelInfo(cache_view->image,pixel);
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
   GetPixelInfoPixel(cache_view->image,p,pixel);
