@@ -1093,7 +1093,7 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image)
   if (status == MagickFalse)
     return(status);
   if (IsRGBColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(pcd_image,RGBColorspace);
+    (void) TransformImageColorspace(pcd_image,sRGBColorspace);
   /*
     Write PCD image header.
   */

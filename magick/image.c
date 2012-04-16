@@ -2512,7 +2512,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
   image_view=DestroyCacheView(image_view);
   if (channel != GrayChannels)
     image->matte=MagickFalse;
-  (void) SetImageColorspace(image,RGBColorspace);
+  (void) SetImageColorspace(image,sRGBColorspace);
   return(status);
 }
 
