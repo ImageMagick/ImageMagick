@@ -1212,7 +1212,7 @@ int main( int /*argc*/, char ** argv)
     //
     // renderingIntent
     //
-    if ( image.renderingIntent() != RelativeIntent )
+    if ( image.renderingIntent() != PerceptualIntent )
       {
 	++failures;
 	cout << "Line: " << __LINE__
