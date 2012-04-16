@@ -312,7 +312,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
 
     /* FUTURE: The not a setting part below is a temporary hack to stop gap
      * measure for options that are BOTH settings and optional 'Simple/List'
-     * operators.  Specifically -monitor  and  -colorspace */
+     * operators.  Specifically -monitor, -depth, and  -colorspace */
     if ( cli_wand->wand.images == (Image *)NULL ) {
       if (((option_type & ImageRequiredFlags) != 0 ) &&
           ((option_type & SettingOptionFlags) == 0 ))  /* temp hack */
@@ -546,7 +546,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
 
     /* FUTURE: The not a setting part below is a temporary hack to stop gap
      * measure for options that are BOTH settings and optional 'Simple/List'
-     * operators.  Specifically -monitor  and  -colorspace */
+     * operators.  Specifically -monitor, -depth, and  -colorspace */
     if ( cli_wand->wand.images == (Image *)NULL ) {
       if (((option_type & ImageRequiredFlags) != 0 ) &&
           ((option_type & SettingOptionFlags) == 0 )  )  /* temp hack */
