@@ -95,8 +95,11 @@ test_color CMY   sRGB
 test_color CMYK  sRGB
 test_color HSL   sRGB
 test_color HSB   sRGB
+test_color HWB   sRGB
 test_color Lab   sRGB
 test_color YIQ   sRGB
+test_color YUV   sRGB
 test_color YCbCr sRGB
+test_color OHTA  sRGB
 
 eval ! $error   # return the overall error result
