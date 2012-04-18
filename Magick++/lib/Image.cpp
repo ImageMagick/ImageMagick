@@ -2802,8 +2802,10 @@ size_t Magick::Image::colorMapSize ( void )
 // Image colorspace
 void Magick::Image::colorSpace( const ColorspaceType colorSpace_ )
 {
-  modifyImage();
+  if ( image()->colorspace == colorSpace_ )
+    return;
 
+  modifyImage();
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   TransformImageColorspace(image(), colorSpace_, &exceptionInfo);
