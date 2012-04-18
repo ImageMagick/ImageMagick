@@ -610,7 +610,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
 #if defined(MAGICKCORE_HDRI_SUPPORT)
       fuzz+=0.003;
 #endif
-      if (IsRGBColorspace(reference_image->colorspace) == MagickFalse)
+      if (IssRGBColorspace(reference_image->colorspace) == MagickFalse)
         fuzz+=0.3;
       fuzz+=MagickEpsilon;
       difference_image=CompareImageChannels(reference_image,reconstruct_image,
@@ -826,7 +826,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
 #if defined(MAGICKCORE_HDRI_SUPPORT)
       fuzz+=0.003;
 #endif
-      if (IsRGBColorspace(reference_image->colorspace) == MagickFalse)
+      if (IssRGBColorspace(reference_image->colorspace) == MagickFalse)
         fuzz+=0.3;
       fuzz+=MagickEpsilon;
       difference_image=CompareImageChannels(reference_image,reconstruct_image,
