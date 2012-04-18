@@ -1,3 +1,6 @@
+2012-04-17  6.7.6-7 Cristy  <quetzlzacatenango@image...>
+  * Distinquish grayscale as sRGB no linear RGB.
+
 2012-04-16  6.7.6-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-6, SVN revision 7536.
 

@@ -1006,7 +1006,7 @@ static MagickBooleanType WritePCDTile(Image *image,const char *page_geometry,
       tile_image=bordered_image;
     }
   (void) TransformImage(&tile_image,(char *) NULL,tile_geometry);
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (IssRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(tile_image,YCCColorspace);
   downsample_image=ResizeImage(tile_image,tile_image->columns/2,
     tile_image->rows/2,TriangleFilter,1.0,&image->exception);
@@ -1092,7 +1092,7 @@ static MagickBooleanType WritePCDImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,pcd_image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (IssRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(pcd_image,sRGBColorspace);
   /*
     Write PCD image header.

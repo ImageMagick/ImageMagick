@@ -2791,7 +2791,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
             }
           else
             {
-              if (IsRGBColorspace(image->colorspace) == MagickFalse)
+              if (IssRGBColorspace(image->colorspace) == MagickFalse)
                 (void) TransformImageColorspace(image,sRGBColorspace);
               photometric=PHOTOMETRIC_RGB;
             }
@@ -2959,7 +2959,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if (image_info->quality != UndefinedCompressionQuality)
           (void) TIFFSetField(tiff,TIFFTAG_JPEGQUALITY,image_info->quality);
         (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RAW);
-        if (IsRGBColorspace(image->colorspace) == MagickTrue)
+        if (IssRGBColorspace(image->colorspace) == MagickTrue)
           {
             const char
               *value;

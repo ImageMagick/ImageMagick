@@ -2849,7 +2849,7 @@ MagickExport MagickBooleanType QueryMagickColorname(const Image *image,
     }
   GetColorTuple(&pixel,compliance != SVGCompliance ? MagickTrue : MagickFalse,
     name);
-  if (IsRGBColorspace(pixel.colorspace) == MagickFalse)
+  if (IssRGBColorspace(pixel.colorspace) == MagickFalse)
     return(MagickFalse);
   (void) GetColorInfo("*",exception);
   ResetLinkedListIterator(color_list);

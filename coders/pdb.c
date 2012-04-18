@@ -736,7 +736,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (IssRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace);
 
   if (image -> colors <= 2  ||  GetImageType( image, &image -> exception ) == BilevelType) { /* TS */
@@ -811,7 +811,7 @@ static MagickBooleanType WritePDBImage(const ImageInfo *image_info,Image *image)
     sizeof(*scanline));
   if (scanline == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (IssRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace);
   /*
     Convert to GRAY raster scanline.

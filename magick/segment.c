@@ -1825,7 +1825,7 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
           image->filename)
       }
   }
-  if (IsRGBColorspace(colorspace) == MagickFalse)
+  if (IssRGBColorspace(colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,colorspace);
   /*
     Initialize histogram.
@@ -1841,7 +1841,7 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
     Classify using the fuzzy c-Means technique.
   */
   status=Classify(image,extrema,cluster_threshold,WeightingExponent,verbose);
-  if (IsRGBColorspace(colorspace) == MagickFalse)
+  if (IssRGBColorspace(colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,colorspace);
   /*
     Relinquish resources.
