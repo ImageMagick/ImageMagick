@@ -867,7 +867,6 @@ namespace Magick
   using MagickCore::ResourceLimitError;
   using MagickCore::ResourceLimitFatalError;
   using MagickCore::ResourceLimitWarning;
-  using MagickCore::RGBTransformImage;
   using MagickCore::RollImage;
   using MagickCore::RotateImage;
   using MagickCore::SampleImage;
@@ -920,7 +919,7 @@ namespace Magick
   using MagickCore::TextureImage;
   using MagickCore::ThrowException;
   using MagickCore::TransformImage;
-  using MagickCore::TransformRGBImage;
+  using MagickCore::TransformImageColorspace;
   using MagickCore::TransparentPaintImage;
   using MagickCore::TransparentPaintImageChroma;
   using MagickCore::TrimImage;
