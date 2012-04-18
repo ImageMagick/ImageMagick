@@ -288,7 +288,7 @@ MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
   v=1.0-blackness;
-  if (hue == 0.0)
+  if (hue == -1.0)
     {
       *red=(double) ClampToQuantum((MagickRealType) QuantumRange*v);
       *green=(double) ClampToQuantum((MagickRealType) QuantumRange*v);
@@ -532,7 +532,7 @@ MagickPrivate void ConvertRGBToHWB(const double red,const double green,
   *whiteness=QuantumScale*w;
   if (v == w)
     {
-      *hue=0.0;
+      *hue=(-1.0);
       return;
     }
   f=((MagickRealType) red == w) ? green-(MagickRealType) blue :
