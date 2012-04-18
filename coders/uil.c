@@ -308,7 +308,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
       Define UIL color.
     */
     SetMagickPixelPacket(image,image->colormap+i,(IndexPacket *) NULL,&pixel);
-    pixel.colorspace=RGBColorspace;
+    pixel.colorspace=sRGBColorspace;
     pixel.depth=8;
     pixel.opacity=(MagickRealType) OpaqueOpacity;
     GetColorTuple(&pixel,MagickTrue,name);

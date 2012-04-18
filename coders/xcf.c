@@ -1071,7 +1071,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->compression=NoCompression;
   image->depth=8;
   if (image_type == GIMP_RGB)
-    image->colorspace=RGBColorspace;
+    image->colorspace=sRGBColorspace;
   else
     if (image_type == GIMP_GRAY)
       image->colorspace=GRAYColorspace;
