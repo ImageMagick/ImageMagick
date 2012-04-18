@@ -2802,46 +2802,11 @@ size_t Magick::Image::colorMapSize ( void )
 // Image colorspace
 void Magick::Image::colorSpace( const ColorspaceType colorSpace_ )
 {
-  // Nothing to do?
-  if ( image()->colorspace == colorSpace_ )
-    return;
-
   modifyImage();
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  if ( colorSpace_ != RGBColorspace &&
-       colorSpace_ != sRGBColorspace &&
-       colorSpace_ != TransparentColorspace &&
-       colorSpace_ != GRAYColorspace )
-    {
-      if (image()->colorspace != RGBColorspace &&
-          image()->colorspace != sRGBColorspace &&
-          image()->colorspace != TransparentColorspace &&
-          image()->colorspace != GRAYColorspace)
-        {
-          /* Transform to RGB colorspace as intermediate step */
-          TransformRGBImage( image(), image()->colorspace, &exceptionInfo );
-          throwImageException();
-        }
-      /* Transform to final non-RGB colorspace */
-      RGBTransformImage( image(), colorSpace_, &exceptionInfo );
-      throwException( exceptionInfo );
-      (void) DestroyExceptionInfo( &exceptionInfo );
-      return;
-    }
-
-  if ( colorSpace_ == RGBColorspace ||
-       colorSpace_ == sRGBColorspace ||
-       colorSpace_ == TransparentColorspace ||
-       colorSpace_ == GRAYColorspace )
-    {
-      /* Transform to a RGB-type colorspace */
-      TransformRGBImage( image(), image()->colorspace, &exceptionInfo );
-      throwException( exceptionInfo );
-      (void) DestroyExceptionInfo( &exceptionInfo );
-      return;
-    }
+  TransformImageColorspace(image(), colorSpace_, &exceptionInfo);
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
