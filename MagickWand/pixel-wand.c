@@ -113,7 +113,7 @@ WandExport void ClearPixelWand(PixelWand *wand)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   ClearMagickException(wand->exception);
-  wand->pixel.colorspace=RGBColorspace;
+  wand->pixel.colorspace=sRGBColorspace;
   wand->debug=IsEventLogging();
 }
 

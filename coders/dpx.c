@@ -1051,12 +1051,12 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     case LumaComponentType:
     {
-      image->colorspace=RGBColorspace;
+      image->colorspace=sRGBColorspace;
       break;
     }
     default:
     {
-      image->colorspace=RGBColorspace;
+      image->colorspace=sRGBColorspace;
       if (dpx.image.image_element[0].transfer == LogarithmicColorimetric)
         image->colorspace=LogColorspace;
       if (dpx.image.image_element[0].transfer == PrintingDensityColorimetric)

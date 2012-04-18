@@ -738,7 +738,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
       Define XPM color.
     */
     pixel=picon->colormap[i];
-    pixel.colorspace=RGBColorspace;
+    pixel.colorspace=sRGBColorspace;
     pixel.depth=8;
     pixel.alpha=(MagickRealType) OpaqueAlpha;
     (void) QueryColorname(image,&pixel,XPMCompliance,name,exception);
@@ -974,7 +974,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
       Define XPM color.
     */
     pixel=image->colormap[i];
-    pixel.colorspace=RGBColorspace;
+    pixel.colorspace=sRGBColorspace;
     pixel.depth=8;
     pixel.alpha=(MagickRealType) OpaqueAlpha;
     (void) QueryColorname(image,&pixel,XPMCompliance,name,exception);

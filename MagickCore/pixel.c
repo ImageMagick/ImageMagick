@@ -1973,7 +1973,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
 MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
 {
   pixel->storage_class=DirectClass;
-  pixel->colorspace=RGBColorspace;
+  pixel->colorspace=sRGBColorspace;
   pixel->matte=MagickFalse;
   pixel->fuzz=0.0;
   pixel->depth=MAGICKCORE_QUANTUM_DEPTH;
