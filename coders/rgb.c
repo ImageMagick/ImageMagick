@@ -1128,7 +1128,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
     /*
       Convert MIFF to RGB raster pixels.
     */
-    if (IsRGBColorspace(image->colorspace) == MagickFalse)
+    if (IssRGBColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
     if ((LocaleCompare(image_info->magick,"RGBA") == 0) &&
         (image->matte == MagickFalse))

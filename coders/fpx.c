@@ -858,7 +858,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
     Initialize FPX toolkit.
   */
   image->depth=8;
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+  if (IssRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   memory_limit=20000000;
   fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);

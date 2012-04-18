@@ -5990,7 +5990,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                  (source_colorspace != LabColorspace) &&
                  (source_colorspace != XYZColorspace) &&
                  (source_colorspace != YCbCrColorspace) &&
-                 (IsRGBColorspace(image->colorspace) == MagickFalse))
+                 (IssRGBColorspace(image->colorspace) == MagickFalse))
               ThrowProfileException(ImageError,"ColorspaceColorProfileMismatch",
                 name);
             switch (image->rendering_intent)
