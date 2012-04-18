@@ -8957,7 +8957,7 @@ Mogrify(ref,...)
 
           cluster_threshold=1.0;
           smoothing_threshold=1.5;
-          colorspace=RGBColorspace;
+          colorspace=sRGBColorspace;
           verbose=MagickFalse;
           if (attribute_flag[0] != 0)
             {

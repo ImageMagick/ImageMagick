@@ -402,7 +402,7 @@ static void MvgAppendColor(DrawingWand *wand,const PixelPacket *color)
         pixel;
 
       GetMagickPixelPacket(wand->image,&pixel);
-      pixel.colorspace=RGBColorspace;
+      pixel.colorspace=sRGBColorspace;
       pixel.matte=color->opacity != OpaqueOpacity ? MagickTrue : MagickFalse;
       pixel.red=(MagickRealType) GetPixelRed(color);
       pixel.green=(MagickRealType) GetPixelGreen(color);

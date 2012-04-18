@@ -5871,7 +5871,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
             }
           geometry_info.rho=1.0;
           geometry_info.sigma=1.5;
-          colorspace=RGBColorspace;
+          colorspace=sRGBColorspace;
           verbose=MagickFalse;
           if (attributes != (const xmlChar **) NULL)
             for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
