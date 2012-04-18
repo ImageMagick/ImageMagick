@@ -562,7 +562,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       page.width=page.height;
       page.height=swap;
     }
-  if (IsRGBColorspace(image_info->colorspace) != MagickFalse)
+  if (IssRGBColorspace(image_info->colorspace) != MagickFalse)
     cmyk=MagickFalse;
   /*
     Create Ghostscript control file.
@@ -1253,7 +1253,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     }
     if (compression == JPEG2000Compression)
       {
-        if (IsRGBColorspace(image->colorspace) == MagickFalse)
+        if (IssRGBColorspace(image->colorspace) == MagickFalse)
           (void) TransformImageColorspace(image,sRGBColorspace,exception);
       }
     /*

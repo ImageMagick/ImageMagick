@@ -50,10 +50,8 @@ typedef enum
 } ColorspaceType;
 
 extern MagickExport MagickBooleanType
-  RGBTransformImage(Image *,const ColorspaceType,ExceptionInfo *),
   SetImageColorspace(Image *,const ColorspaceType,ExceptionInfo *),
-  TransformImageColorspace(Image *,const ColorspaceType,ExceptionInfo *),
-  TransformRGBImage(Image *,const ColorspaceType,ExceptionInfo *);
+  TransformImageColorspace(Image *,const ColorspaceType,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

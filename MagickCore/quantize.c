@@ -514,7 +514,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
       cube_info->quantize_info->colorspace,exception);
   else
     if ((image->colorspace != GRAYColorspace) &&
-        (IsRGBColorspace(image->colorspace) == MagickFalse) &&
+        (IssRGBColorspace(image->colorspace) == MagickFalse) &&
         (image->colorspace != CMYColorspace))
       (void) TransformImageColorspace((Image *) image,sRGBColorspace,exception);
   if (AcquireImageColormap(image,cube_info->colors,exception) == MagickFalse)
@@ -804,7 +804,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
   else
     if ((image->colorspace != GRAYColorspace) &&
         (image->colorspace != CMYColorspace) &&
-        (IsRGBColorspace(image->colorspace) == MagickFalse))
+        (IssRGBColorspace(image->colorspace) == MagickFalse))
       (void) TransformImageColorspace((Image *) image,sRGBColorspace,exception);
   midpoint.red=(MagickRealType) QuantumRange/2.0;
   midpoint.green=(MagickRealType) QuantumRange/2.0;

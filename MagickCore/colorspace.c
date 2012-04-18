@@ -77,24 +77,30 @@ typedef struct _TransformPacket
 } TransformPacket;
 
 /*
+  Forward declarations.
+*/
+static MagickBooleanType
+  TransformsRGBImage(Image *,const ColorspaceType,ExceptionInfo *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     R G B T r a n s f o r m I m a g e                                       %
++     s R G B T r a n s f o r m I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RGBTransformImage() converts the reference image from sRGB to an alternate
+%  sRGBTransformImage() converts the reference image from sRGB to an alternate
 %  colorspace.  The transformation matrices are not the standard ones: the
 %  weights are rescaled to normalized the range of the transformed values to
 %  be [0..QuantumRange].
 %
-%  The format of the RGBTransformImage method is:
+%  The format of the sRGBTransformImage method is:
 %
-%      MagickBooleanType RGBTransformImage(Image *image,
+%      MagickBooleanType sRGBTransformImage(Image *image,
 %        const ColorspaceType colorspace,EsceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -179,10 +185,10 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
     *b+=1.0;
 }
 
-MagickExport MagickBooleanType RGBTransformImage(Image *image,
+static MagickBooleanType sRGBTransformImage(Image *image,
   const ColorspaceType colorspace,ExceptionInfo *exception)
 {
-#define RGBTransformImageTag  "RGBTransform/Image"
+#define sRGBTransformImageTag  "RGBTransform/Image"
 
   CacheView
     *image_view;
@@ -1142,9 +1148,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
               proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_RGBTransformImage)
+            #pragma omp critical (MagickCore_sRGBTransformImage)
 #endif
-            proceed=SetImageProgress(image,RGBTransformImageTag,progress++,
+            proceed=SetImageProgress(image,sRGBTransformImageTag,progress++,
               image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
@@ -1272,14 +1278,14 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
     Convert the reference image from an alternate colorspace to RGB.
   */
   if ((colorspace == sRGBColorspace) || (colorspace == TransparentColorspace))
-    return(TransformRGBImage(image,colorspace,exception));
+    return(TransformsRGBImage(image,colorspace,exception));
   status=MagickTrue;
-  if (IsRGBColorspace(image->colorspace) == MagickFalse)
-    status=TransformRGBImage(image,image->colorspace,exception);
+  if (IssRGBColorspace(image->colorspace) == MagickFalse)
+    status=TransformsRGBImage(image,image->colorspace,exception);
   /*
     Convert the reference image from RGB to an alternate colorspace.
   */
-  if (RGBTransformImage(image,colorspace,exception) == MagickFalse)
+  if (sRGBTransformImage(image,colorspace,exception) == MagickFalse)
     status=MagickFalse;
   return(status);
 }
@@ -1289,20 +1295,20 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+     T r a n s f o r m R G B I m a g e                                       %
++     T r a n s f o r m s R G B I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  TransformRGBImage() converts the reference image from an alternate
+%  TransformsRGBImage() converts the reference image from an alternate
 %  colorspace to sRGB.  The transformation matrices are not the standard ones:
 %  the weights are rescaled to normalize the range of the transformed values to
 %  be [0..QuantumRange].
 %
-%  The format of the TransformRGBImage method is:
+%  The format of the TransformsRGBImage method is:
 %
-%      MagickBooleanType TransformRGBImage(Image *image,
+%      MagickBooleanType TransformsRGBImage(Image *image,
 %        const ColorspaceType colorspace,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1406,13 +1412,13 @@ static inline void ConvertCMYKToRGB(PixelInfo *pixel)
     (QuantumRange-pixel->black)+pixel->black);
 }
 
-MagickExport MagickBooleanType TransformRGBImage(Image *image,
+static MagickBooleanType TransformsRGBImage(Image *image,
   const ColorspaceType colorspace,ExceptionInfo *exception)
 {
 #define D50X  (0.9642)
 #define D50Y  (1.0)
 #define D50Z  (0.8249)
-#define TransformRGBImageTag  "Transform/Image"
+#define TransformsRGBImageTag  "Transform/Image"
 
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   static const float
@@ -2612,9 +2618,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
               proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_TransformRGBImage)
+            #pragma omp critical (MagickCore_TransformsRGBImage)
 #endif
-            proceed=SetImageProgress(image,TransformRGBImageTag,progress++,
+            proceed=SetImageProgress(image,TransformsRGBImageTag,progress++,
               image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
