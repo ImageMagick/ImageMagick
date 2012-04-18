@@ -2669,37 +2669,8 @@ void Magick::Image::colorSpace( const ColorspaceType colorSpace_ )
     return;
 
   modifyImage();
-
-  if ( colorSpace_ != RGBColorspace &&
-       colorSpace_ != sRGBColorspace &&
-       colorSpace_ != TransparentColorspace &&
-       colorSpace_ != GRAYColorspace )
-    {
-      if (image()->colorspace != RGBColorspace &&
-          image()->colorspace != sRGBColorspace &&
-          image()->colorspace != TransparentColorspace &&
-          image()->colorspace != GRAYColorspace)
-        {
-          /* Transform to RGB colorspace as intermediate step */
-          TransformRGBImage( image(), image()->colorspace );
-          throwImageException();
-        }
-      /* Transform to final non-RGB colorspace */
-      RGBTransformImage( image(), colorSpace_ );
-      throwImageException();
-      return;
-    }
-
-  if ( colorSpace_ == RGBColorspace ||
-       colorSpace_ == sRGBColorspace ||
-       colorSpace_ == TransparentColorspace ||
-       colorSpace_ == GRAYColorspace )
-    {
-      /* Transform to a RGB-type colorspace */
-      TransformRGBImage( image(), image()->colorspace );
-      throwImageException();
-      return;
-    }
+  TransformRGBImage( image(), colorSpace_ );
+  throwImageException();
 }
 Magick::ColorspaceType Magick::Image::colorSpace ( void ) const
 {
