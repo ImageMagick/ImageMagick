@@ -99,7 +99,7 @@ build=x86_64-unknown-linux-gnu
 build_os=linux-gnu
 
 # A BSD- or MS-compatible name lister.
-NM="/usr/bin/nm -B"
+NM="/bin/nm -B"
 
 # Whether we need soft or hard links.
 LN_S="ln -s"
@@ -278,7 +278,7 @@ hardcode_into_libs=yes
 sys_lib_search_path_spec="/usr/lib/gcc/x86_64-redhat-linux/4.7.0 /usr/lib64 /lib64 "
 
 # Run-time system search path for libraries.
-sys_lib_dlsearch_path_spec="/lib64 /usr/lib64 /lib /usr/lib /usr/lib64/atlas /usr/lib/llvm /usr/lib64/llvm /usr/local/lib /usr/lib64/mysql /usr/lib64/nvidia /usr/lib64/qt-3.3/lib /usr/lib64/tcl8.5/tclx8.4 /usr/lib64/tcl8.5 /usr/lib64/tracker-0.12 /usr/lib/wine/ /usr/lib64/wine/ /usr/lib64/xulrunner-2 "
+sys_lib_dlsearch_path_spec="/lib64 /usr/lib64 /lib /usr/lib /usr/lib64/atlas /usr/lib/llvm /usr/lib64/llvm /usr/local/lib /usr/lib64/mysql /usr/lib64/nvidia /usr/lib64/qt-3.3/lib /usr/lib64/tcl8.5/tclx8.4 /usr/lib64/tcl8.5 /usr/lib64/tracker-0.14 /usr/lib/wine/ /usr/lib64/wine/ /usr/lib64/xulrunner-2 "
 
 # Whether dlopen is supported.
 dlopen_support=yes
@@ -295,7 +295,7 @@ striplib="strip --strip-unneeded"
 
 
 # The linker used to build libraries.
-LD="/usr/bin/ld -m elf_x86_64"
+LD="/bin/ld -m elf_x86_64"
 
 # How to create reloadable object files.
 reload_flag=" -r"
@@ -10096,7 +10096,7 @@ build_old_libs=`case $build_libtool_libs in yes) echo no;; *) echo yes;; esac`
 # ### BEGIN LIBTOOL TAG CONFIG: CXX
 
 # The linker used to build libraries.
-LD="/usr/bin/ld -m elf_x86_64"
+LD="/bin/ld -m elf_x86_64"
 
 # How to create reloadable object files.
 reload_flag=" -r"
