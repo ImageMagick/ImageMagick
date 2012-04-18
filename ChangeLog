@@ -33,6 +33,8 @@
   * Pixel allocation for Pango is stride*rows not stride*columns.
   * Set the image resolution for Postscript files with an embedded Photoshop
     profile.
+  * Ensure proper round trips to / from sRGB (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20751).
 
 2012-04-07  6.7.6-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-5, SVN revision 7483.
