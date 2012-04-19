@@ -1,8 +1,8 @@
 2012-04-20  6.7.6-7 Anthony Thyssen <A.Thyssen@griffith...>
-  * Allow +-X+-Y is geometry arguments
+  * Allow +-X+-Y as geometry arguments.
 
 2012-04-17  6.7.6-7 Cristy  <quetzlzacatenango@image...>
-  * Distinquish grayscale as sRGB no linear RGB.
+  * Distinquish grayscale as sRGB not linear RGB.
 
 2012-04-16  6.7.6-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-6, SVN revision 7536.
