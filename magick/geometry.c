@@ -115,7 +115,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
         (void) CopyMagickString(p,p+1,MaxTextExtent);
         continue;
       }
-    c=(int) ((unsigned char) *p);
+    c=(int)*p;
     switch (c)
     {
       case '%':
@@ -515,8 +515,6 @@ MagickExport MagickBooleanType IsGeometry(const char *geometry)
   if (geometry == (const char *) NULL)
     return(MagickFalse);
   flags=ParseGeometry(geometry,&geometry_info);
-  if (flags == NoValue)
-    flags=ParseGeometry(geometry+1,&geometry_info);  /* i.e. +-4+-4 */
   return(flags != NoValue ? MagickTrue : MagickFalse);
 }
 
@@ -702,11 +700,11 @@ MagickExport MagickStatusType ParseAffineGeometry(const char *geometry,
       }
     }
   }
-  determinant=(affine_matrix->sx*affine_matrix->sy-affine_matrix->rx*
-    affine_matrix->ry);
+  determinant=(affine_matrix->sx*affine_matrix->sy
+                 - affine_matrix->rx*affine_matrix->ry);
   if (fabs(determinant) < MagickEpsilon)
     (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "InvalidGeometry","`%s'",geometry);
+      "InvalidArgument","'%s' : 'Indeterminate Matrix'",geometry);
   return(flags);
 }
 
@@ -912,7 +910,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       /*
         Parse xi value.
       */
-      if ((*p == ',') || (*p == '/') || (*p == ':'))
+      if ((*p == '+') || (*p == ',') || (*p == '/') || (*p == ':') )
         p++;
       q=p;
       value=StringToDouble(p,&p);
@@ -931,7 +929,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
           /*
             Parse psi value.
           */
-          if ((*p == ',') || (*p == '/') || (*p == ':'))
+          if ((*p == '+') || (*p == ',') || (*p == '/') || (*p == ':'))
             p++;
           q=p;
           value=StringToDouble(p,&p);
@@ -951,7 +949,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
           /*
             Parse chi value.
           */
-          if ((*p == ',') || (*p == '/') || (*p == ':'))
+          if ((*p == '+') || (*p == ',') || (*p == '/') || (*p == ':'))
             p++;
           q=p;
           value=StringToDouble(p,&p);
