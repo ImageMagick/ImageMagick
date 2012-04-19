@@ -137,7 +137,7 @@ typedef enum
   ImageInfoOptionFlag       = 0x0001,  /* Setting stored in ImageInfo */
   DrawInfoOptionFlag        = 0x0002,  /* Setting stored in DrawInfo */
   QuantizeInfoOptionFlag    = 0x0004,  /* Setting stored in QuantizeInfo */
-  GlobalOptionFlag          = 0x0008,  /* Global Setting */
+  GlobalOptionFlag          = 0x0008,  /* Global Setting or Control */
   SettingOptionFlags        = 0x000F,  /* mask for all setting options */
 
   SimpleOperatorOptionFlag  = 0x0010,  /* Simple Image processing operator */

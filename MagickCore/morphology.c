@@ -2446,7 +2446,9 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MorphologyApply() applies a morphological method, multiple times using
-%  a list of multiple kernels.
+%  a list of multiple kernels.  This is the method that should be called by
+%  other 'operators' that internally use morphology operations as part of
+%  their processing.
 %
 %  It is basically equivalent to as MorphologyImage() (see below) but
 %  without any user controls.  This allows internel programs to use this
@@ -2456,10 +2458,9 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %  It is MorphologyImage() task to extract any such user controls, and
 %  pass them to this function for processing.
 %
-%  More specifically kernels are not normalized/scaled/blended by the
-%  'convolve:scale' Image Artifact (setting), nor is the convolve bias
-%  ('convolve:bias' artifact) looked at, but must be supplied from the
-%  function arguments.
+%  More specifically all given kernels should already be scaled, normalised,
+%  and blended appropriatally before being parred to this routine. The
+%  appropriate bias, and compose (typically 'UndefinedComposeOp') given.
 %
 %  The format of the MorphologyApply method is:
 %
@@ -3745,7 +3746,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
 ** composition or re-iteration of results, and compound morphology methods
 ** that is based on multiple low-level (staged) morphology methods.
 **
-** Basically this provides the complex grue between the requested morphology
+** Basically this provides the complex glue between the requested morphology
 ** method and raw low-level implementation (above).
 */
 MagickPrivate Image *MorphologyApply(const Image *image,
@@ -4215,19 +4216,19 @@ exit_cleanup:
 %  the above internal function MorphologyApply().
 %
 %  User defined settings include...
-%    * Output Bias for Convolution and correlation ('-define convolve:bias=??")
-%    * Kernel Scale/normalize settings     ("-define convolve:scale=??")
+%    * Output Bias for Convolution and correlation ("-define convolve:bias=??")
+%    * Kernel Scale/normalize settings             ("-define convolve:scale=??")
 %      This can also includes the addition of a scaled unity kernel.
-%    * Show Kernel being applied           ("-define showkernel=1")
+%    * Show Kernel being applied                   ("-define showkernel=1")
+%
+%  Other operators that do not want user supplied options interfering,
+%  especially "convolve:bias" and "showkernel" should use MorphologyApply()
+%  directly.
 %
 %  The format of the MorphologyImage method is:
 %
 %      Image *MorphologyImage(const Image *image,MorphologyMethod method,
 %        const ssize_t iterations,KernelInfo *kernel,ExceptionInfo *exception)
-%
-%      Image *MorphologyImage(const Image *image, const ChannelType
-%        channel,MorphologyMethod method,const ssize_t iterations,
-%        KernelInfo *kernel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -4262,38 +4263,50 @@ MagickExport Image *MorphologyImage(const Image *image,
   double
     bias;
 
+  curr_kernel = (KernelInfo *) kernel;
+  bias=0.0;
+  compose = (ssize_t)UndefinedCompositeOp;  /* use default for method */
+
   /* Apply Convolve/Correlate Normalization and Scaling Factors.
    * This is done BEFORE the ShowKernelInfo() function is called so that
    * users can see the results of the 'option:convolve:scale' option.
    */
-  curr_kernel = (KernelInfo *) kernel;
-  bias=0.0;            /*  curr_kernel->bias;  should we get from kernel */
-  if ( method == ConvolveMorphology ||  method == CorrelateMorphology )
-    {
+  if ( method == ConvolveMorphology || method == CorrelateMorphology ) {
       const char
         *artifact;
 
-      artifact = GetImageArtifact(image,"convolve:scale");
-      if ( artifact != (const char *)NULL ) {
-        if ( curr_kernel == kernel )
-          curr_kernel = CloneKernelInfo(kernel);
-        if (curr_kernel == (KernelInfo *) NULL) {
-          curr_kernel=DestroyKernelInfo(curr_kernel);
-          return((Image *) NULL);
-        }
-        ScaleGeometryKernelInfo(curr_kernel, artifact);
+      /* Get the bias value as it will be needed */
+      artifact = GetImageArtifact(image,"convolve:bias");
+      if ( artifact != (const char *) NULL) {
+        if (IfMagickFalse(IsGeometry(artifact)))
+          (void) ThrowMagickException(exception,GetMagickModule(),
+               OptionWarning,"InvalidSetting","'%s' '%s'",
+               "convolve:bias",artifact);
+        else
+          bias=StringToDoubleInterval(artifact,(double) QuantumRange+1.0);
       }
 
-      artifact = GetImageArtifact(image,"convolve:bias");
-      compose = UndefinedCompositeOp;  /* use default for method */
-      if ( artifact != (const char *) NULL)
-        bias=StringToDouble(artifact, (char **) NULL);
+      /* Scale kernel according to user wishes */
+      artifact = GetImageArtifact(image,"convolve:scale");
+      if ( artifact != (const char *)NULL ) {
+        if (IfMagickFalse(IsGeometry(artifact)))
+          (void) ThrowMagickException(exception,GetMagickModule(),
+               OptionWarning,"InvalidSetting","'%s' '%s'",
+               "convolve:scale",artifact);
+        else {
+          if ( curr_kernel == kernel )
+            curr_kernel = CloneKernelInfo(kernel);
+          if (curr_kernel == (KernelInfo *) NULL)
+            return((Image *) NULL);
+          ScaleGeometryKernelInfo(curr_kernel, artifact);
+        }
+      }
     }
 
   /* display the (normalized) kernel via stderr */
-  if ( IfMagickTrue(IsStringTrue(GetImageArtifact(image,"showkernel")))
-    || IfMagickTrue(IsStringTrue(GetImageArtifact(image,"convolve:showkernel")))
-    || IfMagickTrue(IsStringTrue(GetImageArtifact(image,"morphology:showkernel"))) )
+  if ( IfStringTrue(GetImageArtifact(image,"showkernel"))
+    || IfStringTrue(GetImageArtifact(image,"convolve:showkernel"))
+    || IfStringTrue(GetImageArtifact(image,"morphology:showkernel")) )
     ShowKernelInfo(curr_kernel);
 
   /* Override the default handling of multi-kernel morphology results
@@ -4304,11 +4317,20 @@ MagickExport Image *MorphologyImage(const Image *image,
    */
   { const char
       *artifact;
-    compose = UndefinedCompositeOp;  /* use default for method */
+    ssize_t
+      parse;
+
     artifact = GetImageArtifact(image,"morphology:compose");
-    if ( artifact != (const char *) NULL)
-      compose=(CompositeOperator) ParseCommandOption(MagickComposeOptions,
+    if ( artifact != (const char *) NULL) {
+      parse=ParseCommandOption(MagickComposeOptions,
         MagickFalse,artifact);
+      if ( parse < 0 )
+        (void) ThrowMagickException(exception,GetMagickModule(),
+             OptionWarning,"UnrecognizedComposeOperator","'%s' '%s'",
+             "morphology:compose",artifact);
+      else
+        compose=(CompositeOperator)parse;
+    }
   }
   /* Apply the Morphology */
   morphology_image = MorphologyApply(image,method,iterations,
@@ -4558,13 +4580,14 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 MagickExport void ScaleGeometryKernelInfo (KernelInfo *kernel,
      const char *geometry)
 {
-  GeometryFlags
+  //GeometryFlags
+  int
     flags;
   GeometryInfo
     args;
 
   SetGeometryInfo(&args);
-  flags = (GeometryFlags) ParseGeometry(geometry, &args);
+  flags = ParseGeometry(geometry, &args);
 
 #if 0
   /* For Debugging Geometry Input */

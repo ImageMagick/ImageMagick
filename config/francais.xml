@@ -604,11 +604,11 @@
         <message name="GeometryDoesNotContainImage">
           image non incluse dans la géométrie
         </message>
-        <message name="InvalidUseOfOption">
-          Invalide utilisation de l'option
-        </message>
         <message name="InvalidArgument">
           argument invalide pour l'option
+        </message>
+        <message name="InvalidUseOfOption">
+          Invalide utilisation de l'option
         </message>
         <message name="InvalidGeometry">
           géométrie invalide
@@ -618,6 +618,9 @@
         </message>
         <message name="InvalidNumberList">
           liste des numéros non valide
+        </message>
+        <message name="InvalidSetting">
+          invalide de réglage
         </message>
         <message name="ImagesAreNotTheSameSize">
           images diffèrent par la taille
@@ -920,6 +923,9 @@
         </message>
         <message name="GeometryDoesNotContainImage">
           image non incluse dans la géométrie
+        </message>
+        <message name="InvalidSetting">
+          invalide de réglage
         </message>
         <message name="NoSuchElement">
           élément absent de la liste
