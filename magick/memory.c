@@ -59,6 +59,7 @@
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/semaphore.h"
 #include "magick/string_.h"
 
@@ -70,7 +71,6 @@
 #define BlockHeader(block)  ((size_t *) (block)-1)
 #define BlockSize  4096
 #define BlockThreshold  1024
-#define AlignedSize  (16*sizeof(void *))
 #define MaxBlockExponent  16
 #define MaxBlocks ((BlockThreshold/(4*sizeof(size_t)))+MaxBlockExponent+1)
 #define MaxSegments  1024
@@ -186,14 +186,6 @@ static MagickBooleanType
 %    o quantum: the number of bytes in each quantum.
 %
 */
-
-static inline size_t MagickMax(const size_t x,const size_t y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
 MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 {
   size_t
@@ -210,11 +202,11 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     void
       *memory;
 
-    if (posix_memalign(&memory,AlignedSize,MagickMax(size,AlignedSize)) == 0)
+    if (posix_memalign(&memory,CACHE_LINE_SIZE,size) == 0)
       return(memory);
   }
 #endif
-  return(malloc(MagickMax(size,AlignedSize)));
+  return(malloc(size));
 }
 
 #if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
