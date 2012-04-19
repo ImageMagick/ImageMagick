@@ -18,3 +18,6 @@ script-token-test: script-token-test.c ../script-token.[ch]
 
 clean:
 	rm -f $(tests)
+
+test_script:
+	script-token-test.sh | diff script-token-test-results.txt -
