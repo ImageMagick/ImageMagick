@@ -431,16 +431,17 @@ am__MagickCore_libMagickCore_la_SOURCES_DIST =  \
 	MagickCore/magick-type.h MagickCore/magick.h \
 	MagickCore/matrix.c MagickCore/matrix.h \
 	MagickCore/matrix-private.h MagickCore/memory.c \
-	MagickCore/memory_.h MagickCore/method-attribute.h \
-	MagickCore/methods.h MagickCore/mime.c MagickCore/mime.h \
-	MagickCore/module.c MagickCore/module.h MagickCore/monitor.c \
-	MagickCore/monitor.h MagickCore/monitor-private.h \
-	MagickCore/montage.c MagickCore/montage.h \
-	MagickCore/morphology.c MagickCore/morphology.h \
-	MagickCore/morphology-private.h MagickCore/nt-base.h \
-	MagickCore/nt-base-private.h MagickCore/nt-feature.h \
-	MagickCore/option.c MagickCore/option.h MagickCore/paint.c \
-	MagickCore/paint.h MagickCore/pixel.c MagickCore/pixel.h \
+	MagickCore/memory_.h MagickCore/memory-private.h \
+	MagickCore/method-attribute.h MagickCore/methods.h \
+	MagickCore/mime.c MagickCore/mime.h MagickCore/module.c \
+	MagickCore/module.h MagickCore/monitor.c MagickCore/monitor.h \
+	MagickCore/monitor-private.h MagickCore/montage.c \
+	MagickCore/montage.h MagickCore/morphology.c \
+	MagickCore/morphology.h MagickCore/morphology-private.h \
+	MagickCore/nt-base.h MagickCore/nt-base-private.h \
+	MagickCore/nt-feature.h MagickCore/option.c \
+	MagickCore/option.h MagickCore/paint.c MagickCore/paint.h \
+	MagickCore/pixel.c MagickCore/pixel.h \
 	MagickCore/pixel-accessor.h MagickCore/policy.c \
 	MagickCore/policy.h MagickCore/PreRvIcccm.c \
 	MagickCore/PreRvIcccm.h MagickCore/prepress.c \
@@ -4082,6 +4083,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/matrix-private.h \
 	MagickCore/memory.c \
 	MagickCore/memory_.h \
+	MagickCore/memory-private.h \
 	MagickCore/method-attribute.h \
 	MagickCore/methods.h \
 	MagickCore/mime.c \
@@ -4325,6 +4327,7 @@ MAGICKCORE_NOINST_HDRS = \
  	MagickCore/magick-private.h \
  	MagickCore/magic-private.h \
 	MagickCore/matrix-private.h \
+	MagickCore/memory-private.h \
  	MagickCore/methods-private.h \
  	MagickCore/mime-private.h \
 	MagickCore/mime-private.h \
