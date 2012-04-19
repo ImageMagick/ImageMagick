@@ -804,7 +804,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
+  if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(UndefinedFilter < filter && filter < SentinelFilter);
   assert(exception != (ExceptionInfo *) NULL);
@@ -820,7 +820,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   filter_type=mapping[filter].filter;
   window_type=mapping[filter].window;
   /* Promote 1D Windowed Sinc Filters to a 2D Windowed Jinc filters */
-  if ((cylindrical != MagickFalse) && (filter_type == SincFastFilter) &&
+  if( IfMagickTrue(cylindrical) && (filter_type == SincFastFilter) &&
       (filter != SincFastFilter))
     filter_type=JincFilter;  /* 1D Windowed Sinc => 2D Windowed Jinc filters */
   /* Expert filter setting override */
@@ -864,8 +864,8 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
           option=ParseCommandOption(MagickFilterOptions,MagickFalse,artifact);
           if ((UndefinedFilter < option) && (option < SentinelFilter))
             {
-              filter_type=cylindrical != MagickFalse ? JincFilter :
-                 SincFastFilter;
+              filter_type= IfMagickTrue(cylindrical) ? JincFilter
+                                                     : SincFastFilter;
               window_type=(FilterTypes) option;
             }
         }
@@ -881,7 +881,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   /*
     Filter Modifications for orthogonal/cylindrical usage.
   */
-  if (cylindrical != MagickFalse)
+  if( IfMagickTrue(cylindrical) )
     switch (filter_type)
     {
       case BoxFilter:
@@ -1053,8 +1053,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   #pragma omp master
   {
 #endif
-    artifact=GetImageArtifact(image,"filter:verbose");
-    if (IfMagickTrue(IsStringTrue(artifact)))
+    if (IfStringTrue(GetImageArtifact(image,"filter:verbose")))
       {
         double
           support,
@@ -1557,7 +1556,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
+  if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -1568,7 +1567,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
   resize_image=CloneImage(image,columns,rows,MagickTrue,exception);
   if (resize_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(resize_image,DirectClass,exception) == MagickFalse)
+  if( IfMagickFalse(SetImageStorageClass(resize_image,DirectClass,exception)) )
     {
       resize_image=DestroyImage(resize_image);
       return((Image *) NULL);
@@ -1593,7 +1592,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
     register ssize_t
       x;
 
-    if (status == MagickFalse)
+    if( IfMagickFalse(status) )
       continue;
     q=QueueCacheViewAuthenticPixels(resize_view,0,y,resize_image->columns,1,
       exception);
@@ -1631,7 +1630,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
       }
       q+=GetPixelChannels(resize_image);
     }
-    if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
+    if( IfMagickFalse(SyncCacheViewAuthenticPixels(resize_view,exception)) )
       continue;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -1643,13 +1642,13 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
 #endif
         proceed=SetImageProgress(image,InterpolativeResizeImageTag,progress++,
           image->rows);
-        if (proceed == MagickFalse)
+        if( IfMagickFalse(proceed) )
           status=MagickFalse;
       }
   }
   resize_view=DestroyCacheView(resize_view);
   image_view=DestroyCacheView(image_view);
-  if (status == MagickFalse)
+  if( IfMagickFalse(status) )
     resize_image=DestroyImage(resize_image);
   return(resize_image);
 }
@@ -1730,7 +1729,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
+  if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -1777,7 +1776,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     register ssize_t
       x;
 
-    if (status == MagickFalse)
+    if( IfMagickFalse(status) )
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
@@ -1813,7 +1812,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       pixels=(gfloat *) RelinquishMagickMemory(pixels);
       return((Image *) NULL);
     }
-  if (SetImageStorageClass(rescale_image,DirectClass,exception) == MagickFalse)
+  if( IfMagickFalse(SetImageStorageClass(rescale_image,DirectClass,exception)) )
     {
       pixels=(gfloat *) RelinquishMagickMemory(pixels);
       rescale_image=DestroyImage(rescale_image);
@@ -1851,7 +1850,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
       SetPixelChannel(rescale_image,channel,ClampToQuantum(QuantumRange*
         packet[i]),q);
     }
-    if (SyncCacheViewAuthenticPixels(rescale_view,exception) == MagickFalse)
+    if( IfMagickFalse(SyncCacheViewAuthenticPixels(rescale_view,exception)) )
       break;
   }
   rescale_view=DestroyCacheView(rescale_view);
@@ -1866,7 +1865,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
+  if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -1908,7 +1907,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
+  if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -1949,7 +1948,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
+  if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -2009,7 +2008,7 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
+  if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -2166,7 +2165,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   scale=MagickMax(1.0/x_factor+MagickEpsilon,1.0);
   support=scale*GetResizeFilterSupport(resize_filter);
   storage_class=support > 0.5 ? DirectClass : image->storage_class;
-  if (SetImageStorageClass(resize_image,storage_class,exception) == MagickFalse)
+  if( IfMagickFalse(SetImageStorageClass(resize_image,storage_class,exception)) )
     return(MagickFalse);
   if (support < 0.5)
     {
@@ -2213,7 +2212,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       start,
       stop;
 
-    if (status == MagickFalse)
+    if( IfMagickFalse(status) )
       continue;
     bisect=(MagickRealType) (x+0.5)/x_factor+MagickEpsilon;
     start=(ssize_t) MagickMax(bisect-support+0.5,0.0);
@@ -2328,7 +2327,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       }
       q+=GetPixelChannels(resize_image);
     }
-    if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
+    if( IfMagickFalse(SyncCacheViewAuthenticPixels(resize_view,exception)) )
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -2339,7 +2338,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   #pragma omp critical (MagickCore_HorizontalFilter)
 #endif
         proceed=SetImageProgress(image,ResizeImageTag,(*offset)++,span);
-        if (proceed == MagickFalse)
+        if( IfMagickFalse(proceed) )
           status=MagickFalse;
       }
   }
@@ -2382,7 +2381,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   scale=MagickMax(1.0/y_factor+MagickEpsilon,1.0);
   support=scale*GetResizeFilterSupport(resize_filter);
   storage_class=support > 0.5 ? DirectClass : image->storage_class;
-  if (SetImageStorageClass(resize_image,storage_class,exception) == MagickFalse)
+  if( IfMagickFalse(SetImageStorageClass(resize_image,storage_class,exception)) )
     return(MagickFalse);
   if (support < 0.5)
     {
@@ -2430,7 +2429,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       start,
       stop;
 
-    if (status == MagickFalse)
+    if( IfMagickFalse(status) )
       continue;
     bisect=(MagickRealType) (y+0.5)/y_factor+MagickEpsilon;
     start=(ssize_t) MagickMax(bisect-support+0.5,0.0);
@@ -2543,7 +2542,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       }
       q+=GetPixelChannels(resize_image);
     }
-    if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
+    if( IfMagickFalse(SyncCacheViewAuthenticPixels(resize_view,exception)) )
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -2554,7 +2553,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   #pragma omp critical (MagickCore_VerticalFilter)
 #endif
         proceed=SetImageProgress(image,ResizeImageTag,(*offset)++,span);
-        if (proceed == MagickFalse)
+        if( IfMagickFalse(proceed) )
           status=MagickFalse;
       }
   }
@@ -2597,7 +2596,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
+  if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -2628,7 +2627,8 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
       filter_type=PointFilter;
     else
       if ((image->storage_class == PseudoClass) ||
-          (image->matte != MagickFalse) || ((x_factor*y_factor) > 1.0))
+          IfMagickTrue(image->matte) ||
+          ((x_factor*y_factor) > 1.0))
         filter_type=MitchellFilter;
   resize_filter=AcquireResizeFilter(image,filter_type,MagickFalse,exception);
   /*
@@ -2656,7 +2656,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
   */
   filter_image=DestroyImage(filter_image);
   resize_filter=DestroyResizeFilter(resize_filter);
-  if (status == MagickFalse)
+  if( IfMagickFalse(status) )
     {
       resize_image=DestroyImage(resize_image);
       return((Image *) NULL);
@@ -2726,7 +2726,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
+  if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -2774,7 +2774,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
     ssize_t
       y_offset;
 
-    if (status == MagickFalse)
+    if( IfMagickFalse(status) )
       continue;
     y_offset=(ssize_t) (((MagickRealType) y+0.5)*image->rows/
       sample_image->rows);
@@ -2820,7 +2820,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
       }
       q+=GetPixelChannels(sample_image);
     }
-    if (SyncCacheViewAuthenticPixels(sample_view,exception) == MagickFalse)
+    if( IfMagickFalse(SyncCacheViewAuthenticPixels(sample_view,exception)) )
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
@@ -2831,7 +2831,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
         #pragma omp critical (MagickCore_SampleImage)
 #endif
         proceed=SetImageProgress(image,SampleImageTag,progress++,image->rows);
-        if (proceed == MagickFalse)
+        if( IfMagickFalse(proceed) )
           status=MagickFalse;
       }
   }
@@ -2921,7 +2921,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
+  if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -2932,7 +2932,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   scale_image=CloneImage(image,columns,rows,MagickTrue,exception);
   if (scale_image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(scale_image,DirectClass,exception) == MagickFalse)
+  if( IfMagickFalse(SetImageStorageClass(scale_image,DirectClass,exception)) )
     {
       scale_image=DestroyImage(scale_image);
       return((Image *) NULL);
@@ -3030,8 +3030,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
         */
         while (scale.y < span.y)
         {
-          if ((next_row != MagickFalse) &&
-              (number_rows < (ssize_t) image->rows))
+          if( IfMagickTrue(next_row) && (number_rows < (ssize_t) image->rows))
             {
               /*
                 Read a new scanline.
@@ -3078,7 +3077,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
           scale.y=(double) scale_image->rows/(double) image->rows;
           next_row=MagickTrue;
         }
-        if ((next_row != MagickFalse) && (number_rows < (ssize_t) image->rows))
+        if( IfMagickTrue(next_row) && (number_rows < (ssize_t) image->rows))
           {
             /*
               Read a new scanline.
@@ -3193,7 +3192,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
           scale.x=(double) scale_image->columns/(double) image->columns;
           while (scale.x >= span.x)
           {
-            if (next_column != MagickFalse)
+            if( IfMagickTrue(next_column) )
               {
                 for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
                   pixel[i]=0.0;
@@ -3220,7 +3219,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
           }
         if (scale.x > 0)
           {
-            if (next_column != MagickFalse)
+            if( IfMagickTrue(next_column) )
               {
                 for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
                   pixel[i]=0.0;
@@ -3237,7 +3236,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
             pixel[i]+=span.x*scanline[(x-1)*GetPixelChannels(image)+i];
         }
-      if ((next_column == MagickFalse) &&
+      if( IfMagickFalse(next_column) &&
           ((ssize_t) n < (ssize_t) scale_image->columns))
         for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
@@ -3277,11 +3276,11 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
         q+=GetPixelChannels(scale_image);
       }
     }
-    if (SyncCacheViewAuthenticPixels(scale_view,exception) == MagickFalse)
+    if( IfMagickFalse(SyncCacheViewAuthenticPixels(scale_view,exception)) )
       break;
     proceed=SetImageProgress(image,ScaleImageTag,(MagickOffsetType) y,
       image->rows);
-    if (proceed == MagickFalse)
+    if( IfMagickFalse(proceed) )
       break;
   }
   scale_view=DestroyCacheView(scale_view);
@@ -3355,7 +3354,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
+  if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
@@ -3382,7 +3381,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
   if (thumbnail_image == (Image *) NULL)
     return(thumbnail_image);
   (void) ParseAbsoluteGeometry("0x0+0+0",&thumbnail_image->page);
-  if (thumbnail_image->matte == MagickFalse)
+  if( IfMagickFalse(thumbnail_image->matte) )
     (void) SetImageAlphaChannel(thumbnail_image,OpaqueAlphaChannel,exception);
   thumbnail_image->depth=8;
   thumbnail_image->interlace=NoInterlace;
@@ -3406,7 +3405,7 @@ MagickExport Image *ThumbnailImage(const Image *image,const size_t columns,
       image->magick_filename);
   (void) SetImageProperty(thumbnail_image,"Thumb::URI",value,exception);
   (void) CopyMagickString(value,image->magick_filename,MaxTextExtent);
-  if (GetPathAttributes(image->filename,&attributes) != MagickFalse)
+  if( IfMagickTrue(GetPathAttributes(image->filename,&attributes)) )
     {
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
         attributes.st_mtime);

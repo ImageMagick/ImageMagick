@@ -75,6 +75,11 @@ static const char
   BackgroundColor[] = "#fff",  /* white */
   BorderColor[] = "#dfdfdf",  /* sRGB gray */
   MatteColor[] = "#bdbdbd";  /* slightly darker gray */
+
+/* For Debugging Geometry Input */
+#define ReportGeometry(flags,info) \
+  (void) FormatLocaleFile(stderr, "Geometry = 0x%04X : %lg x %lg %+lg %+lg\n", \
+       flags, info.rho, info.sigma, info.xi, info.psi )
 
 /*
 ** Function to report on the progress of image operations
@@ -1689,9 +1694,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("adaptive-blur",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           new_image=AdaptiveBlurImage(_image,geometry_info.rho,
@@ -1710,9 +1715,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("adaptive-sharpen",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           new_image=AdaptiveSharpenImage(_image,geometry_info.rho,
@@ -1735,10 +1740,10 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             *text,
             geometry[MaxTextExtent];
 
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           SetGeometryInfo(&geometry_info);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=geometry_info.rho;
           text=InterpretImageProperties(_image_info,_image,arg2,
@@ -1834,18 +1839,18 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           geometry_info.rho=1.5;
           if (IfNormalOp) {
-            if (IfMagickFalse(IsGeometry(arg1)))
-              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
             flags=ParseGeometry(arg1,&geometry_info);
+            if ((flags & RhoValue) == 0)
+              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           }
           new_image=BlueShiftImage(_image,geometry_info.rho,_exception);
           break;
         }
       if (LocaleCompare("blur",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           new_image=BlurImage(_image,geometry_info.rho,geometry_info.sigma,
@@ -1860,8 +1865,11 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           const char*
             value;
 
-          if (IfMagickFalse(IsGeometry(arg1)))
+          flags=ParsePageGeometry(_image,arg1,&geometry,_exception);
+          if ((flags & RhoValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          if ((flags & SigmaValue) == 0)
+            geometry.height=geometry.width;
 
           value=GetImageOption(_image_info,"compose");
           if (value != (const char *) NULL)
@@ -1870,9 +1878,6 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           else
             compose=OverCompositeOp;  /* use Over not _image->compose */
 
-          flags=ParsePageGeometry(_image,arg1,&geometry,_exception);
-          if ((flags & SigmaValue) == 0)
-            geometry.height=geometry.width;
           new_image=BorderImage(_image,&geometry,compose,_exception);
           break;
         }
@@ -1888,9 +1893,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           MagickStatusType
             flags;
 
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           brightness=geometry_info.rho;
           contrast=0.0;
           if ((flags & SigmaValue) != 0)
@@ -1920,9 +1925,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("charcoal",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           if ((flags & XiValue) == 0)
@@ -2078,9 +2083,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           MagickStatusType
             flags;
 
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           black_point=geometry_info.rho;
           white_point=(flags & SigmaValue) != 0 ? geometry_info.sigma :
             black_point;
@@ -2102,8 +2107,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           kernel_info=AcquireKernelInfo(arg1);
           if (kernel_info == (KernelInfo *) NULL)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          /* kernel_info->bias=_image->bias; -- FUTURE: check this path! */
-          new_image=ConvolveImage(_image,kernel_info,_exception);
+          new_image=MorphologyImage(_image,ConvolveMorphology,1,kernel_info,
+               _exception);
           kernel_info=DestroyKernelInfo(kernel_info);
           break;
         }
@@ -2234,9 +2239,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("edge",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           new_image=EdgeImage(_image,geometry_info.rho,geometry_info.sigma,
@@ -2513,9 +2518,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("lat",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & PercentValue) != 0)
             geometry_info.xi=(double) QuantumRange*geometry_info.xi/100.0;
           new_image=AdaptiveThresholdImage(_image,(size_t) geometry_info.rho,
@@ -2533,9 +2538,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           MagickStatusType
             flags;
 
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           black_point=geometry_info.rho;
           white_point=(MagickRealType) QuantumRange;
           if ((flags & SigmaValue) != 0)
@@ -2604,9 +2609,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           MagickStatusType
             flags;
 
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           black_point=geometry_info.rho;
           white_point=(MagickRealType) _image->columns*_image->rows;
           if ((flags & SigmaValue) != 0)
@@ -2739,9 +2744,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("motion-blur",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           new_image=MotionBlurImage(_image,geometry_info.rho,
@@ -2813,7 +2818,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("paint",option+1) == 0)
         {
-          (void) ParseGeometry(arg1,&geometry_info);
+          flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           new_image=OilPaintImage(_image,geometry_info.rho,geometry_info.sigma,
                _exception);
           break;
@@ -2835,9 +2842,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             random_info=DestroyRandomInfo(random_info);
           }
           else {
-            if (IfMagickFalse(IsGeometry(arg1)))
-              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
             flags=ParseGeometry(arg1,&geometry_info);
+            if ((flags & RhoValue) == 0)
+              CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
             angle=geometry_info.rho;
           }
           caption=GetImageProperty(_image,"caption",_exception);
@@ -2847,9 +2854,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("posterize",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
+          flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          (void) ParseGeometry(arg1,&geometry_info);
           (void) PosterizeImage(_image,(size_t) geometry_info.rho,
                _quantize_info->dither,_exception);
           break;
@@ -2932,9 +2939,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("radial-blur",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           new_image=RadialBlurImage(_image,geometry_info.rho,_exception);
           break;
         }
@@ -2988,9 +2995,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("resample",option+1) == 0)
         {
           /* FUTURE: Roll into a resize special operation */
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=geometry_info.rho;
           new_image=ResampleImage(_image,geometry_info.rho,
@@ -3016,15 +3023,13 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("rotate",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
+          flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          if (strchr(arg1,'>') != (char *) NULL)
-            if (_image->columns <= _image->rows)
-              break;
-          if (strchr(arg1,'<') != (char *) NULL)
-            if (_image->columns >= _image->rows)
-              break;
-          (void) ParseGeometry(arg1,&geometry_info);
+          if ((flags & GreaterValue) != 0 && (_image->columns >= _image->rows))
+            break;
+          if ((flags & LessValue) != 0 && (_image->columns >= _image->rows))
+            break;
           new_image=RotateImage(_image,geometry_info.rho,_exception);
           break;
         }
@@ -3054,9 +3059,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("segment",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           (void) SegmentImage(_image,_image->colorspace,
@@ -3066,9 +3071,11 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("selective-blur",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          if ((flags & SigmaValue) == 0)
+            geometry_info.sigma=1.0;
           if ((flags & PercentValue) != 0)
             geometry_info.xi=(double) QuantumRange*geometry_info.xi/100.0;
           new_image=SelectiveBlurImage(_image,geometry_info.rho,
@@ -3126,20 +3133,18 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("shade",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
-          if ((flags & SigmaValue) == 0)
-            geometry_info.sigma=1.0;
+          if (((flags & RhoValue) == 0) || ((flags & SigmaValue) == 0))
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           new_image=ShadeImage(_image,normal_op,geometry_info.rho,
                geometry_info.sigma,_exception);
           break;
         }
       if (LocaleCompare("shadow",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           if ((flags & XiValue) == 0)
@@ -3153,9 +3158,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("sharpen",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           if ((flags & XiValue) == 0)
@@ -3174,9 +3179,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("shear",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=geometry_info.rho;
           new_image=ShearImage(_image,geometry_info.rho,
@@ -3185,9 +3190,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("sigmoidal-contrast",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=(double) QuantumRange/2.0;
           if ((flags & PercentValue) != 0)
@@ -3199,9 +3204,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("sketch",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           new_image=SketchImage(_image,geometry_info.rho,
@@ -3256,9 +3261,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ( parse < 0 )
             CLIWandExceptArgBreak(OptionError,"UnrecognizedStatisticType",
                  option,arg1);
-          if (IfMagickFalse(IsGeometry(arg2)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg2);
           flags=ParseGeometry(arg2,&geometry_info);
+          if ((flags & RhoValue) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg2);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=geometry_info.rho;
           new_image=StatisticImage(_image,(StatisticType)parse,
@@ -3376,9 +3381,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("unsharp",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           if ((flags & XiValue) == 0)
@@ -3405,9 +3410,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("vignette",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           if ((flags & XiValue) == 0)
@@ -3425,9 +3430,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("wave",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           new_image=WaveImage(_image,geometry_info.rho,geometry_info.sigma,

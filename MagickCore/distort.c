@@ -1948,13 +1948,19 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   { const char *artifact=GetImageArtifact(image,"distort:viewport");
     viewport_given = MagickFalse;
     if ( artifact != (const char *) NULL ) {
-      (void) ParseAbsoluteGeometry(artifact,&geometry);
-      viewport_given = MagickTrue;
+      if (IfMagickFalse(IsGeometry(artifact)))
+        (void) ThrowMagickException(exception,GetMagickModule(),
+             OptionWarning,"InvalidSetting","'%s' '%s'",
+             "distort:viewport",artifact);
+      else {
+        (void) ParseAbsoluteGeometry(artifact,&geometry);
+        viewport_given = MagickTrue;
+      }
     }
   }
 
   /* Verbose output */
-  if ( IfMagickTrue(IsStringTrue(GetImageArtifact(image,"verbose"))) ) {
+  if ( IfStringTrue(GetImageArtifact(image,"verbose")) ) {
     register ssize_t
        i;
     char image_gen[MaxTextExtent];
@@ -2939,7 +2945,7 @@ MagickExport Image *SparseColorImage(const Image *image,
   }
 
   /* Verbose output */
-  if ( IfMagickTrue(IsStringTrue(GetImageArtifact(image,"verbose"))) ) {
+  if ( IfStringTrue(GetImageArtifact(image,"verbose")) ) {
 
     switch (sparse_method) {
       case BarycentricColorInterpolate:
