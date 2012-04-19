@@ -3026,7 +3026,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & RhoValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          if ((flags & GreaterValue) != 0 && (_image->columns >= _image->rows))
+          if ((flags & GreaterValue) != 0 && (_image->columns <= _image->rows))
             break;
           if ((flags & LessValue) != 0 && (_image->columns >= _image->rows))
             break;
