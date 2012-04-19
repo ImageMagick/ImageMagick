@@ -1421,8 +1421,9 @@ am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 	magick/magic.h magick/magick.c magick/magick-config.h \
 	magick/magick-type.h magick/magick.h magick/matrix.c \
 	magick/matrix.h magick/memory.c magick/memory_.h \
-	magick/methods.h magick/method-attribute.h magick/mime.c \
-	magick/mime.h magick/module.c magick/module.h magick/monitor.c \
+	magick/memory-private.h magick/methods.h \
+	magick/method-attribute.h magick/mime.c magick/mime.h \
+	magick/module.c magick/module.h magick/monitor.c \
 	magick/monitor.h magick/monitor-private.h magick/montage.c \
 	magick/montage.h magick/morphology.c magick/morphology.h \
 	magick/morphology-private.h magick/nt-base.h \
@@ -4049,6 +4050,7 @@ MAGICK_BASE_SRCS = \
 	magick/matrix.h \
 	magick/memory.c \
 	magick/memory_.h \
+	magick/memory-private.h \
 	magick/methods.h \
 	magick/method-attribute.h \
 	magick/mime.c \
@@ -4271,6 +4273,7 @@ MAGICK_NOINST_HDRS = \
 	magick/fx-private.h \
 	magick/image-private.h \
 	magick/mac.h \
+	magick/memory-private.h \
 	magick/mime-private.h \
 	magick/monitor-private.h \
 	magick/morphology-private.h \
