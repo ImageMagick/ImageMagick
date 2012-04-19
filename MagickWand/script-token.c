@@ -255,6 +255,7 @@ WandExport ScriptTokenInfo * DestroyScriptTokenInfo(ScriptTokenInfo *token_info)
    The EOL is defined as either '\r\n', or '\r', or '\n'.
    A '\r' on its own is converted into a '\n' to correctly handle
    raw input, typically due to 'copy-n-paste' of text files.
+   But a '\r\n' sequence is left ASIS for string handling
 */
 #define GetChar(c) \
 { \
@@ -370,13 +371,16 @@ WandExport MagickBooleanType GetScriptToken(ScriptTokenInfo *token_info)
             continue;
           }
         GetChar(c);
-        if (c == '\n' || c == '\r' )
+        if (c == '\n')
           switch (state) {
             case IN_COMMENT:
               state=IN_WHITE;  /* end comment */
+            case IN_QUOTE:
+              if (quote != '"')
+                break;         /* in double quotes only */
             case IN_WHITE:
             case IN_TOKEN:
-              continue;   /* line continuation (outside quotes and comment) */
+              continue;        /* line continuation - remove line feed */
           }
         switch (state) {
           case IN_WHITE:
