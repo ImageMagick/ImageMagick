@@ -2732,18 +2732,6 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
   parser->inputTab=parser_context.inputTab;
 }
 
-#if defined(MAGICKCORE_RSVG_DELEGATE)
-static void SVGSetImageSize(int *width,int *height,gpointer context)
-{
-  Image
-    *image;
-
-  image=(Image *) context;
-  *width=(int) (*width*image->x_resolution/72.0);
-  *height=(int) (*height*image->y_resolution/72.0);
-}
-#endif
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
@@ -2845,7 +2833,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (svg_handle == (RsvgHandle *) NULL)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
       rsvg_handle_set_base_uri(svg_handle,image_info->filename);
-      rsvg_handle_set_size_callback(svg_handle,SVGSetImageSize,image,NULL);
       if ((image->x_resolution != 72.0) && (image->y_resolution != 72.0))
         rsvg_handle_set_dpi_x_y(svg_handle,image->x_resolution,
           image->y_resolution);
@@ -2874,9 +2861,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->matte=MagickTrue;
       SetImageProperty(image,"svg:base-uri",
         rsvg_handle_get_base_uri(svg_handle));
-      SetImageProperty(image,"svg:title",rsvg_handle_get_title(svg_handle));
-      SetImageProperty(image,"svg:description",
-        rsvg_handle_get_desc(svg_handle));
       if ((image->columns == 0) || (image->rows == 0))
         {
 #if !defined(MAGICKCORE_CAIRO_DELEGATE)
@@ -3135,7 +3119,7 @@ ModuleExport size_t RegisterSVGImage(void)
   (void) CopyMagickString(version,"XML " LIBXML_DOTTED_VERSION,MaxTextExtent);
 #endif
 #if defined(MAGICKCORE_RSVG_DELEGATE)
-  rsvg_init();
+  g_type_init();
   (void) FormatLocaleString(version,MaxTextExtent,"RSVG %d.%d.%d",
     LIBRSVG_MAJOR_VERSION,LIBRSVG_MINOR_VERSION,LIBRSVG_MICRO_VERSION);
 #endif
