@@ -143,7 +143,7 @@ ModuleExport size_t analyzeImage(Image **images,const int argc,
     saturation_skewness=0.0;
     area=0.0;
     status=MagickTrue;
-    image_view=AcquireCacheView(image);
+    image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static,4) shared(status)
 #endif
