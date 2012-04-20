@@ -186,8 +186,10 @@ typedef enum
 #  define IfMagickTrue(v)  ((v) != MagickFalse)
 #  define IfMagickFalse(v) ((v) == MagickFalse)
 #endif
-#define IsMagickNULL(v) (((void *)(v) == NULL)?MagickTrue:MagickFalse)
-#define IsMagickNotNULL(v) (((void *)(v) != NULL)?MagickTrue:MagickFalse)
+#define IfStringTrue(v)       IfMagickTrue(IsStringTrue(v))
+#define IfStringNotFalse(v)   IfMagickTrue(IsStringNotFalse(v))
+#define IsMagickNULL(v)       (((void *)(v) == NULL)?MagickTrue:MagickFalse)
+#define IsMagickNotNULL(v)    (((void *)(v) != NULL)?MagickTrue:MagickFalse)
 
 typedef struct _BlobInfo BlobInfo;
 
