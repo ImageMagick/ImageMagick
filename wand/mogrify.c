@@ -1103,7 +1103,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               break;
             if (SetImageStorageClass(mask_image,DirectClass) == MagickFalse)
               return(MagickFalse);
-            mask_view=AcquireCacheView(mask_image);
+            mask_view=AcquireAuthenticCacheView(mask_image,exception);
             for (y=0; y < (ssize_t) mask_image->rows; y++)
             {
               q=GetCacheViewAuthenticPixels(mask_view,0,y,mask_image->columns,1,

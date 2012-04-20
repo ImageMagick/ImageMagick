@@ -501,7 +501,7 @@ MagickExport Image *AppendImages(const Image *images,
   x_offset=0;
   y_offset=0;
   next=images;
-  append_view=AcquireCacheView(append_image);
+  append_view=AcquireAuthenticCacheView(append_image,exception);
   for (n=0; n < (MagickOffsetType) number_images; n++)
   {
     CacheView
@@ -522,7 +522,7 @@ MagickExport Image *AppendImages(const Image *images,
       x_offset-=geometry.x;
     else
       y_offset-=geometry.y;
-    image_view=AcquireCacheView(image);
+    image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static) shared(status)
 #endif
@@ -1069,7 +1069,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
   */
   status=MagickTrue;
   progress=0;
-  combine_view=AcquireCacheView(combine_image);
+  combine_view=AcquireAuthenticCacheView(combine_image,exception);
   for (y=0; y < (ssize_t) combine_image->rows; y++)
   {
     CacheView
@@ -1102,7 +1102,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
     next=image;
     if (((channel & RedChannel) != 0) && (next != (Image *) NULL))
       {
-        image_view=AcquireCacheView(next);
+        image_view=AcquireVirtualCacheView(next,exception);
         p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           continue;
@@ -1118,7 +1118,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
       }
     if (((channel & GreenChannel) != 0) && (next != (Image *) NULL))
       {
-        image_view=AcquireCacheView(next);
+        image_view=AcquireVirtualCacheView(next,exception);
         p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           continue;
@@ -1134,7 +1134,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
       }
     if (((channel & BlueChannel) != 0) && (next != (Image *) NULL))
       {
-        image_view=AcquireCacheView(next);
+        image_view=AcquireVirtualCacheView(next,exception);
         p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           continue;
@@ -1150,7 +1150,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
       }
     if (((channel & OpacityChannel) != 0) && (next != (Image *) NULL))
       {
-        image_view=AcquireCacheView(next);
+        image_view=AcquireVirtualCacheView(next,exception);
         p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           continue;
@@ -1170,7 +1170,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         IndexPacket
           *indexes;
 
-        image_view=AcquireCacheView(next);
+        image_view=AcquireVirtualCacheView(next,exception);
         p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           continue;
@@ -1924,7 +1924,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
   GetMagickPixelPacket(image,&zero);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -2184,7 +2184,7 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
   image->depth=background->depth;
   status=MagickTrue;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -2390,7 +2390,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
     image->matte=MagickTrue;
   progress=0;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -2677,7 +2677,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       SetPixelPacket(image,&background,&pixel,&index);
       status=MagickTrue;
       exception=(&image->exception);
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
       #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp parallel for schedule(static,4) shared(status)
       #endif
@@ -2798,7 +2798,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       SetPixelPacket(image,&background,&pixel,&index);
       status=MagickTrue;
       exception=(&image->exception);
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
       #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp parallel for schedule(static,4) shared(status)
       #endif
@@ -2953,7 +2953,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
   */
   status=MagickTrue;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register PixelPacket
@@ -3071,7 +3071,7 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
   image->depth=color->depth;
   status=MagickTrue;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -3737,7 +3737,7 @@ MagickExport MagickBooleanType SetImageOpacity(Image *image,
   image->matte=opacity != OpaqueOpacity ? MagickTrue : MagickFalse;
   status=MagickTrue;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -4057,8 +4057,8 @@ static ssize_t SmushXGap(const Image *smush_image,const Image *images,
   GravityAdjustGeometry(left_image->columns,left_image->rows,
     left_image->gravity,&left_geometry);
   gap=right_image->columns;
-  left_view=AcquireCacheView(left_image);
-  right_view=AcquireCacheView(right_image);
+  left_view=AcquireVirtualCacheView(left_image,exception);
+  right_view=AcquireVirtualCacheView(right_image,exception);
   for (y=0; y < (ssize_t) smush_image->rows; y++)
   {
     for (x=(ssize_t) left_image->columns-1; x > 0; x--)
@@ -4075,7 +4075,8 @@ static ssize_t SmushXGap(const Image *smush_image,const Image *images,
       p=GetCacheViewVirtualPixels(right_view,x,right_geometry.y+y,1,1,
         exception);
       if ((p == (const PixelPacket *) NULL) ||
-          (GetPixelOpacity(p) != TransparentOpacity) || ((x+i) >= (ssize_t) gap))
+          (GetPixelOpacity(p) != TransparentOpacity) ||
+          ((x+i) >= (ssize_t) gap))
         break;
     }
     if ((x+i) < (ssize_t) gap)
@@ -4127,8 +4128,8 @@ static ssize_t SmushYGap(const Image *smush_image,const Image *images,
   GravityAdjustGeometry(top_image->columns,top_image->rows,top_image->gravity,
     &top_geometry);
   gap=bottom_image->rows;
-  top_view=AcquireCacheView(top_image);
-  bottom_view=AcquireCacheView(bottom_image);
+  top_view=AcquireVirtualCacheView(top_image,exception);
+  bottom_view=AcquireVirtualCacheView(bottom_image,exception);
   for (x=0; x < (ssize_t) smush_image->columns; x++)
   {
     for (y=(ssize_t) top_image->rows-1; y > 0; y--)
@@ -4246,7 +4247,7 @@ MagickExport Image *SmushImages(const Image *images,
   status=MagickTrue;
   x_offset=0;
   y_offset=0;
-  smush_view=AcquireCacheView(smush_image);
+  smush_view=AcquireVirtualCacheView(smush_image,exception);
   for (n=0; n < (MagickOffsetType) number_images; n++)
   {
     SetGeometry(smush_image,&geometry);
@@ -4379,7 +4380,7 @@ MagickExport MagickBooleanType SyncImage(Image *image)
   range_exception=MagickFalse;
   status=MagickTrue;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(range_exception,status)
 #endif

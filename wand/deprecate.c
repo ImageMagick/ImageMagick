@@ -2509,7 +2509,8 @@ WandExport PixelView *NewPixelView(MagickWand *wand)
     PixelViewId,(double) pixel_view->id);
   pixel_view->exception=AcquireExceptionInfo();
   pixel_view->wand=wand;
-  pixel_view->view=AcquireCacheView(pixel_view->wand->images);
+  pixel_view->view=AcquireVirtualCacheView(pixel_view->wand->images,
+    pixel_view->exception);
   pixel_view->region.width=wand->images->columns;
   pixel_view->region.height=wand->images->rows;
   pixel_view->number_threads=GetOpenMPMaximumThreads();
@@ -2567,7 +2568,8 @@ WandExport PixelView *NewPixelViewRegion(MagickWand *wand,const ssize_t x,
   (void) FormatLocaleString(pixel_view->name,MaxTextExtent,"%s-%.20g",
     PixelViewId,(double) pixel_view->id);
   pixel_view->exception=AcquireExceptionInfo();
-  pixel_view->view=AcquireCacheView(pixel_view->wand->images);
+  pixel_view->view=AcquireVirtualCacheView(pixel_view->wand->images,
+    pixel_view->exception);
   pixel_view->wand=wand;
   pixel_view->region.width=width;
   pixel_view->region.height=height;

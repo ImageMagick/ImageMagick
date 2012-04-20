@@ -196,9 +196,9 @@ MagickExport Image *CompareImageChannels(Image *image,
   */
   status=MagickTrue;
   GetMagickPixelPacket(image,&zero);
-  image_view=AcquireCacheView(image);
-  reconstruct_view=AcquireCacheView(reconstruct_image);
-  highlight_view=AcquireCacheView(highlight_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
+  highlight_view=AcquireAuthenticCacheView(highlight_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -374,8 +374,8 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
   */
   status=MagickTrue;
   GetMagickPixelPacket(image,&zero);
-  image_view=AcquireCacheView(image);
-  reconstruct_view=AcquireCacheView(reconstruct_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -490,8 +490,8 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     y;
 
   status=MagickTrue;
-  image_view=AcquireCacheView(image);
-  reconstruct_view=AcquireCacheView(reconstruct_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -610,8 +610,8 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
     y;
 
   status=MagickTrue;
-  image_view=AcquireCacheView(image);
-  reconstruct_view=AcquireCacheView(reconstruct_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -731,8 +731,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   area=0.0;
   maximum_error=0.0;
   mean_error=0.0;
-  image_view=AcquireCacheView(image);
-  reconstruct_view=AcquireCacheView(reconstruct_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
@@ -856,8 +856,8 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
     y;
 
   status=MagickTrue;
-  image_view=AcquireCacheView(image);
-  reconstruct_view=AcquireCacheView(reconstruct_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -990,8 +990,8 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   for (i=0; i <= (ssize_t) CompositeChannels; i++)
     distortion[i]=0.0;
   area=1.0/((MagickRealType) image->columns*image->rows-1);
-  image_view=AcquireCacheView(image);
-  reconstruct_view=AcquireCacheView(reconstruct_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
@@ -1118,8 +1118,8 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
     y;
 
   status=MagickTrue;
-  image_view=AcquireCacheView(image);
-  reconstruct_view=AcquireCacheView(reconstruct_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -1594,8 +1594,8 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
   mean_error_per_pixel=0.0;
   mean_error=0.0;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
-  reconstruct_view=AcquireCacheView(reconstruct_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
@@ -1800,7 +1800,7 @@ MagickExport Image *SimilarityMetricImage(Image *image,const Image *reference,
   */
   status=MagickTrue;
   progress=0;
-  similarity_view=AcquireCacheView(similarity_image);
+  similarity_view=AcquireVirtualCacheView(similarity_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif

@@ -776,13 +776,14 @@ WandExport WandView *NewWandView(MagickWand *wand)
     WandViewId,(double) wand_view->id);
   wand_view->description=ConstantString("WandView");
   wand_view->wand=wand;
-  wand_view->view=AcquireCacheView(wand_view->wand->images);
+  wand_view->exception=AcquireExceptionInfo();
+  wand_view->view=AcquireVirtualCacheView(wand_view->wand->images,
+    wand_view->exception);
   wand_view->extent.width=wand->images->columns;
   wand_view->extent.height=wand->images->rows;
   wand_view->number_threads=GetOpenMPMaximumThreads();
   wand_view->pixel_wands=AcquirePixelsThreadSet(wand_view->extent.width,
     wand_view->number_threads);
-  wand_view->exception=AcquireExceptionInfo();
   if (wand_view->pixel_wands == (PixelWand ***) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
@@ -835,14 +836,15 @@ WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
   (void) FormatLocaleString(wand_view->name,MaxTextExtent,"%s-%.20g",
     WandViewId,(double) wand_view->id);
   wand_view->description=ConstantString("WandView");
-  wand_view->view=AcquireCacheView(wand_view->wand->images);
+  wand_view->exception=AcquireExceptionInfo();
+  wand_view->view=AcquireVirtualCacheView(wand_view->wand->images,
+    wand_view->exception);
   wand_view->wand=wand;
   wand_view->extent.width=width;
   wand_view->extent.height=height;
   wand_view->extent.x=x;
   wand_view->extent.y=y;
   wand_view->number_threads=GetOpenMPMaximumThreads();
-  wand_view->exception=AcquireExceptionInfo();
   wand_view->pixel_wands=AcquirePixelsThreadSet(wand_view->extent.width,
     wand_view->number_threads);
   if (wand_view->pixel_wands == (PixelWand ***) NULL)

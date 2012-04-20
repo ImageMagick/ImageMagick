@@ -649,7 +649,7 @@ static MagickBooleanType RadonTransform(const Image *image,
     bits[i]=(unsigned short) count;
   }
   status=MagickTrue;
-  image_view=AcquireCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -779,7 +779,7 @@ static void GetImageBackgroundColor(Image *image,const ssize_t offset,
     return;
   GetMagickPixelPacket(image,&background);
   count=0.0;
-  image_view=AcquireCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
@@ -998,8 +998,8 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireCacheView(image);
-  rotate_view=AcquireCacheView(rotate_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  rotate_view=AcquireAuthenticCacheView(rotate_image,exception);
   switch (rotations)
   {
     case 0:
@@ -1419,7 +1419,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -1639,7 +1639,7 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif

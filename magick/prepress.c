@@ -107,7 +107,7 @@ MagickExport double GetImageTotalInkDensity(Image *image)
   status=MagickTrue;
   total_ink_density=0.0;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif

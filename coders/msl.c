@@ -1931,11 +1931,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                                             "compose:args",value);
                       if (composite_image->matte != MagickTrue)
                         (void) SetImageOpacity(composite_image,OpaqueOpacity);
-                      composite_view=AcquireCacheView(composite_image);
+                      composite_view=AcquireAuthenticCacheView(composite_image,
+                        &exception);
                       for (y=0; y < (ssize_t) composite_image->rows ; y++)
                       {
-                        q=GetCacheViewAuthenticPixels(composite_view,0,y,(ssize_t)
-                          composite_image->columns,1,&exception);
+                        q=GetCacheViewAuthenticPixels(composite_view,0,y,
+                          (ssize_t) composite_image->columns,1,&exception);
                         for (x=0; x < (ssize_t) composite_image->columns; x++)
                         {
                           if (q->opacity == OpaqueOpacity)

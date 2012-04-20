@@ -5117,7 +5117,7 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,
   assert(cache_info->signature == MagickSignature);
   image->matte=MagickTrue;
   status=MagickTrue;
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,&image->exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif

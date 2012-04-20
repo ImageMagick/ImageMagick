@@ -716,13 +716,14 @@ MagickExport ImageView *NewImageView(Image *image)
   (void) ResetMagickMemory(image_view,0,sizeof(*image_view));
   image_view->description=ConstantString("ImageView");
   image_view->image=image;
-  image_view->view=AcquireCacheView(image_view->image);
+  image_view->exception=AcquireExceptionInfo();
+  image_view->view=AcquireVirtualCacheView(image_view->image,
+    image_view->exception);
   image_view->extent.width=image->columns;
   image_view->extent.height=image->rows;
   image_view->extent.x=0;
   image_view->extent.y=0;
   image_view->number_threads=GetOpenMPMaximumThreads();
-  image_view->exception=AcquireExceptionInfo();
   image_view->debug=IsEventLogging();
   image_view->signature=MagickSignature;
   return(image_view);
@@ -768,14 +769,15 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(image_view,0,sizeof(*image_view));
   image_view->description=ConstantString("ImageView");
-  image_view->view=AcquireCacheView(image_view->image);
+  image_view->exception=AcquireExceptionInfo();
+  image_view->view=AcquireVirtualCacheView(image_view->image,
+    image_view->exception);
   image_view->image=image;
   image_view->extent.width=width;
   image_view->extent.height=height;
   image_view->extent.x=x;
   image_view->extent.y=y;
   image_view->number_threads=GetOpenMPMaximumThreads();
-  image_view->exception=AcquireExceptionInfo();
   image_view->debug=IsEventLogging();
   image_view->signature=MagickSignature;
   return(image_view);

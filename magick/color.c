@@ -1693,8 +1693,8 @@ MagickExport MagickBooleanType IsImageSimilar(const Image *image,
   status=MagickTrue;
   GetMagickPixelPacket(image,&pixel);
   GetMagickPixelPacket(image,&target);
-  image_view=AcquireCacheView(image);
-  target_view=AcquireCacheView(target_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  target_view=AcquireVirtualCacheView(target_image,exception);
   for (y=(*y_offset); y < (ssize_t) image->rows; y++)
   {
     for (x=y == 0 ? *x_offset : 0; x < (ssize_t) image->columns; x++)

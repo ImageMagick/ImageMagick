@@ -1170,8 +1170,8 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   exception=(&image->exception);
   start=(ssize_t) ceil(edge.y1-0.5);
   stop=(ssize_t) floor(edge.y2+0.5);
-  image_view=AcquireCacheView(image);
-  source_view=AcquireCacheView(source);
+  source_view=AcquireVirtualCacheView(source,exception);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status)
 #endif
@@ -3277,7 +3277,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   status=MagickTrue;
   exception=(&image->exception);
   GetMagickPixelPacket(image,&zero);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status)
 #endif
@@ -3878,7 +3878,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     image->rows ? (double) image->rows-1.0 : bounds.y2;
   status=MagickTrue;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
   if (primitive_info->coordinates == 1)
     {
       /*
@@ -3909,8 +3909,8 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         start=(ssize_t) ceil(bounds.x1-0.5);
         stop=(ssize_t) floor(bounds.x2+0.5);
         x=start;
-        q=GetCacheViewAuthenticPixels(image_view,x,y,(size_t) (stop-x+1),
-          1,exception);
+        q=GetCacheViewAuthenticPixels(image_view,x,y,(size_t) (stop-x+1),1,
+          exception);
         if (q == (PixelPacket *) NULL)
           {
             status=MagickFalse;
@@ -4174,7 +4174,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
   exception=(&image->exception);
   x=(ssize_t) ceil(primitive_info->point.x-0.5);
   y=(ssize_t) ceil(primitive_info->point.y-0.5);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
   switch (primitive_info->primitive)
   {
     case PointPrimitive:

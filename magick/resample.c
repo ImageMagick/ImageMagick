@@ -173,7 +173,7 @@ struct _ResampleFilter
 %  output pixel, the ResampleFilter structure generated holds that information
 %  between individual image resampling.
 %
-%  This function will make the appropriate AcquireCacheView() calls
+%  This function will make the appropriate AcquireVirtualCacheView() calls
 %  to view the image, calling functions do not need to open a cache view.
 %
 %  Usage Example...
@@ -222,7 +222,7 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
 
   resample_filter->exception=exception;
   resample_filter->image=ReferenceImage((Image *) image);
-  resample_filter->view=AcquireCacheView(resample_filter->image);
+  resample_filter->view=AcquireVirtualCacheView(resample_filter->image,exception);
 
   resample_filter->debug=IsEventLogging();
   resample_filter->signature=MagickSignature;
@@ -478,7 +478,8 @@ MagickExport MagickBooleanType ResamplePixelColor(
               *pixel=resample_filter->average_pixel; /* FAILED */
               break;
             }
-          average_view=AcquireCacheView(average_image);
+          average_view=AcquireVirtualCacheView(average_image,
+            &average_image->exception);
           pixels=(PixelPacket *)GetCacheViewVirtualPixels(average_view,0,0,1,1,
             resample_filter->exception);
           if (pixels == (const PixelPacket *) NULL) {

@@ -232,7 +232,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -291,7 +291,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             return(MagickFalse);
         }
       GetMagickPixelPacket(image,&zero);
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -351,7 +351,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -414,7 +414,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -477,7 +477,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -540,7 +540,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -654,7 +654,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         logmap[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*(reference_white+
           log10(black+((MagickRealType) i/MaxMap)*(1.0-black))/((gamma/density)*
           0.002/film_gamma))/1024.0));
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -1083,7 +1083,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       /*
         Convert DirectClass image.
       */
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -1161,7 +1161,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       /*
         Convert PseudoClass image.
       */
-      image_view=AcquireCacheView(image);
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         MagickPixelPacket
@@ -1177,7 +1176,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         image->colormap[i].green=ScaleMapToQuantum(pixel.green);
         image->colormap[i].blue=ScaleMapToQuantum(pixel.blue);
       }
-      image_view=DestroyCacheView(image_view);
       (void) SyncImage(image);
       break;
     }
@@ -1691,7 +1689,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -1750,7 +1748,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             return(MagickFalse);
         }
       GetMagickPixelPacket(image,&zero);
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -1810,7 +1808,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -1876,7 +1874,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -1942,7 +1940,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -2008,7 +2006,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -2123,7 +2121,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         logmap[i]=(Quantum) QuantumRange;
       if (SetImageStorageClass(image,DirectClass) == MagickFalse)
         return(MagickFalse);
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -2522,7 +2520,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       /*
         Convert DirectClass image.
       */
-      image_view=AcquireCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -2630,7 +2628,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       /*
         Convert PseudoClass image.
       */
-      image_view=AcquireCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -2695,7 +2692,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           }
         }
       }
-      image_view=DestroyCacheView(image_view);
       (void) SyncImage(image);
       break;
     }

@@ -6012,7 +6012,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               (void) SetImageColorspace(image,target_colorspace);
             status=MagickTrue;
             progress=0;
-            image_view=AcquireCacheView(image);
+            image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
             #pragma omp parallel for schedule(static,4) shared(status)
 #endif
