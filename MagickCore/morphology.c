@@ -4304,9 +4304,9 @@ MagickExport Image *MorphologyImage(const Image *image,
     }
 
   /* display the (normalized) kernel via stderr */
-  if ( IfMagickTrue(GetImageArtifact(image,"showkernel"))
-    || IfMagickTrue(GetImageArtifact(image,"convolve:showkernel"))
-    || IfMagickTrue(GetImageArtifact(image,"morphology:showkernel")) )
+  if ( IfStringTrue(GetImageArtifact(image,"showkernel"))
+    || IfStringTrue(GetImageArtifact(image,"convolve:showkernel"))
+    || IfStringTrue(GetImageArtifact(image,"morphology:showkernel")) )
     ShowKernelInfo(curr_kernel);
 
   /* Override the default handling of multi-kernel morphology results
