@@ -73,7 +73,7 @@ typedef struct _ResampleFilter
 
 extern MagickExport MagickBooleanType
   ResamplePixelColor(ResampleFilter *,const double,const double,
-    PixelInfo *),
+    PixelInfo *,ExceptionInfo *),
   SetResampleFilterInterpolateMethod(ResampleFilter *,
     const PixelInterpolateMethod),
   SetResampleFilterVirtualPixelMethod(ResampleFilter *,

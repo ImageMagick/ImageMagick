@@ -224,7 +224,7 @@ static CubeInfo *ClassifyImageColors(const Image *image,
     }
   GetPixelInfo(image,&pixel);
   GetPixelInfo(image,&target);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -686,7 +686,7 @@ MagickExport MagickBooleanType IsHistogramImage(const Image *image,
     }
   GetPixelInfo(image,&pixel);
   GetPixelInfo(image,&target);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -846,7 +846,7 @@ MagickExport MagickBooleanType IsPaletteImage(const Image *image,
     }
   GetPixelInfo(image,&pixel);
   GetPixelInfo(image,&target);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -1292,7 +1292,7 @@ MagickExport Image *UniqueImageColors(const Image *image,
       unique_image=DestroyImage(unique_image);
       return((Image *) NULL);
     }
-  unique_view=AcquireCacheView(unique_image);
+  unique_view=AcquireAuthenticCacheView(unique_image,exception);
   UniqueColorsToImage(unique_image,unique_view,cube_info,cube_info->root,
     exception);
   unique_view=DestroyCacheView(unique_view);

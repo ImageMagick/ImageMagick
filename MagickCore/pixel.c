@@ -4189,7 +4189,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
       excerpt_image=DestroyImage(excerpt_image);
       if (filter_image == (Image *) NULL)
         break;
-      filter_view=AcquireCacheView(filter_image);
+      filter_view=AcquireVirtualCacheView(filter_image,exception);
       p=GetCacheViewVirtualPixels(filter_view,0,0,1,1,exception);
       if (p == (const Quantum *) NULL)
         status=MagickFalse;
@@ -4638,7 +4638,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         excerpt_source=DestroyImage(excerpt_source);
         if (filter_source == (Image *) NULL)
           continue;
-        filter_view=AcquireCacheView(filter_source);
+        filter_view=AcquireVirtualCacheView(filter_source,exception);
         p=GetCacheViewVirtualPixels(filter_view,0,0,1,1,exception);
         if (p == (const Quantum *) NULL)
           status=MagickFalse;
@@ -5166,7 +5166,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       excerpt_image=DestroyImage(excerpt_image);
       if (filter_image == (Image *) NULL)
         break;
-      filter_view=AcquireCacheView(filter_image);
+      filter_view=AcquireVirtualCacheView(filter_image,exception);
       p=GetCacheViewVirtualPixels(filter_view,0,0,1,1,exception);
       if (p != (const Quantum *) NULL)
         GetPixelInfoPixel(image,p,pixel);

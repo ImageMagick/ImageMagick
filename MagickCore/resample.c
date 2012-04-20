@@ -223,7 +223,7 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
 
   resample_filter->exception=exception;
   resample_filter->image=ReferenceImage((Image *) image);
-  resample_filter->view=AcquireCacheView(resample_filter->image);
+  resample_filter->view=AcquireVirtualCacheView(resample_filter->image,exception);
 
   resample_filter->debug=IsEventLogging();
   resample_filter->signature=MagickSignature;
@@ -301,7 +301,8 @@ MagickExport ResampleFilter *DestroyResampleFilter(
 %  The format of the ResamplePixelColor method is:
 %
 %     MagickBooleanType ResamplePixelColor(ResampleFilter *resample_filter,
-%       const double u0,const double v0,PixelInfo *pixel)
+%       const double u0,const double v0,PixelInfo *pixel,
+%       ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -312,10 +313,12 @@ MagickExport ResampleFilter *DestroyResampleFilter(
 %
 %    o pixel: the resampled pixel is returned here.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport MagickBooleanType ResamplePixelColor(
   ResampleFilter *resample_filter,const double u0,const double v0,
-  PixelInfo *pixel)
+  PixelInfo *pixel,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -474,7 +477,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
               *pixel=resample_filter->average_pixel; /* FAILED */
               break;
             }
-          average_view=AcquireCacheView(average_image);
+          average_view=AcquireVirtualCacheView(average_image,exception);
           pixels=GetCacheViewVirtualPixels(average_view,0,0,1,1,
             resample_filter->exception);
           if (pixels == (const Quantum *) NULL) {

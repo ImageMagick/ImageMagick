@@ -26,7 +26,7 @@ typedef struct _FxInfo
   FxInfo;
 
 extern MagickPrivate FxInfo
-  *AcquireFxInfo(const Image *,const char *),
+  *AcquireFxInfo(const Image *,const char *,ExceptionInfo *),
   *DestroyFxInfo(FxInfo *);
 
 extern MagickPrivate MagickBooleanType

@@ -1986,7 +1986,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             break;
           /* Create a write mask from cli_wand mask image */
           /* FUTURE: use Alpha operations instead and create a Grey Image */
-          mask_view=AcquireCacheView(mask_image);
+          mask_view=AcquireAuthenticCacheView(mask_image,_exception);
           for (y=0; y < (ssize_t) mask_image->rows; y++)
           {
             q=GetCacheViewAuthenticPixels(mask_view,0,y,mask_image->columns,1,

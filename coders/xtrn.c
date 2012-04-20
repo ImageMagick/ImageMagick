@@ -148,7 +148,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info,
       (void) sscanf(clone_info->filename,"%lx,%lx",&param1,&param2);
       image_ptr=(Image **) param2;
       if (*image_ptr != (Image *)NULL)
-        image=CloneImage(*image_ptr,0,0,MagickFalse,exception);
+        image=CloneImage(*image_ptr,0,0,MagickFalse,&(*image_ptr)->exception);
 #ifdef ALL_IMAGEINFO
       image_info_ptr=(ImageInfo **) param1;
       if (*image_info_ptr != (ImageInfo *)NULL)
@@ -595,7 +595,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
           SetImageInfo(clone_info,1,exception);
           (void) CopyMagickString(image->magick,clone_info->magick,
             MaxTextExtent);
-          status=WriteStream(clone_info,image,fifo,exception);
+          status=WriteStream(clone_info,image,fifo);
           if (status == MagickFalse)
             CatchImageException(image);
         }
@@ -624,7 +624,7 @@ static MagickBooleanType WriteXTRNImage(const ImageInfo *image_info,Image *image
           SetImageInfo(clone_info,1,exception);
           (void) CopyMagickString(image->magick,clone_info->magick,
             MaxTextExtent);
-          status=WriteStream(clone_info,image,SafeArrayFifo,exception);
+          status=WriteStream(clone_info,image,SafeArrayFifo);
           if (status == MagickFalse)
             CatchImageException(image);
         }
