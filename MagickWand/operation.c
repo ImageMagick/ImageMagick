@@ -2250,9 +2250,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("emboss",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           new_image=EmbossImage(_image,geometry_info.rho,
@@ -2429,9 +2429,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("gaussian-blur",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & (RhoValue|SigmaValue)) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=1.0;
           new_image=GaussianBlurImage(_image,geometry_info.rho,
@@ -2494,11 +2494,11 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("implode",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
+          flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          (void) ParseGeometry(arg1,&geometry_info);
-          new_image=ImplodeImage(_image,geometry_info.rho,
-            _image->interpolate,_exception);
+          new_image=ImplodeImage(_image,geometry_info.rho,_image->interpolate,
+               _exception);
           break;
         }
       if (LocaleCompare("interpolative-resize",option+1) == 0)
@@ -3242,15 +3242,15 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          (void) ParseGravityGeometry(_image,arg1,&geometry,_exception);
+          flags=ParseGravityGeometry(_image,arg1,&geometry,_exception);
           new_image=SpliceImage(_image,&geometry,_exception);
           break;
         }
       if (LocaleCompare("spread",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          (void) ParseGeometry(arg1,&geometry_info);
+          flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg2);
           new_image=SpreadImage(_image,geometry_info.rho,_image->interpolate,
                _exception);
           break;
@@ -3278,9 +3278,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("swirl",option+1) == 0)
         {
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          (void) ParseGeometry(arg1,&geometry_info);
+          flags=ParseGeometry(arg2,&geometry_info);
+          if ((flags & RhoValue) == 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg2);
           new_image=SwirlImage(_image,geometry_info.rho,
             _image->interpolate,_exception);
           break;
@@ -4234,9 +4234,9 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
             flags;
 
           swap_index=(-1);
-          if (IfMagickFalse(IsGeometry(arg1)))
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParseGeometry(arg1,&geometry_info);
+          if ((flags & RhoValue) != 0)
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           index=(ssize_t) geometry_info.rho;
           if ((flags & SigmaValue) != 0)
             swap_index=(ssize_t) geometry_info.sigma;
