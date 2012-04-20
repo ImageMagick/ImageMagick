@@ -2311,7 +2311,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     GetPixelInfo(distort_image,&zero);
     resample_filter=AcquireResampleFilterThreadSet(image,
       UndefinedVirtualPixelMethod,MagickFalse,exception);
-    distort_view=AcquireCacheView(distort_image);
+    distort_view=AcquireAuthenticCacheView(distort_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -2711,7 +2711,8 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
         }
         else {
           /* resample the source image to find its correct color */
-          (void) ResamplePixelColor(resample_filter[id],s.x,s.y,&pixel);
+          (void) ResamplePixelColor(resample_filter[id],s.x,s.y,&pixel,
+            exception);
           /* if validity between 0.0 and 1.0 mix result with invalid pixel */
           if ( validity < 1.0 ) {
             /* Do a blend of sample color and invalid pixel */
@@ -3034,7 +3035,7 @@ MagickExport Image *SparseColorImage(const Image *image,
 
     status=MagickTrue;
     progress=0;
-    sparse_view=AcquireCacheView(sparse_image);
+    sparse_view=AcquireAuthenticCacheView(sparse_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif

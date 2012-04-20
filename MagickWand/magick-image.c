@@ -5266,7 +5266,7 @@ WandExport MagickBooleanType MagickGetImagePixelColor(MagickWand *wand,
 
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  image_view=AcquireCacheView(wand->images);
+  image_view=AcquireVirtualCacheView(wand->images,wand->exception);
   p=GetCacheViewVirtualPixels(image_view,x,y,1,1,wand->exception);
   if (p == (const Quantum *) NULL)
     {

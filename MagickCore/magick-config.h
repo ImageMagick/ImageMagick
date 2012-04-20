@@ -12,7 +12,9 @@
 /* #undef AUTOTRACE_DELEGATE */
 
 /* Define if coders and filters are to be built as modules. */
-/* #undef BUILD_MODULES */
+#ifndef MAGICKCORE_BUILD_MODULES
+#define MAGICKCORE_BUILD_MODULES 1
+#endif
 
 /* Define if you have the bzip2 library */
 #ifndef MAGICKCORE_BZLIB_DELEGATE
@@ -106,9 +108,7 @@
 /* #undef GS_DELEGATE */
 
 /* Define if you have GVC library */
-#ifndef MAGICKCORE_GVC_DELEGATE
-#define MAGICKCORE_GVC_DELEGATE 1
-#endif
+/* #undef GVC_DELEGATE */
 
 /* Define to 1 if you have the `acosh' function. */
 #ifndef MAGICKCORE_HAVE_ACOSH
@@ -219,7 +219,9 @@
 #endif
 
 /* Define to 1 if you have the <CL/cl.h> header file. */
-/* #undef HAVE_CL_CL_H */
+#ifndef MAGICKCORE_HAVE_CL_CL_H
+#define MAGICKCORE_HAVE_CL_CL_H 1
+#endif
 
 /* Define to 1 if you have the <complex.h> header file. */
 #ifndef MAGICKCORE_HAVE_COMPLEX_H
@@ -1188,7 +1190,9 @@
 #endif
 
 /* Define if you have JBIG library */
-/* #undef JBIG_DELEGATE */
+#ifndef MAGICKCORE_JBIG_DELEGATE
+#define MAGICKCORE_JBIG_DELEGATE 1
+#endif
 
 /* Define if you have JPEG version 2 "Jasper" library */
 #ifndef MAGICKCORE_JP2_DELEGATE
@@ -1229,7 +1233,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib/llvm:/usr/lib64/llvm:/usr/local/lib:/usr/lib64/mysql:/usr/lib64/nvidia:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.5/tclx8.4:/usr/lib64/tcl8.5:/usr/lib64/tracker-0.14:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-2"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/local/cuda/lib64:/usr/local/cuda/lib:/usr/lib/llvm:/usr/lib64/llvm:/usr/local/lib:/usr/lib64/mysql:/usr/lib64/nvidia:/usr/lib64/tracker-0.14:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-2"
 #endif
 
 /* The archive extension */
@@ -1263,9 +1267,7 @@
 /* #undef LT_SHARED_EXT */
 
 /* Define if you have LZMA library */
-#ifndef MAGICKCORE_LZMA_DELEGATE
-#define MAGICKCORE_LZMA_DELEGATE 1
-#endif
+/* #undef LZMA_DELEGATE */
 
 /* Define to prepend to default font search path. */
 /* #undef MAGICK_FONT_PATH */
@@ -1283,7 +1285,9 @@
 /* #undef NO_MINUS_C_MINUS_O */
 
 /* Define if you have OPENEXR library */
-/* #undef OPENEXR_DELEGATE */
+#ifndef MAGICKCORE_OPENEXR_DELEGATE
+#define MAGICKCORE_OPENEXR_DELEGATE 1
+#endif
 
 /* Name of package */
 #ifndef MAGICKCORE_PACKAGE
@@ -1353,7 +1357,9 @@
 #endif
 
 /* Define if you have RSVG library */
-/* #undef RSVG_DELEGATE */
+#ifndef MAGICKCORE_RSVG_DELEGATE
+#define MAGICKCORE_RSVG_DELEGATE 1
+#endif
 
 /* Define to the type of arg 1 for `select'. */
 #ifndef MAGICKCORE_SELECT_TYPE_ARG1
@@ -1579,7 +1585,9 @@
 /* #undef _MINIX */
 
 /* Define this for the OpenCL Accelerator */
-/* #undef _OPENCL */
+#ifndef MAGICKCORE__OPENCL
+#define MAGICKCORE__OPENCL 1
+#endif
 
 /* Define to 2 if the system does not provide POSIX.1 features except with
    this defined. */

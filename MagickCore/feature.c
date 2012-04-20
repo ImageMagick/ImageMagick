@@ -220,7 +220,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
     grays[i].black=(~0U);
   }
   status=MagickTrue;
-  image_view=AcquireCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -394,7 +394,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
     Initialize spatial dependence matrix.
   */
   status=MagickTrue;
-  image_view=AcquireCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum

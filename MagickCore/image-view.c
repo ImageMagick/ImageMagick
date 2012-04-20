@@ -694,14 +694,16 @@ MagickExport MagickBooleanType IsImageView(const ImageView *image_view)
 %
 %  The format of the NewImageView method is:
 %
-%      ImageView *NewImageView(MagickCore *wand)
+%      ImageView *NewImageView(MagickCore *wand,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o wand: the wand.
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport ImageView *NewImageView(Image *image)
+MagickExport ImageView *NewImageView(Image *image,ExceptionInfo *exception)
 {
   ImageView
     *image_view;
@@ -714,7 +716,7 @@ MagickExport ImageView *NewImageView(Image *image)
   (void) ResetMagickMemory(image_view,0,sizeof(*image_view));
   image_view->description=ConstantString("ImageView");
   image_view->image=image;
-  image_view->view=AcquireCacheView(image_view->image);
+  image_view->view=AcquireVirtualCacheView(image_view->image,exception);
   image_view->extent.width=image->columns;
   image_view->extent.height=image->rows;
   image_view->extent.x=0;
@@ -743,7 +745,8 @@ MagickExport ImageView *NewImageView(Image *image)
 %  The format of the NewImageViewRegion method is:
 %
 %      ImageView *NewImageViewRegion(MagickCore *wand,const ssize_t x,
-%        const ssize_t y,const size_t width,const size_t height)
+%        const ssize_t y,const size_t width,const size_t height,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -752,9 +755,12 @@ MagickExport ImageView *NewImageView(Image *image)
 %    o x,y,columns,rows:  These values define the perimeter of a extent of
 %      pixel_wands view.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
 MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
-  const ssize_t y,const size_t width,const size_t height)
+  const ssize_t y,const size_t width,const size_t height,
+  ExceptionInfo *exception)
 {
   ImageView
     *image_view;
@@ -766,7 +772,7 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(image_view,0,sizeof(*image_view));
   image_view->description=ConstantString("ImageView");
-  image_view->view=AcquireCacheView(image_view->image);
+  image_view->view=AcquireVirtualCacheView(image_view->image,exception);
   image_view->image=image;
   image_view->extent.width=width;
   image_view->extent.height=height;

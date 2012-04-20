@@ -729,6 +729,9 @@ static PixelWand ***AcquirePixelsThreadSet(const size_t number_wands,
 
 WandExport WandView *NewWandView(MagickWand *wand)
 {
+  ExceptionInfo
+    *exception;
+
   WandView
     *wand_view;
 
@@ -744,13 +747,14 @@ WandExport WandView *NewWandView(MagickWand *wand)
     WandViewId,(double) wand_view->id);
   wand_view->description=ConstantString("WandView");
   wand_view->wand=wand;
-  wand_view->view=AcquireCacheView(wand_view->wand->images);
+  exception=AcquireExceptionInfo();
+  wand_view->view=AcquireVirtualCacheView(wand_view->wand->images,exception);
   wand_view->extent.width=wand->images->columns;
   wand_view->extent.height=wand->images->rows;
   wand_view->number_threads=GetOpenMPMaximumThreads();
   wand_view->pixel_wands=AcquirePixelsThreadSet(wand_view->extent.width,
     wand_view->number_threads);
-  wand_view->exception=AcquireExceptionInfo();
+  wand_view->exception=exception;
   if (wand_view->pixel_wands == (PixelWand ***) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
@@ -789,6 +793,9 @@ WandExport WandView *NewWandView(MagickWand *wand)
 WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
   const ssize_t y,const size_t width,const size_t height)
 {
+  ExceptionInfo
+    *exception;
+
   WandView
     *wand_view;
 
@@ -803,14 +810,15 @@ WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
   (void) FormatLocaleString(wand_view->name,MaxTextExtent,"%s-%.20g",
     WandViewId,(double) wand_view->id);
   wand_view->description=ConstantString("WandView");
-  wand_view->view=AcquireCacheView(wand_view->wand->images);
+  exception=AcquireExceptionInfo();
+  wand_view->view=AcquireVirtualCacheView(wand_view->wand->images,exception);
   wand_view->wand=wand;
   wand_view->extent.width=width;
   wand_view->extent.height=height;
   wand_view->extent.x=x;
   wand_view->extent.y=y;
   wand_view->number_threads=GetOpenMPMaximumThreads();
-  wand_view->exception=AcquireExceptionInfo();
+  wand_view->exception=exception;
   wand_view->pixel_wands=AcquirePixelsThreadSet(wand_view->extent.width,
     wand_view->number_threads);
   if (wand_view->pixel_wands == (PixelWand ***) NULL)

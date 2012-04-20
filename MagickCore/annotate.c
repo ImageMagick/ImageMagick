@@ -1386,7 +1386,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
           Rasterize the glyph.
         */
         status=MagickTrue;
-        image_view=AcquireCacheView(image);
+        image_view=AcquireAuthenticCacheView(image,exception);
         p=bitmap->bitmap.buffer;
         for (y=0; y < (ssize_t) bitmap->bitmap.rows; y++)
         {
@@ -1818,7 +1818,7 @@ static MagickBooleanType RenderPostscript(Image *image,
         (void) SetImageAlphaChannel(annotate_image,OpaqueAlphaChannel,
           exception);
       fill_color=draw_info->fill;
-      annotate_view=AcquireCacheView(annotate_image);
+      annotate_view=AcquireAuthenticCacheView(annotate_image,exception);
       for (y=0; y < (ssize_t) annotate_image->rows; y++)
       {
         register ssize_t

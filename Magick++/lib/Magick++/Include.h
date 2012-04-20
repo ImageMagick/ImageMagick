@@ -549,8 +549,9 @@ namespace Magick
   //
   // ImageMagick symbols used in implementation code
   //
-  using MagickCore::AcquireCacheView;
+  using MagickCore::AcquireAuthenticCacheView;
   using MagickCore::AcquireExceptionInfo;
+  using MagickCore::AcquireVirtualCacheView;
   using MagickCore::GetCacheViewVirtualPixels;
   using MagickCore::AcquireImage;
   using MagickCore::GetVirtualPixels;

@@ -86,25 +86,70 @@ struct _CacheView
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c q u i r e C a c h e V i e w                                           %
+%   A c q u i r e A u t h e n t i c C a c h e V i e w                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireCacheView() acquires a view into the pixel cache, using the
-%  VirtualPixelMethod that is defined within the given image itself.
+%  AcquireAuthenticCacheView() acquires an authentic view into the pixel cache.
 %
-%  The format of the AcquireCacheView method is:
+%  The format of the AcquireAuthenticCacheView method is:
 %
-%      CacheView *AcquireCacheView(const Image *image)
+%      CacheView *AcquireAuthenticCacheView(const Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport CacheView *AcquireCacheView(const Image *image)
+MagickExport CacheView *AcquireAuthenticCacheView(const Image *image,
+  ExceptionInfo *exception)
+{
+  CacheView
+    *cache_view;
+
+  MagickBooleanType
+    status;
+
+  cache_view=AcquireVirtualCacheView(image,exception);
+  status=SyncImagePixelCache(cache_view->image,exception);
+  if (status == MagickFalse)
+    ThrowFatalException(CacheFatalError,"UnableToAcquireCacheView");
+  return(cache_view);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c q u i r e V i r t u a l C a c h e V i e w                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireVirtualCacheView() acquires a virtual view into the pixel cache,
+%  using the VirtualPixelMethod that is defined within the given image itself.
+%
+%  The format of the AcquireVirtualCacheView method is:
+%
+%      CacheView *AcquireVirtualCacheView(const Image *image,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport CacheView *AcquireVirtualCacheView(const Image *image,
+  ExceptionInfo *exception)
 {
   CacheView
     *cache_view;
@@ -113,6 +158,7 @@ MagickExport CacheView *AcquireCacheView(const Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  (void) exception;
   cache_view=(CacheView *) AcquireQuantumMemory(1,sizeof(*cache_view));
   if (cache_view == (CacheView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -349,6 +395,8 @@ MagickExport ClassType GetCacheViewStorageClass(const CacheView *cache_view)
 %
 %    o x,y,columns,rows:  These values define the perimeter of a region of
 %      pixels.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport Quantum *GetCacheViewAuthenticPixels(CacheView *cache_view,

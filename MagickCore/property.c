@@ -2049,7 +2049,7 @@ MagickExport const char *GetImageProperty(const Image *image,
     {
       if (LocaleNCompare("fx:",property,3) == 0)
         {
-          fx_info=AcquireFxInfo(image,property+3);
+          fx_info=AcquireFxInfo(image,property+3,exception);
           status=FxEvaluateChannelExpression(fx_info,IntensityPixelChannel,0,0,
             &alpha,exception);
           fx_info=DestroyFxInfo(fx_info);
@@ -2095,7 +2095,7 @@ MagickExport const char *GetImageProperty(const Image *image,
             pixel;
 
           GetPixelInfo(image,&pixel);
-          fx_info=AcquireFxInfo(image,property+6);
+          fx_info=AcquireFxInfo(image,property+6,exception);
           status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
             &alpha,exception);
           pixel.red=(MagickRealType) QuantumRange*alpha;

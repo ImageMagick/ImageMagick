@@ -508,7 +508,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image,
   image->resolution.x=204.0;
   image->resolution.y=196.0;
   image->units=PixelsPerInchResolution;
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; ((y < (ssize_t) image->rows) && (null_lines < 3)); )
   {
     register Quantum

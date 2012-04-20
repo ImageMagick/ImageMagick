@@ -203,8 +203,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   PushSegmentStack(y,x,x,1);
   PushSegmentStack(y+1,x,x,-1);
   GetPixelInfo(image,&pixel);
-  image_view=AcquireCacheView(image);
-  floodplane_view=AcquireCacheView(floodplane_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  floodplane_view=AcquireAuthenticCacheView(floodplane_image,exception);
   while (s > segment_stack)
   {
     register const Quantum
@@ -587,8 +587,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   progress=0;
   center=(ssize_t) GetPixelChannels(image)*(image->columns+width)*(width/2L)+
     GetPixelChannels(image)*(width/2L);
-  image_view=AcquireCacheView(image);
-  paint_view=AcquireCacheView(paint_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  paint_view=AcquireAuthenticCacheView(paint_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -788,7 +788,7 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
   status=MagickTrue;
   progress=0;
   GetPixelInfo(image,&zero);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -914,7 +914,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
   status=MagickTrue;
   progress=0;
   GetPixelInfo(image,&zero);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -1040,7 +1040,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif

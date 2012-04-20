@@ -49,9 +49,9 @@ extern MagickExport Image
 extern MagickExport ImageView
   *CloneImageView(const ImageView *),
   *DestroyImageView(ImageView *),
-  *NewImageView(Image *),
+  *NewImageView(Image *,ExceptionInfo *),
   *NewImageViewRegion(Image *,const ssize_t,const ssize_t,const size_t,
-    const size_t);
+    const size_t,ExceptionInfo *);
 
 extern MagickExport MagickBooleanType
   DuplexTransferImageViewIterator(ImageView *,ImageView *,ImageView *,
