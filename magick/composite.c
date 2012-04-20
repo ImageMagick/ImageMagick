@@ -1687,8 +1687,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         break;
       status=MagickTrue;
       exception=(&image->exception);
-      image_view=AcquireCacheView(image);
-      composite_view=AcquireCacheView(composite_image);
+      composite_view=AcquireVirtualCacheView(composite_image,exception);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
 #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -1835,8 +1835,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       exception=(&image->exception);
       resample_filter=AcquireResampleFilter(image,&image->exception);
       SetResampleFilter(resample_filter,CubicFilter,2.0);
-      destination_view=AcquireCacheView(destination_image);
-      composite_view=AcquireCacheView(composite_image);
+      composite_view=AcquireVirtualCacheView(composite_image,exception);
+      destination_view=AcquireAuthenticCacheView(destination_image,exception);
       for (y=0; y < (ssize_t) composite_image->rows; y++)
       {
         MagickBooleanType
@@ -2016,9 +2016,9 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       */
       pixel=zero;
       exception=(&image->exception);
-      image_view=AcquireCacheView(image);
-      destination_view=AcquireCacheView(destination_image);
-      composite_view=AcquireCacheView(composite_image);
+      image_view=AcquireVirtualCacheView(image,exception);
+      composite_view=AcquireVirtualCacheView(composite_image,exception);
+      destination_view=AcquireAuthenticCacheView(destination_image,exception);
       for (y=0; y < (ssize_t) composite_image->rows; y++)
       {
         MagickBooleanType
@@ -2189,8 +2189,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   midpoint=((MagickRealType) QuantumRange+1.0)/2;
   GetMagickPixelPacket(composite_image,&zero);
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
-  composite_view=AcquireCacheView(composite_image);
+  composite_view=AcquireVirtualCacheView(composite_image,exception);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -2897,8 +2897,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
   */
   status=MagickTrue;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
-  texture_view=AcquireCacheView(texture);
+  texture_view=AcquireVirtualCacheView(texture,exception);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status)
 #endif

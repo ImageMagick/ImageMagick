@@ -288,8 +288,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
           i++;
         }
     }
-  magnitude_view=AcquireCacheView(magnitude_image);
-  phase_view=AcquireCacheView(phase_image);
+  magnitude_view=AcquireAuthenticCacheView(magnitude_image,exception);
   i=0L;
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
@@ -347,7 +346,9 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
     if (status == MagickFalse)
       break;
   }
+  magnitude_view=DestroyCacheView(magnitude_view);
   i=0L;
+  phase_view=AcquireAuthenticCacheView(phase_image,exception);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     q=GetCacheViewAuthenticPixels(phase_view,0L,y,fourier_info->height,1UL,
@@ -362,32 +363,27 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
         case RedChannel:
         default:
         {
-          SetPixelRed(q,ClampToQuantum(QuantumRange*
-            phase_source[i]));
+          SetPixelRed(q,ClampToQuantum(QuantumRange*phase_source[i]));
           break;
         }
         case GreenChannel:
         {
-          SetPixelGreen(q,ClampToQuantum(QuantumRange*
-            phase_source[i]));
+          SetPixelGreen(q,ClampToQuantum(QuantumRange*phase_source[i]));
           break;
         }
         case BlueChannel:
         {
-          SetPixelBlue(q,ClampToQuantum(QuantumRange*
-            phase_source[i]));
+          SetPixelBlue(q,ClampToQuantum(QuantumRange*phase_source[i]));
           break;
         }
         case OpacityChannel:
         {
-          SetPixelOpacity(q,ClampToQuantum(QuantumRange*
-            phase_source[i]));
+          SetPixelOpacity(q,ClampToQuantum(QuantumRange*phase_source[i]));
           break;
         }
         case IndexChannel:
         {
-          SetPixelIndex(indexes+x,ClampToQuantum(QuantumRange*
-            phase_source[i]));
+          SetPixelIndex(indexes+x,ClampToQuantum(QuantumRange*phase_source[i]));
           break;
         }
         case GrayChannels:
@@ -404,7 +400,6 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
       break;
    }
   phase_view=DestroyCacheView(phase_view);
-  magnitude_view=DestroyCacheView(magnitude_view);
   phase_source=(double *) RelinquishMagickMemory(phase_source);
   magnitude_source=(double *) RelinquishMagickMemory(magnitude_source);
   return(status);
@@ -453,7 +448,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   ResetMagickMemory(source,0,fourier_info->height*fourier_info->width*
     sizeof(*source));
   i=0L;
-  image_view=AcquireCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0L,y,fourier_info->width,1UL,
@@ -878,7 +873,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
       return(MagickFalse);
     }
   i=0L;
-  magnitude_view=AcquireCacheView(magnitude_image);
+  magnitude_view=AcquireVirtualCacheView(magnitude_image,exception);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     p=GetCacheViewVirtualPixels(magnitude_view,0L,y,fourier_info->width,1UL,
@@ -927,7 +922,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     }
   }
   i=0L;
-  phase_view=AcquireCacheView(phase_image);
+  phase_view=AcquireVirtualCacheView(phase_image,exception);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     p=GetCacheViewVirtualPixels(phase_view,0,y,fourier_info->width,1,
@@ -1093,7 +1088,7 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
     fftw_destroy_plan(fftw_c2r_plan);
   }
   i=0L;
-  image_view=AcquireCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     if (y >= (ssize_t) image->rows)

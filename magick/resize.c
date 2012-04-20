@@ -1181,8 +1181,8 @@ MagickExport Image *AdaptiveResizeImage(const Image *image,
     }
   status=MagickTrue;
   progress=0;
-  image_view=AcquireCacheView(image);
-  resize_view=AcquireCacheView(resize_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  resize_view=AcquireAuthenticCacheView(resize_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status)
 #endif
@@ -1874,7 +1874,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     }
   GetMagickPixelPacket(rescale_image,&pixel);
   (void) lqr_carver_scan_reset(carver);
-  rescale_view=AcquireCacheView(rescale_image);
+  rescale_view=AcquireAuthenticCacheView(rescale_image,exception);
   while (lqr_carver_scan(carver,&x,&y,&packet) != 0)
   {
     register IndexPacket
@@ -2097,8 +2097,8 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   status=MagickTrue;
   scale=1.0/scale;
   (void) ResetMagickMemory(&zero,0,sizeof(zero));
-  image_view=AcquireCacheView(image);
-  resize_view=AcquireCacheView(resize_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  resize_view=AcquireAuthenticCacheView(resize_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -2336,8 +2336,8 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   status=MagickTrue;
   scale=1.0/scale;
   (void) ResetMagickMemory(&zero,0,sizeof(zero));
-  image_view=AcquireCacheView(image);
-  resize_view=AcquireCacheView(resize_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  resize_view=AcquireAuthenticCacheView(resize_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status)
 #endif
@@ -2712,8 +2712,8 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireCacheView(image);
-  sample_view=AcquireCacheView(sample_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  sample_view=AcquireAuthenticCacheView(sample_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -2907,8 +2907,8 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   GetMagickPixelPacket(image,&pixel);
   (void) ResetMagickMemory(&zero,0,sizeof(zero));
   i=0;
-  image_view=AcquireCacheView(image);
-  scale_view=AcquireCacheView(scale_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  scale_view=AcquireAuthenticCacheView(scale_image,exception);
   for (y=0; y < (ssize_t) scale_image->rows; y++)
   {
     register const IndexPacket

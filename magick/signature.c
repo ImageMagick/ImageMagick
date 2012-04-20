@@ -524,7 +524,7 @@ MagickExport MagickBooleanType SignatureImage(Image *image)
   signature=AcquireStringInfo(quantum_info->extent);
   pixels=GetQuantumPixels(quantum_info);
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);

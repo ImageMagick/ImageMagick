@@ -1805,8 +1805,8 @@ static double GetSimilarityMetric(const Image *image,const Image *reference,
   if ((image->colorspace == CMYKColorspace) &&
       (reference->colorspace == CMYKColorspace))
     channels++;
-  image_view=AcquireCacheView(image);
-  reference_view=AcquireCacheView(reference);
+  image_view=AcquireVirtualCacheView(image,exception);
+  reference_view=AcquireVirtualCacheView(reference,exception);
   for (y=0; y < (ssize_t) reference->rows; y++)
   {
     register const IndexPacket
@@ -4918,7 +4918,7 @@ MagickExport MagickBooleanType OpaqueImage(Image *image,
 %
 %  Deprecated, replace with:
 %
-%    AcquireCacheView(image);
+%    AcquireVirtualCacheView(image,&image->exception);
 %
 %  The format of the OpenCacheView method is:
 %
@@ -4931,7 +4931,7 @@ MagickExport MagickBooleanType OpaqueImage(Image *image,
 */
 MagickExport CacheView *OpenCacheView(const Image *image)
 {
-  return(AcquireCacheView(image));
+  return(AcquireVirtualCacheView(image,&((Image *) image)->exception));
 }
 
 /*

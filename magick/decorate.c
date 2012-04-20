@@ -286,8 +286,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     }
   status=MagickTrue;
   progress=0;
-  image_view=AcquireCacheView(image);
-  frame_view=AcquireCacheView(frame_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  frame_view=AcquireAuthenticCacheView(frame_image,exception);
   height=(size_t) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
     frame_info->inner_bevel);
   if (height != 0)
@@ -726,7 +726,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
   #pragma omp parallel for schedule(static) shared(progress,status)
 #endif

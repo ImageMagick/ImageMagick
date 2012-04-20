@@ -290,6 +290,9 @@ WandExport PixelIterator *NewPixelIterator(MagickWand *wand)
   const char
     *quantum;
 
+  ExceptionInfo
+    *exception;
+
   Image
     *image;
 
@@ -310,7 +313,8 @@ WandExport PixelIterator *NewPixelIterator(MagickWand *wand)
   image=GetImageFromMagickWand(wand);
   if (image == (Image *) NULL)
     return((PixelIterator *) NULL);
-  view=AcquireCacheView(image);
+  exception=AcquireExceptionInfo();
+  view=AcquireVirtualCacheView(image,exception);
   if (view == (CacheView *) NULL)
     return((PixelIterator *) NULL);
   iterator=(PixelIterator *) AcquireMagickMemory(sizeof(*iterator));
@@ -321,7 +325,7 @@ WandExport PixelIterator *NewPixelIterator(MagickWand *wand)
   iterator->id=AcquireWandId();
   (void) FormatLocaleString(iterator->name,MaxTextExtent,"%s-%.20g",
     PixelIteratorId,(double) iterator->id);
-  iterator->exception=AcquireExceptionInfo();
+  iterator->exception=exception;
   iterator->view=view;
   SetGeometry(image,&iterator->region);
   iterator->region.width=image->columns;
@@ -406,6 +410,9 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,
   const char
     *quantum;
 
+  ExceptionInfo
+    *exception;
+
   Image
     *image;
 
@@ -425,7 +432,8 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,
   image=GetImageFromMagickWand(wand);
   if (image == (Image *) NULL)
     return((PixelIterator *) NULL);
-  view=AcquireCacheView(image);
+  exception=AcquireExceptionInfo();
+  view=AcquireVirtualCacheView(image,exception);
   if (view == (CacheView *) NULL)
     return((PixelIterator *) NULL);
   iterator=(PixelIterator *) AcquireMagickMemory(sizeof(*iterator));
@@ -436,7 +444,7 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,
   iterator->id=AcquireWandId();
   (void) FormatLocaleString(iterator->name,MaxTextExtent,"%s-%.20g",
     PixelIteratorId,(double) iterator->id);
-  iterator->exception=AcquireExceptionInfo();
+  iterator->exception=exception;
   iterator->view=view;
   SetGeometry(image,&iterator->region);
   iterator->region.width=width;

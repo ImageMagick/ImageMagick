@@ -4011,7 +4011,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       excerpt_image=DestroyImage(excerpt_image);
       if (filter_image == (Image *) NULL)
         break;
-      filter_view=AcquireCacheView(filter_image);
+      filter_view=AcquireVirtualCacheView(filter_image,exception);
       p=GetCacheViewVirtualPixels(filter_view,0,0,1,1,exception);
       if (p != (const PixelPacket *) NULL)
         {

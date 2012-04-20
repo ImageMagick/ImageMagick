@@ -510,7 +510,7 @@ MagickExport MagickBooleanType HuffmanDecodeImage(Image *image)
   image->y_resolution=196.0;
   image->units=PixelsPerInchResolution;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; ((y < (ssize_t) image->rows) && (null_lines < 3)); )
   {
     register PixelPacket

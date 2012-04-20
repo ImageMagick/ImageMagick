@@ -630,7 +630,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -784,7 +784,7 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   progress=0;
   adjust=(ssize_t) (clut_image->interpolate == IntegerInterpolatePixel ? 0 : 1);
   exception=(&image->exception);
-  clut_view=AcquireCacheView(clut_image);
+  clut_view=AcquireAuthenticCacheView(clut_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4)
 #endif
@@ -796,7 +796,7 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
       QuantumScale*i*(clut_image->rows-adjust),clut_map+i,exception);
   }
   clut_view=DestroyCacheView(clut_view);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -978,7 +978,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -1166,7 +1166,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   status=MagickTrue;
   exception=(&image->exception);
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const PixelPacket
@@ -1631,8 +1631,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   status=MagickTrue;
   progress=0;
   (void) ResetMagickMemory(&zero,0,sizeof(zero));
-  image_view=AcquireCacheView(image);
-  enhance_view=AcquireCacheView(enhance_image);
+  image_view=AcquireAuthenticCacheView(image,exception);
+  enhance_view=AcquireAuthenticCacheView(enhance_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -1926,7 +1926,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -2152,7 +2152,7 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -2340,8 +2340,8 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
   width=(double) hald_image->columns;
   GetMagickPixelPacket(hald_image,&zero);
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
-  hald_view=AcquireCacheView(hald_image);
+  image_view=AcquireAuthenticCacheView(image,exception);
+  hald_view=AcquireAuthenticCacheView(hald_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -2652,7 +2652,7 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -2829,7 +2829,7 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -3315,7 +3315,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -3490,7 +3490,7 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
   if (grayscale != MagickFalse)
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3867,7 +3867,7 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif

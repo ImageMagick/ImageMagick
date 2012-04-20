@@ -1360,7 +1360,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
         status=MagickTrue;
         exception=(&image->exception);
         p=bitmap->bitmap.buffer;
-        image_view=AcquireCacheView(image);
+        image_view=AcquireAuthenticCacheView(image,exception);
         for (y=0; y < (ssize_t) bitmap->bitmap.rows; y++)
         {
           MagickBooleanType
@@ -1788,7 +1788,7 @@ static MagickBooleanType RenderPostscript(Image *image,
         (void) SetImageAlphaChannel(annotate_image,OpaqueAlphaChannel);
       fill_color=draw_info->fill;
       exception=(&image->exception);
-      annotate_view=AcquireCacheView(annotate_image);
+      annotate_view=AcquireAuthenticCacheView(annotate_image,exception);
       for (y=0; y < (ssize_t) annotate_image->rows; y++)
       {
         register ssize_t

@@ -1589,7 +1589,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             y=0;
             items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
             (void) items;
-            image_view=AcquireCacheView(image);
+            image_view=AcquireAuthenticCacheView(image,exception);
             p=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
             if (p != (PixelPacket *) NULL)
               {
@@ -1822,7 +1822,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             y=0;
             items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
             (void) items;
-            image_view=AcquireCacheView(image);
+            image_view=AcquireAuthenticCacheView(image,exception);
             q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
             indexes=GetCacheViewAuthenticIndexQueue(image_view);
             if (q != (PixelPacket *) NULL)
@@ -4879,7 +4879,7 @@ Get(ref,...)
               y=0;
               items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
               (void) items;
-              image_view=AcquireCacheView(image);
+              image_view=AcquireVirtualCacheView(image,exception);
               p=GetCacheViewVirtualPixels(image_view,x,y,1,1,&image->exception);
               if (p != (const PixelPacket *) NULL)
                 {
@@ -8297,7 +8297,8 @@ Mogrify(ref,...)
                     1.0));
                   if (composite_image->matte != MagickTrue)
                     (void) SetImageOpacity(composite_image,OpaqueOpacity);
-                  composite_view=AcquireCacheView(composite_image);
+                  composite_view=AcquireAuthenticCacheView(composite_image,
+                    exception);
                   for (y=0; y < (ssize_t) composite_image->rows ; y++)
                   {
                     q=GetCacheViewAuthenticPixels(composite_view,0,y,(ssize_t)

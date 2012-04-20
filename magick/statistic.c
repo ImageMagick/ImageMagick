@@ -499,7 +499,7 @@ MagickExport Image *EvaluateImages(const Image *images,
   random_info=AcquireRandomInfoThreadSet();
   concurrent=GetRandomSecretKey(random_info[0]) == ~0UL ? MagickTrue :
     MagickFalse;
-  evaluate_view=AcquireCacheView(evaluate_image);
+  evaluate_view=AcquireAuthenticCacheView(evaluate_image,exception);
   if (op == MedianEvaluateOperator)
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -555,7 +555,7 @@ MagickExport Image *EvaluateImages(const Image *images,
             register const PixelPacket
               *p;
 
-            image_view=AcquireCacheView(next);
+            image_view=AcquireVirtualCacheView(next,exception);
             p=GetCacheViewVirtualPixels(image_view,x,y,1,1,exception);
             if (p == (const PixelPacket *) NULL)
               {
@@ -660,7 +660,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           register const PixelPacket
             *p;
 
-          image_view=AcquireCacheView(next);
+          image_view=AcquireVirtualCacheView(next,exception);
           p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
           if (p == (const PixelPacket *) NULL)
             {
@@ -790,7 +790,7 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
   random_info=AcquireRandomInfoThreadSet();
   concurrent=GetRandomSecretKey(random_info[0]) == ~0UL ? MagickTrue : 
     MagickFalse;
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) omp_concurrent(concurrent)
 #endif
@@ -1028,7 +1028,7 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
     }
   status=MagickTrue;
   progress=0;
-  image_view=AcquireCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
@@ -2557,8 +2557,8 @@ MagickExport Image *StatisticImageChannel(const Image *image,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireCacheView(image);
-  statistic_view=AcquireCacheView(statistic_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  statistic_view=AcquireAuthenticCacheView(statistic_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status)
 #endif
