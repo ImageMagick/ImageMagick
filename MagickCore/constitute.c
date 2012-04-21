@@ -521,6 +521,17 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   image=NewImageList();
   if (constitute_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&constitute_semaphore);
+  if ((magick_info == (const MagickInfo *) NULL) ||
+      (GetImageDecoder(magick_info) == (DecodeImageHandler *) NULL))
+    {
+      delegate_info=GetDelegateInfo(read_info->magick,(char *) NULL,exception);
+      if (delegate_info == (const DelegateInfo *) NULL)
+        {
+          (void) SetImageInfo(read_info,0,exception);
+          (void) CopyMagickString(read_info->filename,filename,MaxTextExtent);
+          magick_info=GetMagickInfo(read_info->magick,exception);
+        }
+    }
   if ((magick_info != (const MagickInfo *) NULL) &&
       (GetImageDecoder(magick_info) != (DecodeImageHandler *) NULL))
     {
@@ -1184,10 +1195,20 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
             }
           if ((magick_info == (const MagickInfo *) NULL) ||
               (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
-            (void) ThrowMagickException(exception,GetMagickModule(),
-              MissingDelegateError,"NoEncodeDelegateForThisImageFormat","'%s'",
-              image->filename);
-          else
+            {
+              magick_info=GetMagickInfo(image->magick,exception);
+              if ((magick_info == (const MagickInfo *) NULL) ||
+                  (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
+                (void) ThrowMagickException(exception,GetMagickModule(),
+                  MissingDelegateError,"NoEncodeDelegateForThisImageFormat",
+                  "'%s'",image->filename);
+              else
+                (void) ThrowMagickException(exception,GetMagickModule(),
+                  MissingDelegateWarning,"NoEncodeDelegateForThisImageFormat",
+                  "'%s'",image->filename);
+            }
+          if ((magick_info != (const MagickInfo *) NULL) &&
+              (GetImageEncoder(magick_info) != (EncodeImageHandler *) NULL))
             {
               /*
                 Call appropriate image writer based on image type.
