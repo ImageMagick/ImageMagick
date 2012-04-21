@@ -141,7 +141,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
 }
 #define ThrowConjureException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"'%s'", \
      option); \
   DestroyConjure(); \
   return(MagickFalse); \
@@ -149,7 +149,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
 #define ThrowConjureInvalidArgumentException(option,argument) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),OptionError, \
-    "InvalidArgument","`%s': %s",option,argument); \
+    "InvalidArgument","'%s': %s",option,argument); \
   DestroyConjure(); \
   return(MagickFalse); \
 }

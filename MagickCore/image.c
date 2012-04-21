@@ -2532,10 +2532,10 @@ MagickExport MagickBooleanType SetImageExtent(Image *image,const size_t columns,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageInfo() initializes the `magick' field of the ImageInfo structure.
+%  SetImageInfo() initializes the 'magick' field of the ImageInfo structure.
 %  It is set to a type of image format based on the prefix or suffix of the
-%  filename.  For example, `ps:image' returns PS indicating a Postscript image.
-%  JPEG is returned for this filename: `image.jpg'.  The filename prefix has
+%  filename.  For example, 'ps:image' returns PS indicating a Postscript image.
+%  JPEG is returned for this filename: 'image.jpg'.  The filename prefix has
 %  precendence over the suffix.  Use an optional index enclosed in brackets
 %  after a file name to specify a desired scene of a multi-resolution image
 %  format like Photo CD (e.g. img0001.pcd[4]).  A True (non-zero) return value
@@ -3757,7 +3757,7 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
   image_view=DestroyCacheView(image_view);
   if (range_exception != MagickFalse)
     (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-      "InvalidColormapIndex","`%s'",image->filename);
+      "InvalidColormapIndex","'%s'",image->filename);
   return(status);
 }
 

@@ -29,7 +29,7 @@ extern "C" {
 { \
   if (image != (Image *) NULL) \
     (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-      tag == (const char *) NULL ? "unknown" : tag,"`%s'",context); \
+      tag == (const char *) NULL ? "unknown" : tag,"'%s'",context); \
   return(MagickFalse); \
 }
 #define ThrowFatalException(severity,tag) \
@@ -43,7 +43,7 @@ extern "C" {
   GetExceptionInfo(&exception); \
   message=GetExceptionMessage(errno); \
   (void) ThrowMagickException(&exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"`%s'",message); \
+    tag == (const char *) NULL ? "unknown" : tag,"'%s'",message); \
   message=DestroyString(message); \
   CatchException(&exception); \
   (void) DestroyExceptionInfo(&exception); \
@@ -56,19 +56,19 @@ extern "C" {
  \
   message=GetExceptionMessage(errno); \
   (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"`%s': %s",context,message); \
+    tag == (const char *) NULL ? "unknown" : tag,"'%s': %s",context,message); \
   message=DestroyString(message); \
 }
 #define ThrowImageException(severity,tag) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"`%s'",image->filename); \
+    tag == (const char *) NULL ? "unknown" : tag,"'%s'",image->filename); \
   return((Image *) NULL); \
 }
 #define ThrowReaderException(severity,tag) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"`%s'",image_info->filename); \
+    tag == (const char *) NULL ? "unknown" : tag,"'%s'",image_info->filename); \
   if ((image) != (Image *) NULL) \
     { \
       (void) CloseBlob(image); \
@@ -79,7 +79,7 @@ extern "C" {
 #define ThrowWriterException(severity,tag) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"`%s'",image->filename); \
+    tag == (const char *) NULL ? "unknown" : tag,"'%s'",image->filename); \
   if (image_info->adjoin != MagickFalse) \
     while (image->previous != (Image *) NULL) \
       image=image->previous; \

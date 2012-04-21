@@ -467,7 +467,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     if ((next->columns != images->columns) || (next->rows != images->rows))
       {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "ImageWidthsOrHeightsDiffer","`%s'",images->filename);
+          "ImageWidthsOrHeightsDiffer","'%s'",images->filename);
         return((Image *) NULL);
       }
   /*
@@ -488,7 +488,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     {
       evaluate_image=DestroyImage(evaluate_image);
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",images->filename);
       return((Image *) NULL);
     }
   /*

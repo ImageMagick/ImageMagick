@@ -149,7 +149,7 @@ static MagickBooleanType StreamUsage(void)
   for (p=miscellaneous; *p != (char *) NULL; p++)
     (void) printf("  %s\n",*p);
   (void) printf(
-    "\nBy default, the image format of `file' is determined by its magic\n");
+    "\nBy default, the image format of 'file' is determined by its magic\n");
   (void) printf(
     "number.  To specify a particular image format, precede the filename\n");
   (void) printf(
@@ -173,7 +173,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
 }
 #define ThrowStreamException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"'%s'", \
     option); \
   DestroyStream(); \
   return(MagickFalse); \
@@ -181,7 +181,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
 #define ThrowStreamInvalidArgumentException(option,argument) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),OptionError, \
-    "InvalidArgument","`%s': %s",option,argument); \
+    "InvalidArgument","'%s': %s",option,argument); \
   DestroyStream(); \
   return(MagickFalse); \
 }

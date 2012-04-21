@@ -58,7 +58,7 @@
 #define ThrowWandException(severity,tag,context) \
 { \
   (void) ThrowMagickException(wand->exception,GetMagickModule(),severity, \
-    tag,"`%s'",context); \
+    tag,"'%s'",context); \
   return(MagickFalse); \
 }
 
@@ -98,7 +98,7 @@ WandExport MagickBooleanType MagickDeleteImageArtifact(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
+        "ContainsNoImages","'%s'",wand->name);
       return(MagickFalse);
     }
   return(DeleteImageArtifact(wand->images,artifact));
@@ -140,7 +140,7 @@ WandExport MagickBooleanType MagickDeleteImageProperty(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
+        "ContainsNoImages","'%s'",wand->name);
       return(MagickFalse);
     }
   return(DeleteImageProperty(wand->images,property));
@@ -574,7 +574,7 @@ WandExport char *MagickGetImageArtifact(MagickWand *wand,const char *artifact)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
+        "ContainsNoImages","'%s'",wand->name);
       return((char *) NULL);
     }
   value=GetImageArtifact(wand->images,artifact);
@@ -636,7 +636,7 @@ WandExport char **MagickGetImageArtifacts(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
+        "ContainsNoImages","'%s'",wand->name);
       return((char **) NULL);
     }
   (void) GetImageProperty(wand->images,"exif:*",wand->exception);
@@ -659,7 +659,7 @@ WandExport char **MagickGetImageArtifacts(MagickWand *wand,
             if (artifacts == (char **) NULL)
               {
                 (void) ThrowMagickException(wand->exception,GetMagickModule(),
-                  ResourceLimitError,"MemoryAllocationFailed","`%s'",
+                  ResourceLimitError,"MemoryAllocationFailed","'%s'",
                   wand->name);
                 return((char **) NULL);
               }
@@ -718,7 +718,7 @@ WandExport unsigned char *MagickGetImageProfile(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
+        "ContainsNoImages","'%s'",wand->name);
       return((unsigned char *) NULL);
     }
   *length=0;
@@ -790,7 +790,7 @@ WandExport char **MagickGetImageProfiles(MagickWand *wand,const char *pattern,
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
+        "ContainsNoImages","'%s'",wand->name);
       return((char **) NULL);
     }
   (void) GetImageProfile(wand->images,"exif:*");
@@ -813,7 +813,7 @@ WandExport char **MagickGetImageProfiles(MagickWand *wand,const char *pattern,
             if (profiles == (char **) NULL)
               {
                 (void) ThrowMagickException(wand->exception,GetMagickModule(),
-                  ResourceLimitError,"MemoryAllocationFailed","`%s'",
+                  ResourceLimitError,"MemoryAllocationFailed","'%s'",
                   wand->name);
                 return((char **) NULL);
               }
@@ -867,7 +867,7 @@ WandExport char *MagickGetImageProperty(MagickWand *wand,const char *property)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
+        "ContainsNoImages","'%s'",wand->name);
       return((char *) NULL);
     }
   value=GetImageProperty(wand->images,property,wand->exception);
@@ -929,7 +929,7 @@ WandExport char **MagickGetImageProperties(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
+        "ContainsNoImages","'%s'",wand->name);
       return((char **) NULL);
     }
   (void) GetImageProperty(wand->images,"exif:*",wand->exception);
@@ -952,7 +952,7 @@ WandExport char **MagickGetImageProperties(MagickWand *wand,
             if (properties == (char **) NULL)
               {
                 (void) ThrowMagickException(wand->exception,GetMagickModule(),
-                  ResourceLimitError,"MemoryAllocationFailed","`%s'",
+                  ResourceLimitError,"MemoryAllocationFailed","'%s'",
                   wand->name);
                 return((char **) NULL);
               }
@@ -1134,7 +1134,7 @@ WandExport char **MagickGetOptions(MagickWand *wand,const char *pattern,
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
+        "ContainsNoImages","'%s'",wand->name);
       return((char **) NULL);
     }
   length=1024;
@@ -1156,7 +1156,7 @@ WandExport char **MagickGetOptions(MagickWand *wand,const char *pattern,
             if (options == (char **) NULL)
               {
                 (void) ThrowMagickException(wand->exception,GetMagickModule(),
-                  ResourceLimitError,"MemoryAllocationFailed","`%s'",
+                  ResourceLimitError,"MemoryAllocationFailed","'%s'",
                   wand->name);
                 return((char **) NULL);
               }
@@ -1809,7 +1809,7 @@ WandExport unsigned char *MagickRemoveImageProfile(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
+        "ContainsNoImages","'%s'",wand->name);
       return((unsigned char *) NULL);
     }
   *length=0;

@@ -367,7 +367,7 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
  \
   fatal_exception=AcquireExceptionInfo(); \
   (void) ThrowMagickException(fatal_exception,GetMagickModule(),severity,tag, \
-    "`%s'",(context)); \
+    "'%s'",(context)); \
   CatchException(fatal_exception); \
   fatal_exception=DestroyExceptionInfo(fatal_exception); \
 }

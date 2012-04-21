@@ -863,7 +863,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
             node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
             if (node_info->child[id] == (NodeInfo *) NULL)
               (void) ThrowMagickException(exception,GetMagickModule(),
-                ResourceLimitError,"MemoryAllocationFailed","`%s'",
+                ResourceLimitError,"MemoryAllocationFailed","'%s'",
                 image->filename);
             if (level == MaxTreeDepth)
               cube_info->colors++;
@@ -2878,7 +2878,7 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
   if (cube_info == (CubeInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",images->filename);
       return(MagickFalse);
     }
   number_images=GetImageListLength(images);

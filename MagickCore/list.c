@@ -371,7 +371,7 @@ MagickExport void DeleteImages(Image **images,const char *scenes,
   if (delete_list == (MagickBooleanType *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",(*images)->filename);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",(*images)->filename);
       return;
     }
   image=(*images);
@@ -842,7 +842,7 @@ MagickExport Image **ImageListToArray(const Image *images,
   if (group == (Image **) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",images->filename);
       return((Image **) NULL);
     }
   images=GetFirstImageInList(images);

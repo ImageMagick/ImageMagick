@@ -1241,7 +1241,7 @@ MagickExport double *GetImageDistortions(Image *image,
       (reconstruct_image->rows != image->rows))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "ImageSizeDiffers","`%s'",image->filename);
+        "ImageSizeDiffers","'%s'",image->filename);
       return((double *) NULL);
     }
   /*
@@ -1649,19 +1649,15 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
       }
       q+=GetPixelChannels(similarity_image);
     }
-    if (SyncCacheViewAuthenticPixels(similarity_view,exception) == MagickFalse)
+    if (IfMagickFalse( SyncCacheViewAuthenticPixels(similarity_view,exception) ))
       status=MagickFalse;
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
-        MagickBooleanType
-          proceed;
-
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_SimilarityImage)
 #endif
-        proceed=SetImageProgress(image,SimilarityImageTag,progress++,
-          image->rows);
-        if (proceed == MagickFalse)
+        if (IfMagickFalse( SetImageProgress(image,SimilarityImageTag,
+                 progress++,image->rows) ))
           status=MagickFalse;
       }
   }

@@ -1680,7 +1680,7 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
   if (display == (Display *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),XServerError,
-        "UnableToOpenXServer","`%s'",XDisplayName(image_info->server_name));
+        "UnableToOpenXServer","'%s'",XDisplayName(image_info->server_name));
       return(MagickFalse);
     }
   if (exception->severity != UndefinedException)
@@ -1758,7 +1758,7 @@ MagickExport MagickBooleanType RemoteDisplayCommand(const ImageInfo *image_info,
   if (display == (Display *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),XServerError,
-        "UnableToOpenXServer","`%s'",XDisplayName(image_info->server_name));
+        "UnableToOpenXServer","'%s'",XDisplayName(image_info->server_name));
       return(MagickFalse);
     }
   (void) XSetErrorHandler(XError);
@@ -5512,7 +5512,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
   if (coordinate_info == (XPoint *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'","...");
+        ResourceLimitError,"MemoryAllocationFailed","'%s'","...");
       return(MagickFalse);
     }
   /*
@@ -6137,7 +6137,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
             max_coordinates,sizeof(*coordinate_info));
           if (coordinate_info == (XPoint *) NULL)
             (void) ThrowMagickException(exception,GetMagickModule(),
-              ResourceLimitError,"MemoryAllocationFailed","`%s'","...");
+              ResourceLimitError,"MemoryAllocationFailed","'%s'","...");
           break;
         }
         case Expose:
@@ -6164,7 +6164,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
             max_coordinates,sizeof(*coordinate_info));
           if (coordinate_info == (XPoint *) NULL)
             (void) ThrowMagickException(exception,GetMagickModule(),
-              ResourceLimitError,"MemoryAllocationFailed","`%s'","...");
+              ResourceLimitError,"MemoryAllocationFailed","'%s'","...");
           break;
         }
         default:
@@ -13309,7 +13309,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  XTranslateImage() translates the image within an Image window by one pixel
-%  as specified by the key symbol.  If the image has a `montage string the
+%  as specified by the key symbol.  If the image has a montage string the
 %  translation is respect to the width and height contained within the string.
 %
 %  The format of the XTranslateImage method is:
@@ -16194,7 +16194,7 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
-    "DelegateLibrarySupportNotBuiltIn","`%s' (X11)",image->filename);
+    "DelegateLibrarySupportNotBuiltIn","'%s' (X11)",image->filename);
   return(MagickFalse);
 }
 
@@ -16237,7 +16237,7 @@ MagickExport MagickBooleanType RemoteDisplayCommand(const ImageInfo *image_info,
   (void) window;
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
-    "DelegateLibrarySupportNotBuiltIn","`%s' (X11)",image_info->filename);
+    "DelegateLibrarySupportNotBuiltIn","'%s' (X11)",image_info->filename);
   return(MagickFalse);
 }
 #endif

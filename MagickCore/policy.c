@@ -720,7 +720,7 @@ static MagickBooleanType LoadPolicyList(const char *xml,const char *filename,
             {
               if (depth > 200)
                 (void) ThrowMagickException(exception,GetMagickModule(),
-                  ConfigureError,"IncludeElementNestedTooDeeply","`%s'",token);
+                  ConfigureError,"IncludeElementNestedTooDeeply","'%s'",token);
               else
                 {
                   char
@@ -767,7 +767,7 @@ static MagickBooleanType LoadPolicyList(const char *xml,const char *filename,
         status=AppendValueToLinkedList(policy_list,policy_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",
+            ResourceLimitError,"MemoryAllocationFailed","'%s'",
             policy_info->name);
         policy_info=(PolicyInfo *) NULL;
       }
@@ -916,7 +916,7 @@ static MagickBooleanType LoadPolicyLists(const char *filename,
     if (policy_info == (PolicyInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",policy_info->name);
+          ResourceLimitError,"MemoryAllocationFailed","'%s'",policy_info->name);
         continue;
       }
     (void) ResetMagickMemory(policy_info,0,sizeof(*policy_info));
@@ -931,7 +931,7 @@ static MagickBooleanType LoadPolicyLists(const char *filename,
     status=AppendValueToLinkedList(policy_list,policy_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",policy_info->name);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",policy_info->name);
   }
   /*
     Load external policy map.

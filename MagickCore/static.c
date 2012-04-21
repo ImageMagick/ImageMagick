@@ -97,7 +97,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",tag);
+        "NotAuthorized","'%s'",tag);
       return(MagickFalse);
     }
 #if defined(MAGICKCORE_BUILD_MODULES)
@@ -118,7 +118,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
       image_filter=(ImageFilterHandler *) analyzeImage;
     if (image_filter == (ImageFilterHandler *) NULL)
       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-        "UnableToLoadModule","`%s'",tag);
+        "UnableToLoadModule","'%s'",tag);
     else
       {
         size_t
@@ -134,7 +134,7 @@ MagickExport MagickBooleanType InvokeStaticImageFilter(const char *tag,
         if (signature != MagickImageFilterSignature)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-              "ImageFilterSignatureMismatch","`%s': %8lx != %8lx",tag,
+              "ImageFilterSignatureMismatch","'%s': %8lx != %8lx",tag,
               (unsigned long) signature,(unsigned long)
               MagickImageFilterSignature);
             return(MagickFalse);

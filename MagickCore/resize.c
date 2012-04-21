@@ -1870,7 +1870,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
-    "DelegateLibrarySupportNotBuiltIn","`%s' (LQR)",image->filename);
+    "DelegateLibrarySupportNotBuiltIn","'%s' (LQR)",image->filename);
   return((Image *) NULL);
 }
 #endif
@@ -2179,7 +2179,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   if (contributions == (ContributionInfo **) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
       return(MagickFalse);
     }
   status=MagickTrue;
@@ -2395,7 +2395,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   if (contributions == (ContributionInfo **) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
       return(MagickFalse);
     }
   status=MagickTrue;

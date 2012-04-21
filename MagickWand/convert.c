@@ -57,7 +57,7 @@
  \
   message=GetExceptionMessage(errno); \
   (void) ThrowMagickException(exception,GetMagickModule(),severity, \
-    tag == (const char *) NULL ? "unknown" : tag,"`%s': %s",context,message); \
+    tag == (const char *) NULL ? "unknown" : tag,"'%s': %s",context,message); \
   message=DestroyString(message); \
 }
 
@@ -186,7 +186,7 @@ static MagickBooleanType ConvertUsage(void)
       "-color-matrix matrix apply color correction to the image",
       "-contrast            enhance or reduce the image contrast",
       "-contrast-stretch geometry",
-      "                     improve contrast by `stretching' the intensity range",
+      "                     improve contrast by 'stretching' the intensity range",
       "-convolve coefficients",
       "                     apply a convolution kernel to the image",
       "-cycle amount        cycle the image colormap",
@@ -228,7 +228,7 @@ static MagickBooleanType ConvertUsage(void)
       "-level-colors color,color",
       "                     level image with the given colors",
       "-linear-stretch geometry",
-      "                     improve contrast by `stretching with saturation'",
+      "                     improve contrast by 'stretching with saturation'",
       "-liquid-rescale geometry",
       "                     rescale image with seam-carving",
       "-median geometry     apply a median filter to the image",
@@ -460,7 +460,7 @@ static MagickBooleanType ConvertUsage(void)
   for (p=miscellaneous; *p != (char *) NULL; p++)
     (void) printf("  %s\n",*p);
   (void) printf(
-    "\nBy default, the image format of `file' is determined by its magic\n");
+    "\nBy default, the image format of 'file' is determined by its magic\n");
   (void) printf(
     "number.  To specify a particular image format, precede the filename\n");
   (void) printf(
@@ -484,7 +484,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
 }
 #define ThrowConvertException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"'%s'", \
     option); \
   DestroyConvert(); \
   return(MagickFalse); \
@@ -492,7 +492,7 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
 #define ThrowConvertInvalidArgumentException(option,argument) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),OptionError, \
-    "InvalidArgument","`%s': %s",option,argument); \
+    "InvalidArgument","'%s': %s",option,argument); \
   DestroyConvert(); \
   return(MagickFalse); \
 }
@@ -3019,10 +3019,12 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
     ThrowConvertException(OptionError,"UnbalancedParenthesis",argv[i]);
   if (i-- != (ssize_t) (argc-1))
     ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
-  if (image == (Image *) NULL)
-    ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   FinalizeImageSettings(image_info,image,MagickTrue);
   if (image == (Image *) NULL)
+    ThrowConvertException(OptionError,"NoImagesDefined",argv[argc-1]);
+  if (IsCommandOption(argv[argc-1]))
+    ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
+  if (LocaleCompare(" ",argv[argc-1])==0) /* common line continuation error */
     ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   status&=WriteImages(image_info,image,argv[argc-1],exception);
   if (metadata != (char **) NULL)

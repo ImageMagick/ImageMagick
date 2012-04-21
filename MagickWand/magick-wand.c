@@ -57,7 +57,7 @@
 #define ThrowWandException(severity,tag,context) \
 { \
   (void) ThrowMagickException(wand->exception,GetMagickModule(),severity, \
-    tag,"`%s'",context); \
+    tag,"'%s'",context); \
   return(MagickFalse); \
 }
 
@@ -297,7 +297,7 @@ WandExport char *MagickGetException(const MagickWand *wand,
   if (description == (char *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "MemoryAllocationFailed","`%s'",wand->name);
+        "MemoryAllocationFailed","'%s'",wand->name);
       return((char *) NULL);
     }
   *description='\0';
@@ -378,7 +378,7 @@ WandExport ssize_t MagickGetIteratorIndex(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoIterators","`%s'",wand->name);
+        "ContainsNoIterators","'%s'",wand->name);
       return(-1);
     }
   return(GetImageIndexInList(wand->images));
@@ -542,7 +542,7 @@ WandExport double *MagickQueryFontMetrics(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
+        "ContainsNoImages","'%s'",wand->name);
       return((double *) NULL);
     }
   font_metrics=(double *) AcquireQuantumMemory(13UL,sizeof(*font_metrics));
@@ -649,7 +649,7 @@ WandExport double *MagickQueryMultilineFontMetrics(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","`%s'",wand->name);
+        "ContainsNoImages","'%s'",wand->name);
       return((double *) NULL);
     }
   font_metrics=(double *) AcquireQuantumMemory(13UL,sizeof(*font_metrics));

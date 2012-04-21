@@ -605,8 +605,11 @@ next_argument:
   if (LocaleCompare(option,"-exit") == 0 )
     return(argc);  /* just exit, no image write */
 
-  /* If filename looks like an option -- produce an error */
-  if (IsCommandOption(option) != MagickFalse) {
+  /* If filename looks like an option,
+     Or the common 'end of line' error of a single space.
+     -- produce an error */
+  if (IfMagickTrue(IsCommandOption(option)) ||
+      (option[0] == ' ' && option[1] == '\0') ) {
     CLIWandException(OptionError,"MissingOutputFilename",option);
     return(argc);
   }
@@ -880,7 +883,7 @@ Magick_Command_Cleanup:
          exception);
     if (text == (char *) NULL)
       ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-           "MemoryAllocationFailed","`%s'", GetExceptionMessage(errno));
+           "MemoryAllocationFailed","'%s'", GetExceptionMessage(errno));
     else {
       (void) ConcatenateString(&(*metadata),text);
       text=DestroyString(text);

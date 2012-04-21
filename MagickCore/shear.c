@@ -345,7 +345,7 @@ static RadonInfo *AcquireRadonInfo(const Image *image,const size_t width,
       if (status == MagickFalse)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-            "CacheResourcesExhausted","`%s'",image->filename);
+            "CacheResourcesExhausted","'%s'",image->filename);
           return(DestroyRadonInfo(radon_info));
         }
       radon_info->type=DiskCache;

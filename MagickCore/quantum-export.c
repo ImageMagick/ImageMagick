@@ -889,7 +889,7 @@ static void ExportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
   if (image->colorspace != CMYKColorspace)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "ColorSeparatedImageRequired","`%s'",image->filename);
+        "ColorSeparatedImageRequired","'%s'",image->filename);
       return;
     }
   switch (quantum_info->depth)
@@ -1211,7 +1211,7 @@ static void ExportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
   if (image->colorspace != CMYKColorspace)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "ColorSeparatedImageRequired","`%s'",image->filename);
+        "ColorSeparatedImageRequired","'%s'",image->filename);
       return;
     }
   switch (quantum_info->depth)
@@ -1356,7 +1356,7 @@ static void ExportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
   if (image->colorspace != CMYKColorspace)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "ColorSeparatedImageRequired","`%s'",image->filename);
+        "ColorSeparatedImageRequired","'%s'",image->filename);
       return;
     }
   switch (quantum_info->depth)
@@ -2087,7 +2087,7 @@ static void ExportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
   if (image->storage_class != PseudoClass)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "ColormappedImageRequired","`%s'",image->filename);
+        "ColormappedImageRequired","'%s'",image->filename);
       return;
     }
   switch (quantum_info->depth)
@@ -2254,7 +2254,7 @@ static void ExportIndexAlphaQuantum(const Image *image,
   if (image->storage_class != PseudoClass)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "ColormappedImageRequired","`%s'",image->filename);
+        "ColormappedImageRequired","'%s'",image->filename);
       return;
     }
   switch (quantum_info->depth)

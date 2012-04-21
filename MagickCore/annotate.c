@@ -889,7 +889,7 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
       type_info=GetTypeInfo(draw_info->font,exception);
       if (type_info == (const TypeInfo *) NULL)
         (void) ThrowMagickException(exception,GetMagickModule(),TypeWarning,
-          "UnableToReadFont","`%s'",draw_info->font);
+          "UnableToReadFont","'%s'",draw_info->font);
     }
   if ((type_info == (const TypeInfo *) NULL) &&
       (draw_info->family != (const char *) NULL))
@@ -898,7 +898,7 @@ static MagickBooleanType RenderType(Image *image,const DrawInfo *draw_info,
         draw_info->stretch,draw_info->weight,exception);
       if (type_info == (const TypeInfo *) NULL)
         (void) ThrowMagickException(exception,GetMagickModule(),TypeWarning,
-          "UnableToReadFont","`%s'",draw_info->family);
+          "UnableToReadFont","'%s'",draw_info->family);
     }
   if (type_info == (const TypeInfo *) NULL)
     type_info=GetTypeInfoByFamily("Arial",draw_info->style,
@@ -1147,7 +1147,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     {
       (void) FT_Done_FreeType(library);
       (void) ThrowMagickException(exception,GetMagickModule(),TypeError,
-        "UnableToReadFont","`%s'",draw_info->font);
+        "UnableToReadFont","'%s'",draw_info->font);
       return(RenderPostscript(image,draw_info,offset,metrics,exception));
     }
   if ((draw_info->metrics != (char *) NULL) &&
@@ -1552,7 +1552,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
   TypeMetric *metrics,ExceptionInfo *exception)
 {
   (void) ThrowMagickException(exception,GetMagickModule(),
-    MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","`%s' (Freetype)",
+    MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","'%s' (Freetype)",
     draw_info->font != (char *) NULL ? draw_info->font : "none");
   return(RenderPostscript(image,draw_info,offset,metrics,exception));
 }
@@ -2094,7 +2094,7 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
   (void) offset;
   (void) metrics;
   (void) ThrowMagickException(exception,GetMagickModule(),
-    MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","`%s' (X11)",
+    MissingDelegateError,"DelegateLibrarySupportNotBuiltIn","'%s' (X11)",
     image->filename);
   return(MagickFalse);
 }
