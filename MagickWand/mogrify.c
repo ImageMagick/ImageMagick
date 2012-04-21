@@ -491,7 +491,7 @@ static Image *SparseColorOption(const Image *image,
     if ( isalpha((int) token[0]) || token[0] == '#' ) {
       if ( color_from_image ) {
         (void) ThrowMagickException(exception,GetMagickModule(),
-            OptionError, "InvalidArgument", "`%s': %s", "sparse-color",
+            OptionError, "InvalidArgument", "'%s': %s", "sparse-color",
             "Color arg given, when colors are coming from image");
         return( (Image *)NULL);
       }
@@ -514,7 +514,7 @@ static Image *SparseColorOption(const Image *image,
   }
   if ( error ) {
     (void) ThrowMagickException(exception,GetMagickModule(),
-               OptionError, "InvalidArgument", "`%s': %s", "sparse-color",
+               OptionError, "InvalidArgument", "'%s': %s", "sparse-color",
                "Invalid number of Arguments");
     return( (Image *)NULL);
   }
@@ -537,7 +537,7 @@ static Image *SparseColorOption(const Image *image,
     if ( token[0] == '\0' ) break;
     if ( isalpha((int) token[0]) || token[0] == '#' ) {
       (void) ThrowMagickException(exception,GetMagickModule(),
-            OptionError, "InvalidArgument", "`%s': %s", "sparse-color",
+            OptionError, "InvalidArgument", "'%s': %s", "sparse-color",
             "Color found, instead of X-coord");
       error = MagickTrue;
       break;
@@ -548,7 +548,7 @@ static Image *SparseColorOption(const Image *image,
     if ( token[0] == '\0' ) break;
     if ( isalpha((int) token[0]) || token[0] == '#' ) {
       (void) ThrowMagickException(exception,GetMagickModule(),
-            OptionError, "InvalidArgument", "`%s': %s", "sparse-color",
+            OptionError, "InvalidArgument", "'%s': %s", "sparse-color",
             "Color found, instead of Y-coord");
       error = MagickTrue;
       break;
@@ -632,7 +632,7 @@ static Image *SparseColorOption(const Image *image,
   }
   if ( number_arguments != x && !error ) {
     (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "InvalidArgument","`%s': %s","sparse-color","Argument Parsing Error");
+      "InvalidArgument","'%s': %s","sparse-color","Argument Parsing Error");
     sparse_arguments=(double *) RelinquishMagickMemory(sparse_arguments);
     return( (Image *)NULL);
   }
@@ -3300,7 +3300,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-color-matrix matrix apply color correction to the image",
       "-contrast            enhance or reduce the image contrast",
       "-contrast-stretch geometry",
-      "                     improve contrast by `stretching' the intensity range",
+      "                     improve contrast by 'stretching' the intensity range",
       "-convolve coefficients",
       "                     apply a convolution kernel to the image",
       "-cycle amount        cycle the image colormap",
@@ -3342,7 +3342,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-level-colors color,color",
       "                     level image with the given colors",
       "-linear-stretch geometry",
-      "                     improve contrast by `stretching with saturation'",
+      "                     improve contrast by 'stretching with saturation'",
       "-liquid-rescale geometry",
       "                     rescale image with seam-carving",
       "-median geometry     apply a median filter to the image",
@@ -3600,7 +3600,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
 }
 #define ThrowMogrifyException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"'%s'", \
     option); \
   DestroyMogrify(); \
   return(MagickFalse); \
@@ -3608,7 +3608,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
 #define ThrowMogrifyInvalidArgumentException(option,argument) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),OptionError, \
-    "InvalidArgument","`%s': %s",argument,option); \
+    "InvalidArgument","'%s': %s",argument,option); \
   DestroyMogrify(); \
   return(MagickFalse); \
 }
@@ -7690,7 +7690,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             if (p == (Image *) NULL)
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
-                  OptionError,"NoSuchImage","`%s'",argv[i+1]);
+                  OptionError,"NoSuchImage","'%s'",argv[i+1]);
                 status=MagickFalse;
                 break;
               }
@@ -7706,7 +7706,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                    if (q == (Image *) NULL)
                      {
                        (void) ThrowMagickException(exception,GetMagickModule(),
-                         OptionError,"NoSuchImage","`%s'",argv[i+1]);
+                         OptionError,"NoSuchImage","'%s'",argv[i+1]);
                        status=MagickFalse;
                        break;
                      }
@@ -8128,7 +8128,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             if ((p == (Image *) NULL) || (q == (Image *) NULL))
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
-                  OptionError,"NoSuchImage","`%s'",(*images)->filename);
+                  OptionError,"NoSuchImage","'%s'",(*images)->filename);
                 status=MagickFalse;
                 break;
               }

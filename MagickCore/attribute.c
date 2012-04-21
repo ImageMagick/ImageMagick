@@ -231,7 +231,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   image_view=DestroyCacheView(image_view);
   if ((bounds.width == 0) || (bounds.height == 0))
     (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-      "GeometryDoesNotContainImage","`%s'",image->filename);
+      "GeometryDoesNotContainImage","'%s'",image->filename);
   else
     {
       bounds.width-=(bounds.x-1);

@@ -213,7 +213,7 @@ static MagickBooleanType AnimateUsage(void)
     "-borderwidth, -font, -foreground, -iconGeometry, -iconic, -name,\n");
   (void) printf("-mattecolor, -shared-memory, or -title.\n");
   (void) printf(
-    "\nBy default, the image format of `file' is determined by its magic\n");
+    "\nBy default, the image format of 'file' is determined by its magic\n");
   (void) printf(
     "number.  To specify a particular image format, precede the filename\n");
   (void) printf(
@@ -247,7 +247,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
 }
 #define ThrowAnimateException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"'%s'", \
     option); \
   DestroyAnimate(); \
   return(MagickFalse); \
@@ -255,7 +255,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
 #define ThrowAnimateInvalidArgumentException(option,argument) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),OptionError, \
-    "InvalidArgument","`%s': %s",option,argument); \
+    "InvalidArgument","'%s': %s",option,argument); \
   DestroyAnimate(); \
   return(MagickFalse); \
 }
@@ -1472,7 +1472,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
   (void) argc;
   (void) argv;
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
-    "DelegateLibrarySupportNotBuiltIn","`%s' (X11)",image_info->filename);
+    "DelegateLibrarySupportNotBuiltIn","'%s' (X11)",image_info->filename);
   return(AnimateUsage());
 #endif
 }

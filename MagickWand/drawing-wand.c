@@ -60,7 +60,7 @@
 #define CurrentContext  (wand->graphic_context[wand->index])
 #define DrawingWandId  "DrawingWand"
 #define ThrowDrawException(severity,tag,reason) (void) ThrowMagickException( \
-  wand->exception,GetMagickModule(),severity,tag,"`%s'",reason);
+  wand->exception,GetMagickModule(),severity,tag,"'%s'",reason);
 
 /*
   Typedef declarations.

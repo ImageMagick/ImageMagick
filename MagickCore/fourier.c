@@ -249,7 +249,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   if (phase_image == (Image *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "TwoOrMoreImagesRequired","`%s'",image->filename);
+        "TwoOrMoreImagesRequired","'%s'",image->filename);
       return(MagickFalse);
     }
   /*
@@ -266,7 +266,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   if (phase_source == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
       magnitude_source=(double *) RelinquishMagickMemory(magnitude_source);
       return(MagickFalse);
     }
@@ -430,7 +430,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   if (source == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
       return(MagickFalse);
     }
   ResetMagickMemory(source,0,fourier_info->height*fourier_info->width*
@@ -484,7 +484,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   if (fourier == (fftw_complex *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
       source=(double *) RelinquishMagickMemory(source);
       return(MagickFalse);
     }
@@ -572,7 +572,7 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
   if (magnitude == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
       return(MagickFalse);
     }
   phase=(double *) AcquireQuantumMemory((size_t) fourier_info.height,
@@ -580,7 +580,7 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
   if (phase == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
       magnitude=(double *) RelinquishMagickMemory(magnitude);
       return(MagickFalse);
     }
@@ -589,7 +589,7 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
   if (fourier == (fftw_complex *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
       phase=(double *) RelinquishMagickMemory(phase);
       magnitude=(double *) RelinquishMagickMemory(magnitude);
       return(MagickFalse);
@@ -615,7 +615,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
 #if !defined(MAGICKCORE_FFTW_DELEGATE)
   (void) modulus;
   (void) ThrowMagickException(exception,GetMagickModule(),
-    MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","`%s' (FFTW)",
+    MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","'%s' (FFTW)",
     image->filename);
 #else
   {
@@ -837,7 +837,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   if (magnitude_source == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",
         magnitude_image->filename);
       return(MagickFalse);
     }
@@ -846,7 +846,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   if (phase_source == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",
         magnitude_image->filename);
       magnitude_source=(double *) RelinquishMagickMemory(magnitude_source);
       return(MagickFalse);
@@ -955,7 +955,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   if (magnitude == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",
         magnitude_image->filename);
       magnitude_source=(double *) RelinquishMagickMemory(magnitude_source);
       phase_source=(double *) RelinquishMagickMemory(phase_source);
@@ -969,7 +969,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
   if (phase == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",
         magnitude_image->filename);
       phase_source=(double *) RelinquishMagickMemory(phase_source);
       return(MagickFalse);
@@ -1039,7 +1039,7 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
   if (source == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
       return(MagickFalse);
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1142,7 +1142,7 @@ static MagickBooleanType InverseFourierTransformChannel(
   if (magnitude == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",
         magnitude_image->filename);
       return(MagickFalse);
     }
@@ -1151,7 +1151,7 @@ static MagickBooleanType InverseFourierTransformChannel(
   if (phase == (double *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",
         magnitude_image->filename);
       magnitude=(double *) RelinquishMagickMemory(magnitude);
       return(MagickFalse);
@@ -1161,7 +1161,7 @@ static MagickBooleanType InverseFourierTransformChannel(
   if (fourier == (fftw_complex *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",
         magnitude_image->filename);
       phase=(double *) RelinquishMagickMemory(phase);
       magnitude=(double *) RelinquishMagickMemory(magnitude);
@@ -1194,14 +1194,14 @@ MagickExport Image *InverseFourierTransformImage(const Image *magnitude_image,
   if (phase_image == (Image *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "TwoOrMoreImagesRequired","`%s'",magnitude_image->filename);
+        "TwoOrMoreImagesRequired","'%s'",magnitude_image->filename);
       return((Image *) NULL);
     }
 #if !defined(MAGICKCORE_FFTW_DELEGATE)
   fourier_image=(Image *) NULL;
   (void) modulus;
   (void) ThrowMagickException(exception,GetMagickModule(),
-    MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","`%s' (FFTW)",
+    MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn","'%s' (FFTW)",
     magnitude_image->filename);
 #else
   {

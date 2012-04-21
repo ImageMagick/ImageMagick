@@ -506,7 +506,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
         Crop is not within virtual canvas, return 1 pixel transparent image.
       */
       (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-        "GeometryDoesNotContainImage","`%s'",image->filename);
+        "GeometryDoesNotContainImage","'%s'",image->filename);
       crop_image=CloneImage(image,1,1,MagickTrue,exception);
       if (crop_image == (Image *) NULL)
         return((Image *) NULL);
@@ -556,7 +556,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   if ((page.width == 0) || (page.height == 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-        "GeometryDoesNotContainImage","`%s'",image->filename);
+        "GeometryDoesNotContainImage","'%s'",image->filename);
       return((Image *) NULL);
     }
   /*

@@ -510,7 +510,7 @@ MagickExport char **GetModuleList(const char *pattern,
   if (modules == (char **) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ConfigureError,
-        "MemoryAllocationFailed","`%s'",pattern);
+        "MemoryAllocationFailed","'%s'",pattern);
       return((char **) NULL);
     }
   qsort((void *) modules,(size_t) i,sizeof(*modules),ModuleCompare);
@@ -676,7 +676,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
       if (key_value == (unsigned char *) NULL)
         {
           ThrowMagickException(exception,GetMagickModule(),ConfigureError,
-            "RegistryKeyLookupFailed","`%s'",registery_key);
+            "RegistryKeyLookupFailed","'%s'",registery_key);
           return(MagickFalse);
         }
       (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",(char *) key_value,
@@ -978,7 +978,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",tag);
+        "NotAuthorized","'%s'",tag);
       return(MagickFalse);
     }
   TagToFilterModuleName(tag,name);
@@ -986,7 +986,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
   if (status == MagickFalse)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-        "UnableToLoadModule","`%s': %s",name,path);
+        "UnableToLoadModule","'%s': %s",name,path);
       return(MagickFalse);
     }
   /*
@@ -996,7 +996,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
   if (handle == (ModuleHandle) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-        "UnableToLoadModule","`%s': %s",name,lt_dlerror());
+        "UnableToLoadModule","'%s': %s",name,lt_dlerror());
       return(MagickFalse);
     }
   /*
@@ -1015,7 +1015,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
   image_filter=(ImageFilterHandler *) lt_dlsym(handle,name);
   if (image_filter == (ImageFilterHandler *) NULL)
     (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-      "UnableToLoadModule","`%s': %s",name,lt_dlerror());
+      "UnableToLoadModule","'%s': %s",name,lt_dlerror());
   else
     {
       size_t
@@ -1030,7 +1030,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
           tag);
       if (signature != MagickImageFilterSignature)
         (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-          "ImageFilterSignatureMismatch","`%s': %8lx != %8lx",tag,
+          "ImageFilterSignatureMismatch","'%s': %8lx != %8lx",tag,
           (unsigned long) signature,(unsigned long) MagickImageFilterSignature);
     }
   /*
@@ -1038,7 +1038,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
   */
   if (lt_dlclose(handle) != 0)
     (void) ThrowMagickException(exception,GetMagickModule(),ModuleWarning,
-      "UnableToCloseModule","`%s': %s",name,lt_dlerror());
+      "UnableToCloseModule","'%s': %s",name,lt_dlerror());
   return(exception->severity < ErrorException ? MagickTrue : MagickFalse);
 }
 
@@ -1281,7 +1281,7 @@ MagickPrivate MagickBooleanType OpenModule(const char *module,
   if (handle == (ModuleHandle) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-        "UnableToLoadModule","`%s': %s",path,lt_dlerror());
+        "UnableToLoadModule","'%s': %s",path,lt_dlerror());
       return(MagickFalse);
     }
   /*
@@ -1299,7 +1299,7 @@ MagickPrivate MagickBooleanType OpenModule(const char *module,
   if (module_info->register_module == (size_t (*)(void)) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-        "UnableToRegisterImageFormat","`%s': %s",module_name,lt_dlerror());
+        "UnableToRegisterImageFormat","'%s': %s",module_name,lt_dlerror());
       return(MagickFalse);
     }
   (void) LogMagickEvent(ModuleEvent,GetMagickModule(),
@@ -1313,7 +1313,7 @@ MagickPrivate MagickBooleanType OpenModule(const char *module,
   if (module_info->unregister_module == (void (*)(void)) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-        "UnableToRegisterImageFormat","`%s': %s",module_name,lt_dlerror());
+        "UnableToRegisterImageFormat","'%s': %s",module_name,lt_dlerror());
       return(MagickFalse);
     }
   (void) LogMagickEvent(ModuleEvent,GetMagickModule(),
@@ -1323,7 +1323,7 @@ MagickPrivate MagickBooleanType OpenModule(const char *module,
   if (signature != MagickImageCoderSignature)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-        "ImageCoderSignatureMismatch","`%s': %8lx != %8lx",module_name,
+        "ImageCoderSignatureMismatch","'%s': %8lx != %8lx",module_name,
         (unsigned long) signature,(unsigned long) MagickImageCoderSignature);
       return(MagickFalse);
     }
@@ -1424,7 +1424,7 @@ static const ModuleInfo *RegisterModule(const ModuleInfo *module_info,
   status=AddValueToSplayTree(module_list,module_info->tag,module_info);
   if (status == MagickFalse)
     (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-      "MemoryAllocationFailed","`%s'",module_info->tag);
+      "MemoryAllocationFailed","'%s'",module_info->tag);
   return(module_info);
 }
 
@@ -1608,7 +1608,7 @@ static MagickBooleanType UnregisterModule(const ModuleInfo *module_info,
   if (lt_dlclose((ModuleHandle) module_info->handle) != 0)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ModuleWarning,
-        "UnableToCloseModule","`%s': %s",module_info->tag,lt_dlerror());
+        "UnableToCloseModule","'%s': %s",module_info->tag,lt_dlerror());
       return(MagickFalse);
     }
   return(MagickTrue);
@@ -1635,7 +1635,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",tag);
+        "NotAuthorized","'%s'",tag);
       return(MagickFalse);
     }
 #if defined(MAGICKCORE_BUILD_MODULES)
@@ -1656,7 +1656,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
       image_filter=(ImageFilterHandler *) analyzeImage;
     if (image_filter == (ImageFilterHandler *) NULL)
       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-        "UnableToLoadModule","`%s'",tag);
+        "UnableToLoadModule","'%s'",tag);
     else
       {
         size_t
@@ -1672,7 +1672,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
         if (signature != MagickImageFilterSignature)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-              "ImageFilterSignatureMismatch","`%s': %8lx != %8lx",tag,
+              "ImageFilterSignatureMismatch","'%s': %8lx != %8lx",tag,
               (unsigned long) signature,(unsigned long)
               MagickImageFilterSignature);
             return(MagickFalse);

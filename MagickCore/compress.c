@@ -1305,7 +1305,7 @@ MagickExport MagickBooleanType ZLIBEncodeImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
-    "DelegateLibrarySupportNotBuiltIn","`%s' (ZIP)",image->filename);
+    "DelegateLibrarySupportNotBuiltIn","'%s' (ZIP)",image->filename);
   return(MagickFalse);
 }
 #endif

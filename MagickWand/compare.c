@@ -160,7 +160,7 @@ static MagickBooleanType CompareUsage(void)
   for (p=miscellaneous; *p != (char *) NULL; p++)
     (void) printf("  %s\n",*p);
   (void) printf(
-    "\nBy default, the image format of `file' is determined by its magic\n");
+    "\nBy default, the image format of 'file' is determined by its magic\n");
   (void) printf(
     "number.  To specify a particular image format, precede the filename\n");
   (void) printf(
@@ -190,14 +190,14 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
 { \
   if (exception->severity < (asperity)) \
     (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag, \
-      "`%s'",option); \
+      "'%s'",option); \
   DestroyCompare(); \
   return(MagickFalse); \
 }
 #define ThrowCompareInvalidArgumentException(option,argument) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),OptionError, \
-    "InvalidArgument","`%s': %s",option,argument); \
+    "InvalidArgument","'%s': %s",option,argument); \
   DestroyCompare(); \
   return(MagickFalse); \
 }

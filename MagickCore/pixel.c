@@ -1791,7 +1791,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
   if (quantum_map == (QuantumType *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
       return(MagickFalse);
     }
   for (i=0; i < (ssize_t) strlen(map); i++)
@@ -1818,7 +1818,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
           break;
         quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
         (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-          "ColorSeparatedImageRequired","`%s'",map);
+          "ColorSeparatedImageRequired","'%s'",map);
         return(MagickFalse);
       }
       case 'g':
@@ -1841,7 +1841,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
           break;
         quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
         (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-          "ColorSeparatedImageRequired","`%s'",map);
+          "ColorSeparatedImageRequired","'%s'",map);
         return(MagickFalse);
       }
       case 'M':
@@ -1852,7 +1852,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
           break;
         quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
         (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-          "ColorSeparatedImageRequired","`%s'",map);
+          "ColorSeparatedImageRequired","'%s'",map);
         return(MagickFalse);
       }
       case 'o':
@@ -1881,14 +1881,14 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
           break;
         quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
         (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-          "ColorSeparatedImageRequired","`%s'",map);
+          "ColorSeparatedImageRequired","'%s'",map);
         return(MagickFalse);
       }
       default:
       {
         quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "UnrecognizedPixelMap","`%s'",map);
+          "UnrecognizedPixelMap","'%s'",map);
         return(MagickFalse);
       }
     }
@@ -1938,7 +1938,7 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
     {
       quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "UnrecognizedPixelMap","`%s'",map);
+        "UnrecognizedPixelMap","'%s'",map);
       break;
     }
   }
@@ -3801,7 +3801,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
       {
         quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "UnrecognizedPixelMap","`%s'",map);
+          "UnrecognizedPixelMap","'%s'",map);
         return(MagickFalse);
       }
     }
@@ -3856,7 +3856,7 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
     {
       quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "UnrecognizedPixelMap","`%s'",map);
+        "UnrecognizedPixelMap","'%s'",map);
       break;
     }
   }

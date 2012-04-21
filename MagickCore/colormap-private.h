@@ -32,7 +32,7 @@ static inline Quantum ConstrainColormapIndex(Image *image,const size_t index,
   if (index < image->colors)
     return((Quantum) index);
   (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-    "InvalidColormapIndex","`%s'",image->filename);
+    "InvalidColormapIndex","'%s'",image->filename);
   return((Quantum) 0);
 }
 

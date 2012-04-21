@@ -49,14 +49,14 @@
 %
 %    o For each histogram, successively apply the scale-space filter and
 %      build an interval tree of zero crossings in the second derivative
-%      at each scale.  Analyze this scale-space ``fingerprint'' to
+%      at each scale.  Analyze this scale-space ''fingerprint'' to
 %      determine which peaks and valleys in the histogram are most
 %      predominant.
 %
 %    o The fingerprint defines intervals on the axis of the histogram.
 %      Each interval contains either a minima or a maxima in the original
 %      signal.  If each color component lies within the maxima interval,
-%      that pixel is considered ``classified'' and is assigned an unique
+%      that pixel is considered ''classified'' and is assigned an unique
 %      class number.
 %
 %    o Any pixel that fails to be classified in the above thresholding
@@ -1002,7 +1002,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
           histogram[i]=(ssize_t *) RelinquishMagickMemory(histogram[i]);
         }
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+          ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
         return(MagickFalse);
       }
   }
@@ -1049,7 +1049,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
         if (cluster == (Cluster *) NULL)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),
-              ResourceLimitError,"MemoryAllocationFailed","`%s'",
+              ResourceLimitError,"MemoryAllocationFailed","'%s'",
               image->filename);
             return(MagickFalse);
           }
@@ -1073,7 +1073,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
       if (cluster == (Cluster *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+            ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
           return(MagickFalse);
         }
       /*

@@ -238,7 +238,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
 }
 #define ThrowImportException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"'%s'", \
      option); \
   DestroyImport(); \
   return(MagickFalse); \
@@ -246,7 +246,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
 #define ThrowImportInvalidArgumentException(option,argument) \
 { \
   (void) ThrowMagickException(exception,GetMagickModule(),OptionError, \
-    "InvalidArgument","`%s': %s",option,argument); \
+    "InvalidArgument","'%s': %s",option,argument); \
   DestroyImport(); \
   return(MagickFalse); \
 }
@@ -1308,7 +1308,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
   (void) argc;
   (void) argv;
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
-    "DelegateLibrarySupportNotBuiltIn","`%s' (X11)",image_info->filename);
+    "DelegateLibrarySupportNotBuiltIn","'%s' (X11)",image_info->filename);
   return(ImportUsage());
 #endif
 }

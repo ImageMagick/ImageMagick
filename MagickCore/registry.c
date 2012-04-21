@@ -203,7 +203,7 @@ MagickExport void *GetImageRegistry(const RegistryType type,const char *key,
   if (registry_info == (void *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),RegistryError,
-        "UnableToGetRegistryID","`%s'",key);
+        "UnableToGetRegistryID","'%s'",key);
       return((void *) NULL);
     }
   value=(void *) NULL;

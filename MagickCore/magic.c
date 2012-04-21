@@ -739,7 +739,7 @@ static MagickBooleanType LoadMagicList(const char *xml,const char *filename,
             {
               if (depth > 200)
                 (void) ThrowMagickException(exception,GetMagickModule(),
-                  ConfigureError,"IncludeElementNestedTooDeeply","`%s'",token);
+                  ConfigureError,"IncludeElementNestedTooDeeply","'%s'",token);
               else
                 {
                   char
@@ -786,7 +786,7 @@ static MagickBooleanType LoadMagicList(const char *xml,const char *filename,
         status=AppendValueToLinkedList(magic_list,magic_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",
+            ResourceLimitError,"MemoryAllocationFailed","'%s'",
             magic_info->name);
         magic_info=(MagicInfo *) NULL;
       }
@@ -966,7 +966,7 @@ static MagickBooleanType LoadMagicLists(const char *filename,
     if (magic_info == (MagicInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);
+          ResourceLimitError,"MemoryAllocationFailed","'%s'",magic_info->name);
         continue;
       }
     (void) ResetMagickMemory(magic_info,0,sizeof(*magic_info));
@@ -981,7 +981,7 @@ static MagickBooleanType LoadMagicLists(const char *filename,
     status=AppendValueToLinkedList(magic_list,magic_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",magic_info->name);
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",magic_info->name);
   }
   /*
     Load external magic map.

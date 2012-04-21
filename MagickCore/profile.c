@@ -456,14 +456,14 @@ static void CMSExceptionHandler(cmsContext context,cmsUInt32Number severity,
   if (image == (Image *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-        "UnableToTransformColorspace","`%s'","unknown context");
+        "UnableToTransformColorspace","'%s'","unknown context");
       return;
     }
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TransformEvent,GetMagickModule(),"lcms: #%u, %s",
       severity,message != (char *) NULL ? message : "no message");
   (void) ThrowMagickException(exception,GetMagickModule(),ImageWarning,
-    "UnableToTransformColorspace","`%s'",image->filename);
+    "UnableToTransformColorspace","'%s'",image->filename);
 }
 #else
 static int CMSExceptionHandler(int severity,const char *message)
@@ -5765,7 +5765,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
 #if !defined(MAGICKCORE_LCMS_DELEGATE)
       (void) ThrowMagickException(exception,GetMagickModule(),
         MissingDelegateWarning,"DelegateLibrarySupportNotBuiltIn",
-        "`%s' (LCMS)",image->filename);
+        "'%s' (LCMS)",image->filename);
 #else
       {
         cmsHPROFILE

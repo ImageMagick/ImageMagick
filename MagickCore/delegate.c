@@ -276,21 +276,21 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   if (delegate_info == (const DelegateInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-        "NoTagFound","`%s'",decode ? decode : encode);
+        "NoTagFound","'%s'",decode ? decode : encode);
       return((char *) NULL);
     }
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",
         decode ? decode : encode);
       return((char *) NULL);
     }
   command=InterpretImageProperties(image_info,image,commands[0],exception);
   if (command == (char *) NULL)
     (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-      "MemoryAllocationFailed","`%s'",commands[0]);
+      "MemoryAllocationFailed","'%s'",commands[0]);
   /*
     Relinquish resources.
   */
@@ -862,14 +862,14 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",decode);
+        "NotAuthorized","'%s'",decode);
       return(MagickFalse);
     }
   if (IsRightsAuthorized(DelegatePolicyDomain,rights,encode) == MagickFalse)
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","`%s'",encode);
+        "NotAuthorized","'%s'",encode);
       return(MagickFalse);
     }
   temporary=(*image->filename == '\0') ? MagickTrue : MagickFalse;
@@ -886,7 +886,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       if (temporary != MagickFalse)
         (void) RelinquishUniqueFileResource(image->filename);
       (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-        "NoTagFound","`%s'",decode ? decode : encode);
+        "NoTagFound","'%s'",decode ? decode : encode);
       return(MagickFalse);
     }
   if (*image_info->filename == '\0')
@@ -940,7 +940,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
           if (temporary != MagickFalse)
             (void) RelinquishUniqueFileResource(image->filename);
           (void) ThrowMagickException(exception,GetMagickModule(),
-            DelegateError,"DelegateFailed","`%s'",decode ? decode : encode);
+            DelegateError,"DelegateFailed","'%s'",decode ? decode : encode);
           return(MagickFalse);
         }
       LocaleUpper(magick);
@@ -971,7 +971,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
               (void) RelinquishUniqueFileResource(image->filename);
             clone_info=DestroyImageInfo(clone_info);
             (void) ThrowMagickException(exception,GetMagickModule(),
-              DelegateError,"DelegateFailed","`%s'",decode ? decode : encode);
+              DelegateError,"DelegateFailed","'%s'",decode ? decode : encode);
             return(MagickFalse);
           }
         if (clone_info->adjoin != MagickFalse)
@@ -990,7 +990,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       if (temporary != MagickFalse)
         (void) RelinquishUniqueFileResource(image->filename);
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",
         decode ? decode : encode);
       return(MagickFalse);
     }
@@ -1053,7 +1053,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     if (status != MagickFalse)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-          "DelegateFailed","`%s'",commands[i]);
+          "DelegateFailed","'%s'",commands[i]);
         break;
       }
     commands[i]=DestroyString(commands[i]);
@@ -1275,7 +1275,7 @@ static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
             {
               if (depth > 200)
                 (void) ThrowMagickException(exception,GetMagickModule(),
-                  ConfigureError,"IncludeElementNestedTooDeeply","`%s'",token);
+                  ConfigureError,"IncludeElementNestedTooDeeply","'%s'",token);
               else
                 {
                   char
@@ -1322,7 +1322,7 @@ static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
         status=AppendValueToLinkedList(delegate_list,delegate_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","`%s'",
+            ResourceLimitError,"MemoryAllocationFailed","'%s'",
             delegate_info->commands);
         delegate_info=(DelegateInfo *) NULL;
       }

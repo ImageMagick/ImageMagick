@@ -161,30 +161,34 @@ typedef enum
 
 /*
    Define some short-hand macros for handling MagickBooleanType
-   Some of these assume MagickBooleanType uses values 0 and 1,
    and uses fast C typing with C boolean operations
 
-     Is  -- returns MagickBooleanType
+     Is  -- returns a MagickBooleanType (for storage)
      If  -- returns C integer boolean (for if's and while's)
 
-   IsTrue()  converts a C integer boolean to a MagickBooleanType
-   IsFalse() is a  MagickBooleanType 'not' operation
+   IfMagickTrue()     converts MagickBooleanType to C integer Boolean
+   IfMagickFalse()    Not the MagickBooleanType to C integer Boolean
 
-   IfTrue()   converts MagickBooleanType to C integer Boolean
-   IfFalse()  Not the MagickBooleanType to C integer Boolean
+   IsMagickTrue()     converts a C integer boolean to a MagickBooleanType
+   IsMagickFalse()    converts and is also a MagickBooleanType 'not' operation
 
-   IsNULL() and IsNotNULL() converts C pointers to MagickBooleanType
+   IsMagickNULL()
+   IsMagickNotNULL()  converts C pointers tests MagickBooleanType
 */
 #if 1
-#  define IsMagickTrue(v)  ((MagickBooleanType)((int)(v)!= 0))
-#  define IsMagickFalse(v) ((MagickBooleanType)(!(int)(v)))
+/* Fast C typing method assumes MagickBooleanType uses match 0,1 values */
 #  define IfMagickTrue(v)  ((int)(v))
 #  define IfMagickFalse(v) (!(int)(v))
+#  define IsMagickTrue(v)  ((MagickBooleanType)((int)(v)!=0))
+#  define IsMagickFalse(v) ((MagickBooleanType)(!(int)(v)))
+#  define IsMagickNot(v)   ((MagickBooleanType)(!(int)(v)))
 #else
-#  define IsMagickTrue(v)  (((MagickBooleanType)(v))!=MagickFalse?MagickTrue:MagickFalse)
-#  define IsMagickFalse(v) (((MagickBooleanType)(v))==MagickFalse?MagickTrue:MagickFalse)
+/* Do not depend MagickBooleanValues */
 #  define IfMagickTrue(v)  ((v) != MagickFalse)
 #  define IfMagickFalse(v) ((v) == MagickFalse)
+#  define IsMagickTrue(v)  ((v)?MagickTrue:MagickFalse)
+#  define IsMagickFalse(v) ((v)?MagickFalse:MagickTrue)
+#  define IsMagickNot(v)   (IfMagickTrue(v)?MagickFalse:MagickTrue)
 #endif
 #define IfStringTrue(v)       IfMagickTrue(IsStringTrue(v))
 #define IfStringNotFalse(v)   IfMagickTrue(IsStringNotFalse(v))

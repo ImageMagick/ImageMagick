@@ -633,7 +633,7 @@ static MagickBooleanType DiskToDiskPixelCacheClone(CacheInfo *clone_info,
   if (blob == (unsigned char *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",
         cache_info->filename);
       return(MagickFalse);
     }
@@ -801,7 +801,7 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
   if (blob == (unsigned char *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",
         cache_info->filename);
       return(MagickFalse);
     }
@@ -3100,7 +3100,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
       if (virtual_nexus != (NexusInfo **) NULL)
         virtual_nexus=DestroyPixelCacheNexus(virtual_nexus,1);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "UnableToGetCacheNexus","`%s'",image->filename);
+        "UnableToGetCacheNexus","'%s'",image->filename);
       return((const Quantum *) NULL);
     }
   (void) ResetMagickMemory(virtual_pixel,0,cache_info->number_channels*
@@ -3130,7 +3130,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
             {
               virtual_nexus=DestroyPixelCacheNexus(virtual_nexus,1);
               (void) ThrowMagickException(exception,GetMagickModule(),
-                CacheError,"UnableToGetCacheNexus","`%s'",image->filename);
+                CacheError,"UnableToGetCacheNexus","'%s'",image->filename);
               return((const Quantum *) NULL);
             }
           (void) ResetMagickMemory(virtual_metacontent,0,
@@ -3832,7 +3832,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   if (status == MagickFalse)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "CacheResourcesExhausted","`%s'",image->filename);
+        "CacheResourcesExhausted","'%s'",image->filename);
       return(MagickFalse);
     }
   if ((source_info.storage_class != UndefinedClass) && (mode != ReadMode))
@@ -4127,14 +4127,14 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
   if ((cache_info->columns == 0) && (cache_info->rows == 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "NoPixelsDefinedInCache","`%s'",image->filename);
+        "NoPixelsDefinedInCache","'%s'",image->filename);
       return((Quantum *) NULL);
     }
   if ((x < 0) || (y < 0) || (x >= (ssize_t) cache_info->columns) ||
       (y >= (ssize_t) cache_info->rows))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "PixelsAreNotAuthentic","`%s'",image->filename);
+        "PixelsAreNotAuthentic","'%s'",image->filename);
       return((Quantum *) NULL);
     }
   offset=(MagickOffsetType) y*cache_info->columns+x;
@@ -4741,7 +4741,7 @@ static inline MagickBooleanType AcquireCacheNexusPixels(CacheInfo *cache_info,
   if (nexus_info->cache == (Quantum *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","`%s'",
+        ResourceLimitError,"MemoryAllocationFailed","'%s'",
         cache_info->filename);
       return(MagickFalse);
     }

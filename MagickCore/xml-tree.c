@@ -1809,7 +1809,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
           if (attributes == (char **) NULL)
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
-                ResourceLimitError,"MemoryAllocationFailed","`%s'","");
+                ResourceLimitError,"MemoryAllocationFailed","'%s'","");
               utf8=DestroyString(utf8);
               return(&root->root);
             }
@@ -2051,7 +2051,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
       return(&root->root);
     }
   (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-    "ParseError","unclosed tag: `%s'",root->node->tag);
+    "ParseError","unclosed tag: '%s'",root->node->tag);
   return(&root->root);
 }
 
