@@ -555,6 +555,9 @@
           <message name="LCMSLibraryIsNotAvailable">
             LCMS color profile library is not available
           </message>
+          <message name="NoEncodeDelegateForThisImageFormat">
+            no encode delegate for this image format
+          </message>
         </warning>
       </delegate>
     </missing>
