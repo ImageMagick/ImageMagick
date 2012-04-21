@@ -776,7 +776,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         far more control than currently available.
       */
       resample_filter=AcquireResampleFilter(image,exception);
-      SetResampleFilter(resample_filter,CubicFilter); /* was blur*2 */
+      SetResampleFilter(resample_filter,GaussianFilter); /* was blur*2 */
       composite_view=AcquireVirtualCacheView(composite_image,exception);
       destination_view=AcquireAuthenticCacheView(destination_image,exception);
       for (y=0; y < (ssize_t) composite_image->rows; y++)
