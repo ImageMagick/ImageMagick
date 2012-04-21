@@ -549,6 +549,9 @@
           <message name="DelegateLibrarySupportNotBuiltIn">
             delegate library support not built-in
           </message>
+          <message name="NoEncodeDelegateForThisImageFormat">
+            pas de délégué pour encoder ce format d'image
+          </message>
         </warning>
       </delegate>
     </missing>
