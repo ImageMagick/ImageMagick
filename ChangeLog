@@ -1,5 +1,5 @@
 2012-04-21  6.7.6-7 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.6-7, SVN revision 7580.
+  * New version 6.7.6-7, SVN revision 7587.
 
 2012-04-21  6.7.6-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Error when doing an implicit (final) write to a single space filename.
