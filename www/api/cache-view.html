@@ -169,6 +169,12 @@
   <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201208010120 mickey@163... -->
 <div class="sponsbox">
 <div class="sponsor">
+  <a rel="follow" title="Werbebanner Werbeplane" href="http://www.allesbanner.de">Werbebanner Werbeplane</a><!-- 201212010450 info@druck... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Entertainment News &amp; Photos" href="http://www.zimbio.com">Entertainment News &amp; Photos</a><!-- 201211010540 bd@zimb... -->
+</div>
+<div class="sponsor">
   <a rel="follow" title="Sponsor: LED24" href="http://led24.de/">LED24</a><!-- 201207010270 info@led24... -->
 </div>
 <div class="sponsor">
@@ -179,9 +185,6 @@
 </div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 201206010090 golestan -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Entertainment News &amp; Photos" href="http://www.zimbio.com">Entertainment News &amp; Photos</a><!-- 201211010540 bd@zimb... -->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201206010270 info@pkwte... -->
@@ -214,7 +217,7 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Got Stripes" href="http://www.stripeslawncare.org">Got Stripes?</a><!-- 2012090100150 brooks@stripes...-->
+   <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.webhostingclue.com">Best Web Hosting</a><!-- 2012120100150 racent marketing@webhosting...-->
 </div>
 <div class="sponsor">
    <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
@@ -241,23 +244,48 @@
 <div class="main">
 
 <h1>Module cache-view Methods</h1>
-<p class="navigation-index">[<a href="#AcquireCacheView">AcquireCacheView</a> &bull; <a href="#CloneCacheView">CloneCacheView</a> &bull; <a href="#DestroyCacheView">DestroyCacheView</a> &bull; <a href="#GetCacheViewChannels">GetCacheViewChannels</a> &bull; <a href="#GetCacheViewColorspace">GetCacheViewColorspace</a> &bull; <a href="#GetCacheViewException">GetCacheViewException</a> &bull; <a href="#GetCacheViewStorageClass">GetCacheViewStorageClass</a> &bull; <a href="#GetCacheViewAuthenticPixels">GetCacheViewAuthenticPixels</a> &bull; <a href="#GetOneCacheViewAuthenticPixel">GetOneCacheViewAuthenticPixel</a> &bull; <a href="#GetCacheViewAuthenticIndexQueue">GetCacheViewAuthenticIndexQueue</a> &bull; <a href="#GetCacheViewAuthenticPixelQueue">GetCacheViewAuthenticPixelQueue</a> &bull; <a href="#GetCacheViewVirtualIndexQueue">GetCacheViewVirtualIndexQueue</a> &bull; <a href="#GetCacheViewVirtualPixelQueue">GetCacheViewVirtualPixelQueue</a> &bull; <a href="#GetCacheViewVirtualPixels">GetCacheViewVirtualPixels</a> &bull; <a href="#GetOneCacheViewVirtualPixel">GetOneCacheViewVirtualPixel</a> &bull; <a href="#GetOneCacheViewVirtualMethodPixel">GetOneCacheViewVirtualMethodPixel</a> &bull; <a href="#QueueCacheViewAuthenticPixels">QueueCacheViewAuthenticPixels</a> &bull; <a href="#SetCacheViewStorageClass">SetCacheViewStorageClass</a> &bull; <a href="#SetCacheViewVirtualPixelMethod">SetCacheViewVirtualPixelMethod</a> &bull; <a href="#SyncCacheViewAuthenticPixels">SyncCacheViewAuthenticPixels</a>]</p>
+<p class="navigation-index">[<a href="#AcquireAuthenticCacheView">AcquireAuthenticCacheView</a> &bull; <a href="#AcquireVirtualCacheView">AcquireVirtualCacheView</a> &bull; <a href="#CloneCacheView">CloneCacheView</a> &bull; <a href="#DestroyCacheView">DestroyCacheView</a> &bull; <a href="#GetCacheViewChannels">GetCacheViewChannels</a> &bull; <a href="#GetCacheViewColorspace">GetCacheViewColorspace</a> &bull; <a href="#GetCacheViewException">GetCacheViewException</a> &bull; <a href="#GetCacheViewStorageClass">GetCacheViewStorageClass</a> &bull; <a href="#GetCacheViewAuthenticPixels">GetCacheViewAuthenticPixels</a> &bull; <a href="#GetOneCacheViewAuthenticPixel">GetOneCacheViewAuthenticPixel</a> &bull; <a href="#GetCacheViewAuthenticIndexQueue">GetCacheViewAuthenticIndexQueue</a> &bull; <a href="#GetCacheViewAuthenticPixelQueue">GetCacheViewAuthenticPixelQueue</a> &bull; <a href="#GetCacheViewVirtualIndexQueue">GetCacheViewVirtualIndexQueue</a> &bull; <a href="#GetCacheViewVirtualPixelQueue">GetCacheViewVirtualPixelQueue</a> &bull; <a href="#GetCacheViewVirtualPixels">GetCacheViewVirtualPixels</a> &bull; <a href="#GetOneCacheViewVirtualPixel">GetOneCacheViewVirtualPixel</a> &bull; <a href="#GetOneCacheViewVirtualMethodPixel">GetOneCacheViewVirtualMethodPixel</a> &bull; <a href="#QueueCacheViewAuthenticPixels">QueueCacheViewAuthenticPixels</a> &bull; <a href="#SetCacheViewStorageClass">SetCacheViewStorageClass</a> &bull; <a href="#SetCacheViewVirtualPixelMethod">SetCacheViewVirtualPixelMethod</a> &bull; <a href="#SyncCacheViewAuthenticPixels">SyncCacheViewAuthenticPixels</a>]</p>
 
-<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view_8c.html" id="AcquireCacheView">AcquireCacheView</a></h2>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view_8c.html" id="AcquireAuthenticCacheView">AcquireAuthenticCacheView</a></h2>
 <div class="doc-section">
 
-<p>AcquireCacheView() acquires a view into the pixel cache, using the VirtualPixelMethod that is defined within the given image itself.</p>
+<p>AcquireAuthenticCacheView() acquires an authentic view into the pixel cache.</p>
 
-<p>The format of the AcquireCacheView method is:</p>
+<p>The format of the AcquireAuthenticCacheView method is:</p>
 
 <pre class="code">
-  CacheView *AcquireCacheView(const Image *image)
+  CacheView *AcquireAuthenticCacheView(const Image *image,
+    ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
 
 <h5>image</h5>
 <p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
+
+ </div>
+<h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view_8c.html" id="AcquireVirtualCacheView">AcquireVirtualCacheView</a></h2>
+<div class="doc-section">
+
+<p>AcquireVirtualCacheView() acquires a virtual view into the pixel cache, using the VirtualPixelMethod that is defined within the given image itself.</p>
+
+<p>The format of the AcquireVirtualCacheView method is:</p>
+
+<pre class="code">
+  CacheView *AcquireVirtualCacheView(const Image *image,
+    ExceptionInfo *exception)
+</pre>
+
+<p>A description of each parameter follows:</p>
+
+<h5>image</h5>
+<p>the image.</p>
+
+<h5>exception</h5>
+<p>return any errors or warnings in this structure.</p>
 
  </div>
 <h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view_8c.html" id="CloneCacheView">CloneCacheView</a></h2>
@@ -280,7 +308,7 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/cache-view_8c.html" id="DestroyCacheView">DestroyCacheView</a></h2>
 <div class="doc-section">
 
-<p>DestroyCacheView() destroys the specified view returned by a previous call to AcquireCacheView().</p>
+<p>DestroyCacheView() destroys the specified view returned by a previous call to AcquireVirtualCacheView().</p>
 
 <p>The format of the DestroyCacheView method is:</p>
 
@@ -667,7 +695,7 @@
     <span id="linkbar-east">&nbsp;</span>
   </div>
   <div class="footer">
-    <span id="footer-west">&copy; 1999-2011 ImageMagick Studio LLC</span>
+    <span id="footer-west">&copy; 1999-2012 ImageMagick Studio LLC</span>
     <span id="footer-east"> <a href="../http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>
