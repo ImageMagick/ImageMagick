@@ -366,7 +366,7 @@ static Image *SparseColorOption(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   C L I S e t t i n g O p t i o n I n f o                                   %
+%   C L I S e t t i n g O p t i o n I n f o                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -396,27 +396,6 @@ static Image *SparseColorOption(const Image *image,
 %
 %    o arg1, arg2: optional argument strings to the operation
 %        arg2 is currently only used by "-limit"
-%
-% Example usage...
-%
-%    CLISettingOptionInfo(cli_wand, "-background", "Red", NULL); // set value
-%    CLISettingOptionInfo(cli_wand, "-adjoin", NULL, NULL);      // set boolean
-%    CLISettingOptionInfo(cli_wand, "+adjoin", NULL, NULL);      // unset
-%
-% Or for handling command line arguments EG: +/-option ["arg1"]
-%
-%    argc,argv
-%    i=index in argv
-%
-%    option_info = GetCommandOptionInfo(argv[i]);
-%    count=option_info->type;
-%    option_type=option_info->flags;
-%
-%    if ( (option_type & SettingOperatorOptionFlags) != 0 )
-%      CLISettingOptionInfo(cli_wand, argv[i],
-%                   (count>=1) ? argv[i+1] : (char *)NULL,
-%                   (count>=2) ? argv[i+2] : (char *)NULL);
-%    i += count+1;
 %
 */
 WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
@@ -452,7 +431,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("affine",option+1) == 0)
         {
-          CLIWandWarnDepreciated("-draw 'affine ...'");
+          CLIWandWarnReplaced("-draw 'affine ...'");
           if (IfSetOption)
             (void) ParseAffineGeometry(arg1,&_draw_info->affine,_exception);
           else
@@ -558,7 +537,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("box",option+1) == 0)
         {
-          CLIWandWarnDepreciated("-undercolor");
+          CLIWandWarnReplaced("-undercolor");
           CLISettingOptionInfo(cli_wand,"-undercolor",arg1, arg2);
           break;
         }
@@ -1601,30 +1580,6 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
 %
 %    o arg1, arg2: optional argument strings to the operation
 %
-% Any problems will be added to the 'exception' entry of the given wand.
-%
-% Example usage...
-%
-%  CLISimpleOperatorImages(cli_wand, "-crop","100x100+20+30",NULL);
-%  CLISimpleOperatorImages(cli_wand, "+repage",NULL,NULL);
-%  CLISimpleOperatorImages(cli_wand, "+distort","SRT","45");
-%
-% Or for handling command line arguments EG: +/-option ["arg1"]
-%
-%    cli_wand
-%    argc,argv
-%    i=index in argv
-%
-%    option_info = GetCommandOptionInfo(argv[i]);
-%    count=option_info->type;
-%    option_type=option_info->flags;
-%
-%    if ( (option_type & SimpleOperatorOptionFlag) != 0 )
-%      CLISimpleOperatorImages(cli_wand, argv[i],
-%          count>=1 ? argv[i+1] : (char *)NULL,
-%          count>=2 ? argv[i+2] : (char *)NULL );
-%    i += count+1;
-%
 */
 
 /*
@@ -1678,8 +1633,6 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
   assert(_image != (Image *) NULL);             /* an image must be present */
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
-
-  (void) SyncImageSettings(_image_info,_image,_exception);
 
   SetGeometryInfo(&geometry_info);
 
@@ -2070,7 +2023,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("contrast",option+1) == 0)
         {
-          CLIWandWarnDepreciated(normal_op?"-level":"+level");
+          CLIWandWarnReplaced(normal_op?"-level":"+level");
           (void) ContrastImage(_image,normal_op,_exception);
           break;
         }
@@ -2440,7 +2393,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("gaussian",option+1) == 0)
         {
-          CLIWandWarnDepreciated("-gaussian-blur");
+          CLIWandWarnReplaced("-gaussian-blur");
           CLISimpleOperatorImage(cli_wand,"-gaussian-blur",arg1,NULL);
         }
       if (LocaleCompare("geometry",option+1) == 0)
@@ -2647,7 +2600,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("map",option+1) == 0)
         {
-          CLIWandWarnDepreciated("-remap");
+          CLIWandWarnReplaced("-remap");
           CLISimpleOperatorImage(cli_wand,"-remap",NULL,NULL);
           break;
         }
@@ -2671,21 +2624,21 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("matte",option+1) == 0)
         {
-          CLIWandWarnDepreciated(IfNormalOp?"-alpha Set":"-alpha Off");
+          CLIWandWarnReplaced(IfNormalOp?"-alpha Set":"-alpha Off");
           (void) SetImageAlphaChannel(_image,IfNormalOp ? SetAlphaChannel :
                          DeactivateAlphaChannel, _exception);
           break;
         }
       if (LocaleCompare("median",option+1) == 0)
         {
-          CLIWandWarnDepreciated("-statistic Median");
+          CLIWandWarnReplaced("-statistic Median");
           CLISimpleOperatorImage(cli_wand,"-statistic","Median",arg1);
           break;
         }
       if (LocaleCompare("mode",option+1) == 0)
         {
           /* FUTURE: note this is also a special "montage" option */
-          CLIWandWarnDepreciated("-statistic Mode");
+          CLIWandWarnReplaced("-statistic Mode");
           CLISimpleOperatorImage(cli_wand,"-statistic","Mode",arg1);
           break;
         }
@@ -2772,7 +2725,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
 
           if (IfNormalOp)
             {
-              CLIWandWarnDepreciated("-statistic NonPeak");
+              CLIWandWarnReplaced("-statistic NonPeak");
               CLISimpleOperatorImage(cli_wand,"-statistic","NonPeak",arg1);
               break;
             }
@@ -2964,7 +2917,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("recolor",option+1) == 0)
         {
-          CLIWandWarnDepreciated("-color-matrix");
+          CLIWandWarnReplaced("-color-matrix");
           CLISimpleOperatorImage(cli_wand,"-color-matrix",arg1,NULL);
         }
       if (LocaleCompare("remap",option+1) == 0)
@@ -3321,7 +3274,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("transform",option+1) == 0)
         {
-          CLIWandWarnDepreciated("+distort AffineProjection");
+          CLIWandWarnReplaced("+distort AffineProjection");
           new_image=AffineTransformImage(_image,&_draw_info->affine,_exception);
           break;
         }
@@ -3536,27 +3489,6 @@ WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
 %    o arg1, arg2: optional argument strings to the operation
 %        arg2 is currently not used
 %
-% Example usage...
-%
-%  CLIListOperatorImages(cli_wand,MagickFalse,"-duplicate", "3",  NULL);
-%  CLIListOperatorImages(cli_wand,MagickTrue, "+append",    NULL, NULL);
-%
-% Or for handling command line arguments EG: +/-option ["arg1"]
-%
-%    cli_wand
-%    argc,argv
-%    i=index in argv
-%
-%    option_info = GetCommandOptionInfo(argv[i]);
-%    count=option_info->type;
-%    option_type=option_info->flags;
-%
-%    if ( (option_type & ListOperatorOptionFlag) != 0 )
-%      CLIListOperatorImages(cli_wand,argv[i],
-%          count>=1 ? argv[i+1] : (char *)NULL,
-%          count>=2 ? argv[i+2] : (char *)NULL );
-%    i += count+1;
-%
 */
 WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
      const char *option,const char *arg1, const char *magick_unused(arg2))
@@ -3583,8 +3515,6 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
-  (void) SyncImagesSettings(_image_info,_images,_exception);
-
   new_images=NewImageList();
 
   switch (*(option+1))
@@ -3598,7 +3528,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
         }
       if (LocaleCompare("average",option+1) == 0)
         {
-          CLIWandWarnDepreciated("-evaluate-sequence Mean");
+          CLIWandWarnReplaced("-evaluate-sequence Mean");
           CLIListOperatorImages(cli_wand,"-evaluate-sequence","Mean",NULL);
           break;
         }
@@ -3722,7 +3652,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("deconstruct",option+1) == 0)
         {
-          CLIWandWarnDepreciated("-layer CompareAny");
+          CLIWandWarnReplaced("-layer CompareAny");
           CLIListOperatorImages(cli_wand,"-layer","CompareAny",NULL);
           break;
         }
@@ -4020,7 +3950,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     {
       if (LocaleCompare("map",option+1) == 0)
         {
-          CLIWandWarnDepreciated("+remap");
+          CLIWandWarnReplaced("+remap");
           (void) RemapImages(_quantize_info,_images,(Image *) NULL,_exception);
           break;
         }
@@ -4291,7 +4221,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CLISpecialOperator() Applies operations that may not actually need images
+%  CLINoImageOperator() Applies operations that may not actually need images
 %  in an image list wen it is applied.
 %
 %  The classic operators of this type is -read, which actually creates images
@@ -4301,10 +4231,10 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 %  Note: unlike other Operators, these may involve other special 'option'
 %  character prefixes, other than simply '-' or '+'.
 %
-%  The format of the CLISpecialOption method is:
+%  The format of the CLINoImageOption method is:
 %
-%      void CLISpecialOption(MagickCLI *cli_wand,const char *option,
-%           const char *arg1)
+%      void CLINoImageOption(MagickCLI *cli_wand,const char *option,
+%           const char *arg1, const char *arg2)
 %
 %  A description of each parameter follows:
 %
@@ -4312,31 +4242,12 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 %
 %    o option: The special option (with any switch char) to process
 %
-%    o arg1: Argument for option, if required
-%
-% Example Usage...
-%
-%  CLISpecialOperator(cli_wand,"-read","rose:");
-%
-% Or for handling command line arguments EG: +/-option ["arg1"]
-%
-%    cli_wand
-%    argc,argv
-%    i=index in argv
-%
-%    option_info = GetCommandOptionInfo(argv[i]);
-%    count=option_info->type;
-%    option_type=option_info->flags;
-%
-%    if ( (option_type & SpecialOptionFlag) != 0 )
-%      CLISpecialOperator(cli_wand,argv[i],
-%          count>=1 ? argv[i+1] : (char *)NULL);
-%    i += count+1;
+%    o arg1 & arg2: Argument for option, if required
+%                   Currently arg2 is not used.
 %
 */
-
-WandExport void CLISpecialOperator(MagickCLI *cli_wand,
-  const char *option, const char *arg1)
+WandExport void CLINoImageOperator(MagickCLI *cli_wand,
+  const char *option, const char *arg1, const char *magick_unused(arg2))
 {
 #define _image_info     (cli_wand->wand.image_info)
 #define _images         (cli_wand->wand.images)
@@ -4349,9 +4260,6 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
   assert(cli_wand->wand.signature == WandSignature);
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
-
-  if(_images != (Image *)NULL)
-    (void) SyncImagesSettings(cli_wand->wand.image_info,_images,_exception);
 
   /*
     No-op options  (ignore these)
@@ -4672,4 +4580,144 @@ WandExport void CLISpecialOperator(MagickCLI *cli_wand,
 #undef _exception
 #undef IfNormalOp
 #undef IfPlusOp
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C L I O p t i o n O p e r a t i o n s                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CLIOption() Processes the given option using the given CLI Magick Wand.
+%
+%  If the cli_wand->command pointer is non-null, then it is assumed that the
+%  option has already been search for up from the CommandOptions[] table in
+%  "MagickCore/options.c" using  GetCommandOptionInfo(), so that any command
+%  specific options (such as "magick" scripting options, or "display" settings)
+%  can be handled separatally.
+%
+%  The format of the CLIOption method is:
+%
+%       void CLIOption(MagickCLI *cli_wand,const char *option, ...)
+%
+%  A description of each parameter follows:
+%
+%     o cli_wand: the main CLI Wand to use.
+%
+%     o option: The special option (with any switch char) to process
+%
+%     o args: any required arguments for an option
+%
+%  Example Usage...
+%
+%    CLIoption(cli_wand,"-read","rose:");
+%    CLIoption(cli_wand,"-virtual-pixel","transparent");
+%    CLIoption(cli_wand,"-distort","SRT:","30");
+%    CLIoption(cli_wand,"-write","rotated_rose.png");
+%
+*/
+WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
+{
+  const char
+    *arg1,
+    *arg2;
+
+  CommandOptionFlags
+    option_type;
+
+  assert(cli_wand != (MagickCLI *) NULL);
+  assert(cli_wand->signature == WandSignature);
+  assert(cli_wand->wand.signature == WandSignature);
+  if (IfMagickTrue(cli_wand->wand.debug))
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
+
+  if ( cli_wand->command == (const OptionInfo *) NULL )
+    cli_wand->command = GetCommandOptionInfo(option);
+#if 0
+    (void) FormatLocaleFile(stderr, "CLIOption \"%s\" matched \"%s\"\n",
+          option, cli_wand->command->mnemonic );
+#endif
+
+  option_type=(CommandOptionFlags) cli_wand->command->flags;
+
+  if ( option_type == UndefinedOptionFlag )
+    CLIWandExceptionReturn(OptionFatalError,"UnrecognizedOption",option);
+
+  assert( LocaleCompare(cli_wand->command->mnemonic,option) == 0 );
+
+  if ((option_type & (SpecialOptionFlag|GenesisOptionFlag)) != 0 )
+    CLIWandExceptionReturn(OptionFatalError,"InvalidUseOfOption",option);
+
+  if ( (option_type & DeprecateOptionFlag) != 0 )
+    CLIWandExceptionReturn(OptionError,"DeprecatedOptionNoCode",option);
+
+  if ( IfMagickTrue(CLICatchException(cli_wand, MagickFalse)) )
+    return;
+
+
+  { size_t
+      count = cli_wand->command->type;
+
+    va_list
+      operands;
+
+    va_start(operands,option);
+
+    arg1=arg2=NULL;
+    if ( count >= 1 )
+      arg1=(const char *) va_arg(operands, const char *);
+    if ( count >= 2 )
+      arg2=(const char *) va_arg(operands, const char *);
+
+    va_end(operands);
+
+#if 1
+    (void) FormatLocaleFile(stderr,
+      "CLIOption: \"%s\"  Count: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
+          option,count,option_type,arg1,arg2);
+#endif
+  }
+
+  cli_wand->command = (const OptionInfo *) NULL; /* prevent re-use later */
+
+
+  /*
+     Call the appropriate option handler
+  */
+
+  /* FUTURE: this is temporary - get 'settings' to handle
+     distribution of settings to images attributes,proprieties,artifacts */
+  if ( cli_wand->wand.images != (Image *)NULL )
+    SyncImagesSettings(cli_wand->wand.image_info,cli_wand->wand.images,
+        cli_wand->wand.exception);
+
+  if ( (option_type & SettingOptionFlags) != 0 ) {
+    CLISettingOptionInfo(cli_wand, option, arg1, arg2);
+    // FUTURE: Sync Specific Settings into Image Properities (not global)
+  }
+
+  if ( (option_type & NoImageOperatorFlag) != 0)
+    CLINoImageOperator(cli_wand, option, arg1, arg2);
+
+  /* FUTURE: The not a setting part below is a temporary hack due to
+   * some options being both a Setting and a Simple operator.
+   * Specifically -monitor, -depth, and  -colorspace */
+  if ( cli_wand->wand.images == (Image *)NULL ) {
+    if ( ((option_type & (SimpleOperatorFlag|ListOperatorFlag)) != 0 ) &&
+         ((option_type & SettingOptionFlags) == 0 ))  /* temp hack */
+      CLIWandException(OptionError,"NoImagesFound",option);
+    return; /* on its own this is not an error */
+  }
+
+  if ( (option_type & SimpleOperatorFlag) != 0)
+    CLISimpleOperatorImages(cli_wand, option, arg1, arg2);
+
+  if ( (option_type & ListOperatorFlag) != 0 )
+    CLIListOperatorImages(cli_wand, option, arg1, arg2);
+
 }

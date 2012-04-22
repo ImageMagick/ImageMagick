@@ -922,7 +922,7 @@
       </fatalerror>
       <warning>
         <message name="DepreciatedOption">
-          option est obsolète
+          Option a été remplacée
         </message>
         <message name="GeometryDoesNotContainImage">
           image non incluse dans la géométrie

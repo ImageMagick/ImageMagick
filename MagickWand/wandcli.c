@@ -117,17 +117,19 @@ WandExport MagickCLI *AcquireMagickCLI(ImageInfo *image_info,
   /* Initialize CLI Part of MagickCLI */
   cli_wand->draw_info=CloneDrawInfo(cli_wand->wand.image_info,(DrawInfo *) NULL);
   cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
+  cli_wand->process_flags=MagickCommandOptionFlags;  /* assume "magick" CLI */
+  cli_wand->command=(const OptionInfo *)NULL;     /* no option at this time */
   cli_wand->image_list_stack=(Stack *)NULL;
   cli_wand->image_info_stack=(Stack *)NULL;
-  cli_wand->process_flags=MagickCommandOptionFlags;  /* assume "magick" CLI */
 
   /* default exception location...
      EG: sprintf(locaiton, filename, line, column);
   */
-  cli_wand->location="from \"%s\"";   /* location format: */
-  cli_wand->filename="unknown";       /* unknown source */
-  cli_wand->line=0;
-  cli_wand->column=0;
+  cli_wand->location="from \"%s\"";   /* location format using arguments: */
+                                      /*      filename, line, column */
+  cli_wand->filename="unknown";       /* script filename, unknown source */
+  cli_wand->line=0;                   /* line from script OR CLI argument */
+  cli_wand->column=0;                 /* column from script */
 
   cli_wand->signature=WandSignature;
   if (IfMagickTrue(cli_wand->wand.debug))
@@ -213,7 +215,7 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
 %  CLICatchException() will report exceptions, either just non-fatal warnings
 %  only, or all errors, according to 'all_execeptions' boolean argument.
 %
-%  The function returns true is errors are fatal, in which case the caller
+%  The function returns true if errors are fatal, in which case the caller
 %  should abort and re-call with an 'all_exceptions' argument of true before
 %  quitting.
 %
@@ -224,6 +226,12 @@ WandExport MagickCLI *DestroyMagickCLI(MagickCLI *cli_wand)
 %
 %    MagickBooleanType CLICatchException(MagickCLI *cli_wand,
 %              const MagickBooleanType all_exceptions );
+%
+%  Arguments are
+%
+%    o cli_wand:   The Wand CLI that holds the exception Information
+%
+%    o all_exceptions:   Report all exceptions, including the fatal one
 %
 */
 WandExport MagickBooleanType CLICatchException(MagickCLI *cli_wand,

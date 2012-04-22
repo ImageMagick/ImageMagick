@@ -930,8 +930,8 @@
         </message>
       </fatalerror>
       <warning>
-        <message name="DeprecatedOption">
-          option is deprecated
+        <message name="ReplacedOption">
+          option has been replaced
         </message>
         <message name="GeometryDoesNotContainImage">
           geometry does not contain image
