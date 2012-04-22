@@ -1,6 +1,33 @@
 2012-04-21  6.7.6-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-7, SVN revision 7580.
 
+2012-04-21  6.7.6-7 Anthony Thyssen <A.Thyssen@griffith...>
+  * Error when doing an implicit (final) write to a single space filename.
+    This is typically a failed line continuation and is very common.
+    Using an explicit "-write" will let you do this.
+
+2012-04-20  6.7.6-7 Anthony Thyssen <A.Thyssen@griffith...>
+  * Allow +-X+-Y as geometry arguments.
+
+2012-04-17  6.7.6-7 Cristy  <quetzlzacatenango@image...>
+  * Distinquish grayscale as sRGB not linear RGB.
+
+2012-04-16  6.7.6-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.6-6, SVN revision 7536.
+
+2012-04-11  6.7.6-6 Glenn Randers-Pehrson <glennrp@image...>
+  * Always unlock the semaphore before returning from the png codec, either
+    by a "return" or png_error(); changed all Magick*Exception() calls
+    after setjmp() to png_error() to ensure proper cleanup (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=16883).
+
+2012-04-10  6.7.6-6 Anthony Thyssen <A.Thyssen@griffith...>
+  * Fixed log known alpha*kernel normalization bug in morphology convolve.
+
+    Convolve kernel weights have been separated from alpha blend handling.
+    Un-normalized kernels applied to images with active alpha will no longer
+    be auto-normalized due to the effect of alpha blending.
+
 2012-04-20  6.7.6-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Allow +-X+-Y as geometry arguments.
 
