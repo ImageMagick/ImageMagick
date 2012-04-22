@@ -112,19 +112,6 @@ typedef enum
   AllValidate = 0x7fffffff
 } ValidateType;
 
-typedef struct _OptionInfo
-{
-  const char
-    *mnemonic;
-
-  ssize_t
-    type,
-    flags;
-
-  MagickBooleanType
-    stealth;
-} OptionInfo;
-
 /*
   Flags to describe classes of image processing options.
   These are used to determine how a option should be processed, and
@@ -140,19 +127,33 @@ typedef enum
   GlobalOptionFlag          = 0x0008,  /* Global Setting or Control */
   SettingOptionFlags        = 0x000F,  /* mask for all setting options */
 
-  SimpleOperatorOptionFlag  = 0x0010,  /* Simple Image processing operator */
-  ListOperatorOptionFlag    = 0x0020,  /* Multi-Image processing operator */
-  SpecialOptionFlag         = 0x0040,  /* Special handled Option */
+  NoImageOperatorFlag       = 0x0010,  /* Images not required operator */
+  SimpleOperatorFlag        = 0x0020,  /* Simple Image processing operator */
+  ListOperatorFlag          = 0x0040,  /* Multi-Image processing operator */
   GenesisOptionFlag         = 0x0080,  /* MagickCommandGenesis() Only Option */
 
-  ImageRequiredFlags        = 0x0030,  /* Flags also means Images Required */
+  SpecialOptionFlag         = 0x0100,  /* Operator with Special Requirements */
+                                       /* EG: for specific CLI commands */
 
   NonMagickOptionFlag       = 0x1000,  /* Option not used by Magick Command */
   FireOptionFlag            = 0x2000,  /* Convert operation seq firing point */
   DeprecateOptionFlag       = 0x4000,  /* Deprecate option (no code) */
-  ReplacedOptionFlag        = 0x8000   /* Replaced Option (still works) */
+  ReplacedOptionFlag        = 0x8000   /* Replaced Option (but still works) */
 
 } CommandOptionFlags;
+
+typedef struct _OptionInfo
+{
+  const char
+    *mnemonic;
+
+  ssize_t
+    type,
+    flags;
+
+  MagickBooleanType
+    stealth;
+} OptionInfo;
 
 
 extern MagickExport char

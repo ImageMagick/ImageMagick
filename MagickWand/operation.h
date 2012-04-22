@@ -22,11 +22,16 @@
 extern "C" {
 #endif
 
+/* These actually private */
 extern WandExport void
   CLISettingOptionInfo(MagickCLI *,const char *,const char *, const char *),
   CLISimpleOperatorImages(MagickCLI *,const char *,const char *,const char *),
   CLIListOperatorImages(MagickCLI *, const char *,const char *,const char *),
-  CLISpecialOperator(MagickCLI *,const char *,const char *);
+  CLINoImageOperator(MagickCLI *, const char *,const char *,const char *);
+
+/* This can be used by used using WandCLI API */
+extern WandExport void
+  CLIOption(MagickCLI *,const char *,...);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -30,10 +30,10 @@ extern "C" {
   (void) CLIThrowException(cli_wand,GetMagickModule(),severity,tag, \
        "'%s' '%s'",option, arg)
 
-#define CLIWandWarnDepreciated(message) \
+#define CLIWandWarnReplaced(message) \
   if ( (cli_wand->process_flags & ProcessWarnDepreciated) != 0 ) \
     (void) CLIThrowException(cli_wand,GetMagickModule(),OptionWarning, \
-       "DeprecatedOption", "'%s', use \"%s\"",option,message)
+       "ReplacedOption", "'%s', use \"%s\"",option,message)
 
 #define CLIWandExceptionFile(severity,tag,context) \
 { char *message=GetExceptionMessage(errno); \
@@ -108,16 +108,19 @@ struct _MagickCLI       /* CLI interface version of MagickWand */
   DrawInfo
     *draw_info;         /* for CLI API usage, not used by MagickWand API */
 
+  ProcessOptionFlags
+    process_flags;      /* When handling CLI, what options do we process? */
+
+  const OptionInfo
+    *command;           /* The option entry that is being processed */
+
   Stack
     *image_list_stack,  /* Stacks of Image Lists and Image Info settings */
     *image_info_stack;
 
-  ProcessOptionFlags
-    process_flags;      /* when handling CLI, what options do we process? */
-
   const char            /* Location of option being processed for exception */
     *location,          /* location format string for exception reports */
-    *filename;          /* "CLI", "unknown", or script filename */
+    *filename;          /* "CLI", "unknown", or the script filename */
 
   size_t
     line,               /* location of current option from source */
