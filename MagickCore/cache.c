@@ -898,27 +898,29 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
           clone_offset+=sizeof(Quantum);
         }
     }
-    length=clone_info->number_channels*sizeof(Quantum);
-    (void) ResetMagickMemory(blob,0,length*sizeof(*blob));
     if (y < clone_info->rows)
-      for ( ; x < (ssize_t) clone_info->columns; x++)
       {
         /*
           Set remaining columns as undefined.
         */
-        if (clone_info->type != DiskCache)
-          (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,blob,
-            length);
-        else
-          {
-            count=WritePixelCacheRegion(clone_info,clone_offset,length,blob);
-            if ((MagickSizeType) count != length)
-              {
-                status=MagickFalse;
-                break;
+        length=clone_info->number_channels*sizeof(Quantum);
+        (void) ResetMagickMemory(blob,0,length*sizeof(*blob));
+        for ( ; x < (ssize_t) clone_info->columns; x++)
+        {
+          if (clone_info->type != DiskCache)
+            (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,
+              blob,length);
+          else
+            {
+              count=WritePixelCacheRegion(clone_info,clone_offset,length,blob);
+              if ((MagickSizeType) count != length)
+                {
+                  status=MagickFalse;
+                  break;
               }
-          }
-        clone_offset+=length;
+            }
+          clone_offset+=length;
+        }
       }
   }
   length=clone_info->number_channels*sizeof(Quantum);
@@ -1015,30 +1017,32 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
           clone_offset+=length;
         }
       }
-      length=clone_info->metacontent_extent;
-      (void) ResetMagickMemory(blob,0,length*sizeof(*blob));
       if (y < clone_info->rows)
-        for ( ; y < (ssize_t) clone_info->rows; y++)
         {
           /*
             Set remaining rows as undefined.
           */
-          for (x=0; x < (ssize_t) clone_info->columns; x++)
+          length=clone_info->metacontent_extent;
+          (void) ResetMagickMemory(blob,0,length*sizeof(*blob));
+          for ( ; y < (ssize_t) clone_info->rows; y++)
           {
-            if (clone_info->type != DiskCache)
-              (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,
-                blob,length);
-            else
-              {
-                count=WritePixelCacheRegion(clone_info,clone_offset,length,
-                  blob);
-                if ((MagickSizeType) count != length)
-                  {
-                    status=MagickFalse;
-                    break;
-                  }
-              }
-            clone_offset+=length;
+            for (x=0; x < (ssize_t) clone_info->columns; x++)
+            {
+              if (clone_info->type != DiskCache)
+                (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,
+                  blob,length);
+              else
+                {
+                  count=WritePixelCacheRegion(clone_info,clone_offset,length,
+                    blob);
+                  if ((MagickSizeType) count != length)
+                    {
+                      status=MagickFalse;
+                      break;
+                    }
+                }
+              clone_offset+=length;
+            }
           }
         }
     }
