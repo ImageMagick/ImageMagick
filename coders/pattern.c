@@ -989,12 +989,6 @@ static Image *ReadPATTERNImage(const ImageInfo *image_info,
       */
       pattern_image=image;
       image=AcquireImage(image_info);
-      (void) ParseAbsoluteGeometry(image_info->size,&image->extract_info);
-      image->columns=image->extract_info.width;
-      image->rows=image->extract_info.height;
-      image->offset=image->extract_info.x;
-      image->extract_info.x=0;
-      image->extract_info.y=0;
       (void) TextureImage(image,pattern_image);
       pattern_image=DestroyImage(pattern_image);
     }
