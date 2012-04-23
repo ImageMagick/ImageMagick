@@ -562,7 +562,13 @@ static MagickRealType Welsh(const MagickRealType x,
 %  moderately blurs high frequency 'pixel-hash' patterns under no-op.  It turns
 %  out to be close to both Mitchell and Lanczos2Sharp.  For example, its first
 %  crossing is at (36 sqrt(2) + 123)/(72 sqrt(2) + 47), almost the same as the
-%  first crossing of both Mitchell and Lanczos2Sharp.
+%  first crossing of Mitchell and Lanczos2Sharp.
+%
+%  RodidouxSharp is a slightly sharper version of Rodidoux, some believe it
+%  is too sharp.  It is designed to minimize the maximum possible change in
+%  a pixel value which is at one of the extremes (e.g., 0 or 255) under no-op
+%  conditions.  Amazingly Mitchell falls roughly between Rodidoux and
+%  RodidouxSharp, though this seems to have been pure coincidence.
 %
 %  'EXPERT' OPTIONS:
 %
@@ -637,7 +643,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %  The format of the AcquireResizeFilter method is:
 %
 %      ResizeFilter *AcquireResizeFilter(const Image *image,
-%        const FilterTypes filter_type, const MagickBooleanType radial,
+%        const FilterTypes filter_type,const MagickBooleanType cylindrical,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -677,7 +683,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     *resize_filter;
 
   /*
-    Table Mapping given Filter, into Weighting and Windowing functions.  A
+    Table Mapping given Filter, into Weighting and Windowing functions. A
     'Box' windowing function means its a simble non-windowed filter.  An
     'SincFast' filter function could be upgraded to a 'Jinc' filter if a
     "cylindrical", unless a 'Sinc' or 'SincFast' filter was specifically
@@ -696,33 +702,34 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       window;
   } const mapping[SentinelFilter] =
   {
-    { UndefinedFilter,    BoxFilter      }, /* Undefined (default to Box)   */
-    { PointFilter,        BoxFilter      }, /* SPECIAL: Nearest neighbour   */
-    { BoxFilter,          BoxFilter      }, /* Box averaging filter         */
-    { TriangleFilter,     BoxFilter      }, /* Linear interpolation filter  */
-    { HermiteFilter,      BoxFilter      }, /* Hermite interpolation filter */
-    { SincFastFilter,     HanningFilter  }, /* Hanning -- cosine-sinc       */
-    { SincFastFilter,     HammingFilter  }, /* Hamming --      '' variation */
-    { SincFastFilter,     BlackmanFilter }, /* Blackman -- 2*cosine-sinc    */
-    { GaussianFilter,     BoxFilter      }, /* Gaussian blur filter         */
-    { QuadraticFilter,    BoxFilter      }, /* Quadratic Gaussian approx    */
-    { CubicFilter,        BoxFilter      }, /* Cubic B-Spline               */
-    { CatromFilter,       BoxFilter      }, /* Cubic-Keys interpolator      */
-    { MitchellFilter,     BoxFilter      }, /* 'Ideal' Cubic-Keys filter    */
-    { JincFilter,         BoxFilter      }, /* Raw 3-lobed Jinc function    */
-    { SincFilter,         BoxFilter      }, /* Raw 4-lobed Sinc function    */
-    { SincFastFilter,     BoxFilter      }, /* Raw fast sinc ("Pade"-type)  */
-    { SincFastFilter,     KaiserFilter   }, /* Kaiser -- square root-sinc   */
-    { SincFastFilter,     WelshFilter    }, /* Welsh -- parabolic-sinc      */
-    { SincFastFilter,     CubicFilter    }, /* Parzen -- cubic-sinc         */
-    { SincFastFilter,     BohmanFilter   }, /* Bohman -- 2*cosine-sinc      */
-    { SincFastFilter,     TriangleFilter }, /* Bartlett -- triangle-sinc    */
-    { LagrangeFilter,     BoxFilter      }, /* Lagrange self-windowing      */
-    { LanczosFilter,      LanczosFilter  }, /* Lanczos Sinc-Sinc filters    */
-    { LanczosSharpFilter, LanczosSharpFilter }, /* | these require */
-    { Lanczos2Filter,     Lanczos2Filter },     /* | special handling */
-    { Lanczos2SharpFilter,Lanczos2SharpFilter },
-    { RobidouxFilter,     BoxFilter      }, /* Cubic Keys tuned for EWA     */
+    { UndefinedFilter,     BoxFilter      },  /* Undefined (default to Box)   */
+    { PointFilter,         BoxFilter      },  /* SPECIAL: Nearest neighbour   */
+    { BoxFilter,           BoxFilter      },  /* Box averaging filter         */
+    { TriangleFilter,      BoxFilter      },  /* Linear interpolation filter  */
+    { HermiteFilter,       BoxFilter      },  /* Hermite interpolation filter */
+    { SincFastFilter,      HanningFilter  },  /* Hanning -- cosine-sinc       */
+    { SincFastFilter,      HammingFilter  },  /* Hamming --      '' variation */
+    { SincFastFilter,      BlackmanFilter },  /* Blackman -- 2*cosine-sinc    */
+    { GaussianFilter,      BoxFilter      },  /* Gaussian blur filter         */
+    { QuadraticFilter,     BoxFilter      },  /* Quadratic Gaussian approx    */
+    { CubicFilter,         BoxFilter      },  /* Cubic B-Spline               */
+    { CatromFilter,        BoxFilter      },  /* Cubic-Keys interpolator      */
+    { MitchellFilter,      BoxFilter      },  /* 'Ideal' Cubic-Keys filter    */
+    { JincFilter,          BoxFilter      },  /* Raw 3-lobed Jinc function    */
+    { SincFilter,          BoxFilter      },  /* Raw 4-lobed Sinc function    */
+    { SincFastFilter,      BoxFilter      },  /* Raw fast sinc ("Pade"-type)  */
+    { SincFastFilter,      KaiserFilter   },  /* Kaiser -- square root-sinc   */
+    { SincFastFilter,      WelshFilter    },  /* Welsh -- parabolic-sinc      */
+    { SincFastFilter,      CubicFilter    },  /* Parzen -- cubic-sinc         */
+    { SincFastFilter,      BohmanFilter   },  /* Bohman -- 2*cosine-sinc      */
+    { SincFastFilter,      TriangleFilter },  /* Bartlett -- triangle-sinc    */
+    { LagrangeFilter,      BoxFilter      },  /* Lagrange self-windowing      */
+    { LanczosFilter,       LanczosFilter  },  /* Lanczos Sinc-Sinc filters    */
+    { LanczosSharpFilter,  LanczosSharpFilter }, /* | these require */
+    { Lanczos2Filter,      Lanczos2Filter },     /* | special handling */
+    { Lanczos2SharpFilter, Lanczos2SharpFilter },
+    { RobidouxFilter,      BoxFilter      },  /* Cubic Keys tuned for EWA     */
+    { RobidouxSharpFilter, BoxFilter      },  /* Sharper Cubic Keys for EWA   */
   };
   /*
     Table mapping the filter/window from the above table to an actual function.
@@ -738,42 +745,50 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   static struct
   {
     MagickRealType
-      (*function)(const MagickRealType, const ResizeFilter*),
-      lobes, /* Default lobes/support size of the weighting filter. */
-      scale, /* Support when function used as a windowing function
-                Typically equal to the location of the first zero crossing. */
-      B,C;   /* BC-spline coefficients, ignored if not a CubicBC filter. */
+      (*function)(const MagickRealType,const ResizeFilter*),
+      lobes,  /* Default lobes/support size of the weighting filter. */
+      scale,  /* Support when function used as a windowing function
+                 Typically equal to the location of the first zero crossing. */
+      B,C;    /* BC-spline coefficients, ignored if not a CubicBC filter. */
   } const filters[SentinelFilter] =
   {
-    { Box,       0.5, 0.5,     0.0, 0.0 }, /* Undefined (default to Box)  */
-    { Box,       0.0, 0.5,     0.0, 0.0 }, /* Point (special handling)    */
-    { Box,       0.5, 0.5,     0.0, 0.0 }, /* Box                         */
-    { Triangle,  1.0, 1.0,     0.0, 0.0 }, /* Triangle                    */
-    { CubicBC,   1.0, 1.0,     0.0, 0.0 }, /* Hermite (cubic  B=C=0)      */
-    { Hanning,   1.0, 1.0,     0.0, 0.0 }, /* Hanning, cosine window      */
-    { Hamming,   1.0, 1.0,     0.0, 0.0 }, /* Hamming, '' variation       */
-    { Blackman,  1.0, 1.0,     0.0, 0.0 }, /* Blackman, 2*cosine window   */
-    { Gaussian,  2.0, 1.5,     0.0, 0.0 }, /* Gaussian                    */
-    { Quadratic, 1.5, 1.5,     0.0, 0.0 }, /* Quadratic gaussian          */
-    { CubicBC,   2.0, 2.0,     1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
-    { CubicBC,   2.0, 1.0,     0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
+    /*            .---  support window
+                  |    .--- first crossing (if used as a Windowing function)
+                  |    |    .--- B value for Cubic Function
+                  |    |    |    .---- C value for Cubic Function
+                  |    |    |    |                                    */
+    { Box,       0.5, 0.5, 0.0, 0.0 }, /* Undefined (default to Box)  */
+    { Box,       0.0, 0.5, 0.0, 0.0 }, /* Point (special handling)    */
+    { Box,       0.5, 0.5, 0.0, 0.0 }, /* Box                         */
+    { Triangle,  1.0, 1.0, 0.0, 0.0 }, /* Triangle                    */
+    { CubicBC,   1.0, 1.0, 0.0, 0.0 }, /* Hermite (cubic  B=C=0)      */
+    { Hanning,   1.0, 1.0, 0.0, 0.0 }, /* Hanning, cosine window      */
+    { Hamming,   1.0, 1.0, 0.0, 0.0 }, /* Hamming, '' variation       */
+    { Blackman,  1.0, 1.0, 0.0, 0.0 }, /* Blackman, 2*cosine window   */
+    { Gaussian,  2.0, 1.5, 0.0, 0.0 }, /* Gaussian                    */
+    { Quadratic, 1.5, 1.5, 0.0, 0.0 }, /* Quadratic gaussian          */
+    { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
+    { CubicBC,   2.0, 1.0, 0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
     { CubicBC,   2.0, 8.0/7.0, 1./3., 1./3. }, /* Mitchell   (B=C=1/3)    */
     { Jinc,      3.0, 1.2196698912665045, 0.0, 0.0 }, /* Raw 3-lobed Jinc */
-    { Sinc,      4.0, 1.0,     0.0, 0.0 }, /* Raw 4-lobed Sinc            */
-    { SincFast,  4.0, 1.0,     0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
-    { Kaiser,    1.0, 1.0,     0.0, 0.0 }, /* Kaiser (square root window) */
-    { Welsh,     1.0, 1.0,     0.0, 0.0 }, /* Welsh (parabolic window)    */
-    { CubicBC,   2.0, 2.0,     1.0, 0.0 }, /* Parzen (B-Spline window)    */
-    { Bohman,    1.0, 1.0,     0.0, 0.0 }, /* Bohman, 2*Cosine window     */
-    { Triangle,  1.0, 1.0,     0.0, 0.0 }, /* Bartlett (triangle window)  */
-    { Lagrange,  2.0, 1.0,     0.0, 0.0 }, /* Lagrange sinc approximation */
-    { SincFast,  3.0, 1.0,     0.0, 0.0 }, /* Lanczos, 3-lobed Sinc-Sinc  */
-    { SincFast,  3.0, 1.0,     0.0, 0.0 }, /* lanczos, Sharpened          */
-    { SincFast,  2.0, 1.0,     0.0, 0.0 }, /* Lanczos, 2-lobed            */
-    { SincFast,  2.0, 1.0,     0.0, 0.0 }, /* Lanczos2, sharpened         */
+    { Sinc,      4.0, 1.0, 0.0, 0.0 }, /* Raw 4-lobed Sinc            */
+    { SincFast,  4.0, 1.0, 0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
+    { Kaiser,    1.0, 1.0, 0.0, 0.0 }, /* Kaiser (square root window) */
+    { Welsh,     1.0, 1.0, 0.0, 0.0 }, /* Welsh (parabolic window)    */
+    { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Parzen (B-Spline window)    */
+    { Bohman,    1.0, 1.0, 0.0, 0.0 }, /* Bohman, 2*Cosine window     */
+    { Triangle,  1.0, 1.0, 0.0, 0.0 }, /* Bartlett (triangle window)  */
+    { Lagrange,  2.0, 1.0, 0.0, 0.0 }, /* Lagrange sinc approximation */
+    { SincFast,  3.0, 1.0, 0.0, 0.0 }, /* Lanczos, 3-lobed Sinc-Sinc  */
+    { SincFast,  3.0, 1.0, 0.0, 0.0 }, /* lanczos, Sharpened          */
+    { SincFast,  2.0, 1.0, 0.0, 0.0 }, /* Lanczos, 2-lobed            */
+    { SincFast,  2.0, 1.0, 0.0, 0.0 }, /* Lanczos2, sharpened         */
+    /* Robidoux: Keys cubic close to Lanczos2D sharpened */
     { CubicBC,   2.0, 1.1685777620836932,
-                              0.37821575509399867, 0.31089212245300067 }
-                     /* Robidoux: Keys cubic close to Lanczos2D sharpened */
+                            0.37821575509399867, 0.31089212245300067 },
+    /* RobidouxSharp: Sharper version of Robidoux */
+    { CubicBC,   2.0, 1.105822933719019,
+                            0.2620145123990142,  0.3689927438004929  }
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
@@ -783,8 +798,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     filter.
 
     Values taken from
-    http://cose.math.bas.bg/webMathematica/webComputing/BesselZeros.jsp using
-    Jv-function with v=1, then dividing by PI.
+    http://cose.math.bas.bg/webMathematica/webComputing/BesselZeros.jsp
+    using Jv-function with v=1, then dividing by PI.
   */
   static MagickRealType
     jinc_zeros[16] =
@@ -795,7 +810,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       4.2410628637960699,
       5.2427643768701817,
       6.2439216898644877,
-      7.244759868719957,
+      7.2447598687199570,
       8.2453949139520427,
       9.2458926849494673,
       10.246293348754916,
@@ -803,7 +818,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       12.246898461138105,
       13.247132522181061,
       14.247333735806849,
-      15.2475085630373,
+      15.247508563037300,
       16.247661874700962
    };
 
@@ -820,6 +835,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   resize_filter=(ResizeFilter *) AcquireMagickMemory(sizeof(*resize_filter));
   if (resize_filter == (ResizeFilter *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(resize_filter,0,sizeof(*resize_filter));
   /*
     Defaults for the requested filter.
   */
@@ -829,7 +845,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   /* Promote 1D Windowed Sinc Filters to a 2D Windowed Jinc filters */
   if (cylindrical != MagickFalse && filter_type == SincFastFilter
        && filter != SincFastFilter )
-    filter_type=JincFilter;
+    filter_type=JincFilter;  /* 1D Windowed Sinc => 2D Windowed Jinc filters */
 
   /* Expert filter setting override */
   artifact=GetImageArtifact(image,"filter:filter");
@@ -862,8 +878,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           ssize_t
             option;
 
-          option=ParseCommandOption(MagickFilterOptions,MagickFalse,
-            artifact);
+          option=ParseCommandOption(MagickFilterOptions,MagickFalse,artifact);
           if ((UndefinedFilter < option) && (option < SentinelFilter))
             {
               filter_type=cylindrical != MagickFalse ?
@@ -914,11 +929,11 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   }
 
   /*
-  ** Other Expert Option Modifications
+    Expert Option Modifications.
   */
 
   /* User Gaussian Sigma Override - no support change */
-  value = 0.5;    /* guassian sigma default, half pixel */
+  value=0.5;    /* guassian sigma default, half pixel */
   if ( GaussianFilter ) {
     artifact=GetImageArtifact(image,"filter:sigma");
     if (artifact != (const char *) NULL)
@@ -964,7 +979,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       if (resize_filter->support > 16)
         resize_filter->support=jinc_zeros[15];  /* largest entry in table */
       else
-        resize_filter->support = jinc_zeros[((long)resize_filter->support)-1];
+        resize_filter->support=jinc_zeros[((long)resize_filter->support)-1];
     }
   /* expert override of the support setting */
   artifact=GetImageArtifact(image,"filter:support");
@@ -983,7 +998,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     Adjust window function scaling to match windowing support for
     weighting function.  This avoids a division on every filter call.
   */
-  resize_filter->scale /= resize_filter->window_support;
+  resize_filter->scale/=resize_filter->window_support;
 
   /*
    * Set Cubic Spline B,C values, calculate Cubic coefficients.
@@ -1064,7 +1079,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         /*
           Report Filter Details.
         */
-        support=GetResizeFilterSupport(resize_filter); /* practical_support */
+        support=GetResizeFilterSupport(resize_filter);  /* practical_support */
         (void) FormatLocaleFile(stdout,"# Resize Filter (for graphing)\n#\n");
         (void) FormatLocaleFile(stdout,"# filter = %s\n",
              CommandOptionToMnemonic(MagickFilterOptions,filter_type));
