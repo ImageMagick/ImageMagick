@@ -30,7 +30,8 @@ ${MAGICK} ${REFERENCE_IMAGE} -write miff:- null: | ${IDENTIFY} -
 ${MAGICK} ${REFERENCE_IMAGE} -write -      null: | ${IDENTIFY} -
 
 # IMv7 "magick" testing
-
+# -read option
+${MAGICK} -read ${REFERENCE_IMAGE} info:
 # -exit can be used insted of implicit write
 ${MAGICK} ${REFERENCE_IMAGE} -write info: -exit
 # null: does not require an image during write
