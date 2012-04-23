@@ -741,7 +741,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       if ((flags & WidthValue) == 0 ) {
           (void) ThrowMagickException(exception,GetMagickModule(),
                OptionWarning,"InvalidSetting","'%s' '%s'",
-               "distort:viewport",artifact);
+               "distort:viewport",value);
           destination_image=DestroyImage(destination_image);
           return(MagickFalse);
         }
