@@ -1004,6 +1004,7 @@ static const OptionInfo
     { "Point", PointFilter, UndefinedOptionFlag, MagickFalse },
     { "Quadratic", QuadraticFilter, UndefinedOptionFlag, MagickFalse },
     { "Robidoux", RobidouxFilter, UndefinedOptionFlag, MagickFalse },
+    { "RobidouxSharp", RobidouxSharpFilter, UndefinedOptionFlag, MagickFalse },
     { "Sinc", SincFilter, UndefinedOptionFlag, MagickFalse },
     { "SincFast", SincFastFilter, UndefinedOptionFlag, MagickFalse },
     { "Triangle", TriangleFilter, UndefinedOptionFlag, MagickFalse },
@@ -1035,7 +1036,7 @@ static const OptionInfo
     { "South", SouthGravity, UndefinedOptionFlag, MagickFalse },
     { "SouthWest", SouthWestGravity, UndefinedOptionFlag, MagickFalse },
     { "West", WestGravity, UndefinedOptionFlag, MagickFalse },
-    { "Static", StaticGravity, UndefinedOptionFlag, MagickFalse },
+    { "Static", StaticGravity, UndefinedOptionFlag, MagickTrue },
     { (char *) NULL, UndefinedGravity, UndefinedOptionFlag, MagickFalse }
   },
   IntentOptions[] =
