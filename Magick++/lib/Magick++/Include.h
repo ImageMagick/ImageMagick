@@ -334,7 +334,6 @@ namespace Magick
   using MagickCore::SouthWestGravity;
   using MagickCore::SouthGravity;
   using MagickCore::SouthEastGravity;
-  using MagickCore::StaticGravity;
 
   // Image types
   using MagickCore::ImageType;
