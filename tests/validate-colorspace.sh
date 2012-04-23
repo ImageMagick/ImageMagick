@@ -102,7 +102,8 @@ test_color CMYK  sRGB
 test_color HSL   sRGB
 test_color HSB   sRGB
 test_color HWB   sRGB
-test_color Lab   sRGB
+test_color LAB   sRGB
+test_color Log   sRGB
 test_color YIQ   sRGB
 test_color YUV   sRGB
 test_color YCbCr sRGB
