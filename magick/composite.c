@@ -1808,6 +1808,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       width=height=geometry_info.rho*2.0;
       if ((flags & HeightValue) != 0 )
         height=geometry_info.sigma*2.0;
+
+/* Hack -- this make gaussian work! -- But it is not needed for cubic! */
+width*=2.0; height*=2.0;
+
       /* default the unrotated ellipse width and height axis vectors */
       blur.x1=width;
       blur.x2=0.0;
@@ -1846,7 +1850,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       pixel=zero;
       exception=(&image->exception);
       resample_filter=AcquireResampleFilter(image,&image->exception);
-      SetResampleFilter(resample_filter,CubicFilter,1.0);
+      SetResampleFilter(resample_filter,GaussianFilter,1.0);
       composite_view=AcquireVirtualCacheView(composite_image,exception);
       destination_view=AcquireAuthenticCacheView(destination_image,exception);
       for (y=0; y < (ssize_t) composite_image->rows; y++)
@@ -1895,15 +1899,19 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
               blur.y2=height*cos(angle);
             }
 #if 0
-          if ( x == 60 && y == 60 )
+          if ( x == 10 && y == 60 ) {
             fprintf(stderr, "blur.x=%lf,%lf, blur.y=%lf,%lf\n",
                 blur.x1, blur.x2, blur.y1, blur.y2);
+            fprintf(stderr, "scaled by=%lf,%lf\n",
+                QuantumScale*GetPixelRed(p), QuantumScale*GetPixelGreen(p));
+          }
 #endif
           ScaleResampleFilter(resample_filter,
-               blur.x1*QuantumScale*GetPixelRed(p),
-               blur.y1*QuantumScale*GetPixelGreen(p),
-               blur.x2*QuantumScale*GetPixelRed(p),
-               blur.y2*QuantumScale*GetPixelGreen(p) );
+              blur.x1*QuantumScale*GetPixelRed(p),
+              blur.y1*QuantumScale*GetPixelGreen(p),
+              blur.x2*QuantumScale*GetPixelRed(p),
+              blur.y2*QuantumScale*GetPixelGreen(p) );
+
           (void) ResamplePixelColor(resample_filter,(double) x_offset+x,
             (double) y_offset+y,&pixel);
           SetPixelPacket(destination_image,&pixel,r,destination_indexes+x);
