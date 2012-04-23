@@ -173,8 +173,8 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
   if (quantum_info->pixels == (unsigned char **) NULL)
     return(MagickFalse);
   quantum_info->extent=extent;
-  (void) ResetMagickMemory(quantum_info->pixels,0,
-    quantum_info->number_threads*sizeof(*quantum_info->pixels));
+  (void) ResetMagickMemory(quantum_info->pixels,0,quantum_info->number_threads*
+    sizeof(*quantum_info->pixels));
   for (i=0; i < (ssize_t) quantum_info->number_threads; i++)
   {
     quantum_info->pixels[i]=(unsigned char *) AcquireQuantumMemory(extent+1,

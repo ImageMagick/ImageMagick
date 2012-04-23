@@ -988,7 +988,7 @@ static Image *ReadPATTERNImage(const ImageInfo *image_info,
         Tile pattern across image canvas.
       */
       pattern_image=image;
-      image=CloneImage(pattern_image,0,0,MagickTrue,exception);
+      image=AcquireImage(image_info);
       (void) ParseAbsoluteGeometry(image_info->size,&image->extract_info);
       image->columns=image->extract_info.width;
       image->rows=image->extract_info.height;
