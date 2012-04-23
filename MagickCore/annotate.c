@@ -359,7 +359,6 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
           (number_lines-1.0)*height)/2.0;
         break;
       }
-      case StaticGravity:
       case CenterGravity:
       {
         offset.x=(geometry.width == 0 ? -1.0 : 1.0)*annotate_info->affine.tx+
