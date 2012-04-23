@@ -1,12 +1,12 @@
 /*
   Copyright 1999-2012 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
-  
+
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
-  
+
     http://www.imagemagick.org/script/license.php
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -70,7 +70,6 @@ typedef enum
 #undef SouthWestGravity
 #undef SouthGravity
 #undef SouthEastGravity
-#undef StaticGravity
 #endif
 
 typedef enum
@@ -80,13 +79,12 @@ typedef enum
   NorthWestGravity = 1,
   NorthGravity = 2,
   NorthEastGravity = 3,
-  WestGravity = 4, 
+  WestGravity = 4,
   CenterGravity = 5,
   EastGravity = 6,
   SouthWestGravity = 7,
   SouthGravity = 8,
   SouthEastGravity = 9,
-  StaticGravity = 10 
 } GravityType;
 
 typedef struct _AffineMatrix

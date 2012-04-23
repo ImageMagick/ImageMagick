@@ -1032,12 +1032,11 @@ static const OptionInfo
     { "Point", PointFilter, UndefinedOptionFlag, MagickFalse },
     { "Quadratic", QuadraticFilter, UndefinedOptionFlag, MagickFalse },
     { "Robidoux", RobidouxFilter, UndefinedOptionFlag, MagickFalse },
+    { "RobidouxSharp", RobidouxSharpFilter, UndefinedOptionFlag, MagickFalse },
     { "Sinc", SincFilter, UndefinedOptionFlag, MagickFalse },
     { "SincFast", SincFastFilter, UndefinedOptionFlag, MagickFalse },
     { "Triangle", TriangleFilter, UndefinedOptionFlag, MagickFalse },
     { "Welsh", WelshFilter, UndefinedOptionFlag, MagickFalse },
-    /* For backward compatibility - must be after "Jinc" */
-    { "Bessel", JincFilter, UndefinedOptionFlag, MagickTrue },
     { (char *) NULL, UndefinedFilter, UndefinedOptionFlag, MagickFalse }
   },
   FunctionOptions[] =
@@ -1063,7 +1062,6 @@ static const OptionInfo
     { "South", SouthGravity, UndefinedOptionFlag, MagickFalse },
     { "SouthWest", SouthWestGravity, UndefinedOptionFlag, MagickFalse },
     { "West", WestGravity, UndefinedOptionFlag, MagickFalse },
-    { "Static", StaticGravity, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedGravity, UndefinedOptionFlag, MagickFalse }
   },
   IntentOptions[] =
@@ -1129,7 +1127,6 @@ static const OptionInfo
     { "Edges", EdgesKernel, UndefinedOptionFlag, MagickFalse },
     { "Corners", CornersKernel, UndefinedOptionFlag, MagickFalse },
     { "Diagonals", DiagonalsKernel, UndefinedOptionFlag, MagickFalse },
-    { "ThinDiagonals", DiagonalsKernel, DeprecateOptionFlag, MagickTrue },
     { "LineEnds", LineEndsKernel, UndefinedOptionFlag, MagickFalse },
     { "LineJunctions", LineJunctionsKernel, UndefinedOptionFlag, MagickFalse },
     { "Ridges", RidgesKernel, UndefinedOptionFlag, MagickFalse },
