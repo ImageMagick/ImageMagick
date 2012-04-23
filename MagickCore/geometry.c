@@ -442,7 +442,6 @@ MagickExport void GravityAdjustGeometry(const size_t width,
     case NorthGravity:
     case SouthGravity:
     case CenterGravity:
-    case StaticGravity:
     {
       region->x+=(ssize_t) (width/2-region->width/2);
       break;
@@ -466,7 +465,6 @@ MagickExport void GravityAdjustGeometry(const size_t width,
     case EastGravity:
     case WestGravity:
     case CenterGravity:
-    case StaticGravity:
     {
       region->y+=(ssize_t) (height/2-region->height/2);
       break;
