@@ -1718,7 +1718,6 @@ MagickExport Image *SpliceImage(const Image *image,
       splice_geometry.y+=(ssize_t) splice_geometry.width/2;
       break;
     }
-    case StaticGravity:
     case CenterGravity:
     {
       splice_geometry.x+=(ssize_t) splice_geometry.width/2;
