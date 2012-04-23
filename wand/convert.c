@@ -3013,10 +3013,12 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
     ThrowConvertException(OptionError,"UnbalancedParenthesis",argv[i]);
   if (i-- != (ssize_t) (argc-1))
     ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
-  if (image == (Image *) NULL)
-    ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   FinalizeImageSettings(image_info,image,MagickTrue);
   if (image == (Image *) NULL)
+    ThrowConvertException(OptionError,"NoImagesDefined",argv[argc-1]);
+  if (IsCommandOption(argv[argc-1]))
+    ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
+  if (LocaleCompare(" ",argv[argc-1]) == 0) /* common line continuation error */
     ThrowConvertException(OptionError,"MissingAnImageFilename",argv[argc-1]);
   status&=WriteImages(image_info,image,argv[argc-1],exception);
   if (metadata != (char **) NULL)
