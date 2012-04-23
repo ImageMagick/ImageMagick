@@ -738,21 +738,30 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       value=GetImageArtifact(composite_image,"compose:args");
       if (value != (char *) NULL)
         flags=ParseGeometry(value,&geometry_info);
-      if ((flags & WidthValue) == 0 )
-        {
+      if ((flags & WidthValue) == 0 ) {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+               OptionWarning,"InvalidSetting","'%s' '%s'",
+               "distort:viewport",artifact);
           destination_image=DestroyImage(destination_image);
           return(MagickFalse);
         }
-      width=geometry_info.rho;
-      height=geometry_info.sigma;
-      blur.x1=geometry_info.rho;
+      /* width and height of ellipse.
+         Note: The Gaussian Filter uses a sigma = 0.5, so to compensate the
+         input sigma must be doubled to give a correct 'area to resample'.
+      */
+      width=height=geometry_info.rho*2.0;
+      if ((flags & HeightValue) != 0 )
+        height=geometry_info.sigma*2.0;
+
+/* Hack -- this make gaussian work! -- But it is not needed for cubic! */
+width*=2.0; height*=2.0;
+
+      /* Default the unrotated ellipse width and height axis vectors */
+      blur.x1=width;
       blur.x2=0.0;
       blur.y1=0.0;
-      blur.y2=geometry_info.sigma;
-      angle_start=0.0;
-      angle_range=0.0;
-      if ((flags & HeightValue) == 0)
-        blur.y2=blur.x1;
+      blur.y2=height;
+      /* rotate vectors if a rotation angle is given */
       if ((flags & XValue) != 0 )
         {
           MagickRealType
@@ -764,6 +773,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           blur.y1=(-height*sin(angle));
           blur.y2=height*cos(angle);
         }
+      /* Otherwise lets set a angle range and calculate in the loop */
+      angle_start=0.0;
+      angle_range=0.0;
       if ((flags & YValue) != 0 )
         {
           angle_start=DegreesToRadians(geometry_info.xi);
@@ -771,12 +783,16 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         }
       /*
         Blur Image by resampling.
+
         FUTURE: this is currently broken, especially for small sigma blurs
         This needs to be fixed to use a non-user filter setup that provides
         far more control than currently available.
+
+        It should also be set to GaussianFilter, but it is not being effected
+        by ScaleResampleFilter() for some reason.
       */
       resample_filter=AcquireResampleFilter(image,exception);
-      SetResampleFilter(resample_filter,GaussianFilter); /* was blur*2 */
+      SetResampleFilter(resample_filter,GaussianFilter);
       composite_view=AcquireVirtualCacheView(composite_image,exception);
       destination_view=AcquireAuthenticCacheView(destination_image,exception);
       for (y=0; y < (ssize_t) composite_image->rows; y++)
@@ -820,11 +836,18 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               blur.y1=(-height*sin(angle));
               blur.y2=height*cos(angle);
             }
-          ScaleResampleFilter(resample_filter,blur.x1*QuantumScale*
-            GetPixelRed(composite_image,p),blur.y1*QuantumScale*
-            GetPixelGreen(composite_image,p),blur.x2*QuantumScale*
-            GetPixelRed(composite_image,p),blur.y2*QuantumScale*
-            GetPixelGreen(composite_image,p));
+#if 0
+          if ( x == 10 && y == 60 ) {
+            fprintf(stderr, "blur.x=%lf,%lf, blur.y=%lf,%lf\n",
+                blur.x1, blur.x2, blur.y1, blur.y2);
+            fprintf(stderr, "scaled by=%lf,%lf\n",
+                QuantumScale*GetPixelRed(p), QuantumScale*GetPixelGreen(p));
+#endif
+          ScaleResampleFilter(resample_filter,
+            blur.x1*QuantumScale*GetPixelRed(composite_image,p),
+            blur.y1*QuantumScale*GetPixelGreen(composite_image,p),
+            blur.x2*QuantumScale*GetPixelRed(composite_image,p),
+            blur.y2*QuantumScale*GetPixelGreen(composite_image,p) );
           (void) ResamplePixelColor(resample_filter,(double) x_offset+x,
             (double) y_offset+y,&pixel,exception);
           SetPixelInfoPixel(destination_image,&pixel,q);
