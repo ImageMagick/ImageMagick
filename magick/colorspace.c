@@ -213,8 +213,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
   assert(colorspace != sRGBColorspace);
   assert(colorspace != TransparentColorspace);
   assert(colorspace != UndefinedColorspace);
-  if (SetImageColorspace(image,colorspace) == MagickFalse)
-    return(MagickFalse);
+  if (IsGrayColorspace(colorspace) != MagickFalse)
+    (void) SetImageColorspace(image,sRGBColorspace);
+  else
+    if (SetImageColorspace(image,colorspace) == MagickFalse)
+      return(MagickFalse);
   status=MagickTrue;
   progress=0;
   exception=(&image->exception);
