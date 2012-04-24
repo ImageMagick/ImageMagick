@@ -740,7 +740,7 @@ WandExport unsigned char *MagickGetImageProfile(MagickWand *wand,
 %
 %  The format of the MagickGetImageProfiles method is:
 %
-%      char *MagickGetImageProfiles(MagickWand *wand,
+%      char *MagickGetImageProfiles(MagickWand *wand,const char *pattern,
 %        size_t *number_profiles)
 %
 %  A description of each parameter follows:
