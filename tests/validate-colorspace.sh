@@ -16,12 +16,6 @@
 #
 . ${srcdir}/tests/common.sh
 
-depth=`eval ${MAGICK} xc:none -format '%[fx:QuantumRange]' info:-`
-echo $depth
-if [ "$depth" != "65535" ]; then
-  exit 0
-fi
-
 # how to generate a one pixel (average rose) color and output its values
 in="rose: -scale 1x1"    # a one pixel image of the average color.
 out="-format '%[fx:int(255*r+.5)],%[fx:int(255*g+.5)],%[fx:int(255*b+.5)]' info:-"
