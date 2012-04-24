@@ -2598,12 +2598,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             default:
               break;
           }
-          SetPixelRed(q,ScaleMapToQuantum((MagickRealType) MaxMap*
-            QuantumScale*pixel.red));
-          SetPixelGreen(q,ScaleMapToQuantum((MagickRealType) MaxMap*
-            QuantumScale*pixel.green));
-          SetPixelBlue(q,ScaleMapToQuantum((MagickRealType) MaxMap*
-            QuantumScale*pixel.blue));
+          SetPixelRed(q,ScaleMapToQuantum(pixel.red));
+          SetPixelGreen(q,ScaleMapToQuantum(pixel.green));
+          SetPixelBlue(q,ScaleMapToQuantum(pixel.blue));
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2655,12 +2652,12 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           case YCCColorspace:
           {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-            image->colormap[i].red=(Quantum) (QuantumRange*YCCMap[
-              RoundToYCC(1024.0*QuantumScale*pixel.red)]);
-            image->colormap[i].green=(Quantum) (QuantumRange*YCCMap[
-              RoundToYCC(1024.0*QuantumScale*pixel.green)]);
-            image->colormap[i].blue=(Quantum) (QuantumRange*YCCMap[
-              RoundToYCC(1024.0*QuantumScale*pixel.blue)]);
+            pixel.red=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
+              pixel.red)];
+            pixel.green=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
+              pixel.green)];
+            pixel.blue=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
+              pixel.blue)];
 #endif
             break;
           }
@@ -2684,16 +2681,11 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             break;
           }
           default:
-          {
-            image->colormap[i].red=ScaleMapToQuantum((MagickRealType) MaxMap*
-              QuantumScale*pixel.red);
-            image->colormap[i].green=ScaleMapToQuantum((MagickRealType) MaxMap*
-              QuantumScale*pixel.green);
-            image->colormap[i].blue=ScaleMapToQuantum((MagickRealType) MaxMap*
-              QuantumScale*pixel.blue);
             break;
-          }
         }
+        image->colormap[i].red=ScaleMapToQuantum(pixel.red);
+        image->colormap[i].green=ScaleMapToQuantum(pixel.green);
+        image->colormap[i].blue=ScaleMapToQuantum(pixel.blue);
       }
       (void) SyncImage(image);
       break;
