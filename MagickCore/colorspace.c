@@ -1244,7 +1244,8 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  TransformImageColorspace() transforms an image colorspace.
+%  TransformImageColorspace() transforms an image colorspace, changing the
+%  image data to reflect the new colorspace.
 %
 %  The format of the TransformImageColorspace method is:
 %
@@ -1275,7 +1276,7 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   if (image->colorspace == colorspace)
     return(MagickTrue);  /* same colorspace: no op */
   /*
-    Convert the reference image from an alternate colorspace to RGB.
+    Convert the reference image from an alternate colorspace to sRGB.
   */
   if ((colorspace == sRGBColorspace) || (colorspace == TransparentColorspace))
     return(TransformsRGBImage(image,colorspace,exception));
@@ -1283,7 +1284,7 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   if (IssRGBColorspace(image->colorspace) == MagickFalse)
     status=TransformsRGBImage(image,image->colorspace,exception);
   /*
-    Convert the reference image from RGB to an alternate colorspace.
+    Convert the reference image from sRGB to an alternate colorspace.
   */
   if (sRGBTransformImage(image,colorspace,exception) == MagickFalse)
     status=MagickFalse;
@@ -1303,8 +1304,8 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
 %
 %  TransformsRGBImage() converts the reference image from an alternate
 %  colorspace to sRGB.  The transformation matrices are not the standard ones:
-%  the weights are rescaled to normalize the range of the transformed values to
-%  be [0..QuantumRange].
+%  the weights are rescaled to normalize the range of the transformed values
+%  to be [0..QuantumRange].
 %
 %  The format of the TransformsRGBImage method is:
 %
