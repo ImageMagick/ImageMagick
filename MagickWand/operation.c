@@ -4676,7 +4676,7 @@ WandExport void CLIOption(MagickCLI *cli_wand,const char *option,...)
 
     va_end(operands);
 
-#if 1
+#if 0
     (void) FormatLocaleFile(stderr,
       "CLIOption: \"%s\"  Count: %ld  Flags: %04x  Args: \"%s\" \"%s\"\n",
           option,(long) count,option_type,arg1,arg2);
