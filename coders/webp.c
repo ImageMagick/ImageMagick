@@ -163,6 +163,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   image->columns=(size_t) width;
   image->rows=(size_t) height;
+  image->matte=MagickTrue;
   p=pixels;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -175,8 +176,6 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
       SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
       SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
-      if (GetPixelAlpha(image,q) != OpaqueAlpha)
-        image->matte=MagickTrue;
       q+=GetPixelChannels(image);
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -357,8 +356,8 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   /*
     Allocate memory for pixels.
   */
-  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
-    (image->matte != MagickFalse ? 4 : 3)*image->rows*sizeof(*pixels));
+  pixels=(unsigned char *) AcquireQuantumMemory(image->columns,4*image->rows*
+    sizeof(*pixels));
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   /*
@@ -375,9 +374,8 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       *q++=ScaleQuantumToChar(GetPixelRed(image,p));
       *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
       *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-      if (image->matte != MagickFalse)
-        *q++=ScaleQuantumToChar((Quantum) (image->matte != MagickFalse ?
-          GetPixelAlpha(image,p) : OpaqueAlpha));
+      *q++=ScaleQuantumToChar((Quantum) (image->matte != MagickFalse ?
+        GetPixelAlpha(image,p) : OpaqueAlpha));
       p+=GetPixelChannels(image);
     }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
