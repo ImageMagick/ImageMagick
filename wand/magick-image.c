@@ -12337,7 +12337,9 @@ WandExport MagickWand *MagickTransformImage(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickTransformImageColorspace() transform the image colorspace.
+%  MagickTransformImageColorspace() transform the image colorspace, setting
+%  the images colorspace while transforming the images data to that
+%  colorspace.
 %
 %  The format of the MagickTransformImageColorspace method is:
 %
@@ -12348,11 +12350,12 @@ WandExport MagickWand *MagickTransformImage(MagickWand *wand,
 %
 %    o wand: the magick wand.
 %
-%    o colorspace: the image colorspace:   UndefinedColorspace, RGBColorspace,
-%      GRAYColorspace, TransparentColorspace, OHTAColorspace, XYZColorspace,
-%      YCbCrColorspace, YCCColorspace, YIQColorspace, YPbPrColorspace,
-%      YPbPrColorspace, YUVColorspace, CMYKColorspace, sRGBColorspace,
-%      HSLColorspace, or HWBColorspace.
+%    o colorspace: the image colorspace:   UndefinedColorspace,
+%      sRGBColorspace, RGBColorspace, GRAYColorspace,
+%      OHTAColorspace, XYZColorspace, YCbCrColorspace,
+%      YCCColorspace, YIQColorspace, YPbPrColorspace,
+%      YPbPrColorspace, YUVColorspace, CMYKColorspace,
+%      HSLColorspace, HWBColorspace.
 %
 */
 WandExport MagickBooleanType MagickTransformImageColorspace(MagickWand *wand,
