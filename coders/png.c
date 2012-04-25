@@ -9721,7 +9721,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         5:   libpng adaptive filtering if compression level > 5
              libpng filter type "none" if compression level <= 5
                 or if image is grayscale or palette
-             
+           
         6:   libpng adaptive filtering
 
         7:   "LOCO" filtering (intrapixel differing) if writing
@@ -9750,7 +9750,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       if (mng_info->write_png_compression_strategy == 0)
         mng_info->write_png_compression_strategy = Z_HUFFMAN_ONLY+1;
     }
-  
+
   else if (mng_info->write_png_compression_level == 0)
     {
       int
