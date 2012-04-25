@@ -2659,9 +2659,10 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         continue;
       }
     p++;
+    /* Handle percent escape */
     switch (*p)
     {
-      case '[':  /* multi-character substitution */
+      case '[':  /* multi-character percent escape  %[....] */
       {
         char
           pattern[MaxTextExtent];
@@ -2673,13 +2674,12 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         ssize_t
           depth;
 
-        /*
-          Image value.
-        */
+        /* get the string from parenthesis */
         if (strchr(p,']') == (char *) NULL)
           break;
         depth=1;
         p++;
+        /* FUTURE: refactor into sub-routine looking for 'break' character */
         for (i=0; (i < (MaxTextExtent-1L)) && (*p != '\0'); i++)
         {
           if (*p == '[')
@@ -2691,6 +2691,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           pattern[i]=(*p++);
         }
         pattern[i]='\0';
+        /* Try a Special Image Properity - including fx: and pixel: */
         value=GetImageProperty(image,pattern,exception);
         if (value != (const char *) NULL)
           {
@@ -2708,38 +2709,36 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
             q+=length;
             break;
           }
-        else
-          if (IsGlob(pattern) != MagickFalse)
+        /* Handle properity 'blob' patterns - by iteratation */
+        if (IsGlob(pattern) != MagickFalse)
+          {
+            ResetImagePropertyIterator(image);
+            key=GetNextImageProperty(image);
+            while (key != (const char *) NULL)
             {
-              /*
-                Iterate over image properties.
-              */
-              ResetImagePropertyIterator(image);
+              if (GlobExpression(key,pattern,MagickTrue) != MagickFalse)
+                {
+                  value=GetImageProperty(image,key,exception);
+                  if (value != (const char *) NULL)
+                    {
+                      length=strlen(key)+strlen(value)+2;
+                      if ((size_t) (q-interpret_text+length+1) >= extent)
+                        {
+                          extent+=length;
+                          interpret_text=(char *) ResizeQuantumMemory(
+                            interpret_text,extent+MaxTextExtent,
+                            sizeof(*interpret_text));
+                          if (interpret_text == (char *) NULL)
+                            break;
+                          q=interpret_text+strlen(interpret_text);
+                        }
+                      q+=FormatLocaleString(q,extent,"%s=%s\n",key,value);
+                    }
+                }
               key=GetNextImageProperty(image);
-              while (key != (const char *) NULL)
-              {
-                if (GlobExpression(key,pattern,MagickTrue) != MagickFalse)
-                  {
-                    value=GetImageProperty(image,key,exception);
-                    if (value != (const char *) NULL)
-                      {
-                        length=strlen(key)+strlen(value)+2;
-                        if ((size_t) (q-interpret_text+length+1) >= extent)
-                          {
-                            extent+=length;
-                            interpret_text=(char *) ResizeQuantumMemory(
-                              interpret_text,extent+MaxTextExtent,
-                              sizeof(*interpret_text));
-                            if (interpret_text == (char *) NULL)
-                              break;
-                            q=interpret_text+strlen(interpret_text);
-                          }
-                        q+=FormatLocaleString(q,extent,"%s=%s\n",key,value);
-                      }
-                  }
-                key=GetNextImageProperty(image);
-              }
             }
+            break;
+          }
         value=GetMagickProperty(image_info,image,pattern,exception);
         if (value != (const char *) NULL)
           {
@@ -2778,7 +2777,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           }
         break;
       }
-      case 'b':  /* image size as read in */
+      case 'b':  /* image size read in - in bytes */
       {
         char
           format[MaxTextExtent];
