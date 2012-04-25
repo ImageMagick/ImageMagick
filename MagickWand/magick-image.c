@@ -5510,7 +5510,7 @@ WandExport size_t MagickGetImageScene(MagickWand *wand)
 %
 %  The format of the MagickGetImageSignature method is:
 %
-%      char MagickGetImageSignature(MagickWand *wand)
+%      char *MagickGetImageSignature(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
