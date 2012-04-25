@@ -8054,7 +8054,7 @@ WandExport MagickBooleanType MagickPolaroidImage(MagickWand *wand,
 %  The format of the MagickPosterizeImage method is:
 %
 %      MagickBooleanType MagickPosterizeImage(MagickWand *wand,
-%        const unsigned levels,const MagickBooleanType dither)
+%        const size_t levels,const MagickBooleanType dither)
 %
 %  A description of each parameter follows:
 %
