@@ -1546,7 +1546,7 @@ WandExport MagickWand *MagickCoalesceImages(MagickWand *wand)
 %  The format of the MagickColorDecisionListImage method is:
 %
 %      MagickBooleanType MagickColorDecisionListImage(MagickWand *wand,
-%        const double gamma)
+%        const char *color_correction_collection)
 %
 %  A description of each parameter follows:
 %
