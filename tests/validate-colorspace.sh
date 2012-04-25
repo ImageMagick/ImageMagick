@@ -16,10 +16,11 @@
 #
 . ${srcdir}/tests/common.sh
 
-depth=`eval convert xc:none -format '%[fx:QuantumRange]' info:-`
-if [ "$depth" == "65535" ]; then
-  exit 0
-fi
+# Q16 is most common do test it!
+#depth=`eval convert xc:none -format '%[fx:QuantumRange]' info:-`
+#if [ "$depth" == "65535" ]; then
+#  exit 0
+#fi
 
 # how to generate a one pixel (average rose) color and output its values
 in="rose: -scale 1x1"    # a one pixel image of the average color.
@@ -108,4 +109,5 @@ test_color YUV   sRGB
 test_color YCbCr sRGB
 test_color OHTA  sRGB
 
-eval ! $error   # return the overall error result
+$error && exit 1 # return the overall error result
+exit 0
