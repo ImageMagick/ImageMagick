@@ -1087,7 +1087,7 @@ WandExport char *MagickGetOption(MagickWand *wand,const char *key)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t O p t i o n                                             %
+%   M a g i c k G e t O p t i o n s                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1100,7 +1100,8 @@ WandExport char *MagickGetOption(MagickWand *wand,const char *key)
 %
 %  The format of the MagickGetOptions method is:
 %
-%      char *MagickGetOptions(MagickWand *wand,size_t *number_options)
+%      char *MagickGetOptions(MagickWand *wand,const char *pattern,
+%        size_t *number_options)
 %
 %  A description of each parameter follows:
 %
@@ -2773,7 +2774,7 @@ WandExport MagickBooleanType MagickSetResourceLimit(const ResourceType type,
 %  The format of the MagickSetResolution method is:
 %
 %      MagickBooleanType MagickSetResolution(MagickWand *wand,
-%        const double x_resolution,const doubtl y_resolution)
+%        const double x_resolution,const double y_resolution)
 %
 %  A description of each parameter follows:
 %
