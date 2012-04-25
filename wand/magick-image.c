@@ -10807,7 +10807,7 @@ WandExport MagickBooleanType MagickSetImageRenderingIntent(MagickWand *wand,
 %  The format of the MagickSetImageResolution method is:
 %
 %      MagickBooleanType MagickSetImageResolution(MagickWand *wand,
-%        const double x_resolution,const doubtl y_resolution)
+%        const double x_resolution,const double y_resolution)
 %
 %  A description of each parameter follows:
 %
@@ -11311,7 +11311,7 @@ WandExport MagickBooleanType MagickShaveImage(MagickWand *wand,
 %  The format of the MagickShearImage method is:
 %
 %      MagickBooleanType MagickShearImage(MagickWand *wand,
-%        const PixelWand *background,const double x_shear,onst double y_shear)
+%        const PixelWand *background,const double x_shear,const double y_shear)
 %
 %  A description of each parameter follows:
 %
