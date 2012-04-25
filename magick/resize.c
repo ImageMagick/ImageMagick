@@ -137,33 +137,18 @@ static MagickRealType
 
 #define MagickPIL ((MagickRealType) 3.14159265358979323846264338327950288420L)
 
-static MagickRealType Jinc(const MagickRealType x,
-  const ResizeFilter *magick_unused(resize_filter))
-{
-  /*
-    See Pratt "Digital Image Processing" p.97 for Jinc/Bessel functions.
-    http://mathworld.wolfram.com/JincFunction.html and page 11 of
-    http://www.ph.ed.ac.uk/%7ewjh/teaching/mo/slides/lens/lens.pdf
-
-    The original "zoom" program by Paul Heckbert called this "Bessel".
-    But really it is more accurately named "Jinc".
-  */
-  if (x == 0.0)
-    return(0.5*MagickPIL);
-  return(BesselOrderOne(MagickPIL*x)/x);
-}
-
 static MagickRealType Blackman(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
     Blackman: 2nd order cosine windowing function:
       0.42 + 0.5 cos(pi x) + 0.08 cos(2pi x)
-    Refactored by Chantal Racette and Nicolas Robidoux to one trig
-    call and five flops.
+
+    Refactored by Chantal Racette and Nicolas Robidoux to one trig call and
+    five flops.
   */
-  const MagickRealType cospix = cos((double) (MagickPIL*x));
-  return(0.34+cospix*(0.5+cospix*0.16));
+  const MagickRealType cosine=cos((double) (MagickPIL*x));
+  return(0.34+cosine*(0.5+cosine*0.16));
 }
 
 static MagickRealType Bohman(const MagickRealType x,
@@ -172,13 +157,14 @@ static MagickRealType Bohman(const MagickRealType x,
   /*
     Bohman: 2rd Order cosine windowing function:
       (1-x) cos(pi x) + sin(pi x) / pi.
-    Refactored by Nicolas Robidoux to one trig call, one sqrt call,
-    and 7 flops, taking advantage of the fact that the support of
-    Bohman is 1 (so that we know that sin(pi x) >= 0).
+
+    Refactored by Nicolas Robidoux to one trig call, one sqrt call, and 7 flops,
+    taking advantage of the fact that the support of Bohman is 1.0 (so that we
+    know that sin(pi x) >= 0).
   */
-  const double cospix = cos((double) (MagickPIL*x));
-  const double sinpix = sqrt(1.0-cospix*cospix);
-  return((1.0-x)*cospix+(1.0/MagickPIL)*sinpix);
+  const MagickRealType cosine=cos((double) (MagickPIL*x));
+  const MagickRealType sine=sqrt(1.0-cosine*cosine);
+  return((1.0-x)*cosine+(1.0/MagickPIL)*sine);
 }
 
 static MagickRealType Box(const MagickRealType magick_unused(x),
@@ -222,8 +208,7 @@ static MagickRealType CubicBC(const MagickRealType x,
        P0 + P1*x + P2*x^2 + P3*x^3      0 <= x < 1
        Q0 + Q1*x + Q2*x^2 + Q3*x^3      1 <= x < 2
 
-    which ensures function is continuous in value and derivative
-    (slope).
+    which ensures function is continuous in value and derivative (slope).
   */
   if (x < 1.0)
     return(resize_filter->coefficient[0]+x*(x*
@@ -275,10 +260,10 @@ static MagickRealType Hanning(const MagickRealType x,
 {
   /*
     Cosine window function:
-      .5+.5cos(pi x).
+      0.5+0.5*cos(pi*x).
   */
-  const MagickRealType cospix = cos((double) (MagickPIL*x));
-  return(0.5+0.5*cospix);
+  const MagickRealType cosine=cos((double) (MagickPIL*x));
+  return(0.5+0.5*cosine);
 }
 
 static MagickRealType Hamming(const MagickRealType x,
@@ -288,8 +273,24 @@ static MagickRealType Hamming(const MagickRealType x,
     Offset cosine window function:
      .54 + .46 cos(pi x).
   */
-  const MagickRealType cospix = cos((double) (MagickPIL*x));
-  return(0.54+0.46*cospix);
+  const MagickRealType cosine=cos((double) (MagickPIL*x));
+  return(0.54+0.46*cosine);
+}
+
+static MagickRealType Jinc(const MagickRealType x,
+  const ResizeFilter *magick_unused(resize_filter))
+{
+  /*
+    See Pratt "Digital Image Processing" p.97 for Jinc/Bessel functions.
+    http://mathworld.wolfram.com/JincFunction.html and page 11 of
+    http://www.ph.ed.ac.uk/%7ewjh/teaching/mo/slides/lens/lens.pdf
+
+    The original "zoom" program by Paul Heckbert called this "Bessel".  But
+    really it is more accurately named "Jinc".
+  */
+  if (x == 0.0)
+    return(0.5*MagickPIL);
+  return(BesselOrderOne(MagickPIL*x)/x);
 }
 
 static MagickRealType Kaiser(const MagickRealType x,
@@ -319,22 +320,19 @@ static MagickRealType Lagrange(const MagickRealType x,
     order;
 
   /*
-    Lagrange piecewise polynomial fit of sinc: N is the 'order' of the
-    lagrange function and depends on the overall support window size
-    of the filter. That is: for a support of 2, it gives a lagrange-4
-    (piecewise cubic function).
+    Lagrange piecewise polynomial fit of sinc: N is the 'order' of the lagrange
+    function and depends on the overall support window size of the filter. That
+    is: for a support of 2, it gives a lagrange-4 (piecewise cubic function).
 
     "n" identifies the piece of the piecewise polynomial.
 
-    See Survey: Interpolation Methods, IEEE Transactions on Medical
-    Imaging, Vol 18, No 11, November 1999, p1049-1075, -- Equation 27
-    on p1064.
+    See Survey: Interpolation Methods, IEEE Transactions on Medical Imaging,
+    Vol 18, No 11, November 1999, p1049-1075, -- Equation 27 on p1064.
   */
   if (x > resize_filter->support)
     return(0.0);
   order=(ssize_t) (2.0*resize_filter->window_support);  /* number of pieces */
-  /*n=(ssize_t)((1.0*order)/2.0+x);   --  which piece does x belong to */
-  n = (ssize_t)(resize_filter->window_support + x);
+  n=(ssize_t) (resize_filter->window_support+x);
   value=1.0f;
   for (i=0; i < order; i++)
     if (i != n)
@@ -363,10 +361,10 @@ static MagickRealType Sinc(const MagickRealType x,
       sinc(x) == sin(pi x)/(pi x).
   */
   if (x != 0.0)
-  {
-    const MagickRealType pix = (MagickRealType) (MagickPIL*x);
-    return(sin((double) pix)/pix);
-  }
+    {
+      const MagickRealType alpha=(MagickRealType) (MagickPIL*x);
+      return(sin((double) alpha)/alpha);
+    }
   return((MagickRealType) 1.0);
 }
 
@@ -374,43 +372,37 @@ static MagickRealType SincFast(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    Approximations of the sinc function sin(pi x)/(pi x) over the
-    interval [-4,4] constructed by Nicolas Robidoux and Chantal
-    Racette with funding from the Natural Sciences and Engineering
-    Research Council of Canada.
+    Approximations of the sinc function sin(pi x)/(pi x) over the interval
+    [-4,4] constructed by Nicolas Robidoux and Chantal Racette with funding
+    from the Natural Sciences and Engineering Research Council of Canada.
 
     Although the approximations are polynomials (for low order of
     approximation) and quotients of polynomials (for higher order of
-    approximation) and consequently are similar in form to Taylor
-    polynomials/Pade approximants, the approximations are computed
-    with a completely different technique.
+    approximation) and consequently are similar in form to Taylor polynomials /
+    Pade approximants, the approximations are computed with a completely
+    different technique.
 
-    Summary: These approximations are "the best" in terms of bang
-    (accuracy) for the buck (flops). More specifically: Among the
-    polynomial quotients that can be computed using a fixed number of
-    flops (with a given "+ - * / budget"), the chosen polynomial
-    quotient is the one closest to the approximated function with
-    respect to maximum absolute relative error over the given
-    interval.
+    Summary: These approximations are "the best" in terms of bang (accuracy)
+    for the buck (flops). More specifically: Among the polynomial quotients
+    that can be computed using a fixed number of flops (with a given "+ - * /
+    budget"), the chosen polynomial quotient is the one closest to the
+    approximated function with respect to maximum absolute relative error over
+    the given interval.
 
-    The Remez algorithm, as implemented in the boost library's minimax
-    package, is the key to the construction:
-    http://www.boost.org/doc/libs/1_36_0/libs/math/doc/...
-    ...sf_and_dist/html/math_toolkit/backgrounders/remez.html
-  */
-  /*
-    If outside of the interval of approximation, use the standard trig
-    formula.
+    The Remez algorithm, as implemented in the boost library's minimax package,
+    is the key to the construction: http://www.boost.org/doc/libs/1_36_0/libs/
+    math/doc/sf_and_dist/html/math_toolkit/backgrounders/remez.html
+
+    If outside of the interval of approximation, use the standard trig formula.
   */
   if (x > 4.0)
     {
-      const MagickRealType pix = (MagickRealType) (MagickPIL*x);
-      return(sin((double) pix)/pix);
+      const MagickRealType alpha=(MagickRealType) (MagickPIL*x);
+      return(sin((double) alpha)/alpha);
     }
   {
     /*
-      The approximations only depend on x^2 (sinc is an even
-      function).
+      The approximations only depend on x^2 (sinc is an even function).
     */
     const MagickRealType xx = x*x;
 #if MAGICKCORE_QUANTUM_DEPTH <= 8
@@ -474,9 +466,9 @@ static MagickRealType Triangle(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    1st order (linear) B-Spline, bilinear interpolation, Tent 1D
-    filter, or a Bartlett 2D Cone filter.  Also used as a
-    Bartlett Windowing function for Sinc().
+    1st order (linear) B-Spline, bilinear interpolation, Tent 1D filter, or
+    a Bartlett 2D Cone filter.  Also used as a Bartlett Windowing function
+    for Sinc().
   */
   if (x < 1.0)
     return(1.0-x);
@@ -521,7 +513,8 @@ static MagickRealType Welsh(const MagickRealType x,
 %      Kaiser       Lanczos
 %
 %  Special purpose Filters
-%      SincFast  LanczosSharp  Lanczos2D Lanczos2DSharp  Robidoux
+%      SincFast  LanczosSharp  Lanczos2  Lanczos2Sharp
+%      Robidoux RobidouxSharp
 %
 %  The users "-filter" selection is used to lookup the default 'expert'
 %  settings for that filter from a internal table.  However any provided
@@ -536,6 +529,8 @@ static MagickRealType Welsh(const MagickRealType x,
 %  Windowed Sinc filter to a 3-lobed Windowed Jinc equivalent, which is better
 %  suited to this style of image resampling. This typically happens when using
 %  such a filter for images distortions.
+%
+%  SPECIFIC FILTERS:
 %
 %  Directly requesting 'Sinc', 'Jinc' function as a filter will force the use
 %  of function without any windowing, or promotion for cylindrical usage.  This
@@ -777,7 +772,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Hanning,   1.0, 1.0, 0.0, 0.0 }, /* Hanning, cosine window      */
     { Hamming,   1.0, 1.0, 0.0, 0.0 }, /* Hamming, '' variation       */
     { Blackman,  1.0, 1.0, 0.0, 0.0 }, /* Blackman, 2*cosine window   */
-    { Gaussian,  1.5, 1.5, 0.0, 0.0 }, /* Gaussian                    */
+    { Gaussian,  2.0, 1.5, 0.0, 0.0 }, /* Gaussian (support=2.0 for var.blur) */
     { Quadratic, 1.5, 1.5, 0.0, 0.0 }, /* Quadratic gaussian          */
     { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
     { CubicBC,   2.0, 1.0, 0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */

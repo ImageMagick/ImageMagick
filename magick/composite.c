@@ -1808,8 +1808,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         }
       /*
         Users input sigma now needs to be converted to the EWA ellipse size.
-        The filter defaults to a sigma of 0.5 so to make this match
-        the elipse size needs to be doubled.
+        The filter defaults to a sigma of 0.5 so to make this match the
+        users input the ellipse size needs to be doubled.
       */
       width=height=geometry_info.rho*2.0;
       if ((flags & HeightValue) != 0 )
@@ -1843,11 +1843,13 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       /*
         Set up a gaussian cylindrical filter for EWA Bluring.
 
-        FUTURE: Currently broken, small sigma blurs
-          (either goes to zero earily, or blurs on zero blurs)
+        As the minimum ellipse radius of support*1.0 the EWA algorithm
+        can only produce a minimum blur of 0.5 for Gaussian (support=2.0)
+        This means that even 'No Blur' will be still a little blurry!
 
-        Also need to prevent user 'expert' filter options overriding the
-        filter settings I am carfully setting up for image blurring.
+        The solution (as well as the problem of preventing any user
+        expert filter settings, is to set our own user settings, then
+        restore them afterwards.
       */
       resample_filter=AcquireResampleFilter(image,exception);
       SetResampleFilter(resample_filter,GaussianFilter,1.0);
