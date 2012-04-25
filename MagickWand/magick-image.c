@@ -4379,11 +4379,11 @@ WandExport CompressionType MagickGetImageCompression(MagickWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickGetImageCompression() gets the image compression quality.
+%  MagickGetImageCompressionQuality() gets the image compression quality.
 %
-%  The format of the MagickGetImageCompression method is:
+%  The format of the MagickGetImageCompressionQuality method is:
 %
-%      size_t MagickGetImageCompression(MagickWand *wand)
+%      size_t MagickGetImageCompressionQuality(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
