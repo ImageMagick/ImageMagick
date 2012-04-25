@@ -1052,6 +1052,33 @@ LosslessReduceDepthOK(Image *image,ExceptionInfo *exception)
 }
 #endif /* MAGICKCORE_QUANTUM_DEPTH >= 16 */
 
+static const char* PngColorTypeToString(const unsigned int color_type)
+{
+  const char
+    *result = "Unknown";
+
+  switch (color_type)
+    {
+    case PNG_COLOR_TYPE_GRAY:
+      result = "Gray";
+      break;
+    case PNG_COLOR_TYPE_GRAY_ALPHA:
+      result = "Gray+Alpha";
+      break;
+    case PNG_COLOR_TYPE_PALETTE:
+      result = "Palette";
+      break;
+    case PNG_COLOR_TYPE_RGB:
+      result = "RGB";
+      break;
+    case PNG_COLOR_TYPE_RGB_ALPHA:
+      result = "RGB+Alpha";
+      break;
+    }
+
+  return result;
+}
+
 static int
 Magick_RenderingIntent_to_PNG_RenderingIntent(const RenderingIntent intent)
 {
@@ -9294,7 +9321,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (logging != MagickFalse)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "    Tentative PNG color type: %.20g",(double) ping_color_type);
+        "    Tentative PNG color type: %s (%.20g)",
+        PngColorTypeToString(ping_color_type),
+        (double) ping_color_type);
 
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    image_info->type: %.20g",(double) image_info->type);
@@ -9719,7 +9748,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "    PNG color type: %d",ping_color_type);
+      "    PNG color type: %s (%d)", PngColorTypeToString(ping_color_type),
+      ping_color_type);
   /*
     Initialize compression level and filtering.
   */
