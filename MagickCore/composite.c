@@ -723,6 +723,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         blur;
 
       /*
+        Blur Image by resampling.
+
         Blur Image dictated by an overlay gradient map: X = red_channel;
           Y = green_channel; compose:args =  x_scale[,y_scale[,angle]].
       */
@@ -731,7 +733,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       if (destination_image == (Image *) NULL)
         return(MagickFalse);
       /*
-        Determine the horizontal and vertical maximim blur.
+        Gather the maximum blur sigma values from user.
       */
       SetGeometryInfo(&geometry_info);
       flags=NoValue;
@@ -741,22 +743,20 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       if ((flags & WidthValue) == 0 ) {
           (void) ThrowMagickException(exception,GetMagickModule(),
                OptionWarning,"InvalidSetting","'%s' '%s'",
-               "distort:viewport",value);
+               "compose:args",value);
           destination_image=DestroyImage(destination_image);
           return(MagickFalse);
         }
-      /* width and height of ellipse.
-         Note: The Gaussian Filter uses a sigma = 0.5, so to compensate the
-         input sigma must be doubled to give a correct 'area to resample'.
+      /*
+        Users input sigma now needs to be converted to the EWA ellipse size.
+        The filter defaults to a sigma of 0.5 so to make this match the
+        users input the ellipse size needs to be doubled.
       */
       width=height=geometry_info.rho*2.0;
       if ((flags & HeightValue) != 0 )
         height=geometry_info.sigma*2.0;
 
-/* Hack -- this make gaussian work! -- But it is not needed for cubic! */
-width*=2.0; height*=2.0;
-
-      /* Default the unrotated ellipse width and height axis vectors */
+      /* default the unrotated ellipse width and height axis vectors */
       blur.x1=width;
       blur.x2=0.0;
       blur.y1=0.0;
@@ -782,17 +782,21 @@ width*=2.0; height*=2.0;
           angle_range=DegreesToRadians(geometry_info.psi)-angle_start;
         }
       /*
-        Blur Image by resampling.
+        Set up a gaussian cylindrical filter for EWA Bluring.
 
-        FUTURE: this is currently broken, especially for small sigma blurs
-        This needs to be fixed to use a non-user filter setup that provides
-        far more control than currently available.
+        As the minimum ellipse radius of support*1.0 the EWA algorithm
+        can only produce a minimum blur of 0.5 for Gaussian (support=2.0)
+        This means that even 'No Blur' will be still a little blurry!
 
-        It should also be set to GaussianFilter, but it is not being effected
-        by ScaleResampleFilter() for some reason.
+        The solution (as well as the problem of preventing any user
+        expert filter settings, is to set our own user settings, then
+        restore them afterwards.
       */
       resample_filter=AcquireResampleFilter(image,exception);
       SetResampleFilter(resample_filter,GaussianFilter);
+
+      /* do the variable blurring of each pixel in image */
+      GetPixelInfo(image,&pixel);
       composite_view=AcquireVirtualCacheView(composite_image,exception);
       destination_view=AcquireAuthenticCacheView(destination_image,exception);
       for (y=0; y < (ssize_t) composite_image->rows; y++)
@@ -1063,6 +1067,14 @@ width*=2.0; height*=2.0;
             destination_dissolve=geometry_info.sigma/100.0;
           if ((destination_dissolve-MagickEpsilon) < 0.0)
             destination_dissolve=0.0;
+       /* posible speed up?  -- from IMv6 update
+          clip_to_self=MagickFalse;
+          if ((destination_dissolve+MagickEpsilon) > 1.0 )
+            {
+              destination_dissolve=1.0;
+              clip_to_self=MagickTrue;
+            }
+        */
         }
       break;
     }

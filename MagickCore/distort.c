@@ -1948,14 +1948,13 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   { const char *artifact=GetImageArtifact(image,"distort:viewport");
     viewport_given = MagickFalse;
     if ( artifact != (const char *) NULL ) {
-      if (IfMagickFalse(IsGeometry(artifact)))
+      MagickStatusType flags=ParseAbsoluteGeometry(artifact,&geometry);
+      if (flags==NoValue)
         (void) ThrowMagickException(exception,GetMagickModule(),
              OptionWarning,"InvalidSetting","'%s' '%s'",
              "distort:viewport",artifact);
-      else {
-        (void) ParseAbsoluteGeometry(artifact,&geometry);
+      else
         viewport_given = MagickTrue;
-      }
     }
   }
 

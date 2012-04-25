@@ -64,6 +64,7 @@
 #include "MagickCore/signature-private.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
+#include "MagickCore/option.h"
 /*
   EWA Resampling Options
 */
@@ -179,7 +180,7 @@ struct _ResampleFilter
 %
 %  Usage Example...
 %      resample_filter=AcquireResampleFilter(image,exception);
-%      SetResampleFilter(resample_filter, GaussianFilter, 1.0);
+%      SetResampleFilter(resample_filter, GaussianFilter);
 %      for (y=0; y < (ssize_t) image->rows; y++) {
 %        for (x=0; x < (ssize_t) image->columns; x++) {
 %          u= ....;   v= ....;
@@ -493,9 +494,10 @@ MagickExport MagickBooleanType ResamplePixelColor(
 
           if ( resample_filter->virtual_pixel == CheckerTileVirtualPixelMethod )
             {
-              /* CheckerTile is avergae of image average half background */
-              /* FUTURE: replace with a 50% blend of both pixels */
+              /* CheckerTile is a alpha blend of the image's average pixel
+                 color and the current background color */
 
+              /* image's average pixel color */
               weight = QuantumScale*((MagickRealType)
                 resample_filter->average_pixel.alpha);
               resample_filter->average_pixel.red *= weight;
@@ -503,6 +505,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
               resample_filter->average_pixel.blue *= weight;
               divisor_c = weight;
 
+              /* background color */
               weight = QuantumScale*((MagickRealType)
                 resample_filter->image->background_color.alpha);
               resample_filter->average_pixel.red +=
@@ -515,10 +518,11 @@ MagickExport MagickBooleanType ResamplePixelColor(
                       resample_filter->image->background_color.alpha;
               divisor_c += weight;
 
+              /* alpha blend */
               resample_filter->average_pixel.red /= divisor_c;
               resample_filter->average_pixel.green /= divisor_c;
               resample_filter->average_pixel.blue /= divisor_c;
-              resample_filter->average_pixel.alpha /= 2;
+              resample_filter->average_pixel.alpha /= 2; /* 50% blend */
 
             }
         }
@@ -1151,7 +1155,8 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
   }
 
   /* Scale ellipse to match the filters support
-     (that is, multiply F by the square of the support).
+     (that is, multiply F by the square of the support)
+     Simplier to just multiply it by the support twice!
   */
   F *= resample_filter->support;
   F *= resample_filter->support;
@@ -1210,10 +1215,6 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
 %  specific filter.  Note that the filter is used as a radial filter not as a
 %  two pass othogonally aligned resampling filter.
 %
-%  The default Filter, is Gaussian, which is the standard filter used by the
-%  original paper on the Elliptical Weighted Everage Algorithm. However other
-%  filters can also be used.
-%
 %  The format of the SetResampleFilter method is:
 %
 %    void SetResampleFilter(ResampleFilter *resample_filter,
@@ -1238,25 +1239,25 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
   resample_filter->do_interpolate = MagickFalse;
   resample_filter->filter = filter;
 
-  if ( filter == PointFilter )
-    {
-      resample_filter->do_interpolate = MagickTrue;
-      return;  /* EWA turned off - nothing more to do */
-    }
-
-  /* Set a default cylindrical filter of a 'low blur' Jinc windowed Jinc */
+  /* Default cylindrical filter is a Cubic Keys filter */
   if ( filter == UndefinedFilter )
     resample_filter->filter = RobidouxFilter;
 
+  if ( resample_filter->filter == PointFilter ) {
+    resample_filter->do_interpolate = MagickTrue;
+    return;  /* EWA turned off - nothing more to do */
+  }
+
   resize_filter = AcquireResizeFilter(resample_filter->image,
     resample_filter->filter,MagickTrue,resample_filter->exception);
-  if (resize_filter == (ResizeFilter *) NULL)
-    {
-      (void) ThrowMagickException(resample_filter->exception,GetMagickModule(),
-           ModuleError, "UnableToSetFilteringValue",
-           "Fall back to default EWA gaussian filter");
-      resample_filter->filter = PointFilter;
-    }
+  if (resize_filter == (ResizeFilter *) NULL) {
+    (void) ThrowMagickException(resample_filter->exception,GetMagickModule(),
+         ModuleError, "UnableToSetFilteringValue",
+         "Fall back to Interpolated 'Point' filter");
+    resample_filter->filter = PointFilter;
+    resample_filter->do_interpolate = MagickTrue;
+    return;  /* EWA turned off - nothing more to do */
+  }
 
   /* Get the practical working support for the filter,
    * after any API call blur factors have been accoded for.
@@ -1273,6 +1274,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
        Q;
     double
        r_scale;
+
     /* Scale radius so the filter LUT covers the full support range */
     r_scale = resample_filter->support*sqrt(1.0/(double)WLUT_WIDTH);
     for(Q=0; Q<WLUT_WIDTH; Q++)
@@ -1296,10 +1298,10 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
   ScaleResampleFilter(resample_filter, 1.0, 0.0, 0.0, 1.0);
 
 #if 0
-  /* This is old code kept as a reference only.  It is very wrong,
-     and I don't understand exactly what it was attempting to do.
-  */
   /*
+    This is old code kept as a reference only. Basically it generates
+    a Gaussian bell curve, with sigma = 0.5 if the support is 2.0
+
     Create Normal Gaussian 2D Filter Weighted Lookup Table.
     A normal EWA guassual lookup would use   exp(Q*ALPHA)
     where  Q = distance squared from 0.0 (center) to 1.0 (edge)
@@ -1307,49 +1309,56 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
     The table is of length 1024, and equates to support radius of 2.0
     thus needs to be scaled by  ALPHA*4/1024 and any blur factor squared
 
-    The above came from some reference code provided by Fred Weinhaus
-    and seems to have been a guess that was appropriate for its use
-    in a 3d perspective landscape mapping program.
+    The it comes from reference code provided by Fred Weinhaus.
   */
   r_scale = -2.77258872223978123767/(WLUT_WIDTH*blur*blur);
   for(Q=0; Q<WLUT_WIDTH; Q++)
     resample_filter->filter_lut[Q] = exp((double)Q*r_scale);
   resample_filter->support = WLUT_WIDTH;
-  break;
 #endif
 
 #if FILTER_LUT
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp single
 #endif
-  { register int
-       Q;
-    double
-       r_scale;
-
-    /* Scale radius so the filter LUT covers the full support range */
-    r_scale = resample_filter->support*sqrt(1.0/(double)WLUT_WIDTH);
-    if (IfMagickTrue(IsStringTrue(GetImageArtifact(resample_filter->image,
-             "resample:verbose"))) )
+  {
+    if (IsMagickTrue(GetImageArtifact(resample_filter->image,
+             "resample:verbose")) )
       {
+        register int
+          Q;
+        double
+          r_scale;
+
         /* Debug output of the filter weighting LUT
-          Gnuplot the LUT with hoizontal adjusted to 'r' using...
-            plot [0:2][-.2:1] "lut.dat" using (sqrt($0/1024)*2):1 with lines
-          The filter values is normalized for comparision
+          Gnuplot the LUT data, the x scale index has been adjusted
+            plot [0:2][-.2:1] "lut.dat" with lines
+          The filter values should be normalized for comparision
         */
         printf("#\n");
-        printf("# Resampling Filter LUT (%d values)\n", WLUT_WIDTH);
+        printf("# Resampling Filter LUT (%d values) for '%s' filter\n",
+                   WLUT_WIDTH, CommandOptionToMnemonic(MagickFilterOptions,
+                   resample_filter->filter) );
         printf("#\n");
         printf("# Note: values in table are using a squared radius lookup.\n");
-        printf("# And the whole table represents the filters support.\n");
-        printf("\n"); /* generates a 'break' in gnuplot if multiple outputs */
+        printf("# As such its distribution is not uniform.\n");
+        printf("#\n");
+        printf("# The X value is the support distance for the Y weight\n");
+        printf("# so you can use gnuplot to plot this cylindrical filter\n");
+        printf("#    plot [0:2][-.2:1] \"lut.dat\" with lines\n");
+        printf("#\n");
+
+        /* Scale radius so the filter LUT covers the full support range */
+        r_scale = resample_filter->support*sqrt(1.0/(double)WLUT_WIDTH);
         for(Q=0; Q<WLUT_WIDTH; Q++)
           printf("%8.*g %.*g\n",
-               GetMagickPrecision(),sqrt((double)Q)*r_scale,
-               GetMagickPrecision(),resample_filter->filter_lut[Q] );
+              GetMagickPrecision(),sqrt((double)Q)*r_scale,
+              GetMagickPrecision(),resample_filter->filter_lut[Q] );
+        printf("\n\n"); /* generate a 'break' in gnuplot if multiple outputs */
       }
-    /* output the above once only for each image, and each setting */
+    /* Output the above once only for each image, and each setting
     (void) DeleteImageArtifact(resample_filter->image,"resample:verbose");
+    */
   }
 #endif /* FILTER_LUT */
   return;

@@ -173,9 +173,9 @@ static MagickRealType Box(const MagickRealType magick_unused(x),
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    A Box filter is a equal weighting function (all weights equal).  DO NOT
-    LIMIT results by support or resize point sampling will work as it requests
-    points beyond its normal 0.0 support size.
+    A Box filter is a equal weighting function (all weights equal).
+    DO NOT LIMIT results by support or resize point sampling will work
+    as it requests points beyond its normal 0.0 support size.
   */
   return(1.0);
 }
@@ -185,10 +185,10 @@ static MagickRealType CubicBC(const MagickRealType x,
 {
   /*
     Cubic Filters using B,C determined values:
-       Mitchell-Netravali  B= 1/3 C= 1/3  "Balanced" cubic spline filter
-       Catmull-Rom         B= 0   C= 1/2  Interpolatory and exact on linears
-       Cubic B-Spline      B= 1   C= 0    Spline approximation of Gaussian
-       Hermite             B= 0   C= 0    Spline with small support (= 1)
+       Mitchell-Netravali  B = 1/3 C = 1/3  "Balanced" cubic spline filter
+       Catmull-Rom         B = 0   C = 1/2  Interpolatory and exact on linears
+       Cubic B-Spline      B = 1   C = 0    Spline approximation of Gaussian
+       Hermite             B = 0   C = 0    Spline with small support (= 1)
 
     See paper by Mitchell and Netravali, Reconstruction Filters in Computer
     Graphics Computer Graphics, Volume 22, Number 4, August 1988
@@ -213,8 +213,8 @@ static MagickRealType CubicBC(const MagickRealType x,
     which ensures function is continuous in value and derivative (slope).
   */
   if (x < 1.0)
-    return(resize_filter->coefficient[0]+x*(x*(resize_filter->coefficient[1]+x*
-      resize_filter->coefficient[2])));
+    return(resize_filter->coefficient[0]+x*(x*
+      (resize_filter->coefficient[1]+x*resize_filter->coefficient[2])));
   if (x < 2.0)
     return(resize_filter->coefficient[3]+x*(resize_filter->coefficient[4]+x*
       (resize_filter->coefficient[5]+x*resize_filter->coefficient[6])));
@@ -225,27 +225,36 @@ static MagickRealType Gaussian(const MagickRealType x,
   const ResizeFilter *resize_filter)
 {
   /*
-    Gaussian with a fixed sigma = 1/2
+    Gaussian with a sigma = 1/2 (or as user specified)
 
     Gaussian Formula (1D) ...
-       exp( -(x^2)/((2.0*sigma^2) ) / sqrt(2*PI)sigma^2))
-
-    The constants are pre-calculated...
-       exp( -coeff[0]*(x^2)) ) * coeff[1]
-
-    However the multiplier coefficent (1) is not needed and not used.
+        exp( -(x^2)/((2.0*sigma^2) ) / (sqrt(2*PI)*sigma^2))
 
     Gaussian Formula (2D) ...
-       exp( -(x^2)/((2.0*sigma^2) ) / (PI*sigma^2) )
+        exp( -(x^2+y^2)/(2.0*sigma^2) ) / (PI*sigma^2) )
+    or for radius
+        exp( -(r^2)/(2.0*sigma^2) ) / (PI*sigma^2) )
 
-    Note that it is only a change in the normalization multiplier which is
-    not needed or used when gausian is used as a filter.
+    Note that it is only a change from 1-d to radial form is in the
+    normalization multiplier which is not needed or used when Gaussian is used
+    as a filter.
+
+    The constants are pre-calculated...
+
+        coeff[0]=sigma;
+        coeff[1]=1.0/(2.0*sigma^2);
+        coeff[2]=1.0/(sqrt(2*PI)*sigma^2);
+
+        exp( -coeff[1]*(x^2)) ) * coeff[2];
+
+    However the multiplier coeff[1] is not needed and not used.
 
     This separates the gaussian 'sigma' value from the 'blur/support'
     settings allowing for its use in special 'small sigma' gaussians,
-    without the filter 'missing' pixels because the support becomes too small.
+    without the filter 'missing' pixels because the support becomes too
+    small.
   */
-  return(exp((double)(-resize_filter->coefficient[0]*x*x)));
+  return(exp((double)(-resize_filter->coefficient[1]*x*x)));
 }
 
 static MagickRealType Hanning(const MagickRealType x,
@@ -291,8 +300,9 @@ static MagickRealType Kaiser(const MagickRealType x,
 {
   /*
     Kaiser Windowing Function (bessel windowing)
-    Alpha (c[0]) is a free value from 5 to 8 (defaults to 6.5).
-    A scaling factor (c[1]) is not needed as filter is normalized
+    Alpha (coeff[0]) is a free value from 5 to 8 (defaults to 6.5).
+    A scaling factor (coeff[1]) is not actually needed as filter will
+    automatically be normalized.
   */
   return(resize_filter->coefficient[1]*
               I0(resize_filter->coefficient[0]*sqrt((double) (1.0-x*x))));
@@ -493,13 +503,16 @@ static MagickRealType Welsh(const MagickRealType x,
 %  these filters:
 %
 %  FIR (Finite impulse Response) Filters
-%      Box  Triangle Quadratic  Cubic  Hermite  Catrom  Mitchell
+%      Box         Triangle   Quadratic
+%      Cubic       Hermite    Catrom
+%      Mitchell
 %
 %  IIR (Infinite impulse Response) Filters
-%      Gaussian  Sinc  Jinc (Bessel)
+%      Gaussian     Sinc        Jinc (Bessel)
 %
 %  Windowed Sinc/Jinc Filters
-%      Blackman  Hanning  Hamming  Kaiser Lanczos
+%      Blackman     Hanning     Hamming
+%      Kaiser       Lanczos
 %
 %  Special purpose Filters
 %      SincFast  LanczosSharp  Lanczos2  Lanczos2Sharp
@@ -679,17 +692,17 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     *resize_filter;
 
   /*
-    Table Mapping given Filter, into Weighting and Windowing functions. A
-    'Box' windowing function means its a simble non-windowed filter.  An
-    'SincFast' filter function could be upgraded to a 'Jinc' filter if a
-    "cylindrical", unless a 'Sinc' or 'SincFast' filter was specifically
-    requested.
+    Table Mapping given Filter, into Weighting and Windowing functions.
+    A 'Box' windowing function means its a simble non-windowed filter.
+    An 'SincFast' filter function could be upgraded to a 'Jinc' filter if a
+    "cylindrical" is requested, unless a 'Sinc' or 'SincFast' filter was
+    specifically requested by the user.
 
-    WARNING: The order of this tabel must match the order of the FilterTypes
+    WARNING: The order of this table must match the order of the FilterTypes
     enumeration specified in "resample.h", or the filter names will not match
     the filter being setup.
 
-    You can check filter setups with the "filter:verbose" setting.
+    You can check filter setups with the "filter:verbose" expert setting.
   */
   static struct
   {
@@ -742,10 +755,10 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   {
     MagickRealType
       (*function)(const MagickRealType,const ResizeFilter*),
-      lobes,  /* Default lobes/support size of the weighting filter. */
-      scale,  /* Support when function used as a windowing function
+      support, /* Default lobes/support size of the weighting filter. */
+      scale,   /* Support when function used as a windowing function
                  Typically equal to the location of the first zero crossing. */
-      B,C;    /* BC-spline coefficients, ignored if not a CubicBC filter. */
+      B,C;     /* BC-spline coefficients, ignored if not a CubicBC filter. */
   } const filters[SentinelFilter] =
   {
     /*            .---  support window
@@ -761,7 +774,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { Hanning,   1.0, 1.0, 0.0, 0.0 }, /* Hanning, cosine window      */
     { Hamming,   1.0, 1.0, 0.0, 0.0 }, /* Hamming, '' variation       */
     { Blackman,  1.0, 1.0, 0.0, 0.0 }, /* Blackman, 2*cosine window   */
-    { Gaussian,  2.0, 1.5, 0.0, 0.0 }, /* Gaussian                    */
+    { Gaussian,  2.0, 1.5, 0.0, 0.0 }, /* Gaussian (support=2.0 for var.blur) */
     { Quadratic, 1.5, 1.5, 0.0, 0.0 }, /* Quadratic gaussian          */
     { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
     { CubicBC,   2.0, 1.0, 0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
@@ -886,7 +899,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
 
   /* Assign the real functions to use for the filters selected. */
   resize_filter->filter=filters[filter_type].function;
-  resize_filter->support=filters[filter_type].lobes;
+  resize_filter->support=filters[filter_type].support;
   resize_filter->window=filters[window_type].function;
   resize_filter->scale=filters[window_type].scale;
   resize_filter->signature=MagickSignature;
@@ -929,24 +942,28 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   */
 
   /* User Gaussian Sigma Override - no support change */
-  value=0.5;    /* guassian sigma default, half pixel */
-  if ( GaussianFilter ) {
+  if (resize_filter->filter == Gaussian) {
+    value=0.5;    /* guassian sigma default, half pixel */
     artifact=GetImageArtifact(image,"filter:sigma");
     if (artifact != (const char *) NULL)
       value=StringToDouble(artifact,(char **) NULL);
     /* Define coefficents for Gaussian */
-    resize_filter->coefficient[0]=1.0/(2.0*value*value); /* X scaling */
-    resize_filter->coefficient[1]=(MagickRealType) (1.0/(Magick2PI*value*
-      value)); /* normalization */
+    resize_filter->coefficient[0]=value;                 /* note sigma too */
+    resize_filter->coefficient[1]=1.0/(2.0*value*value); /* sigma scaling */
+    resize_filter->coefficient[2]=1.0/(Magick2PI*value*value);
+       /* normalization - not actually needed or used! */
+    if ( value > 0.5 )
+      resize_filter->support *= value/0.5;  /* increase support */
   }
+
   /* User Kaiser Alpha Override - no support change */
-  if ( KaiserFilter ) {
+  if (resize_filter->filter == Kaiser) {
     value=6.5; /* default alpha value for Kaiser bessel windowing function */
     artifact=GetImageArtifact(image,"filter:alpha");
     if (artifact != (const char *) NULL)
       value=StringToDouble(artifact,(char **) NULL);
     /* Define coefficents for Kaiser Windowing Function */
-    resize_filter->coefficient[0]=value;         /* X scaling */
+    resize_filter->coefficient[0]=value;         /* alpha */
     resize_filter->coefficient[1]=1.0/I0(value); /* normalization */
   }
 
@@ -1088,10 +1105,10 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
              GetMagickPrecision(), (double)resize_filter->blur);
         if ( filter_type == GaussianFilter )
           (void) FormatLocaleFile(stdout,"# gaussian_sigma = %.*g\n",
-               GetMagickPrecision(), (double)value);
+               GetMagickPrecision(), (double)resize_filter->coefficient[0]);
         if ( filter_type == KaiserFilter )
           (void) FormatLocaleFile(stdout,"# kaiser_alpha = %.*g\n",
-               GetMagickPrecision(), (double)value);
+               GetMagickPrecision(), (double)resize_filter->coefficient[0]);
         (void) FormatLocaleFile(stdout,"# practical_support = %.*g\n",
              GetMagickPrecision(), (double)support);
         if ( filter_type == CubicFilter || window_type == CubicFilter )
