@@ -109,7 +109,7 @@ struct _PixelIterator
 %
 %  The format of the ClearPixelIterator method is:
 %
-%      PixelIterator *ClearPixelIterator(PixelIterator *iterator)
+%      void ClearPixelIterator(PixelIterator *iterator)
 %
 %  A description of each parameter follows:
 %
@@ -357,11 +357,11 @@ WandExport PixelIterator *NewPixelIterator(MagickWand *wand)
 %
 %  The format of the PixelClearIteratorException method is:
 %
-%      MagickBooleanType PixelClearIteratorException(PixelIterator *wand)
+%      MagickBooleanType PixelClearIteratorException(PixelIterator *iterator)
 %
 %  A description of each parameter follows:
 %
-%    o wand: the pixel wand.
+%    o iterator: the pixel iterator.
 %
 */
 WandExport MagickBooleanType PixelClearIteratorException(
@@ -390,7 +390,7 @@ WandExport MagickBooleanType PixelClearIteratorException(
 %
 %  The format of the NewPixelRegionIterator method is:
 %
-%      PixelIterator NewPixelRegionIterator(MagickWand *wand,const ssize_t x,
+%      PixelIterator *NewPixelRegionIterator(MagickWand *wand,const ssize_t x,
 %        const ssize_t y,const size_t width,const size_t height)
 %
 %  A description of each parameter follows:
@@ -544,7 +544,7 @@ WandExport PixelWand **PixelGetCurrentIteratorRow(PixelIterator *iterator,
 %
 %  The format of the PixelGetIteratorException method is:
 %
-%      char *PixelGetIteratorException(const Pixeliterator *iterator,
+%      char *PixelGetIteratorException(const PixelIterator *iterator,
 %        ExceptionType *severity)
 %
 %  A description of each parameter follows:
@@ -597,26 +597,27 @@ WandExport char *PixelGetIteratorException(const PixelIterator *iterator,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PixelGetIteratorExceptionType() the exception type associated with the wand.
-%  If no exception has occurred, UndefinedExceptionType is returned.
+%  PixelGetIteratorExceptionType() the exception type associated with the
+%  iterator.  If no exception has occurred, UndefinedExceptionType is returned.
 %
 %  The format of the PixelGetIteratorExceptionType method is:
 %
-%      ExceptionType PixelGetIteratorExceptionType(const PixelWand *wand)
+%      ExceptionType PixelGetIteratorExceptionType(
+%        const PixelIterator *iterator)
 %
 %  A description of each parameter follows:
 %
-%    o wand: the magick wand.
+%    o iterator: the magick iterator.
 %
 */
 WandExport ExceptionType PixelGetIteratorExceptionType(
-  const PixelIterator *wand)
+  const PixelIterator *iterator)
 {
-  assert(wand != (const PixelIterator *) NULL);
-  assert(wand->signature == WandSignature);
-  if (wand->debug != MagickFalse)
-    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  return(wand->exception->severity);
+  assert(iterator != (const PixelIterator *) NULL);
+  assert(iterator->signature == WandSignature);
+  if (iterator->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
+  return(iterator->exception->severity);
 }
 
 /*
