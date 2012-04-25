@@ -7381,7 +7381,7 @@ WandExport MagickBooleanType MagickMotionBlurImageChannel(MagickWand *wand,
 %
 %      MagickBooleanType MagickNegateImage(MagickWand *wand,
 %        const MagickBooleanType gray)
-%      MagickBooleanType MagickNegateImage(MagickWand *wand,
+%      MagickBooleanType MagickNegateImageChannel(MagickWand *wand,
 %        const ChannelType channel,const MagickBooleanType gray)
 %
 %  A description of each parameter follows:
