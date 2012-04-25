@@ -1,11 +1,17 @@
+2012-04-25  6.7.6-8 Anthony Thyssen <A.Thyssen@griffith...>
+  * Gaussian Filter Fixed.
+    For some strange reason half the width it should be with an effective
+    sigma of 0.25 (not 0.5).  This was the real reason "variable blur" was not
+    bluring enough.
+
 2012-04-24  6.7.6-8 Cristy  <quetzlzacatenango@image...>
   * Colorspace round-trip unit tests now work for Q32.
 
 2012-04-23  6.7.6-8 Anthony Thyssen <A.Thyssen@griffith...>
   * Added the RobidouxSharp filter (originally defined Dec 2011)
-  * Fixed Variable Blur - incorrect blur area calculation
+  * Fixed Variable Blur - bad blur area calculation
     Also Gaussian is sampling proerly. Substitute the faster Cubic for now.
-  * Convert nolonger will do an implict write to a single space image
+  * Convert no longer will do an implict write to a single space image
 
 2012-04-21  6.7.6-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-7, SVN revision 7587.

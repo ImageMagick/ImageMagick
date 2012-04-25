@@ -1645,6 +1645,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   GetMagickPixelPacket(image,&zero);
+  exception=(&image->exception);
   destination_image=(Image *) NULL;
   amount=0.5;
   destination_dissolve=1.0;
@@ -1686,7 +1687,6 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       if ((y_offset+(ssize_t) composite_image->rows) >= (ssize_t) image->rows)
         break;
       status=MagickTrue;
-      exception=(&image->exception);
       composite_view=AcquireVirtualCacheView(composite_image,exception);
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1782,15 +1782,17 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         blur;
 
       /*
+        Blur Image by resampling.
+
         Blur Image dictated by an overlay gradient map: X = red_channel;
           Y = green_channel; compose:args =  x_scale[,y_scale[,angle]].
       */
       destination_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-        &image->exception);
+        exception);
       if (destination_image == (Image *) NULL)
         return(MagickFalse);
       /*
-        Determine the horizontal and vertical maximim blur.
+        Gather the maximum blur sigma values from user.
       */
       SetGeometryInfo(&geometry_info);
       flags=NoValue;
@@ -1798,19 +1800,20 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       if (value != (char *) NULL)
         flags=ParseGeometry(value,&geometry_info);
       if ((flags & WidthValue) == 0 ) {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+               OptionWarning,"InvalidGeometry","'%s' '%s'",
+               "compose:args",value);
           destination_image=DestroyImage(destination_image);
           return(MagickFalse);
         }
-      /* Width and height of ellipse.
-         Note: The Gaussian Filter uses a sigma = 0.5, so to compensate the
-         input sigma must be doubled to give a correct 'area to resample'.
+      /*
+        Users input sigma now needs to be converted to the EWA ellipse size.
+        The filter defaults to a sigma of 0.5 so to make this match
+        the elipse size needs to be doubled.
       */
       width=height=geometry_info.rho*2.0;
       if ((flags & HeightValue) != 0 )
         height=geometry_info.sigma*2.0;
-
-/* Hack -- this make gaussian work! -- But it is not needed for cubic! */
-width*=2.0; height*=2.0;
 
       /* default the unrotated ellipse width and height axis vectors */
       blur.x1=width;
@@ -1829,7 +1832,7 @@ width*=2.0; height*=2.0;
           blur.y1=(-height*sin(angle));
           blur.y2=height*cos(angle);
         }
-      /* otherwise lets set a angle range and calculate in the loop */
+      /* Otherwise lets set a angle range and calculate in the loop */
       angle_start=0.0;
       angle_range=0.0;
       if ((flags & YValue) != 0 )
@@ -1838,19 +1841,19 @@ width*=2.0; height*=2.0;
           angle_range=DegreesToRadians(geometry_info.psi)-angle_start;
         }
       /*
-        Blur Image by resampling.
+        Set up a gaussian cylindrical filter for EWA Bluring.
 
-        FUTURE: this is currently broken, especially for small sigma blurs
-        This needs to be fixed to use a non-user filter setup that provides
-        far more control than currently available.
+        FUTURE: Currently broken, small sigma blurs
+          (either goes to zero earily, or blurs on zero blurs)
 
-        It should also be set to GaussianFilter, but it is not being effected
-        by ScaleResampleFilter() for some reason.
+        Also need to prevent user 'expert' filter options overriding the
+        filter settings I am carfully setting up for image blurring.
       */
-      pixel=zero;
-      exception=(&image->exception);
-      resample_filter=AcquireResampleFilter(image,&image->exception);
+      resample_filter=AcquireResampleFilter(image,exception);
       SetResampleFilter(resample_filter,GaussianFilter,1.0);
+
+      /* do the variable blurring of each pixel in image */
+      pixel=zero;
       composite_view=AcquireVirtualCacheView(composite_image,exception);
       destination_view=AcquireAuthenticCacheView(destination_image,exception);
       for (y=0; y < (ssize_t) composite_image->rows; y++)
@@ -1875,7 +1878,7 @@ width*=2.0; height*=2.0;
         p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
           1,exception);
         r=QueueCacheViewAuthenticPixels(destination_view,0,y,
-          destination_image->columns,1,&image->exception);
+          destination_image->columns,1,exception);
         if ((p == (const PixelPacket *) NULL) || (r == (PixelPacket *) NULL))
           break;
         destination_indexes=GetCacheViewAuthenticIndexQueue(destination_view);
@@ -1959,7 +1962,7 @@ width*=2.0; height*=2.0;
           compose:args = x_scale[,y_scale[,center.x,center.y]]
       */
       destination_image=CloneImage(image,image->columns,image->rows,MagickTrue,
-        &image->exception);
+        exception);
       if (destination_image == (Image *) NULL)
         return(MagickFalse);
       SetGeometryInfo(&geometry_info);
@@ -2040,7 +2043,6 @@ width*=2.0; height*=2.0;
         displacement/distortion map.  -- Like a lens...
       */
       pixel=zero;
-      exception=(&image->exception);
       image_view=AcquireVirtualCacheView(image,exception);
       composite_view=AcquireVirtualCacheView(composite_image,exception);
       destination_view=AcquireAuthenticCacheView(destination_image,exception);
@@ -2060,7 +2062,7 @@ width*=2.0; height*=2.0;
         p=GetCacheViewVirtualPixels(composite_view,0,y,composite_image->columns,
           1,exception);
         r=QueueCacheViewAuthenticPixels(destination_view,0,y,
-          destination_image->columns,1,&image->exception);
+          destination_image->columns,1,exception);
         if ((p == (const PixelPacket *) NULL) || (r == (PixelPacket *) NULL))
           break;
         destination_indexes=GetCacheViewAuthenticIndexQueue(destination_view);
@@ -2213,7 +2215,6 @@ width*=2.0; height*=2.0;
   progress=0;
   midpoint=((MagickRealType) QuantumRange+1.0)/2;
   GetMagickPixelPacket(composite_image,&zero);
-  exception=(&image->exception);
   composite_view=AcquireVirtualCacheView(composite_image,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
