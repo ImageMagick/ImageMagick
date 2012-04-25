@@ -7642,7 +7642,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
           "    storage_class=PseudoClass");
     }
 
-  if (image->storage_class == PseudoClass && 
+  if (image->storage_class == PseudoClass &&
      (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32 ||
      (mng_info->write_png_colortype != 0 &&
      mng_info->write_png_colortype != 4)))
@@ -9721,7 +9721,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         5:   libpng adaptive filtering if compression level > 5
              libpng filter type "none" if compression level <= 5
                 or if image is grayscale or palette
-           
+
         6:   libpng adaptive filtering
 
         7:   "LOCO" filtering (intrapixel differing) if writing
@@ -11605,7 +11605,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   jng_alpha_compression_method=image->compression==JPEGCompression? 8 : 0;
 
-  jng_alpha_quality=image_info->quality == 0UL ? 75UL : 
+  jng_alpha_quality=image_info->quality == 0UL ? 75UL :
       image_info->quality;
 
   if (jng_alpha_quality >= 1000)
