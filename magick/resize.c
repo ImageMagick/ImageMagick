@@ -772,7 +772,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Hanning,   1.0, 1.0, 0.0, 0.0 }, /* Hanning, cosine window      */
     { Hamming,   1.0, 1.0, 0.0, 0.0 }, /* Hamming, '' variation       */
     { Blackman,  1.0, 1.0, 0.0, 0.0 }, /* Blackman, 2*cosine window   */
-    { Gaussian,  1.5, 1.5, 0.0, 0.0 }, /* Gaussian                    */
+    { Gaussian,  2.0, 1.5, 0.0, 0.0 }, /* Gaussian                    */
     { Quadratic, 1.5, 1.5, 0.0, 0.0 }, /* Quadratic gaussian          */
     { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
     { CubicBC,   2.0, 1.0, 0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
