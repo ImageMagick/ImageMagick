@@ -397,7 +397,7 @@ WandExport MagickBooleanType PixelClearIteratorException(
 %
 %  The format of the NewPixelRegionIterator method is:
 %
-%      PixelIterator NewPixelRegionIterator(MagickWand *wand,const ssize_t x,
+%      PixelIterator *NewPixelRegionIterator(MagickWand *wand,const ssize_t x,
 %        const ssize_t y,const size_t width,const size_t height)
 %
 %  A description of each parameter follows:
