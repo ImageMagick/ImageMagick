@@ -18,7 +18,7 @@
 
 depth=`eval convert xc:none -format '%[fx:QuantumRange]' info:-`
 if [ "X$depth" == "X255" ]; then
-  exit 0
+  exit 0  # Q8 versions do not have the quantum resolution to test
 fi
 
 # how to generate a one pixel (average rose) color and output its values
