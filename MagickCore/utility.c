@@ -771,9 +771,9 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
         (LocaleCompare(magick,"PANGO") == 0) ||
         (LocaleCompare(magick,"VID") == 0))
       continue;
-    if ((IsGlob(filename) == MagickFalse) && (*filename != '@'))
+    if ((IsGlob(option) == MagickFalse) && (*option != '@'))
       continue;
-    if (*filename != '@')
+    if (*option != '@')
       {
         /*
           Generate file list from wildcard filename (e.g. *.jpg).
@@ -784,7 +784,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
         if (*home_directory == '\0')
           directory=getcwd(home_directory,MaxTextExtent-1);
         (void) directory;
-        filelist=ListFiles(*path == '\0' ? home_directory : path,filename,
+        filelist=ListFiles(*path == '\0' ? home_directory : path,option,
           &number_files);
       }
     else
@@ -802,7 +802,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
           Generate file list from file list (e.g. @filelist.txt).
         */
         exception=AcquireExceptionInfo();
-        files=FileToString(filename+1,~0,exception);
+        files=FileToString(option+1,~0,exception);
         exception=DestroyExceptionInfo(exception);
         if (files == (char *) NULL)
           continue;
