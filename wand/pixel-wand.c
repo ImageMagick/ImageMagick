@@ -1728,7 +1728,7 @@ WandExport void PixelSetColorCount(PixelWand *wand,const size_t count)
 %
 %  The format of the PixelSetColorFromWand method is:
 %
-%      PixelSetColorFromWand(PixelWand *wand,const PixelWand *color)
+%      void PixelSetColorFromWand(PixelWand *wand,const PixelWand *color)
 %
 %  A description of each parameter follows:
 %
