@@ -420,7 +420,7 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
 %
 %  The format of the GetWandViewException method is:
 %
-%      char *GetWandViewException(const PixelWand *wand_view,
+%      char *GetWandViewException(const WandView *wand_view,
 %        ExceptionType *severity)
 %
 %  A description of each parameter follows:

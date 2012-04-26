@@ -255,8 +255,7 @@ struct _DrawVTable
   void (*DrawSetTextDecoration)(DrawingWand *,const DecorationType);
   void (*DrawSetTextUnderColor)(DrawingWand *,const PixelWand *);
   void (*DrawTranslate)(DrawingWand *,const double,const double);
-  void (*DrawSetViewbox)(DrawingWand *,size_t,size_t,
-    size_t,size_t);
+  void (*DrawSetViewbox)(DrawingWand *,ssize_t,ssize_t,ssize_t,ssize_t);
   void (*PeekDrawingWand)(DrawingWand *);
   MagickBooleanType (*PopDrawingWand)(DrawingWand *);
   MagickBooleanType (*PushDrawingWand)(DrawingWand *);
@@ -1876,7 +1875,7 @@ WandExport MagickBooleanType DrawGetStrokeAntialias(const DrawingWand *wand)
 %  The format of the DrawGetStrokeColor method is:
 %
 %      void DrawGetStrokeColor(const DrawingWand *wand,
-$        PixelWand *stroke_color)
+%        PixelWand *stroke_color)
 %
 %  A description of each parameter follows:
 %
@@ -2182,7 +2181,7 @@ WandExport double DrawGetStrokeWidth(const DrawingWand *wand)
 %
 %  The format of the DrawGetTextAlignment method is:
 %
-%      AlignType DrawGetTextAlignment(DrawingWand *wand)
+%      AlignType DrawGetTextAlignment(const DrawingWand *wand)
 %
 %  A description of each parameter follows:
 %
@@ -2246,7 +2245,7 @@ WandExport MagickBooleanType DrawGetTextAntialias(const DrawingWand *wand)
 %
 %  The format of the DrawGetTextDecoration method is:
 %
-%      DecorationType DrawGetTextDecoration(DrawingWand *wand)
+%      DecorationType DrawGetTextDecoration(const DrawingWand *wand)
 %
 %  A description of each parameter follows:
 %
@@ -2334,15 +2333,15 @@ WandExport double DrawGetTextKerning(DrawingWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w G e t T e x t I n t e r L i n e S p a c i n g                     %
+%   D r a w G e t T e x t I n t e r l i n e S p a c i n g                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawGetTextInterwordSpacing() gets the spacing between lines in text.
+%  DrawGetTextInterlineSpacing() gets the spacing between lines in text.
 %
-%  The format of the DrawSetFontKerning method is:
+%  The format of the DrawGetTextInterwordSpacing method is:
 %
 %      double DrawGetTextInterwordSpacing(DrawingWand *wand)
 %
@@ -2409,7 +2408,7 @@ WandExport double DrawGetTextInterwordSpacing(DrawingWand *wand)
 %
 %  The format of the DrawGetVectorGraphics method is:
 %
-%      char *DrawGetVectorGraphics(const DrawingWand *wand)
+%      char *DrawGetVectorGraphics(DrawingWand *wand)
 %
 %  A description of each parameter follows:
 %
@@ -2960,7 +2959,7 @@ WandExport void DrawPathCurveToRelative(DrawingWand *wand,const double x1,
 %  The format of the DrawPathCurveToQuadraticBezierAbsolute method is:
 %
 %      void DrawPathCurveToQuadraticBezierAbsolute(DrawingWand *wand,
-%        const double x1,const double y1,onst double x,const double y)
+%        const double x1,const double y1,const double x,const double y)
 %
 %  A description of each parameter follows:
 %
@@ -3128,7 +3127,7 @@ WandExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(DrawingWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPathCurveToQuadraticBezierSmoothAbsolute() draws a quadratic Bezier
+%  DrawPathCurveToQuadraticBezierSmoothRelative() draws a quadratic Bezier
 %  curve (using relative coordinates) from the current point to (x,y). The
 %  control point is assumed to be the reflection of the control point on the
 %  previous command relative to the current point. (If there is no previous
@@ -3186,7 +3185,7 @@ WandExport void DrawPathCurveToQuadraticBezierSmoothRelative(DrawingWand *wand,
 %  The format of the DrawPathCurveToSmoothAbsolute method is:
 %
 %      void DrawPathCurveToSmoothAbsolute(DrawingWand *wand,
-%        const double x2const double y2,const double x,const double y)
+%        const double x2,const double y2,const double x,const double y)
 %
 %  A description of each parameter follows:
 %
@@ -3570,7 +3569,7 @@ WandExport void DrawPathLineToRelative(DrawingWand *wand,const double x,
 %  The format of the DrawPathLineToHorizontalAbsolute method is:
 %
 %      void DrawPathLineToHorizontalAbsolute(DrawingWand *wand,
-%        const PathMode mode,const double x)
+%        const double x)
 %
 %  A description of each parameter follows:
 %
@@ -4792,8 +4791,8 @@ WandExport void DrawSetFillOpacity(DrawingWand *wand,const double fill_opacity)
 %
 %  The format of the DrawSetFontResolution method is:
 %
-%      DrawBooleanType DrawSetFontResolution(DrawingWand *wand,
-%        const double x_resolution,const doubtl y_resolution)
+%      MagickBooleanType DrawSetFontResolution(DrawingWand *wand,
+%        const double x_resolution,const double y_resolution)
 %
 %  A description of each parameter follows:
 %
@@ -6000,17 +5999,17 @@ WandExport void DrawSetTextKerning(DrawingWand *wand,const double kerning)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w S e t T e x t I n t e r L i n e S p a c i n g                     %
+%   D r a w S e t T e x t I n t e r l i n e S p a c i n g                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetTextInterwordSpacing() sets the spacing between line in text.
+%  DrawSetTextInterlineSpacing() sets the spacing between line in text.
 %
-%  The format of the DrawSetInterwordSpacing method is:
+%  The format of the DrawSetInterlineSpacing method is:
 %
-%      void DrawSetTextInterwordSpacing(DrawingWand *wand,
+%      void DrawSetTextInterlineSpacing(DrawingWand *wand,
 %        const double interline_spacing)
 %
 %  A description of each parameter follows:
@@ -6555,8 +6554,8 @@ WandExport void DrawTranslate(DrawingWand *wand,const double x,const double y)
 %
 %  The format of the DrawSetViewbox method is:
 %
-%      void DrawSetViewbox(DrawingWand *wand,size_t x1,
-%        size_t y1,size_t x2,size_t y2)
+%      void DrawSetViewbox(DrawingWand *wand,ssize_t x1,
+%        ssize_t y1,ssize_t x2,ssize_t y2)
 %
 %  A description of each parameter follows:
 %
@@ -6631,7 +6630,7 @@ WandExport MagickBooleanType IsDrawingWand(const DrawingWand *wand)
 %
 %  The format of the NewDrawingWand method is:
 %
-%      DrawingWand NewDrawingWand(void)
+%      DrawingWand *NewDrawingWand(void)
 %
 */
 WandExport DrawingWand *NewDrawingWand(void)

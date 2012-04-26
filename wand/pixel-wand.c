@@ -2074,7 +2074,7 @@ WandExport void PixelSetMagentaQuantum(PixelWand *wand,const Quantum magenta)
 %
 %  The format of the PixelSetMagickColor method is:
 %
-%      PixelSetMagickColor(PixelWand *wand,const MagickPixelPacket *color)
+%      void PixelSetMagickColor(PixelWand *wand,const MagickPixelPacket *color)
 %
 %  A description of each parameter follows:
 %
