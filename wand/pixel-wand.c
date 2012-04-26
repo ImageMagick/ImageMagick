@@ -2178,7 +2178,7 @@ WandExport void PixelSetOpacityQuantum(PixelWand *wand,const Quantum opacity)
 %
 %  The format of the PixelSetQuantumColor method is:
 %
-%      PixelSetQuantumColor(PixelWand *wand,const PixelPacket *color)
+%      void PixelSetQuantumColor(PixelWand *wand,const PixelPacket *color)
 %
 %  A description of each parameter follows:
 %
