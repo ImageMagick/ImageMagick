@@ -374,8 +374,8 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       *q++=ScaleQuantumToChar(GetPixelRed(image,p));
       *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
       *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
-      *q++=ScaleQuantumToChar((Quantum) (image->matte != MagickFalse ?
-        GetPixelAlpha(image,p) : OpaqueAlpha));
+      if (image->matte != MagickFalse)
+        *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
       p+=GetPixelChannels(image);
     }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,

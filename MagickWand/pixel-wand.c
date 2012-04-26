@@ -2132,7 +2132,7 @@ WandExport void PixelSetPixelColor(PixelWand *wand,const PixelInfo *color)
 %
 %  The format of the PixelSetQuantumPixel method is:
 %
-%      PixelSetQuantumPixel(const Image *image,const QixelPixel *pixel,
+%      void PixelSetQuantumPixel(const Image *image,const Quantum *pixel,
 %        PixelWand *wand)
 %
 %  A description of each parameter follows:
