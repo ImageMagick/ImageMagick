@@ -764,7 +764,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
       }
     if ((*option == '"') || (*option == '\''))
       continue;
-    GetPathComponent(option,TailPath,filename);
+    GetPathComponent(option,CanonicalPath,filename);
     GetPathComponent(option,MagickPath,magick);
     if ((LocaleCompare(magick,"CAPTION") == 0) ||
         (LocaleCompare(magick,"LABEL") == 0) ||
