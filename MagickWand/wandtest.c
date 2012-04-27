@@ -5384,6 +5384,7 @@ int main(int argc,char **argv)
   }
   (void) PixelSyncIterator(iterator);
   iterator=DestroyPixelIterator(iterator);
+  MagickSetCompression(magick_wand,NoCompression);
   (void) FormatLocaleFile(stdout,"Write to wandtest_out.miff...\n");
   status=MagickWriteImages(magick_wand,"wandtest_out.miff",MagickTrue);
   if (status == MagickFalse)
