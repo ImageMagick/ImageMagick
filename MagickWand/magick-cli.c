@@ -761,7 +761,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
       goto Magick_Command_Exit;
     }
     if (LocaleCompare("-usage",argv[1]) == 0) {   /* both version & usage */
-      CLIOption(cli_wand, "-version");
+      CLIOption(cli_wand, "-version" );
       MagickUsage(MagickTrue);
       goto Magick_Command_Exit;
     }
@@ -777,7 +777,7 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
 
   /* List Information and Abort */
   if (LocaleCompare("-list",argv[1]) == 0) {
-    CLIOption(cli_wand, argv[1]);
+    CLIOption(cli_wand, argv[1], argv[2]);
     goto Magick_Command_Exit;
   }
 
