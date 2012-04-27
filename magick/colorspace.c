@@ -115,17 +115,17 @@ static inline void ConvertRGBToXYZ(const Quantum red,const Quantum green,
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
   r=QuantumScale*red;
-  if (r > 0.04045)
+  if (r > 0.0404482362771082)
     r=pow((r+0.055)/1.055,2.4);
   else
     r/=12.92;
   g=QuantumScale*green;
-  if (g > 0.04045)
+  if (g > 0.0404482362771082)
     g=pow((g+0.055)/1.055,2.4);
   else
     g/=12.92;
   b=QuantumScale*blue;
-  if (b > 0.04045)
+  if (b > 0.0404482362771082)
     b=pow((b+0.055)/1.055,2.4);
   else
     b/=12.92;
@@ -878,7 +878,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           v;
 
         v=(MagickRealType) i/(MagickRealType) MaxMap;
-        if (((MagickRealType) i/(MagickRealType) MaxMap) <= 0.04045f)
+        if (((MagickRealType) i/(MagickRealType) MaxMap) <= 0.0404482362771082f)
           v/=12.92f;
         else
           v=(MagickRealType) pow((((double) i/MaxMap)+0.055)/1.055,2.4);
@@ -1374,15 +1374,15 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
   r=3.2404542*x-1.5371385*y-0.4985314*z;
   g=(-0.9692660*x+1.8760108*y+0.0415560*z);
   b=0.0556434*x-0.2040259*y+1.0572252*z;
-  if (r > 0.0031308)
+  if (r > 0.00313066844250063)
     r=1.055*pow(r,1.0/2.4)-0.055;
   else
     r*=12.92;
-  if (g > 0.0031308)
+  if (g > 0.00313066844250063)
     g=1.055*pow(g,1.0/2.4)-0.055;
   else
     g*=12.92;
-  if (b > 0.0031308)
+  if (b > 0.00313066844250063)
     b=1.055*pow(b,1.0/2.4)-0.055;
   else
     b*=12.92;
@@ -2314,7 +2314,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           v;
 
         v=(MagickRealType) i/(MagickRealType) MaxMap;
-        if (((MagickRealType) i/(MagickRealType) MaxMap) <= 0.0031308)
+        if (((MagickRealType) i/(MagickRealType) MaxMap) <= 0.00313066844250063)
           v*=12.92f;
         else
           v=(MagickRealType) (1.055*pow((double) i/MaxMap,1.0/2.4)-0.055);
@@ -2579,17 +2579,17 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             }
             case RGBColorspace:
             {
-              if ((QuantumScale*pixel.red) <= 0.0031308)
+              if ((QuantumScale*pixel.red) <= 0.00313066844250063)
                 pixel.red*=12.92f;
               else
                 pixel.red=(MagickRealType) QuantumRange*(1.055*pow(
                   QuantumScale*pixel.red,(1.0/2.4))-0.055);
-              if ((QuantumScale*pixel.green) <= 0.0031308)
+              if ((QuantumScale*pixel.green) <= 0.00313066844250063)
                 pixel.green*=12.92f;
               else
                 pixel.green=(MagickRealType) QuantumRange*(1.055*pow(
                   QuantumScale*pixel.green,(1.0/2.4))-0.055);
-              if ((QuantumScale*pixel.blue) <= 0.0031308)
+              if ((QuantumScale*pixel.blue) <= 0.00313066844250063)
                 pixel.blue*=12.92f;
               else
                 pixel.blue=(MagickRealType) QuantumRange*(1.055*pow(
@@ -2663,17 +2663,17 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           }
           case RGBColorspace:
           {
-            if ((QuantumScale*pixel.red) <= 0.0031308)
+            if ((QuantumScale*pixel.red) <= 0.00313066844250063)
               pixel.red*=12.92f;
             else
               pixel.red=(MagickRealType) QuantumRange*(1.055*
                 pow(QuantumScale*pixel.red,(1.0/2.4))-0.055);
-            if ((QuantumScale*pixel.green) <= 0.0031308)
+            if ((QuantumScale*pixel.green) <= 0.00313066844250063)
               pixel.green*=12.92f;
             else
               pixel.green=(MagickRealType) QuantumRange*(1.055*
                 pow(QuantumScale*pixel.green,(1.0/2.4))-0.055);
-            if ((QuantumScale*pixel.blue) <= 0.0031308)
+            if ((QuantumScale*pixel.blue) <= 0.00313066844250063)
               pixel.blue*=12.92f;
             else
               pixel.blue=(MagickRealType) QuantumRange*(1.055*
