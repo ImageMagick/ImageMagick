@@ -2776,7 +2776,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
         {
           alpha=FxEvaluateSubexpression(fx_info,channel,x,y,expression+6,beta,
             exception);
-          return((MagickRealType) (1.0/(1.0+exp((double) (4.0*alpha)))));
+          return((MagickRealType) (1.0/(1.0+exp((double) (-alpha)))));
         }
       if (LocaleCompare(expression,"s") == 0)
         return(FxGetSymbol(fx_info,channel,x,y,expression,exception));
