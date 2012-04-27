@@ -5404,7 +5404,7 @@ int main(int argc,char **argv)
       (void) FormatLocaleFile(stderr,"Get delay does not match set delay\n");
       exit(1);
     }
-  (void) FormatLocaleFile(stdout,"Write to wandtest_out_0.gif...\n");
+  (void) FormatLocaleFile(stdout,"Write to wandtest_out.gif...\n");
   status=MagickWriteImages(magick_wand,"wandtest_out.gif",MagickTrue);
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
