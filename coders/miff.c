@@ -311,14 +311,11 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         quantum;
 
       p=PushShortPixel(MSBEndian,p,&quantum);
-      SetPixelRed(pixel,quantum >> (image->depth-
-        MAGICKCORE_QUANTUM_DEPTH));
+      SetPixelRed(pixel,quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH));
       p=PushShortPixel(MSBEndian,p,&quantum);
-      SetPixelGreen(pixel,quantum >> (image->depth-
-        MAGICKCORE_QUANTUM_DEPTH));
+      SetPixelGreen(pixel,quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH));
       p=PushShortPixel(MSBEndian,p,&quantum);
-      SetPixelBlue(pixel,quantum >> (image->depth-
-        MAGICKCORE_QUANTUM_DEPTH));
+      SetPixelBlue(pixel,quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH));
       if (image->matte != MagickFalse)
         {
           p=PushShortPixel(MSBEndian,p,&quantum);
@@ -339,14 +336,11 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
         quantum;
 
       p=PushLongPixel(MSBEndian,p,&quantum);
-      SetPixelRed(pixel,quantum >> (image->depth-
-        MAGICKCORE_QUANTUM_DEPTH));
+      SetPixelRed(pixel,quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH));
       p=PushLongPixel(MSBEndian,p,&quantum);
-      SetPixelGreen(pixel,quantum >> (image->depth-
-        MAGICKCORE_QUANTUM_DEPTH));
+      SetPixelGreen(pixel,quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH));
       p=PushLongPixel(MSBEndian,p,&quantum);
-      SetPixelBlue(pixel,quantum >> (image->depth-
-        MAGICKCORE_QUANTUM_DEPTH));
+      SetPixelBlue(pixel,quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH));
       if (image->matte != MagickFalse)
         {
           p=PushLongPixel(MSBEndian,p,&quantum);
