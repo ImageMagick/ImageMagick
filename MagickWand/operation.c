@@ -4277,15 +4277,44 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
   */
   if ( ( LocaleCompare("read",option+1) == 0 ) ||
      ( LocaleCompare("--",option) == 0 ) ) {
-    int
-      argc;
-    char
-      **argv;
+#if 0
+    /* Directly read 'arg1' without filename expansion handling (see below).
+       This does NOT turn off the 'coder:' prefix, or '[...]' read modifiers.
+    */
+#if !USE_WAND_METHODS
+    Image    *new_images;
 
-    ssize_t
-      i;
+    if (IfMagickTrue(_image_info->ping))
+      new_images=PingImages(_image_info,arg1,_exception);
+    else
+      new_images=ReadImages(_image_info,arg1,_exception);
+    AppendImageToList(&_images, new_images);
+#else
+    /* read images using MagickWand method - no ping */
+    /* This is not working! - it locks up in a CPU loop! */
+    MagickSetLastIterator(&cli_wand->wand);
+    MagickReadImage(&cli_wand->wand,arg1);
+    MagickSetFirstIterator(&cli_wand->wand);
+#endif
+#else
+    /* Do Filename Expansion for 'arg1' then read all images.
+     *
+     * Expansion handles '@', '~', '*', and '?' meta-characters while ignoring
+     * (but attaching to generated argument list) any [...] read modifiers
+     * that may be present.
+     *
+     * For example: correctly expand '*.gif[20x20]' into a list such as
+     * 'abc.gif[20x20',  'foobar.gif[20x20]',  'xyzzy.gif[20x20]'
+     *
+     * NOTE: In IMv6 this was done globally across all images. This
+     * meant you could include IM options in '@filename' lists, but you
+     * could not include comments.   Doing it only for image read makes
+     * it far more secure.
+     */
+    int      argc;
+    char     **argv;
+    ssize_t  i;
 
-    /* Expand the filename argument (meta-characters or "@filelist" ) */
     argc = 1;
     argv = (char **) &arg1;
     MagickBooleanType
@@ -4295,30 +4324,26 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
       CLIWandExceptArgReturn(ResourceLimitError,"MemoryAllocationFailed",
           option,GetExceptionMessage(errno));
 
-    /* loop over expanded list reading images */
+    /* loop over expanded filename list, and read then all in */
     for (i=0; i<argc; i++) {
-#if !USE_WAND_METHODS
       Image *
         new_images;
+#if 0
+fprintf(stderr, "DEBUG: Reading image: \"%s\"\n", argv[i]);
+#endif
       if (IfMagickTrue(_image_info->ping))
         new_images=PingImages(_image_info,argv[i],_exception);
       else
         new_images=ReadImages(_image_info,argv[i],_exception);
       AppendImageToList(&_images, new_images);
-#else
-      /* read images using MagickWand method - no ping */
-      /* This is not working! - it locks up in a CPU loop! */
-      MagickSetLastIterator(&cli_wand->wand);
-      MagickReadImage(&cli_wand->wand,arg1);
-      MagickSetFirstIterator(&cli_wand->wand);
-#endif
     }
-    /* FUTURE: how do I free the expanded filename arguments??? */
-
+    /* FUTURE: how do I free the expanded filename array memory ??? */
+#endif
     return;
   }
   /*
-    Image Writing  (no-images present is valid in specific cases)
+    Image Writing
+    Note: Writing a empty image list is valid in specific cases
   */
   if (LocaleCompare("write",option+1) == 0) {
     char

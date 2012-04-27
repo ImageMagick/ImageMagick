@@ -675,9 +675,30 @@ MagickPrivate void ExpandFilename(char *path)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ExpandFilenames() checks each argument of the command line vector and
-%  expands it if they have a wildcard character.  For example, *.jpg might
-%  expand to:  bird.jpg rose.jpg tiki.jpg.
+%  ExpandFilenames() checks each argument of the given argument array, and
+%  expands it if they have a wildcard character.
+%
+%  Any coder prefix (EG: 'coder:filename') or read modifier postfix (EG:
+%  'filename[...]') are ignored during the file the expansion, but will be
+%  included in the final argument.  If no filename matching the meta-character
+%  'glob' is found the original argument is returned.
+%
+%  For example, an argument of '*.gif[20x20]' will be replaced by the list
+%    'abc.gif[20x20]',  'foobar.gif[20x20]',  'xyzzy.gif[20x20]'
+%  if such filenames exist, (in the current directory in this case).
+%
+%  Meta-characters handled...
+%     @    read a list of filenames (no further expansion performed)
+%     ~    At start of filename expands to HOME environemtn variable
+%     *    matches any string including an empty string
+%     ?    matches by any single character
+%
+%  WARNING: filenames starting with '.' (hidden files in a UNIX file system)
+%  will never be expanded.  Attempting to epand '.*' will produce no change.
+%
+%  Expansion is ignored for coders "label:" "caption:" "pango:" and "vid:".
+%  Which provide their own '@' meta-character handling.
+%
 %
 %  The format of the ExpandFilenames function is:
 %
