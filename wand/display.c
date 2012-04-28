@@ -628,9 +628,10 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
         /*
           Free image resources.
         */
-        display_image=DestroyImageList(display_image);
+        display_image=GetFirstImageInList(display_image);
         if (image_list != display_image)
           image_list=DestroyImageList(image_list);
+        display_image=DestroyImageList(display_image);
         if ((state & FormerImageState) == 0)
           {
             last_image=(size_t) image_number;
