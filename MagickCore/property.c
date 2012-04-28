@@ -1290,10 +1290,10 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
         *q;
 
       size_t
-        format,
-        number_bytes;
+        format;
 
       ssize_t
+        number_bytes,
         components;
 
       q=(unsigned char *) (directory+(12*entry)+2);
@@ -1319,10 +1319,10 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             The directory entry contains an offset.
           */
           offset=(ssize_t) ((int) ReadPropertyLong(endian,q+8));
+          if ((ssize_t) (offset+number_bytes) < offset)
+            continue;  /* prevent overflow */
           if ((size_t) (offset+number_bytes) > length)
             continue;
-          if (~length < number_bytes)
-            continue;  /* prevent overflow */
           p=(unsigned char *) (exif+offset);
         }
       if ((all != 0) || (tag == (size_t) tag_value))
@@ -2429,12 +2429,12 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         }
       if (LocaleNCompare("scene",property,5) == 0)
         {
-          /* FUTURE: I am not certain this property return makes sense! */
-          (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-            image->scene);
           if (image_info->number_scenes != 0)
             (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-              image_info->scene);
+                image_info->scene);
+          else
+            (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+                image->scene);
           break;
         }
       if (LocaleNCompare("skewness",property,8) == 0)
@@ -2448,7 +2448,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             GetMagickPrecision(),skewness);
           break;
         }
-      if (LocaleNCompare("standard-deviation",property,18) == 0)
+      if ((LocaleNCompare("standard-deviation",property,18) == 0) ||
+          (LocaleNCompare("standard_deviation",property,18) == 0))
         {
           double
             mean,
@@ -2488,6 +2489,26 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
             (image->magick_columns != 0 ? image->magick_columns : 256));
+          break;
+        }
+      break;
+    }
+    case 'x':
+    {
+      if (LocaleNCompare("xresolution",property,11) == 0)
+        {
+          (void) FormatLocaleString(value,MaxTextExtent,"%g",
+            image->resolution.x);
+          break;
+        }
+      break;
+    }
+    case 'y':
+    {
+      if (LocaleNCompare("yresolution",property,11) == 0)
+        {
+          (void) FormatLocaleString(value,MaxTextExtent,"%g",
+            image->resolution.y);
           break;
         }
       break;
@@ -2709,7 +2730,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
             q+=length;
             break;
           }
-        /* Handle properity 'blob' patterns - by iteratation */
+        /* Handle properity 'glob' patterns - by iteration */
         if (IsGlob(pattern) != MagickFalse)
           {
             ResetImagePropertyIterator(image);
@@ -2827,26 +2848,20 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         q+=CopyMagickString(q,filename,extent);
         break;
       }
-      case 't': /* Base filename without directory or extention */
-      {
-        GetPathComponent(image->magick_filename,BasePath,filename);
-        q+=CopyMagickString(q,filename,extent);
-        break;
-      }
-      case 'g': /* Image geometry,  canvas and offset */
+      case 'g': /* Image geometry, canvas and offset */
       {
         q+=FormatLocaleString(q,extent,"%.20gx%.20g%+.20g%+.20g",(double)
           image->page.width,(double) image->page.height,(double) image->page.x,
           (double) image->page.y);
         break;
       }
-      case 'h': /* Image height */
+      case 'h': /* Image height (current) */
       {
         q+=FormatLocaleString(q,extent,"%.20g",(double) (image->rows != 0 ?
           image->rows : image->magick_rows));
         break;
       }
-      case 'i': /* Images filename - (output filename with "info:" ) */
+      case 'i': /* Input Filename - for delegate use only */
       {
         q+=CopyMagickString(q,image->filename,extent);
         break;
@@ -2880,18 +2895,13 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         q+=CopyMagickString(q,image->magick,extent);
         break;
       }
-      case 'M': /* Magick filename - exactly as given incl. read mods */
-      {
-        q+=CopyMagickString(q,image->magick_filename,extent);
-        break;
-      }
       case 'n': /* Number of images in the list.  */
       {
         q+=FormatLocaleString(q,extent,"%.20g",(double)
           GetImageListLength(image));
         break;
       }
-      case 'o': /* Image output filename */
+      case 'o': /* Output Filename - for delegate use only */
       {
         q+=CopyMagickString(q,image_info->filename,extent);
         break;
@@ -2924,10 +2934,16 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       }
       case 's': /* Image scene number  */
       {
-        if (image_info->number_scenes == 0)
-          q+=FormatLocaleString(q,extent,"%.20g",(double) image->scene);
-        else
+        if (image_info->number_scenes != 0)
           q+=FormatLocaleString(q,extent,"%.20g",(double) image_info->scene);
+        else
+          q+=FormatLocaleString(q,extent,"%.20g",(double) image->scene);
+        break;
+      }
+      case 't': /* Base filename without directory or extention */
+      {
+        GetPathComponent(image->magick_filename,BasePath,filename);
+        q+=CopyMagickString(q,filename,extent);
         break;
       }
       case 'u': /* Unique filename */
@@ -2936,7 +2952,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         q+=CopyMagickString(q,filename,extent);
         break;
       }
-      case 'w': /* Image width  */
+      case 'w': /* Image width (current) */
       {
         q+=FormatLocaleString(q,extent,"%.20g",(double) (image->columns != 0 ?
           image->columns : image->magick_columns));
@@ -2988,6 +3004,11 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       case 'H': /* layer canvas height */
       {
         q+=FormatLocaleString(q,extent,"%.20g",(double) image->page.height);
+        break;
+      }
+      case 'M': /* Magick filename - filename given incl. coder & read mods */
+      {
+        q+=CopyMagickString(q,image->magick_filename,extent);
         break;
       }
       case 'O': /* layer canvas offset with sign = "+%X+%Y" */
