@@ -1573,8 +1573,7 @@ static MagickBooleanType GetXMPProperty(const Image *image,const char *property)
 }
 
 static char *TracePSClippath(const unsigned char *blob,size_t length,
-  const size_t magick_unused(columns),
-  const size_t magick_unused(rows))
+  const size_t magick_unused(columns),const size_t magick_unused(rows))
 {
   char
     *path,
@@ -1873,8 +1872,8 @@ static char *TraceSVGClippath(const unsigned char *blob,size_t length,
             xx,
             yy;
 
-          yy=ReadPropertyMSBLong(&blob,&length);
-          xx=ReadPropertyMSBLong(&blob,&length);
+          yy=(size_t) ((int) ReadPropertyMSBLong(&blob,&length));
+          xx=(size_t) ((int) ReadPropertyMSBLong(&blob,&length));
           x=(ssize_t) xx;
           if (xx > 2147483647)
             x=(ssize_t) xx-4294967295U-1;
@@ -2415,11 +2414,12 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         }
       if (LocaleNCompare("scene",property,5) == 0)
         {
-          (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-            image->scene);
           if (image_info->number_scenes != 0)
             (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
-              image_info->scene);
+                image_info->scene);
+          else
+            (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+                image->scene);
           break;
         }
       if (LocaleNCompare("skewness",property,8) == 0)
@@ -2714,7 +2714,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
             q+=length;
             break;
           }
-        /* Handle properity 'blob' patterns - by iteratation */
+        /* Handle properity 'glob' patterns - by iteration */
         if (IsGlob(pattern) != MagickFalse)
           {
             ResetImagePropertyIterator(image);
@@ -2918,10 +2918,10 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       }
       case 's': /* Image scene number  */
       {
-        if (image_info->number_scenes == 0)
-          q+=FormatLocaleString(q,extent,"%.20g",(double) image->scene);
-        else
+        if (image_info->number_scenes != 0)
           q+=FormatLocaleString(q,extent,"%.20g",(double) image_info->scene);
+        else
+          q+=FormatLocaleString(q,extent,"%.20g",(double) image->scene);
         break;
       }
       case 't': /* Base filename without directory or extention */
