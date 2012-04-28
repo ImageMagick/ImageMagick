@@ -1236,9 +1236,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
               (void) FormatLocaleFile(svg_info->file,"fill-rule '%s'\n",value);
               break;
             }
-          if (LocaleCompare(keyword,"fill-opacity") == 0)
+          if (LocaleCompare(keyword,"fill-alpha") == 0)
             {
-              (void) FormatLocaleFile(svg_info->file,"fill-opacity '%s'\n",
+              (void) FormatLocaleFile(svg_info->file,"fill-alpha '%s'\n",
                 value);
               break;
             }
@@ -1680,10 +1680,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
                           "fill-rule '%s'\n",value);
                         break;
                       }
-                    if (LocaleCompare(keyword,"fill-opacity") == 0)
+                    if (LocaleCompare(keyword,"fill-alpha") == 0)
                       {
                         (void) FormatLocaleFile(svg_info->file,
-                          "fill-opacity '%s'\n",value);
+                          "fill-alpha '%s'\n",value);
                         break;
                       }
                     if (LocaleCompare(keyword,"font-family") == 0)
@@ -3686,11 +3686,11 @@ static MagickBooleanType WriteSVGImage(const ImageInfo *image_info,Image *image,
             (void) WriteBlobString(image,message);
             break;
           }
-        if (LocaleCompare("fill-opacity",keyword) == 0)
+        if (LocaleCompare("fill-alpha",keyword) == 0)
           {
             GetMagickToken(q,&q,token);
             (void) FormatLocaleString(message,MaxTextExtent,
-              "fill-opacity:%s;",token);
+              "fill-alpha:%s;",token);
             (void) WriteBlobString(image,message);
             break;
           }
