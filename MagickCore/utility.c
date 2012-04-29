@@ -785,16 +785,16 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
       }
     if ((*option == '"') || (*option == '\''))
       continue;
-    GetPathComponent(option,CanonicalPath,filename);
+    GetPathComponent(option,TailPath,filename);
     GetPathComponent(option,MagickPath,magick);
     if ((LocaleCompare(magick,"CAPTION") == 0) ||
         (LocaleCompare(magick,"LABEL") == 0) ||
         (LocaleCompare(magick,"PANGO") == 0) ||
         (LocaleCompare(magick,"VID") == 0))
       continue;
-    if ((IsGlob(option) == MagickFalse) && (*option != '@'))
+    if ((IsGlob(filename) == MagickFalse) && (*filename != '@'))
       continue;
-    if (*option != '@')
+    if (*filename != '@')
       {
         /*
           Generate file list from wildcard filename (e.g. *.jpg).
@@ -805,7 +805,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
         if (*home_directory == '\0')
           directory=getcwd(home_directory,MaxTextExtent-1);
         (void) directory;
-        filelist=ListFiles(*path == '\0' ? home_directory : path,option,
+        filelist=ListFiles(*path == '\0' ? home_directory : path,filename,
           &number_files);
       }
     else
