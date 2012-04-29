@@ -488,8 +488,8 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
   const char *thresholds,ExceptionInfo *exception)
 {
 #define ThresholdImageTag  "Threshold/Image"
-#define BlackThreshold(pixel,threshold_percentage) \
-  if (pixel <= threshold_percentage) pixel=0;
+#define BlackThreshold(pixel,threshold) \
+  if (pixel <= threshold) pixel=0;
 
   CacheView
     *image_view;
@@ -504,7 +504,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
     progress;
 
   PixelInfo
-    threshold_percentage;
+    threshold;
 
   MagickStatusType
     flags;
@@ -522,25 +522,33 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  GetPixelInfo(image,&threshold_percentage);
+  GetPixelInfo(image,&threshold);
   flags=ParseGeometry(thresholds,&geometry_info);
-  threshold_percentage.red=geometry_info.rho;
-  threshold_percentage.green=geometry_info.rho;
-  threshold_percentage.blue=geometry_info.rho;
-  threshold_percentage.black=geometry_info.rho;
-  threshold_percentage.alpha=100.0;
+  threshold.red=geometry_info.rho;
+  threshold.green=geometry_info.rho;
+  threshold.blue=geometry_info.rho;
+  threshold.black=geometry_info.rho;
+  threshold.alpha=100.0;
   if ((flags & SigmaValue) != 0)
-    threshold_percentage.green=geometry_info.sigma;
+    threshold.green=geometry_info.sigma;
   if ((flags & XiValue) != 0)
-    threshold_percentage.blue=geometry_info.xi;
+    threshold.blue=geometry_info.xi;
   if ((flags & PsiValue) != 0)
-    threshold_percentage.alpha=geometry_info.psi;
-  if (threshold_percentage.colorspace == CMYKColorspace)
+    threshold.alpha=geometry_info.psi;
+  if (threshold.colorspace == CMYKColorspace)
     {
       if ((flags & PsiValue) != 0)
-        threshold_percentage.black=geometry_info.psi;
+        threshold.black=geometry_info.psi;
       if ((flags & ChiValue) != 0)
-        threshold_percentage.alpha=geometry_info.chi;
+        threshold.alpha=geometry_info.chi;
+    }
+  if ((flags & PercentValue) != 0)
+    {
+      threshold.red*=(QuantumRange/100.0);
+      threshold.green*=(QuantumRange/100.0);
+      threshold.blue*=(QuantumRange/100.0);
+      threshold.black*=(QuantumRange/100.0);
+      threshold.alpha*=(QuantumRange/100.0);
     }
   /*
     White threshold image.
@@ -579,11 +587,11 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
           continue;
         }
       GetPixelInfoPixel(image,q,&pixel);
-      BlackThreshold(pixel.red,threshold_percentage.red);
-      BlackThreshold(pixel.green,threshold_percentage.green);
-      BlackThreshold(pixel.blue,threshold_percentage.blue);
-      BlackThreshold(pixel.black,threshold_percentage.black);
-      BlackThreshold(pixel.alpha,threshold_percentage.alpha);
+      BlackThreshold(pixel.red,threshold.red);
+      BlackThreshold(pixel.green,threshold.green);
+      BlackThreshold(pixel.blue,threshold.blue);
+      BlackThreshold(pixel.black,threshold.black);
+      BlackThreshold(pixel.alpha,threshold.alpha);
       SetPixelInfoPixel(image,&pixel,q);
       q+=GetPixelChannels(image);
     }
@@ -595,7 +603,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_WhiteThresholdImage)
+        #pragma omp critical (MagickCore_BlackThresholdImage)
 #endif
         proceed=SetImageProgress(image,ThresholdImageTag,progress++,
           image->rows);
@@ -1605,8 +1613,8 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
   const char *thresholds,ExceptionInfo *exception)
 {
 #define ThresholdImageTag  "Threshold/Image"
-#define WhiteThreshold(pixel,threshold_percentage) \
-  if (pixel > threshold_percentage) pixel=QuantumRange;
+#define WhiteThreshold(pixel,threshold) \
+  if (pixel > threshold) pixel=QuantumRange;
 
   CacheView
     *image_view;
@@ -1621,7 +1629,7 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
     progress;
 
   PixelInfo
-    threshold_percentage;
+    threshold;
 
   MagickStatusType
     flags;
@@ -1639,25 +1647,33 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
-  GetPixelInfo(image,&threshold_percentage);
+  GetPixelInfo(image,&threshold);
   flags=ParseGeometry(thresholds,&geometry_info);
-  threshold_percentage.red=geometry_info.rho;
-  threshold_percentage.green=geometry_info.rho;
-  threshold_percentage.blue=geometry_info.rho;
-  threshold_percentage.black=geometry_info.rho;
-  threshold_percentage.alpha=100.0;
+  threshold.red=geometry_info.rho;
+  threshold.green=geometry_info.rho;
+  threshold.blue=geometry_info.rho;
+  threshold.black=geometry_info.rho;
+  threshold.alpha=100.0;
   if ((flags & SigmaValue) != 0)
-    threshold_percentage.green=geometry_info.sigma;
+    threshold.green=geometry_info.sigma;
   if ((flags & XiValue) != 0)
-    threshold_percentage.blue=geometry_info.xi;
+    threshold.blue=geometry_info.xi;
   if ((flags & PsiValue) != 0)
-    threshold_percentage.alpha=geometry_info.psi;
-  if (threshold_percentage.colorspace == CMYKColorspace)
+    threshold.alpha=geometry_info.psi;
+  if (threshold.colorspace == CMYKColorspace)
     {
       if ((flags & PsiValue) != 0)
-        threshold_percentage.black=geometry_info.psi;
+        threshold.black=geometry_info.psi;
       if ((flags & ChiValue) != 0)
-        threshold_percentage.alpha=geometry_info.chi;
+        threshold.alpha=geometry_info.chi;
+    }
+  if ((flags & PercentValue) != 0)
+    {
+      threshold.red*=(QuantumRange/100.0);
+      threshold.green*=(QuantumRange/100.0);
+      threshold.blue*=(QuantumRange/100.0);
+      threshold.black*=(QuantumRange/100.0);
+      threshold.alpha*=(QuantumRange/100.0);
     }
   /*
     White threshold image.
@@ -1696,11 +1712,11 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
           continue;
         }
       GetPixelInfoPixel(image,q,&pixel);
-      WhiteThreshold(pixel.red,threshold_percentage.red);
-      WhiteThreshold(pixel.green,threshold_percentage.green);
-      WhiteThreshold(pixel.blue,threshold_percentage.blue);
-      WhiteThreshold(pixel.black,threshold_percentage.black);
-      WhiteThreshold(pixel.alpha,threshold_percentage.alpha);
+      WhiteThreshold(pixel.red,threshold.red);
+      WhiteThreshold(pixel.green,threshold.green);
+      WhiteThreshold(pixel.blue,threshold.blue);
+      WhiteThreshold(pixel.black,threshold.black);
+      WhiteThreshold(pixel.alpha,threshold.alpha);
       SetPixelInfoPixel(image,&pixel,q);
       q+=GetPixelChannels(image);
     }
@@ -1712,7 +1728,7 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_WhiteThresholdImage)
+        #pragma omp critical (MagickCore_WhiteThresholdImage)
 #endif
         proceed=SetImageProgress(image,ThresholdImageTag,progress++,
           image->rows);

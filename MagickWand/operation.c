@@ -2060,8 +2060,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           kernel_info=AcquireKernelInfo(arg1);
           if (kernel_info == (KernelInfo *) NULL)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          new_image=MorphologyImage(_image,ConvolveMorphology,1,kernel_info,
-               _exception);
+          new_image=MorphologyImage(_image,CorrelateMorphology,1,kernel_info,
+            _exception);
           kernel_info=DestroyKernelInfo(kernel_info);
           break;
         }
