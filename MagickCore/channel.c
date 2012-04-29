@@ -783,5 +783,7 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
     if (separate_image != (Image *) NULL)
       AppendImageToList(&images,separate_image);
   }
+  if (images == (Image *) NULL)
+    images=SeparateImage(image,UndefinedChannel,exception);
   return(images);
 }
