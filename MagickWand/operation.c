@@ -4281,7 +4281,7 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
     /* Directly read 'arg1' without filename expansion handling (see below).
        This does NOT turn off the 'coder:' prefix, or '[...]' read modifiers.
     */
-#if !USE_WAND_METHODS
+# if !USE_WAND_METHODS
     Image    *new_images;
 
     if (IfMagickTrue(_image_info->ping))
@@ -4289,13 +4289,13 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
     else
       new_images=ReadImages(_image_info,arg1,_exception);
     AppendImageToList(&_images, new_images);
-#else
+# else
     /* read images using MagickWand method - no ping */
     /* This is not working! - it locks up in a CPU loop! */
     MagickSetLastIterator(&cli_wand->wand);
     MagickReadImage(&cli_wand->wand,arg1);
     MagickSetFirstIterator(&cli_wand->wand);
-#endif
+# endif
 #else
     /* Do Filename Expansion for 'arg1' then read all images.
      *
@@ -4317,10 +4317,8 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
 
     argc = 1;
     argv = (char **) &arg1;
-    MagickBooleanType
-      status=ExpandFilenames(&argc,&argv);
 
-    if (IfMagickFalse(status))
+    if (IfMagickFalse(ExpandFilenames(&argc,&argv)))
       CLIWandExceptArgReturn(ResourceLimitError,"MemoryAllocationFailed",
           option,GetExceptionMessage(errno));
 
@@ -4328,7 +4326,7 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
     for (i=0; i<argc; i++) {
       Image *
         new_images;
-#if 0
+#if 1
 fprintf(stderr, "DEBUG: Reading image: \"%s\"\n", argv[i]);
 #endif
       if (IfMagickTrue(_image_info->ping))
@@ -4338,6 +4336,7 @@ fprintf(stderr, "DEBUG: Reading image: \"%s\"\n", argv[i]);
       AppendImageToList(&_images, new_images);
     }
     /* FUTURE: how do I free the expanded filename array memory ??? */
+    //argv=DestroyStringList(argv);  /* Is this correct? */
 #endif
     return;
   }
