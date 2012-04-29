@@ -1831,15 +1831,25 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
         if (LocaleNCompare(pattern,"filename:",9) != 0)
           break;
         value=(const char *) NULL;
+#if 0
+        // FUTURE: remove this code. -- Anthony  29 Arpil 2012
+        // Removed as GetMagickProperty() will now return a 'cloned' string
+        // that must also be freed. It will never match a "filename:" string
+        // in any case as this is not a specificaally 'known' image properity.
+        //
         if ((image_info != (const ImageInfo *) NULL) &&
             (image != (const Image *) NULL))
           value=GetMagickProperty(image_info,image,pattern);
         else
-          if (image != (Image *) NULL)
-            value=GetImageProperty(image,pattern);
-          else
-            if (image_info != (ImageInfo *) NULL)
-              value=GetImageOption(image_info,pattern);
+#endif
+        if (image != (Image *) NULL)
+          value=GetImageProperty(image,pattern);
+        if ((value == (const char *) NULL) &&
+            (image != (Image *) NULL))
+          value=GetImageArtifact(image,pattern);
+        if ((value == (const char *) NULL) &&
+            (image_info != (ImageInfo *) NULL))
+          value=GetImageOption(image_info,pattern);
         if (value == (const char *) NULL)
           break;
         q--;

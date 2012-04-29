@@ -2144,12 +2144,19 @@ MagickExport const char *GetImageProperty(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickProperty() gets a value associated with an image property.
+%  GetMagickProperty() gets attributes or calculated values that is associated
+%  with a fixed known property name.
+%
+%  This does not return single character properity names, special profile or
+%  calculated properity substitutions. Nor does it return free-form properity
+%  strings, unless such a name is also associated with a specific attribute.
+%
+%  The returned string should be freed using DestoryString() when finished.
 %
 %  The format of the GetMagickProperty method is:
 %
 %      const char *GetMagickProperty(const ImageInfo *image_info,Image *image,
-%        const char *key)
+%        const char *properity)
 %
 %  A description of each parameter follows:
 %
@@ -2172,7 +2179,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
   {
     case 'b':
     {
-      if (LocaleNCompare("base",property,4) == 0)
+      if ((LocaleNCompare("base",property,4) == 0) ||
+          (LocaleNCompare("basename",property,8) == 0) )
         {
           GetPathComponent(image->magick_filename,BasePath,filename);
           (void) CopyMagickString(value,filename,MaxTextExtent);
@@ -2510,15 +2518,9 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
       break;
     }
   }
-  if (*value != '\0')
-   {
-     if (image->properties == (void *) NULL)
-       image->properties=NewSplayTree(CompareSplayTreeString,
-         RelinquishMagickMemory,RelinquishMagickMemory);
-     (void) AddValueToSplayTree((SplayTreeInfo *) image->properties,
-       ConstantString(property),ConstantString(value));
-   }
-  return(GetImageProperty(image,property));
+  if (*value == '\0')
+    return(NULL);
+  return(ConstantString(value));
 }
 
 /*
@@ -2532,7 +2534,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetNextImageProperty() gets the next image property value.
+%  GetNextImageProperty() gets the next free-form string properity name.
 %
 %  The format of the GetNextImageProperty method is:
 %
@@ -2567,8 +2569,23 @@ MagickExport char *GetNextImageProperty(const Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  InterpretImageProperties() replaces any embedded formatting characters with
-%  the appropriate image property and returns the interpreted text.  Free with
-%  DestoryString() or RelinquishMagickMemory().
+%  the appropriate image property and returns the interpreted text.
+%
+%  This searches for and replaces
+%     %x           where 'x' is a single letter, case sensitive).
+%     %[type:...]  where 'type' is specifically known prefix.
+%     %[name]      where 'name' is a specifically known attribute, calculated
+%                  value, or free-form properity string name, or a free-form
+%                  global option string setting.
+%     \n \r        replaced by newline, return
+%     &lt; &lt;    replaced by '<', '>' resp.
+%
+%  If 'name' is a 'glob-expresion' (containing '*' or '?' characters) it is used
+%  as a search pattern to print "name=value\n" pairs of free-form string
+%  properities. Some 'type' properities may also allow 'glob-expressions'.
+%
+%  The returned string must be freeds using DestoryString() or
+%  RelinquishMagickMemory().
 %
 %  The format of the InterpretImageProperties method is:
 %
@@ -2759,6 +2776,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
               }
             (void) CopyMagickString(q,value,extent);
             q+=length;
+            value=DestroyString((char *)value); /* must be destoryed */
             break;
           }
         if (image_info == (ImageInfo *) NULL)
