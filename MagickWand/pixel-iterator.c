@@ -72,9 +72,6 @@ struct _PixelIterator
   ExceptionInfo
     *exception;
 
-  Image
-    *image;
-
   CacheView
     *view;
 
@@ -176,8 +173,6 @@ WandExport PixelIterator *ClonePixelIterator(const PixelIterator *iterator)
     PixelIteratorId,(double) clone_iterator->id);
   clone_iterator->exception=AcquireExceptionInfo();
   InheritException(clone_iterator->exception,iterator->exception);
-  clone_iterator->image=CloneImage(iterator->image,0,0,MagickTrue,
-    iterator->exception);
   clone_iterator->view=CloneCacheView(iterator->view);
   clone_iterator->region=iterator->region;
   clone_iterator->active=iterator->active;
@@ -220,7 +215,6 @@ WandExport PixelIterator *DestroyPixelIterator(PixelIterator *iterator)
   assert(iterator->signature == WandSignature);
   if (iterator->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",iterator->name);
-  iterator->image=DestroyImage(iterator->image);
   iterator->view=DestroyCacheView(iterator->view);
   iterator->pixel_wands=DestroyPixelWands(iterator->pixel_wands,
     iterator->region.width);
@@ -332,7 +326,6 @@ WandExport PixelIterator *NewPixelIterator(MagickWand *wand)
   (void) FormatLocaleString(iterator->name,MaxTextExtent,"%s-%.20g",
     PixelIteratorId,(double) iterator->id);
   iterator->exception=exception;
-  iterator->image=CloneImage(image,0,0,MagickTrue,iterator->exception);
   iterator->view=view;
   SetGeometry(image,&iterator->region);
   iterator->region.width=image->columns;
@@ -515,8 +508,9 @@ WandExport PixelWand **PixelGetCurrentIteratorRow(PixelIterator *iterator,
     return((PixelWand **) NULL);
   for (x=0; x < (ssize_t) iterator->region.width; x++)
   {
-    PixelSetQuantumPixel(iterator->image,pixels,iterator->pixel_wands[x]);
-    pixels+=GetPixelChannels(iterator->image);
+    PixelSetQuantumPixel(GetCacheViewImage(iterator->view),pixels,
+      iterator->pixel_wands[x]);
+    pixels+=GetPixelChannels(GetCacheViewImage(iterator->view));
   }
   *number_wands=iterator->region.width;
   return(iterator->pixel_wands);
@@ -696,8 +690,9 @@ WandExport PixelWand **PixelGetNextIteratorRow(PixelIterator *iterator,
     return((PixelWand **) NULL);
   for (x=0; x < (ssize_t) iterator->region.width; x++)
   {
-    PixelSetQuantumPixel(iterator->image,pixels,iterator->pixel_wands[x]);
-    pixels+=GetPixelChannels(iterator->image);
+    PixelSetQuantumPixel(GetCacheViewImage(iterator->view),pixels,
+      iterator->pixel_wands[x]);
+    pixels+=GetPixelChannels(GetCacheViewImage(iterator->view));
   }
   *number_wands=iterator->region.width;
   return(iterator->pixel_wands);
@@ -754,8 +749,9 @@ WandExport PixelWand **PixelGetPreviousIteratorRow(PixelIterator *iterator,
     return((PixelWand **) NULL);
   for (x=0; x < (ssize_t) iterator->region.width; x++)
   {
-    PixelSetQuantumPixel(iterator->image,pixels,iterator->pixel_wands[x]);
-    pixels+=GetPixelChannels(iterator->image);
+    PixelSetQuantumPixel(GetCacheViewImage(iterator->view),pixels,
+      iterator->pixel_wands[x]);
+    pixels+=GetPixelChannels(GetCacheViewImage(iterator->view));
   }
   *number_wands=iterator->region.width;
   return(iterator->pixel_wands);
@@ -944,8 +940,9 @@ WandExport MagickBooleanType PixelSyncIterator(PixelIterator *iterator)
     return(MagickFalse);
   for (x=0; x < (ssize_t) iterator->region.width; x++)
   {
-    PixelGetQuantumPixel(iterator->image,iterator->pixel_wands[x],pixels);
-    pixels+=GetPixelChannels(iterator->image);
+    PixelGetQuantumPixel(GetCacheViewImage(iterator->view),
+      iterator->pixel_wands[x],pixels);
+    pixels+=GetPixelChannels(GetCacheViewImage(iterator->view));
   }
   if (SyncCacheViewAuthenticPixels(iterator->view,iterator->exception) == MagickFalse)
     return(MagickFalse);

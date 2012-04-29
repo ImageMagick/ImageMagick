@@ -60,6 +60,9 @@ extern MagickExport ClassType
 extern MagickExport ColorspaceType
   GetCacheViewColorspace(const CacheView *);
 
+extern MagickExport const Image
+  *GetCacheViewImage(const CacheView *);
+
 extern MagickExport const Quantum
   *GetCacheViewVirtualPixels(const CacheView *,const ssize_t,const ssize_t,
     const size_t,const size_t,ExceptionInfo *) magick_hot_spot,
