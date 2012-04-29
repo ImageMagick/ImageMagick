@@ -178,7 +178,7 @@
   <a rel="follow" title="Sponsor: LED24" href="http://led24.de/">LED24</a><!-- 201207010270 info@led24... -->
 </div>
 <div class="sponsor">
-  <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.top-cheap-web-hosting.com">Best Web Hosting</a><!-- 201304010090 eunge.liu-->
+  <a rel="follow" title="Sponsor: Top-Cheap-Web-Hosting.com" href="http://www.top-cheap-web-hosting.com">Top-Cheap-Web-Hosting.com</a><!-- 201304010090 eunge.liu-->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201208010090 barsh@inter... -->
@@ -199,7 +199,7 @@
    <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
 </div>
 <div class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
+  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">SEO Moves Australia</a><!-- 201301010090s jen@seo lowprofilelinks -->
 </div>
 <div class="sponsor">
    <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
@@ -217,10 +217,10 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Turbolader Online kaufen" href="http://www.autoteile-carparts.de">Turbolader Online kaufen</a><!-- 2012060100150 t.temurbas...-->
+   <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.webhostingclue.com">Best Web Hosting</a><!-- 2012120100150 racent marketing@webhosting...-->
 </div>
-<div  class="sponsor">
-   <a rel="follow" title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2012060100030 atlas.multimedia-->
+<div class="sponsor">
+   <a rel="follow" title="Sponsor: Waschmaschinen Reparatur Berlin" href="http://www.waschmaschinen-reparaturen-berlin.de">Waschmaschinen Reparatur Berlin</a><!-- 2012070100030 Temurbas@autoteile-->
 </div>
 </div>
 </div>
@@ -244,21 +244,18 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2012-04-21  6.7.6-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2012-04-25  6.7.6-8 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Gaussian Filter Fixed.    For some strange reason it was half the width it should be with an    effective sigma of 0.25 (not 0.5).  This was the real reason "variable    blur" was not blurring enough.</dd>
+<dt>2012-04-24  6.7.6-8 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Colorspace round-trip unit tests now work for Q32.</dd>
+<dt>2012-04-23  6.7.6-8 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Added the RobidouxSharp filter (originally defined Dec 2011)</dd>
+  <dd> Fixed Variable Blur - bad blur area calculation    Also Gaussian is sampling properly. Substitute the faster Cubic for now.</dd>
+  <dd> Convert no longer will do an implicit write to a single space image</dd>
+<dt>2012-04-21  6.7.6-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.6-7, SVN revision 7587.</dd>
 <dt>2012-04-21  6.7.6-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Error when doing an implicit (final) write to a single space filename.    This is typically a failed line continuation and is very common.    Using an explicit "-write" will let you do this.</dd>
-<dt>2012-04-20  6.7.6-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <dd> Allow +-X+-Y as geometry arguments.</dd>
-<dt>2012-04-17  6.7.6-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> Distinquish grayscale as sRGB not linear RGB.</dd>
-<dt>2012-04-16  6.7.6-6 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
-  <dd> New version 6.7.6-6, SVN revision 7536.</dd>
-<dt>2012-04-11  6.7.6-6 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
-  <dd> Always unlock the semaphore before returning from the png codec, either    by a "return" or png_error(); changed all Magick*Exception() calls    after setjmp() to png_error() to ensure proper cleanup (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=16883).</dd>
-<dt>2012-04-10  6.7.6-6 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <dd> Fixed log known alpha*kernel normalization bug in morphology convolve.</dd>
-    Convolve kernel weights have been separated from alpha blend handling.    Un-normalized kernels applied to images with active alpha will no longer    be auto-normalized due to the effect of alpha blending.</dd>
 <dt>2012-04-20  6.7.6-7 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
   <dd> Allow +-X+-Y as geometry arguments.</dd>
 <dt>2012-04-17  6.7.6-7 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
