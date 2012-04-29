@@ -1,3 +1,6 @@
+2012-04-29  6.7.6-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.6-8, SVN revision 7705.
+
 2012-04-25  6.7.6-8 Anthony Thyssen <A.Thyssen@griffith...>
   * Gaussian Filter Fixed.
     For some strange reason it was half the width it should be with an
