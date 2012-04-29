@@ -263,6 +263,139 @@ MagickExport CacheView *DestroyCacheView(CacheView *cache_view)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t C a c h e V i e w A u t h e n t i c P i x e l s                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetCacheViewAuthenticPixels() gets pixels from the in-memory or disk pixel
+%  cache as defined by the geometry parameters.   A pointer to the pixels is
+%  returned if the pixels are transferred, otherwise a NULL is returned.
+%
+%  The format of the GetCacheViewAuthenticPixels method is:
+%
+%      Quantum *GetCacheViewAuthenticPixels(CacheView *cache_view,
+%        const ssize_t x,const ssize_t y,const size_t columns,
+%        const size_t rows,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o cache_view: the cache view.
+%
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Quantum *GetCacheViewAuthenticPixels(CacheView *cache_view,
+  const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
+  ExceptionInfo *exception)
+{
+  const int
+    id = GetOpenMPThreadId();
+
+  Quantum
+    *pixels;
+
+  assert(cache_view != (CacheView *) NULL);
+  assert(cache_view->signature == MagickSignature);
+  assert(id < (int) cache_view->number_threads);
+  pixels=GetAuthenticPixelCacheNexus(cache_view->image,x,y,columns,rows,
+    cache_view->nexus_info[id],exception);
+  return(pixels);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e V i e w A u t h e n t i c M e t a c o n t e n t           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetCacheViewAuthenticMetacontent() returns the meta-content corresponding
+%  with the last call to SetCacheViewIndexes() or
+%  GetCacheViewAuthenticMetacontent().  The meta-content are authentic and can
+%  be updated.
+%
+%  The format of the GetCacheViewAuthenticMetacontent() method is:
+%
+%      void *GetCacheViewAuthenticMetacontent(CacheView *cache_view)
+%
+%  A description of each parameter follows:
+%
+%    o cache_view: the cache view.
+%
+*/
+MagickExport void *GetCacheViewAuthenticMetacontent(CacheView *cache_view)
+{
+  const int
+    id = GetOpenMPThreadId();
+
+  void
+    *metacontent;
+
+  assert(cache_view != (CacheView *) NULL);
+  assert(cache_view->signature == MagickSignature);
+  assert(cache_view->image->cache != (Cache) NULL);
+  assert(id < (int) cache_view->number_threads);
+  metacontent=GetPixelCacheNexusMetacontent(cache_view->image->cache,
+    cache_view->nexus_info[id]);
+  return(metacontent);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C a c h e V i e w A u t h e n t i c P i x e l Q u e u e             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetCacheViewAuthenticPixelQueue() returns the pixels associated with the
+%  last call to QueueCacheViewAuthenticPixels() or
+%  GetCacheViewAuthenticPixels().  The pixels are authentic and therefore can be
+%  updated.
+%
+%  The format of the GetCacheViewAuthenticPixelQueue() method is:
+%
+%      Quantum *GetCacheViewAuthenticPixelQueue(CacheView *cache_view)
+%
+%  A description of each parameter follows:
+%
+%    o cache_view: the cache view.
+%
+*/
+MagickExport Quantum *GetCacheViewAuthenticPixelQueue(CacheView *cache_view)
+{
+  const int
+    id = GetOpenMPThreadId();
+
+  Quantum
+    *pixels;
+
+  assert(cache_view != (CacheView *) NULL);
+  assert(cache_view->signature == MagickSignature);
+  assert(cache_view->image->cache != (Cache) NULL);
+  assert(id < (int) cache_view->number_threads);
+  pixels=GetPixelCacheNexusPixels(cache_view->image->cache,
+    cache_view->nexus_info[id]);
+  return(pixels);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t C a c h e V i e w C o l o r s p a c e                               %
 %                                                                             %
 %                                                                             %
@@ -340,13 +473,45 @@ MagickExport MagickSizeType GetCacheViewExtent(const CacheView *cache_view)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t C a c h e V i e w I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetCacheViewImage() returns the image associated with the specified view.
+%
+%  The format of the GetCacheViewImage method is:
+%
+%      const Image *GetCacheViewImage(const CacheView *cache_view)
+%
+%  A description of each parameter follows:
+%
+%    o cache_view: the cache view.
+%
+*/
+MagickExport const Image *GetCacheViewImage(const CacheView *cache_view)
+{
+  assert(cache_view != (CacheView *) NULL);
+  assert(cache_view->signature == MagickSignature);
+  if (cache_view->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      cache_view->image->filename);
+  return(cache_view->image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t C a c h e V i e w S t o r a g e C l a s s                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetCacheViewStorageClass() returns the image storage class  associated with
+%  GetCacheViewStorageClass() returns the image storage class associated with
 %  the specified view.
 %
 %  The format of the GetCacheViewStorageClass method is:
@@ -366,140 +531,6 @@ MagickExport ClassType GetCacheViewStorageClass(const CacheView *cache_view)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_view->image->filename);
   return(GetPixelCacheStorageClass(cache_view->image->cache));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t C a c h e V i e w A u t h e n t i c P i x e l s                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetCacheViewAuthenticPixels() gets pixels from the in-memory or disk pixel
-%  cache as defined by the geometry parameters.   A pointer to the pixels is
-%  returned if the pixels are transferred, otherwise a NULL is returned.
-%
-%  The format of the GetCacheViewAuthenticPixels method is:
-%
-%      Quantum *GetCacheViewAuthenticPixels(CacheView *cache_view,
-%        const ssize_t x,const ssize_t y,const size_t columns,
-%        const size_t rows,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o cache_view: the cache view.
-%
-%    o x,y,columns,rows:  These values define the perimeter of a region of
-%      pixels.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Quantum *GetCacheViewAuthenticPixels(CacheView *cache_view,
-  const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
-  ExceptionInfo *exception)
-{
-  const int
-    id = GetOpenMPThreadId();
-
-  Quantum
-    *pixels;
-
-  assert(cache_view != (CacheView *) NULL);
-  assert(cache_view->signature == MagickSignature);
-  assert(id < (int) cache_view->number_threads);
-  pixels=GetAuthenticPixelCacheNexus(cache_view->image,x,y,columns,rows,
-    cache_view->nexus_info[id],exception);
-  return(pixels);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t C a c h e V i e w A u t h e n t i c M e t a c o n t e n t           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetCacheViewAuthenticMetacontent() returns the meta-content corresponding
-%  with the last call to SetCacheViewIndexes() or
-%  GetCacheViewAuthenticMetacontent().  The meta-content are authentic and can
-%  be updated.
-%
-%  The format of the GetCacheViewAuthenticMetacontent() method is:
-%
-%      void *GetCacheViewAuthenticMetacontent(CacheView *cache_view)
-%
-%  A description of each parameter follows:
-%
-%    o cache_view: the cache view.
-%
-*/
-MagickExport void *GetCacheViewAuthenticMetacontent(
-  CacheView *cache_view)
-{
-  const int
-    id = GetOpenMPThreadId();
-
-  void
-    *metacontent;
-
-  assert(cache_view != (CacheView *) NULL);
-  assert(cache_view->signature == MagickSignature);
-  assert(cache_view->image->cache != (Cache) NULL);
-  assert(id < (int) cache_view->number_threads);
-  metacontent=GetPixelCacheNexusMetacontent(cache_view->image->cache,
-    cache_view->nexus_info[id]);
-  return(metacontent);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t C a c h e V i e w A u t h e n t i c P i x e l Q u e u e             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetCacheViewAuthenticPixelQueue() returns the pixels associated with the
-%  last call to QueueCacheViewAuthenticPixels() or
-%  GetCacheViewAuthenticPixels().  The pixels are authentic and therefore can be
-%  updated.
-%
-%  The format of the GetCacheViewAuthenticPixelQueue() method is:
-%
-%      Quantum *GetCacheViewAuthenticPixelQueue(CacheView *cache_view)
-%
-%  A description of each parameter follows:
-%
-%    o cache_view: the cache view.
-%
-*/
-MagickExport Quantum *GetCacheViewAuthenticPixelQueue(CacheView *cache_view)
-{
-  const int
-    id = GetOpenMPThreadId();
-
-  Quantum
-    *pixels;
-
-  assert(cache_view != (CacheView *) NULL);
-  assert(cache_view->signature == MagickSignature);
-  assert(cache_view->image->cache != (Cache) NULL);
-  assert(id < (int) cache_view->number_threads);
-  pixels=GetPixelCacheNexusPixels(cache_view->image->cache,
-    cache_view->nexus_info[id]);
-  return(pixels);
 }
 
 /*
