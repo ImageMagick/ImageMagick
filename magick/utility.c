@@ -780,7 +780,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
       }
     if ((*option == '"') || (*option == '\''))
       continue;
-    GetPathComponent(option,CanonicalPath,filename);
+    GetPathComponent(option,TailPath,filename);
     GetPathComponent(option,MagickPath,magick);
     if ((LocaleCompare(magick,"CAPTION") == 0) ||
         (LocaleCompare(magick,"LABEL") == 0) ||
@@ -818,7 +818,7 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
           Generate file list from file list (e.g. @filelist.txt).
         */
         exception=AcquireExceptionInfo();
-        files=FileToString(filename+1,~0,exception);
+        files=FileToString(option+1,~0,exception);
         exception=DestroyExceptionInfo(exception);
         if (files == (char *) NULL)
           continue;
