@@ -102,6 +102,9 @@ static const unsigned char
 %  AcquireString() allocates memory for a string and copies the source string
 %  to that memory location (and returns it).
 %
+%  The allocated space for the new string is the source string length
+%  plus MaxTextExtent, allowing room for the string to grow.
+%
 %  The returned string shoud be freed using DestoryString() or
 %  RelinquishMagickMemory() when finished.
 %
@@ -239,13 +242,16 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  CloneString() allocates memory for the destination string and copies
-%  the source string to that memory location.
+%  the source string to that memory location.  Extra space of MaxTextExtent
+%  is also included in the resulting memory allocation.
 %
-%  If source is a NULL pointer the destination will also be set to a NULL
-%  point (any existing string is freed).  Otherwise the memory is allocated
-%  (or resized) and the source string copied into it.
+%  If source is a NULL pointer the destination string will be freed and set to
+%  a NULL pointer.  The value stored in the destination is also returned.
 %
-%  A pointer to the copy of the source string, or NULL is returned.
+%  When finished the non-NULL string should be freed using DestoryString()
+%
+%  See also ConstantString(), below.
+%
 %
 %  The format of the CloneString method is:
 %
@@ -667,9 +673,14 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConstantString() allocates memory for a string and copies the source string
-%  to that memory location (and returns it).  Use it for strings that you do
-%  do not expect to change over its lifetime.
+%  ConstantString() allocates exactly the needed memory for a string and
+%  copies the source string to that memory location.  A NULL string pointer
+%  will allocate an empty string containing just the NUL character.
+%
+%  You should use CloneString() if you expect that the sting may be modified
+%  or may grow in size at a later date.
+%
+%  When finished the string should be freed using DestoryString()
 %
 %  The format of the ConstantString method is:
 %
