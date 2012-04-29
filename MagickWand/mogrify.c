@@ -1252,7 +1252,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if (kernel_info == (KernelInfo *) NULL)
               break;
             /* kernel_info->bias=(*image)->bias; -- FUTURE: check this path! */
-            mogrify_image=ConvolveImage(*image,kernel_info,exception);
+            mogrify_image=MorphologyImage(*image,CorrelateMorphology,1,
+              kernel_info,exception);
             kernel_info=DestroyKernelInfo(kernel_info);
             break;
           }
