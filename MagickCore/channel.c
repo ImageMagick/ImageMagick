@@ -645,6 +645,7 @@ MagickExport Image *SeparateImage(const Image *image,
       return((Image *) NULL);
     }
   separate_image->colorspace=GRAYColorspace;
+  separate_image->matte=MagickFalse;
   /*
     Separate image.
   */
