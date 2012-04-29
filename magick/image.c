@@ -2592,10 +2592,10 @@ MagickExport Image *SeparateImages(const Image *image,const ChannelType channel,
       (void) SeparateImageChannel(separate_image,BlackChannel);
       AppendImageToList(&images,separate_image);
     }
-  if ((channel & OpacityChannel) != 0)
+  if ((channel & AlphaChannel) != 0)
     {
       separate_image=CloneImage(image,0,0,MagickTrue,exception);
-      (void) SeparateImageChannel(separate_image,OpacityChannel);
+      (void) SeparateImageChannel(separate_image,TrueAlphaChannel);
       AppendImageToList(&images,separate_image);
     }
   return(images);
