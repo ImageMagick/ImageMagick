@@ -787,9 +787,9 @@ MagickExport MagickBooleanType ExpandFilenames(int *number_arguments,
         (LocaleCompare(magick,"PANGO") == 0) ||
         (LocaleCompare(magick,"VID") == 0))
       continue;
-    if ((IsGlob(filename) == MagickFalse) && (*filename != '@'))
+    if ((IsGlob(filename) == MagickFalse) && (*option != '@'))
       continue;
-    if (*filename != '@')
+    if (*option != '@')
       {
         /*
           Generate file list from wildcard filename (e.g. *.jpg).
