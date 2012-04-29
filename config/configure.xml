@@ -9,9 +9,9 @@
   <configure name="NAME" value="ImageMagick"/>
   <configure name="VERSION" value="6.7.6"/>
   <configure name="LIB_VERSION" value="0x676"/>
-  <configure name="LIB_VERSION_NUMBER" value="6,7,6,8"/>
-  <configure name="SVN_REVISION" value="7587" />
-  <configure name="RELEASE_DATE" value="2012-04-22"/>
+  <configure name="LIB_VERSION_NUMBER" value="6,7,6,9"/>
+  <configure name="SVN_REVISION" value="7703" />
+  <configure name="RELEASE_DATE" value="2012-04-29"/>
   <configure name="CONFIGURE" value="./configure "/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
