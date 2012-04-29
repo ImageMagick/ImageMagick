@@ -775,15 +775,15 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
     goto Magick_Command_Exit;
   }
 
-  /* List Information and Abort */
-  if (LocaleCompare("-list",argv[1]) == 0) {
-    CLIOption(cli_wand, argv[1], argv[2]);
-    goto Magick_Command_Exit;
-  }
-
   /* Special "concatenate option (hidden) for delegate usage */
   if (LocaleCompare("-concatenate",argv[1]) == 0) {
     ConcatenateImages(argc,argv,exception);
+    goto Magick_Command_Exit;
+  }
+
+  /* List Information and Abort */
+  if (argc == 3 && LocaleCompare("-list",argv[1]) == 0) {
+    CLIOption(cli_wand, argv[1], argv[2]);
     goto Magick_Command_Exit;
   }
 
