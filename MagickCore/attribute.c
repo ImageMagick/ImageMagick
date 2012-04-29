@@ -809,7 +809,9 @@ MagickExport MagickBooleanType IsImageMonochrome(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  IsImageOpaque() returns MagickTrue if none of the pixels in the image have
-%  an opacity value other than opaque (0).
+%  an alpha value other than OpaqueAlpha (QuantumRange).
+%
+%  Will return true immediatally is alpha channel is not available.
 %
 %  The format of the IsImageOpaque method is:
 %
@@ -845,8 +847,10 @@ MagickExport MagickBooleanType IsImageOpaque(const Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+
   if (image->matte == MagickFalse)
     return(MagickTrue);
+
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
