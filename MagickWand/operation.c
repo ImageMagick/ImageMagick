@@ -4326,7 +4326,7 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
     for (i=0; i<argc; i++) {
       Image *
         new_images;
-#if 1
+#if 0
 fprintf(stderr, "DEBUG: Reading image: \"%s\"\n", argv[i]);
 #endif
       if (IfMagickTrue(_image_info->ping))
