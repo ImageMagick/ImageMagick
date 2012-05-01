@@ -619,7 +619,8 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char *BImgBuff = NULL;
   double MinVal, MaxVal;
   size_t Unknown6;
-  unsigned z;
+  unsigned z, z2;
+  unsigned Frames;
   int logging;
   int sample_size;
   MagickOffsetType filepos=0x80;
@@ -686,6 +687,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   filepos = TellBlob(image);
   while(!EOFBlob(image)) /* object parser loop */
   {
+    Frames = 1;
     (void) SeekBlob(image,filepos,SEEK_SET);
     /* printf("pos=%X\n",TellBlob(image)); */
 
@@ -725,11 +727,16 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
     switch(MATLAB_HDR.DimFlag)
     {     
-      case  8: z=1; break;      /* 2D matrix*/
-      case 12: z = ReadBlobXXXLong(image2);  /* 3D matrix RGB*/
+      case  8: z2=z=1; break;      /* 2D matrix*/
+      case 12: z2=z = ReadBlobXXXLong(image2);  /* 3D matrix RGB*/
            Unknown6 = ReadBlobXXXLong(image2);
            (void) Unknown6;
          if(z!=3) ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
+         break;
+      case 16: z2=z = ReadBlobXXXLong(image2);  /* 4D matrix animation */
+         if(z!=3 && z!=1)
+           ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
+          Frames = ReadBlobXXXLong(image2);
          break;
       default: ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported");
     }  
@@ -776,6 +783,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   
     (void) ReadBlob(image2, 4, (unsigned char *) &size);     /* data size */
 
+NEXT_FRAME:
       /* Image is gray when no complex flag is set and 2D Matrix */
     if ((MATLAB_HDR.DimFlag == 8) &&
         ((MATLAB_HDR.StructureFlag & FLAG_COMPLEX) == 0))
@@ -1011,8 +1019,31 @@ done_reading:
       /* row scan buffer is no longer needed */
     RelinquishMagickMemory(BImgBuff);
     BImgBuff = NULL;
+
+    if(--Frames>0)
+    {
+      z = z2;
+      if(image2==NULL) image2 = image;
+      goto NEXT_FRAME;
+    }
+
+    if(image2!=NULL)
+      if(image2!=image)   /* Does shadow temporary decompressed image exist? */
+      {
+/*  CloseBlob(image2); */
+        DeleteImageFromList(&image2);
+        if(clone_info)
+        {
+          if(clone_info->file)
+          {
+            fclose(clone_info->file);
+            clone_info->file = NULL;
+            (void) unlink(clone_info->filename);
+          }
+         }
+       }
   }
-    clone_info=DestroyImageInfo(clone_info);
+  clone_info=DestroyImageInfo(clone_info);
 
   RelinquishMagickMemory(BImgBuff);
   CloseBlob(image);
