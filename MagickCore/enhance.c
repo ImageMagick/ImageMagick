@@ -2160,10 +2160,6 @@ static inline MagickRealType LevelPixel(const double black_point,
     level_pixel,
     scale;
 
-  if (pixel < black_point)
-    return(0.0);
-  if (pixel > white_point)
-    return((MagickRealType) QuantumRange);
   scale=(white_point != black_point) ? 1.0/(white_point-black_point) : 1.0;
   level_pixel=(MagickRealType) QuantumRange*pow(scale*((double) pixel-
     black_point),1.0/gamma);
