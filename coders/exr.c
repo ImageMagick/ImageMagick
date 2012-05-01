@@ -199,6 +199,8 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=max_x-min_x+1UL;
   image->rows=max_y-min_y+1UL;
   image->matte=MagickTrue;
+  image->colorspace=RGBColorspace;
+  image->gamma=1.0;
   if (image_info->ping != MagickFalse)
     {
       (void) ImfCloseInputFile(file);
