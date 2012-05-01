@@ -172,17 +172,20 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     image->columns=(size_t) (metrics.width+draw_info->stroke_width+1.5);
   if (image->columns == 0)
     image->columns=(size_t) (draw_info->pointsize+draw_info->stroke_width+1.5);
-  if ((draw_info->gravity == UndefinedGravity) ||
-      (draw_info->direction == RightToLeftDirection))
+  if (draw_info->gravity == UndefinedGravity)
     {
       (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
         -metrics.bounds.x1+draw_info->stroke_width/2.0,metrics.ascent+
         draw_info->stroke_width/2.0);
+      (void) CloneString(&draw_info->geometry,geometry);
+    }
+  if (draw_info->direction == RightToLeftDirection)
+    {
       if (draw_info->direction == RightToLeftDirection)
         (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
           image->columns-(metrics.bounds.x2+draw_info->stroke_width/2.0),
-          metrics.ascent+draw_info->stroke_width/2.0);
-      draw_info->geometry=AcquireString(geometry);
+          draw_info->stroke_width/2.0);
+      (void) CloneString(&draw_info->geometry,geometry);
     }
   if (image->rows == 0)
     image->rows=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);

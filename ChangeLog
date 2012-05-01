@@ -1,5 +1,8 @@
 2012-05-01  6.7.6-9 Cristy  <quetzlzacatenango@image...>
-  * EXR images are in the linear RGB colorspace with a gamma of 1.0.
+  * EXR images are in the linear RGB colorspace with a gamma of 1.0 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=20895).
+  * Correct annotation offset for right-to-left labels (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20884).
 
 2012-04-29  6.7.6-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-8, SVN revision 7705.
