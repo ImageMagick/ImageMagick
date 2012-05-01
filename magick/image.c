@@ -2869,22 +2869,17 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     case OpaqueAlphaChannel:
     {
       status=SetImageOpacity(image,OpaqueOpacity);
-      image->matte=MagickTrue;
       break;
     }
     case SetAlphaChannel:
     {
       if (image->matte == MagickFalse)
-        {
-          status=SetImageOpacity(image,OpaqueOpacity);
-          image->matte=MagickTrue;
-        }
+        status=SetImageOpacity(image,OpaqueOpacity);
       break;
     }
     case TransparentAlphaChannel:
     {
       status=SetImageOpacity(image,TransparentOpacity);
-      image->matte=MagickTrue;
       break;
     }
     case UndefinedAlphaChannel:
