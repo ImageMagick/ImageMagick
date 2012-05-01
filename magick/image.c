@@ -1157,7 +1157,7 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
         q=pixels;
         for (x=0; x < (ssize_t) combine_image->columns; x++)
         {
-          SetPixelOpacity(q,PixelIntensityToQuantum(p));
+          SetPixelAlpha(q,PixelIntensityToQuantum(p));
           p++;
           q++;
         }
