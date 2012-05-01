@@ -1951,7 +1951,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobLSBLong(image,0x0000ff00U);  /* Green mask */
         (void) WriteBlobLSBLong(image,0x000000ffU);  /* Blue mask */
         (void) WriteBlobLSBLong(image,0xff000000U);  /* Alpha mask */
-        (void) WriteBlobLSBLong(image,0x00000001U);  /* CSType==Calib. RGB */
+        (void) WriteBlobLSBLong(image,0x73524742U);  /* sRGB */
         (void) WriteBlobLSBLong(image,(unsigned int)
           image->chromaticity.red_primary.x*0x3ffffff);
         (void) WriteBlobLSBLong(image,(unsigned int)
