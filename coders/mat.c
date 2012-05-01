@@ -1039,9 +1039,9 @@ done_reading:
           }
         }
         }
-    clone_info=DestroyImageInfo(clone_info);
   }
 
+  clone_info=DestroyImageInfo(clone_info);
   RelinquishMagickMemory(BImgBuff);
   CloseBlob(image);
 
