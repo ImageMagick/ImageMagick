@@ -1,3 +1,6 @@
+2012-05-01  6.7.6-9 Cristy  <quetzlzacatenango@image...>
+  * EXR images are in the linear RGB colorspace with a gamma of 1.0.
+
 2012-04-29  6.7.6-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-8, SVN revision 7705.
 
