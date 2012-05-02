@@ -5,6 +5,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20884).
   * The -level 100x0% now produces the equivalent of -negate (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20889).
+  * Virtual pixel transparent no longer cause fatal exception (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?t=20903).
 
 2012-04-29  6.7.6-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-8, SVN revision 7705.
