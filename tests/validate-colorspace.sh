@@ -66,7 +66,7 @@ fi
 $error && exit 1
 
 test_color() {
-  test="sRGB(rose)"
+  test="sRGB"
   cs='';
   for i in "$@"; do
     test="${test}->$i"        # format of the test being performed
