@@ -2070,7 +2070,6 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      status=sRGBTransformImage(image,RGBColorspace,exception);
       if (SetImageColorspace(image,sRGBColorspace,exception) == MagickFalse)
         return(MagickFalse);
       return(status);
