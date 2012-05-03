@@ -16,7 +16,7 @@
 #
 . ${srcdir}/tests/common.sh
 
-depth=`eval convert xc:none -format '%[fx:QuantumRange]' info:-`
+depth=`eval ${CONVERT} xc:none -format '%[fx:QuantumRange]' info:-`
 if [ "X$depth" == "X255" ]; then
   exit 0
 fi
