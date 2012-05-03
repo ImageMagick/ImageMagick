@@ -16,7 +16,7 @@
 #
 . ${srcdir}/tests/common.sh
 
-depth=`eval convert xc:none -format '%[fx:QuantumRange]' info:-`
+depth=`eval ${MAGICK} xc:none -format '%[fx:QuantumRange]' info:-`
 if [ "X$depth" == "X255" ]; then
   exit 0
 fi
@@ -29,9 +29,9 @@ out="-format '%[fx:int(255*r+.5)],%[fx:int(255*g+.5)],%[fx:int(255*b+.5)]' info:
 
 # Colors to compare results to.
 error=false
-average=`eval ${CONVERT} "$in" -noop "$out"`
-too_dark=`eval ${CONVERT} "$in" -colorspace RGB "$out"`
-too_light=`eval ${CONVERT} "$in" -set colorspace RGB -colorspace sRGB "$out"`
+average=`eval ${MAGICK} "$in" -noop "$out"`
+too_dark=`eval ${MAGICK} "$in" -colorspace RGB "$out"`
+too_light=`eval ${MAGICK} "$in" -set colorspace RGB -colorspace sRGB "$out"`
 format='%-30s%s\n'        # results formating
 format2='%-30s%-14s%s\n'
 
@@ -44,9 +44,9 @@ echo ''
 # Sanity checks
 #
 # NOTE: as a extra validation on sanity checks below...
-#    eval ${CONVERT} "$in" -gamma .454545 "$out"
+#    eval ${MAGICK} "$in" -gamma .454545 "$out"
 # produces a value of  74,25,20   which is close to 73,26,21 below.
-#    eval ${CONVERT} "$in" -gamma 2.2 "$out"
+#    eval ${MAGICK} "$in" -gamma 2.2 "$out"
 # produces a value of  198,158,151  whcih is close to 199,160,152 below.
 #
 # Actual values used below come from IM v6.5.4-7 colorspace conversions
@@ -72,7 +72,7 @@ test_color() {
     test="${test}->$i"        # format of the test being performed
     cs="$cs -colorspace $i"   # colorspace operations to perform test
   done
-  color=`eval ${CONVERT} "$in" $cs "$out"`
+  color=`eval ${MAGICK} "$in" $cs "$out"`
 
   if [ "X$color" = "X$average" ]; then
     printf "$format" "$test" "good"
