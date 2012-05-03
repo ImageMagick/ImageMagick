@@ -1271,8 +1271,14 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   if ((colorspace == sRGBColorspace) || (colorspace == TransparentColorspace))
     return(TransformRGBImage(image,colorspace));
   status=MagickTrue;
+  if (image->colorspace == RGBColorspace)
+    status=TransformRGBImage(image,sRGBColorspace);
+  if (status == MagickFalse)
+    return(status);
   if (IssRGBColorspace(image->colorspace) == MagickFalse)
     status=TransformRGBImage(image,image->colorspace);
+  if (status == MagickFalse)
+    return(status);
   /*
     Convert the reference image from sRGB to an alternate colorspace.
   */
