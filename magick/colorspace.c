@@ -2066,7 +2066,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      status=RGBTransformImage(image,RGBColorspace);
       if (SetImageColorspace(image,sRGBColorspace) == MagickFalse)
         return(MagickFalse);
       return(status);
