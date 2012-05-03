@@ -686,15 +686,21 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
   register ssize_t
     i;
 
+  if (IfMagickFalse(ExpandFilenames(&argc,&argv)))
+    ThrowFileException(exception,ResourceLimitError,"MemoryAllocationFailed",
+         GetExceptionMessage(errno));
+
   output=fopen_utf8(argv[argc-1],"wb");
   if (output == (FILE *) NULL) {
     ThrowFileException(exception,FileOpenError,"UnableToOpenFile",argv[argc-1]);
     return(MagickFalse);
   }
   for (i=2; i < (ssize_t) (argc-1); i++) {
+#if 0
+    fprintf(stderr, "DEBUG: Concatenate Image: \"%s\"\n", argv[i]);
+#endif
     input=fopen_utf8(argv[i],"rb");
-    if (input == (FILE *) NULL)
-      {
+    if (input == (FILE *) NULL) {
         ThrowFileException(exception,FileOpenError,"UnableToOpenFile",argv[i]);
         continue;
       }
