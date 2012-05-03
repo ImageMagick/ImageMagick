@@ -773,7 +773,7 @@ int main( int /*argc*/, char ** argv)
     //
     // gamma
     //
-    if ( image.gamma() != 1.0000f/2.20000f )
+    if ( image.gamma() != 1.0000f/2.2000f )
       {
 	++failures;
 	cout << "Line: " << __LINE__
