@@ -1644,6 +1644,9 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   assert(composite_image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      (IsGrayColorspace(composite_image->colorspace) == MagickFalse))
+    (void) TransformImageColorspace(image,sRGBColorspace);
   GetMagickPixelPacket(image,&zero);
   exception=(&image->exception);
   destination_image=(Image *) NULL;

@@ -48,6 +48,7 @@
 #include "magick/color-private.h"
 #include "magick/colormap.h"
 #include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/configure.h"
 #include "magick/constitute.h"
 #include "magick/decorate.h"
@@ -551,6 +552,8 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
     return(MagickTrue);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace);
   GetMagickPixelPacket(image,&threshold);
   flags=ParseGeometry(thresholds,&geometry_info);
   threshold.red=geometry_info.rho;
@@ -2016,6 +2019,8 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
     return(MagickTrue);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace);
   flags=ParseGeometry(thresholds,&geometry_info);
   GetMagickPixelPacket(image,&threshold);
   threshold.red=geometry_info.rho;
