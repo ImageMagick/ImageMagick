@@ -1065,6 +1065,8 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
       combine_image=DestroyImage(combine_image);
       return((Image *) NULL);
     }
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) SetImageColorspace(combine_image,sRGBColorspace);
   if ((channel & OpacityChannel) != 0)
     combine_image->matte=MagickTrue;
   (void) SetImageBackgroundColor(combine_image);
@@ -2947,6 +2949,9 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
   assert(image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      (IsGray(&image->background_color) == MagickFalse))
+    (void) TransformImageColorspace(image,sRGBColorspace);
   if ((image->background_color.opacity != OpaqueOpacity) &&
       (image->matte == MagickFalse))
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);

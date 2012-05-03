@@ -49,6 +49,7 @@
 #include "magick/client.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
+#include "magick/colorspace-private.h"
 #include "magick/composite.h"
 #include "magick/composite-private.h"
 #include "magick/constitute.h"
@@ -280,6 +281,8 @@ MagickExport MagickBooleanType AnnotateImage(Image *image,
     }
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace);
   status=MagickTrue;
   for (i=0; textlist[i] != (char *) NULL; i++)
   {

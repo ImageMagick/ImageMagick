@@ -6708,9 +6708,6 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
     number_entries=ReadProfileShort(endian,directory);
     for ( ; entry < number_entries; entry++)
     {
-      int
-        components;
-
       register unsigned char
         *p,
         *q;
@@ -6719,6 +6716,7 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
         number_bytes;
 
       ssize_t
+        components,
         format,
         tag_value;
 
@@ -6732,7 +6730,7 @@ MagickExport MagickBooleanType SyncImageProfiles(Image *image)
         break;
       components=(ssize_t) ((int) ReadProfileLong(endian,q+4));
       number_bytes=(size_t) components*format_bytes[format];
-      if (number_bytes < components)
+      if ((ssize_t) number_bytes < components)
         break;  /* prevent overflow */
       if (number_bytes <= 4)
         p=q+8;
