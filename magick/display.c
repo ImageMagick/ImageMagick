@@ -4295,7 +4295,6 @@ static MagickBooleanType XCompositeImage(Display *display,
         Create mattes for blending.
       */
       (void) SetImageAlphaChannel(composite_image,OpaqueAlphaChannel);
-      composite_image->matte=MagickTrue;
       opacity=(Quantum) (ScaleQuantumToChar((Quantum) QuantumRange)-
         ((ssize_t) ScaleQuantumToChar((Quantum) QuantumRange)*blend)/100);
       if (SetImageStorageClass(image,DirectClass) == MagickFalse)
