@@ -1871,7 +1871,10 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
       return(integral_image);
     }
   if (integral_image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(integral_image,OpaqueAlphaChannel);
+    {
+      (void) SetImageAlphaChannel(integral_image,OpaqueAlphaChannel);
+      integral_image->matte=MagickTrue;
+    }
   /*
     Compute image size.
   */
@@ -1895,7 +1898,10 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     Shear the image.
   */
   if (shear_image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(shear_image,OpaqueAlphaChannel);
+    {
+      (void) SetImageAlphaChannel(shear_image,OpaqueAlphaChannel);
+      shear_image->matte=MagickTrue;
+    }
   status=XShearImage(shear_image,shear.x,image->columns,image->rows,x_offset,
     (ssize_t) (shear_image->rows-image->rows)/2,exception);
   if (status == MagickFalse)
@@ -2023,7 +2029,10 @@ MagickExport Image *ShearRotateImage(const Image *image,const double degrees,
       return(integral_image);
     }
   if (integral_image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(integral_image,OpaqueAlphaChannel);
+    {
+      (void) SetImageAlphaChannel(integral_image,OpaqueAlphaChannel);
+      integral_image->matte=MagickTrue;
+    }
   /*
     Compute image size.
   */

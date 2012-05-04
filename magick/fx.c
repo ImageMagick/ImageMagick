@@ -715,7 +715,10 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
     (void) SetImageColorspace(colorize_image,sRGBColorspace);
   if ((colorize_image->matte == MagickFalse) &&
       (colorize.opacity != OpaqueOpacity))
-    (void) SetImageAlphaChannel(colorize_image,OpaqueAlphaChannel);
+    {
+      (void) SetImageAlphaChannel(colorize_image,OpaqueAlphaChannel);
+      colorize_image->matte=MagickTrue;
+    }
   if (opacity == (const char *) NULL)
     return(colorize_image);
   /*
@@ -3969,6 +3972,7 @@ MagickExport Image *PolaroidImage(const Image *image,const DrawInfo *draw_info,
     }
   (void) QueryColorDatabase("none",&picture_image->background_color,exception);
   (void) SetImageAlphaChannel(picture_image,OpaqueAlphaChannel);
+  picture_image->matte=MagickFalse;
   rotate_image=RotateImage(picture_image,90.0,exception);
   picture_image=DestroyImage(picture_image);
   if (rotate_image == (Image *) NULL)
@@ -4250,7 +4254,10 @@ MagickExport Image *ShadowImage(const Image *image,const double opacity,
   if (border_image == (Image *) NULL)
     return((Image *) NULL);
   if (border_image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(border_image,OpaqueAlphaChannel);
+    {
+      (void) SetImageAlphaChannel(border_image,OpaqueAlphaChannel);
+      border_image->matte=MagickTrue;
+    }
   /*
     Shadow image.
   */

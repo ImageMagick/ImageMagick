@@ -1193,12 +1193,16 @@ MagickExport MagickBooleanType ColorFloodfillImage(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+    {
+      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      image->matte=MagickTrue;
+    }
   floodplane_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     &image->exception);
   if (floodplane_image == (Image *) NULL)
     return(MagickFalse);
   (void) SetImageAlphaChannel(floodplane_image,OpaqueAlphaChannel);
+  floodplane_image->matte=MagickTrue;
   /*
     Set floodfill color.
   */
@@ -4407,12 +4411,16 @@ MagickExport MagickBooleanType MatteFloodfillImage(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+    {
+      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      image->matte=MagickTrue;
+    }
   floodplane_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     &image->exception);
   if (floodplane_image == (Image *) NULL)
     return(MagickFalse);
   (void) SetImageAlphaChannel(floodplane_image,OpaqueAlphaChannel);
+  floodplane_image->matte=MagickTrue;
   /*
     Set floodfill color.
   */
@@ -7196,7 +7204,10 @@ MagickExport MagickBooleanType TransparentImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+    {
+      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      image->matte=MagickTrue;
+    }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register ssize_t

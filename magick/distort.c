@@ -1531,6 +1531,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
       /* distort alpha channel separately */
       (void) SeparateImageChannel(tmp_image,TrueAlphaChannel);
       (void) SetImageAlphaChannel(tmp_image,OpaqueAlphaChannel);
+      tmp_image->matte=MagickTrue;
       resize_alpha=DistortImage(tmp_image,AffineDistortion,12,distort_args,
             MagickTrue,exception),
       tmp_image=DestroyImage(tmp_image);

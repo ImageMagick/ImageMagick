@@ -178,7 +178,10 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     (void) TransformImageColorspace(image,sRGBColorspace);
   if ((image->matte == MagickFalse) &&
       (draw_info->fill.opacity != OpaqueOpacity))
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+    {
+      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      image->matte=MagickTrue;
+    }
   /*
     Set floodfill state.
   */
@@ -186,6 +189,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
   if (floodplane_image == (Image *) NULL)
     return(MagickFalse);
   (void) SetImageAlphaChannel(floodplane_image,OpaqueAlphaChannel);
+  floodplane_image->matte=MagickTrue;
   segment_stack=(SegmentInfo *) AcquireQuantumMemory(MaxStacksize,
     sizeof(*segment_stack));
   if (segment_stack == (SegmentInfo *) NULL)
@@ -804,7 +808,10 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
       (IsMagickGray(fill) != MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace);
   if ((fill->opacity != OpaqueOpacity) && (image->matte == MagickFalse))
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+    {
+      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      image->matte=MagickTrue;
+    }
   /*
     Make image color opaque.
   */
@@ -948,7 +955,10 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if (image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+    {
+      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      image->matte=MagickTrue;
+    }
   /*
     Make image color transparent.
   */

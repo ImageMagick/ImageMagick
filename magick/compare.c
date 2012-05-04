@@ -163,6 +163,7 @@ MagickExport Image *CompareImageChannels(Image *image,
   if (difference_image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageAlphaChannel(difference_image,OpaqueAlphaChannel);
+  difference_image->matte=MagickTrue;
   highlight_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (highlight_image == (Image *) NULL)
@@ -178,6 +179,7 @@ MagickExport Image *CompareImageChannels(Image *image,
       return((Image *) NULL);
     }
   (void) SetImageAlphaChannel(highlight_image,OpaqueAlphaChannel);
+  highlight_image->matte=MagickTrue;
   (void) QueryMagickColor("#f1001ecc",&highlight,exception);
   artifact=GetImageArtifact(image,"highlight-color");
   if (artifact != (const char *) NULL)
