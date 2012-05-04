@@ -2213,12 +2213,16 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
           else
             {
               (void) WriteBlobByte(image,'{');
-              for (i=0; i < (ssize_t) strlen(value); i++)
-              {
-                if (value[i] == (int) '}')
-                  (void) WriteBlobByte(image,'\\');
-                (void) WriteBlobByte(image,value[i]);
-              }
+              if (strchr(value,'}') == (char *) NULL)
+                (void) WriteBlob(image,strlen(value),(const unsigned char *)
+                  value);
+              else
+                for (i=0; i < (ssize_t) strlen(value); i++)
+                {
+                  if (value[i] == (int) '}')
+                    (void) WriteBlobByte(image,'\\');
+                  (void) WriteBlobByte(image,value[i]);
+                }
               (void) WriteBlobByte(image,'}');
             }
         }
