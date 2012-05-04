@@ -2332,7 +2332,10 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace);
   if (image->matte == MagickFalse)
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+    {
+      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      image->matte=MagickTrue;
+    }
   /*
     Hald clut image.
   */

@@ -2954,7 +2954,10 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
     (void) TransformImageColorspace(image,sRGBColorspace);
   if ((image->background_color.opacity != OpaqueOpacity) &&
       (image->matte == MagickFalse))
-    (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+    {
+      (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      image->matte=MagickTrue;
+    }
   GetMagickPixelPacket(image,&background);
   SetMagickPixelPacket(image,&image->background_color,(const IndexPacket *)
     NULL,&background);
@@ -3864,7 +3867,10 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (IsGrayImage(image,&image->exception) == MagickFalse)
         status=TransformImageColorspace(image,GRAYColorspace);
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+        {
+          (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+          image->matte=MagickTrue;
+        }
       break;
     }
     case PaletteType:
@@ -3886,7 +3892,10 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (IssRGBColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,sRGBColorspace);
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+        {
+          (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+          image->matte=MagickTrue;
+        }
       (void) BilevelImageChannel(image,AlphaChannel,(double) QuantumRange/2.0);
       quantize_info=AcquireQuantizeInfo(image_info);
       status=QuantizeImage(quantize_info,image);
@@ -3898,7 +3907,10 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (IssRGBColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,sRGBColorspace);
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+        {
+          (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+          image->matte=MagickTrue;
+        }
       quantize_info=AcquireQuantizeInfo(image_info);
       quantize_info->colorspace=TransparentColorspace;
       status=QuantizeImage(quantize_info,image);
@@ -3921,7 +3933,10 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (image->storage_class != DirectClass)
         status=SetImageStorageClass(image,DirectClass);
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+        {
+          (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+          image->matte=MagickTrue;
+        }
       break;
     }
     case ColorSeparationType:
@@ -3948,7 +3963,10 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
       if (image->storage_class != DirectClass)
         status=SetImageStorageClass(image,DirectClass);
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+        {
+          (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+          image->matte=MagickTrue;
+        }
       break;
     }
     case OptimizeType:

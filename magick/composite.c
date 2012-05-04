@@ -1760,6 +1760,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       */
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      image->matte=MagickTrue;
       clip_to_self=MagickFalse;
       break;
     }

@@ -1260,7 +1260,10 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       if (image->storage_class != DirectClass)
         (void) SetImageStorageClass(image,DirectClass);
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+        {
+          (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+          image->matte=MagickTrue;
+        }
     }
   direction=1.0;
   if (draw_info->direction == RightToLeftDirection)
@@ -1786,9 +1789,15 @@ static MagickBooleanType RenderPostscript(Image *image,
         Render fill color.
       */
       if (image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+        {
+          (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+          image->matte=MagickTrue;
+        }
       if (annotate_image->matte == MagickFalse)
-        (void) SetImageAlphaChannel(annotate_image,OpaqueAlphaChannel);
+        {
+          (void) SetImageAlphaChannel(annotate_image,OpaqueAlphaChannel);
+          annotate_image->matte=MagickTrue;
+        }
       fill_color=draw_info->fill;
       exception=(&image->exception);
       annotate_view=AcquireAuthenticCacheView(annotate_image,exception);
