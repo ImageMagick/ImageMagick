@@ -699,10 +699,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         channel to exist, to add transparency.
       */
       if (image->matte == MagickFalse)
-        {
-          (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
-          image->matte=MagickFalse;
-        }
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
     }
     case BlurCompositeOp:
