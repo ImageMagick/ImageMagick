@@ -1811,8 +1811,8 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
       /*
         Transparencies are involved - set alpha distance.
       */
-      pixel=(p->matte != MagickFalse ? GetPixelOpacity(p) :
-        OpaqueOpacity)-(q->matte != MagickFalse ? q->opacity : OpaqueOpacity);
+      pixel=(p->matte != MagickFalse ? GetPixelOpacity(p) : OpaqueOpacity)-
+        (q->matte != MagickFalse ? q->opacity : OpaqueOpacity);
       distance=pixel*pixel;
       if (distance > fuzz)
         return(MagickFalse);

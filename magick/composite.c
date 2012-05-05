@@ -2295,8 +2295,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     composite_indexes=GetCacheViewVirtualIndexQueue(composite_view);
-    source=zero;
-    destination=zero;
+    GetMagickPixelPacket(composite_image,&source);
+    GetMagickPixelPacket(image,&destination);
     hue=0.0;
     saturation=0.0;
     brightness=0.0;
@@ -2759,7 +2759,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         }
         case CopyOpacityCompositeOp:
         {
-          if (source.matte == MagickFalse)
+          if (destination.matte == MagickFalse)
             {
               composite.opacity=(MagickRealType) (QuantumRange-
                 MagickPixelIntensityToQuantum(&source));
