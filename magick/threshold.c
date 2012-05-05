@@ -1672,7 +1672,6 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
     flags;
 
   MagickBooleanType
-    concurrent,
     status;
 
   MagickOffsetType
@@ -1690,6 +1689,9 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
 
   ssize_t
     y;
+
+  unsigned long
+    key;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1733,11 +1735,11 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
       random_info=AcquireRandomInfoThreadSet();
-      concurrent=GetRandomSecretKey(random_info[0]) == ~0UL ? MagickTrue :
-        MagickFalse;
+      key=GetRandomSecretKey(random_info[0]);
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,8) shared(progress,status) omp_concurrent(concurrent)
+      #pragma omp parallel for schedule(static,8) shared(progress,status) \
+        if (key == ~0UL) num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1814,11 +1816,11 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
       return(MagickFalse);
     }
   random_info=AcquireRandomInfoThreadSet();
-  concurrent=GetRandomSecretKey(random_info[0]) == ~0UL ? MagickTrue :
-    MagickFalse;
+  key=GetRandomSecretKey(random_info[0]);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(progress,status) omp_concurrent(concurrent)
+  #pragma omp parallel for schedule(static,8) shared(progress,status) \
+    if (key == ~0UL) num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

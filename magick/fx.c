@@ -81,6 +81,7 @@
 #include "magick/resample.h"
 #include "magick/resample-private.h"
 #include "magick/resize.h"
+#include "magick/resource_.h"
 #include "magick/splay-tree.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
@@ -277,7 +278,6 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
     *noise_image;
 
   MagickBooleanType
-    concurrent,
     status;
 
   MagickOffsetType
@@ -291,6 +291,9 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
 
   ssize_t
     y;
+
+  unsigned long
+    key;
 
   /*
     Initialize noise image attributes.
@@ -320,12 +323,12 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
   status=MagickTrue;
   progress=0;
   random_info=AcquireRandomInfoThreadSet();
-  concurrent=GetRandomSecretKey(random_info[0]) == ~0UL ? MagickTrue :
-    MagickFalse;
+  key=GetRandomSecretKey(random_info[0]);
   image_view=AcquireVirtualCacheView(image,exception);
   noise_view=AcquireAuthenticCacheView(noise_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_concurrent(concurrent)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if (key == ~0UL) num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -4371,7 +4374,6 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
     *sketch_image;
 
   MagickBooleanType
-    concurrent,
     status;
 
   MagickPixelPacket
@@ -4383,6 +4385,9 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
   ssize_t
     y;
 
+  unsigned long
+    key;
+
   /*
     Sketch image.
   */
@@ -4393,11 +4398,11 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
   status=MagickTrue;
   GetMagickPixelPacket(random_image,&zero);
   random_info=AcquireRandomInfoThreadSet();
-  concurrent=GetRandomSecretKey(random_info[0]) == ~0UL ? MagickTrue :
-    MagickFalse;
+  key=GetRandomSecretKey(random_info[0]);
   random_view=AcquireAuthenticCacheView(random_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status) omp_concurrent(concurrent)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    if (key == ~0UL) num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) random_image->rows; y++)
   {
