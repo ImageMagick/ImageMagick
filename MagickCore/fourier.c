@@ -55,6 +55,7 @@
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/property.h"
 #include "MagickCore/quantum-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/thread-private.h"
 #if defined(MAGICKCORE_FFTW_DELEGATE)
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)

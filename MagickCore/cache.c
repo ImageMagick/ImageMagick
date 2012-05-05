@@ -201,7 +201,7 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
   cache_info->id=GetMagickThreadId();
   cache_info->number_threads=number_threads;
   if (number_threads == 0)
-    cache_info->number_threads=GetOpenMPMaximumThreads();
+    cache_info->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   cache_info->nexus_info=AcquirePixelCacheNexus(cache_info->number_threads);
   if (cache_info->nexus_info == (NexusInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -898,7 +898,7 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
           clone_offset+=sizeof(Quantum);
         }
     }
-    if (y < clone_info->rows)
+    if (y < (ssize_t) clone_info->rows)
       {
         /*
           Set remaining columns as undefined.
@@ -1017,7 +1017,7 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
           clone_offset+=length;
         }
       }
-      if (y < clone_info->rows)
+      if (y < (ssize_t) clone_info->rows)
         {
           /*
             Set remaining rows as undefined.
@@ -1856,7 +1856,7 @@ static inline MagickBooleanType ValidatePixelCacheMorphology(const Image *image)
       (memcmp(p,q,image->number_channels*sizeof(*p)) != 0) ||
       (image->metacontent_extent != cache_info->metacontent_extent) ||
       (cache_info->nexus_info == (NexusInfo **) NULL) ||
-      (cache_info->number_threads < GetOpenMPMaximumThreads()))
+      (cache_info->number_threads < (size_t) GetMagickResourceLimit(ThreadResource)))
     return(MagickFalse);
   return(MagickTrue);
 }
@@ -4898,7 +4898,9 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);  /* must be virtual */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status)
+  #pragma omp parallel for schedule(static) shared(status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

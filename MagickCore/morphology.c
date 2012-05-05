@@ -71,6 +71,7 @@
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/prepress.h"
 #include "MagickCore/quantize.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/registry.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/splay-tree.h"
@@ -2586,7 +2587,9 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       x;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-#pragma omp parallel for schedule(static,4) shared(progress,status)
+    #pragma omp parallel for schedule(static,4) shared(progress,status) \
+      if ((image->rows*image->columns) > 8192) \
+        num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
     for (x=0; x < (ssize_t) image->columns; x++)
     {
@@ -2745,7 +2748,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_MorphologyImage)
+          #pragma omp critical (MagickCore_MorphologyImage)
 #endif
           proceed=SetImageProgress(image,MorphologyTag,progress++,image->rows);
           if (proceed == MagickFalse)
@@ -2762,7 +2765,9 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   ** Normal handling of horizontal or rectangular kernels (row by row)
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -3288,7 +3293,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_MorphologyImage)
+        #pragma omp critical (MagickCore_MorphologyImage)
 #endif
         proceed=SetImageProgress(image,MorphologyTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -4581,8 +4586,9 @@ MagickExport void ScaleGeometryKernelInfo (KernelInfo *kernel,
      const char *geometry)
 {
   //GeometryFlags
-  int
+  MagickStatusType
     flags;
+
   GeometryInfo
     args;
 

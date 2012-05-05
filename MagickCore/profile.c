@@ -59,6 +59,7 @@
 #include "MagickCore/property.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/thread-private.h"
@@ -357,7 +358,7 @@ static unsigned short **DestroyPixelThreadSet(unsigned short **pixels)
     i;
 
   assert(pixels != (unsigned short **) NULL);
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (pixels[i] != (unsigned short *) NULL)
       pixels[i]=(unsigned short *) RelinquishMagickMemory(pixels[i]);
   pixels=(unsigned short **) RelinquishMagickMemory(pixels);
@@ -376,7 +377,7 @@ static unsigned short **AcquirePixelThreadSet(const size_t columns,
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=GetMagickResourceLimit(ThreadResource);
   pixels=(unsigned short **) AcquireQuantumMemory(number_threads,
     sizeof(*pixels));
   if (pixels == (unsigned short **) NULL)
@@ -398,7 +399,7 @@ static cmsHTRANSFORM *DestroyTransformThreadSet(cmsHTRANSFORM *transform)
     i;
 
   assert(transform != (cmsHTRANSFORM *) NULL);
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (transform[i] != (cmsHTRANSFORM) NULL)
       cmsDeleteTransform(transform[i]);
   transform=(cmsHTRANSFORM *) RelinquishMagickMemory(transform);
@@ -419,7 +420,7 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(Image *image,
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=GetMagickResourceLimit(ThreadResource);
   transform=(cmsHTRANSFORM *) AcquireQuantumMemory(number_threads,
     sizeof(*transform));
   if (transform == (cmsHTRANSFORM *) NULL)
@@ -6040,7 +6041,9 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             progress=0;
             image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp parallel for schedule(static,4) shared(status)
+            #pragma omp parallel for schedule(static,4) shared(status) \
+              if ((image->rows*image->columns) > 8192) \
+                num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
             for (y=0; y < (ssize_t) image->rows; y++)
             {
@@ -6115,7 +6118,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
                     proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-#pragma omp critical (MagickCore_ProfileImage)
+                  #pragma omp critical (MagickCore_ProfileImage)
 #endif
                   proceed=SetImageProgress(image,ProfileImageTag,progress++,
                     image->rows);

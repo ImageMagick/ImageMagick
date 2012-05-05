@@ -197,6 +197,7 @@
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/thread-private.h"
 
@@ -541,7 +542,9 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
       status=MagickTrue;
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        if ((image->rows*image->columns) > 8192) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1417,7 +1420,7 @@ static RealPixelInfo **DestroyPixelThreadSet(RealPixelInfo **pixels)
     i;
 
   assert(pixels != (RealPixelInfo **) NULL);
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (pixels[i] != (RealPixelInfo *) NULL)
       pixels[i]=(RealPixelInfo *) RelinquishMagickMemory(pixels[i]);
   pixels=(RealPixelInfo **) RelinquishMagickMemory(pixels);
@@ -1435,7 +1438,7 @@ static RealPixelInfo **AcquirePixelThreadSet(const size_t count)
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   pixels=(RealPixelInfo **) AcquireQuantumMemory(number_threads,
     sizeof(*pixels));
   if (pixels == (RealPixelInfo **) NULL)
@@ -2377,7 +2380,9 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(static,4) shared(progress,status)
+    #pragma omp parallel for schedule(static,4) shared(progress,status) \
+      if (image->colors > 256) \
+        num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
     for (i=0; i < (ssize_t) image->colors; i++)
     {
@@ -2404,7 +2409,9 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -3300,7 +3307,9 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
       status=MagickTrue;
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        if ((image->rows*image->columns) > 8192) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -3328,7 +3337,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
           if (colormap_index[intensity] < 0)
             {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_SetGrayscaleImage)
+              #pragma omp critical (MagickCore_SetGrayscaleImage)
 #endif
               if (colormap_index[intensity] < 0)
                 {
@@ -3377,7 +3386,9 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

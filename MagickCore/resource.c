@@ -1146,7 +1146,6 @@ MagickExport MagickBooleanType SetMagickResourceLimit(const ResourceType type,
       if (value != (char *) NULL)
         resource_info.thread_limit=MagickMin(limit,StringToSizeType(value,
           100.0));
-      SetOpenMPMaximumThreads((int) resource_info.thread_limit);
       break;
     }
     case TimeResource:

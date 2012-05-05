@@ -31,9 +31,6 @@ extern "C" {
 #define MagickCachePrefetch(address,mode,locality)
 #endif
 
-#define omp_throttle(factor)  num_threads(omp_get_max_threads() >> \
-   (factor) == 0 ? 1 : omp_get_max_threads() >> (factor))
-
 #if defined(MAGICKCORE_THREAD_SUPPORT)
   typedef pthread_mutex_t MagickMutexType;
 #elif defined(MAGICKCORE_WINDOWS_SUPPORT)
@@ -97,20 +94,11 @@ static inline MagickBooleanType IsMagickThreadEqual(const MagickThreadType id)
 */
 static inline size_t GetOpenMPMaximumThreads(void)
 {
-  static size_t
-    maximum_threads = 1;
-
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  {
-    ssize_t
-      threads;
-
-    threads=omp_get_max_threads();
-    if (threads > (ssize_t) maximum_threads)
-      maximum_threads=threads;
-  }
+  return(omp_get_max_threads());
+#else
+  return(1);
 #endif
-  return(maximum_threads);
 }
 
 static inline int GetOpenMPThreadId(void)

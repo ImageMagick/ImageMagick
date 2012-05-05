@@ -205,7 +205,9 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   threshold_view=AcquireAuthenticCacheView(threshold_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -304,7 +306,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_AdaptiveThresholdImage)
+        #pragma omp critical (MagickCore_AdaptiveThresholdImage)
 #endif
         proceed=SetImageProgress(image,AdaptiveThresholdImageTag,progress++,
           image->rows);
@@ -391,7 +393,9 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(progress,status)
+  #pragma omp parallel for schedule(static,8) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -443,7 +447,7 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_BilevelImage)
+        #pragma omp critical (MagickCore_BilevelImage)
 #endif
         proceed=SetImageProgress(image,ThresholdImageTag,progress++,
           image->rows);
@@ -557,7 +561,9 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(progress,status)
+  #pragma omp parallel for schedule(static,8) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -699,7 +705,9 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(progress,status)
+  #pragma omp parallel for schedule(static,8) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -751,7 +759,7 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_ClampImage)
+        #pragma omp critical (MagickCore_ClampImage)
 #endif
         proceed=SetImageProgress(image,ClampImageTag,progress++,
           image->rows);
@@ -1322,7 +1330,9 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(progress,status)
+  #pragma omp parallel for schedule(static,8) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1390,7 +1400,7 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-#pragma omp critical (MagickCore_OrderedPosterizeImage)
+        #pragma omp critical (MagickCore_OrderedPosterizeImage)
 #endif
         proceed=SetImageProgress(image,DitherImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -1502,7 +1512,8 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,8) shared(progress,status) \
-    if (key == ~0UL) num_threads(GetMagickResourceLimit(ThreadResource))
+    if (((image->rows*image->columns) > 8192) && (key == ~0UL)) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1569,7 +1580,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_RandomThresholdImage)
+        #pragma omp critical (MagickCore_RandomThresholdImage)
 #endif
         proceed=SetImageProgress(image,ThresholdImageTag,progress++,
           image->rows);
@@ -1684,7 +1695,9 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(progress,status)
+  #pragma omp parallel for schedule(static,8) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

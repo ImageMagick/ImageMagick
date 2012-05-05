@@ -334,7 +334,9 @@ static MagickBooleanType CompositeOverImage(Image *image,
   composite_view=AcquireVirtualCacheView(composite_image,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -518,7 +520,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_CompositeImage)
+        #pragma omp critical (MagickCore_CompositeImage)
 #endif
         proceed=SetImageProgress(image,CompositeImageTag,progress++,
           image->rows);
@@ -607,7 +609,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       composite_view=AcquireVirtualCacheView(composite_image,exception);
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        if ((composite_image->rows*composite_image->columns) > 8192) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (y=0; y < (ssize_t) composite_image->rows; y++)
       {
@@ -1166,7 +1170,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   composite_view=AcquireVirtualCacheView(composite_image,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2364,7 +2370,9 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
         Tile texture onto the image background.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(status)
+      #pragma omp parallel for schedule(static) shared(status) \
+        if ((image->rows*image->columns) > 8192) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) texture_image->rows)
       {
@@ -2413,7 +2421,9 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
   texture_view=AcquireVirtualCacheView(texture_image,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status)
+  #pragma omp parallel for schedule(static) shared(status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
