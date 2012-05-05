@@ -1,3 +1,6 @@
+2012-05-04  6.7.6-9 Glenn Randers-Pehrson <glennrp@image...>
+  * Don't write an invalid PNG sRGB chunk when rendering intent is undefined.
+
 2012-05-01  6.7.6-9 Cristy  <quetzlzacatenango@image...>
   * EXR images are in the linear RGB colorspace with a gamma of 1.0 (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=20895).
