@@ -81,6 +81,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/random_.h"
 #include "MagickCore/random-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/segment.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/signature-private.h"
@@ -436,7 +437,6 @@ MagickExport Image *EvaluateImages(const Image *images,
     *evaluate_image;
 
   MagickBooleanType
-    concurrent,
     status;
 
   MagickOffsetType
@@ -453,6 +453,9 @@ MagickExport Image *EvaluateImages(const Image *images,
 
   ssize_t
     y;
+
+  unsigned long
+    key;
 
   /*
     Ensure the image are the same size.
@@ -497,13 +500,13 @@ MagickExport Image *EvaluateImages(const Image *images,
   status=MagickTrue;
   progress=0;
   random_info=AcquireRandomInfoThreadSet();
-  concurrent=GetRandomSecretKey(random_info[0]) == ~0UL ? MagickTrue :
-    MagickFalse;
+  key=GetRandomSecretKey(random_info[0]);
   evaluate_view=AcquireAuthenticCacheView(evaluate_image,exception);
   if (op == MedianEvaluateOperator)
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(progress,status) omp_concurrent(concurrent)
+      #pragma omp parallel for schedule(static) shared(progress,status) \
+        if (key == ~0UL) num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (y=0; y < (ssize_t) evaluate_image->rows; y++)
       {
@@ -610,7 +613,8 @@ MagickExport Image *EvaluateImages(const Image *images,
   else
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(progress,status) omp_concurrent(concurrent)
+      #pragma omp parallel for schedule(static) shared(progress,status) \
+        if (key == ~0UL) num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (y=0; y < (ssize_t) evaluate_image->rows; y++)
       {
@@ -787,7 +791,6 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
     *image_view;
 
   MagickBooleanType
-    concurrent,
     status;
 
   MagickOffsetType
@@ -798,6 +801,9 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
 
   ssize_t
     y;
+
+  unsigned long
+    key;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -810,11 +816,11 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
   status=MagickTrue;
   progress=0;
   random_info=AcquireRandomInfoThreadSet();
-  concurrent=GetRandomSecretKey(random_info[0]) == ~0UL ? MagickTrue :
-    MagickFalse;
+  key=GetRandomSecretKey(random_info[0]);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) omp_concurrent(concurrent)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if (key == ~0UL) num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
