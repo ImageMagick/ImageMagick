@@ -195,6 +195,7 @@
 #include "magick/pixel-private.h"
 #include "magick/quantize.h"
 #include "magick/quantum.h"
+#include "magick/resource_.h"
 #include "magick/string_.h"
 #include "magick/thread-private.h"
 
@@ -535,7 +536,9 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
       exception=(&image->exception);
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        if ((image->rows*image->columns) > 8192) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1385,7 +1388,7 @@ static RealPixelPacket **DestroyPixelThreadSet(RealPixelPacket **pixels)
     i;
 
   assert(pixels != (RealPixelPacket **) NULL);
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (pixels[i] != (RealPixelPacket *) NULL)
       pixels[i]=(RealPixelPacket *) RelinquishMagickMemory(pixels[i]);
   pixels=(RealPixelPacket **) RelinquishMagickMemory(pixels);
@@ -1403,7 +1406,7 @@ static RealPixelPacket **AcquirePixelThreadSet(const size_t count)
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   pixels=(RealPixelPacket **) AcquireQuantumMemory(number_threads,
     sizeof(*pixels));
   if (pixels == (RealPixelPacket **) NULL)
@@ -2327,7 +2330,9 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(static,4) shared(progress,status)
+    #pragma omp parallel for schedule(static,4) shared(progress,status) \
+      if (image->colors > 256) \
+        num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
     for (i=0; i < (ssize_t) image->colors; i++)
     {
@@ -2351,7 +2356,9 @@ MagickExport MagickBooleanType PosterizeImageChannel(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -3251,7 +3258,9 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
       exception=(&image->exception);
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(status)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        if ((image->rows*image->columns) > 8192) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -3283,7 +3292,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
           if (colormap_index[intensity] < 0)
             {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_SetGrayscaleImage)
+              #pragma omp critical (MagickCore_SetGrayscaleImage)
 #endif
               if (colormap_index[intensity] < 0)
                 {
@@ -3329,7 +3338,9 @@ static MagickBooleanType SetGrayscaleImage(Image *image)
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

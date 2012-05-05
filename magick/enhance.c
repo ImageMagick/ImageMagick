@@ -67,6 +67,7 @@
 #include "magick/quantum-private.h"
 #include "magick/resample.h"
 #include "magick/resample-private.h"
+#include "magick/resource_.h"
 #include "magick/statistic.h"
 #include "magick/string_.h"
 #include "magick/string-private.h"
@@ -587,7 +588,9 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4)
+  #pragma omp parallel for schedule(static,4) \
+    if (MaxMap > 256) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
@@ -607,7 +610,9 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
         Apply transfer function to colormap.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+      #pragma omp parallel for schedule(static,4) shared(progress,status) \
+        if (image->colors > 256) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
@@ -633,7 +638,9 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -789,7 +796,9 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   exception=(&image->exception);
   clut_view=AcquireAuthenticCacheView(clut_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4)
+  #pragma omp parallel for schedule(static,4) \
+    if (MaxMap > 256) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
@@ -983,7 +992,9 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1335,7 +1346,9 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   */
   (void) ResetMagickMemory(stretch_map,0,(MaxMap+1)*sizeof(*stretch_map));
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if (MaxMap > 256) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
@@ -1417,7 +1430,9 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
         Stretch colormap.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+      #pragma omp parallel for schedule(static,4) shared(progress,status) \
+        if (image->colors > 256) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
@@ -1453,7 +1468,9 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   status=MagickTrue;
   progress=0;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1637,7 +1654,9 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   image_view=AcquireAuthenticCacheView(image,exception);
   enhance_view=AcquireAuthenticCacheView(enhance_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1873,7 +1892,9 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   white=map[(int) MaxMap];
   (void) ResetMagickMemory(equalize_map,0,(MaxMap+1)*sizeof(*equalize_map));
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if (MaxMap > 256) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
@@ -1904,7 +1925,9 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
         Equalize colormap.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+      #pragma omp parallel for schedule(static,4) shared(progress,status) \
+        if (image->colors > 256) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
@@ -1931,7 +1954,9 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2113,7 +2138,9 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
   (void) ResetMagickMemory(gamma_map,0,(MaxMap+1)*sizeof(*gamma_map));
   if (gamma != 0.0)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4)
+    #pragma omp parallel for schedule(static,4) \
+      if (MaxMap > 256) \
+        num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
     for (i=0; i <= (ssize_t) MaxMap; i++)
       gamma_map[i]=ClampToQuantum((MagickRealType) ScaleMapToQuantum((
@@ -2124,7 +2151,9 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
         Gamma-correct colormap.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+      #pragma omp parallel for schedule(static,4) shared(progress,status) \
+        if (image->colors > 256) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
@@ -2157,7 +2186,9 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2348,7 +2379,9 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
   hald_view=AcquireAuthenticCacheView(hald_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2623,7 +2656,9 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+    #pragma omp parallel for schedule(static,4) shared(progress,status) \
+      if (image->colors > 256) \
+        num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
     for (i=0; i < (ssize_t) image->colors; i++)
     {
@@ -2643,9 +2678,9 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
           black_point,white_point,gamma,(MagickRealType)
           image->colormap[i].blue));
       if ((channel & OpacityChannel) != 0)
-        image->colormap[i].opacity=QuantumRange-(Quantum) ClampToQuantum(
-          LevelPixel(black_point,white_point,gamma,(MagickRealType)
-          (QuantumRange-image->colormap[i].opacity)));
+        image->colormap[i].opacity=(Quantum) (QuantumRange-(Quantum)
+          ClampToQuantum(LevelPixel(black_point,white_point,gamma,
+          (MagickRealType) (QuantumRange-image->colormap[i].opacity))));
       }
   /*
     Level image.
@@ -2655,7 +2690,9 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2807,7 +2844,9 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+    #pragma omp parallel for schedule(static,4) shared(progress,status) \
+      if (image->colors > 256) \
+        num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
     for (i=0; i < (ssize_t) image->colors; i++)
     {
@@ -2821,8 +2860,8 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
       if ((channel & BlueChannel) != 0)
         image->colormap[i].blue=LevelizeValue(image->colormap[i].blue);
       if ((channel & OpacityChannel) != 0)
-        image->colormap[i].opacity=QuantumRange-LevelizeValue(
-             QuantumRange-image->colormap[i].opacity);
+        image->colormap[i].opacity=(Quantum) (QuantumRange-LevelizeValue(
+          QuantumRange-image->colormap[i].opacity));
     }
   /*
     Level image.
@@ -2832,7 +2871,9 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -3281,7 +3322,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
         Modulate colormap.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+      #pragma omp parallel for schedule(static,4) shared(progress,status) \
+        if (image->colors > 256) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
         switch (colorspace)
@@ -3318,7 +3361,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -3466,7 +3511,9 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
         Negate colormap.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(progress,status)
+      #pragma omp parallel for schedule(static) shared(progress,status) \
+        if (image->colors > 256) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
@@ -3495,7 +3542,9 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
   if (grayscale != MagickFalse)
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(progress,status)
+      #pragma omp parallel for schedule(static) shared(progress,status) \
+        if ((image->rows*image->columns) > 8192) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -3568,7 +3617,9 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
     Negate image.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -3781,7 +3832,9 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
       image->filename);
   (void) ResetMagickMemory(sigmoidal_map,0,(MaxMap+1)*sizeof(*sigmoidal_map));
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if (MaxMap > 256) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
@@ -3844,7 +3897,9 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
         Sigmoidal-contrast enhance colormap.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(progress,status)
+      #pragma omp parallel for schedule(static) shared(progress,status) \
+        if (image->colors > 256) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
@@ -3870,7 +3925,9 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
