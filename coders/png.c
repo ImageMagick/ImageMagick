@@ -9923,8 +9923,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
   if ((mng_info->have_write_global_srgb == 0) &&
-      ((image->rendering_intent != UndefinedIntent) ||
-      (image->colorspace == sRGBColorspace)))
+      (image->rendering_intent != UndefinedIntent))
     {
       if (ping_exclude_sRGB == MagickFalse)
         {
