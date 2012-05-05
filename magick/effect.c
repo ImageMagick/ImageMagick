@@ -4395,7 +4395,6 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
     status;
 
   MagickOffsetType
-    concurrent,
     progress;
 
   MagickPixelPacket
@@ -4409,6 +4408,9 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 
   ssize_t
     y;
+
+  unsigned long
+    key;
 
   /*
     Initialize spread image attributes.
@@ -4437,12 +4439,12 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   GetMagickPixelPacket(spread_image,&bias);
   width=GetOptimalKernelWidth1D(radius,0.5);
   random_info=AcquireRandomInfoThreadSet();
-  concurrent=GetRandomSecretKey(random_info[0]) == ~0UL ? MagickTrue :
-    MagickFalse;
+  key=GetRandomSecretKey(random_info[0]);
   image_view=AcquireVirtualCacheView(image,exception);
   spread_view=AcquireAuthenticCacheView(spread_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(progress,status) omp_concurrent(concurrent)
+  #pragma omp parallel for schedule(static,8) shared(progress,status) \
+    if (key == ~0UL) num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) spread_image->rows; y++)
   {
