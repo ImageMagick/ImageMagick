@@ -580,7 +580,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
       q++;
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetMeanSquaredError)
+    #pragma omp critical (MagickCore_GetFuzzDistortion)
 #endif
     for (i=0; i <= (ssize_t) CompositeChannels; i++)
       distortion[i]+=channel_distortion[i];
