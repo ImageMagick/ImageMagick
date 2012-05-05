@@ -66,6 +66,7 @@
 #include "MagickCore/resample-private.h"
 #include "MagickCore/resize.h"
 #include "MagickCore/resize-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
@@ -950,7 +951,8 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     /* Define coefficents for Gaussian */
     resize_filter->coefficient[0]=value;                 /* note sigma too */
     resize_filter->coefficient[1]=1.0/(2.0*value*value); /* sigma scaling */
-    resize_filter->coefficient[2]=1.0/(Magick2PI*value*value);
+    resize_filter->coefficient[2]=(MagickRealType)
+      (1.0/(Magick2PI*value*value));
        /* normalization - not actually needed or used! */
     if ( value > 0.5 )
       resize_filter->support *= value/0.5;  /* increase support */
@@ -1591,7 +1593,9 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
   scale.x=(double) image->columns/resize_image->columns;
   scale.y=(double) image->rows/resize_image->rows;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if ((resize_image->rows*resize_image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) resize_image->rows; y++)
   {
@@ -1650,7 +1654,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_InterpolativeResizeImage)
+        #pragma omp critical (MagickCore_InterpolativeResizeImage)
 #endif
         proceed=SetImageProgress(image,InterpolativeResizeImageTag,progress++,
           image->rows);
@@ -2096,7 +2100,7 @@ static ContributionInfo **DestroyContributionThreadSet(
     i;
 
   assert(contribution != (ContributionInfo **) NULL);
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (contribution[i] != (ContributionInfo *) NULL)
       contribution[i]=(ContributionInfo *) RelinquishAlignedMemory(
         contribution[i]);
@@ -2115,7 +2119,7 @@ static ContributionInfo **AcquireContributionThreadSet(const size_t count)
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   contribution=(ContributionInfo **) AcquireQuantumMemory(number_threads,
     sizeof(*contribution));
   if (contribution == (ContributionInfo **) NULL)
@@ -2199,7 +2203,9 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   image_view=AcquireVirtualCacheView(image,exception);
   resize_view=AcquireAuthenticCacheView(resize_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    if ((resize_image->rows*resize_image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (x=0; x < (ssize_t) resize_image->columns; x++)
   {
@@ -2347,7 +2353,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_HorizontalFilter)
+        #pragma omp critical (MagickCore_HorizontalFilter)
 #endif
         proceed=SetImageProgress(image,ResizeImageTag,(*offset)++,span);
         if( IfMagickFalse(proceed) )
@@ -2416,7 +2422,9 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   image_view=AcquireVirtualCacheView(image,exception);
   resize_view=AcquireAuthenticCacheView(resize_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) resize_image->rows; y++)
   {
@@ -2562,7 +2570,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_VerticalFilter)
+        #pragma omp critical (MagickCore_VerticalFilter)
 #endif
         proceed=SetImageProgress(image,ResizeImageTag,(*offset)++,span);
         if( IfMagickFalse(proceed) )
@@ -2770,7 +2778,9 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   image_view=AcquireVirtualCacheView(image,exception);
   sample_view=AcquireAuthenticCacheView(sample_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if ((sample_image->rows*sample_image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) sample_image->rows; y++)
   {

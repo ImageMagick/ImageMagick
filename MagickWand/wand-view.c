@@ -80,9 +80,6 @@ struct _WandView
   CacheView
     *view;
 
-  size_t
-    number_threads;
-
   PixelWand
     ***pixel_wands;
 
@@ -143,10 +140,9 @@ WandExport WandView *CloneWandView(const WandView *wand_view)
     wand_view->exception);
   clone_view->view=CloneCacheView(wand_view->view);
   clone_view->extent=wand_view->extent;
-  clone_view->number_threads=wand_view->number_threads;
   clone_view->exception=AcquireExceptionInfo();
   InheritException(clone_view->exception,wand_view->exception);
-  for (i=0; i < (ssize_t) wand_view->number_threads; i++)
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     clone_view->pixel_wands[i]=ClonePixelWands((const PixelWand **)
       wand_view->pixel_wands[i],wand_view->extent.width);
   clone_view->debug=wand_view->debug;
@@ -180,13 +176,13 @@ WandExport WandView *CloneWandView(const WandView *wand_view)
 */
 
 static PixelWand ***DestroyPixelsThreadSet(PixelWand ***pixel_wands,
-  const size_t number_wands,const size_t number_threads)
+  const size_t number_wands)
 {
   register ssize_t
     i;
 
   assert(pixel_wands != (PixelWand ***) NULL);
-  for (i=0; i < (ssize_t) number_threads; i++)
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (pixel_wands[i] != (PixelWand **) NULL)
       pixel_wands[i]=DestroyPixelWands(pixel_wands[i],number_wands);
   pixel_wands=(PixelWand ***) RelinquishMagickMemory(pixel_wands);
@@ -198,7 +194,7 @@ WandExport WandView *DestroyWandView(WandView *wand_view)
   assert(wand_view != (WandView *) NULL);
   assert(wand_view->signature == WandSignature);
   wand_view->pixel_wands=DestroyPixelsThreadSet(wand_view->pixel_wands,
-    wand_view->extent.width,wand_view->number_threads);
+    wand_view->extent.width);
   wand_view->image=DestroyImage(wand_view->image);
   wand_view->view=DestroyCacheView(wand_view->view);
   wand_view->exception=DestroyExceptionInfo(wand_view->exception);
@@ -273,6 +269,10 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
   MagickOffsetType
     progress;
 
+  size_t
+    height,
+    width;
+
   ssize_t
     y;
 
@@ -288,8 +288,12 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
+  height=source->extent.height-source->extent.y;
+  width=source->extent.width-source->extent.x;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) num_threads(source->number_threads)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if ((height*width) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -524,6 +528,10 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
   MagickOffsetType
     progress;
 
+  size_t
+    height,
+    width;
+
   ssize_t
     y;
 
@@ -534,8 +542,12 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
   source_image=source->wand->images;
   status=MagickTrue;
   progress=0;
+  height=source->extent.height-source->extent.y;
+  width=source->extent.width-source->extent.x;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) num_threads(source->number_threads)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if ((height*width) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -704,8 +716,7 @@ WandExport MagickBooleanType IsWandView(const WandView *wand_view)
 %
 */
 
-static PixelWand ***AcquirePixelsThreadSet(const size_t number_wands,
-  const size_t number_threads)
+static PixelWand ***AcquirePixelsThreadSet(const size_t number_wands)
 {
   PixelWand
     ***pixel_wands;
@@ -713,6 +724,10 @@ static PixelWand ***AcquirePixelsThreadSet(const size_t number_wands,
   register ssize_t
     i;
 
+  size_t
+    number_threads;
+
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   pixel_wands=(PixelWand ***) AcquireQuantumMemory(number_threads,
     sizeof(*pixel_wands));
   if (pixel_wands == (PixelWand ***) NULL)
@@ -722,7 +737,7 @@ static PixelWand ***AcquirePixelsThreadSet(const size_t number_wands,
   {
     pixel_wands[i]=NewPixelWands(number_wands);
     if (pixel_wands[i] == (PixelWand **) NULL)
-      return(DestroyPixelsThreadSet(pixel_wands,number_wands,number_threads));
+      return(DestroyPixelsThreadSet(pixel_wands,number_wands));
   }
   return(pixel_wands);
 }
@@ -751,9 +766,7 @@ WandExport WandView *NewWandView(MagickWand *wand)
   wand_view->view=AcquireVirtualCacheView(wand_view->wand->images,exception);
   wand_view->extent.width=wand->images->columns;
   wand_view->extent.height=wand->images->rows;
-  wand_view->number_threads=GetOpenMPMaximumThreads();
-  wand_view->pixel_wands=AcquirePixelsThreadSet(wand_view->extent.width,
-    wand_view->number_threads);
+  wand_view->pixel_wands=AcquirePixelsThreadSet(wand_view->extent.width);
   wand_view->exception=exception;
   if (wand_view->pixel_wands == (PixelWand ***) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -817,10 +830,8 @@ WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
   wand_view->extent.height=height;
   wand_view->extent.x=x;
   wand_view->extent.y=y;
-  wand_view->number_threads=GetOpenMPMaximumThreads();
   wand_view->exception=exception;
-  wand_view->pixel_wands=AcquirePixelsThreadSet(wand_view->extent.width,
-    wand_view->number_threads);
+  wand_view->pixel_wands=AcquirePixelsThreadSet(wand_view->extent.width);
   if (wand_view->pixel_wands == (PixelWand ***) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
       GetExceptionMessage(errno));
@@ -917,6 +928,10 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
   MagickOffsetType
     progress;
 
+  size_t
+    height,
+    width;
+
   ssize_t
     y;
 
@@ -931,8 +946,12 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
+  height=destination->extent.height-destination->extent.y;
+  width=destination->extent.width-destination->extent.x;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) num_threads(destination->number_threads)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if ((height*width) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=destination->extent.y; y < (ssize_t) destination->extent.height; y++)
   {
@@ -983,41 +1002,6 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
       }
   }
   return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t W a n d V i e w T h r e a d s                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  SetWandViewThreads() sets the number of threads in a thread team.
-%
-%  The format of the SetWandViewDescription method is:
-%
-%      void SetWandViewThreads(WandView *image_view,
-%        const size_t number_threads)
-%
-%  A description of each parameter follows:
-%
-%    o image_view: the image view.
-%
-%    o number_threads: the number of threads in a thread team.
-%
-*/
-MagickExport void SetWandViewThreads(WandView *image_view,
-  const size_t number_threads)
-{
-  assert(image_view != (WandView *) NULL);
-  assert(image_view->signature == MagickSignature);
-  image_view->number_threads=number_threads;
-  if (number_threads > GetOpenMPMaximumThreads())
-    image_view->number_threads=GetOpenMPMaximumThreads();
 }
 
 /*
@@ -1081,6 +1065,10 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
   MagickOffsetType
     progress;
 
+  size_t
+    height,
+    width;
+
   ssize_t
     y;
 
@@ -1096,8 +1084,12 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
+  height=source->extent.height-source->extent.y;
+  width=source->extent.width-source->extent.x;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) num_threads(source->number_threads)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if ((height*width) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -1230,6 +1222,10 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
   MagickOffsetType
     progress;
 
+  size_t
+    height,
+    width;
+
   ssize_t
     y;
 
@@ -1243,8 +1239,12 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
+  height=source->extent.height-source->extent.y;
+  width=source->extent.width-source->extent.x;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) num_threads(source->number_threads)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if ((height*width) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {

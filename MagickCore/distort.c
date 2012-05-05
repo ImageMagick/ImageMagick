@@ -63,6 +63,7 @@
 #include "MagickCore/resample.h"
 #include "MagickCore/resample-private.h"
 #include "MagickCore/registry.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/shear.h"
 #include "MagickCore/string_.h"
@@ -2312,7 +2313,9 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       UndefinedVirtualPixelMethod,MagickFalse,exception);
     distort_view=AcquireAuthenticCacheView(distort_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+    #pragma omp parallel for schedule(static,4) shared(progress,status) \
+      if ((distort_image->rows*distort_image->columns) > 8192) \
+        num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
     for (j=0; j < (ssize_t) distort_image->rows; j++)
     {
@@ -2732,7 +2735,7 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
             proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_DistortImage)
+          #pragma omp critical (MagickCore_DistortImage)
 #endif
           proceed=SetImageProgress(image,DistortImageTag,progress++,
             image->rows);
@@ -3036,7 +3039,9 @@ MagickExport Image *SparseColorImage(const Image *image,
     progress=0;
     sparse_view=AcquireAuthenticCacheView(sparse_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+    #pragma omp parallel for schedule(static,4) shared(progress,status) \
+      if ((sparse_image->rows*sparse_image->columns) > 8192) \
+        num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
     for (j=0; j < (ssize_t) sparse_image->rows; j++)
     {
@@ -3223,7 +3228,7 @@ MagickExport Image *SparseColorImage(const Image *image,
             proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_SparseColorImage)
+          #pragma omp critical (MagickCore_SparseColorImage)
 #endif
           proceed=SetImageProgress(image,SparseColorTag,progress++,image->rows);
           if (proceed == MagickFalse)

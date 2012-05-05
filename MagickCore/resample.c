@@ -59,6 +59,7 @@
 #include "MagickCore/resample.h"
 #include "MagickCore/resize.h"
 #include "MagickCore/resize-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/token.h"
 #include "MagickCore/transform.h"
 #include "MagickCore/signature-private.h"

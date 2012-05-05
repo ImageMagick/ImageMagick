@@ -49,6 +49,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
@@ -126,7 +127,8 @@ static MagickBooleanType ChannelImage(Image *destination_image,
     status;
 
   size_t
-    height;
+    height,
+    width;
 
   ssize_t
     y;
@@ -135,8 +137,11 @@ static MagickBooleanType ChannelImage(Image *destination_image,
   source_view=AcquireVirtualCacheView(source_image,exception);
   destination_view=AcquireAuthenticCacheView(destination_image,exception);
   height=MagickMin(source_image->rows,destination_image->rows);
+  width=MagickMin(source_image->columns,destination_image->columns);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status)
+  #pragma omp parallel for schedule(static) shared(status) \
+    if ((height*width) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) height; y++)
   {
@@ -152,9 +157,6 @@ static MagickBooleanType ChannelImage(Image *destination_image,
 
     register ssize_t
       x;
-
-    size_t
-      width;
 
     if (status == MagickFalse)
       continue;
@@ -173,7 +175,6 @@ static MagickBooleanType ChannelImage(Image *destination_image,
     if ((destination_traits == UndefinedPixelTrait) ||
         (source_traits == UndefinedPixelTrait))
       continue;
-    width=MagickMin(source_image->columns,destination_image->columns);
     for (x=0; x < (ssize_t) width; x++)
     {
       if (channel_op == AssignChannelOp)
@@ -654,7 +655,9 @@ MagickExport Image *SeparateImage(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   separate_view=AcquireAuthenticCacheView(separate_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -715,7 +718,7 @@ MagickExport Image *SeparateImage(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_SeparateImage)
+        #pragma omp critical (MagickCore_SeparateImage)
 #endif
         proceed=SetImageProgress(image,SeparateImageTag,progress++,image->rows);
         if (proceed == MagickFalse)

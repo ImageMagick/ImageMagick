@@ -79,7 +79,7 @@
   <delegate decode="https" command="&quot;curl&quot; -s -k -o &quot;%o&quot; &quot;https:%M&quot;"/>
   <delegate decode="ilbm" command="&quot;ilbmtoppm&quot; &quot;%i&quot; &gt; &quot;%o&quot;"/>
   <delegate decode="man" command="&quot;groff&quot; -man -Tps &quot;%i&quot; &gt; &quot;%o&quot;"/>
-  <delegate decode="mpeg:decode" command="&quot;ffmpeg&quot; -v -1 -vframes %S -i &quot;%i&quot; -vcodec pam -an -f rawvideo -y &quot;%u.pam&quot; 2&gt; &quot;%Z&quot;"/>
+  <delegate decode="mpeg:decode" command="&quot;ffmpeg&quot; -v -1 -i &quot;%i&quot; -vframes %S -vcodec pam -an -f rawvideo -y &quot;%u.pam&quot; 2&gt; &quot;%Z&quot;"/>
   <delegate encode="mpeg:encode" stealth="True" command="&quot;ffmpeg&quot; -v -1 -mbd rd -trellis 2 -cmp 2 -subcmp 2 -g 300 -i &quot;%M%%d.jpg&quot; &quot;%u.%m&quot; 2&gt; &quot;%Z&quot;"/>
   <delegate decode="sid" command="&quot;mrsidgeodecode&quot; -if sid -i &quot;%i&quot; -of tif -o &quot;%o&quot; &gt; &quot;%u&quot;"/>
   <delegate decode="pcl:color" stealth="True" command="&quot;pcl6&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=ppmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
@@ -89,7 +89,7 @@
   <delegate decode="pdf" encode="ps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pswrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="tiff" encode="launch" mode="encode" command="&quot;gimp&quot; &quot;%i&quot;"/>
   <delegate decode="pnm" encode="ilbm" mode="encode" command="&quot;ppmtoilbm&quot; -24if &quot;%i&quot; &gt; &quot;%o&quot;"/>
-  <delegate decode="pov" command="&quot;povray&quot; &quot;+i%i&quot; -D0 &quot;+o%o&quot; +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n\n&quot;convert&quot; -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
+  <delegate decode="pov" command="&quot;povray&quot; &quot;+i%i&quot; -D0 &quot;+o%o&quot; +fn%q +w%w +h%h +a -q9 &quot;-kfi%s&quot; &quot;-kff%n&quot;;&quot;convert&quot; -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
   <delegate decode="ps" encode="eps" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=epswrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="ps" encode="pdf" mode="bi" command="&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=pdfwrite&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="ps" encode="print" mode="encode" command="lpr &quot;%i&quot;"/>
