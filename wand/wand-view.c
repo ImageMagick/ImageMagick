@@ -271,6 +271,10 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
   MagickOffsetType
     progress;
 
+  size_t
+    height,
+    width;
+
   ssize_t
     y;
 
@@ -285,9 +289,13 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
+  height=(size_t) (source->extent.height-source->extent.y);
+  width=(size_t) (source->extent.width-source->extent.x);
   exception=destination->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) num_threads(source->number_threads)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if ((height*width) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -393,7 +401,7 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-       #pragma omp critical (MagickWand_DuplexTransferWandViewIterator)
+        #pragma omp critical (MagickWand_DuplexTransferWandViewIterator)
 #endif
         proceed=SetImageProgress(source_image,source->description,progress++,
           source->extent.height);
@@ -547,6 +555,10 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
   MagickOffsetType
     progress;
 
+  size_t
+    height,
+    width;
+
   ssize_t
     y;
 
@@ -557,8 +569,12 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
   source_image=source->wand->images;
   status=MagickTrue;
   progress=0;
+  height=(size_t) (source->extent.height-source->extent.y);
+  width=(size_t) (source->extent.width-source->extent.x);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) num_threads(source->number_threads)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if ((height*width) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -781,7 +797,7 @@ WandExport WandView *NewWandView(MagickWand *wand)
     wand_view->exception);
   wand_view->extent.width=wand->images->columns;
   wand_view->extent.height=wand->images->rows;
-  wand_view->number_threads=GetOpenMPMaximumThreads();
+  wand_view->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   wand_view->pixel_wands=AcquirePixelsThreadSet(wand_view->extent.width,
     wand_view->number_threads);
   if (wand_view->pixel_wands == (PixelWand ***) NULL)
@@ -844,7 +860,7 @@ WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
   wand_view->extent.height=height;
   wand_view->extent.x=x;
   wand_view->extent.y=y;
-  wand_view->number_threads=GetOpenMPMaximumThreads();
+  wand_view->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   wand_view->pixel_wands=AcquirePixelsThreadSet(wand_view->extent.width,
     wand_view->number_threads);
   if (wand_view->pixel_wands == (PixelWand ***) NULL)
@@ -946,6 +962,10 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
   MagickOffsetType
     progress;
 
+  size_t
+    height,
+    width;
+
   ssize_t
     y;
 
@@ -959,8 +979,12 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
   status=MagickTrue;
   progress=0;
   exception=destination->exception;
+  height=(size_t) (destination->extent.height-destination->extent.y);
+  width=(size_t) (destination->extent.width-destination->extent.x);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) num_threads(destination->number_threads)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if ((height*width) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=destination->extent.y; y < (ssize_t) destination->extent.height; y++)
   {
@@ -1054,8 +1078,8 @@ MagickExport void SetWandViewThreads(WandView *image_view,
   assert(image_view != (WandView *) NULL);
   assert(image_view->signature == MagickSignature);
   image_view->number_threads=number_threads;
-  if (number_threads > GetOpenMPMaximumThreads())
-    image_view->number_threads=GetOpenMPMaximumThreads();
+  if (number_threads > (size_t) GetMagickResourceLimit(ThreadResource))
+    image_view->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
 }
 
 /*
@@ -1122,6 +1146,10 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
   MagickOffsetType
     progress;
 
+  size_t
+    height,
+    width;
+
   ssize_t
     y;
 
@@ -1136,8 +1164,12 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
   status=MagickTrue;
   progress=0;
   exception=destination->exception;
+  height=(size_t) (source->extent.height-source->extent.y);
+  width=(size_t) (source->extent.width-source->extent.x);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) num_threads(source->number_threads)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if ((height*width) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -1291,6 +1323,10 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
   MagickOffsetType
     progress;
 
+  size_t
+    height,
+    width;
+
   ssize_t
     y;
 
@@ -1304,8 +1340,12 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
   status=MagickTrue;
   progress=0;
   exception=source->exception;
+  height=(size_t) (source->extent.height-source->extent.y);
+  width=(size_t) (source->extent.width-source->extent.x);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) num_threads(source->number_threads)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    if ((height*width) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {

@@ -271,7 +271,9 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
   edge_view=AcquireVirtualCacheView(edge_image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((blur_image->rows*blur_image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) blur_image->rows; y++)
   {
@@ -588,7 +590,9 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
   edge_view=AcquireVirtualCacheView(edge_image,exception);
   sharp_view=AcquireAuthenticCacheView(sharp_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((sharp_image->rows*sharp_image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) sharp_image->rows; y++)
   {
@@ -904,7 +908,9 @@ MagickExport Image *BlurImageChannel(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((blur_image->rows*blur_image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) blur_image->rows; y++)
   {
@@ -1083,7 +1089,9 @@ MagickExport Image *BlurImageChannel(const Image *image,
   image_view=AcquireVirtualCacheView(blur_image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((blur_image->rows*blur_image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (x=0; x < (ssize_t) blur_image->columns; x++)
   {
@@ -1424,7 +1432,9 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   convolve_view=AcquireAuthenticCacheView(convolve_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1679,7 +1689,9 @@ static void Hull(const ssize_t x_offset,const ssize_t y_offset,
   q=g+(columns+2);
   r=p+(y_offset*(columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static)
+  #pragma omp parallel for schedule(static) \
+    if ((rows*columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -1715,7 +1727,9 @@ static void Hull(const ssize_t x_offset,const ssize_t y_offset,
   r=q+(y_offset*(columns+2)+x_offset);
   s=q-(y_offset*(columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static)
+  #pragma omp parallel for schedule(static) \
+    if ((rows*columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -2214,7 +2228,9 @@ MagickExport Image *FilterImageChannel(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   filter_view=AcquireAuthenticCacheView(filter_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2681,7 +2697,9 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -3468,7 +3486,9 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((blur_image->rows*blur_image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) blur_image->rows; y++)
   {
@@ -3802,7 +3822,9 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -4141,7 +4163,9 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
   image_view=AcquireVirtualCacheView(image,exception);
   shade_view=AcquireAuthenticCacheView(shade_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -4444,7 +4468,8 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   spread_view=AcquireAuthenticCacheView(spread_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,8) shared(progress,status) \
-    if (key == ~0UL) num_threads(GetMagickResourceLimit(ThreadResource))
+    if (((image->rows*image->columns) > 8192) && (key == ~0UL)) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) spread_image->rows; y++)
   {
@@ -4607,7 +4632,9 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   unsharp_view=AcquireAuthenticCacheView(unsharp_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

@@ -139,7 +139,7 @@ static MagickPixelPacket **DestroyPixelThreadSet(MagickPixelPacket **pixels)
     i;
 
   assert(pixels != (MagickPixelPacket **) NULL);
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (pixels[i] != (MagickPixelPacket *) NULL)
       pixels[i]=(MagickPixelPacket *) RelinquishMagickMemory(pixels[i]);
   pixels=(MagickPixelPacket **) RelinquishMagickMemory(pixels);
@@ -160,7 +160,7 @@ static MagickPixelPacket **AcquirePixelThreadSet(const Image *image,
     length,
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   pixels=(MagickPixelPacket **) AcquireQuantumMemory(number_threads,
     sizeof(*pixels));
   if (pixels == (MagickPixelPacket **) NULL)
@@ -506,7 +506,8 @@ MagickExport Image *EvaluateImages(const Image *images,
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(progress,status) \
-        if (key == ~0UL) num_threads(GetMagickResourceLimit(ThreadResource))
+        if (((evaluate_image->rows*evaluate_image->columns) > 8192) && (key == ~0UL)) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (y=0; y < (ssize_t) evaluate_image->rows; y++)
       {
@@ -616,7 +617,8 @@ MagickExport Image *EvaluateImages(const Image *images,
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(progress,status) \
-        if (key == ~0UL) num_threads(GetMagickResourceLimit(ThreadResource))
+        if (((evaluate_image->rows*evaluate_image->columns) > 8192) && (key == ~0UL)) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (y=0; y < (ssize_t) evaluate_image->rows; y++)
       {
@@ -798,7 +800,8 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    if (key == ~0UL) num_threads(GetMagickResourceLimit(ThreadResource))
+    if (((image->rows*image->columns) > 8192) && (key == ~0UL)) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -856,7 +859,7 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_EvaluateImageChannel)
+        #pragma omp critical (MagickCore_EvaluateImageChannel)
 #endif
         proceed=SetImageProgress(image,EvaluateImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -1036,7 +1039,9 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1091,7 +1096,7 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_FunctionImageChannel)
+        #pragma omp critical (MagickCore_FunctionImageChannel)
 #endif
         proceed=SetImageProgress(image,FunctionImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -1970,7 +1975,7 @@ static PixelList **DestroyPixelListThreadSet(PixelList **pixel_list)
     i;
 
   assert(pixel_list != (PixelList **) NULL);
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (pixel_list[i] != (PixelList *) NULL)
       pixel_list[i]=DestroyPixelList(pixel_list[i]);
   pixel_list=(PixelList **) RelinquishMagickMemory(pixel_list);
@@ -2015,7 +2020,7 @@ static PixelList **AcquirePixelListThreadSet(const size_t width,
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   pixel_list=(PixelList **) AcquireQuantumMemory(number_threads,
     sizeof(*pixel_list));
   if (pixel_list == (PixelList **) NULL)
@@ -2566,7 +2571,9 @@ MagickExport Image *StatisticImageChannel(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   statistic_view=AcquireAuthenticCacheView(statistic_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((statistic_image->rows*statistic_image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) statistic_image->rows; y++)
   {
@@ -2708,7 +2715,7 @@ MagickExport Image *StatisticImageChannel(const Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_StatisticImage)
+        #pragma omp critical (MagickCore_StatisticImage)
 #endif
         proceed=SetImageProgress(image,StatisticImageTag,progress++,
           image->rows);

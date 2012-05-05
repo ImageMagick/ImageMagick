@@ -53,6 +53,7 @@
 #include "magick/monitor.h"
 #include "magick/property.h"
 #include "magick/quantum-private.h"
+#include "magick/resource_.h"
 #include "magick/thread-private.h"
 #if defined(MAGICKCORE_FFTW_DELEGATE)
 #if defined(MAGICKCORE_HAVE_COMPLEX_H)
@@ -675,7 +676,7 @@ MagickExport Image *ForwardFourierTransformImage(const Image *image,
             status=MagickTrue;
             is_gray=IsGrayImage(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel sections
+            #pragma omp parallel sections
 #endif
             {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

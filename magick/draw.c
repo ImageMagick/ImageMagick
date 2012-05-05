@@ -75,6 +75,7 @@
 #include "magick/property.h"
 #include "magick/resample.h"
 #include "magick/resample-private.h"
+#include "magick/resource_.h"
 #include "magick/string_.h"
 #include "magick/string-private.h"
 #include "magick/thread-private.h"
@@ -1115,6 +1116,10 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   SegmentInfo
     edge;
 
+  size_t
+    height,
+    width;
+
   ssize_t
     start,
     stop,
@@ -1172,10 +1177,14 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   exception=(&image->exception);
   start=(ssize_t) ceil(edge.y1-0.5);
   stop=(ssize_t) floor(edge.y2+0.5);
+  height=(size_t) (floor(edge.y2+0.5)-ceil(edge.y1-0.5));
+  width=(size_t) (floor(edge.x2+0.5)-ceil(edge.x1-0.5));
   source_view=AcquireVirtualCacheView(source,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status)
+  #pragma omp parallel for schedule(static) shared(status) \
+    if ((height*width) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=start; y <= stop; y++)
   {
@@ -3261,6 +3270,10 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   RectangleInfo
     bounding_box;
 
+  size_t
+    height,
+    width;
+
   ssize_t
     y;
 
@@ -3281,9 +3294,13 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   status=MagickTrue;
   exception=(&image->exception);
   GetMagickPixelPacket(image,&zero);
+  height=(size_t) (bounding_box.height-bounding_box.y);
+  width=(size_t) (bounding_box.width-bounding_box.x);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status)
+  #pragma omp parallel for schedule(static) shared(status) \
+    if ((height*width) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=bounding_box.y; y < (ssize_t) bounding_box.height; y++)
   {
@@ -3587,7 +3604,7 @@ static PolygonInfo **DestroyPolygonThreadSet(PolygonInfo **polygon_info)
     i;
 
   assert(polygon_info != (PolygonInfo **) NULL);
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (polygon_info[i] != (PolygonInfo *) NULL)
       polygon_info[i]=DestroyPolygonInfo(polygon_info[i]);
   polygon_info=(PolygonInfo **) RelinquishMagickMemory(polygon_info);
@@ -3609,13 +3626,13 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   polygon_info=(PolygonInfo **) AcquireQuantumMemory(number_threads,
     sizeof(*polygon_info));
   if (polygon_info == (PolygonInfo **) NULL)
     return((PolygonInfo **) NULL);
-  (void) ResetMagickMemory(polygon_info,0,GetOpenMPMaximumThreads()*
-    sizeof(*polygon_info));
+  (void) ResetMagickMemory(polygon_info,0,(size_t)
+    GetMagickResourceLimit(ThreadResource)*sizeof(*polygon_info));
   path_info=ConvertPrimitiveToPath(draw_info,primitive_info);
   if (path_info == (PathInfo *) NULL)
     return(DestroyPolygonThreadSet(polygon_info));
@@ -3828,6 +3845,10 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   SegmentInfo
     bounds;
 
+  size_t
+    height,
+    width;
+
   ssize_t
     start,
     stop,
@@ -3882,6 +3903,8 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     image->rows ? (double) image->rows-1.0 : bounds.y2;
   status=MagickTrue;
   exception=(&image->exception);
+  height=(size_t) (floor(bounds.y2+0.5)-ceil(bounds.y1-0.5));
+  width=(size_t) (floor(bounds.x2+0.5)-ceil(bounds.x1-0.5));
   image_view=AcquireAuthenticCacheView(image,exception);
   if (primitive_info->coordinates == 1)
     {
@@ -3891,7 +3914,9 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
       start=(ssize_t) ceil(bounds.y1-0.5);
       stop=(ssize_t) floor(bounds.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(status)
+      #pragma omp parallel for schedule(static) shared(status) \
+        if ((height*width) > 8192) \
+          num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
       for (y=start; y <= stop; y++)
       {
@@ -3946,7 +3971,9 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   start=(ssize_t) ceil(bounds.y1-0.5);
   stop=(ssize_t) floor(bounds.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status)
+  #pragma omp parallel for schedule(static) shared(status) \
+    if ((height*width) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=start; y <= stop; y++)
   {

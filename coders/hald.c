@@ -55,6 +55,7 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/quantum-private.h"
+#include "magick/resource_.h"
 #include "magick/static.h"
 #include "magick/string_.h"
 #include "magick/string-private.h"
@@ -123,7 +124,9 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
   image->columns=(size_t) (level*cube_size);
   image->rows=(size_t) (level*cube_size);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(status)
+  #pragma omp parallel for schedule(static,8) shared(status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) level)
   {
@@ -149,9 +152,12 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
     {
       for (red=0; red < (ssize_t) cube_size; red++)
       {
-        SetPixelRed(q,ClampToQuantum(QuantumRange*red/(cube_size-1.0)));
-        SetPixelGreen(q,ClampToQuantum(QuantumRange*green/(cube_size-1.0)));
-        SetPixelBlue(q,ClampToQuantum(QuantumRange*blue/(cube_size-1.0)));
+        SetPixelRed(q,ClampToQuantum((MagickRealType)
+          (QuantumRange*red/(cube_size-1.0))));
+        SetPixelGreen(q,ClampToQuantum((MagickRealType)
+          (QuantumRange*green/(cube_size-1.0))));
+        SetPixelBlue(q,ClampToQuantum((MagickRealType)
+          (QuantumRange*blue/(cube_size-1.0))));
         SetPixelOpacity(q,OpaqueOpacity);
         q++;
       }

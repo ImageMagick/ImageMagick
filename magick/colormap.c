@@ -63,6 +63,7 @@
 #include "magick/quantize.h"
 #include "magick/quantum.h"
 #include "magick/semaphore.h"
+#include "magick/resource_.h"
 #include "magick/string_.h"
 #include "magick/token.h"
 #include "magick/utility.h"
@@ -205,7 +206,9 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
-  #pragma omp parallel for schedule(static,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -333,7 +336,9 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image)
     Assign index values to colormap entries.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    if (image->colors > 256) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (i=0; i < (ssize_t) image->colors; i++)
     image->colormap[i].opacity=(IndexPacket) i;

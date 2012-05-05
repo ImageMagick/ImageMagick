@@ -80,6 +80,7 @@
 #include "magick/profile.h"
 #include "magick/quantize.h"
 #include "magick/random_.h"
+#include "magick/resource_.h"
 #include "magick/segment.h"
 #include "magick/semaphore.h"
 #include "magick/signature-private.h"
@@ -222,7 +223,9 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -601,7 +604,9 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     Compute texture features.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    if ((number_grays*number_grays) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (i=0; i < 4; i++)
   {
@@ -785,7 +790,9 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     Compute more texture features.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    if ((number_grays*number_grays) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (i=0; i < 4; i++)
   {
@@ -860,7 +867,9 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     Compute more texture features.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    if ((number_grays*number_grays) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (i=0; i < 4; i++)
   {
@@ -980,7 +989,9 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
   (void) ResetMagickMemory(&variance,0,sizeof(variance));
   (void) ResetMagickMemory(&sum_squares,0,sizeof(sum_squares));
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    if ((number_grays*number_grays) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (i=0; i < 4; i++)
   {
@@ -1131,7 +1142,9 @@ MagickExport ChannelFeatures *GetImageChannelFeatures(const Image *image,
     Compute more texture features.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    if ((number_grays*number_grays) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (i=0; i < 4; i++)
   {

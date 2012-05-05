@@ -54,6 +54,7 @@
 #include "magick/monitor-private.h"
 #include "magick/paint.h"
 #include "magick/pixel-private.h"
+#include "magick/resource_.h"
 #include "magick/string_.h"
 #include "magick/thread-private.h"
 
@@ -526,7 +527,7 @@ static size_t **DestroyHistogramThreadSet(size_t **histogram)
     i;
 
   assert(histogram != (size_t **) NULL);
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (histogram[i] != (size_t *) NULL)
       histogram[i]=(size_t *) RelinquishMagickMemory(histogram[i]);
   histogram=(size_t **) RelinquishMagickMemory(histogram);
@@ -542,7 +543,7 @@ static size_t **AcquireHistogramThreadSet(const size_t count)
     **histogram,
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   histogram=(size_t **) AcquireQuantumMemory(number_threads,
     sizeof(*histogram));
   if (histogram == (size_t **) NULL)
@@ -617,7 +618,9 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   image_view=AcquireVirtualCacheView(image,exception);
   paint_view=AcquireAuthenticCacheView(paint_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -703,7 +706,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_OilPaintImage)
+        #pragma omp critical (MagickCore_OilPaintImage)
 #endif
         proceed=SetImageProgress(image,OilPaintImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
@@ -814,7 +817,9 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
   GetMagickPixelPacket(image,&zero);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -867,7 +872,7 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_OpaquePaintImageChannel)
+        #pragma omp critical (MagickCore_OpaquePaintImageChannel)
 #endif
         proceed=SetImageProgress(image,OpaquePaintImageTag,progress++,
           image->rows);
@@ -958,7 +963,9 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
   GetMagickPixelPacket(image,&zero);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -999,7 +1006,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_TransparentPaintImage)
+        #pragma omp critical (MagickCore_TransparentPaintImage)
 #endif
         proceed=SetImageProgress(image,TransparentPaintImageTag,progress++,
           image->rows);
@@ -1090,7 +1097,9 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    if ((image->rows*image->columns) > 8192) \
+      num_threads(GetMagickResourceLimit(ThreadResource))
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1138,7 +1147,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
           proceed;
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp critical (MagickCore_TransparentPaintImageChroma)
+        #pragma omp critical (MagickCore_TransparentPaintImageChroma)
 #endif
         proceed=SetImageProgress(image,TransparentPaintImageTag,progress++,
           image->rows);
