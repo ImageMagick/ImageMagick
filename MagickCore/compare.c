@@ -521,7 +521,7 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
       q+=GetPixelChannels(reconstruct_image);
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetMeanSquaredError)
+    #pragma omp critical (MagickCore_GetFuzzDistortion)
 #endif
     for (i=0; i <= MaxPixelChannels; i++)
       distortion[i]+=channel_distortion[i];
