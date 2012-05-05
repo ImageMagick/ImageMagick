@@ -1761,10 +1761,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         channel to exist, to add transparency.
       */
       if (image->matte == MagickFalse)
-        {
-          (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
-          image->matte=MagickFalse;
-        }
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
       clip_to_self=MagickFalse;
       break;
     }
