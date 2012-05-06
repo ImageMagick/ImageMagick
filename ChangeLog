@@ -1,5 +1,5 @@
 2012-05-05  6.7.6-9 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.6-9, SVN revision 7799.
+  * New version 6.7.6-9, SVN revision 7800.
 
 2012-05-05  6.7.6-9 Anthony Thyssen <A.Thyssen@griffith...>
   * Allow braced single letter excapes, EG "%[x]" as equivelent to "%x"
