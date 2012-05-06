@@ -29,6 +29,11 @@ extern "C" {
   if (((((columns) > ThreadThreshold) || ((rows) > ThreadThreshold))) && \
       ((MagickSizeType) (columns*rows) > (ThreadThreshold*ThreadThreshold))) \
    num_threads(GetMagickResourceLimit(ThreadResource))
+#define IsConcurrentEx(columns,rows,expression) \
+  if (((((columns) > ThreadThreshold) || ((rows) > ThreadThreshold))) && \
+      ((MagickSizeType) (columns*rows) > (ThreadThreshold*ThreadThreshold)) && \
+      (expression)) \
+   num_threads(GetMagickResourceLimit(ThreadResource))
 
 #if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR > 10))
 #define MagickCachePrefetch(address,mode,locality) \
