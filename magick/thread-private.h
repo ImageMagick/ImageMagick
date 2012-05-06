@@ -24,15 +24,15 @@ extern "C" {
 
 #include <magick/thread_.h>
 
-#define IsConcurrentArea(columns,rows,threshold) \
+#define IsConcurrentArea(columns,rows) \
   if (((((columns) > 64) || ((rows) > 64))) && \
       ((MagickSizeType) (columns*rows) > (64*64))) \
     num_threads(GetMagickResourceLimit(ThreadResource))
-#define IsConcurrentAreaExp(columns,rows,threshold,expression) \
+#define IsConcurrentAreaExp(columns,rows,expression) \
   if (((((columns) > 64) || ((rows) > 64))) && \
       ((MagickSizeType) (columns*rows) > (64*64)) && (expression)) \
     num_threads(GetMagickResourceLimit(ThreadResource))
-#define IsConcurrentColors(colors,threshold) \
+#define IsConcurrentColors(colors) \
   if ((colors) > 256) \
     num_threads(GetMagickResourceLimit(ThreadResource))
 
