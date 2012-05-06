@@ -1983,8 +1983,7 @@ static inline MagickBooleanType ValidatePixelCacheMorphology(const Image *image)
       (image->channels != cache_info->channels) ||
       (image->columns != cache_info->columns) ||
       (image->rows != cache_info->rows) ||
-      (cache_info->nexus_info == (NexusInfo **) NULL) ||
-      (cache_info->number_threads < (size_t) GetMagickResourceLimit(ThreadResource)))
+      (cache_info->nexus_info == (NexusInfo **) NULL))
     return(MagickFalse);
   return(MagickTrue);
 }
