@@ -24,16 +24,17 @@ extern "C" {
 
 #include <magick/thread_.h>
 
-#define ThreadThreshold  64
-#define IsConcurrent(columns,rows) \
-  if (((((columns) > ThreadThreshold) || ((rows) > ThreadThreshold))) && \
-      ((MagickSizeType) (columns*rows) > (ThreadThreshold*ThreadThreshold))) \
-   num_threads(GetMagickResourceLimit(ThreadResource))
-#define IsConcurrentExp(columns,rows,expression) \
-  if (((((columns) > ThreadThreshold) || ((rows) > ThreadThreshold))) && \
-      ((MagickSizeType) (columns*rows) > (ThreadThreshold*ThreadThreshold)) && \
-      (expression)) \
-   num_threads(GetMagickResourceLimit(ThreadResource))
+#define IsConcurrentArea(columns,rows,threshold) \
+  if (((((columns) > 64) || ((rows) > 64))) && \
+      ((MagickSizeType) (columns*rows) > (64*64))) \
+    num_threads(GetMagickResourceLimit(ThreadResource))
+#define IsConcurrentAreaExp(columns,rows,threshold,expression) \
+  if (((((columns) > 64) || ((rows) > 64))) && \
+      ((MagickSizeType) (columns*rows) > (64*64)) && (expression)) \
+    num_threads(GetMagickResourceLimit(ThreadResource))
+#define IsConcurrentColors(colors,threshold) \
+  if ((colors) > 256) \
+    num_threads(GetMagickResourceLimit(ThreadResource))
 
 #if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR > 10))
 #define MagickCachePrefetch(address,mode,locality) \
