@@ -24,6 +24,9 @@ extern "C" {
 
 #include <magick/thread_.h>
 
+/*
+  Can loop benefit from multi-threads?
+*/
 #define IsConcurrentUno(colors,threshold) \
   if ((colors) > threshold) \
     num_threads(GetMagickResourceLimit(ThreadResource))
