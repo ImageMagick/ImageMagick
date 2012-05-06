@@ -121,7 +121,7 @@ static MagickBooleanType IsSFW(const unsigned char *magick,const size_t length)
 */
 
 static unsigned char *SFWScan(unsigned char *p,const unsigned char *q,
-  const unsigned char *target,const int length)
+  const unsigned char *target,const size_t length)
 {
   register ssize_t
     i;
@@ -132,10 +132,10 @@ static unsigned char *SFWScan(unsigned char *p,const unsigned char *q,
       continue;
     if (length == 1)
       return(p);
-    for (i=1; i < length; i++)
+    for (i=1; i < (ssize_t) length; i++)
       if (*(p+i) != *(target+i))
         break;
-    if (i == length)
+    if (i == (ssize_t) length)
       return(p);
   }
   return((unsigned char *) NULL);
@@ -207,6 +207,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   Image
     *flipped_image,
+    *jpeg_image,
     *image;
 
   ImageInfo
@@ -252,15 +253,17 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read image into a buffer.
   */
+  if (GetBlobSize(image) != (size_t) GetBlobSize(image))
+    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   buffer=(unsigned char *) AcquireQuantumMemory((size_t) GetBlobSize(image),
     sizeof(*buffer));
   if (buffer == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   count=ReadBlob(image,(size_t) GetBlobSize(image),buffer);
-  if ((count == 0) || (LocaleNCompare((char *) buffer,"SFW",3) != 0))
+  if ((count != (ssize_t) GetBlobSize(image)) ||
+      (LocaleNCompare((char *) buffer,"SFW",3) != 0))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   (void) CloseBlob(image);
-  image=DestroyImage(image);
   /*
     Find the start of the JFIF data
   */
@@ -338,11 +341,18 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read JPEG image.
   */
-  image=ReadImage(read_info,exception);
+  jpeg_image=ReadImage(read_info,exception);
   (void) RelinquishUniqueFileResource(read_info->filename);
   read_info=DestroyImageInfo(read_info);
-  if (image == (Image *) NULL)
-    return(GetFirstImageInList(image));
+  if (jpeg_image == (Image *) NULL)
+    {
+      image=DestroyImageList(image);
+      return(jpeg_image);
+    }
+  (void) CopyMagickString(jpeg_image->filename,image->filename,MaxTextExtent);
+  (void) CopyMagickString(jpeg_image->magick,image->magick,MaxTextExtent);
+  image=DestroyImageList(image);
+  image=jpeg_image;
   /*
     Correct image orientation.
   */

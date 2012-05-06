@@ -506,8 +506,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(progress,status) \
-        if (((evaluate_image->rows*evaluate_image->columns) > 8192) && (key == ~0UL)) \
-          num_threads(GetMagickResourceLimit(ThreadResource))
+        IsConcurrentTres(images->columns,images->rows,key == ~0UL,64)
 #endif
       for (y=0; y < (ssize_t) evaluate_image->rows; y++)
       {
@@ -617,8 +616,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(progress,status) \
-        if (((evaluate_image->rows*evaluate_image->columns) > 8192) && (key == ~0UL)) \
-          num_threads(GetMagickResourceLimit(ThreadResource))
+        IsConcurrentTres(images->columns,images->rows,key == ~0UL,64)
 #endif
       for (y=0; y < (ssize_t) evaluate_image->rows; y++)
       {
@@ -800,8 +798,7 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    if (((image->rows*image->columns) > 8192) && (key == ~0UL)) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentTres(image->columns,image->rows,key == ~0UL,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1040,8 +1037,7 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2572,8 +2568,7 @@ MagickExport Image *StatisticImageChannel(const Image *image,
   statistic_view=AcquireAuthenticCacheView(statistic_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    if ((statistic_image->rows*statistic_image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) statistic_image->rows; y++)
   {
