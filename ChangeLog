@@ -1,5 +1,5 @@
 2012-05-05  6.7.6-9 Anthony Thyssen <A.Thyssen@griffith...>
-  * Allow braced single letter excapes, EG "%[x]"
+  * Allow braced single letter excapes, EG "%[x]" as equivelent to "%x"
 
 2012-05-04  6.7.6-9 Glenn Randers-Pehrson <glennrp@image...>
   * Don't write an invalid PNG sRGB chunk when rendering intent is undefined.
