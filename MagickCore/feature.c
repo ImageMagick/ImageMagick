@@ -224,8 +224,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -596,8 +595,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    if ((number_grays*number_grays) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(number_grays,number_grays,64)
 #endif
   for (i=0; i < 4; i++)
   {
@@ -782,8 +780,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    if ((number_grays*number_grays) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(number_grays,number_grays,64)
 #endif
   for (i=0; i < 4; i++)
   {
@@ -859,8 +856,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    if ((number_grays*number_grays) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(number_grays,number_grays,64)
 #endif
   for (i=0; i < 4; i++)
   {
@@ -981,8 +977,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   (void) ResetMagickMemory(&sum_squares,0,sizeof(sum_squares));
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    if ((number_grays*number_grays) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(number_grays,number_grays,64)
 #endif
   for (i=0; i < 4; i++)
   {
@@ -1134,8 +1129,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    if ((number_grays*number_grays) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(number_grays,number_grays,64)
 #endif
   for (i=0; i < 4; i++)
   {

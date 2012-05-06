@@ -573,8 +573,7 @@ static void RadonProjection(RadonInfo *source_cells,
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) \
-    if ((p->width*p->height) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(p->width,p->height,64)
 #endif
   for (x=0; x < (ssize_t) p->width; x++)
   {
@@ -655,8 +654,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -706,8 +704,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   (void) ResetRadonCells(source_cells);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1030,8 +1027,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(progress,status) \
-        if ((image->rows*image->columns) > 8192) \
-          num_threads(GetMagickResourceLimit(ThreadResource))
+        IsConcurrentDos(image->columns,image->rows,64)
 #endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
@@ -1156,8 +1152,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(progress,status) \
-        if ((image->rows*image->columns) > 8192) \
-          num_threads(GetMagickResourceLimit(ThreadResource))
+        IsConcurrentDos(image->columns,image->rows,64)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1254,8 +1249,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(progress,status) \
-        if ((image->rows*image->columns) > 8192) \
-          num_threads(GetMagickResourceLimit(ThreadResource))
+        IsConcurrentDos(image->columns,image->rows,64)
 #endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
@@ -1458,8 +1452,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    if ((height*width) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(width,height,64)
 #endif
   for (y=0; y < (ssize_t) height; y++)
   {
@@ -1675,8 +1668,7 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    if ((height*width) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(width,height,64)
 #endif
   for (x=0; x < (ssize_t) width; x++)
   {
