@@ -36,8 +36,8 @@ extern "C" {
       ((MagickSizeType) (columns*rows) > (threshold*threshold))) \
     num_threads(GetMagickResourceLimit(ThreadResource))
 #define IsConcurrentTres(columns,rows,expression,threshold) \
-  if (((((columns) > threshold) || ((rows) > threshold))) && \
-      ((MagickSizeType) (columns*rows) > (threshold*threshold)) && (expression)) \
+  if (((((columns) > threshold) || ((rows) > threshold))) && ((MagickSizeType) \
+      (columns*rows) > (threshold*threshold)) && (expression)) \
     num_threads(GetMagickResourceLimit(ThreadResource))
 
 #if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR > 10))
