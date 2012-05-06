@@ -101,6 +101,7 @@
 #include "magick/resource_.h"
 #include "magick/segment.h"
 #include "magick/string_.h"
+#include "magick/thread-private.h"
 
 /*
   Define declarations.
@@ -531,8 +532,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

@@ -197,8 +197,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   threshold_view=AcquireAuthenticCacheView(threshold_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -396,8 +395,7 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,8) shared(progress,status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -589,8 +587,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,8) shared(progress,status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -772,8 +769,7 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,8) shared(progress,status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1514,8 +1510,7 @@ printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
     image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static,8) shared(progress,status) \
-      if ((image->rows*image->columns) > 8192) \
-        num_threads(GetMagickResourceLimit(ThreadResource))
+      IsConcurrentDos(image->columns,image->rows,64)
 #endif
     for (y=0; y < (ssize_t) image->rows; y++)
     {
@@ -1749,8 +1744,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,8) shared(progress,status) \
-        if (((image->rows*image->columns) > 8192) && (key == ~0UL)) \
-          num_threads(GetMagickResourceLimit(ThreadResource))
+        IsConcurrentTres(image->columns,image->rows,key == ~0UL,64)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1831,8 +1825,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,8) shared(progress,status) \
-    if (((image->rows*image->columns) > 8192) && (key == ~0UL)) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentTres(image->columns,image->rows,key == ~0UL,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2066,8 +2059,7 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,8) shared(progress,status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
