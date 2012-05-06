@@ -24,6 +24,12 @@ extern "C" {
 
 #include <magick/thread_.h>
 
+#define ThreadThreshold  64
+#define IsConcurrent(columns,rows) \
+  if (((((columns) > ThreadThreshold) || ((rows) > ThreadThreshold))) && \
+      ((MagickSizeType) (columns*rows) > (ThreadThreshold*ThreadThreshold))) \
+   num_threads(GetMagickResourceLimit(ThreadResource))
+
 #if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR > 10))
 #define MagickCachePrefetch(address,mode,locality) \
   __builtin_prefetch(address,mode,locality)
