@@ -2757,7 +2757,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         }
         case CopyOpacityCompositeOp:
         {
-          if (destination.matte == MagickFalse)
+          if (source.matte == MagickFalse)
             {
               composite.opacity=(MagickRealType) (QuantumRange-
                 MagickPixelIntensityToQuantum(&source));
