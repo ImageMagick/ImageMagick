@@ -2162,11 +2162,11 @@ MagickExport const char *GetImageProperty(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetMagickProperty() gets attributes or calculated values that is associated
-%  with a fixed known property name.
+%  with a fixed known property name, or single letter properity.
 %
-%  This does not return single character properity names, special profile or
-%  calculated properity substitutions. Nor does it return free-form properity
-%  strings, unless such a name is also associated with a specific attribute.
+%  This does not return, special profile or properity expressions. Nor does it
+%  return free-form properity strings, unless referenced by a single letter
+%  properity name.
 %
 %  The returned string should be freed using DestoryString() when finished.
 %
@@ -2435,7 +2435,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
            image->page.y);
       break;
     }
-    case 'Z': /* Zero filename?? */
+    case 'Z': /* Zero filename ??? */
     {
       clone=ConstantString(image_info->zero);
       break;
@@ -2743,8 +2743,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             GetMagickPrecision(),skewness);
           break;
         }
-      if ((LocaleNCompare("standard-deviation",property,18) == 0) ||
-          (LocaleNCompare("standard_deviation",property,18) == 0))
+      if (LocaleNCompare("standard-deviation",property,18) == 0)
         {
           double
             mean,
@@ -3596,7 +3595,11 @@ MagickExport void ResetImagePropertyIterator(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageProperty() associates an value with an image property.
+%  SetImageProperty() saves teh given string value either to specific known
+%  attribute or to a freeform properity string.
+%
+%  Attempting to set a properity that is normally calculated will produce
+%  an exception.
 %
 %  The format of the SetImageProperty method is:
 %
@@ -3626,14 +3629,27 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if( IfMagickTrue(image->debug) )
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      image->filename);
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+
   if (image->properties == (void *) NULL)
     image->properties=NewSplayTree(CompareSplayTreeString,
       RelinquishMagickMemory,RelinquishMagickMemory);
   if ((value == (const char *) NULL) || (*value == '\0'))
     return(DeleteImageProperty(image,property));
   status=MagickTrue;
+
+  if (strlen(property) <= 1)
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+          OptionError,"SetReadOnlyProperty","'%s'",property);
+      return(MagickFalse);
+    }
+  /* FUTURE: These should produce 'illegal settings'
+     + test for binary chars in name, 
+     + first letter must be a alphabetic
+     + special prefix
+  */
+
   switch (*property)
   {
     case 'B':
@@ -3647,11 +3663,19 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         }
       status=AddValueToSplayTree((SplayTreeInfo *) image->properties,
         ConstantString(property),ConstantString(value));
+      /* FUTURE: error if status is bad? */
       break;
     }
     case 'C':
     case 'c':
     {
+      if (LocaleCompare(property,"channels") == 0)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"SetReadOnlyProperty","'%s'",property);
+          status=MagickFalse;
+          break;
+        }
       if (LocaleCompare(property,"colorspace") == 0)
         {
           ssize_t
@@ -3686,6 +3710,13 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           if (compression < 0)
             break;
           image->compression=(CompressionType) compression;
+          break;
+        }
+      if (LocaleCompare(property,"copyright") == 0)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"SetReadOnlyProperty","'%s'",property);
+          status=MagickFalse;
           break;
         }
       status=AddValueToSplayTree((SplayTreeInfo *) image->properties,
@@ -3768,6 +3799,15 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         ConstantString(property),ConstantString(value));
       break;
     }
+    case 'H':
+    case 'h':
+      if (LocaleCompare(property,"height") == 0)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"SetReadOnlyProperty","'%s'",property);
+          status=MagickFalse;
+          break;
+        }
     case 'I':
     case 'i':
     {
@@ -3799,6 +3839,15 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         ConstantString(property),ConstantString(value));
       break;
     }
+    case 'K':
+    case 'k':
+      if (LocaleCompare(property,"kurtosis") == 0)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"SetReadOnlyProperty","'%s'",property);
+          status=MagickFalse;
+          break;
+        }
     case 'L':
     case 'l':
     {
@@ -3811,6 +3860,28 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         ConstantString(property),ConstantString(value));
       break;
     }
+    case 'M':
+    case 'm':
+      if ( (LocaleCompare(property,"magick") == 0) ||
+           (LocaleCompare(property,"max") == 0) ||
+           (LocaleCompare(property,"mean") == 0) ||
+           (LocaleCompare(property,"min") == 0) ||
+           (LocaleCompare(property,"min") == 0) )
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"SetReadOnlyProperty","'%s'",property);
+          status=MagickFalse;
+          break;
+        }
+    case 'O':
+    case 'o':
+      if (LocaleCompare(property,"opaque") == 0)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"SetReadOnlyProperty","'%s'",property);
+          status=MagickFalse;
+          break;
+        }
     case 'P':
     case 'p':
     {
@@ -3856,14 +3927,27 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           rendering_intent=ParseCommandOption(MagickIntentOptions,MagickFalse,
             value);
           if (rendering_intent < 0)
-            break;
-          image->rendering_intent=(RenderingIntent) rendering_intent;
+            status=MagickFalse;
+          else
+            image->rendering_intent=(RenderingIntent) rendering_intent;
           break;
         }
       status=AddValueToSplayTree((SplayTreeInfo *) image->properties,
         ConstantString(property),ConstantString(value));
       break;
     }
+    case 'S':
+    case 's':
+      if ( (LocaleCompare(property,"size") == 0) ||
+           (LocaleCompare(property,"skewness") == 0) ||
+           (LocaleCompare(property,"scenes") == 0) ||
+           (LocaleCompare(property,"standard-deviation") == 0) )
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"SetReadOnlyProperty","'%s'",property);
+          status=MagickFalse;
+          break;
+        }
     case 'T':
     case 't':
     {
@@ -3899,6 +3983,24 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         ConstantString(property),ConstantString(value));
       break;
     }
+    case 'V':
+    case 'v':
+      if (LocaleCompare(property,"version") == 0)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"SetReadOnlyProperty","'%s'",property);
+          status=MagickFalse;
+          break;
+        }
+    case 'W':
+    case 'w':
+      if (LocaleCompare(property,"width") == 0)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),
+               OptionError,"SetReadOnlyProperty","'%s'",property);
+          status=MagickFalse;
+          break;
+        }
     default:
     {
       status=AddValueToSplayTree((SplayTreeInfo *) image->properties,
