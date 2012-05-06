@@ -22,6 +22,7 @@
 extern "C" {
 #endif
 
+#include <magick/resource_.h>
 #include <magick/thread_.h>
 
 /*
