@@ -169,8 +169,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   GetPixelInfo(image,&zero);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -389,8 +388,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
       }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        if ((image->rows*image->columns) > 8192) \
-          num_threads(GetMagickResourceLimit(ThreadResource))
+        IsConcurrentDos(image->columns,image->rows,64)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -454,8 +452,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -939,8 +936,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
-        if (image->colors > 256) \
-          num_threads(GetMagickResourceLimit(ThreadResource))
+        IsConcurrentUno(image->colors,256)
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
@@ -948,7 +944,8 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
           image->colormap[i].red=(double) ScaleAnyToQuantum(ScaleQuantumToAny(
             ClampToQuantum(image->colormap[i].red),range),range);
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].green=(double) ScaleAnyToQuantum(ScaleQuantumToAny(            ClampToQuantum(image->colormap[i].green),range),range);
+          image->colormap[i].green=(double) ScaleAnyToQuantum(ScaleQuantumToAny(
+            ClampToQuantum(image->colormap[i].green),range),range);
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           image->colormap[i].blue=(double) ScaleAnyToQuantum(ScaleQuantumToAny(
             ClampToQuantum(image->colormap[i].blue),range),range);
@@ -983,8 +980,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
           range);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        if ((image->rows*image->columns) > 8192) \
-          num_threads(GetMagickResourceLimit(ThreadResource))
+        IsConcurrentDos(image->columns,image->rows,64)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1048,8 +1044,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

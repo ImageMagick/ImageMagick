@@ -65,6 +65,7 @@
 #include "MagickCore/resource_.h"
 #include "MagickCore/semaphore.h"
 #include "MagickCore/string_.h"
+#include "MagickCore/thread-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/xml-tree.h"
@@ -205,8 +206,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -331,8 +331,7 @@ MagickExport MagickBooleanType SortColormapByIntensity(Image *image,
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    if (image->colors > 256) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentUno(image->colors,256)
 #endif
   for (i=0; i < (ssize_t) image->colors; i++)
     image->colormap[i].alpha=(double) i;

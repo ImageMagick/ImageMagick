@@ -51,6 +51,7 @@
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/string-private.h"
+#include "MagickCore/thread-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/version.h"
@@ -140,8 +141,7 @@ static MagickBooleanType ChannelImage(Image *destination_image,
   width=MagickMin(source_image->columns,destination_image->columns);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    if ((height*width) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(width,height,64)
 #endif
   for (y=0; y < (ssize_t) height; y++)
   {
@@ -656,8 +656,7 @@ MagickExport Image *SeparateImage(const Image *image,
   separate_view=AcquireAuthenticCacheView(separate_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

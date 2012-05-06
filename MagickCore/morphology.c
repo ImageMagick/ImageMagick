@@ -78,6 +78,7 @@
 #include "MagickCore/statistic.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
+#include "MagickCore/thread-private.h"
 #include "MagickCore/token.h"
 #include "MagickCore/utility.h"
 #include "MagickCore/utility-private.h"
@@ -2588,8 +2589,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static,4) shared(progress,status) \
-      if ((image->rows*image->columns) > 8192) \
-        num_threads(GetMagickResourceLimit(ThreadResource))
+      IsConcurrentDos(image->columns,image->rows,64)
 #endif
     for (x=0; x < (ssize_t) image->columns; x++)
     {
@@ -2766,8 +2766,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    if ((image->rows*image->columns) > 8192) \
-      num_threads(GetMagickResourceLimit(ThreadResource))
+    IsConcurrentDos(image->columns,image->rows,64)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
