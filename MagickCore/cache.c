@@ -4875,11 +4875,11 @@ static Quantum *SetPixelCacheNexusPixels(const Image *image,
 static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
   ExceptionInfo *exception)
 {
-  CacheView
-    *image_view;
-
   CacheInfo
     *cache_info;
+
+  CacheView
+    *image_view;
 
   MagickBooleanType
     status;
