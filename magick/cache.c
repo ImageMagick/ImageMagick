@@ -5094,11 +5094,11 @@ static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
 static MagickBooleanType SetCacheAlphaChannel(Image *image,
   const Quantum opacity)
 {
-  CacheView
-    *image_view;
-
   CacheInfo
     *cache_info;
+
+  CacheView
+    *image_view;
 
   MagickBooleanType
     status;
