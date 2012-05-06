@@ -29,7 +29,7 @@ extern "C" {
   if (((((columns) > ThreadThreshold) || ((rows) > ThreadThreshold))) && \
       ((MagickSizeType) (columns*rows) > (ThreadThreshold*ThreadThreshold))) \
    num_threads(GetMagickResourceLimit(ThreadResource))
-#define IsConcurrentEx(columns,rows,expression) \
+#define IsConcurrentExp(columns,rows,expression) \
   if (((((columns) > ThreadThreshold) || ((rows) > ThreadThreshold))) && \
       ((MagickSizeType) (columns*rows) > (ThreadThreshold*ThreadThreshold)) && \
       (expression)) \
