@@ -131,8 +131,8 @@ static const void
   *GetVirtualMetacontentFromCache(const Image *);
 
 static MagickBooleanType
-  GetOneAuthenticPixelFromCache(Image *,const ssize_t,const ssize_t,
-    Quantum *,ExceptionInfo *),
+  GetOneAuthenticPixelFromCache(Image *,const ssize_t,const ssize_t,Quantum *,
+    ExceptionInfo *),
   GetOneVirtualPixelFromCache(const Image *,const VirtualPixelMethod,
     const ssize_t,const ssize_t,Quantum *,ExceptionInfo *),
   OpenPixelCache(Image *,const MapMode,ExceptionInfo *),
