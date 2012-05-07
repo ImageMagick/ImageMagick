@@ -29,15 +29,7 @@ extern "C" {
   Single threaded unless workload justifies the threading overhead.
 */
 #define MinimumWorkLoad()  (32*GetMagickResourceLimit(ThreadResource))
-#define dynamic_num_threads_uno(colors) \
-  if ((colors) > MinimumWorkLoad()) \
-    num_threads(GetMagickResourceLimit(ThreadResource))
-#define dynamic_num_threads_dos(columns,rows) \
-  if (((((columns) > MinimumWorkLoad()) || \
-      ((rows) > MinimumWorkLoad()))) && ((MagickSizeType) \
-      ((columns)*(rows)) > (MinimumWorkLoad()*MinimumWorkLoad()))) \
-    num_threads(GetMagickResourceLimit(ThreadResource))
-#define dynamic_num_threads_tres(columns,rows,expression) \
+#define dynamic_number_threads(columns,rows,expression) \
   if (((((columns) > MinimumWorkLoad()) || \
       ((rows) > MinimumWorkLoad()))) && ((MagickSizeType) \
       ((columns)*(rows)) > (MinimumWorkLoad()*MinimumWorkLoad())) && \
