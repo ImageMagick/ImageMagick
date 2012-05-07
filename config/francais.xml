@@ -698,6 +698,9 @@
         <message name="ReferenceIsNotMyType">
           référence de type erroné
         </message>
+        <message name="SetReadOnlyProperty">
+          tenter d'établir propriété en lecture seule
+        </message>
         <message name="SteganoImageRequired">
           image stégano requise
         </message>

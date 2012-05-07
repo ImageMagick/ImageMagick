@@ -704,6 +704,9 @@
         <message name="ReferenceIsNotMyType">
           reference is not my type
         </message>
+        <message name="SetReadOnlyProperty">
+          attempt to set read-only property
+        </message>
         <message name="SteganoImageRequired">
           stegano image required
         </message>
