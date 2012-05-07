@@ -1064,8 +1064,7 @@ ModuleExport void UnregisterRGBImage(void)
 %    o image:  The image.
 %
 */
-static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
-  Image *image)
+static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,Image *image)
 {
   MagickBooleanType
     status;
@@ -1109,15 +1108,9 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
     }
   quantum_type=RGBQuantum;
   if (LocaleCompare(image_info->magick,"RGBA") == 0)
-    {
-      quantum_type=RGBAQuantum;
-      image->matte=MagickTrue;
-    }
+    quantum_type=RGBAQuantum;
   if (LocaleCompare(image_info->magick,"RGBO") == 0)
-    {
-      quantum_type=RGBOQuantum;
-      image->matte=MagickTrue;
-    }
+    quantum_type=RGBOQuantum;
   scene=0;
   do
   {
