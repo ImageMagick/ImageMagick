@@ -2314,12 +2314,16 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     }
     case 'x': /* Image horizontal resolution (no units) */
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",image->x_resolution);
+      (void) FormatLocaleString(value,MaxTextExtent,"%g %s",
+           image->x_resolution,CommandOptionToMnemonic(
+           MagickResolutionOptions,(ssize_t)image->units));
       break;
     }
     case 'y': /* Image vertical resolution (no units) */
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",image->y_resolution);
+      (void) FormatLocaleString(value,MaxTextExtent,"%g %s",
+           image->y_resolution,CommandOptionToMnemonic(
+           MagickResolutionOptions,(ssize_t)image->units));
       break;
     }
     case 'z': /* Image depth as read in */
@@ -2780,9 +2784,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
           (LocaleNCompare("x-resolution",property,12) == 0) ||
           (LocaleNCompare("x_resolution",property,12) == 0) )
         {
-          (void) FormatLocaleString(value,MaxTextExtent,"%g %s",
-               image->x_resolution,CommandOptionToMnemonic(
-               MagickResolutionOptions,(ssize_t)image->units));
+          (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
+               image->x_resolution);
           break;
         }
       break;
@@ -2793,9 +2796,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
           (LocaleNCompare("y-resolution",property,12) == 0) ||
           (LocaleNCompare("y_resolution",property,12) == 0) )
         {
-          (void) FormatLocaleString(value,MaxTextExtent,"%g %s",
-               image->y_resolution,CommandOptionToMnemonic(
-               MagickResolutionOptions,(ssize_t)image->units));
+          (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
+               image->y_resolution);
           break;
         }
       break;
