@@ -506,7 +506,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(progress,status) \
-        IsConcurrentTres(images->columns,images->rows,key == ~0UL,64)
+        dynamic_num_threads_tres(images->columns,images->rows,key == ~0UL)
 #endif
       for (y=0; y < (ssize_t) evaluate_image->rows; y++)
       {
@@ -614,7 +614,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(progress,status) \
-        IsConcurrentTres(images->columns,images->rows,key == ~0UL,64)
+        dynamic_num_threads_tres(images->columns,images->rows,key == ~0UL)
 #endif
       for (y=0; y < (ssize_t) evaluate_image->rows; y++)
       {
@@ -820,7 +820,7 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    IsConcurrentTres(image->columns,image->rows,key == ~0UL,64)
+    dynamic_num_threads_tres(image->columns,image->rows,key == ~0UL)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1053,7 +1053,7 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    IsConcurrentDos(image->columns,image->rows,64)
+    dynamic_num_threads_dos(image->columns,image->rows)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1317,7 +1317,7 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    IsConcurrentDos(image->columns,image->rows,64)
+    dynamic_num_threads_dos(image->columns,image->rows)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1446,7 +1446,7 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    IsConcurrentDos(image->columns,image->rows,64)
+    dynamic_num_threads_dos(image->columns,image->rows)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2268,7 +2268,7 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
   statistic_view=AcquireAuthenticCacheView(statistic_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    IsConcurrentDos(image->columns,image->rows,64)
+    dynamic_num_threads_dos(image->columns,image->rows)
 #endif
   for (y=0; y < (ssize_t) statistic_image->rows; y++)
   {

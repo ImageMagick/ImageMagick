@@ -385,7 +385,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    IsConcurrentDos(image->columns,image->rows,64)
+    dynamic_num_threads_dos(image->columns,image->rows)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -690,7 +690,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    IsConcurrentDos(image->columns,image->rows,64)
+    dynamic_num_threads_dos(image->columns,image->rows)
 #endif
   for (y=0; y < (ssize_t) raise_info->height; y++)
   {
@@ -796,7 +796,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    IsConcurrentDos(image->columns,image->rows,64)
+    dynamic_num_threads_dos(image->columns,image->rows)
 #endif
   for (y=(ssize_t) raise_info->height; y < (ssize_t) (image->rows-raise_info->height); y++)
   {
@@ -879,7 +879,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT) 
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    IsConcurrentDos(image->columns,image->rows,64)
+    dynamic_num_threads_dos(image->columns,image->rows)
 #endif
   for (y=(ssize_t) (image->rows-raise_info->height); y < (ssize_t) image->rows; y++)
   {

@@ -26,18 +26,22 @@ extern "C" {
 #include <MagickCore/thread_.h>
 
 /*
-  Can loop benefit from multi-threads?
+  Single threaded unless workload justifies the threading overhead.
 */
-#define IsConcurrentUno(colors,threshold) \
-  if ((colors) > threshold) \
+#define MinimumWorkLoad()  (32*GetMagickResourceLimit(ThreadResource))
+#define dynamic_num_threads_uno(colors) \
+  if ((colors) > MinimumWorkLoad()) \
     num_threads(GetMagickResourceLimit(ThreadResource))
-#define IsConcurrentDos(columns,rows,threshold) \
-  if (((((columns) > threshold) || ((rows) > threshold))) && \
-      ((MagickSizeType) (columns*rows) > (threshold*threshold))) \
+#define dynamic_num_threads_dos(columns,rows) \
+  if (((((columns) > MinimumWorkLoad()) || \
+      ((rows) > MinimumWorkLoad()))) && ((MagickSizeType) \
+      ((columns)*(rows)) > (MinimumWorkLoad()*MinimumWorkLoad()))) \
     num_threads(GetMagickResourceLimit(ThreadResource))
-#define IsConcurrentTres(columns,rows,expression,threshold) \
-  if (((((columns) > threshold) || ((rows) > threshold))) && ((MagickSizeType) \
-      (columns*rows) > (threshold*threshold)) && (expression)) \
+#define dynamic_num_threads_tres(columns,rows,expression) \
+  if (((((columns) > MinimumWorkLoad()) || \
+      ((rows) > MinimumWorkLoad()))) && ((MagickSizeType) \
+      ((columns)*(rows)) > (MinimumWorkLoad()*MinimumWorkLoad())) && \
+      (expression)) \
     num_threads(GetMagickResourceLimit(ThreadResource))
 
 #if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR > 10))

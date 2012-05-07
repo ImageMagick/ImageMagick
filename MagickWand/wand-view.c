@@ -292,7 +292,7 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
   width=source->extent.width-source->extent.x;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    IsConcurrentDos(width,height,64)
+    dynamic_num_threads_dos(width,height)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -545,7 +545,7 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
   width=source->extent.width-source->extent.x;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    IsConcurrentDos(width,height,64)
+    dynamic_num_threads_dos(width,height)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -948,7 +948,7 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
   width=destination->extent.width-destination->extent.x;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    IsConcurrentDos(width,height,64)
+    dynamic_num_threads_dos(width,height)
 #endif
   for (y=destination->extent.y; y < (ssize_t) destination->extent.height; y++)
   {
@@ -1085,7 +1085,7 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
   width=source->extent.width-source->extent.x;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    IsConcurrentDos(width,height,64)
+    dynamic_num_threads_dos(width,height)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -1239,7 +1239,7 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
   width=source->extent.width-source->extent.x;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    IsConcurrentDos(width,height,64)
+    dynamic_num_threads_dos(width,height)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
