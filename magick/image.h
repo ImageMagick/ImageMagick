@@ -273,9 +273,9 @@ struct _Image
     *blob;
 
   char
-    filename[MaxTextExtent],   /* images input filename */
-    magick_filename[MaxTextExtent],
-    magick[MaxTextExtent];
+    filename[MaxTextExtent],         /* images input filename */
+    magick_filename[MaxTextExtent],  /* ditto with coders, and read_mods */
+    magick[MaxTextExtent];           /* Coder used to decode image */
 
   size_t
     magick_columns,
