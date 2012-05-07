@@ -169,11 +169,12 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       quantum_type=RGBAQuantum;
       image->matte=MagickTrue;
+      canvas_image->matte=MagickTrue;
     }
   if (LocaleCompare(image_info->magick,"RGBO") == 0)
     {
       quantum_type=RGBOQuantum;
-      image->matte=MagickTrue;
+      canvas_image->matte=MagickTrue;
     }
   if (image_info->number_scenes != 0)
     while (image->scene < image_info->scene)
@@ -884,8 +885,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     0,canvas_image->columns,1,exception);
                   q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                     image->columns,1,exception);
-                  if ((p == (const Quantum *) NULL) ||
-                      (q == (Quantum *) NULL))
+                  if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                     break;
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
@@ -1056,8 +1056,8 @@ ModuleExport void UnregisterRGBImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,Image *image,
-  ExceptionInfo *exception)
+static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
+  Image *image,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
@@ -1101,17 +1101,9 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,Image *image,
     }
   quantum_type=RGBQuantum;
   if (LocaleCompare(image_info->magick,"RGBA") == 0)
-    {
-      quantum_type=RGBAQuantum;
-      if (image->matte == MagickFalse)
-        SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
-    }
+    quantum_type=RGBAQuantum;
   if (LocaleCompare(image_info->magick,"RGBO") == 0)
-    {
-      quantum_type=RGBOQuantum;
-      if (image->matte == MagickFalse)
-        SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
-    }
+    quantum_type=RGBOQuantum;
   scene=0;
   do
   {
