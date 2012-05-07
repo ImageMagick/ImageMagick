@@ -853,7 +853,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
 
     if (CellType==miUINT8 && z!=3)
     {
-      if(image->colors>256) image->colors = 256;
+      if(image->colors > 256) image->colors = 256;
 
       if (AcquireImageColormap(image, image->colors,exception) == MagickFalse)
       {

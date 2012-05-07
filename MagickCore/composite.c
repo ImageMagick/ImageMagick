@@ -335,7 +335,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    IsConcurrentDos(image->columns,image->rows,64)
+    dynamic_num_threads_dos(image->columns,image->rows)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -609,7 +609,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        IsConcurrentDos(image->columns,image->rows,64)
+        dynamic_num_threads_dos(image->columns,image->rows)
 #endif
       for (y=0; y < (ssize_t) composite_image->rows; y++)
       {
@@ -1166,7 +1166,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    IsConcurrentDos(image->columns,image->rows,64)
+    dynamic_num_threads_dos(image->columns,image->rows)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2365,7 +2365,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
-        IsConcurrentDos(image->columns,image->rows,64)
+        dynamic_num_threads_dos(image->columns,image->rows)
 #endif
       for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) texture_image->rows)
       {
@@ -2415,7 +2415,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    IsConcurrentDos(image->columns,image->rows,64)
+    dynamic_num_threads_dos(image->columns,image->rows)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

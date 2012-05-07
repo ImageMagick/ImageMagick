@@ -169,7 +169,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   GetPixelInfo(image,&zero);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    IsConcurrentDos(image->columns,image->rows,64)
+    dynamic_num_threads_dos(image->columns,image->rows)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -388,7 +388,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
       }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        IsConcurrentDos(image->columns,image->rows,64)
+        dynamic_num_threads_dos(image->columns,image->rows)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -452,7 +452,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    IsConcurrentDos(image->columns,image->rows,64)
+    dynamic_num_threads_dos(image->columns,image->rows)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -936,7 +936,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
-        IsConcurrentUno(image->colors,256)
+        dynamic_num_threads_uno(image->colors)
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
@@ -980,7 +980,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
           range);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        IsConcurrentDos(image->columns,image->rows,64)
+        dynamic_num_threads_dos(image->columns,image->rows)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1044,7 +1044,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    IsConcurrentDos(image->columns,image->rows,64)
+    dynamic_num_threads_dos(image->columns,image->rows)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
