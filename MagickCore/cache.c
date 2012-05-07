@@ -4898,7 +4898,7 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
   image_view=AcquireVirtualCacheView(image,exception);  /* must be virtual */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    dynamic_num_threads_dos(image->columns,image->rows)
+    dynamic_number_threads(image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

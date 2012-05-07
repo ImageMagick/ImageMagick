@@ -96,8 +96,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadRGBImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *canvas_image,
@@ -248,8 +247,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                 canvas_image->columns,1,exception);
               q=QueueAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -332,8 +330,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                   0,canvas_image->columns,1,exception);
                 q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                   image->columns,1,exception);
-                if ((p == (const Quantum *) NULL) ||
-                    (q == (Quantum *) NULL))
+                if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                   break;
                 for (x=0; x < (ssize_t) image->columns; x++)
                 {
@@ -427,8 +424,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                 canvas_image->columns,1,exception);
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -479,8 +475,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                 canvas_image->columns,1,exception);
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -531,8 +526,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                 canvas_image->columns,1,exception);
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -592,8 +586,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                     exception);
                   q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                     image->columns,1,exception);
-                  if ((p == (const Quantum *) NULL) ||
-                      (q == (Quantum *) NULL))
+                  if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                     break;
                   for (x=0; x < (ssize_t) image->columns; x++)
                   {
@@ -679,8 +672,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                 canvas_image->columns,1,exception);
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -750,8 +742,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                 canvas_image->columns,1,exception);
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -821,8 +812,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,
                 canvas_image->columns,1,exception);
               q=GetAuthenticPixels(image,0,y-image->extract_info.y,
                 image->columns,1,exception);
-              if ((p == (const Quantum *) NULL) ||
-                  (q == (Quantum *) NULL))
+              if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -1066,8 +1056,8 @@ ModuleExport void UnregisterRGBImage(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
-  Image *image,ExceptionInfo *exception)
+static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,Image *image,
+  ExceptionInfo *exception)
 {
   MagickBooleanType
     status;
