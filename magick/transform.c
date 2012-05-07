@@ -161,7 +161,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   chop_view=AcquireAuthenticCacheView(chop_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    dynamic_number_threads_dos(extent.y,extent.y)
+    dynamic_number_threads(extent.y,extent.y,1)
 #endif
   for (y=0; y < (ssize_t) extent.y; y++)
   {
