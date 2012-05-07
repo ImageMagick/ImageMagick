@@ -760,10 +760,10 @@ void Magick::Image::convolve ( const size_t order_,
   kernel_info=AcquireKernelInfo((const char *) NULL);
   kernel_info->width=order_;
   kernel_info->height=order_;
-  kernel_info->values=(MagickRealType *) kernel_;
+  kernel_info->values=(double *) kernel_;
   MagickCore::Image* newImage =
     ConvolveImage ( image(), kernel_info, &exceptionInfo );
-  kernel_info->values=(MagickRealType *) NULL;
+  kernel_info->values=(double *) NULL;
   kernel_info=DestroyKernelInfo(kernel_info);
   replaceImage( newImage );
   throwException( exceptionInfo );
