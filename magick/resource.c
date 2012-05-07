@@ -989,7 +989,7 @@ MagickExport MagickBooleanType ResourceComponentGenesis(void)
   if (files < 0)
     files=64;
   (void) SetMagickResourceLimit(FileResource,MagickMax((size_t)
-    (3*files/4),64));
+    (3*files/4)));
   limit=GetEnvironmentValue("MAGICK_FILE_LIMIT");
   if (limit == (char *) NULL)
     limit=GetPolicyValue("file");

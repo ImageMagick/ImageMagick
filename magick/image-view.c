@@ -250,7 +250,7 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
   exception=destination->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    IsConcurrentDos(width,height,64)
+    dynamic_num_threads_dos(width,height)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -563,7 +563,7 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
   width=(size_t) (source->extent.width-source->extent.x);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    IsConcurrentDos(width,height,64)
+    dynamic_num_threads_dos(width,height)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -910,7 +910,7 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
   exception=destination->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    IsConcurrentDos(width,height,64)
+    dynamic_num_threads_dos(width,height)
 #endif
   for (y=destination->extent.y; y < (ssize_t) destination->extent.height; y++)
   {
@@ -1081,7 +1081,7 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
   exception=destination->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    IsConcurrentDos(width,height,64)
+    dynamic_num_threads_dos(width,height)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -1218,7 +1218,7 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
   exception=source->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    IsConcurrentDos(width,height,64)
+    dynamic_num_threads_dos(width,height)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
