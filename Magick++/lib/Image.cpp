@@ -3539,10 +3539,6 @@ void Magick::Image::pixelColor ( const ssize_t x_, const ssize_t y_,
 Magick::Color Magick::Image::pixelColor ( const ssize_t x_,
 					  const ssize_t y_ ) const
 {
-  ClassType storage_class;
-  storage_class = classType();
-  (void) storage_class;
-  // DirectClass
   const Quantum* pixel = getConstPixels( x_, y_, 1, 1 );
   if ( pixel )
     {
