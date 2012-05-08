@@ -104,7 +104,6 @@
 %  script 'launcher' to be used for magick scripts.
 %
 %    #!/bin/sh
-%    #
 %    : echo "This part is run in the shell, but ignored by Magick"
 %    : exec magick -script "$0" "$@"; exit 10
 %    #
@@ -116,12 +115,21 @@
 %  DOS script launcher...
 %
 %  Similarly for DOS, any '@' at the start of the line (outside of quotes)
-%  will also be treated as comment. To allow the same DOS script launcher
-%  code
+%  will also be treated as comment. This allow you to create a DOS script
+%  launcher, to turn ".bat" DOS scripts into "magick" scripts.
 %
 %    @echo This line is DOS executed but ignored by Magick
 %    @magick -script %~dpnx0 %*
 %    @GOTO :EOF
+%    #
+%    # The rest of the file is magick script
+%    -read label:"This is a Magick Script!"
+%    -write show: -exit
+%
+% But this can also be used as a shell script launhers
+%
+%    @() { exec magick -script "$@"; }
+%    @ "$0" "$@"; exit
 %    #
 %    # The rest of the file is magick script
 %    -read label:"This is a Magick Script!"
