@@ -620,14 +620,13 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
   (void) AcquireMagickResource(FileResource,1);
   cache_info->file=file;
   cache_info->mode=mode;
-  cache_info->timestamp=time(0);
   UnlockSemaphoreInfo(cache_info->disk_semaphore);
   return(MagickTrue);
 }
 
-static inline MagickOffsetType ReadPixelCacheRegion(CacheInfo *cache_info,
-  const MagickOffsetType offset,const MagickSizeType length,
-  unsigned char *restrict buffer)
+static inline MagickOffsetType ReadPixelCacheRegion(
+  const CacheInfo *restrict cache_info,const MagickOffsetType offset,
+  const MagickSizeType length,unsigned char *restrict buffer)
 {
   register MagickOffsetType
     i;
@@ -635,7 +634,6 @@ static inline MagickOffsetType ReadPixelCacheRegion(CacheInfo *cache_info,
   ssize_t
     count;
 
-  cache_info->timestamp=time(0);
 #if !defined(MAGICKCORE_HAVE_PREAD)
   LockSemaphoreInfo(cache_info->disk_semaphore);
   if (lseek(cache_info->file,offset,SEEK_SET) < 0)
@@ -669,9 +667,9 @@ static inline MagickOffsetType ReadPixelCacheRegion(CacheInfo *cache_info,
   return(i);
 }
 
-static inline MagickOffsetType WritePixelCacheRegion(CacheInfo *cache_info,
-  const MagickOffsetType offset,const MagickSizeType length,
-  const unsigned char *restrict buffer)
+static inline MagickOffsetType WritePixelCacheRegion(
+  const CacheInfo *restrict cache_info,const MagickOffsetType offset,
+  const MagickSizeType length,const unsigned char *restrict buffer)
 {
   register MagickOffsetType
     i;
@@ -679,7 +677,6 @@ static inline MagickOffsetType WritePixelCacheRegion(CacheInfo *cache_info,
   ssize_t
     count;
 
-  cache_info->timestamp=time(0);
 #if !defined(MAGICKCORE_HAVE_PWRITE)
   LockSemaphoreInfo(cache_info->disk_semaphore);
   if (lseek(cache_info->file,offset,SEEK_SET) < 0)
@@ -1969,7 +1966,8 @@ MagickExport MagickSizeType GetImageExtent(const Image *image)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static inline MagickBooleanType ValidatePixelCacheMorphology(const Image *image)
+static inline MagickBooleanType ValidatePixelCacheMorphology(
+  const Image *restrict image)
 {
   CacheInfo
     *cache_info;
@@ -4953,8 +4951,9 @@ MagickExport void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
 %
 */
 
-static inline MagickBooleanType AcquireCacheNexusPixels(CacheInfo *cache_info,
-  NexusInfo *nexus_info,ExceptionInfo *exception)
+static inline MagickBooleanType AcquireCacheNexusPixels(
+  const CacheInfo *restrict cache_info,NexusInfo *nexus_info,
+  ExceptionInfo *exception)
 {
   if (nexus_info->length != (MagickSizeType) ((size_t) nexus_info->length))
     return(MagickFalse);
