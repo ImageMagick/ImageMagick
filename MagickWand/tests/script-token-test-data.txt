@@ -1,6 +1,10 @@
 #
 # Comments should be ignored
 #
+: Shell script launcher comment ignore
+@ DOS script launcher comment ignore
+
+
 -option key  # end of line comment
 +reset   imbedded#hash   # <- not a comment, thought this is
 

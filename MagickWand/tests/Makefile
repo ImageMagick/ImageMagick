@@ -21,3 +21,4 @@ clean:
 
 test_script:
 	script-token-test.sh | diff script-token-test-results.txt -
+
