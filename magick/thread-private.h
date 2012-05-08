@@ -28,7 +28,7 @@ extern "C" {
 /*
   Single threaded unless workload justifies the threading overhead.
 */
-#define MinimumWorkLoad()  (32*GetMagickResourceLimit(ThreadResource))
+#define MinimumWorkLoad()  (16*GetMagickResourceLimit(ThreadResource))
 #define dynamic_number_threads(columns,rows,expression) \
   if (((((columns) > MinimumWorkLoad()) || \
       ((rows) > MinimumWorkLoad()))) && ((MagickSizeType) \
