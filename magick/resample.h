@@ -59,6 +59,7 @@ typedef enum
   Lanczos2SharpFilter,
   RobidouxFilter,
   RobidouxSharpFilter,
+  CosineFilter,
   SentinelFilter  /* a count of all the filters, not a real filter */
 } FilterTypes;
 
