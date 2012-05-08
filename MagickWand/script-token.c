@@ -80,28 +80,50 @@
 %  end of the line.  You can escape a comment '#', using quotes or backlsashes
 %  just as you can in a shell.
 %
-%  This allows the normal UNIX 'scripting' to be used to call on the magick
-%  command to parse the tokens from a file
+%
+%  UNIX script Launcher...
+%
+%  Th euse of '#' comments allow normal UNIX 'scripting' to be used to call on
+%  the "magick" command to parse the tokens from a file
 %
 %    #!/path/to/command/magick -script
 %
-%  or
+%
+%  UNIX 'env' command launcher...
+%
+%  If "magick" is renamed "magick-script" you can use a 'env' UNIX launcher
 %
 %    #!/usr/bin/env magick-script
+%
+%
+%  Shell script launsher...
 %
 %  As a special case a ':' at the start of a line is also treated as a comment
 %  This allows a magick script to ignore a line that can be parsed by the shell
 %  and not by the magick script (tokenizer).  This allows for an alternative
-%  script 'launcher' to be used for magick scripts, and posibly windows DOS
-%  scripts.
+%  script 'launcher' to be used for magick scripts.
 %
 %    #!/bin/sh
 %    #
-%    # Shell Launcher for Magick Script
-%    : echo "This part is run in the shell"
+%    : echo "This part is run in the shell, but ignored by Magick"
 %    : exec magick -script "$0" "$@"; exit 10
 %    #
-%    # The rest of the script is magick script
+%    # The rest of the file is magick script
+%    -read label:"This is a Magick Script!"
+%    -write show: -exit
+%
+%
+%  DOS script launcher...
+%
+%  Similarly for DOS, any '@' at the start of the line (outside of quotes)
+%  will also be treated as comment. To allow the same DOS script launcher
+%  code
+%
+%    @echo This line is DOS executed but ignored by Magick
+%    @magick -script %~dpnx0 %*
+%    @GOTO :EOF
+%    #
+%    # The rest of the file is magick script
 %    -read label:"This is a Magick Script!"
 %    -write show: -exit
 %
@@ -326,10 +348,12 @@ WandExport MagickBooleanType GetScriptToken(ScriptTokenInfo *token_info)
         state=IN_WHITE;
       continue;
     }
+    /* comment lines start with '#' anywhere, or ':' or '@' at start of line */
     if ( state == IN_WHITE )
-      if (c == '#' || (c == ':' && token_info->curr_column==1))
+      if ( ( c == '#' ) ||
+           ( token_info->curr_column==1 && (c == ':' || c == '@' ) ) )
         state=IN_COMMENT;
-    /* whitespace break character */
+    /* whitespace token seperator character */
     if (strchr(" \n\r\t",c) != (char *)NULL) {
       switch (state) {
         case IN_TOKEN:
@@ -342,7 +366,7 @@ WandExport MagickBooleanType GetScriptToken(ScriptTokenInfo *token_info)
       continue;
     }
     /* quote character */
-    if (strchr("'\"",c) != (char *)NULL) {
+    if ( c=='\'' || c =='"' ) {
       switch (state) {
         case IN_WHITE:
           token_info->token_line=token_info->curr_line;
