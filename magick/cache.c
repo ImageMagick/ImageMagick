@@ -1648,7 +1648,7 @@ MagickExport IndexPacket *GetAuthenticIndexQueue(const Image *image)
 */
 
 static inline MagickBooleanType IsPixelAuthentic(
-  const CacheInfo *restrict cache_info,NexusInfo *nexus_info)
+  const CacheInfo *restrict cache_info,const NexusInfo *restrict nexus_info)
 {
   MagickOffsetType
     offset;
