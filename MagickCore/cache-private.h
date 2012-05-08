@@ -192,6 +192,9 @@ typedef struct _CacheInfo
     *semaphore,
     *disk_semaphore;
 
+  time_t
+    timestamp;
+
   size_t
     signature;
 } CacheInfo;
