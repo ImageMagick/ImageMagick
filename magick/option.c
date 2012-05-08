@@ -987,6 +987,7 @@ static const OptionInfo
     { "Bohman", BohmanFilter, UndefinedOptionFlag, MagickFalse },
     { "Box", BoxFilter, UndefinedOptionFlag, MagickFalse },
     { "Catrom", CatromFilter, UndefinedOptionFlag, MagickFalse },
+    { "Cosine", CosineFilter, UndefinedOptionFlag, MagickFalse },
     { "Cubic", CubicFilter, UndefinedOptionFlag, MagickFalse },
     { "Gaussian", GaussianFilter, UndefinedOptionFlag, MagickFalse },
     { "Hamming", HammingFilter, UndefinedOptionFlag, MagickFalse },

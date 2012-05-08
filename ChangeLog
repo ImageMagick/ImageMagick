@@ -1,3 +1,6 @@
+2012-05-08  6.7.6-10 Anthony Thyssen <A.Thyssen@griffith...>
+  * Added a low level "Cosine" Windowing Filter -- Request by Nicholas Robidox
+
 2012-05-05  6.7.6-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-9, SVN revision 7812.
 
