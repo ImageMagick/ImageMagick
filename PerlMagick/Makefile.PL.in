@@ -229,6 +229,8 @@ WriteMakefile
 
    # Use same compiler as ImageMagick
    'PERLMAINCC'	=> '@PERLMAINCC@ @OPENMP_CFLAGS@',
+   'AR' => '@AR@',
+   'LD' => '@PERLMAINCC@',
 
    # Set Perl installation prefix to ImageMagick installation prefix
 #   'PREFIX'	=> '@prefix@',
