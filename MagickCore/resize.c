@@ -138,8 +138,6 @@ static MagickRealType
 %
 */
 
-#define MagickPIL ((MagickRealType) 3.14159265358979323846264338327950288420L)
-
 static MagickRealType Blackman(const MagickRealType x,
   const ResizeFilter *magick_unused(resize_filter))
 {
@@ -150,7 +148,7 @@ static MagickRealType Blackman(const MagickRealType x,
     Refactored by Chantal Racette and Nicolas Robidoux to one trig call and
     five flops.
   */
-  const MagickRealType cosine=cos((double) (MagickPIL*x));
+  const MagickRealType cosine=cos((double) (MagickPI*x));
   return(0.34+cosine*(0.5+cosine*0.16));
 }
 
@@ -165,9 +163,9 @@ static MagickRealType Bohman(const MagickRealType x,
     taking advantage of the fact that the support of Bohman is 1.0 (so that we
     know that sin(pi x) >= 0).
   */
-  const MagickRealType cosine=cos((double) (MagickPIL*x));
+  const MagickRealType cosine=cos((double) (MagickPI*x));
   const MagickRealType sine=sqrt(1.0-cosine*cosine);
-  return((1.0-x)*cosine+(1.0/MagickPIL)*sine);
+  return((1.0-x)*cosine+(1.0/MagickPI)*sine);
 }
 
 static MagickRealType Box(const MagickRealType magick_unused(x),
@@ -179,6 +177,16 @@ static MagickRealType Box(const MagickRealType magick_unused(x),
     as it requests points beyond its normal 0.0 support size.
   */
   return(1.0);
+}
+
+static MagickRealType Cosine(const MagickRealType x,
+  const ResizeFilter *magick_unused(resize_filter))
+{
+  /*
+    Cosine window function:
+      cos((pi/2)*x).
+  */
+  return((MagickRealType)cos((double) (MagickPI2*x)));
 }
 
 static MagickRealType CubicBC(const MagickRealType x,
@@ -265,7 +273,7 @@ static MagickRealType Hanning(const MagickRealType x,
     Cosine window function:
       0.5+0.5*cos(pi*x).
   */
-  const MagickRealType cosine=cos((double) (MagickPIL*x));
+  const MagickRealType cosine=cos((double) (MagickPI*x));
   return(0.5+0.5*cosine);
 }
 
@@ -276,7 +284,7 @@ static MagickRealType Hamming(const MagickRealType x,
     Offset cosine window function:
      .54 + .46 cos(pi x).
   */
-  const MagickRealType cosine=cos((double) (MagickPIL*x));
+  const MagickRealType cosine=cos((double) (MagickPI*x));
   return(0.54+0.46*cosine);
 }
 
@@ -292,8 +300,8 @@ static MagickRealType Jinc(const MagickRealType x,
     really it is more accurately named "Jinc".
   */
   if (x == 0.0)
-    return(0.5*MagickPIL);
-  return(BesselOrderOne(MagickPIL*x)/x);
+    return(0.5*MagickPI);
+  return(BesselOrderOne(MagickPI*x)/x);
 }
 
 static MagickRealType Kaiser(const MagickRealType x,
@@ -365,7 +373,7 @@ static MagickRealType Sinc(const MagickRealType x,
   */
   if (x != 0.0)
     {
-      const MagickRealType alpha=(MagickRealType) (MagickPIL*x);
+      const MagickRealType alpha=(MagickRealType) (MagickPI*x);
       return(sin((double) alpha)/alpha);
     }
   return((MagickRealType) 1.0);
@@ -400,7 +408,7 @@ static MagickRealType SincFast(const MagickRealType x,
   */
   if (x > 4.0)
     {
-      const MagickRealType alpha=(MagickRealType) (MagickPIL*x);
+      const MagickRealType alpha=(MagickRealType) (MagickPI*x);
       return(sin((double) alpha)/alpha);
     }
   {
@@ -740,6 +748,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { Lanczos2SharpFilter, Lanczos2SharpFilter },
     { RobidouxFilter,      BoxFilter      },  /* Cubic Keys tuned for EWA     */
     { RobidouxSharpFilter, BoxFilter      },  /* Sharper Cubic Keys for EWA   */
+    { SincFastFilter,      CosineFilter   },  /* low level cosine window      */
   };
   /*
     Table mapping the filter/window from the above table to an actual function.
@@ -798,7 +807,8 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
                             0.37821575509399867, 0.31089212245300067 },
     /* RobidouxSharp: Sharper version of Robidoux */
     { CubicBC,   2.0, 1.105822933719019,
-                            0.2620145123990142,  0.3689927438004929  }
+                            0.2620145123990142,  0.3689927438004929  },
+    { Cosine,    1.0, 1.0, 0.0, 0.0 }  /* Low level cosine window     */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
