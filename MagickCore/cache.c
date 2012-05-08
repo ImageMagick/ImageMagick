@@ -1494,8 +1494,8 @@ static void *GetAuthenticMetacontentFromCache(const Image *image)
 %
 */
 
-static inline MagickBooleanType IsPixelAuthentic(const CacheInfo *cache_info,
-  NexusInfo *nexus_info)
+static inline MagickBooleanType IsPixelAuthentic(
+  const CacheInfo *restrict cache_info,NexusInfo *nexus_info)
 {
   MagickBooleanType
     status;
