@@ -377,7 +377,7 @@ static unsigned short **AcquirePixelThreadSet(const size_t columns,
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   pixels=(unsigned short **) AcquireQuantumMemory(number_threads,
     sizeof(*pixels));
   if (pixels == (unsigned short **) NULL)
@@ -420,7 +420,7 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(Image *image,
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   transform=(cmsHTRANSFORM *) AcquireQuantumMemory(number_threads,
     sizeof(*transform));
   if (transform == (cmsHTRANSFORM *) NULL)
