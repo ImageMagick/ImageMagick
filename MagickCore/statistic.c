@@ -161,7 +161,7 @@ static PixelChannels **AcquirePixelThreadSet(const Image *image,
     length,
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   pixels=(PixelChannels **) AcquireQuantumMemory(number_threads,
     sizeof(*pixels));
   if (pixels == (PixelChannels **) NULL)
@@ -1855,7 +1855,7 @@ static PixelList **AcquirePixelListThreadSet(const size_t width,
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   pixel_list=(PixelList **) AcquireQuantumMemory(number_threads,
     sizeof(*pixel_list));
   if (pixel_list == (PixelList **) NULL)

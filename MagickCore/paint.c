@@ -516,7 +516,7 @@ static size_t **AcquireHistogramThreadSet(const size_t count)
     **histogram,
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   histogram=(size_t **) AcquireQuantumMemory(number_threads,sizeof(*histogram));
   if (histogram == (size_t **) NULL)
     return((size_t **) NULL);

@@ -3589,7 +3589,7 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   polygon_info=(PolygonInfo **) AcquireQuantumMemory(number_threads,
     sizeof(*polygon_info));
   if (polygon_info == (PolygonInfo **) NULL)
