@@ -165,7 +165,7 @@ MagickExport CacheView *AcquireVirtualCacheView(const Image *image,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(cache_view,0,sizeof(*cache_view));
   cache_view->image=ReferenceImage((Image *) image);
-  cache_view->number_threads=GetMagickResourceLimit(ThreadResource);
+  cache_view->number_threads=GetOpenMPMaximumThreads();
   cache_view->nexus_info=AcquirePixelCacheNexus(cache_view->number_threads);
   cache_view->virtual_pixel_method=GetImageVirtualPixelMethod(image);
   cache_view->debug=IsEventLogging();

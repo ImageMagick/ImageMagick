@@ -175,7 +175,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
           }
       return(status);
     }
-  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  number_threads=GetOpenMPMaximumThreads();
   serial=0.0;
   for (n=1; n <= (ssize_t) number_threads; n++)
   {
