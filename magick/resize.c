@@ -312,7 +312,7 @@ static MagickRealType Kaiser(const MagickRealType x,
     automatically be normalized.
   */
   return(resize_filter->coefficient[1]*
-              I0(resize_filter->coefficient[0]*sqrt((double) (1.0-x*x))));
+         I0(resize_filter->coefficient[0]*sqrt((double) (1.0-x*x))));
 }
 
 static MagickRealType Lagrange(const MagickRealType x,
@@ -951,7 +951,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   */
 
   /* User Gaussian Sigma Override - no support change */
-  if (resize_filter->filter == Gaussian) {
+  if ((resize_filter->filter == Gaussian) ||
+      (resize_filter->window == Gaussian) ) {
     value=0.5;    /* guassian sigma default, half pixel */
     artifact=GetImageArtifact(image,"filter:sigma");
     if (artifact != (const char *) NULL)
@@ -966,7 +967,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   }
 
   /* User Kaiser Alpha Override - no support change */
-  if (resize_filter->filter == Kaiser) {
+  if ((resize_filter->filter == Kaiser) ||
+      (resize_filter->window == Kaiser) ) {
     value=6.5; /* default alpha value for Kaiser bessel windowing function */
     artifact=GetImageArtifact(image,"filter:alpha");
     if (artifact != (const char *) NULL)
@@ -1027,8 +1029,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   */
   B=0.0;
   C=0.0;
-  if ((filters[filter_type].function == CubicBC) ||
-      (filters[window_type].function == CubicBC))
+  if ((resize_filter->filter == CubicBC) ||
+      (resize_filter->window == CubicBC) )
     {
       B=filters[filter_type].B;
       C=filters[filter_type].C;
@@ -1106,17 +1108,17 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         (void) FormatLocaleFile(stdout,"# filter = %s\n",
              CommandOptionToMnemonic(MagickFilterOptions,filter_type));
         (void) FormatLocaleFile(stdout,"# window = %s\n",
-             CommandOptionToMnemonic(MagickFilterOptions, window_type));
+             CommandOptionToMnemonic(MagickFilterOptions,window_type));
         (void) FormatLocaleFile(stdout,"# support = %.*g\n",
              GetMagickPrecision(),(double) resize_filter->support);
         (void) FormatLocaleFile(stdout,"# win-support = %.*g\n",
              GetMagickPrecision(),(double) resize_filter->window_support);
         (void) FormatLocaleFile(stdout,"# scale_blur = %.*g\n",
              GetMagickPrecision(), (double)resize_filter->blur);
-        if ( filter_type == GaussianFilter )
+        if ( filter_type == GaussianFilter || window_type == GaussianFilter )
           (void) FormatLocaleFile(stdout,"# gaussian_sigma = %.*g\n",
                GetMagickPrecision(), (double)resize_filter->coefficient[0]);
-        if ( filter_type == KaiserFilter )
+        if ( filter_type == KaiserFilter || window_type == KaiserFilter )
           (void) FormatLocaleFile(stdout,"# kaiser_alpha = %.*g\n",
                GetMagickPrecision(), (double)resize_filter->coefficient[0]);
         (void) FormatLocaleFile(stdout,"# practical_support = %.*g\n",
