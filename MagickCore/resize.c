@@ -256,7 +256,7 @@ static MagickRealType Gaussian(const MagickRealType x,
 
         exp( -coeff[1]*(x^2)) ) * coeff[2];
 
-    However the multiplier coeff[1] is not needed and not used.
+    However the multiplier coeff[1] is need, the others are informative only.
 
     This separates the gaussian 'sigma' value from the 'blur/support'
     settings allowing for its use in special 'small sigma' gaussians,
