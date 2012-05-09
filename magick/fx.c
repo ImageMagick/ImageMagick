@@ -2978,7 +2978,7 @@ static FxInfo **AcquireFxThreadSet(const Image *image,const char *expression,
   size_t
     number_threads;
 
-  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  number_threads=GetOpenMPMaximumThreads();
   fx_info=(FxInfo **) AcquireQuantumMemory(number_threads,sizeof(*fx_info));
   if (fx_info == (FxInfo **) NULL)
     return((FxInfo **) NULL);

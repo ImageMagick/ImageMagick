@@ -1405,7 +1405,7 @@ static RealPixelPacket **AcquirePixelThreadSet(const size_t count)
   size_t
     number_threads;
 
-  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  number_threads=GetOpenMPMaximumThreads();
   pixels=(RealPixelPacket **) AcquireQuantumMemory(number_threads,
     sizeof(*pixels));
   if (pixels == (RealPixelPacket **) NULL)
