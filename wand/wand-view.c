@@ -795,7 +795,7 @@ WandExport WandView *NewWandView(MagickWand *wand)
     wand_view->exception);
   wand_view->extent.width=wand->images->columns;
   wand_view->extent.height=wand->images->rows;
-  wand_view->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  wand_view->number_threads=GetOpenMPMaximumThreads();
   wand_view->pixel_wands=AcquirePixelsThreadSet(wand_view->extent.width,
     wand_view->number_threads);
   if (wand_view->pixel_wands == (PixelWand ***) NULL)
@@ -858,7 +858,7 @@ WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
   wand_view->extent.height=height;
   wand_view->extent.x=x;
   wand_view->extent.y=y;
-  wand_view->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  wand_view->number_threads=GetOpenMPMaximumThreads();
   wand_view->pixel_wands=AcquirePixelsThreadSet(wand_view->extent.width,
     wand_view->number_threads);
   if (wand_view->pixel_wands == (PixelWand ***) NULL)
@@ -1076,7 +1076,7 @@ MagickExport void SetWandViewThreads(WandView *image_view,
   assert(image_view->signature == MagickSignature);
   image_view->number_threads=number_threads;
   if (number_threads > (size_t) GetMagickResourceLimit(ThreadResource))
-    image_view->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+    image_view->number_threads=GetOpenMPMaximumThreads();
 }
 
 /*
