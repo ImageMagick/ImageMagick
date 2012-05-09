@@ -168,7 +168,7 @@ static MagickBooleanType AcquireQuantumPixels(QuantumInfo *quantum_info,
 
   assert(quantum_info != (QuantumInfo *) NULL);
   assert(quantum_info->signature == MagickSignature);
-  quantum_info->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  quantum_info->number_threads=GetOpenMPMaximumThreads();
   quantum_info->pixels=(unsigned char **) AcquireQuantumMemory(
     quantum_info->number_threads,sizeof(*quantum_info->pixels));
   if (quantum_info->pixels == (unsigned char **) NULL)

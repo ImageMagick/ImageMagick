@@ -291,7 +291,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  number_threads=GetOpenMPMaximumThreads();
   current_depth=(size_t *) AcquireQuantumMemory(number_threads,
     sizeof(*current_depth));
   if (current_depth == (size_t *) NULL)

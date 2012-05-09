@@ -725,7 +725,7 @@ static PixelWand ***AcquirePixelsThreadSet(const size_t number_wands)
   size_t
     number_threads;
 
-  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  number_threads=GetOpenMPMaximumThreads();
   pixel_wands=(PixelWand ***) AcquireQuantumMemory(number_threads,
     sizeof(*pixel_wands));
   if (pixel_wands == (PixelWand ***) NULL)
