@@ -700,6 +700,18 @@ ModuleExport size_t RegisterJP2Image(void)
   entry->encoder=(EncodeImageHandler *) WriteJP2Image;
 #endif
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("J2K");
+  entry->description=ConstantString("JPEG-2000 Code Stream Syntax");
+  entry->module=ConstantString("JP2");
+  entry->magick=(IsImageFormatHandler *) IsJPC;
+  entry->adjoin=MagickFalse;
+  entry->seekable_stream=MagickTrue;
+  entry->thread_support=NoThreadSupport;
+#if defined(MAGICKCORE_JP2_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadJP2Image;
+  entry->encoder=(EncodeImageHandler *) WriteJP2Image;
+#endif
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPX");
   entry->description=ConstantString("JPEG-2000 File Format Syntax");
   entry->module=ConstantString("JP2");
@@ -755,6 +767,7 @@ ModuleExport size_t RegisterJP2Image(void)
 ModuleExport void UnregisterJP2Image(void)
 {
   (void) UnregisterMagickInfo("PGX");
+  (void) UnregisterMagickInfo("J2K");
   (void) UnregisterMagickInfo("J2C");
   (void) UnregisterMagickInfo("JPC");
   (void) UnregisterMagickInfo("JP2");
