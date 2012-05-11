@@ -260,7 +260,9 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
   /* clear flags - for Expanding kernel lists thorugh rotations */
    flags = NoValue;
 
-  /* Has a ':' in argument - New user kernel specification */
+  /* Has a ':' in argument - New user kernel specification
+     FUTURE: this split on ':' could be done by StringToken()
+   */
   p = strchr(kernel_string, ':');
   if ( p != (char *) NULL && p < end)
     {
@@ -1383,8 +1385,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[3] = +MagickSQ2;
-            kernel->values[5] = -MagickSQ2;
+            kernel->values[3] = +(MagickRealType) MagickSQ2;
+            kernel->values[5] = -(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             break;
           case 2:
@@ -1392,8 +1394,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[1] = kernel->values[3] = +MagickSQ2;
-            kernel->values[5] = kernel->values[7] = -MagickSQ2;
+            kernel->values[1] = kernel->values[3]= +(MagickRealType) MagickSQ2;
+            kernel->values[5] = kernel->values[7]= -(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1408,8 +1410,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[3] = +MagickSQ2;
-            kernel->values[5] = -MagickSQ2;
+            kernel->values[3] = +(MagickRealType) MagickSQ2;
+            kernel->values[5] = -(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1418,8 +1420,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[1] = +MagickSQ2;
-            kernel->values[7] = +MagickSQ2;
+            kernel->values[1] = +(MagickRealType) MagickSQ2;
+            kernel->values[7] = +(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1428,8 +1430,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[0] = +MagickSQ2;
-            kernel->values[8] = -MagickSQ2;
+            kernel->values[0] = +(MagickRealType) MagickSQ2;
+            kernel->values[8] = -(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1438,8 +1440,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[2] = -MagickSQ2;
-            kernel->values[6] = +MagickSQ2;
+            kernel->values[2] = -(MagickRealType) MagickSQ2;
+            kernel->values[6] = +(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -2216,7 +2218,7 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
   assert(kernel != (KernelInfo *) NULL);
   if ( kernel->next != (KernelInfo *) NULL )
     kernel->next=DestroyKernelInfo(kernel->next);
-  kernel->values=(double *)RelinquishAlignedMemory(kernel->values);
+  kernel->values=(double *) RelinquishAlignedMemory(kernel->values);
   kernel=(KernelInfo *) RelinquishMagickMemory(kernel);
   return(kernel);
 }
@@ -2445,7 +2447,9 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MorphologyApply() applies a morphological method, multiple times using
-%  a list of multiple kernels.
+%  a list of multiple kernels.  This is the method that should be called by
+%  other 'operators' that internally use morphology operations as part of
+%  their processing.
 %
 %  It is basically equivalent to as MorphologyImage() (see below) but
 %  without any user controls.  This allows internel programs to use this
@@ -2455,10 +2459,9 @@ static void CalcKernelMetaData(KernelInfo *kernel)
 %  It is MorphologyImage() task to extract any such user controls, and
 %  pass them to this function for processing.
 %
-%  More specifically kernels are not normalized/scaled/blended by the
-%  'convolve:scale' Image Artifact (setting), nor is the convolve bias
-%  ('convolve:bias' artifact) looked at, but must be supplied from the
-%  function arguments.
+%  More specifically all given kernels should already be scaled, normalised,
+%  and blended appropriatally before being parred to this routine. The
+%  appropriate bias, and compose (typically 'UndefinedComposeOp') given.
 %
 %  The format of the MorphologyApply method is:
 %
