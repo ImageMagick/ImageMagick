@@ -5022,7 +5022,7 @@ static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
             nexus_info->region.x;
           nexus_info->pixels=cache_info->pixels+offset;
           if (mode == ReadMode)
-            MagickCachePrefetch(nexus_info->pixels,0,0);
+            MagickCachePrefetch(nexus_info->pixels,0,1);
           else
             MagickCachePrefetch(nexus_info->pixels,1,1);
           nexus_info->indexes=(IndexPacket *) NULL;
@@ -5063,7 +5063,7 @@ static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
       }
   nexus_info->pixels=nexus_info->cache;
   if (mode == ReadMode)
-    MagickCachePrefetch(nexus_info->pixels,0,0);
+    MagickCachePrefetch(nexus_info->pixels,0,1);
   else
     MagickCachePrefetch(nexus_info->pixels,1,1);
   nexus_info->indexes=(IndexPacket *) NULL;
