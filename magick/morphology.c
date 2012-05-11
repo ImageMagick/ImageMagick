@@ -1180,7 +1180,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         else /* special case - generate a unity kernel */
           kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
 #else
-        /* Direct calculation without curve averaging */
+        /* Direct calculation without curve averaging
+           This is equivelent to a KernelRank of 1 */
 
         /* Calculate a Positive Gaussian */
         if ( sigma > MagickEpsilon )
@@ -1197,10 +1198,11 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 #endif
         /* Note the above kernel may have been 'clipped' by a user defined
         ** radius, producing a smaller (darker) kernel.  Also for very small
-        ** sigma's (> 0.1) the central value becomes larger than one, and thus
-        ** producing a very bright kernel.
+        ** sigma's (> 0.1) the central value becomes larger than one, as a
+        ** result of not generating a actual 'discrete' kernel, and thus
+        ** producing a very bright 'impulse'.
         **
-        ** Normalization will still be needed.
+        ** Becuase of these two factors Normalization is required!
         */
 
         /* Normalize the 1D Gaussian Kernel
