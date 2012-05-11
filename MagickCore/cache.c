@@ -54,6 +54,7 @@
 #include "MagickCore/log.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/nt-base-private.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
@@ -2869,7 +2870,7 @@ MagickExport const void *GetVirtualMetacontent(const Image *image)
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   metacontent=cache_info->methods.get_virtual_metacontent_from_handler(image);
-  if (metacontent != (GetVirtualMetacontentFromHandler) NULL)
+  if (metacontent != (void *) NULL)
     return(metacontent);
   assert(id < (int) cache_info->number_threads);
   metacontent=GetVirtualMetacontentFromNexus(cache_info,
@@ -4755,6 +4756,19 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
   return(MagickTrue);
 }
 
+static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
+  const MapMode mode)
+{
+  MagickSizeType
+    i;
+
+  for (i=0; i < nexus_info->length; i+=CACHE_LINE_SIZE)
+    if (mode == ReadMode)
+      MagickCachePrefetch((unsigned char *) nexus_info->pixels+i,0,1);
+    else
+      MagickCachePrefetch((unsigned char *) nexus_info->pixels+i,1,1);
+}
+
 static Quantum *SetPixelCacheNexusPixels(const Image *image,const MapMode mode,
   const RectangleInfo *region,NexusInfo *nexus_info,ExceptionInfo *exception)
 {
@@ -4797,14 +4811,11 @@ static Quantum *SetPixelCacheNexusPixels(const Image *image,const MapMode mode,
             nexus_info->region.x;
           nexus_info->pixels=cache_info->pixels+cache_info->number_channels*
             offset;
-          if (mode == ReadMode)
-            MagickCachePrefetch(nexus_info->pixels,0,1);
-          else
-            MagickCachePrefetch(nexus_info->pixels,1,1);
           nexus_info->metacontent=(void *) NULL;
           if (cache_info->metacontent_extent != 0)
             nexus_info->metacontent=(unsigned char *) cache_info->metacontent+
               offset*cache_info->metacontent_extent;
+          PrefetchPixelCacheNexusPixels(nexus_info,mode);
           return(nexus_info->pixels);
         }
     }
@@ -4839,14 +4850,11 @@ static Quantum *SetPixelCacheNexusPixels(const Image *image,const MapMode mode,
           }
       }
   nexus_info->pixels=nexus_info->cache;
-  if (mode == ReadMode)
-    MagickCachePrefetch(nexus_info->pixels,0,1);
-  else
-    MagickCachePrefetch(nexus_info->pixels,1,1);
   nexus_info->metacontent=(void *) NULL;
   if (cache_info->metacontent_extent != 0)
     nexus_info->metacontent=(void *) (nexus_info->pixels+number_pixels*
       cache_info->number_channels);
+  PrefetchPixelCacheNexusPixels(nexus_info,mode);
   return(nexus_info->pixels);
 }
 
