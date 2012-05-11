@@ -28,11 +28,11 @@ extern "C" {
 /*
   Single threaded unless workload justifies the threading overhead.
 */
-#define MinimumWorkLoad()  (16*GetMagickResourceLimit(ThreadResource))
+#define WorkloadThreshold()  (16*GetMagickResourceLimit(ThreadResource))
 #define dynamic_number_threads(columns,rows,expression) \
-  if (((((columns) > MinimumWorkLoad()) || \
-      ((rows) > MinimumWorkLoad()))) && ((MagickSizeType) \
-      ((columns)*(rows)) > (MinimumWorkLoad()*MinimumWorkLoad())) && \
+  if (((((columns) > WorkloadThreshold()) || \
+      ((rows) > WorkloadThreshold()))) && ((MagickSizeType) \
+      ((columns)*(rows)) > (WorkloadThreshold()*WorkloadThreshold())) && \
       (expression)) \
     num_threads(GetMagickResourceLimit(ThreadResource))
 
