@@ -649,8 +649,9 @@ MagickExport MagickBooleanType ResamplePixelColor(
   /*
     Result sanity check -- this should NOT happen
   */
-  if ( hit == 0 ) {
-    /* not enough pixels in resampling, resort to direct interpolation */
+  if ( hit == 0 || divisor_m <= MagickEpsilon || divisor_c <= MagickEpsilon ) {
+    /* not enough pixels, or bad weighting in resampling,
+       resort to direct interpolation */
 #if DEBUG_NO_PIXEL_HIT
     pixel->opacity = pixel->red = pixel->green = pixel->blue = 0;
     pixel->red = QuantumRange; /* show pixels for which EWA fails */
