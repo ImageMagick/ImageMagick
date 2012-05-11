@@ -1184,7 +1184,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         else /* special case - generate a unity kernel */
           kernel->values[kernel->x+kernel->y*kernel->width] = 1.0;
 #else
-        /* Direct calculation without curve averaging */
+        /* Direct calculation without curve averaging
+           This is equivelent to a KernelRank of 1 */
 
         /* Calculate a Positive Gaussian */
         if ( sigma > MagickEpsilon )
@@ -1201,10 +1202,11 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 #endif
         /* Note the above kernel may have been 'clipped' by a user defined
         ** radius, producing a smaller (darker) kernel.  Also for very small
-        ** sigma's (> 0.1) the central value becomes larger than one, and thus
-        ** producing a very bright kernel.
+        ** sigma's (> 0.1) the central value becomes larger than one, as a
+        ** result of not generating a actual 'discrete' kernel, and thus
+        ** producing a very bright 'impulse'.
         **
-        ** Normalization will still be needed.
+        ** Becuase of these two factors Normalization is required!
         */
 
         /* Normalize the 1D Gaussian Kernel
@@ -1268,8 +1270,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             /* B = 1.0/(MagickSQ2PI*sigma); */
             for ( i=0; i < (ssize_t) kernel->width; i++)
               kernel->positive_range +=
-                kernel->values[i] =
-                  exp(-((double)(i*i))*A);
+                kernel->values[i] = exp(-((double)(i*i))*A);
                 /* exp(-((double)(i*i))/2.0*sigma*sigma)/(MagickSQ2PI*sigma); */
 #endif
           }
@@ -1386,8 +1387,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[3]+=(MagickRealType) MagickSQ2;
-            kernel->values[5]-=(MagickRealType) MagickSQ2;
+            kernel->values[3] = +(MagickRealType) MagickSQ2;
+            kernel->values[5] = -(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             break;
           case 2:
@@ -1395,8 +1396,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[1] = kernel->values[3]+=(MagickRealType) MagickSQ2;
-            kernel->values[5] = kernel->values[7]-=(MagickRealType) MagickSQ2;
+            kernel->values[1] = kernel->values[3]= +(MagickRealType) MagickSQ2;
+            kernel->values[5] = kernel->values[7]= -(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1411,8 +1412,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[3]+=(MagickRealType) MagickSQ2;
-            kernel->values[5]-=(MagickRealType) MagickSQ2;
+            kernel->values[3] = +(MagickRealType) MagickSQ2;
+            kernel->values[5] = -(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1421,8 +1422,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[1]+=(MagickRealType) MagickSQ2;
-            kernel->values[7]+=(MagickRealType) MagickSQ2;
+            kernel->values[1] = +(MagickRealType) MagickSQ2;
+            kernel->values[7] = +(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1431,8 +1432,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[0]+=(MagickRealType) MagickSQ2;
-            kernel->values[8]-=(MagickRealType) MagickSQ2;
+            kernel->values[0] = +(MagickRealType) MagickSQ2;
+            kernel->values[8] = -(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1441,8 +1442,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[2]-=(MagickRealType) MagickSQ2;
-            kernel->values[6]+=(MagickRealType) MagickSQ2;
+            kernel->values[2] = -(MagickRealType) MagickSQ2;
+            kernel->values[6] = +(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -2647,11 +2648,11 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             GetPixelChannels(image)),q);
 
         /* Set the bias of the weighted average output */
-        result.red     =
-        result.green   =
-        result.blue    =
+        result.red   =
+        result.green =
+        result.blue  =
         result.alpha =
-        result.black   = bias;
+        result.black = bias;
 
 
         /* Weighted Average of pixels using reflected kernel
