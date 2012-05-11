@@ -4798,7 +4798,7 @@ static Quantum *SetPixelCacheNexusPixels(const Image *image,const MapMode mode,
           nexus_info->pixels=cache_info->pixels+cache_info->number_channels*
             offset;
           if (mode == ReadMode)
-            MagickCachePrefetch(nexus_info->pixels,0,0);
+            MagickCachePrefetch(nexus_info->pixels,0,1);
           else
             MagickCachePrefetch(nexus_info->pixels,1,1);
           nexus_info->metacontent=(void *) NULL;
@@ -4840,7 +4840,7 @@ static Quantum *SetPixelCacheNexusPixels(const Image *image,const MapMode mode,
       }
   nexus_info->pixels=nexus_info->cache;
   if (mode == ReadMode)
-    MagickCachePrefetch(nexus_info->pixels,0,0);
+    MagickCachePrefetch(nexus_info->pixels,0,1);
   else
     MagickCachePrefetch(nexus_info->pixels,1,1);
   nexus_info->metacontent=(void *) NULL;
