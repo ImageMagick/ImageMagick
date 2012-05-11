@@ -4279,7 +4279,6 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
      ( LocaleCompare("--",option) == 0 ) ) {
 #if 0
     /* Directly read 'arg1' without filename expansion handling (see below).
-       This does NOT turn off the 'coder:' prefix, or '[...]' read modifiers.
     */
 # if !USE_WAND_METHODS
     Image    *new_images;
@@ -4318,7 +4317,11 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
     argc = 1;
     argv = (char **) &arg1;
 
-    if (IfMagickFalse(ExpandFilenames(&argc,&argv)))
+    /* Expand 'glob' expressions in the given filename.
+       Expansion handles any 'coder:' prefix, or read modifiers attached
+       to the filename, including them in the resulting expanded list.
+    */
+    if (IfMagickFalse(  ExpandFilenames(&argc,&argv)  ))
       CLIWandExceptArgReturn(ResourceLimitError,"MemoryAllocationFailed",
           option,GetExceptionMessage(errno));
 
@@ -4335,8 +4338,7 @@ fprintf(stderr, "DEBUG: Reading image: \"%s\"\n", argv[i]);
         new_images=ReadImages(_image_info,argv[i],_exception);
       AppendImageToList(&_images, new_images);
     }
-    /* FUTURE: how do I free the expanded filename array memory ??? */
-    //argv=DestroyStringList(argv);  /* Is this correct? */
+    argv=DestroyStringList(argv);  /* Destroy the Expanded Filename list */
 #endif
     return;
   }
