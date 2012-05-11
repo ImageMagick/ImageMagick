@@ -4982,18 +4982,12 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
 static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
   const MapMode mode)
 {
-  MagickSizeType
-    length;
-
-  register MagickSizeType
-    i;
-
-  length=(MagickSizeType) nexus_info->region.width*nexus_info->region.height;
-  for (i=0; i < length; i+=CACHE_LINE_SIZE)
-    if (mode == ReadMode)
-      MagickCachePrefetch((unsigned char *) nexus_info->pixels+i,0,1);
-    else
-      MagickCachePrefetch((unsigned char *) nexus_info->pixels+i,1,1);
+  if (mode == ReadMode)
+    {
+      MagickCachePrefetch((unsigned char *) nexus_info->pixels,0,1);
+      return;
+    }
+  MagickCachePrefetch((unsigned char *) nexus_info->pixels,1,1);
 }
 
 static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
