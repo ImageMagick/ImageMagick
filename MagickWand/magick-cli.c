@@ -686,7 +686,7 @@ static MagickBooleanType ConcatenateImages(int argc,char **argv,
   register ssize_t
     i;
 
-  if (IfMagickFalse(ExpandFilenames(&argc,&argv)))
+  if (IfMagickFalse(  ExpandFilenames(&argc,&argv)  ))
     ThrowFileException(exception,ResourceLimitError,"MemoryAllocationFailed",
          GetExceptionMessage(errno));
 
@@ -724,13 +724,6 @@ WandExport MagickBooleanType MagickImageCommand(ImageInfo *image_info,
 
   /* For specific OS command line requirements */
   ReadCommandlLine(argc,&argv);
-
-#if 0
-  status=ExpandFilenames(&argc,&argv);
-  if ( IfMagickFalse(status) )
-    ThrowConvertException(ResourceLimitError,"MemoryAllocationFailed",
-      GetExceptionMessage(errno));
-#endif
 
   /* Initialize special "CLI Wand" to hold images and settings (empty) */
   cli_wand=AcquireMagickCLI(image_info,exception);

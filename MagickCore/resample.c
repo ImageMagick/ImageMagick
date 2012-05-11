@@ -1323,7 +1323,7 @@ MagickExport void SetResampleFilter(ResampleFilter *resample_filter,
   #pragma omp single
 #endif
   {
-    if (IsStringTrue(GetImageArtifact(resample_filter->image,
+    if (IfStringTrue(GetImageArtifact(resample_filter->image,
              "resample:verbose")) )
       {
         register int
