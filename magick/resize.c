@@ -312,7 +312,7 @@ static MagickRealType Kaiser(const MagickRealType x,
     automatically be normalized.
   */
   return(resize_filter->coefficient[1]*
-         I0(resize_filter->coefficient[0]*sqrt((double) (1.0-x*x))));
+            I0(resize_filter->coefficient[0]*sqrt((double) (1.0-x*x))));
 }
 
 static MagickRealType Lagrange(const MagickRealType x,
