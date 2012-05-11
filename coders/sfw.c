@@ -126,18 +126,16 @@ static unsigned char *SFWScan(unsigned char *p,const unsigned char *q,
   register ssize_t
     i;
 
-  for ( ; p < q; p++)
-  {
-    if (*p != *target)
-      continue;
-    if (length == 1)
-      return(p);
-    for (i=1; i < (ssize_t) length; i++)
-      if (*(p+i) != *(target+i))
-        break;
-    if (i == (ssize_t) length)
-      return(p);
-  }
+  if ((p+length) < q)
+    while (p < q)
+    {
+      for (i=0; i < length; i++)
+        if (p[i] != target[i])
+          break;
+      if (i == length)
+        return((unsigned char *) p);
+      p++;
+    }
   return((unsigned char *) NULL);
 }
 
@@ -281,13 +279,18 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Translate remaining markers.
   */
   offset=header+2;
-  offset+=(offset[2] << 8)+offset[3]+2;
+  offset+=(((unsigned int) offset[2]) << 8)+offset[3]+2;
   for ( ; ; )
   {
+    if ((offset+4) > (buffer+count-1))
+      {
+        buffer=(unsigned char *) RelinquishMagickMemory(buffer);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+      }
     TranslateSFWMarker(offset);
     if (offset[1] == 0xda)
       break;
-    offset+=(offset[2] << 8)+offset[3]+2;
+    offset+=(((unsigned int) offset[2]) << 8)+offset[3]+2;
   }
   offset--;
   data=SFWScan(offset,buffer+count-1,(const unsigned char *) "\377\311",2);
