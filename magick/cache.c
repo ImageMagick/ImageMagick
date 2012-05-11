@@ -4983,9 +4983,13 @@ static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
   const MapMode mode)
 {
   MagickSizeType
+    length;
+
+  register MagickSizeType
     i;
 
-  for (i=0; i < nexus_info->length; i+=CACHE_LINE_SIZE)
+  length=(MagickSizeType) nexus_info->region.width*nexus_info->region.height;
+  for (i=0; i < length; i+=CACHE_LINE_SIZE)
     if (mode == ReadMode)
       MagickCachePrefetch((unsigned char *) nexus_info->pixels+i,0,1);
     else
