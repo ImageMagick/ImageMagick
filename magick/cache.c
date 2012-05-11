@@ -54,6 +54,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/pixel.h"
 #include "magick/pixel-private.h"
 #include "magick/policy.h"
@@ -4978,6 +4979,19 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
   return(MagickTrue);
 }
 
+static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
+  const MapMode mode)
+{
+  MagickSizeType
+    i;
+
+  for (i=0; i < nexus_info->length; i+=CACHE_LINE_SIZE)
+    if (mode == ReadMode)
+      MagickCachePrefetch((unsigned char *) nexus_info->pixels+i,0,1);
+    else
+      MagickCachePrefetch((unsigned char *) nexus_info->pixels+i,1,1);
+}
+
 static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
   const MapMode mode,const RectangleInfo *region,NexusInfo *nexus_info,
   ExceptionInfo *exception)
@@ -5021,14 +5035,11 @@ static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
           offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
             nexus_info->region.x;
           nexus_info->pixels=cache_info->pixels+offset;
-          if (mode == ReadMode)
-            MagickCachePrefetch(nexus_info->pixels,0,1);
-          else
-            MagickCachePrefetch(nexus_info->pixels,1,1);
           nexus_info->indexes=(IndexPacket *) NULL;
           if (cache_info->active_index_channel != MagickFalse)
             nexus_info->indexes=cache_info->indexes+offset;
           return(nexus_info->pixels);
+          PrefetchPixelCacheNexusPixels(nexus_info,mode);
         }
     }
   /*
@@ -5062,13 +5073,10 @@ static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
           }
       }
   nexus_info->pixels=nexus_info->cache;
-  if (mode == ReadMode)
-    MagickCachePrefetch(nexus_info->pixels,0,1);
-  else
-    MagickCachePrefetch(nexus_info->pixels,1,1);
   nexus_info->indexes=(IndexPacket *) NULL;
   if (cache_info->active_index_channel != MagickFalse)
     nexus_info->indexes=(IndexPacket *) (nexus_info->pixels+number_pixels);
+  PrefetchPixelCacheNexusPixels(nexus_info,mode);
   return(nexus_info->pixels);
 }
 
