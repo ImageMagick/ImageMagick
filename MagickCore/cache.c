@@ -147,8 +147,8 @@ static Quantum
     const size_t,ExceptionInfo *),
   *QueueAuthenticPixelsCache(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,ExceptionInfo *),
-  *SetPixelCacheNexusPixels(const Image *,const RectangleInfo *,NexusInfo *,
-    ExceptionInfo *) magick_hot_spot;
+  *SetPixelCacheNexusPixels(const Image *,const MapMode,const RectangleInfo *,
+    NexusInfo *,ExceptionInfo *) magick_hot_spot;
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
@@ -3062,7 +3062,7 @@ MagickPrivate const Quantum *GetVirtualPixelsFromNexus(const Image *image,
   region.y=y;
   region.width=columns;
   region.height=rows;
-  pixels=SetPixelCacheNexusPixels(image,&region,nexus_info,exception);
+  pixels=SetPixelCacheNexusPixels(image,ReadMode,&region,nexus_info,exception);
   if (pixels == (Quantum *) NULL)
     return((const Quantum *) NULL);
   q=pixels;
@@ -4155,7 +4155,7 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
   region.y=y;
   region.width=columns;
   region.height=rows;
-  return(SetPixelCacheNexusPixels(image,&region,nexus_info,exception));
+  return(SetPixelCacheNexusPixels(image,WriteMode,&region,nexus_info,exception));
 }
 
 /*
@@ -4711,13 +4711,15 @@ MagickPrivate void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
 %
 %  The format of the SetPixelCacheNexusPixels() method is:
 %
-%      Quantum SetPixelCacheNexusPixels(const Image *image,
+%      Quantum SetPixelCacheNexusPixels(const Image *image,const MapMode mode,
 %        const RectangleInfo *region,NexusInfo *nexus_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
+%
+%    o mode: ReadMode, WriteMode, or IOMode.
 %
 %    o region: A pointer to the RectangleInfo structure that defines the
 %      region of this particular cache nexus.
@@ -4753,7 +4755,7 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
   return(MagickTrue);
 }
 
-static Quantum *SetPixelCacheNexusPixels(const Image *image,
+static Quantum *SetPixelCacheNexusPixels(const Image *image,const MapMode mode,
   const RectangleInfo *region,NexusInfo *nexus_info,ExceptionInfo *exception)
 {
   CacheInfo
@@ -4795,6 +4797,10 @@ static Quantum *SetPixelCacheNexusPixels(const Image *image,
             nexus_info->region.x;
           nexus_info->pixels=cache_info->pixels+cache_info->number_channels*
             offset;
+          if (mode == ReadMode)
+            MagickCachePrefetch(nexus_info->pixels,0,0);
+          else
+            MagickCachePrefetch(nexus_info->pixels,1,1);
           nexus_info->metacontent=(void *) NULL;
           if (cache_info->metacontent_extent != 0)
             nexus_info->metacontent=(unsigned char *) cache_info->metacontent+
@@ -4833,6 +4839,10 @@ static Quantum *SetPixelCacheNexusPixels(const Image *image,
           }
       }
   nexus_info->pixels=nexus_info->cache;
+  if (mode == ReadMode)
+    MagickCachePrefetch(nexus_info->pixels,0,0);
+  else
+    MagickCachePrefetch(nexus_info->pixels,1,1);
   nexus_info->metacontent=(void *) NULL;
   if (cache_info->metacontent_extent != 0)
     nexus_info->metacontent=(void *) (nexus_info->pixels+number_pixels*
