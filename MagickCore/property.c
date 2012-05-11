@@ -2467,6 +2467,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
       break;
     }
   }
+  /* FUTURE: save it as a 'special' property - for return */
   if (*value != '\0')
     clone=ConstantString(value);
   return(clone);
@@ -2476,8 +2477,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
   Image *image,const char *property,ExceptionInfo *exception)
 {
   char
-    value[MaxTextExtent],
-    filename[MaxTextExtent];
+    value[MaxTextExtent];
 
   assert(property[0] != '\0');
   if ( property[1] == '\0')  /* single letter properity request */
@@ -2491,8 +2491,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
       if ((LocaleNCompare("base",property,4) == 0) ||
           (LocaleNCompare("basename",property,8) == 0) )
         {
-          GetPathComponent(image->magick_filename,BasePath,filename);
-          (void) CopyMagickString(value,filename,MaxTextExtent);
+          GetPathComponent(image->magick_filename,BasePath,value);
           break;
         }
       break;
@@ -2545,8 +2544,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         }
       if (LocaleNCompare("directory",property,9) == 0)
         {
-          GetPathComponent(image->magick_filename,HeadPath,filename);
-          (void) CopyMagickString(value,filename,MaxTextExtent);
+          GetPathComponent(image->magick_filename,HeadPath,value);
           break;
         }
       break;
@@ -2555,15 +2553,15 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     {
       if (LocaleNCompare("extension",property,9) == 0)
         {
-          GetPathComponent(image->magick_filename,ExtensionPath,filename);
-          (void) CopyMagickString(value,filename,MaxTextExtent);
+          GetPathComponent(image->magick_filename,ExtensionPath,value);
           break;
         }
       break;
     }
     case 'g':
     {
-      if (LocaleNCompare("group",property,5) == 0)
+      if ( (image_info != (ImageInfo *) NULL) &&
+           (LocaleNCompare("group",property,5) == 0) )
         {
           (void) FormatLocaleString(value,MaxTextExtent,"0x%lx",
             (unsigned long) image_info->group);
@@ -2667,7 +2665,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             image->orientation));
           break;
         }
-      if (LocaleNCompare("output",property,6) == 0)
+      if ( (image_info != (ImageInfo *) NULL) &&
+           (LocaleNCompare("output",property,6) == 0) )
         {
           (void) CopyMagickString(value,image_info->filename,MaxTextExtent);
           break;
@@ -2706,7 +2705,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     {
       if (LocaleNCompare("scene",property,5) == 0)
         {
-          if (image_info->number_scenes != 0)
+          if ( (image_info != (ImageInfo *) NULL) &&
+               (image_info->number_scenes != 0) )
             (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
                 image_info->scene);
           else
@@ -2756,10 +2756,10 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'u':
     {
-      if (LocaleNCompare("unique",property,6) == 0)
+      if ( (image_info != (ImageInfo *) NULL) &&
+           (LocaleNCompare("unique",property,6) == 0) )
         {
-          (void) CopyMagickString(filename,image_info->unique,MaxTextExtent);
-          (void) CopyMagickString(value,filename,MaxTextExtent);
+          (void) CopyMagickString(value,image_info->unique,MaxTextExtent);
           break;
         }
       break;
@@ -2808,15 +2808,16 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'z':
     {
-      if (LocaleNCompare("zero",property,4) == 0)
+      if ( (image_info != (ImageInfo *) NULL) &&
+           (LocaleNCompare("zero",property,4) == 0) )
         {
-          (void) CopyMagickString(filename,image_info->zero,MaxTextExtent);
-          (void) CopyMagickString(value,filename,MaxTextExtent);
+          (void) CopyMagickString(value,image_info->zero,MaxTextExtent);
           break;
         }
       break;
     }
   }
+  /* FUTURE: save it as a 'special' property entry - for return */
   if (*value == '\0')
     return(NULL);
   return(ConstantString(value));
@@ -2871,25 +2872,31 @@ MagickExport char *GetNextImageProperty(const Image *image)
 %  the appropriate image property and returns the interpreted text.
 %
 %  This searches for and replaces
-%     %x           where 'x' is a single letter, case sensitive).
-%     %[type:...]  where 'type' is specifically known prefix.
-%     %[name]      where 'name' is a specifically known attribute, calculated
-%                  value, or free-form properity string name, or a free-form
-%                  global option string setting.
-%     \n \r        replaced by newline, return
-%     &lt; &lt;    replaced by '<', '>' resp.
+%     \n \r \%          replaced by newline, return, and percent resp.
+%     &lt; &gt; &amp;   replaced by '<', '>', '&' resp.
+%     %%                replaced by percent
 %
-%  If 'name' is a 'glob-expresion' (containing '*' or '?' characters) it is used
-%  as a search pattern to print "name=value\n" pairs of free-form string
-%  properities. Some 'type' properities may also allow 'glob-expressions'.
+%     %x            where 'x' is a single letter, case sensitive).
+%     %[type:name]  where 'type' is specifically known prefix.
+%     %[name]       where 'name' is a specifically known attribute, calculated
+%                   value, or a per-image properity string name, or a per-image
+%                   'artifact' (as generated from a global option)
 %
-%  The returned string must be freeds using DestoryString() or
-%  RelinquishMagickMemory().
+%  Single letter % substitutions will only happen if the preceeding character
+%  is NOT a number. But braced substitutions will always be performed. This
+%  prevents typical usage of percent in 'geometry arguments' from being
+%  substituted unexpectedly.
+%
+%  If 'glob-expresions' ('*' or '?' characters) is used for 'name' it may be
+%  used as a search pattern to print multiple lines of "name=value\n" pairs of
+%  the associacted set of properities.
+%
+%  The returned string must be freed using DestoryString().
 %
 %  The format of the InterpretImageProperties method is:
 %
-%      char *InterpretImageProperties(const ImageInfo *image_info,Image *image,
-%        const char *embed_text,ExceptionInfo *exception)
+%      char *InterpretImageProperties(const ImageInfo *image_info,
+%        Image *image,const char *embed_text,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2907,11 +2914,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
   Image *image,const char *embed_text,ExceptionInfo *exception)
 {
   char
-    *interpret_text,
-    *text;
-
-  const char
-    *value;
+    *interpret_text;
 
   register char
     *q;
@@ -2919,12 +2922,12 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
   register const char
     *p;
 
-  register ssize_t
-    i;
-
   size_t
     extent,
     length;
+
+  MagickBooleanType
+    number;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2933,19 +2936,26 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
 
   if ((embed_text == (const char *) NULL) || (*embed_text == '\0'))
     return((char *) NULL);
-  text=(char *) embed_text;
+  p=embed_text;
 
   /* handle a '@' replace string from file */
-  if ((*text == '@') && ((*(text+1) == '-') ||
-      IfMagickTrue(IsPathAccessible(text+1))))
-    return(FileToString(embed_text+1,~0,exception));
+  if (*p == '@') {
+     p++;
+     if (*p != '-' && IfMagickFalse(IsPathAccessible(p)) ) {
+       (void) ThrowMagickException(exception,GetMagickModule(),
+           OptionError,"UnableToAcessPath","%s",p);
+       return((char *) NULL);
+     }
+     return(FileToString(p,~0,exception));
+  }
+
   /*
     Translate any embedded format characters.
   */
-  interpret_text=AcquireString(text);
-  extent=MaxTextExtent;
-  p=text;
-  for (q=interpret_text; *p != '\0'; p++)
+  interpret_text=AcquireString(embed_text); /* new string with extra space */
+  extent=MaxTextExtent;                     /* how many extra space */
+  number=MagickFalse;                       /* is last char a number? */
+  for (q=interpret_text; *p!='\0'; number=IsMagickTrue(isdigit(*p)),p++)
   {
     *q='\0';
     if ((size_t) (q-interpret_text+MaxTextExtent) >= extent)
@@ -2954,54 +2964,77 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         interpret_text=(char *) ResizeQuantumMemory(interpret_text,extent+
           MaxTextExtent+1,sizeof(*interpret_text));
         if (interpret_text == (char *) NULL)
-          break;
+          return((char *) NULL);
         q=interpret_text+strlen(interpret_text);
       }
     /*
-      Process backslash escapes
+      Look for percent escapes, (and handle other specials)
     */
-    if ((*p == '\\') && (*(p+1) == 'r'))  /* convert to RETURN */
-      {
-        *q++='\r';
-        p++;
+    switch (*p) {
+      case '\\':
+        switch (*(p+1)) {
+          case '\0':
+            continue;
+          case 'r':       /* convert to RETURN */
+            *q++='\r';
+            p++;
+            continue;
+          case 'n':       /* convert to NEWLINE */
+            *q++='\n';
+            p++;
+            continue;
+          case '\n':      /* EOL removal UNIX,MacOSX */
+            p++;
+            continue;
+          case '\r':      /* EOL removal DOS,Windows */
+            p++;
+            if (*p == '\n') /* return-newline EOL */
+              p++;
+            continue;
+          default:
+            p++;
+            *q++=(*p);
+            continue;
+        }
+        continue; /* never reached! */
+      case '&':
+        if (LocaleNCompare("&lt;",p+1,4) != 0)
+          *q++='<', p+=3;
+        else if (LocaleNCompare("&gt;",p+1,4) != 0)
+          *q++='>', p+=3;
+        else if (LocaleNCompare("&amp;",p+1,5) != 0)
+          *q++='&', p+=4;
+        else
+          *q++=(*p);
         continue;
-      }
-    if ((*p == '\\') && (*(p+1) == 'n'))  /* convert to NEWLINE */
-      {
-        *q++='\n';
-        p++;
+      case '%':
+        break;      /* continue to next set of handlers */
+      default:
+        *q++=(*p);  /* any thing else is 'as normal' */
         continue;
-      }
-#if 0
-    /* FUTURE: end of line removal! */
-      if ((*p == '\\') && (*(p+1) == '\n'))  /* EOL removal UNIX,MacOSX */
-      {
-        p+=2;
-        continue;
-      }
-      if ((*p == '\\') && (*(p+1) == '\r'))  /* EOL removal DOS,Windows */
-      {
-        p+=2;
-        if (*p == '\n' )
-          p++;
-      }
-#endif
-    if (*p == '\\') /* escaped backslash */
-      {
-        p++;
-        *q++=(*p);
-        continue;
-      }
-    if (*p != '%') /* usless escape - remove -- no if needed? */
-      {
-        *q++=(*p);
-        continue;
-      }
-    p++;
-    /* Handle percent escape */
+    }
 
-    /* single letter escapes, without multi-character brace wrapper */
-    if ( *p != '[' ) {
+    /*
+      Doubled Percent
+    */
+    if ( *(p+1) == '%' ) {
+        *q++=(*p);
+        p++;
+    }
+
+    /*
+      Single letter escapes
+    */
+    if ( *(p+1) != '[' ) {
+      const char
+        *value;
+
+      /* But only if not preceeded by a number! */
+      if ( IfMagickTrue(number) ) {
+        *q++=(*p); /* do NOT substitute the percent */
+        continue;
+      }
+      p++;
       value=GetMagickPropertyLetter(image_info,image,*p, exception);
       if (value != (char *) NULL) {
         length=strlen(value);
@@ -3010,143 +3043,181 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
             extent+=length;
             interpret_text=(char *) ResizeQuantumMemory(interpret_text,
               extent+MaxTextExtent,sizeof(*interpret_text));
-            if (interpret_text == (char *) NULL)
-              break;
+            if (interpret_text == (char *) NULL) {
+              value=DestroyString((char *)value);
+              return((char *)NULL);
+            }
             q=interpret_text+strlen(interpret_text);
           }
         (void) CopyMagickString(q,value,extent);
         q+=length;
         value=DestroyString((char *)value); /* must be destoryed */
       }
-#if 0
       else {
-        /* FUTURE: Warn about unknown percent escape */
-        fprintf(stderr, "UNKNOWN ESCAPE: \"%%%c\"\n", *p);
+        (void) ThrowMagickException(exception,GetMagickModule(),
+            OptionWarning,"UnknownImageProperty","\"%%%c\"",*p);
       }
-#endif
+      continue;
     }
-    else   /* multi-character percent escape  %[....] */
-      do {   /* brace block, enable use of 'break' */
 
-        char
-          pattern[MaxTextExtent];
+    /*
+      Braced Percent Escape
+    */
+    {
+      char
+        pattern[MaxTextExtent];
 
-        const char
-          *key,
-          *value;
+      const char
+        *key,
+        *value;
 
-        ssize_t
-          depth;
+      register ssize_t
+        len;
 
-        /* get the string from framed by [..] */
-#if 1
-        if (strchr(p,']') == (char *) NULL)
-          break;  /* FUTURE: escape %[..] missing final brace */
-#endif
-        depth=1;
-        p++;
-        /* FUTURE: refactor into sub-routine looking for 'break' character
-         * Full recursion? Or only as needed?
-         */
-        for (i=0; (i < (MaxTextExtent-1L)) && (*p != '\0'); i++)
+      ssize_t
+        depth;
+
+      /* get the string framed by the %[...] */
+      p+=2;  /* advance p to just inside the opening brace */
+      depth=1;
+      if ( *p == ']' ) {
+        (void) ThrowMagickException(exception,GetMagickModule(),
+            OptionWarning,"UnknownImageProperty","\"%%[]\"");
+        break;
+      }
+      for (len=0; len<(MaxTextExtent-1L) && (*p != '\0');)
+      {
+        /* skip escaped braces within braced pattern */
+        if ( (*p == '\\') && (*(p+1) != '\0') ) {
+          pattern[len++]=(*p++);
+          pattern[len++]=(*p++);
+          continue;
+        }
+        if (*p == '[')
+          depth++;
+        if (*p == ']')
+          depth--;
+        if (depth <= 0)
+          break;
+        pattern[len++]=(*p++);
+      }
+      pattern[len]='\0';
+      /* Check for unmatched final ']' for "%[...]" */
+      if ( depth != 0 ) {
+        if (len >= 64) {  /* truncate string for error message */
+          pattern[61] = '.';
+          pattern[62] = '.';
+          pattern[63] = '.';
+          pattern[64] = '\0';
+        }
+        (void) ThrowMagickException(exception,GetMagickModule(),
+            OptionError,"UnbalancedBraces","\"%%[%s]\"",pattern);
+        break; /* exit loop */
+      }
+
+      /*
+        Special Properity Prefixes
+        such as: %[exif:...] %[fx:...] %[pixel:...]
+      */
+      value=GetImageProperty(image,pattern,exception);
+      if (value != (const char *) NULL)
         {
-          if (*p == '[')
-            depth++;
-          if (*p == ']')
-            depth--;
-          if (depth <= 0)
-            break;
-          pattern[i]=(*p++);
-        }
-        pattern[i]='\0';
-#if 0
-        if ( depth != 0 ) {
-          /* FUTURE: WARN missing final ']' for "%[...]" */
-          pattern[7] = '\0';  /* truncate escape pattern for error */
-          fprintf(stderr, "Unbalanced Escape Brace: \"%%[%s...\"\n",pattern);
-          p--;
-          break;
-        }
-        fprintf(stderr, "MULTI-CHAR ESCAPE: \"%%[%s]\"\n", pattern);
-#endif
-
-        /* Try a Special Properity String, or a special prefix,
-         * such as: %[exif:...] %[fx:...] %[pixel:...]
-         */
-        value=GetImageProperty(image,pattern,exception);
-        if (value != (const char *) NULL)
-          {
-            length=strlen(value);
-            if ((size_t) (q-interpret_text+length+1) >= extent)
-              {
-                extent+=length;
-                interpret_text=(char *) ResizeQuantumMemory(interpret_text,
-                  extent+MaxTextExtent,sizeof(*interpret_text));
-                if (interpret_text == (char *) NULL)
-                  break;
-                q=interpret_text+strlen(interpret_text);
-              }
-            (void) CopyMagickString(q,value,extent);
-            q+=length;
-            break;
-          }
-        /* Handle properity 'glob' patterns - by iteration
-         * Such as:  %[*]   %[my_property:*]  %[filename:size]
-         * Also does wrapped single letters:  %[b] %[G] %[g]
-         */
-        if( IfMagickTrue(IsGlob(pattern)) )
-          {
-            ResetImagePropertyIterator(image);
-            key=GetNextImageProperty(image);
-            while (key != (const char *) NULL)
+          length=strlen(value);
+          if ((size_t) (q-interpret_text+length+1) >= extent)
             {
-              if( IfMagickTrue(GlobExpression(key,pattern,MagickTrue)) )
-                {
-                  value=GetImageProperty(image,key,exception);
-                  if (value != (const char *) NULL)
-                    {
-                      length=strlen(key)+strlen(value)+2;
-                      if ((size_t) (q-interpret_text+length+1) >= extent)
-                        {
-                          extent+=length;
-                          interpret_text=(char *) ResizeQuantumMemory(
-                            interpret_text,extent+MaxTextExtent,
-                            sizeof(*interpret_text));
-                          if (interpret_text == (char *) NULL)
-                            break;
-                          q=interpret_text+strlen(interpret_text);
-                        }
-                      q+=FormatLocaleString(q,extent,"%s=%s\n",key,value);
-                    }
-                }
-              key=GetNextImageProperty(image);
+              extent+=length;
+              interpret_text=(char *) ResizeQuantumMemory(interpret_text,
+                extent+MaxTextExtent,sizeof(*interpret_text));
+              if (interpret_text == (char *) NULL)
+                return((char *)NULL);
+              q=interpret_text+strlen(interpret_text);
             }
-            break;
-          }
-        /* Look for a known property or image attribute
-           Such as  %[basename]  %[denisty]  %[delay]
-        */
-        value=GetMagickProperty(image_info,image,pattern,exception);
-        if (value != (const char *) NULL)
+          (void) CopyMagickString(q,value,extent);
+          q+=length;
+          continue;
+        }
+      /*
+        Handle properity 'glob' patterns
+        Such as:  %[*]   %[user:array_??]  %[filename:e*]
+      */
+      if( IfMagickTrue(IsGlob(pattern)) )
+        {
+          ResetImagePropertyIterator(image);
+          key=GetNextImageProperty(image);
+          while (key != (const char *) NULL)
           {
-            length=strlen(value);
-            if ((size_t) (q-interpret_text+length+1) >= extent)
+            if( IfMagickTrue(GlobExpression(key,pattern,MagickTrue)) )
               {
-                extent+=length;
-                interpret_text=(char *) ResizeQuantumMemory(interpret_text,
-                  extent+MaxTextExtent,sizeof(*interpret_text));
-                if (interpret_text == (char *) NULL)
-                  break;
-                q=interpret_text+strlen(interpret_text);
+                value=GetImageProperty(image,key,exception);
+                if (value != (const char *) NULL)
+                  {
+                    length=strlen(key)+strlen(value)+2;
+                    if ((size_t) (q-interpret_text+length+1) >= extent)
+                      {
+                        extent+=length;
+                        interpret_text=(char *) ResizeQuantumMemory(
+                          interpret_text,extent+MaxTextExtent,
+                          sizeof(*interpret_text));
+                        if (interpret_text == (char *) NULL)
+                          return((char *)NULL);
+                        q=interpret_text+strlen(interpret_text);
+                      }
+                    q+=FormatLocaleString(q,extent,"%s=%s\n",key,value);
+                  }
               }
-            (void) CopyMagickString(q,value,extent);
-            q+=length;
-            value=DestroyString((char *)value); /* must be destoryed */
-            break;
+            key=GetNextImageProperty(image);
           }
-        if (image_info == (ImageInfo *) NULL)
-          break;
-        /* Look for artifact of this name */
+          continue;
+        }
+      /*
+        Look for a known property or image attribute
+        Such as  %[basename]  %[denisty]  %[delay]
+        Also does wrapped single letters:  %[b] %[G] %[g]
+      */
+      value=GetMagickProperty(image_info,image,pattern,exception);
+      if (value != (const char *) NULL)
+        {
+          length=strlen(value);
+          if ((size_t) (q-interpret_text+length+1) >= extent)
+            {
+              extent+=length;
+              interpret_text=(char *) ResizeQuantumMemory(interpret_text,
+                extent+MaxTextExtent,sizeof(*interpret_text));
+              if (interpret_text == (char *) NULL) {
+                value=DestroyString((char *)value);
+                return((char *)NULL);
+              }
+              q=interpret_text+strlen(interpret_text);
+            }
+          (void) CopyMagickString(q,value,extent);
+          q+=length;
+          value=DestroyString((char *)value); /* must be destoryed */
+          continue;
+        }
+      /*
+        Look for a per-image Artifact (escaped option)
+      */
+      value=GetImageArtifact(image,pattern);
+      if (value != (char *) NULL)
+        {
+          length=strlen(value);
+          if ((size_t) (q-interpret_text+length+1) >= extent)
+            {
+              extent+=length;
+              interpret_text=(char *) ResizeQuantumMemory(interpret_text,
+                extent+MaxTextExtent,sizeof(*interpret_text));
+              if (interpret_text == (char *) NULL)
+                return((char *)NULL);
+              q=interpret_text+strlen(interpret_text);
+            }
+          (void) CopyMagickString(q,value,extent);
+          q+=length;
+          continue;
+        }
+      /*
+        Look for option of this name (should never match in CLI usage)
+      */
+      if (image_info != (ImageInfo *) NULL) {
         value=GetImageOption(image_info,pattern);
         if (value != (char *) NULL)
           {
@@ -3157,42 +3228,30 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
                 interpret_text=(char *) ResizeQuantumMemory(interpret_text,
                   extent+MaxTextExtent,sizeof(*interpret_text));
                 if (interpret_text == (char *) NULL)
-                  break;
+                  return((char *)NULL);
                 q=interpret_text+strlen(interpret_text);
               }
             (void) CopyMagickString(q,value,extent);
             q+=length;
-            break;
+            continue;
           }
-        /* Look for option of this name */
-        value=GetImageOption(image_info,pattern);
-        if (value != (char *) NULL)
-          {
-            length=strlen(value);
-            if ((size_t) (q-interpret_text+length+1) >= extent)
-              {
-                extent+=length;
-                interpret_text=(char *) ResizeQuantumMemory(interpret_text,
-                  extent+MaxTextExtent,sizeof(*interpret_text));
-                if (interpret_text == (char *) NULL)
-                  break;
-                q=interpret_text+strlen(interpret_text);
-              }
-            (void) CopyMagickString(q,value,extent);
-            q+=length;
-            break;
-          }
-#if 0
-        /* FUTURE: unknown multi-character percent escape */
-        fprintf(stderr, "UNKNOWN ESCAPE: \"%%[%s]\"\n", pattern);
-#endif
-      } while(0); /* End Brace Block and handling %[....] */
-  }
+        }
+      /*
+        Failed to find any match anywhere!
+      */
+      if (len >= 64) {  /* truncate string for error message */
+        pattern[61] = '.';
+        pattern[62] = '.';
+        pattern[63] = '.';
+        pattern[64] = '\0';
+      }
+      (void) ThrowMagickException(exception,GetMagickModule(),
+          OptionWarning,"UnknownImageProperty","\"%%[%s]\"",pattern);
+      /* continue */
+    } /* Braced Percent Escape */
+
+  } /* for each char in 'embed_text' */
   *q='\0';
-  if (text != (const char *) embed_text)
-    text=DestroyString(text);
-  (void) SubstituteString(&interpret_text,"&lt;","<");
-  (void) SubstituteString(&interpret_text,"&gt;",">");
   return(interpret_text);
 }
 
@@ -3336,7 +3395,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
       return(MagickFalse);
     }
   /* FUTURE: These should produce 'illegal settings'
-     + test for binary chars in name, 
+     + test for binary chars in name,
      + first letter must be a alphabetic
      + special prefix
   */

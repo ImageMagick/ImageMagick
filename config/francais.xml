@@ -304,13 +304,16 @@
             impossible de décompresser l'image
           </message>
           <message name="UnexpectedEndOfFile">
-            Fin de fichier inattendue
+            fin de fichier inattendue
           </message>
           <message name="UnexpectedSamplingFactor">
-            Facteur d'échantillonnage inattendu
+            facteur d'échantillonnage inattendu
+          </message>
+          <message name="UnknownImageProperity">
+            image propriété non reconnus
           </message>
           <message name="UnknownPatternType">
-            Type de motif inconnu
+            type de motif inconnu
           </message>
           <message name="UnrecognizedBitsPerPixel">
             bits par pixel non reconnus
@@ -329,7 +332,7 @@
         </fatalerror>
         <warning>
           <message name="InsufficientImageDataInFile">
-            Pas assez de données d'image dans le fichier
+            pas assez de données d'image dans le fichier
           </message>
           <message name="LengthAndFilesizeDoNotMatch">
             Longueur et taille du fichier ne correspondent pas
@@ -712,6 +715,9 @@
         </message>
         <message name="TwoOrMoreImagesRequired">
           deux ou plusieurs images nécessaires
+        </message>
+        <message name="UnableToAcessPath">
+          incapables d'accéder chemin du fichier
         </message>
         <message name="UnableToOpenFile">
           impossible d'ouvrir le fichier

@@ -62,7 +62,7 @@
       3 - option type details
       9 - output options/artifacts/propertys
 */
-#define MagickCommandDebug 0
+#define MagickCommandDebug 3
 
 
 #if MagickCommandDebug >= 9
@@ -508,7 +508,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
       goto next_argument;
     }
 
-    /* Process non-specific Option */
+    /* Process a Normal Option */
     CLIOption(cli_wand, option, arg1, arg2);
 
 next_argument:
