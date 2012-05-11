@@ -5036,8 +5036,8 @@ static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
           nexus_info->indexes=(IndexPacket *) NULL;
           if (cache_info->active_index_channel != MagickFalse)
             nexus_info->indexes=cache_info->indexes+offset;
-          return(nexus_info->pixels);
           PrefetchPixelCacheNexusPixels(nexus_info,mode);
+          return(nexus_info->pixels);
         }
     }
   /*
