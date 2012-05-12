@@ -57,6 +57,14 @@ static inline void ConvertRGBToCMYK(MagickPixelPacket *pixel)
   pixel->index=QuantumRange*black;
 }
 
+static inline MagickBooleanType IsCMYKColorspace(
+  const ColorspaceType colorspace)
+{
+  if (colorspace == CMYKColorspace)
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 static inline MagickBooleanType IsGrayColorspace(
   const ColorspaceType colorspace)
 {
