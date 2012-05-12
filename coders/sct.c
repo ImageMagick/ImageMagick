@@ -213,7 +213,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,200,buffer);
   count=ReadBlob(image,768,buffer);
   if (separations_mask == 0x0f)
-    image->colorspace=CMYKColorspace;
+    SetImageColorspace(image,CMYKColorspace,exception);
   image->resolution.x=1.0*image->columns/width;
   image->resolution.y=1.0*image->rows/height;
   if (image_info->ping != MagickFalse)

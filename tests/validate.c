@@ -935,7 +935,7 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
           continue;
         }
       if (LocaleNCompare(reference_map[i],"cmy",3) == 0)
-        reference_image->colorspace=CMYKColorspace;
+        SetImageColorspace(reference_image,CMYKColorspace,exception);
       length=strlen(reference_map[i])*reference_image->columns*
         reference_image->rows*reference_storage[j].quantum;
       pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));

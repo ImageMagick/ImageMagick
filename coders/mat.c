@@ -783,7 +783,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
         ((MATLAB_HDR.StructureFlag & FLAG_COMPLEX) == 0))
       {
         image->type=GrayscaleType;
-        image->colorspace=GRAYColorspace;
+        SetImageColorspace(image,GRAYColorspace,exception);
       }
 
     switch (CellType)

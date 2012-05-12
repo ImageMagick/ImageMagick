@@ -1069,12 +1069,12 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     jpeg_info.out_color_space=JCS_YCbCr;
   if (IsITUFaxImage(image) != MagickFalse)
     {
-      image->colorspace=LabColorspace;
+      SetImageColorspace(image,LabColorspace,exception);
       jpeg_info.out_color_space=JCS_YCbCr;
     }
   else
     if (jpeg_info.out_color_space == JCS_CMYK)
-      image->colorspace=CMYKColorspace;
+      SetImageColorspace(image,CMYKColorspace,exception);
   /*
     Set image resolution.
   */
@@ -1196,9 +1196,9 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image->rows=jpeg_info.output_height;
   image->depth=(size_t) jpeg_info.data_precision;
   if (jpeg_info.out_color_space == JCS_YCbCr)
-    image->colorspace=YCbCrColorspace;
+    SetImageColorspace(image,YCbCrColorspace,exception);
   if (jpeg_info.out_color_space == JCS_CMYK)
-    image->colorspace=CMYKColorspace;
+    SetImageColorspace(image,CMYKColorspace,exception);
   option=GetImageOption(image_info,"jpeg:colors");
   if (option != (const char *) NULL)
     if (AcquireImageColormap(image,StringToUnsignedLong(option),exception)
