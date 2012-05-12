@@ -1243,6 +1243,26 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
   const ColorspaceType colorspace)
 {
   image->colorspace=colorspace;
+  image->rendering_intent=UndefinedIntent;
+  image->gamma=1.000f;
+  ResetMagickMemory(&image->chromaticity,0,sizeof(image->chromaticity));
+  if (IssRGBColorspace(colorspace) != MagickFalse)
+    {
+      image->rendering_intent=PerceptualIntent;
+      image->gamma=1.000f/2.200f;
+      image->chromaticity.red_primary.x=0.6400f;
+      image->chromaticity.red_primary.y=0.3300f;
+      image->chromaticity.red_primary.z=0.0300f;
+      image->chromaticity.green_primary.x=0.3000f;
+      image->chromaticity.green_primary.y=0.6000f;
+      image->chromaticity.green_primary.z=0.1000f;
+      image->chromaticity.blue_primary.x=0.1500f;
+      image->chromaticity.blue_primary.y=0.0600f;
+      image->chromaticity.blue_primary.z=0.7900f;
+      image->chromaticity.white_point.x=0.3127f;
+      image->chromaticity.white_point.y=0.3290f;
+      image->chromaticity.white_point.z=0.3583f;
+    }
   return(SyncImagePixelCache(image,&image->exception));
 }
 
@@ -1288,10 +1308,11 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   /*
     Convert the reference image from an alternate colorspace to sRGB.
   */
-  if ((colorspace == sRGBColorspace) || (colorspace == TransparentColorspace))
+  if (IssRGBColorspace(colorspace) != MagickFalse)
     return(TransformRGBImage(image,colorspace));
   status=MagickTrue;
-  if (image->colorspace == RGBColorspace)
+  if ((IsRGBColorspace(image->colorspace) != MagickFalse) ||
+      (IsGrayColorspace(image->colorspace) != MagickFalse))
     status=TransformRGBImage(image,sRGBColorspace);
   if (status == MagickFalse)
     return(status);

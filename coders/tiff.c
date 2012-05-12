@@ -1007,11 +1007,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image->endian=LSBEndian;
     if ((photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
-      image->colorspace=GRAYColorspace;
+      SetImageColorspace(image,GRAYColorspace);
     if (photometric == PHOTOMETRIC_SEPARATED)
-      image->colorspace=CMYKColorspace;
+      SetImageColorspace(image,CMYKColorspace);
     if (photometric == PHOTOMETRIC_CIELAB)
-      image->colorspace=LabColorspace;
+      SetImageColorspace(image,LabColorspace);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
       &samples_per_pixel);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);

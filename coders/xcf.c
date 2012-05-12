@@ -1071,10 +1071,10 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->compression=NoCompression;
   image->depth=8;
   if (image_type == GIMP_RGB)
-    image->colorspace=sRGBColorspace;
+    SetImageColorspace(image,sRGBColorspace);
   else
     if (image_type == GIMP_GRAY)
-      image->colorspace=GRAYColorspace;
+      SetImageColorspace(image,GRAYColorspace);
     else
       if (image_type == GIMP_INDEXED)
         ThrowReaderException(CoderError,"ColormapTypeNotSupported");

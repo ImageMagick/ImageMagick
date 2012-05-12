@@ -3331,7 +3331,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   if ((ping_color_type == PNG_COLOR_TYPE_GRAY) ||
       (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
-    image->colorspace=GRAYColorspace;
+    SetImageColorspace(image,GRAYColorspace);
 
   for (j = 0; j < 2; j++)
   {
