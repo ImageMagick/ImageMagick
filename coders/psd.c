@@ -838,12 +838,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   if (psd_info.mode == LabMode)
-    image->colorspace=LabColorspace;
+    SetImageColorspace(image,LabColorspace);
   psd_info.color_channels=3;
   if (psd_info.mode == CMYKMode)
     {
       psd_info.color_channels=4;
-      image->colorspace=CMYKColorspace;
+      SetImageColorspace(image,CMYKColorspace);
     }
   if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
       (psd_info.mode == DuotoneMode))
@@ -854,7 +854,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Image colormap allocated");
-      image->colorspace=GRAYColorspace;
+      SetImageColorspace(image,GRAYColorspace);
     }
   image->matte=MagickFalse;
   /*
@@ -1235,11 +1235,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (layer_info[i].visible == MagickFalse)
               layer_info[i].image->compose=NoCompositeOp;
             if (psd_info.mode == CMYKMode)
-              layer_info[i].image->colorspace=CMYKColorspace;
+              SetImageColorspace(layer_info[i].image,CMYKColorspace);
             if ((psd_info.mode == BitmapMode) ||
                 (psd_info.mode == GrayscaleMode) ||
                 (psd_info.mode == DuotoneMode))
-              layer_info[i].image->colorspace=GRAYColorspace;
+              SetImageColorspace(layer_info[i].image,GRAYColorspace);
             for (j=0; j < (ssize_t) layer_info[i].channels; j++)
               if (layer_info[i].channel_info[j].type == -1)
                 layer_info[i].image->matte=MagickTrue;

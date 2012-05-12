@@ -391,12 +391,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (LocaleCompare(value,"CMYK") == 0)
                 {
                   quantum_type=CMYKQuantum;
-                  image->colorspace=CMYKColorspace;
+                  SetImageColorspace(image,CMYKColorspace);
                 }
               if (LocaleCompare(value,"CMYK_ALPHA") == 0)
                 {
                   quantum_type=CMYKAQuantum;
-                  image->colorspace=CMYKColorspace;
+                  SetImageColorspace(image,CMYKColorspace);
                   image->matte=MagickTrue;
                 }
             }

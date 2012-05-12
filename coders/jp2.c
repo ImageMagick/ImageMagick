@@ -453,7 +453,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           image->matte=MagickTrue;
           number_components++;
         }
-      image->colorspace=YCbCrColorspace;
+      SetImageColorspace(image,YCbCrColorspace);
       break;
     }
     default:

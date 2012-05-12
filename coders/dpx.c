@@ -596,6 +596,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read DPX file header.
   */
+  SetImageColorspace(image,RGBColorspace);
   offset=0;
   count=ReadBlob(image,4,(unsigned char *) magick);
   offset+=count;
@@ -1051,21 +1052,21 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case CbYACrYA4224ComponentType:
     case CbYCr444ComponentType:
     {
-      image->colorspace=Rec709YCbCrColorspace;
+      SetImageColorspace(image,Rec709YCbCrColorspace);
       break;
     }
     case LumaComponentType:
     {
-      image->colorspace=sRGBColorspace;
+      SetImageColorspace(image,sRGBColorspace);
       break;
     }
     default:
     {
-      image->colorspace=sRGBColorspace;
+      SetImageColorspace(image,sRGBColorspace);
       if (dpx.image.image_element[0].transfer == LogarithmicColorimetric)
-        image->colorspace=LogColorspace;
+        SetImageColorspace(image,LogColorspace);
       if (dpx.image.image_element[0].transfer == PrintingDensityColorimetric)
-        image->colorspace=LogColorspace;
+        SetImageColorspace(image,LogColorspace);
       break;
     }
   }

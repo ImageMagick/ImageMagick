@@ -680,7 +680,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         image->colorspace=YCCColorspace;
         if (LocaleCompare(image_info->magick,"PCDS") == 0)
-          image->colorspace=sRGBColorspace;
+          SetImageColorspace(image,sRGBColorspace);
         if (j < (ssize_t) number_images)
           {
             /*
@@ -834,7 +834,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->gamma=1.000f/2.200f;
   image->colorspace=YCCColorspace;
   if (LocaleCompare(image_info->magick,"PCDS") == 0)
-    image->colorspace=sRGBColorspace;
+    SetImageColorspace(image,sRGBColorspace);
   return(GetFirstImageInList(image));
 }
 

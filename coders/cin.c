@@ -737,7 +737,7 @@ static Image *ReadCINImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (EOFBlob(image) != MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
-  image->colorspace=LogColorspace;
+  SetImageColorspace(image,LogColorspace);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
