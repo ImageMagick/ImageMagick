@@ -778,14 +778,6 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     (void) ReadBlob(image2, 4, (unsigned char *) &size);     /* data size */
 
     NEXT_FRAME:
-      /* Image is gray when no complex flag is set and 2D Matrix */
-    if ((MATLAB_HDR.DimFlag == 8) &&
-        ((MATLAB_HDR.StructureFlag & FLAG_COMPLEX) == 0))
-      {
-        image->type=GrayscaleType;
-        SetImageColorspace(image,GRAYColorspace,exception);
-      }
-
     switch (CellType)
     {
       case miINT8:
@@ -848,6 +840,14 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     image->colors = one << image->depth;
     if (image->columns == 0 || image->rows == 0)
       goto MATLAB_KO;
+    /* Image is gray when no complex flag is set and 2D Matrix */
+    if ((MATLAB_HDR.DimFlag == 8) &&
+        ((MATLAB_HDR.StructureFlag & FLAG_COMPLEX) == 0))
+      {
+        image->type=GrayscaleType;
+        SetImageColorspace(image,GRAYColorspace,exception);
+      }
+
 
     /* ----- Create gray palette ----- */
 
