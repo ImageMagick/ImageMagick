@@ -2168,7 +2168,10 @@ MagickExport const char *GetImageProperty(const Image *image,
 %  return free-form properity strings, unless referenced by a single letter
 %  properity name.
 %
-%  The returned string should be freed using DestoryString() when finished.
+%  The returned string is stored as the image artifact 'get-property' (not as
+%  another property), and as such should not be freed. Later calls however
+%  will overwrite this value so if needed for a longer period a copy should be
+%  made.  This artifact can be deleted when no longer required.
 %
 %  The format of the GetMagickProperty method is:
 %
@@ -2190,16 +2193,17 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
   Image *image,const char letter,ExceptionInfo *exception)
 {
   char
-    value[MaxTextExtent],
-    *clone;
+    value[MaxTextExtent];
 
-  if (image != (Image *) NULL && image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+  const char
+    *string;
+
+  if (image != (Image *) NULL && IfMagickTrue(image->debug))
+      (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image->filename);
 
-  *value='\0';
-  clone=(char *)NULL;
-
+  *value='\0';          /* formated string */
+  string=(char *)NULL;  /* constant string reference */
   switch (letter)
   {
 
@@ -2214,7 +2218,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     }
     case 'c':  /* image comment property */
     {
-      clone=ConstantString(GetImageProperty(image,"comment",exception));
+      string=GetImageProperty(image,"comment",exception);
       break;
     }
     case 'd':  /* Directory component of filename */
@@ -2247,7 +2251,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     }
     case 'i': /* Filename last used for image (read or write) */
     {
-      clone=ConstantString(image->filename);
+      string=image->filename;
       break;
     }
     case 'k': /* Number of unique colors  */
@@ -2259,12 +2263,12 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     }
     case 'l': /* Image label  */
     {
-      clone=ConstantString(GetImageProperty(image,"label",exception));
+      string=GetImageProperty(image,"label",exception);
       break;
     }
     case 'm': /* Image format (file magick) */
     {
-      clone=ConstantString(image->magick);
+      string=image->magick;
       break;
     }
     case 'n': /* Number of images in the list.  */
@@ -2275,7 +2279,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     }
     case 'o': /* Output Filename - for delegate use only */
     {
-      clone=ConstantString(image_info->filename);
+      string=image_info->filename;
       break;
     }
     case 'p': /* Image index in current image list -- As 'n' OBSOLETE */
@@ -2321,7 +2325,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     }
     case 'u': /* Unique filename */
     {
-      clone=ConstantString(image_info->unique);
+      string=image_info->unique;
       break;
     }
     case 'w': /* Image width (current) */
@@ -2385,7 +2389,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     }
     case 'M': /* Magick filename - filename given incl. coder & read mods */
     {
-      clone=ConstantString(image->magick_filename);
+      string=image->magick_filename;
       break;
     }
     case 'O': /* layer canvas offset with sign = "+%X+%Y" */
@@ -2409,7 +2413,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     case 'S': /* Image scenes  ???? */
     {
       if (image_info->number_scenes == 0)
-        clone=ConstantString("2147483647");
+        string="2147483647";
       else
         (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
             image_info->scene+image_info->number_scenes);
@@ -2441,7 +2445,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     }
     case 'Z': /* Zero filename ??? */
     {
-      clone=ConstantString(image_info->zero);
+      string=image_info->zero;
       break;
     }
     case '@': /* Trim bounding box, without Trimming! */
@@ -2458,19 +2462,22 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     case '#': /* Image signature */
     {
       (void) SignatureImage(image,exception);
-      clone=ConstantString(GetImageProperty(image,"signature",exception));
+      string=GetImageProperty(image,"signature",exception);
       break;
     }
     case '%': /* percent escaped */
     {
-      clone=ConstantString("%");
+      string="%";
       break;
     }
   }
-  /* FUTURE: save it as a 'special' property - for return */
   if (*value != '\0')
-    clone=ConstantString(value);
-  return(clone);
+    string=value;
+  if (string != (char *)NULL) {
+    (void) SetImageArtifact(image, "get-properity", value);
+    return(GetImageArtifact(image, "get-properity"));
+  }
+  return((char *)NULL);
 }
 
 MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
@@ -2479,17 +2486,25 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
   char
     value[MaxTextExtent];
 
+  const char
+    *string;
+
   assert(property[0] != '\0');
   if ( property[1] == '\0')  /* single letter properity request */
     return( GetMagickPropertyLetter(image_info,image,*property,exception) );
 
-  *value='\0';
+  if (image != (Image *) NULL && IfMagickTrue(image->debug))
+      (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      image->filename);
+
+  *value='\0';          /* formated string */
+  string=(char *)NULL;  /* constant string reference */
   switch (*property)
   {
     case 'b':
     {
-      if ((LocaleNCompare("base",property,4) == 0) ||
-          (LocaleNCompare("basename",property,8) == 0) )
+      if ((LocaleCompare("base",property) == 0) ||
+          (LocaleCompare("basename",property) == 0) )
         {
           GetPathComponent(image->magick_filename,BasePath,value);
           break;
@@ -2498,7 +2513,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'c':
     {
-      if (LocaleNCompare("channels",property,8) == 0)
+      if (LocaleCompare("channels",property) == 0)
         {
           /*
             Image channels.
@@ -2511,7 +2526,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             (void) ConcatenateMagickString(value,"a",MaxTextExtent);
           break;
         }
-      if (LocaleNCompare("colorspace",property,10) == 0)
+      if (LocaleCompare("colorspace",property) == 0)
         {
           ColorspaceType
             colorspace;
@@ -2522,12 +2537,11 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
           colorspace=image->colorspace;
           if( IfMagickTrue(IsImageGray(image,exception)) )
             colorspace=GRAYColorspace;
-          (void) FormatLocaleString(value,MaxTextExtent,"%s",
-            CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
-            colorspace));
+          string=CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
+            colorspace);
           break;
         }
-      if (LocaleNCompare("copyright",property,9) == 0)
+      if (LocaleCompare("copyright",property) == 0)
         {
           (void) CopyMagickString(value,GetMagickCopyright(),MaxTextExtent);
           break;
@@ -2536,13 +2550,13 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'd':
     {
-      if (LocaleNCompare("depth",property,5) == 0)
+      if (LocaleCompare("depth",property) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
             image->depth);
           break;
         }
-      if (LocaleNCompare("directory",property,9) == 0)
+      if (LocaleCompare("directory",property) == 0)
         {
           GetPathComponent(image->magick_filename,HeadPath,value);
           break;
@@ -2551,7 +2565,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'e':
     {
-      if (LocaleNCompare("extension",property,9) == 0)
+      if (LocaleCompare("extension",property) == 0)
         {
           GetPathComponent(image->magick_filename,ExtensionPath,value);
           break;
@@ -2561,7 +2575,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     case 'g':
     {
       if ( (image_info != (ImageInfo *) NULL) &&
-           (LocaleNCompare("group",property,5) == 0) )
+           (LocaleCompare("group",property) == 0) )
         {
           (void) FormatLocaleString(value,MaxTextExtent,"0x%lx",
             (unsigned long) image_info->group);
@@ -2571,7 +2585,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'h':
     {
-      if (LocaleNCompare("height",property,6) == 0)
+      if (LocaleCompare("height",property) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
             image->magick_rows != 0 ? (double) image->magick_rows : 256.0);
@@ -2581,16 +2595,16 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'i':
     {
-      if (LocaleNCompare("input",property,5) == 0)
+      if (LocaleCompare("input",property) == 0)
         {
-          (void) CopyMagickString(value,image->filename,MaxTextExtent);
+          string=image->filename;
           break;
         }
       break;
     }
     case 'k':
     {
-      if (LocaleNCompare("kurtosis",property,8) == 0)
+      if (LocaleCompare("kurtosis",property) == 0)
         {
           double
             kurtosis,
@@ -2605,12 +2619,12 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'm':
     {
-      if (LocaleNCompare("magick",property,6) == 0)
+      if (LocaleCompare("magick",property) == 0)
         {
-          (void) CopyMagickString(value,image->magick,MaxTextExtent);
+          string=image->magick;
           break;
         }
-      if (LocaleNCompare("max",property,3) == 0)
+      if (LocaleCompare("max",property) == 0)
         {
           double
             maximum,
@@ -2621,7 +2635,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             GetMagickPrecision(),maximum);
           break;
         }
-      if (LocaleNCompare("mean",property,4) == 0)
+      if (LocaleCompare("mean",property) == 0)
         {
           double
             mean,
@@ -2633,7 +2647,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             GetMagickPrecision(),mean);
           break;
         }
-      if (LocaleNCompare("min",property,3) == 0)
+      if (LocaleCompare("min",property) == 0)
         {
           double
             maximum,
@@ -2648,7 +2662,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'o':
     {
-      if (LocaleNCompare("opaque",property,6) == 0)
+      if (LocaleCompare("opaque",property) == 0)
         {
           MagickBooleanType
             opaque;
@@ -2658,15 +2672,14 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
                MaxTextExtent);
           break;
         }
-      if (LocaleNCompare("orientation",property,11) == 0)
+      if (LocaleCompare("orientation",property) == 0)
         {
-          (void) FormatLocaleString(value,MaxTextExtent,"%s",
-            CommandOptionToMnemonic(MagickOrientationOptions,(ssize_t)
-            image->orientation));
+          string=CommandOptionToMnemonic(MagickOrientationOptions,(ssize_t)
+            image->orientation);
           break;
         }
       if ( (image_info != (ImageInfo *) NULL) &&
-           (LocaleNCompare("output",property,6) == 0) )
+           (LocaleCompare("output",property) == 0) )
         {
           (void) CopyMagickString(value,image_info->filename,MaxTextExtent);
           break;
@@ -2675,7 +2688,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'p':
     {
-      if (LocaleNCompare("page",property,4) == 0)
+      if (LocaleCompare("page",property) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
             GetImageIndexInList(image)+1);
@@ -2686,14 +2699,14 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     case 'r':
     {
       /* FUTURE: Obsolete */
-      if (LocaleNCompare("resolution.x",property,11) == 0)
+      if (LocaleCompare("resolution.x",property) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%g",
             image->resolution.x);
           break;
         }
       /* FUTURE: Obsolete */
-      if (LocaleNCompare("resolution.y",property,11) == 0)
+      if (LocaleCompare("resolution.y",property) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%g",
             image->resolution.y);
@@ -2703,7 +2716,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 's':
     {
-      if (LocaleNCompare("scene",property,5) == 0)
+      if (LocaleCompare("scene",property) == 0)
         {
           if ( (image_info != (ImageInfo *) NULL) &&
                (image_info->number_scenes != 0) )
@@ -2714,13 +2727,13 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
                 image->scene);
           break;
         }
-      if (LocaleNCompare("scenes",property,6) == 0)
+      if (LocaleCompare("scenes",property) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
             GetImageListLength(image));
           break;
         }
-      if (LocaleNCompare("size",property,4) == 0)
+      if (LocaleCompare("size",property) == 0)
         {
           char
             format[MaxTextExtent];
@@ -2729,7 +2742,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
           (void) FormatLocaleString(value,MaxTextExtent,"%sB",format);
           break;
         }
-      if (LocaleNCompare("skewness",property,8) == 0)
+      if (LocaleCompare("skewness",property) == 0)
         {
           double
             kurtosis,
@@ -2740,7 +2753,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             GetMagickPrecision(),skewness);
           break;
         }
-      if (LocaleNCompare("standard-deviation",property,18) == 0)
+      if (LocaleCompare("standard-deviation",property) == 0)
         {
           double
             mean,
@@ -2757,26 +2770,25 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     case 'u':
     {
       if ( (image_info != (ImageInfo *) NULL) &&
-           (LocaleNCompare("unique",property,6) == 0) )
+           (LocaleCompare("unique",property) == 0) )
         {
-          (void) CopyMagickString(value,image_info->unique,MaxTextExtent);
+          string=image_info->unique;
           break;
         }
       break;
     }
     case 'v':
     {
-      if (LocaleNCompare("version",property,7) == 0)
+      if (LocaleCompare("version",property) == 0)
         {
-          (void) CopyMagickString(value,GetMagickVersion((size_t *) NULL),
-            MaxTextExtent);
+          string=GetMagickVersion((size_t *) NULL);
           break;
         }
       break;
     }
     case 'w':
     {
-      if (LocaleNCompare("width",property,5) == 0)
+      if (LocaleCompare("width",property) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
             (image->magick_columns != 0 ? image->magick_columns : 256));
@@ -2786,8 +2798,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'x': /* ( X resolution, (with units) */
     {
-      if ((LocaleNCompare("xresolution",property,11) == 0) ||
-          (LocaleNCompare("x-resolution",property,12) == 0) )
+      if ((LocaleCompare("xresolution",property) == 0) ||
+          (LocaleCompare("x-resolution",property) == 0) )
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
                image->resolution.x);
@@ -2797,8 +2809,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'y': /* ( Y resolution, (with units) */
     {
-      if ((LocaleNCompare("yresolution",property,11) == 0) ||
-          (LocaleNCompare("y-resolution",property,12) == 0) )
+      if ((LocaleCompare("yresolution",property) == 0) ||
+          (LocaleCompare("y-resolution",property) == 0) )
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
                image->resolution.y);
@@ -2809,18 +2821,21 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     case 'z':
     {
       if ( (image_info != (ImageInfo *) NULL) &&
-           (LocaleNCompare("zero",property,4) == 0) )
+           (LocaleCompare("zero",property) == 0) )
         {
-          (void) CopyMagickString(value,image_info->zero,MaxTextExtent);
+          string=image_info->zero;
           break;
         }
       break;
     }
   }
-  /* FUTURE: save it as a 'special' property entry - for return */
-  if (*value == '\0')
-    return(NULL);
-  return(ConstantString(value));
+  if (*value != '\0')
+    string=value;
+  if (string != (char *)NULL) {
+    (void) SetImageArtifact(image, "get-properity", value);
+    return(GetImageArtifact(image, "get-properity"));
+  }
+  return((char *)NULL);
 }
 
 /*
@@ -3051,12 +3066,10 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           }
         (void) CopyMagickString(q,value,extent);
         q+=length;
-        value=DestroyString((char *)value); /* must be destoryed */
+        continue;
       }
-      else {
-        (void) ThrowMagickException(exception,GetMagickModule(),
-            OptionWarning,"UnknownImageProperty","\"%%%c\"",*p);
-      }
+      (void) ThrowMagickException(exception,GetMagickModule(),
+          OptionWarning,"UnknownImageProperty","\"%%%c\"",*p);
       continue;
     }
 
@@ -3118,6 +3131,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       /*
         Special Properity Prefixes
         such as: %[exif:...] %[fx:...] %[pixel:...]
+        Otherwise a free-form properity string
       */
       value=GetImageProperty(image,pattern,exception);
       if (value != (const char *) NULL)
@@ -3191,11 +3205,10 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
             }
           (void) CopyMagickString(q,value,extent);
           q+=length;
-          value=DestroyString((char *)value); /* must be destoryed */
           continue;
         }
       /*
-        Look for a per-image Artifact (escaped option)
+        Look for a per-image Artifact (user option, post-interpreted)
       */
       value=GetImageArtifact(image,pattern);
       if (value != (char *) NULL)
@@ -3215,7 +3228,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           continue;
         }
       /*
-        Look for option of this name (should never match in CLI usage)
+        Look for user option of this name (should never match in CLI usage)
       */
       if (image_info != (ImageInfo *) NULL) {
         value=GetImageOption(image_info,pattern);

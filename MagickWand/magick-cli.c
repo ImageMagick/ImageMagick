@@ -62,7 +62,7 @@
       3 - option type details
       9 - output options/artifacts/propertys
 */
-#define MagickCommandDebug 3
+#define MagickCommandDebug 0
 
 
 #if MagickCommandDebug >= 9
