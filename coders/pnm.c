@@ -370,18 +370,26 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (LocaleCompare(keyword,"TUPLTYPE") == 0)
             {
               if (LocaleCompare(value,"BLACKANDWHITE") == 0)
-                quantum_type=GrayQuantum;
+                {
+                  SetImageColorspace(image,GRAYColorspace);
+                  quantum_type=GrayQuantum;
+                }
               if (LocaleCompare(value,"BLACKANDWHITE_ALPHA") == 0)
                 {
-                  quantum_type=GrayAlphaQuantum;
+                  SetImageColorspace(image,GRAYColorspace);
                   image->matte=MagickTrue;
+                  quantum_type=GrayAlphaQuantum;
                 }
               if (LocaleCompare(value,"GRAYSCALE") == 0)
-                quantum_type=GrayQuantum;
+                {
+                  SetImageColorspace(image,GRAYColorspace);
+                  quantum_type=GrayQuantum;
+                }
               if (LocaleCompare(value,"GRAYSCALE_ALPHA") == 0)
                 {
-                  quantum_type=GrayAlphaQuantum;
+                  SetImageColorspace(image,GRAYColorspace);
                   image->matte=MagickTrue;
+                  quantum_type=GrayAlphaQuantum;
                 }
               if (LocaleCompare(value,"RGB_ALPHA") == 0)
                 {
@@ -390,14 +398,14 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               if (LocaleCompare(value,"CMYK") == 0)
                 {
-                  quantum_type=CMYKQuantum;
                   SetImageColorspace(image,CMYKColorspace);
+                  quantum_type=CMYKQuantum;
                 }
               if (LocaleCompare(value,"CMYK_ALPHA") == 0)
                 {
-                  quantum_type=CMYKAQuantum;
                   SetImageColorspace(image,CMYKColorspace);
                   image->matte=MagickTrue;
+                  quantum_type=CMYKAQuantum;
                 }
             }
           if (LocaleCompare(keyword,"width") == 0)
@@ -425,6 +433,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PBM image to pixel packets.
         */
+        SetImageColorspace(image,GRAYColorspace);
         for (y=0; y < (ssize_t) image->rows; y++)
         {
           register ssize_t
@@ -464,6 +473,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM image to pixel packets.
         */
+        SetImageColorspace(image,GRAYColorspace);
         scale=(Quantum *) NULL;
         if (max_value != (1U*QuantumRange))
           {
@@ -522,6 +532,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PNM image to pixel packets.
         */
+        SetImageColorspace(image,GRAYColorspace);
         scale=(Quantum *) NULL;
         if (max_value != (1U*QuantumRange))
           {
@@ -584,6 +595,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PBM raw image to pixel packets.
         */
+        SetImageColorspace(image,GRAYColorspace);
         quantum_type=GrayQuantum;
         if (image->storage_class == PseudoClass)
           quantum_type=IndexQuantum;
@@ -658,6 +670,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM raw image to pixel packets.
         */
+        SetImageColorspace(image,GRAYColorspace);
         range=GetQuantumRange(image->depth);
         quantum_type=GrayQuantum;
         extent=(image->depth <= 8 ? 1 : 2)*image->columns;
