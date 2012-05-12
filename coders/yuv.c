@@ -414,7 +414,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     }
     resize_image=DestroyImage(resize_image);
-    image->colorspace=YCbCrColorspace;
+    SetImageColorspace(image,YCbCrColorspace,exception);
     if (interlace == PartitionInterlace)
       (void) CopyMagickString(image->filename,image_info->filename,
         MaxTextExtent);

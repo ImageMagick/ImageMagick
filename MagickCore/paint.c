@@ -183,7 +183,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     exception);
   if (floodplane_image == (Image *) NULL)
     return(MagickFalse);
-  floodplane_image->colorspace=GRAYColorspace;
+  SetImageColorspace(floodplane_image,GRAYColorspace,exception);
   (void) EvaluateImage(floodplane_image,SetEvaluateOperator,0.0,exception);
   segment_stack=(SegmentInfo *) AcquireQuantumMemory(MaxStacksize,
     sizeof(*segment_stack));

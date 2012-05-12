@@ -175,7 +175,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   }
-  image->colorspace=YCbCrColorspace;
+  SetImageColorspace(image,YCbCrColorspace,exception);
   if (EOFBlob(image) != MagickFalse)
     ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);

@@ -416,7 +416,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       fits_info.bits_per_pixel;
     image->endian=fits_info.endian;
     image->scene=(size_t) scene;
-    image->colorspace=GRAYColorspace;
+    SetImageColorspace(image,GRAYColorspace,exception);
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;

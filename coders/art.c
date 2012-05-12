@@ -132,7 +132,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  image->colorspace=GRAYColorspace;
+  SetImageColorspace(image,GRAYColorspace,exception);
   image->depth=1;
   image->endian=MSBEndian;
   (void) ReadBlobLSBShort(image);

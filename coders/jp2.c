@@ -454,7 +454,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           image->matte=MagickTrue;
           number_components++;
         }
-      image->colorspace=YCbCrColorspace;
+      SetImageColorspace(image,YCbCrColorspace,exception);
       break;
     }
     default:
@@ -468,7 +468,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   image->rows=jas_image_height(jp2_image);
   image->compression=JPEG2000Compression;
   if (number_components == 1)
-    image->colorspace=GRAYColorspace;
+    SetImageColorspace(image,GRAYColorspace,exception);
   for (i=0; i < (ssize_t) number_components; i++)
   {
     size_t

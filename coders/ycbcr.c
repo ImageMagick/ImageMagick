@@ -147,7 +147,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
   image=AcquireImage(image_info,exception);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
-  image->colorspace=YCbCrColorspace;
+  SetImageColorspace(image,YCbCrColorspace,exception);
   if (image_info->interlace != PartitionInterlace)
     {
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
@@ -203,7 +203,7 @@ static Image *ReadYCBCRImage(const ImageInfo *image_info,
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
-    image->colorspace=YCbCrColorspace;
+    SetImageColorspace(image,YCbCrColorspace,exception);
     switch (image_info->interlace)
     {
       case NoInterlace:
