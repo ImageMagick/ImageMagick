@@ -137,7 +137,7 @@ print("Portable pixmap format (color), ASCII format ...\n");
 testReadWrite( 'PPM:input_p3.ppm',
   'PPM:output_p3.ppm',
   q/compression=>'None'/,
-  '6a4a257921582768b774aeeac549b7c0c0b51f665395eddf921cce53a0ad2a33');
+  '34f7d6043e6c578a0959b95f7b707720b5b415360cf5b8710097b4cdfbd0ade5');
 
 print("Portable graymap format (gray scale), binary format ...\n");
 ++$test;
