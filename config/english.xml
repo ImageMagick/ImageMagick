@@ -331,9 +331,6 @@
           </message>
         </fatalerror>
         <warning>
-          <message name="UnknownImageProperity">
-            unknown image property
-          </message>
           <message name="InsufficientImageDataInFile">
             insufficient image data in file
           </message>
@@ -722,7 +719,7 @@
         <message name="TwoOrMoreImagesRequired">
           two or more images required
         </message>
-        <message name="UnableToAcessPath">
+        <message name="UnableToAccessPath">
           unable to access file path
         </message>
         <message name="UnableToOpenFile">
@@ -950,6 +947,9 @@
         </message>
         <message name="NoSuchElement">
           no such element in list
+        </message>
+        <message name="UnknownImageProperty">
+          unknown image property
         </message>
         <message name="UnrecognizedColor">
           unrecognized color

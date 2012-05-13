@@ -99,11 +99,13 @@ static const unsigned char
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AcquireString() allocates memory for a string and copies the source string
-%  to that memory location (and returns it).
+%  AcquireString() returns an new extented string, containing a clone of the
+%  given string.
 %
-%  The returned string shoud be freed using DestoryString() or
-%  RelinquishMagickMemory() when finished.
+%  An extended string is the string length, plus an extra MaxTextExtent space
+%  to allow for the string to be activally worked on.
+%
+%  The returned string shoud be freed using DestoryString().
 %
 %  The format of the AcquireString method is:
 %
@@ -194,7 +196,8 @@ MagickExport StringInfo *AcquireStringInfo(const size_t length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  BlobToStringInfo() returns the contents of a blob as a string.
+%  BlobToStringInfo() returns the contents of a blob as a StringInfo structure
+%  with MaxTextExtent extra space.
 %
 %  The format of the BlobToStringInfo method is:
 %
@@ -238,16 +241,15 @@ MagickExport StringInfo *BlobToStringInfo(const void *blob,const size_t length)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloneString() allocates memory for the destination string and copies
-%  the source string to that memory location.
+%  CloneString() replaces or frees the destination string to make it
+%  a clone of the input string plus MaxTextExtent more space so the string may
+%  be worked on on.
 %
-%  If source is a NULL pointer the destination will also be set to a NULL
-%  point (any existing string is freed).  Otherwise the memory is allocated
-%  (or resized) and the source string copied into it.
+%  If source is a NULL pointer the destination string will be freed and set to
+%  a NULL pointer.  A pointer to the stored in the destination is also returned.
 %
-%  A pointer to the copy of the source string, or NULL is returned.
-%
-%  Free the string using DestoryString().
+%  When finished the non-NULL string should be freed using DestoryString()
+%  or using CloneString() with a NULL pointed for the source.
 %
 %  The format of the CloneString method is:
 %
@@ -669,11 +671,11 @@ MagickExport StringInfo *ConfigureFileToStringInfo(const char *filename)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConstantString() allocates memory for a string and copies the source string
-%  to that memory location (and returns it).  Use it for strings that you do
-%  do not expect to change over its lifetime.
+%  ConstantString() allocates exactly the needed memory for a string and
+%  copies the source string to that memory location.  A NULL string pointer
+%  will allocate an empty string containing just the NUL character.
 %
-%  When finished free the string using DestoryString().
+%  When finished the string should be freed using DestoryString()
 %
 %  The format of the ConstantString method is:
 %

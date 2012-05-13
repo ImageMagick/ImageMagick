@@ -2958,7 +2958,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
      p++;
      if (*p != '-' && IfMagickFalse(IsPathAccessible(p)) ) {
        (void) ThrowMagickException(exception,GetMagickModule(),
-           OptionError,"UnableToAcessPath","%s",p);
+           OptionError,"UnableToAccessPath","%s",p);
        return((char *) NULL);
      }
      return(FileToString(p,~0,exception));
@@ -3013,11 +3013,11 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         }
         continue; /* never reached! */
       case '&':
-        if (LocaleNCompare("&lt;",p+1,4) != 0)
+        if (LocaleNCompare("&lt;",p,4) == 0)
           *q++='<', p+=3;
-        else if (LocaleNCompare("&gt;",p+1,4) != 0)
+        else if (LocaleNCompare("&gt;",p,4) == 0)
           *q++='>', p+=3;
-        else if (LocaleNCompare("&amp;",p+1,5) != 0)
+        else if (LocaleNCompare("&amp;",p,5) == 0)
           *q++='&', p+=4;
         else
           *q++=(*p);
@@ -3028,28 +3028,29 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         *q++=(*p);  /* any thing else is 'as normal' */
         continue;
     }
+    p++; /* advance beyond the percent */
 
     /*
       Doubled Percent
     */
-    if ( *(p+1) == '%' ) {
+    if ( *p == '%' ) {
         *q++=(*p);
-        p++;
-    }
+        continue;
+      }
 
     /*
       Single letter escapes
     */
-    if ( *(p+1) != '[' ) {
+    if ( *p != '[' ) {
       const char
         *value;
 
       /* But only if not preceeded by a number! */
       if ( IfMagickTrue(number) ) {
-        *q++=(*p); /* do NOT substitute the percent */
+        *q++='%'; /* do NOT substitute the percent */
+        p--;      /* back up one */
         continue;
       }
-      p++;
       value=GetMagickPropertyLetter(image_info,image,*p, exception);
       if (value != (char *) NULL) {
         length=strlen(value);
@@ -3058,10 +3059,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
             extent+=length;
             interpret_text=(char *) ResizeQuantumMemory(interpret_text,
               extent+MaxTextExtent,sizeof(*interpret_text));
-            if (interpret_text == (char *) NULL) {
-              value=DestroyString((char *)value);
+            if (interpret_text == (char *) NULL)
               return((char *)NULL);
-            }
             q=interpret_text+strlen(interpret_text);
           }
         (void) CopyMagickString(q,value,extent);
@@ -3091,7 +3090,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         depth;
 
       /* get the string framed by the %[...] */
-      p+=2;  /* advance p to just inside the opening brace */
+      p++;  /* advance p to just inside the opening brace */
       depth=1;
       if ( *p == ']' ) {
         (void) ThrowMagickException(exception,GetMagickModule(),
@@ -3124,12 +3123,13 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           pattern[64] = '\0';
         }
         (void) ThrowMagickException(exception,GetMagickModule(),
-            OptionError,"UnbalancedBraces","\"%%[%s]\"",pattern);
-        break; /* exit loop */
+            OptionError,"UnbalancedBraces","\"%%[%s\"",pattern);
+        interpret_text=DestroyString(interpret_text);
+        return((char *)NULL);
       }
 
       /*
-        Special Properity Prefixes
+        Special Property Prefixes
         such as: %[exif:...] %[fx:...] %[pixel:...]
         Otherwise a free-form properity string
       */
@@ -3197,10 +3197,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
               extent+=length;
               interpret_text=(char *) ResizeQuantumMemory(interpret_text,
                 extent+MaxTextExtent,sizeof(*interpret_text));
-              if (interpret_text == (char *) NULL) {
-                value=DestroyString((char *)value);
+              if (interpret_text == (char *) NULL)
                 return((char *)NULL);
-              }
               q=interpret_text+strlen(interpret_text);
             }
           (void) CopyMagickString(q,value,extent);
@@ -3358,7 +3356,7 @@ MagickExport void ResetImagePropertyIterator(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageProperty() saves teh given string value either to specific known
+%  SetImageProperty() saves the given string value either to specific known
 %  attribute or to a freeform properity string.
 %
 %  Attempting to set a properity that is normally calculated will produce

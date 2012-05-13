@@ -1169,6 +1169,9 @@ MagickExport MagickBooleanType GetPathAttributes(const char *path,
 %  GetPathComponent() returns the parent directory name, filename, basename, or
 %  extension of a file path.
 %
+%  The component string pointed to must have at least MaxTextExtent space
+%  for the results to be stored.
+%
 %  The format of the GetPathComponent function is:
 %
 %      GetPathComponent(const char *path,PathType type,char *component)
