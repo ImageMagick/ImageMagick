@@ -903,7 +903,10 @@ void Magick::Image::extent ( const Geometry &geometry_, const Color &backgroundC
 }
 void Magick::Image::extent ( const Geometry &geometry_, const GravityType gravity_ )
 {
-  image()->gravity  = gravity_;
+  RectangleInfo geometry;
+
+  SetGeometry(image(), &geometry);
+  GravityAdjustGeometry(image()->columns, image()->rows, gravity_, &geometry);
   extent ( geometry_ );
 }
 void Magick::Image::extent ( const Geometry &geometry_, const Color &backgroundColor_, const GravityType gravity_ )
