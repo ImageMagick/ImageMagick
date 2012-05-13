@@ -309,9 +309,6 @@
           <message name="UnexpectedSamplingFactor">
             facteur d'échantillonnage inattendu
           </message>
-          <message name="UnknownImageProperity">
-            image propriété non reconnus
-          </message>
           <message name="UnknownPatternType">
             type de motif inconnu
           </message>
@@ -716,7 +713,7 @@
         <message name="TwoOrMoreImagesRequired">
           deux ou plusieurs images nécessaires
         </message>
-        <message name="UnableToAcessPath">
+        <message name="UnableToAccessPath">
           incapables d'accéder chemin du fichier
         </message>
         <message name="UnableToOpenFile">
@@ -941,6 +938,9 @@
         </message>
         <message name="NoSuchElement">
           élément absent de la liste
+        </message>
+        <message name="UnknownImageProperty">
+          image propriété non reconnus
         </message>
         <message name="UnrecognizedColor">
           couleur non reconnue
