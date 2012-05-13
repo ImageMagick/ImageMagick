@@ -51,7 +51,7 @@ static inline ResampleFilter **AcquireResampleFilterThreadSet(
   size_t
     number_threads;
 
-  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  number_threads=GetOpenMPMaximumThreads();
   filter=(ResampleFilter **) AcquireQuantumMemory(number_threads,
     sizeof(*filter));
   if (filter == (ResampleFilter **) NULL)
