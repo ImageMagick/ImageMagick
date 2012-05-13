@@ -54,7 +54,7 @@ static inline RandomInfo **AcquireRandomInfoThreadSet(void)
   size_t
     number_threads;
 
-  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
+  number_threads=GetOpenMPMaximumThreads();
   random_info=(RandomInfo **) AcquireQuantumMemory(number_threads,
     sizeof(*random_info));
   if (random_info == (RandomInfo **) NULL)
