@@ -4,6 +4,7 @@
   * Added 'weight' sanity check in EWA resampling.
   * Set default for histogram:unique-colors to be 'true' when undefined
     Returning it to previous behaviour.
+  * Refactor of InterpretImageProperties() (percent escape sub-stitutions)
 
 2012-05-05  6.7.6-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-9, SVN revision 7812.
