@@ -850,7 +850,7 @@ NEXT_FRAME:
     if ((MATLAB_HDR.DimFlag == 8) &&
         ((MATLAB_HDR.StructureFlag & FLAG_COMPLEX) == 0))
       {
-        SetImageColorspace(image,GrayColorspace);
+        SetImageColorspace(image,GRAYColorspace);
         image->type=GrayscaleType;
       }
 
