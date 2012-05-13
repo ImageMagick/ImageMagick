@@ -720,10 +720,12 @@ MagickExport char *ConstantString(const char *source)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CopyMagickString() copies the source string to the destination string.  The
-%  destination buffer is always null-terminated even if the string must be
-%  truncated.  The return value is the minimum of the source string length
-%  or the length parameter.
+%  CopyMagickString() copies the source string to the destination string, with
+%  out exceeding the given pre-declared length.
+%
+%  The destination buffer is always null-terminated even if the string must be
+%  truncated.  The return value is the minimum of the source string length or
+%  the length parameter.
 %
 %  The format of the CopyMagickString method is:
 %
@@ -1600,16 +1602,18 @@ MagickExport void LocaleLower(char *string)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LocaleNCompare() performs a case-insensitive comparison of two
-%  strings byte-by-byte, according to the ordering of the current locale
-%  encoding. LocaleNCompare returns an integer greater than, equal to, or
-%  less than 0, if the string pointed to by p is greater than, equal to, or
-%  less than the string pointed to by q respectively.  The sign of a non-zero
-%  return value is determined by the sign of the difference between the
-%  values of the first pair of bytes that differ in the strings being
-%  compared.  The LocaleNCompare method makes the same comparison as
-%  LocaleCompare but looks at a maximum of n bytes.  Bytes following a
-%  null byte are not compared.
+%  LocaleNCompare() performs a case-insensitive comparison of two strings
+%  byte-by-byte, according to the ordering of the current locale encoding.
+%
+%  LocaleNCompare returns an integer greater than, equal to, or less than 0,
+%  if the string pointed to by p is greater than, equal to, or less than the
+%  string pointed to by q respectively.  The sign of a non-zero return value
+%  is determined by the sign of the difference between the values of the first
+%  pair of bytes that differ in the strings being compared.
+%
+%  The LocaleNCompare method makes the same comparison as LocaleCompare but
+%  looks at a maximum of n bytes.  Bytes following a null byte are not
+%  compared.
 %
 %  The format of the LocaleNCompare method is:
 %

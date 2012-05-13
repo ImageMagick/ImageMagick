@@ -688,6 +688,9 @@
         <message name="SubimageSpecificationReturnsNoImages">
           subimage specification returns no images
         </message>
+        <message name="UnableToAccessPath">
+          unable to access file path
+        </message>
         <message name="UnableToOpenFile">
           unable to open file
         </message>
@@ -696,6 +699,9 @@
         </message>
         <message name="UnableToParseKernel">
           unable to parse kernel string
+        </message>
+        <message name="UnbalancedBraces">
+          unbalanced braces
         </message>
         <message name="UnbalancedParenthesis">
           unbalanced parenthesis
@@ -889,6 +895,9 @@
         </message>
         <message name="NoSuchElement">
           no such element in list
+        </message>
+        <message name="UnknownImageProperty">
+          unknown image property
         </message>
         <message name="UnrecognizedColor">
           unrecognized color
