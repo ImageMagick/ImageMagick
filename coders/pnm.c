@@ -532,7 +532,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PNM image to pixel packets.
         */
-        SetImageColorspace(image,GRAYColorspace);
         scale=(Quantum *) NULL;
         if (max_value != (1U*QuantumRange))
           {
