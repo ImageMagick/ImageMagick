@@ -441,6 +441,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   int
     c;
 
+  LinkedListInfo
+    *profiles;
+
 #if defined(MAGICKCORE_LZMA_DELEGATE)
   lzma_stream
     initialize_lzma = LZMA_STREAM_INIT,
@@ -449,9 +452,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   lzma_allocator
     allocator;
 #endif
-
-  LinkedListInfo
-    *profiles;
 
   MagickBooleanType
     status;
