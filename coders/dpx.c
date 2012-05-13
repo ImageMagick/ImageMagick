@@ -598,7 +598,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read DPX file header.
   */
-  SetImageColorspace(image,RGBColorspace,exception);
   offset=0;
   count=ReadBlob(image,4,(unsigned char *) magick);
   offset+=count;
@@ -730,6 +729,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset+=ReadBlob(image,sizeof(dpx.image.image_element[i].description),
       (unsigned char *) dpx.image.image_element[i].description);
   }
+  SetImageColorspace(image,RGBColorspace,exception);
   SetPrimaryChromaticity((DPXColorimetric)
     dpx.image.image_element[0].colorimetric,&image->chromaticity);
   offset+=ReadBlob(image,sizeof(dpx.image.reserve),(unsigned char *)
