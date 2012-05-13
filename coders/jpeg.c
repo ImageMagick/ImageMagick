@@ -1195,10 +1195,30 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image->columns=jpeg_info.output_width;
   image->rows=jpeg_info.output_height;
   image->depth=(size_t) jpeg_info.data_precision;
-  if (jpeg_info.out_color_space == JCS_YCbCr)
-    SetImageColorspace(image,YCbCrColorspace,exception);
-  if (jpeg_info.out_color_space == JCS_CMYK)
-    SetImageColorspace(image,CMYKColorspace,exception);
+  switch (jpeg_info.out_color_space)
+  {
+    case JCS_RGB:
+    default:
+    {
+      SetImageColorspace(image,sRGBColorspace,exception);
+      break;
+    }
+    case JCS_GRAYSCALE:
+    {
+      SetImageColorspace(image,GRAYColorspace,exception);
+      break;
+    }
+    case JCS_YCbCr:
+    {
+      SetImageColorspace(image,YCbCrColorspace,exception);
+      break;
+    }
+    case JCS_CMYK:
+    {
+      SetImageColorspace(image,CMYKColorspace,exception);
+      break;
+    }
+  }
   option=GetImageOption(image_info,"jpeg:colors");
   if (option != (const char *) NULL)
     if (AcquireImageColormap(image,StringToUnsignedLong(option),exception)
