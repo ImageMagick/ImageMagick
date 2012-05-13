@@ -690,7 +690,7 @@ MagickExport MagickBooleanType IsImageGray(const Image *image,
   if ((image->type == BilevelType) || (image->type == GrayscaleType) ||
       (image->type == GrayscaleMatteType))
     return(MagickTrue);
-  if (IssRGBColorspace(image->colorspace) == MagickFalse)
+  if (IsGrayColorspace(image->colorspace) == MagickFalse)
     return(MagickFalse);
   type=BilevelType;
   image_view=AcquireVirtualCacheView(image,exception);
@@ -774,7 +774,7 @@ MagickExport MagickBooleanType IsImageMonochrome(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->type == BilevelType)
     return(MagickTrue);
-  if (IssRGBColorspace(image->colorspace) == MagickFalse)
+  if (IsGrayColorspace(image->colorspace) == MagickFalse)
     return(MagickFalse);
   type=BilevelType;
   image_view=AcquireVirtualCacheView(image,exception);
