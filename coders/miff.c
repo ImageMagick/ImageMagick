@@ -1265,17 +1265,17 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         if (image->matte != MagickFalse)
           quantum_type=CMYKAQuantum;
       }
-    if (image->storage_class == PseudoClass)
-      {
-        quantum_type=IndexQuantum;
-        if (image->matte != MagickFalse)
-          quantum_type=IndexAlphaQuantum;
-      }
     if (IsGrayColorspace(image->colorspace) != MagickFalse)
       {
         quantum_type=GrayQuantum;
         if (image->matte != MagickFalse)
           quantum_type=GrayAlphaQuantum;
+      }
+    if (image->storage_class == PseudoClass)
+      {
+        quantum_type=IndexQuantum;
+        if (image->matte != MagickFalse)
+          quantum_type=IndexAlphaQuantum;
       }
     status=MagickTrue;
     switch (image->compression)

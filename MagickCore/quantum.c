@@ -508,13 +508,12 @@ MagickExport QuantumType GetQuantumType(Image *image,ExceptionInfo *exception)
       if (image->matte != MagickFalse)
         quantum_type=GrayAlphaQuantum;
     }
-  else
-    if (image->storage_class == PseudoClass)
-      {
-        quantum_type=IndexQuantum;
-        if (image->matte != MagickFalse)
-          quantum_type=IndexAlphaQuantum;
-      }
+  if (image->storage_class == PseudoClass)
+    {
+      quantum_type=IndexQuantum;
+      if (image->matte != MagickFalse)
+        quantum_type=IndexAlphaQuantum;
+    }
   return(quantum_type);
 }
 
