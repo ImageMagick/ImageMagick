@@ -1173,10 +1173,30 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image->columns=jpeg_info.output_width;
   image->rows=jpeg_info.output_height;
   image->depth=(size_t) jpeg_info.data_precision;
-  if (jpeg_info.out_color_space == JCS_YCbCr)
-    SetImageColorspace(image,YCbCrColorspace);
-  if (jpeg_info.out_color_space == JCS_CMYK)
-    SetImageColorspace(image,CMYKColorspace);
+  switch (jpeg_info.out_color_space)
+  {
+    case JCS_RGB:
+    default:
+    {
+      SetImageColorspace(image,sRGBColorspace);
+      break;
+    }
+    case JCS_GRAYSCALE:
+    {
+      SetImageColorspace(image,GRAYColorspace);
+      break;
+    }
+    case JCS_YCbCr:
+    {
+      SetImageColorspace(image,YCbCrColorspace);
+      break;
+    }
+    case JCS_CMYK:
+    {
+      SetImageColorspace(image,CMYKColorspace);
+      break;
+    }
+  }
   if ((image_info->colors != 0) && (image_info->colors <= 256))
     if (AcquireImageColormap(image,image_info->colors) == MagickFalse)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
