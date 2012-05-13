@@ -679,6 +679,9 @@
         <message name="SubimageSpecificationReturnsNoImages">
           la spécification de sous-image ne permet pas de fournir des images
         </message>
+        <message name="UnableToAccessPath">
+          incapables d'accéder chemin du fichier
+        </message>
         <message name="UnableToOpenFile">
           impossible d'ouvrir le fichier
         </message>
@@ -687,6 +690,9 @@
         </message>
         <message name="UnableToParseKernel">
           impossible d'analyser l'kernel string
+        </message>
+        <message name="UnbalancedBraces">
+          brace non fermée
         </message>
         <message name="UnbalancedParenthesis">
           parenthèse non fermée
@@ -877,6 +883,9 @@
         </message>
         <message name="NoSuchElement">
           élément absent de la liste
+        </message>
+        <message name="UnknownImageProperty">
+          image propriété non reconnus
         </message>
         <message name="UnrecognizedColor">
           couleur non reconnue

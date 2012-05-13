@@ -695,6 +695,17 @@ MagickExport void ExpandFilename(char *path)
 %  Expansion is ignored for coders "label:" "caption:" "pango:" and "vid:".
 %  Which provide their own '@' meta-character handling.
 %
+%  You can see the results of the expansion using "Configure" log
+%  events.
+%
+%
+%  The returned list should be freed using  DestroyStringList().
+%
+%  However the strings in the original pointed to argv are not
+%  freed  (TO BE CHECKED).  So a copy of the original pointer (and count)
+%  should be kept separate if they need to be freed later.
+%
+%
 %  The format of the ExpandFilenames function is:
 %
 %      status=ExpandFilenames(int *number_arguments,char ***arguments)
