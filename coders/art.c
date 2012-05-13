@@ -132,7 +132,6 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  SetImageColorspace(image,GRAYColorspace,exception);
   image->depth=1;
   image->endian=MSBEndian;
   (void) ReadBlobLSBShort(image);
@@ -147,6 +146,7 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert bi-level image to pixel packets.
   */
+  SetImageColorspace(image,GRAYColorspace,exception);
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
