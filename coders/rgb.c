@@ -96,8 +96,7 @@ static MagickBooleanType
 %    o exception: return any errors or warnings in this structure.
 %
 */
-static Image *ReadRGBImage(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
     *canvas_image,
