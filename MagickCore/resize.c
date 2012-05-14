@@ -314,7 +314,7 @@ static MagickRealType Kaiser(const MagickRealType x,
     automatically be normalized.
   */
   return(resize_filter->coefficient[1]*
-              I0(resize_filter->coefficient[0]*sqrt((double) (1.0-x*x))));
+           I0(resize_filter->coefficient[0]*sqrt((double) (1.0-x*x))));
 }
 
 static MagickRealType Lagrange(const MagickRealType x,
@@ -975,6 +975,12 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     artifact=GetImageArtifact(image,"filter:alpha");
     if (artifact != (const char *) NULL)
       value=StringToDouble(artifact,(char **) NULL);
+    artifact=GetImageArtifact(image,"filter:kaiser-beta");
+    if (artifact != (const char *) NULL)
+      value=StringToDouble(artifact,(char **) NULL);
+    artifact=GetImageArtifact(image,"filter:kaiser-alpha");
+    if (artifact != (const char *) NULL)
+      value=StringToDouble(artifact,(char **) NULL)*MagickPI;
     /* Define coefficents for Kaiser Windowing Function */
     resize_filter->coefficient[0]=value;         /* alpha */
     resize_filter->coefficient[1]=1.0/I0(value); /* normalization */
@@ -1112,17 +1118,18 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
              CommandOptionToMnemonic(MagickFilterOptions,window_type));
         (void) FormatLocaleFile(stdout,"# support = %.*g\n",
              GetMagickPrecision(),(double) resize_filter->support);
-        (void) FormatLocaleFile(stdout,"# win-support = %.*g\n",
+        (void) FormatLocaleFile(stdout,"# window-support = %.*g\n",
              GetMagickPrecision(),(double) resize_filter->window_support);
-        (void) FormatLocaleFile(stdout,"# scale_blur = %.*g\n",
+        (void) FormatLocaleFile(stdout,"# scale-blur = %.*g\n",
              GetMagickPrecision(), (double)resize_filter->blur);
         if ( filter_type == GaussianFilter || window_type == GaussianFilter )
-          (void) FormatLocaleFile(stdout,"# gaussian_sigma = %.*g\n",
+          (void) FormatLocaleFile(stdout,"# gaussian-sigma = %.*g\n",
                GetMagickPrecision(), (double)resize_filter->coefficient[0]);
         if ( filter_type == KaiserFilter || window_type == KaiserFilter )
-          (void) FormatLocaleFile(stdout,"# kaiser_alpha = %.*g\n",
-               GetMagickPrecision(), (double)resize_filter->coefficient[0]);
-        (void) FormatLocaleFile(stdout,"# practical_support = %.*g\n",
+          (void) FormatLocaleFile(stdout,"# kaiser-beta = %.*g\n",
+               GetMagickPrecision(),
+               (double)resize_filter->coefficient[0]);
+        (void) FormatLocaleFile(stdout,"# practical-support = %.*g\n",
              GetMagickPrecision(), (double)support);
         if ( filter_type == CubicFilter || window_type == CubicFilter )
           (void) FormatLocaleFile(stdout,"# B,C = %.*g,%.*g\n",
