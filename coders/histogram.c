@@ -336,9 +336,8 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   }
   histogram=(PixelInfo *) RelinquishMagickMemory(histogram);
 
-  /* output unique colors?  IMv6 is on by default, IMv7 is off by default */
-  if (IfMagickTrue((IsStringTrue(GetImageOption(image_info,
-               "histogram:unique-colors")))))
+  /* output unique colors?  True by default (when not defined) */
+  if (IfStringNotFalse(GetImageOption(image_info, "histogram:unique-colors")))
     {
       FILE
         *file;
