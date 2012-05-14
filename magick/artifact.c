@@ -439,11 +439,15 @@ MagickExport MagickBooleanType SetImageArtifact(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image->filename);
+
+  /* Create tree if needed */
   if (image->artifacts == (void *) NULL)
     image->artifacts=NewSplayTree(CompareSplayTreeString,
       RelinquishMagickMemory,RelinquishMagickMemory);
-  if ((value == (const char *) NULL) || (*value == '\0'))
+  /* Delete artifact if NULL --  empty string values are valid! */
+  if (value == (const char *) NULL)
     return(DeleteImageArtifact(image,artifact));
+  /* Add artifact to tree */
   status=AddValueToSplayTree((SplayTreeInfo *) image->artifacts,
     ConstantString(artifact),ConstantString(value));
   return(status);
