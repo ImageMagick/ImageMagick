@@ -3329,6 +3329,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       image->storage_class=DirectClass;
     }
 
+  /* Note that the following sets image->gamma to 1.0, image->rendering_intent
+     to Undefined, and resets image->chromaticity, overriding any ancillary
+     chunk data from the PNG file.
+   */
   if ((ping_color_type == PNG_COLOR_TYPE_GRAY) ||
       (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
     SetImageColorspace(image,GRAYColorspace);
