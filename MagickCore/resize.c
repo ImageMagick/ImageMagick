@@ -309,9 +309,15 @@ static MagickRealType Kaiser(const MagickRealType x,
 {
   /*
     Kaiser Windowing Function (bessel windowing)
-    Alpha (coeff[0]) is a free value from 5 to 8 (defaults to 6.5).
-    A scaling factor (coeff[1]) is not actually needed as filter will
-    automatically be normalized.
+
+       I0( beta * sqrt( 1-x^2) ) / IO(0)
+
+    Beta (coeff[0]) is a free value from 5 to 8 (defaults to 6.5).
+    However it is typically defined in terms of Alpha*PI
+
+    The normalization factor (coeff[1]) is not actually needed,
+    but without it the filters has a large value at x=0 making it
+    difficult to compare the function with other windowing functions.
   */
   return(resize_filter->coefficient[1]*
            I0(resize_filter->coefficient[0]*sqrt((double) (1.0-x*x))));
@@ -971,8 +977,8 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
   /* User Kaiser Alpha Override - no support change */
   if ((resize_filter->filter == Kaiser) ||
       (resize_filter->window == Kaiser) ) {
-    value=6.5; /* default alpha value for Kaiser bessel windowing function */
-    artifact=GetImageArtifact(image,"filter:alpha");
+    value=6.5; /* default beta value for Kaiser bessel windowing function */
+    artifact=GetImageArtifact(image,"filter:alpha");  /* FUTURE: depreciate */
     if (artifact != (const char *) NULL)
       value=StringToDouble(artifact,(char **) NULL);
     artifact=GetImageArtifact(image,"filter:kaiser-beta");
