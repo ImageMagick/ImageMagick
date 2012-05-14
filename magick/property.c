@@ -2199,9 +2199,9 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
       ConcatenateMagickString(value,"B",MaxTextExtent);
       break;
     }
-    case 'c':  /* image comment property */
+    case 'c':  /* image comment property - empty string by default */
     {
-      string=GetImageProperty(image,"comment");
+      string=GetImageProperty(image,"comment") || "";
       break;
     }
     case 'd':  /* Directory component of filename */
@@ -2244,9 +2244,9 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
             GetNumberColors(image,(FILE *) NULL,&image->exception));
       break;
     }
-    case 'l': /* Image label  */
+    case 'l': /* Image label properity - empty string by default */
     {
-      string=GetImageProperty(image,"label");
+      string=GetImageProperty(image,"label") || "";
       break;
     }
     case 'm': /* Image format (file magick) */
