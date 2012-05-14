@@ -1986,7 +1986,7 @@ MagickExport const char *GetImageProperty(const Image *image,
             image->properties);
           return(p);
         }
-      if (LocaleNCompare("fx:",property,3) != 0)
+      if (LocaleNCompare("fx:",property,3) != 0) /* NOT fx: !!!! */
         {
           p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
             image->properties,property);
@@ -2201,7 +2201,9 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     }
     case 'c':  /* image comment property - empty string by default */
     {
-      string=GetImageProperty(image,"comment") || "";
+      string=GetImageProperty(image,"comment");
+      if ( string == (const char *)NULL)
+        string="";
       break;
     }
     case 'd':  /* Directory component of filename */
@@ -2246,7 +2248,9 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     }
     case 'l': /* Image label properity - empty string by default */
     {
-      string=GetImageProperty(image,"label") || "";
+      string=GetImageProperty(image,"label");
+      if ( string == (const char *)NULL)
+        string="";
       break;
     }
     case 'm': /* Image format (file magick) */
@@ -3362,11 +3366,23 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image->filename);
+
+  /* Create splay-tree */
   if (image->properties == (void *) NULL)
     image->properties=NewSplayTree(CompareSplayTreeString,
       RelinquishMagickMemory,RelinquishMagickMemory);
-  if ((value == (const char *) NULL) || (*value == '\0'))
+
+  /* Delete properity if NULL --  empty string values are valid! */
+  if (value == (const char *) NULL)
     return(DeleteImageProperty(image,property));
+
+  /* FUTURE: These should produce 'illegal settings'
+     + binary chars in p[roperty key
+     + first letter must be a alphabetic
+     + single letter property keys (read only)
+     + known special prefix (read only, they don't get saved!)
+  */
+
   status=MagickTrue;
   exception=(&image->exception);
   switch (*property)
