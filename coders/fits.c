@@ -422,7 +422,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     /*
       Initialize image structure.
     */
-    SetImageColorspace(image,GRAYColorspace,exception);
+    SetImageColorspace(image,GRAYColorspace);
     if ((fits_info.min_data != 0.0) || (fits_info.max_data != 0.0))
       {
         if ((fits_info.bits_per_pixel != 0) && (fits_info.max_data == 0.0))
