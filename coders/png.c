@@ -2722,9 +2722,15 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   image->compression=ZipCompression;
   image->columns=ping_width;
   image->rows=ping_height;
+
+  /* Note that the following sets image->gamma to 1.0, image->rendering_intent
+     to Undefined, and resets image->chromaticity, overriding any ancillary
+     chunk data from the PNG file.
+   */
   if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
       ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
     SetImageColorspace(image,GRAYColorspace,exception);
+
   if (((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
       ((int) ping_color_type == PNG_COLOR_TYPE_GRAY))
     {
