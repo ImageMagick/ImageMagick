@@ -3329,13 +3329,25 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       image->storage_class=DirectClass;
     }
 
-  /* Note that the following sets image->gamma to 1.0, image->rendering_intent
-     to Undefined, and resets image->chromaticity, overriding any ancillary
-     chunk data from the PNG file.
-   */
   if ((ping_color_type == PNG_COLOR_TYPE_GRAY) ||
       (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
-    SetImageColorspace(image,GRAYColorspace);
+    {
+      if (!png_get_valid(ping,ping_info,PNG_INFO_gAMA) &&
+          !png_get_valid(ping,ping_info,PNG_INFO_cHRM) &&
+          !png_get_valid(ping,ping_info,PNG_INFO_sRGB))
+        {
+          /* Set image->gamma to 1.0, image->rendering_intent to Undefined,
+           * and reset image->chromaticity.
+           */
+          SetImageColorspace(image,GRAYColorspace);
+        }
+    
+      else
+        {
+          /* Use colorspace data from PNG ancillary chunks */
+          image->colorspace=GRAYColorspace;
+        }
+    }
 
   for (j = 0; j < 2; j++)
   {
