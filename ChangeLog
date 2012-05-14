@@ -9,6 +9,7 @@
     (formerly "filter:alpha" in previous versions)
   * Setting the expert option "filter:kaiser-alpha" will override this,
     (after being multiplied by PI).
+  * Add "gamma" as a -set and % escape to access image gamma meta-data
 
 2012-05-05  6.7.6-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-9, SVN revision 7812.

@@ -2553,6 +2553,12 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'g':
     {
+      if (LocaleCompare("gamma",property) == 0)
+        {
+          (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
+            GetMagickPrecision(),image->gamma);
+          break;
+        }
       if ( (image_info != (ImageInfo *) NULL) &&
            (LocaleCompare("group",property) == 0) )
         {
@@ -3368,12 +3374,12 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     case 'B':
     case 'b':
     {
-      if (LocaleCompare(property,"background") == 0)
+      if (LocaleCompare("background",property) == 0)
         {
           (void) QueryColorDatabase(value,&image->background_color,exception);
           break;
         }
-      if (LocaleCompare(property,"bias") == 0)
+      if (LocaleCompare("bias",property) == 0)
         {
           image->bias=StringToDoubleInterval(value,(double) QuantumRange+1.0);
           break;
@@ -3385,7 +3391,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     case 'C':
     case 'c':
     {
-      if (LocaleCompare(property,"colorspace") == 0)
+      if (LocaleCompare("colorspace",property) == 0)
         {
           ssize_t
             colorspace;
@@ -3397,7 +3403,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           (void) SetImageColorspace(image,(ColorspaceType) colorspace);
           break;
         }
-      if (LocaleCompare(property,"compose") == 0)
+      if (LocaleCompare("compose",property) == 0)
         {
           ssize_t
             compose;
@@ -3408,7 +3414,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           image->compose=(CompositeOperator) compose;
           break;
         }
-      if (LocaleCompare(property,"compress") == 0)
+      if (LocaleCompare("compress",property) == 0)
         {
           ssize_t
             compression;
@@ -3427,7 +3433,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     case 'D':
     case 'd':
     {
-      if (LocaleCompare(property,"delay") == 0)
+      if (LocaleCompare("delay",property) == 0)
         {
           GeometryInfo
             geometry_info;
@@ -3451,7 +3457,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
             image->ticks_per_second=(ssize_t) floor(geometry_info.sigma+0.5);
           break;
         }
-      if (LocaleCompare(property,"density") == 0)
+      if (LocaleCompare("density",property) == 0)
         {
           GeometryInfo
             geometry_info;
@@ -3462,12 +3468,12 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           if ((flags & SigmaValue) == 0)
             image->y_resolution=image->x_resolution;
         }
-      if (LocaleCompare(property,"depth") == 0)
+      if (LocaleCompare("depth",property) == 0)
         {
           image->depth=StringToUnsignedLong(value);
           break;
         }
-      if (LocaleCompare(property,"dispose") == 0)
+      if (LocaleCompare("dispose",property) == 0)
         {
           ssize_t
             dispose;
@@ -3485,7 +3491,12 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     case 'G':
     case 'g':
     {
-      if (LocaleCompare(property,"gravity") == 0)
+      if (LocaleCompare("gamma",property) == 0)
+        {
+          image->gamma=StringToDouble(value,(char **) NULL);
+          break;
+        }
+      if (LocaleCompare("gravity",property) == 0)
         {
           ssize_t
             gravity;
@@ -3503,7 +3514,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     case 'I':
     case 'i':
     {
-      if (LocaleCompare(property,"intent") == 0)
+      if (LocaleCompare("intent",property) == 0)
         {
           ssize_t
             rendering_intent;
@@ -3515,7 +3526,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           image->rendering_intent=(RenderingIntent) rendering_intent;
           break;
         }
-      if (LocaleCompare(property,"interpolate") == 0)
+      if (LocaleCompare("interpolate",property) == 0)
         {
           ssize_t
             interpolate;
@@ -3534,7 +3545,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     case 'L':
     case 'l':
     {
-      if (LocaleCompare(property,"loop") == 0)
+      if (LocaleCompare("loop",property) == 0)
         {
           image->iterations=StringToUnsignedLong(value);
           break;
@@ -3546,7 +3557,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     case 'P':
     case 'p':
     {
-      if (LocaleCompare(property,"page") == 0)
+      if (LocaleCompare("page",property) == 0)
         {
           char
             *geometry;
@@ -3556,7 +3567,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           geometry=DestroyString(geometry);
           break;
         }
-      if (LocaleCompare(property,"profile") == 0)
+      if (LocaleCompare("profile",property) == 0)
         {
           ImageInfo
             *image_info;
@@ -3580,7 +3591,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     case 'R':
     case 'r':
     {
-      if (LocaleCompare(property,"rendering-intent") == 0)
+      if (LocaleCompare("rendering-intent",property) == 0)
         {
           ssize_t
             rendering_intent;
@@ -3599,7 +3610,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     case 'T':
     case 't':
     {
-      if (LocaleCompare(property,"tile-offset") == 0)
+      if (LocaleCompare("tile-offset",property) == 0)
         {
           char
             *geometry;
@@ -3616,7 +3627,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     case 'U':
     case 'u':
     {
-      if (LocaleCompare(property,"units") == 0)
+      if (LocaleCompare("units",property) == 0)
         {
           ssize_t
             units;
