@@ -1,10 +1,14 @@
-2012-05-08  6.7.6-10 Anthony Thyssen <A.Thyssen@griffith...>
+2012-05-14  6.7.6-10 Anthony Thyssen <A.Thyssen@griffith...>
   * Added a low level "Cosine" Windowing Filter -- Request by Nicholas Robidox
   * Fixed Kaiser Window Filter (was producing all zeros!)
   * Added 'weight' sanity check in EWA resampling.
   * Set default for histogram:unique-colors to be 'true' when undefined
     Returning it to previous behaviour.
   * Refactor of InterpretImageProperties() (percent escape sub-stitutions)
+  * Kaiser Window Function now uses the working value "filter:kaiser-beta"
+    (formerly "filter:alpha" in previous versions)
+  * Setting the expert option "filter:kaiser-alpha" will override this,
+    (after being multiplied by PI).
 
 2012-05-05  6.7.6-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-9, SVN revision 7812.
