@@ -229,6 +229,8 @@ WriteMakefile
 
    # Use same compiler as ImageMagick
    'PERLMAINCC'	=> ' -fopenmp',
+   'AR' => 'ar',
+   'LD' => '',
 
    # Set Perl installation prefix to ImageMagick installation prefix
 #   'PREFIX'	=> '/usr/local',
