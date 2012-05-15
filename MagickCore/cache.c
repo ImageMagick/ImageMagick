@@ -3644,6 +3644,41 @@ MagickPrivate const Quantum *GetVirtualPixelsNexus(const Cache cache,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   I s P i x e l C a c h e I n C o r e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsPixelCacheInCore() returns MagickTrue if the pixel cache is memory based
+%  otherwise MagickFalse.
+%
+%  The format of the IsPixelCacheInCore() method is:
+%
+%      MagickBooleanType IsPixelCacheInCore(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+*/
+MagickExport MagickBooleanType IsPixelCacheInCore(const Image *image)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(image->cache != (Cache) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  return(cache_info->type == DiskCache ? MagickFalse  : MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   O p e n P i x e l C a c h e                                               %
 %                                                                             %
 %                                                                             %
@@ -4913,7 +4948,7 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
   image_view=AcquireVirtualCacheView(image,exception);  /* must be virtual */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
-    dynamic_number_threads(image->columns,image->rows,1)
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

@@ -23,6 +23,7 @@ extern "C" {
 #endif
 
 #include <time.h>
+#include "MagickCore/cache.h"
 #include "MagickCore/random_.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/semaphore.h"
