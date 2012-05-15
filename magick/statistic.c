@@ -431,7 +431,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     *next;
 
   Image
-    *evaluate_image;
+    *image;
 
   MagickBooleanType
     status;
@@ -474,21 +474,20 @@ MagickExport Image *EvaluateImages(const Image *images,
   /*
     Initialize evaluate next attributes.
   */
-  evaluate_image=CloneImage(images,images->columns,images->rows,MagickTrue,
-    exception);
-  if (evaluate_image == (Image *) NULL)
+  image=CloneImage(images,images->columns,images->rows,MagickTrue,exception);
+  if (image == (Image *) NULL)
     return((Image *) NULL);
-  if (SetImageStorageClass(evaluate_image,DirectClass) == MagickFalse)
+  if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     {
-      InheritException(exception,&evaluate_image->exception);
-      evaluate_image=DestroyImage(evaluate_image);
+      InheritException(exception,&image->exception);
+      image=DestroyImage(image);
       return((Image *) NULL);
     }
   number_images=GetImageListLength(images);
   evaluate_pixels=AcquirePixelThreadSet(images,number_images);
   if (evaluate_pixels == (MagickPixelPacket **) NULL)
     {
-      evaluate_image=DestroyImage(evaluate_image);
+      image=DestroyImage(image);
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
       return((Image *) NULL);
@@ -501,14 +500,14 @@ MagickExport Image *EvaluateImages(const Image *images,
   GetMagickPixelPacket(images,&zero);
   random_info=AcquireRandomInfoThreadSet();
   key=GetRandomSecretKey(random_info[0]);
-  evaluate_view=AcquireAuthenticCacheView(evaluate_image,exception);
+  evaluate_view=AcquireAuthenticCacheView(image,exception);
   if (op == MedianEvaluateOperator)
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(progress,status) \
-        dynamic_number_threads(images->columns,images->rows,key == ~0UL)
+        dynamic_number_threads(image,image->columns,image->rows,key == ~0UL)
 #endif
-      for (y=0; y < (ssize_t) evaluate_image->rows; y++)
+      for (y=0; y < (ssize_t) image->rows; y++)
       {
         CacheView
           *image_view;
@@ -534,7 +533,7 @@ MagickExport Image *EvaluateImages(const Image *images,
         if (status == MagickFalse)
           continue;
         q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,
-          evaluate_image->columns,1,exception);
+          image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           {
             status=MagickFalse;
@@ -542,7 +541,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           }
         evaluate_indexes=GetCacheViewAuthenticIndexQueue(evaluate_view);
         evaluate_pixel=evaluate_pixels[id];
-        for (x=0; x < (ssize_t) evaluate_image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           register ssize_t
             i;
@@ -574,7 +573,7 @@ MagickExport Image *EvaluateImages(const Image *images,
               GetPixelBlue(p),op,evaluate_pixel[i].blue);
             evaluate_pixel[i].opacity=ApplyEvaluateOperator(random_info[id],
               GetPixelOpacity(p),op,evaluate_pixel[i].opacity);
-            if (evaluate_image->colorspace == CMYKColorspace)
+            if (image->colorspace == CMYKColorspace)
               evaluate_pixel[i].index=ApplyEvaluateOperator(random_info[id],
                 *indexes,op,evaluate_pixel[i].index);
             image_view=DestroyCacheView(image_view);
@@ -585,12 +584,12 @@ MagickExport Image *EvaluateImages(const Image *images,
           SetPixelRed(q,ClampToQuantum(evaluate_pixel[i/2].red));
           SetPixelGreen(q,ClampToQuantum(evaluate_pixel[i/2].green));
           SetPixelBlue(q,ClampToQuantum(evaluate_pixel[i/2].blue));
-          if (evaluate_image->matte == MagickFalse)
+          if (image->matte == MagickFalse)
             SetPixelOpacity(q,ClampToQuantum(
               evaluate_pixel[i/2].opacity));
           else
             SetPixelAlpha(q,ClampToQuantum(evaluate_pixel[i/2].opacity));
-          if (evaluate_image->colorspace == CMYKColorspace)
+          if (image->colorspace == CMYKColorspace)
             SetPixelIndex(evaluate_indexes+i,ClampToQuantum(
               evaluate_pixel[i/2].index));
           q++;
@@ -606,7 +605,7 @@ MagickExport Image *EvaluateImages(const Image *images,
             #pragma omp critical (MagickCore_EvaluateImages)
 #endif
             proceed=SetImageProgress(images,EvaluateImageTag,progress++,
-              evaluate_image->rows);
+              image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
           }
@@ -616,9 +615,9 @@ MagickExport Image *EvaluateImages(const Image *images,
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(progress,status) \
-        dynamic_number_threads(images->columns,images->rows,key == ~0UL)
+        dynamic_number_threads(image,image->columns,image->rows,key == ~0UL)
 #endif
-      for (y=0; y < (ssize_t) evaluate_image->rows; y++)
+      for (y=0; y < (ssize_t) image->rows; y++)
       {
         CacheView
           *image_view;
@@ -645,7 +644,7 @@ MagickExport Image *EvaluateImages(const Image *images,
         if (status == MagickFalse)
           continue;
         q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,
-          evaluate_image->columns,1,exception);
+          image->columns,1,exception);
         if (q == (PixelPacket *) NULL)
           {
             status=MagickFalse;
@@ -653,7 +652,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           }
         evaluate_indexes=GetCacheViewAuthenticIndexQueue(evaluate_view);
         evaluate_pixel=evaluate_pixels[id];
-        for (x=0; x < (ssize_t) evaluate_image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
           evaluate_pixel[x]=zero;
         next=images;
         for (i=0; i < (ssize_t) number_images; i++)
@@ -686,7 +685,7 @@ MagickExport Image *EvaluateImages(const Image *images,
             evaluate_pixel[x].opacity=ApplyEvaluateOperator(random_info[id],
               GetPixelOpacity(p),i == 0 ? AddEvaluateOperator : op,
               evaluate_pixel[x].opacity);
-            if (evaluate_image->colorspace == CMYKColorspace)
+            if (image->colorspace == CMYKColorspace)
               evaluate_pixel[x].index=ApplyEvaluateOperator(random_info[id],
                 GetPixelIndex(indexes+x),i == 0 ? AddEvaluateOperator : op,
                 evaluate_pixel[x].index);
@@ -696,7 +695,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           next=GetNextImageInList(next);
         }
         if (op == MeanEvaluateOperator)
-          for (x=0; x < (ssize_t) evaluate_image->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; x++)
           {
             evaluate_pixel[x].red/=number_images;
             evaluate_pixel[x].green/=number_images;
@@ -705,7 +704,7 @@ MagickExport Image *EvaluateImages(const Image *images,
             evaluate_pixel[x].index/=number_images;
           }
         if (op == MultiplyEvaluateOperator)
-          for (x=0; x < (ssize_t) evaluate_image->columns; x++)
+          for (x=0; x < (ssize_t) image->columns; x++)
           {
             register ssize_t
               j;
@@ -719,16 +718,16 @@ MagickExport Image *EvaluateImages(const Image *images,
               evaluate_pixel[x].index*=QuantumScale;
             }
           }
-        for (x=0; x < (ssize_t) evaluate_image->columns; x++)
+        for (x=0; x < (ssize_t) image->columns; x++)
         {
           SetPixelRed(q,ClampToQuantum(evaluate_pixel[x].red));
           SetPixelGreen(q,ClampToQuantum(evaluate_pixel[x].green));
           SetPixelBlue(q,ClampToQuantum(evaluate_pixel[x].blue));
-          if (evaluate_image->matte == MagickFalse)
+          if (image->matte == MagickFalse)
             SetPixelOpacity(q,ClampToQuantum(evaluate_pixel[x].opacity));
           else
             SetPixelAlpha(q,ClampToQuantum(evaluate_pixel[x].opacity));
-          if (evaluate_image->colorspace == CMYKColorspace)
+          if (image->colorspace == CMYKColorspace)
             SetPixelIndex(evaluate_indexes+x,ClampToQuantum(
               evaluate_pixel[x].index));
           q++;
@@ -744,7 +743,7 @@ MagickExport Image *EvaluateImages(const Image *images,
             #pragma omp critical (MagickCore_EvaluateImages)
 #endif
             proceed=SetImageProgress(images,EvaluateImageTag,progress++,
-              evaluate_image->rows);
+              image->rows);
             if (proceed == MagickFalse)
               status=MagickFalse;
           }
@@ -754,8 +753,8 @@ MagickExport Image *EvaluateImages(const Image *images,
   evaluate_pixels=DestroyPixelThreadSet(evaluate_pixels);
   random_info=DestroyRandomInfoThreadSet(random_info);
   if (status == MagickFalse)
-    evaluate_image=DestroyImage(evaluate_image);
-  return(evaluate_image);
+    image=DestroyImage(image);
+  return(image);
 }
 
 MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
@@ -798,7 +797,7 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,key == ~0UL)
+    dynamic_number_threads(image,image->columns,image->rows,key == ~0UL)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1037,7 +1036,7 @@ MagickExport MagickBooleanType FunctionImageChannel(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,1)
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2568,7 +2567,7 @@ MagickExport Image *StatisticImageChannel(const Image *image,
   statistic_view=AcquireAuthenticCacheView(statistic_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,1)
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) statistic_image->rows; y++)
   {

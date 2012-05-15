@@ -294,7 +294,7 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
   exception=destination->exception;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    dynamic_number_threads(width,height,1)
+    dynamic_number_threads(source,width,height,1)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -572,7 +572,7 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
   width=(size_t) (source->extent.width-source->extent.x);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    dynamic_number_threads(width,height,1)
+    dynamic_number_threads(source,width,height,1)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -981,7 +981,7 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
   width=(size_t) (destination->extent.width-destination->extent.x);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    dynamic_number_threads(width,height,1)
+    dynamic_number_threads(destination,width,height,1)
 #endif
   for (y=destination->extent.y; y < (ssize_t) destination->extent.height; y++)
   {
@@ -1165,7 +1165,7 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
   width=(size_t) (source->extent.width-source->extent.x);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    dynamic_number_threads(width,height,1)
+    dynamic_number_threads(source,width,height,1)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -1340,7 +1340,7 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
   width=(size_t) (source->extent.width-source->extent.x);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    dynamic_number_threads(width,height,1)
+    dynamic_number_threads(source,width,height,1)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {

@@ -272,7 +272,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,1)
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) blur_image->rows; y++)
   {
@@ -590,7 +590,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
   sharp_view=AcquireAuthenticCacheView(sharp_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,1)
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) sharp_image->rows; y++)
   {
@@ -907,7 +907,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,1)
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) blur_image->rows; y++)
   {
@@ -1087,7 +1087,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,1)
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (x=0; x < (ssize_t) blur_image->columns; x++)
   {
@@ -1429,7 +1429,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
   convolve_view=AcquireAuthenticCacheView(convolve_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,1)
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1665,9 +1665,9 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
 %
 */
 
-static void Hull(const ssize_t x_offset,const ssize_t y_offset,
-  const size_t columns,const size_t rows,const int polarity,Quantum *restrict f,
-  Quantum *restrict g)
+static void Hull(const Image *image,const ssize_t x_offset,
+  const ssize_t y_offset,const size_t columns,const size_t rows,
+  const int polarity,Quantum *restrict f,Quantum *restrict g)
 {
   register Quantum
     *p,
@@ -1685,7 +1685,7 @@ static void Hull(const ssize_t x_offset,const ssize_t y_offset,
   r=p+(y_offset*(columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
-    dynamic_number_threads(columns,rows,1)
+    dynamic_number_threads(image,columns,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -1722,7 +1722,7 @@ static void Hull(const ssize_t x_offset,const ssize_t y_offset,
   s=q-(y_offset*(columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) \
-    dynamic_number_threads(columns,rows,1)
+    dynamic_number_threads(image,columns,rows,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -1875,10 +1875,10 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     (void) ResetMagickMemory(buffer,0,length*sizeof(*buffer));
     for (k=0; k < 4; k++)
     {
-      Hull(X[k],Y[k],image->columns,image->rows,1,pixels,buffer);
-      Hull(-X[k],-Y[k],image->columns,image->rows,1,pixels,buffer);
-      Hull(-X[k],-Y[k],image->columns,image->rows,-1,pixels,buffer);
-      Hull(X[k],Y[k],image->columns,image->rows,-1,pixels,buffer);
+      Hull(image,X[k],Y[k],image->columns,image->rows,1,pixels,buffer);
+      Hull(image,-X[k],-Y[k],image->columns,image->rows,1,pixels,buffer);
+      Hull(image,-X[k],-Y[k],image->columns,image->rows,-1,pixels,buffer);
+      Hull(image,X[k],Y[k],image->columns,image->rows,-1,pixels,buffer);
     }
     j=(ssize_t) image->columns+2;
     for (y=0; y < (ssize_t) image->rows; y++)
@@ -2222,7 +2222,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
   filter_view=AcquireAuthenticCacheView(filter_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,1)
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -2690,7 +2690,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,1)
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -3478,7 +3478,7 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,1)
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) blur_image->rows; y++)
   {
@@ -3813,7 +3813,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,1)
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -4153,7 +4153,7 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
   shade_view=AcquireAuthenticCacheView(shade_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,1)
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -4456,7 +4456,7 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   spread_view=AcquireAuthenticCacheView(spread_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,8) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,key == ~0UL)
+    dynamic_number_threads(image,image->columns,image->rows,key == ~0UL)
 #endif
   for (y=0; y < (ssize_t) spread_image->rows; y++)
   {
@@ -4620,7 +4620,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
   unsharp_view=AcquireAuthenticCacheView(unsharp_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image->columns,image->rows,1)
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
