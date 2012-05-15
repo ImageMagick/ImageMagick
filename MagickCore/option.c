@@ -2721,7 +2721,7 @@ MagickExport MagickBooleanType SetImageOption(ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
 
-  /* This should not be here! - but others might */
+  /* FUTURE: This should not be here! - but others might */
   if (LocaleCompare(option,"size") == 0)
     (void) CloneString(&image_info->size,value);
 
@@ -2734,7 +2734,7 @@ MagickExport MagickBooleanType SetImageOption(ImageInfo *image_info,
   if (value == (const char *) NULL)
     return(DeleteImageOption(image_info,option));
 
-  /* add option and return */
+  /* add option to splay-tree */
   return(AddValueToSplayTree((SplayTreeInfo *) image_info->options,
     ConstantString(option),ConstantString(value)));
 }
