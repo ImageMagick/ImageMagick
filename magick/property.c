@@ -2690,14 +2690,14 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     }
     case 'r':
     {
-      /* FUTURE: Obsolete */
+      /* This matches %[fx:resolution.x] */
       if (LocaleCompare("resolution.x",property) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%g",
             image->x_resolution);
           break;
         }
-      /* FUTURE: Obsolete */
+      /* This matches %[fx:resolution.y] */
       if (LocaleCompare("resolution.y",property) == 0)
         {
           (void) FormatLocaleString(value,MaxTextExtent,"%g",
@@ -2789,7 +2789,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         }
       break;
     }
-    case 'x': /* ( X resolution, (with units) */
+    case 'x': /* FUTURE: Obsolete X resolution */
     {
       if ((LocaleCompare("xresolution",property) == 0) ||
           (LocaleCompare("x-resolution",property) == 0) )
@@ -2800,7 +2800,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         }
       break;
     }
-    case 'y': /* ( Y resolution, (with units) */
+    case 'y': /* FUTURE: Obsolete Y resolution */
     {
       if ((LocaleCompare("yresolution",property) == 0) ||
           (LocaleCompare("y-resolution",property) == 0) )
