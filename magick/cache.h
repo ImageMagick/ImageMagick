@@ -48,6 +48,7 @@ extern MagickExport MagickBooleanType
     const ssize_t,PixelPacket *,ExceptionInfo *),
   GetOneAuthenticPixel(Image *,const ssize_t,const ssize_t,PixelPacket *,
     ExceptionInfo *),
+  IsPixelCacheInCore(const Image *),
   PersistPixelCache(Image *,const char *,const MagickBooleanType,
     MagickOffsetType *,ExceptionInfo *),
   SyncAuthenticPixels(Image *,ExceptionInfo *);
