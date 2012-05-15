@@ -22,6 +22,7 @@
 extern "C" {
 #endif
 
+#include <MagickCore/cache.h>
 #include <MagickCore/resource_.h>
 #include <MagickCore/thread_.h>
 
@@ -29,11 +30,11 @@ extern "C" {
   Single threaded unless workload justifies the threading overhead.
 */
 #define WorkloadThreshold()  (16*GetMagickResourceLimit(ThreadResource))
-#define dynamic_number_threads(columns,rows,expression) \
+#define dynamic_number_threads(image,columns,rows,expression) \
   if (((((columns) > WorkloadThreshold()) || \
       ((rows) > WorkloadThreshold()))) && ((MagickSizeType) \
       ((columns)*(rows)) > (WorkloadThreshold()*WorkloadThreshold())) && \
-      (expression)) \
+      (IsPixelCacheInCore(image) != MagickFalse) && (expression)) \
     num_threads(GetMagickResourceLimit(ThreadResource))
 
 #if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR > 10))

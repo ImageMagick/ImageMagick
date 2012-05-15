@@ -39,6 +39,7 @@ extern MagickExport MagickBooleanType
     ExceptionInfo *),
   GetOneVirtualPixelInfo(const Image *,const VirtualPixelMethod,
     const ssize_t,const ssize_t,PixelInfo *,ExceptionInfo *),
+  IsPixelCacheInCore(const Image *),
   PersistPixelCache(Image *,const char *,const MagickBooleanType,
     MagickOffsetType *,ExceptionInfo *),
   SyncAuthenticPixels(Image *,ExceptionInfo *) magick_hot_spot;
