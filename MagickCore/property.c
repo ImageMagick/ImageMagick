@@ -2003,7 +2003,7 @@ MagickExport const char *GetImageProperty(const Image *image,
             image->properties);
           return(p);
         }
-      if (LocaleNCompare("fx:",property,3) != 0)
+      if (LocaleNCompare("fx:",property,3) != 0) /* NOT fx: !!!! */
         {
           p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
             image->properties,property);
@@ -2216,9 +2216,11 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
       ConcatenateMagickString(value,"B",MaxTextExtent);
       break;
     }
-    case 'c':  /* image comment property */
+    case 'c':  /* image comment property - empty string by default */
     {
       string=GetImageProperty(image,"comment",exception);
+      if ( string == (const char *)NULL)
+        string="";
       break;
     }
     case 'd':  /* Directory component of filename */
@@ -2261,9 +2263,11 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
             GetNumberColors(image,(FILE *) NULL,exception));
       break;
     }
-    case 'l': /* Image label  */
+    case 'l': /* Image label properity - empty string by default */
     {
       string=GetImageProperty(image,"label",exception);
+      if ( string == (const char *)NULL)
+        string="";
       break;
     }
     case 'm': /* Image format (file magick) */
@@ -2474,7 +2478,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
   if (*value != '\0')
     string=value;
   if (string != (char *)NULL) {
-    (void) SetImageArtifact(image, "get-properity", value);
+    (void) SetImageArtifact(image, "get-properity", string);
     return(GetImageArtifact(image, "get-properity"));
   }
   return((char *)NULL);
@@ -2515,9 +2519,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
     {
       if (LocaleCompare("channels",property) == 0)
         {
-          /*
-            Image channels.
-          */
+          /* FUTURE: return actual image channels */
           (void) FormatLocaleString(value,MaxTextExtent,"%s",
             CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
             image->colorspace));
@@ -2531,9 +2533,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
           ColorspaceType
             colorspace;
 
-          /*
-            Image storage class and colorspace.
-          */
+          /* FUTURE: return actual colorspace - no 'gray' stuff */
           colorspace=image->colorspace;
           if( IfMagickTrue(IsImageGray(image,exception)) )
             colorspace=GRAYColorspace;
@@ -2838,7 +2838,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
   if (*value != '\0')
     string=value;
   if (string != (char *)NULL) {
-    (void) SetImageArtifact(image, "get-properity", value);
+    (void) SetImageArtifact(image, "get-properity", string);
     return(GetImageArtifact(image, "get-properity"));
   }
   return((char *)NULL);
@@ -3398,23 +3398,28 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
   if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
+  /* Create splay-tree */
   if (image->properties == (void *) NULL)
     image->properties=NewSplayTree(CompareSplayTreeString,
       RelinquishMagickMemory,RelinquishMagickMemory);
-  if ((value == (const char *) NULL) || (*value == '\0'))
+
+  /* Delete properity if NULL --  empty string values are valid! */
+  if ((value == (const char *) NULL))
     return(DeleteImageProperty(image,property));
   status=MagickTrue;
 
+  /* Do not 'set' single letter properties - read only shorthand */
   if (strlen(property) <= 1)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
           OptionError,"SetReadOnlyProperty","'%s'",property);
       return(MagickFalse);
     }
+
   /* FUTURE: These should produce 'illegal settings'
-     + test for binary chars in name,
-     + first letter must be a alphabetic
-     + special prefix
+     + binary chars in p[roperty key
+     + single letter property keys (read only)
+     + known special prefix (read only, they don't get saved!)
   */
 
   switch (*property)

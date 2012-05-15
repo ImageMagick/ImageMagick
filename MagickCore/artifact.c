@@ -247,8 +247,9 @@ MagickExport void DestroyImageArtifacts(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetImageArtifact() gets a value associated with an image artifact.
+%  If the requested artifact is NULL return the first artifact.
 %
-%  Note, the artifact is a constant.  Do not attempt to free it.
+%  Note, returned string is a constant in the tree and should NOT be freed.
 %
 %  The format of the GetImageArtifact method is:
 %
@@ -444,10 +445,12 @@ MagickExport MagickBooleanType SetImageArtifact(Image *image,
   if (image->artifacts == (void *) NULL)
     image->artifacts=NewSplayTree(CompareSplayTreeString,
       RelinquishMagickMemory,RelinquishMagickMemory);
-  /* Delete artifact if NULL or empty */
-  if ((value == (const char *) NULL) || (*value == '\0'))
+
+  /* Delete artifact if NULL --  empty string values are valid! */
+  if (value == (const char *) NULL)
     return(DeleteImageArtifact(image,artifact));
-  /* add option to tree */
+
+  /* add artifact to splay-tree */
   status=AddValueToSplayTree((SplayTreeInfo *) image->artifacts,
     ConstantString(artifact),ConstantString(value));
   return(status);
