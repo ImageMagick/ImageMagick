@@ -1,7 +1,7 @@
 #! /bin/sh
 # Wrapper for compilers which do not understand '-c -o'.
 
-scriptversion=2012-01-04.17; # UTC
+scriptversion=2012-03-05.13; # UTC
 
 # Copyright (C) 1999, 2000, 2003, 2004, 2005, 2009, 2010, 2012 Free
 # Software Foundation, Inc.
@@ -79,6 +79,48 @@ func_file_conv ()
   esac
 }
 
+# func_cl_dashL linkdir
+# Make cl look for libraries in LINKDIR
+func_cl_dashL ()
+{
+  func_file_conv "$1"
+  if test -z "$lib_path"; then
+    lib_path=$file
+  else
+    lib_path="$lib_path;$file"
+  fi
+  linker_opts="$linker_opts -LIBPATH:$file"
+}
+
+# func_cl_dashl library
+# Do a library search-path lookup for cl
+func_cl_dashl ()
+{
+  lib=$1
+  found=no
+  save_IFS=$IFS
+  IFS=';'
+  for dir in $lib_path $LIB
+  do
+    IFS=$save_IFS
+    if $shared && test -f "$dir/$lib.dll.lib"; then
+      found=yes
+      lib=$dir/$lib.dll.lib
+      break
+    fi
+    if test -f "$dir/$lib.lib"; then
+      found=yes
+      lib=$dir/$lib.lib
+      break
+    fi
+  done
+  IFS=$save_IFS
+
+  if test "$found" != yes; then
+    lib=$lib.lib
+  fi
+}
+
 # func_cl_wrapper cl arg...
 # Adjust compile command to suit cl
 func_cl_wrapper ()
@@ -109,43 +151,34 @@ func_cl_wrapper ()
 	      ;;
 	  esac
 	  ;;
+	-I)
+	  eat=1
+	  func_file_conv "$2" mingw
+	  set x "$@" -I"$file"
+	  shift
+	  ;;
 	-I*)
 	  func_file_conv "${1#-I}" mingw
 	  set x "$@" -I"$file"
 	  shift
 	  ;;
-	-l*)
-	  lib=${1#-l}
-	  found=no
-	  save_IFS=$IFS
-	  IFS=';'
-	  for dir in $lib_path $LIB
-	  do
-	    IFS=$save_IFS
-	    if $shared && test -f "$dir/$lib.dll.lib"; then
-	      found=yes
-	      set x "$@" "$dir/$lib.dll.lib"
-	      break
-	    fi
-	    if test -f "$dir/$lib.lib"; then
-	      found=yes
-	      set x "$@" "$dir/$lib.lib"
-	      break
-	    fi
-	  done
-	  IFS=$save_IFS
-
-	  test "$found" != yes && set x "$@" "$lib.lib"
+	-l)
+	  eat=1
+	  func_cl_dashl "$2"
+	  set x "$@" "$lib"
 	  shift
 	  ;;
+	-l*)
+	  func_cl_dashl "${1#-l}"
+	  set x "$@" "$lib"
+	  shift
+	  ;;
+	-L)
+	  eat=1
+	  func_cl_dashL "$2"
+	  ;;
 	-L*)
-	  func_file_conv "${1#-L}"
-	  if test -z "$lib_path"; then
-	    lib_path=$file
-	  else
-	    lib_path="$lib_path;$file"
-	  fi
-	  linker_opts="$linker_opts -LIBPATH:$file"
+	  func_cl_dashL "${1#-L}"
 	  ;;
 	-static)
 	  shared=false

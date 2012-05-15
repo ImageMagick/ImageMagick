@@ -4,7 +4,7 @@
 #   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
 #   2011, 2012 Free Software Foundation, Inc.
 
-timestamp='2012-01-01'
+timestamp='2012-02-10'
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,9 +17,7 @@ timestamp='2012-01-01'
 # General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA
-# 02110-1301, USA.
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 # As a special exception to the GNU General Public License, if you
 # distribute this file as part of a program that contains a
@@ -863,6 +861,13 @@ EOF
     i*86:Minix:*:*)
 	echo ${UNAME_MACHINE}-pc-minix
 	exit ;;
+    aarch64:Linux:*:*)
+	echo ${UNAME_MACHINE}-unknown-linux-gnu
+	exit ;;
+    aarch64_be:Linux:*:*)
+	UNAME_MACHINE=aarch64_be
+	echo ${UNAME_MACHINE}-unknown-linux-gnu
+	exit ;;
     alpha:Linux:*:*)
 	case `sed -n '/^cpu model/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo` in
 	  EV5)   UNAME_MACHINE=alphaev5 ;;
@@ -1319,6 +1324,9 @@ EOF
 	exit ;;
     i*86:AROS:*:*)
 	echo ${UNAME_MACHINE}-pc-aros
+	exit ;;
+    x86_64:VMkernel:*:*)
+	echo ${UNAME_MACHINE}-unknown-esx
 	exit ;;
 esac
 
