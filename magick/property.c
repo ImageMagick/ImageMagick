@@ -2461,7 +2461,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
   if (*value != '\0')
     string=value;
   if (string != (char *)NULL) {
-    (void) SetImageArtifact(image, "get-properity", value);
+    (void) SetImageArtifact(image, "get-properity", string);
     return(GetImageArtifact(image, "get-properity"));
   }
   return((char *)NULL);
@@ -2825,7 +2825,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
   if (*value != '\0')
     string=value;
   if (string != (char *)NULL) {
-    (void) SetImageArtifact(image, "get-properity", value);
+    (void) SetImageArtifact(image, "get-properity", string);
     return(GetImageArtifact(image, "get-properity"));
   }
   return((char *)NULL);
