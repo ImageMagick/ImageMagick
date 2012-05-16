@@ -137,7 +137,7 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImage(image);
       return((Image *) NULL);
     }
-  image->colorspace=color.colorspace;
+  SetImageColorspace(image,pixel.colorspace,exception);
   image->matte=color.matte;
   index=0;
   SetPixelPacket(image,&color,&pixel,&index);
