@@ -2672,6 +2672,8 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
           return(MagickFalse);
         }
       color->colorspace=(ColorspaceType) type;
+      if (color->colorspace == RGBColorspace)
+        color->colorspace=sRGBColorspace;  /* as required by SVG standard */
       SetGeometryInfo(&geometry_info);
       flags=ParseGeometry(name+i+1,&geometry_info);
       scale=(MagickRealType) ScaleCharToQuantum(1);
