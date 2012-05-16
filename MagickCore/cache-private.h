@@ -28,15 +28,6 @@ extern "C" {
 #include "MagickCore/thread-private.h"
 #include "MagickCore/semaphore.h"
 
-typedef enum
-{
-  UndefinedCache,
-  MemoryCache,
-  MapCache,
-  DiskCache,
-  PingCache
-} CacheType;
-
 typedef void
   *Cache;
 

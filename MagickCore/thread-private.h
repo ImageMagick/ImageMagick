@@ -34,7 +34,8 @@ extern "C" {
   if (((((columns) > WorkloadThreshold()) || \
       ((rows) > WorkloadThreshold()))) && ((MagickSizeType) \
       ((columns)*(rows)) > (WorkloadThreshold()*WorkloadThreshold())) && \
-      (IsPixelCacheInCore(image) != MagickFalse) && (expression)) \
+      ((GetImagePixelCacheType(image) == MemoryCache) || \
+       (GetImagePixelCacheType(image) == MapCache)) && (expression)) \
     num_threads(GetMagickResourceLimit(ThreadResource))
 
 #if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR > 10))
