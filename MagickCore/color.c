@@ -2295,6 +2295,8 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           return(MagickFalse);
         }
       color->colorspace=(ColorspaceType) type;
+      if (color->colorspace == RGBColorspace)
+        color->colorspace=sRGBColorspace;  /* as required by SVG standard */
       SetGeometryInfo(&geometry_info);
       flags=ParseGeometry(name+i+1,&geometry_info);
       scale=(MagickRealType) ScaleCharToQuantum(1);
@@ -2322,6 +2324,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           QuantumRange*geometry_info.chi);
       if (LocaleCompare(colorspace,"gray") == 0)
         {
+          color->colorspace=GRAYColorspace;
           color->green=color->red;
           color->blue=color->red;
           if (((flags & SigmaValue) != 0) && (color->matte != MagickFalse))
@@ -2335,6 +2338,12 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           PixelInfo
             pixel;
 
+          if (LocaleCompare(colorspace,"HSB") == 0)
+            color->colorspace=HSBColorspace;
+          if (LocaleCompare(colorspace,"HSL") == 0)
+            color->colorspace=HSLColorspace;
+          if (LocaleCompare(colorspace,"HWB") == 0)
+            color->colorspace=HWBColorspace;
           scale=1.0/360.0;
           if ((flags & PercentValue) != 0)
             scale=1.0/100.0;
