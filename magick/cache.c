@@ -2105,6 +2105,41 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t I m a g e P i x e l C a c h e T y p e                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImagePixelCacheType() returns the pixel cache type: UndefinedCache,
+%  DiskCache, MapCache, MemoryCache, or PingCache.
+%
+%  The format of the GetImagePixelCacheType() method is:
+%
+%      const CacheType GetImagePixelCacheType(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+*/
+MagickExport const CacheType GetImagePixelCacheType(const Image *image)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(image->cache != (Cache) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  return(cache_info->type);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t O n e A u t h e n t i c P i x e l                                   %
 %                                                                             %
 %                                                                             %
@@ -3738,41 +3773,6 @@ MagickExport const PixelPacket *GetVirtualPixelsNexus(const Cache cache,
   if (cache_info->storage_class == UndefinedClass)
     return((PixelPacket *) NULL);
   return((const PixelPacket *) nexus_info->pixels);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   I s P i x e l C a c h e I n C o r e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  IsPixelCacheInCore() returns MagickTrue if the pixel cache is memory based
-%  otherwise MagickFalse.
-%
-%  The format of the IsPixelCacheInCore() method is:
-%
-%      MagickBooleanType IsPixelCacheInCore(const Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-*/
-MagickExport MagickBooleanType IsPixelCacheInCore(const Image *image)
-{
-  CacheInfo
-    *cache_info;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(image->cache != (Cache) NULL);
-  cache_info=(CacheInfo *) image->cache;
-  return(cache_info->type == DiskCache ? MagickFalse  : MagickTrue);
 }
 
 /*
