@@ -607,6 +607,9 @@
         <message name="GeometryDoesNotContainImage">
           image non incluse dans la géométrie
         </message>
+        <message name="InterpretPropertyFailure">
+          *** failure in interpret image property escapes ***
+        </message>
         <message name="InvalidArgument">
           argument invalide pour l'option
         </message>
@@ -932,6 +935,9 @@
         </message>
         <message name="GeometryDoesNotContainImage">
           image non incluse dans la géométrie
+        </message>
+        <message name="InterpretPropertyFailure">
+          *** failure in interpret image property escapes ***
         </message>
         <message name="InvalidSetting">
           invalide de réglage
