@@ -33,7 +33,7 @@ typedef enum
   PingCache
 } CacheType;
 
-extern MagickExport const CacheType
+extern MagickExport CacheType
   GetImagePixelCacheType(const Image *);
 
 extern MagickExport const Quantum
