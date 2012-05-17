@@ -122,9 +122,6 @@ static Cache
   GetImagePixelCache(Image *,const MagickBooleanType,ExceptionInfo *) 
     magick_hot_spot;
 
-static CacheType
-  GetPixelCacheType(const Image *);
-
 static const IndexPacket
   *GetVirtualIndexesFromCache(const Image *);
 
@@ -2128,7 +2125,15 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
 */
 MagickExport CacheType GetImagePixelCacheType(const Image *image)
 {
-  return(GetPixelCacheType(image));
+  CacheInfo
+    *cache_info;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(image->cache != (Cache) NULL);
+  cache_info=(CacheInfo *) image->cache;
+  assert(cache_info->signature == MagickSignature);
+  return(cache_info->type);
 }
 
 /*
@@ -2859,44 +2864,9 @@ MagickExport void GetPixelCacheTileSize(const Image *image,size_t *width,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   *width=2048UL/sizeof(PixelPacket);
-  if (GetPixelCacheType(image) == DiskCache)
+  if (GetImagePixelCacheType(image) == DiskCache)
     *width=8192UL/sizeof(PixelPacket);
   *height=(*width);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   G e t P i x e l C a c h e T y p e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetPixelCacheType() returns the pixel cache type (e.g. memory, disk, etc.).
-%
-%  The format of the GetPixelCacheType() method is:
-%
-%      CacheType GetPixelCacheType(const Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-*/
-static CacheType GetPixelCacheType(const Image *image)
-{
-  CacheInfo
-    *cache_info;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(image->cache != (Cache) NULL);
-  cache_info=(CacheInfo *) image->cache;
-  assert(cache_info->signature == MagickSignature);
-  return(cache_info->type);
 }
 
 /*
