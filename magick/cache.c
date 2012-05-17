@@ -2123,6 +2123,12 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
 %    o image: the image.
 %
 */
+
+MagickExport CacheType GetPixelCacheType(const Image *image)
+{
+  return(GetImagePixelCacheType(image));
+}
+
 MagickExport CacheType GetImagePixelCacheType(const Image *image)
 {
   CacheInfo
