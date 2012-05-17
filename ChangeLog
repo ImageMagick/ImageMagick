@@ -1,3 +1,6 @@
+2012-05-16  6.7.6-10 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.6-10, SVN revision 7952.
+
 2012-05-14  6.7.6-10 Glenn Randers-Pehrson <glennrp@image...>
   * Reset color info in grayscale PNG images to gamma=1.0, undefined
     rendering_intent and chromaticity only when reading images that don't
