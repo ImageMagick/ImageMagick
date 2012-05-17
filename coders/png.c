@@ -2885,7 +2885,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             row_offset=0;
 
           png_read_row(ping,ping_pixels+row_offset,NULL);
-          q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+          q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
           if (q == (PixelPacket *) NULL)
             break;
