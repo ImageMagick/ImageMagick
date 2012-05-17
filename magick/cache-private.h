@@ -192,9 +192,6 @@ extern MagickExport Cache
   DestroyPixelCache(Cache),
   ReferencePixelCache(Cache);
 
-extern MagickExport CacheType
-  GetPixelCacheType(const Image *);
-
 extern MagickExport ClassType
   GetPixelCacheStorageClass(const Cache);
 

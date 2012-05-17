@@ -122,6 +122,9 @@ static Cache
   GetImagePixelCache(Image *,const MagickBooleanType,ExceptionInfo *) 
     magick_hot_spot;
 
+static CacheType
+  GetPixelCacheType(const Image *);
+
 static const IndexPacket
   *GetVirtualIndexesFromCache(const Image *);
 
@@ -2116,23 +2119,16 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
 %
 %  The format of the GetImagePixelCacheType() method is:
 %
-%      const CacheType GetImagePixelCacheType(const Image *image)
+%      CacheType GetImagePixelCacheType(const Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
 */
-MagickExport const CacheType GetImagePixelCacheType(const Image *image)
+MagickExport CacheType GetImagePixelCacheType(const Image *image)
 {
-  CacheInfo
-    *cache_info;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  assert(image->cache != (Cache) NULL);
-  cache_info=(CacheInfo *) image->cache;
-  return(cache_info->type);
+  return(GetPixelCacheType(image));
 }
 
 /*
@@ -2890,7 +2886,7 @@ MagickExport void GetPixelCacheTileSize(const Image *image,size_t *width,
 %    o image: the image.
 %
 */
-MagickExport CacheType GetPixelCacheType(const Image *image)
+static CacheType GetPixelCacheType(const Image *image)
 {
   CacheInfo
     *cache_info;
