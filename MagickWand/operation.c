@@ -3636,7 +3636,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
               else {
                 /* Set a blending mask for the composition.  */
                 (void) NegateImage(mask_image,MagickFalse,_exception);
-                (void) SetImageMask(new_images,mask_image,_exception);
+                (void) SetImageMask(source_image,mask_image,_exception);
                 mask_image=DestroyImage(mask_image);
               }
             }
