@@ -1577,8 +1577,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=QuantumRange*Sa;
                 break;
               }
-              case CopyCompositeOp:
               case CopyAlphaCompositeOp:
+              {
+                pixel=QuantumRange*Sa;
+                if (composite_image->matte == MagickFalse)
+                  pixel=GetPixelIntensity(composite_image,p);
+                break;
+              }
+              case CopyCompositeOp:
               case DisplaceCompositeOp:
               case DistortCompositeOp:
               case DstAtopCompositeOp:
@@ -1757,8 +1763,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case CopyAlphaCompositeOp:
           case IntensityCompositeOp:
           {
-            if (channel == AlphaPixelChannel)
-              pixel=(MagickRealType) GetPixelAlpha(composite_image,p);
+            pixel=Dc;
             break;
           }
           case CopyBlackCompositeOp:
@@ -1957,10 +1962,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           {
             if (Sc > Dc)
               {
-                pixel=QuantumRange*gamma*(Sa*Sc-Sa*Da*Dc+Da*Dc);
+                pixel=gamma*(Sa*Sc-Sa*Da*Dc+Da*Dc);
                 break;
               }
-            pixel=QuantumRange*gamma*(Da*Dc-Da*Sa*Sc+Sa*Sc);
+            pixel=gamma*(Da*Dc-Da*Sa*Sc+Sa*Sc);
             break;
           }
           case LightenIntensityCompositeOp:
@@ -2158,7 +2163,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case PlusCompositeOp:
           {
-            pixel=QuantumRange*gamma*(Sa*Sc+Da*Dc);
+            pixel=gamma*(Sa*Sc+Da*Dc);
             break;
           }
           case SaturateCompositeOp:
