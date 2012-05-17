@@ -7466,7 +7466,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                       Set a blending mask for the composition.
                     */
                     (void) NegateImage(mask_image,MagickFalse,exception);
-                    (void) SetImageMask(image,mask_image,exception);
+                    (void) SetImageMask(composite_image,mask_image,exception);
                     mask_image=DestroyImage(mask_image);
                   }
               }

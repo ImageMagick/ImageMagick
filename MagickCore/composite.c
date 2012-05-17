@@ -641,7 +641,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           register ssize_t
             i;
 
-          if (GetPixelMask(image,p) != 0)
+          if (GetPixelMask(composite_image,p) != 0)
             {
               p+=GetPixelChannels(composite_image);
               q+=GetPixelChannels(image);
