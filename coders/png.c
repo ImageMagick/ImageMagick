@@ -2942,7 +2942,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             row_offset=0;
 
           png_read_row(ping,ping_pixels+row_offset,NULL);
-          q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
+          q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
           if (q == (Quantum *) NULL)
             break;
@@ -10498,8 +10498,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             {
               for (y=0; y < (ssize_t) image->rows; y++)
               {
-                p=GetVirtualPixels(image,0,y,image->columns,1,
-                   exception);
+                p=GetVirtualPixels(image,0,y,image->columns,1, exception);
 
                 if (p == (const Quantum *) NULL)
                   break;
