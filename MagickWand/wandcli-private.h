@@ -59,11 +59,12 @@ extern "C" {
 /* Define how options should be processed */
 typedef enum
 {
-  /* NonOption Handling */
-  ProcessNonOptionImageRead   = 0x0001,  /* A non-option is a image read
+  /* General Option Handling */
+  ProcessImplictRead          = 0x0001,  /* Non-options are image reads.
                                             If not set then skip implied read
                                             without producing an error.
                                             For use with "mogrify" handling */
+  ProcessInterpretProperities = 0x0010,  /* allow general escapes in args */
 
   /* Special Option Handling */
   ProcessExitOption           = 0x0100,  /* allow '-exit' use */
@@ -73,10 +74,10 @@ typedef enum
 
   /* Option Processing Flags */
   ProcessOneOptionOnly        = 0x4000,  /* Process one option only */
-  ProcessImpliedWrite         = 0x8000,  /* Last arg is an implied write */
+  ProcessImplictWrite         = 0x8000,  /* Last arg is an implict write */
 
   /* Flag Groups for specific Situations */
-  MagickCommandOptionFlags    = 0x8F0F,  /* Magick Command Flags */
+  MagickCommandOptionFlags    = 0x8FFF,  /* Magick Command Flags */
   ConvertCommandOptionFlags   = 0x800F,  /* Convert Command Flags */
   MagickScriptArgsFlags       = 0x000F,  /* Script CLI Process Args Flags */
 } ProcessOptionFlags;

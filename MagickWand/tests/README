@@ -1,0 +1,19 @@
+
+These file provide simple examples and testing of aspects of the
+MagickWand API.
+
+Specifically
+  + MagickAddImage() (also use by MagickReadImage() ) in various situations
+    with a single images, or a list of images.  Study of the examples
+    details exactly what the API does.
+
+  + GetScriptToken ()  doing low level testing of the tokenization (argument
+    separation) the "magick" command applies when reading command options
+    from a script, or pipeline. The Tokenization is designed specifically to
+    emulate the BASH shell. In this way you would write scripts in exactly the
+    same way you would write BASH shell command line arguments.
+
+    Tests include quoting, mixed quoting, backslash escapes, line
+    continuation, extremely long tokens, and various error conditions.
+
+

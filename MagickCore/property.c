@@ -2955,9 +2955,12 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
   if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
-  if ((embed_text == (const char *) NULL) || (*embed_text == '\0'))
+  if ((embed_text == (const char *) NULL))
     return((char *) NULL);
   p=embed_text;
+
+  if (*p == '\0')
+    return(ConstantString(""));
 
   /* handle a '@' replace string from file */
   if (*p == '@') {

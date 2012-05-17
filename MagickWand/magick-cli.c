@@ -64,7 +64,6 @@
 */
 #define MagickCommandDebug 0
 
-
 #if MagickCommandDebug >= 9
 /*
   Temporary Debugging Information
@@ -77,13 +76,13 @@ static void OutputOptions(ImageInfo *image_info)
     *option,
     *value;
 
-  (void) FormatLocaleFile(stdout,"  Global Options:\n");
+  (void) FormatLocaleFile(stderr,"  Global Options:\n");
   ResetImageOptionIterator(image_info);
   while ((option=GetNextImageOption(image_info)) != (const char *) NULL ) {
-    (void) FormatLocaleFile(stdout,"    %s: ",option);
+    (void) FormatLocaleFile(stderr,"    %s: ",option);
     value=GetImageOption(image_info,option);
     if (value != (const char *) NULL)
-      (void) FormatLocaleFile(stdout,"%s\n",value);
+      (void) FormatLocaleFile(stderr,"%s\n",value);
   }
   ResetImageOptionIterator(image_info);
 }
@@ -94,13 +93,13 @@ static void OutputArtifacts(Image *image)
     *artifact,
     *value;
 
-  (void) FormatLocaleFile(stdout,"  Image Artifacts:\n");
+  (void) FormatLocaleFile(stderr,"  Image Artifacts:\n");
   ResetImageArtifactIterator(image);
   while ((artifact=GetNextImageArtifact(image)) != (const char *) NULL ) {
-    (void) FormatLocaleFile(stdout,"    %s: ",artifact);
+    (void) FormatLocaleFile(stderr,"    %s: ",artifact);
     value=GetImageArtifact(image,artifact);
     if (value != (const char *) NULL)
-      (void) FormatLocaleFile(stdout,"%s\n",value);
+      (void) FormatLocaleFile(stderr,"%s\n",value);
   }
   ResetImageArtifactIterator(image);
 }
@@ -111,13 +110,13 @@ static void OutputProperties(Image *image,ExceptionInfo *exception)
     *property,
     *value;
 
-  (void) FormatLocaleFile(stdout,"  Image Properity:\n");
+  (void) FormatLocaleFile(stderr,"  Image Properity:\n");
   ResetImagePropertyIterator(image);
   while ((property=GetNextImageProperty(image)) != (const char *) NULL ) {
-    (void) FormatLocaleFile(stdout,"    %s: ",property);
+    (void) FormatLocaleFile(stderr,"    %s: ",property);
     value=GetImageProperty(image,property,exception);
     if (value != (const char *) NULL)
-      (void) FormatLocaleFile(stdout,"%s\n",value);
+      (void) FormatLocaleFile(stderr,"%s\n",value);
   }
   ResetImagePropertyIterator(image);
 }
@@ -216,93 +215,94 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
         break; /* error or end of options */
     }
 
-    /* save option details */
-    CloneString(&option,token_info->token);
+    do { /* use break to loop to exception handler and loop */
 
-    /* get option, its argument count, and option type */
-    cli_wand->command = GetCommandOptionInfo(option);
-    count=cli_wand->command->type;
-    option_type=(CommandOptionFlags) cli_wand->command->flags;
+      /* save option details */
+      CloneString(&option,token_info->token);
+
+      /* get option, its argument count, and option type */
+      cli_wand->command = GetCommandOptionInfo(option);
+      count=cli_wand->command->type;
+      option_type=(CommandOptionFlags) cli_wand->command->flags;
 #if 0
-    (void) FormatLocaleFile(stderr, "Script: %u,%u: \"%s\" matched \"%s\"\n",
+      (void) FormatLocaleFile(stderr, "Script: %u,%u: \"%s\" matched \"%s\"\n",
           cli_wand->line, cli_wand->line, option, cli_wand->command->mnemonic );
 #endif
 
-    /* handle a undefined option - image read? */
-    if ( option_type == UndefinedOptionFlag ||
-         (option_type & NonMagickOptionFlag) != 0 ) {
+      /* handle a undefined option - image read - always for "magick-script" */
+      if ( option_type == UndefinedOptionFlag ||
+           (option_type & NonMagickOptionFlag) != 0 ) {
 #if MagickCommandDebug >= 3
-      (void) FormatLocaleFile(stderr, "Script %u,%u Non-Option: \"%s\"\n",
-                  cli_wand->line, cli_wand->line, option);
+        (void) FormatLocaleFile(stderr, "Script %u,%u Non-Option: \"%s\"\n",
+                    cli_wand->line, cli_wand->line, option);
 #endif
-      if ( IfMagickFalse(IsCommandOption(option))) {
-        /* non-option -- treat as a image read */
-        cli_wand->command=(const OptionInfo *)NULL;
-        CLIOption(cli_wand,"-read",option);
-        goto next_token;
+        if ( IfMagickFalse(IsCommandOption(option))) {
+          /* non-option -- treat as a image read */
+          cli_wand->command=(const OptionInfo *)NULL;
+          CLIOption(cli_wand,"-read",option);
+          break; /* next option */
+        }
+        CLIWandException(OptionFatalError,"UnrecognizedOption",option);
+        break; /* next option */
       }
-      CLIWandExceptionBreak(OptionFatalError,"UnrecognizedOption",option);
-      goto next_token;
-    }
 
-    if ( count >= 1 ) {
-      if( IfMagickFalse(GetScriptToken(token_info)) )
-        CLIWandException(OptionFatalError,"MissingArgument",option);
-      CloneString(&arg1,token_info->token);
-    }
-    else
-      CloneString(&arg1,(char *)NULL);
+      if ( count >= 1 ) {
+        if( IfMagickFalse(GetScriptToken(token_info)) )
+          CLIWandException(OptionFatalError,"MissingArgument",option);
+        CloneString(&arg1,token_info->token);
+      }
+      else
+        CloneString(&arg1,(char *)NULL);
 
-    if ( count >= 2 ) {
-      if( IfMagickFalse(GetScriptToken(token_info)) )
-        CLIWandExceptionBreak(OptionFatalError,"MissingArgument",option);
-      CloneString(&arg2,token_info->token);
-    }
-    else
-      CloneString(&arg2,(char *)NULL);
+      if ( count >= 2 ) {
+        if( IfMagickFalse(GetScriptToken(token_info)) )
+          CLIWandExceptionBreak(OptionFatalError,"MissingArgument",option);
+        CloneString(&arg2,token_info->token);
+      }
+      else
+        CloneString(&arg2,(char *)NULL);
 
-
-    /*
-      Process Options
-    */
+      /*
+        Process Options
+      */
 #if MagickCommandDebug >= 3
-    (void) FormatLocaleFile(stderr,
-      "Script %u,%u Option: \"%s\"  Count: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
-          cli_wand->line,cli_wand->line,option,count,option_type,arg1,arg2);
+      (void) FormatLocaleFile(stderr,
+        "Script %u,%u Option: \"%s\"  Count: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
+            cli_wand->line,cli_wand->line,option,count,option_type,arg1,arg2);
 #endif
-    /* Hard Depreciated Options, no code to execute - error */
-    if ( (option_type & DeprecateOptionFlag) != 0 ) {
-      CLIWandException(OptionError,"DeprecatedOptionNoCode",option);
-      if ( IfMagickTrue(CLICatchException(cli_wand, MagickFalse)) )
-        break;
-      goto next_token;
-    }
-
-    /* MagickCommandGenesis() options have no place in a magick script */
-    if ( (option_type & GenesisOptionFlag) != 0 ) {
-      CLIWandExceptionBreak(OptionError,"InvalidUseOfOption",option);
-      goto next_token;
-    }
-
-    if ( (option_type & SpecialOptionFlag) != 0 ) {
-      if ( LocaleCompare(option,"-exit") == 0 ) {
-        break; /* forced end of script */
+      /* Hard Depreciated Options, no code to execute - error */
+      if ( (option_type & DeprecateOptionFlag) != 0 ) {
+        CLIWandException(OptionError,"DeprecatedOptionNoCode",option);
+        break; /* next option */
       }
-      if ( LocaleCompare(option,"-script") == 0 ) {
-        /* FUTURE: call new script from this script */
-        CLIWandExceptionBreak(OptionError,"InvalidUseOfOption",option);
-        goto next_token;
+
+      /* MagickCommandGenesis() options have no place in a magick script */
+      if ( (option_type & GenesisOptionFlag) != 0 ) {
+        CLIWandException(OptionError,"InvalidUseOfOption",option);
+        break; /* next option */
       }
-      /* FUTURE: handle special script-argument options here */
-      /* handle any other special operators now */
-      CLIWandExceptionBreak(OptionError,"InvalidUseOfOption",option);
-      goto next_token;
-    }
 
-    /* Process non-specific Option */
-    CLIOption(cli_wand, option, arg1, arg2);
+      /* handle any special 'script' options */
+      if ( (option_type & SpecialOptionFlag) != 0 ) {
+        if ( LocaleCompare(option,"-exit") == 0 ) {
+          break; /* forced end of script */
+        }
+        if ( LocaleCompare(option,"-script") == 0 ) {
+          /* FUTURE: call new script from this script - error for now */
+          CLIWandException(OptionError,"InvalidUseOfOption",option);
+          break; /* next option */
+        }
+        /* FUTURE: handle special script-argument options here */
+        /* handle any other special operators now */
+        CLIWandException(OptionError,"InvalidUseOfOption",option);
+        break; /* next option */
+      }
 
-next_token:
+      /* Process non-specific Option */
+      CLIOption(cli_wand, option, arg1, arg2);
+
+    } while (0); /* break block to next option */
+
 #if MagickCommandDebug >= 9
     OutputOptions(cli_wand->wand.image_info);
     if ( cli_wand->wand.images != (Image *)NULL ) {
@@ -310,10 +310,13 @@ next_token:
       OutputProperties(cli_wand->wand.images,cli_wand->wand.exception);
     }
 #endif
-    if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-      break;
+    if ( IfMagickTrue(CLICatchException(cli_wand, MagickFalse)) )
+      break;  /* exit loop */
   }
 
+  /*
+     Loop exit - check for some tokenization error
+  */
 #if MagickCommandDebug >= 3
   (void) FormatLocaleFile(stderr, "Script End: %d\n", token_info->status);
 #endif
@@ -428,7 +431,7 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
   cli_wand->filename="CLI";
 
   end = argc;
-  if ( (cli_wand->process_flags & ProcessImpliedWrite) != 0 )
+  if ( (cli_wand->process_flags & ProcessImplictWrite) != 0 )
     end--; /* the last arument is an implied write, do not process directly */
 
   for (i=index; i < end; i += count +1) {
@@ -436,82 +439,87 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
     if ( (cli_wand->process_flags & ProcessOneOptionOnly) != 0 && i != index )
       return(i);
 
-    option=argv[i];
-    cli_wand->line=i;  /* note the argument for this option */
+    do { /* use break to loop to exception handler and loop */
 
-    /* get option, its argument count, and option type */
-    cli_wand->command = GetCommandOptionInfo(argv[i]);
-    count=cli_wand->command->type;
-    option_type=(CommandOptionFlags) cli_wand->command->flags;
+      option=argv[i];
+      cli_wand->line=i;  /* note the argument for this option */
+
+      /* get option, its argument count, and option type */
+      cli_wand->command = GetCommandOptionInfo(argv[i]);
+      count=cli_wand->command->type;
+      option_type=(CommandOptionFlags) cli_wand->command->flags;
 #if 0
-    (void) FormatLocaleFile(stderr, "CLI %d: \"%s\" matched \"%s\"\n",
-          i, argv[i], cli_wand->command->mnemonic );
+      (void) FormatLocaleFile(stderr, "CLI %d: \"%s\" matched \"%s\"\n",
+            i, argv[i], cli_wand->command->mnemonic );
 #endif
 
-    if ( option_type == UndefinedOptionFlag ||
-         (option_type & NonMagickOptionFlag) != 0 ) {
+      if ( option_type == UndefinedOptionFlag ||
+           (option_type & NonMagickOptionFlag) != 0 ) {
 #if MagickCommandDebug >= 3
-      (void) FormatLocaleFile(stderr, "CLI %d Non-Option: \"%s\"\n", i, option);
+        (void) FormatLocaleFile(stderr, "CLI %d Non-Option: \"%s\"\n", i, option);
 #endif
-      if ( IfMagickFalse(IsCommandOption(option)) ) {
-        if ( (cli_wand->process_flags & ProcessNonOptionImageRead) != 0 ) {
-          /* non-option -- treat as a image read */
-          cli_wand->command=(const OptionInfo *)NULL;
-          CLIOption(cli_wand,"-read",option);
-          goto next_argument;
+        if ( IfMagickFalse(IsCommandOption(option)) ) {
+          if ( (cli_wand->process_flags & ProcessImplictRead) != 0 ) {
+            /* non-option -- treat as a image read */
+            cli_wand->command=(const OptionInfo *)NULL;
+            CLIOption(cli_wand,"-read",option);
+            break; /* next option */
+          }
         }
+        CLIWandException(OptionFatalError,"UnrecognizedOption",option);
+        break; /* next option */
       }
-      CLIWandException(OptionFatalError,"UnrecognizedOption",option);
-      goto next_argument;
-    }
 
-    if ( ((option_type & SpecialOptionFlag) != 0 ) &&
-         ((cli_wand->process_flags & ProcessScriptOption) != 0) &&
-         (LocaleCompare(option,"-script") == 0) ) {
-      /* Call Script from CLI, with a filename as a zeroth argument.
-         NOTE: -script may need to use the 'implict write filename' argument
-         so it must be handled specially to prevent a 'missing argument' error.
-      */
-      if ( (i+count) >= argc )
+      if ( ((option_type & SpecialOptionFlag) != 0 ) &&
+           ((cli_wand->process_flags & ProcessScriptOption) != 0) &&
+           (LocaleCompare(option,"-script") == 0) ) {
+        /* Call Script from CLI, with a filename as a zeroth argument.
+           NOTE: -script may need to use the 'implict write filename' argument
+           so it must be handled specially to prevent a 'missing argument' error.
+        */
+        if ( (i+count) >= argc )
+          CLIWandException(OptionFatalError,"MissingArgument",option);
+        ProcessScriptOptions(cli_wand,argc,argv,i+1);
+        return(argc);  /* Script does not return to CLI -- Yet */
+                       /* FUTURE: when it does, their may be no write arg! */
+      }
+
+      if ((i+count) >= end ) {
         CLIWandException(OptionFatalError,"MissingArgument",option);
-      ProcessScriptOptions(cli_wand,argc,argv,i+1);
-      return(argc);  /* Script does not return to CLI -- Yet */
-                     /* FUTURE: when it does, their may be no write arg! */
-    }
+        if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+          return(end);
+        break; /* next option - not that their is any! */
+      }
 
-    if ((i+count) >= end ) {
-      CLIWandException(OptionFatalError,"MissingArgument",option);
-      if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-        return(end);
-      goto next_argument; /* no more arguments unable to proceed */
-    }
+      arg1 = ( count >= 1 ) ? argv[i+1] : (char *)NULL;
+      arg2 = ( count >= 2 ) ? argv[i+2] : (char *)NULL;
 
-    arg1 = ( count >= 1 ) ? argv[i+1] : (char *)NULL;
-    arg2 = ( count >= 2 ) ? argv[i+2] : (char *)NULL;
-
-    /*
-      Process Known Options
-    */
+      /*
+        Process Known Options
+      */
 #if MagickCommandDebug >= 3
-    (void) FormatLocaleFile(stderr,
-      "CLI %u Option: \"%s\"  Count: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
-          i,option,count,option_type,arg1,arg2);
+      (void) FormatLocaleFile(stderr,
+        "CLI %u Option: \"%s\"  Count: %d  Flags: %04x  Args: \"%s\" \"%s\"\n",
+            i,option,count,option_type,arg1,arg2);
 #endif
 
-    if ( (option_type & GenesisOptionFlag) != 0 )
-      goto next_argument; /* ignored this from command line args */
+      /* ignore 'genesis options' in command line args */
+      if ( (option_type & GenesisOptionFlag) != 0 )
+        break; /* next option */
 
-    if ( (option_type & SpecialOptionFlag) != 0 ) {
-      if ( (cli_wand->process_flags & ProcessExitOption) != 0
-           && LocaleCompare(option,"-exit") == 0 )
-        return(i+count);
-      goto next_argument;
-    }
+      /* Handle any special options for CLI (-script handled above) */
+      if ( (option_type & SpecialOptionFlag) != 0 ) {
+        if ( (cli_wand->process_flags & ProcessExitOption) != 0
+             && LocaleCompare(option,"-exit") == 0 )
+          return(i+count);
+        break; /* next option */
+      }
 
-    /* Process a Normal Option */
-    CLIOption(cli_wand, option, arg1, arg2);
+      /* Process standard image option */
+      CLIOption(cli_wand, option, arg1, arg2);
 
-next_argument:
+    } while (0); /* break block to next option */
+
 #if MagickCommandDebug >= 9
     OutputOptions(cli_wand->wand.image_info);
     if ( cli_wand->wand.images != (Image *)NULL ) {
@@ -524,7 +532,7 @@ next_argument:
   }
   assert(i==end);
 
-  if ( (cli_wand->process_flags & ProcessImpliedWrite) == 0 )
+  if ( (cli_wand->process_flags & ProcessImplictWrite) == 0 )
     return(end); /* no implied write -- just return to caller */
 
   assert(end==argc-1); /* end should not include last argument */
@@ -535,19 +543,19 @@ next_argument:
   option=argv[i];
   cli_wand->line=i;
 
+  /* check that stacks are empty - or cause exception */
+  if (cli_wand->image_list_stack != (Stack *)NULL)
+    CLIWandException(OptionError,"UnbalancedParenthesis", "(end of cli)");
+  else if (cli_wand->image_info_stack != (Stack *)NULL)
+    CLIWandException(OptionError,"UnbalancedBraces", "(end of cli)");
+  if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
+    return(argc);
+
 #if MagickCommandDebug >= 3
   (void) FormatLocaleFile(stderr, "CLI %d Write File: \"%s\"\n", i, option );
 #endif
 
-  /* check that stacks are empty */
-  if (cli_wand->image_list_stack != (Stack *)NULL)
-    CLIWandException(OptionError,"UnbalancedParenthesis", "(eof)");
-  else if (cli_wand->image_info_stack != (Stack *)NULL)
-    CLIWandException(OptionError,"UnbalancedBraces", "(eof)");
-  if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
-    return(argc);
-
-  /* This is a valid 'do no write' option - no images needed */
+  /* Valid 'do no write' replacement option (instead of "null:") */
   if (LocaleCompare(option,"-exit") == 0 )
     return(argc);  /* just exit, no image write */
 

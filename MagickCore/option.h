@@ -125,7 +125,7 @@ typedef enum
   DrawInfoOptionFlag        = 0x0002,  /* Setting stored in DrawInfo */
   QuantizeInfoOptionFlag    = 0x0004,  /* Setting stored in QuantizeInfo */
   GlobalOptionFlag          = 0x0008,  /* Global Setting or Control */
-  SettingOptionFlags        = 0x000F,  /* mask for all setting options */
+  SettingOptionFlags        = 0x000F,  /* mask any setting option */
 
   NoImageOperatorFlag       = 0x0010,  /* Images not required operator */
   SimpleOperatorFlag        = 0x0020,  /* Simple Image processing operator */
@@ -134,6 +134,9 @@ typedef enum
 
   SpecialOptionFlag         = 0x0100,  /* Operator with Special Requirements */
                                        /* EG: for specific CLI commands */
+
+  AlwaysInterpretArgsFlag   = 0x0400,  /* Always Interpret escapes in Args */
+  NeverInterpretArgsFlag    = 0x0800,  /* Never Interpret escapes in Args */
 
   NonMagickOptionFlag       = 0x1000,  /* Option not used by Magick Command */
   FireOptionFlag            = 0x2000,  /* Convert operation seq firing point */
