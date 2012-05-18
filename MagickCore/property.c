@@ -3039,11 +3039,18 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
     }
     p++; /* advance beyond the percent */
 
+    if ( *p == '\0' ) {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+          OptionWarning,"UnknownImageProperty","\"%%\"");
+      p--;
+      continue;
+    }
+
     /*
       Doubled Percent
     */
     if ( *p == '%' ) {
-        *q++=(*p);
+        *q++='%';
         continue;
       }
 
