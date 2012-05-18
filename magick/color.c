@@ -2628,7 +2628,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
           } while (isxdigit((int) ((unsigned char) *name)) != MagickFalse);
           depth=4*(n/4);
         }
-      color->colorspace=sRGBColorspace;
+      color->colorspace=UndefinedColorspace;
       color->matte=MagickFalse;
       range=GetQuantumRange(depth);
       color->red=(MagickRealType) ScaleAnyToQuantum(pixel.red,range);
