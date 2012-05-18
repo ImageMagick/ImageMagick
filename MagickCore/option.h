@@ -136,12 +136,14 @@ typedef enum
                                        /* EG: for specific CLI commands */
 
   AlwaysInterpretArgsFlag   = 0x0400,  /* Always Interpret escapes in Args */
+                                       /* CF: "convert" compatibility mode */
   NeverInterpretArgsFlag    = 0x0800,  /* Never Interpret escapes in Args */
+                                       /* Typical because it's a filename */
 
   NonMagickOptionFlag       = 0x1000,  /* Option not used by Magick Command */
   FireOptionFlag            = 0x2000,  /* Convert operation seq firing point */
   DeprecateOptionFlag       = 0x4000,  /* Deprecate option (no code) */
-  ReplacedOptionFlag        = 0x8000   /* Replaced Option (but still works) */
+  ReplacedOptionFlag        = 0x8800   /* Replaced Option (but still works) */
 
 } CommandOptionFlags;
 

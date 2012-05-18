@@ -420,6 +420,38 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
 #define ArgBooleanString  (IfSetOption?"true":"false")
 #define ArgOption(def)    (IfSetOption?arg1:(const char *)(def))
 
+#if 0
+Setting are not directly involved with images, so can not
+interpret Percent Escapes in Arguments, At least not yet */
+
+#define _process_flags    (cli_wand->process_flags)
+#define _option_type      ((CommandOptionFlags) cli_wand->command->flags)
+  /* Interpret Percent Escapes in Arguments - using first image */
+  arg1 = arg1n,
+  arg2 = arg2n;
+  if ( (((_process_flags & ProcessInterpretProperities) != 0 )
+        || ((_option_type & AlwaysInterpretArgsFlag) != 0)
+       )  && ((_option_type & NeverInterpretArgsFlag) == 0) ) {
+    /* Interpret Percent escapes in argument 1 */
+    if (arg1n != (char *) NULL) {
+      arg1=InterpretImageProperties(_image_info,_image,arg1n,_exception);
+      if (arg1 == (char *) NULL) {
+        CLIWandException(OptionWarning,"InterpretPropertyFailure",option);
+        arg1=arg1n;  /* use the given argument as is */
+      }
+    }
+    if (arg2n != (char *) NULL) {
+      arg2=InterpretImageProperties(_image_info,_image,arg2n,_exception);
+      if (arg2 == (char *) NULL) {
+        CLIWandException(OptionWarning,"InterpretPropertyFailure",option);
+        arg2=arg2n;  /* use the given argument as is */
+      }
+    }
+  }
+#undef _process_flags
+#undef _option_type
+#endif
+
   switch (*(option+1))
   {
     case 'a':
@@ -1376,6 +1408,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("texture",option+1) == 0)
         {
+          /* Note: arguments do not have percent escapes expanded */
           /* FUTURE: move _image_info string to option splay-tree
              Other than "montage" what uses "texture" ????
           */
@@ -1384,6 +1417,7 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
         }
       if (LocaleCompare("tile",option+1) == 0)
         {
+          /* Note: arguments do not have percent escapes expanded */
           _draw_info->fill_pattern=IfSetOption
                                  ?GetImageCache(_image_info,arg1,_exception)
                                  :DestroyImage(_draw_info->fill_pattern);
@@ -1536,6 +1570,14 @@ WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
   }
 
+#if 0
+  /* clean up percent escape interpreted strings */
+  if (arg1 != arg1n )
+    arg1=DestroyString((char *)arg1);
+  if (arg2 != arg2n )
+    arg2=DestroyString((char *)arg2);
+#endif
+
 #undef _image_info
 #undef _exception
 #undef _draw_info
@@ -1662,6 +1704,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
       }
     }
   }
+#undef _process_flags
 #undef _option_type
 
 #if 0
@@ -1888,6 +1931,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("cdl",option+1) == 0)
         {
+          /* Note: arguments do not have percent escapes expanded */
           char
             *color_correction_collection;
 
@@ -1937,6 +1981,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("clip-mask",option+1) == 0)
         {
+          /* Note: arguments do not have percent escapes expanded */
           CacheView
             *mask_view;
 
@@ -1953,7 +1998,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             y;
 
           if (IfPlusOp) {
-            /* "+clip-mask" Remove the write mask */
+            /* use "+clip-mask" Remove the write mask for -clip-path */
             (void) SetImageMask(_image,(Image *) NULL,_exception);
             break;
           }
@@ -1993,6 +2038,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
       if (LocaleCompare("clip-path",option+1) == 0)
         {
           (void) ClipImagePath(_image,arg1,normal_op,_exception);
+          /* Note: Use "+clip-mask" remove the write mask added */
           break;
         }
       if (LocaleCompare("colorize",option+1) == 0)
@@ -2112,6 +2158,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("decipher",option+1) == 0)
         {
+          /* Note: arguments do not have percent escapes expanded */
           StringInfo
             *passkey;
 
@@ -2231,6 +2278,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("encipher",option+1) == 0)
         {
+          /* Note: arguments do not have percent escapes expanded */
           StringInfo
             *passkey;
 
@@ -2614,6 +2662,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("mask",option+1) == 0)
         {
+          /* Note: arguments do not have percent escapes expanded */
           Image
             *mask;
 
@@ -2837,6 +2886,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("profile",option+1) == 0)
         {
+          /* Note: arguments do not have percent escapes expanded */
           const char
             *name;
 
@@ -2930,6 +2980,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("remap",option+1) == 0)
         {
+          /* Note: arguments do not have percent escapes expanded */
           Image
             *remap_image;
 
@@ -3060,6 +3111,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("set",option+1) == 0)
         {
+          /* Note: arguments do not have percent escapes expanded */
           char
             *value;
 
@@ -3549,6 +3601,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
       }
     }
   }
+#undef _process_flags
 #undef _option_type
 
 #if 0
@@ -4265,12 +4318,12 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 %  CLINoImageOperator() Applies operations that may not actually need images
 %  in an image list.
 %
-%  The classic operators of this type is -read, which actually creates images
-%  even when no images are present.  Or image stack operators, which can be
-%  applied (push or pop) to an empty image list.
+%  The classic operators of this type is "-read", which actually creates
+%  images even when no images are present.  Or image stack operators, which
+%  can be applied (push or pop) to an empty image list.
 %
-%  Note: unlike other Operators, these may involve other special 'option'
-%  characters other than '-' or '+', namely parenthesis and braces.
+%  Note that these operators may involve other special 'option' prefix
+%  characters other  than '-' or '+', namely parenthesis and braces.
 %
 %  The format of the CLINoImageOption method is:
 %
@@ -4290,6 +4343,12 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 WandExport void CLINoImageOperator(MagickCLI *cli_wand,
   const char *option, const char *arg1, const char *magick_unused(arg2))
 {
+#if 0
+  const char    /* For percent escape interpretImageProperties() */
+    *arg1,
+    *arg2;
+#endif
+
 #define _image_info     (cli_wand->wand.image_info)
 #define _images         (cli_wand->wand.images)
 #define _exception      (cli_wand->wand.exception)
@@ -4302,345 +4361,369 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
   if (IfMagickTrue(cli_wand->wand.debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",cli_wand->wand.name);
 
-  /*
-    No-op options  (ignore these)
-  */
-  if (LocaleCompare("noop",option+1) == 0)   /* no argument */
-    return;
-  if (LocaleCompare("sans",option+1) == 0)   /* one argument */
-    return;
-  if (LocaleCompare("sans0",option+1) == 0)  /* no argument */
-    return;
-  if (LocaleCompare("sans2",option+1) == 0)  /* two arguments */
-    return;
-  /*
-    Image Reading
-  */
-  if ( ( LocaleCompare("read",option+1) == 0 ) ||
-     ( LocaleCompare("--",option) == 0 ) ) {
 #if 0
-    /* Directly read 'arg1' without filename expansion handling (see below).
-    */
-# if !USE_WAND_METHODS
-    Image    *new_images;
+  Not able to be used as their may not be any images!
+  Also the only option that may have arguments that can be percent escaped is
+  "-clone".
 
-    if (IfMagickTrue(_image_info->ping))
-      new_images=PingImages(_image_info,arg1,_exception);
-    else
-      new_images=ReadImages(_image_info,arg1,_exception);
-    AppendImageToList(&_images, new_images);
-# else
-    /* read images using MagickWand method - no ping */
-    /* This is not working! - it locks up in a CPU loop! */
-    MagickSetLastIterator(&cli_wand->wand);
-    MagickReadImage(&cli_wand->wand,arg1);
-    MagickSetFirstIterator(&cli_wand->wand);
-# endif
-#else
-    /* Do Filename Expansion for 'arg1' then read all images.
-     *
-     * Expansion handles '@', '~', '*', and '?' meta-characters while ignoring
-     * (but attaching to generated argument list) any [...] read modifiers
-     * that may be present.
-     *
-     * For example: correctly expand '*.gif[20x20]' into a list such as
-     * 'abc.gif[20x20',  'foobar.gif[20x20]',  'xyzzy.gif[20x20]'
-     *
-     * NOTE: In IMv6 this was done globally across all images. This
-     * meant you could include IM options in '@filename' lists, but you
-     * could not include comments.   Doing it only for image read makes
-     * it far more secure.
-     */
-    int      argc;
-    char     **argv;
-    ssize_t  i;
-
-    argc = 1;
-    argv = (char **) &arg1;
-
-    /* Expand 'glob' expressions in the given filename.
-       Expansion handles any 'coder:' prefix, or read modifiers attached
-       to the filename, including them in the resulting expanded list.
-    */
-    if (IfMagickFalse(  ExpandFilenames(&argc,&argv)  ))
-      CLIWandExceptArgReturn(ResourceLimitError,"MemoryAllocationFailed",
-          option,GetExceptionMessage(errno));
-
-    /* loop over expanded filename list, and read then all in */
-    for (i=0; i<argc; i++) {
-      Image *
-        new_images;
-#if 0
-      fprintf(stderr, "DEBUG: Reading image: \"%s\"\n", argv[i]);
+#define _process_flags  (cli_wand->process_flags)
+#define _option_type    ((CommandOptionFlags) cli_wand->command->flags)
+  /* Interpret Percent Escapes in Arguments - using first image */
+  arg1 = arg1n;
+  arg2 = arg2n;
+  if ( (((_process_flags & ProcessInterpretProperities) != 0 )
+        || ((_option_type & AlwaysInterpretArgsFlag) != 0)
+       )  && ((_option_type & NeverInterpretArgsFlag) == 0) ) {
+    /* Interpret Percent escapes in argument 1 */
+    if (arg1n != (char *) NULL) {
+      arg1=InterpretImageProperties(_image_info,_images,arg1n,_exception);
+      if (arg1 == (char *) NULL) {
+        CLIWandException(OptionWarning,"InterpretPropertyFailure",option);
+        arg1=arg1n;  /* use the given argument as is */
+      }
+    }
+    if (arg2n != (char *) NULL) {
+      arg2=InterpretImageProperties(_image_info,_images,arg2n,_exception);
+      if (arg2 == (char *) NULL) {
+        CLIWandException(OptionWarning,"InterpretPropertyFailure",option);
+        arg2=arg2n;  /* use the given argument as is */
+      }
+    }
+  }
+#undef _process_flags
+#undef _option_type
 #endif
-      if (IfMagickTrue(_image_info->ping))
-        new_images=PingImages(_image_info,argv[i],_exception);
+
+  do {  /* break to exit code */
+    /*
+      No-op options  (ignore these)
+    */
+    if (LocaleCompare("noop",option+1) == 0)   /* no argument */
+      break;
+    if (LocaleCompare("sans",option+1) == 0)   /* one argument */
+      break;
+    if (LocaleCompare("sans0",option+1) == 0)  /* no argument */
+      break;
+    if (LocaleCompare("sans2",option+1) == 0)  /* two arguments */
+      break;
+    /*
+      Image Reading
+    */
+    if ( ( LocaleCompare("read",option+1) == 0 ) ||
+      ( LocaleCompare("--",option) == 0 ) ) {
+      /* Do Glob filename Expansion for 'arg1' then read all images.
+      *
+      * Expansion handles '@', '~', '*', and '?' meta-characters while ignoring
+      * (but attaching to the filenames in the generated argument list) any
+      * [...] read modifiers that may be present.
+      *
+      * For example: It will expand '*.gif[20x20]' into a list such as
+      * 'abc.gif[20x20]',  'foobar.gif[20x20]',  'xyzzy.gif[20x20]'
+      *
+      * NOTE: In IMv6 this was done globally across all images. This
+      * meant you could include IM options in '@filename' lists, but you
+      * could not include comments.   Doing it only for image read makes
+      * it far more secure.
+      *
+      * Note: arguments do not have percent escapes expanded for security
+      * reasons.
+      */
+      int      argc;
+      char     **argv;
+      ssize_t  i;
+
+      argc = 1;
+      argv = (char **) &arg1;
+
+      /* Expand 'glob' expressions in the given filename.
+        Expansion handles any 'coder:' prefix, or read modifiers attached
+        to the filename, including them in the resulting expanded list.
+      */
+      if (IfMagickFalse(  ExpandFilenames(&argc,&argv)  ))
+        CLIWandExceptArgBreak(ResourceLimitError,"MemoryAllocationFailed",
+            option,GetExceptionMessage(errno));
+
+      /* loop over expanded filename list, and read then all in */
+      for (i=0; i<argc; i++) {
+        Image *
+          new_images;
+        if (IfMagickTrue(_image_info->ping))
+          new_images=PingImages(_image_info,argv[i],_exception);
+        else
+          new_images=ReadImages(_image_info,argv[i],_exception);
+        AppendImageToList(&_images, new_images);
+      }
+      argv=DestroyStringList(argv);  /* Destroy the Expanded Filename list */
+      break;
+    }
+    /*
+      Image Writing
+      Note: Writing a empty image list is valid in specific cases
+    */
+    if (LocaleCompare("write",option+1) == 0) {
+      /* Note: arguments do not have percent escapes expanded */
+      char
+        key[MaxTextExtent];
+
+      Image
+        *write_images;
+
+      ImageInfo
+        *write_info;
+
+      /* Need images, unless a "null:" output coder is used */
+      if ( cli_wand->wand.images == (Image *) NULL ) {
+        if ( LocaleCompare(arg1,"null:") == 0 )
+          break;
+        CLIWandExceptArgBreak(OptionError,"NoImagesForWrite",option,arg1);
+      }
+
+      (void) FormatLocaleString(key,MaxTextExtent,"cache:%s",arg1);
+      (void) DeleteImageRegistry(key);
+      write_images=_images;
+      if (IfPlusOp)
+        write_images=CloneImageList(_images,_exception);
+      write_info=CloneImageInfo(_image_info);
+      (void) WriteImages(write_info,write_images,arg1,_exception);
+      write_info=DestroyImageInfo(write_info);
+      if (IfPlusOp)
+        write_images=DestroyImageList(write_images);
+      break;
+    }
+    /*
+      Parenthesis and Brace operations
+    */
+    if (LocaleCompare("(",option) == 0) {
+      /* stack 'push' images */
+      Stack
+        *node;
+
+      size_t
+        size;
+
+      size=0;
+      node=cli_wand->image_list_stack;
+      for ( ; node != (Stack *)NULL; node=node->next)
+        size++;
+      if ( size >= MAX_STACK_DEPTH )
+        CLIWandExceptionBreak(OptionError,"ParenthesisNestedTooDeeply",option);
+      node=(Stack *) AcquireMagickMemory(sizeof(*node));
+      if (node == (Stack *) NULL)
+        CLIWandExceptionBreak(ResourceLimitFatalError,
+            "MemoryAllocationFailed",option);
+      node->data = (void *)cli_wand->wand.images;
+      cli_wand->wand.images = NewImageList();
+      node->next = cli_wand->image_list_stack;
+      cli_wand->image_list_stack = node;
+
+      /* handle respect-parenthesis */
+      if (IfMagickTrue(IsStringTrue(GetImageOption(cli_wand->wand.image_info,
+                    "respect-parenthesis"))))
+        option="{"; /* fall-thru so as to push image settings too */
       else
-        new_images=ReadImages(_image_info,argv[i],_exception);
-      AppendImageToList(&_images, new_images);
+        break;
+      /* fall thru to next if */
     }
-    argv=DestroyStringList(argv);  /* Destroy the Expanded Filename list */
-#endif
-    return;
-  }
-  /*
-    Image Writing
-    Note: Writing a empty image list is valid in specific cases
-  */
-  if (LocaleCompare("write",option+1) == 0) {
-    char
-      key[MaxTextExtent];
+    if (LocaleCompare("{",option) == 0) {
+      /* stack 'push' of image_info settings */
+      Stack
+        *node;
 
-    Image
-      *write_images;
+      size_t
+        size;
 
-    ImageInfo
-      *write_info;
+      size=0;
+      node=cli_wand->image_info_stack;
+      for ( ; node != (Stack *)NULL; node=node->next)
+        size++;
+      if ( size >= MAX_STACK_DEPTH )
+        CLIWandExceptionBreak(OptionError,"CurlyBracesNestedTooDeeply",option);
+      node=(Stack *) AcquireMagickMemory(sizeof(*node));
+      if (node == (Stack *) NULL)
+        CLIWandExceptionBreak(ResourceLimitFatalError,
+            "MemoryAllocationFailed",option);
 
-    /* Need images, unless a "null:" output coder is used */
-    if ( cli_wand->wand.images == (Image *) NULL ) {
-      if ( LocaleCompare(arg1,"null:") == 0 )
-        return;
-      CLIWandExceptArgReturn(OptionError,"NoImagesForWrite",option,arg1);
+      node->data = (void *)cli_wand->wand.image_info;
+      cli_wand->wand.image_info = CloneImageInfo(cli_wand->wand.image_info);
+      if (cli_wand->wand.image_info == (ImageInfo *)NULL) {
+        CLIWandException(ResourceLimitFatalError,"MemoryAllocationFailed",
+            option);
+        cli_wand->wand.image_info = (ImageInfo *)node->data;
+        node = (Stack *)RelinquishMagickMemory(node);
+        break;
+      }
+
+      node->next = cli_wand->image_info_stack;
+      cli_wand->image_info_stack = node;
+
+      break;
     }
+    if (LocaleCompare(")",option) == 0) {
+      /* pop images from stack */
+      Stack
+        *node;
 
-    (void) FormatLocaleString(key,MaxTextExtent,"cache:%s",arg1);
-    (void) DeleteImageRegistry(key);
-    write_images=_images;
-    if (IfPlusOp)
-      write_images=CloneImageList(_images,_exception);
-    write_info=CloneImageInfo(_image_info);
-    (void) WriteImages(write_info,write_images,arg1,_exception);
-    write_info=DestroyImageInfo(write_info);
-    if (IfPlusOp)
-      write_images=DestroyImageList(write_images);
-    return;
-  }
-  /*
-    Parenthesis and Brace operations
-  */
-  if (LocaleCompare("(",option) == 0) {
-    /* stack 'push' images */
-    Stack
-      *node;
+      node = (Stack *)cli_wand->image_list_stack;
+      if ( node == (Stack *)NULL)
+        CLIWandExceptionBreak(OptionError,"UnbalancedParenthesis",option);
+      cli_wand->image_list_stack = node->next;
 
-    size_t
-      size;
+      AppendImageToList((Image **)&node->data,cli_wand->wand.images);
+      cli_wand->wand.images= (Image *)node->data;
+      node = (Stack *)RelinquishMagickMemory(node);
 
-    size=0;
-    node=cli_wand->image_list_stack;
-    for ( ; node != (Stack *)NULL; node=node->next)
-      size++;
-    if ( size >= MAX_STACK_DEPTH )
-      CLIWandExceptionReturn(OptionError,"ParenthesisNestedTooDeeply",option);
-    node=(Stack *) AcquireMagickMemory(sizeof(*node));
-    if (node == (Stack *) NULL)
-      CLIWandExceptionReturn(ResourceLimitFatalError,
-           "MemoryAllocationFailed",option);
-    node->data = (void *)cli_wand->wand.images;
-    cli_wand->wand.images = NewImageList();
-    node->next = cli_wand->image_list_stack;
-    cli_wand->image_list_stack = node;
+      /* handle respect-parenthesis - of the previous 'pushed' settings */
+      node = cli_wand->image_info_stack;
+      if ( node != (Stack *)NULL)
+        {
+          if (IfMagickTrue(IsStringTrue(GetImageOption(
+                cli_wand->wand.image_info,"respect-parenthesis"))))
+            option="}"; /* fall-thru so as to pop image settings too */
+          else
+            break;
+        }
+      else
+        break;
+      /* fall thru to next if */
+    }
+    if (LocaleCompare("}",option) == 0) {
+      /* pop image_info settings from stack */
+      Stack
+        *node;
 
-    /* handle respect-parenthesis */
-    if (IfMagickTrue(IsStringTrue(GetImageOption(cli_wand->wand.image_info,
-                  "respect-parenthesis"))))
-      option="{"; /* fall-thru so as to push image settings too */
-    else
-      return;
-  }
-  if (LocaleCompare("{",option) == 0) {
-    /* stack 'push' of image_info settings */
-    Stack
-      *node;
+      node = (Stack *)cli_wand->image_info_stack;
+      if ( node == (Stack *)NULL)
+        CLIWandExceptionBreak(OptionError,"UnbalancedCurlyBraces",option);
+      cli_wand->image_info_stack = node->next;
 
-    size_t
-      size;
-
-    size=0;
-    node=cli_wand->image_info_stack;
-    for ( ; node != (Stack *)NULL; node=node->next)
-      size++;
-    if ( size >= MAX_STACK_DEPTH )
-      CLIWandExceptionReturn(OptionError,"CurlyBracesNestedTooDeeply",option);
-    node=(Stack *) AcquireMagickMemory(sizeof(*node));
-    if (node == (Stack *) NULL)
-      CLIWandExceptionReturn(ResourceLimitFatalError,
-           "MemoryAllocationFailed",option);
-
-    node->data = (void *)cli_wand->wand.image_info;
-    cli_wand->wand.image_info = CloneImageInfo(cli_wand->wand.image_info);
-    if (cli_wand->wand.image_info == (ImageInfo *)NULL) {
-      CLIWandException(ResourceLimitFatalError,"MemoryAllocationFailed",
-           option);
+      (void) DestroyImageInfo(cli_wand->wand.image_info);
       cli_wand->wand.image_info = (ImageInfo *)node->data;
       node = (Stack *)RelinquishMagickMemory(node);
-      return;
+
+      GetDrawInfo(cli_wand->wand.image_info, cli_wand->draw_info);
+      cli_wand->quantize_info=DestroyQuantizeInfo(cli_wand->quantize_info);
+      cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
+
+      break;
+    }
+    if (LocaleCompare("clone",option+1) == 0) {
+        Image
+          *new_images;
+
+        if (*option == '+')
+          arg1="-1";
+        if (IfMagickFalse(IsSceneGeometry(arg1,MagickFalse)))
+          CLIWandExceptionBreak(OptionError,"InvalidArgument",option);
+        if ( cli_wand->image_list_stack == (Stack *)NULL)
+          CLIWandExceptionBreak(OptionError,"UnableToCloneImage",option);
+        new_images = (Image *)cli_wand->image_list_stack->data;
+        if (new_images == (Image *) NULL)
+          CLIWandExceptionBreak(OptionError,"UnableToCloneImage",option);
+        new_images=CloneImages(new_images,arg1,_exception);
+        if (new_images == (Image *) NULL)
+          CLIWandExceptionBreak(OptionError,"NoSuchImage",option);
+        AppendImageToList(&_images,new_images);
+        break;
+      }
+    /*
+       Informational Operations
+
+       Note that these do not require either cli-wand or images!
+    */
+    if (LocaleCompare("version",option+1) == 0) {
+      (void) FormatLocaleFile(stdout,"Version: %s\n",
+        GetMagickVersion((size_t *) NULL));
+      (void) FormatLocaleFile(stdout,"Copyright: %s\n",
+        GetMagickCopyright());
+      (void) FormatLocaleFile(stdout,"Features: %s\n\n",
+        GetMagickFeatures());
+      break;
+    }
+    if (LocaleCompare("list",option+1) == 0) {
+      /*
+         FUTURE: This 'switch' should really be built into the MagickCore
+      */
+      ssize_t
+        list;
+
+      list=ParseCommandOption(MagickListOptions,MagickFalse,arg1);
+      if ( list < 0 ) {
+        CLIWandExceptionArg(OptionError,"UnrecognizedListType",option,arg1);
+        break;
+      }
+      switch (list)
+      {
+        case MagickCoderOptions:
+        {
+          (void) ListCoderInfo((FILE *) NULL,_exception);
+          break;
+        }
+        case MagickColorOptions:
+        {
+          (void) ListColorInfo((FILE *) NULL,_exception);
+          break;
+        }
+        case MagickConfigureOptions:
+        {
+          (void) ListConfigureInfo((FILE *) NULL,_exception);
+          break;
+        }
+        case MagickDelegateOptions:
+        {
+          (void) ListDelegateInfo((FILE *) NULL,_exception);
+          break;
+        }
+        case MagickFontOptions:
+        {
+          (void) ListTypeInfo((FILE *) NULL,_exception);
+          break;
+        }
+        case MagickFormatOptions:
+          (void) ListMagickInfo((FILE *) NULL,_exception);
+          break;
+        case MagickLocaleOptions:
+          (void) ListLocaleInfo((FILE *) NULL,_exception);
+          break;
+        case MagickLogOptions:
+          (void) ListLogInfo((FILE *) NULL,_exception);
+          break;
+        case MagickMagicOptions:
+          (void) ListMagicInfo((FILE *) NULL,_exception);
+          break;
+        case MagickMimeOptions:
+          (void) ListMimeInfo((FILE *) NULL,_exception);
+          break;
+        case MagickModuleOptions:
+          (void) ListModuleInfo((FILE *) NULL,_exception);
+          break;
+        case MagickPolicyOptions:
+          (void) ListPolicyInfo((FILE *) NULL,_exception);
+          break;
+        case MagickResourceOptions:
+          (void) ListMagickResourceInfo((FILE *) NULL,_exception);
+          break;
+        case MagickThresholdOptions:
+          (void) ListThresholdMaps((FILE *) NULL,_exception);
+          break;
+        default:
+          (void) ListCommandOptions((FILE *) NULL,(CommandOption) list,
+            _exception);
+          break;
+      }
+      break;
     }
 
-    node->next = cli_wand->image_info_stack;
-    cli_wand->image_info_stack = node;
+    CLIWandException(OptionError,"UnrecognizedOption",option);
 
-    return;
-  }
-  if (LocaleCompare(")",option) == 0) {
-    /* pop images from stack */
-    Stack
-      *node;
-
-    node = (Stack *)cli_wand->image_list_stack;
-    if ( node == (Stack *)NULL)
-      CLIWandExceptionReturn(OptionError,"UnbalancedParenthesis",option);
-    cli_wand->image_list_stack = node->next;
-
-    AppendImageToList((Image **)&node->data,cli_wand->wand.images);
-    cli_wand->wand.images= (Image *)node->data;
-    node = (Stack *)RelinquishMagickMemory(node);
-
-    /* handle respect-parenthesis - of the previous 'pushed' settings */
-    node = cli_wand->image_info_stack;
-    if ( node != (Stack *)NULL)
-      {
-        if (IfMagickTrue(IsStringTrue(GetImageOption(
-               cli_wand->wand.image_info,"respect-parenthesis"))))
-          option="}"; /* fall-thru so as to pop image settings too */
-        else
-          return;
-      }
-    else
-      return;
-  }
-  if (LocaleCompare("}",option) == 0) {
-    /* pop image_info settings from stack */
-    Stack
-      *node;
-
-    node = (Stack *)cli_wand->image_info_stack;
-    if ( node == (Stack *)NULL)
-      CLIWandExceptionReturn(OptionError,"UnbalancedCurlyBraces",option);
-    cli_wand->image_info_stack = node->next;
-
-    (void) DestroyImageInfo(cli_wand->wand.image_info);
-    cli_wand->wand.image_info = (ImageInfo *)node->data;
-    node = (Stack *)RelinquishMagickMemory(node);
-
-    GetDrawInfo(cli_wand->wand.image_info, cli_wand->draw_info);
-    cli_wand->quantize_info=DestroyQuantizeInfo(cli_wand->quantize_info);
-    cli_wand->quantize_info=AcquireQuantizeInfo(cli_wand->wand.image_info);
-
-    return;
-  }
-  if (LocaleCompare("clone",option+1) == 0) {
-      Image
-        *new_images;
-
-      if (*option == '+')
-        arg1="-1";
-      if (IfMagickFalse(IsSceneGeometry(arg1,MagickFalse)))
-        CLIWandExceptionReturn(OptionError,"InvalidArgument",option);
-      if ( cli_wand->image_list_stack == (Stack *)NULL)
-        CLIWandExceptionReturn(OptionError,"UnableToCloneImage",option);
-      new_images = (Image *)cli_wand->image_list_stack->data;
-      if (new_images == (Image *) NULL)
-        CLIWandExceptionReturn(OptionError,"UnableToCloneImage",option);
-      new_images=CloneImages(new_images,arg1,_exception);
-      if (new_images == (Image *) NULL)
-        CLIWandExceptionReturn(OptionError,"NoSuchImage",option);
-      AppendImageToList(&_images,new_images);
-      return;
-    }
-  /*
-    Informational Operations
-  */
-  if (LocaleCompare("version",option+1) == 0) {
-    (void) FormatLocaleFile(stdout,"Version: %s\n",
-      GetMagickVersion((size_t *) NULL));
-    (void) FormatLocaleFile(stdout,"Copyright: %s\n",
-      GetMagickCopyright());
-    (void) FormatLocaleFile(stdout,"Features: %s\n\n",
-      GetMagickFeatures());
-    return;
-  }
-  if (LocaleCompare("list",option+1) == 0) {
-    /* FUTURE: This should really be built into the MagickCore
-       It does not actually require a cli-wand or and images!
-     */
-    ssize_t
-      list;
-
-    list=ParseCommandOption(MagickListOptions,MagickFalse,arg1);
-    if ( list < 0 ) {
-      CLIWandExceptionArg(OptionError,"UnrecognizedListType",option,arg1);
-      return;
-    }
-    switch (list)
-    {
-      case MagickCoderOptions:
-      {
-        (void) ListCoderInfo((FILE *) NULL,_exception);
-        break;
-      }
-      case MagickColorOptions:
-      {
-        (void) ListColorInfo((FILE *) NULL,_exception);
-        break;
-      }
-      case MagickConfigureOptions:
-      {
-        (void) ListConfigureInfo((FILE *) NULL,_exception);
-        break;
-      }
-      case MagickDelegateOptions:
-      {
-        (void) ListDelegateInfo((FILE *) NULL,_exception);
-        break;
-      }
-      case MagickFontOptions:
-      {
-        (void) ListTypeInfo((FILE *) NULL,_exception);
-        break;
-      }
-      case MagickFormatOptions:
-        (void) ListMagickInfo((FILE *) NULL,_exception);
-        break;
-      case MagickLocaleOptions:
-        (void) ListLocaleInfo((FILE *) NULL,_exception);
-        break;
-      case MagickLogOptions:
-        (void) ListLogInfo((FILE *) NULL,_exception);
-        break;
-      case MagickMagicOptions:
-        (void) ListMagicInfo((FILE *) NULL,_exception);
-        break;
-      case MagickMimeOptions:
-        (void) ListMimeInfo((FILE *) NULL,_exception);
-        break;
-      case MagickModuleOptions:
-        (void) ListModuleInfo((FILE *) NULL,_exception);
-        break;
-      case MagickPolicyOptions:
-        (void) ListPolicyInfo((FILE *) NULL,_exception);
-        break;
-      case MagickResourceOptions:
-        (void) ListMagickResourceInfo((FILE *) NULL,_exception);
-        break;
-      case MagickThresholdOptions:
-        (void) ListThresholdMaps((FILE *) NULL,_exception);
-        break;
-      default:
-        (void) ListCommandOptions((FILE *) NULL,(CommandOption) list,
-          _exception);
-        break;
-    }
-    return;
-  }
+  } while (0);  /* break to exit code. */
 
 #if 0
-  // Other 'special' options this should handle
-  //    "region"  "reset"  "arg"
-  if ( ( process_flags & ProcessUnknownOptionError ) != 0 )
+  /* clean up percent escape interpreted strings */
+  if (arg1 != arg1n )
+    arg1=DestroyString((char *)arg1);
+  if (arg2 != arg2n )
+    arg2=DestroyString((char *)arg2);
 #endif
-    CLIWandException(OptionError,"UnrecognizedOption",option);
 
 #undef _image_info
 #undef _images
