@@ -1,5 +1,11 @@
 2012-05-17  6.7.7-0 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.7-0, SVN revision 7969.
+  * New version 6.7.7-0, SVN revision 7973.
+
+2012-05-17  6.7.7-0 Cristy  <quetzlzacatenango@image...>
+  * Group4-compressed TIFF / PDF image formats stopped working (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=21039).
+  * Auto convert images in the grayscale colorspace to sRGB (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21031).
 
 2012-05-16  6.7.6-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-10, SVN revision 7952.
