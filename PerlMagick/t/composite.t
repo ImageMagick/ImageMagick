@@ -146,7 +146,7 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
   'input.miff', q//, q/, gravity=>'Center', compose=>'Plus'/,
-  'reference/composite/Plus.miff', 0.0, 0.0);
+  'reference/composite/Plus.miff', 0.03, 0.7);
 
 #
 # Subtract
