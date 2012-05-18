@@ -285,7 +285,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
       /* handle any special 'script' options */
       if ( (option_type & SpecialOptionFlag) != 0 ) {
         if ( LocaleCompare(option,"-exit") == 0 ) {
-          break; /* forced end of script */
+          goto loop_exit; /* break out of loop - return from script */
         }
         if ( LocaleCompare(option,"-script") == 0 ) {
           /* FUTURE: call new script from this script - error for now */
@@ -317,6 +317,7 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
   /*
      Loop exit - check for some tokenization error
   */
+loop_exit:
 #if MagickCommandDebug >= 3
   (void) FormatLocaleFile(stderr, "Script End: %d\n", token_info->status);
 #endif
