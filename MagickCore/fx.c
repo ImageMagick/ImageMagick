@@ -5283,6 +5283,9 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
       tint_image=DestroyImage(tint_image);
       return((Image *) NULL);
     }
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      (IsPixelInfoGray(tint) == MagickFalse))
+    (void) SetImageColorspace(tint_image,sRGBColorspace,exception);
   if (blend == (const char *) NULL)
     return(tint_image);
   /*
