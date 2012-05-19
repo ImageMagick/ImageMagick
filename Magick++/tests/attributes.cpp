@@ -350,7 +350,7 @@ int main( int /*argc*/, char ** argv)
       // Test default setting
       double x, y;
       image.chromaBluePrimary( &x, &y );
-      if ( x != 0.1500f || y != 0.0600f )
+      if ( x != 0.0f || y != 0.0f )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
@@ -376,7 +376,7 @@ int main( int /*argc*/, char ** argv)
       // Test default setting
       double x, y;
       image.chromaGreenPrimary( &x, &y );
-      if ( x != 0.3000f || y != 0.6000f )
+      if ( x != 0.0f || y != 0.0f )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
@@ -401,7 +401,7 @@ int main( int /*argc*/, char ** argv)
       // Test default setting
       double x, y;
       image.chromaRedPrimary( &x, &y );
-      if ( x != 0.6400f || y != 0.3300f )
+      if ( x != 0.0f || y != 0.0f )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
@@ -426,7 +426,7 @@ int main( int /*argc*/, char ** argv)
       // Test default setting
       double x, y;
       image.chromaWhitePoint( &x, &y );
-      if ( x != 0.3127f || y != 0.3290f )
+      if ( x != 0.0f || y != 0.0f )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
@@ -773,11 +773,11 @@ int main( int /*argc*/, char ** argv)
     //
     // gamma
     //
-    if ( image.gamma() != 1.0000f/2.2000f )
+    if ( image.gamma() != 1.0f)
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", gamma correction is not zero as expected" << endl;
+             << ", gamma correction is not unity as expected" << endl;
       }
 
     //
@@ -1212,11 +1212,11 @@ int main( int /*argc*/, char ** argv)
     //
     // renderingIntent
     //
-    if ( image.renderingIntent() != PerceptualIntent )
+    if ( image.renderingIntent() != UndefinedIntent )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", renderingIntent default is not PerceptualIntent as expected"
+             << ", renderingIntent default is not UndefinedIntent as expected"
              << endl;
       }
 
