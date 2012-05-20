@@ -1292,6 +1292,9 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
       value=GetImageProperty(image,property);
       if (value != (const char *) NULL)
         {
+          size_t
+            length;
+
           length=strlen(value);
           for (i=0; i < (ssize_t) length; i++)
             if (isspace((int) ((unsigned char) value[i])) != 0)
