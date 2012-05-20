@@ -1079,17 +1079,25 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             char
               *comments;
 
+            size_t
+              length;
+
             /*
               Read comment extension.
             */
             comments=AcquireString((char *) NULL);
-            for ( ; ; )
+            for (length=0; ; length+=count)
             {
               count=(ssize_t) ReadBlobBlock(image,header);
               if (count == 0)
                 break;
               header[count]='\0';
-              (void) ConcatenateString(&comments,(const char *) header);
+              comments=(char *) ResizeQuantumMemory(comments,length+count,
+                sizeof(*comments));
+              if (comments == (char *) NULL)
+                ThrowReaderException(ResourceLimitError,
+                  "MemoryAllocationFailed");
+              (void) CopyMagickMemory(comments+length,header,(size_t) count);
             }
             (void) SetImageProperty(image,"comment",comments,exception);
             comments=DestroyString(comments);
@@ -1097,8 +1105,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           case 0xff:
           {
-            /* Read GIF application extension */
-
             MagickBooleanType
               loop;
 
@@ -1267,12 +1273,12 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=global_colormap;
         for (i=0; i < (ssize_t) image->colors; i++)
         {
-          image->colormap[i].red=ScaleCharToQuantum(*p++);
-          image->colormap[i].green=ScaleCharToQuantum(*p++);
-          image->colormap[i].blue=ScaleCharToQuantum(*p++);
+          image->colormap[i].red=(double) ScaleCharToQuantum(*p++);
+          image->colormap[i].green=(double) ScaleCharToQuantum(*p++);
+          image->colormap[i].blue=(double) ScaleCharToQuantum(*p++);
           if (i == opacity)
             {
-              image->colormap[i].alpha=(Quantum) TransparentAlpha;
+              image->colormap[i].alpha=(double) TransparentAlpha;
               image->transparent_color=image->colormap[opacity];
             }
         }
@@ -1307,11 +1313,11 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=colormap;
         for (i=0; i < (ssize_t) image->colors; i++)
         {
-          image->colormap[i].red=ScaleCharToQuantum(*p++);
-          image->colormap[i].green=ScaleCharToQuantum(*p++);
-          image->colormap[i].blue=ScaleCharToQuantum(*p++);
+          image->colormap[i].red=(double) ScaleCharToQuantum(*p++);
+          image->colormap[i].green=(double) ScaleCharToQuantum(*p++);
+          image->colormap[i].blue=(double) ScaleCharToQuantum(*p++);
           if (i == opacity)
-            image->colormap[i].alpha=(Quantum) TransparentAlpha;
+            image->colormap[i].alpha=(double) TransparentAlpha;
         }
         colormap=(unsigned char *) RelinquishMagickMemory(colormap);
       }
@@ -1616,9 +1622,9 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
     q=colormap;
     for (i=0; i < (ssize_t) image->colors; i++)
     {
-      *q++=ScaleQuantumToChar(image->colormap[i].red);
-      *q++=ScaleQuantumToChar(image->colormap[i].green);
-      *q++=ScaleQuantumToChar(image->colormap[i].blue);
+      *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].red));
+      *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].green));
+      *q++=ScaleQuantumToChar(ClampToQuantum(image->colormap[i].blue));
     }
     for ( ; i < (ssize_t) (one << bits_per_pixel); i++)
     {
@@ -1668,29 +1674,38 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         if ((LocaleCompare(write_info->magick,"GIF87") != 0) &&
             (GetImageProperty(image,"comment",exception) != (const char *) NULL))
           {
-            const char
-              *value;
-
-            register const char
-              *p;
+            char
+              *comments;
 
             size_t
+              length;
+
+            ssize_t
               count;
 
+            unsigned char
+              header[MaxTextExtent];
+
             /*
-              Write Comment extension.
+              Read comment extension.
             */
-            (void) WriteBlobByte(image,(unsigned char) 0x21);
-            (void) WriteBlobByte(image,(unsigned char) 0xfe);
-            value=GetImageProperty(image,"comment",exception);
-            for (p=value; strlen(p) != 0; )
+            comments=AcquireString((char *) NULL);
+            for (length=0; ; length+=count)
             {
-              count=MagickMin(strlen(p),255);
-              (void) WriteBlobByte(image,(unsigned char) count);
-              for (i=0; i < (ssize_t) count; i++)
-                (void) WriteBlobByte(image,(unsigned char) *p++);
+              count=(ssize_t) ReadBlobBlock(image,header);
+              if (count == 0)
+                break;
+              header[count]='\0';
+              comments=(char *) ResizeQuantumMemory(comments,length+count+1,
+                sizeof(*comments));
+              if (comments == (char *) NULL)
+                ThrowBinaryException(ResourceLimitError,
+                  "MemoryAllocationFailed",image->filename);
+              (void) CopyMagickMemory(comments+length,header,(size_t) count);
             }
-            (void) WriteBlobByte(image,(unsigned char) 0x00);
+            (void) SetImageProperty(image,"comment",comments,exception);
+            comments=DestroyString(comments);
+            break;
           }
         if ((GetPreviousImageInList(image) == (Image *) NULL) &&
             (GetNextImageInList(image) != (Image *) NULL) &&
