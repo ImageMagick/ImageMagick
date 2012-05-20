@@ -625,7 +625,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               }
             *p='\0';
             if (*options == '{')
-              (void) CopyMagickString(options,options+1,MaxTextExtent);
+              (void) strcpy(options,options+1);
             /*
               Assign a value to the specified keyword.
             */
