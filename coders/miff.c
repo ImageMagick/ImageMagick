@@ -2196,19 +2196,19 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       value=GetImageProperty(image,property,exception);
       if (value != (const char *) NULL)
         {
-          for (i=0; i < (ssize_t) strlen(value); i++)
+          length=strlen(value);
+          for (i=0; i < (ssize_t) length; i++)
             if (isspace((int) ((unsigned char) value[i])) != 0)
               break;
-          if (i == (ssize_t) strlen(value))
-            (void) WriteBlob(image,strlen(value),(const unsigned char *) value);
+          if (i == (ssize_t) length)
+            (void) WriteBlob(image,length,(const unsigned char *) value);
           else
             {
               (void) WriteBlobByte(image,'{');
               if (strchr(value,'}') == (char *) NULL)
-                (void) WriteBlob(image,strlen(value),(const unsigned char *)
-                  value);
+                (void) WriteBlob(image,length,(const unsigned char *) value);
               else
-                for (i=0; i < (ssize_t) strlen(value); i++)
+                for (i=0; i < (ssize_t) length; i++)
                 {
                   if (value[i] == (int) '}')
                     (void) WriteBlobByte(image,'\\');
