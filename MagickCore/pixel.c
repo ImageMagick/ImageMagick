@@ -364,6 +364,9 @@ static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
   register unsigned char
     *restrict q;
 
+  size_t
+    length;
+
   ssize_t
     y;
 
@@ -489,6 +492,7 @@ static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
       }
       return;
     }
+  length=strlen(map);
   for (y=0; y < (ssize_t) roi->height; y++)
   {
     p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -499,7 +503,7 @@ static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) strlen(map); i++)
+      for (i=0; i < (ssize_t) length; i++)
       {
         *q=0;
         switch (quantum_map[i])
@@ -565,6 +569,9 @@ static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
 
   register ssize_t
     x;
+
+  size_t
+    length;
 
   ssize_t
     y;
@@ -691,6 +698,7 @@ static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
       }
       return;
     }
+  length=strlen(map);
   for (y=0; y < (ssize_t) roi->height; y++)
   {
     p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -701,7 +709,7 @@ static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) strlen(map); i++)
+      for (i=0; i < (ssize_t) length; i++)
       {
         *q=0;
         switch (quantum_map[i])
@@ -768,6 +776,9 @@ static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
 
   register ssize_t
     x;
+
+  size_t
+    length;
 
   ssize_t
     y;
@@ -894,6 +905,7 @@ static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
       }
       return;
     }
+  length=strlen(map);
   for (y=0; y < (ssize_t) roi->height; y++)
   {
     p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -904,7 +916,7 @@ static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) strlen(map); i++)
+      for (i=0; i < (ssize_t) length; i++)
       {
         *q=0;
         switch (quantum_map[i])
@@ -970,6 +982,9 @@ static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
 
   register unsigned int
     *restrict q;
+
+  size_t
+    length;
 
   ssize_t
     y;
@@ -1096,6 +1111,7 @@ static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
       }
       return;
     }
+  length=strlen(map);
   for (y=0; y < (ssize_t) roi->height; y++)
   {
     p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -1106,7 +1122,7 @@ static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) strlen(map); i++)
+      for (i=0; i < (ssize_t) length; i++)
       {
         *q=0;
         switch (quantum_map[i])
@@ -1172,6 +1188,9 @@ static void ExportLongLongPixel(const Image *image,const RectangleInfo *roi,
 
   register MagickSizeType
     *restrict q;
+
+  size_t
+    length;
 
   ssize_t
     y;
@@ -1298,6 +1317,7 @@ static void ExportLongLongPixel(const Image *image,const RectangleInfo *roi,
       }
       return;
     }
+  length=strlen(map);
   for (y=0; y < (ssize_t) roi->height; y++)
   {
     p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -1308,7 +1328,7 @@ static void ExportLongLongPixel(const Image *image,const RectangleInfo *roi,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) strlen(map); i++)
+      for (i=0; i < (ssize_t) length; i++)
       {
         *q=0;
         switch (quantum_map[i])
@@ -1374,6 +1394,9 @@ static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
 
   register ssize_t
     x;
+
+  size_t
+    length;
 
   ssize_t
     y;
@@ -1500,6 +1523,7 @@ static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
       }
       return;
     }
+  length=strlen(map);
   for (y=0; y < (ssize_t) roi->height; y++)
   {
     p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -1510,7 +1534,7 @@ static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) strlen(map); i++)
+      for (i=0; i < (ssize_t) length; i++)
       {
         *q=(Quantum) 0;
         switch (quantum_map[i])
@@ -1577,11 +1601,14 @@ static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
   register ssize_t
     x;
 
-  ssize_t
-    y;
-
   register unsigned short
     *restrict q;
+
+  size_t
+    length;
+
+  ssize_t
+    y;
 
   q=(unsigned short *) pixels;
   if (LocaleCompare(map,"BGR") == 0)
@@ -1705,6 +1732,7 @@ static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
       }
       return;
     }
+  length=strlen(map);
   for (y=0; y < (ssize_t) roi->height; y++)
   {
     p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -1715,7 +1743,7 @@ static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) strlen(map); i++)
+      for (i=0; i < (ssize_t) length; i++)
       {
         *q=0;
         switch (quantum_map[i])
@@ -1782,19 +1810,22 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
   register ssize_t
     i;
 
+  size_t
+    length;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  quantum_map=(QuantumType *) AcquireQuantumMemory(strlen(map),
-    sizeof(*quantum_map));
+  length=strlen(map);
+  quantum_map=(QuantumType *) AcquireQuantumMemory(length,sizeof(*quantum_map));
   if (quantum_map == (QuantumType *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
       return(MagickFalse);
     }
-  for (i=0; i < (ssize_t) strlen(map); i++)
+  for (i=0; i < (ssize_t) length; i++)
   {
     switch (map[i])
     {
@@ -2061,6 +2092,9 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
   register ssize_t
     x;
 
+  size_t
+    length;
+
   ssize_t
     y;
 
@@ -2240,6 +2274,7 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
       }
       return;
     }
+  length=strlen(map);
   for (y=0; y < (ssize_t) roi->height; y++)
   {
     q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -2250,7 +2285,7 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) strlen(map); i++)
+      for (i=0; i < (ssize_t) length; i++)
       {
         switch (quantum_map[i])
         {
@@ -2316,6 +2351,9 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
 
   register ssize_t
     x;
+
+  size_t
+    length;
 
   ssize_t
     y;
@@ -2497,6 +2535,7 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
       }
       return;
     }
+   length=strlen(map);
   for (y=0; y < (ssize_t) roi->height; y++)
   {
     q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -2507,7 +2546,7 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) strlen(map); i++)
+      for (i=0; i < (ssize_t) length; i++)
       {
         switch (quantum_map[i])
         {
@@ -2580,6 +2619,9 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
 
   register ssize_t
     x;
+
+  size_t
+    length;
 
   ssize_t
     y;
@@ -2761,6 +2803,7 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
       }
       return;
     }
+  length=strlen(map);
   for (y=0; y < (ssize_t) roi->height; y++)
   {
     q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -2771,7 +2814,7 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) strlen(map); i++)
+      for (i=0; i < (ssize_t) length; i++)
       {
         switch (quantum_map[i])
         {
@@ -2844,6 +2887,9 @@ static void ImportLongPixel(Image *image,const RectangleInfo *roi,
 
   register ssize_t
     x;
+
+  size_t
+    length;
 
   ssize_t
     y;
@@ -2984,6 +3030,7 @@ static void ImportLongPixel(Image *image,const RectangleInfo *roi,
       }
       return;
     }
+  length=strlen(map);
   for (y=0; y < (ssize_t) roi->height; y++)
   {
     q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -2994,7 +3041,7 @@ static void ImportLongPixel(Image *image,const RectangleInfo *roi,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) strlen(map); i++)
+      for (i=0; i < (ssize_t) length; i++)
       {
         switch (quantum_map[i])
         {
@@ -3060,6 +3107,9 @@ static void ImportLongLongPixel(Image *image,const RectangleInfo *roi,
 
   register ssize_t
     x;
+
+  size_t
+    length;
 
   ssize_t
     y;
@@ -3200,6 +3250,7 @@ static void ImportLongLongPixel(Image *image,const RectangleInfo *roi,
       }
       return;
     }
+  length=strlen(map);
   for (y=0; y < (ssize_t) roi->height; y++)
   {
     q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -3210,7 +3261,7 @@ static void ImportLongLongPixel(Image *image,const RectangleInfo *roi,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) strlen(map); i++)
+      for (i=0; i < (ssize_t) length; i++)
       {
         switch (quantum_map[i])
         {
@@ -3276,6 +3327,9 @@ static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
 
   register ssize_t
     x;
+
+  size_t
+    length;
 
   ssize_t
     y;
@@ -3416,6 +3470,7 @@ static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
       }
       return;
     }
+  length=strlen(map);
   for (y=0; y < (ssize_t) roi->height; y++)
   {
     q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -3426,7 +3481,7 @@ static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) strlen(map); i++)
+      for (i=0; i < (ssize_t) length; i++)
       {
         switch (quantum_map[i])
         {
@@ -3492,6 +3547,9 @@ static void ImportShortPixel(Image *image,const RectangleInfo *roi,
 
   register ssize_t
     x;
+
+  size_t
+    length;
 
   ssize_t
     y;
@@ -3632,6 +3690,7 @@ static void ImportShortPixel(Image *image,const RectangleInfo *roi,
       }
       return;
     }
+  length=strlen(map);
   for (y=0; y < (ssize_t) roi->height; y++)
   {
     q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -3642,7 +3701,7 @@ static void ImportShortPixel(Image *image,const RectangleInfo *roi,
       register ssize_t
         i;
 
-      for (i=0; i < (ssize_t) strlen(map); i++)
+      for (i=0; i < (ssize_t) length; i++)
       {
         switch (quantum_map[i])
         {
@@ -3709,6 +3768,9 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
   register ssize_t
     i;
 
+  size_t
+    length;
+
   /*
     Allocate image structure.
   */
@@ -3716,12 +3778,12 @@ MagickExport MagickBooleanType ImportImagePixels(Image *image,const ssize_t x,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  quantum_map=(QuantumType *) AcquireQuantumMemory(strlen(map),
-    sizeof(*quantum_map));
+  length=strlen(map);
+  quantum_map=(QuantumType *) AcquireQuantumMemory(length,sizeof(*quantum_map));
   if (quantum_map == (QuantumType *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-  for (i=0; i < (ssize_t) strlen(map); i++)
+  for (i=0; i < (ssize_t) length; i++)
   {
     switch (map[i])
     {
