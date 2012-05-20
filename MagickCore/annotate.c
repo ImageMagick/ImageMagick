@@ -1659,6 +1659,9 @@ static MagickBooleanType RenderPostscript(Image *image,
   register ssize_t
     i;
 
+  size_t
+    length;
+
   ssize_t
     y;
 
@@ -1695,7 +1698,8 @@ static MagickBooleanType RenderPostscript(Image *image,
     (fabs(draw_info->affine.ry) < MagickEpsilon) ? MagickTrue : MagickFalse;
   extent.x=0.0;
   extent.y=0.0;
-  for (i=0; i <= (ssize_t) (strlen(draw_info->text)+2); i++)
+  length=strlen(draw_info->text);
+  for (i=0; i <= (ssize_t) (length+2); i++)
   {
     point.x=fabs(draw_info->affine.sx*i*draw_info->pointsize+
       draw_info->affine.ry*2.0*draw_info->pointsize);
