@@ -1033,8 +1033,16 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         */
         status=SystemCommand(delegate_info->spawn,image_info->verbose,command,
           exception) != 0 ? MagickTrue : MagickFalse;
-        if (delegate_info->spawn != MagickFalse)
-          (void) sleep(2);
+        /* If spawn, wait for input file to 'disappear', or maximum 5 secs */
+        if (delegate_info->spawn != MagickFalse) {
+#if 1
+            ssize_t count=50;  /* 50 x 0.1 sec sleeps maximum */
+            while( count > 0 && access_utf8(image->filename,F_OK) == 0 )
+              (void) usleep(100000);  /* sleep 0.1 seconds */
+#else
+            (void) sleep(2);
+#endif
+          }
         command=DestroyString(command);
       }
     if (LocaleCompare(decode,"SCAN") != 0)
