@@ -58,11 +58,19 @@
 
   Set option delegate:bimodal=true to process bimodal delegates otherwise they
   are ignored.
+
+  If stealth="True" the delegate is not listed in user requested
+  "-list delegate" listings. These are typically special internal delegates.
+
+  If spawn="True" ImageMagick will not way for the delegate to finish,
+  nor will it read any output image.  It will only wait for either the input
+  file to be removed (See "ephemeral:" coder) indicating that the input file
+  has been read, or a maximum time limit of 2 seconds.
 -->
 <delegatemap>
   <delegate decode="autotrace" stealth="True" command="&quot;convert&quot; &quot;%i&quot; &quot;pnm:%u&quot;\n&quot;autotrace&quot; -input-format pnm -output-format svg -output-file &quot;%o&quot; &quot;%u&quot;"/>
   <delegate decode="blender" command="&quot;blender&quot; -b &quot;%i&quot; -F PNG -o &quot;%o&quot;&quot;\n&quot;convert&quot; -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
-  <delegate decode="browse" stealth="True" spawn="True" command="&quot;xdg-open&quot; http://www.imagemagick.org/"/>
+  <delegate decode="browse" stealth="True" spawn="True" command="&quot;xdg-open&quot; http://www.imagemagick.org/; rm &quot;%i&quot;"/>
   <delegate decode="cdr" command="&quot;uniconvertor&quot; &quot;%i&quot; &quot;%o.svg&quot;; mv &quot;%o.svg&quot; &quot;%o&quot;"/>
   <delegate decode="cgm" thread-support="False" command="&quot;ralcgm&quot; -d ps -oC &lt; &quot;%i&quot; &gt; &quot;%o&quot; 2&gt; &quot;%Z&quot;"/>
   <delegate decode="dvi" command="&quot;dvips&quot; -q -o &quot;%o&quot; &quot;%i&quot;"/>
