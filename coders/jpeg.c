@@ -1036,14 +1036,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       (image_info->colorspace == Rec601YCbCrColorspace) ||
       (image_info->colorspace == Rec709YCbCrColorspace))
     jpeg_info.out_color_space=JCS_YCbCr;
-  if (IsITUFaxImage(image) != MagickFalse)
-    {
-      SetImageColorspace(image,LabColorspace);
-      jpeg_info.out_color_space=JCS_YCbCr;
-    }
-  else
-    if (jpeg_info.out_color_space == JCS_CMYK)
-      SetImageColorspace(image,CMYKColorspace);
   /*
     Set image resolution.
   */
@@ -1197,6 +1189,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       break;
     }
   }
+  if (IsITUFaxImage(image) != MagickFalse)
+    {
+      SetImageColorspace(image,LabColorspace);
+      jpeg_info.out_color_space=JCS_YCbCr;
+    }
   if ((image_info->colors != 0) && (image_info->colors <= 256))
     if (AcquireImageColormap(image,image_info->colors) == MagickFalse)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
