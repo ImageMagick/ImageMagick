@@ -1035,8 +1035,7 @@ static double SiPrefixToDoubleInterval(const char *string,const double interval)
   return(value);
 }
 
-static inline double StringToDouble(const char *restrict string,
-  char **restrict sentinal)
+static inline double StringToDouble(const char *string,char **sentinal)
 {
   return(InterpretLocaleValue(string,sentinal));
 }
