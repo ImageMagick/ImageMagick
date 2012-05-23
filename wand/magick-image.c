@@ -10043,6 +10043,44 @@ WandExport MagickBooleanType MagickSetImageDispose(MagickWand *wand,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k S e t I m a g e E n d i a n                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickSetImageEndian() sets the image endian method.
+%
+%  The format of the MagickSetImageEndian method is:
+%
+%      MagickBooleanType MagickSetImageEndian(MagickWand *wand,
+%        const EndianType endian)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+%    o endian: the image endian type.
+%
+*/
+WandExport MagickBooleanType MagickSetImageEndian(MagickWand *wand,
+  const EndianType endian)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,"ContainsNoImages",wand->name);
+  wand->images->endian=endian;
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k S e t I m a g e E x t e n t                                   %
 %                                                                             %
 %                                                                             %
