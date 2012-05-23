@@ -270,8 +270,9 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
+  if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+
   delegate_info=GetDelegateInfo(decode,encode,exception);
   if (delegate_info == (const DelegateInfo *) NULL)
     {
@@ -325,6 +326,7 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 MagickExport const char *GetDelegateCommands(const DelegateInfo *delegate_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+
   assert(delegate_info != (DelegateInfo *) NULL);
   assert(delegate_info->signature == MagickSignature);
   return(delegate_info->commands);
@@ -367,11 +369,11 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
 
   assert(exception != (ExceptionInfo *) NULL);
   if ((delegate_list == (LinkedListInfo *) NULL) ||
-      (instantiate_delegate == MagickFalse))
-    if (InitializeDelegateList(exception) == MagickFalse)
+      (IfMagickFalse(instantiate_delegate)))
+    if( IfMagickFalse(InitializeDelegateList(exception)) )
       return((const DelegateInfo *) NULL);
   if ((delegate_list == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(delegate_list) != MagickFalse))
+      (IfMagickTrue(IsLinkedListEmpty(delegate_list))))
     return((const DelegateInfo *) NULL);
   if ((LocaleCompare(decode,"*") == 0) && (LocaleCompare(encode,"*") == 0))
     return((const DelegateInfo *) GetValueFromLinkedList(delegate_list,0));
@@ -488,9 +490,10 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
   /*
     Allocate delegate list.
   */
+  assert(number_delegates != (size_t *) NULL);
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
-  assert(number_delegates != (size_t *) NULL);
+
   *number_delegates=0;
   p=GetDelegateInfo("*","*",exception);
   if (p == (const DelegateInfo *) NULL)
@@ -507,9 +510,9 @@ MagickExport const DelegateInfo **GetDelegateInfoList(const char *pattern,
   p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
   for (i=0; p != (const DelegateInfo *) NULL; )
   {
-    if ((p->stealth == MagickFalse) &&
-        ((GlobExpression(p->decode,pattern,MagickFalse) != MagickFalse) ||
-         (GlobExpression(p->encode,pattern,MagickFalse) != MagickFalse)))
+    if( IfMagickFalse(p->stealth) &&
+        ( IfMagickTrue(GlobExpression(p->decode,pattern,MagickFalse)) ||
+          IfMagickTrue(GlobExpression(p->encode,pattern,MagickFalse))) )
       delegates[i++]=p;
     p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
   }
@@ -586,6 +589,7 @@ MagickExport char **GetDelegateList(const char *pattern,
   */
   assert(pattern != (char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",pattern);
+
   assert(number_delegates != (size_t *) NULL);
   *number_delegates=0;
   p=GetDelegateInfo("*","*",exception);
@@ -600,11 +604,11 @@ MagickExport char **GetDelegateList(const char *pattern,
   p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
   for (i=0; p != (const DelegateInfo *) NULL; )
   {
-    if ((p->stealth == MagickFalse) &&
-        (GlobExpression(p->decode,pattern,MagickFalse) != MagickFalse))
+    if( IfMagickFalse(p->stealth) &&
+        IfMagickTrue(GlobExpression(p->decode,pattern,MagickFalse)) )
       delegates[i++]=ConstantString(p->decode);
-    if ((p->stealth == MagickFalse) &&
-        (GlobExpression(p->encode,pattern,MagickFalse) != MagickFalse))
+    if( IfMagickFalse(p->stealth) &&
+        IfMagickTrue(GlobExpression(p->encode,pattern,MagickFalse)) )
       delegates[i++]=ConstantString(p->encode);
     p=(const DelegateInfo *) GetNextValueInLinkedList(delegate_list);
   }
@@ -640,6 +644,7 @@ MagickExport char **GetDelegateList(const char *pattern,
 MagickExport ssize_t GetDelegateMode(const DelegateInfo *delegate_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+
   assert(delegate_info != (DelegateInfo *) NULL);
   assert(delegate_info->signature == MagickSignature);
   return(delegate_info->mode);
@@ -673,6 +678,7 @@ MagickExport MagickBooleanType GetDelegateThreadSupport(
   const DelegateInfo *delegate_info)
 {
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+
   assert(delegate_info != (DelegateInfo *) NULL);
   assert(delegate_info->signature == MagickSignature);
   return(delegate_info->thread_support);
@@ -703,20 +709,20 @@ MagickExport MagickBooleanType GetDelegateThreadSupport(
 static MagickBooleanType InitializeDelegateList(ExceptionInfo *exception)
 {
   if ((delegate_list == (LinkedListInfo *) NULL) &&
-      (instantiate_delegate == MagickFalse))
+      IfMagickFalse(instantiate_delegate))
     {
       if (delegate_semaphore == (SemaphoreInfo *) NULL)
         AcquireSemaphoreInfo(&delegate_semaphore);
       LockSemaphoreInfo(delegate_semaphore);
       if ((delegate_list == (LinkedListInfo *) NULL) &&
-          (instantiate_delegate == MagickFalse))
+          IfMagickFalse(instantiate_delegate))
         {
           (void) LoadDelegateLists(DelegateFilename,exception);
           instantiate_delegate=MagickTrue;
         }
       UnlockSemaphoreInfo(delegate_semaphore);
     }
-  return(delegate_list != (LinkedListInfo *) NULL ? MagickTrue : MagickFalse);
+  return(IsMagickNotNULL(delegate_list));
 }
 
 /*
@@ -788,7 +794,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   assert(source != (const char *) NULL);
   assert(destination != (char *) NULL);
   status=GetPathAttributes(destination,&attributes);
-  if ((status != MagickFalse) && (attributes.st_size != 0))
+  if( IfMagickTrue(status) && (attributes.st_size != 0))
     return(MagickTrue);
   destination_file=open_utf8(destination,O_WRONLY | O_BINARY | O_CREAT,S_MODE);
   if (destination_file == -1)
@@ -823,7 +829,7 @@ static MagickBooleanType CopyDelegateFile(const char *source,
   (void) close(destination_file);
   (void) close(source_file);
   buffer=(unsigned char *) RelinquishMagickMemory(buffer);
-  return(i != 0 ? MagickTrue : MagickFalse);
+  return(IsMagickTrue(i!=0));
 }
 
 MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
@@ -855,26 +861,27 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
+  if( IfMagickTrue(image->debug) )
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+
   rights=ExecutePolicyRights;
-  if (IsRightsAuthorized(DelegatePolicyDomain,rights,decode) == MagickFalse)
+  if( IfMagickFalse(IsRightsAuthorized(DelegatePolicyDomain,rights,decode)) )
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","'%s'",decode);
       return(MagickFalse);
     }
-  if (IsRightsAuthorized(DelegatePolicyDomain,rights,encode) == MagickFalse)
+  if( IfMagickFalse(IsRightsAuthorized(DelegatePolicyDomain,rights,encode)) )
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","'%s'",encode);
       return(MagickFalse);
     }
-  temporary=(*image->filename == '\0') ? MagickTrue : MagickFalse;
-  if (temporary != MagickFalse)
-    if (AcquireUniqueFilename(image->filename) == MagickFalse)
+  temporary=IsMagickTrue(*image->filename == '\0');
+  if( IfMagickTrue(temporary) )
+    if( IfMagickFalse(AcquireUniqueFilename(image->filename)) )
       {
         ThrowFileException(exception,FileOpenError,
           "UnableToCreateTemporaryFile",image->filename);
@@ -883,7 +890,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   delegate_info=GetDelegateInfo(decode,encode,exception);
   if (delegate_info == (DelegateInfo *) NULL)
     {
-      if (temporary != MagickFalse)
+      if( IfMagickTrue(temporary) )
         (void) RelinquishUniqueFileResource(image->filename);
       (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
         "NoTagFound","'%s'",decode ? decode : encode);
@@ -891,9 +898,9 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     }
   if (*image_info->filename == '\0')
     {
-      if (AcquireUniqueFilename(image_info->filename) == MagickFalse)
+      if( IfMagickFalse(AcquireUniqueFilename(image_info->filename)) )
         {
-          if (temporary != MagickFalse)
+          if( IfMagickTrue(temporary) )
             (void) RelinquishUniqueFileResource(image->filename);
           ThrowFileException(exception,FileOpenError,
             "UnableToCreateTemporaryFile",image_info->filename);
@@ -918,13 +925,13 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       /*
         Delegate requires a particular image format.
       */
-      if (AcquireUniqueFilename(image_info->unique) == MagickFalse)
+      if( IfMagickFalse(AcquireUniqueFilename(image_info->unique)) )
         {
           ThrowFileException(exception,FileOpenError,
             "UnableToCreateTemporaryFile",image_info->unique);
           return(MagickFalse);
         }
-      if (AcquireUniqueFilename(image_info->zero) == MagickFalse)
+      if( IfMagickFalse(AcquireUniqueFilename(image_info->zero)) )
         {
           (void) RelinquishUniqueFileResource(image_info->unique);
           ThrowFileException(exception,FileOpenError,
@@ -937,7 +944,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         {
           (void) RelinquishUniqueFileResource(image_info->unique);
           (void) RelinquishUniqueFileResource(image_info->zero);
-          if (temporary != MagickFalse)
+          if( IfMagickTrue(temporary) )
             (void) RelinquishUniqueFileResource(image->filename);
           (void) ThrowMagickException(exception,GetMagickModule(),
             DelegateError,"DelegateFailed","'%s'",decode ? decode : encode);
@@ -963,18 +970,18 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         (void) FormatLocaleString(p->filename,MaxTextExtent,"%s:%s",
           delegate_info->decode,clone_info->filename);
         status=WriteImage(clone_info,p,exception);
-        if (status == MagickFalse)
+        if( IfMagickFalse(status) )
           {
             (void) RelinquishUniqueFileResource(image_info->unique);
             (void) RelinquishUniqueFileResource(image_info->zero);
-            if (temporary != MagickFalse)
+            if( IfMagickTrue(temporary) )
               (void) RelinquishUniqueFileResource(image->filename);
             clone_info=DestroyImageInfo(clone_info);
             (void) ThrowMagickException(exception,GetMagickModule(),
               DelegateError,"DelegateFailed","'%s'",decode ? decode : encode);
             return(MagickFalse);
           }
-        if (clone_info->adjoin != MagickFalse)
+        if( IfMagickTrue(clone_info->adjoin) )
           break;
       }
       (void) RelinquishUniqueFileResource(image_info->unique);
@@ -987,7 +994,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     {
-      if (temporary != MagickFalse)
+      if( IfMagickTrue(temporary) )
         (void) RelinquishUniqueFileResource(image->filename);
       (void) ThrowMagickException(exception,GetMagickModule(),
         ResourceLimitError,"MemoryAllocationFailed","'%s'",
@@ -1001,13 +1008,13 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   for (i=0; commands[i] != (char *) NULL; i++)
   {
     status=AcquireUniqueSymbolicLink(output_filename,image_info->filename);
-    if (AcquireUniqueFilename(image_info->unique) == MagickFalse)
+    if( IfMagickFalse(AcquireUniqueFilename(image_info->unique)) )
       {
         ThrowFileException(exception,FileOpenError,
           "UnableToCreateTemporaryFile",image_info->unique);
         break;
       }
-    if (AcquireUniqueFilename(image_info->zero) == MagickFalse)
+    if( IfMagickFalse(AcquireUniqueFilename(image_info->zero)) )
       {
         (void) RelinquishUniqueFileResource(image_info->unique);
         ThrowFileException(exception,FileOpenError,
@@ -1017,7 +1024,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
     if (LocaleCompare(decode,"SCAN") != 0)
       {
         status=AcquireUniqueSymbolicLink(input_filename,image->filename);
-        if (status == MagickFalse)
+        if( IfMagickFalse(status) )
           {
             ThrowFileException(exception,FileOpenError,
               "UnableToCreateTemporaryFile",input_filename);
@@ -1031,10 +1038,10 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         /*
           Execute delegate.
         */
-        status=SystemCommand(delegate_info->spawn,image_info->verbose,command,
-          exception) != 0 ? MagickTrue : MagickFalse;
+        status=IsMagickTrue(SystemCommand(delegate_info->spawn,
+               image_info->verbose,command,exception) != 0);
         /* If spawn, wait for input file to 'disappear', or maximum 5 secs */
-        if (delegate_info->spawn != MagickFalse) {
+        if( IfMagickTrue(delegate_info->spawn) ) {
 #if 1
             ssize_t count=50;  /* 50 x 0.1 sec sleeps maximum */
             while( count > 0 && access_utf8(image->filename,F_OK) == 0 )
@@ -1047,18 +1054,18 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
       }
     if (LocaleCompare(decode,"SCAN") != 0)
       {
-        if (CopyDelegateFile(image->filename,input_filename) == MagickFalse)
+        if( IfMagickFalse(CopyDelegateFile(image->filename,input_filename)) )
           (void) RelinquishUniqueFileResource(input_filename);
       }
-    if (CopyDelegateFile(image_info->filename,output_filename) == MagickFalse)
+    if( IfMagickFalse(CopyDelegateFile(image_info->filename,output_filename)) )
       (void) RelinquishUniqueFileResource(output_filename);
-    if (image_info->temporary != MagickFalse)
+    if( IfMagickTrue(image_info->temporary) )
       (void) RelinquishUniqueFileResource(image_info->filename);
     (void) RelinquishUniqueFileResource(image_info->unique);
     (void) RelinquishUniqueFileResource(image_info->zero);
     (void) RelinquishUniqueFileResource(image_info->filename);
     (void) RelinquishUniqueFileResource(image->filename);
-    if (status != MagickFalse)
+    if( IfMagickTrue(status) )
       {
         (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
           "DelegateFailed","'%s'",commands[i]);
@@ -1074,9 +1081,9 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
   for ( ; commands[i] != (char *) NULL; i++)
     commands[i]=DestroyString(commands[i]);
   commands=(char **) RelinquishMagickMemory(commands);
-  if (temporary != MagickFalse)
+  if( IfMagickTrue(temporary) )
     (void) RelinquishUniqueFileResource(image->filename);
-  return(status == MagickFalse ? MagickTrue : MagickFalse);
+  return(IsMagickFalse(status));
 }
 
 /*
@@ -1133,7 +1140,7 @@ MagickExport MagickBooleanType ListDelegateInfo(FILE *file,
   path=(const char *) NULL;
   for (i=0; i < (ssize_t) number_delegates; i++)
   {
-    if (delegate_info[i]->stealth != MagickFalse)
+    if( IfMagickTrue(delegate_info[i]->stealth) )
       continue;
     if ((path == (const char *) NULL) ||
         (LocaleCompare(path,delegate_info[i]->path) != 0))
@@ -1328,7 +1335,7 @@ static MagickBooleanType LoadDelegateList(const char *xml,const char *filename,
     if (LocaleCompare(keyword,"/>") == 0)
       {
         status=AppendValueToLinkedList(delegate_list,delegate_info);
-        if (status == MagickFalse)
+        if( IfMagickFalse(status) )
           (void) ThrowMagickException(exception,GetMagickModule(),
             ResourceLimitError,"MemoryAllocationFailed","'%s'",
             delegate_info->commands);
@@ -1493,8 +1500,8 @@ static MagickBooleanType LoadDelegateLists(const char *filename,
   }
   options=DestroyConfigureOptions(options);
   if ((delegate_list == (LinkedListInfo *) NULL) ||
-      (IsLinkedListEmpty(delegate_list) != MagickFalse))
+      (IfMagickTrue(IsLinkedListEmpty(delegate_list))))
     status|=LoadDelegateList(DelegateMap,"built-in",0,exception);
-  return(status != 0 ? MagickTrue : MagickFalse);
+  return(IsMagickTrue(status!=0));
 #endif
 }
