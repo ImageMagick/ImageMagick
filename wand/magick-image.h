@@ -296,6 +296,7 @@ extern WandExport MagickBooleanType
   MagickSetImageDepth(MagickWand *,const size_t),
   MagickSetImageDispose(MagickWand *,const DisposeType),
   MagickSetImageCompressionQuality(MagickWand *,const size_t),
+  MagickSetImageEndian(MagickWand *,const EndianType),
   MagickSetImageExtent(MagickWand *,const size_t,const size_t),
   MagickSetImageFilename(MagickWand *,const char *),
   MagickSetImageFormat(MagickWand *,const char *),
