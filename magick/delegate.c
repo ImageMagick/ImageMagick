@@ -80,7 +80,7 @@ static const char
     "<delegatemap>"
     "  <delegate decode=\"autotrace\" stealth=\"True\" command=\"&quot;autotrace&quot; -output-format svg -output-file &quot;%o&quot; &quot;%i&quot;\"/>"
     "  <delegate decode=\"avi:decode\" stealth=\"True\" command=\"&quot;mplayer&quot; &quot;%i&quot; -really-quiet -ao null -vo png:z=3\"/>"
-    "  <delegate decode=\"browse\" stealth=\"True\" spawn=\"True\" command=\"&quot;xdg-open&quot; http://www.imagemagick.org/\"/>"
+    "  <delegate decode=\"browse\" stealth=\"True\" spawn=\"True\" command=\"&quot;xdg-open&quot; http://www.imagemagick.org/; rm &quot;%i&quot;\"/>"
     "  <delegate decode=\"cgm\" thread-support=\"False\" command=\"&quot;ralcgm&quot; -d ps -oC &lt; &quot;%i&quot; &gt; &quot;%o&quot; 2&gt; &quot;%u&quot;\"/>"
     "  <delegate decode=\"dng:decode\" command=\"&quot;/usr/bin/ufraw-batch&quot; --silent --wb=camera --black-point=auto --exposure=auto --create-id=also --out-type=ppm16 &quot;--output=%u.pnm&quot; &quot;%i&quot;\"/>"
     "  <delegate decode=\"edit\" stealth=\"True\" command=\"&quot;xterm&quot; -title &quot;Edit Image Comment&quot; -e vi &quot;%o&quot;\"/>"
@@ -115,11 +115,11 @@ static const char
     "  <delegate decode=\"ps:mono\" stealth=\"True\" command=\"&quot;gs&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=0 &quot;-sDEVICE=pnmraw&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;\"/>"
     "  <delegate decode=\"rgba\" encode=\"rle\" mode=\"encode\" command=\"&quot;rawtorle&quot; -o &quot;%o&quot; -v &quot;%i&quot;\"/>"
     "  <delegate decode=\"scan\" command=\"&quot;scanimage&quot; -d &quot;%i&quot; &gt; &quot;%o&quot;\"/>"
-    "  <delegate encode=\"show\" spawn=\"True\" command=\"&quot;/usr/local/bin/display&quot; -immutable -delay 0 -window-group %g -title &quot;%l of %f&quot; &quot;temporary:%i&quot;\"/>"
+    "  <delegate encode=\"show\" spawn=\"True\" command=\"&quot;display&quot; -immutable -delay 0 -window-group %g -title &quot;%l of %f&quot; &quot;temporary:%i&quot;\"/>"
     "  <delegate decode=\"shtml\" command=\"&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;\"/>"
     "  <delegate decode=\"svg\" command=\"&quot;rsvg&quot; &quot;%i&quot; &quot;%o&quot;\"/>"
     "  <delegate decode=\"txt\" encode=\"ps\" mode=\"bi\" command=\"&quot;enscript&quot; -o &quot;%o&quot; &quot;%i&quot;\"/>"
-    "  <delegate encode=\"win\" stealth=\"True\" spawn=\"True\" command=\"&quot;/usr/local/bin/display&quot; -immutable -delay 0 -window-group %g -title &quot;%l of %f&quot; &quot;temporary:%i&quot;\"/>"
+    "  <delegate encode=\"win\" stealth=\"True\" spawn=\"True\" command=\"&quot;display&quot; -immutable -delay 0 -window-group %g -title &quot;%l of %f&quot; &quot;temporary:%i&quot;\"/>"
     "  <delegate decode=\"wmf\" command=\"&quot;wmf2eps&quot; -o &quot;%o&quot; &quot;%i&quot;\"/>"
     "</delegatemap>";
 
@@ -926,7 +926,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
         }
       if (AcquireUniqueFilename(image_info->zero) == MagickFalse)
         {
-          (void) RelinquishUniqueFileResource(image_info->zero);
+          (void) RelinquishUniqueFileResource(image_info->unique);
           ThrowFileException(exception,FileOpenError,
             "UnableToCreateTemporaryFile",image_info->zero);
           return(MagickFalse);
