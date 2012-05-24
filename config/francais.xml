@@ -608,7 +608,7 @@
           image non incluse dans la géométrie
         </message>
         <message name="InterpretPropertyFailure">
-          *** failure in interpret image property escapes ***
+          l'échec d'interpréter s'échappe de propriété d'image
         </message>
         <message name="InvalidArgument">
           argument invalide pour l'option

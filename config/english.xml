@@ -614,7 +614,7 @@
           geometry does not contain image
         </message>
         <message name="InterpretPropertyFailure">
-          failure in interpret image property escapes
+          failure to interpret image property escapes
         </message>
         <message name="InvalidArgument">
           invalid argument for option
