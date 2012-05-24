@@ -553,14 +553,11 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          SetPixelRed(q,ScaleAnyToQuantum((QuantumAny) pixel,
-            range[0]));
+          SetPixelRed(q,ScaleAnyToQuantum((QuantumAny) pixel,range[0]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[1],x/x_step[1]);
-          SetPixelGreen(q,ScaleAnyToQuantum((QuantumAny) pixel,
-            range[1]));
+          SetPixelGreen(q,ScaleAnyToQuantum((QuantumAny) pixel,range[1]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
-          SetPixelBlue(q,ScaleAnyToQuantum((QuantumAny) pixel,
-            range[2]));
+          SetPixelBlue(q,ScaleAnyToQuantum((QuantumAny) pixel,range[2]));
           q++;
         }
         break;
@@ -576,14 +573,11 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           SetPixelRed(q,ScaleAnyToQuantum((QuantumAny) pixel,
             range[0]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[1],x/x_step[1]);
-          SetPixelGreen(q,ScaleAnyToQuantum((QuantumAny) pixel,
-            range[1]));
+          SetPixelGreen(q,ScaleAnyToQuantum((QuantumAny) pixel,range[1]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
-          SetPixelBlue(q,ScaleAnyToQuantum((QuantumAny) pixel,
-            range[2]));
+          SetPixelBlue(q,ScaleAnyToQuantum((QuantumAny) pixel,range[2]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[3],x/x_step[3]);
-          SetPixelAlpha(q,ScaleAnyToQuantum((QuantumAny) pixel,
-            range[3]));
+          SetPixelAlpha(q,ScaleAnyToQuantum((QuantumAny) pixel,range[3]));
           q++;
         }
         break;
