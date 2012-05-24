@@ -461,6 +461,48 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       break;
     }
+    case JAS_CLRSPC_FAM_XYZ:
+    {
+      SetImageColorspace(image,XYZColorspace);
+      components[0]=jas_image_getcmptbytype(jp2_image,0);
+      components[1]=jas_image_getcmptbytype(jp2_image,1);
+      components[2]=jas_image_getcmptbytype(jp2_image,2);
+      if ((components[0] < 0) || (components[1] < 0) || (components[2] < 0))
+        {
+          (void) jas_stream_close(jp2_stream);
+          jas_image_destroy(jp2_image);
+          ThrowReaderException(CorruptImageError,"MissingImageChannel");
+        }
+      number_components=3;
+      components[3]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_UNKNOWN);
+      if (components[3] > 0)
+        {
+          image->matte=MagickTrue;
+          number_components++;
+        }
+      break;
+    }
+    case JAS_CLRSPC_FAM_LAB:
+    {
+      SetImageColorspace(image,YCbCrColorspace);
+      components[0]=jas_image_getcmptbytype(jp2_image,0);
+      components[1]=jas_image_getcmptbytype(jp2_image,1);
+      components[2]=jas_image_getcmptbytype(jp2_image,2);
+      if ((components[0] < 0) || (components[1] < 0) || (components[2] < 0))
+        {
+          (void) jas_stream_close(jp2_stream);
+          jas_image_destroy(jp2_image);
+          ThrowReaderException(CorruptImageError,"MissingImageChannel");
+        }
+      number_components=3;
+      components[3]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_UNKNOWN);
+      if (components[3] > 0)
+        {
+          image->matte=MagickTrue;
+          number_components++;
+        }
+      break;
+    }
     default:
     {
       (void) jas_stream_close(jp2_stream);
@@ -872,8 +914,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
   if (jp2_stream == (jas_stream_t *) NULL)
     ThrowWriterException(DelegateError,"UnableToManageJP2Stream");
   number_components=image->matte ? 4UL : 3UL;
-  if ((image_info->type != TrueColorType) &&
-      (IsGrayImage(image,&image->exception) != MagickFalse))
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
     number_components=1;
   if ((image->columns != (unsigned int) image->columns) ||
       (image->rows != (unsigned int) image->rows))
@@ -894,19 +935,13 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     JAS_CLRSPC_UNKNOWN);
   if (jp2_image == (jas_image_t *) NULL)
     ThrowWriterException(DelegateError,"UnableToCreateImage");
-  if (number_components == 1)
+  switch (image->colorspace)
+  {
+    case RGBColorspace:
+    case sRGBColorspace:
     {
       /*
-        sRGB Grayscale.
-      */
-      jas_image_setclrspc(jp2_image,JAS_CLRSPC_SGRAY);
-      jas_image_setcmpttype(jp2_image,0,
-        JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
-    }
-  else
-    {
-      /*
-        sRGB.
+        RGB.
       */
       jas_image_setclrspc(jp2_image,JAS_CLRSPC_SRGB);
       jas_image_setcmpttype(jp2_image,0,
@@ -917,7 +952,83 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
         (jas_image_cmpttype_t) JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_RGB_B));
       if (number_components == 4)
         jas_image_setcmpttype(jp2_image,3,JAS_IMAGE_CT_OPACITY);
+      break;
     }
+    case GRAYColorspace:
+    {
+      /*
+        Grayscale.
+      */
+      jas_image_setclrspc(jp2_image,JAS_CLRSPC_SGRAY);
+      jas_image_setcmpttype(jp2_image,0,
+        JAS_IMAGE_CT_COLOR(JAS_CLRSPC_CHANIND_GRAY_Y));
+      break;
+    }
+    case YCbCrColorspace:
+    {
+      /*
+        YCbCr.
+      */
+      jas_image_setclrspc(jp2_image,JAS_CLRSPC_SYCBCR);
+      jas_image_setcmpttype(jp2_image,0,(jas_image_cmpttype_t)
+        JAS_IMAGE_CT_COLOR(0));
+      jas_image_setcmpttype(jp2_image,1,(jas_image_cmpttype_t)
+        JAS_IMAGE_CT_COLOR(1));
+      jas_image_setcmpttype(jp2_image,2,(jas_image_cmpttype_t)
+        JAS_IMAGE_CT_COLOR(2));
+      if (number_components == 4)
+        jas_image_setcmpttype(jp2_image,3,JAS_IMAGE_CT_OPACITY);
+      break;
+    }
+    case XYZColorspace:
+    {
+      /*
+        YCbCr.
+      */
+      jas_image_setclrspc(jp2_image,JAS_CLRSPC_CIEXYZ);
+      jas_image_setcmpttype(jp2_image,0,(jas_image_cmpttype_t)
+        JAS_IMAGE_CT_COLOR(0));
+      jas_image_setcmpttype(jp2_image,1,(jas_image_cmpttype_t)
+        JAS_IMAGE_CT_COLOR(1));
+      jas_image_setcmpttype(jp2_image,2,(jas_image_cmpttype_t)
+        JAS_IMAGE_CT_COLOR(2));
+      if (number_components == 4)
+        jas_image_setcmpttype(jp2_image,3,JAS_IMAGE_CT_OPACITY);
+      break;
+    }
+    case LabColorspace:
+    {
+      /*
+        Lab.
+      */
+      jas_image_setclrspc(jp2_image,JAS_CLRSPC_CIELAB);
+      jas_image_setcmpttype(jp2_image,0,(jas_image_cmpttype_t)
+        JAS_IMAGE_CT_COLOR(0));
+      jas_image_setcmpttype(jp2_image,1,(jas_image_cmpttype_t)
+        JAS_IMAGE_CT_COLOR(1));
+      jas_image_setcmpttype(jp2_image,2,(jas_image_cmpttype_t)
+        JAS_IMAGE_CT_COLOR(2));
+      if (number_components == 4)
+        jas_image_setcmpttype(jp2_image,3,JAS_IMAGE_CT_OPACITY);
+      break;
+    }
+    default:
+    {
+      /*
+        Unknow.
+      */
+      jas_image_setclrspc(jp2_image,JAS_CLRSPC_UNKNOWN);
+      jas_image_setcmpttype(jp2_image,0,(jas_image_cmpttype_t)
+        JAS_IMAGE_CT_COLOR(0));
+      jas_image_setcmpttype(jp2_image,1,(jas_image_cmpttype_t)
+        JAS_IMAGE_CT_COLOR(1));
+      jas_image_setcmpttype(jp2_image,2,(jas_image_cmpttype_t)
+        JAS_IMAGE_CT_COLOR(2));
+      if (number_components == 4)
+        jas_image_setcmpttype(jp2_image,3,JAS_IMAGE_CT_OPACITY);
+      break;
+    }
+  }
   /*
     Convert to JPEG 2000 pixels.
   */
