@@ -2849,8 +2849,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         g_error_free(error);
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
       rsvg_handle_get_dimensions(svg_handle,&dimension_info);
-      image->columns=dimension_info.width;
-      image->rows=dimension_info.height;
+      image->columns=image->resolution.x*dimension_info.width/72.0;
+      image->rows=image->resolution.y*dimension_info.height/72.0;
       pixels=(unsigned char *) NULL;
 #else
       pixel_info=rsvg_handle_get_pixbuf(svg_handle);
@@ -2872,9 +2872,14 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       if (image_info->ping == MagickFalse)
         {
+          size_t
+            stride;
+
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
-          pixels=(unsigned char *) AcquireQuantumMemory(image->columns,4*
-            image->rows*sizeof(*pixels));
+          stride=(size_t) cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
+            image->columns);
+          pixels=(unsigned char *) AcquireQuantumMemory(stride,image->rows*
+            sizeof(*pixels));
           if (pixels == (unsigned char *) NULL)
             {
               g_object_unref(svg_handle);
@@ -2895,6 +2900,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           cairo_set_operator(cairo_image,CAIRO_OPERATOR_CLEAR);
           cairo_paint(cairo_image);
           cairo_set_operator(cairo_image,CAIRO_OPERATOR_OVER);
+          cairo_scale(cairo_image,image->resolution.x/72.0,image->resolution.y/
+            72.0);
           rsvg_handle_render_cairo(svg_handle,cairo_image);
           cairo_destroy(cairo_image);
           cairo_surface_destroy(cairo_surface);
