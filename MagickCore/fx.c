@@ -1901,6 +1901,11 @@ static const char *FxOperatorPrecedence(const char *expression,
             break;
           }
 #endif
+        if (LocaleNCompare(expression,"atan2",5) == 0)
+          {
+            expression+=5;
+            break;
+          }
         break;
       }
       case 'E':
