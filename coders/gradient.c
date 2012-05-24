@@ -94,6 +94,10 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   char
     colorname[MaxTextExtent];
 
+  MagickPixelPacket
+    start_pixel,
+    stop_pixel;
+
   PixelPacket
     start_color,
     stop_color;
@@ -123,6 +127,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image=DestroyImage(image);
       return((Image *) NULL);
     }
+  (void) QueryMagickColor(colorname,&start_pixel,exception);
   (void) CopyMagickString(colorname,"white",MaxTextExtent);
   if (PixelIntensityToQuantum(&start_color) > (Quantum) (QuantumRange/2))
     (void) CopyMagickString(colorname,"black",MaxTextExtent);
@@ -132,8 +137,12 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image=DestroyImage(image);
       return((Image *) NULL);
     }
+  (void) QueryMagickColor(colorname,&stop_pixel,exception);
   (void) GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
     LinearGradient : RadialGradient,PadSpread,&start_color,&stop_color);
+  if ((start_pixel.colorspace == GRAYColorspace) &&
+      (stop_pixel.colorspace == GRAYColorspace))
+    (void) SetImageColorspace(image,GRAYColorspace);
   return(GetFirstImageInList(image));
 }
 
