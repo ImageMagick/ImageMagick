@@ -436,6 +436,9 @@ static inline MagickBooleanType IsPixelMonochrome(const Image *restrict image,
 static inline MagickBooleanType IsPixelInfoGray(
   const PixelInfo *restrict pixel_info)
 {
+  if ((IsGrayColorspace(pixel_info->colorspace) == MagickFalse) &&
+      (IsRGBColorspace(pixel_info->colorspace) == MagickFalse))
+    return(MagickFalse);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if ((pixel_info->red == pixel_info->green) &&
       (pixel_info->green == pixel_info->blue))
