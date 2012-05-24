@@ -2878,8 +2878,11 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             stride;
 
 #if defined(MAGICKCORE_CAIRO_DELEGATE)
+          stride=4*image->column);
+#if defined(MAGICKCORE_PANGOCAIRO_DELEGATE)
           stride=(size_t) cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32,
             image->columns);
+#endif
           pixels=(unsigned char *) AcquireQuantumMemory(stride,image->rows*
             sizeof(*pixels));
           if (pixels == (unsigned char *) NULL)
