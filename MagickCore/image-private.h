@@ -31,13 +31,6 @@ extern "C" {
 #define UndefinedTicksPerSecond  100L
 #define UndefinedCompressionQuality  0UL
 
-extern MagickPrivate const char
-  BackgroundColor[],
-  BorderColor[],
-  ForegroundColor[],
-  DefaultTileFrame[],
-  MatteColor[];
-
 static inline double DegreesToRadians(const double degrees)
 {
   return((double) (MagickPI*degrees/180.0));

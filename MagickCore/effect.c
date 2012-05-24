@@ -2139,6 +2139,9 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
     sigma,
     threshold;
 
+  extern const char
+    DefaultTileFrame[];
+
   Image
     *images,
     *montage_image,

@@ -3051,6 +3051,10 @@ MagickPrivate void XGetPixelInfo(Display *display,
   Colormap
     colormap;
 
+  extern const char
+    BorderColor[],
+    ForegroundColor[];
+
   register ssize_t
     i;
 
@@ -3477,6 +3481,10 @@ MagickExport void XGetResourceInfo(const ImageInfo *image_info,
   char
     *directory,
     *resource_value;
+
+  extern const char
+    BorderColor[],
+    ForegroundColor[];
 
   /*
     Initialize resource info fields.

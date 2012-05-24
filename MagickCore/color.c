@@ -2145,6 +2145,9 @@ static MagickBooleanType LoadColorLists(const char *filename,
 MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   const ComplianceType compliance,PixelInfo *color,ExceptionInfo *exception)
 {
+  extern const char
+    BackgroundColor[];
+
   GeometryInfo
     geometry_info;
 
