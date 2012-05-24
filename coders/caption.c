@@ -177,11 +177,10 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         (void) status;
         width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
         height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
-        if ((width > image->columns) || (height > image->rows))
+        if ((width > image->columns) && (height > image->rows))
           break;
-        draw_info->pointsize*=2.0;
+        draw_info->pointsize++;
       }
-      draw_info->pointsize/=2.0;
       /*
         Scale text down to fit bounding box.
       */
@@ -198,11 +197,10 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         status=GetMultilineTypeMetrics(image,draw_info,&metrics);
         width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
         height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
-        if ((width > image->columns) || (height > image->rows))
+        if ((width <= image->columns) && (height <= image->rows))
           break;
-        draw_info->pointsize++;
+        draw_info->pointsize--;
       }
-      draw_info->pointsize--;
     }
   i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&caption);
   if (image->rows == 0)
