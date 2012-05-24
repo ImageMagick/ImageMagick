@@ -2878,6 +2878,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
     return(MagickFalse);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
+  exception=(&image->exception);
   texture_image=CloneImage(texture,0,0,MagickTrue,exception);
   if (texture_image == (const Image *) NULL)
     return(MagickFalse);
@@ -2939,7 +2940,6 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
     Tile texture onto the image background (optimized).
   */
   status=MagickTrue;
-  exception=(&image->exception);
   texture_view=AcquireVirtualCacheView(texture_image,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
