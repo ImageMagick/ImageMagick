@@ -161,8 +161,12 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       char
         *text;
 
+      double
+        high,
+        low;
+
       /*
-        Scale text up to fit bounding box.
+        Auto fit text into bounding box.
       */
       for ( ; ; )
       {
@@ -181,13 +185,13 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
         if ((width > image->columns) && (height > image->rows))
           break;
-        draw_info->pointsize++;
+        draw_info->pointsize*=2.0;
       }
-      /*
-        Scale text down to fit bounding box.
-      */
-      for ( ; ; )
+      high=draw_info->pointsize/2.0;
+      low=high/2.0;
+      while ((high-low) > 1.0)
       {
+        draw_info->pointsize=(low+high)/2.0;
         text=AcquireString(caption);
         i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
           exception);
@@ -201,9 +205,11 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
         height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
         if ((width <= image->columns) && (height <= image->rows))
-          break;
-        draw_info->pointsize--;
+          low=draw_info->pointsize+1.0;
+        else
+          high=draw_info->pointsize-1.0;
       }
+      draw_info->pointsize--;
     }
   i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&caption,exception);
   if (image->rows == 0)
