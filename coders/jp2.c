@@ -483,7 +483,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((width != image->columns) || (height != image->rows) ||
         (jas_image_cmpttlx(jp2_image,components[i]) != 0) ||
         (jas_image_cmpttly(jp2_image,components[i]) != 0) ||
-        (x_step[i] != 1) || (y_step[i] != 1) ||
         (jas_image_cmptsgnd(jp2_image,components[i]) != MagickFalse))
       {
         (void) jas_stream_close(jp2_stream);
