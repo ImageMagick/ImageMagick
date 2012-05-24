@@ -401,10 +401,14 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) jas_stream_close(jp2_stream);
       ThrowReaderException(DelegateError,"UnableToDecodeImageFile");
     }
+  image->columns=jas_image_width(jp2_image);
+  image->rows=jas_image_height(jp2_image);
+  image->compression=JPEG2000Compression;
   switch (jas_clrspc_fam(jas_image_clrspc(jp2_image)))
   {
     case JAS_CLRSPC_FAM_RGB:
     {
+      SetImageColorspace(image,RGBColorspace);
       components[0]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_RGB_R);
       components[1]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_RGB_G);
       components[2]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_RGB_B);
@@ -425,6 +429,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     case JAS_CLRSPC_FAM_GRAY:
     {
+      SetImageColorspace(image,GRAYColorspace);
       components[0]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_GRAY_Y);
       if (components[0] < 0)
         {
@@ -437,6 +442,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     case JAS_CLRSPC_FAM_YCBCR:
     {
+      SetImageColorspace(image,YCbCrColorspace);
       components[0]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_YCBCR_Y);
       components[1]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_YCBCR_CB);
       components[2]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_YCBCR_CR);
@@ -453,7 +459,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           image->matte=MagickTrue;
           number_components++;
         }
-      SetImageColorspace(image,YCbCrColorspace);
       break;
     }
     default:
@@ -463,9 +468,6 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CoderError,"ColorspaceModelIsNotSupported");
     }
   }
-  image->columns=jas_image_width(jp2_image);
-  image->rows=jas_image_height(jp2_image);
-  image->compression=JPEG2000Compression;
   for (i=0; i < (ssize_t) number_components; i++)
   {
     size_t
