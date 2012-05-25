@@ -1462,15 +1462,15 @@ MagickExport Image *DistortResizeImage(const Image *image,
 {
 #define DistortResizeImageTag  "Distort/Image"
 
+  double
+    distort_args[12];
+
   Image
     *resize_image,
     *tmp_image;
 
   RectangleInfo
     crop_area;
-
-  double
-    distort_args[12];
 
   VirtualPixelMethod
     vp_save;
@@ -1487,7 +1487,6 @@ MagickExport Image *DistortResizeImage(const Image *image,
   if ((columns == 0) || (rows == 0))
     return((Image *) NULL);
   /* Do not short-circuit this resize if final image size is unchanged */
-
 
   (void) ResetMagickMemory(distort_args,0,12*sizeof(double));
   distort_args[4]=(double) image->columns;
