@@ -944,7 +944,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
     case sRGBColorspace:
     {
       /*
-        RGB.
+        RGB colorspace.
       */
       jas_image_setclrspc(jp2_image,JAS_CLRSPC_SRGB);
       jas_image_setcmpttype(jp2_image,0,
@@ -960,7 +960,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
     case GRAYColorspace:
     {
       /*
-        Grayscale.
+        Grayscale colorspace.
       */
       jas_image_setclrspc(jp2_image,JAS_CLRSPC_SGRAY);
       jas_image_setcmpttype(jp2_image,0,
@@ -970,7 +970,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
     case YCbCrColorspace:
     {
       /*
-        YCbCr.
+        YCbCr colorspace.
       */
       jas_image_setclrspc(jp2_image,JAS_CLRSPC_SYCBCR);
       jas_image_setcmpttype(jp2_image,0,(jas_image_cmpttype_t)
@@ -986,7 +986,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
     case XYZColorspace:
     {
       /*
-        YCbCr.
+        XYZ colorspace.
       */
       jas_image_setclrspc(jp2_image,JAS_CLRSPC_CIEXYZ);
       jas_image_setcmpttype(jp2_image,0,(jas_image_cmpttype_t)
@@ -1002,7 +1002,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
     case LabColorspace:
     {
       /*
-        Lab.
+        Lab colorspace.
       */
       jas_image_setclrspc(jp2_image,JAS_CLRSPC_CIELAB);
       jas_image_setcmpttype(jp2_image,0,(jas_image_cmpttype_t)
