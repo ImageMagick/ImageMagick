@@ -1,3 +1,9 @@
+2012-05-26  6.7.7-2 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.7-2, SVN revision 8066.
+
+2012-05-26  6.7.7-2 Cristy  <quetzlzacatenango@image...>
+  * MagickDelay() is in microseconds, not milliseconds.
+
 2012-05-25  6.7.7-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.7-1, SVN revision 8059.
 
