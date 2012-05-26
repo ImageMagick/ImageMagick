@@ -1373,7 +1373,6 @@ static double LabF2(double alpha)
 static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   double *X,double *Y,double *Z)
 {
-
   double
     x,
     y,
