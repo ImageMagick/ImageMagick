@@ -1043,7 +1043,7 @@ MagickExport MagickBooleanType InvokeDelegate(ImageInfo *image_info,
             */
             count=50;
             while ((count-- > 0) && (access_utf8(image->filename,F_OK) == 0))
-              (void) MagickDelay(100000);  /* sleep 0.1 seconds */
+              (void) MagickDelay(100);  /* sleep 0.1 seconds */
           }
         command=DestroyString(command);
       }
