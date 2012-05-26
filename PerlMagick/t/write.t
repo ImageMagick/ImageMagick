@@ -170,7 +170,7 @@ print("SUN 1-bit Rasterfile ...\n");
 testReadWrite( 'SUN:input.im1',
   'SUN:output.im1',
   q//,
-  '8922c9505ece06295a015d23e28da3727c3bc7ab22593f98e0fc8784aa16d0c2');
+  '4cc91a24ddcbe4a9563b1ca063f765ec1ca4514cc3e3ba3e710f1226e49a8dd5');
 
 print("SUN 8-bit Rasterfile ...\n");
 ++$test;
