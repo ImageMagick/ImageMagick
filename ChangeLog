@@ -2,7 +2,7 @@
   * New version 6.7.7-1, SVN revision 8059.
 
 2012-05-20  6.7.7-1 Cristy  <quetzlzacatenango@image...>
-  * In rare cases, caption would not word wrap properly (reference
+  * In rare cases, caption would not word-wrap properly (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21044).
   * Set the JPEG image colorspace after the columns / rows are set (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21059).
@@ -42,14 +42,14 @@
   * Added resampling 'weight' sanity check in EWA resampling.
   * Set default for histogram:unique-colors to be 'true' when undefined
     Returning it to previous behaviour.
-  * Refactor of InterpretImageProperties() (percent escape sub-stitutions)
+  * Refactor of InterpretImageProperties() (percent escape substitutions)
   * Add "gamma" as a -set and % escape to access image gamma meta-data
 
 2012-05-05  6.7.6-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.6-9, SVN revision 7812.
 
 2012-05-05  6.7.6-9 Anthony Thyssen <A.Thyssen@griffith...>
-  * Allow braced single letter excapes, EG "%[x]" as equivelent to "%x"
+  * Allow braced single letter escapes, EG "%[x]" as equivalent to "%x"
 
 2012-05-04  6.7.6-9 Glenn Randers-Pehrson <glennrp@image...>
   * Don't write an invalid PNG sRGB chunk when rendering intent is undefined.
