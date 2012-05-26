@@ -12,7 +12,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21044).
   * Set the JPEG image colorspace after the columns / rows are set (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21059).
-  * Potential gray images are in either the gray or sRGB colorspaces.
+  * Potential gray images are in either the gray or RGB colorspaces.
   * Restore MagickSetImageEndian() method (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?t=20425&p=81525).
   * Respect resolution when rendering SVG (reference
