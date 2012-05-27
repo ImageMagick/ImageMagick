@@ -1647,6 +1647,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
             if (status != MagickFalse)
               {
                 channel_statistics[channel].depth++;
+                i--;
                 continue;
               }
           }
