@@ -99,14 +99,19 @@ extern "C" {
 typedef enum
 {
   UndefinedInterpolatePixel,
-  AverageInterpolatePixel,
-  BicubicInterpolatePixel,
-  BilinearInterpolatePixel,
-  FilterInterpolatePixel,
-  IntegerInterpolatePixel,
-  MeshInterpolatePixel,
-  NearestNeighborInterpolatePixel,
-  SplineInterpolatePixel
+  AverageInterpolatePixel,           /* nearest four neighbours */
+  BicubicInterpolatePixel,           /* catrom interpolation */
+  BilinearInterpolatePixel,          /* bilinear or triangular interpolation */
+  FilterInterpolatePixel,            /* use resize filter - (very slow) */
+  IntegerInterpolatePixel,           /* integer (floor) interpolation */
+  MeshInterpolatePixel,              /* tirangular mesh interpolation */
+  NearestNeighborInterpolatePixel,   /* nearest neighbour only */
+  SplineInterpolatePixel,            /* Cubic Spline (blurred) interpolation */
+  NearestBackgroundInterpolatePixel, /* nearest pixel surrounded by background */
+  NearestBlendInterpolatePixel,      /* blend of nearest 1, 2 or 4 pixels */
+  NearestAverageInterpolatePixel,    /* nearest pixel, surrounded by average */
+  Average9InterpolatePixel,          /* nearest pixel plus 8 neighbours */
+  Average16InterpolatePixel,         /* nearest 16 neighbours */
 } InterpolatePixelMethod;
 
 typedef enum

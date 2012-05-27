@@ -1,3 +1,19 @@
+2012-05-27  6.7.7-3 Anthony Thyssen <A.Thyssen@griffith...>
+  * Trialing the addition of new interpolation methods
+      Average16         average of 16 pixels around sampling point
+      Average9          9 pixels around nearest pixel
+      Average           Average of 4 pixels around sampling point
+      NearestAverage    Select nearest pixel if close, else Average
+      NearestBlend      blend 1, 2 or 4 pixel neighbors
+    NOTE: Before this 'Average' was equivelent to 'Average16' above.
+    The 'Nearest' methods are variations on NearestNeighbor (or just 'Nearest')
+
+  * Add 'NearestBackground'.  Interpolation returns background color unless
+    the pixel interpolation has an 'Exact Match'.  For Distort, that will
+    only happen for all pixels if scale of resize is an odd-integer.
+
+    For example:  -filter point -interpolate   +distort SRT 9,0
+
 2012-05-26  6.7.7-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.7-2, SVN revision 8066.
 
