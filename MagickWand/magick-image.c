@@ -7739,7 +7739,7 @@ WandExport MagickBooleanType MagickPreviousImage(MagickWand *wand)
 %
 %      MagickBooleanType MagickQuantizeImage(MagickWand *wand,
 %        const size_t number_colors,const ColorspaceType colorspace,
-%        const size_t treedepth,const MagickBooleanType dither,
+%        const size_t treedepth,const DitherMethod dither_method,
 %        const MagickBooleanType measure_error)
 %
 %  A description of each parameter follows:
@@ -7759,9 +7759,8 @@ WandExport MagickBooleanType MagickPreviousImage(MagickWand *wand)
 %      Log4(number_colors) is required.  To expand the color tree completely,
 %      use a value of 8.
 %
-%    o dither: A value other than zero distributes the difference between an
-%      original image and the corresponding color reduced image to
-%      neighboring pixels along a Hilbert curve.
+%    o dither_method: choose from UndefinedDitherMethod, NoDitherMethod,
+%      RiemersmaDitherMethod, FloydSteinbergDitherMethod.
 %
 %    o measure_error: A value other than zero measures the difference between
 %      the original and quantized images.  This difference is the total
@@ -7772,7 +7771,7 @@ WandExport MagickBooleanType MagickPreviousImage(MagickWand *wand)
 */
 WandExport MagickBooleanType MagickQuantizeImage(MagickWand *wand,
   const size_t number_colors,const ColorspaceType colorspace,
-  const size_t treedepth,const MagickBooleanType dither,
+  const size_t treedepth,const DitherMethod dither_method,
   const MagickBooleanType measure_error)
 {
   MagickBooleanType
@@ -7790,7 +7789,7 @@ WandExport MagickBooleanType MagickQuantizeImage(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
   quantize_info->number_colors=number_colors;
-  quantize_info->dither=dither;
+  quantize_info->dither_method=dither_method;
   quantize_info->tree_depth=treedepth;
   quantize_info->colorspace=colorspace;
   quantize_info->measure_error=measure_error;
@@ -7819,7 +7818,7 @@ WandExport MagickBooleanType MagickQuantizeImage(MagickWand *wand,
 %
 %      MagickBooleanType MagickQuantizeImages(MagickWand *wand,
 %        const size_t number_colors,const ColorspaceType colorspace,
-%        const size_t treedepth,const MagickBooleanType dither,
+%        const size_t treedepth,const DitherMethod dither_method,
 %        const MagickBooleanType measure_error)
 %
 %  A description of each parameter follows:
@@ -7839,9 +7838,8 @@ WandExport MagickBooleanType MagickQuantizeImage(MagickWand *wand,
 %      Log4(number_colors) is required.  To expand the color tree completely,
 %      use a value of 8.
 %
-%    o dither: A value other than zero distributes the difference between an
-%      original image and the corresponding color reduced algorithm to
-%      neighboring pixels along a Hilbert curve.
+%    o dither_method: choose from these dither methods: NoDitherMethod,
+%      RiemersmaDitherMethod, or FloydSteinbergDitherMethod.
 %
 %    o measure_error: A value other than zero measures the difference between
 %      the original and quantized images.  This difference is the total
@@ -7852,7 +7850,7 @@ WandExport MagickBooleanType MagickQuantizeImage(MagickWand *wand,
 */
 WandExport MagickBooleanType MagickQuantizeImages(MagickWand *wand,
   const size_t number_colors,const ColorspaceType colorspace,
-  const size_t treedepth,const MagickBooleanType dither,
+  const size_t treedepth,const DitherMethod dither_method,
   const MagickBooleanType measure_error)
 {
   MagickBooleanType
@@ -7870,7 +7868,7 @@ WandExport MagickBooleanType MagickQuantizeImages(MagickWand *wand,
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
   quantize_info->number_colors=number_colors;
-  quantize_info->dither=dither;
+  quantize_info->dither_method=dither_method;
   quantize_info->tree_depth=treedepth;
   quantize_info->colorspace=colorspace;
   quantize_info->measure_error=measure_error;
@@ -8202,7 +8200,7 @@ WandExport MagickBooleanType MagickReadImageFile(MagickWand *wand,FILE *file)
 %
 */
 WandExport MagickBooleanType MagickRemapImage(MagickWand *wand,
-  const MagickWand *remap_wand,const DitherMethod method)
+  const MagickWand *remap_wand,const DitherMethod dither_method)
 {
   MagickBooleanType
     status;
@@ -8219,9 +8217,7 @@ WandExport MagickBooleanType MagickRemapImage(MagickWand *wand,
       (remap_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   quantize_info=AcquireQuantizeInfo(wand->image_info);
-  quantize_info->dither_method=method;
-  if (method == NoDitherMethod)
-    quantize_info->dither=MagickFalse;
+  quantize_info->dither_method=dither_method;
   status=RemapImage(quantize_info,wand->images,remap_wand->images,
     wand->exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);

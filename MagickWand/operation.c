@@ -780,12 +780,12 @@ interpret Percent Escapes in Arguments, At least not yet */
              but also ImageInfo and _quantize_info method!
              FUTURE: merge the duality of the dithering options
           */
-          _image_info->dither = _quantize_info->dither = ArgBoolean;
+          _image_info->dither = ArgBoolean;
           (void) SetImageOption(_image_info,option+1,ArgOption("none"));
           _quantize_info->dither_method=(DitherMethod) ParseCommandOption(
-                    MagickDitherOptions,MagickFalse,ArgOption("none"));
+             MagickDitherOptions,MagickFalse,ArgOption("none"));
           if (_quantize_info->dither_method == NoDitherMethod)
-            _image_info->dither = _quantize_info->dither = MagickFalse;
+            _image_info->dither = MagickFalse;
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
@@ -2868,7 +2868,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & RhoValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           (void) PosterizeImage(_image,(size_t) geometry_info.rho,
-               _quantize_info->dither,_exception);
+            _quantize_info->dither_method,_exception);
           break;
         }
       if (LocaleCompare("preview",option+1) == 0)

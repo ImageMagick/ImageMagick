@@ -6110,7 +6110,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             Convert to 8 bit color-mapped X canvas.
           */
           if (resource_info->color_recovery &&
-              resource_info->quantize_info->dither)
+              resource_info->quantize_info->dither_method != NoDitherMethod)
             {
               XDitherImage(canvas,ximage,exception);
               break;
@@ -6273,7 +6273,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             Convert to contiguous 8 bit continuous-tone X canvas.
           */
           if (resource_info->color_recovery &&
-              resource_info->quantize_info->dither)
+              resource_info->quantize_info->dither_method != NoDitherMethod)
             {
               XDitherImage(canvas,ximage,exception);
               break;
@@ -6744,7 +6744,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             Convert to 8 bit color-mapped X canvas.
           */
           if (resource_info->color_recovery &&
-              resource_info->quantize_info->dither)
+              resource_info->quantize_info->dither_method != NoDitherMethod)
             {
               XDitherImage(canvas,ximage,exception);
               break;
@@ -6908,7 +6908,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             Convert to 8 bit continuous-tone X canvas.
           */
           if (resource_info->color_recovery &&
-              resource_info->quantize_info->dither)
+              resource_info->quantize_info->dither_method != NoDitherMethod)
             {
               XDitherImage(canvas,ximage,exception);
               break;
@@ -7797,7 +7797,7 @@ MagickPrivate void XMakeStandardColormap(Display *display,
       if ((map_info->red_max*map_info->green_max*map_info->blue_max) != 0)
         if ((image->matte == MagickFalse) &&
             (resource_info->color_recovery == MagickFalse) &&
-            resource_info->quantize_info->dither &&
+            (resource_info->quantize_info->dither_method != NoDitherMethod) &&
             (number_colors < MaxColormapSize))
           {
             Image
@@ -9377,7 +9377,8 @@ MagickPrivate void XUserPreferences(XResourceInfo *resource_info)
   value=resource_info->display_warnings ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
   (void) FormatLocaleString(specifier,MaxTextExtent,"%s.dither",client_name);
-  value=resource_info->quantize_info->dither ? "True" : "False";
+  value=resource_info->quantize_info->dither_method != NoDitherMethod ?
+    "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,(char *) value);
   (void) FormatLocaleString(specifier,MaxTextExtent,"%s.gammaCorrect",
     client_name);

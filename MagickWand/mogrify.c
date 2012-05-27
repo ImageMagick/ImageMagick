@@ -1429,14 +1429,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           {
             if (*option == '+')
               {
-                quantize_info->dither=MagickFalse;
+                quantize_info->dither_method=NoDitherMethod;
                 break;
               }
-            quantize_info->dither=MagickTrue;
             quantize_info->dither_method=(DitherMethod) ParseCommandOption(
               MagickDitherOptions,MagickFalse,argv[i+1]);
-            if (quantize_info->dither_method == NoDitherMethod)
-              quantize_info->dither=MagickFalse;
             break;
           }
         if (LocaleCompare("draw",option+1) == 0)
@@ -2307,7 +2304,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
             (void) PosterizeImage(*image,StringToUnsignedLong(argv[i+1]),
-              quantize_info->dither,exception);
+              quantize_info->dither_method,exception);
             break;
           }
         if (LocaleCompare("preview",option+1) == 0)
@@ -7511,10 +7508,9 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
           {
             if (*option == '+')
               {
-                quantize_info->dither=MagickFalse;
+                quantize_info->dither_method=NoDitherMethod;
                 break;
               }
-            quantize_info->dither=MagickTrue;
             quantize_info->dither_method=(DitherMethod) ParseCommandOption(
               MagickDitherOptions,MagickFalse,argv[i+1]);
             break;

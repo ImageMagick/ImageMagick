@@ -430,8 +430,8 @@ static MagickBooleanType WriteEPTImage(const ImageInfo *image_info,Image *image,
         EPT preview requires that the image is colormapped.
       */
       GetQuantizeInfo(&quantize_info);
-      quantize_info.dither=IsPaletteImage(write_image,exception) == MagickFalse
-        ? MagickTrue : MagickFalse;
+      quantize_info.dither_method=IsPaletteImage(write_image,exception) ==
+        MagickFalse ? RiemersmaDitherMethod : NoDitherMethod;
       (void) QuantizeImage(&quantize_info,write_image,exception);
     }
   write_info->compression=NoCompression;

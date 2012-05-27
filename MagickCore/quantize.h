@@ -40,26 +40,23 @@ typedef struct _QuantizeInfo
   size_t
     tree_depth;
 
-  MagickBooleanType
-    dither;
-
   ColorspaceType
     colorspace;
+
+  DitherMethod
+    dither_method;
 
   MagickBooleanType
     measure_error;
 
   size_t
     signature;
-
-  DitherMethod
-    dither_method;
 } QuantizeInfo;
 
 extern MagickExport MagickBooleanType
   CompressImageColormap(Image *,ExceptionInfo *),
   GetImageQuantizeError(Image *,ExceptionInfo *),
-  PosterizeImage(Image *,const size_t,const MagickBooleanType,ExceptionInfo *),
+  PosterizeImage(Image *,const size_t,const DitherMethod,ExceptionInfo *),
   QuantizeImage(const QuantizeInfo *,Image *,ExceptionInfo *),
   QuantizeImages(const QuantizeInfo *,Image *,ExceptionInfo *),
   RemapImage(const QuantizeInfo *,Image *,const Image *,ExceptionInfo *),

@@ -3644,7 +3644,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               }
             }
           quantize_info=AcquireQuantizeInfo(msl_info->image_info[n]);
-          quantize_info->dither=dither;
+          quantize_info->dither_method=dither != MagickFalse ?
+            RiemersmaDitherMethod : NoDitherMethod;
           (void) RemapImages(quantize_info,msl_info->image[n],
             affinity_image,&exception);
           quantize_info=DestroyQuantizeInfo(quantize_info);
@@ -4489,12 +4490,12 @@ static void MSLStartElement(void *context,const xmlChar *tag,
                 {
                   if (LocaleCompare(keyword,"dither") == 0)
                     {
-                      option=ParseCommandOption(MagickBooleanOptions,MagickFalse,
+                      option=ParseCommandOption(MagickDitherOptions,MagickFalse,
                         value);
                       if (option < 0)
                         ThrowMSLException(OptionError,"UnrecognizedBooleanType",
                           value);
-                      quantize_info.dither=(MagickBooleanType) option;
+                      quantize_info.dither_method=(DitherMethod) option;
                       break;
                     }
                   ThrowMSLException(OptionError,"UnrecognizedAttribute",
