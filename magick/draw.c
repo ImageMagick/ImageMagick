@@ -1578,7 +1578,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
           n=0;
         length=scale*(draw_info->dash_pattern[n]+(n == 0 ? -0.5 : 0.5));
       }
-    for (total_length=0.0; (total_length+length) < maximum_length; )
+    for (total_length=0.0; (total_length+length) <= maximum_length; )
     {
       total_length+=length;
       if ((n & 0x01) != 0)
@@ -1617,7 +1617,7 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
     dash_polygon[j].coordinates=1;
     j++;
   }
-  if ((total_length < maximum_length) && ((n & 0x01) == 0) && (j > 1))
+  if ((total_length <= maximum_length) && ((n & 0x01) == 0) && (j > 1))
     {
       dash_polygon[j]=primitive_info[i-1];
       dash_polygon[j].point.x+=MagickEpsilon;
