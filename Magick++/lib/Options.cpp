@@ -435,7 +435,8 @@ Magick::ColorspaceType Magick::Options::quantizeColorSpace ( void ) const
 void Magick::Options::quantizeDither ( bool ditherFlag_ )
 {
   _imageInfo->dither = (MagickBooleanType) ditherFlag_;
-  _quantizeInfo->dither = (MagickBooleanType) ditherFlag_;
+  _quantizeInfo->dither_method = ditherFlag_ ? RiemersmaDitherMethod :
+    NoDitherMethod;
 }
 bool Magick::Options::quantizeDither ( void ) const
 {

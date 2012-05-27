@@ -451,7 +451,8 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
   image_info->verbose=IsStringTrue(resource_value);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "dither","True");
-  quantize_info->dither=IsStringTrue(resource_value);
+  quantize_info->dither_method=IsStringTrue(resource_value) != MagickFalse ?
+    RiemersmaDitherMethod : NoDitherMethod;
   /*
     Parse command line.
   */
@@ -1018,7 +1019,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             ssize_t
               method;
 
-            quantize_info->dither=MagickFalse;
+            quantize_info->dither_method=NoDitherMethod;
             if (*option == '+')
               break;
             i++;
@@ -1028,7 +1029,6 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
             if (method < 0)
               ThrowDisplayException(OptionError,"UnrecognizedDitherMethod",
                 argv[i]);
-            quantize_info->dither=MagickTrue;
             quantize_info->dither_method=(DitherMethod) method;
             break;
           }

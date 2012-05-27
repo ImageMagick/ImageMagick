@@ -380,7 +380,8 @@ MagickExport QuantizeInfo *AcquireQuantizeInfo(const ImageInfo *image_info)
       const char
         *option;
 
-      quantize_info->dither=image_info->dither;
+      quantize_info->dither_method=image_info->dither == MagickFalse ?
+        NoDitherMethod : RiemersmaDitherMethod;
       option=GetImageOption(image_info,"dither");
       if (option != (const char *) NULL)
         quantize_info->dither_method=(DitherMethod) ParseCommandOption(
@@ -528,7 +529,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
   /*
     Create a reduced color image.
   */
-  if ((cube_info->quantize_info->dither != MagickFalse) &&
+  if ((cube_info->quantize_info->dither_method != NoDitherMethod) &&
       (cube_info->quantize_info->dither_method != NoDitherMethod))
     (void) DitherImage(image,cube_info,exception);
   else
@@ -1042,7 +1043,6 @@ MagickExport QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
     return(clone_info);
   clone_info->number_colors=quantize_info->number_colors;
   clone_info->tree_depth=quantize_info->tree_depth;
-  clone_info->dither=quantize_info->dither;
   clone_info->dither_method=quantize_info->dither_method;
   clone_info->colorspace=quantize_info->colorspace;
   clone_info->measure_error=quantize_info->measure_error;
@@ -2040,7 +2040,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
     return((CubeInfo *) NULL);
   cube_info->root->parent=cube_info->root;
   cube_info->quantize_info=CloneQuantizeInfo(quantize_info);
-  if (cube_info->quantize_info->dither == MagickFalse)
+  if (cube_info->quantize_info->dither_method == NoDitherMethod)
     return(cube_info);
   /*
     Initialize dither resources.
@@ -2298,7 +2298,6 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
   assert(quantize_info != (QuantizeInfo *) NULL);
   (void) ResetMagickMemory(quantize_info,0,sizeof(*quantize_info));
   quantize_info->number_colors=256;
-  quantize_info->dither=MagickTrue;
   quantize_info->dither_method=RiemersmaDitherMethod;
   quantize_info->colorspace=UndefinedColorspace;
   quantize_info->measure_error=MagickFalse;
@@ -2322,7 +2321,7 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %  The format of the PosterizeImage method is:
 %
 %      MagickBooleanType PosterizeImage(Image *image,const size_t levels,
-%        const MagickBooleanType dither,ExceptionInfo *exception)
+%        const DitherMethod dither_method,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2331,8 +2330,8 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %    o levels: Number of color levels allowed in each channel.  Very low values
 %      (2, 3, or 4) have the most visible effect.
 %
-%    o dither: Set this integer value to something other than zero to dither
-%      the mapped image.
+%    o dither_method: choose from UndefinedDitherMethod, NoDitherMethod,
+%      RiemersmaDitherMethod, FloydSteinbergDitherMethod.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -2349,7 +2348,7 @@ static inline ssize_t MagickRound(MagickRealType x)
 }
 
 MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
-  const MagickBooleanType dither,ExceptionInfo *exception)
+  const DitherMethod dither_method,ExceptionInfo *exception)
 {
 #define PosterizeImageTag  "Posterize/Image"
 #define PosterizePixel(pixel) (Quantum) (QuantumRange*(MagickRound( \
@@ -2462,7 +2461,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   quantize_info=AcquireQuantizeInfo((ImageInfo *) NULL);
   quantize_info->number_colors=(size_t) MagickMin((ssize_t) levels*levels*
     levels,MaxColormapSize+1);
-  quantize_info->dither=dither;
+  quantize_info->dither_method=dither_method;
   quantize_info->tree_depth=MaxTreeDepth;
   status=QuantizeImage(quantize_info,image,exception);
   quantize_info=DestroyQuantizeInfo(quantize_info);
@@ -2761,7 +2760,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
       colors=maximum_colors;
       for (depth=1; colors != 0; depth++)
         colors>>=2;
-      if ((quantize_info->dither != MagickFalse) && (depth > 2))
+      if ((quantize_info->dither_method != NoDitherMethod) && (depth > 2))
         depth--;
       if ((image->matte != MagickFalse) && (depth > 5))
         depth--;
@@ -2872,7 +2871,7 @@ MagickExport MagickBooleanType QuantizeImages(const QuantizeInfo *quantize_info,
       colors=maximum_colors;
       for (depth=1; colors != 0; depth++)
         colors>>=2;
-      if (quantize_info->dither != MagickFalse)
+      if (quantize_info->dither_method != NoDitherMethod)
         depth--;
     }
   /*

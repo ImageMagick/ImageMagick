@@ -8588,8 +8588,9 @@ MagickPrivate MagickBooleanType XPreferencesWidget(Display *display,
           MagickFalse ? MagickTrue : MagickFalse;
         preferences_info[4].raised=resource_info->display_warnings ==
           MagickFalse ? MagickTrue : MagickFalse;
-        preferences_info[5].raised=resource_info->quantize_info->dither ==
-          MagickFalse ? MagickTrue : MagickFalse;
+        preferences_info[5].raised=
+          resource_info->quantize_info->dither_method == NoDitherMethod ?
+          MagickTrue : MagickFalse;
         preferences_info[6].raised=resource_info->colormap !=
           SharedColormap ? MagickTrue : MagickFalse;
         preferences_info[7].raised=resource_info->use_pixmap ==
@@ -8842,8 +8843,9 @@ MagickPrivate MagickBooleanType XPreferencesWidget(Display *display,
     preferences_info[3].raised == MagickFalse ? MagickTrue : MagickFalse;
   resource_info->display_warnings=
      preferences_info[4].raised == MagickFalse ? MagickTrue : MagickFalse;
-  resource_info->quantize_info->dither=
-    preferences_info[5].raised == MagickFalse ? MagickTrue : MagickFalse;
+  resource_info->quantize_info->dither_method=
+    preferences_info[5].raised == MagickFalse ?
+    RiemersmaDitherMethod : NoDitherMethod;
   resource_info->colormap=SharedColormap;
   if (preferences_info[6].raised)
     resource_info->colormap=PrivateColormap;

@@ -8066,7 +8066,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
       quantize_info.number_colors=StringToUnsignedLong(colors);
-      quantize_info.dither=status != 0 ? MagickTrue : MagickFalse;
+      quantize_info.dither_method=status != 0 ? RiemersmaDitherMethod :
+        NoDitherMethod;
       (void) QuantizeImage(&quantize_info,*image,exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)

@@ -326,7 +326,7 @@ static struct
     { "Gamma", { {"gamma", StringReference}, {"channel", MagickChannelOptions},
       {"red", RealReference}, {"green", RealReference},
       {"blue", RealReference} } },
-    { "Map", { {"image", ImageReference}, {"dither", MagickBooleanOptions},
+    { "Map", { {"image", ImageReference},
       {"dither-method", MagickDitherOptions} } },
     { "MatteFloodfill", { {"geometry", StringReference},
       {"x", IntegerReference}, {"y", IntegerReference},
@@ -345,7 +345,7 @@ static struct
       {"invert", MagickBooleanOptions} } },
     { "Quantize", { {"colors", IntegerReference},
       {"treedepth", IntegerReference}, {"colorspace", MagickColorspaceOptions},
-      {"dither", MagickBooleanOptions}, {"measure", MagickBooleanOptions},
+      {"dither", MagickDitherOptions}, {"measure", MagickBooleanOptions},
       {"global", MagickBooleanOptions}, {"transparent-color", StringReference},
       {"dither-method", MagickDitherOptions} } },
     { "Raise", { {"geometry", StringReference}, {"width", IntegerReference},
@@ -499,7 +499,7 @@ static struct
     { "Decipher", { {"passphrase", StringReference} } },
     { "Deskew", { {"geometry", StringReference},
       {"threshold", StringReference} } },
-    { "Remap", { {"image", ImageReference}, {"dither", MagickBooleanOptions},
+    { "Remap", { {"image", ImageReference},
       {"dither-method", MagickDitherOptions} } },
     { "SparseColor", { {"points", ArrayReference},
       {"method", MagickSparseColorOptions},
@@ -8894,11 +8894,8 @@ Mogrify(ref,...)
             }
           quantize_info=AcquireQuantizeInfo(info->image_info);
           if (attribute_flag[1] != 0)
-            quantize_info->dither=(MagickBooleanType)
-              argument_list[1].integer_reference;
-          if (attribute_flag[2] != 0)
             quantize_info->dither_method=(DitherMethod)
-              argument_list[2].integer_reference;
+              argument_list[1].integer_reference;
           (void) RemapImages(quantize_info,image,
             argument_list[0].image_reference,exception);
           quantize_info=DestroyQuantizeInfo(quantize_info);
@@ -9059,12 +9056,11 @@ Mogrify(ref,...)
             quantize_info->colorspace=(ColorspaceType)
               argument_list[2].integer_reference;
           if (attribute_flag[3] != 0)
-            quantize_info->dither=argument_list[3].integer_reference != 0 ?
-              MagickTrue : MagickFalse;
+            quantize_info->dither_method=(DitherMethod)
+              argument_list[3].integer_reference;
           if (attribute_flag[4] != 0)
-            quantize_info->measure_error=
-              argument_list[4].integer_reference != 0 ? MagickTrue :
-              MagickFalse;
+            quantize_info->measure_error=argument_list[4].integer_reference !=
+              0 ? MagickTrue : MagickFalse;
           if (attribute_flag[5] != 0)
             (void) QueryColorCompliance(argument_list[5].string_reference,
               AllCompliance,&image->transparent_color,exception);
@@ -10576,11 +10572,8 @@ Mogrify(ref,...)
             }
           quantize_info=AcquireQuantizeInfo(info->image_info);
           if (attribute_flag[1] != 0)
-            quantize_info->dither=(MagickBooleanType)
-              argument_list[1].integer_reference;
-          if (attribute_flag[2] != 0)
             quantize_info->dither_method=(DitherMethod)
-              argument_list[2].integer_reference;
+              argument_list[1].integer_reference;
           (void) RemapImages(quantize_info,image,
             argument_list[0].image_reference,exception);
           quantize_info=DestroyQuantizeInfo(quantize_info);

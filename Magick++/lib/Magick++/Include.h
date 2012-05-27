@@ -263,6 +263,12 @@ namespace Magick
   using MagickCore::ShepardsDistortion;
   using MagickCore::SentinelDistortion;
 
+  // Dither methods
+  using MagickCore::UndefinedDitherMethod;
+  using MagickCore::NoDitherMethod;
+  using MagickCore::RiemersmaDitherMethod;
+  using MagickCore::FloydSteinbergDitherMethod;
+
   // Endian options
   using MagickCore::EndianType;
   using MagickCore::UndefinedEndian;

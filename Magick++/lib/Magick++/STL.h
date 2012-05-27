@@ -2257,7 +2257,8 @@ namespace Magick
     MagickCore::GetExceptionInfo( &exceptionInfo );
     MagickCore::QuantizeInfo quantizeInfo;
     MagickCore::GetQuantizeInfo( &quantizeInfo );
-    quantizeInfo.dither = dither_ ? MagickCore::MagickTrue : MagickCore::MagickFalse;
+    quantizeInfo.dither_method = dither_ ? MagickCore::RiemersmaDitherMethod :
+      MagickCore::NoDitherMethod;
     linkImages( first_, last_ );
     MagickCore::RemapImages( &quantizeInfo, first_->image(),
         mapImage_.constImage());

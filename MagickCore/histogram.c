@@ -1303,7 +1303,7 @@ MagickExport Image *UniqueImageColors(const Image *image,
 
       quantize_info=AcquireQuantizeInfo((ImageInfo *) NULL);
       quantize_info->number_colors=MaxColormapSize;
-      quantize_info->dither=MagickFalse;
+      quantize_info->dither_method=NoDitherMethod;
       quantize_info->tree_depth=8;
       (void) QuantizeImage(quantize_info,unique_image,exception);
       quantize_info=DestroyQuantizeInfo(quantize_info);
