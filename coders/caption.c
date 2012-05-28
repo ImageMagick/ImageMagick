@@ -209,7 +209,25 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         else
           high=draw_info->pointsize-1.0;
       }
-      draw_info->pointsize--;
+      for (draw_info->pointsize=(low+high)/2.0; ; )
+      {
+        text=AcquireString(caption);
+        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text,
+          exception);
+        (void) CloneString(&draw_info->text,text);
+        text=DestroyString(text);
+        (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
+          -metrics.bounds.x1,metrics.ascent);
+        if (draw_info->gravity == UndefinedGravity)
+          (void) CloneString(&draw_info->geometry,geometry);
+        status=GetMultilineTypeMetrics(image,draw_info,&metrics,exception);
+        width=(size_t) floor(metrics.width+draw_info->stroke_width+0.5);
+        height=(size_t) floor(metrics.height+draw_info->stroke_width+0.5);
+        if ((width <= image->columns) && (height <= image->rows))
+          break;
+        draw_info->pointsize--;
+      }
+      draw_info->pointsize=floor(draw_info->pointsize);
     }
   i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&caption,exception);
   if (image->rows == 0)
