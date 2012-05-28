@@ -1,6 +1,8 @@
 2012-05-28  6.7.7-3 Cristy  <quetzlzacatenango@image...>
   * Fix bug with stroke-dasharray (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21090).
+  * In rare cases, caption would not word-wrap properly (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21106).
 
 2012-05-27  6.7.7-3 Anthony Thyssen <A.Thyssen@griffith...>
   * Trialing the addition of new interpolation methods
