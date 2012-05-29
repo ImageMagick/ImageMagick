@@ -2060,7 +2060,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   ssize_t
     j;
 
-#if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
+#ifdef PNG_UNKNOWN_CHUNKS_SUPPORTED
   png_byte unused_chunks[]=
   {
     104,  73,  83,  84, (png_byte) '\0',   /* hIST */
@@ -2069,6 +2069,12 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     115,  67,  65,  76, (png_byte) '\0',   /* sCAL */
     115,  80,  76,  84, (png_byte) '\0',   /* sPLT */
     116,  73,  77,  69, (png_byte) '\0',   /* tIME */
+#ifdef PNG_APNG_SUPPORTED /* libpng was built with APNG patch; */
+                          /* ignore the APNG chunks */
+     97,  99,  84,  76, (png_byte) '\0',   /* acTL */
+    102,  99,  84,  76, (png_byte) '\0',   /* fcTL */
+    102, 100,  65,  84, (png_byte) '\0',   /* fdAT */
+#endif
   };
 #endif
 

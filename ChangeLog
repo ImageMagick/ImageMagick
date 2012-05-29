@@ -1,4 +1,7 @@
-2012-05-29.7.7-3 Cristy  <quetzlzacatenango@image...>
+2012-05-29  6.7.7-4 Glenn Randers-Pehrson <glennrp@image...>
+  * Ignore APNG chunks even when libpng is built with the "APNG patch".
+
+2012-05-29  6.7.7-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.7-3, SVN revision 8089.
 
 2012-05-28  6.7.7-3 Cristy  <quetzlzacatenango@image...>
@@ -17,7 +20,7 @@
       Average           Average of 4 pixels around sampling point
       NearestAverage    Select nearest pixel if close, else Average
       NearestBlend      blend 1, 2 or 4 pixel neighbors
-    NOTE: Before this 'Average' was equivelent to 'Average16' above.
+    NOTE: Before this 'Average' was equivalent to 'Average16' above.
     The 'Nearest' methods are variations on NearestNeighbor (or just 'Nearest')
 
   * Add 'NearestBackground'.  Interpolation returns background color unless
