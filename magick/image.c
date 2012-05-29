@@ -277,7 +277,6 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info)
   image->client_data=image_info->client_data;
   if (image_info->cache != (void *) NULL)
     ClonePixelCacheMethods(image->cache,image_info->cache);
-  (void) SetImageVirtualPixelMethod(image,image_info->virtual_pixel_method);
   (void) SyncImageSettings(image_info,image);
   option=GetImageOption(image_info,"delay");
   if (option != (const char *) NULL)
