@@ -217,10 +217,10 @@
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Notebook Reparatur" href="http://www.notebook-reparaturen-berlin.de">Notebook Reparatur</a><!-- 2012080100300 atlas-multimedia-->
+   <a rel="follow" title="Sponsor: Names List" href="http://www.listofnames.info">Names List</a><!-- 2012110100180 grimshrat@busyb-->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Schlüsseldienst Berlin BSD" href="http://www.schluesseldienst-berlin.de">Schlüsseldienst Berlin BSD</a><!-- 2012050100025 info@schlues-->
+   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
 </div>
 </div>
 </div>
@@ -249,7 +249,18 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2012-05-26  6.7.7-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2012-05-29.7.7-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> New version 6.7.7-3, SVN revision 8089.</dd>
+<dt>2012-05-28  6.7.7-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> Fix bug with stroke-dasharray (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21090).</dd>
+  <dd> In rare cases, caption would not word-wrap properly (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21106).</dd>
+  <dd> Don't set alpha pixels in SetImageVirtualPixelMethod() unless    image area is well defined (i.e. != 0) (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?t=21110).</dd>
+<dt>2012-05-27  6.7.7-3 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
+  <dd> Trialing the addition of new interpolation methods      Average16         average of 16 pixels around sampling point      Average9          9 pixels around nearest pixel      Average           Average of 4 pixels around sampling point      NearestAverage    Select nearest pixel if close, else Average      NearestBlend      blend 1, 2 or 4 pixel neighbors    NOTE: Before this 'Average' was equivelent to 'Average16' above.    The 'Nearest' methods are variations on NearestNeighbor (or just 'Nearest')</dd>
+</dd>
+  <dd> Add 'NearestBackground'.  Interpolation returns background color unless    the pixel interpolation has an 'Exact Match'.  For Distort, that will    only happen for all pixels if scale of resize is an odd-integer.</dd>
+    For example:  -filter point -interpolate   +distort SRT 9,0</dd>
+<dt>2012-05-26  6.7.7-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.7-2, SVN revision 8066.</dd>
 <dt>2012-05-26  6.7.7-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> MagickDelay() is in microseconds, not milliseconds.</dd>
@@ -258,7 +269,7 @@
 <dt>2012-05-20  6.7.7-1 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> In rare cases, caption would not word-wrap properly (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21044).</dd>
   <dd> Set the JPEG image colorspace after the columns / rows are set (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21059).</dd>
-  <dd> Potential gray images are in either the gray or sRGB colorspaces.</dd>
+  <dd> Potential gray images are in either the gray or RGB colorspaces.</dd>
   <dd> Restore MagickSetImageEndian() method (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?t=20425&p=81525).</dd>
   <dd> Respect resolution when rendering SVG (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21076).</dd>
 <dt>2012-05-20  6.7.7-1 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
