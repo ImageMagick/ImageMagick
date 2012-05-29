@@ -80,10 +80,14 @@
 %  end of the line.  You can escape a comment '#', using quotes or backlsashes
 %  just as you can in a shell.
 %
+%  The parser will accept both newlines, returns, or return-newlines to mark
+%  the EOL. Though this is technically breaking (or perhaps adding to) the
+%  'BASH' syntax that is being followed.
+%
 %
 %  UNIX script Launcher...
 %
-%  Th euse of '#' comments allow normal UNIX 'scripting' to be used to call on
+%  The use of '#' comments allow normal UNIX 'scripting' to be used to call on
 %  the "magick" command to parse the tokens from a file
 %
 %    #!/path/to/command/magick -script
@@ -96,7 +100,7 @@
 %    #!/usr/bin/env magick-script
 %
 %
-%  Shell script launsher...
+%  Shell script launcher...
 %
 %  As a special case a ':' at the start of a line is also treated as a comment
 %  This allows a magick script to ignore a line that can be parsed by the shell
@@ -104,8 +108,19 @@
 %  script 'launcher' to be used for magick scripts.
 %
 %    #!/bin/sh
-%    : echo "This part is run in the shell, but ignored by Magick"
-%    : exec magick -script "$0" "$@"; exit 10
+%    :; exec magick -script "$0" "$@"; exit 10
+%    #
+%    # The rest of the file is magick script
+%    -read label:"This is a Magick Script!"
+%    -write show: -exit
+%
+% Or with some shell pre/post processing...
+%
+%    #!/bin/sh
+%    :; echo "This part is run in the shell, but ignored by Magick"
+%    :; magick -script "$0" "$@"
+%    :; echo "This is run after the "magick" script is finished!"
+%    :; exit 10
 %    #
 %    # The rest of the file is magick script
 %    -read label:"This is a Magick Script!"
@@ -120,16 +135,29 @@
 %
 %    @echo This line is DOS executed but ignored by Magick
 %    @magick -script %~dpnx0 %*
+%    @echo This line is processed after the Magick script is finished
 %    @GOTO :EOF
 %    #
 %    # The rest of the file is magick script
 %    -read label:"This is a Magick Script!"
 %    -write show: -exit
 %
-% But this can also be used as a shell script launhers
+% But this can also be used as a shell script launcher as well!
+% Though is more restrictive and less free-form than using ':'.
 %
+%    #!/bin/sh
 %    @() { exec magick -script "$@"; }
 %    @ "$0" "$@"; exit
+%    #
+%    # The rest of the file is magick script
+%    -read label:"This is a Magick Script!"
+%    -write show: -exit
+%
+% Or even like this...
+%
+%    #!/bin/sh
+%    @() { }
+%    @; exec magick -script "$0" "$@"; exit
 %    #
 %    # The rest of the file is magick script
 %    -read label:"This is a Magick Script!"
