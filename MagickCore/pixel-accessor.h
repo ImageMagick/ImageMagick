@@ -26,7 +26,7 @@ extern "C" {
 #include <MagickCore/cache.h>
 #include <MagickCore/cache-view.h>
 #include <MagickCore/color.h>
-#include <MagickCore/colorspace-private.h>
+#include <MagickCore/colorspace.h>
 #include <MagickCore/image.h>
 
 #undef index
