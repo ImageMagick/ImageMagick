@@ -169,6 +169,9 @@
   <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201208010120 mickey@163... -->
 <div class="sponsbox">
 <div class="sponsor">
+  <a rel="follow" title="Sponsor: The Fastest &amp; Easiest Way to Find Images" href="http://www.graphicsfactory.com">The Fastest &amp; Easiest Way to Find Images</a><!-- 201210010270 graphicsfac... -->
+</div>
+<div class="sponsor">
   <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201209010090 barsh@inter... -->
 </div>
 <div class="sponsor">
@@ -182,12 +185,6 @@
 </div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: Top-Cheap-Web-Hosting.com" href="http://www.top-cheap-web-hosting.com">Top-Cheap-Web-Hosting.com</a><!-- 201304010090 eunge.liu-->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 201206010090 golestan -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201206010270 info@pkwte... -->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201208010120 mickey@163... -->
@@ -208,19 +205,13 @@
   <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
 </div>
 <div class="sponsor">
-  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540 suvalj -->
-</div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
-</div>
-<div class="sponsor">
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Names List" href="http://www.listofnames.info">Names List</a><!-- 2012110100180 grimshrat@busyb-->
+   <a rel="follow" title="Sponsor: Best Web Hosting" href="http://www.webhostingclue.com">Best Web Hosting</a><!-- 2012120100150 racent marketing@webhosting...-->
 </div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Bildbearbeitung" href="http://www.bildschliff.de">Bildbearbeitung</a><!-- 2012060100300 strait.de-->
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Fernsehdienst Berlin" href="http://www.atlas-multimedia.de">Fernsehdienst Berlin</a><!-- 2012080100030 atlas-multimedia-->
 </div>
 </div>
 </div>
@@ -249,17 +240,18 @@
 <div class="main">
 
 <h1>ImageMagick Changelog</h1>
-<dl><dt>2012-05-29.7.7-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+<dl><dt>2012-05-30  6.7.7-4 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
+  <dd> 'convert 1-bit.tif -rotate 90 ...' returns a 1-bit TIFF image as expected.</dd>
+<dt>2012-05-29  6.7.7-4 Glenn Randers-Pehrson &lt;glennrp@image...&gt;</dt>
+  <dd> Ignore APNG chunks even when libpng is built with the "APNG patch".</dd>
+<dt>2012-05-29  6.7.7-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.7-3, SVN revision 8089.</dd>
 <dt>2012-05-28  6.7.7-3 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> Fix bug with stroke-dasharray (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21090).</dd>
   <dd> In rare cases, caption would not word-wrap properly (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?f=3&t=21106).</dd>
   <dd> Don't set alpha pixels in SetImageVirtualPixelMethod() unless    image area is well defined (i.e. != 0) (reference    http://www.imagemagick.org/discourse-server/viewtopic.html?t=21110).</dd>
 <dt>2012-05-27  6.7.7-3 Anthony Thyssen &lt;A.Thyssen@griffith...&gt;</dt>
-  <dd> Trialing the addition of new interpolation methods      Average16         average of 16 pixels around sampling point      Average9          9 pixels around nearest pixel      Average           Average of 4 pixels around sampling point      NearestAverage    Select nearest pixel if close, else Average      NearestBlend      blend 1, 2 or 4 pixel neighbors    NOTE: Before this 'Average' was equivelent to 'Average16' above.    The 'Nearest' methods are variations on NearestNeighbor (or just 'Nearest')</dd>
-</dd>
-  <dd> Add 'NearestBackground'.  Interpolation returns background color unless    the pixel interpolation has an 'Exact Match'.  For Distort, that will    only happen for all pixels if scale of resize is an odd-integer.</dd>
-    For example:  -filter point -interpolate   +distort SRT 9,0</dd>
+  <dd> Trialing the addition of new interpolation methods      Average16         average of 16 pixels around sampling point      Average9          9 pixels around nearest pixel      Average4          Average of 4 pixels around sampling point      Background        Background color (for resampling error checking)      Blend             Blend of closest 1, 2 or 4 pixel neighbors    NOTE: 'Average' is now equivelent to 'Average4',    previous to this version it was equivelent to 'Average16'.    The 'Background' method is for showing 'resample errors' be it    accidental, or on purpose.  See IM Examples, Cylindrical Filters.</dd>
 <dt>2012-05-26  6.7.7-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
   <dd> New version 6.7.7-2, SVN revision 8066.</dd>
 <dt>2012-05-26  6.7.7-2 Cristy  &lt;quetzlzacatenango@image...&gt;</dt>
