@@ -2790,11 +2790,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
               (void) SetImageDepth(image,8);
             }
           else
-            {
-              if (IssRGBColorspace(image->colorspace) == MagickFalse)
-                (void) TransformImageColorspace(image,sRGBColorspace);
-              photometric=PHOTOMETRIC_RGB;
-            }
+            photometric=PHOTOMETRIC_RGB;
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);
         if ((image_info->type != TrueColorType) &&
             (image_info->type != TrueColorMatteType))
@@ -2836,6 +2832,9 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 }
           }
       }
+    if ((photometric == PHOTOMETRIC_RGB) &&
+        (IssRGBColorspace(image->colorspace) == MagickFalse))
+      (void) TransformImageColorspace(image,sRGBColorspace);
     switch (image->endian)
     {
       case LSBEndian:
