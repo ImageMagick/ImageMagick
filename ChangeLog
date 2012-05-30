@@ -1,3 +1,6 @@
+2012-05-30  6.7.7-4 Cristy  <quetzlzacatenango@image...>
+  * 'convert 1-bit.tif -rotate 90 ...' returns a 1-bit TIFF image as expected.
+
 2012-05-29  6.7.7-4 Glenn Randers-Pehrson <glennrp@image...>
   * Ignore APNG chunks even when libpng is built with the "APNG patch".
 
