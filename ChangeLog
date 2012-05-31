@@ -1,3 +1,9 @@
+2012-05-31  6.7.7-5 Cristy  <quetzlzacatenango@image...>
+  * Set terminal character for GIF comment.
+
+2012-05-30  6.7.7-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.7-3, SVN revision 8096.
+
 2012-05-30  6.7.7-4 Cristy  <quetzlzacatenango@image...>
   * 'convert 1-bit.tif -rotate 90 ...' returns a 1-bit TIFF image as expected.
 
