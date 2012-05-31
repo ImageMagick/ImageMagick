@@ -1689,7 +1689,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
            */
             (void) WriteBlobByte(image,(unsigned char) 0x21);
             (void) WriteBlobByte(image,(unsigned char) 0xfe);
-            value=GetImageProperty(image,"comment");
+            value=GetImageProperty(image,"comment",exception);
             for (p=value; *p != '\0'; )
             {
               count=MagickMin(strlen(p),255);
