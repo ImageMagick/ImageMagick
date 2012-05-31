@@ -1099,6 +1099,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   "MemoryAllocationFailed");
               (void) CopyMagickMemory(comments+length,header,(size_t) count);
             }
+            comments[length+count]='\0';
             (void) SetImageProperty(image,"comment",comments,exception);
             comments=DestroyString(comments);
             break;
@@ -1674,38 +1675,29 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image,
         if ((LocaleCompare(write_info->magick,"GIF87") != 0) &&
             (GetImageProperty(image,"comment",exception) != (const char *) NULL))
           {
-            char
-              *comments;
+            const char
+              *value;
+
+            register const char 
+              *p;
 
             size_t
-              length;
-
-            ssize_t
               count;
-
-            unsigned char
-              header[MaxTextExtent];
-
+    
             /*
-              Read comment extension.
-            */
-            comments=AcquireString((char *) NULL);
-            for (length=0; ; length+=count)
+              Write Comment extension.
+           */
+            (void) WriteBlobByte(image,(unsigned char) 0x21);
+            (void) WriteBlobByte(image,(unsigned char) 0xfe);
+            value=GetImageProperty(image,"comment");
+            for (p=value; *p != '\0'; )
             {
-              count=(ssize_t) ReadBlobBlock(image,header);
-              if (count == 0)
-                break;
-              header[count]='\0';
-              comments=(char *) ResizeQuantumMemory(comments,length+count+1,
-                sizeof(*comments));
-              if (comments == (char *) NULL)
-                ThrowBinaryException(ResourceLimitError,
-                  "MemoryAllocationFailed",image->filename);
-              (void) CopyMagickMemory(comments+length,header,(size_t) count);
+              count=MagickMin(strlen(p),255);
+              (void) WriteBlobByte(image,(unsigned char) count);
+              for (i=0; i < (ssize_t) count; i++)
+                (void) WriteBlobByte(image,(unsigned char) *p++);
             }
-            (void) SetImageProperty(image,"comment",comments,exception);
-            comments=DestroyString(comments);
-            break;
+            (void) WriteBlobByte(image,(unsigned char) 0x00);
           }
         if ((GetPreviousImageInList(image) == (Image *) NULL) &&
             (GetNextImageInList(image) != (Image *) NULL) &&
