@@ -1104,6 +1104,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   "MemoryAllocationFailed");
               (void) CopyMagickMemory(comments+length,header,(size_t) count);
             }
+            comments[length+count]='\0';
             (void) SetImageProperty(image,"comment",comments);
             comments=DestroyString(comments);
             break;
@@ -1686,7 +1687,7 @@ static MagickBooleanType WriteGIFImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobByte(image,(unsigned char) 0x21);
             (void) WriteBlobByte(image,(unsigned char) 0xfe);
             value=GetImageProperty(image,"comment");
-            for (p=value; strlen(p) != 0; )
+            for (p=value; *p != '\0'; )
             {
               count=MagickMin(strlen(p),255);
               (void) WriteBlobByte(image,(unsigned char) count);
