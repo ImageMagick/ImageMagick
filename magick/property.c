@@ -3418,7 +3418,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
             value);
           if (colorspace < 0)
             break;
-          (void) SetImageColorspace(image,(ColorspaceType) colorspace);
+          image->colorspace=(ColorspaceType) colorspace;
           break;
         }
       if (LocaleCompare("compose",property) == 0)
