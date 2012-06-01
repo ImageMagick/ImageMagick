@@ -60,6 +60,7 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/option.h"
+#include "magick/pixel-private.h"
 #include "magick/property.h"
 #include "magick/quantize.h"
 #include "magick/quantum-private.h"
@@ -1325,6 +1326,11 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         colormap=(unsigned char *) RelinquishMagickMemory(colormap);
       }
+    for (i=0; i < (ssize_t) image->colors; i++)
+      if (IsGrayPixel(image->colormap+i) == MagickFalse)
+        break;
+    if (i == (ssize_t) image->colors)
+      SetImageColorspace(image,GRAYColorspace);
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
