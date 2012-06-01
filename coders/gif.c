@@ -1322,6 +1322,12 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         colormap=(unsigned char *) RelinquishMagickMemory(colormap);
       }
+    for (i=0; i < (ssize_t) image->colors; i++)
+      if ((image->colormap[i].red != image->colormap[i].green) ||
+          (image->colormap[i].green != image->colormap[i].blue))
+        break;
+    if (i == (ssize_t) image->colors)
+      SetImageColorspace(image,GRAYColorspace,exception);
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
