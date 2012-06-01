@@ -748,14 +748,10 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
       q=image->colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
       {
-        SetPixelRed(q,ClampToUnsignedQuantum(
-          GetPixelRed(q)));
-        SetPixelGreen(q,ClampToUnsignedQuantum(
-          GetPixelGreen(q)));
-        SetPixelBlue(q,ClampToUnsignedQuantum(
-          GetPixelBlue(q)));
-        SetPixelOpacity(q,ClampToUnsignedQuantum(
-          GetPixelOpacity(q)));
+        SetPixelRed(q,ClampToUnsignedQuantum(GetPixelRed(q)));
+        SetPixelGreen(q,ClampToUnsignedQuantum(GetPixelGreen(q)));
+        SetPixelBlue(q,ClampToUnsignedQuantum(GetPixelBlue(q)));
+        SetPixelOpacity(q,ClampToUnsignedQuantum(GetPixelOpacity(q)));
         q++;
       }
       return(SyncImage(image));
@@ -794,17 +790,13 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        SetPixelRed(q,ClampToUnsignedQuantum(
-          GetPixelRed(q)));
+        SetPixelRed(q,ClampToUnsignedQuantum(GetPixelRed(q)));
       if ((channel & GreenChannel) != 0)
-        SetPixelGreen(q,ClampToUnsignedQuantum(
-          GetPixelGreen(q)));
+        SetPixelGreen(q,ClampToUnsignedQuantum(GetPixelGreen(q)));
       if ((channel & BlueChannel) != 0)
-        SetPixelBlue(q,ClampToUnsignedQuantum(
-          GetPixelBlue(q)));
+        SetPixelBlue(q,ClampToUnsignedQuantum(GetPixelBlue(q)));
       if ((channel & OpacityChannel) != 0)
-        SetPixelOpacity(q,ClampToUnsignedQuantum(
-          GetPixelOpacity(q)));
+        SetPixelOpacity(q,ClampToUnsignedQuantum(GetPixelOpacity(q)));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         SetPixelIndex(indexes+x,ClampToUnsignedQuantum(
