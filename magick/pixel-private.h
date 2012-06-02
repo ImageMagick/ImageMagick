@@ -28,6 +28,21 @@ extern "C" {
 #include <magick/image-private.h>
 #include <magick/quantum-private.h>
 
+static inline MagickRealType AlphaReciprocal(const MagickRealType alpha)
+{
+  MagickRealType
+    beta;
+
+  /*
+     Reciprocal alpha: clamp overshoot; ensure alpha is not negative or too
+     close to 0; return reciprocal.
+  */
+  beta=(alpha > (MagickRealType) 1.0 ? (MagickRealType) 1.0 : alpha);
+  beta=(gamma < (MagickRealType) MagickEpsilon ? (MagickRealType)
+    MagickEpsilon : beta);
+  return((MagickRealType) 1.0/beta);
+}
+
 static inline MagickPixelPacket *CloneMagickPixelPacket(
   const MagickPixelPacket *pixel)
 {
