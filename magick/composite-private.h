@@ -29,6 +29,7 @@ extern "C" {
 #include "magick/color.h"
 #include "magick/image.h"
 #include "magick/image-private.h"
+#include "magick/pixel-private.h"
 
 static inline MagickRealType RoundToUnity(const MagickRealType value)
 {
@@ -61,7 +62,7 @@ static inline void MagickCompositeOver(const PixelPacket *p,
   gamma=1.0-QuantumScale*QuantumScale*alpha*beta;
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   composite->opacity=(Quantum) (QuantumRange*(1.0-gamma)+0.5);
-  gamma=1.0/(gamma < MagickEpsilon ? MagickEpsilon : gamma);
+  gamma=ClampReciprocal(gamma);
   SetPixelRed(composite,gamma*MagickOver_((MagickRealType)
     GetPixelRed(p),alpha,(MagickRealType) GetPixelRed(q),beta)+0.5);
   SetPixelGreen(composite,gamma*MagickOver_((MagickRealType)
@@ -70,7 +71,7 @@ static inline void MagickCompositeOver(const PixelPacket *p,
     GetPixelBlue(p),alpha,(MagickRealType) GetPixelBlue(q),beta)+0.5);
 #else
   SetPixelOpacity(composite,QuantumRange*(1.0-gamma));
-  gamma=1.0/(gamma < MagickEpsilon ? MagickEpsilon : gamma);
+  gamma=ClampReciprocal(gamma);
   SetPixelRed(composite,gamma*MagickOver_((MagickRealType)
     GetPixelRed(p),alpha,(MagickRealType) GetPixelRed(q),beta));
   SetPixelGreen(composite,gamma*MagickOver_((MagickRealType)
@@ -97,7 +98,7 @@ static inline void MagickPixelCompositeOver(const MagickPixelPacket *p,
     }
   gamma=1.0-QuantumScale*QuantumScale*alpha*beta;
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-  gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+  gamma=ClampReciprocal(gamma);
   composite->red=gamma*MagickOver_(p->red,alpha,q->red,beta);
   composite->green=gamma*MagickOver_(p->green,alpha,q->green,beta);
   composite->blue=gamma*MagickOver_(p->blue,alpha,q->blue,beta);
@@ -121,7 +122,7 @@ static inline void MagickPixelCompositePlus(const MagickPixelPacket *p,
   Da=1.0-QuantumScale*beta;
   gamma=RoundToUnity(Sa+Da);  /* 'Plus' blending -- not 'Over' blending */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-  gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+  gamma=ClampReciprocal(gamma);
   composite->red=gamma*(Sa*p->red+Da*q->red);
   composite->green=gamma*(Sa*p->green+Da*q->green);
   composite->blue=gamma*(Sa*p->blue+Da*q->blue);
