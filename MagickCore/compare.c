@@ -950,7 +950,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     channel=GetPixelChannelMapChannel(image,i);
     gamma=image_statistics[i].standard_deviation*
       reconstruct_statistics[channel].standard_deviation;
-    gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+    gamma=ClampReciprocal(gamma);
     distortion[i]=QuantumRange*gamma*distortion[i];
     distortion[CompositePixelChannel]+=distortion[i]*distortion[i];
   }

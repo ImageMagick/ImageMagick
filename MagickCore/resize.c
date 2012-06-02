@@ -61,6 +61,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resample.h"
 #include "MagickCore/resample-private.h"
@@ -2362,7 +2363,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
           pixel+=alpha*p[k*GetPixelChannels(image)+i];
           gamma+=alpha;
         }
-        gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+        gamma=ClampReciprocal(gamma);
         SetPixelChannel(resize_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       q+=GetPixelChannels(resize_image);
@@ -2578,7 +2579,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
           pixel+=alpha*p[k*GetPixelChannels(image)+i];
           gamma+=alpha;
         }
-        gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+        gamma=ClampReciprocal(gamma);
         SetPixelChannel(resize_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       q+=GetPixelChannels(resize_image);
@@ -3209,7 +3210,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
               }
             alpha=QuantumScale*scanline[x*GetPixelChannels(image)+
               GetPixelChannelMapChannel(image,AlphaPixelChannel)];
-            gamma=1.0/(fabs((double) alpha) < MagickEpsilon ? MagickEpsilon : alpha);
+            gamma=ClampReciprocal(alpha);
             SetPixelChannel(scale_image,channel,ClampToQuantum(gamma*scanline[
               x*GetPixelChannels(image)+offset]),q);
           }
@@ -3311,7 +3312,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
             }
           alpha=QuantumScale*scanline[x*GetPixelChannels(image)+
             GetPixelChannelMapChannel(image,AlphaPixelChannel)];
-          gamma=1.0/(fabs((double) alpha) < MagickEpsilon ? MagickEpsilon : alpha);
+          gamma=ClampReciprocal(alpha);
           SetPixelChannel(scale_image,channel,ClampToQuantum(gamma*
             scale_scanline[x*MaxPixelChannels+channel]),q);
         }

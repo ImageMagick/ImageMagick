@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-static inline MagickRealType AlphaReciprocal(const MagickRealType alpha)
+static inline MagickRealType ClampReciprocal(const MagickRealType alpha)
 {
   MagickRealType
     beta;
