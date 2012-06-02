@@ -62,6 +62,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resource_.h"
@@ -3609,7 +3610,7 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
             continue;
           }
         Sa=QuantumScale*GetPixelAlpha(image,q);
-        gamma=1.0/(fabs(Sa) < MagickEpsilon ? MagickEpsilon : Sa);
+        gamma=ClampReciprocal(Sa);
         for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
           PixelChannel

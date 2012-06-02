@@ -194,6 +194,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/option.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
@@ -1251,7 +1252,7 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
       */
       q=image->colormap+image->colors;
       alpha=(MagickRealType) ((MagickOffsetType) node_info->number_unique);
-      alpha=1.0/(fabs((double) alpha) < MagickEpsilon ? MagickEpsilon : alpha);
+      alpha=ClampReciprocal(alpha);
       if (cube_info->associate_alpha == MagickFalse)
         {
           q->red=(double) ClampToQuantum((MagickRealType)
@@ -1285,7 +1286,7 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
                 gamma;
 
               gamma=(MagickRealType) (QuantumScale*q->alpha);
-              gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+              gamma=ClampReciprocal(gamma);
               q->red=(double) ClampToQuantum((MagickRealType)
                 (alpha*gamma*QuantumRange*node_info->total_color.red));
               q->green=(double) ClampToQuantum((MagickRealType)

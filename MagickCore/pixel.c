@@ -4136,7 +4136,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
         }
       for (i=0; i < 16; i++)
       {
-        gamma=1.0/(fabs((double) alpha[i]) < MagickEpsilon ? MagickEpsilon : alpha[i]);
+        gamma=ClampReciprocal(alpha[i]);
         *pixel+=gamma*0.0625*pixels[i];
       }
       break;
@@ -4199,7 +4199,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
       */
       gamma=1.0;
       if (channel != AlphaPixelChannel)
-        gamma=AlphaReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
+        gamma=ClampReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
           alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+
           cx[2]*alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+
           cx[1]*alpha[9]+cx[2]*alpha[10]+cx[3]*alpha[11])+cy[3]*(
@@ -4243,7 +4243,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
       epsilon.y=1.0-delta.y;
       gamma=((epsilon.y*(epsilon.x*alpha[0]+delta.x*alpha[1])+delta.y*
         (epsilon.x*alpha[2]+delta.x*alpha[3])));
-      gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+      gamma=ClampReciprocal(gamma);
       *pixel=gamma*(epsilon.y*(epsilon.x*pixels[0]+delta.x*pixels[1])+delta.y*
         (epsilon.x*pixels[2]+delta.x*pixels[3]));
       break;
@@ -4350,7 +4350,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
               */
               delta.y=1.0-delta.y;
               gamma=MeshInterpolate(&delta,alpha[2],alpha[3],alpha[0]);
-              gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+              gamma=ClampReciprocal(gamma);
               *pixel=gamma*MeshInterpolate(&delta,pixels[2],pixels[3],
                 pixels[0]);
             }
@@ -4361,7 +4361,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
               */
               delta.x=1.0-delta.x;
               gamma=MeshInterpolate(&delta,alpha[1],alpha[0],alpha[3]);
-              gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+              gamma=ClampReciprocal(gamma);
               *pixel=gamma*MeshInterpolate(&delta,pixels[1],pixels[0],
                 pixels[3]);
             }
@@ -4377,7 +4377,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
                 Top-left triangle (pixel: 0, diagonal: 1-2).
               */
               gamma=MeshInterpolate(&delta,alpha[0],alpha[1],alpha[2]);
-              gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+              gamma=ClampReciprocal(gamma);
               *pixel=gamma*MeshInterpolate(&delta,pixels[0],pixels[1],
                 pixels[2]);
             }
@@ -4389,7 +4389,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
               delta.x=1.0-delta.x;
               delta.y=1.0-delta.y;
               gamma=MeshInterpolate(&delta,alpha[3],alpha[2],alpha[1]);
-              gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+              gamma=ClampReciprocal(gamma);
               *pixel=gamma*MeshInterpolate(&delta,pixels[3],pixels[2],
                 pixels[1]);
             }
@@ -4438,7 +4438,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
         for (j=(-1); j < 3L; j++)
         {
           dx=CubicWeightingFunction(delta.x-(MagickRealType) j);
-          gamma=1.0/(fabs((double) alpha[n]) < MagickEpsilon ? MagickEpsilon : alpha[n]);
+          gamma=ClampReciprocal(alpha[n]);
           *pixel+=gamma*dx*dy*pixels[n];
           n++;
         }
@@ -4565,7 +4565,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           alpha[j]=QuantumScale*GetPixelAlpha(source,p+j*
             GetPixelChannels(source));
           pixels[j]*=alpha[j];
-          gamma=1.0/(fabs((double) alpha[j]) < MagickEpsilon ? MagickEpsilon : alpha[j]);
+          gamma=ClampReciprocal(alpha[j]);
           sum+=gamma*0.0625*pixels[j];
         }
         SetPixelChannel(destination,channel,ClampToQuantum(sum),pixel);
@@ -4641,7 +4641,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         */
         gamma=1.0;
         if ((traits & BlendPixelTrait) == 0)
-          gamma=AlphaReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
+          gamma=ClampReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
             alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+
             cx[2]*alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+
             cx[1]*alpha[9]+cx[2]*alpha[10]+cx[3]*alpha[11])+cy[3]*(
@@ -4687,7 +4687,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         if ((traits & BlendPixelTrait) == 0)
           {
             gamma=((epsilon.y*(epsilon.x+delta.x)+delta.y*(epsilon.x+delta.x)));
-            gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+            gamma=ClampReciprocal(gamma);
             SetPixelChannel(destination,channel,ClampToQuantum(gamma*(epsilon.y*
               (epsilon.x*pixels[0]+delta.x*pixels[1])+delta.y*(epsilon.x*
               pixels[2]+delta.x*pixels[3]))),pixel);
@@ -4705,7 +4705,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         pixels[3]*=alpha[3];
         gamma=((epsilon.y*(epsilon.x*alpha[0]+delta.x*alpha[1])+delta.y*
           (epsilon.x*alpha[2]+delta.x*alpha[3])));
-        gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+        gamma=ClampReciprocal(gamma);
         SetPixelChannel(destination,channel,ClampToQuantum(gamma*(epsilon.y*
           (epsilon.x*pixels[0]+delta.x*pixels[1])+delta.y*(epsilon.x*pixels[2]+
           delta.x*pixels[3]))),pixel);
@@ -4859,7 +4859,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                 */
                 delta.y=1.0-delta.y;
                 gamma=MeshInterpolate(&delta,alpha[2],alpha[3],alpha[0]);
-                gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+                gamma=ClampReciprocal(gamma);
                 SetPixelChannel(destination,channel,ClampToQuantum(gamma*
                   MeshInterpolate(&delta,pixels[2],pixels[3],pixels[0])),pixel);
               }
@@ -4870,7 +4870,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                 */
                 delta.x=1.0-delta.x;
                 gamma=MeshInterpolate(&delta,alpha[1],alpha[0],alpha[3]);
-                gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+                gamma=ClampReciprocal(gamma);
                 SetPixelChannel(destination,channel,ClampToQuantum(gamma*
                   MeshInterpolate(&delta,pixels[1],pixels[0],pixels[3])),pixel);
               }
@@ -4886,7 +4886,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                   Top-left triangle (pixel: 0, diagonal: 1-2).
                 */
                 gamma=MeshInterpolate(&delta,alpha[0],alpha[1],alpha[2]);
-                gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+                gamma=ClampReciprocal(gamma);
                 SetPixelChannel(destination,channel,ClampToQuantum(gamma*
                   MeshInterpolate(&delta,pixels[0],pixels[1],pixels[2])),pixel);
               }
@@ -4898,7 +4898,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                 delta.x=1.0-delta.x;
                 delta.y=1.0-delta.y;
                 gamma=MeshInterpolate(&delta,alpha[3],alpha[2],alpha[1]);
-                gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+                gamma=ClampReciprocal(gamma);
                 SetPixelChannel(destination,channel,ClampToQuantum(gamma*
                   MeshInterpolate(&delta,pixels[3],pixels[2],pixels[1])),pixel);
               }
@@ -4963,8 +4963,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           for (k=(-1); k < 3L; k++)
           {
             dx=CubicWeightingFunction(delta.x-(MagickRealType) k);
-            gamma=1.0/(fabs((double) alpha[n]) < MagickEpsilon ? MagickEpsilon :
-              alpha[n]);
+            gamma=ClampReciprocal(alpha[n]);
             sum+=gamma*dx*dy*pixels[n];
             n++;
           }
@@ -5110,7 +5109,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       pixel->alpha=0.0;
       for (i=0; i < 16L; i++)
       {
-        gamma=1.0/(fabs((double) alpha[i]) < MagickEpsilon ? MagickEpsilon : alpha[i]);
+        gamma=ClampReciprocal(alpha[i]);
         pixel->red+=gamma*0.0625*pixels[i].red;
         pixel->green+=gamma*0.0625*pixels[i].green;
         pixel->blue+=gamma*0.0625*pixels[i].blue;
@@ -5252,7 +5251,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       epsilon.y=1.0-delta.y;
       gamma=((epsilon.y*(epsilon.x*alpha[0]+delta.x*alpha[1])+delta.y*
         (epsilon.x*alpha[2]+delta.x*alpha[3])));
-      gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+      gamma=ClampReciprocal(gamma);
       pixel->red=gamma*(epsilon.y*(epsilon.x*pixels[0].red+delta.x*
         pixels[1].red)+delta.y*(epsilon.x*pixels[2].red+delta.x*pixels[3].red));
       pixel->green=gamma*(epsilon.y*(epsilon.x*pixels[0].green+delta.x*
@@ -5266,7 +5265,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           pixels[1].black)+delta.y*(epsilon.x*pixels[2].black+delta.x*
           pixels[3].black));
       gamma=((epsilon.y*(epsilon.x+delta.x)+delta.y*(epsilon.x+delta.x)));
-      gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+      gamma=ClampReciprocal(gamma);
       pixel->alpha=(epsilon.y*(epsilon.x*pixels[0].alpha+delta.x*
         pixels[1].alpha)+delta.y*(epsilon.x*pixels[2].alpha+delta.x*
         pixels[3].alpha));
@@ -5351,7 +5350,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
               */
               delta.y=1.0-delta.y;
               gamma=MeshInterpolate(&delta,alpha[2],alpha[3],alpha[0]);
-              gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+              gamma=ClampReciprocal(gamma);
               pixel->red=gamma*MeshInterpolate(&delta,pixels[2].red,
                 pixels[3].red,pixels[0].red);
               pixel->green=gamma*MeshInterpolate(&delta,pixels[2].green,
@@ -5372,7 +5371,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
               */
               delta.x=1.0-delta.x;
               gamma=MeshInterpolate(&delta,alpha[1],alpha[0],alpha[3]);
-              gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+              gamma=ClampReciprocal(gamma);
               pixel->red=gamma*MeshInterpolate(&delta,pixels[1].red,
                 pixels[0].red,pixels[3].red);
               pixel->green=gamma*MeshInterpolate(&delta,pixels[1].green,
@@ -5398,7 +5397,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
                 Top-left triangle (pixel: 0, diagonal: 1-2).
               */
               gamma=MeshInterpolate(&delta,alpha[0],alpha[1],alpha[2]);
-              gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+              gamma=ClampReciprocal(gamma);
               pixel->red=gamma*MeshInterpolate(&delta,pixels[0].red,
                 pixels[1].red,pixels[2].red);
               pixel->green=gamma*MeshInterpolate(&delta,pixels[0].green,
@@ -5420,7 +5419,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
               delta.x=1.0-delta.x;
               delta.y=1.0-delta.y;
               gamma=MeshInterpolate(&delta,alpha[3],alpha[2],alpha[1]);
-              gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
+              gamma=ClampReciprocal(gamma);
               pixel->red=gamma*MeshInterpolate(&delta,pixels[3].red,
                 pixels[2].red,pixels[1].red);
               pixel->green=gamma*MeshInterpolate(&delta,pixels[3].green,
@@ -5505,7 +5504,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         for (j=(-1); j < 3L; j++)
         {
           dx=CubicWeightingFunction(delta.x-(MagickRealType) j);
-          gamma=1.0/(fabs((double) alpha[n]) < MagickEpsilon ? MagickEpsilon : alpha[n]);
+          gamma=ClampReciprocal(alpha[n]);
           pixel->red+=gamma*dx*dy*pixels[n].red;
           pixel->green+=gamma*dx*dy*pixels[n].green;
           pixel->blue+=gamma*dx*dy*pixels[n].blue;
