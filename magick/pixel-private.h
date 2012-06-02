@@ -26,9 +26,10 @@ extern "C" {
 #include <magick/image.h>
 #include <magick/color.h>
 #include <magick/image-private.h>
+#include <magick/memory_.h>
 #include <magick/quantum-private.h>
 
-static inline MagickRealType AlphaReciprocal(const MagickRealType alpha)
+static inline MagickRealType ClampReciprocal(const MagickRealType alpha)
 {
   MagickRealType
     beta;
