@@ -2732,7 +2732,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
               k_indexes++;
             }
             /* Sync'ed channels, all channels are modified */
-            gamma=(double)count/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+            gamma=(double)count/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
             SetPixelRed(q,ClampToQuantum(gamma*result.red));
             SetPixelGreen(q,ClampToQuantum(gamma*result.green));
             SetPixelBlue(q,ClampToQuantum(gamma*result.blue));
@@ -2971,7 +2971,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                   k_indexes += virt_width;
                 }
                 /* Sync'ed channels, all channels are modified */
-                gamma=(double)count/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+                gamma=(double)count/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
                 SetPixelRed(q,ClampToQuantum(gamma*result.red));
                 SetPixelGreen(q,ClampToQuantum(gamma*result.green));
                 SetPixelBlue(q,ClampToQuantum(gamma*result.blue));

@@ -2936,7 +2936,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   gamma;
     
                 gamma=1.0-QuantumScale*fill_color.opacity;
-                gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+                gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
                 fill_color.blue*=gamma;
                 fill_color.green*=gamma;
                 fill_color.red*=gamma;

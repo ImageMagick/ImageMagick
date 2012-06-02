@@ -56,7 +56,7 @@ static inline MagickBooleanType IsGrayPixel(const PixelPacket *pixel)
 
     alpha=GetPixelRed(pixel)-GetPixelGreen(pixel);
     beta=GetPixelGreen(pixel)-GetPixelBlue(pixel);
-    if ((fabs(alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
+    if ((fabs((double) alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
       return(MagickTrue);
   }
 #endif
@@ -81,7 +81,7 @@ static inline MagickBooleanType IsMonochromePixel(const PixelPacket *pixel)
     beta=GetPixelGreen(pixel)-GetPixelBlue(pixel);
     if (((fabs(GetPixelRed(pixel)) <= MagickEpsilon) ||
          (fabs(GetPixelRed(pixel)-QuantumRange) <= MagickEpsilon)) &&
-        (fabs(alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
+        (fabs((double) alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
       return(MagickTrue);
     }
 #endif

@@ -159,7 +159,7 @@ static inline Quantum PixelIntensityToQuantum(const PixelPacket *pixel)
 
     alpha=GetPixelRed(pixel)-GetPixelGreen(pixel);
     beta=GetPixelGreen(pixel)-GetPixelBlue(pixel);
-    if ((fabs(alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
+    if ((fabs((double) alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
       return(GetPixelRed(pixel));
     return((Quantum) (0.299*GetPixelRed(pixel)+0.587*
       GetPixelGreen(pixel)+0.114*GetPixelBlue(pixel)));
