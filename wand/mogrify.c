@@ -1250,7 +1250,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             gamma=0.0;
             for (j=0; j < (ssize_t) (kernel->width*kernel->height); j++)
               gamma+=kernel->values[j];
-            gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
+            gamma=1.0/(fabs((double) gamma) < MagickEpsilon ? MagickEpsilon : gamma);
             for (j=0; j < (ssize_t) (kernel->width*kernel->height); j++)
               kernel->values[j]*=gamma;
             mogrify_image=FilterImageChannel(*image,channel,kernel,exception);

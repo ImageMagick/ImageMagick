@@ -636,8 +636,8 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       gamma=DisplayGamma;
       value=GetImageProperty(image,"gamma");
       if (value != (const char *) NULL)
-        gamma=1.0/StringToDouble(value,(char **) NULL) != 0.0 ? StringToDouble(
-          value,(char **) NULL) : 1.0;
+        gamma=1.0/(StringToDouble(value,(char **) NULL) < MagickEpsilon ?
+          MagickEpsilon : StringToDouble(value,(char **) NULL));
       film_gamma=FilmGamma;
       value=GetImageProperty(image,"film-gamma");
       if (value != (const char *) NULL)
@@ -2145,8 +2145,8 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       gamma=DisplayGamma;
       value=GetImageProperty(image,"gamma");
       if (value != (const char *) NULL)
-        gamma=1.0/StringToDouble(value,(char **) NULL) != 0.0 ? StringToDouble(
-          value,(char **) NULL) : 1.0;
+        gamma=1.0/(StringToDouble(value,(char **) NULL) < MagickEpsilon ?
+          MagickEpsilon : StringToDouble(value,(char **) NULL));
       film_gamma=FilmGamma;
       value=GetImageProperty(image,"film-gamma");
       if (value != (const char *) NULL)
