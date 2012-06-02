@@ -34,11 +34,10 @@ static inline MagickRealType AlphaReciprocal(const MagickRealType alpha)
     beta;
 
   /*
-     Reciprocal alpha: clamp overshoot; ensure alpha is not negative or too
-     close to 0; return reciprocal.
+    Reciprocal alpha: clamp to [MagickEpsilon,1], return reciprocal.
   */
   beta=(alpha > (MagickRealType) 1.0 ? (MagickRealType) 1.0 : alpha);
-  beta=(gamma < (MagickRealType) MagickEpsilon ? (MagickRealType)
+  beta=(beta < (MagickRealType) MagickEpsilon ? (MagickRealType)
     MagickEpsilon : beta);
   return((MagickRealType) 1.0/beta);
 }
