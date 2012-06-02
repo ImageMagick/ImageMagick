@@ -61,7 +61,7 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
   Sa=QuantumScale*alpha;
   Da=QuantumScale*beta,
   gamma=Sa*(-Da)+Sa+Da;
-  gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
+  gamma=1.0/(gamma < MagickEpsilon ? MagickEpsilon : gamma);
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     PixelChannel
@@ -132,7 +132,7 @@ static inline void CompositePixelInfoOver(const PixelInfo *p,
   Da=QuantumScale*beta,
   gamma=Sa*(-Da)+Sa+Da;
   composite->alpha=(MagickRealType) QuantumRange*gamma;
-  gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
+  gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
   composite->red=gamma*MagickOver_(p->red,alpha,q->red,beta);
   composite->green=gamma*MagickOver_(p->green,alpha,q->green,beta);
   composite->blue=gamma*MagickOver_(p->blue,alpha,q->blue,beta);
@@ -161,7 +161,7 @@ static inline void CompositePixelInfoPlus(const PixelInfo *p,
   Da=QuantumScale*beta;
   gamma=RoundToUnity(Sa+Da);  /* 'Plus' blending -- not 'Over' blending */
   composite->alpha=(MagickRealType) QuantumRange*gamma;
-  gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);
+  gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
   composite->red=gamma*(Sa*p->red+Da*q->red);
   composite->green=gamma*(Sa*p->green+Da*q->green);
   composite->blue=gamma*(Sa*p->blue+Da*q->blue);
