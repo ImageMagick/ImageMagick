@@ -54,6 +54,9 @@ extern WandExport double
   MagickGetImageGamma(MagickWand *),
   MagickGetImageTotalInkDensity(MagickWand *);
 
+extern WandExport EndianType
+  MagickGetImageEndian(MagickWand *);
+
 extern WandExport GravityType
   MagickGetImageGravity(MagickWand *);
 

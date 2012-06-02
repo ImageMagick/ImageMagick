@@ -5018,6 +5018,43 @@ WandExport DisposeType MagickGetImageDispose(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k G e t I m a g e E n d i a n                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImageEndian() gets the image endian.
+%
+%  The format of the MagickGetImageEndian method is:
+%
+%      EndianType MagickGetImageEndian(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+WandExport EndianType MagickGetImageEndian(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if (wand->debug != MagickFalse)
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    {
+      (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
+        "ContainsNoImages","`%s'",wand->name);
+      return(UndefinedEndian);
+    }
+  return(wand->images->endian);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   M a g i c k G e t I m a g e F i l e n a m e                               %
 %                                                                             %
 %                                                                             %
@@ -5168,7 +5205,7 @@ WandExport double MagickGetImageGamma(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g i c k G e t I m a g e I n t e r l a c e S c h e m e                 %
+%   M a g i c k G e t I m a g e G r a v i t y                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
