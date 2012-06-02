@@ -59,6 +59,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resource_.h"
@@ -4143,12 +4144,18 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
     case BicubicInterpolatePixel:
     {
       MagickRealType
-        u[4],
-        v[4];
+        beta[4],
+        cx[4],
+        cy[4];
 
       PointInfo
         delta;
 
+      /*
+        Refactoring of the Catmull-Rom computation by Nicolas Robidoux with 55
+        flops = 28* + 10- + 17+.  Originally implemented for the VIPS (Virtual
+        Image Processing System) library.
+      */
       p=GetCacheViewVirtualPixels(image_view,x_offset-1,y_offset-1,4,4,
         exception);
       if (p == (const Quantum *) NULL)
@@ -4171,21 +4178,37 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
         }
       delta.x=x-x_offset;
       delta.y=y-y_offset;
-      for (i=0; i < 4; i++)
-      {
-        u[0]=(pixels[4*i+3]-pixels[4*i+2])-(pixels[4*i+0]-pixels[4*i+1]);
-        u[1]=(pixels[4*i+0]-pixels[4*i+1])-u[0];
-        u[2]=pixels[4*i+2]-pixels[4*i+0];
-        u[3]=pixels[4*i+1];
-        v[i]=(delta.x*delta.x*delta.x*u[0])+(delta.x*delta.x*u[1])+(delta.x*
-          u[2])+u[3];
-      }
-      u[0]=(v[3]-v[2])-(v[0]-v[1]);
-      u[1]=(v[0]-v[1])-u[0];
-      u[2]=v[2]-v[0];
-      u[3]=v[1];
-      *pixel=(delta.y*delta.y*delta.y*u[0])+(delta.y*delta.y*u[1])+(delta.y*
-        u[2])+u[3];
+      beta[0]=1.0-delta.x;
+      beta[1]=(-0.5)*delta.x;
+      beta[2]=beta[0]*beta[1];
+      cx[0]=beta[0]*beta[2];
+      cx[3]=delta.x*beta[2];
+      beta[3]=cx[3]-cx[0];
+      cx[1]=beta[0]-cx[0]+beta[3];
+      cx[2]=delta.x-cx[3]-beta[3];
+      beta[0]=1.0-delta.y;
+      beta[1]=(-0.5)*delta.y;
+      beta[2]=beta[0]*beta[1];
+      cy[0]=beta[0]*beta[2];
+      cy[3]=delta.y*beta[2];
+      beta[3]=cy[3]-cy[0];
+      cy[1]=beta[0]-cy[0]+beta[3];
+      cy[2]=delta.y-cy[3]-beta[3];
+      /*
+        Interpolate pixel.
+      */
+      gamma=1.0;
+      if (channel != AlphaPixelChannel)
+        gamma=AlphaReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
+          alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+
+          cx[2]*alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+
+          cx[1]*alpha[9]+cx[2]*alpha[10]+cx[3]*alpha[11])+cy[3]*(
+          cx[0]*alpha[12]+cx[1]*alpha[13]+cx[2]*alpha[14]+cx[3]*alpha[15]));
+      *pixel=gamma*(cy[0]*(cx[0]*pixels[0]+cx[1]*pixels[1]+cx[2]*pixels[2]+
+        cx[3]*pixels[3])+cy[1]*(cx[0]*pixels[4]+cx[1]*pixels[5]+
+        cx[2]*pixels[6]+cx[3]*pixels[7])+cy[2]*(cx[0]*pixels[8]+
+        cx[1]*pixels[9]+cx[2]*pixels[10]+cx[3]*pixels[11])+cy[3]*(
+        cx[0]*pixels[12]+cx[1]*pixels[13]+cx[2]*pixels[14]+cx[3]*pixels[15]));
       break;
     }
     case BilinearInterpolatePixel:
@@ -4552,12 +4575,18 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
     case BicubicInterpolatePixel:
     {
       MagickRealType
-        u[4],
-        v[4];
+        beta[4],
+        cx[4],
+        cy[4];
 
       PointInfo
         delta;
 
+      /*
+        Refactoring of the Catmull-Rom computation by Nicolas Robidoux with 55
+        flops = 28* + 10- + 17+.  Originally implemented for the VIPS (Virtual
+        Image Processing System) library.
+      */
       p=GetCacheViewVirtualPixels(source_view,x_offset-1,y_offset-1,4,4,
         exception);
       if (p == (const Quantum *) NULL)
@@ -4591,21 +4620,38 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           }
         delta.x=x-x_offset;
         delta.y=y-y_offset;
-        for (j=0; j < 4; j++)
-        {
-          u[0]=(pixels[4*j+3]-pixels[4*j+2])-(pixels[4*j+0]-pixels[4*j+1]);
-          u[1]=(pixels[4*j+0]-pixels[4*j+1])-u[0];
-          u[2]=pixels[4*j+2]-pixels[4*j+0];
-          u[3]=pixels[4*j+1];
-          v[j]=(delta.x*delta.x*delta.x*u[0])+(delta.x*delta.x*u[1])+(delta.x*
-            u[2])+u[3];
-        }
-        u[0]=(v[3]-v[2])-(v[0]-v[1]);
-        u[1]=(v[0]-v[1])-u[0];
-        u[2]=v[2]-v[0];
-        u[3]=v[1];
-        SetPixelChannel(destination,channel,ClampToQuantum((delta.y*delta.y*
-          delta.y*u[0])+(delta.y*delta.y*u[1])+(delta.y*u[2])+u[3]),pixel);
+        beta[0]=1.0-delta.x;
+        beta[1]=(-0.5)*delta.x;
+        beta[2]=beta[0]*beta[1];
+        cx[0]=beta[0]*beta[2];
+        cx[3]=delta.x*beta[2];
+        beta[3]=cx[3]-cx[0];
+        cx[1]=beta[0]-cx[0]+beta[3];
+        cx[2]=delta.x-cx[3]-beta[3];
+        beta[0]=1.0-delta.y;
+        beta[1]=(-0.5)*delta.y;
+        beta[2]=beta[0]*beta[1];
+        cy[0]=beta[0]*beta[2];
+        cy[3]=delta.y*beta[2];
+        beta[3]=cy[3]-cy[0];
+        cy[1]=beta[0]-cy[0]+beta[3];
+        cy[2]=delta.y-cy[3]-beta[3];
+        /*
+          Interpolate pixel.
+        */
+        gamma=1.0;
+        if ((traits & BlendPixelTrait) == 0)
+          gamma=AlphaReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
+            alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+
+            cx[2]*alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+
+            cx[1]*alpha[9]+cx[2]*alpha[10]+cx[3]*alpha[11])+cy[3]*(
+            cx[0]*alpha[12]+cx[1]*alpha[13]+cx[2]*alpha[14]+cx[3]*alpha[15]));
+        SetPixelChannel(destination,channel,ClampToQuantum(gamma*(cy[0]*(cx[0]*
+          pixels[0]+cx[1]*pixels[1]+cx[2]*pixels[2]+cx[3]*pixels[3])+cy[1]*
+          (cx[0]*pixels[4]+cx[1]*pixels[5]+cx[2]*pixels[6]+cx[3]*pixels[7])+
+          cy[2]*(cx[0]*pixels[8]+cx[1]*pixels[9]+cx[2]*pixels[10]+cx[3]*
+          pixels[11])+cy[3]*(cx[0]*pixels[12]+cx[1]*pixels[13]+cx[2]*pixels[14]+
+          cx[3]*pixels[15]))),pixel);
       }
       break;
     }
@@ -4994,47 +5040,6 @@ static inline void AlphaBlendPixelInfo(const Image *image,
   pixel_info->alpha=(MagickRealType) GetPixelAlpha(image,pixel);
 }
 
-static void BicubicInterpolate(const PixelInfo *pixels,const double dx,
-  PixelInfo *pixel)
-{
-  MagickRealType
-    dx2,
-    p,
-    q,
-    r,
-    s;
-
-  dx2=dx*dx;
-  p=(pixels[3].red-pixels[2].red)-(pixels[0].red-pixels[1].red);
-  q=(pixels[0].red-pixels[1].red)-p;
-  r=pixels[2].red-pixels[0].red;
-  s=pixels[1].red;
-  pixel->red=(dx*dx2*p)+(dx2*q)+(dx*r)+s;
-  p=(pixels[3].green-pixels[2].green)-(pixels[0].green-pixels[1].green);
-  q=(pixels[0].green-pixels[1].green)-p;
-  r=pixels[2].green-pixels[0].green;
-  s=pixels[1].green;
-  pixel->green=(dx*dx2*p)+(dx2*q)+(dx*r)+s;
-  p=(pixels[3].blue-pixels[2].blue)-(pixels[0].blue-pixels[1].blue);
-  q=(pixels[0].blue-pixels[1].blue)-p;
-  r=pixels[2].blue-pixels[0].blue;
-  s=pixels[1].blue;
-  pixel->blue=(dx*dx2*p)+(dx2*q)+(dx*r)+s;
-  p=(pixels[3].alpha-pixels[2].alpha)-(pixels[0].alpha-pixels[1].alpha);
-  q=(pixels[0].alpha-pixels[1].alpha)-p;
-  r=pixels[2].alpha-pixels[0].alpha;
-  s=pixels[1].alpha;
-  pixel->alpha=(dx*dx2*p)+(dx2*q)+(dx*r)+s;
-  if (pixel->colorspace == CMYKColorspace)
-    {
-      p=(pixels[3].black-pixels[2].black)-(pixels[0].black-pixels[1].black);
-      q=(pixels[0].black-pixels[1].black)-p;
-      r=pixels[2].black-pixels[0].black;
-      s=pixels[1].black;
-      pixel->black=(dx*dx2*p)+(dx2*q)+(dx*r)+s;
-    }
-}
-
 MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
   const CacheView *image_view,const PixelInterpolateMethod method,
   const double x,const double y,PixelInfo *pixel,ExceptionInfo *exception)
@@ -5117,12 +5122,20 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
     }
     case BicubicInterpolatePixel:
     {
-      PixelInfo
-        u[4];
+      MagickRealType
+        beta[4],
+        cx[4],
+        cy[4];
 
       PointInfo
         delta;
 
+
+      /*
+        Refactoring of the Catmull-Rom computation by Nicolas Robidoux with 55
+        flops = 28* + 10- + 17+.  Originally implemented for the VIPS (Virtual
+        Image Processing System) library.
+      */
       p=GetCacheViewVirtualPixels(image_view,x_offset-1,y_offset-1,4,4,
         exception);
       if (p == (const Quantum *) NULL)
@@ -5154,9 +5167,66 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         15);
       delta.x=x-x_offset;
       delta.y=y-y_offset;
-      for (i=0; i < 4L; i++)
-        BicubicInterpolate(pixels+4*i,delta.x,u+i);
-      BicubicInterpolate(u,delta.y,pixel);
+      beta[0]=1.0-delta.x;
+      beta[1]=(-0.5)*delta.x;
+      beta[2]=beta[0]*beta[1];
+      cx[0]=beta[0]*beta[2];
+      cx[3]=delta.x*beta[2];
+      beta[3]=cx[3]-cx[0];
+      cx[1]=beta[0]-cx[0]+beta[3];
+      cx[2]=delta.x-cx[3]-beta[3];
+      beta[0]=1.0-delta.y;
+      beta[1]=(-0.5)*delta.y;
+      beta[2]=beta[0]*beta[1];
+      cy[0]=beta[0]*beta[2];
+      cy[3]=delta.y*beta[2];
+      beta[3]=cy[3]-cy[0];
+      cy[1]=beta[0]-cy[0]+beta[3];
+      cy[2]=delta.y-cy[3]-beta[3];
+      /*
+        Interpolate pixel.
+      */
+      pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*
+        pixels[1].red+cx[2]*pixels[2].red+cx[3]*
+        pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
+        pixels[5].red+cx[2]*pixels[6].red+cx[3]*
+        pixels[7].red)+cy[2]*(cx[0]*pixels[8].red+cx[1]*
+        pixels[9].red+cx[2]*pixels[10].red+cx[3]*
+        pixels[11].red)+cy[3]*(cx[0]*pixels[12].red+cx[1]*
+        pixels[13].red+cx[2]*pixels[14].red+cx[3]*pixels[15].red));
+      pixel->green=(cy[0]*(cx[0]*pixels[0].green+cx[1]*
+        pixels[1].green+cx[2]*pixels[2].green+cx[3]*
+        pixels[3].green)+cy[1]*(cx[0]*pixels[4].green+cx[1]*
+        pixels[5].green+cx[2]*pixels[6].green+cx[3]*
+        pixels[7].green)+cy[2]*(cx[0]*pixels[8].green+cx[1]*
+        pixels[9].green+cx[2]*pixels[10].green+cx[3]*
+        pixels[11].green)+cy[3]*(cx[0]*pixels[12].green+cx[1]*
+        pixels[13].green+cx[2]*pixels[14].green+cx[3]*pixels[15].green));
+      pixel->blue=(cy[0]*(cx[0]*pixels[0].blue+cx[1]*
+        pixels[1].blue+cx[2]*pixels[2].blue+cx[3]*
+        pixels[3].blue)+cy[1]*(cx[0]*pixels[4].blue+cx[1]*
+        pixels[5].blue+cx[2]*pixels[6].blue+cx[3]*
+        pixels[7].blue)+cy[2]*(cx[0]*pixels[8].blue+cx[1]*
+        pixels[9].blue+cx[2]*pixels[10].blue+cx[3]*
+        pixels[11].blue)+cy[3]*(cx[0]*pixels[12].blue+cx[1]*
+        pixels[13].blue+cx[2]*pixels[14].blue+cx[3]*pixels[15].blue));
+      if (image->colorspace == CMYKColorspace)
+        pixel->black=(cy[0]*(cx[0]*pixels[0].black+cx[1]*
+          pixels[1].black+cx[2]*pixels[2].black+cx[3]*
+          pixels[3].black)+cy[1]*(cx[0]*pixels[4].black+cx[1]*
+          pixels[5].black+cx[2]*pixels[6].black+cx[3]*
+          pixels[7].black)+cy[2]*(cx[0]*pixels[8].black+cx[1]*
+          pixels[9].black+cx[2]*pixels[10].black+cx[3]*
+          pixels[11].black)+cy[3]*(cx[0]*pixels[12].black+cx[1]*
+          pixels[13].black+cx[2]*pixels[14].black+cx[3]*pixels[15].black));
+      pixel->alpha=(cy[0]*(cx[0]*pixels[0].alpha+cx[1]*
+        pixels[1].alpha+cx[2]*pixels[2].alpha+cx[3]*
+        pixels[3].alpha)+cy[1]*(cx[0]*pixels[4].alpha+cx[1]*
+        pixels[5].alpha+cx[2]*pixels[6].alpha+cx[3]*
+        pixels[7].alpha)+cy[2]*(cx[0]*pixels[8].alpha+cx[1]*
+        pixels[9].alpha+cx[2]*pixels[10].alpha+cx[3]*
+        pixels[11].alpha)+cy[3]*(cx[0]*pixels[12].alpha+cx[1]*
+        pixels[13].alpha+cx[2]*pixels[14].alpha+cx[3]*pixels[15].alpha));
       break;
     }
     case BilinearInterpolatePixel:

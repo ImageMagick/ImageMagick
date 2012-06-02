@@ -1283,7 +1283,9 @@
 /* #undef NO_MINUS_C_MINUS_O */
 
 /* Define if you have OPENEXR library */
-/* #undef OPENEXR_DELEGATE */
+#ifndef MAGICKCORE_OPENEXR_DELEGATE
+#define MAGICKCORE_OPENEXR_DELEGATE 1
+#endif
 
 /* Name of package */
 #ifndef MAGICKCORE_PACKAGE
