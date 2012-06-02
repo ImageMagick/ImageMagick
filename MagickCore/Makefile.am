@@ -188,6 +188,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/pixel.c \
 	MagickCore/pixel.h \
 	MagickCore/pixel-accessor.h \
+	MagickCore/pixel-private.h \
 	MagickCore/policy.c \
 	MagickCore/policy.h \
 	MagickCore/PreRvIcccm.c \
@@ -421,6 +422,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/morphology-private.h \
 	MagickCore/nt-base.h \
 	MagickCore/nt-feature.h \
+ 	MagickCore/pixel-private.h \
  	MagickCore/policy-private.h \
  	MagickCore/profile-private.h \
 	MagickCore/quantum-private.h \
