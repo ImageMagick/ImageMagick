@@ -572,7 +572,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         break;
       }
     }
-    normalize=1.0/(fabs((double) normalize) <= MagickEpsilon ? 1.0 : normalize);
+    normalize=1.0/(fabs((double) normalize) < MagickEpsilon ? MagickEpsilon : normalize);
     for (y=0; y < (ssize_t) number_grays; y++)
     {
       register ssize_t

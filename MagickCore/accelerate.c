@@ -295,7 +295,7 @@ static const char
     "      break;\n"
     "    }\n"
     "  }\n"
-    "  gamma=1.0/(fabs(gamma) <= MagickEpsilon ? 1.0 : gamma);\n"
+    "  gamma=1.0/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);\n"
     "  const unsigned long index = y*columns+x;\n"
     "  output[index].x=ClampToQuantum(gamma*sum.x);\n"
     "  output[index].y=ClampToQuantum(gamma*sum.y);\n"

@@ -502,7 +502,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
         */
         Sc=(MagickRealType) GetPixelChannel(composite_image,channel,p);
         Dc=(MagickRealType) q[i];
-        gamma=1.0/(fabs(alpha) <= MagickEpsilon ? 1.0 : alpha);
+        gamma=1.0/(fabs((double) alpha) < MagickEpsilon ? MagickEpsilon : alpha);
         q[i]=ClampToQuantum(gamma*(Sa*Sc-Sa*Da*Dc+Da*Dc));
       }
       p+=GetPixelChannels(composite_image);
@@ -1649,7 +1649,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           default:
             break;
         }
-        gamma=1.0/(fabs(alpha) <= MagickEpsilon ? 1.0 : alpha);
+        gamma=1.0/(fabs((double) alpha) < MagickEpsilon ? MagickEpsilon : alpha);
         pixel=Dc;
         switch (compose)
         {

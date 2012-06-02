@@ -214,7 +214,7 @@ static inline Quantum GetPixelIntensity(const Image *restrict image,
       pixel[image->channel_map[GreenPixelChannel].offset];
     beta=pixel[image->channel_map[GreenPixelChannel].offset]-(double)
       pixel[image->channel_map[BluePixelChannel].offset];
-    if ((fabs(alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
+    if ((fabs((double) alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
       return(pixel[image->channel_map[RedPixelChannel].offset]);
     return((Quantum) (0.299*pixel[image->channel_map[RedPixelChannel].offset]+
       0.587*pixel[image->channel_map[GreenPixelChannel].offset]+0.114*
@@ -370,7 +370,7 @@ static inline MagickBooleanType IsPixelGray(const Image *restrict image,
       pixel[image->channel_map[GreenPixelChannel].offset];
     beta=pixel[image->channel_map[GreenPixelChannel].offset]-(double)
       pixel[image->channel_map[BluePixelChannel].offset];
-    if ((fabs(alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
+    if ((fabs((double) alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
       return(MagickTrue);
   }
 #endif
@@ -427,7 +427,7 @@ static inline MagickBooleanType IsPixelMonochrome(const Image *restrict image,
       pixel[image->channel_map[BluePixelChannel].offset];
     if (((fabs(pixel[image->channel_map[RedPixelChannel].offset]) <= MagickEpsilon) ||
          (fabs(pixel[image->channel_map[RedPixelChannel].offset]-QuantumRange) <= MagickEpsilon)) &&
-        (fabs(alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
+        (fabs((double) alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
       return(MagickTrue);
     }
 #endif
@@ -452,7 +452,7 @@ static inline MagickBooleanType IsPixelInfoGray(
 
     alpha=pixel_info->red-(double) pixel_info->green;
     beta=pixel_info->green-(double) pixel_info->blue;
-    if ((fabs(alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
+    if ((fabs((double) alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
       return(MagickTrue);
   }
 #endif
@@ -477,7 +477,7 @@ static inline MagickBooleanType IsPixelInfoMonochrome(
     beta=pixel_info->green-(double) pixel_info->blue;
     if (((fabs(pixel_info->red) <= MagickEpsilon) ||
          (fabs(pixel_info->red-QuantumRange) <= MagickEpsilon)) &&
-        (fabs(alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
+        (fabs((double) alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
       return(MagickTrue);
     }
 #endif
