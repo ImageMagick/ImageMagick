@@ -29,7 +29,7 @@ extern "C" {
 #include <magick/memory_.h>
 #include <magick/quantum-private.h>
 
-static inline MagickRealType MagickReciprocal(const MagickRealType x)
+static inline MagickRealType MagickEpsilonReciprocal(const MagickRealType x)
 {
   return((MagickRealType) 1.0/(((x) > (MagickRealType) 0.0 ? (x) : -(x)) <
     MagickEpsilon ? MagickEpsilon : x));
