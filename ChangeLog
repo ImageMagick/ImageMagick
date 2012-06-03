@@ -3,6 +3,8 @@
   * Assume grayscale images in the GIF format are linear.
   * Add Nicolas Robidoux's bicubic interolation method (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21118).
+  * Add DuPont & XFIG copyright to NOTICE.
+  * sRGB.icc has an unfriendly license, remove it.
 
 2012-05-31  6.7.7-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.7-5, SVN revision 8099.
