@@ -6,25 +6,25 @@
       xsi:schemaLocation="http://www.w3.org/1999/xhtml
                           http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
   <meta name="google-site-verification" content="MxsMq6bdLOx0KSuz1MY6yG9ZTIJ7_7DVRfl5NCAT5Yg"/>
   <title>ImageMagick: PerlMagick, Perl API for ImageMagick</title>
-  <meta http-equiv="Content-Language" content="en-US"/>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <meta http-equiv="Reply-to" content="magick-users@imagemagick.org"/>
-  <meta name="Application-name" content="ImageMagick"/>
-  <meta name="Description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
-  <meta name="Application-url" content="http://www.imagemagick.org"/>
-  <meta name="Generator" content="PHP"/>
-  <meta name="Keywords" content="perlmagick, perl, api, for, imagemagick, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
-  <meta name="Rating" content="GENERAL"/>
-  <meta name="Robots" content="INDEX, FOLLOW"/>
-  <meta name="Generator" content="ImageMagick Studio LLC"/>
-  <meta name="Author" content="ImageMagick Studio LLC"/>
-  <meta name="Revisit-after" content="2 DAYS"/>
-  <meta name="Resource-type" content="document"/>
-  <meta name="Copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
-  <meta name="Distribution" content="Global"/>
+  <meta http-equiv="content-language" content="en-US"/>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="reply-to" content="magick-users@imagemagick.org"/>
+  <meta name="application-name" content="ImageMagick"/>
+  <meta name="description" content="Use ImageMagick to convert, edit, or compose bitmap images in a variety of formats.  In addition resize, rotate, shear, distort and transform images automagically."/>
+  <meta name="application-url" content="http://www.imagemagick.org"/>
+  <meta name="generator" content="PHP"/>
+  <meta name="keywords" content="perlmagick, perl, api, for, imagemagick, ImageMagick, PerlMagick, image processing, OpenMP, software development library, image, photo, software, Magick++, MagickWand"/>
+  <meta name="rating" content="GENERAL"/>
+  <meta name="robots" content="INDEX, FOLLOW"/>
+  <meta name="generator" content="ImageMagick Studio LLC"/>
+  <meta name="author" content="ImageMagick Studio LLC"/>
+  <meta name="revisit-after" content="2 DAYS"/>
+  <meta name="resource-type" content="document"/>
+  <meta name="copyright" content="Copyright (c) 1999-2012 ImageMagick Studio LLC"/>
+  <meta name="distribution" content="Global"/>
   <link rel="icon" href="../images/wand.png"/>
   <link rel="shortcut icon" href="../images/wand.ico"  type="images/x-icon"/>
   <link rel="canonical" href="http://www.imagemagick.org" />
@@ -37,15 +37,15 @@
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
   
   <!-- Add fancyBox -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.3" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.3"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.fancybox.pack.js?v=2.0.4"></script>
   
   <!-- Optionaly include button and/or thumbnail helpers -->
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.3" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.3"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.css?v=2.0.4" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-buttons.js?v=2.0.4"></script>
   
-  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.3" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.3"></script>
+  <link rel="stylesheet" href="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.css?v=2.0.4" type="text/css" media="screen" />
+  <script type="text/javascript" src="http://www.imagemagick.org/fancybox/helpers/jquery.fancybox-thumbs.js?v=2.0.4"></script>
   <script type="text/javascript">
   	$(document).ready(function() {
   		$(".fancybox").fancybox();
@@ -73,7 +73,7 @@
     src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
   </script>
 </div>
-<a href="http://www.imagemagick.org/discourse-server/">
+<a href="../discourse-server">
   <img src="../images/logo.jpg"
   alt="ImageMagick Logo"
   style="width: 123px; height: 118px; border: 0px; float: right;" /></a>
@@ -89,108 +89,111 @@
   <a title="About ImageMagick" href="../index.html">About ImageMagick</a>
 </div>
 <div class="menu">
-  <a title="Binary Releases" href="../www/binary-releases.html">Binary Releases</a>
+  <a title="Binary Releases" href="binary-releases.html">Binary Releases</a>
 </div>
 <div class="sub">
-    <a title="Binary Release: Unix" href="../www/binary-releases.html#unix">Unix</a>
+    <a title="Binary Release: Unix" href="binary-releases.html#unix">Unix</a>
 </div>
 <div class="sub">
-    <a title="Binary Release: MacOS X" href="../www/binary-releases.html#macosx">Mac OS X</a>
+    <a title="Binary Release: MacOS X" href="binary-releases.html#macosx">Mac OS X</a>
 </div>
 <div class="sub">
-    <a title="Binary Release: iOS" href="../www/binary-releases.html#iOS">iOS</a>
+    <a title="Binary Release: iOS" href="binary-releases.html#iOS">iOS</a>
 </div>
 <div class="sub">
-    <a title="Binary Release: Windows" href="../www/binary-releases.html#windows">Windows</a>
+    <a title="Binary Release: Windows" href="binary-releases.html#windows">Windows</a>
 </div>
 <div class="sep"></div>
 <div class="menu">
-  <a title="Command-line Tools" href="../www/command-line-tools.html">Command-line Tools</a>
+  <a title="Command-line Tools" href="command-line-tools.html">Command-line Tools</a>
 </div>
 <div class="sub">
-    <a title="Command-line Tools: Processing" href="../www/command-line-processing.html">Processing</a>
+    <a title="Command-line Tools: Processing" href="command-line-processing.html">Processing</a>
 </div>
 <div class="sub">
-    <a title="Command-line Tools: Options" href="../www/command-line-options.html">Options</a>
+    <a title="Command-line Tools: Options" href="command-line-options.html">Options</a>
 </div>
 <div class="sub">
     <a title="Command-line Tools: Usage" href="http://www.imagemagick.org/Usage/">Usage</a>
 </div>
 <div class="menu">
-  <a title="Program Interfaces" href="../www/api.html">Program Interfaces</a>
+  <a title="Program Interfaces" href="api.html">Program Interfaces</a>
 </div>
 <div class="sub">
-    <a title="Program Interface: MagickWand" href="../www/magick-wand.html">MagickWand</a>
+    <a title="Program Interface: MagickWand" href="magick-wand.html">MagickWand</a>
 </div>
 <div class="sub">
-    <a title="Program Interface: MagickCore" href="../www/magick-core.html">MagickCore</a>
+    <a title="Program Interface: MagickCore" href="magick-core.html">MagickCore</a>
 </div>
 <div class="sub">
-    <a title="Program Interface: PerlMagick" href="../www/perl-magick.html">PerlMagick</a>
+    <a title="Program Interface: PerlMagick" href="perl-magick.html">PerlMagick</a>
 </div>
 <div class="sub">
-    <a title="Program Interface: Magick++" href="../www/magick++.html">Magick++</a>
+    <a title="Program Interface: Magick++" href="magick++.html">Magick++</a>
 </div>
 <div class="sep"></div>
 <div  class="menu">
-   <a title="Install from Source" href="../www/install-source.html">Install from Source</a>
+   <a title="Install from Source" href="install-source.html">Install from Source</a>
 </div>
 <div class="sub">
-    <a title="Install from Source: Unix" href="../www/install-source.html#unix">Unix</a>
+    <a title="Install from Source: Unix" href="install-source.html#unix">Unix</a>
 </div>
 <div class="sub">
-    <a title="Install from Source: Windows" href="../www/install-source.html#windows">Windows</a>
+    <a title="Install from Source: Windows" href="install-source.html#windows">Windows</a>
  </div>
 <div class="menu">
-  <a title="Resources" href="../www/resources.html">Resources</a>
+  <a title="Resources" href="resources.html">Resources</a>
 </div>
 <div class="menu">
-  <a title="Architecture" href="../www/architecture.html">Architecture</a>
+  <a title="Architecture" href="architecture.html">Architecture</a>
 </div>
 <div class="menu">
-  <a title="Download" href="../www/download.html">Download</a>
-</div>
-<div class="sep"></div>
-<div class="menu">
-  <a title="Search" href="../www/search.html">Search</a>
+  <a title="Download" href="download.html">Download</a>
 </div>
 <div class="sep"></div>
 <div class="menu">
-  <a title="Site Map" href="../www/sitemap.html">Site Map</a>
+  <a title="Search" href="search.html">Search</a>
+</div>
+<div class="sep"></div>
+<div class="menu">
+  <a title="Site Map" href="sitemap.html">Site Map</a>
 </div>
 <div  class="sub">
-  <a title="Site Map: Links" href="../www/links.html">Links</a>
+  <a title="Site Map: Links" href="links.html">Links</a>
 </div>
 <div class="sep"></div>
 <div class="menu">
-  <a rel="follow" title="Sponsors" href="../www/sponsors.html">Sponsors:</a>
+  <a rel="follow" title="Sponsors" href="sponsors.html">Sponsors:</a>
 
   <a href="http://www.networkredux.com"> <img src="../images/networkredux.png" width="140" height="31" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a>
-  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201204010120 mickey@163... -->
+  <a href="http://www.dinodirect.com/ipads-tablets/"> <img src="../images/dino-direct.jpg" width="140" height="90" alt="[sponsor]" style="margin-top: 4px; margin-left: 4px; border: 0px; float: left;" /></a><!-- 201208010120 mickey@163... -->
 <div class="sponsbox">
 <div class="sponsor">
-  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201204010120 mickey@163... -->
+  <a rel="follow" title="Sponsor: The Fastest &amp; Easiest Way to Find Images" href="http://www.graphicsfactory.com">The Fastest &amp; Easiest Way to Find Images</a><!-- 201210010270 graphicsfac... -->
 </div>
 <div class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting" href="http://www.micfo.com">Web Hosting</a><!-- 209901010090s golestan -->
+  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201209010090 barsh@inter... -->
 </div>
 <div class="sponsor">
-  <a rel="follow" title="Sponsor: Autos Part" href="http://www.pkwteile.de/autoteile">Autos Part</a><!-- 201203010270 info@pkwte... -->
+  <a rel="follow" title="Werbebanner Werbeplane" href="http://www.allesbanner.de">Werbebanner Werbeplane</a><!-- 201212010450 info@druck... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Entertainment News &amp; Photos" href="http://www.zimbio.com">Entertainment News &amp; Photos</a><!-- 201211010540 bd@zimb... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: LED24" href="http://led24.de/">LED24</a><!-- 201207010270 info@led24... -->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Sponsor: Best Website Hosting" href="http://www.top-cheap-web-hosting.com">Best Website Hosting</a><!-- 201304010090 eunge.liu-->
+</div>
+<div class="sponsor">
+  <a rel="follow" title="Android Tablet" href="http://www.dinodirect.com/ipads-tablets/">Android Tablet</a><!-- 201208010120 mickey@163... -->
 </div>
 <div class="sponsor">
   <a rel="follow" title="Sponsor: Web Site Hosting" href="http://webhostinggeeks.com">Web Site Hosting</a><!-- 201302010900 funds@enmob... -->
 </div>
 <div class="sponsor">
-  <a rel="follow" title="Sponsor: Tenant Check" href="http://www.rentmethod.com/">Tenant Check</a><!-- 201203010090 chris@rentm... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: VPS" href="http://www.interdominios.com/vps">VPS</a><!-- 201204010090 barsh@inter... -->
-</div>
-<div class="sponsor">
    <a rel="follow" title="Sponsor: Premium Quality Stock Photos" href="http://www.f1online.pro/en/">Premium Quality Stock Photos</a><!-- 2012080100540 ... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Search engine optimisation" href="http://www.seomoves.com.au">Search engine optimisation</a><!-- 201301010090s jen@seo lowprofilelinks -->
 </div>
 <div class="sponsor">
    <a rel="follow" title="Sponsor: Druckerei" href="http://print24.com/de/">Druckerei</a><!-- 2012070100250 ... -->
@@ -199,42 +202,35 @@
   <a rel="follow" title="Sponsor: Managed Server" href="http://www.robhost.de">Managed Server</a><!-- 201210010720 klikics... -->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Stock Photography" href="http://www.fotosearch.com/">Stock Photography</a><!-- 2012040100250 ... -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Autoteile" href="http://www.q11-shop.de">Autoteile</a><!-- 201205010540 suvalj -->
-</div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Royalty Free Stock Images" href="http://www.canstockphoto.com/">Royalty Free Stock Images</a><!-- 2012050100360 support@can -->
-</div>
-<div class="sponsor">
-  <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingsecretrevealed.com">Web Hosting Secret Revealed</a><!-- 201204010540 iamchee jerry -->
-</div>
-<div class="sponsor">
   <a rel="follow" title="Sponsor: Druckerei" href="http://www.allesdruck.de">Druckerei</a><!-- 201303011500 r.leo -->
 </div>
-<div class="sponsor">
-   <a rel="follow" title="Sponsor: Turbolader Online kaufen" href="http://www.autoteile-carparts.de">Turbolader Online kaufen</a><!-- 2012050100150 t.temurbas...-->
+<div  class="sponsor">
+   <a rel="follow" title="Sponsor: Kaffeemaschinen reparatur" href="http://www.kaffeemaschinen-reparatur.de">Kaffeemaschinen reparatur</a><!-- 2012080100030 Temurbas atlas-multimedia-->
 </div>
 <div class="sponsor">
-   <a rel="follow" title="Sponsor: Web Hosting Reviews" href="http://www.webhostingreviewz.com">Web Hosting Reviews</a><!-- 2012040100030 Soft Tec-->
+   <a rel="follow" title="Sponsor: Web Hosting" href="http://www.hostucan.com">Web Hosting</a><!-- 2012120100150 racent marketing@webhosting...-->
 </div>
 </div>
 </div>
 </div>
 
 <div class="eastbar">
-  <div class="g-plusone" data-size="standard" data-count="false"></div>
+  <div class="g-plusone" id="gplusone"></div>
   <script type="text/javascript">
     window.___gcfg = {
       lang: 'en-US'
     };
 
     (function() {
-      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+      var po = document.createElement('script');
+      po.type = 'text/javascript'; po.async = true;
       po.src = 'https://apis.google.com/js/plusone.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      var script = document.getElementsByTagName('script')[0];
+      script.parentNode.insertBefore(po, script);
     })();
+    var gplusone = document.getElementById("gplusone");
+    gplusone.setAttribute("data-size","medium");
+    gplusone.setAttribute("data-count","false");
   </script>
 </div>
 
@@ -242,15 +238,15 @@
 
 
 <h1>PerlMagick API</h1>
-<p class="navigation-index">[<a href="#installation">Installation</a> &bull; <a href="#overview">Overview</a> &bull; <a href="#example">Example Script</a> &bull; <a href="#read">Read or Write an Image</a> &bull; <a href="#manipulate">Manipulate an Image</a> &bull; <a href="#set-attribute">Set an Image Attribute</a> &bull; <a href="#get-attribute">Get an Image Attribute</a> &bull; <a href="#compare">Compare an Image to its Reconstruction</a> &bull; <a href="#montage">Create an Image Montage</a> &bull; <a href="#blobs">Working with Blobs</a> &bull; <a href="#direct-access">Direct-access to Image Pixels</a> &bull; <a href="#miscellaneous">Miscellaneous Methods</a> &bull; <a href="#exceptions">Handling Exceptions</a>&bull; <a href="#constants">Constant</a> ]</p>
+<p class="navigation-index">[<a href="perl-magick.html#installation">Installation</a> &bull; <a href="perl-magick.html#overview">Overview</a> &bull; <a href="perl-magick.html#example">Example Script</a> &bull; <a href="perl-magick.html#read">Read or Write an Image</a> &bull; <a href="perl-magick.html#manipulate">Manipulate an Image</a> &bull; <a href="perl-magick.html#set-attribute">Set an Image Attribute</a> &bull; <a href="perl-magick.html#get-attribute">Get an Image Attribute</a> &bull; <a href="perl-magick.html#compare">Compare an Image to its Reconstruction</a> &bull; <a href="perl-magick.html#montage">Create an Image Montage</a> &bull; <a href="perl-magick.html#blobs">Working with Blobs</a> &bull; <a href="perl-magick.html#direct-access">Direct-access to Image Pixels</a> &bull; <a href="perl-magick.html#miscellaneous">Miscellaneous Methods</a> &bull; <a href="perl-magick.html#exceptions">Handling Exceptions</a>&bull; <a href="perl-magick.html#constants">Constant</a> ]</p>
 
 <div class="doc-section">
 <a id="introduction"></a>
-<p><a href="../www/download.html">PerlMagick</a> is an objected-oriented <a href="http://www.perl.com/perl/">Perl</a> interface to ImageMagick. Use the module to read, manipulate, or write an image or image sequence from within a Perl script. This makes it very suitable for Web CGI scripts. You must have ImageMagick 6.5.5 or above and Perl version 5.005_02 or greater installed on your system for PerlMagick to build properly.</p>
+<p><a href="download.html">PerlMagick</a> is an objected-oriented <a href="http://www.perl.com/perl/">Perl</a> interface to ImageMagick. Use the module to read, manipulate, or write an image or image sequence from within a Perl script. This makes it very suitable for Web CGI scripts. You must have ImageMagick 6.5.5 or above and Perl version 5.005_02 or greater installed on your system for PerlMagick to build properly.</p>
 
 <p>There are a number of useful scripts available to show you the value of PerlMagick. You can do Web based image manipulation and conversion with <a href="http://www.imagemagick.org/download/perl">MagickStudio</a>, or use <a href="https://www.imagemagick.org/subversion/ImageMagick/trunk/PerlMagick/demo/">L-systems</a> to create images of plants using mathematical constructs, and finally navigate through collections of thumbnail images and select the image to view with the <a href="http://webmagick.sourceforge.net/">WebMagick Image Navigator</a>.</p>
 
-<p>You can try PerlMagick from your Web browser at the <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>. Or, you can see <a href="../www/examples.html">examples</a> of select PerlMagick functions.</p>
+<p>You can try PerlMagick from your Web browser at the <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick Studio</a>. Or, you can see <a href="examples.html">examples</a> of select PerlMagick functions.</p>
 </div>
 
 <h2><a id="installation"></a>Installation</h2>
@@ -261,11 +257,11 @@
 <p>The following instructions for Unix apply only to the unbundled PerlMagick as obtained from CPAN. PerlMagick is included as a subdirectory (PerlMagick) of the ImageMagick source distribution, and may be configured and built using the instructions provided in the ImageMagick distribution's README.txt file. It is usually most convenient to install PerlMagick as part of the ImageMagick distribution.</p>
 
 <p>ImageMagick must already be installed on your system. Next, get
-the <a href="../www/download.html">PerlMagick</a> distribution corresponding to the installed ImageMagick distribution
-(e.g., PerlMagick 6.75 for
-ImageMagick 6.7.5) and unpack it as shown below:</p>
+the <a href="download.html">PerlMagick</a> distribution corresponding to the installed ImageMagick distribution
+(e.g., PerlMagick 6.77 for
+ImageMagick 6.7.7) and unpack it as shown below:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvfz PerlMagick-6.75.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd PerlMagick</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvfz PerlMagick-6.77.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd PerlMagick</span></p>
 <p>Next, edit <kbd>Makefile.PL</kbd> and change LIBS and INC to include the appropriate path information to the required <kbd>MagickCore</kbd> library. You may need paths to JPEG, PNG, TIFF, etc.  delegates if they were included with your installed version of ImageMagick. Build and install it like this:</p>
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>perl Makefile.PL</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make install</span></p>
@@ -273,7 +269,7 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 
 <p><b>Windows XP / Windows 2000</b></p>
 
-<p>ImageMagick must already be installed on your system. Also, the ImageMagick source distribution for <a href="../www/download.html">Windows 2000</a> is required. You must also have the <kbd>nmake</kbd> from the Visual C++ or J++ development environment. Copy <kbd>\bin\IMagick.dll</kbd> and <kbd>\bin\X11.dll</kbd> to a directory in your dynamic load path such as <kbd>c:\perl\site\5.00502</kbd>.</p>
+<p>ImageMagick must already be installed on your system. Also, the ImageMagick source distribution for <a href="download.html">Windows 2000</a> is required. You must also have the <kbd>nmake</kbd> from the Visual C++ or J++ development environment. Copy <kbd>\bin\IMagick.dll</kbd> and <kbd>\bin\X11.dll</kbd> to a directory in your dynamic load path such as <kbd>c:\perl\site\5.00502</kbd>.</p>
 
 <p>Next, type</p>
 
@@ -303,13 +299,13 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
   $image=Image::Magick-&gt;new;
 </pre>
 
-<p>The new() method takes the same parameters as <a href="#set-attribute">SetAttribute</a> . For example,</p>
+<p>The new() method takes the same parameters as <a href="perl-magick.html#set-attribute">SetAttribute</a> . For example,</p>
 
 <pre class="code">
   $image=Image::Magick-&gt;new(size=&gt;'384x256');
 </pre>
 
-<p>Next you will want to read an image or image sequence, manipulate it, and then display or write it. The input and output methods for PerlMagick are defined in <a href="#read">Read or Write an Image</a>. See <a href="#set-attribute">Set an Image Attribute</a> for methods that affect the way an image is read or written. Refer to <a href="#manipulate">Manipulate an Image</a> for a list of methods to transform an image. <a href="#get-attribute">Get an Image Attribute</a> describes how to retrieve an attribute for an image. Refer to <a href="#montage">Create an Image Montage</a> for details about tiling your images as thumbnails on a background. Finally, some methods do not neatly fit into any of the categories just mentioned. Review <a href="#misc">Miscellaneous Methods</a> for a list of these methods.</p>
+<p>Next you will want to read an image or image sequence, manipulate it, and then display or write it. The input and output methods for PerlMagick are defined in <a href="perl-magick.html#read">Read or Write an Image</a>. See <a href="perl-magick.html#set-attribute">Set an Image Attribute</a> for methods that affect the way an image is read or written. Refer to <a href="perl-magick.html#manipulate">Manipulate an Image</a> for a list of methods to transform an image. <a href="perl-magick.html#get-attribute">Get an Image Attribute</a> describes how to retrieve an attribute for an image. Refer to <a href="perl-magick.html#montage">Create an Image Montage</a> for details about tiling your images as thumbnails on a background. Finally, some methods do not neatly fit into any of the categories just mentioned. Review <a href="perl-magick.html#misc">Miscellaneous Methods</a> for a list of these methods.</p>
 
 <p>Once you are finished with a PerlMagick object you should consider destroying it. Each image in an image sequence is stored in virtual memory. This can potentially add up to mebibytes of memory. Upon destroying a PerlMagick object, the memory is returned for use by other Perl methods. The recommended way to destroy an object is with <kbd>undef</kbd>:</p>
 
@@ -476,7 +472,7 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 </tbody>
 </table>
 
-<p>For convenience, methods Write(), Display(), and Animate() can take any parameter that <a href="#set-attribute">SetAttribute</a> knows about. For example,</p>
+<p>For convenience, methods Write(), Display(), and Animate() can take any parameter that <a href="perl-magick.html#set-attribute">SetAttribute</a> knows about. For example,</p>
 
 <pre class="code">
   $image-&gt;Write(filename=&gt;'image.png', compression=&gt;'None');
@@ -524,7 +520,7 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 <h2><a id="manipulate"></a>Manipulate an Image</h2>
 <div class="doc-section">
 
-<p>Once you create an image with, for example, method ReadImage() you may want to operate on it. Below is a list of all the image manipulations methods available to you with PerlMagick.  There are <a href="../www/examples.html">examples</a> of select PerlMagick methods. Here is an example call to an image manipulation method:</p>
+<p>Once you create an image with, for example, method ReadImage() you may want to operate on it. Below is a list of all the image manipulations methods available to you with PerlMagick.  There are <a href="examples.html">examples</a> of select PerlMagick methods. Here is an example call to an image manipulation method:</p>
 
 <pre class="code">
   $image-&gt;Crop(geometry=&gt;'100x100+10+20');
@@ -574,7 +570,7 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">AffineTransform</td>
-    <td valign="top">affine=&gt;<i>array of float values</i>, translate=&gt;<i>float, float</i>, scale=&gt; <i>float, float</i>, rotate=&gt;<i>float</i>, skewX=&gt;<i>float</i>, skewY=&gt;<i>float</i>, interpolate={Average, Bicubic, Bilinear, Filter, Integer, Mesh, NearestNeighbor}, background=&gt;<i><a href="../www/color.html">color name</a></i></td>
+    <td valign="top">affine=&gt;<i>array of float values</i>, translate=&gt;<i>float, float</i>, scale=&gt; <i>float, float</i>, rotate=&gt;<i>float</i>, skewX=&gt;<i>float</i>, skewY=&gt;<i>float</i>, interpolate={Average, Bicubic, Bilinear, Filter, Integer, Mesh, NearestNeighbor}, background=&gt;<i><a href="color.html">color name</a></i></td>
     <td valign="top">affine transform image</td>
   </tr>
 
@@ -586,8 +582,8 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Annotate</td>
-    <td valign="top">text=&gt;<i>string</i>, font=&gt;<i>string</i>, family=&gt;<i>string</i>, style=&gt;{Normal, Italic, Oblique, Any}, stretch=&gt;{Normal, UltraCondensed, ExtraCondensed, Condensed, SemiCondensed, SemiExpanded, Expanded, ExtraExpanded, UltraExpanded}, weight=&gt;<i>integer</i>, pointsize=&gt;<i>integer</i>, density=&gt;<i>geometry</i>, stroke=&gt;<i><a href="../www/color.html">color name</a></i>, strokewidth=&gt;<i>integer</i>, fill=&gt;<i><a href="../www/color.html">color name</a></i>, undercolor=&gt;<i><a href="../www/color.html">color name</a></i>, kerning=&gt;<i>float</i>, geometry=&gt;<i>geometry</i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast}, antialias=&gt;{true, false}, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, affine=&gt;<i>array of float values</i>, translate=&gt;<i>float, float</i>, scale=&gt;<i>float, float</i>, rotate=&gt;<i>float</i>. skewX=&gt;<i>float</i>, skewY=&gt; <i>float</i>, align=&gt;{Left, Center, Right}, encoding=&gt;{UTF-8}, interline-spacing=&gt;<i>double</i>, interword-spacing=&gt;<i>double</i>, direction=&gt;{right-to-left, left-to-right}</td>
-    <td valign="top">annotate an image with text. See <a href="#misc">QueryFontMetrics</a> to get font metrics without rendering any text.</td>
+    <td valign="top">text=&gt;<i>string</i>, font=&gt;<i>string</i>, family=&gt;<i>string</i>, style=&gt;{Normal, Italic, Oblique, Any}, stretch=&gt;{Normal, UltraCondensed, ExtraCondensed, Condensed, SemiCondensed, SemiExpanded, Expanded, ExtraExpanded, UltraExpanded}, weight=&gt;<i>integer</i>, pointsize=&gt;<i>integer</i>, density=&gt;<i>geometry</i>, stroke=&gt;<i><a href="color.html">color name</a></i>, strokewidth=&gt;<i>integer</i>, fill=&gt;<i><a href="color.html">color name</a></i>, undercolor=&gt;<i><a href="color.html">color name</a></i>, kerning=&gt;<i>float</i>, geometry=&gt;<i>geometry</i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast}, antialias=&gt;{true, false}, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, affine=&gt;<i>array of float values</i>, translate=&gt;<i>float, float</i>, scale=&gt;<i>float, float</i>, rotate=&gt;<i>float</i>. skewX=&gt;<i>float</i>, skewY=&gt; <i>float</i>, align=&gt;{Left, Center, Right}, encoding=&gt;{UTF-8}, interline-spacing=&gt;<i>double</i>, interword-spacing=&gt;<i>double</i>, direction=&gt;{right-to-left, left-to-right}</td>
+    <td valign="top">annotate an image with text. See <a href="perl-magick.html#misc">QueryFontMetrics</a> to get font metrics without rendering any text.</td>
   </tr>
 
   <tr>
@@ -628,7 +624,7 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Border</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, bordercolor=&gt;<i><a href="../www/color.html">color name</a></i>,  compose=&gt;{Undefined, Add, Atop, Blend, Bumpmap, Clear, ColorBurn, ColorDodge, Colorize, CopyBlack, CopyBlue, CopyCMYK, Cyan, CopyGreen, Copy, CopyMagenta, CopyOpacity, CopyRed, RGB, CopyYellow, Darken, Dst, Difference, Displace, Dissolve, DstAtop, DstIn, DstOut, DstOver, Dst, Exclusion, HardLight, Hue, In, Lighten, Luminize, Minus, Modulate, Multiply, None, Out, Overlay, Over, Plus, ReplaceCompositeOp, Saturate, Screen, SoftLight, Src, SrcAtop, SrcIn, SrcOut, SrcOver, Src, Subtract, Threshold, Xor },</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, bordercolor=&gt;<i><a href="color.html">color name</a></i>,  compose=&gt;{Undefined, Add, Atop, Blend, Bumpmap, Clear, ColorBurn, ColorDodge, Colorize, CopyBlack, CopyBlue, CopyCMYK, Cyan, CopyGreen, Copy, CopyMagenta, CopyOpacity, CopyRed, RGB, CopyYellow, Darken, Dst, Difference, Displace, Dissolve, DstAtop, DstIn, DstOut, DstOver, Dst, Exclusion, HardLight, Hue, In, Lighten, Luminize, Minus, Modulate, Multiply, None, Out, Overlay, Over, Plus, ReplaceCompositeOp, Saturate, Screen, SoftLight, Src, SrcAtop, SrcIn, SrcOut, SrcOver, Src, Subtract, Threshold, Xor },</td>
     <td valign="top">surround the image with a border of color</td>
   </tr>
 
@@ -676,7 +672,7 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Color</td>
-    <td valign="top">color=&gt;<i><a href="../www/color.html">color name</a></i></td>
+    <td valign="top">color=&gt;<i><a href="color.html">color name</a></i></td>
     <td valign="top">set the entire image to this color.</td>
   </tr>
 
@@ -688,7 +684,7 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Colorize</td>
-    <td valign="top">fill=&gt;<i><a href="../www/color.html">color name</a></i>, blend=&gt;<i>string</i></td>
+    <td valign="top">fill=&gt;<i><a href="color.html">color name</a></i>, blend=&gt;<i>string</i></td>
     <td valign="top">colorize the image with the fill color</td>
   </tr>
 
@@ -712,7 +708,7 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Composite</td>
-    <td valign="top">image=&gt;<i>image-handle</i>, compose=&gt;{Undefined, Add, Atop, Blend, Bumpmap, Clear, ColorBurn, ColorDodge, Colorize, CopyBlack, CopyBlue, CopyCMYK, Cyan, CopyGreen, Copy, CopyMagenta, CopyOpacity, CopyRed, RGB, CopyYellow, Darken, Dst, Difference, Displace, Dissolve, DstAtop, DstIn, DstOut, DstOver, Dst, Exclusion, HardLight, Hue, In, Lighten, Luminize, Minus, Modulate, Multiply, None, Out, Overlay, Over, Plus, ReplaceCompositeOp, Saturate, Screen, SoftLight, Src, SrcAtop, SrcIn, SrcOut, SrcOver, Src, Subtract, Threshold, Xor }, mask=&gt;<i>image-handle</i>, geometry=&gt;<i>geometry</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast}, opacity=&gt;<i>integer</i>, tile=&gt;{True, False}, rotate=&gt;<i>double</i>, color=&gt;<i><a href="../www/color.html">color name</a></i>, blend=&gt;<i>geometry</i>, interpolate=&gt;{undefined, average, bicubic, bilinear, filter, integer, mesh, nearest-neighbor, spline}</td>
+    <td valign="top">image=&gt;<i>image-handle</i>, compose=&gt;{Undefined, Add, Atop, Blend, Bumpmap, Clear, ColorBurn, ColorDodge, Colorize, CopyBlack, CopyBlue, CopyCMYK, Cyan, CopyGreen, Copy, CopyMagenta, CopyOpacity, CopyRed, RGB, CopyYellow, Darken, Dst, Difference, Displace, Dissolve, DstAtop, DstIn, DstOut, DstOver, Dst, Exclusion, HardLight, Hue, In, Lighten, Luminize, Minus, Modulate, Multiply, None, Out, Overlay, Over, Plus, ReplaceCompositeOp, Saturate, Screen, SoftLight, Src, SrcAtop, SrcIn, SrcOut, SrcOver, Src, Subtract, Threshold, Xor }, mask=&gt;<i>image-handle</i>, geometry=&gt;<i>geometry</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast}, opacity=&gt;<i>integer</i>, tile=&gt;{True, False}, rotate=&gt;<i>double</i>, color=&gt;<i><a href="color.html">color name</a></i>, blend=&gt;<i>geometry</i>, interpolate=&gt;{undefined, average, bicubic, bilinear, filter, integer, mesh, nearest-neighbor, spline}</td>
     <td valign="top">composite one image onto another.  Use the rotate parameter in concert with the tile parameter.</td>
   </tr>
 
@@ -784,7 +780,7 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Draw</td>
-    <td valign="top">primitive=&gt;{point, line, rectangle, arc, ellipse, circle, path, polyline, polygon, bezier, color, matte, text, @<i>filename</i>}, points=&gt;<i>string</i> , method=&gt;<i>{Point, Replace, Floodfill, FillToBorder, Reset}</i>, stroke=&gt;<i><a href="../www/color.html">color name</a></i>, fill=&gt;<i><a href="../www/color.html">color name</a></i>, font=&gt;<i>string</i>, pointsize=&gt;<i>integer</i>, strokewidth=&gt;<i>float</i>, antialias=&gt;{true, false}, bordercolor=&gt;<i><a href="../www/color.html">color name</a></i>, x=&gt;<i>float</i>, y=&gt;<i>float</i>, dash-offset=&gt;<i>float</i>, dash-pattern=&gt;<i>array of float values</i>, affine=&gt;<i>array of float values</i>, translate=&gt;<i>float, float</i>, scale=&gt;<i>float, float</i>, rotate=&gt;<i>float</i>,  skewX=&gt;<i>float</i>, skewY=&gt;<i>float</i>, interpolate=&gt;{undefined, average, bicubic, bilinear, mesh, nearest-neighbor, spline}, kerning=&gt;<i>float</i>, text=&gt;<i>string</i>, vector-graphics=&gt;<i>string</i>, interline-spacing=&gt;<i>double</i>, interword-spacing=&gt;<i>double</i>, direction=&gt;{right-to-left, left-to-right}</td>
+    <td valign="top">primitive=&gt;{point, line, rectangle, arc, ellipse, circle, path, polyline, polygon, bezier, color, matte, text, @<i>filename</i>}, points=&gt;<i>string</i> , method=&gt;<i>{Point, Replace, Floodfill, FillToBorder, Reset}</i>, stroke=&gt;<i><a href="color.html">color name</a></i>, fill=&gt;<i><a href="color.html">color name</a></i>, font=&gt;<i>string</i>, pointsize=&gt;<i>integer</i>, strokewidth=&gt;<i>float</i>, antialias=&gt;{true, false}, bordercolor=&gt;<i><a href="color.html">color name</a></i>, x=&gt;<i>float</i>, y=&gt;<i>float</i>, dash-offset=&gt;<i>float</i>, dash-pattern=&gt;<i>array of float values</i>, affine=&gt;<i>array of float values</i>, translate=&gt;<i>float, float</i>, scale=&gt;<i>float, float</i>, rotate=&gt;<i>float</i>,  skewX=&gt;<i>float</i>, skewY=&gt;<i>float</i>, interpolate=&gt;{undefined, average, bicubic, bilinear, mesh, nearest-neighbor, spline}, kerning=&gt;<i>float</i>, text=&gt;<i>string</i>, vector-graphics=&gt;<i>string</i>, interline-spacing=&gt;<i>double</i>, interword-spacing=&gt;<i>double</i>, direction=&gt;{right-to-left, left-to-right}</td>
     <td valign="top">annotate an image with one or more graphic primitives.</td>
   </tr>
 
@@ -820,7 +816,7 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Extent</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, fuzz=&gt;<i>double</i>, background=&gt;<i><a href="../www/color.html">color name</a></i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast}</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, fuzz=&gt;<i>double</i>, background=&gt;<i><a href="color.html">color name</a></i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast}</td>
     <td valign="top">set the image size</td>
   </tr>
 
@@ -850,7 +846,7 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">FloodfillPaint</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}, x=&gt;<i>integer</i>, y=&gt;<i>integer</i> , fill=&gt;<i><a href="../www/color.html">color name</a></i>, bordercolor=&gt;<i><a href="../www/color.html">color name</a></i>, fuzz=&gt;<i>double</i>, invert=&gt;{True, False}</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}, x=&gt;<i>integer</i>, y=&gt;<i>integer</i> , fill=&gt;<i><a href="color.html">color name</a></i>, bordercolor=&gt;<i><a href="color.html">color name</a></i>, fuzz=&gt;<i>double</i>, invert=&gt;{True, False}</td>
     <td valign="top">changes the color value of any pixel that matches the color of the target pixel and is a neighbor. If you specify a border color, the color value is changed for any neighbor pixel that is not that color.</td>
   </tr>
 
@@ -862,7 +858,7 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Frame</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, inner=&gt;<i>integer</i>, outer=&gt;<i>integer</i>, fill=&gt;<i><a href="../www/color.html">color name</a></i>,  compose=&gt;{Undefined, Add, Atop, Blend, Bumpmap, Clear, ColorBurn, ColorDodge, Colorize, CopyBlack, CopyBlue, CopyCMYK, Cyan, CopyGreen, Copy, CopyMagenta, CopyOpacity, CopyRed, RGB, CopyYellow, Darken, Dst, Difference, Displace, Dissolve, DstAtop, DstIn, DstOut, DstOver, Dst, Exclusion, HardLight, Hue, In, Lighten, Luminize, Minus, Modulate, Multiply, None, Out, Overlay, Over, Plus, ReplaceCompositeOp, Saturate, Screen, SoftLight, Src, SrcAtop, SrcIn, SrcOut, SrcOver, Src, Subtract, Threshold, Xor },</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, inner=&gt;<i>integer</i>, outer=&gt;<i>integer</i>, fill=&gt;<i><a href="color.html">color name</a></i>,  compose=&gt;{Undefined, Add, Atop, Blend, Bumpmap, Clear, ColorBurn, ColorDodge, Colorize, CopyBlack, CopyBlue, CopyCMYK, Cyan, CopyGreen, Copy, CopyMagenta, CopyOpacity, CopyRed, RGB, CopyYellow, Darken, Dst, Difference, Displace, Dissolve, DstAtop, DstIn, DstOut, DstOver, Dst, Exclusion, HardLight, Hue, In, Lighten, Luminize, Minus, Modulate, Multiply, None, Out, Overlay, Over, Plus, ReplaceCompositeOp, Saturate, Screen, SoftLight, Src, SrcAtop, SrcIn, SrcOut, SrcOver, Src, Subtract, Threshold, Xor },</td>
     <td valign="top">surround the image with an ornamental border</td>
   </tr>
 
@@ -970,7 +966,7 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">MatteFloodfill</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i> , matte=&gt;<i>integer</i>, bordercolor=&gt;<i><a href="../www/color.html">color name</a></i>, fuzz=&gt;<i>double</i>, invert=&gt;{True, False}</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i> , matte=&gt;<i>integer</i>, bordercolor=&gt;<i><a href="color.html">color name</a></i>, fuzz=&gt;<i>double</i>, invert=&gt;{True, False}</td>
     <td valign="top">changes the matte value of any pixel that matches the color of the target pixel and is a neighbor. If you specify a border color, the matte value is changed for any neighbor pixel that is not that color.</td>
   </tr>
 
@@ -1030,8 +1026,8 @@ ImageMagick 6.7.5) and unpack it as shown below:</p>
 
   <tr>
     <td valign="top">Opaque</td>
-    <td valign="top">color=&gt;<i><a href="../www/color.html">color name</a></i>,
-fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}, invert=&gt;{True, False}</td>
+    <td valign="top">color=&gt;<i><a href="color.html">color name</a></i>,
+fill=&gt;<i><a href="color.html">color name</a></i>, channel=&gt;{All, Default, Alpha, Black, Blue, CMYK, Cyan, Gray, Green, Index, Magenta, Opacity, Red, RGB, Yellow}, invert=&gt;{True, False}</td>
     <td valign="top">change this color to the fill color within the image</td>
   </tr>
 
@@ -1043,7 +1039,7 @@ fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, De
 
   <tr>
     <td valign="top">Polaroid</td>
-    <td valign="top">caption=&gt;<i>string</i>, angle=&gt;<i>double</i>, pointsize=&gt;<i>double</i>, font=&gt;<i>string</i>, stroke=&gt; <i><a href="../www/color.html">color name</a></i>, strokewidth=&gt;<i>integer</i>, fill=&gt;<i><a href="../www/color.html">color name</a></i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast},  background=&gt;<i><a href="../www/color.html">color name</a></i></td>
+    <td valign="top">caption=&gt;<i>string</i>, angle=&gt;<i>double</i>, pointsize=&gt;<i>double</i>, font=&gt;<i>string</i>, stroke=&gt; <i><a href="color.html">color name</a></i>, strokewidth=&gt;<i>integer</i>, fill=&gt;<i><a href="color.html">color name</a></i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast},  background=&gt;<i><a href="color.html">color name</a></i></td>
     <td valign="top">simulate a Polaroid picture.</td>
   </tr>
 
@@ -1109,7 +1105,7 @@ fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, De
 
   <tr>
     <td valign="top">Rotate</td>
-    <td valign="top">degrees=&gt;<i>double</i>, background=&gt;<i><a href="../www/color.html">color name</a></i></td>
+    <td valign="top">degrees=&gt;<i>double</i>, background=&gt;<i><a href="color.html">color name</a></i></td>
     <td valign="top">rotate an image</td>
   </tr>
 
@@ -1174,7 +1170,7 @@ fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, De
 
   <tr>
     <td valign="top">Shear</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, x=&gt;<i>double</i>, y=&gt;<i>double</i> fill=&gt;<i><a href="../www/color.html">color name</a></i></td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, x=&gt;<i>double</i>, y=&gt;<i>double</i> fill=&gt;<i><a href="color.html">color name</a></i></td>
     <td valign="top">shear the image along the X or Y axis by a positive or negative shear angle</td>
   </tr>
 
@@ -1210,7 +1206,7 @@ fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, De
 
   <tr>
     <td valign="top">Splice</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, fuzz=&gt;<i>double</i>, background=&gt;<i><a href="../www/color.html">color name</a></i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast}</td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, width=&gt;<i>integer</i>, height=&gt;<i>integer</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, fuzz=&gt;<i>double</i>, background=&gt;<i><a href="color.html">color name</a></i>, gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast}</td>
     <td valign="top">splice an image</td>
   </tr>
 
@@ -1269,13 +1265,13 @@ fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, De
 
   <tr>
     <td valign="top">Tint</td>
-    <td valign="top">fill=&gt;<i><a href="../www/color.html">color name</a></i>, blend=&gt;<i>string</i></td>
+    <td valign="top">fill=&gt;<i><a href="color.html">color name</a></i>, blend=&gt;<i>string</i></td>
     <td valign="top">tint the image with the fill color.</td>
   </tr>
 
   <tr>
     <td valign="top">Transparent</td>
-    <td valign="top">color=&gt;<i><a href="../www/color.html">color name</a></i>, invert=&gt;{True, False}</td>
+    <td valign="top">color=&gt;<i><a href="color.html">color name</a></i>, invert=&gt;{True, False}</td>
     <td valign="top">make this color transparent within the image</td>
   </tr>
 
@@ -1305,7 +1301,7 @@ fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, De
 
   <tr>
     <td valign="top">Vignette</td>
-    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, background=&gt;<i><a href="../www/color.html">color name</a></i></td>
+    <td valign="top">geometry=&gt;<i>geometry</i>, radius=&gt;<i>double</i>, sigma=&gt;<i>double</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>, background=&gt;<i><a href="color.html">color name</a></i></td>
     <td valign="top">offset the edges of the image in vignette style</td>
   </tr>
 
@@ -1397,7 +1393,7 @@ fill=&gt;<i><a href="../www/color.html">color name</a></i>, channel=&gt;{All, De
 
 <p>You can optionally add <i>Image</i> to any method name. For example, TrimImage() is an alias for method Trim().</p>
 
-<p>Most of the attributes listed above have an analog in <a href="../www/convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
+<p>Most of the attributes listed above have an analog in <a href="convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
 
 </div>
 
@@ -1466,7 +1462,7 @@ can use the integers 1 and 0.</p>
 
   <tr>
     <td valign="top">background</td>
-    <td valign="top"><i><a href="../www/color.html">color name</a></i></td>
+    <td valign="top"><i><a href="color.html">color name</a></i></td>
     <td valign="top">image background color</td>
   </tr>
 
@@ -1478,7 +1474,7 @@ can use the integers 1 and 0.</p>
 
   <tr>
     <td valign="top">bordercolor</td>
-    <td valign="top"><i><a href="../www/color.html">color name</a></i></td>
+    <td valign="top"><i><a href="color.html">color name</a></i></td>
     <td valign="top">set the image border color</td>
   </tr>
 
@@ -1490,7 +1486,7 @@ can use the integers 1 and 0.</p>
 
   <tr>
     <td valign="top">colormap[<i>i</i>]</td>
-    <td valign="top"><i><a href="../www/color.html">color name</a></i></td>
+    <td valign="top"><i><a href="color.html">color name</a></i></td>
     <td valign="top">color name (e.g. red) or hex value (e.g. #ccc) at position
 <i>i</i></td>
   </tr>
@@ -1671,7 +1667,7 @@ can use the integers 1 and 0.</p>
 
   <tr>
     <td valign="top">mattecolor</td>
-    <td valign="top"><i><a href="../www/color.html">color name</a></i></td>
+    <td valign="top"><i><a href="color.html">color name</a></i></td>
     <td valign="top">set the image matte color</td>
   </tr>
 
@@ -1814,7 +1810,7 @@ can use the integers 1 and 0.</p>
 <p>SetAttribute() is an alias for method Set().</p>
 
 <p>Most of the attributes listed above have an analog in
-<a href="../www/convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
+<a href="convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
 
 </div>
 
@@ -1828,7 +1824,7 @@ can use the integers 1 and 0.</p>
   $width = $image-&gt;[3]-&gt;Get('columns');
 </pre>
 
-<p>In addition to all the attributes listed in <a href="#set-attribute">Set an Image Attribute</a> , you can get these additional attributes:</p>
+<p>In addition to all the attributes listed in <a href="perl-magick.html#set-attribute">Set an Image Attribute</a> , you can get these additional attributes:</p>
 
 <table class="doc">
   <caption>Image Attributes</caption>
@@ -2027,7 +2023,7 @@ can use the integers 1 and 0.</p>
 
   <tr>
     <td valign="top">transparent-color</td>
-    <td valign="top"><i><a href="../www/color.html">color name</a></i></td>
+    <td valign="top"><i><a href="color.html">color name</a></i></td>
     <td valign="top">set the image transparent color</td>
   </tr>
 
@@ -2066,7 +2062,7 @@ can use the integers 1 and 0.</p>
 <p>GetAttribute() is an alias for method Get().</p>
 
 <p>Most of the attributes listed above have an analog in
-<a href="../www/convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
+<a href="convert.html">convert</a>. See the documentation for a more detailed description of these attributes.</p>
 
 </div>
 
@@ -2150,7 +2146,7 @@ can use the integers 1 and 0.</p>
 
   <tr>
     <td valign="top">background</td>
-    <td valign="top"><i><a href="../www/color.html">color name</a></i></td>
+    <td valign="top"><i><a href="color.html">color name</a></i></td>
     <td valign="top">background color name</td>
   </tr>
 
@@ -2168,7 +2164,7 @@ can use the integers 1 and 0.</p>
 
   <tr>
     <td valign="top">fill</td>
-    <td valign="top"><a href="../www/color.html">color name</a></td>
+    <td valign="top"><a href="color.html">color name</a></td>
     <td valign="top">fill color for annotations</td>
   </tr>
 
@@ -2224,7 +2220,7 @@ South, SouthEast</td>
 
   <tr>
     <td valign="top">stroke</td>
-    <td valign="top"><a href="../www/color.html">color name</a></td>
+    <td valign="top"><a href="color.html">color name</a></td>
     <td valign="top">stroke color for annotations</td>
   </tr>
 
@@ -2258,7 +2254,7 @@ South, SouthEast</td>
 
 <p>MontageImage() is an alias for method Montage().</p>
 
-<p>Most of the attributes listed above have an analog in <a href="../www/montage.html">montage</a>. See the documentation for a more detailed description of these attributes.</p>
+<p>Most of the attributes listed above have an analog in <a href="montage.html">montage</a>. See the documentation for a more detailed description of these attributes.</p>
 
 </div>
 
@@ -2267,7 +2263,7 @@ South, SouthEast</td>
 
 <p>A blob contains data that directly represent a particular image
 format in memory instead of on disk. PerlMagick supports
-blobs in any of these image <a href="../www/formats.html">formats</a> and provides methods to convert a blob to or from a particular image format.</p>
+blobs in any of these image <a href="formats.html">formats</a> and provides methods to convert a blob to or from a particular image format.</p>
 
 <table class="doc">
   <caption>Blob Methods</caption>
@@ -2281,7 +2277,7 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
 
   <tr>
     <td valign="top">ImageToBlob</td>
-    <td valign="top">any image <a href="#set-attribute">attribute</a></td>
+    <td valign="top">any image <a href="perl-magick.html#set-attribute">attribute</a></td>
     <td valign="top">an array of image data in the respective image format</td>
     <td valign="top">convert an image or image sequence to an array of blobs</td>
   </tr>
@@ -2399,6 +2395,10 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
 
 <p>Finally, the Transform() method accepts a fully-qualified geometry specification for cropping or resizing one or more images.  For example,</p>
 
+<pre class="code">
+  $p = $images-&gt;Transform(crop=>'100x100+10+60');
+</pre>
+
 <p>The Flatten() method flattens a set of images and returns it. For example,</p>
 
 <pre class="code">
@@ -2417,7 +2417,7 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
 
 <p>replaces the red channel with the average of the green and blue channels.</p>
 
-<p>See <a href="../www/fx.html">FX, The Special Effects Image Operator</a> for a detailed discussion of this method.</p>
+<p>See <a href="fx.html">FX, The Special Effects Image Operator</a> for a detailed discussion of this method.</p>
 
 <p>Histogram() returns the unique colors in the image and a count for each one. The returned values are an array of red, green, blue, opacity, and count values.</p>
 
@@ -2431,7 +2431,7 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
 
 <p>Mosaic() creates an mosaic from an image sequence.</p>
 
-<p>Method Mogrify() is a single entry point for the image manipulation methods (<a href="#manipulate">Manipulate an Image</a>). The parameters are the name of a method followed by any parameters the method may require. For example, these calls are equivalent:</p>
+<p>Method Mogrify() is a single entry point for the image manipulation methods (<a href="perl-magick.html#manipulate">Manipulate an Image</a>). The parameters are the name of a method followed by any parameters the method may require. For example, these calls are equivalent:</p>
 
 <pre class="code">
   $image-&gt;Crop('340x256+0+0');
@@ -2466,7 +2466,7 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
          = $image-&gt;QueryFontMetrics(<i>parameters</i>);
 </pre>
 
-<p>Where <i>parameters</i> is any parameter of the <a href="#manipulate">Annotate</a> method. The return values are:</p>
+<p>Where <i>parameters</i> is any parameter of the <a href="perl-magick.html#manipulate">Annotate</a> method. The return values are:</p>
 
 <ul>
   <li>character width</li>
@@ -2521,7 +2521,7 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
   $mime = $image-&gt;MagickToMime('tif');
 </pre>
 
-<p>Use RemoteCommand() to send a command to an already running <a href="../www/display.html">display</a> or <a href="../www/animate.html">animate</a> application. The only parameter is the name of the image file to display or animate.</p>
+<p>Use RemoteCommand() to send a command to an already running <a href="display.html">display</a> or <a href="animate.html">animate</a> application. The only parameter is the name of the image file to display or animate.</p>
 
 <pre class="code">
   $image-&gt;RemoteCommand('image.jpg');
@@ -2544,7 +2544,7 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
 <p>Finally, the Transform() method accepts a fully-qualified geometry specification for cropping or resizing one or more images.  For example,</p>
 
 <pre class="code">
-  $p = $image-&gt;Transform(crop=&gt;'100x100+0+0', gravity=&gt;'Center');
+  $p = $image-&gt;Transform(crop=&gt;'100x100+0+0');
 </pre>
 
 <p>You can optionally add <i>Image</i> to any method name above. For example, PingImage() is an alias for method Ping().</p>
@@ -2590,7 +2590,7 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
   Error 400: Memory allocation failed
 </pre>
 
-<p>Review the complete list of <a href="../www/exception.html">error and warning codes</a>.</p>
+<p>Review the complete list of <a href="exception.html">error and warning codes</a>.</p>
 
 <p>The following illustrates how you can use a numeric status code:</p>
 
@@ -2665,14 +2665,14 @@ blobs in any of these image <a href="../www/formats.html">formats</a> and provid
 <div id="linkbar">
     <span id="linkbar-west">&nbsp;</span>
     <span id="linkbar-center">
-      <a href="http://www.imagemagick.org/discourse-server/">Discourse Server</a> &bull;
+      <a href="../discourse-server">Discourse Server</a> &bull;
       <a href="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">Studio</a>
     </span>
     <span id="linkbar-east">&nbsp;</span>
   </div>
   <div class="footer">
-    <span id="footer-west">&copy; 1999-2011 ImageMagick Studio LLC</span>
-    <span id="footer-east"> <a href="http://www.imagemagick.org/script/contact.php">Contact the Wizards</a></span>
+    <span id="footer-west">&copy; 1999-2012 ImageMagick Studio LLC</span>
+    <span id="footer-east"> <a href="contact.html">Contact the Wizards</a></span>
   </div>
   <div style="clear: both; margin: 0; width: 100%; "></div>
   <script type="text/javascript">
