@@ -40,7 +40,6 @@ configlib_DATA = \
 	config/mime.xml \
 	config/policy.xml \
 	config/quantization-table.xml \
-	config/sRGB.icc \
 	config/thresholds.xml \
 	config/type.xml \
 	config/type-dejavu.xml \
@@ -62,7 +61,6 @@ CONFIG_EXTRA_DIST = \
 	config/mime.xml \
 	config/policy.xml \
 	config/quantization-table.xml \
-	config/sRGB.icc \
 	config/thresholds.xml \
 	config/type-dejavu.xml.in \
 	config/type-ghostscript.xml.in \
