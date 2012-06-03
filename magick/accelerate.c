@@ -294,7 +294,7 @@ static char
     "      break;\n"
     "    }\n"
     "  }\n"
-    "  gamma=ClampReciprocal(gamma);\n"
+    "  gamma=MagickReciprocal(gamma);\n"
     "  const unsigned long index = y*columns+x;\n"
     "  output[index].x=ClampToQuantum(gamma*sum.x);\n"
     "  output[index].y=ClampToQuantum(gamma*sum.y);\n"

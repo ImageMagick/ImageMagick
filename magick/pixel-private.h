@@ -29,18 +29,10 @@ extern "C" {
 #include <magick/memory_.h>
 #include <magick/quantum-private.h>
 
-static inline MagickRealType ClampReciprocal(const MagickRealType alpha)
+static inline MagickRealType MagickReciprocal(const MagickRealType x)
 {
-  MagickRealType
-    beta;
-
-  /*
-    Reciprocal alpha: clamp to [MagickEpsilon,1], return reciprocal.
-  beta=(alpha > (MagickRealType) 1.0 ? (MagickRealType) 1.0 : alpha);
-  beta=(beta < MagickEpsilon ? MagickEpsilon : beta);
-  */
-beta=(fabs((double) alpha) < MagickEpsilon ? MagickEpsilon : alpha);
-  return((MagickRealType) 1.0/beta);
+  return((MagickRealType) 1.0/(((x) > (MagickRealType) 0.0 ? (x) : -(x)) <
+    MagickEpsilon ? MagickEpsilon : x));
 }
 
 static inline MagickPixelPacket *CloneMagickPixelPacket(

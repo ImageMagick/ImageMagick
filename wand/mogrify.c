@@ -1251,7 +1251,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             gamma=0.0;
             for (j=0; j < (ssize_t) (kernel->width*kernel->height); j++)
               gamma+=kernel->values[j];
-            gamma=ClampReciprocal(gamma);
+            gamma=MagickReciprocal(gamma);
             for (j=0; j < (ssize_t) (kernel->width*kernel->height); j++)
               kernel->values[j]*=gamma;
             mogrify_image=FilterImageChannel(*image,channel,kernel,exception);
