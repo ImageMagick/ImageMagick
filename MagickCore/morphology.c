@@ -4270,7 +4270,7 @@ MagickExport Image *MorphologyImage(const Image *image,
 
   curr_kernel = (KernelInfo *) kernel;
   bias=0.0;
-  compose = (ssize_t)UndefinedCompositeOp;  /* use default for method */
+  compose = UndefinedCompositeOp;  /* use default for method */
 
   /* Apply Convolve/Correlate Normalization and Scaling Factors.
    * This is done BEFORE the ShowKernelInfo() function is called so that
@@ -4610,7 +4610,7 @@ MagickExport void ScaleGeometryKernelInfo (KernelInfo *kernel,
     args.sigma = 0.0;
 
   /* Scale/Normalize the input kernel */
-  ScaleKernelInfo(kernel, args.rho, flags);
+  ScaleKernelInfo(kernel, args.rho, (GeometryFlags) flags);
 
   /* Add Unity Kernel, for blending with original */
   if ( (flags & SigmaValue) != 0 )

@@ -2363,7 +2363,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
           pixel+=alpha*p[k*GetPixelChannels(image)+i];
           gamma+=alpha;
         }
-        gamma=ClampReciprocal(gamma);
+        gamma=MagickReciprocal(gamma);
         SetPixelChannel(resize_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       q+=GetPixelChannels(resize_image);
@@ -2579,7 +2579,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
           pixel+=alpha*p[k*GetPixelChannels(image)+i];
           gamma+=alpha;
         }
-        gamma=ClampReciprocal(gamma);
+        gamma=MagickReciprocal(gamma);
         SetPixelChannel(resize_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       q+=GetPixelChannels(resize_image);
@@ -3210,7 +3210,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
               }
             alpha=QuantumScale*scanline[x*GetPixelChannels(image)+
               GetPixelChannelMapChannel(image,AlphaPixelChannel)];
-            gamma=ClampReciprocal(alpha);
+            gamma=MagickReciprocal(alpha);
             SetPixelChannel(scale_image,channel,ClampToQuantum(gamma*scanline[
               x*GetPixelChannels(image)+offset]),q);
           }
@@ -3312,7 +3312,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
             }
           alpha=QuantumScale*scanline[x*GetPixelChannels(image)+
             GetPixelChannelMapChannel(image,AlphaPixelChannel)];
-          gamma=ClampReciprocal(alpha);
+          gamma=MagickReciprocal(alpha);
           SetPixelChannel(scale_image,channel,ClampToQuantum(gamma*
             scale_scanline[x*MaxPixelChannels+channel]),q);
         }

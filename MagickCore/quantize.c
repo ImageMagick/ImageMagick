@@ -1252,7 +1252,7 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
       */
       q=image->colormap+image->colors;
       alpha=(MagickRealType) ((MagickOffsetType) node_info->number_unique);
-      alpha=ClampReciprocal(alpha);
+      alpha=MagickReciprocal(alpha);
       if (cube_info->associate_alpha == MagickFalse)
         {
           q->red=(double) ClampToQuantum((MagickRealType)
@@ -1286,7 +1286,7 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
                 gamma;
 
               gamma=(MagickRealType) (QuantumScale*q->alpha);
-              gamma=ClampReciprocal(gamma);
+              gamma=MagickReciprocal(gamma);
               q->red=(double) ClampToQuantum((MagickRealType)
                 (alpha*gamma*QuantumRange*node_info->total_color.red));
               q->green=(double) ClampToQuantum((MagickRealType)
