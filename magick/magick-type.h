@@ -37,8 +37,7 @@ extern "C" {
 #endif
 
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
-#define MagickEpsilon  ((MagickRealType) 1.0e-6)
-#define MagickHuge     1.0e6
+#define MagickEpsilon  ((MagickRealType) 1.0e-7)
 #define MaxColormapSize  256UL
 #define MaxMap  255UL
 
@@ -57,8 +56,7 @@ typedef unsigned char Quantum;
 #define QuantumFormat  "%u"
 #endif
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
-#define MagickEpsilon  ((MagickRealType) 1.0e-10)
-#define MagickHuge     1.0e12
+#define MagickEpsilon  ((MagickRealType) 1.0e-16)
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
 
@@ -77,8 +75,7 @@ typedef unsigned short Quantum;
 #define QuantumFormat  "%u"
 #endif
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
-#define MagickEpsilon  ((MagickRealType) 1.0e-10)
-#define MagickHuge     1.0e12
+#define MagickEpsilon  ((MagickRealType) 1.0e-16)
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
 
@@ -93,8 +90,7 @@ typedef unsigned int Quantum;
 #define QuantumFormat  "%u"
 #endif
 #elif (MAGICKCORE_QUANTUM_DEPTH == 64) && defined(MAGICKCORE_HAVE_LONG_DOUBLE_WIDER)
-#define MagickEpsilon  ((MagickRealType) 1.0e-10)
-#define MagickHuge     1.0e12
+#define MagickEpsilon  ((MagickRealType) 1.0e-16)
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
 
@@ -107,6 +103,7 @@ typedef double Quantum;
 # error "MAGICKCORE_QUANTUM_DEPTH must be one of 8, 16, 32, or 64"
 #endif
 #endif
+#define MagickHuge  3.402823466E+38F
 
 /*
   Typedef declarations.

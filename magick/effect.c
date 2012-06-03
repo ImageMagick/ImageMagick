@@ -360,7 +360,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
           p++;
         }
       }
-      gamma=ClampReciprocal(gamma);
+      gamma=MagickReciprocal(gamma);
       if ((channel & RedChannel) != 0)
         SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
       if ((channel & GreenChannel) != 0)
@@ -679,7 +679,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
           p++;
         }
       }
-      gamma=ClampReciprocal(gamma);
+      gamma=MagickReciprocal(gamma);
       if ((channel & RedChannel) != 0)
         SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
       if ((channel & GreenChannel) != 0)
@@ -1018,7 +1018,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
             k++;
             kernel_pixels++;
           }
-          gamma=ClampReciprocal(gamma);
+          gamma=MagickReciprocal(gamma);
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
           if ((channel & GreenChannel) != 0)
@@ -1198,7 +1198,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
             k++;
             kernel_pixels++;
           }
-          gamma=ClampReciprocal(gamma);
+          gamma=MagickReciprocal(gamma);
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
           if ((channel & GreenChannel) != 0)
@@ -1415,7 +1415,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
   gamma=0.0;
   for (i=0; i < (ssize_t) (width*width); i++)
     gamma+=kernel[i];
-  gamma=ClampReciprocal(gamma);
+  gamma=MagickReciprocal(gamma);
   for (i=0; i < (ssize_t) (width*width); i++)
     normal_kernel[i]=gamma*kernel[i];
   /*
@@ -1559,7 +1559,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
             }
             kernel_pixels+=image->columns+width;
           }
-          gamma=ClampReciprocal(gamma);
+          gamma=MagickReciprocal(gamma);
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
           if ((channel & GreenChannel) != 0)
@@ -2353,7 +2353,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
             }
             kernel_pixels+=image->columns+kernel->width;
           }
-          gamma=ClampReciprocal(gamma);
+          gamma=MagickReciprocal(gamma);
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
           if ((channel & GreenChannel) != 0)
@@ -2786,7 +2786,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
             gamma+=(*k)*alpha;
             k++;
           }
-          gamma=ClampReciprocal(gamma);
+          gamma=MagickReciprocal(gamma);
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(gamma*qixel.red));
           if ((channel & GreenChannel) != 0)
@@ -3560,7 +3560,7 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
               }
             normalize+=1.0;
           }
-          normalize=ClampReciprocal(normalize);
+          normalize=MagickReciprocal(normalize);
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(normalize*qixel.red));
           if ((channel & GreenChannel) != 0)
@@ -3601,8 +3601,8 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
             gamma+=alpha;
             normalize+=1.0;
           }
-          gamma=ClampReciprocal(gamma);
-          normalize=ClampReciprocal(normalize);
+          gamma=MagickReciprocal(gamma);
+          normalize=MagickReciprocal(normalize);
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(gamma*qixel.red));
           if ((channel & GreenChannel) != 0)
@@ -3887,7 +3887,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
           }
           if (gamma != 0.0)
             {
-              gamma=ClampReciprocal(gamma);
+              gamma=MagickReciprocal(gamma);
               if ((channel & RedChannel) != 0)
                 SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
               if ((channel & GreenChannel) != 0)
@@ -3912,7 +3912,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                 }
                 j+=(ssize_t) (image->columns+width);
               }
-              gamma=ClampReciprocal(gamma);
+              gamma=MagickReciprocal(gamma);
               SetPixelOpacity(q,ClampToQuantum(gamma*pixel.opacity));
             }
           if (((channel & IndexChannel) != 0) &&
@@ -3933,7 +3933,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                 }
                 j+=(ssize_t) (image->columns+width);
               }
-              gamma=ClampReciprocal(gamma);
+              gamma=MagickReciprocal(gamma);
               SetPixelIndex(blur_indexes+x,ClampToQuantum(gamma*pixel.index));
             }
         }
@@ -3961,7 +3961,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
           }
           if (gamma != 0.0)
             {
-              gamma=ClampReciprocal(gamma);
+              gamma=MagickReciprocal(gamma);
               if ((channel & RedChannel) != 0)
                 SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
               if ((channel & GreenChannel) != 0)
@@ -3986,7 +3986,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                 }
                 j+=(ssize_t) (image->columns+width);
               }
-              gamma=ClampReciprocal(gamma);
+              gamma=MagickReciprocal(gamma);
               SetPixelOpacity(q,ClampToQuantum(pixel.opacity));
             }
           if (((channel & IndexChannel) != 0) &&
@@ -4009,7 +4009,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
                 }
                 j+=(ssize_t) (image->columns+width);
               }
-              gamma=ClampReciprocal(gamma);
+              gamma=MagickReciprocal(gamma);
               SetPixelIndex(blur_indexes+x,ClampToQuantum(gamma*pixel.index));
             }
         }

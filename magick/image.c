@@ -2851,7 +2851,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
 
           gamma=1.0-QuantumScale*QuantumScale*q->opacity*pixel.opacity;
           opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-          gamma=ClampReciprocal(gamma);
+          gamma=MagickReciprocal(gamma);
           q->red=ClampToQuantum(gamma*MagickOver_((MagickRealType) q->red,
             (MagickRealType) q->opacity,(MagickRealType) pixel.red,
             (MagickRealType) pixel.opacity));
