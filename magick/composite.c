@@ -383,7 +383,7 @@ static inline void CompositeDarken(const MagickPixelPacket *p,
   if ( (channel & SyncChannels) != 0 ) {
     composite->opacity=QuantumScale*p->opacity*q->opacity; /* Over Blend */
     gamma=1.0-QuantumScale*composite->opacity;
-    gamma=MagickReciprocal(gamma);
+    gamma=MagickEpsilonReciprocal(gamma);
     composite->red=gamma*Darken(p->red,p->opacity,q->red,q->opacity);
     composite->green=gamma*Darken(p->green,p->opacity,q->green,q->opacity);
     composite->blue=gamma*Darken(p->blue,p->opacity,q->blue,q->opacity);
@@ -459,7 +459,7 @@ static inline void CompositeDifference(const MagickPixelPacket *p,
   if ( (channel & SyncChannels) != 0 ) {
     gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
     composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-    gamma=MagickReciprocal(gamma);
+    gamma=MagickEpsilonReciprocal(gamma);
     /* Values are not normalized as an optimization.  */
     composite->red=gamma*Difference(p->red,Sa,q->red,Da);
     composite->green=gamma*Difference(p->green,Sa,q->green,Da);
@@ -686,7 +686,7 @@ static inline void CompositeIn(const MagickPixelPacket *p,
   Da=1.0-QuantumScale*q->opacity;
   gamma=Sa*Da;
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-  gamma=MagickReciprocal(gamma);
+  gamma=MagickEpsilonReciprocal(gamma);
   composite->red=gamma*In(p->red,Sa,q->red,Da);
   composite->green=gamma*In(p->green,Sa,q->green,Da);
   composite->blue=gamma*In(p->blue,Sa,q->blue,Da);
@@ -717,7 +717,7 @@ static inline void CompositeLighten(const MagickPixelPacket *p,
   if ( (channel & SyncChannels) != 0 ) {
     composite->opacity=QuantumScale*p->opacity*q->opacity; /* Over Blend */
     gamma=1.0-QuantumScale*composite->opacity;
-    gamma=MagickReciprocal(gamma);
+    gamma=MagickEpsilonReciprocal(gamma);
     composite->red=gamma*Lighten(p->red,p->opacity,q->red,q->opacity);
     composite->green=gamma*Lighten(p->green,p->opacity,q->green,q->opacity);
     composite->blue=gamma*Lighten(p->blue,p->opacity,q->blue,q->opacity);
@@ -797,7 +797,7 @@ static inline void CompositeLinearDodge(const MagickPixelPacket *p,
   Da=1.0-QuantumScale*q->opacity;
   gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-  gamma=MagickReciprocal(gamma);
+  gamma=MagickEpsilonReciprocal(gamma);
   composite->red=gamma*(p->red*Sa+q->red*Da);
   composite->green=gamma*(p->green*Sa+q->green*Da);
   composite->blue=gamma*(p->blue*Sa+q->blue*Da);
@@ -1019,7 +1019,7 @@ static inline void CompositeMinus(const MagickPixelPacket *p,
   if ( (channel & SyncChannels) != 0 ) {
     gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
     composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-    gamma=MagickReciprocal(gamma);
+    gamma=MagickEpsilonReciprocal(gamma);
     composite->red=gamma*Minus(p->red*Sa,Sa,q->red*Da,Da);
     composite->green=gamma*Minus(p->green*Sa,Sa,q->green*Da,Da);
     composite->blue=gamma*Minus(p->blue*Sa,Sa,q->blue*Da,Da);
@@ -1066,7 +1066,7 @@ static inline void CompositeModulusAdd(const MagickPixelPacket *p,
     Da=1.0-QuantumScale*q->opacity;
     gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
     composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-    gamma=MagickReciprocal(gamma);
+    gamma=MagickEpsilonReciprocal(gamma);
     composite->red=ModulusAdd(p->red,Sa,q->red,Da);
     composite->green=ModulusAdd(p->green,Sa,q->green,Da);
     composite->blue=ModulusAdd(p->blue,Sa,q->blue,Da);
@@ -1114,7 +1114,7 @@ static inline void CompositeModulusSubtract(const MagickPixelPacket *p,
     Da=1.0-QuantumScale*q->opacity;
     gamma = RoundToUnity(Sa+Da-Sa*Da);
     composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-    gamma=MagickReciprocal(gamma);
+    gamma=MagickEpsilonReciprocal(gamma);
     composite->red=ModulusSubtract(p->red,Sa,q->red,Da);
     composite->green=ModulusSubtract(p->green,Sa,q->green,Da);
     composite->blue=ModulusSubtract(p->blue,Sa,q->blue,Da);
@@ -1200,7 +1200,7 @@ static inline void CompositeOut(const MagickPixelPacket *p,
   Da=1.0-QuantumScale*q->opacity;
   gamma=Sa*(1.0-Da);
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-  gamma=MagickReciprocal(gamma);
+  gamma=MagickEpsilonReciprocal(gamma);
   composite->red=gamma*Out(p->red,Sa,q->red,Da);
   composite->green=gamma*Out(p->green,Sa,q->green,Da);
   composite->blue=gamma*Out(p->blue,Sa,q->blue,Da);
@@ -1489,7 +1489,7 @@ static inline void CompositeXor(const MagickPixelPacket *p,
   Da=1.0-QuantumScale*q->opacity;
   gamma=Sa+Da-2*Sa*Da;        /* Xor blend mode X=0,Y=1,Z=1 */
   composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-  gamma=MagickReciprocal(gamma);
+  gamma=MagickEpsilonReciprocal(gamma);
   composite->red=gamma*Xor(p->red*Sa,Sa,q->red*Da,Da);
   composite->green=gamma*Xor(p->green*Sa,Sa,q->green*Da,Da);
   composite->blue=gamma*Xor(p->blue*Sa,Sa,q->blue*Da,Da);
