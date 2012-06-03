@@ -28,7 +28,6 @@ extern "C" {
   AppendImageToList(&image_stack[k].image,images); \
   image=image_stack[k].image; \
 }
-#define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 #define DestroyImageStack() \
 { \
   while (k > 0) \
@@ -63,7 +62,6 @@ extern "C" {
             pend=MagickFalse; \
           } \
     }
-#define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define MaxImageStackDepth  32
 #define NewImageStack() \
 { \
@@ -93,11 +91,9 @@ extern "C" {
   image_info=image_stack[k].image_info; \
   image=image_stack[k].image; \
 }
-#define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
 #define QuantumTick(i,span) ((MagickBooleanType) ((((i) & ((i)-1)) == 0) || \
    (((i) & 0xfff) == 0) || \
    ((MagickOffsetType) (i) == ((MagickOffsetType) (span)-1))))
-#define RadiansToDegrees(x) (180.0*(x)/MagickPI)
 #define RemoveImageStack(images) \
 { \
   images=RemoveFirstImageFromList(&image_stack[k].image); \
@@ -121,64 +117,6 @@ typedef struct _ImageStack
   Image
     *image;
 } ImageStack;
-
-static inline MagickRealType MagickPixelIntensity(
-  const MagickPixelPacket *pixel)
-{
-  MagickRealType
-    intensity;
-
-  intensity=0.299*pixel->red+0.587*pixel->green+0.114*pixel->blue;
-  return(intensity);
-}
-
-static inline Quantum MagickPixelIntensityToQuantum(
-  const MagickPixelPacket *pixel)
-{
-  MagickRealType
-    intensity;
-
-  intensity=0.299*pixel->red+0.587*pixel->green+0.114*pixel->blue;
-  return((Quantum) (intensity+0.5));
-}
-
-static inline MagickRealType PixelIntensity(const PixelPacket *pixel)
-{
-  MagickRealType
-    intensity;
-
-  intensity=(MagickRealType) (0.299*pixel->red+0.587*pixel->green+
-    0.114*pixel->blue);
-  return(intensity);
-}
-
-static inline Quantum PixelIntensityToQuantum(const PixelPacket *pixel)
-{
-  MagickRealType
-    intensity;
-
-  intensity=(MagickRealType) (0.299*pixel->red+0.587*pixel->green+
-    0.114*pixel->blue);
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) (intensity+0.5));
-#else
-  return((Quantum) intensity);
-#endif
-}
-
-static inline void SetMagickPixelPacket(const Image *image,
-  const PixelPacket *color,const IndexPacket *index,MagickPixelPacket *pixel)
-{
-  pixel->red=(MagickRealType) color->red;
-  pixel->green=(MagickRealType) color->green;
-  pixel->blue=(MagickRealType) color->blue;
-  if (image->matte != MagickFalse)
-    pixel->opacity=(MagickRealType) color->opacity;
-  if (((image->colorspace == CMYKColorspace) ||
-       (image->storage_class == PseudoClass)) &&
-      (index != (const IndexPacket *) NULL))
-    pixel->index=(MagickRealType) *index;
-}
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

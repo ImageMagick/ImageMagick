@@ -47,6 +47,7 @@
 #include "wand/studio.h"
 #include "wand/MagickWand.h"
 #include "wand/mogrify-private.h"
+#include "magick/color-private.h"
 #include "magick/monitor-private.h"
 #include "magick/pixel-private.h"
 #include "magick/thread-private.h"
@@ -61,7 +62,7 @@
 /*
   Constant declaration.
 */
-static const char
+const char
   BackgroundColor[] = "#fff",  /* white */
   BorderColor[] = "#dfdfdf",  /* gray */
   MatteColor[] = "#bdbdbd";  /* gray */
