@@ -1017,7 +1017,7 @@ static int NTLocateGhostscript(DWORD flags,const char **product_family,int *majo
 
 static BOOL NTIs64BitPlatform()
 {
-#if defined(_WIN64)
+#if defined(_WIN64) || !defined(KEY_WOW64_32KEY)
   return(TRUE);
 #else
   BOOL is64=FALSE;
@@ -1068,15 +1068,25 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
   *value='\0';
   if (product_family == NULL)
   {
+    flags=0;
+#if defined(KEY_WOW64_32KEY)
     flags=NTIs64BitPlatform() ? KEY_WOW64_64KEY : 0;
-    (void) NTLocateGhostscript(flags,&product_family,&major_version,&minor_version);
+#endif
+    (void) NTLocateGhostscript(flags,&product_family,&major_version,
+      &minor_version);
     if (product_family == NULL)
     {
       if (flags!=0)
       {
-        /* We are running on a 64 bit platform - check for a 32 bit Ghostscript, too */
+        /*
+          We are running on a 64 bit platform - check for a 32 bit Ghostscript.
+        */
+        flags=0;
+#if defined(KEY_WOW64_32KEY)
         flags=KEY_WOW64_32KEY;
-        (void) NTLocateGhostscript(flags,&product_family,&major_version,&minor_version);
+#endif
+        (void) NTLocateGhostscript(flags,&product_family,&major_version,
+          &minor_version);
   	  }
     }
     else
