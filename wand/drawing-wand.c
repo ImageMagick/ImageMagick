@@ -5082,7 +5082,7 @@ WandExport void DrawSetFontSize(DrawingWand *wand,const double pointsize)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
-      (fabs(CurrentContext->pointsize-pointsize) > MagickEpsilon))
+      (fabs(CurrentContext->pointsize-pointsize) >= MagickEpsilon))
     {
       CurrentContext->pointsize=pointsize;
       (void) MvgPrintf(wand,"font-size %g\n",pointsize);
@@ -5486,7 +5486,7 @@ WandExport MagickBooleanType DrawSetStrokeDashArray(DrawingWand *wand,
           q=CurrentContext->dash_pattern;
           for (i=0; i < (ssize_t) n_new; i++)
           {
-            if (fabs((*p)-(*q)) > MagickEpsilon)
+            if (fabs((*p)-(*q)) >= MagickEpsilon)
               {
                 update=MagickTrue;
                 break;
@@ -5565,7 +5565,7 @@ WandExport void DrawSetStrokeDashOffset(DrawingWand *wand,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
-     (fabs(CurrentContext->dash_offset-dash_offset) > MagickEpsilon))
+     (fabs(CurrentContext->dash_offset-dash_offset) >= MagickEpsilon))
     {
       CurrentContext->dash_offset=dash_offset;
       (void) MvgPrintf(wand,"stroke-dashoffset %g\n",dash_offset);
@@ -5776,7 +5776,7 @@ WandExport void DrawSetStrokeWidth(DrawingWand *wand,const double stroke_width)
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if ((wand->filter_off != MagickFalse) ||
-      (fabs(CurrentContext->stroke_width-stroke_width) > MagickEpsilon))
+      (fabs(CurrentContext->stroke_width-stroke_width) >= MagickEpsilon))
     {
       CurrentContext->stroke_width=stroke_width;
       (void) MvgPrintf(wand,"stroke-width %g\n",stroke_width);
