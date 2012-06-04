@@ -2214,7 +2214,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
         case NotEqualOperator:
         {
           *beta=FxEvaluateSubexpression(fx_info,channel,x,y,++p,beta,exception);
-          return(fabs(alpha-(*beta)) > MagickEpsilon ? 1.0 : 0.0);
+          return(fabs(alpha-(*beta)) >= MagickEpsilon ? 1.0 : 0.0);
         }
         case '&':
         {
@@ -2254,7 +2254,7 @@ static MagickRealType FxEvaluateSubexpression(FxInfo *fx_info,
                 OptionError,"UnableToParseExpression","'%s'",subexpression);
               return(0.0);
             }
-          if (fabs((double) alpha) > MagickEpsilon)
+          if (fabs((double) alpha) >= MagickEpsilon)
             gamma=FxEvaluateSubexpression(fx_info,channel,x,y,p,beta,exception);
           else
             gamma=FxEvaluateSubexpression(fx_info,channel,x,y,q,beta,exception);
