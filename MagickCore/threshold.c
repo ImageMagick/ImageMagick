@@ -757,8 +757,7 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_ClampImage)
 #endif
-        proceed=SetImageProgress(image,ClampImageTag,progress++,
-          image->rows);
+        proceed=SetImageProgress(image,ClampImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
