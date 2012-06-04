@@ -216,7 +216,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
   blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
-  if (fabs(sigma) <= MagickEpsilon)
+  if (fabs(sigma) < MagickEpsilon)
     return(blur_image);
   if (SetImageStorageClass(blur_image,DirectClass,exception) == MagickFalse)
     {
@@ -271,8 +271,8 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
         k++;
       }
     }
-    if (fabs(normalize) <= MagickEpsilon)
-      normalize=1.0;
+    if (fabs(normalize) < MagickEpsilon)
+      normalize=MagickEpsilon;
     normalize=1.0/normalize;
     for (k=0; k < (j*j); k++)
       kernel[i][k]=normalize*kernel[i][k];
@@ -598,8 +598,8 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
         k++;
       }
     }
-    if (fabs(normalize) <= MagickEpsilon)
-      normalize=1.0;
+    if (fabs(normalize) < MagickEpsilon)
+      normalize=MagickEpsilon;
     normalize=1.0/normalize;
     for (k=0; k < (j*j); k++)
       kernel[i][k]=normalize*kernel[i][k];
@@ -905,7 +905,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   blur_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
-  if (fabs(sigma) <= MagickEpsilon)
+  if (fabs(sigma) < MagickEpsilon)
     return(blur_image);
   if (SetImageStorageClass(blur_image,DirectClass,exception) == MagickFalse)
     {
