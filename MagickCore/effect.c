@@ -543,7 +543,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   sharp_image=CloneImage(image,0,0,MagickTrue,exception);
   if (sharp_image == (Image *) NULL)
     return((Image *) NULL);
-  if (fabs(sigma) <= MagickEpsilon)
+  if (fabs(sigma) < MagickEpsilon)
     return(sharp_image);
   if (SetImageStorageClass(sharp_image,DirectClass,exception) == MagickFalse)
     {
