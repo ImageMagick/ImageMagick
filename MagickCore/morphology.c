@@ -1483,7 +1483,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             ScaleKernelInfo(kernel, 1.0/3.0, NoValue);
             break;
         }
-        if ( fabs(args->sigma) > MagickEpsilon )
+        if ( fabs(args->sigma) >= MagickEpsilon )
           /* Rotate by correctly supplied 'angle' */
           RotateKernelInfo(kernel, args->sigma);
         else if ( args->rho > 30.0 || args->rho < -30.0 )
@@ -2354,7 +2354,7 @@ static MagickBooleanType SameKernelInfo(const KernelInfo *kernel1,
     if ( IsNan(kernel2->values[i]) && !IsNan(kernel1->values[i]) )
       return MagickFalse;
     /* Test actual values are equivalent */
-    if ( fabs(kernel1->values[i] - kernel2->values[i]) > MagickEpsilon )
+    if ( fabs(kernel1->values[i] - kernel2->values[i]) >= MagickEpsilon )
       return MagickFalse;
   }
 
@@ -4706,7 +4706,7 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
   /* Normalization of Kernel */
   pos_scale = 1.0;
   if ( (normalize_flags&NormalizeValue) != 0 ) {
-    if ( fabs(kernel->positive_range + kernel->negative_range) > MagickEpsilon )
+    if ( fabs(kernel->positive_range + kernel->negative_range) >= MagickEpsilon )
       /* non-zero-summing kernel (generally positive) */
       pos_scale = fabs(kernel->positive_range + kernel->negative_range);
     else
@@ -4715,9 +4715,9 @@ MagickExport void ScaleKernelInfo(KernelInfo *kernel,
   }
   /* Force kernel into a normalized zero-summing kernel */
   if ( (normalize_flags&CorrelateNormalizeValue) != 0 ) {
-    pos_scale = ( fabs(kernel->positive_range) > MagickEpsilon )
+    pos_scale = ( fabs(kernel->positive_range) >= MagickEpsilon )
                  ? kernel->positive_range : 1.0;
-    neg_scale = ( fabs(kernel->negative_range) > MagickEpsilon )
+    neg_scale = ( fabs(kernel->negative_range) >= MagickEpsilon )
                  ? -kernel->negative_range : 1.0;
   }
   else
@@ -4790,7 +4790,7 @@ MagickPrivate void ShowKernelInfo(const KernelInfo *kernel)
       (void) FormatLocaleFile(stderr, " #%lu", (unsigned long) c );
     (void) FormatLocaleFile(stderr, " \"%s",
           CommandOptionToMnemonic(MagickKernelOptions, k->type) );
-    if ( fabs(k->angle) > MagickEpsilon )
+    if ( fabs(k->angle) >= MagickEpsilon )
       (void) FormatLocaleFile(stderr, "@%lg", k->angle);
     (void) FormatLocaleFile(stderr, "\" of size %lux%lu%+ld%+ld",(unsigned long)
       k->width,(unsigned long) k->height,(long) k->x,(long) k->y);
