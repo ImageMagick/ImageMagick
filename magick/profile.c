@@ -427,22 +427,6 @@ static cmsHTRANSFORM *AcquireTransformThreadSet(Image *image,
 }
 #endif
 
-  StringInfo
-    *profile;
-
-  MagickBooleanType
-    status;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (GetImageProfile(image,"icm") != (const StringInfo *) NULL)
-    return(MagickFalse);
-  profile=AcquireStringInfo(sizeof(sRGBProfile));
-  SetStringInfoDatum(profile,sRGBProfile);
-  status=SetImageProfile(image,"icm",profile);
-  profile=DestroyStringInfo(profile);
-  return(status);
-}
 #if defined(MAGICKCORE_LCMS_DELEGATE)
 #if defined(LCMS_VERSION) && (LCMS_VERSION >= 2000)
 static void LCMSExceptionHandler(cmsContext context,cmsUInt32Number severity,
