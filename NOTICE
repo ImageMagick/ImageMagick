@@ -10,6 +10,9 @@ ImageMagick was originally developed and distributed by E. I. du Pont de Nemours
 
   Except as contained in this notice, the name of the E. I. du Pont de Nemours and Company shall not be used in advertising or otherwise to promote the sale, use or other dealings in ImageMagick without prior written authorization from the E. I. du Pont de Nemours and Company.  
 
+As of 1999, E. I. du Pont de Nemours assigned ownership of the ImageMagick
+software to ImageMagick Studio LLC.
+
 * * *
 
 This copyright is limited to magick/utility.c/Base64Decode() and Base64Encode(), incorporated from the OpenSSH package:
