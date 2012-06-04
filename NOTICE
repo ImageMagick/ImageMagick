@@ -1,9 +1,3 @@
-This copyright is limited to the embedded sRGB v4 profile:
-
-The sRGB profile is provided "AS IS" WITH NO EXPRESS OR IMPLIED WARRANTY, permission to use, copy and distribute this file for any purpose is hereby granted without fee, provided that the file is not changed including the ICC copyright notice tag, and that the name of ICC shall not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission. ICC makes no representations about the suitability of this software for any purpose.
-
-* * *
-
 ImageMagick was originally developed and distributed by E. I. du Pont de Nemours and Company:
 
   Copyright 1999 E. I. du Pont de Nemours and Company
@@ -76,14 +70,3 @@ This copyright is limited to the Magick++ API in the Magick++ folder:
   This copyright notice shall be included in all copies or substantial portions of Magick++. The copyright to Magick++ is retained by its author and shall not be subsumed or replaced by any other copyright.
                                                                             
   The software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall Bob Friesenhahn be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with Magick++ or the use or other dealings in Magick++.
-
-* * *
-
-Many of the pattern images in coders/logo.c are derived from XFig, which is distributed under the following license:
- 
-  | FIG : Facility for Interactive Generation of figures
-  | Copyright (c) 1985-1988 by Supoj Sutanthavibul
-  | Parts Copyright (c) 1989-2000 by Brian V. Smith
-  | Parts Copyright (c) 1991 by Paul King
- 
-  Any party obtaining a copy of these files is granted, free of charge, a full and unrestricted irrevocable, world-wide, paid up, royalty-free, nonexclusive right and license to deal in this software and documentation files (the "Software"), including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons who receive copies from any such party to do so, with the only requirement being that this copyright notice remain intact.
