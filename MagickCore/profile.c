@@ -563,6 +563,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
             *value;
 
           value=GetImageProperty(image,"exif:ColorSpace",exception);
+          (void) value;
           /* Future.
           if (LocaleCompare(value,"1") != 0)
             (void) SetsRGBImageProfile(image,exception);
