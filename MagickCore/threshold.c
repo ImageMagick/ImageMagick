@@ -645,11 +645,15 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
 
 static inline Quantum ClampToUnsignedQuantum(const Quantum quantum)
 {
+#if defined(MAGICKCORE_HDRI_SUPPORT)
   if (quantum <= 0)
     return(0);
   if (quantum >= QuantumRange)
     return(QuantumRange);
   return(quantum);
+#else
+  return(quantum);
+#endif
 }
 
 MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
