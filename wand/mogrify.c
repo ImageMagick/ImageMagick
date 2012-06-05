@@ -1873,6 +1873,17 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             draw_info->interword_spacing=geometry_info.rho;
             break;
           }
+        if (LocaleCompare("interpolative-resize",option+1) == 0)
+          {
+            /*
+              Resize image using 'point sampled' interpolation
+            */
+            (void) SyncImageSettings(mogrify_info,*image);
+            (void) ParseRegionGeometry(*image,argv[i+1],&geometry,exception);
+            mogrify_image=InterpolativeResizeImage(*image,geometry.width,
+              geometry.height,(*image)->interpolate,exception);
+            break;
+          }
         break;
       }
       case 'k':

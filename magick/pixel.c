@@ -3937,81 +3937,6 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       SetMagickPixelPacket(image,&image->background_color,&index,pixel);
       break;
     }
-    case BicubicInterpolatePixel:
-    {
-      MagickRealType
-        beta[4],
-        cx[4],
-        cy[4];
-
-      PointInfo
-        delta;
-
-      p=GetCacheViewVirtualPixels(image_view,x_offset-1,y_offset-1,4,4,
-        exception);
-      if (p == (const PixelPacket *) NULL)
-        {
-          status=MagickFalse;
-          break;
-        }
-      indexes=GetCacheViewVirtualIndexQueue(image_view);
-      for (i=0; i < 16L; i++)
-        AlphaBlendMagickPixelPacket(image,p+i,indexes+i,pixels+i,alpha+i);
-      delta.x=x-x_offset;
-      delta.y=y-y_offset;
-      beta[0]=1.0-delta.x;
-      beta[1]=(-0.5)*delta.x;
-      beta[2]=beta[0]*beta[1];
-      cx[0]=beta[0]*beta[2];
-      cx[3]=delta.x*beta[2];
-      beta[3]=cx[3]-cx[0];
-      cx[1]=beta[0]-cx[0]+beta[3];
-      cx[2]=delta.x-cx[3]-beta[3];
-      beta[0]=1.0-delta.y;
-      beta[1]=(-0.5)*delta.y;
-      beta[2]=beta[0]*beta[1];
-      cy[0]=beta[0]*beta[2];
-      cy[3]=delta.y*beta[2];
-      beta[3]=cy[3]-cy[0];
-      cy[1]=beta[0]-cy[0]+beta[3];
-      cy[2]=delta.y-cy[3]-beta[3];
-      /*
-        Interpolate pixel.
-      */
-      pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*
-        pixels[1].red+cx[2]*pixels[2].red+cx[3]*
-        pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
-        pixels[5].red+cx[2]*pixels[6].red+cx[3]*
-        pixels[7].red)+cy[2]*(cx[0]*pixels[8].red+cx[1]*
-        pixels[9].red+cx[2]*pixels[10].red+cx[3]*
-        pixels[11].red)+cy[3]*(cx[0]*pixels[12].red+cx[1]*
-        pixels[13].red+cx[2]*pixels[14].red+cx[3]*pixels[15].red));
-      pixel->green=(cy[0]*(cx[0]*pixels[0].green+cx[1]*
-        pixels[1].green+cx[2]*pixels[2].green+cx[3]*
-        pixels[3].green)+cy[1]*(cx[0]*pixels[4].green+cx[1]*
-        pixels[5].green+cx[2]*pixels[6].green+cx[3]*
-        pixels[7].green)+cy[2]*(cx[0]*pixels[8].green+cx[1]*
-        pixels[9].green+cx[2]*pixels[10].green+cx[3]*
-        pixels[11].green)+cy[3]*(cx[0]*pixels[12].green+cx[1]*
-        pixels[13].green+cx[2]*pixels[14].green+cx[3]*pixels[15].green));
-      pixel->blue=(cy[0]*(cx[0]*pixels[0].blue+cx[1]*
-        pixels[1].blue+cx[2]*pixels[2].blue+cx[3]*
-        pixels[3].blue)+cy[1]*(cx[0]*pixels[4].blue+cx[1]*
-        pixels[5].blue+cx[2]*pixels[6].blue+cx[3]*
-        pixels[7].blue)+cy[2]*(cx[0]*pixels[8].blue+cx[1]*
-        pixels[9].blue+cx[2]*pixels[10].blue+cx[3]*
-        pixels[11].blue)+cy[3]*(cx[0]*pixels[12].blue+cx[1]*
-        pixels[13].blue+cx[2]*pixels[14].blue+cx[3]*pixels[15].blue));
-      pixel->opacity=(cy[0]*(cx[0]*pixels[0].opacity+cx[1]*
-        pixels[1].opacity+cx[2]*pixels[2].opacity+cx[3]*
-        pixels[3].opacity)+cy[1]*(cx[0]*pixels[4].opacity+cx[1]*
-        pixels[5].opacity+cx[2]*pixels[6].opacity+cx[3]*
-        pixels[7].opacity)+cy[2]*(cx[0]*pixels[8].opacity+cx[1]*
-        pixels[9].opacity+cx[2]*pixels[10].opacity+cx[3]*
-        pixels[11].opacity)+cy[3]*(cx[0]*pixels[12].opacity+cx[1]*
-        pixels[13].opacity+cx[2]*pixels[14].opacity+cx[3]*pixels[15].opacity));
-      break;
-    }
     case BilinearInterpolatePixel:
     default:
     {
@@ -4101,6 +4026,81 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       pixel->blue  = alpha[0]*pixel->blue;
       pixel->index = alpha[0]*pixel->index;
       pixel->opacity = gamma*pixel->opacity; /* divide by number of pixels */
+      break;
+    }
+    case CatromInterpolatePixel:
+    {
+      MagickRealType
+        beta[4],
+        cx[4],
+        cy[4];
+
+      PointInfo
+        delta;
+
+      p=GetCacheViewVirtualPixels(image_view,x_offset-1,y_offset-1,4,4,
+        exception);
+      if (p == (const PixelPacket *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      indexes=GetCacheViewVirtualIndexQueue(image_view);
+      for (i=0; i < 16L; i++)
+        AlphaBlendMagickPixelPacket(image,p+i,indexes+i,pixels+i,alpha+i);
+      delta.x=x-x_offset;
+      delta.y=y-y_offset;
+      beta[0]=1.0-delta.x;
+      beta[1]=(-0.5)*delta.x;
+      beta[2]=beta[0]*beta[1];
+      cx[0]=beta[0]*beta[2];
+      cx[3]=delta.x*beta[2];
+      beta[3]=cx[3]-cx[0];
+      cx[1]=beta[0]-cx[0]+beta[3];
+      cx[2]=delta.x-cx[3]-beta[3];
+      beta[0]=1.0-delta.y;
+      beta[1]=(-0.5)*delta.y;
+      beta[2]=beta[0]*beta[1];
+      cy[0]=beta[0]*beta[2];
+      cy[3]=delta.y*beta[2];
+      beta[3]=cy[3]-cy[0];
+      cy[1]=beta[0]-cy[0]+beta[3];
+      cy[2]=delta.y-cy[3]-beta[3];
+      /*
+        Interpolate pixel.
+      */
+      pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*
+        pixels[1].red+cx[2]*pixels[2].red+cx[3]*
+        pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
+        pixels[5].red+cx[2]*pixels[6].red+cx[3]*
+        pixels[7].red)+cy[2]*(cx[0]*pixels[8].red+cx[1]*
+        pixels[9].red+cx[2]*pixels[10].red+cx[3]*
+        pixels[11].red)+cy[3]*(cx[0]*pixels[12].red+cx[1]*
+        pixels[13].red+cx[2]*pixels[14].red+cx[3]*pixels[15].red));
+      pixel->green=(cy[0]*(cx[0]*pixels[0].green+cx[1]*
+        pixels[1].green+cx[2]*pixels[2].green+cx[3]*
+        pixels[3].green)+cy[1]*(cx[0]*pixels[4].green+cx[1]*
+        pixels[5].green+cx[2]*pixels[6].green+cx[3]*
+        pixels[7].green)+cy[2]*(cx[0]*pixels[8].green+cx[1]*
+        pixels[9].green+cx[2]*pixels[10].green+cx[3]*
+        pixels[11].green)+cy[3]*(cx[0]*pixels[12].green+cx[1]*
+        pixels[13].green+cx[2]*pixels[14].green+cx[3]*pixels[15].green));
+      pixel->blue=(cy[0]*(cx[0]*pixels[0].blue+cx[1]*
+        pixels[1].blue+cx[2]*pixels[2].blue+cx[3]*
+        pixels[3].blue)+cy[1]*(cx[0]*pixels[4].blue+cx[1]*
+        pixels[5].blue+cx[2]*pixels[6].blue+cx[3]*
+        pixels[7].blue)+cy[2]*(cx[0]*pixels[8].blue+cx[1]*
+        pixels[9].blue+cx[2]*pixels[10].blue+cx[3]*
+        pixels[11].blue)+cy[3]*(cx[0]*pixels[12].blue+cx[1]*
+        pixels[13].blue+cx[2]*pixels[14].blue+cx[3]*pixels[15].blue));
+      pixel->opacity=(cy[0]*(cx[0]*pixels[0].opacity+cx[1]*
+        pixels[1].opacity+cx[2]*pixels[2].opacity+cx[3]*
+        pixels[3].opacity)+cy[1]*(cx[0]*pixels[4].opacity+cx[1]*
+        pixels[5].opacity+cx[2]*pixels[6].opacity+cx[3]*
+        pixels[7].opacity)+cy[2]*(cx[0]*pixels[8].opacity+cx[1]*
+        pixels[9].opacity+cx[2]*pixels[10].opacity+cx[3]*
+        pixels[11].opacity)+cy[3]*(cx[0]*pixels[12].opacity+cx[1]*
+        pixels[13].opacity+cx[2]*pixels[14].opacity+cx[3]*pixels[15].opacity));
       break;
     }
     case FilterInterpolatePixel:

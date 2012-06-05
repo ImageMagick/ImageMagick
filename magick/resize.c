@@ -307,12 +307,18 @@ static MagickRealType Kaiser(const MagickRealType x,
 {
   /*
     Kaiser Windowing Function (bessel windowing)
-    Alpha (coeff[0]) is a free value from 5 to 8 (defaults to 6.5).
-    A scaling factor (coeff[1]) is not actually needed as filter will
-    automatically be normalized.
+
+       I0( beta * sqrt( 1-x^2) ) / IO(0)
+
+    Beta (coeff[0]) is a free value from 5 to 8 (defaults to 6.5).
+    However it is typically defined in terms of Alpha*PI
+
+    The normalization factor (coeff[1]) is not actually needed,
+    but without it the filters has a large value at x=0 making it
+    difficult to compare the function with other windowing functions.
   */
   return(resize_filter->coefficient[1]*
-            I0(resize_filter->coefficient[0]*sqrt((double) (1.0-x*x))));
+           I0(resize_filter->coefficient[0]*sqrt((double) (1.0-x*x))));
 }
 
 static MagickRealType Lagrange(const MagickRealType x,
@@ -969,8 +975,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   /* User Kaiser Alpha Override - no support change */
   if ((resize_filter->filter == Kaiser) ||
       (resize_filter->window == Kaiser) ) {
-    value=6.5; /* default alpha value for Kaiser bessel windowing function */
-    artifact=GetImageArtifact(image,"filter:alpha");
+    value=6.5; /* default beta value for Kaiser bessel windowing function */
+    artifact=GetImageArtifact(image,"filter:alpha");  /* FUTURE: depreciate */
     if (artifact != (const char *) NULL)
       value=StringToDouble(artifact,(char **) NULL);
     artifact=GetImageArtifact(image,"filter:kaiser-beta");
@@ -1166,6 +1172,11 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
 %
 %  AdaptiveResizeImage() adaptively resize image with pixel resampling.
 %
+%  This is shortcut function for a fast interpolative resize using mesh
+%  interpolation.  It works well for small resizes of less than +/- 50%
+%  of the original image size.  For larger resizing on images a full
+%  filtered and slower resize function should be used instead.
+%
 %  The format of the AdaptiveResizeImage method is:
 %
 %      Image *AdaptiveResizeImage(const Image *image,const size_t columns,
@@ -1185,109 +1196,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
 MagickExport Image *AdaptiveResizeImage(const Image *image,
   const size_t columns,const size_t rows,ExceptionInfo *exception)
 {
-#define AdaptiveResizeImageTag  "Resize/Image"
-
-  CacheView
-    *image_view,
-    *resize_view;
-
-  Image
-    *resize_image;
-
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
-  ssize_t
-    y;
-
-  /*
-    Adaptively resize image.
-  */
-  assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  if ((columns == 0) || (rows == 0))
-    return((Image *) NULL);
-  if ((columns == image->columns) && (rows == image->rows))
-    return(CloneImage(image,0,0,MagickTrue,exception));
-  resize_image=CloneImage(image,columns,rows,MagickTrue,exception);
-  if (resize_image == (Image *) NULL)
-    return((Image *) NULL);
-  if (SetImageStorageClass(resize_image,DirectClass) == MagickFalse)
-    {
-      InheritException(exception,&resize_image->exception);
-      resize_image=DestroyImage(resize_image);
-      return((Image *) NULL);
-    }
-  status=MagickTrue;
-  progress=0;
-  image_view=AcquireVirtualCacheView(image,exception);
-  resize_view=AcquireAuthenticCacheView(resize_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) \
-    dynamic_number_threads(image,image->columns,image->rows,1)
-#endif
-  for (y=0; y < (ssize_t) resize_image->rows; y++)
-  {
-    MagickPixelPacket
-      pixel;
-
-    PointInfo
-      offset;
-
-    register IndexPacket
-      *restrict resize_indexes;
-
-    register PixelPacket
-      *restrict q;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    q=QueueCacheViewAuthenticPixels(resize_view,0,y,resize_image->columns,1,
-      exception);
-    if (q == (PixelPacket *) NULL)
-      continue;
-    resize_indexes=GetCacheViewAuthenticIndexQueue(resize_view);
-    offset.y=((MagickRealType) (y+0.5)*image->rows/resize_image->rows);
-    GetMagickPixelPacket(image,&pixel);
-    for (x=0; x < (ssize_t) resize_image->columns; x++)
-    {
-      offset.x=((MagickRealType) (x+0.5)*image->columns/resize_image->columns);
-      (void) InterpolateMagickPixelPacket(image,image_view,
-        MeshInterpolatePixel,offset.x-0.5,offset.y-0.5,&pixel,exception);
-      SetPixelPacket(resize_image,&pixel,q,resize_indexes+x);
-      q++;
-    }
-    if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
-      continue;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
-        #pragma omp critical (MagickCore_AdaptiveResizeImage)
-#endif
-        proceed=SetImageProgress(image,AdaptiveResizeImageTag,progress++,
-          image->rows);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
-  }
-  resize_view=DestroyCacheView(resize_view);
-  image_view=DestroyCacheView(image_view);
-  if (status == MagickFalse)
-    resize_image=DestroyImage(resize_image);
-  return(resize_image);
+  return(InterpolativeResizeImage(image,columns,rows,MeshInterpolatePixel,
+    exception));
 }
 
 /*
@@ -1621,132 +1531,61 @@ MagickExport MagickRealType GetResizeFilterWeight(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   M a g n i f y I m a g e                                                   %
+%   I n t e r p o l a t i v e R e s i z e I m a g e                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagnifyImage() is a convenience method that scales an image proportionally
-%  to twice its size.
+%  InterpolativeResizeImage() resizes an image using the specified
+%  interpolation method.
 %
-%  The format of the MagnifyImage method is:
+%  The format of the InterpolativeResizeImage method is:
 %
-%      Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
-{
-  Image
-    *magnify_image;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  magnify_image=ResizeImage(image,2*image->columns,2*image->rows,CubicFilter,
-    1.0,exception);
-  return(magnify_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M i n i f y I m a g e                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MinifyImage() is a convenience method that scales an image proportionally
-%  to half its size.
-%
-%  The format of the MinifyImage method is:
-%
-%      Image *MinifyImage(const Image *image,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o image: the image.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
-{
-  Image
-    *minify_image;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
-  minify_image=ResizeImage(image,image->columns/2,image->rows/2,CubicFilter,1.0,
-    exception);
-  return(minify_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R e s a m p l e I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ResampleImage() resize image in terms of its pixel size, so that when
-%  displayed at the given resolution it will be the same size in terms of
-%  real world units as the original image at the original resolution.
-%
-%  The format of the ResampleImage method is:
-%
-%      Image *ResampleImage(Image *image,const double x_resolution,
-%        const double y_resolution,const FilterTypes filter,const double blur,
+%      Image *InterpolativeResizeImage(const Image *image,const size_t columns,
+%        const size_t rows,const InterpolatePixelMethod method,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image to be resized to fit the given resolution.
+%    o image: the image.
 %
-%    o x_resolution: the new image x resolution.
+%    o columns: the number of columns in the resized image.
 %
-%    o y_resolution: the new image y resolution.
+%    o rows: the number of rows in the resized image.
 %
-%    o filter: Image filter to use.
+%    o method: the pixel interpolation method.
 %
-%    o blur: the blur factor where > 1 is blurry, < 1 is sharp.
+%    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
-  const double y_resolution,const FilterTypes filter,const double blur,
+MagickExport Image *InterpolativeResizeImage(const Image *image,
+  const size_t columns,const size_t rows,const InterpolatePixelMethod method,
   ExceptionInfo *exception)
 {
-#define ResampleImageTag  "Resample/Image"
+#define InterpolativeResizeImageTag  "Resize/Image"
+
+  CacheView
+    *image_view,
+    *resize_view;
 
   Image
-    *resample_image;
+    *resize_image;
 
-  size_t
-    height,
-    width;
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  PointInfo
+    scale;
+
+  ssize_t
+    y;
 
   /*
-    Initialize sampled image attributes.
+    Interpolatively resize image.
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1754,17 +1593,84 @@ MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=(size_t) (x_resolution*image->columns/(image->x_resolution == 0.0 ?
-    72.0 : image->x_resolution)+0.5);
-  height=(size_t) (y_resolution*image->rows/(image->y_resolution == 0.0 ?
-    72.0 : image->y_resolution)+0.5);
-  resample_image=ResizeImage(image,width,height,filter,blur,exception);
-  if (resample_image != (Image *) NULL)
+  if ((columns == 0) || (rows == 0))
+    return((Image *) NULL);
+  if ((columns == image->columns) && (rows == image->rows))
+    return(CloneImage(image,0,0,MagickTrue,exception));
+  resize_image=CloneImage(image,columns,rows,MagickTrue,exception);
+  if (resize_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (SetImageStorageClass(resize_image,DirectClass) == MagickFalse)
     {
-      resample_image->x_resolution=x_resolution;
-      resample_image->y_resolution=y_resolution;
+      InheritException(exception,&resize_image->exception);
+      resize_image=DestroyImage(resize_image);
+      return((Image *) NULL);
     }
-  return(resample_image);
+  status=MagickTrue;
+  progress=0;
+  image_view=AcquireVirtualCacheView(image,exception);
+  resize_view=AcquireAuthenticCacheView(resize_image,exception);
+  scale.x=(double) image->columns/resize_image->columns;
+  scale.y=(double) image->rows/resize_image->rows;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static) shared(progress,status) \
+    dynamic_number_threads(image,image->columns,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) resize_image->rows; y++)
+  {
+    MagickPixelPacket
+      pixel;
+
+    PointInfo
+      offset;
+
+    register IndexPacket
+      *restrict resize_indexes;
+
+    register PixelPacket
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=QueueCacheViewAuthenticPixels(resize_view,0,y,resize_image->columns,1,
+      exception);
+    if (q == (PixelPacket *) NULL)
+      continue;
+    resize_indexes=GetCacheViewAuthenticIndexQueue(resize_view);
+    GetMagickPixelPacket(image,&pixel);
+    offset.y=((MagickRealType) y+0.5)*scale.y-0.5;
+    for (x=0; x < (ssize_t) resize_image->columns; x++)
+    {
+      offset.x=((MagickRealType) x+0.5)*scale.x-0.5;
+      (void) InterpolateMagickPixelPacket(image,image_view,method,
+           offset.x,offset.y,&pixel,exception);
+      SetPixelPacket(resize_image,&pixel,q,resize_indexes+x);
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(resize_view,exception) == MagickFalse)
+      continue;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+        #pragma omp critical (MagickCore_InterpolativeResizeImage)
+#endif
+        proceed=SetImageProgress(image,InterpolativeResizeImageTag,progress++,
+          image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  resize_view=DestroyCacheView(resize_view);
+  image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    resize_image=DestroyImage(resize_image);
+  return(resize_image);
 }
 #if defined(MAGICKCORE_LQR_DELEGATE)
 
@@ -1976,6 +1882,157 @@ MagickExport Image *LiquidRescaleImage(const Image *image,
   return((Image *) NULL);
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g n i f y I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagnifyImage() is a convenience method that scales an image proportionally
+%  to twice its size.
+%
+%  The format of the MagnifyImage method is:
+%
+%      Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
+{
+  Image
+    *magnify_image;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  magnify_image=ResizeImage(image,2*image->columns,2*image->rows,CubicFilter,
+    1.0,exception);
+  return(magnify_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M i n i f y I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MinifyImage() is a convenience method that scales an image proportionally to
+%  half its size.
+%
+%  The format of the MinifyImage method is:
+%
+%      Image *MinifyImage(const Image *image,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
+{
+  Image
+    *minify_image;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  minify_image=ResizeImage(image,image->columns/2,image->rows/2,CubicFilter,1.0,
+    exception);
+  return(minify_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e s a m p l e I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ResampleImage() resize image in terms of its pixel size, so that when
+%  displayed at the given resolution it will be the same size in terms of
+%  real world units as the original image at the original resolution.
+%
+%  The format of the ResampleImage method is:
+%
+%      Image *ResampleImage(Image *image,const double x_resolution,
+%        const double y_resolution,const FilterTypes filter,const double blur,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image to be resized to fit the given resolution.
+%
+%    o x_resolution: the new image x resolution.
+%
+%    o y_resolution: the new image y resolution.
+%
+%    o filter: Image filter to use.
+%
+%    o blur: the blur factor where > 1 is blurry, < 1 is sharp.
+%
+*/
+MagickExport Image *ResampleImage(const Image *image,const double x_resolution,
+  const double y_resolution,const FilterTypes filter,const double blur,
+  ExceptionInfo *exception)
+{
+#define ResampleImageTag  "Resample/Image"
+
+  Image
+    *resample_image;
+
+  size_t
+    height,
+    width;
+
+  /*
+    Initialize sampled image attributes.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  width=(size_t) (x_resolution*image->columns/(image->x_resolution == 0.0 ?
+    72.0 : image->x_resolution)+0.5);
+  height=(size_t) (y_resolution*image->rows/(image->y_resolution == 0.0 ?
+    72.0 : image->y_resolution)+0.5);
+  resample_image=ResizeImage(image,width,height,filter,blur,exception);
+  if (resample_image != (Image *) NULL)
+    {
+      resample_image->x_resolution=x_resolution;
+      resample_image->y_resolution=y_resolution;
+    }
+  return(resample_image);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
