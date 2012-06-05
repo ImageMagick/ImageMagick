@@ -100,7 +100,7 @@ typedef enum
 {
   UndefinedInterpolatePixel,
   AverageInterpolatePixel,           /* Average four nearest neighbours */
-  CatromInterpolatePixel,            /* Catmull-Rom interpolation */
+  BicubicInterpolatePixel,           /* Catmull-Rom interpolation */
   BilinearInterpolatePixel,          /* Triangular filter interpolation */
   FilterInterpolatePixel,            /* Use resize filter - (very slow) */
   IntegerInterpolatePixel,           /* Integer (floor) interpolation */
@@ -111,10 +111,8 @@ typedef enum
   Average16InterpolatePixel,         /* Average 16 nearest neighbours */
   BlendInterpolatePixel,             /* blend of nearest 1, 2 or 4 pixels */
   BackgroundInterpolatePixel,        /* just return background color */
+  CatromInterpolatePixel             /* Catmull-Rom interpolation */
 } InterpolatePixelMethod;
-
-/* 'Bicubic' is very imprecise, but define it for backward compatibility */
-#define BicubicInterpolatePixel CatromInterpolatePixel
 
 typedef enum
 {
