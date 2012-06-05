@@ -99,19 +99,22 @@ extern "C" {
 typedef enum
 {
   UndefinedInterpolatePixel,
-  AverageInterpolatePixel,           /* nearest four neighbours */
-  BicubicInterpolatePixel,           /* ??cubic?? interpolation */
-  BilinearInterpolatePixel,          /* triangular filter interpolation */
-  FilterInterpolatePixel,            /* use resize filter - (very slow) */
-  IntegerInterpolatePixel,           /* integer (floor) interpolation */
-  MeshInterpolatePixel,              /* tirangular mesh interpolation */
-  NearestNeighborInterpolatePixel,   /* nearest neighbour only */
+  AverageInterpolatePixel,           /* Average four nearest neighbours */
+  CatromInterpolatePixel,            /* Catmull-Rom interpolation */
+  BilinearInterpolatePixel,          /* Triangular filter interpolation */
+  FilterInterpolatePixel,            /* Use resize filter - (very slow) */
+  IntegerInterpolatePixel,           /* Integer (floor) interpolation */
+  MeshInterpolatePixel,              /* Triangular mesh interpolation */
+  NearestNeighborInterpolatePixel,   /* Nearest neighbour only */
   SplineInterpolatePixel,            /* Cubic Spline (blurred) interpolation */
-  Average9InterpolatePixel,          /* nearest pixel plus 8 neighbours */
-  Average16InterpolatePixel,         /* nearest 16 neighbours */
+  Average9InterpolatePixel,          /* Averge 9 nearest neighbours */
+  Average16InterpolatePixel,         /* Average 16 nearest neighbours */
   BlendInterpolatePixel,             /* blend of nearest 1, 2 or 4 pixels */
   BackgroundInterpolatePixel,        /* just return background color */
 } InterpolatePixelMethod;
+
+/* 'Bicubic' is very imprecise, but define it for backward compatibility */
+#define BicubicInterpolatePixel CatromInterpolatePixel
 
 typedef enum
 {
