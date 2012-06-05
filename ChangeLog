@@ -13,6 +13,7 @@
   * sRGB.icc has an unfriendly license, remove it.
   * MinGW does not define KEY_WOW64_32KEY (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21155).
+  * -evaluate log properly handles negative pixel values.
 
 2012-05-31  6.7.7-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.7-5, SVN revision 8099.
