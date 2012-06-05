@@ -312,8 +312,9 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case LogEvaluateOperator:
     {
-      result=(MagickRealType) (QuantumRange*log((double) (QuantumScale*value*
-        pixel+1.0))/log((double) (value+1.0)));
+      if ((QuantumScale*pixel) >= MagickEpsilon)
+        result=(MagickRealType) (QuantumRange*log((double) (QuantumScale*value*
+          pixel+1.0))/log((double) (value+1.0)));
       break;
     }
     case MaxEvaluateOperator:
