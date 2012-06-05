@@ -471,7 +471,7 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
 
             c=getc(stdin);
             if (c == EOF)
-              break;
+              option="logo:";
             else
               {
                 c=ungetc(c,stdin);
