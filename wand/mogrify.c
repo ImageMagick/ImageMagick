@@ -60,14 +60,6 @@
 #define UndefinedCompressionQuality  0UL
 
 /*
-  Constant declaration.
-*/
-const char
-  BackgroundColor[] = "#fff",  /* white */
-  BorderColor[] = "#dfdfdf",  /* gray */
-  MatteColor[] = "#bdbdbd";  /* gray */
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

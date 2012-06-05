@@ -11,7 +11,7 @@
   <configure name="LIB_VERSION" value="0x677"/>
   <configure name="LIB_VERSION_NUMBER" value="6,7,7,6"/>
   <configure name="SVN_REVISION" value="8118" />
-  <configure name="RELEASE_DATE" value="2012-06-03"/>
+  <configure name="RELEASE_DATE" value="2012-06-05"/>
   <configure name="CONFIGURE" value="./configure  'CC=gcc'"/>
   <configure name="PREFIX" value="/usr/local"/>
   <configure name="EXEC-PREFIX" value="/usr/local"/>
