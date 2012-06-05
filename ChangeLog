@@ -1,3 +1,6 @@
+2012-06-05  6.7.7-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.7-6, SVN revision 8164.
+
 2012-06-05  6.7.7-6 Anthony Thyssen <A.Thyssen@griffith...>
   * Renamed 'Bicubic' interpolation the more precise defintion 'Catrom'
     Old name kept (but hidden) for backward compatibilty in bit CLI and
