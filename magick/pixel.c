@@ -4028,6 +4028,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       pixel->opacity = gamma*pixel->opacity; /* divide by number of pixels */
       break;
     }
+    case BicubicInterpolatePixel:
     case CatromInterpolatePixel:
     {
       MagickRealType
