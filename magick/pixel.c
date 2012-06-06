@@ -3883,26 +3883,27 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
     interpolate = image->interpolate;
   switch (interpolate)
   {
-    case AverageInterpolatePixel:        /* nearest four neighbours */
-    case Average9InterpolatePixel:       /* nearest plus its 8 neighbours */
+    case AverageInterpolatePixel:        /* nearest 4 neighbours */
+    case Average9InterpolatePixel:       /* nearest 9 neighbours */
     case Average16InterpolatePixel:      /* nearest 16 neighbours */
     {
-      i=2; /* size of the area to average - average nearest 4 neighbours */
+      size_t
+        count=2; /* size of the area to average - default nearest 4 */
       if (interpolate == Average9InterpolatePixel)
         {
-          i=3;
+          count=3;
           x_offset=(ssize_t) (floor(x+0.5)-1);
           y_offset=(ssize_t) (floor(y+0.5)-1);
         }
       else if (interpolate == Average16InterpolatePixel)
         {
-          i=4;
+          count=4;
           x_offset--;
           y_offset--;
         }
 
-      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,(size_t) i,
-        (size_t) i,exception);
+      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,(size_t) count,
+        (size_t) count,exception);
       if (p == (const PixelPacket *) NULL)
         {
           status=MagickFalse;
@@ -3914,18 +3915,23 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       pixel->blue=0.0;
       pixel->opacity=0.0;
       pixel->index=0.0;
-      i*=i;            /* number of pixels - square of size */
-      alpha[1]=1.0/i;  /* average weighting of each pixel in area */
-      for (i--; i>=0; i--)
-        {
-          AlphaBlendMagickPixelPacket(image,p+i,indexes+i,pixels,alpha);
-          gamma=MagickEpsilonReciprocal(alpha[0]);
-          pixel->red     += gamma*alpha[1]*pixels[0].red;
-          pixel->green   += gamma*alpha[1]*pixels[0].green;
-          pixel->blue    += gamma*alpha[1]*pixels[0].blue;
-          pixel->index   += gamma*alpha[1]*pixels[0].index;
-          pixel->opacity += alpha[1]*pixels[0].opacity;
-        }
+      count*=count;            /* number of pixels - square of size */
+      for (i=0; i < count; i++)
+      {
+        AlphaBlendMagickPixelPacket(image,p+i,indexes+i,pixels,alpha);
+        gamma=MagickEpsilonReciprocal(alpha[0]);
+        pixel->red     += gamma*pixels[0].red;
+        pixel->green   += gamma*pixels[0].green;
+        pixel->blue    += gamma*pixels[0].blue;
+        pixel->index   += gamma*pixels[0].index;
+        pixel->opacity +=       pixels[0].opacity;
+      }
+      gamma=1.0/count;  /* average weighting of each pixel in area */
+      pixel->red     *= gamma;
+      pixel->green   *= gamma;
+      pixel->blue    *= gamma;
+      pixel->index   *= gamma;
+      pixel->opacity *= gamma;
       break;
     }
     case BackgroundInterpolatePixel:
@@ -4019,17 +4025,17 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
         pixels[0].opacity += pixels[1].opacity;
         pixels[0].index   += pixels[1].index;
       }
-      gamma = 1.0/gamma;
-      alpha[0]=MagickEpsilonReciprocal(alpha[0]);
-      pixel->red   = alpha[0]*pixel->red;
-      pixel->green = alpha[0]*pixel->green;  /* divide by sum of alpha */
-      pixel->blue  = alpha[0]*pixel->blue;
-      pixel->index = alpha[0]*pixel->index;
-      pixel->opacity = gamma*pixel->opacity; /* divide by number of pixels */
+      gamma = 1.0/gamma;                          /* 1/sum(pixels) */
+      alpha[0]=MagickEpsilonReciprocal(alpha[0]); /* 1/sum(alpha) */
+      pixel->red   = alpha[0]*pixels[0].red;
+      pixel->green = alpha[0]*pixels[0].green;  /* divide by sum of alpha */
+      pixel->blue  = alpha[0]*pixels[0].blue;
+      pixel->index = alpha[0]*pixels[0].index;
+      pixel->opacity =  gamma*pixels[0].opacity; /* divide by number pixels */
       break;
     }
-    case BicubicInterpolatePixel:
     case CatromInterpolatePixel:
+    case BicubicInterpolatePixel: /* depreciated method */
     {
       MagickRealType
         beta[4],
@@ -4039,6 +4045,11 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       PointInfo
         delta;
 
+      /*
+        Refactoring of the Catmull-Rom computation by Nicolas Robidoux with 55
+        flops = 28* + 10- + 17+.  Originally implemented for the VIPS (Virtual
+        Image Processing System) library.
+      */
       p=GetCacheViewVirtualPixels(image_view,x_offset-1,y_offset-1,4,4,
         exception);
       if (p == (const PixelPacket *) NULL)
