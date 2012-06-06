@@ -2221,6 +2221,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   png_set_read_user_chunk_fn(ping, image, read_vpag_chunk_callback);
 #endif
 
+#ifdef PNG_READ_CHECK_FOR_INVALID_INDEX_SUPPORTED
+    /* Disable new libpng-1.5.10 feature */
+    png_set_check_for_invalid_index (ping, 0);
+#endif
+
 #if (PNG_LIBPNG_VER < 10400)
 #  if defined(PNG_USE_PNGGCCRD) && defined(PNG_ASSEMBLER_CODE_SUPPORTED) && \
    (PNG_LIBPNG_VER >= 10200) && (PNG_LIBPNG_VER < 10220) && defined(__i386__)
@@ -8925,6 +8930,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   /*
     Prepare PNG for writing.
   */
+
+#ifdef PNG_WRITE_CHECK_FOR_INVALID_INDEX_SUPPORTED
+    /* Disable new libpng-1.5.10 feature */
+    png_set_check_for_invalid_index (ping, 0);
+#endif
+
 #if defined(PNG_MNG_FEATURES_SUPPORTED)
   if (mng_info->write_mng)
      (void) png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);

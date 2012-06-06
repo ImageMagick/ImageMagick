@@ -1,3 +1,7 @@
+2012-06-06  6.7.7-7 Glenn Randers-Pehrson <glennrp@image...>
+  * Disabled a new palette-index test in libpng-1.5.10.  It does not play
+    nicely with the MNG encoder when a global palette is used.
+
 2012-06-06  6.7.7-7 Anthony Thyssen <A.Thyssen@griffith...>
   * Small refactor of Average Interpolators (save some multiplies)
 
