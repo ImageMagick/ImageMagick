@@ -1116,6 +1116,32 @@ Magick_RenderingIntent_from_PNG_RenderingIntent(const int ping_intent)
     }
 }
 
+
+static char *
+Magick_ColorType_from_PNG_ColorType(const int ping_colortype)
+{
+  switch (ping_colortype)
+  {
+    case 0:
+      return "Grayscale";
+
+    case 2:
+      return "Truecolor";
+
+    case 3:
+      return "Indexed";
+
+    case 4:
+      return "GrayAlpha";
+
+    case 6:
+      return "RGBA";
+
+    default:
+      return "UndefinedColorType";
+    }
+}
+
 static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
 {
   if (x > y)
@@ -2800,7 +2826,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_bit_depth);
      (void) SetImageProperty(image,"png:IHDR.bit_depth       ",msg);
 
-     (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_color_type);
+     (void) FormatLocaleString(msg,MaxTextExtent,"%d (%s)",
+         (int) ping_color_type,
+         Magick_ColorType_from_PNG_ColorType((int)ping_color_type));
      (void) SetImageProperty(image,"png:IHDR.color_type      ",msg);
 
      (void) FormatLocaleString(msg,MaxTextExtent,"%d",
