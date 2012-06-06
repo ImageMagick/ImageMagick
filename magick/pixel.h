@@ -99,7 +99,7 @@ extern "C" {
 typedef enum
 {
   UndefinedInterpolatePixel,
-  AverageInterpolatePixel,           /* Average four nearest neighbours */
+  AverageInterpolatePixel,           /* Average 4 nearest neighbours */
   BicubicInterpolatePixel,           /* Catmull-Rom interpolation */
   BilinearInterpolatePixel,          /* Triangular filter interpolation */
   FilterInterpolatePixel,            /* Use resize filter - (very slow) */
@@ -107,7 +107,7 @@ typedef enum
   MeshInterpolatePixel,              /* Triangular mesh interpolation */
   NearestNeighborInterpolatePixel,   /* Nearest neighbour only */
   SplineInterpolatePixel,            /* Cubic Spline (blurred) interpolation */
-  Average9InterpolatePixel,          /* Averge 9 nearest neighbours */
+  Average9InterpolatePixel,          /* Average 9 nearest neighbours */
   Average16InterpolatePixel,         /* Average 16 nearest neighbours */
   BlendInterpolatePixel,             /* blend of nearest 1, 2 or 4 pixels */
   BackgroundInterpolatePixel,        /* just return background color */
