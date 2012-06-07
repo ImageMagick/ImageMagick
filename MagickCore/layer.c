@@ -270,7 +270,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
   if (coalesce_image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageBackgroundColor(coalesce_image,exception);
-  coalesce_image->matte=mext->matte;
+  coalesce_image->matte=next->matte;
   coalesce_image->page=bounds;
   coalesce_image->dispose=NoneDispose;
   /*
