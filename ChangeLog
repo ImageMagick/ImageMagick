@@ -1,6 +1,7 @@
 2012-06-06  6.7.7-7 Glenn Randers-Pehrson <glennrp@image...>
-  * Disabled a new palette-index test in libpng-1.5.10.  It does not play
-    nicely with the MNG encoder when a global palette is used.
+  * Disabled the new libpng-1.5.10 test for invalid palette index when
+    reading a PNG or MNG (for speed), or when writing a MNG (because a
+    zero-length PLTE is valid in a MNG when the global PLTE is used).
   * Display the PNG colortype as a string in "identify -verbose" output.
 
 2012-06-06  6.7.7-7 Anthony Thyssen <A.Thyssen@griffith...>
