@@ -60,6 +60,7 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/pixel.h"
+#include "magick/pixel-private.h"
 #include "magick/option.h"
 #include "magick/resample.h"
 #include "magick/resample-private.h"
@@ -967,8 +968,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       value=StringToDouble(artifact,(char **) NULL);
     /* Define coefficents for Gaussian */
     resize_filter->coefficient[0]=value;                 /* note sigma too */
-    resize_filter->coefficient[1]=1.0/(2.0*value*value); /* sigma scaling */
-    resize_filter->coefficient[2]=(MagickRealType) (1.0/(Magick2PI*value*value));
+    resize_filter->coefficient[1]=MagickEpsilonReciprocal(2.0*value*value); /* sigma scaling */
+    resize_filter->coefficient[2]=MagickEpsilonReciprocal(Magick2PI*value*value);
        /* normalization - not actually needed or used! */
     if ( value > 0.5 )
       resize_filter->support *= value/0.5;  /* increase support */
@@ -989,7 +990,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       value=StringToDouble(artifact,(char **) NULL)*MagickPI;
     /* Define coefficents for Kaiser Windowing Function */
     resize_filter->coefficient[0]=value;         /* alpha */
-    resize_filter->coefficient[1]=1.0/I0(value); /* normalization */
+    resize_filter->coefficient[1]=MagickEpsilonReciprocal(I0(value)); /* normalization */
   }
 
   /* Blur Override */
@@ -2201,7 +2202,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       return(MagickFalse);
     }
   status=MagickTrue;
-  scale=1.0/scale;
+  scale=MagickEpsilonReciprocal(scale);
   (void) ResetMagickMemory(&zero,0,sizeof(zero));
   image_view=AcquireVirtualCacheView(image,exception);
   resize_view=AcquireAuthenticCacheView(resize_image,exception);
@@ -2260,7 +2261,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
         /*
           Normalize.
         */
-        density=1.0/density;
+        density=MagickEpsilonReciprocal(density);
         for (i=0; i < n; i++)
           contribution[i].weight*=density;
       }
@@ -2441,7 +2442,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       return(MagickFalse);
     }
   status=MagickTrue;
-  scale=1.0/scale;
+  scale=MagickEpsilonReciprocal(scale);
   (void) ResetMagickMemory(&zero,0,sizeof(zero));
   image_view=AcquireVirtualCacheView(image,exception);
   resize_view=AcquireAuthenticCacheView(resize_image,exception);
@@ -2500,7 +2501,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
         /*
           Normalize.
         */
-        density=1.0/density;
+        density=MagickEpsilonReciprocal(density);
         for (i=0; i < n; i++)
           contribution[i].weight*=density;
       }

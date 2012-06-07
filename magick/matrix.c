@@ -42,6 +42,7 @@
 #include "magick/studio.h"
 #include "magick/matrix.h"
 #include "magick/memory_.h"
+#include "magick/pixel-private.h"
 #include "magick/utility.h"
 
 /*
@@ -256,7 +257,7 @@ MagickExport MagickBooleanType GaussJordanElimination(double **matrix,
     columns[i]=column;
     if (matrix[column][column] == 0.0)
       return(MagickFalse);  /* sigularity */
-    scale=1.0/matrix[column][column];
+    scale=MagickEpsilonReciprocal(matrix[column][column]);
     matrix[column][column]=1.0;
     for (j=0; j < (ssize_t) rank; j++)
       matrix[column][j]*=scale;

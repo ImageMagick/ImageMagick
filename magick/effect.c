@@ -247,7 +247,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
     }
     if (fabs(normalize) < MagickEpsilon)
       normalize=MagickEpsilon;
-    normalize=1.0/normalize;
+    normalize=MagickEpsilonReciprocal(normalize);
     for (k=0; k < (j*j); k++)
       kernel[i][k]=normalize*kernel[i][k];
   }
@@ -565,7 +565,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
     }
     if (fabs(normalize) < MagickEpsilon)
       normalize=MagickEpsilon;
-    normalize=1.0/normalize;
+    normalize=MagickEpsilonReciprocal(normalize);
     for (k=0; k < (j*j); k++)
       kernel[i][k]=normalize*kernel[i][k];
   }
