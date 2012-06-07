@@ -630,7 +630,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
                 /*
                   Classify this pixel.
                 */
-                local_minima=MagickEpsilonReciprocal(sum);
+                local_minima=1.0/sum;
                 SetPixelIndex(image,(Quantum) j,q);
               }
           }

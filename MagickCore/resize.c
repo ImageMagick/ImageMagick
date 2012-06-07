@@ -252,8 +252,8 @@ static MagickRealType Gaussian(const MagickRealType x,
     The constants are pre-calculated...
 
         coeff[0]=sigma;
-        coeff[1]=MagickEpsilonReciprocal(2.0*sigma^2);
-        coeff[2]=MagickEpsilonReciprocal(sqrt(2*PI)*sigma^2);
+        coeff[1]=1.0/(2.0*sigma^2);
+        coeff[2]=1.0/(sqrt(2*PI)*sigma^2);
 
         exp( -coeff[1]*(x^2)) ) * coeff[2];
 
