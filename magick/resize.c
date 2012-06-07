@@ -194,7 +194,7 @@ static MagickRealType CubicBC(const MagickRealType x,
     Cubic Filters using B,C determined values:
        Mitchell-Netravali  B = 1/3 C = 1/3  "Balanced" cubic spline filter
        Catmull-Rom         B = 0   C = 1/2  Interpolatory and exact on linears
-       Cubic B-Spline      B = 1   C = 0    Spline approximation of Gaussian
+       Spline              B = 1   C = 0    Spline approximation of Gaussian
        Hermite             B = 0   C = 0    Spline with small support (= 1)
 
     See paper by Mitchell and Netravali, Reconstruction Filters in Computer
@@ -517,7 +517,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %
 %  FIR (Finite impulse Response) Filters
 %      Box         Triangle   Quadratic
-%      Cubic       Hermite    Catrom
+%      Spline      Hermite    Catrom
 %      Mitchell
 %
 %  IIR (Infinite impulse Response) Filters
@@ -528,7 +528,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %      Kaiser       Lanczos
 %
 %  Special purpose Filters
-%      SincFast  LanczosSharp  Lanczos2  Lanczos2Sharp
+%      Cubic  SincFast  LanczosSharp  Lanczos2  Lanczos2Sharp
 %      Robidoux RobidouxSharp
 %
 %  The users "-filter" selection is used to lookup the default 'expert'
@@ -648,7 +648,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %       using it for Distort.
 %
 %    "filter:b"
-%    "filter:c" Override the preset B,C values for a Cubic type of filter.
+%    "filter:c" Override the preset B,C values for a Cubic filter.
 %       If only one of these are given it is assumes to be a 'Keys' type of
 %       filter such that B+2C=1, where Keys 'alpha' value = C.
 %
@@ -734,7 +734,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFastFilter,      BlackmanFilter },  /* Blackman -- 2*cosine-sinc    */
     { GaussianFilter,      BoxFilter      },  /* Gaussian blur filter         */
     { QuadraticFilter,     BoxFilter      },  /* Quadratic Gaussian approx    */
-    { CubicFilter,         BoxFilter      },  /* Cubic B-Spline               */
+    { CubicFilter,         BoxFilter      },  /* Cubic Filter (Spline)        */
     { CatromFilter,        BoxFilter      },  /* Cubic-Keys interpolator      */
     { MitchellFilter,      BoxFilter      },  /* 'Ideal' Cubic-Keys filter    */
     { JincFilter,          BoxFilter      },  /* Raw 3-lobed Jinc function    */
@@ -753,6 +753,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { RobidouxFilter,      BoxFilter      },  /* Cubic Keys tuned for EWA     */
     { RobidouxSharpFilter, BoxFilter      },  /* Sharper Cubic Keys for EWA   */
     { SincFastFilter,      CosineFilter   },  /* low level cosine window      */
+    { SplineFilter,        BoxFilter      },  /* Spline Cubic Filter          */
   };
   /*
     Table mapping the filter/window from the above table to an actual function.
@@ -790,7 +791,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Blackman,  1.0, 1.0, 0.0, 0.0 }, /* Blackman, 2*cosine window   */
     { Gaussian,  2.0, 1.5, 0.0, 0.0 }, /* Gaussian                    */
     { Quadratic, 1.5, 1.5, 0.0, 0.0 }, /* Quadratic gaussian          */
-    { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
+    { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* General Cubic Filter        */
     { CubicBC,   2.0, 1.0, 0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
     { CubicBC,   2.0, 8.0/7.0, 1./3., 1./3. }, /* Mitchell   (B=C=1/3)    */
     { Jinc,      3.0, 1.2196698912665045, 0.0, 0.0 }, /* Raw 3-lobed Jinc */
@@ -812,7 +813,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     /* RobidouxSharp: Sharper version of Robidoux */
     { CubicBC,   2.0, 1.105822933719019,
                             0.2620145123990142,  0.3689927438004929  },
-    { Cosine,    1.0, 1.0, 0.0, 0.0 }  /* Low level cosine window     */
+    { Cosine,    1.0, 1.0, 0.0, 0.0 }, /* Low level cosine window     */
+    { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)

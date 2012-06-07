@@ -1010,6 +1010,7 @@ static const OptionInfo
     { "RobidouxSharp", RobidouxSharpFilter, UndefinedOptionFlag, MagickFalse },
     { "Sinc", SincFilter, UndefinedOptionFlag, MagickFalse },
     { "SincFast", SincFastFilter, UndefinedOptionFlag, MagickFalse },
+    { "Spline", SplineFilter, UndefinedOptionFlag, MagickFalse },
     { "Triangle", TriangleFilter, UndefinedOptionFlag, MagickFalse },
     { "Welsh", WelshFilter, UndefinedOptionFlag, MagickFalse },
     /* For backward compatibility - must be after "Jinc" */
