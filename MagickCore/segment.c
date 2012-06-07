@@ -96,6 +96,7 @@
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/quantize.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
@@ -629,7 +630,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
                 /*
                   Classify this pixel.
                 */
-                local_minima=1.0/sum;
+                local_minima=MagickEpsilonReciprocal(sum);
                 SetPixelIndex(image,(Quantum) j,q);
               }
           }
@@ -1730,8 +1731,8 @@ static void ScaleSpace(const ssize_t *histogram,const MagickRealType tau,
   if (gamma == (MagickRealType *) NULL)
     ThrowFatalException(ResourceLimitFatalError,
       "UnableToAllocateGammaMap");
-  alpha=1.0/(tau*sqrt(2.0*MagickPI));
-  beta=(-1.0/(2.0*tau*tau));
+  alpha=MagickEpsilonReciprocal(tau*sqrt(2.0*MagickPI));
+  beta=(-1.0*MagickEpsilonReciprocal(2.0*tau*tau));
   for (x=0; x <= 255; x++)
     gamma[x]=0.0;
   for (x=0; x <= 255; x++)

@@ -60,6 +60,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/resample.h"
 #include "MagickCore/resample-private.h"
 #include "MagickCore/registry.h"
@@ -104,7 +105,7 @@ static void InvertAffineCoefficients(const double *coeff,double *inverse)
   /* From "Digital Image Warping" by George Wolberg, page 50 */
   double determinant;
 
-  determinant=1.0/(coeff[0]*coeff[4]-coeff[1]*coeff[3]);
+  determinant=MagickEpsilonReciprocal(coeff[0]*coeff[4]-coeff[1]*coeff[3]);
   inverse[0]=determinant*coeff[4];
   inverse[1]=determinant*(-coeff[1]);
   inverse[2]=determinant*(coeff[1]*coeff[5]-coeff[2]*coeff[4]);
@@ -119,7 +120,7 @@ static void InvertPerspectiveCoefficients(const double *coeff,
   /* From "Digital Image Warping" by George Wolberg, page 53 */
   double determinant;
 
-  determinant=1.0/(coeff[0]*coeff[4]-coeff[3]*coeff[1]);
+  determinant=MagickEpsilonReciprocal(coeff[0]*coeff[4]-coeff[3]*coeff[1]);
   inverse[0]=determinant*(coeff[4]-coeff[7]*coeff[5]);
   inverse[1]=determinant*(coeff[7]*coeff[2]-coeff[1]);
   inverse[2]=determinant*(coeff[1]*coeff[5]-coeff[4]*coeff[2]);

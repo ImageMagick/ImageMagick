@@ -50,6 +50,7 @@
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/quantum.h"
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/random_.h"
@@ -767,8 +768,8 @@ MagickPrivate size_t GetOptimalKernelWidth1D(const double radius,
   gamma=fabs(sigma);
   if (gamma <= MagickEpsilon)
     return(3UL);
-  alpha=1.0/(2.0*gamma*gamma);
-  beta=(double) (1.0/(MagickSQ2PI*gamma));
+  alpha=MagickEpsilonReciprocal(2.0*gamma*gamma);
+  beta=(double) MagickEpsilonReciprocal(MagickSQ2PI*gamma);
   for (width=5; ; )
   {
     normalize=0.0;
@@ -807,8 +808,8 @@ MagickPrivate size_t GetOptimalKernelWidth2D(const double radius,
   gamma=fabs(sigma);
   if (gamma <= MagickEpsilon)
     return(3UL);
-  alpha=1.0/(2.0*gamma*gamma);
-  beta=(double) (1.0/(Magick2PI*gamma*gamma));
+  alpha=MagickEpsilonReciprocal(2.0*gamma*gamma);
+  beta=(double) MagickEpsilonReciprocal(Magick2PI*gamma*gamma);
   for (width=5; ; )
   {
     normalize=0.0;

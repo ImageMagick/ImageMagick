@@ -2062,7 +2062,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   weight=1.0;
   for (i=0; i < ErrorQueueLength; i++)
   {
-    cube_info->weights[ErrorQueueLength-i-1]=1.0/weight;
+    cube_info->weights[ErrorQueueLength-i-1]=MagickEpsilonReciprocal(weight);
     weight*=exp(log(((double) QuantumRange+1.0))/(ErrorQueueLength-1.0));
   }
   /*
