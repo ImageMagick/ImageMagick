@@ -1432,6 +1432,7 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
     *image_view;
 
   MagickBooleanType
+    initialize,
     status;
 
   ssize_t
@@ -1442,11 +1443,12 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   status=MagickTrue;
-  *maxima=(-MagickHuge);
-  *minima=MagickHuge;
+  initialize=MagickTrue;
+  *maxima=0.0;
+  *minima=0.0;
   image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
+  #pragma omp parallel for schedule(static) shared(status,initialize) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -1493,10 +1495,19 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
         #pragma omp critical (MagickCore_GetImageRange)
 #endif
         {
-          if ((double) p[i] < *minima)
-            *minima=(double) p[i];
-          if ((double) p[i] > *maxima)
-            *maxima=(double) p[i];
+          if (initialize != MagickFalse)
+            {
+              *minima=(double) p[i];
+              *maxima=(double) p[i];
+              initialize=MagickFalse;
+            }
+          else
+            {
+              if ((double) p[i] < *minima)
+                *minima=(double) p[i];
+              if ((double) p[i] > *maxima)
+                *maxima=(double) p[i];
+           }
         }
       }
       p+=GetPixelChannels(image);
@@ -1575,6 +1586,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     area;
 
   MagickStatusType
+    initialize,
     status;
 
   QuantumAny
@@ -1603,9 +1615,10 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
   {
     channel_statistics[i].depth=1;
-    channel_statistics[i].maxima=(-MagickHuge);
-    channel_statistics[i].minima=MagickHuge;
+    channel_statistics[i].maxima=0.0;
+    channel_statistics[i].minima=0.0;
   }
+  initialize=MagickTrue;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -1652,10 +1665,19 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
                 continue;
               }
           }
-        if ((double) p[i] < channel_statistics[channel].minima)
-          channel_statistics[channel].minima=(double) p[i];
-        if ((double) p[i] > channel_statistics[channel].maxima)
-          channel_statistics[channel].maxima=(double) p[i];
+        if (initialize != MagickFalse)
+          {
+            channel_statistics[channel].minima=(double) p[i];
+            channel_statistics[channel].maxima=(double) p[i];
+            initialize=MagickFalse;
+          }
+        else
+          {
+            if ((double) p[i] < channel_statistics[channel].minima)
+              channel_statistics[channel].minima=(double) p[i];
+            if ((double) p[i] > channel_statistics[channel].maxima)
+              channel_statistics[channel].maxima=(double) p[i];
+          }
         channel_statistics[channel].sum+=p[i];
         channel_statistics[channel].sum_squared+=(double) p[i]*p[i];
         channel_statistics[channel].sum_cubed+=(double) p[i]*p[i]*p[i];
