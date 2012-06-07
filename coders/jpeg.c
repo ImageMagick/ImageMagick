@@ -248,7 +248,7 @@ static boolean FillInputBuffer(j_decompress_ptr cinfo)
     MaxBufferExtent,source->buffer);
   if (source->manager.bytes_in_buffer == 0)
     {
-      if (source->start_of_blob != 0)
+      if (source->start_of_blob != FALSE)
         ERREXIT(cinfo,JERR_INPUT_EMPTY);
       WARNMS(cinfo,JWRN_JPEG_EOF);
       source->buffer[0]=(JOCTET) 0xff;
