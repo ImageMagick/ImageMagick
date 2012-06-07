@@ -2574,8 +2574,8 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
         {
           k=(ssize_t) ((contribution[j].pixel-contribution[0].pixel)*
             image->columns+x);
-          alpha=contribution[j].weight*QuantumScale*
-            GetPixelAlpha(image,p+k*GetPixelChannels(image));
+          alpha=contribution[j].weight*QuantumScale*GetPixelAlpha(image,p+k*
+            GetPixelChannels(image));
           pixel+=alpha*p[k*GetPixelChannels(image)+i];
           gamma+=alpha;
         }
