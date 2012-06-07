@@ -98,7 +98,7 @@ typedef unsigned char boolean;
 #define ICC_PROFILE  "ICC_PROFILE"
 #define IPTC_MARKER  (JPEG_APP0+13)
 #define XML_MARKER  (JPEG_APP0+1)
-#define MaxBufferExtent  8192
+#define MaxBufferExtent  16384
 
 /*
   Typedef declarations.
