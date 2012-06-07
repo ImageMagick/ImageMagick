@@ -71,6 +71,7 @@
 #include "MagickCore/option.h"
 #include "MagickCore/paint.h"
 #include "MagickCore/pixel-accessor.h"
+#include "MagickCore/pixel-private.h"
 #include "MagickCore/property.h"
 #include "MagickCore/resample.h"
 #include "MagickCore/resample-private.h"
@@ -1042,7 +1043,8 @@ static AffineMatrix InverseAffineMatrix(const AffineMatrix *affine)
   double
     determinant;
 
-  determinant=1.0/(affine->sx*affine->sy-affine->rx*affine->ry);
+  determinant=MagickEpsilonReciprocal(affine->sx*affine->sy-affine->rx*
+    affine->ry);
   inverse_affine.sx=determinant*affine->sy;
   inverse_affine.rx=determinant*(-affine->rx);
   inverse_affine.ry=determinant*(-affine->ry);
@@ -3688,9 +3690,8 @@ static MagickRealType GetFillAlpha(PolygonInfo *polygon_info,
             }
           else
             {
-              alpha=1.0/alpha;
               beta=delta.x*(y-q->y)-delta.y*(x-q->x);
-              distance=alpha*beta*beta;
+              distance=MagickEpsilonReciprocal(alpha)*beta*beta;
             }
         }
       /*
@@ -4984,7 +4985,7 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
   points[1].y=(double) (cosine*end.y/radii.y-sine*end.x/radii.y);
   alpha=points[1].x-points[0].x;
   beta=points[1].y-points[0].y;
-  factor=1.0/(alpha*alpha+beta*beta)-0.25;
+  factor=MagickEpsilonReciprocal(alpha*alpha+beta*beta)-0.25;
   if (factor <= 0.0)
     factor=0.0;
   else
