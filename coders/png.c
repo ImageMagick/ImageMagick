@@ -9003,14 +9003,17 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     Prepare PNG for writing.
   */
 
-#ifdef PNG_WRITE_CHECK_FOR_INVALID_INDEX_SUPPORTED
-    /* Disable new libpng-1.5.10 feature */
-    png_set_check_for_invalid_index (ping, 0);
-#endif
-
 #if defined(PNG_MNG_FEATURES_SUPPORTED)
   if (mng_info->write_mng)
+  {
      (void) png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
+# ifdef PNG_WRITE_CHECK_FOR_INVALID_INDEX_SUPPORTED
+     /* Disable new libpng-1.5.10 feature when writing a MNG because
+      * zero-length PLTE is OK
+      */
+     png_set_check_for_invalid_index (ping, 0);
+# endif
+  }
 
 #else
 # ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
