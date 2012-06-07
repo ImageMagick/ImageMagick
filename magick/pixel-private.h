@@ -31,8 +31,10 @@ extern "C" {
 
 static inline MagickRealType MagickEpsilonReciprocal(const MagickRealType x)
 {
-  return((MagickRealType) 1.0/(((x) > (MagickRealType) 0.0 ? (x) : -(x)) <
-    MagickEpsilon ? MagickEpsilon : x));
+  MagickRealType sign = (x < (MagickRealType) 0.0 ? (MagickRealType) -1.0 : 
+    (MagickRealType) 1.0);
+  return((sign*x) > MagickEpsilon ? (MagickRealType) 1.0/x : sign*(
+    (MagickRealType) 1.0/MagickEpsilon));
 }
 
 static inline MagickPixelPacket *CloneMagickPixelPacket(
