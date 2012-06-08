@@ -91,7 +91,7 @@ struct _ResizeFilter
     window_support, /* window support, usally equal to support (expert only) */
     scale,          /* dimension scaling to fit window support (usally 1.0) */
     blur,           /* x-scale (blur-sharpen) */
-    coefficient[7]; /* cubic coefficents for BC-cubic spline filters */
+    coefficient[7]; /* cubic coefficents for BC-cubic filters */
 
   size_t
     signature;
@@ -197,8 +197,8 @@ static MagickRealType CubicBC(const MagickRealType x,
     Cubic Filters using B,C determined values:
        Mitchell-Netravali  B = 1/3 C = 1/3  "Balanced" cubic spline filter
        Catmull-Rom         B = 0   C = 1/2  Interpolatory and exact on linears
-       Cubic B-Spline      B = 1   C = 0    Spline approximation of Gaussian
-       Hermite             B = 0   C = 0    Spline with small support (= 1)
+       Spline              B = 1   C = 0    B-Spline Gaussian approximation
+       Hermite             B = 0   C = 0    B-Spline interpolator
 
     See paper by Mitchell and Netravali, Reconstruction Filters in Computer
     Graphics Computer Graphics, Volume 22, Number 4, August 1988
@@ -520,7 +520,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %
 %  FIR (Finite impulse Response) Filters
 %      Box         Triangle   Quadratic
-%      Cubic       Hermite    Catrom
+%      Spline      Hermite    Catrom
 %      Mitchell
 %
 %  IIR (Infinite impulse Response) Filters
@@ -530,8 +530,8 @@ static MagickRealType Welsh(const MagickRealType x,
 %      Blackman     Hanning     Hamming
 %      Kaiser       Lanczos
 %
-%  Special purpose Filters
-%      SincFast  LanczosSharp  Lanczos2  Lanczos2Sharp
+%  Special Purpose Filters
+%      Cubic  SincFast  LanczosSharp  Lanczos2  Lanczos2Sharp
 %      Robidoux RobidouxSharp
 %
 %  The users "-filter" selection is used to lookup the default 'expert'
@@ -651,7 +651,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %       using it for Distort.
 %
 %    "filter:b"
-%    "filter:c" Override the preset B,C values for a Cubic type of filter.
+%    "filter:c" Override the preset B,C values for a Cubic filter.
 %       If only one of these are given it is assumes to be a 'Keys' type of
 %       filter such that B+2C=1, where Keys 'alpha' value = C.
 %
@@ -737,7 +737,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFastFilter,      BlackmanFilter },  /* Blackman -- 2*cosine-sinc    */
     { GaussianFilter,      BoxFilter      },  /* Gaussian blur filter         */
     { QuadraticFilter,     BoxFilter      },  /* Quadratic Gaussian approx    */
-    { CubicFilter,         BoxFilter      },  /* Cubic B-Spline               */
+    { CubicFilter,         BoxFilter      },  /* General Cubic Filter, Spline */
     { CatromFilter,        BoxFilter      },  /* Cubic-Keys interpolator      */
     { MitchellFilter,      BoxFilter      },  /* 'Ideal' Cubic-Keys filter    */
     { JincFilter,          BoxFilter      },  /* Raw 3-lobed Jinc function    */
@@ -756,6 +756,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { RobidouxFilter,      BoxFilter      },  /* Cubic Keys tuned for EWA     */
     { RobidouxSharpFilter, BoxFilter      },  /* Sharper Cubic Keys for EWA   */
     { SincFastFilter,      CosineFilter   },  /* low level cosine window      */
+    { SplineFilter,        BoxFilter      },  /* Spline Cubic Filter          */
   };
   /*
     Table mapping the filter/window from the above table to an actual function.
@@ -793,7 +794,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { Blackman,  1.0, 1.0, 0.0, 0.0 }, /* Blackman, 2*cosine window   */
     { Gaussian,  2.0, 1.5, 0.0, 0.0 }, /* Gaussian                    */
     { Quadratic, 1.5, 1.5, 0.0, 0.0 }, /* Quadratic gaussian          */
-    { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
+    { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* General Cubic Filter        */
     { CubicBC,   2.0, 1.0, 0.0, 0.5 }, /* Catmull-Rom    (B=0,C=1/2)  */
     { CubicBC,   2.0, 8.0/7.0, 1./3., 1./3. }, /* Mitchell   (B=C=1/3)    */
     { Jinc,      3.0, 1.2196698912665045, 0.0, 0.0 }, /* Raw 3-lobed Jinc */
@@ -815,7 +816,8 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     /* RobidouxSharp: Sharper version of Robidoux */
     { CubicBC,   2.0, 1.105822933719019,
                             0.2620145123990142,  0.3689927438004929  },
-    { Cosine,    1.0, 1.0, 0.0, 0.0 }  /* Low level cosine window     */
+    { Cosine,    1.0, 1.0, 0.0, 0.0 }, /* Low level cosine window     */
+    { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
@@ -1182,7 +1184,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
 %  The format of the AdaptiveResizeImage method is:
 %
 %      Image *AdaptiveResizeImage(const Image *image,const size_t columns,
-%        const size_t rows, ExceptionInfo *exception)
+%        const size_t rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1198,12 +1200,8 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
 MagickExport Image *AdaptiveResizeImage(const Image *image,
   const size_t columns,const size_t rows,ExceptionInfo *exception)
 {
-  Image
-    *resize_image;
-
-  resize_image=InterpolativeResizeImage(image,columns,rows,MeshInterpolatePixel,
-    exception);
-  return(resize_image);
+  return(InterpolativeResizeImage(image,columns,rows,MeshInterpolatePixel,
+    exception));
 }
 
 /*
@@ -1951,7 +1949,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  magnify_image=ResizeImage(image,2*image->columns,2*image->rows,CubicFilter,
+  magnify_image=ResizeImage(image,2*image->columns,2*image->rows,SplineFilter,
     exception);
   return(magnify_image);
 }
@@ -1992,7 +1990,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  minify_image=ResizeImage(image,image->columns/2,image->rows/2,CubicFilter,
+  minify_image=ResizeImage(image,image->columns/2,image->rows/2,SplineFilter,
     exception);
   return(minify_image);
 }
