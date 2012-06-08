@@ -4186,9 +4186,11 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
         AlphaBlendMagickPixelPacket(image,p+i,indexes+i,pixels+i,alpha+i);
       delta.x=x-x_offset;
       delta.y=y-y_offset;
-      luminance.x=MagickPixelLuminance(pixels+0)-MagickPixelLuminance(pixels+3);
-      luminance.y=MagickPixelLuminance(pixels+1)-MagickPixelLuminance(pixels+2);
-      if (fabs(luminance.x) < fabs(luminance.y))
+      luminance.x=fabs(MagickPixelLuminance(pixels+0)
+                       -MagickPixelLuminance(pixels+3));
+      luminance.y=fabs(MagickPixelLuminance(pixels+1)
+                       -MagickPixelLuminance(pixels+2));
+      if (luminance.x < luminance.y)
         {
           /*
             Diagonal 0-3 NW-SE.
