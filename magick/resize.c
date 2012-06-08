@@ -89,7 +89,7 @@ struct _ResizeFilter
     window_support, /* window support, usally equal to support (expert only) */
     scale,          /* dimension scaling to fit window support (usally 1.0) */
     blur,           /* x-scale (blur-sharpen) */
-    coefficient[7]; /* cubic coefficents for BC-cubic spline filters */
+    coefficient[7]; /* cubic coefficents for BC-cubic filters */
 
   size_t
     signature;
@@ -195,8 +195,8 @@ static MagickRealType CubicBC(const MagickRealType x,
     Cubic Filters using B,C determined values:
        Mitchell-Netravali  B = 1/3 C = 1/3  "Balanced" cubic spline filter
        Catmull-Rom         B = 0   C = 1/2  Interpolatory and exact on linears
-       Spline              B = 1   C = 0    Spline approximation of Gaussian
-       Hermite             B = 0   C = 0    Spline with small support (= 1)
+       Spline              B = 1   C = 0    B-Spline Gaussian approximation
+       Hermite             B = 0   C = 0    B-Spline interpolator
 
     See paper by Mitchell and Netravali, Reconstruction Filters in Computer
     Graphics Computer Graphics, Volume 22, Number 4, August 1988
@@ -528,7 +528,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %      Blackman     Hanning     Hamming
 %      Kaiser       Lanczos
 %
-%  Special purpose Filters
+%  Special Purpose Filters
 %      Cubic  SincFast  LanczosSharp  Lanczos2  Lanczos2Sharp
 %      Robidoux RobidouxSharp
 %
@@ -735,7 +735,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFastFilter,      BlackmanFilter },  /* Blackman -- 2*cosine-sinc    */
     { GaussianFilter,      BoxFilter      },  /* Gaussian blur filter         */
     { QuadraticFilter,     BoxFilter      },  /* Quadratic Gaussian approx    */
-    { CubicFilter,         BoxFilter      },  /* Cubic Filter (Spline)        */
+    { CubicFilter,         BoxFilter      },  /* General Cubic Filter, Spline */
     { CatromFilter,        BoxFilter      },  /* Cubic-Keys interpolator      */
     { MitchellFilter,      BoxFilter      },  /* 'Ideal' Cubic-Keys filter    */
     { JincFilter,          BoxFilter      },  /* Raw 3-lobed Jinc function    */
@@ -1922,7 +1922,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  magnify_image=ResizeImage(image,2*image->columns,2*image->rows,CubicFilter,
+  magnify_image=ResizeImage(image,2*image->columns,2*image->rows,SplineFilter,
     1.0,exception);
   return(magnify_image);
 }
@@ -1963,7 +1963,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  minify_image=ResizeImage(image,image->columns/2,image->rows/2,CubicFilter,1.0,
+  minify_image=ResizeImage(image,image->columns/2,image->rows/2,SplineFilter,1.0,
     exception);
   return(minify_image);
 }
