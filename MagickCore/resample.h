@@ -26,7 +26,7 @@ extern "C" {
 
 /*
   WARNING:  The order of this table must also match the order of a table
-  located in AcquireResizeFilter() or "resize.c" otherwise the users filter
+  located in AcquireResizeFilter() in "resize.c" otherwise the users filter
   will not match the actual filter that is setup.
 */
 typedef enum
@@ -60,6 +60,7 @@ typedef enum
   RobidouxFilter,
   RobidouxSharpFilter,
   CosineFilter,
+  SplineFilter,
   SentinelFilter  /* a count of all the filters, not a real filter */
 } FilterTypes;
 

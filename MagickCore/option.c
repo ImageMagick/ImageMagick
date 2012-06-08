@@ -1036,6 +1036,7 @@ static const OptionInfo
     { "RobidouxSharp", RobidouxSharpFilter, UndefinedOptionFlag, MagickFalse },
     { "Sinc", SincFilter, UndefinedOptionFlag, MagickFalse },
     { "SincFast", SincFastFilter, UndefinedOptionFlag, MagickFalse },
+    { "Spline", SplineFilter, UndefinedOptionFlag, MagickFalse },
     { "Triangle", TriangleFilter, UndefinedOptionFlag, MagickFalse },
     { "Welsh", WelshFilter, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedFilter, UndefinedOptionFlag, MagickFalse }
@@ -1090,14 +1091,19 @@ static const OptionInfo
   {
     { "Undefined", UndefinedInterpolatePixel, UndefinedOptionFlag, MagickTrue },
     { "Average", AverageInterpolatePixel, UndefinedOptionFlag, MagickFalse },
-    { "Bicubic", BicubicInterpolatePixel, UndefinedOptionFlag, MagickFalse },
+    { "Average4", AverageInterpolatePixel, UndefinedOptionFlag, MagickFalse },
+    { "Average9", Average9InterpolatePixel, UndefinedOptionFlag, MagickFalse },
+    { "Average16", Average16InterpolatePixel, UndefinedOptionFlag, MagickFalse },
+    { "Background", BackgroundInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { "Bilinear", BilinearInterpolatePixel, UndefinedOptionFlag, MagickFalse },
-    { "filter", FilterInterpolatePixel, UndefinedOptionFlag, MagickFalse },
+    { "Blend", BlendInterpolatePixel, UndefinedOptionFlag, MagickFalse },
+    { "Catrom", CatromInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { "Integer", IntegerInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { "Mesh", MeshInterpolatePixel, UndefinedOptionFlag, MagickFalse },
-    { "Nearest", NearestNeighborInterpolatePixel, UndefinedOptionFlag, MagickFalse },
-    { "NearestNeighbor", NearestNeighborInterpolatePixel, UndefinedOptionFlag, MagickFalse },
+    { "Nearest", NearestInterpolatePixel, UndefinedOptionFlag, MagickFalse },
+    { "NearestNeighbor", NearestInterpolatePixel, UndefinedOptionFlag, MagickTrue },
     { "Spline", SplineInterpolatePixel, UndefinedOptionFlag, MagickFalse },
+/*  { "Filter", FilterInterpolatePixel, UndefinedOptionFlag, MagickFalse }, */
     { (char *) NULL, UndefinedInterpolatePixel, UndefinedOptionFlag, MagickFalse }
   },
   KernelOptions[] =
