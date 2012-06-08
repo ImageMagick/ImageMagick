@@ -1076,12 +1076,13 @@ static const OptionInfo
     { "Bilinear", BilinearInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { "Blend", BlendInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { "Catrom", CatromInterpolatePixel, UndefinedOptionFlag, MagickTrue },
-    { "Filter", FilterInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { "Integer", IntegerInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { "Mesh", MeshInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { "Nearest", NearestNeighborInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { "NearestNeighbor", NearestNeighborInterpolatePixel, UndefinedOptionFlag, MagickFalse },
     { "Spline", SplineInterpolatePixel, UndefinedOptionFlag, MagickFalse },
+    /* depreciation of slow and useless interpolation method */
+    { "Filter", FilterInterpolatePixel, UndefinedOptionFlag, MagickTrue },
     { (char *) NULL, UndefinedInterpolatePixel, UndefinedOptionFlag, MagickFalse }
   },
   KernelOptions[] =
