@@ -496,9 +496,8 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
       */
       flags=GetGeometry(montage_info->geometry,&extract_info.x,&extract_info.y,
         &extract_info.width,&extract_info.height);
-      if ((extract_info.x == 0) && (extract_info.y == 0))
-        concatenate=((flags & RhoValue) == 0) && ((flags & SigmaValue) == 0) ?
-          MagickTrue : MagickFalse;
+      concatenate=((flags & RhoValue) == 0) && ((flags & SigmaValue) == 0) ?
+        MagickTrue : MagickFalse;
     }
   border_width=montage_info->border_width;
   bevel_width=0;
