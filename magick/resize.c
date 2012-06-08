@@ -1963,8 +1963,8 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  minify_image=ResizeImage(image,image->columns/2,image->rows/2,SplineFilter,1.0,
-    exception);
+  minify_image=ResizeImage(image,image->columns/2,image->rows/2,SplineFilter,
+    1.0,exception);
   return(minify_image);
 }
 
