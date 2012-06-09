@@ -987,10 +987,6 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
           image->colormap[i].opacity=ScaleAnyToQuantum(ScaleQuantumToAny(
             image->colormap[i].opacity,range),range);
       }
-      status=SyncImage(image);
-      if (status != MagickFalse)
-        image->depth=depth;
-      return(status);
     }
   status=MagickTrue;
   exception=(&image->exception);
