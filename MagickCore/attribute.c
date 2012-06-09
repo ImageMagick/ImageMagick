@@ -953,10 +953,6 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
           image->colormap[i].alpha=(double) ScaleAnyToQuantum(ScaleQuantumToAny(
             ClampToQuantum(image->colormap[i].alpha),range),range);
       }
-      status=SyncImage(image,exception);
-      if (status != MagickFalse)
-        image->depth=depth;
-      return(status);
     }
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
