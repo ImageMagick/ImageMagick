@@ -1,3 +1,6 @@
+2012-06-08  6.7.7-7 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.7-7, SVN revision 8219.
+
 2012-06-06  6.7.7-7 Glenn Randers-Pehrson <glennrp@image...>
   * Disabled the new libpng-1.5.10 test for invalid palette index when
     reading a PNG or MNG (for speed), or when writing a MNG (because a
