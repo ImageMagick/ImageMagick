@@ -1747,7 +1747,8 @@ MagickExport void PrintStringInfo(FILE *file,const char *id,
   }
   if (i == string_info->length)
     {
-      (void) fputs((char *) string_info->datum,file);
+      for (i=0; i < string_info->length; i++)
+        (void) fputc(string_info->datum[i],file);
       (void) fputc('\n',file);
       return;
     }
