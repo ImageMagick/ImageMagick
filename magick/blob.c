@@ -394,6 +394,23 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   (void) FormatLocaleString(clone_info->filename,MaxTextExtent,"%s:%s",
     blob_info->magick,blob_info->filename);
   image=ReadImage(clone_info,exception);
+  if (image != (Image *) NULL)
+    {
+      Image
+        *images;
+
+      /*
+        Restore original filenames.
+      */
+      for (images=GetFirstImageInList(image); images != (Image *) NULL; )
+      {
+        (void) CopyMagickMemory(images->magick_filename,image_info->filename,
+          sizeof(images->magick_filename));
+        (void) CopyMagickMemory(images->filename,image_info->filename,
+          sizeof(images->filename));
+        images=GetNextImageInList(images);
+      }
+    }
   clone_info=DestroyImageInfo(clone_info);
   (void) RelinquishUniqueFileResource(blob_info->filename);
   blob_info=DestroyImageInfo(blob_info);
