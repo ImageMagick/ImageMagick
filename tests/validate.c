@@ -465,8 +465,8 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
 
   Image
     *difference_image,
-    *reconstruct_image,
     *ping_image,
+    *reconstruct_image,
     *reference_image;
 
   MagickBooleanType
