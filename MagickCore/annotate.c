@@ -1249,7 +1249,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       draw_info->pointsize);
   flags=FT_LOAD_NO_BITMAP;
   if (draw_info->text_antialias == MagickFalse)
-     flags|=FT_LOAD_TARGET_MONO;
+    flags|=FT_LOAD_TARGET_MONO;
   else
     {
 #if defined(FT_LOAD_TARGET_LIGHT)
