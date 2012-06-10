@@ -322,8 +322,8 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read hex image data.
   */
   padding=0;
-  if (((image->columns % 16) != 0) &&
-      ((image->columns % 16) < 9) && (version == 10))
+  if (((image->columns % 16) != 0) && ((image->columns % 16) < 9) &&
+      (version == 10))
     padding=1;
   bytes_per_line=(image->columns+7)/8+padding;
   length=(size_t) image->rows;
