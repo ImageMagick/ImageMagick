@@ -71,7 +71,7 @@ typedef enum
   IntegerInterpolatePixel,    /* Integer (floor) interpolation */
   MeshInterpolatePixel,       /* Triangular Mesh interpolation */
   NearestInterpolatePixel,    /* Nearest Neighbour Only */
-  SplineInterpolatePixel,     /* Cubic Spline (blurred) interpolation */
+  SplineInterpolatePixel     /* Cubic Spline (blurred) interpolation */
   /* FilterInterpolatePixel,  ** Use resize filter - (very slow) */
 } PixelInterpolateMethod;
 
