@@ -465,6 +465,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
 
   Image
     *difference_image,
+    *ping_image,
     *reference_image,
     *reconstruct_image;
 
@@ -555,6 +556,20 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
           continue;
         }
       /*
+        Ping reference image.
+      */
+      (void) FormatLocaleString(image_info->filename,MaxTextExtent,"%s:%s",
+        reference_formats[i].magick,output_filename);
+      ping_image=PingImage(image_info,exception);
+      if (ping_image == (Image *) NULL)
+        {
+          (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
+            GetMagickModule());
+          (*fail)++;
+          continue;
+        }
+      ping_image=DestroyImage(ping_image);
+      /*
         Read reference image.
       */
       (void) FormatLocaleString(image_info->filename,MaxTextExtent,"%s:%s",
@@ -586,6 +601,19 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
           reference_image=DestroyImage(reference_image);
           continue;
         }
+      /*
+        Ping reference blob.
+      */
+      ping_image=PingBlob(image_info,blob,length,exception);
+      if (ping_image == (Image *) NULL)
+        {
+          (void) FormatLocaleFile(stdout,"... fail @ %s/%s/%lu.\n",
+            GetMagickModule());
+          (*fail)++;
+          blob=(unsigned char *) RelinquishMagickMemory(blob);
+          continue;
+        }
+      ping_image=DestroyImage(ping_image);
       /*
         Read reconstruct image.
       */
