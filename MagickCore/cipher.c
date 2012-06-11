@@ -519,6 +519,21 @@ static void EncipherAESBlock(AESInfo *aes_info,const unsigned char *plaintext,
 %
 */
 
+static inline void IncrementCipherNonce(const size_t length,
+  unsigned char *nonce)
+{
+  register ssize_t
+    i;
+
+  for (i=(ssize_t) (length-1); i >= 0; i--)
+  {
+    nonce[i]++;
+    if (nonce[i] != 0)
+      return;
+  }
+  ThrowFatalException(ResourceLimitFatalError,"Sequence wrap error `%s'");
+}
+
 static inline size_t MagickMin(const size_t x,const size_t y)
 {
   if (x < y)
@@ -562,6 +577,9 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
   MagickBooleanType
     proceed;
 
+  MagickSizeType
+    extent;
+
   QuantumInfo
     *quantum_info;
 
@@ -600,16 +618,11 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
   assert(exception->signature == MagickSignature);
   if (passkey == (const StringInfo *) NULL)
     return(MagickTrue);
-  quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
-  if (quantum_info == (QuantumInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
   aes_info=AcquireAESInfo();
   key=CloneStringInfo(passkey);
   if (key == (StringInfo *) NULL)
     {
       aes_info=DestroyAESInfo(aes_info);
-      quantum_info=DestroyQuantumInfo(quantum_info);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
@@ -618,7 +631,6 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
     {
       key=DestroyStringInfo(key);
       aes_info=DestroyAESInfo(aes_info);
-      quantum_info=DestroyQuantumInfo(quantum_info);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
@@ -626,25 +638,34 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
   key=DestroyStringInfo(key);
   signature_info=AcquireSignatureInfo();
   UpdateSignature(signature_info,nonce);
-  SetStringInfoLength(nonce,sizeof(quantum_info->extent));
-  SetStringInfoDatum(nonce,(const unsigned char *) &quantum_info->extent);
+  extent=(MagickSizeType) image->columns*image->rows;
+  SetStringInfoLength(nonce,sizeof(extent));
+  SetStringInfoDatum(nonce,(const unsigned char *) &extent);
   UpdateSignature(signature_info,nonce);
+  nonce=DestroyStringInfo(nonce);
   FinalizeSignature(signature_info);
   (void) ResetMagickMemory(input_block,0,sizeof(input_block));
   digest=GetStringInfoDatum(GetSignatureDigest(signature_info));
   (void) CopyMagickMemory(input_block,digest,MagickMin(AESBlocksize,
     GetSignatureDigestsize(signature_info))*sizeof(*input_block));
-  nonce=DestroyStringInfo(nonce);
   signature_info=DestroySignatureInfo(signature_info);
   /*
     Convert cipher pixels to plain pixels.
   */
+  quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
+  if (quantum_info == (QuantumInfo *) NULL)
+    {
+      aes_info=DestroyAESInfo(aes_info);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
   quantum_type=GetQuantumType(image,exception);
   pixels=GetQuantumPixels(quantum_info);
   image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register ssize_t
+      i,
       x;
 
     register Quantum
@@ -656,15 +677,23 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
     length=ExportQuantumPixels(image,image_view,quantum_info,quantum_type,
       pixels,exception);
     p=pixels;
-    for (x=0; x < (ssize_t) length; x++)
+    for (x=0; x < (ssize_t) length; x+=AESBlocksize)
     {
       (void) CopyMagickMemory(output_block,input_block,AESBlocksize*
         sizeof(*output_block));
+      IncrementCipherNonce(AESBlocksize,input_block);
       EncipherAESBlock(aes_info,output_block,output_block);
-      (void) CopyMagickMemory(input_block,input_block+1,(AESBlocksize-1)*
-        sizeof(*input_block));
-      input_block[AESBlocksize-1]=(*p);
-      *p++^=(*output_block);
+      for (i=0; i < AESBlocksize; i++)
+        p[i]^=output_block[i];
+      p+=AESBlocksize;
+    }
+    (void) CopyMagickMemory(output_block,input_block,AESBlocksize*
+      sizeof(*output_block));
+    EncipherAESBlock(aes_info,output_block,output_block);
+    for (i=0; x < length; x++)
+    {
+      p[i]^=output_block[i];
+      i++;
     }
     (void) ImportQuantumPixels(image,image_view,quantum_info,quantum_type,
       pixels,exception);
@@ -761,6 +790,9 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
   MagickBooleanType
     proceed;
 
+  MagickSizeType
+    extent;
+
   QuantumInfo
     *quantum_info;
 
@@ -801,16 +833,11 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
     return(MagickTrue);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
-  if (quantum_info == (QuantumInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
   aes_info=AcquireAESInfo();
   key=CloneStringInfo(passkey);
   if (key == (StringInfo *) NULL)
     {
       aes_info=DestroyAESInfo(aes_info);
-      quantum_info=DestroyQuantumInfo(quantum_info);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
@@ -819,7 +846,6 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
     {
       key=DestroyStringInfo(key);
       aes_info=DestroyAESInfo(aes_info);
-      quantum_info=DestroyQuantumInfo(quantum_info);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
@@ -827,30 +853,39 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
   key=DestroyStringInfo(key);
   signature_info=AcquireSignatureInfo();
   UpdateSignature(signature_info,nonce);
-  SetStringInfoLength(nonce,sizeof(quantum_info->extent));
-  SetStringInfoDatum(nonce,(const unsigned char *) &quantum_info->extent);
+  extent=(MagickSizeType) image->columns*image->rows;
+  SetStringInfoLength(nonce,sizeof(extent));
+  SetStringInfoDatum(nonce,(const unsigned char *) &extent);
   UpdateSignature(signature_info,nonce);
   nonce=DestroyStringInfo(nonce);
   FinalizeSignature(signature_info);
+  signature=StringInfoToHexString(GetSignatureDigest(signature_info));
+  (void) SetImageProperty(image,"cipher:type","AES",exception);
+  (void) SetImageProperty(image,"cipher:mode","CTR",exception);
+  (void) SetImageProperty(image,"cipher:nonce",signature,exception);
+  signature=DestroyString(signature);
   (void) ResetMagickMemory(input_block,0,sizeof(input_block));
   digest=GetStringInfoDatum(GetSignatureDigest(signature_info));
   (void) CopyMagickMemory(input_block,digest,MagickMin(AESBlocksize,
     GetSignatureDigestsize(signature_info))*sizeof(*input_block));
-  signature=StringInfoToHexString(GetSignatureDigest(signature_info));
-  (void) SetImageProperty(image,"cipher:type","AES",exception);
-  (void) SetImageProperty(image,"cipher:mode","CFB",exception);
-  (void) SetImageProperty(image,"cipher:nonce",signature,exception);
-  signature=DestroyString(signature);
   signature_info=DestroySignatureInfo(signature_info);
   /*
     Convert plain pixels to cipher pixels.
   */
+  quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
+  if (quantum_info == (QuantumInfo *) NULL)
+    {
+      aes_info=DestroyAESInfo(aes_info);
+      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        image->filename);
+    }
   quantum_type=GetQuantumType(image,exception);
   pixels=GetQuantumPixels(quantum_info);
   image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register ssize_t
+      i,
       x;
 
     register Quantum
@@ -862,15 +897,23 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
     length=ExportQuantumPixels(image,image_view,quantum_info,quantum_type,
       pixels,exception);
     p=pixels;
-    for (x=0; x < (ssize_t) length; x++)
+    for (x=0; x < (ssize_t) length; x+=AESBlocksize)
     {
       (void) CopyMagickMemory(output_block,input_block,AESBlocksize*
         sizeof(*output_block));
+      IncrementCipherNonce(AESBlocksize,input_block);
       EncipherAESBlock(aes_info,output_block,output_block);
-      *p^=(*output_block);
-      (void) CopyMagickMemory(input_block,input_block+1,(AESBlocksize-1)*
-        sizeof(*input_block));
-      input_block[AESBlocksize-1]=(*p++);
+      for (i=0; i < AESBlocksize; i++)
+        p[i]^=output_block[i];
+      p+=AESBlocksize;
+    }
+    (void) CopyMagickMemory(output_block,input_block,AESBlocksize*
+      sizeof(*output_block));
+    EncipherAESBlock(aes_info,output_block,output_block);
+    for (i=0; x < length; x++)
+    {
+      p[i]^=output_block[i];
+      i++;
     }
     (void) ImportQuantumPixels(image,image_view,quantum_info,quantum_type,
       pixels,exception);
