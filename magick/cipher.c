@@ -613,7 +613,9 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
-  nonce=SplitStringInfo(key,GetStringInfoLength(key)/2);
+  SetAESKey(aes_info,key);
+  key=DestroyStringInfo(key);
+  nonce=AcquireStringInfo(0);
   if (nonce == (StringInfo *) NULL)
     {
       key=DestroyStringInfo(key);
@@ -622,10 +624,7 @@ MagickExport MagickBooleanType PasskeyDecipherImage(Image *image,
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
-  SetAESKey(aes_info,key);
-  key=DestroyStringInfo(key);
   signature_info=AcquireSignatureInfo();
-  UpdateSignature(signature_info,nonce);
   SetStringInfoLength(nonce,sizeof(quantum_info->extent));
   SetStringInfoDatum(nonce,(const unsigned char *) &quantum_info->extent);
   UpdateSignature(signature_info,nonce);
@@ -814,7 +813,9 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
-  nonce=SplitStringInfo(key,GetStringInfoLength(key)/2);
+  SetAESKey(aes_info,key);
+  key=DestroyStringInfo(key);
+  nonce=AcquireStringInfo(0);
   if (nonce == (StringInfo *) NULL)
     {
       key=DestroyStringInfo(key);
@@ -823,10 +824,7 @@ MagickExport MagickBooleanType PasskeyEncipherImage(Image *image,
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
-  SetAESKey(aes_info,key);
-  key=DestroyStringInfo(key);
   signature_info=AcquireSignatureInfo();
-  UpdateSignature(signature_info,nonce);
   SetStringInfoLength(nonce,sizeof(quantum_info->extent));
   SetStringInfoDatum(nonce,(const unsigned char *) &quantum_info->extent);
   UpdateSignature(signature_info,nonce);
