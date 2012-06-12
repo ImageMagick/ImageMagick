@@ -4070,7 +4070,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       break;
     }
     case CatromInterpolatePixel:
-    case BicubicInterpolatePixel: /* depreciated method */
+    case BicubicInterpolatePixel: /* deprecated method */
     {
       MagickRealType
         cx[4],
