@@ -357,7 +357,8 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
             SetPixelGreen(q,ClampToQuantum(fill.green));
           if ((channel & BlueChannel) != 0)
             SetPixelBlue(q,ClampToQuantum(fill.blue));
-          if ((channel & OpacityChannel) != 0)
+          if (((channel & OpacityChannel) != 0) ||
+              (draw_info->fill.opacity != OpaqueOpacity))
             SetPixelOpacity(q,ClampToQuantum(fill.opacity));
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace))
