@@ -171,6 +171,12 @@ $example->Label('Emboss');
 $example->Emboss('0x1');
 push(@$images,$example);
 
+print "Encipher...\n";
+$example=$model->Clone();
+$example->Label('Encipher');
+$example->Encipher('Magick');
+push(@$images,$example);
+
 print "Equalize...\n";
 $example=$model->Clone();
 $example->Label('Equalize');
