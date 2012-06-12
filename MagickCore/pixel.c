@@ -4047,21 +4047,55 @@ static inline double MagickMax(const MagickRealType x,const MagickRealType y)
   return(y);
 }
 
-static inline MagickRealType SplineWeightingFunction(const MagickRealType x)
+static inline void CatromWeights(const MagickRealType x,
+  MagickRealType (*weights)[4])
 {
+  /*
+    Nicolas Robidoux' 10 flops (4* + 5- + 1+) refactoring of the
+    computation of the standard four 1D Catmull-Rom weights. The
+    sampling location is assumed between the second and third input
+    pixel locations, and x is the position relative to the second
+    input pixel location. Formulas originally derived for the VIPS
+    (Virtual Image Processing System) library.
+  */
   MagickRealType
     alpha,
+    beta,
     gamma;
 
-  alpha=MagickMax(x+2.0,0.0);
-  gamma=1.0*alpha*alpha*alpha;
-  alpha=MagickMax(x+1.0,0.0);
-  gamma-=4.0*alpha*alpha*alpha;
-  alpha=MagickMax(x+0.0,0.0);
-  gamma+=6.0*alpha*alpha*alpha;
-  alpha=MagickMax(x-1.0,0.0);
-  gamma-=4.0*alpha*alpha*alpha;
-  return(gamma/6.0);
+  alpha=(MagickRealType) 1.0-x;
+  beta=(MagickRealType) (-0.5)*x*alpha;
+  (*weights)[0]=alpha*beta;
+  (*weights)[3]=x*beta;
+  /*
+    The following computation of the inner weights from the outer ones
+    works for all Keys cubics.
+  */
+  gamma=(*weights)[3]-(*weights)[0];
+  (*weights)[1]=alpha-(*weights)[0]+gamma;
+  (*weights)[2]=x-(*weights)[3]-gamma;
+}
+
+static inline void SplineWeights(const MagickRealType x,
+  MagickRealType (*weights)[4])
+{
+  /*
+    Nicolas Robidoux' 12 flops (6* + 5- + 1+) refactoring of the
+    computation of the standard four 1D cubic B-spline smoothing
+    weights. The sampling location is assumed between the second and
+    third input pixel locations, and x is the position relative to the
+    second input pixel location.
+  */
+  MagickRealType
+    alpha,
+    beta;
+
+  alpha=(MagickRealType) 1.0-x;
+  (*weights)[3]=(MagickRealType) (1.0/6.0)*x*x*x;
+  (*weights)[0]=(MagickRealType) (1.0/6.0)*alpha*alpha*alpha;
+  beta=(*weights)[3]-(*weights)[0];
+  (*weights)[1]=alpha-(*weights)[0]+beta;
+  (*weights)[2]=x-(*weights)[3]-beta;
 }
 
 static inline double MeshInterpolate(const PointInfo *delta,const double p,
@@ -4210,18 +4244,10 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
     case CatromInterpolatePixel:
     {
       MagickRealType
-        beta[4],
         cx[4],
-        cy[4];
+        cy[4],
+        gamma;
 
-      PointInfo
-        delta;
-
-      /*
-        Refactoring of the Catmull-Rom computation by Nicolas Robidoux with 55
-        flops = 28* + 10- + 17+.  Originally implemented for the VIPS (Virtual
-        Image Processing System) library.
-      */
       p=GetCacheViewVirtualPixels(image_view,x_offset-1,y_offset-1,4,4,
         exception);
       if (p == (const Quantum *) NULL)
@@ -4242,39 +4268,19 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
             GetPixelChannels(image));
           pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+channel];
         }
-      delta.x=x-x_offset;
-      delta.y=y-y_offset;
-      beta[0]=1.0-delta.x;
-      beta[1]=(-0.5)*delta.x;
-      beta[2]=beta[0]*beta[1];
-      cx[0]=beta[0]*beta[2];
-      cx[3]=delta.x*beta[2];
-      beta[3]=cx[3]-cx[0];
-      cx[1]=beta[0]-cx[0]+beta[3];
-      cx[2]=delta.x-cx[3]-beta[3];
-      beta[0]=1.0-delta.y;
-      beta[1]=(-0.5)*delta.y;
-      beta[2]=beta[0]*beta[1];
-      cy[0]=beta[0]*beta[2];
-      cy[3]=delta.y*beta[2];
-      beta[3]=cy[3]-cy[0];
-      cy[1]=beta[0]-cy[0]+beta[3];
-      cy[2]=delta.y-cy[3]-beta[3];
-      /*
-        Interpolate pixel.
-      */
-      gamma=1.0;
-      if (channel != AlphaPixelChannel)
-        gamma=MagickEpsilonReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
-          alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+
-          cx[2]*alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+
-          cx[1]*alpha[9]+cx[2]*alpha[10]+cx[3]*alpha[11])+cy[3]*(
-          cx[0]*alpha[12]+cx[1]*alpha[13]+cx[2]*alpha[14]+cx[3]*alpha[15]));
+      CatromWeights((MagickRealType) (x-x_offset),&cx);
+      CatromWeights((MagickRealType) (y-y_offset),&cy);
+      gamma=(channel == AlphaPixelChannel ? (MagickRealType) 1.0 :
+        MagickEpsilonReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
+        alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+cx[2]*
+        alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+cx[1]*alpha[9]+cx[2]*
+        alpha[10]+cx[3]*alpha[11])+cy[3]*(cx[0]*alpha[12]+cx[1]*alpha[13]+
+        cx[2]*alpha[14]+cx[3]*alpha[15])));
       *pixel=gamma*(cy[0]*(cx[0]*pixels[0]+cx[1]*pixels[1]+cx[2]*pixels[2]+
-        cx[3]*pixels[3])+cy[1]*(cx[0]*pixels[4]+cx[1]*pixels[5]+
-        cx[2]*pixels[6]+cx[3]*pixels[7])+cy[2]*(cx[0]*pixels[8]+
-        cx[1]*pixels[9]+cx[2]*pixels[10]+cx[3]*pixels[11])+cy[3]*(
-        cx[0]*pixels[12]+cx[1]*pixels[13]+cx[2]*pixels[14]+cx[3]*pixels[15]));
+        cx[3]*pixels[3])+cy[1]*(cx[0]*pixels[4]+cx[1]*pixels[5]+cx[2]*
+        pixels[6]+cx[3]*pixels[7])+cy[2]*(cx[0]*pixels[8]+cx[1]*pixels[9]+
+        cx[2]*pixels[10]+cx[3]*pixels[11])+cy[3]*(cx[0]*pixels[12]+cx[1]*
+        pixels[13]+cx[2]*pixels[14]+cx[3]*pixels[15]));
       break;
     }
 #if 0
@@ -4432,15 +4438,9 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
     case SplineInterpolatePixel:
     {
       MagickRealType
-        dx,
-        dy;
-
-      PointInfo
-        delta;
-
-      ssize_t
-        j,
-        n;
+        cx[4],
+        cy[4],
+        gamma;
 
       p=GetCacheViewVirtualPixels(image_view,x_offset-1,y_offset-1,4,4,
         exception);
@@ -4462,20 +4462,19 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
             GetPixelChannels(image));
           pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+channel];
         }
-      delta.x=x-x_offset;
-      delta.y=y-y_offset;
-      n=0;
-      for (i=(-1); i < 3L; i++)
-      {
-        dy=SplineWeightingFunction((MagickRealType) i-delta.y);
-        for (j=(-1); j < 3L; j++)
-        {
-          dx=SplineWeightingFunction(delta.x-(MagickRealType) j);
-          gamma=MagickEpsilonReciprocal(alpha[n]);
-          *pixel+=gamma*dx*dy*pixels[n];
-          n++;
-        }
-      }
+      SplineWeights((MagickRealType) (x-x_offset),&cx);
+      SplineWeights((MagickRealType) (y-y_offset),&cy);
+      gamma=(channel == AlphaPixelChannel ? (MagickRealType) 1.0 :
+        MagickEpsilonReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
+        alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+cx[2]*
+        alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+cx[1]*alpha[9]+cx[2]*
+        alpha[10]+cx[3]*alpha[11])+cy[3]*(cx[0]*alpha[12]+cx[1]*alpha[13]+
+        cx[2]*alpha[14]+cx[3]*alpha[15])));
+      *pixel=gamma*(cy[0]*(cx[0]*pixels[0]+cx[1]*pixels[1]+cx[2]*pixels[2]+
+        cx[3]*pixels[3])+cy[1]*(cx[0]*pixels[4]+cx[1]*pixels[5]+cx[2]*
+        pixels[6]+cx[3]*pixels[7])+cy[2]*(cx[0]*pixels[8]+cx[1]*pixels[9]+
+        cx[2]*pixels[10]+cx[3]*pixels[11])+cy[3]*(cx[0]*pixels[12]+cx[1]*
+        pixels[13]+cx[2]*pixels[14]+cx[3]*pixels[15]));
       break;
     }
   }
@@ -4694,18 +4693,9 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
     case CatromInterpolatePixel:
     {
       MagickRealType
-        beta[4],
         cx[4],
         cy[4];
 
-      PointInfo
-        delta;
-
-      /*
-        Refactoring of the Catmull-Rom computation by Nicolas Robidoux with 55
-        flops = 28* + 10- + 17+.  Originally implemented for the VIPS (Virtual
-        Image Processing System) library.
-      */
       p=GetCacheViewVirtualPixels(source_view,x_offset-1,y_offset-1,4,4,
         exception);
       if (p == (const Quantum *) NULL)
@@ -4737,40 +4727,20 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
               GetPixelChannels(source));
             pixels[j]=alpha[j]*p[j*GetPixelChannels(source)+i];
           }
-        delta.x=x-x_offset;
-        delta.y=y-y_offset;
-        beta[0]=1.0-delta.x;
-        beta[1]=(-0.5)*delta.x;
-        beta[2]=beta[0]*beta[1];
-        cx[0]=beta[0]*beta[2];
-        cx[3]=delta.x*beta[2];
-        beta[3]=cx[3]-cx[0];
-        cx[1]=beta[0]-cx[0]+beta[3];
-        cx[2]=delta.x-cx[3]-beta[3];
-        beta[0]=1.0-delta.y;
-        beta[1]=(-0.5)*delta.y;
-        beta[2]=beta[0]*beta[1];
-        cy[0]=beta[0]*beta[2];
-        cy[3]=delta.y*beta[2];
-        beta[3]=cy[3]-cy[0];
-        cy[1]=beta[0]-cy[0]+beta[3];
-        cy[2]=delta.y-cy[3]-beta[3];
-        /*
-          Interpolate pixel.
-        */
-        gamma=1.0;
-        if ((traits & BlendPixelTrait) == 0)
-          gamma=MagickEpsilonReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
-            alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+
-            cx[2]*alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+
-            cx[1]*alpha[9]+cx[2]*alpha[10]+cx[3]*alpha[11])+cy[3]*(
-            cx[0]*alpha[12]+cx[1]*alpha[13]+cx[2]*alpha[14]+cx[3]*alpha[15]));
+        CatromWeights((MagickRealType) (x-x_offset),&cx);
+        CatromWeights((MagickRealType) (y-y_offset),&cy);
+        gamma=((traits & BlendPixelTrait) ? (MagickRealType) (1.0) :
+          MagickEpsilonReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
+          alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+cx[2]*
+          alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+cx[1]*alpha[9]+cx[2]*
+          alpha[10]+cx[3]*alpha[11])+cy[3]*(cx[0]*alpha[12]+cx[1]*alpha[13]+
+          cx[2]*alpha[14]+cx[3]*alpha[15])));
         SetPixelChannel(destination,channel,ClampToQuantum(gamma*(cy[0]*(cx[0]*
           pixels[0]+cx[1]*pixels[1]+cx[2]*pixels[2]+cx[3]*pixels[3])+cy[1]*
           (cx[0]*pixels[4]+cx[1]*pixels[5]+cx[2]*pixels[6]+cx[3]*pixels[7])+
           cy[2]*(cx[0]*pixels[8]+cx[1]*pixels[9]+cx[2]*pixels[10]+cx[3]*
-          pixels[11])+cy[3]*(cx[0]*pixels[12]+cx[1]*pixels[13]+cx[2]*pixels[14]+
-          cx[3]*pixels[15]))),pixel);
+          pixels[11])+cy[3]*(cx[0]*pixels[12]+cx[1]*pixels[13]+cx[2]*
+          pixels[14]+cx[3]*pixels[15]))),pixel);
       }
       break;
     }
@@ -4976,6 +4946,10 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
     }
     case SplineInterpolatePixel:
     {
+      MagickRealType
+        cx[4],
+        cy[4];
+
       p=GetCacheViewVirtualPixels(source_view,x_offset-1,y_offset-1,4,4,
         exception);
       if (p == (const Quantum *) NULL)
@@ -4985,22 +4959,8 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         }
       for (i=0; i < GetPixelChannels(source); i++)
       {
-        double
-          sum;
-
-        MagickRealType
-          dx,
-          dy;
-
-        PointInfo
-          delta;
-
         register ssize_t
           j;
-
-        ssize_t
-          k,
-          n;
 
         channel=GetPixelChannelMapChannel(source,i);
         traits=GetPixelChannelMapTraits(source,channel);
@@ -5021,22 +4981,20 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
               GetPixelChannels(source));
             pixels[j]=alpha[j]*p[j*GetPixelChannels(source)+i];
           }
-        delta.x=x-x_offset;
-        delta.y=y-y_offset;
-        sum=0.0;
-        n=0;
-        for (j=(-1); j < 3L; j++)
-        {
-          dy=SplineWeightingFunction((MagickRealType) j-delta.y);
-          for (k=(-1); k < 3L; k++)
-          {
-            dx=SplineWeightingFunction(delta.x-(MagickRealType) k);
-            gamma=MagickEpsilonReciprocal(alpha[n]);
-            sum+=gamma*dx*dy*pixels[n];
-            n++;
-          }
-        }
-        SetPixelChannel(destination,channel,p[i],pixel);
+        SplineWeights((MagickRealType) (x-x_offset),&cx);
+        SplineWeights((MagickRealType) (y-y_offset),&cy);
+        gamma=((traits & BlendPixelTrait) ? (MagickRealType) (1.0) :
+          MagickEpsilonReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
+          alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+cx[2]*
+          alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+cx[1]*alpha[9]+cx[2]*
+          alpha[10]+cx[3]*alpha[11])+cy[3]*(cx[0]*alpha[12]+cx[1]*alpha[13]+
+          cx[2]*alpha[14]+cx[3]*alpha[15])));
+        SetPixelChannel(destination,channel,ClampToQuantum(gamma*(cy[0]*(cx[0]*
+          pixels[0]+cx[1]*pixels[1]+cx[2]*pixels[2]+cx[3]*pixels[3])+cy[1]*
+          (cx[0]*pixels[4]+cx[1]*pixels[5]+cx[2]*pixels[6]+cx[3]*pixels[7])+
+          cy[2]*(cx[0]*pixels[8]+cx[1]*pixels[9]+cx[2]*pixels[10]+cx[3]*
+          pixels[11])+cy[3]*(cx[0]*pixels[12]+cx[1]*pixels[13]+cx[2]*
+          pixels[14]+cx[3]*pixels[15]))),pixel);
       }
       break;
     }
@@ -5295,18 +5253,9 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
     case CatromInterpolatePixel:
     {
       MagickRealType
-        beta[4],
         cx[4],
         cy[4];
 
-      PointInfo
-        delta;
-
-      /*
-        Refactoring of the Catmull-Rom computation by Nicolas Robidoux with 55
-        flops = 28* + 10- + 17+.  Originally implemented for the VIPS (Virtual
-        Image Processing System) library.
-      */
       p=GetCacheViewVirtualPixels(image_view,x_offset-1,y_offset-1,4,4,
         exception);
       if (p == (const Quantum *) NULL)
@@ -5316,27 +5265,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         }
       for (i=0; i < 16L; i++)
         AlphaBlendPixelInfo(image,p+i*GetPixelChannels(image),pixels+i,alpha+i);
-      delta.x=x-x_offset;
-      delta.y=y-y_offset;
-      beta[0]=1.0-delta.x;
-      beta[1]=(-0.5)*delta.x;
-      beta[2]=beta[0]*beta[1];
-      cx[0]=beta[0]*beta[2];
-      cx[3]=delta.x*beta[2];
-      beta[3]=cx[3]-cx[0];
-      cx[1]=beta[0]-cx[0]+beta[3];
-      cx[2]=delta.x-cx[3]-beta[3];
-      beta[0]=1.0-delta.y;
-      beta[1]=(-0.5)*delta.y;
-      beta[2]=beta[0]*beta[1];
-      cy[0]=beta[0]*beta[2];
-      cy[3]=delta.y*beta[2];
-      beta[3]=cy[3]-cy[0];
-      cy[1]=beta[0]-cy[0]+beta[3];
-      cy[2]=delta.y-cy[3]-beta[3];
-      /*
-        Interpolate pixel.
-      */
+      CatromWeights((MagickRealType) (x-x_offset),&cx);
+      CatromWeights((MagickRealType) (y-y_offset),&cy);
       pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*
         pixels[1].red+cx[2]*pixels[2].red+cx[3]*
         pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
@@ -5564,15 +5494,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
     case SplineInterpolatePixel:
     {
       MagickRealType
-        dx,
-        dy;
-
-      PointInfo
-        delta;
-
-      ssize_t
-        j,
-        n;
+        cx[4],
+        cy[4];
 
       p=GetCacheViewVirtualPixels(image_view,x_offset-1,y_offset-1,4,4,
         exception);
@@ -5583,30 +5506,49 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         }
       for (i=0; i < 16L; i++)
         AlphaBlendPixelInfo(image,p+i*GetPixelChannels(image),pixels+i,alpha+i);
-      pixel->red=0.0;
-      pixel->green=0.0;
-      pixel->blue=0.0;
-      pixel->black=0.0;
-      pixel->alpha=0.0;
-      delta.x=x-x_offset;
-      delta.y=y-y_offset;
-      n=0;
-      for (i=(-1); i < 3L; i++)
-      {
-        dy=SplineWeightingFunction((MagickRealType) i-delta.y);
-        for (j=(-1); j < 3L; j++)
-        {
-          dx=SplineWeightingFunction(delta.x-(MagickRealType) j);
-          gamma=MagickEpsilonReciprocal(alpha[n]);
-          pixel->red+=gamma*dx*dy*pixels[n].red;
-          pixel->green+=gamma*dx*dy*pixels[n].green;
-          pixel->blue+=gamma*dx*dy*pixels[n].blue;
-          if (image->colorspace == CMYKColorspace)
-            pixel->black+=gamma*dx*dy*pixels[n].black;
-          pixel->alpha+=dx*dy*pixels[n].alpha;
-          n++;
-        }
-      }
+      SplineWeights((MagickRealType) (x-x_offset),&cx);
+      SplineWeights((MagickRealType) (y-y_offset),&cy);
+      pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*
+        pixels[1].red+cx[2]*pixels[2].red+cx[3]*
+        pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
+        pixels[5].red+cx[2]*pixels[6].red+cx[3]*
+        pixels[7].red)+cy[2]*(cx[0]*pixels[8].red+cx[1]*
+        pixels[9].red+cx[2]*pixels[10].red+cx[3]*
+        pixels[11].red)+cy[3]*(cx[0]*pixels[12].red+cx[1]*
+        pixels[13].red+cx[2]*pixels[14].red+cx[3]*pixels[15].red));
+      pixel->green=(cy[0]*(cx[0]*pixels[0].green+cx[1]*
+        pixels[1].green+cx[2]*pixels[2].green+cx[3]*
+        pixels[3].green)+cy[1]*(cx[0]*pixels[4].green+cx[1]*
+        pixels[5].green+cx[2]*pixels[6].green+cx[3]*
+        pixels[7].green)+cy[2]*(cx[0]*pixels[8].green+cx[1]*
+        pixels[9].green+cx[2]*pixels[10].green+cx[3]*
+        pixels[11].green)+cy[3]*(cx[0]*pixels[12].green+cx[1]*
+        pixels[13].green+cx[2]*pixels[14].green+cx[3]*pixels[15].green));
+      pixel->blue=(cy[0]*(cx[0]*pixels[0].blue+cx[1]*
+        pixels[1].blue+cx[2]*pixels[2].blue+cx[3]*
+        pixels[3].blue)+cy[1]*(cx[0]*pixels[4].blue+cx[1]*
+        pixels[5].blue+cx[2]*pixels[6].blue+cx[3]*
+        pixels[7].blue)+cy[2]*(cx[0]*pixels[8].blue+cx[1]*
+        pixels[9].blue+cx[2]*pixels[10].blue+cx[3]*
+        pixels[11].blue)+cy[3]*(cx[0]*pixels[12].blue+cx[1]*
+        pixels[13].blue+cx[2]*pixels[14].blue+cx[3]*pixels[15].blue));
+      if (image->colorspace == CMYKColorspace)
+        pixel->black=(cy[0]*(cx[0]*pixels[0].black+cx[1]*
+          pixels[1].black+cx[2]*pixels[2].black+cx[3]*
+          pixels[3].black)+cy[1]*(cx[0]*pixels[4].black+cx[1]*
+          pixels[5].black+cx[2]*pixels[6].black+cx[3]*
+          pixels[7].black)+cy[2]*(cx[0]*pixels[8].black+cx[1]*
+          pixels[9].black+cx[2]*pixels[10].black+cx[3]*
+          pixels[11].black)+cy[3]*(cx[0]*pixels[12].black+cx[1]*
+          pixels[13].black+cx[2]*pixels[14].black+cx[3]*pixels[15].black));
+      pixel->alpha=(cy[0]*(cx[0]*pixels[0].alpha+cx[1]*
+        pixels[1].alpha+cx[2]*pixels[2].alpha+cx[3]*
+        pixels[3].alpha)+cy[1]*(cx[0]*pixels[4].alpha+cx[1]*
+        pixels[5].alpha+cx[2]*pixels[6].alpha+cx[3]*
+        pixels[7].alpha)+cy[2]*(cx[0]*pixels[8].alpha+cx[1]*
+        pixels[9].alpha+cx[2]*pixels[10].alpha+cx[3]*
+        pixels[11].alpha)+cy[3]*(cx[0]*pixels[12].alpha+cx[1]*
+        pixels[13].alpha+cx[2]*pixels[14].alpha+cx[3]*pixels[15].alpha));
       break;
     }
   }
