@@ -4283,7 +4283,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
       break;
     }
 #if 0
-    /* depreciated useless and very slow interpolator */
+    /* deprecated useless and very slow interpolator */
     case FilterInterpolatePixel:
     {
       CacheView
@@ -4743,7 +4743,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
       break;
     }
 #if 0
-    /* depreciated useless and very slow interpolator */
+    /* deprecated useless and very slow interpolator */
     case FilterInterpolatePixel:
     {
       for (i=0; i < GetPixelChannels(source); i++)
@@ -5309,7 +5309,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       break;
     }
 #if 0
-    /* depreciated useless and very slow interpolator */
+    /* deprecated useless and very slow interpolator */
     case FilterInterpolatePixel:
     {
       CacheView
