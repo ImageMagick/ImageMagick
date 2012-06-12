@@ -4245,8 +4245,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
     {
       MagickRealType
         cx[4],
-        cy[4],
-        gamma;
+        cy[4];
 
       p=GetCacheViewVirtualPixels(image_view,x_offset-1,y_offset-1,4,4,
         exception);
@@ -4439,8 +4438,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
     {
       MagickRealType
         cx[4],
-        cy[4],
-        gamma;
+        cy[4];
 
       p=GetCacheViewVirtualPixels(image_view,x_offset-1,y_offset-1,4,4,
         exception);
