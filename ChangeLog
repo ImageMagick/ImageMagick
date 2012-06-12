@@ -1,3 +1,9 @@
+2012-06-12  6.7.7-8 Nicolas Robidoux <nicolas.robidoux@gmail...>
+  * Refactor Catmull-Rom and Spline "interpolation" using
+    state-of-the-art unpublished formulas
+  * Fix incorrect transparency handling of "interpolative" cubic
+    B-spline smoothing
+
 2012-06-09  6.7.7-8 Cristy  <quetzlzacatenango@image...>
   * Initialize alpha channel when floodfill fill color is not opaque.
 
