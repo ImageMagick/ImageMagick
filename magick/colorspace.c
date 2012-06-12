@@ -116,23 +116,23 @@ static inline void ConvertRGBToXYZ(const Quantum red,const Quantum green,
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
   r=QuantumScale*red;
-  if (r > 0.0404482362771082)
-    r=pow((r+0.055)/1.055,2.4);
-  else
+  if (r <= 0.04045)
     r/=12.92;
+  else
+    r=pow((r+0.055)/1.055,2.4);
   g=QuantumScale*green;
-  if (g > 0.0404482362771082)
-    g=pow((g+0.055)/1.055,2.4);
-  else
+  if (g <= 0.04045)
     g/=12.92;
-  b=QuantumScale*blue;
-  if (b > 0.0404482362771082)
-    b=pow((b+0.055)/1.055,2.4);
   else
+    g=pow((g+0.055)/1.055,2.4);
+  b=QuantumScale*blue;
+  if (b <= 0.04045)
     b/=12.92;
-  *X=0.4124240*r+0.3575790*g+0.1804640*b;
-  *Y=0.2126560*r+0.7151580*g+0.0721856*b;
-  *Z=0.0193324*r+0.1191930*g+0.9504440*b;
+  else
+    b=pow((b+0.055)/1.055,2.4);
+  *X=0.4360747*r+0.3850649*g+0.1430804*b;
+  *Y=0.2225045*r+0.7168786*g+0.0606169*b;
+  *Z=0.0139322*r+0.0971045*g+0.7141733*b;
 }
 
 static double LabF1(double alpha)
@@ -1411,23 +1411,23 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
     r;
 
   /*
-    Convert XYZ to RGB colorspace.
-  */
+ *     Convert XYZ to RGB colorspace.
+ *       */
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
-  r=3.2404542*x-1.5371385*y-0.4985314*z;
-  g=(-0.9692660*x+1.8760108*y+0.0415560*z);
-  b=0.0556434*x-0.2040259*y+1.0572252*z;
-  if (r > 0.00313066844250063)
+  r=3.1338561*x-1.6168667*y-0.4906146*z;
+  g=(-0.9787684*x+1.9161415*y+0.0334540*z);
+  b=0.0719453*x-0.2289914*y+1.4052427*z;
+  if (r > 0.0031308)
     r=1.055*pow(r,1.0/2.4)-0.055;
   else
     r*=12.92;
-  if (g > 0.00313066844250063)
+  if (g > 0.0031308)
     g=1.055*pow(g,1.0/2.4)-0.055;
   else
     g*=12.92;
-  if (b > 0.00313066844250063)
+  if (b > 0.0031308)
     b=1.055*pow(b,1.0/2.4)-0.055;
   else
     b*=12.92;
