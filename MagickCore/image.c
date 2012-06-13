@@ -1303,7 +1303,7 @@ MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
   if (mask_image == (Image *) NULL)
     return((Image *) NULL);
   status=MagickTrue;
-  SetImageColorspace(mask_image,GRAYColorspace,exception);
+  (void) SetImageColorspace(mask_image,GRAYColorspace,exception);
   mask_image->mask=MagickFalse;
   image_view=AcquireVirtualCacheView(image,exception);
   mask_view=AcquireAuthenticCacheView(mask_image,exception);
