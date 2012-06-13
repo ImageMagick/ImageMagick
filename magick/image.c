@@ -2399,7 +2399,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
-  SetImageColorspace(image,GRAYColorspace);
+  (void) SetImageColorspace(image,GRAYColorspace);
   /*
     Separate image channels.
   */
