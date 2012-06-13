@@ -704,6 +704,64 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       logmap=(Quantum *) RelinquishMagickMemory(logmap);
       return(status);
     }
+    case XYZColorspace:
+    {
+      /*
+        Transform image from RGB to XYZ.
+      */
+      if (image->storage_class == PseudoClass)
+        {
+          if (SyncImage(image) == MagickFalse)
+            return(MagickFalse);
+          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+            return(MagickFalse);
+        }
+      image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        dynamic_number_threads(image,image->columns,image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        MagickBooleanType
+          sync;
+
+        register ssize_t
+          x;
+
+        register PixelPacket
+          *restrict q;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (PixelPacket *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          double
+            X,
+            Y,
+            Z;
+
+          ConvertRGBToXYZ(GetPixelRed(q),GetPixelGreen(q),GetPixelBlue(q),
+            &X,&Y,&Z);
+          SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*X));
+          SetPixelGreen(q,ClampToQuantum((MagickRealType) QuantumRange*Y));
+          SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*Z));
+          q++;
+        }
+        sync=SyncCacheViewAuthenticPixels(image_view,exception);
+        if (sync == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
+      return(status);
+    }
     default:
       break;
   }
@@ -901,33 +959,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         x_map[i].z=0.0f*MaxMap*v;
         y_map[i].z=0.0f*MaxMap*v;
         z_map[i].z=1.0f*MaxMap*v;
-      }
-      break;
-    }
-    case XYZColorspace:
-    {
-      /*
-        Initialize CIE XYZ tables (ITU-R 709 RGB):
-
-          X = 0.4124564*R+0.3575761*G+0.1804375*B
-          Y = 0.2126729*R+0.7151522*G+0.0721750*B
-          Z = 0.0193339*R+0.1191920*G+0.9503041*B
-      */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) \
-        dynamic_number_threads(image,image->columns,1,1)
-#endif
-      for (i=0; i <= (ssize_t) MaxMap; i++)
-      {
-        x_map[i].x=0.4124564f*(MagickRealType) i;
-        y_map[i].x=0.3575761f*(MagickRealType) i;
-        z_map[i].x=0.1804375f*(MagickRealType) i;
-        x_map[i].y=0.2126729f*(MagickRealType) i;
-        y_map[i].y=0.7151522f*(MagickRealType) i;
-        z_map[i].y=0.0721750f*(MagickRealType) i;
-        x_map[i].z=0.0193339f*(MagickRealType) i;
-        y_map[i].z=0.1191920f*(MagickRealType) i;
-        z_map[i].z=0.9503041f*(MagickRealType) i;
       }
       break;
     }
@@ -1402,8 +1433,8 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
     r;
 
   /*
- *     Convert XYZ to RGB colorspace.
- *       */
+    Convert XYZ to RGB colorspace.
+  */
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
@@ -2207,6 +2238,73 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         return(MagickFalse);
       return(status);
     }
+    case XYZColorspace:
+    {
+      /*
+        Transform image from XYZ to RGB.
+      */
+      if (image->storage_class == PseudoClass)
+        {
+          if (SyncImage(image) == MagickFalse)
+            return(MagickFalse);
+          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+            return(MagickFalse);
+        }
+      image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        dynamic_number_threads(image,image->columns,image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        MagickBooleanType
+          sync;
+
+        register ssize_t
+          x;
+
+        register PixelPacket
+          *restrict q;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (PixelPacket *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          double
+            X,
+            Y,
+            Z;
+
+          Quantum
+            blue,
+            green,
+            red;
+
+          X=QuantumScale*GetPixelRed(q);
+          Y=QuantumScale*GetPixelGreen(q);
+          Z=QuantumScale*GetPixelBlue(q);
+          ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
+          SetPixelRed(q,red);
+          SetPixelGreen(q,green);
+          SetPixelBlue(q,blue);
+          q++;
+        }
+        sync=SyncCacheViewAuthenticPixels(image_view,exception);
+        if (sync == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
+      if (SetImageColorspace(image,sRGBColorspace) == MagickFalse)
+        return(MagickFalse);
+      return(status);
+    }
     default:
       break;
   }
@@ -2370,33 +2468,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         x_map[i].z=0.0f*MaxMap*v;
         y_map[i].z=0.0f*MaxMap*v;
         z_map[i].z=1.0f*MaxMap*v;
-      }
-      break;
-    }
-    case XYZColorspace:
-    {
-      /*
-        Initialize CIE XYZ tables (ITU R-709 RGB):
-
-          R =  3.2404542*X-1.5371385*Y-0.4985314*Z
-          G = -0.9692660*X+1.8760108*Y+0.0415560*Z
-          B =  0.0556434*X-0.2040259*Y+1.057225*Z
-      */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) \
-        dynamic_number_threads(image,image->columns,1,1)
-#endif
-      for (i=0; i <= (ssize_t) MaxMap; i++)
-      {
-        x_map[i].x=3.2404542f*(MagickRealType) i;
-        x_map[i].y=(-0.9692660f)*(MagickRealType) i;
-        x_map[i].z=0.0556434f*(MagickRealType) i;
-        y_map[i].x=(-1.5371385f)*(MagickRealType) i;
-        y_map[i].y=1.8760108f*(MagickRealType) i;
-        y_map[i].z=(-0.2040259f)*(MagickRealType) i;
-        z_map[i].x=(-0.4985314f)*(MagickRealType) i;
-        z_map[i].y=0.0415560f*(MagickRealType) i;
-        z_map[i].z=1.0572252f*(MagickRealType) i;
       }
       break;
     }
