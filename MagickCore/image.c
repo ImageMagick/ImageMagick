@@ -1525,7 +1525,7 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
           Image option.
         */
         /* FUTURE: Compare update with code from InterpretImageProperties()
-           Note that a 'filename:' properity should not need depth recursion.
+           Note that a 'filename:' property should not need depth recursion.
         */
         if (strchr(p,']') == (char *) NULL)
           break;
@@ -1548,7 +1548,7 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
 #if 0
         // FUTURE: remove this code. -- Anthony  29 Arpil 2012
         // Removed as GetMagickProperty() will will never match a "filename:"
-        // string as this is not a 'known' image properity.
+        // string as this is not a 'known' image property.
         //
         if ((image_info != (const ImageInfo *) NULL) &&
             (image != (const Image *) NULL))

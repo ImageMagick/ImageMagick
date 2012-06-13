@@ -2162,11 +2162,11 @@ MagickExport const char *GetImageProperty(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetMagickProperty() gets attributes or calculated values that is associated
-%  with a fixed known property name, or single letter properity.
+%  with a fixed known property name, or single letter property.
 %
-%  This does not return, special profile or properity expressions. Nor does it
-%  return free-form properity strings, unless referenced by a single letter
-%  properity name.
+%  This does not return, special profile or property expressions. Nor does it
+%  return free-form property strings, unless referenced by a single letter
+%  property name.
 %
 %  The returned string is stored as the image artifact 'get-property' (not as
 %  another property), and as such should not be freed. Later calls however
@@ -2176,7 +2176,7 @@ MagickExport const char *GetImageProperty(const Image *image,
 %  The format of the GetMagickProperty method is:
 %
 %      const char *GetMagickProperty(const ImageInfo *image_info,Image *image,
-%        const char *properity,ExceptionInfo *exception)
+%        const char *property,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2260,7 +2260,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
         GetNumberColors(image,(FILE *) NULL,exception));
       break;
     }
-    case 'l': /* Image label properity - empty string by default */
+    case 'l': /* Image label property - empty string by default */
     {
       string=GetImageProperty(image,"label",exception);
       if ( string == (const char *)NULL)
@@ -2848,7 +2848,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetNextImageProperty() gets the next free-form string properity name.
+%  GetNextImageProperty() gets the next free-form string property name.
 %
 %  The format of the GetNextImageProperty method is:
 %
@@ -2893,7 +2893,7 @@ MagickExport char *GetNextImageProperty(const Image *image)
 %     %x            where 'x' is a single letter, case sensitive).
 %     %[type:name]  where 'type' is specifically known prefix.
 %     %[name]       where 'name' is a specifically known attribute, calculated
-%                   value, or a per-image properity string name, or a per-image
+%                   value, or a per-image property string name, or a per-image
 %                   'artifact' (as generated from a global option)
 %
 %  Single letter % substitutions will only happen if the preceeding character
@@ -3135,7 +3135,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       /*
         Special Property Prefixes
         such as: %[exif:...] %[fx:...] %[pixel:...]
-        Otherwise a free-form properity string
+        Otherwise a free-form property string
       */
       value=GetImageProperty(image,pattern,exception);
       if (value != (const char *) NULL)
@@ -3155,7 +3155,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
           continue;
         }
       /*
-        Handle properity 'glob' patterns
+        Handle property 'glob' patterns
         Such as:  %[*]   %[user:array_??]  %[filename:e*]
       */
       if( IfMagickTrue(IsGlob(pattern)) )
@@ -3361,9 +3361,9 @@ MagickExport void ResetImagePropertyIterator(const Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SetImageProperty() saves the given string value either to specific known
-%  attribute or to a freeform properity string.
+%  attribute or to a freeform property string.
 %
-%  Attempting to set a properity that is normally calculated will produce
+%  Attempting to set a property that is normally calculated will produce
 %  an exception.
 %
 %  The format of the SetImageProperty method is:
@@ -3401,7 +3401,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
     image->properties=NewSplayTree(CompareSplayTreeString,
       RelinquishMagickMemory,RelinquishMagickMemory);
 
-  /* Delete properity if NULL --  empty string values are valid! */
+  /* Delete property if NULL --  empty string values are valid! */
   if ((value == (const char *) NULL))
     return(DeleteImageProperty(image,property));
   status=MagickTrue;
