@@ -91,7 +91,7 @@
 ** part of the kernel neighbourhood for convolution or morphology processing,
 ** and thus should be ignored.  This allows the use of 'shaped' kernels.
 **
-** The special properity that two NaN's are never equal, even if they are from
+** The special property that two NaN's are never equal, even if they are from
 ** the same variable allow you to test if a value is special NaN value.
 **
 ** This macro  IsNaN() is thus is only true if the value given is NaN.
