@@ -2382,7 +2382,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       SetMagickPixelPacket(distort_image,&distort_image->matte_color,
         (IndexPacket *) NULL, &invalid);
       if (distort_image->colorspace == CMYKColorspace)
-        ConvertRGBToCMYK(&invalid);   /* what about other color spaces? */
+        ConvertsRGBToCMYK(&invalid);   /* what about other color spaces? */
 
       for (i=0; i < (ssize_t) distort_image->columns; i++)
       {

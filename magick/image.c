@@ -2691,7 +2691,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       SetMagickPixelPacket(image,&image->background_color,(const IndexPacket *)
         NULL,&background);
       if (image->colorspace == CMYKColorspace)
-        ConvertRGBToCMYK(&background);
+        ConvertsRGBToCMYK(&background);
       index=0;
       SetPixelPacket(image,&background,&pixel,&index);
       status=MagickTrue;
@@ -2813,7 +2813,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       SetMagickPixelPacket(image,&image->background_color,(const IndexPacket *)
         NULL,&background);
       if (image->colorspace == CMYKColorspace)
-        ConvertRGBToCMYK(&background);
+        ConvertsRGBToCMYK(&background);
       index=0;
       SetPixelPacket(image,&background,&pixel,&index);
       status=MagickTrue;
@@ -2964,7 +2964,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
   SetMagickPixelPacket(image,&image->background_color,(const IndexPacket *)
     NULL,&background);
   if (image->colorspace == CMYKColorspace)
-    ConvertRGBToCMYK(&background);
+    ConvertsRGBToCMYK(&background);
   index=0;
   SetPixelPacket(image,&background,&pixel,&index);
   /*
