@@ -63,7 +63,7 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t H S B T o R G B                                             %
+%   C o n v e r t H S B T o s R G B                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -166,7 +166,7 @@ MagickPrivate void ConvertHSBTosRGB(const double hue,const double saturation,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t H S L T o R G B                                             %
+%   C o n v e r t H S L T o s R G B                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -246,7 +246,7 @@ MagickExport void ConvertHSLTosRGB(const double hue,const double saturation,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t H W B T o R G B                                             %
+%   C o n v e r t H W B T o s R G B                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -322,7 +322,7 @@ MagickPrivate void ConvertHWBTosRGB(const double hue,const double whiteness,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t R G B T o H S B                                             %
+%   C o n v e r t s R G B T o H S B                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -392,7 +392,7 @@ MagickPrivate void ConvertsRGBToHSB(const double red,const double green,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t R G B T o H S L                                             %
+%   C o n v e r t s R G B T o H S L                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -485,7 +485,7 @@ MagickExport void ConvertsRGBToHSL(const double red,const double green,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t R G B T o H W B                                             %
+%   C o n v e r t s R G B T o H W B                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
