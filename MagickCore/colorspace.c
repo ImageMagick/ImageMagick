@@ -830,7 +830,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       /*
         Initialize Rec601 luma tables:
 
-          G = 0.29900*R+0.58700*G+0.11400*B
+          G = 0.298839*R+0.586811*G+0.114350*B
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) \
@@ -838,15 +838,15 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.29900f*(MagickRealType) i;
-        y_map[i].x=0.58700f*(MagickRealType) i;
-        z_map[i].x=0.11400f*(MagickRealType) i;
-        x_map[i].y=0.29900f*(MagickRealType) i;
-        y_map[i].y=0.58700f*(MagickRealType) i;
-        z_map[i].y=0.11400f*(MagickRealType) i;
-        x_map[i].z=0.29900f*(MagickRealType) i;
-        y_map[i].z=0.58700f*(MagickRealType) i;
-        z_map[i].z=0.11400f*(MagickRealType) i;
+        x_map[i].x=0.298839f*(MagickRealType) i;
+        y_map[i].x=0.586811f*(MagickRealType) i;
+        z_map[i].x=0.114350f*(MagickRealType) i;
+        x_map[i].y=0.298839f*(MagickRealType) i;
+        y_map[i].y=0.586811f*(MagickRealType) i;
+        z_map[i].y=0.114350f*(MagickRealType) i;
+        x_map[i].z=0.298839f*(MagickRealType) i;
+        y_map[i].z=0.586811f*(MagickRealType) i;
+        z_map[i].z=0.114350f*(MagickRealType) i;
       }
       image->type=GrayscaleType;
       break;
@@ -857,7 +857,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       /*
         Initialize YCbCr tables (ITU-R BT.601):
 
-          Y =  0.299000*R+0.587000*G+0.114000*B
+          Y =  0.298839*R+0.586811*G+0.114350*B
           Cb= -0.168736*R-0.331264*G+0.500000*B
           Cr=  0.500000*R-0.418688*G-0.081312*B
 
@@ -872,9 +872,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.299000f*(MagickRealType) i;
-        y_map[i].x=0.587000f*(MagickRealType) i;
-        z_map[i].x=0.114000f*(MagickRealType) i;
+        x_map[i].x=0.298839f*(MagickRealType) i;
+        y_map[i].x=0.586811f*(MagickRealType) i;
+        z_map[i].x=0.114350f*(MagickRealType) i;
         x_map[i].y=(-0.168730f)*(MagickRealType) i;
         y_map[i].y=(-0.331264f)*(MagickRealType) i;
         z_map[i].y=0.500000f*(MagickRealType) i;
@@ -978,9 +978,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       /*
         Initialize YCC tables:
 
-          Y =  0.29900*R+0.58700*G+0.11400*B
-          C1= -0.29900*R-0.58700*G+0.88600*B
-          C2=  0.70100*R-0.58700*G-0.11400*B
+          Y =  0.298839*R+0.586811*G+0.114350*B
+          C1= -0.298839*R-0.586811*G+0.88600*B
+          C2=  0.70100*R-0.586811*G-0.114350*B
 
         YCC is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
@@ -1017,7 +1017,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       /*
         Initialize YIQ tables:
 
-          Y = 0.29900*R+0.58700*G+0.11400*B
+          Y = 0.298839*R+0.586811*G+0.114350*B
           I = 0.59600*R-0.27400*G-0.32200*B
           Q = 0.21100*R-0.52300*G+0.31200*B
 
@@ -1032,9 +1032,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.29900f*(MagickRealType) i;
-        y_map[i].x=0.58700f*(MagickRealType) i;
-        z_map[i].x=0.11400f*(MagickRealType) i;
+        x_map[i].x=0.298839f*(MagickRealType) i;
+        y_map[i].x=0.586811f*(MagickRealType) i;
+        z_map[i].x=0.114350f*(MagickRealType) i;
         x_map[i].y=0.59600f*(MagickRealType) i;
         y_map[i].y=(-0.27400f)*(MagickRealType) i;
         z_map[i].y=(-0.32200f)*(MagickRealType) i;
@@ -1049,7 +1049,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       /*
         Initialize YPbPr tables (ITU-R BT.601):
 
-          Y =  0.299000*R+0.587000*G+0.114000*B
+          Y =  0.298839*R+0.586811*G+0.114350*B
           Pb= -0.168736*R-0.331264*G+0.500000*B
           Pr=  0.500000*R-0.418688*G-0.081312*B
 
@@ -1064,9 +1064,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.299000f*(MagickRealType) i;
-        y_map[i].x=0.587000f*(MagickRealType) i;
-        z_map[i].x=0.114000f*(MagickRealType) i;
+        x_map[i].x=0.298839f*(MagickRealType) i;
+        y_map[i].x=0.586811f*(MagickRealType) i;
+        z_map[i].x=0.114350f*(MagickRealType) i;
         x_map[i].y=(-0.168736f)*(MagickRealType) i;
         y_map[i].y=(-0.331264f)*(MagickRealType) i;
         z_map[i].y=0.500000f*(MagickRealType) i;
@@ -1081,7 +1081,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       /*
         Initialize YUV tables:
 
-          Y =  0.29900*R+0.58700*G+0.11400*B
+          Y =  0.298839*R+0.586811*G+0.114350*B
           U = -0.14740*R-0.28950*G+0.43690*B
           V =  0.61500*R-0.51500*G-0.10000*B
 
@@ -1096,9 +1096,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.29900f*(MagickRealType) i;
-        y_map[i].x=0.58700f*(MagickRealType) i;
-        z_map[i].x=0.11400f*(MagickRealType) i;
+        x_map[i].x=0.298839f*(MagickRealType) i;
+        y_map[i].x=0.586811f*(MagickRealType) i;
+        z_map[i].x=0.114350f*(MagickRealType) i;
         x_map[i].y=(-0.14740f)*(MagickRealType) i;
         y_map[i].y=(-0.28950f)*(MagickRealType) i;
         z_map[i].y=0.43690f*(MagickRealType) i;
