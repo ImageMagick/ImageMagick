@@ -2769,7 +2769,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         case CopyBlackCompositeOp:
         {
           if (source.colorspace != CMYKColorspace)
-            ConvertRGBToCMYK(&source);
+            ConvertsRGBToCMYK(&source);
           composite.index=source.index;
           break;
         }

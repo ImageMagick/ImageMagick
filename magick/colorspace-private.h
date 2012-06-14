@@ -26,7 +26,7 @@ extern "C" {
 #include <magick/image-private.h>
 #include <magick/pixel.h>
 
-static inline void ConvertRGBToCMYK(MagickPixelPacket *pixel)
+static inline void ConvertsRGBToCMYK(MagickPixelPacket *pixel)
 {
   MagickRealType
     black,

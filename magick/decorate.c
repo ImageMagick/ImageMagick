@@ -280,13 +280,13 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   trough.opacity=matte.opacity;
   if (image->colorspace == CMYKColorspace)
     {
-      ConvertRGBToCMYK(&interior);
-      ConvertRGBToCMYK(&matte);
-      ConvertRGBToCMYK(&border);
-      ConvertRGBToCMYK(&accentuate);
-      ConvertRGBToCMYK(&highlight);
-      ConvertRGBToCMYK(&shadow);
-      ConvertRGBToCMYK(&trough);
+      ConvertsRGBToCMYK(&interior);
+      ConvertsRGBToCMYK(&matte);
+      ConvertsRGBToCMYK(&border);
+      ConvertsRGBToCMYK(&accentuate);
+      ConvertsRGBToCMYK(&highlight);
+      ConvertsRGBToCMYK(&shadow);
+      ConvertsRGBToCMYK(&trough);
     }
   status=MagickTrue;
   progress=0;
