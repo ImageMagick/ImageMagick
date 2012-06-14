@@ -303,7 +303,7 @@ Magick::ColorHSL::ColorHSL ( double hue_,
 {
   double red, green, blue;
 
-  ConvertHSLToRGB ( hue_,
+  ConvertHSLTosRGB ( hue_,
 		 saturation_,
 		 luminosity_,
 		 &red,
@@ -337,7 +337,7 @@ Magick::ColorHSL::~ColorHSL ( )
 void Magick::ColorHSL::hue ( double hue_ )
 {
   double hue_val, saturation_val, luminosity_val;
-  ConvertRGBToHSL ( redQuantum(),
+  ConvertsRGBToHSL ( redQuantum(),
 		 greenQuantum(),
 		 blueQuantum(),
 		 &hue_val,
@@ -347,7 +347,7 @@ void Magick::ColorHSL::hue ( double hue_ )
   hue_val = hue_;
 
   double red, green, blue;
-  ConvertHSLToRGB ( hue_val,
+  ConvertHSLTosRGB ( hue_val,
 		 saturation_val,
 		 luminosity_val,
 		 &red,
@@ -363,7 +363,7 @@ void Magick::ColorHSL::hue ( double hue_ )
 double Magick::ColorHSL::hue ( void ) const
 {
   double hue_val, saturation_val, luminosity_val;
-  ConvertRGBToHSL ( redQuantum(),
+  ConvertsRGBToHSL ( redQuantum(),
 		 greenQuantum(),
 		 blueQuantum(),
 		 &hue_val,
@@ -375,7 +375,7 @@ double Magick::ColorHSL::hue ( void ) const
 void Magick::ColorHSL::saturation ( double saturation_ )
 {
   double hue_val, saturation_val, luminosity_val;
-  ConvertRGBToHSL ( redQuantum(),
+  ConvertsRGBToHSL ( redQuantum(),
 		 greenQuantum(),
 		 blueQuantum(),
 		 &hue_val,
@@ -385,7 +385,7 @@ void Magick::ColorHSL::saturation ( double saturation_ )
   saturation_val = saturation_;
   
   double red, green, blue;
-  ConvertHSLToRGB ( hue_val,
+  ConvertHSLTosRGB ( hue_val,
 		 saturation_val,
 		 luminosity_val,
 		 &red,
@@ -401,7 +401,7 @@ void Magick::ColorHSL::saturation ( double saturation_ )
 double Magick::ColorHSL::saturation ( void ) const
 {
   double hue_val, saturation_val, luminosity_val;
-  ConvertRGBToHSL ( redQuantum(),
+  ConvertsRGBToHSL ( redQuantum(),
 		 greenQuantum(),
 		 blueQuantum(),
 		 &hue_val,
@@ -413,7 +413,7 @@ double Magick::ColorHSL::saturation ( void ) const
 void Magick::ColorHSL::luminosity ( double luminosity_ )
 {
   double hue_val, saturation_val, luminosity_val;
-  ConvertRGBToHSL ( redQuantum(),
+  ConvertsRGBToHSL ( redQuantum(),
 		 greenQuantum(),
 		 blueQuantum(),
 		 &hue_val,
@@ -423,7 +423,7 @@ void Magick::ColorHSL::luminosity ( double luminosity_ )
   luminosity_val = luminosity_;
   
   double red, green, blue;
-  ConvertHSLToRGB ( hue_val,
+  ConvertHSLTosRGB ( hue_val,
 		 saturation_val,
 		 luminosity_val,
 		 &red,
@@ -439,7 +439,7 @@ void Magick::ColorHSL::luminosity ( double luminosity_ )
 double Magick::ColorHSL::luminosity ( void ) const
 {
   double hue_val, saturation_val, luminosity_val;
-  ConvertRGBToHSL ( redQuantum(),
+  ConvertsRGBToHSL ( redQuantum(),
 		 greenQuantum(),
 		 blueQuantum(),
 		 &hue_val,
