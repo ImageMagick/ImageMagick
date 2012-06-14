@@ -1067,7 +1067,7 @@ WandExport void PixelGetHSL(const PixelWand *wand,double *hue,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  ConvertRGBToHSL((double) ClampToQuantum(wand->pixel.red),(double)
+  ConvertsRGBToHSL((double) ClampToQuantum(wand->pixel.red),(double)
     ClampToQuantum(wand->pixel.green),(double) ClampToQuantum(wand->pixel.blue),
     hue,saturation,lightness);
 }
@@ -1976,7 +1976,7 @@ WandExport void PixelSetHSL(PixelWand *wand,const double hue,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  ConvertHSLToRGB(hue,saturation,lightness,&red,&green,&blue);
+  ConvertHSLTosRGB(hue,saturation,lightness,&red,&green,&blue);
   wand->pixel.red=(MagickRealType) red;
   wand->pixel.green=(MagickRealType) green;
   wand->pixel.blue=(MagickRealType) blue;

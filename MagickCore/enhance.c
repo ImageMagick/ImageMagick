@@ -856,7 +856,7 @@ static void Contrast(const int sign,double *red,double *green,double *blue)
   hue=0.0;
   saturation=0.0;
   brightness=0.0;
-  ConvertRGBToHSB(*red,*green,*blue,&hue,&saturation,&brightness);
+  ConvertsRGBToHSB(*red,*green,*blue,&hue,&saturation,&brightness);
   brightness+=0.5*sign*(0.5*(sin((double) (MagickPI*(brightness-0.5)))+1.0)-
     brightness);
   if (brightness > 1.0)
@@ -864,7 +864,7 @@ static void Contrast(const int sign,double *red,double *green,double *blue)
   else
     if (brightness < 0.0)
       brightness=0.0;
-  ConvertHSBToRGB(hue,saturation,brightness,red,green,blue);
+  ConvertHSBTosRGB(hue,saturation,brightness,red,green,blue);
 }
 
 MagickExport MagickBooleanType ContrastImage(Image *image,
@@ -2779,7 +2779,7 @@ static void ModulateHSB(const double percent_hue,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  ConvertRGBToHSB(*red,*green,*blue,&hue,&saturation,&brightness);
+  ConvertsRGBToHSB(*red,*green,*blue,&hue,&saturation,&brightness);
   hue+=0.5*(0.01*percent_hue-1.0);
   while (hue < 0.0)
     hue+=1.0;
@@ -2787,7 +2787,7 @@ static void ModulateHSB(const double percent_hue,
     hue-=1.0;
   saturation*=0.01*percent_saturation;
   brightness*=0.01*percent_brightness;
-  ConvertHSBToRGB(hue,saturation,brightness,red,green,blue);
+  ConvertHSBTosRGB(hue,saturation,brightness,red,green,blue);
 }
 
 static void ModulateHSL(const double percent_hue,
@@ -2805,7 +2805,7 @@ static void ModulateHSL(const double percent_hue,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  ConvertRGBToHSL(*red,*green,*blue,&hue,&saturation,&lightness);
+  ConvertsRGBToHSL(*red,*green,*blue,&hue,&saturation,&lightness);
   hue+=0.5*(0.01*percent_hue-1.0);
   while (hue < 0.0)
     hue+=1.0;
@@ -2813,7 +2813,7 @@ static void ModulateHSL(const double percent_hue,
     hue-=1.0;
   saturation*=0.01*percent_saturation;
   lightness*=0.01*percent_lightness;
-  ConvertHSLToRGB(hue,saturation,lightness,red,green,blue);
+  ConvertHSLTosRGB(hue,saturation,lightness,red,green,blue);
 }
 
 static void ModulateHWB(const double percent_hue,const double percent_whiteness,  const double percent_blackness,double *red,double *green,double *blue)
@@ -2829,7 +2829,7 @@ static void ModulateHWB(const double percent_hue,const double percent_whiteness,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  ConvertRGBToHWB(*red,*green,*blue,&hue,&whiteness,&blackness);
+  ConvertsRGBToHWB(*red,*green,*blue,&hue,&whiteness,&blackness);
   hue+=0.5*(0.01*percent_hue-1.0);
   while (hue < 0.0)
     hue+=1.0;
@@ -2837,7 +2837,7 @@ static void ModulateHWB(const double percent_hue,const double percent_whiteness,
     hue-=1.0;
   blackness*=0.01*percent_blackness;
   whiteness*=0.01*percent_whiteness;
-  ConvertHWBToRGB(hue,whiteness,blackness,red,green,blue);
+  ConvertHWBTosRGB(hue,whiteness,blackness,red,green,blue);
 }
 
 MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
