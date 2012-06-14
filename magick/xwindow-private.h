@@ -591,7 +591,7 @@ static inline MagickRealType XPixelIntensity(const XColor *pixel)
   MagickRealType
     intensity;
 
-  intensity=0.299*pixel->red+0.587*pixel->green+0.114*pixel->blue;
+  intensity=0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue;
   return(intensity);
 }
 
