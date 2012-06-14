@@ -130,7 +130,7 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
   GetPixelInfo(image,&background);
   background.alpha=(MagickRealType) TransparentAlpha;
   if (image->colorspace == CMYKColorspace)
-    ConvertRGBToCMYK(&background);
+    ConvertsRGBToCMYK(&background);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);

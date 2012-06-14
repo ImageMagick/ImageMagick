@@ -115,7 +115,7 @@ static MagickBooleanType
 %
 */
 
-static inline void ConvertRGBToXYZ(const Quantum red,const Quantum green,
+static inline void ConvertsRGBToXYZ(const Quantum red,const Quantum green,
   const Quantum blue,double *X,double *Y,double *Z)
 {
   double
@@ -332,7 +332,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           GetPixelInfoPixel(image,q,&pixel);
-          ConvertRGBToCMYK(&pixel);
+          ConvertsRGBToCMYK(&pixel);
           SetPixelInfoPixel(image,&pixel,q);
           q+=GetPixelChannels(image);
         }
@@ -392,7 +392,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         brightness=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          ConvertRGBToHSB((double) GetPixelRed(image,q),
+          ConvertsRGBToHSB((double) GetPixelRed(image,q),
             (double) GetPixelGreen(image,q),(double) GetPixelBlue(image,q),
             &hue,&saturation,&brightness);
           SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
@@ -457,7 +457,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         lightness=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          ConvertRGBToHSL((double) GetPixelRed(image,q),(double)
+          ConvertsRGBToHSL((double) GetPixelRed(image,q),(double)
             GetPixelGreen(image,q),(double) GetPixelBlue(image,q),
             &hue,&saturation,&lightness);
           SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
@@ -522,7 +522,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         blackness=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          ConvertRGBToHWB((double) GetPixelRed(image,q),(double)
+          ConvertsRGBToHWB((double) GetPixelRed(image,q),(double)
             GetPixelGreen(image,q),(double) GetPixelBlue(image,q),
             &hue,&whiteness,&blackness);
           SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
@@ -593,7 +593,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         Z=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          ConvertRGBToXYZ(GetPixelRed(image,q),GetPixelGreen(image,q),
+          ConvertsRGBToXYZ(GetPixelRed(image,q),GetPixelGreen(image,q),
             GetPixelBlue(image,q),&X,&Y,&Z);
           ConvertXYZToLab(X,Y,Z,&L,&a,&b);
           SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
@@ -757,7 +757,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         Z=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          ConvertRGBToXYZ(GetPixelRed(image,q),GetPixelGreen(image,q),
+          ConvertsRGBToXYZ(GetPixelRed(image,q),GetPixelGreen(image,q),
             GetPixelBlue(image,q),&X,&Y,&Z);
           SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*X),q);
           SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*Y),
@@ -1442,7 +1442,7 @@ static inline ssize_t RoundToYCC(const MagickRealType value)
   return((ssize_t) (value+0.5));
 }
 
-static inline void ConvertXYZToRGB(const double x,const double y,const double z,
+static inline void ConvertXYZTosRGB(const double x,const double y,const double z,
   Quantum *red,Quantum *green,Quantum *blue)
 {
   double
@@ -1476,7 +1476,7 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
   *blue=RoundToQuantum((MagickRealType) QuantumRange*b);
 }
 
-static inline void ConvertCMYKToRGB(PixelInfo *pixel)
+static inline void ConvertCMYKTosRGB(PixelInfo *pixel)
 {
   pixel->red=(MagickRealType) QuantumRange-(QuantumScale*pixel->red*
     (QuantumRange-pixel->black)+pixel->black);
@@ -1862,7 +1862,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           GetPixelInfoPixel(image,q,&pixel);
-          ConvertCMYKToRGB(&pixel);
+          ConvertCMYKTosRGB(&pixel);
           SetPixelInfoPixel(image,&pixel,q);
           q+=GetPixelChannels(image);
         }
@@ -1927,7 +1927,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           hue=(double) (QuantumScale*GetPixelRed(image,q));
           saturation=(double) (QuantumScale*GetPixelGreen(image,q));
           brightness=(double) (QuantumScale*GetPixelBlue(image,q));
-          ConvertHSBToRGB(hue,saturation,brightness,&red,&green,&blue);
+          ConvertHSBTosRGB(hue,saturation,brightness,&red,&green,&blue);
           SetPixelRed(image,ClampToQuantum(red),q);
           SetPixelGreen(image,ClampToQuantum(green),q);
           SetPixelBlue(image,ClampToQuantum(blue),q);
@@ -1994,7 +1994,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           hue=(double) (QuantumScale*GetPixelRed(image,q));
           saturation=(double) (QuantumScale*GetPixelGreen(image,q));
           lightness=(double) (QuantumScale*GetPixelBlue(image,q));
-          ConvertHSLToRGB(hue,saturation,lightness,&red,&green,&blue);
+          ConvertHSLTosRGB(hue,saturation,lightness,&red,&green,&blue);
           SetPixelRed(image,ClampToQuantum(red),q);
           SetPixelGreen(image,ClampToQuantum(green),q);
           SetPixelBlue(image,ClampToQuantum(blue),q);
@@ -2061,7 +2061,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           hue=(double) (QuantumScale*GetPixelRed(image,q));
           whiteness=(double) (QuantumScale*GetPixelGreen(image,q));
           blackness=(double) (QuantumScale*GetPixelBlue(image,q));
-          ConvertHWBToRGB(hue,whiteness,blackness,&red,&green,&blue);
+          ConvertHWBTosRGB(hue,whiteness,blackness,&red,&green,&blue);
           SetPixelRed(image,ClampToQuantum(red),q);
           SetPixelGreen(image,ClampToQuantum(green),q);
           SetPixelBlue(image,ClampToQuantum(blue),q);
@@ -2135,7 +2135,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           a=QuantumScale*GetPixelGreen(image,q);
           b=QuantumScale*GetPixelBlue(image,q);
           ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
-          ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
+          ConvertXYZTosRGB(X,Y,Z,&red,&green,&blue);
           SetPixelRed(image,red,q);
           SetPixelGreen(image,green,q);
           SetPixelBlue(image,blue,q);
@@ -2300,7 +2300,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           X=QuantumScale*GetPixelRed(image,q);
           Y=QuantumScale*GetPixelGreen(image,q);
           Z=QuantumScale*GetPixelBlue(image,q);
-          ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
+          ConvertXYZTosRGB(X,Y,Z,&red,&green,&blue);
           SetPixelRed(image,red,q);
           SetPixelGreen(image,green,q);
           SetPixelBlue(image,blue,q);

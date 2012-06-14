@@ -69,12 +69,12 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertHSBToRGB() transforms a (hue, saturation, brightness) to a (red,
+%  ConvertHSBTosRGB() transforms a (hue, saturation, brightness) to a (red,
 %  green, blue) triple.
 %
-%  The format of the ConvertHSBToRGBImage method is:
+%  The format of the ConvertHSBTosRGBImage method is:
 %
-%      void ConvertHSBToRGB(const double hue,const double saturation,
+%      void ConvertHSBTosRGB(const double hue,const double saturation,
 %        const double brightness,double *red,double *green,double *blue)
 %
 %  A description of each parameter follows:
@@ -85,7 +85,7 @@
 %    o red, green, blue: A pointer to a pixel component of type Quantum.
 %
 */
-MagickPrivate void ConvertHSBToRGB(const double hue,const double saturation,
+MagickPrivate void ConvertHSBTosRGB(const double hue,const double saturation,
   const double brightness,double *red,double *green,double *blue)
 {
   MagickRealType
@@ -172,12 +172,12 @@ MagickPrivate void ConvertHSBToRGB(const double hue,const double saturation,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertHSLToRGB() transforms a (hue, saturation, lightness) to a (red,
+%  ConvertHSLTosRGB() transforms a (hue, saturation, lightness) to a (red,
 %  green, blue) triple.
 %
-%  The format of the ConvertHSLToRGBImage method is:
+%  The format of the ConvertHSLTosRGBImage method is:
 %
-%      void ConvertHSLToRGB(const double hue,const double saturation,
+%      void ConvertHSLTosRGB(const double hue,const double saturation,
 %        const double lightness,double *red,double *green,double *blue)
 %
 %  A description of each parameter follows:
@@ -189,7 +189,7 @@ MagickPrivate void ConvertHSBToRGB(const double hue,const double saturation,
 %
 */
 
-static inline MagickRealType ConvertHueToRGB(MagickRealType m1,
+static inline MagickRealType ConvertHueTosRGB(MagickRealType m1,
   MagickRealType m2,MagickRealType hue)
 {
   if (hue < 0.0)
@@ -205,7 +205,7 @@ static inline MagickRealType ConvertHueToRGB(MagickRealType m1,
   return(m1);
 }
 
-MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
+MagickExport void ConvertHSLTosRGB(const double hue,const double saturation,
   const double lightness,double *red,double *green,double *blue)
 {
   MagickRealType
@@ -233,9 +233,9 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
   else
     m2=(lightness+saturation)-(lightness*saturation);
   m1=2.0*lightness-m2;
-  r=ConvertHueToRGB(m1,m2,hue+1.0/3.0);
-  g=ConvertHueToRGB(m1,m2,hue);
-  b=ConvertHueToRGB(m1,m2,hue-1.0/3.0);
+  r=ConvertHueTosRGB(m1,m2,hue+1.0/3.0);
+  g=ConvertHueTosRGB(m1,m2,hue);
+  b=ConvertHueTosRGB(m1,m2,hue-1.0/3.0);
   *red=(double) ClampToQuantum((MagickRealType) QuantumRange*r);
   *green=(double) ClampToQuantum((MagickRealType) QuantumRange*g);
   *blue=(double) ClampToQuantum((MagickRealType) QuantumRange*b);
@@ -252,12 +252,12 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertHWBToRGB() transforms a (hue, whiteness, blackness) to a (red, green,
+%  ConvertHWBTosRGB() transforms a (hue, whiteness, blackness) to a (red, green,
 %  blue) triple.
 %
-%  The format of the ConvertHWBToRGBImage method is:
+%  The format of the ConvertHWBTosRGBImage method is:
 %
-%      void ConvertHWBToRGB(const double hue,const double whiteness,
+%      void ConvertHWBTosRGB(const double hue,const double whiteness,
 %        const double blackness,double *red,double *green,double *blue)
 %
 %  A description of each parameter follows:
@@ -268,7 +268,7 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
 %    o red, green, blue: A pointer to a pixel component of type Quantum.
 %
 */
-MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
+MagickPrivate void ConvertHWBTosRGB(const double hue,const double whiteness,
   const double blackness,double *red,double *green,double *blue)
 {
   MagickRealType
@@ -328,12 +328,12 @@ MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertRGBToHSB() transforms a (red, green, blue) to a (hue, saturation,
+%  ConvertsRGBToHSB() transforms a (red, green, blue) to a (hue, saturation,
 %  brightness) triple.
 %
-%  The format of the ConvertRGBToHSB method is:
+%  The format of the ConvertsRGBToHSB method is:
 %
-%      void ConvertRGBToHSB(const double red,const double green,
+%      void ConvertsRGBToHSB(const double red,const double green,
 %        const double blue,double *hue,double *saturation,double *brightness)
 %
 %  A description of each parameter follows:
@@ -345,7 +345,7 @@ MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
 %      component of the HSB color space.
 %
 */
-MagickPrivate void ConvertRGBToHSB(const double red,const double green,
+MagickPrivate void ConvertsRGBToHSB(const double red,const double green,
   const double blue,double *hue,double *saturation,double *brightness)
 {
   MagickRealType
@@ -398,12 +398,12 @@ MagickPrivate void ConvertRGBToHSB(const double red,const double green,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertRGBToHSL() transforms a (red, green, blue) to a (hue, saturation,
+%  ConvertsRGBToHSL() transforms a (red, green, blue) to a (hue, saturation,
 %  lightness) triple.
 %
-%  The format of the ConvertRGBToHSL method is:
+%  The format of the ConvertsRGBToHSL method is:
 %
-%      void ConvertRGBToHSL(const double red,const double green,
+%      void ConvertsRGBToHSL(const double red,const double green,
 %        const double blue,double *hue,double *saturation,double *lightness)
 %
 %  A description of each parameter follows:
@@ -430,7 +430,7 @@ static inline double MagickMin(const double x,const double y)
   return(y);
 }
 
-MagickExport void ConvertRGBToHSL(const double red,const double green,
+MagickExport void ConvertsRGBToHSL(const double red,const double green,
   const double blue,double *hue,double *saturation,double *lightness)
 {
   MagickRealType
@@ -491,12 +491,12 @@ MagickExport void ConvertRGBToHSL(const double red,const double green,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertRGBToHWB() transforms a (red, green, blue) to a (hue, whiteness,
+%  ConvertsRGBToHWB() transforms a (red, green, blue) to a (hue, whiteness,
 %  blackness) triple.
 %
-%  The format of the ConvertRGBToHWB method is:
+%  The format of the ConvertsRGBToHWB method is:
 %
-%      void ConvertRGBToHWB(const double red,const double green,
+%      void ConvertsRGBToHWB(const double red,const double green,
 %        const double blue,double *hue,double *whiteness,double *blackness)
 %
 %  A description of each parameter follows:
@@ -508,7 +508,7 @@ MagickExport void ConvertRGBToHSL(const double red,const double green,
 %      component of the HWB color space.
 %
 */
-MagickPrivate void ConvertRGBToHWB(const double red,const double green,
+MagickPrivate void ConvertsRGBToHWB(const double red,const double green,
   const double blue,double *hue,double *whiteness,double *blackness)
 {
   long
