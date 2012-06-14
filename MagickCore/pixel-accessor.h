@@ -171,11 +171,11 @@ static inline Quantum GetPixelInfoIntensity(
   const PixelInfo *restrict pixel_info)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) (0.299*pixel_info->red+0.587*pixel_info->green+0.114*
-    pixel_info->blue+0.5));
+  return((Quantum) (0.298839*pixel_info->red+0.586811*pixel_info->green+
+    0.114350*pixel_info->blue+0.5));
 #else
-  return((Quantum) (0.299*pixel_info->red+0.587*pixel_info->green+0.114*
-    pixel_info->blue));
+  return((Quantum) (0.298839*pixel_info->red+0.586811*pixel_info->green+
+    0.114350*pixel_info->blue));
 #endif
 }
 
@@ -201,8 +201,8 @@ static inline Quantum GetPixelIntensity(const Image *restrict image,
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if (image->colorspace == GRAYColorspace)
     return(pixel[image->channel_map[GrayPixelChannel].offset]);
-  return((Quantum) (0.299*pixel[image->channel_map[RedPixelChannel].offset]+
-    0.587*pixel[image->channel_map[GreenPixelChannel].offset]+0.114*
+  return((Quantum) (0.298839*pixel[image->channel_map[RedPixelChannel].offset]+
+    0.586811*pixel[image->channel_map[GreenPixelChannel].offset]+0.114350*
     pixel[image->channel_map[BluePixelChannel].offset]+0.5));
 #else
   {
@@ -216,8 +216,9 @@ static inline Quantum GetPixelIntensity(const Image *restrict image,
       pixel[image->channel_map[BluePixelChannel].offset];
     if ((fabs((double) alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
       return(pixel[image->channel_map[RedPixelChannel].offset]);
-    return((Quantum) (0.299*pixel[image->channel_map[RedPixelChannel].offset]+
-      0.587*pixel[image->channel_map[GreenPixelChannel].offset]+0.114*
+    return((Quantum) (0.298839*
+      pixel[image->channel_map[RedPixelChannel].offset]+0.586811*
+      pixel[image->channel_map[GreenPixelChannel].offset]+0.114350*
       pixel[image->channel_map[BluePixelChannel].offset]));
   }
 #endif
