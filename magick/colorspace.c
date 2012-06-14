@@ -115,21 +115,9 @@ static inline void ConvertsRGBToXYZ(const Quantum red,const Quantum green,
   assert(X != (double *) NULL);
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
-  r=QuantumScale*red;
-  if (r <= 0.04045)
-    r/=12.92;
-  else
-    r=pow((r+0.055)/1.055,2.4);
-  g=QuantumScale*green;
-  if (g <= 0.04045)
-    g/=12.92;
-  else
-    g=pow((g+0.055)/1.055,2.4);
-  b=QuantumScale*blue;
-  if (b <= 0.04045)
-    b/=12.92;
-  else
-    b=pow((b+0.055)/1.055,2.4);
+  r=GammaDecompanding(QuantumScale*red);
+  g=GammaDecompanding(QuantumScale*green);
+  b=GammaDecompanding(QuantumScale*blue);
   *X=0.4360747*r+0.3850649*g+0.1430804*b;
   *Y=0.2225045*r+0.7168786*g+0.0606169*b;
   *Z=0.0139322*r+0.0971045*g+0.7141733*b;
@@ -1441,21 +1429,9 @@ static inline void ConvertXYZTosRGB(const double x,const double y,const double z
   r=3.1338561*x-1.6168667*y-0.4906146*z;
   g=(-0.9787684*x+1.9161415*y+0.0334540*z);
   b=0.0719453*x-0.2289914*y+1.4052427*z;
-  if (r > 0.0031308)
-    r=1.055*pow(r,1.0/2.4)-0.055;
-  else
-    r*=12.92;
-  if (g > 0.0031308)
-    g=1.055*pow(g,1.0/2.4)-0.055;
-  else
-    g*=12.92;
-  if (b > 0.0031308)
-    b=1.055*pow(b,1.0/2.4)-0.055;
-  else
-    b*=12.92;
-  *red=RoundToQuantum((MagickRealType) QuantumRange*r);
-  *green=RoundToQuantum((MagickRealType) QuantumRange*g);
-  *blue=RoundToQuantum((MagickRealType) QuantumRange*b);
+  *red=RoundToQuantum((MagickRealType) QuantumRange*GammaCompanding(r));
+  *green=RoundToQuantum((MagickRealType) QuantumRange*GammaCompanding(g));
+  *blue=RoundToQuantum((MagickRealType) QuantumRange*GammaCompanding(b));
 }
 
 static inline void ConvertCMYKTosRGB(MagickPixelPacket *pixel)

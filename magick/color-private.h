@@ -26,6 +26,20 @@ extern "C" {
 #include <magick/color.h>
 #include <magick/exception-private.h>
 
+static inline double GammaCompanding(const double intensity)
+{
+  if (intensity <= 0.0031308)
+    return(intensity*12.92);
+  return(1.055*pow(intensity,1.0/2.4)-0.055);
+}
+
+static inline double GammaDecompanding(const double intensity)
+{
+  if (intensity <= 0.04045)
+    return(intensity/12.92);
+  return(pow((intensity+0.055)/1.055,2.4));
+}
+
 static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
   const PixelPacket *q)
 {
