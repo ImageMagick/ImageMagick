@@ -31,6 +31,20 @@ extern "C" {
 
 #undef index
 
+static inline double sRGBCompanding(const double intensity)
+{
+  if (intensity <= 0.0031308)
+    return(intensity*12.92);
+  return(1.055*pow(intensity,1.0/2.4)-0.055);
+}
+
+static inline double sRGBDecompanding(const double intensity)
+{
+  if (intensity <= 0.04045)
+    return(intensity/12.92);
+  return(pow((intensity+0.055)/1.055,2.4));
+}
+
 static inline Quantum GetPixelAlpha(const Image *restrict image,
   const Quantum *restrict pixel)
 {

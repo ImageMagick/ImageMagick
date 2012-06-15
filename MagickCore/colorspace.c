@@ -126,9 +126,9 @@ static inline void ConvertsRGBToXYZ(const Quantum red,const Quantum green,
   assert(X != (double *) NULL);
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
-  r=GammaDecompanding(QuantumScale*red);
-  g=GammaDecompanding(QuantumScale*green);
-  b=GammaDecompanding(QuantumScale*blue);
+  r=sRGBDecompanding(QuantumScale*red);
+  g=sRGBDecompanding(QuantumScale*green);
+  b=sRGBDecompanding(QuantumScale*blue);
   *X=0.4360747*r+0.3850649*g+0.1430804*b;
   *Y=0.2225045*r+0.7168786*g+0.0606169*b;
   *Z=0.0139322*r+0.0971045*g+0.7141733*b;
@@ -1166,9 +1166,12 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          red=ScaleQuantumToMap(GetPixelRed(image,q));
-          green=ScaleQuantumToMap(GetPixelGreen(image,q));
-          blue=ScaleQuantumToMap(GetPixelBlue(image,q));
+          red=ScaleQuantumToMap(ClampToQuantum(QuantumRange*sRGBDecompanding(
+            QuantumScale*GetPixelRed(image,q))));
+          green=ScaleQuantumToMap(ClampToQuantum(QuantumRange*sRGBDecompanding(
+            QuantumScale*GetPixelGreen(image,q))));
+          blue=ScaleQuantumToMap(ClampToQuantum(QuantumRange*sRGBDecompanding(
+            QuantumScale*GetPixelBlue(image,q))));
           pixel.red=(x_map[red].x+y_map[green].x+z_map[blue].x)+
             (MagickRealType) primary_info.x;
           pixel.green=(x_map[red].y+y_map[green].y+z_map[blue].y)+
@@ -1215,9 +1218,12 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         PixelInfo
           pixel;
 
-        red=ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red));
-        green=ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green));
-        blue=ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue));
+        red=ScaleQuantumToMap(ClampToQuantum(QuantumRange*sRGBDecompanding(
+          QuantumScale*image->colormap[i].red)));
+        green=ScaleQuantumToMap(ClampToQuantum(QuantumRange*sRGBDecompanding(
+          QuantumScale*image->colormap[i].green)));
+        blue=ScaleQuantumToMap(ClampToQuantum(QuantumRange*sRGBDecompanding(
+          QuantumScale*image->colormap[i].blue)));
         pixel.red=x_map[red].x+y_map[green].x+z_map[blue].x+primary_info.x;
         pixel.green=x_map[red].y+y_map[green].y+z_map[blue].y+primary_info.y;
         pixel.blue=x_map[red].z+y_map[green].z+z_map[blue].z+primary_info.z;
@@ -1447,9 +1453,9 @@ static inline void ConvertXYZTosRGB(const double x,const double y,const double z
   r=3.1338561*x-1.6168667*y-0.4906146*z;
   g=(-0.9787684*x+1.9161415*y+0.0334540*z);
   b=0.0719453*x-0.2289914*y+1.4052427*z;
-  *red=RoundToQuantum((MagickRealType) QuantumRange*GammaCompanding(r));
-  *green=RoundToQuantum((MagickRealType) QuantumRange*GammaCompanding(g));
-  *blue=RoundToQuantum((MagickRealType) QuantumRange*GammaCompanding(b));
+  *red=RoundToQuantum((MagickRealType) QuantumRange*sRGBCompanding(r));
+  *green=RoundToQuantum((MagickRealType) QuantumRange*sRGBCompanding(g));
+  *blue=RoundToQuantum((MagickRealType) QuantumRange*sRGBCompanding(b));
 }
 
 static inline void ConvertCMYKTosRGB(PixelInfo *pixel)
@@ -2670,9 +2676,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           pixel.red=x_map[red].x+y_map[green].x+z_map[blue].x;
           pixel.green=x_map[red].y+y_map[green].y+z_map[blue].y;
           pixel.blue=x_map[red].z+y_map[green].z+z_map[blue].z;
-          switch (colorspace)
-          {
-            case YCCColorspace:
+          if (colorspace == YCCColorspace)
             {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
               pixel.red=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
@@ -2682,32 +2686,13 @@ static MagickBooleanType TransformsRGBImage(Image *image,
               pixel.blue=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
                 pixel.blue)];
 #endif
-              break;
             }
-            case RGBColorspace:
-            {
-              if ((QuantumScale*pixel.red) <= 0.00313066844250063)
-                pixel.red*=12.92f;
-              else
-                pixel.red=(MagickRealType) QuantumRange*(1.055*pow(
-                  QuantumScale*pixel.red,(1.0/2.4))-0.055);
-              if ((QuantumScale*pixel.green) <= 0.00313066844250063)
-                pixel.green*=12.92f;
-              else
-                pixel.green=(MagickRealType) QuantumRange*(1.055*pow(
-                  QuantumScale*pixel.green,(1.0/2.4))-0.055);
-              if ((QuantumScale*pixel.blue) <= 0.00313066844250063)
-                pixel.blue*=12.92f;
-              else
-                pixel.blue=(MagickRealType) QuantumRange*(1.055*pow(
-                  QuantumScale*pixel.blue,(1.0/2.4))-0.055);
-            }
-            default:
-              break;
-          }
-          SetPixelRed(image,ScaleMapToQuantum(pixel.red),q);
-          SetPixelGreen(image,ScaleMapToQuantum(pixel.green),q);
-          SetPixelBlue(image,ScaleMapToQuantum(pixel.blue),q);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*sRGBCompanding(
+            QuantumScale*ScaleMapToQuantum(pixel.red))),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*sRGBCompanding(
+            QuantumScale*ScaleMapToQuantum(pixel.green))),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*sRGBCompanding(
+            QuantumScale*ScaleMapToQuantum(pixel.blue))),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2755,9 +2740,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         pixel.red=x_map[red].x+y_map[green].x+z_map[blue].x;
         pixel.green=x_map[red].y+y_map[green].y+z_map[blue].y;
         pixel.blue=x_map[red].z+y_map[green].z+z_map[blue].z;
-        switch (colorspace)
-        {
-          case YCCColorspace:
+        if (colorspace == YCCColorspace)
           {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
             pixel.red=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
@@ -2767,32 +2750,13 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             pixel.blue=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
               pixel.blue)];
 #endif
-            break;
           }
-          case RGBColorspace:
-          {
-            if ((QuantumScale*pixel.red) <= 0.00313066844250063)
-              pixel.red*=12.92f;
-            else
-              pixel.red=(MagickRealType) QuantumRange*(1.055*
-                pow(QuantumScale*pixel.red,(1.0/2.4))-0.055);
-            if ((QuantumScale*pixel.green) <= 0.00313066844250063)
-              pixel.green*=12.92f;
-            else
-              pixel.green=(MagickRealType) QuantumRange*(1.055*
-                pow(QuantumScale*pixel.green,(1.0/2.4))-0.055);
-            if ((QuantumScale*pixel.blue) <= 0.00313066844250063)
-              pixel.blue*=12.92f;
-            else
-              pixel.blue=(MagickRealType) QuantumRange*(1.055*
-                pow(QuantumScale*pixel.blue,(1.0/2.4))-0.055);
-          }
-          default:
-            break;
-        }
-        image->colormap[i].red=(double) ScaleMapToQuantum(pixel.red);
-        image->colormap[i].green=(double) ScaleMapToQuantum(pixel.green);
-        image->colormap[i].blue=(double) ScaleMapToQuantum(pixel.blue);
+        image->colormap[i].red=(double) ClampToQuantum(QuantumRange*
+          sRGBCompanding(QuantumScale*ScaleMapToQuantum(pixel.red)));
+        image->colormap[i].green=(double) ClampToQuantum(QuantumRange*
+          sRGBCompanding(QuantumScale*ScaleMapToQuantum(pixel.green)));
+        image->colormap[i].blue=(double) ClampToQuantum(QuantumRange*
+          sRGBCompanding(QuantumScale*ScaleMapToQuantum(pixel.blue)));
       }
       (void) SyncImage(image,exception);
       break;
