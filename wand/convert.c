@@ -198,6 +198,7 @@ static MagickBooleanType ConvertUsage(void)
       "                     evaluate an arithmetic, relational, or logical expression",
       "-extent geometry     set the image size",
       "-extract geometry    extract area from image",
+      "-features distance   analyze image features (e.g. contrast, correlation)",
       "-fft                 implements the discrete Fourier transform (DFT)",
       "-flip                flip image vertically",
       "-floodfill geometry color",
