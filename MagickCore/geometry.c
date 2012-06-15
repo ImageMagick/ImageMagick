@@ -67,6 +67,16 @@
 %  whether the x or y values are negative.  In addition, there are flags to
 %  report any meta characters (%, !, <, or >).
 %
+%  The value must form a proper geometry style specification of WxH+X+Y
+%  of integers only, and values can not be separated by comma, colon, or
+%  slash charcaters.  See ParseGeometry() below.
+%
+%  Offsets may be prefixed by multiple signs to make offset string
+%  substitutions easier to handle from shell scripts.
+%  For example: "-10-10", "-+10-+10", or "+-10+-10" will generate negtive
+%  offsets, while "+10+10", "++10++10", or "--10--10" will generate positive
+%  offsets.
+%
 %  The format of the GetGeometry method is:
 %
 %      MagickStatusType GetGeometry(const char *geometry,ssize_t *x,ssize_t *y,
@@ -230,25 +240,52 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       /*
         Parse x value.
       */
-      if (*p == '-')
-        flags|=XNegative;
+      while ((*p == '+') || (*p == '-'))
+        {
+          if (*p == '-')
+            flags^=XNegative;  /* negate sign */
+          p++;
+        }
       q=p;
       *x=(ssize_t) ceil(StringToDouble(p,&p)-0.5);
       if (p != q)
-        flags|=XValue;
-      if ((*p == '+') || (*p == '-'))
         {
-          /*
-            Parse y value.
-          */
-          if (*p == '-')
-            flags|=YNegative;
-          q=p;
-          *y=(ssize_t) ceil(StringToDouble(p,&p)-0.5);
-          if (p != q)
-            flags|=YValue;
+          flags|=XValue;
+          if ( (flags&XNegative) != 0 )
+            *x = -*x;
         }
     }
+  if ((*p == '+') || (*p == '-'))
+    {
+      /*
+        Parse y value.
+      */
+      while ((*p == '+') || (*p == '-'))
+        {
+          if (*p == '-')
+            flags^=YNegative;  /* negate sign */
+          p++;
+        }
+      q=p;
+      *y=(ssize_t) ceil(StringToDouble(p,&p)-0.5);
+      if (p != q)
+        {
+          flags|=YValue;
+          if ( (flags&YNegative) != 0 )
+            *y = -*y;
+        }
+    }
+#if 0
+  /* Debugging Geometry */
+  fprintf(stderr,"GetGeometry...\n");
+  fprintf(stderr,"Input: %s\n",geometry);
+  fprintf(stderr,"Flags: %c %c %s %s\n",
+       (flags&WidthValue)?'W':' ',(flags&HeightValue)?'H':' ',
+       (flags&XValue)?((flags&XNegative)?"-X":"+X"):"  ",
+       (flags&YValue)?((flags&YNegative)?"-Y":"+Y"):"  ");
+  fprintf(stderr,"Geometry: %ldx%ld%+ld%+ld\n",
+       (long)*width,(long)*height,(long)*x,(long)*y);
+#endif
   return(flags);
 }
 
@@ -726,6 +763,13 @@ MagickExport MagickStatusType ParseAffineGeometry(const char *geometry,
 %  and ^) flags present. It does not report the location of the percentage
 %  relative to the values.
 %
+%  Values may also be seperated by commas, colons, or slashes, and offsets.
+%  Offsets may be prefixed by multiple signs to make offset string
+%  substitutions easier to handle from shell scripts.
+%  For example: "-10-10", "-+10-+10", or "+-10+-10" will generate negtive
+%  offsets, while "+10+10", "++10++10", or "--10--10" will generate positive
+%  offsets.
+%
 %  The format of the ParseGeometry method is:
 %
 %      MagickStatusType ParseGeometry(const char *geometry,
@@ -908,15 +952,21 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       /*
         Parse xi value.
       */
-      if ((*p == '+') || (*p == ',') || (*p == '/') || (*p == ':') )
+      if ((*p == ',') || (*p == '/') || (*p == ':') )
         p++;
+      while ((*p == '+') || (*p == '-'))
+        {
+          if (*p == '-')
+            flags^=XiNegative;  /* negate sign */
+          p++;
+        }
       q=p;
       value=StringToDouble(p,&p);
       if (p != q)
         {
           flags|=XiValue;
-          if (*q == '-')
-            flags|=XiNegative;
+          if ( (flags&XiNegative) != 0 )
+            value = -value;
           geometry_info->xi=value;
         }
       while (isspace((int) ((unsigned char) *p)) != 0)
@@ -927,17 +977,22 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
           /*
             Parse psi value.
           */
-          if ((*p == '+') || (*p == ',') || (*p == '/') || (*p == ':'))
+          if ((*p == ',') || (*p == '/') || (*p == ':'))
             p++;
+          while ((*p == '+') || (*p == '-'))
+            {
+              if (*p == '-')
+                flags^=PsiNegative;  /* negate sign */
+              p++;
+            }
           q=p;
           value=StringToDouble(p,&p);
-          if (p != q)
-            {
-              flags|=PsiValue;
-              if (*q == '-')
-                flags|=PsiNegative;
-              geometry_info->psi=value;
-            }
+          if (p != q) {
+            flags|=PsiValue;
+            if ( (flags&PsiNegative) != 0 )
+              value = -value;
+            geometry_info->psi=value;
+          }
         }
       while (isspace((int) ((unsigned char) *p)) != 0)
         p++;
@@ -947,17 +1002,22 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
           /*
             Parse chi value.
           */
-          if ((*p == '+') || (*p == ',') || (*p == '/') || (*p == ':'))
+          if ((*p == ',') || (*p == '/') || (*p == ':'))
             p++;
+          while ((*p == '+') || (*p == '-'))
+            {
+              if (*p == '-')
+                flags^=ChiNegative;  /* negate sign */
+              p++;
+            }
           q=p;
           value=StringToDouble(p,&p);
-          if (p != q)
-            {
-              flags|=ChiValue;
-              if (*q == '-')
-                flags|=ChiNegative;
-              geometry_info->chi=value;
-            }
+          if (p != q) {
+            flags|=ChiValue;
+            if ( (flags&ChiNegative) != 0 )
+              value = -value;
+            geometry_info->chi=value;
+          }
         }
     }
   if (strchr(pedantic_geometry,':') != (char *) NULL)
@@ -981,6 +1041,18 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       flags|=SigmaValue;
       flags&=(~XiValue);
     }
+#if 0
+  /* Debugging Geometry */
+  fprintf(stderr,"ParseGeometry...\n");
+  fprintf(stderr,"Flags: %c %c %s %s %s\n",
+       (flags&RhoValue)?'W':' ',(flags&SigmaValue)?'H':' ',
+       (flags&XiValue)?((flags&XiNegative)?"-X":"+X"):"  ",
+       (flags&PsiValue)?((flags&PsiNegative)?"-Y":"+Y"):"  ",
+       (flags&ChiValue)?((flags&ChiNegative)?"-Z":"+Z"):"  ");
+  fprintf(stderr,"Geometry: %lg,%lg,%lg,%lg,%lg\n",
+       geometry_info->rho,geometry_info->sigma,
+       geometry_info->xi,geometry_info->psi,geometry_info->chi);
+#endif
   return(flags);
 }
 
@@ -1104,7 +1176,7 @@ MagickExport MagickStatusType ParseGravityGeometry(const Image *image,
 %  image within the specified geometry width and height.
 %
 %  Flags are interpreted...
-%     %   geometry size is given percentage of original image size
+%     %   geometry size is given percentage of original width and height given
 %     !   do not try to preserve aspect ratio
 %     <   only enlarge images smaller that geometry
 %     >   only shrink images larger than geometry
