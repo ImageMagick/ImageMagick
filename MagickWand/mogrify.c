@@ -3473,6 +3473,7 @@ static MagickBooleanType MogrifyUsage(void)
       "-encoding type       text encoding type",
       "-endian type         endianness (MSB or LSB) of the image",
       "-family name         render text with this font family",
+      "-features distance   analyze image features (e.g. contrast, correlation)",
       "-fill color          color to use when filling a graphic primitive",
       "-filter type         use this filter when resizing an image",
       "-font name           render text with this font",
@@ -4573,6 +4574,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowMogrifyException(OptionError,"MissingArgument",option);
+            break;
+          }
+        if (LocaleCompare("features",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("fill",option+1) == 0)
