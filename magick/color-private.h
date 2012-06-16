@@ -214,8 +214,8 @@ static inline Quantum PixelIntensityToQuantum(const PixelPacket *pixel)
   if ((red == green) && (green == blue))
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if ((red == green) && (green == blue))
-    return(red);
-  return((Quantum) (0.298839*red+0.586811*green+0.114350*blue+0.5));
+    return(ClampToQuantum(red));
+  return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue+0.5));
 #else
   {
     double
@@ -226,7 +226,7 @@ static inline Quantum PixelIntensityToQuantum(const PixelPacket *pixel)
     beta=green-blue;
     if ((fabs(alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
       return(red);
-    return((Quantum) (0.298839*red+0.586811*green+0.114350*blue));
+    return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
   }
 #endif
 }
