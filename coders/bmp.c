@@ -1100,7 +1100,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
           if (q == (Quantum *) NULL)
             break;
-          for (x = (ssize_t)image->columns; x != 0; --x)
+          for (x=(ssize_t) image->columns; x != 0; --x)
           {
             index=ConstrainColormapIndex(image,*p++,exception);
             SetPixelIndex(image,index,q);

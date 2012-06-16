@@ -123,7 +123,7 @@ print("Portable graymap format (gray scale), ASCII format ...\n");
 testReadWrite( 'PGM:input_p2.pgm',
   'PGM:output_p2.pgm',
   q/compression=>'None'/,
-  '7a2979a50795593006e3e2bcc8c5d700bc21faa08de4de3bcb940ab65a980bef');
+  'a52f1015dcd3290c136b892874b0ef06516d28a846a2a7383d896267a5299aba');
 
 print("Apple Macintosh QuickDraw/PICT file ...\n");
 ++$test;
@@ -144,7 +144,7 @@ print("Portable graymap format (gray scale), binary format ...\n");
 testReadWrite( 'PGM:input_p5.pgm',
   'PGM:output_p5.pgm',
   q//,
-  '7a2979a50795593006e3e2bcc8c5d700bc21faa08de4de3bcb940ab65a980bef');
+  'a52f1015dcd3290c136b892874b0ef06516d28a846a2a7383d896267a5299aba');
 
 print("Portable pixmap format (color), binary format ...\n");
 ++$test;

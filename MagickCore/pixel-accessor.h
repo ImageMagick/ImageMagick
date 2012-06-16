@@ -251,9 +251,9 @@ static inline Quantum GetPixelIntensity(const Image *restrict image,
     return(pixel[image->channel_map[GrayPixelChannel].offset]);
   if (image->colorspace != sRGBColorspace)
     {
-      red=pixel[image->channel_map[RedPixelChannel].offset];
-      green=pixel[image->channel_map[GreenPixelChannel].offset];
-      blue=pixel[image->channel_map[BluePixelChannel].offset];
+      red=(double) pixel[image->channel_map[RedPixelChannel].offset];
+      green=(double) pixel[image->channel_map[GreenPixelChannel].offset];
+      blue=(double) pixel[image->channel_map[BluePixelChannel].offset];
     }
   else
     {
@@ -292,9 +292,9 @@ static inline Quantum GetPixelLuminance(const Image *restrict image,
 
   if (image->colorspace != sRGBColorspace)
     {
-      red=pixel[image->channel_map[RedPixelChannel].offset];
-      green=pixel[image->channel_map[GreenPixelChannel].offset];
-      blue=pixel[image->channel_map[BluePixelChannel].offset];
+      red=(double) pixel[image->channel_map[RedPixelChannel].offset];
+      green=(double) pixel[image->channel_map[GreenPixelChannel].offset];
+      blue=(double) pixel[image->channel_map[BluePixelChannel].offset];
     }
   else
     {
