@@ -441,8 +441,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     type=ParseCommandOption(MagickColorspaceOptions,MagickFalse,colorspace);
     if (type < 0)
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    image->colorspace=(ColorspaceType) type;
     (void) SetImageBackgroundColor(image,exception);
+    (void) SetImageColorspace(image,(ColorspaceType) type,exception);
     GetPixelInfo(image,&pixel);
     range=GetQuantumRange(image->depth);
     for (y=0; y < (ssize_t) image->rows; y++)
