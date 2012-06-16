@@ -25,6 +25,7 @@ extern "C" {
 #include <magick/image.h>
 #include <magick/color.h>
 #include <magick/exception-private.h>
+#include <magick/pixel-private.h>
 
 static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
   const PixelPacket *q)
@@ -107,63 +108,125 @@ static inline MagickBooleanType IsMagickGray(const MagickPixelPacket *pixel)
 static inline MagickRealType MagickPixelIntensity(
   const MagickPixelPacket *pixel)
 {
-  return((MagickRealType) (0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue));
+  double
+    blue,
+    green,
+    red;
+
+  if (pixel->colorspace != sRGBColorspace)
+    {
+      red=pixel->red;
+      green=pixel->green;
+      blue=pixel->blue;
+    }
+  else
+    {
+      red=QuantumRange*sRGBDecompanding(QuantumScale*pixel->red);
+      green=QuantumRange*sRGBDecompanding(QuantumScale*pixel->green);
+      blue=QuantumRange*sRGBDecompanding(QuantumScale*pixel->blue);
+    }
+  return((MagickRealType) (0.298839*red+0.586811*green+0.114350*blue));
 }
 
 static inline Quantum MagickPixelIntensityToQuantum(
   const MagickPixelPacket *pixel)
 {
+  double
+    blue,
+    green,
+    red;
+
+  if (pixel->colorspace != sRGBColorspace)
+    {
+      red=pixel->red;
+      green=pixel->green;
+      blue=pixel->blue;
+    }
+  else
+    {
+      red=QuantumRange*sRGBDecompanding(QuantumScale*pixel->red);
+      green=QuantumRange*sRGBDecompanding(QuantumScale*pixel->green);
+      blue=QuantumRange*sRGBDecompanding(QuantumScale*pixel->blue);
+    }
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) (0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue+0.5));
+  return((Quantum) (0.298839*red+0.586811*green+0.114350*blue+0.5));
 #else
-  return((Quantum) (0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue));
+  return((Quantum) (0.298839*red+0.586811*green+0.114350*blue));
 #endif
 }
 
 static inline MagickRealType MagickPixelLuminance(
   const MagickPixelPacket *pixel)
 {
+  double
+    blue,
+    green,
+    red;
+
   MagickRealType
     luminance;
 
-  luminance=0.21267*pixel->red+0.71516*pixel->green+0.07217*pixel->blue;
+  if (pixel->colorspace != sRGBColorspace)
+    {
+      red=pixel->red;
+      green=pixel->green;
+      blue=pixel->blue;
+    }
+  else
+    {
+      red=QuantumRange*sRGBDecompanding(QuantumScale*pixel->red);
+      green=QuantumRange*sRGBDecompanding(QuantumScale*pixel->green);
+      blue=QuantumRange*sRGBDecompanding(QuantumScale*pixel->blue);
+    }
+  luminance=0.21267*red+0.71516*green+0.07217*blue;
   return(luminance);
 }
 
 static inline MagickRealType PixelIntensity(const PixelPacket *pixel)
 {
+  double
+    blue,
+    green,
+    red;
+
   MagickRealType
     intensity;
 
-  if ((GetPixelRed(pixel) == GetPixelGreen(pixel)) &&
-      (GetPixelGreen(pixel) == GetPixelBlue(pixel)))
-    return((MagickRealType) pixel->red);
-  intensity=(MagickRealType) (0.298839*GetPixelRed(pixel)+0.586811*
-    GetPixelGreen(pixel)+0.114350*GetPixelBlue(pixel));
+  red=QuantumRange*sRGBDecompanding(QuantumScale*GetPixelRed(pixel));
+  green=QuantumRange*sRGBDecompanding(QuantumScale*GetPixelGreen(pixel));
+  blue=QuantumRange*sRGBDecompanding(QuantumScale*GetPixelBlue(pixel));
+  if ((red == green) && (green == blue))
+    return((MagickRealType) red);
+  intensity=(MagickRealType) (0.298839*red+0.586811*green+0.114350*blue);
   return(intensity);
 }
 
 static inline Quantum PixelIntensityToQuantum(const PixelPacket *pixel)
 {
+  double
+    blue,
+    green,
+    red;
+
+  red=QuantumRange*sRGBDecompanding(QuantumScale*GetPixelRed(pixel));
+  green=QuantumRange*sRGBDecompanding(QuantumScale*GetPixelGreen(pixel));
+  blue=QuantumRange*sRGBDecompanding(QuantumScale*GetPixelBlue(pixel));
+  if ((red == green) && (green == blue))
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  if ((GetPixelRed(pixel) == GetPixelGreen(pixel)) &&
-      (GetPixelGreen(pixel) == GetPixelBlue(pixel)))
-    return(GetPixelRed(pixel));
-  return((Quantum) (0.298839*GetPixelRed(pixel)+0.586811*
-    GetPixelGreen(pixel)+0.114350*GetPixelBlue(pixel)+0.5));
+  if ((red == green) && (green == blue))
+    return(red);
+  return((Quantum) (0.298839*red+0.586811*green+0.114350*blue+0.5));
 #else
   {
     double
       alpha,
       beta;
 
-    alpha=GetPixelRed(pixel)-GetPixelGreen(pixel);
-    beta=GetPixelGreen(pixel)-GetPixelBlue(pixel);
-    if ((fabs((double) alpha) <= MagickEpsilon) &&
-        (fabs(beta) <= MagickEpsilon))
-      return(GetPixelRed(pixel));
-    return((Quantum) (0.298839*GetPixelRed(pixel)+0.586811*
-      GetPixelGreen(pixel)+0.114350*GetPixelBlue(pixel)));
+    alpha=red-green;
+    beta=green-blue;
+    if ((fabs(alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
+      return(red);
+    return((Quantum) (0.298839*red+0.586811*green+0.114350*blue));
   }
 #endif
 }

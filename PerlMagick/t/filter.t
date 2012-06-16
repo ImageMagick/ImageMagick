@@ -171,7 +171,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Scale.miff', 'Scale', q/
 testFilterCompare('input.miff',  q//, 'reference/filter/Segment.miff', 'Segment', q//, 0.002, 0.02);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Shade.miff', 'Shade', q/geometry=>'30x30',gray=>'true'/, 0.002, 0.02);
+testFilterCompare('input.miff',  q//, 'reference/filter/Shade.miff', 'Shade', q/geometry=>'30x30',gray=>'true'/, 0.08, 0.3);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Sharpen.miff', 'Sharpen', q/'0.0x1.0'/, 0.05, 1.05);

@@ -51,7 +51,7 @@
 #include "validate.h"
 
 /*
- Define declarations.
+  Define declarations.
 */
 #define DistortionEpsilon  ((MagickRealType) 1.0e-5)
 
