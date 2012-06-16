@@ -255,11 +255,22 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetPixelRed(image,ClampToQuantum((MagickRealType) (QuantumRange-
+          double
+            blue,
+            green,
+            red;
+
+          red=QuantumRange*sRGBDecompanding(QuantumScale*
+            GetPixelRed(image,q));
+          green=QuantumRange*sRGBDecompanding(QuantumScale*
+            GetPixelGreen(image,q));
+          blue=QuantumRange*sRGBDecompanding(QuantumScale*
+            GetPixelBlue(image,q));
+          SetPixelCyan(image,ClampToQuantum((MagickRealType) (QuantumRange-
             GetPixelRed(image,q))),q);
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) (QuantumRange-
+          SetPixelMagenta(image,ClampToQuantum((MagickRealType) (QuantumRange-
             GetPixelGreen(image,q))),q);
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) (QuantumRange-
+          SetPixelYellow(image,ClampToQuantum((MagickRealType) (QuantumRange-
             GetPixelBlue(image,q))),q);
           q+=GetPixelChannels(image);
         }
