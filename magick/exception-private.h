@@ -22,6 +22,7 @@
 extern "C" {
 #endif
 
+#include <errno.h>
 #include "magick/log.h"
 #include "magick/string_.h"
 
