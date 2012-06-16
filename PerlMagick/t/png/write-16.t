@@ -37,7 +37,7 @@ testReadWrite( 'input_truecolor.png',
 ++$test;
 testReadWrite( 'input_mono.png',
   'output_mono.png', '',
-  'cda5c7a8ba8250de624af6dc825ad6772ebba3a7fa6da756c5b1ca228b62f8ac' );
+  'ec3bbb53ae3b1bb35810d3ab33414f3e9b147d4304881eb594844a3aa2ad6d63' );
 
 #
 # 4) Test Multiple-image Network Graphics
