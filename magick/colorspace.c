@@ -691,9 +691,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           red=QuantumRange*sRGBDecompanding(QuantumScale*GetPixelRed(q));
           green=QuantumRange*sRGBDecompanding(QuantumScale*GetPixelGreen(q));
           blue=QuantumRange*sRGBDecompanding(QuantumScale*GetPixelBlue(q));
-          SetPixelRed(q,logmap[ScaleQuantumToMap(red)]);
-          SetPixelGreen(q,logmap[ScaleQuantumToMap(green)]);
-          SetPixelBlue(q,logmap[ScaleQuantumToMap(blue)]);
+          SetPixelRed(q,logmap[ScaleQuantumToMap(ClampToQuantum(red))]);
+          SetPixelGreen(q,logmap[ScaleQuantumToMap(ClampToQuantum(green))]);
+          SetPixelBlue(q,logmap[ScaleQuantumToMap(ClampToQuantum(blue))]);
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2230,9 +2230,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           red=QuantumRange*sRGBCompanding(QuantumScale*GetPixelRed(q));
           green=QuantumRange*sRGBCompanding(QuantumScale*GetPixelGreen(q));
           blue=QuantumRange*sRGBCompanding(QuantumScale*GetPixelBlue(q));
-          SetPixelRed(q,logmap[ScaleQuantumToMap(red)]);
-          SetPixelGreen(q,logmap[ScaleQuantumToMap(green)]);
-          SetPixelBlue(q,logmap[ScaleQuantumToMap(blue)]);
+          SetPixelRed(q,logmap[ScaleQuantumToMap(ClampToQuantum(red))]);
+          SetPixelGreen(q,logmap[ScaleQuantumToMap(ClampToQuantum(green))]);
+          SetPixelBlue(q,logmap[ScaleQuantumToMap(ClampToQuantum(blue))]);
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
