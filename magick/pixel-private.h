@@ -22,12 +22,12 @@
 extern "C" {
 #endif
 
-#include <magick/exception-private.h>
-#include <magick/image.h>
-#include <magick/color.h>
-#include <magick/image-private.h>
-#include <magick/memory_.h>
-#include <magick/quantum-private.h>
+#include "magick/exception-private.h"
+#include "magick/image.h"
+#include "magick/color.h"
+#include "magick/image-private.h"
+#include "magick/memory_.h"
+#include "magick/quantum-private.h"
 
 static inline MagickPixelPacket *CloneMagickPixelPacket(
   const MagickPixelPacket *pixel)
