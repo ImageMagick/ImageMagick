@@ -85,7 +85,7 @@
 MagickExport void ConvertHSBToRGB(const double hue,const double saturation,
   const double brightness,Quantum *red,Quantum *green,Quantum *blue)
 {
-  MagickRealType
+  double
     f,
     h,
     p,
@@ -100,7 +100,7 @@ MagickExport void ConvertHSBToRGB(const double hue,const double saturation,
   assert(blue != (Quantum *) NULL);
   if (saturation == 0.0)
     {
-      *red=ClampToQuantum((MagickRealType) QuantumRange*brightness);
+      *red=ClampToQuantum(QuantumRange*brightness);
       *green=(*red);
       *blue=(*red);
       return;
@@ -115,44 +115,44 @@ MagickExport void ConvertHSBToRGB(const double hue,const double saturation,
     case 0:
     default:
     {
-      *red=ClampToQuantum((MagickRealType) QuantumRange*brightness);
-      *green=ClampToQuantum((MagickRealType) QuantumRange*t);
-      *blue=ClampToQuantum((MagickRealType) QuantumRange*p);
+      *red=ClampToQuantum(QuantumRange*sRGBCompanding(brightness));
+      *green=ClampToQuantum(QuantumRange*sRGBCompanding(t));
+      *blue=ClampToQuantum(QuantumRange*sRGBCompanding(p));
       break;
     }
     case 1:
     {
-      *red=ClampToQuantum((MagickRealType) QuantumRange*q);
-      *green=ClampToQuantum((MagickRealType) QuantumRange*brightness);
-      *blue=ClampToQuantum((MagickRealType) QuantumRange*p);
+      *red=ClampToQuantum(QuantumRange*sRGBCompanding(q));
+      *green=ClampToQuantum(QuantumRange*sRGBCompanding(brightness));
+      *blue=ClampToQuantum(QuantumRange*sRGBCompanding(p));
       break;
     }
     case 2:
     {
-      *red=ClampToQuantum((MagickRealType) QuantumRange*p);
-      *green=ClampToQuantum((MagickRealType) QuantumRange*brightness);
-      *blue=ClampToQuantum((MagickRealType) QuantumRange*t);
+      *red=ClampToQuantum(QuantumRange*sRGBCompanding(p));
+      *green=ClampToQuantum(QuantumRange*sRGBCompanding(brightness));
+      *blue=ClampToQuantum(QuantumRange*sRGBCompanding(t));
       break;
     }
     case 3:
     {
-      *red=ClampToQuantum((MagickRealType) QuantumRange*p);
-      *green=ClampToQuantum((MagickRealType) QuantumRange*q);
-      *blue=ClampToQuantum((MagickRealType) QuantumRange*brightness);
+      *red=ClampToQuantum(QuantumRange*sRGBCompanding(p));
+      *green=ClampToQuantum(QuantumRange*sRGBCompanding(q));
+      *blue=ClampToQuantum(QuantumRange*sRGBCompanding(brightness));
       break;
     }
     case 4:
     {
-      *red=ClampToQuantum((MagickRealType) QuantumRange*t);
-      *green=ClampToQuantum((MagickRealType) QuantumRange*p);
-      *blue=ClampToQuantum((MagickRealType) QuantumRange*brightness);
+      *red=ClampToQuantum(QuantumRange*sRGBCompanding(t));
+      *green=ClampToQuantum(QuantumRange*sRGBCompanding(p));
+      *blue=ClampToQuantum(QuantumRange*sRGBCompanding(brightness));
       break;
     }
     case 5:
     {
-      *red=ClampToQuantum((MagickRealType) QuantumRange*brightness);
-      *green=ClampToQuantum((MagickRealType) QuantumRange*p);
-      *blue=ClampToQuantum((MagickRealType) QuantumRange*q);
+      *red=ClampToQuantum(QuantumRange*sRGBCompanding(brightness));
+      *green=ClampToQuantum(QuantumRange*sRGBCompanding(p));
+      *blue=ClampToQuantum(QuantumRange*sRGBCompanding(q));
       break;
     }
   }
@@ -186,8 +186,7 @@ MagickExport void ConvertHSBToRGB(const double hue,const double saturation,
 %
 */
 
-static inline MagickRealType ConvertHueToRGB(MagickRealType m1,
-  MagickRealType m2,MagickRealType hue)
+static inline double ConvertHueToRGB(double m1,double m2,double hue)
 {
   if (hue < 0.0)
     hue+=1.0;
@@ -205,7 +204,7 @@ static inline MagickRealType ConvertHueToRGB(MagickRealType m1,
 MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
   const double lightness,Quantum *red,Quantum *green,Quantum *blue)
 {
-  MagickRealType
+  double
     b,
     g,
     r,
@@ -220,7 +219,7 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
   assert(blue != (Quantum *) NULL);
   if (saturation == 0)
     {
-      *red=ClampToQuantum((MagickRealType) QuantumRange*lightness);
+      *red=ClampToQuantum(QuantumRange*lightness);
       *green=(*red);
       *blue=(*red);
       return;
@@ -233,9 +232,9 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
   r=ConvertHueToRGB(m1,m2,hue+1.0/3.0);
   g=ConvertHueToRGB(m1,m2,hue);
   b=ConvertHueToRGB(m1,m2,hue-1.0/3.0);
-  *red=ClampToQuantum((MagickRealType) QuantumRange*r);
-  *green=ClampToQuantum((MagickRealType) QuantumRange*g);
-  *blue=ClampToQuantum((MagickRealType) QuantumRange*b);
+  *red=ClampToQuantum(QuantumRange*sRGBCompanding(r));
+  *green=ClampToQuantum(QuantumRange*sRGBCompanding(g));
+  *blue=ClampToQuantum(QuantumRange*sRGBCompanding(b));
 }
 
 /*
@@ -268,7 +267,7 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
 MagickExport void ConvertHWBToRGB(const double hue,const double whiteness,
   const double blackness,Quantum *red,Quantum *green,Quantum *blue)
 {
-  MagickRealType
+  double
     b,
     f,
     g,
@@ -288,9 +287,9 @@ MagickExport void ConvertHWBToRGB(const double hue,const double whiteness,
   v=1.0-blackness;
   if (hue == -1.0)
     {
-      *red=ClampToQuantum((MagickRealType) QuantumRange*v);
-      *green=ClampToQuantum((MagickRealType) QuantumRange*v);
-      *blue=ClampToQuantum((MagickRealType) QuantumRange*v);
+      *red=ClampToQuantum(QuantumRange*sRGBCompanding(v));
+      *green=ClampToQuantum(QuantumRange*sRGBCompanding(v));
+      *blue=ClampToQuantum(QuantumRange*sRGBCompanding(v));
       return;
     }
   i=(ssize_t) floor(6.0*hue);
@@ -309,9 +308,9 @@ MagickExport void ConvertHWBToRGB(const double hue,const double whiteness,
     case 4: r=n; g=whiteness; b=v; break;
     case 5: r=v; g=whiteness; b=n; break;
   }
-  *red=ClampToQuantum((MagickRealType) QuantumRange*r);
-  *green=ClampToQuantum((MagickRealType) QuantumRange*g);
-  *blue=ClampToQuantum((MagickRealType) QuantumRange*b);
+  *red=ClampToQuantum(QuantumRange*sRGBCompanding(r));
+  *green=ClampToQuantum(QuantumRange*sRGBCompanding(g));
+  *blue=ClampToQuantum(QuantumRange*sRGBCompanding(b));
 }
 
 /*
@@ -345,10 +344,13 @@ MagickExport void ConvertHWBToRGB(const double hue,const double whiteness,
 MagickExport void ConvertRGBToHSB(const Quantum red,const Quantum green,
   const Quantum blue,double *hue,double *saturation,double *brightness)
 {
-  MagickRealType
+  double
+    b,
     delta,
+    g,
     max,
-    min;
+    min,
+    r;
 
   /*
     Convert RGB to HSB colorspace.
@@ -359,26 +361,29 @@ MagickExport void ConvertRGBToHSB(const Quantum red,const Quantum green,
   *hue=0.0;
   *saturation=0.0;
   *brightness=0.0;
-  min=(MagickRealType) (red < green ? red : green);
-  if ((MagickRealType) blue < min)
-    min=(MagickRealType) blue;
-  max=(MagickRealType) (red > green ? red : green);
-  if ((MagickRealType) blue > max)
-    max=(MagickRealType) blue;
+  r=QuantumRange*sRGBDecompanding(QuantumScale*red);
+  g=QuantumRange*sRGBDecompanding(QuantumScale*green);
+  b=QuantumRange*sRGBDecompanding(QuantumScale*blue);
+  min=r < g ? r : g;
+  if (b < min)
+    min=b;
+  max=r > g ? r : g;
+  if (b > max)
+    max=b;
   if (max == 0.0)
     return;
   delta=max-min;
-  *saturation=(double) (delta/max);
-  *brightness=(double) (QuantumScale*max);
+  *saturation=delta/max;
+  *brightness=QuantumScale*max;
   if (delta == 0.0)
     return;
-  if ((MagickRealType) red == max)
-    *hue=(double) ((green-(MagickRealType) blue)/delta);
+  if (r == max)
+    *hue=(g-b)/delta;
   else
-    if ((MagickRealType) green == max)
-      *hue=(double) (2.0+(blue-(MagickRealType) red)/delta);
+    if (g == max)
+      *hue=2.0+(b-r)/delta;
     else
-      *hue=(double) (4.0+(red-(MagickRealType) green)/delta);
+      *hue=4.0+(r-g)/delta;
   *hue/=6.0;
   if (*hue < 0.0)
     *hue+=1.0;
@@ -430,7 +435,7 @@ static inline double MagickMin(const double x,const double y)
 MagickExport void ConvertRGBToHSL(const Quantum red,const Quantum green,
   const Quantum blue,double *hue,double *saturation,double *lightness)
 {
-  MagickRealType
+  double
     b,
     delta,
     g,
@@ -444,9 +449,9 @@ MagickExport void ConvertRGBToHSL(const Quantum red,const Quantum green,
   assert(hue != (double *) NULL);
   assert(saturation != (double *) NULL);
   assert(lightness != (double *) NULL);
-  r=QuantumScale*red;
-  g=QuantumScale*green;
-  b=QuantumScale*blue;
+  r=sRGBDecompanding(QuantumScale*red);
+  g=sRGBDecompanding(QuantumScale*green);
+  b=sRGBDecompanding(QuantumScale*blue);
   max=MagickMax(r,MagickMax(g,b));
   min=MagickMin(r,MagickMin(g,b));
   *lightness=(double) ((min+max)/2.0);
@@ -508,11 +513,12 @@ MagickExport void ConvertRGBToHSL(const Quantum red,const Quantum green,
 MagickExport void ConvertRGBToHWB(const Quantum red,const Quantum green,
   const Quantum blue,double *hue,double *whiteness,double *blackness)
 {
-  long
-    i;
-
-  MagickRealType
+  double
+    b,
     f,
+    g,
+    p,
+    r,
     v,
     w;
 
@@ -522,10 +528,11 @@ MagickExport void ConvertRGBToHWB(const Quantum red,const Quantum green,
   assert(hue != (double *) NULL);
   assert(whiteness != (double *) NULL);
   assert(blackness != (double *) NULL);
-  w=(MagickRealType) MagickMin((double) red,MagickMin((double) green,(double)
-    blue));
-  v=(MagickRealType) MagickMax((double) red,MagickMax((double) green,(double)
-    blue));
+  r=QuantumRange*sRGBDecompanding(QuantumScale*red);
+  g=QuantumRange*sRGBDecompanding(QuantumScale*green);
+  b=QuantumRange*sRGBDecompanding(QuantumScale*blue);
+  w=MagickMin(r,MagickMin(g,b));
+  v=MagickMax(r,MagickMax(g,b));
   *blackness=1.0-QuantumScale*v;
   *whiteness=QuantumScale*w;
   if (v == w)
@@ -533,11 +540,9 @@ MagickExport void ConvertRGBToHWB(const Quantum red,const Quantum green,
       *hue=(-1.0);
       return;
     }
-  f=((MagickRealType) red == w) ? green-(MagickRealType) blue :
-    (((MagickRealType) green == w) ? blue-(MagickRealType) red : red-
-    (MagickRealType) green);
-  i=((MagickRealType) red == w) ? 3 : (((MagickRealType) green == w) ? 5 : 1);
-  *hue=((double) i-f/(v-1.0*w))/6.0;
+  f=(r == w) ? g-b : ((g == w) ? b-r : r-g);
+  p=(r == w) ? 3.0 : ((g == w) ? 5.0 : 1.0);
+  *hue=(p-f/(v-1.0*w))/6.0;
 }
 
 /*
@@ -589,8 +594,7 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %  The format of the GenerateDifferentialNoise method is:
 %
 %      double GenerateDifferentialNoise(RandomInfo *random_info,
-%        const Quantum pixel,const NoiseType noise_type,
-%        const MagickRealType attenuate)
+%        const Quantum pixel,const NoiseType noise_type,const double attenuate)
 %
 %  A description of each parameter follows:
 %
@@ -604,14 +608,14 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %
 */
 MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
-  const Quantum pixel,const NoiseType noise_type,const MagickRealType attenuate)
+  const Quantum pixel,const NoiseType noise_type,const double attenuate)
 {
 #define SigmaUniform  (attenuate*0.015625)
 #define SigmaGaussian  (attenuate*0.015625)
 #define SigmaImpulse  (attenuate*0.1)
 #define SigmaLaplacian (attenuate*0.0390625)
 #define SigmaMultiplicativeGaussian  (attenuate*0.5)
-#define SigmaPoisson  (attenuate*12.75)
+#define SigmaPoisson  (attenuate*12.5)
 #define TauGaussian  (attenuate*0.078125)
 
   double
@@ -626,7 +630,7 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
     case UniformNoise:
     default:
     {
-      noise=(double) pixel+QuantumRange*SigmaUniform*(alpha-0.5);
+      noise=(double) (pixel+QuantumRange*SigmaUniform*(alpha-0.5));
       break;
     }
     case GaussianNoise:
@@ -641,8 +645,8 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
       gamma=sqrt(-2.0*log(alpha));
       sigma=gamma*cos((double) (2.0*MagickPI*beta));
       tau=gamma*sin((double) (2.0*MagickPI*beta));
-      noise=(double) pixel+sqrt((double) pixel)*SigmaGaussian*sigma+
-        QuantumRange*TauGaussian*tau;
+      noise=(double) (pixel+sqrt((double) pixel)*SigmaGaussian*sigma+
+        QuantumRange*TauGaussian*tau);
       break;
     }
     case ImpulseNoise:
@@ -661,17 +665,17 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
       if (alpha <= 0.5)
         {
           if (alpha <= MagickEpsilon)
-            noise=(double) pixel-(double) QuantumRange;
+            noise=(double) (pixel-QuantumRange);
           else
-            noise=(double) pixel+QuantumRange*SigmaLaplacian*
-              log(2.0*alpha)+0.5;
+            noise=(double) (pixel+QuantumRange*SigmaLaplacian*
+              log(2.0*alpha)+0.5);
           break;
         }
       beta=1.0-alpha;
       if (beta <= (0.5*MagickEpsilon))
         noise=(double) (pixel+QuantumRange);
       else
-        noise=(double) pixel-QuantumRange*SigmaLaplacian*log(2.0*beta)+0.5;
+        noise=(double) (pixel-QuantumRange*SigmaLaplacian*log(2.0*beta)+0.5);
       break;
     }
     case MultiplicativeGaussianNoise:
@@ -680,8 +684,8 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
       if (alpha > MagickEpsilon)
         sigma=sqrt(-2.0*log(alpha));
       beta=GetPseudoRandomValue(random_info);
-      noise=(double) pixel+pixel*SigmaMultiplicativeGaussian*sigma*
-        cos((double) (2.0*MagickPI*beta))/2.0;
+      noise=(double) (pixel+pixel*SigmaMultiplicativeGaussian*sigma*
+        cos((double) (2.0*MagickPI*beta))/2.0);
       break;
     }
     case PoissonNoise:
@@ -703,7 +707,7 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
     }
     case RandomNoise:
     {
-      noise=(double) QuantumRange*alpha;
+      noise=(double) (QuantumRange*alpha);
       break;
     }
   }
@@ -767,7 +771,7 @@ MagickExport size_t GetOptimalKernelWidth1D(const double radius,
   if (gamma <= MagickEpsilon)
     return(3UL);
   alpha=MagickEpsilonReciprocal(2.0*gamma*gamma);
-  beta=(double) MagickEpsilonReciprocal(MagickSQ2PI*gamma);
+  beta=(double) MagickEpsilonReciprocal((MagickRealType) MagickSQ2PI*gamma);
   for (width=5; ; )
   {
     normalize=0.0;
@@ -807,7 +811,7 @@ MagickExport size_t GetOptimalKernelWidth2D(const double radius,
   if (gamma <= MagickEpsilon)
     return(3UL);
   alpha=MagickEpsilonReciprocal(2.0*gamma*gamma);
-  beta=(double) MagickEpsilonReciprocal(Magick2PI*gamma*gamma);
+  beta=(double) MagickEpsilonReciprocal((MagickRealType) Magick2PI*gamma*gamma);
   for (width=5; ; )
   {
     normalize=0.0;

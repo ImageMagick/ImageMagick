@@ -31,4 +31,4 @@ testReadCompare('input.jpc', '../reference/jp2/read_jpc.miff', q//, 0.0001, 0.00
 # 
 ++$test;
 print( " ...\n" );
-testReadCompare('input.pgx', '../reference/jp2/read_pgx.miff', q//, 0.0001, 0.005);
+testReadCompare('input.pgx', '../reference/jp2/read_pgx.miff', q//, 0.06, 0.3);

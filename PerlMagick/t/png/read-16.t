@@ -18,7 +18,7 @@ chdir 't/png' || die 'Cd failed';
 # 1) Test Monochrome PNG
 # 
 testRead( 'input_mono.png',
-  'ec3bbb53ae3b1bb35810d3ab33414f3e9b147d4304881eb594844a3aa2ad6d63' );
+  'cda5c7a8ba8250de624af6dc825ad6772ebba3a7fa6da756c5b1ca228b62f8ac' );
 
 #
 # 2) Test 256 color pseudocolor PNG

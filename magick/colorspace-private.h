@@ -25,6 +25,7 @@ extern "C" {
 #include <magick/image.h>
 #include <magick/image-private.h>
 #include <magick/pixel.h>
+#include <magick/pixel-private.h>
 
 static inline void ConvertsRGBToCMYK(MagickPixelPacket *pixel)
 {
@@ -39,9 +40,9 @@ static inline void ConvertsRGBToCMYK(MagickPixelPacket *pixel)
       pixel->index=(MagickRealType) QuantumRange;
       return;
     }
-  cyan=(MagickRealType) (1.0-QuantumScale*pixel->red);
-  magenta=(MagickRealType) (1.0-QuantumScale*pixel->green);
-  yellow=(MagickRealType) (1.0-QuantumScale*pixel->blue);
+  cyan=(MagickRealType) (1.0-sRGBDecompanding(QuantumScale*pixel->red));
+  magenta=(MagickRealType) (1.0-sRGBDecompanding(QuantumScale*pixel->green));
+  yellow=(MagickRealType) (1.0-sRGBDecompanding(QuantumScale*pixel->blue));
   black=cyan;
   if (magenta < black)
     black=magenta;
