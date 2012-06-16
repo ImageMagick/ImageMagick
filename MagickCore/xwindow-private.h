@@ -33,6 +33,7 @@ extern "C" {
 #include <X11/Xutil.h>
 #include "MagickCore/exception.h"
 #include "MagickCore/geometry.h"
+#include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantize.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -597,10 +598,18 @@ extern MagickExport XrmDatabase
 
 static inline MagickRealType XPixelIntensity(const XColor *pixel)
 {
+  double
+    blue,
+    green,
+    red;
+
   MagickRealType
     intensity;
 
-  intensity=0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue;
+  red=QuantumRange*sRGBDecompanding(QuantumScale*pixel->red);
+  green=QuantumRange*sRGBDecompanding(QuantumScale*pixel->green);
+  blue=QuantumRange*sRGBDecompanding(QuantumScale*pixel->blue);
+  intensity=0.298839*red+0.586811*green+0.114350*blue;
   return(intensity);
 }
 
