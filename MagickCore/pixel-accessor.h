@@ -184,27 +184,57 @@ static inline PixelTrait GetPixelIndexTraits(const Image *restrict image)
 static inline Quantum GetPixelInfoIntensity(
   const PixelInfo *restrict pixel_info)
 {
+  double
+    blue,
+    green,
+    red;
+
+  if (pixel_info->colorspace != sRGBColorspace)
+    {
+      red=pixel_info->red;
+      green=pixel_info->green;
+      blue=pixel_info->blue;
+    }
+  else
+    {
+      red=QuantumRange*sRGBDecompanding(QuantumScale*pixel_info->red);
+      green=QuantumRange*sRGBDecompanding(QuantumScale*pixel_info->green);
+      blue=QuantumRange*sRGBDecompanding(QuantumScale*pixel_info->blue);
+    }
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) (0.298839*pixel_info->red+0.586811*pixel_info->green+
-    0.114350*pixel_info->blue+0.5));
+  return((Quantum) (0.298839*red+0.586811*green+0.114350*blue+0.5));
 #else
-  return((Quantum) (0.298839*pixel_info->red+0.586811*pixel_info->green+
-    0.114350*pixel_info->blue));
+  return((Quantum) (0.298839*red+0.586811*green+0.114350*blue));
 #endif
 }
 
 static inline Quantum GetPixelInfoLuminance(
   const PixelInfo *restrict pixel_info)
 {
+  double
+    blue,
+    green,
+    red;
+
   Quantum
     luminance;
 
+  if (pixel_info->colorspace != sRGBColorspace)
+    {
+      red=pixel_info->red;
+      green=pixel_info->green;
+      blue=pixel_info->blue;
+    }
+  else
+    {
+      red=QuantumRange*sRGBDecompanding(QuantumScale*pixel_info->red);
+      green=QuantumRange*sRGBDecompanding(QuantumScale*pixel_info->green);
+      blue=QuantumRange*sRGBDecompanding(QuantumScale*pixel_info->blue);
+    }
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  luminance=(Quantum) (0.21267*pixel_info->red+0.71516*pixel_info->green+
-    0.07217*pixel_info->blue+0.5);
+  luminance=(Quantum) (0.21267*red+0.71516*green+0.07217*blue+0.5);
 #else
-  luminance=(Quantum) (0.21267*pixel_info->red+0.71516*pixel_info->green+
-    0.07217*pixel_info->blue);
+  luminance=(Quantum) (0.21267*red+0.71516*green+0.07217*blue);
 #endif
   return((Quantum) luminance);
 }
@@ -212,28 +242,42 @@ static inline Quantum GetPixelInfoLuminance(
 static inline Quantum GetPixelIntensity(const Image *restrict image,
   const Quantum *restrict pixel)
 {
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  double
+    blue,
+    green,
+    red;
+
   if (image->colorspace == GRAYColorspace)
     return(pixel[image->channel_map[GrayPixelChannel].offset]);
-  return((Quantum) (0.298839*pixel[image->channel_map[RedPixelChannel].offset]+
-    0.586811*pixel[image->channel_map[GreenPixelChannel].offset]+0.114350*
-    pixel[image->channel_map[BluePixelChannel].offset]+0.5));
+  if (image->colorspace != sRGBColorspace)
+    {
+      red=pixel[image->channel_map[RedPixelChannel].offset];
+      green=pixel[image->channel_map[GreenPixelChannel].offset];
+      blue=pixel[image->channel_map[BluePixelChannel].offset];
+    }
+  else
+    {
+      red=QuantumRange*sRGBDecompanding(QuantumScale*
+        pixel[image->channel_map[RedPixelChannel].offset]);
+      green=QuantumRange*sRGBDecompanding(QuantumScale*
+        pixel[image->channel_map[GreenPixelChannel].offset]);
+      blue=QuantumRange*sRGBDecompanding(QuantumScale*
+        pixel[image->channel_map[BluePixelChannel].offset]);
+    }
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((Quantum) (0.298839*red+0.586811*green+0.114350*blue+0.5));
 #else
   {
     double
       alpha,
       beta;
 
-    alpha=pixel[image->channel_map[RedPixelChannel].offset]-(double)
-      pixel[image->channel_map[GreenPixelChannel].offset];
-    beta=pixel[image->channel_map[GreenPixelChannel].offset]-(double)
-      pixel[image->channel_map[BluePixelChannel].offset];
-    if ((fabs((double) alpha) <= MagickEpsilon) && (fabs(beta) <= MagickEpsilon))
-      return(pixel[image->channel_map[RedPixelChannel].offset]);
-    return((Quantum) (0.298839*
-      pixel[image->channel_map[RedPixelChannel].offset]+0.586811*
-      pixel[image->channel_map[GreenPixelChannel].offset]+0.114350*
-      pixel[image->channel_map[BluePixelChannel].offset]));
+    alpha=red-(double) green;
+    beta=green-(double) blue;
+    if ((fabs((double) alpha) <= MagickEpsilon) &&
+        (fabs(beta) <= MagickEpsilon))
+      return(red);
+    return((Quantum) (0.298839*red+0.586811*green+0.114350*blue));
   }
 #endif
 }
@@ -241,14 +285,30 @@ static inline Quantum GetPixelIntensity(const Image *restrict image,
 static inline Quantum GetPixelLuminance(const Image *restrict image,
   const Quantum *restrict pixel)
 {
+  double
+    blue,
+    green,
+    red;
+
+  if (image->colorspace != sRGBColorspace)
+    {
+      red=pixel[image->channel_map[RedPixelChannel].offset];
+      green=pixel[image->channel_map[GreenPixelChannel].offset];
+      blue=pixel[image->channel_map[BluePixelChannel].offset];
+    }
+  else
+    {
+      red=QuantumRange*sRGBDecompanding(QuantumScale*
+        pixel[image->channel_map[RedPixelChannel].offset]);
+      green=QuantumRange*sRGBDecompanding(QuantumScale*
+        pixel[image->channel_map[GreenPixelChannel].offset]);
+      blue=QuantumRange*sRGBDecompanding(QuantumScale*
+        pixel[image->channel_map[BluePixelChannel].offset]);
+    }
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return((Quantum) (0.21267*pixel[image->channel_map[RedPixelChannel].offset]+
-    0.71516*pixel[image->channel_map[GreenPixelChannel].offset]+0.07217*
-    pixel[image->channel_map[BluePixelChannel].offset]+0.5));
+  return((Quantum) (0.21267*red+0.71516*green+0.07217*blue+0.5));
 #else
-  return((Quantum) (0.21267*pixel[image->channel_map[RedPixelChannel].offset]+
-    0.71516*pixel[image->channel_map[GreenPixelChannel].offset]+0.07217*
-    pixel[image->channel_map[BluePixelChannel].offset]));
+  return((Quantum) (0.21267*red+0.71516*green+0.07217*blue));
 #endif
 }
 
