@@ -1576,7 +1576,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image)
       }
     if (format != '7')
       {
-        if (IssRGBColorspace(image->colorspace) == MagickFalse)
+        if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+            (IsGrayImage(image,&image->exception) == MagickFalse))
           (void) TransformImageColorspace(image,sRGBColorspace);
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g\n",
           (double) image->columns,(double) image->rows);

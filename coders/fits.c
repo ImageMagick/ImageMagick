@@ -634,6 +634,9 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
+  if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+      (IsGrayImage(image,&image->exception) == MagickFalse))
+    (void) TransformImageColorspace(image,sRGBColorspace);
   /*
     Allocate image memory.
   */
@@ -735,8 +738,6 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
     }
   else
     {
-      if (IssRGBColorspace(image->colorspace) == MagickFalse)
-        (void) TransformImageColorspace(image,sRGBColorspace);
       length=GetQuantumExtent(image,quantum_info,RedQuantum);
       for (y=(ssize_t) image->rows-1; y >= 0; y--)
       {
