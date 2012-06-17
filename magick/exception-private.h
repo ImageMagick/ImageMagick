@@ -22,6 +22,9 @@
 extern "C" {
 #endif
 
+#if defined(MAGICKCORE_HAVE_UNISTD_H)
+# include <unistd.h>
+#endif
 #include <errno.h>
 #include "magick/log.h"
 #include "magick/string_.h"
