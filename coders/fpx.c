@@ -853,8 +853,6 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
     Initialize FPX toolkit.
   */
   image->depth=8;
-  if (IssRGBColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
   memory_limit=20000000;
   fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
   if (fpx_status != FPX_OK)
@@ -870,6 +868,9 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image)
       colorspace.numberOfComponents=1;
       colorspace.theComponents[0].myColor=MONOCHROME;
     }
+  else
+    if (IssRGBColorspace(image->colorspace) == MagickFalse)
+      (void) TransformImageColorspace(image,sRGBColorspace);
   background_color.color1_value=0;
   background_color.color2_value=0;
   background_color.color3_value=0;
