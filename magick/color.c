@@ -2628,7 +2628,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
           } while (isxdigit((int) ((unsigned char) *name)) != MagickFalse);
           depth=4*(n/4);
         }
-      color->colorspace=UndefinedColorspace;
+      color->colorspace=sRGBColorspace;
       color->matte=MagickFalse;
       range=GetQuantumRange(depth);
       color->red=(MagickRealType) ScaleAnyToQuantum(pixel.red,range);
@@ -2701,6 +2701,7 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
           (QuantumRange-QuantumRange*geometry_info.chi));
       if (LocaleCompare(colorspace,"gray") == 0)
         {
+          color->colorspace=GRAYColorspace;
           color->green=color->red;
           color->blue=color->red;
           if (((flags & SigmaValue) != 0) && (color->matte != MagickFalse))

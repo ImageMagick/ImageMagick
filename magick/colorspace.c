@@ -1296,6 +1296,8 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
       image->chromaticity.white_point.y=0.3290f;
       image->chromaticity.white_point.z=0.3583f;
     }
+  if (IsGrayColorspace(colorspace) != MagickFalse)
+    image->type=GrayscaleType;
   return(SyncImagePixelCache(image,&image->exception));
 }
 
