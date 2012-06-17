@@ -45,7 +45,7 @@ testReadCompare('input.dib', 'reference/read/input_dib.miff', q//, 0.0, 0.0);
 
 print("Flexible Image Transport System ...\n");
 ++$test;
-testReadCompare('input.fits', 'reference/read/input_fits.miff', q//, 0.0, 0.0);
+testReadCompare('input.fits', 'reference/read/input_fits.miff', q//, 0.06, 0.6);
 
 print("CompuServe graphics interchange format ...\n");
 ++$test;
@@ -118,11 +118,11 @@ testReadCompare('input.pcx', 'reference/read/input_pcx.miff', q//, 0.0, 0.0);
 
 print("Portable graymap format (gray scale), ASCII format ...\n");
 ++$test;
-testReadCompare('input_p2.pgm', 'reference/read/input_pgm_p2.miff', q//, 0.0, 0.0);
+testReadCompare('input_p2.pgm', 'reference/read/input_pgm_p2.miff', q//, 0.06, 0.6);
 
 print("Portable graymap format (gray scale), binary format ...\n");
 ++$test;
-testReadCompare('input_p5.pgm', 'reference/read/input_pgm_p5.miff', q//, 0.0, 0.0);
+testReadCompare('input_p5.pgm', 'reference/read/input_pgm_p5.miff', q//, 0.06, 0.6);
 
 print("Apple Macintosh QuickDraw/PICT file ...\n");
 ++$test;

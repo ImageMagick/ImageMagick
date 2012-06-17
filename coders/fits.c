@@ -445,8 +445,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         pixel=GetFITSPixel(image,fits_info.bits_per_pixel);
-        SetPixelGray(image,ClampToQuantum(scale*(fits_info.scale*
-          (pixel-fits_info.min_data)+fits_info.zero)),q);
+        SetPixelGray(image,ClampToQuantum(scale*(fits_info.scale*(pixel-
+          fits_info.min_data)+fits_info.zero)),q);
         q+=GetPixelChannels(image);
       }
       if (SyncAuthenticPixels(image,exception) == MagickFalse)
