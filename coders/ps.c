@@ -815,6 +815,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         read_info->filename);
       if (IsPostscriptRendered(read_info->filename) == MagickFalse)
         break;
+      read_info->blob=NULL;
+      read_info->length=0;
       next=ReadImage(read_info,exception);
       (void) RelinquishUniqueFileResource(read_info->filename);
       if (next == (Image *) NULL)
