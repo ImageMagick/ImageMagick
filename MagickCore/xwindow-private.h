@@ -606,9 +606,9 @@ static inline MagickRealType XPixelIntensity(const XColor *pixel)
   MagickRealType
     intensity;
 
-  red=QuantumRange*sRGBDecompanding(QuantumScale*pixel->red);
-  green=QuantumRange*sRGBDecompanding(QuantumScale*pixel->green);
-  blue=QuantumRange*sRGBDecompanding(QuantumScale*pixel->blue);
+  red=QuantumRange*DecompandsRGB(QuantumScale*pixel->red);
+  green=QuantumRange*DecompandsRGB(QuantumScale*pixel->green);
+  blue=QuantumRange*DecompandsRGB(QuantumScale*pixel->blue);
   intensity=0.298839*red+0.586811*green+0.114350*blue;
   return(intensity);
 }
