@@ -40,6 +40,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/attribute.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/colormap.h"
@@ -330,7 +331,8 @@ static MagickBooleanType WriteFAXImage(const ImageInfo *image_info,Image *image,
     /*
       Convert MIFF to monochrome.
     */
-    if (IssRGBColorspace(image->colorspace) == MagickFalse)
+    if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+        (IsImageGray(image,exception) == MagickFalse))
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
     status=HuffmanEncodeImage(write_info,image,image,exception);
     if (GetNextImageInList(image) == (Image *) NULL)

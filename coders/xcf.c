@@ -881,7 +881,7 @@ static MagickBooleanType ReadOneLayer(const ImageInfo *image_info,Image* image,
         scene;
 
       scene=inDocInfo->number_layers-layer-1;
-      if (scene > (image_info->scene+image_info->number_scenes-1))
+      if (scene > (ssize_t) (image_info->scene+image_info->number_scenes-1))
         {
           outLayer->image=CloneImage(image,0,0,MagickTrue,exception);
           if (outLayer->image == (Image *) NULL)

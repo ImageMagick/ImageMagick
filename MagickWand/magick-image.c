@@ -7619,7 +7619,7 @@ WandExport MagickBooleanType MagickPolaroidImage(MagickWand *wand,
 %  The format of the MagickPosterizeImage method is:
 %
 %      MagickBooleanType MagickPosterizeImage(MagickWand *wand,
-%        const size_t levels,const MagickBooleanType dither)
+%        const size_t levels,const DitherMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -7628,12 +7628,12 @@ WandExport MagickBooleanType MagickPolaroidImage(MagickWand *wand,
 %    o levels: Number of color levels allowed in each channel.  Very low values
 %      (2, 3, or 4) have the most visible effect.
 %
-%    o dither: Set this integer value to something other than zero to dither
-%      the mapped image.
+%    o method: choose the dither method: UndefinedDitherMethod,
+%      NoDitherMethod, RiemersmaDitherMethod, or FloydSteinbergDitherMethod.
 %
 */
 WandExport MagickBooleanType MagickPosterizeImage(MagickWand *wand,
-  const size_t levels,const MagickBooleanType dither)
+  const size_t levels,const DitherMethod dither)
 {
   MagickBooleanType
     status;

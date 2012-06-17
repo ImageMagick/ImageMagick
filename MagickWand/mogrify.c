@@ -7442,7 +7442,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 "compose:clip-to-self")); /* if this is true */
             if (IsMagickFalse(clip_to_self)) /* or */
               clip_to_self=IfMagickFalse(IsStringNotFalse(GetImageOption(
-                mogrify_info,"compose:outside-overlay"))); /* this false */
+                mogrify_info,"compose:outside-overlay"))) ? MagickTrue : MagickFalse; /* this false */
             image=RemoveFirstImageFromList(images);
             composite_image=RemoveFirstImageFromList(images);
             if (composite_image == (Image *) NULL)
