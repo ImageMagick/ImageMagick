@@ -2257,7 +2257,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
                 for (x=0; x < (ssize_t) tile_image->columns; x++)
                 {
                   *q++=(unsigned char) GetPixelIndex(tile_image,p);
-                  q+=GetPixelChannels(image);
+                  p+=GetPixelChannels(tile_image);
                 }
               }
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
