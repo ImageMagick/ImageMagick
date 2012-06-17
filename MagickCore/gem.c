@@ -118,44 +118,44 @@ MagickPrivate void ConvertHSBTosRGB(const double hue,const double saturation,
     case 0:
     default:
     {
-      *red=QuantumRange*sRGBCompanding(brightness);
-      *green=QuantumRange*sRGBCompanding(t);
-      *blue=QuantumRange*sRGBCompanding(p);
+      *red=QuantumRange*CompandsRGB(brightness);
+      *green=QuantumRange*CompandsRGB(t);
+      *blue=QuantumRange*CompandsRGB(p);
       break;
     }
     case 1:
     {
-      *red=QuantumRange*sRGBCompanding(q);
-      *green=QuantumRange*sRGBCompanding(brightness);
-      *blue=QuantumRange*sRGBCompanding(p);
+      *red=QuantumRange*CompandsRGB(q);
+      *green=QuantumRange*CompandsRGB(brightness);
+      *blue=QuantumRange*CompandsRGB(p);
       break;
     }
     case 2:
     {
-      *red=QuantumRange*sRGBCompanding(p);
-      *green=QuantumRange*sRGBCompanding(brightness);
-      *blue=QuantumRange*sRGBCompanding(t);
+      *red=QuantumRange*CompandsRGB(p);
+      *green=QuantumRange*CompandsRGB(brightness);
+      *blue=QuantumRange*CompandsRGB(t);
       break;
     }
     case 3:
     {
-      *red=QuantumRange*sRGBCompanding(p);
-      *green=QuantumRange*sRGBCompanding(q);
-      *blue=QuantumRange*sRGBCompanding(brightness);
+      *red=QuantumRange*CompandsRGB(p);
+      *green=QuantumRange*CompandsRGB(q);
+      *blue=QuantumRange*CompandsRGB(brightness);
       break;
     }
     case 4:
     {
-      *red=QuantumRange*sRGBCompanding(t);
-      *green=QuantumRange*sRGBCompanding(p);
-      *blue=QuantumRange*sRGBCompanding(brightness);
+      *red=QuantumRange*CompandsRGB(t);
+      *green=QuantumRange*CompandsRGB(p);
+      *blue=QuantumRange*CompandsRGB(brightness);
       break;
     }
     case 5:
     {
-      *red=QuantumRange*sRGBCompanding(brightness);
-      *green=QuantumRange*sRGBCompanding(p);
-      *blue=QuantumRange*sRGBCompanding(q);
+      *red=QuantumRange*CompandsRGB(brightness);
+      *green=QuantumRange*CompandsRGB(p);
+      *blue=QuantumRange*CompandsRGB(q);
       break;
     }
   }
@@ -235,9 +235,9 @@ MagickExport void ConvertHSLTosRGB(const double hue,const double saturation,
   r=ConvertHueTosRGB(m1,m2,hue+1.0/3.0);
   g=ConvertHueTosRGB(m1,m2,hue);
   b=ConvertHueTosRGB(m1,m2,hue-1.0/3.0);
-  *red=QuantumRange*sRGBCompanding(r);
-  *green=QuantumRange*sRGBCompanding(g);
-  *blue=QuantumRange*sRGBCompanding(b);
+  *red=QuantumRange*CompandsRGB(r);
+  *green=QuantumRange*CompandsRGB(g);
+  *blue=QuantumRange*CompandsRGB(b);
 }
 
 /*
@@ -290,9 +290,9 @@ MagickPrivate void ConvertHWBTosRGB(const double hue,const double whiteness,
   v=1.0-blackness;
   if (hue == -1.0)
     {
-      *red=QuantumRange*sRGBCompanding(v);
-      *green=QuantumRange*sRGBCompanding(v);
-      *blue=QuantumRange*sRGBCompanding(v);
+      *red=QuantumRange*CompandsRGB(v);
+      *green=QuantumRange*CompandsRGB(v);
+      *blue=QuantumRange*CompandsRGB(v);
       return;
     }
   i=(ssize_t) floor(6.0*hue);
@@ -311,9 +311,9 @@ MagickPrivate void ConvertHWBTosRGB(const double hue,const double whiteness,
     case 4: r=n; g=whiteness; b=v; break;
     case 5: r=v; g=whiteness; b=n; break;
   }
-  *red=QuantumRange*sRGBCompanding(r);
-  *green=QuantumRange*sRGBCompanding(g);
-  *blue=QuantumRange*sRGBCompanding(b);
+  *red=QuantumRange*CompandsRGB(r);
+  *green=QuantumRange*CompandsRGB(g);
+  *blue=QuantumRange*CompandsRGB(b);
 }
 
 /*
@@ -364,9 +364,9 @@ MagickPrivate void ConvertsRGBToHSB(const double red,const double green,
   *hue=0.0;
   *saturation=0.0;
   *brightness=0.0;
-  r=QuantumRange*sRGBDecompanding(QuantumScale*red);
-  g=QuantumRange*sRGBDecompanding(QuantumScale*green);
-  b=QuantumRange*sRGBDecompanding(QuantumScale*blue);
+  r=QuantumRange*DecompandsRGB(QuantumScale*red);
+  g=QuantumRange*DecompandsRGB(QuantumScale*green);
+  b=QuantumRange*DecompandsRGB(QuantumScale*blue);
   min=r < g ? r : g;
   if (b < min)
     min=b;
@@ -452,9 +452,9 @@ MagickExport void ConvertsRGBToHSL(const double red,const double green,
   assert(hue != (double *) NULL);
   assert(saturation != (double *) NULL);
   assert(lightness != (double *) NULL);
-  r=sRGBDecompanding(QuantumScale*red);
-  g=sRGBDecompanding(QuantumScale*green);
-  b=sRGBDecompanding(QuantumScale*blue);
+  r=DecompandsRGB(QuantumScale*red);
+  g=DecompandsRGB(QuantumScale*green);
+  b=DecompandsRGB(QuantumScale*blue);
   max=MagickMax(r,MagickMax(g,b));
   min=MagickMin(r,MagickMin(g,b));
   *lightness=(double) ((min+max)/2.0);
@@ -531,9 +531,9 @@ MagickPrivate void ConvertsRGBToHWB(const double red,const double green,
   assert(hue != (double *) NULL);
   assert(whiteness != (double *) NULL);
   assert(blackness != (double *) NULL);
-  r=QuantumRange*sRGBDecompanding(QuantumScale*red);
-  g=QuantumRange*sRGBDecompanding(QuantumScale*green);
-  b=QuantumRange*sRGBDecompanding(QuantumScale*blue);
+  r=QuantumRange*DecompandsRGB(QuantumScale*red);
+  g=QuantumRange*DecompandsRGB(QuantumScale*green);
+  b=QuantumRange*DecompandsRGB(QuantumScale*blue);
   w=MagickMin(r,MagickMin(g,b));
   v=MagickMax(r,MagickMax(g,b));
   *blackness=1.0-QuantumScale*v;
