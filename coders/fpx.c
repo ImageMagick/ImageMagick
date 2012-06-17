@@ -853,6 +853,9 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
+  if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+      (IsImageGray(image,exception) == MagickFalse))
+    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   (void) CloseBlob(image);
   /*
     Initialize FPX toolkit.
@@ -873,9 +876,6 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
       colorspace.numberOfComponents=1;
       colorspace.theComponents[0].myColor=MONOCHROME;
     }
-  else
-    if (IssRGBColorspace(image->colorspace) == MagickFalse)
-      (void) TransformImageColorspace(image,sRGBColorspace,exception);
   background_color.color1_value=0;
   background_color.color2_value=0;
   background_color.color3_value=0;

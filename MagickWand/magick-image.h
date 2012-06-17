@@ -204,7 +204,7 @@ extern WandExport MagickBooleanType
   MagickPingImageFile(MagickWand *,FILE *),
   MagickPolaroidImage(MagickWand *,const DrawingWand *,const char *,
     const double,const PixelInterpolateMethod),
-  MagickPosterizeImage(MagickWand *,const size_t,const MagickBooleanType),
+  MagickPosterizeImage(MagickWand *,const size_t,const DitherMethod),
   MagickPreviousImage(MagickWand *),
   MagickQuantizeImage(MagickWand *,const size_t,const ColorspaceType,
     const size_t,const DitherMethod,const MagickBooleanType),

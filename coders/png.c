@@ -1131,7 +1131,7 @@ static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
   return(y);
 }
 
-static char *
+static const char *
 Magick_ColorType_from_PNG_ColorType(const int ping_colortype)
 {
   switch (ping_colortype)
