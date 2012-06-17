@@ -211,7 +211,6 @@ static inline Quantum PixelIntensityToQuantum(const PixelPacket *pixel)
   red=QuantumRange*sRGBDecompanding(QuantumScale*GetPixelRed(pixel));
   green=QuantumRange*sRGBDecompanding(QuantumScale*GetPixelGreen(pixel));
   blue=QuantumRange*sRGBDecompanding(QuantumScale*GetPixelBlue(pixel));
-  if ((red == green) && (green == blue))
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if ((red == green) && (green == blue))
     return(ClampToQuantum(red));
