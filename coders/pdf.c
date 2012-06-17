@@ -653,6 +653,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         read_info->filename,exception);
       if (IsPDFRendered(read_info->filename) == MagickFalse)
         break;
+      read_info->blob=NULL;
+      read_info->length=0;
       next=ReadImage(read_info,exception);
       (void) RelinquishUniqueFileResource(read_info->filename);
       if (next == (Image *) NULL)
