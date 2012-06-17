@@ -461,7 +461,7 @@ MagickExport MagickBooleanType GradientImage(Image *image,
     image->matte=MagickFalse;
   if ((IsPixelInfoGray(start_color) != MagickFalse) &&
       (IsPixelInfoGray(stop_color) != MagickFalse))
-    image->type=GrayscaleType;
+    SetImageColorspace(image,GRAYColorspace,exception);
   return(status);
 }
 
