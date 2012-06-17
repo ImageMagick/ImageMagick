@@ -22,26 +22,11 @@
 extern "C" {
 #endif
 
-#include "magick/exception-private.h"
 #include "magick/image.h"
 #include "magick/color.h"
 #include "magick/image-private.h"
 #include "magick/memory_.h"
 #include "magick/quantum-private.h"
-
-static inline MagickPixelPacket *CloneMagickPixelPacket(
-  const MagickPixelPacket *pixel)
-{
-  MagickPixelPacket
-    *clone_pixel;
-
-  clone_pixel=(MagickPixelPacket *) AcquireAlignedMemory(1,
-    sizeof(*clone_pixel));
-  if (clone_pixel == (MagickPixelPacket *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  *clone_pixel=(*pixel);
-  return(clone_pixel);
-}
 
 static inline MagickBooleanType IsGrayPixel(const PixelPacket *pixel)
 {
