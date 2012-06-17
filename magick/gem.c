@@ -115,44 +115,44 @@ MagickExport void ConvertHSBToRGB(const double hue,const double saturation,
     case 0:
     default:
     {
-      *red=ClampToQuantum(QuantumRange*sRGBCompanding(brightness));
-      *green=ClampToQuantum(QuantumRange*sRGBCompanding(t));
-      *blue=ClampToQuantum(QuantumRange*sRGBCompanding(p));
+      *red=ClampToQuantum(QuantumRange*CompandsRGB(brightness));
+      *green=ClampToQuantum(QuantumRange*CompandsRGB(t));
+      *blue=ClampToQuantum(QuantumRange*CompandsRGB(p));
       break;
     }
     case 1:
     {
-      *red=ClampToQuantum(QuantumRange*sRGBCompanding(q));
-      *green=ClampToQuantum(QuantumRange*sRGBCompanding(brightness));
-      *blue=ClampToQuantum(QuantumRange*sRGBCompanding(p));
+      *red=ClampToQuantum(QuantumRange*CompandsRGB(q));
+      *green=ClampToQuantum(QuantumRange*CompandsRGB(brightness));
+      *blue=ClampToQuantum(QuantumRange*CompandsRGB(p));
       break;
     }
     case 2:
     {
-      *red=ClampToQuantum(QuantumRange*sRGBCompanding(p));
-      *green=ClampToQuantum(QuantumRange*sRGBCompanding(brightness));
-      *blue=ClampToQuantum(QuantumRange*sRGBCompanding(t));
+      *red=ClampToQuantum(QuantumRange*CompandsRGB(p));
+      *green=ClampToQuantum(QuantumRange*CompandsRGB(brightness));
+      *blue=ClampToQuantum(QuantumRange*CompandsRGB(t));
       break;
     }
     case 3:
     {
-      *red=ClampToQuantum(QuantumRange*sRGBCompanding(p));
-      *green=ClampToQuantum(QuantumRange*sRGBCompanding(q));
-      *blue=ClampToQuantum(QuantumRange*sRGBCompanding(brightness));
+      *red=ClampToQuantum(QuantumRange*CompandsRGB(p));
+      *green=ClampToQuantum(QuantumRange*CompandsRGB(q));
+      *blue=ClampToQuantum(QuantumRange*CompandsRGB(brightness));
       break;
     }
     case 4:
     {
-      *red=ClampToQuantum(QuantumRange*sRGBCompanding(t));
-      *green=ClampToQuantum(QuantumRange*sRGBCompanding(p));
-      *blue=ClampToQuantum(QuantumRange*sRGBCompanding(brightness));
+      *red=ClampToQuantum(QuantumRange*CompandsRGB(t));
+      *green=ClampToQuantum(QuantumRange*CompandsRGB(p));
+      *blue=ClampToQuantum(QuantumRange*CompandsRGB(brightness));
       break;
     }
     case 5:
     {
-      *red=ClampToQuantum(QuantumRange*sRGBCompanding(brightness));
-      *green=ClampToQuantum(QuantumRange*sRGBCompanding(p));
-      *blue=ClampToQuantum(QuantumRange*sRGBCompanding(q));
+      *red=ClampToQuantum(QuantumRange*CompandsRGB(brightness));
+      *green=ClampToQuantum(QuantumRange*CompandsRGB(p));
+      *blue=ClampToQuantum(QuantumRange*CompandsRGB(q));
       break;
     }
   }
@@ -232,9 +232,9 @@ MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
   r=ConvertHueToRGB(m1,m2,hue+1.0/3.0);
   g=ConvertHueToRGB(m1,m2,hue);
   b=ConvertHueToRGB(m1,m2,hue-1.0/3.0);
-  *red=ClampToQuantum(QuantumRange*sRGBCompanding(r));
-  *green=ClampToQuantum(QuantumRange*sRGBCompanding(g));
-  *blue=ClampToQuantum(QuantumRange*sRGBCompanding(b));
+  *red=ClampToQuantum(QuantumRange*CompandsRGB(r));
+  *green=ClampToQuantum(QuantumRange*CompandsRGB(g));
+  *blue=ClampToQuantum(QuantumRange*CompandsRGB(b));
 }
 
 /*
@@ -287,9 +287,9 @@ MagickExport void ConvertHWBToRGB(const double hue,const double whiteness,
   v=1.0-blackness;
   if (hue == -1.0)
     {
-      *red=ClampToQuantum(QuantumRange*sRGBCompanding(v));
-      *green=ClampToQuantum(QuantumRange*sRGBCompanding(v));
-      *blue=ClampToQuantum(QuantumRange*sRGBCompanding(v));
+      *red=ClampToQuantum(QuantumRange*CompandsRGB(v));
+      *green=ClampToQuantum(QuantumRange*CompandsRGB(v));
+      *blue=ClampToQuantum(QuantumRange*CompandsRGB(v));
       return;
     }
   i=(ssize_t) floor(6.0*hue);
@@ -308,9 +308,9 @@ MagickExport void ConvertHWBToRGB(const double hue,const double whiteness,
     case 4: r=n; g=whiteness; b=v; break;
     case 5: r=v; g=whiteness; b=n; break;
   }
-  *red=ClampToQuantum(QuantumRange*sRGBCompanding(r));
-  *green=ClampToQuantum(QuantumRange*sRGBCompanding(g));
-  *blue=ClampToQuantum(QuantumRange*sRGBCompanding(b));
+  *red=ClampToQuantum(QuantumRange*CompandsRGB(r));
+  *green=ClampToQuantum(QuantumRange*CompandsRGB(g));
+  *blue=ClampToQuantum(QuantumRange*CompandsRGB(b));
 }
 
 /*
@@ -361,9 +361,9 @@ MagickExport void ConvertRGBToHSB(const Quantum red,const Quantum green,
   *hue=0.0;
   *saturation=0.0;
   *brightness=0.0;
-  r=QuantumRange*sRGBDecompanding(QuantumScale*red);
-  g=QuantumRange*sRGBDecompanding(QuantumScale*green);
-  b=QuantumRange*sRGBDecompanding(QuantumScale*blue);
+  r=QuantumRange*DecompandsRGB(QuantumScale*red);
+  g=QuantumRange*DecompandsRGB(QuantumScale*green);
+  b=QuantumRange*DecompandsRGB(QuantumScale*blue);
   min=r < g ? r : g;
   if (b < min)
     min=b;
@@ -449,9 +449,9 @@ MagickExport void ConvertRGBToHSL(const Quantum red,const Quantum green,
   assert(hue != (double *) NULL);
   assert(saturation != (double *) NULL);
   assert(lightness != (double *) NULL);
-  r=sRGBDecompanding(QuantumScale*red);
-  g=sRGBDecompanding(QuantumScale*green);
-  b=sRGBDecompanding(QuantumScale*blue);
+  r=DecompandsRGB(QuantumScale*red);
+  g=DecompandsRGB(QuantumScale*green);
+  b=DecompandsRGB(QuantumScale*blue);
   max=MagickMax(r,MagickMax(g,b));
   min=MagickMin(r,MagickMin(g,b));
   *lightness=(double) ((min+max)/2.0);
@@ -528,9 +528,9 @@ MagickExport void ConvertRGBToHWB(const Quantum red,const Quantum green,
   assert(hue != (double *) NULL);
   assert(whiteness != (double *) NULL);
   assert(blackness != (double *) NULL);
-  r=QuantumRange*sRGBDecompanding(QuantumScale*red);
-  g=QuantumRange*sRGBDecompanding(QuantumScale*green);
-  b=QuantumRange*sRGBDecompanding(QuantumScale*blue);
+  r=QuantumRange*DecompandsRGB(QuantumScale*red);
+  g=QuantumRange*DecompandsRGB(QuantumScale*green);
+  b=QuantumRange*DecompandsRGB(QuantumScale*blue);
   w=MagickMin(r,MagickMin(g,b));
   v=MagickMax(r,MagickMax(g,b));
   *blackness=1.0-QuantumScale*v;
