@@ -56,6 +56,6 @@ testReadWrite( 'input_16.png',
   'output_16.png',
   q/quality=>55/,
   'fa6b164245b385b3dea5764074be2c959a503dde90ecb1d4ba9c76a46bb8e4e6',
-  '463a334da8de0f579541b7f163921b8ea8c7587cc06bd59159a65b17ea7c3930');
+  'cf8654cba2235765f05bdda3e6dae3b6fb37e65f105204e319ba372be246b3d0');
 
 
