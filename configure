@@ -3629,6 +3629,7 @@ test -n "$target_alias" &&
 
 
 
+
 MAGICK_TARGET_CPU=$host_cpu
 
 
