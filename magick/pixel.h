@@ -210,6 +210,9 @@ extern MagickExport MagickBooleanType
     const InterpolatePixelMethod,const double,const double,MagickPixelPacket *,
     ExceptionInfo *);
 
+extern MagickExport MagickPixelPacket
+  *CloneMagickPixelPacket(const MagickPixelPacket *);
+
 extern MagickExport void
   GetMagickPixelPacket(const Image *,MagickPixelPacket *);
 

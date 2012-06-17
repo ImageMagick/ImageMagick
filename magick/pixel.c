@@ -71,6 +71,42 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C l o n e M a g i c k P i x e l P a c k e t                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CloneMagickPixelPacket() initializes the MagickPixelPacket structure.
+%
+%  The format of the CloneMagickPixelPacket method is:
+%
+%      MagickPixelPacket *CloneMagickPixelPacket(MagickPixelPacket *pixel)
+%
+%  A description of each parameter follows:
+%
+%    o pixel: Specifies a pointer to a PixelPacket structure.
+%
+*/
+MagickExport MagickPixelPacket *CloneMagickPixelPacket(
+  const MagickPixelPacket *pixel)
+{
+  MagickPixelPacket
+    *clone_pixel;
+
+  clone_pixel=(MagickPixelPacket *) AcquireAlignedMemory(1,
+    sizeof(*clone_pixel));
+  if (clone_pixel == (MagickPixelPacket *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  *clone_pixel=(*pixel);
+  return(clone_pixel);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   E x p o r t I m a g e P i x e l s                                         %
 %                                                                             %
 %                                                                             %
