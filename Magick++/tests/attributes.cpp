@@ -350,11 +350,11 @@ int main( int /*argc*/, char ** argv)
       // Test default setting
       double x, y;
       image.chromaBluePrimary( &x, &y );
-      if ( x != 0.0f || y != 0.0f )
+      if ( x == 0.0f || y == 0.0f )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
-	       << ",  chromaBluePrimary x/y defaults are non-zero"
+	       << ",  chromaBluePrimary x/y defaults are zero"
 	       << endl;
 	}
 
@@ -376,11 +376,11 @@ int main( int /*argc*/, char ** argv)
       // Test default setting
       double x, y;
       image.chromaGreenPrimary( &x, &y );
-      if ( x != 0.0f || y != 0.0f )
+      if ( x == 0.0f || y == 0.0f )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
-               << ",  chromaGreenPrimary x/y defaults are non-zero" << endl;
+               << ",  chromaGreenPrimary x/y defaults are zero" << endl;
 	}
 
       // Test set/get
@@ -401,11 +401,11 @@ int main( int /*argc*/, char ** argv)
       // Test default setting
       double x, y;
       image.chromaRedPrimary( &x, &y );
-      if ( x != 0.0f || y != 0.0f )
+      if ( x == 0.0f || y == 0.0f )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
-               << ",  chromaRedPrimary x/y defaults are non-zero" << endl;
+               << ",  chromaRedPrimary x/y defaults are zero" << endl;
 	}
 
       // Test set/get
@@ -773,11 +773,11 @@ int main( int /*argc*/, char ** argv)
     //
     // gamma
     //
-    if ( image.gamma() != 1.0f)
+    if ( image.gamma() == 1.0f)
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", gamma correction is not unity as expected" << endl;
+             << ", gamma correction is unity as expected" << endl;
       }
 
     //
@@ -1212,11 +1212,11 @@ int main( int /*argc*/, char ** argv)
     //
     // renderingIntent
     //
-    if ( image.renderingIntent() != UndefinedIntent )
+    if ( image.renderingIntent() == UndefinedIntent )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", renderingIntent default is not UndefinedIntent as expected"
+             << ", renderingIntent default is UndefinedIntent as expected"
              << endl;
       }
 
