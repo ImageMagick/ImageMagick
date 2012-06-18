@@ -42,9 +42,9 @@ static inline void ConvertsRGBToCMYK(PixelInfo *pixel)
       pixel->black=(MagickRealType) QuantumRange;
       return;
     }
-  cyan=(MagickRealType) (1.0-DecompandsRGB(QuantumScale*pixel->red));
-  magenta=(MagickRealType) (1.0-DecompandsRGB(QuantumScale*pixel->green));
-  yellow=(MagickRealType) (1.0-DecompandsRGB(QuantumScale*pixel->blue));
+  cyan=(MagickRealType) (1.0-QuantumScale*pixel->red);
+  magenta=(MagickRealType) (1.0-QuantumScale*pixel->green);
+  yellow=(MagickRealType) (1.0-QuantumScale*pixel->blue);
   black=cyan;
   if (magenta < black)
     black=magenta;

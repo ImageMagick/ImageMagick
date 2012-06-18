@@ -256,19 +256,22 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
-            blue,
-            green,
-            red;
+            cyan,
+            magenta,
+            yellow;
 
-          red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
-          green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
-          blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          cyan=QuantumRange*DecompandsRGB(QuantumScale*
+            GetPixelCyan(image,q));
+          magenta=QuantumRange*DecompandsRGB(QuantumScale*
+            GetPixelMagenta(image,q));
+          yellow=QuantumRange*DecompandsRGB(QuantumScale*
+            GetPixelYellow(image,q));
           SetPixelCyan(image,ClampToQuantum((MagickRealType) (QuantumRange-
-            red)),q);
+            cyan)),q);
           SetPixelMagenta(image,ClampToQuantum((MagickRealType) (QuantumRange-
-            green)),q);
+            magenta)),q);
           SetPixelYellow(image,ClampToQuantum((MagickRealType) (QuantumRange-
-            blue)),q);
+            yellow)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -1446,8 +1449,8 @@ static inline ssize_t RoundToYCC(const MagickRealType value)
   return((ssize_t) (value+0.5));
 }
 
-static inline void ConvertXYZTosRGB(const double x,const double y,const double z,
-  Quantum *red,Quantum *green,Quantum *blue)
+static inline void ConvertXYZTosRGB(const double x,const double y,
+  const double z,Quantum *red,Quantum *green,Quantum *blue)
 {
   double
     b,
@@ -1789,12 +1792,20 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          SetPixelRed(image,ClampToQuantum((MagickRealType) (QuantumRange-
-            GetPixelRed(image,q))),q);
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) (QuantumRange-
-            GetPixelGreen(image,q))),q);
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) (QuantumRange-
-            GetPixelBlue(image,q))),q);
+          double
+            cyan,
+            magenta,
+            yellow;
+
+          cyan=QuantumRange*CompandsRGB(QuantumScale*(QuantumRange-
+            GetPixelCyan(image,q)));
+          magenta=QuantumRange*CompandsRGB(QuantumScale*(QuantumRange-
+            GetPixelMagenta(image,q)));
+          yellow=QuantumRange*CompandsRGB(QuantumScale*(QuantumRange-
+            GetPixelYellow(image,q)));
+          SetPixelCyan(image,ClampToQuantum((MagickRealType) cyan),q);
+          SetPixelMagenta(image,ClampToQuantum((MagickRealType) magenta),q);
+          SetPixelYellow(image,ClampToQuantum((MagickRealType) yellow),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
