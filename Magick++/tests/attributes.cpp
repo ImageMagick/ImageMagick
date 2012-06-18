@@ -426,11 +426,11 @@ int main( int /*argc*/, char ** argv)
       // Test default setting
       double x, y;
       image.chromaWhitePoint( &x, &y );
-      if ( x != 0.0f || y != 0.0f )
+      if ( x == 0.0f || y == 0.0f )
 	{
 	  ++failures;
 	  cout << "Line: " << __LINE__
-               << ",  chromaWhitePoint x/y defaults are non-zero" << endl;
+               << ",  chromaWhitePoint x/y defaults are zero" << endl;
 	}
 
       // Test set/get
