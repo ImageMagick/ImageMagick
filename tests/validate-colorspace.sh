@@ -81,10 +81,12 @@ test_color() {
   error=false
   if [ "X$color" = "X$too_light" ]; then
     printf "$format" "$test" "TOO_LIGHT"
+    error=true
     return
   fi
   if [ "X$color" = "X$too_dark" ]; then
     printf "$format" "$test" "TOO_DARK"
+    error=true
     return
   fi
   printf "$format" "$test" "UNKNOWN COLOR (expect $average, got $color)"
@@ -92,14 +94,17 @@ test_color() {
 
 # ----------------
 
-test_color RGB sRGB
-test_color XYZ sRGB
+test_color RGB     sRGB  # round trip (parts tested above)
+
+test_color XYZ     sRGB
 test_color XYZ RGB sRGB
 test_color RGB XYZ sRGB
 
-test_color LAB   sRGB
+test_color LAB     sRGB
 test_color XYZ LAB sRGB
-test_color RGB LAB sRGB 
+test_color LAB XYZ sRGB
+test_color RGB LAB sRGB
+test_color LAB RGB sRGB
 
 test_color CMY   sRGB
 test_color CMYK  sRGB
