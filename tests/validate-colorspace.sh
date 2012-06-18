@@ -51,6 +51,7 @@ echo ''
 #
 # Actual values used below come from IM v6.5.4-7 colorspace conversions
 #
+error=false
 if [ "X$average" != "X146,89,80" ]; then
   echo "Sanity Failure: Average expected to be 145,89,80 - ABORTING"
   error=true
@@ -78,15 +79,14 @@ test_color() {
     printf "$format" "$test" "good"
     return
   fi
-  error=false
+  # Its failed the round-trip test, now report how it failed!
+  error=true
   if [ "X$color" = "X$too_light" ]; then
     printf "$format" "$test" "TOO_LIGHT"
-    error=true
     return
   fi
   if [ "X$color" = "X$too_dark" ]; then
     printf "$format" "$test" "TOO_DARK"
-    error=true
     return
   fi
   printf "$format" "$test" "UNKNOWN COLOR (expect $average, got $color)"
