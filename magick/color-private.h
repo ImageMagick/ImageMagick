@@ -217,7 +217,7 @@ static inline Quantum PixelIntensityToQuantum(const PixelPacket *pixel)
 
   if ((GetPixelRed(pixel) == GetPixelGreen(pixel)) &&
       (GetPixelGreen(pixel) == GetPixelBlue(pixel)))
-    return(ClampToQuantum(GetPixelRed(pixel)));
+    return(GetPixelRed(pixel));
   red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(pixel));
   green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(pixel));
   blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(pixel));
