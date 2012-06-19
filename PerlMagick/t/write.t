@@ -142,6 +142,7 @@ print("Portable graymap format (gray scale), binary format ...\n");
 testReadWrite( 'PGM:input_p5.pgm',
   'PGM:output_p5.pgm',
   q//,
+  '22d98997ff4c2269437406870ba106138e58fd842ac19823c7dc742221b6eb46',
   '61b18b993c5c4b6c9bd97e1cc95cc756e7b7b840df234ea046b0c5c0fb2930c9');
 
 print("Portable pixmap format (color), binary format ...\n");
@@ -243,6 +244,7 @@ testReadWriteSized( 'GRAY:input_70x46.gray',
   '70x46',
   8,
   q//,
+  'ee69810d4e212242e131dbaf7821a160fc7a8aaa94bd73cc9bd4b265cfcb27b3',
   '8365d1242126cb96856a9b4ade0bfad06900b4f42c3f05d589030c1240f37827' );
 
 print("RGB format ...\n");

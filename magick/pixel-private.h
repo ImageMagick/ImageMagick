@@ -53,7 +53,7 @@ static inline MagickBooleanType IsMonochromePixel(const PixelPacket *pixel)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if (((GetPixelRed(pixel) == 0) ||
-       (GetPixelRed(pixel) == (Quantum) QuantumRange)) &&
+       (GetPixelRed(pixel) == QuantumRange)) &&
       (GetPixelRed(pixel) == GetPixelGreen(pixel)) &&
       (GetPixelGreen(pixel) == GetPixelBlue(pixel)))
     return(MagickTrue);

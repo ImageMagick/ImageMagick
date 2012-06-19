@@ -548,7 +548,7 @@ WandExport Quantum PixelGetAlphaQuantum(const PixelWand *wand)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  return((Quantum) QuantumRange-ClampToQuantum(wand->pixel.opacity));
+  return(QuantumRange-ClampToQuantum(wand->pixel.opacity));
 }
 
 /*

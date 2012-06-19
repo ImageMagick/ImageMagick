@@ -2158,7 +2158,7 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
               image->colormap[i].opacity=gamma_map[ScaleQuantumToMap(
                 image->colormap[i].opacity)];
             else
-              image->colormap[i].opacity=(Quantum) QuantumRange-gamma_map[
+              image->colormap[i].opacity=QuantumRange-gamma_map[
                 ScaleQuantumToMap((Quantum) (QuantumRange-
                 image->colormap[i].opacity))];
           }
@@ -3503,13 +3503,13 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
               (image->colormap[i].green != image->colormap[i].blue))
             continue;
         if ((channel & RedChannel) != 0)
-          image->colormap[i].red=(Quantum) QuantumRange-
+          image->colormap[i].red=QuantumRange-
             image->colormap[i].red;
         if ((channel & GreenChannel) != 0)
-          image->colormap[i].green=(Quantum) QuantumRange-
+          image->colormap[i].green=QuantumRange-
             image->colormap[i].green;
         if ((channel & BlueChannel) != 0)
-          image->colormap[i].blue=(Quantum) QuantumRange-
+          image->colormap[i].blue=QuantumRange-
             image->colormap[i].blue;
       }
     }

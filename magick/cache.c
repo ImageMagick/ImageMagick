@@ -447,7 +447,7 @@ static MagickBooleanType ClipPixelCacheNexus(Image *image,
   {
     if ((p == (PixelPacket *) NULL) || (r == (const PixelPacket *) NULL))
       break;
-    if (PixelIntensityToQuantum(r) > ((Quantum) QuantumRange/2))
+    if (PixelIntensityToQuantum(r) > (QuantumRange/2))
       {
         SetPixelRed(q,GetPixelRed(p));
         SetPixelGreen(q,GetPixelGreen(p));

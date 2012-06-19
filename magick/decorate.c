@@ -716,12 +716,12 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       (image->rows <= (raise_info->height << 1)))
     ThrowBinaryException(OptionError,"ImageSizeMustExceedBevelWidth",
       image->filename);
-  foreground=(Quantum) QuantumRange;
+  foreground=QuantumRange;
   background=(Quantum) 0;
   if (raise == MagickFalse)
     {
       foreground=(Quantum) 0;
-      background=(Quantum) QuantumRange;
+      background=QuantumRange;
     }
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);

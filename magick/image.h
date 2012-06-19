@@ -25,7 +25,7 @@ extern "C" {
 #include <magick/color.h>
 
 #define OpaqueOpacity  ((Quantum) 0UL)
-#define TransparentOpacity  ((Quantum) QuantumRange)
+#define TransparentOpacity  (QuantumRange)
 
 typedef enum
 {

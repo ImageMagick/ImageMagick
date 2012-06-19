@@ -91,7 +91,7 @@ static inline Quantum ClampToQuantum(const MagickRealType value)
   if (value <= 0.0)
     return((Quantum) 0);
   if (value >= (MagickRealType) QuantumRange)
-    return((Quantum) QuantumRange);
+    return(QuantumRange);
   return((Quantum) (value+0.5));
 #endif
 }

@@ -4426,7 +4426,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
              if (image->matte != MagickFalse)
                for (x=(ssize_t) image->columns; x != 0; x--,q++,s++)
-                  SetPixelOpacity(q,(Quantum) QuantumRange-
+                  SetPixelOpacity(q,QuantumRange-
                       GetPixelRed(s));
 
              else

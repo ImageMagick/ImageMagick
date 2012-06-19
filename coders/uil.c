@@ -334,7 +334,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image)
       (void) FormatLocaleString(buffer,MaxTextExtent,
         "    color('%s',%s) = '%s'",name,
         PixelIntensityToQuantum(image->colormap+i) <
-        ((Quantum) QuantumRange/2) ? "background" : "foreground",symbol);
+        (QuantumRange/2) ? "background" : "foreground",symbol);
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MaxTextExtent,"%s",
       (i == (ssize_t) (colors-1) ? ");\n" : ",\n"));
