@@ -207,11 +207,6 @@ static MagickBooleanType sRGBTransformImage(Image *image,
   assert(colorspace != sRGBColorspace);
   assert(colorspace != TransparentColorspace);
   assert(colorspace != UndefinedColorspace);
-  if (IsGrayColorspace(colorspace) != MagickFalse)
-    (void) SetImageColorspace(image,sRGBColorspace,exception);
-  else
-    if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
-      return(MagickFalse);
   status=MagickTrue;
   progress=0;
   switch (colorspace)
@@ -281,6 +276,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       image_view=DestroyCacheView(image_view);
       image->type=image->matte == MagickFalse ? ColorSeparationType :
         ColorSeparationMatteType;
+      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
+        return(MagickFalse);
       return(status);
     }
     case CMYKColorspace:
@@ -298,6 +295,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
+      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
+        return(MagickFalse);
       GetPixelInfo(image,&zero);
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -342,6 +341,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       image_view=DestroyCacheView(image_view);
       image->type=image->matte == MagickFalse ? ColorSeparationType :
         ColorSeparationMatteType;
+      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
+        return(MagickFalse);
       return(status);
     }
     case HSBColorspace:
@@ -407,6 +408,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
+      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
+        return(MagickFalse);
       return(status);
     }
     case HSLColorspace:
@@ -472,6 +475,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
+      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
+        return(MagickFalse);
       return(status);
     }
     case HWBColorspace:
@@ -537,6 +542,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
+      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
+        return(MagickFalse);
       return(status);
     }
     case LabColorspace:
@@ -608,6 +615,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
+      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
+        return(MagickFalse);
       return(status);
     }
     case LogColorspace:
@@ -707,6 +716,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       }
       image_view=DestroyCacheView(image_view);
       logmap=(Quantum *) RelinquishMagickMemory(logmap);
+      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
+        return(MagickFalse);
       return(status);
     }
     case XYZColorspace:
@@ -769,6 +780,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
+      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
+        return(MagickFalse);
       return(status);
     }
     default:
@@ -847,6 +860,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         y_map[i].z=0.586811*(MagickRealType) i;
         z_map[i].z=0.114350*(MagickRealType) i;
       }
+puts("a");
       image->type=GrayscaleType;
       break;
     }
@@ -1473,12 +1487,12 @@ static inline void ConvertXYZTosRGB(const double x,const double y,
 
 static inline void ConvertCMYKTosRGB(PixelInfo *pixel)
 {
-  pixel->red=(MagickRealType) QuantumRange-(QuantumScale*pixel->red*
-    (QuantumRange-pixel->black)+pixel->black);
-  pixel->green=(MagickRealType) QuantumRange-(QuantumScale*pixel->green*
-    (QuantumRange-pixel->black)+pixel->black);
-  pixel->blue=(MagickRealType) QuantumRange-(QuantumScale*pixel->blue*
-    (QuantumRange-pixel->black)+pixel->black);
+  pixel->red=QuantumRange*CompandsRGB(QuantumScale*(QuantumRange-
+    (QuantumScale*pixel->red*(QuantumRange-pixel->black)+pixel->black)));
+  pixel->green=QuantumRange*CompandsRGB(QuantumScale*(QuantumRange-
+    (QuantumScale*pixel->green*(QuantumRange-pixel->black)+pixel->black)));
+  pixel->blue=QuantumRange*CompandsRGB(QuantumScale*(QuantumRange-
+    (QuantumScale*pixel->blue*(QuantumRange-pixel->black)+pixel->black)));
 }
 
 static MagickBooleanType TransformsRGBImage(Image *image,
