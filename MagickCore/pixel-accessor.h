@@ -189,6 +189,8 @@ static inline Quantum GetPixelInfoIntensity(
     green,
     red;
 
+  if (pixel_info->colorspace == GRAYColorspace)
+    return(pixel_info->red);
   if (pixel_info->colorspace != sRGBColorspace)
     {
       red=pixel_info->red;
@@ -219,6 +221,8 @@ static inline Quantum GetPixelInfoLuminance(
   Quantum
     luminance;
 
+  if (pixel_info->colorspace == GRAYColorspace)
+    return((Quantum) pixel_info->red);
   if (pixel_info->colorspace != sRGBColorspace)
     {
       red=pixel_info->red;
@@ -290,6 +294,8 @@ static inline Quantum GetPixelLuminance(const Image *restrict image,
     green,
     red;
 
+  if (image->colorspace == GRAYColorspace)
+    return(pixel[image->channel_map[GrayPixelChannel].offset]);
   if (image->colorspace != sRGBColorspace)
     {
       red=(double) pixel[image->channel_map[RedPixelChannel].offset];
