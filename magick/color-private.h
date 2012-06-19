@@ -113,6 +113,8 @@ static inline MagickRealType MagickPixelIntensity(
     green,
     red;
 
+  if (pixel->colorspace == GRAYColorspace)
+    return((MagickRealType) pixel->red);
   if (pixel->colorspace != sRGBColorspace)
     {
       red=pixel->red;
@@ -136,6 +138,8 @@ static inline Quantum MagickPixelIntensityToQuantum(
     green,
     red;
 
+  if (pixel->colorspace == GRAYColorspace)
+    return((MagickRealType) pixel->red);
   if (pixel->colorspace != sRGBColorspace)
     {
       red=pixel->red;
@@ -166,6 +170,8 @@ static inline MagickRealType MagickPixelLuminance(
   MagickRealType
     luminance;
 
+  if (pixel->colorspace == GRAYColorspace)
+    return((MagickRealType) pixel->red);
   if (pixel->colorspace != sRGBColorspace)
     {
       red=pixel->red;
