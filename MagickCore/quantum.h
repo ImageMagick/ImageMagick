@@ -90,7 +90,7 @@ static inline Quantum ClampToQuantum(const double value)
   if (value <= 0.0)
     return((Quantum) 0);
   if (value >= (double) QuantumRange)
-    return((Quantum) QuantumRange);
+    return(QuantumRange);
   return((Quantum) (value+0.5));
 #endif
 }

@@ -244,7 +244,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Allocate histogram count arrays.
   */
-  length=MagickMax((size_t) ScaleQuantumToChar((Quantum) QuantumRange)+1UL,
+  length=MagickMax((size_t) ScaleQuantumToChar(QuantumRange)+1UL,
     histogram_image->columns);
   histogram=(PixelInfo *) AcquireQuantumMemory(length,
     sizeof(*histogram));

@@ -1605,10 +1605,10 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
         white;
 
       black=0;
-      white=(Quantum) QuantumRange;
+      white=QuantumRange;
       if (quantum_info->min_is_white != MagickFalse)
         {
-          black=(Quantum) QuantumRange;
+          black=QuantumRange;
           white=0;
         }
       for (x=0; x < ((ssize_t) number_pixels-7); x+=8)

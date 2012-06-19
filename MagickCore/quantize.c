@@ -482,7 +482,7 @@ static inline Quantum ClampToUnsignedQuantum(const MagickRealType value)
   if (value <= 0.0)
     return((Quantum) 0);
   if (value >= QuantumRange)
-    return((Quantum) QuantumRange);
+    return(QuantumRange);
   return((Quantum) (value+0.5));
 }
 

@@ -52,7 +52,7 @@ typedef float Quantum;
 #define QuantumFormat  "%g"
 #else
 typedef unsigned char Quantum;
-#define QuantumRange  255
+#define QuantumRange  ((Quantum) 255)
 #define QuantumFormat  "%u"
 #endif
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
@@ -71,7 +71,7 @@ typedef float Quantum;
 #define QuantumFormat  "%g"
 #else
 typedef unsigned short Quantum;
-#define QuantumRange  65535
+#define QuantumRange  ((Quantum) 65535)
 #define QuantumFormat  "%u"
 #endif
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
@@ -86,7 +86,7 @@ typedef float Quantum;
 #define QuantumFormat  "%g"
 #else
 typedef unsigned int Quantum;
-#define QuantumRange  4294967295
+#define QuantumRange  ((Quantum) 4294967295)
 #define QuantumFormat  "%u"
 #endif
 #elif (MAGICKCORE_QUANTUM_DEPTH == 64) && defined(MAGICKCORE_HAVE_LONG_DOUBLE_WIDER)

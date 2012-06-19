@@ -572,7 +572,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
 
               image->colormap[1].red=image->colormap[1].green=
-                image->colormap[1].blue=(Quantum) QuantumRange;
+                image->colormap[1].blue=QuantumRange;
               for (i=0; i < (ssize_t)image->rows; i++)
                 {
                   q=QueueAuthenticPixels(image,0,i,image->columns,1,exception);
