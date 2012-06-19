@@ -959,7 +959,7 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
   assert(image->signature == MagickSignature);
   if (depth >= MAGICKCORE_QUANTUM_DEPTH)
     {
-      image->depth=MAGICKCORE_QUANTUM_DEPTH;
+      image->depth=depth;
       return(MagickTrue);
     }
   range=GetQuantumRange(depth);
