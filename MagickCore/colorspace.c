@@ -702,12 +702,17 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           }
         for (x=(ssize_t) image->columns; x != 0; x--)
         {
-          SetPixelRed(image,logmap[ScaleQuantumToMap(
-            GetPixelRed(image,q))],q);
-          SetPixelGreen(image,logmap[ScaleQuantumToMap(
-            GetPixelGreen(image,q))],q);
-          SetPixelBlue(image,logmap[ScaleQuantumToMap(
-            GetPixelBlue(image,q))],q);
+          double
+            blue,
+            green,
+            red;
+
+          red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
+          green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
+          blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          SetPixelRed(image,logmap[ScaleQuantumToMap(red)],q);
+          SetPixelGreen(image,logmap[ScaleQuantumToMap(green)],q);
+          SetPixelBlue(image,logmap[ScaleQuantumToMap(blue)],q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2247,12 +2252,20 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           }
         for (x=(ssize_t) image->columns; x != 0; x--)
         {
-          SetPixelRed(image,logmap[ScaleQuantumToMap(
-            GetPixelRed(image,q))],q);
-          SetPixelGreen(image,logmap[ScaleQuantumToMap(
-            GetPixelGreen(image,q))],q);
-          SetPixelBlue(image,logmap[ScaleQuantumToMap(
-            GetPixelBlue(image,q))],q);
+          double
+            blue,
+            green,
+            red;
+
+          red=QuantumRange*CompandsRGB(QuantumScale*logmap[ScaleQuantumToMap(
+            GetPixelRed(image,q))]);
+          green=QuantumRange*CompandsRGB(QuantumScale*logmap[ScaleQuantumToMap(
+            GetPixelGreen(image,q))]);
+          blue=QuantumRange*CompandsRGB(QuantumScale*logmap[ScaleQuantumToMap(
+            GetPixelBlue(image,q))]);
+          SetPixelRed(image,ClampToQuantum(red),q);
+          SetPixelGreen(image,ClampToQuantum(green),q);
+          SetPixelBlue(image,ClampToQuantum(blue),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
