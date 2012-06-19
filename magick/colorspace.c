@@ -1467,14 +1467,14 @@ static inline void ConvertXYZTosRGB(const double x,const double y,const double z
   *blue=RoundToQuantum((MagickRealType) QuantumRange*CompandsRGB(b));
 }
 
-static inline void ConvertCMYKTosRGB(PixelInfo *pixel)
+static inline void ConvertCMYKToRGB(MagickPixelPacket *pixel)
 {
   pixel->red=QuantumRange*CompandsRGB(QuantumScale*(QuantumRange-
-    (QuantumScale*pixel->red*(QuantumRange-pixel->black)+pixel->black)));
+    (QuantumScale*pixel->red*(QuantumRange-pixel->index)+pixel->index)));
   pixel->green=QuantumRange*CompandsRGB(QuantumScale*(QuantumRange-
-    (QuantumScale*pixel->green*(QuantumRange-pixel->black)+pixel->black)));
+    (QuantumScale*pixel->green*(QuantumRange-pixel->index)+pixel->index)));
   pixel->blue=QuantumRange*CompandsRGB(QuantumScale*(QuantumRange-
-    (QuantumScale*pixel->blue*(QuantumRange-pixel->black)+pixel->black)));
+    (QuantumScale*pixel->blue*(QuantumRange-pixel->index)+pixel->index)));
 }
 
 MagickExport MagickBooleanType TransformRGBImage(Image *image,
@@ -1869,7 +1869,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           SetMagickPixelPacket(image,q,indexes+x,&pixel);
-          ConvertCMYKTosRGB(&pixel);
+          ConvertCMYKToRGB(&pixel);
           SetPixelPacket(image,&pixel,q,indexes+x);
           q++;
         }
