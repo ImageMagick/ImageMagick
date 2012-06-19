@@ -45,9 +45,9 @@ echo ''
 #
 # NOTE: as a extra validation on sanity checks below...
 #    eval ${MAGICK} "$in" -gamma .454545 "$out"
-# produces a value of  74,25,20   which is close to 17,3,2 below.
+# produces a value of  74,25,20   which is close to 73,26,21 below.
 #    eval ${MAGICK} "$in" -gamma 2.2 "$out"
-# produces a value of  198,158,151  whcih is close to 229,207,203 below.
+# produces a value of  198,158,151  whcih is close to 199,160,152 below.
 #
 # Actual values used below come from IM v6.5.4-7 colorspace conversions
 #
@@ -56,12 +56,12 @@ if [ "X$average" != "X146,89,80" ]; then
   echo "Sanity Failure: Average expected to be 145,89,80 - ABORTING"
   error=true
 fi
-if [ "X$too_dark" != "X17,3,2" ]; then
-  echo "Sanity Failure: Too Dark expected to be 17,3,2 - ABORTING"
+if [ "X$too_dark" != "X73,26,21" ]; then
+  echo "Sanity Failure: Too Dark expected to be 73,26,21 - ABORTING"
   error=true
 fi
-if [ "X$too_light" != "X229,207,203" ]; then
-  echo "Sanity Failure: Too Light expected to be 199,159,152 - ABORTING"
+if [ "X$too_light" != "X199,160,152" ]; then
+  echo "Sanity Failure: Too Light expected to be 199,160,152 - ABORTING"
   error=true
 fi
 $error && exit 1
