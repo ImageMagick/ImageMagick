@@ -139,7 +139,7 @@ static inline Quantum MagickPixelIntensityToQuantum(
     red;
 
   if (pixel->colorspace == GRAYColorspace)
-    return((MagickRealType) pixel->red);
+    return(pixel->red);
   if (pixel->colorspace != sRGBColorspace)
     {
       red=pixel->red;
@@ -198,11 +198,12 @@ static inline MagickRealType PixelIntensity(const PixelPacket *pixel)
   MagickRealType
     intensity;
 
+  if ((GetPixelRed(pixel) == GetPixelGreen(pixel)) &&
+      (GetPixelGreen(pixel) == GetPixelBlue(pixel)))
+    return((MagickRealType) GetPixelRed(pixel));
   red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(pixel));
   green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(pixel));
   blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(pixel));
-  if ((red == green) && (green == blue))
-    return((MagickRealType) red);
   intensity=(MagickRealType) (0.298839*red+0.586811*green+0.114350*blue);
   return(intensity);
 }
@@ -214,12 +215,13 @@ static inline Quantum PixelIntensityToQuantum(const PixelPacket *pixel)
     green,
     red;
 
+  if ((GetPixelRed(pixel) == GetPixelGreen(pixel)) &&
+      (GetPixelGreen(pixel) == GetPixelBlue(pixel)))
+    return(ClampToQuantum(GetPixelRed(pixel)));
   red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(pixel));
   green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(pixel));
   blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(pixel));
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  if ((red == green) && (green == blue))
-    return(ClampToQuantum(red));
   return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue+0.5));
 #else
   {
