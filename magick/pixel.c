@@ -2242,7 +2242,7 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
           p++;
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*(*p)));
           p++;
-          q->opacity=(Quantum) QuantumRange-ClampToQuantum((MagickRealType)
+          q->opacity=QuantumRange-ClampToQuantum((MagickRealType)
             QuantumRange*(*p));
           p++;
           q++;

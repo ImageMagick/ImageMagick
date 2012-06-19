@@ -887,9 +887,9 @@ static MagickBooleanType WritePS2Image(const ImageInfo *image_info,Image *image)
                   if ((image->matte != MagickFalse) &&
                       (GetPixelOpacity(p) == (Quantum) TransparentOpacity))
                     {
-                      *q++=ScaleQuantumToChar((Quantum) QuantumRange);
-                      *q++=ScaleQuantumToChar((Quantum) QuantumRange);
-                      *q++=ScaleQuantumToChar((Quantum) QuantumRange);
+                      *q++=ScaleQuantumToChar(QuantumRange);
+                      *q++=ScaleQuantumToChar(QuantumRange);
+                      *q++=ScaleQuantumToChar(QuantumRange);
                     }
                   else
                     if (image->colorspace != CMYKColorspace)

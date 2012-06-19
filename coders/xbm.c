@@ -278,9 +278,9 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize colormap.
   */
-  image->colormap[0].red=(Quantum) QuantumRange;
-  image->colormap[0].green=(Quantum) QuantumRange;
-  image->colormap[0].blue=(Quantum) QuantumRange;
+  image->colormap[0].red=QuantumRange;
+  image->colormap[0].green=QuantumRange;
+  image->colormap[0].blue=QuantumRange;
   image->colormap[1].red=(Quantum) 0;
   image->colormap[1].green=(Quantum) 0;
   image->colormap[1].blue=(Quantum) 0;

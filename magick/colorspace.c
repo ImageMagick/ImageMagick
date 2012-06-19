@@ -763,9 +763,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(q));
           green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(q));
           blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(q));
-          SetPixelRed(q,logmap[ScaleQuantumToMap(red)]);
-          SetPixelGreen(q,logmap[ScaleQuantumToMap(green)]);
-          SetPixelBlue(q,logmap[ScaleQuantumToMap(blue)]);
+          SetPixelRed(q,logmap[ScaleQuantumToMap(ClampToQuantum(red))]);
+          SetPixelGreen(q,logmap[ScaleQuantumToMap(ClampToQuantum(green))]);
+          SetPixelBlue(q,logmap[ScaleQuantumToMap(ClampToQuantum(blue))]);
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2390,7 +2390,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           (pow(10.0,(1024.0*i/MaxMap-reference_white)*
           (gamma/density)*0.002/film_gamma)-black));
       for ( ; i <= (ssize_t) MaxMap; i++)
-        logmap[i]=(Quantum) QuantumRange;
+        logmap[i]=QuantumRange;
       if (image->storage_class == PseudoClass)
         {
           if (SyncImage(image) == MagickFalse)
