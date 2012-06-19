@@ -24,7 +24,7 @@ extern "C" {
 
 #include <MagickCore/color.h>
 
-#define OpaqueAlpha  ((Quantum) QuantumRange)
+#define OpaqueAlpha  (QuantumRange)
 #define TransparentAlpha  ((Quantum) 0UL)
 
 typedef enum

@@ -484,7 +484,7 @@ static inline MagickBooleanType IsPixelMonochrome(const Image *restrict image,
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if (((pixel[image->channel_map[RedPixelChannel].offset] == 0) ||
-      (pixel[image->channel_map[RedPixelChannel].offset] == (Quantum) QuantumRange)) &&
+      (pixel[image->channel_map[RedPixelChannel].offset] == QuantumRange)) &&
       (pixel[image->channel_map[RedPixelChannel].offset] ==
        pixel[image->channel_map[GreenPixelChannel].offset]) &&
       (pixel[image->channel_map[GreenPixelChannel].offset] ==
@@ -538,7 +538,7 @@ static inline MagickBooleanType IsPixelInfoMonochrome(
   const PixelInfo *restrict pixel_info)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
-  if (((pixel_info->red == 0) || (pixel_info->red == (Quantum) QuantumRange)) &&
+  if (((pixel_info->red == 0) || (pixel_info->red == QuantumRange)) &&
       (pixel_info->red == pixel_info->green) &&
       (pixel_info->green == pixel_info->blue))
     return(MagickTrue);

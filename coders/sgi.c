@@ -939,8 +939,8 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
       }
     iris_info.minimum_value=0;
     iris_info.maximum_value=(size_t) (image->depth <= 8 ?
-      1UL*ScaleQuantumToChar((Quantum) QuantumRange) :
-      1UL*ScaleQuantumToShort((Quantum) QuantumRange));
+      1UL*ScaleQuantumToChar(QuantumRange) :
+      1UL*ScaleQuantumToShort(QuantumRange));
     /*
       Write SGI header.
     */

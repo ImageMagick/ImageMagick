@@ -3085,13 +3085,13 @@ MagickExport MagickBooleanType NegateImage(Image *image,
               (image->colormap[i].green != image->colormap[i].blue))
             continue;
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].red=(Quantum) QuantumRange-
+          image->colormap[i].red=QuantumRange-
             image->colormap[i].red;
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].green=(Quantum) QuantumRange-
+          image->colormap[i].green=QuantumRange-
             image->colormap[i].green;
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].blue=(Quantum) QuantumRange-
+          image->colormap[i].blue=QuantumRange-
             image->colormap[i].blue;
       }
     }
