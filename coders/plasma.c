@@ -165,7 +165,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
   read_info=DestroyImageInfo(read_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
-  image->storage_class=DirectClass;
+  (void) SetImageStorageClass(image,DirectClass);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -191,6 +191,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
       /*
         Seed pixels before recursion.
       */
+      (void) SetImageColorspace(image,sRGBColorspace);
       random_info=AcquireRandomInfo();
       PlasmaPixel(image,random_info,segment_info.x1,segment_info.y1);
       PlasmaPixel(image,random_info,segment_info.x1,(segment_info.y1+

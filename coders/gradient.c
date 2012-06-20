@@ -44,6 +44,7 @@
 #include "magick/blob-private.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
+#include "magick/colorspace-private.h"
 #include "magick/draw.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
@@ -94,6 +95,9 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   char
     colorname[MaxTextExtent];
 
+  MagickBooleanType
+    status;
+
   MagickPixelPacket
     start_pixel,
     stop_pixel;
@@ -138,8 +142,15 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   (void) QueryMagickColor(colorname,&stop_pixel,exception);
-  (void) GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
+  status=GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
     LinearGradient : RadialGradient,PadSpread,&start_color,&stop_color);
+  if (status == MagickFalse)
+    {
+      image=DestroyImageList(image);
+      return((Image *) NULL);
+    }
+  if (IssRGBColorspace(image->colorspace) != MagickFalse)
+    (void) SetImageColorspace(image,RGBColorspace);
   return(GetFirstImageInList(image));
 }
 

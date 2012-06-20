@@ -481,14 +481,9 @@ MagickExport MagickBooleanType GradientImage(Image *image,
   /*
     Draw a gradient on the image.
   */
+  (void) SetImageColorspace(image,GRAYColorspace);
   status=DrawGradientImage(image,draw_info);
   draw_info=DestroyDrawInfo(draw_info);
-  if ((start_color->opacity == OpaqueOpacity) &&
-      (stop_color->opacity == OpaqueOpacity))
-    image->matte=MagickFalse;
-  if ((IsGray(start_color) != MagickFalse) &&
-      (IsGray(stop_color) != MagickFalse))
-    SetImageColorspace(image,GRAYColorspace);
   return(status);
 }
 
