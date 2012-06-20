@@ -146,14 +146,13 @@ static inline MagickRealType MagickPixelLuminance(
     red;
 
   if (pixel->colorspace == GRAYColorspace)
-    return((Quantum) pixel->red);
+    return(pixel->red);
   if (pixel->colorspace != sRGBColorspace)
-    return(ClampToQuantum(0.21267*pixel->red+0.71516*pixel->green+
-      0.07217*pixel->blue));
+    return(0.21267*pixel->red+0.71516*pixel->green+0.07217*pixel->blue);
   red=QuantumRange*DecompandsRGB(QuantumScale*pixel->red);
   green=QuantumRange*DecompandsRGB(QuantumScale*pixel->green);
   blue=QuantumRange*DecompandsRGB(QuantumScale*pixel->blue);
-  return(ClampToQuantum(0.21267*red+0.71516*green+0.07217*blue));
+  return(0.21267*red+0.71516*green+0.07217*blue);
 }
 
 static inline MagickRealType PixelIntensity(const PixelPacket *pixel)
