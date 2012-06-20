@@ -1414,6 +1414,8 @@ MagickExport void LocaleComponentTerminus(void)
   if (locale_semaphore == (SemaphoreInfo *) NULL)
     AcquireSemaphoreInfo(&locale_semaphore);
   LockSemaphoreInfo(locale_semaphore);
+  if (locale_list != (SplayTreeInfo *) NULL)
+    locale_list=DestroySplayTree(locale_list);
 #if defined(MAGICKCORE_HAVE_STRTOD_L)
   DestroyCLocale();
 #endif
