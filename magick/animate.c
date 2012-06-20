@@ -1922,7 +1922,8 @@ MagickExport Image *XAnimateImages(Display *display,
     /*
       Create X image.
     */
-    if (IssRGBColorspace(image_list[scene]->colorspace) == MagickFalse)
+    if ((IssRGBColorspace(image_list[scene]->colorspace) == MagickFalse) &&
+        (IsGrayColorspace(image_list[scene]->colorspace) == MagickFalse))
       (void) TransformImageColorspace(image_list[scene],sRGBColorspace);
     windows->image.pixmap=(Pixmap) NULL;
     windows->image.matte_pixmap=(Pixmap) NULL;
