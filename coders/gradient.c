@@ -145,10 +145,10 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  if (IssRGBColorspace(start_color->colorspace) != MagickFalse)
+  if (IssRGBColorspace(start_color.colorspace) != MagickFalse)
     (void) SetImageColorspace(image,RGBColorspace,exception);
   else
-    (void) SetImageColorspace(image,start_color->colorspace,exception);
+    (void) SetImageColorspace(image,start_color.colorspace,exception);
   return(GetFirstImageInList(image));
 }
 
