@@ -140,6 +140,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   (void) GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
     LinearGradient : RadialGradient,PadSpread,&start_color,&stop_color,
     exception);
+  if (IssRGBColorspace(image->colorspace) != MagickFalse)
+    (void) SetImageColorspace(image,RGBColorspace,exception);
   return(GetFirstImageInList(image));
 }
 
