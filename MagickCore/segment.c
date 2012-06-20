@@ -1832,7 +1832,8 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
           image->filename)
       }
   }
-  if (IssRGBColorspace(colorspace) == MagickFalse)
+  if ((IssRGBColorspace(colorspace) == MagickFalse) &&
+      (IsGRAYColorspace(colorspace) == MagickFalse))
     (void) TransformImageColorspace(image,colorspace,exception);
   /*
     Initialize histogram.
@@ -1849,7 +1850,8 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
   */
   status=Classify(image,extrema,cluster_threshold,WeightingExponent,verbose,
     exception);
-  if (IssRGBColorspace(colorspace) == MagickFalse)
+  if ((IssRGBColorspace(colorspace) == MagickFalse) &&
+      (IsGRAYColorspace(colorspace) == MagickFalse))
     (void) TransformImageColorspace(image,colorspace,exception);
   /*
     Relinquish resources.
