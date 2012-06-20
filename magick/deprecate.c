@@ -5754,7 +5754,7 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
           MagickRealType
             intensity;
 
-          intensity=(MagickRealType) PixelIntensityToQuantum(q);
+          intensity=(MagickRealType) PixelIntensityToQuantum(image,q);
           if (order == 1)
             {
               if (intensity < lower_threshold)
@@ -6837,7 +6837,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
     indexes=GetAuthenticIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      index=(IndexPacket) ((MagickRealType) PixelIntensityToQuantum(q) <=
+      index=(IndexPacket) ((MagickRealType) PixelIntensityToQuantum(image,q) <=
         threshold ? 0 : 1);
       SetPixelIndex(indexes+x,index);
       SetPixelRGBO(q,image->colormap+(ssize_t) index);
@@ -6953,7 +6953,7 @@ MagickExport unsigned int ThresholdImageChannel(Image *image,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         index=(IndexPacket) ((MagickRealType)
-          PixelIntensityToQuantum(q) <= pixel.red ? 0 : 1);
+          PixelIntensityToQuantum(image,q) <= pixel.red ? 0 : 1);
         SetPixelIndex(indexes+x,index);
         SetPixelRed(q,image->colormap[(ssize_t) index].red);
         SetPixelGreen(q,image->colormap[(ssize_t) index].green);

@@ -1219,7 +1219,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
                 break;
               for (x=0; x < (ssize_t) image->columns; x++)
               {
-                *q++=(unsigned char) PixelIntensityToQuantum(p);
+                *q++=(unsigned char) PixelIntensityToQuantum(image,p);
                 p++;
               }
               if (image->previous == (Image *) NULL)
