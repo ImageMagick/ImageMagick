@@ -1115,7 +1115,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               for (x=0; x < (ssize_t) mask_image->columns; x++)
               {
                 if (mask_image->matte == MagickFalse)
-                  SetPixelOpacity(q,PixelIntensityToQuantum(q));
+                  SetPixelOpacity(q,PixelIntensityToQuantum(mask_image,q));
                 SetPixelRed(q,GetPixelOpacity(q));
                 SetPixelGreen(q,GetPixelOpacity(q));
                 SetPixelBlue(q,GetPixelOpacity(q));

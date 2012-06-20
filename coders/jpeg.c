@@ -2564,7 +2564,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             q=jpeg_pixels;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              *q++=(JSAMPLE) ScaleQuantumToChar(PixelIntensityToQuantum(p));
+              *q++=(JSAMPLE) ScaleQuantumToChar(PixelIntensityToQuantum(image,p));
               p++;
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -2628,7 +2628,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
         q=jpeg_pixels;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          *q++=(JSAMPLE) (ScaleQuantumToShort(PixelIntensityToQuantum(p)) >>
+          *q++=(JSAMPLE) (ScaleQuantumToShort(PixelIntensityToQuantum(image,p)) >>
             4);
           p++;
         }

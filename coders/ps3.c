@@ -344,7 +344,7 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
     if (pack == 1)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
+        *q++=ScaleQuantumToChar(PixelIntensityToQuantum(image,p));
         p++;
       }
     else
@@ -354,7 +354,7 @@ static MagickBooleanType SerializeImageChannel(const ImageInfo *image_info,
         {
           bit=(unsigned char) 0x00;
           if (x < (ssize_t) image->columns)
-            bit=(unsigned char) (PixelIntensityToQuantum(p) == (Quantum)
+            bit=(unsigned char) (PixelIntensityToQuantum(image,p) == (Quantum)
               TransparentOpacity ? 0x01 : 0x00);
           code=(code << 1)+bit;
           if (((x+1) % pack) == 0)

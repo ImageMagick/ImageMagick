@@ -3195,13 +3195,12 @@ static int IntensityCompare(const void *x,const void *y)
     *color_1,
     *color_2;
 
-  ssize_t
+  int
     intensity;
 
   color_1=(PixelPacket *) x;
   color_2=(PixelPacket *) y;
-  intensity=PixelIntensityToQuantum(color_1)-(ssize_t)
-    PixelIntensityToQuantum(color_2);
+  intensity=PixelPacketIntensity(color_1)-(int) PixelPacketIntensity(color_2);
   return((int) intensity);
 }
 

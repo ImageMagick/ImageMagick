@@ -65,7 +65,7 @@ print("Flexible Image Transport System ...\n");
 testReadWrite( 'FITS:input.fits',
   'FITS:output.fits',
   q//,
-  'a24e60f1cc1b4d6fd6e01204da0a891e01f0f0890b20085c2cd90e8616ba2aa4' );
+  '0aefecf82140beb2c1c36adf65b4b63ac5422e78896a324a0340ceb9c33cfc53' );
 
 print("CompuServe graphics interchange format ...\n");
 ++$test;

@@ -4135,7 +4135,7 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
         intensity,
         tone;
 
-      intensity=(MagickRealType) PixelIntensityToQuantum(p);
+      intensity=(MagickRealType) PixelIntensityToQuantum(image,p);
       tone=intensity > threshold ? (MagickRealType) QuantumRange : intensity+
         (MagickRealType) QuantumRange-threshold;
       SetPixelRed(q,ClampToQuantum(tone));
@@ -4740,19 +4740,19 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
         {
           case 0:
           {
-            SetBit(GetPixelRed(q),j,GetBit(PixelIntensityToQuantum(
+            SetBit(GetPixelRed(q),j,GetBit(PixelIntensityToQuantum(image,
               &pixel),i));
             break;
           }
           case 1:
           {
-            SetBit(GetPixelGreen(q),j,GetBit(PixelIntensityToQuantum(
+            SetBit(GetPixelGreen(q),j,GetBit(PixelIntensityToQuantum(image,
               &pixel),i));
             break;
           }
           case 2:
           {
-            SetBit(GetPixelBlue(q),j,GetBit(PixelIntensityToQuantum(
+            SetBit(GetPixelBlue(q),j,GetBit(PixelIntensityToQuantum(image,
               &pixel),i));
             break;
           }

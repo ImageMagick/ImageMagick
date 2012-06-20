@@ -9418,7 +9418,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 (ScaleQuantumToShort(image->colormap[0].blue) & mask);
 
               ping_trans_color.gray=(png_uint_16)
-                (ScaleQuantumToShort(PixelIntensityToQuantum(
+                (ScaleQuantumToShort(PixelIntensityToQuantum(image,
                    image->colormap)) & mask);
 
               ping_trans_color.index=(png_byte) 0;

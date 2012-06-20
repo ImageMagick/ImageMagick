@@ -370,7 +370,7 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
         break;
       for (x=0; x < (ssize_t) images->columns; x++)
       {
-        SetPixelRed(q,QuantumRange-PixelIntensityToQuantum(p));
+        SetPixelRed(q,QuantumRange-PixelIntensityToQuantum(images,p));
         p++;
         q++;
       }
@@ -402,7 +402,7 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
         break;
       for (x=0; x < (ssize_t) images->columns; x++)
       {
-        q->green=(Quantum) (QuantumRange-PixelIntensityToQuantum(p));
+        q->green=(Quantum) (QuantumRange-PixelIntensityToQuantum(images,p));
         p++;
         q++;
       }
@@ -434,7 +434,7 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
         break;
       for (x=0; x < (ssize_t) images->columns; x++)
       {
-        q->blue=(Quantum) (QuantumRange-PixelIntensityToQuantum(p));
+        q->blue=(Quantum) (QuantumRange-PixelIntensityToQuantum(images,p));
         p++;
         q++;
       }
@@ -471,7 +471,7 @@ MagickExport Image *ConsolidateCMYKImages(const Image *images,
       for (x=0; x < (ssize_t) images->columns; x++)
       {
         SetPixelIndex(indexes+x,QuantumRange-
-          PixelIntensityToQuantum(p));
+          PixelIntensityToQuantum(images,p));
         p++;
       }
       if (SyncCacheViewAuthenticPixels(cmyk_view,exception) == MagickFalse)
