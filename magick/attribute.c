@@ -41,6 +41,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/artifact.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
@@ -74,6 +75,7 @@
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/option.h"
 #include "magick/paint.h"
 #include "magick/pixel.h"
 #include "magick/pixel-private.h"
@@ -1104,5 +1106,189 @@ MagickExport MagickBooleanType SetImageChannelDepth(Image *image,
   image_view=DestroyCacheView(image_view);
   if (status != MagickFalse)
     image->depth=depth;
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e T y p e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageType() sets the type of image.  Choose from these types:
+%
+%      BilevelType, GrayscaleType, GrayscaleMatteType, PaletteType,
+%      PaletteMatteType, TrueColorType, TrueColorMatteType,
+%      ColorSeparationType, ColorSeparationMatteType, OptimizeType
+%
+%  The format of the SetImageType method is:
+%
+%      MagickBooleanType SetImageType(Image *image,const ImageType type)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o type: Image type.
+%
+*/
+MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type)
+{
+  const char
+    *artifact;
+
+  ImageInfo
+    *image_info;
+
+  MagickBooleanType
+    status;
+
+  QuantizeInfo
+    *quantize_info;
+
+  assert(image != (Image *) NULL);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
+  assert(image->signature == MagickSignature);
+  status=MagickTrue;
+  image_info=AcquireImageInfo();
+  image_info->dither=image->dither;
+  artifact=GetImageArtifact(image,"dither");
+  if (artifact != (const char *) NULL)
+    (void) SetImageOption(image_info,"dither",artifact);
+  switch (type)
+  {
+    case BilevelType:
+    {
+      if (IsGrayImage(image,&image->exception) == MagickFalse)
+        status=TransformImageColorspace(image,GRAYColorspace);
+      if (IsMonochromeImage(image,&image->exception) == MagickFalse)
+        {
+          quantize_info=AcquireQuantizeInfo(image_info);
+          quantize_info->number_colors=2;
+          quantize_info->colorspace=GRAYColorspace;
+          status=QuantizeImage(quantize_info,image);
+          quantize_info=DestroyQuantizeInfo(quantize_info);
+        }
+      image->matte=MagickFalse;
+      break;
+    }
+    case GrayscaleType:
+    {
+      if (IsGrayImage(image,&image->exception) == MagickFalse)
+        status=TransformImageColorspace(image,GRAYColorspace);
+      image->matte=MagickFalse;
+      break;
+    }
+    case GrayscaleMatteType:
+    {
+      if (IsGrayImage(image,&image->exception) == MagickFalse)
+        status=TransformImageColorspace(image,GRAYColorspace);
+      if (image->matte == MagickFalse)
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      break;
+    }
+    case PaletteType:
+    {
+      if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+          (IsGrayImage(image,&image->exception) == MagickFalse))
+        status=TransformImageColorspace(image,sRGBColorspace);
+      if ((image->storage_class == DirectClass) || (image->colors > 256))
+        {
+          quantize_info=AcquireQuantizeInfo(image_info);
+          quantize_info->number_colors=256;
+          status=QuantizeImage(quantize_info,image);
+          quantize_info=DestroyQuantizeInfo(quantize_info);
+        }
+      image->matte=MagickFalse;
+      break;
+    }
+    case PaletteBilevelMatteType:
+    {
+      if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+          (IsGrayImage(image,&image->exception) == MagickFalse))
+        status=TransformImageColorspace(image,sRGBColorspace);
+      if (image->matte == MagickFalse)
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      (void) BilevelImageChannel(image,AlphaChannel,(double) QuantumRange/2.0);
+      quantize_info=AcquireQuantizeInfo(image_info);
+      status=QuantizeImage(quantize_info,image);
+      quantize_info=DestroyQuantizeInfo(quantize_info);
+      break;
+    }
+    case PaletteMatteType:
+    {
+      if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+          (IsGrayImage(image,&image->exception) == MagickFalse))
+        status=TransformImageColorspace(image,sRGBColorspace);
+      if (image->matte == MagickFalse)
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      quantize_info=AcquireQuantizeInfo(image_info);
+      quantize_info->colorspace=TransparentColorspace;
+      status=QuantizeImage(quantize_info,image);
+      quantize_info=DestroyQuantizeInfo(quantize_info);
+      break;
+    }
+    case TrueColorType:
+    {
+      if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+          (IsGrayImage(image,&image->exception) == MagickFalse))
+        status=TransformImageColorspace(image,sRGBColorspace);
+      if (image->storage_class != DirectClass)
+        status=SetImageStorageClass(image,DirectClass);
+      image->matte=MagickFalse;
+      break;
+    }
+    case TrueColorMatteType:
+    {
+      if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+          (IsGrayImage(image,&image->exception) == MagickFalse))
+        status=TransformImageColorspace(image,sRGBColorspace);
+      if (image->storage_class != DirectClass)
+        status=SetImageStorageClass(image,DirectClass);
+      if (image->matte == MagickFalse)
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      break;
+    }
+    case ColorSeparationType:
+    {
+      if (image->colorspace != CMYKColorspace)
+        {
+          if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+              (IsGrayImage(image,&image->exception) == MagickFalse))
+            status=TransformImageColorspace(image,sRGBColorspace);
+          status=TransformImageColorspace(image,CMYKColorspace);
+        }
+      if (image->storage_class != DirectClass)
+        status=SetImageStorageClass(image,DirectClass);
+      image->matte=MagickFalse;
+      break;
+    }
+    case ColorSeparationMatteType:
+    {
+      if (image->colorspace != CMYKColorspace)
+        {
+          if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+              (IsGrayImage(image,&image->exception) == MagickFalse))
+            status=TransformImageColorspace(image,sRGBColorspace);
+          status=TransformImageColorspace(image,CMYKColorspace);
+        }
+      if (image->storage_class != DirectClass)
+        status=SetImageStorageClass(image,DirectClass);
+      if (image->matte == MagickFalse)
+        (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
+      break;
+    }
+    case OptimizeType:
+    case UndefinedType:
+      break;
+  }
+  image->type=type;
+  image_info=DestroyImageInfo(image_info);
   return(status);
 }

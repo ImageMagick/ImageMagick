@@ -2757,6 +2757,16 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
         }
        break;
     }
+    case 't':
+    {
+      if (LocaleCompare("type",property) == 0)
+        {
+          string=CommandOptionToMnemonic(MagickTypeOptions,(ssize_t)
+            GetImageType(image,&image->exception));
+          break;
+        }
+       break;
+    }
     case 'u':
     {
       if ((image_info != (ImageInfo *) NULL) &&
