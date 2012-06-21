@@ -40,6 +40,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/attribute.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/constitute.h"
