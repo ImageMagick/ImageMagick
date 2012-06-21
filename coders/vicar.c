@@ -195,6 +195,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  (void) SetImageColorspace(image,GRAYColorspace,exception);
   /*
     Decode image header.
   */
@@ -281,8 +282,6 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
   image->depth=8;
-  if (AcquireImageColormap(image,256,exception) == MagickFalse)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
@@ -291,12 +290,12 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   /*
     Read VICAR pixels.
   */
-  quantum_type=IndexQuantum;
+  quantum_type=GrayQuantum;
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   pixels=GetQuantumPixels(quantum_info);
-  length=GetQuantumExtent(image,quantum_info,IndexQuantum);
+  length=GetQuantumExtent(image,quantum_info,quantum_type);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
