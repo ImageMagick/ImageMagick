@@ -2242,6 +2242,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   image->depth=ping_bit_depth;
   image->depth=GetImageQuantumDepth(image,MagickFalse);
   image->interlace=ping_interlace_method != 0 ? PNGInterlace : NoInterlace;
+  if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
+      ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
+    {
+      image->rendering_intent=UndefinedIntent;
+      image->gamma=1.000;
+      (void) ResetMagickMemory(&image->chromaticity,0,
+        sizeof(image->chromaticity));
+    }
   if (logging != MagickFalse)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
