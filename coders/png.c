@@ -10204,6 +10204,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
        png_error(ping,"WriteBlob Failed");
 
      ping_have_blob=MagickTrue;
+     (void) ping_have_blob;
   }
 
   png_write_info_before_PLTE(ping, ping_info);
