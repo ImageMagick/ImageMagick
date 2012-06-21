@@ -150,7 +150,6 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
         start_color.green);
       start_color.blue=QuantumRange*DecompandsRGB(QuantumScale*
         start_color.blue);
-      start_pixel.colorspace=RGBColorspace;
     }
   if (IssRGBColorspace(stop_pixel.colorspace) != MagickFalse)
     {
@@ -160,7 +159,6 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
         stop_color.green);
       stop_color.blue=QuantumRange*DecompandsRGB(QuantumScale*
         stop_color.blue);
-      stop_pixel.colorspace=RGBColorspace;
     }
   status=GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
     LinearGradient : RadialGradient,PadSpread,&start_color,&stop_color);
@@ -172,6 +170,11 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   (void) SetImageColorspace(image,start_pixel.colorspace);
   if ((start_pixel.matte == MagickFalse) && (stop_pixel.matte == MagickFalse))
     (void) SetImageAlphaChannel(image,DeactivateAlphaChannel);
+  if (IssRGBColorspace(start_pixel.colorspace) != MagickFalse)
+    {
+      (void) SetImageColorspace(image,RGBColorspace);
+      (void) TransformImageColorspace(image,sRGBColorspace);
+    }
   return(GetFirstImageInList(image));
 }
 
