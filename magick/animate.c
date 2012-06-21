@@ -42,6 +42,7 @@
 #include "magick/studio.h"
 #include "magick/animate.h"
 #include "magick/animate-private.h"
+#include "magick/attribute.h"
 #include "magick/client.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
