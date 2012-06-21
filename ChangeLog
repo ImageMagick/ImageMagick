@@ -1,5 +1,6 @@
 2012-06-15  6.7.7-8 Cristy  <quetzlzacatenango@image...>
   * Support the -features option in convert / mogrify.
+  * Add support for the %[type] property.
 
 2012-06-15  6.7.7-8 Anthony Thyssen <A.Thyssen@griffith...>
   * Geomerty arguments accept multiple sign character for offsets

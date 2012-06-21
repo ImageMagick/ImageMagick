@@ -33,7 +33,8 @@ extern MagickExport MagickBooleanType
   IsMonochromeImage(const Image *,ExceptionInfo *),
   IsOpaqueImage(const Image *,ExceptionInfo *),
   SetImageChannelDepth(Image *,const ChannelType,const size_t),
-  SetImageDepth(Image *,const size_t);
+  SetImageDepth(Image *,const size_t),
+  SetImageType(Image *,const ImageType);
 
 extern MagickExport RectangleInfo
   GetImageBoundingBox(const Image *,ExceptionInfo *exception);
