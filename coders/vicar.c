@@ -195,7 +195,6 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  (void) SetImageColorspace(image,GRAYColorspace,exception);
   /*
     Decode image header.
   */
@@ -290,6 +289,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   /*
     Read VICAR pixels.
   */
+  (void) SetImageColorspace(image,GRAYColorspace,exception);
   quantum_type=GrayQuantum;
   quantum_info=AcquireQuantumInfo(image_info,image);
   if (quantum_info == (QuantumInfo *) NULL)
