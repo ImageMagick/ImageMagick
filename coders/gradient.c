@@ -170,6 +170,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   (void) SetImageColorspace(image,start_pixel.colorspace);
+  if ((start_pixel.matte == MagickFalse) && (stop_pixel.matte == MagickFalse))
+    (void) SetImageAlphaChannel(image,DeactivateAlphaChannel);
   return(GetFirstImageInList(image));
 }
 
