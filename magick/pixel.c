@@ -3987,7 +3987,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       pixel->opacity=0.0;
       pixel->index=0.0;
       count*=count;            /* number of pixels - square of size */
-      for (i=0; i < count; i++)
+      for (i=0; i < (ssize_t) count; i++)
       {
         AlphaBlendMagickPixelPacket(image,p+i,indexes+i,pixels,alpha);
         gamma=MagickEpsilonReciprocal(alpha[0]);
