@@ -295,7 +295,7 @@ static const struct ReferenceFormats
     { "PEF", UndefinedCompression, 0.0 },
     { "PFA", UndefinedCompression, 0.0 },
     { "PFB", UndefinedCompression, 0.0 },
-    { "PFM", UndefinedCompression, 0.0 },
+    { "PFM", UndefinedCompression, 0.003 },
     { "PGM", UndefinedCompression, 0.0 },
     { "PGX", UndefinedCompression, 0.0 },
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
