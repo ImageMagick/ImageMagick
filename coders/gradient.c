@@ -144,20 +144,20 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   (void) QueryMagickColor(colorname,&stop_pixel,exception);
   if (IssRGBColorspace(start_pixel.colorspace) != MagickFalse)
     {
-      start_color.red=QuantumRange*DecompandsRGB(QuantumScale*
+      start_color.red=(double) QuantumRange*DecompandsRGB(QuantumScale*
         start_color.red);
-      start_color.green=QuantumRange*DecompandsRGB(QuantumScale*
+      start_color.green=(double) QuantumRange*DecompandsRGB(QuantumScale*
         start_color.green);
-      start_color.blue=QuantumRange*DecompandsRGB(QuantumScale*
+      start_color.blue=(double) QuantumRange*DecompandsRGB(QuantumScale*
         start_color.blue);
     }
   if (IssRGBColorspace(stop_pixel.colorspace) != MagickFalse)
     {
-      stop_color.red=QuantumRange*DecompandsRGB(QuantumScale*
+      stop_color.red=(double) QuantumRange*DecompandsRGB(QuantumScale*
         stop_color.red);
-      stop_color.green=QuantumRange*DecompandsRGB(QuantumScale*
+      stop_color.green=(double) QuantumRange*DecompandsRGB(QuantumScale*
         stop_color.green);
-      stop_color.blue=QuantumRange*DecompandsRGB(QuantumScale*
+      stop_color.blue=(double) QuantumRange*DecompandsRGB(QuantumScale*
         stop_color.blue);
     }
   status=GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
