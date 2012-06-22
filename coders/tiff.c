@@ -368,7 +368,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
   length=WriteLSBLong(file,(size_t) (strip_offset-8));
   length=fwrite("\050\001\003\000\001\000\000\000\002\000\000\000",1,12,file);
   length=fwrite("\000\000\000\000",1,4,file);
-  length=WriteLSBLong(file,image->x_resolution);
+  length=WriteLSBLong(file,(size_t) (image->x_resolution+0.5));
   length=WriteLSBLong(file,1);
   for (length=0; (c=ReadBlobByte(image)) != EOF; length++)
     (void) fputc(c,file);

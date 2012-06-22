@@ -9563,7 +9563,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 ping_bit_depth=1;
                 one=1;
 
-                while ((one << ping_bit_depth) < (ssize_t) number_colors)
+                while ((one << ping_bit_depth) < number_colors)
                   ping_bit_depth <<= 1;
               }
 
@@ -9655,7 +9655,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          {
 
          ping_background.gray=(png_uint_16)
-           ((maxval/65535.)*(ScaleQuantumToShort(
+           ((maxval/65535.)*(ScaleQuantumToShort((Quantum)
               PixelIntensity(&image->background_color)))+.5);
          if (logging != MagickFalse)
          {
