@@ -848,8 +848,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
 #if defined(MAGICKCORE_HDRI_SUPPORT)
       fuzz+=0.003;
 #endif
-      if ((IssRGBColorspace(reference_image->colorspace) == MagickFalse) &&
-          (IsGrayColorspace(reference_image->colorspace) == MagickFalse))
+      if (IssRGBColorspace(reference_image->colorspace) == MagickFalse)
         fuzz+=0.3;
       fuzz+=DistortionEpsilon;
       difference_image=CompareImages(reference_image,reconstruct_image,
