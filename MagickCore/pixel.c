@@ -4132,7 +4132,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
   register const Quantum
     *p;
 
-  register size_t
+  register ssize_t
     i;
 
   ssize_t
@@ -4185,19 +4185,19 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
 
       count*=count;   /* Number of pixels to Average */
       if ((traits & BlendPixelTrait) == 0)
-        for (i=0; i < count; i++)
+        for (i=0; i < (ssize_t) count; i++)
         {
           alpha[i]=1.0;
           pixels[i]=(MagickRealType) p[i*GetPixelChannels(image)+channel];
         }
       else
-        for (i=0; i < count; i++)
+        for (i=0; i < (ssize_t) count; i++)
         {
           alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
             GetPixelChannels(image));
           pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+channel];
         }
-      for (i=0; i < count; i++)
+      for (i=0; i < (ssize_t) count; i++)
       {
         gamma=MagickEpsilonReciprocal(alpha[i])/count;
         *pixel+=gamma*pixels[i];
@@ -4544,7 +4544,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
   register const Quantum
     *p;
 
-  register size_t
+  register ssize_t
     i;
 
   ssize_t
@@ -4593,12 +4593,12 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           break;
         }
       count*=count;   /* Number of pixels to Average */
-      for (i=0; i < GetPixelChannels(source); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
         double
           sum;
 
-        register size_t
+        register ssize_t
           j;
 
         channel=GetPixelChannelMapChannel(source,i);
@@ -4607,18 +4607,18 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
           continue;
-        for (j=0; j < count; j++)
+        for (j=0; j < (ssize_t) count; j++)
           pixels[j]=(MagickRealType) p[j*GetPixelChannels(source)+i];
         sum=0.0;
         if ((traits & BlendPixelTrait) == 0)
           {
-            for (j=0; j < count; j++)
+            for (j=0; j < (ssize_t) count; j++)
               sum+=pixels[j];
             sum/=count;
             SetPixelChannel(destination,channel,ClampToQuantum(sum),pixel);
             continue;
           }
-        for (j=0; j < count; j++)
+        for (j=0; j < (ssize_t) count; j++)
         {
           alpha[j]=QuantumScale*GetPixelAlpha(source,p+j*
             GetPixelChannels(source));
@@ -4640,7 +4640,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           status=MagickFalse;
           break;
         }
-      for (i=0; i < GetPixelChannels(source); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
         PointInfo
           delta,
@@ -4701,7 +4701,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           status=MagickFalse;
           break;
         }
-      for (i=0; i < GetPixelChannels(source); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
         register ssize_t
           j;
@@ -4746,7 +4746,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
     /* deprecated useless and very slow interpolator */
     case FilterInterpolatePixel:
     {
-      for (i=0; i < GetPixelChannels(source); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
         CacheView
           *filter_view;
@@ -4800,7 +4800,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           status=MagickFalse;
           break;
         }
-      for (i=0; i < GetPixelChannels(source); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
         channel=GetPixelChannelMapChannel(source,i);
         traits=GetPixelChannelMapTraits(source,channel);
@@ -4822,7 +4822,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           status=MagickFalse;
           break;
         }
-      for (i=0; i < GetPixelChannels(source); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
         channel=GetPixelChannelMapChannel(source,i);
         traits=GetPixelChannelMapTraits(source,channel);
@@ -4842,7 +4842,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           status=MagickFalse;
           break;
         }
-      for (i=0; i < GetPixelChannels(source); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
         PointInfo
           delta,
@@ -4955,7 +4955,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           status=MagickFalse;
           break;
         }
-      for (i=0; i < GetPixelChannels(source); i++)
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
         register ssize_t
           j;
@@ -5082,7 +5082,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
   register const Quantum
     *p;
 
-  register size_t
+  register ssize_t
     i;
 
   ssize_t
@@ -5135,7 +5135,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       pixel->black=0.0;
       pixel->alpha=0.0;
       count*=count;         /* number of pixels - square of size */
-      for (i=0; i < count; i++)
+      for (i=0; i < (ssize_t) count; i++)
       {
         AlphaBlendPixelInfo(image,p,pixels,alpha);
         gamma=MagickEpsilonReciprocal(alpha[0]);
