@@ -51,11 +51,6 @@
 #include "validate.h"
 
 /*
-  Define declarations.
-*/
-#define DistortionEpsilon  ((MagickRealType) 1.0e-5)
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -638,7 +633,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
 #endif
       if (IssRGBColorspace(reference_image->colorspace) == MagickFalse)
         fuzz+=0.3;
-      fuzz+=DistortionEpsilon;
+      fuzz+=MagickEpsilon;
       difference_image=CompareImages(reference_image,reconstruct_image,
         RootMeanSquaredErrorMetric,&distortion,exception);
       reconstruct_image=DestroyImage(reconstruct_image);
@@ -850,7 +845,7 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
 #endif
       if (IssRGBColorspace(reference_image->colorspace) == MagickFalse)
         fuzz+=0.3;
-      fuzz+=DistortionEpsilon;
+      fuzz+=MagickEpsilon;
       difference_image=CompareImages(reference_image,reconstruct_image,
         RootMeanSquaredErrorMetric,&distortion,exception);
       reconstruct_image=DestroyImage(reconstruct_image);
