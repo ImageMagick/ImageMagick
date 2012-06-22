@@ -2249,10 +2249,10 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     output_scaling = 1.0;
     if (artifact != (const char *) NULL) {
       output_scaling = fabs(StringToDouble(artifact,(char **) NULL));
-      geometry.width  *= (size_t) output_scaling;
-      geometry.height *= (size_t) output_scaling;
-      geometry.x      *= (ssize_t) output_scaling;
-      geometry.y      *= (ssize_t) output_scaling;
+      geometry.width=(size_t) (output_scaling*geometry.width+0.5);
+      geometry.height=(size_t) (output_scaling*geometry.height+0.5);
+      geometry.x=(ssize_t) (output_scaling*geometry.x+0.5);
+      geometry.y=(ssize_t) (output_scaling*geometry.y+0.5);
       if ( output_scaling < 0.1 ) {
         coeff = (double *) RelinquishMagickMemory(coeff);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
