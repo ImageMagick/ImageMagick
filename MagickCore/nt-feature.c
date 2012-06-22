@@ -289,7 +289,6 @@ MagickExport MagickBooleanType NTLoadTypeLists(SplayTreeInfo *type_list,
   LONG
     res;
 
-
   int
     list_entries = 0;
 
