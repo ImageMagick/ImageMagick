@@ -633,9 +633,9 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
             image->y_resolution=geometry_info.sigma;
             if ((flags & SigmaValue) == 0)
               image->y_resolution=image->x_resolution;
-            info.width*=image->x_resolution/info.dpi;
-            info.height*=image->y_resolution/info.dpi;
-            info.dpi=(ssize_t) MagickMax(image->x_resolution,image->y_resolution);
+            info.width=(int) (info.width*image->x_resolution/info.dpi);
+            info.height=(int) (info.height*image->y_resolution/info.dpi);
+            info.dpi=(int) MagickMax(image->x_resolution,image->y_resolution);
           }
         type = ddjvu_page_get_type(lc->page);
 
