@@ -1290,7 +1290,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if ((glyph.id != 0) && (last_glyph.id != 0))
       {
         if (draw_info->kerning != 0.0)
-          origin.x+=64.0*direction*draw_info->kerning;
+          origin.x+=(FT_Pos) (64.0*direction*draw_info->kerning);
         else
           if (FT_HAS_KERNING(face))
             {
@@ -1300,7 +1300,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
               status=FT_Get_Kerning(face,last_glyph.id,glyph.id,
                 ft_kerning_default,&kerning);
               if (status == 0)
-                origin.x+=direction*kerning.x;
+                origin.x+=(FT_Pos) (direction*kerning.x);
             }
         }
     glyph.origin=origin;
@@ -1450,9 +1450,9 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
     if ((draw_info->interword_spacing != 0.0) &&
         (IsUTFSpace(GetUTFCode(p)) != MagickFalse) &&
         (IsUTFSpace(code) == MagickFalse))
-      origin.x+=64.0*direction*draw_info->interword_spacing;
+      origin.x+=(FT_Pos) (64.0*direction*draw_info->interword_spacing);
     else
-      origin.x+=direction*face->glyph->advance.x;
+      origin.x+=(FT_Pos) (direction*face->glyph->advance.x);
     metrics->origin.x=origin.x;
     metrics->origin.y=origin.y;
     FT_Done_Glyph(last_glyph.image);
