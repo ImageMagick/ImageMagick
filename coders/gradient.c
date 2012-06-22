@@ -144,21 +144,21 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   (void) QueryMagickColor(colorname,&stop_pixel,exception);
   if (IssRGBColorspace(start_pixel.colorspace) != MagickFalse)
     {
-      start_color.red=(double) QuantumRange*DecompandsRGB(QuantumScale*
-        start_color.red);
-      start_color.green=(double) QuantumRange*DecompandsRGB(QuantumScale*
-        start_color.green);
-      start_color.blue=(double) QuantumRange*DecompandsRGB(QuantumScale*
-        start_color.blue);
+      start_color.red=ClampToQuantum(QuantumRange*DecompandsRGB(QuantumScale*
+        start_color.red));
+      start_color.green=ClampToQuantum(QuantumRange*DecompandsRGB(QuantumScale*
+        start_color.green));
+      start_color.blue=ClampToQuantum(QuantumRange*DecompandsRGB(QuantumScale*
+        start_color.blue));
     }
   if (IssRGBColorspace(stop_pixel.colorspace) != MagickFalse)
     {
-      stop_color.red=(double) QuantumRange*DecompandsRGB(QuantumScale*
-        stop_color.red);
-      stop_color.green=(double) QuantumRange*DecompandsRGB(QuantumScale*
-        stop_color.green);
-      stop_color.blue=(double) QuantumRange*DecompandsRGB(QuantumScale*
-        stop_color.blue);
+      stop_color.red=ClampToQuantum(QuantumRange*DecompandsRGB(QuantumScale*
+        stop_color.red));
+      stop_color.green=ClampToQuantum(QuantumRange*DecompandsRGB(QuantumScale*
+        stop_color.green));
+      stop_color.blue=ClampToQuantum(QuantumRange*DecompandsRGB(QuantumScale*
+        stop_color.blue));
     }
   status=GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
     LinearGradient : RadialGradient,PadSpread,&start_color,&stop_color);
