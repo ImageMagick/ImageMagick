@@ -768,16 +768,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       case '6':
       {
-        ImageType
-          type;
-
         QuantumAny
           range;
 
         /*
           Convert PNM raster image to pixel packets.
         */
-        type=BilevelType;
         quantum_type=RGBQuantum;
         extent=3*(image->depth <= 8 ? 1 : 2)*image->columns;
         range=GetQuantumRange(image->depth);
@@ -894,22 +890,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     q++;
                   }
                 }
-          if ((type == BilevelType) || (type == GrayscaleType))
-            {
-              q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
-              for (x=0; x < (ssize_t) image->columns; x++)
-              {
-                if ((type == BilevelType) &&
-                    (IsMonochromePixel(q) == MagickFalse))
-                  type=IsGrayPixel(q) == MagickFalse ? UndefinedType :
-                    GrayscaleType;
-                if ((type == GrayscaleType) && (IsGrayPixel(q) == MagickFalse))
-                  type=UndefinedType;
-                if ((type != BilevelType) && (type != GrayscaleType))
-                  break;
-                q++;
-              }
-            }
           sync=SyncAuthenticPixels(image,exception);
           if (sync == MagickFalse)
             status=MagickFalse;
@@ -917,8 +897,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         quantum_info=DestroyQuantumInfo(quantum_info);
         if (status == MagickFalse)
           ThrowReaderException(CorruptImageError,"UnableToReadImageData");
-        if (type != UndefinedType)
-          image->type=type;
         break;
       }
       case '7':
