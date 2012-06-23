@@ -44,6 +44,7 @@
 #include "magick/artifact.h"
 #include "magick/cache.h"
 #include "magick/cache-view.h"
+#include "magick/color-private.h"
 #include "magick/colorspace.h"
 #include "magick/colorspace-private.h"
 #include "magick/composite-private.h"
@@ -2842,7 +2843,8 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   distort_image=CloneImage(image,0,0,MagickTrue,exception);
   if (distort_image == (Image *) NULL)
     return((Image *) NULL);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+  if ((IsGray(&distort_image->background_color) == MagickFalse) &&
+      (IsGrayColorspace(distort_image->colorspace) != MagickFalse))
     (void) TransformImageColorspace(distort_image,sRGBColorspace);
   (void) SetImageVirtualPixelMethod(distort_image,BackgroundVirtualPixelMethod);
   rotate_image=DistortImage(distort_image,ScaleRotateTranslateDistortion,1,
