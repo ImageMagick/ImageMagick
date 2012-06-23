@@ -2280,10 +2280,13 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
       distort_image=DestroyImage(distort_image);
       return((Image *) NULL);
     }
-  distort_image->page.x=geometry.x;
-  distort_image->page.y=geometry.y;
+  if ((IsPixelInfoGray(&distort_image->background_color) == MagickFalse) &&
+      (IsGrayColorspace(distort_image->colorspace) != MagickFalse))
+    (void) TransformImageColorspace(distort_image,sRGBColorspace,exception);
   if (distort_image->background_color.matte != MagickFalse)
     distort_image->matte=MagickTrue;
+  distort_image->page.x=geometry.x;
+  distort_image->page.y=geometry.y;
 
   { /* ----- MAIN CODE -----
        Sample the source image to each pixel in the distort image.
@@ -2832,8 +2835,6 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   distort_image=CloneImage(image,0,0,MagickTrue,exception);
   if (distort_image == (Image *) NULL)
     return((Image *) NULL);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(distort_image,sRGBColorspace,exception);
   (void) SetImageVirtualPixelMethod(distort_image,BackgroundVirtualPixelMethod,
     exception);
   rotate_image=DistortImage(distort_image,ScaleRotateTranslateDistortion,1,
