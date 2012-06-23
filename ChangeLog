@@ -9,10 +9,10 @@
   * Add support for the %[type] property.
 
 2012-06-15  6.7.7-8 Anthony Thyssen <A.Thyssen@griffith...>
-  * Geomerty arguments accept multiple sign character for offsets
-    EG: "-10-10", "-+10-+10", or "+-10+-10" generate negtive offsets
-    while "+10+10", "++10++10", or "--10--10" generate positive offsets
-    that is you can not only optionally have a sign in offset variable
+  * Geometry arguments accept multiple sign character for offsets
+    EG: "-10-10", "-+10-+10", or "+-10+-10" generate negative offsets
+    while "+10+10", "++10++10", or "--10--10" generate positive offsets,
+    that is, you can not only optionally have a sign in offset variable
     substitutions, but can negate that substitution if you so desire.
 
 2012-06-12  6.7.7-8 Nicolas Robidoux <nicolas.robidoux@gmail...>
