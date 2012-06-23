@@ -46,6 +46,8 @@
 #include "magick/cache.h"
 #include "magick/cache-private.h"
 #include "magick/color-private.h"
+#include "magick/colorspace.h"
+#include "magick/colorspace-private.h"
 #include "magick/composite-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
