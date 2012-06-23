@@ -1,3 +1,6 @@
+2012-06-22  6.7.7-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.7-8, SVN revision 8432.
+
 2012-06-15  6.7.7-8 Cristy  <quetzlzacatenango@image...>
   * Support the -features option in convert / mogrify.
   * Add support for the %[type] property.
