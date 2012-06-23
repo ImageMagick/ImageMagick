@@ -5402,6 +5402,8 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
   blur_image=DestroyImage(blur_image);
   vignette_image=MergeImageLayers(canvas_image,FlattenLayer,exception);
   canvas_image=DestroyImage(canvas_image);
+  if (vignette_image != (Image *) NULL)
+    (void) TransformImageColorspace(vignette_image,image->colorspace);
   return(vignette_image);
 }
 
