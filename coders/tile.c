@@ -116,6 +116,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
     ThrowReaderException(OptionError,"MustSpecifyImageSize");
   if (*image_info->filename == '\0')
     ThrowReaderException(OptionError,"MustSpecifyAnImageName");
+  image->colorspace=tile_image->colorspace;
   image->matte=tile_image->matte;
   if (image->matte != MagickFalse)
     (void) SetImageBackgroundColor(image,exception);
@@ -127,6 +128,8 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
     }
   (void) TextureImage(image,tile_image,exception);
   tile_image=DestroyImage(tile_image);
+  if (image->colorspace == GRAYColorspace)
+    image->type=GrayscaleType;
   return(GetFirstImageInList(image));
 }
 

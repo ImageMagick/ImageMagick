@@ -181,27 +181,22 @@ static inline PixelTrait GetPixelIndexTraits(const Image *restrict image)
   return(image->channel_map[IndexPixelChannel].traits);
 }
 
-static inline Quantum GetPixelInfoIntensity(
-  const PixelInfo *restrict pixel_info)
+static inline double GetPixelInfoChannel(const PixelInfo *restrict pixel_info,
+  const PixelChannel channel)
 {
-  double
-    blue,
-    green,
-    red;
-
-  if (pixel_info->colorspace == GRAYColorspace)
-    return(ClampToQuantum(pixel_info->red));
-  if (pixel_info->colorspace != sRGBColorspace)
-    return(ClampToQuantum(0.298839*pixel_info->red+0.586811*pixel_info->green+
-      0.114350*pixel_info->blue));
-  red=QuantumRange*DecompandsRGB(QuantumScale*pixel_info->red);
-  green=QuantumRange*DecompandsRGB(QuantumScale*pixel_info->green);
-  blue=QuantumRange*DecompandsRGB(QuantumScale*pixel_info->blue);
-  return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
+  switch (channel)
+  {
+    case RedPixelChannel: return(pixel_info->red);
+    case GreenPixelChannel: return(pixel_info->green);
+    case BluePixelChannel: return(pixel_info->blue);
+    case BlackPixelChannel: return(pixel_info->black);
+    case AlphaPixelChannel: return(pixel_info->alpha);
+    case IndexPixelChannel: return(pixel_info->index);
+    default: return(0.0);
+  }
 }
 
-static inline Quantum GetPixelInfoLuminance(
-  const PixelInfo *restrict pixel_info)
+static inline double GetPixelInfoIntensity(const PixelInfo *restrict pixel_info)
 {
   double
     blue,
@@ -209,14 +204,32 @@ static inline Quantum GetPixelInfoLuminance(
     red;
 
   if (pixel_info->colorspace == GRAYColorspace)
-    return((Quantum) pixel_info->red);
+    return(pixel_info->red);
   if (pixel_info->colorspace != sRGBColorspace)
-    return(ClampToQuantum(0.21267*pixel_info->red+0.71516*pixel_info->green+
-      0.07217*pixel_info->blue));
+    return(0.298839*pixel_info->red+0.586811*pixel_info->green+
+      0.114350*pixel_info->blue);
   red=QuantumRange*DecompandsRGB(QuantumScale*pixel_info->red);
   green=QuantumRange*DecompandsRGB(QuantumScale*pixel_info->green);
   blue=QuantumRange*DecompandsRGB(QuantumScale*pixel_info->blue);
-  return(ClampToQuantum(0.21267*red+0.71516*green+0.07217*blue));
+  return(0.298839*red+0.586811*green+0.114350*blue);
+}
+
+static inline double GetPixelInfoLuminance(const PixelInfo *restrict pixel_info)
+{
+  double
+    blue,
+    green,
+    red;
+
+  if (pixel_info->colorspace == GRAYColorspace)
+    return(pixel_info->red);
+  if (pixel_info->colorspace != sRGBColorspace)
+    return(0.21267*pixel_info->red+0.71516*pixel_info->green+
+      0.07217*pixel_info->blue);
+  red=QuantumRange*DecompandsRGB(QuantumScale*pixel_info->red);
+  green=QuantumRange*DecompandsRGB(QuantumScale*pixel_info->green);
+  blue=QuantumRange*DecompandsRGB(QuantumScale*pixel_info->blue);
+  return(0.21267*red+0.71516*green+0.07217*blue);
 }
 
 static inline Quantum GetPixelIntensity(const Image *restrict image,
@@ -329,7 +342,7 @@ static inline void GetPixelInfoPixel(const Image *restrict image,
     pixel[image->channel_map[GreenPixelChannel].offset];
   pixel_info->blue=(double)
     pixel[image->channel_map[BluePixelChannel].offset];
-  pixel_info->black=0;
+  pixel_info->black=0.0;
   if (image->channel_map[BlackPixelChannel].traits != UndefinedPixelTrait)
     pixel_info->black=(double)
       pixel[image->channel_map[BlackPixelChannel].offset];
@@ -337,7 +350,7 @@ static inline void GetPixelInfoPixel(const Image *restrict image,
   if (image->channel_map[AlphaPixelChannel].traits != UndefinedPixelTrait)
     pixel_info->alpha=(double)
       pixel[image->channel_map[AlphaPixelChannel].offset];
-  pixel_info->index=0;
+  pixel_info->index=0.0;
   if (image->channel_map[IndexPixelChannel].traits != UndefinedPixelTrait)
     pixel_info->index=(double)
       pixel[image->channel_map[IndexPixelChannel].offset];
