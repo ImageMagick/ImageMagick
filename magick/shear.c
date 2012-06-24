@@ -1925,7 +1925,6 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
       shear_image=DestroyImage(shear_image);
       return((Image *) NULL);
     }
-  shear_image->matte=image->matte;
   shear_image->compose=image->compose;
   shear_image->page.width=0;
   shear_image->page.height=0;
