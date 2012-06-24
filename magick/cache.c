@@ -5197,7 +5197,7 @@ MagickExport VirtualPixelMethod SetPixelCacheVirtualMethod(const Image *image,
         if ((image->background_color.opacity != OpaqueOpacity) &&
             (image->matte == MagickFalse))
           (void) SetCacheAlphaChannel((Image *) image,OpaqueOpacity);
-        if ((IsGray(&image->background_color) == MagickFalse) &&
+        if ((IsPixelGray(&image->background_color) == MagickFalse) &&
             (IsGrayColorspace(image->colorspace) != MagickFalse))
           (void) TransformImageColorspace((Image *) image,sRGBColorspace);
         break;

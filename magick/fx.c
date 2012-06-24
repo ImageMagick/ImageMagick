@@ -715,7 +715,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
       return((Image *) NULL);
     }
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
-      (IsGray(&colorize) != MagickFalse))
+      (IsPixelGray(&colorize) != MagickFalse))
     (void) SetImageColorspace(colorize_image,sRGBColorspace);
   if ((colorize_image->matte == MagickFalse) &&
       (colorize.opacity != OpaqueOpacity))
@@ -5205,7 +5205,7 @@ MagickExport Image *TintImage(const Image *image,const char *opacity,
       return((Image *) NULL);
     }
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
-      (IsGray(&tint) == MagickFalse))
+      (IsPixelGray(&tint) == MagickFalse))
     (void) SetImageColorspace(tint_image,sRGBColorspace);
   if (opacity == (const char *) NULL)
     return(tint_image);
