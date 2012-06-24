@@ -183,7 +183,7 @@ static inline Quantum PixelPacketIntensity(const PixelPacket *pixel)
   red=QuantumRange*DecompandsRGB(QuantumScale*pixel->red);
   green=QuantumRange*DecompandsRGB(QuantumScale*pixel->green);
   blue=QuantumRange*DecompandsRGB(QuantumScale*pixel->blue);
-  return(ClampToQuantum(0.21267*red+0.71516*green+0.07217*blue));
+  return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
 }
 
 static inline Quantum PixelIntensityToQuantum(const Image *restrict image,
@@ -202,7 +202,7 @@ static inline Quantum PixelIntensityToQuantum(const Image *restrict image,
   red=QuantumRange*DecompandsRGB(QuantumScale*pixel->red);
   green=QuantumRange*DecompandsRGB(QuantumScale*pixel->green);
   blue=QuantumRange*DecompandsRGB(QuantumScale*pixel->blue);
-  return(ClampToQuantum(0.21267*red+0.71516*green+0.07217*blue));
+  return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
