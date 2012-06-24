@@ -45,21 +45,6 @@ static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
   return(MagickFalse);
 }
 
-static inline MagickBooleanType IsGray(const PixelPacket *pixel)
-{
-  double
-    blue,
-    green,
-    red;
-
-  red=(double) pixel->red;
-  green=(double) pixel->green;
-  blue=(double) pixel->blue;
-  if ((fabs(red-green) < MagickEpsilon) && (fabs(green-blue) < MagickEpsilon))
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
 static inline MagickBooleanType IsMagickColorEqual(const MagickPixelPacket *p,
   const MagickPixelPacket *q)
 {
@@ -95,6 +80,21 @@ static inline MagickBooleanType IsMagickGray(const MagickPixelPacket *pixel)
     return(MagickFalse);
   if ((fabs(pixel->red-pixel->green) < MagickEpsilon) &&
       (fabs(pixel->green-pixel->blue) < MagickEpsilon))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
+static inline MagickBooleanType IsPixelGray(const PixelPacket *pixel)
+{
+  double
+    blue,
+    green,
+    red;
+
+  red=(double) pixel->red;
+  green=(double) pixel->green;
+  blue=(double) pixel->blue;
+  if ((fabs(red-green) < MagickEpsilon) && (fabs(green-blue) < MagickEpsilon))
     return(MagickTrue);
   return(MagickFalse);
 }
