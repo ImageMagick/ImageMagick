@@ -52,6 +52,7 @@
 #include "magick/cache.h"
 #include "magick/cache-view.h"
 #include "magick/color.h"
+#include "magick/color-private.h"
 #include "magick/colorspace.h"
 #include "magick/colorspace-private.h"
 #include "magick/composite.h"
@@ -1806,8 +1807,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
   (void) QueryColorDatabase("#000000",&start_color,&image->exception);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
   status=MagickTrue;
   for (q=primitive; *q != '\0'; )
   {
@@ -4197,6 +4196,10 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         draw_info->affine.rx,draw_info->affine.ry,draw_info->affine.sy,
         draw_info->affine.tx,draw_info->affine.ty);
     }
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      ((IsPixelGray(&draw_info->fill) == MagickFalse) ||
+       (IsPixelGray(&draw_info->stroke) == MagickFalse)))
+    (void) TransformImageColorspace(image,sRGBColorspace);
   status=MagickTrue;
   exception=(&image->exception);
   x=(ssize_t) ceil(primitive_info->point.x-0.5);

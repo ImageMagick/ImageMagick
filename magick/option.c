@@ -834,6 +834,7 @@ static const OptionInfo
   ColorspaceOptions[] =
   {
     { "Undefined", UndefinedColorspace, UndefinedOptionFlag, MagickTrue },
+    { "CIELab", LabColorspace, UndefinedOptionFlag, MagickFalse },
     { "CMY", CMYColorspace, UndefinedOptionFlag, MagickFalse },
     { "CMYK", CMYKColorspace, UndefinedOptionFlag, MagickFalse },
     { "Gray", GRAYColorspace, UndefinedOptionFlag, MagickFalse },
