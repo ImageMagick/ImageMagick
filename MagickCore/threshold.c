@@ -490,8 +490,6 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
   const char *thresholds,ExceptionInfo *exception)
 {
 #define ThresholdImageTag  "Threshold/Image"
-#define BlackThreshold(pixel,threshold) \
-  if (pixel <= threshold) pixel=0;
 
   CacheView
     *image_view;
@@ -564,9 +562,6 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    PixelInfo
-      pixel;
-
     register ssize_t
       x;
 
@@ -581,7 +576,6 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
         status=MagickFalse;
         continue;
       }
-    GetPixelInfo(image,&pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (GetPixelMask(image,q) != 0)
@@ -589,13 +583,21 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
           q+=GetPixelChannels(image);
           continue;
         }
-      GetPixelInfoPixel(image,q,&pixel);
-      BlackThreshold(pixel.red,threshold.red);
-      BlackThreshold(pixel.green,threshold.green);
-      BlackThreshold(pixel.blue,threshold.blue);
-      BlackThreshold(pixel.black,threshold.black);
-      BlackThreshold(pixel.alpha,threshold.alpha);
-      SetPixelInfoPixel(image,&pixel,q);
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        if ((double) q[i] <= GetPixelInfoChannel(&threshold,channel))
+          q[i]=0;
+      }
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -1619,8 +1621,6 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
   const char *thresholds,ExceptionInfo *exception)
 {
 #define ThresholdImageTag  "Threshold/Image"
-#define WhiteThreshold(pixel,threshold) \
-  if (pixel > threshold) pixel=QuantumRange;
 
   CacheView
     *image_view;
@@ -1693,9 +1693,6 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    PixelInfo
-      pixel;
-
     register ssize_t
       x;
 
@@ -1710,21 +1707,31 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
         status=MagickFalse;
         continue;
       }
-    GetPixelInfo(image,&pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      register ssize_t
+        i;
+
       if (GetPixelMask(image,q) != 0)
         {
           q+=GetPixelChannels(image);
           continue;
         }
-      GetPixelInfoPixel(image,q,&pixel);
-      WhiteThreshold(pixel.red,threshold.red);
-      WhiteThreshold(pixel.green,threshold.green);
-      WhiteThreshold(pixel.blue,threshold.blue);
-      WhiteThreshold(pixel.black,threshold.black);
-      WhiteThreshold(pixel.alpha,threshold.alpha);
-      SetPixelInfoPixel(image,&pixel,q);
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
+        if ((traits & UpdatePixelTrait) == 0)
+          continue;
+        if ((double) q[i] > GetPixelInfoChannel(&threshold,channel))
+          q[i]=QuantumRange;
+      }
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
