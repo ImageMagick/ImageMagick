@@ -3285,9 +3285,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("swirl",option+1) == 0)
         {
-          flags=ParseGeometry(arg2,&geometry_info);
+          flags=ParseGeometry(arg1,&geometry_info);
           if ((flags & RhoValue) == 0)
-            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg2);
+            CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           new_image=SwirlImage(_image,geometry_info.rho,
             _image->interpolate,_exception);
           break;
