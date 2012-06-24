@@ -110,8 +110,7 @@ static inline MagickRealType MagickPixelIntensity(
   if (pixel->colorspace == GRAYColorspace)
     return(pixel->red);
   if (pixel->colorspace != sRGBColorspace)
-    return(0.298839*pixel->red+0.586811*pixel->green+
-      0.114350*pixel->blue);
+    return(0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue);
   red=QuantumRange*DecompandsRGB(QuantumScale*pixel->red);
   green=QuantumRange*DecompandsRGB(QuantumScale*pixel->green);
   blue=QuantumRange*DecompandsRGB(QuantumScale*pixel->blue);
