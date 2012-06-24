@@ -1,3 +1,6 @@
+2012-06-24  6.7.7-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.7-9, SVN revision 8460.
+
 2012-06-23  6.7.7-9 Cristy  <quetzlzacatenango@image...>
   * Some options were incorrectly promoting linear gray to sRGB.
 
