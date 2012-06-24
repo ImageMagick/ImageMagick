@@ -1591,9 +1591,9 @@ static inline void ConvertXYZTosRGB(const double x,const double y,
   r=3.1338561*x-1.6168667*y-0.4906146*z;
   g=(-0.9787684*x+1.9161415*y+0.0334540*z);
   b=0.0719453*x-0.2289914*y+1.4052427*z;
-  *red=RoundToQuantum((MagickRealType) QuantumRange*CompandsRGB(r));
-  *green=RoundToQuantum((MagickRealType) QuantumRange*CompandsRGB(g));
-  *blue=RoundToQuantum((MagickRealType) QuantumRange*CompandsRGB(b));
+  *red=ClampToQuantum((MagickRealType) QuantumRange*CompandsRGB(r));
+  *green=ClampToQuantum((MagickRealType) QuantumRange*CompandsRGB(g));
+  *blue=ClampToQuantum((MagickRealType) QuantumRange*CompandsRGB(b));
 }
 
 static inline void ConvertCMYKTosRGB(PixelInfo *pixel)

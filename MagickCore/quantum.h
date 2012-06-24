@@ -24,8 +24,6 @@ extern "C" {
 
 #include "MagickCore/semaphore.h"
 
-#define RoundToQuantum(quantum)  ClampToQuantum(quantum)
-
 typedef enum
 {
   UndefinedEndian,
