@@ -578,6 +578,9 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      register ssize_t
+        i;
+
       if (GetPixelMask(image,q) != 0)
         {
           q+=GetPixelChannels(image);
