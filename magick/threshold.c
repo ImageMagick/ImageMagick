@@ -540,6 +540,9 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
   MagickPixelPacket
     threshold;
 
+  MagickRealType
+    intensity;
+
   MagickStatusType
     flags;
 
@@ -577,6 +580,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
       threshold.opacity*=(QuantumRange/100.0);
       threshold.index*=(QuantumRange/100.0);
     }
+  intensity=MagickPixelIntensity(&threshold);
   if ((IsMagickGray(&threshold) == MagickFalse) &&
       (IsGrayColorspace(image->colorspace) != MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace);
@@ -614,7 +618,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
     {
       if (channel == DefaultChannels)
         {
-          if (PixelIntensity(q) < MagickPixelIntensity(&threshold))
+          if (PixelIntensity(q) < intensity)
             {
               SetPixelRed(q,0);
               SetPixelGreen(q,0);
@@ -1998,11 +2002,14 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    progress;
+
   MagickPixelPacket
     threshold;
 
-  MagickOffsetType
-    progress;
+  MagickRealType
+    intensity;
 
   MagickStatusType
     flags;
@@ -2041,6 +2048,7 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
       threshold.opacity*=(QuantumRange/100.0);
       threshold.index*=(QuantumRange/100.0);
     }
+  intensity=MagickPixelIntensity(&threshold);
   if ((IsMagickGray(&threshold) == MagickFalse) &&
       (IsGrayColorspace(image->colorspace) != MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace);
@@ -2078,7 +2086,7 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
     {
       if (channel == DefaultChannels)
         {
-          if (PixelIntensity(q) > MagickPixelIntensity(&threshold))
+          if (PixelIntensity(q) > intensity)
             {
               SetPixelRed(q,QuantumRange);
               SetPixelGreen(q,QuantumRange);
