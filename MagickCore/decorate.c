@@ -230,10 +230,10 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
       frame_image=DestroyImage(frame_image);
       return((Image *) NULL);
     }
-  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
-      (IsPixelInfoGray(&image->matte_color) == MagickFalse))
+  if ((IsPixelInfoGray(&frame_image->matte_color) == MagickFalse) &&
+      (IsGrayColorspace(frame_image->colorspace) != MagickFalse))
     (void) SetImageColorspace(frame_image,sRGBColorspace,exception);
-  if ((frame_image->border_color.matte != MagickFalse) &&
+  if ((frame_image->matte_color.matte != MagickFalse) &&
       (frame_image->matte == MagickFalse))
     (void) SetImageAlpha(frame_image,OpaqueAlpha,exception);
   frame_image->page=image->page;

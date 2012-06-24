@@ -2283,6 +2283,20 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
         if (colorspace[i] == '(')
           break;
       colorspace[i--]='\0';
+      scale=(MagickRealType) ScaleCharToQuantum(1);
+      if (LocaleCompare(colorspace,"icc-color") == 0)
+        {
+          register ssize_t
+            j;
+
+          (void) CopyMagickString(colorspace,name+i+2,MaxTextExtent);
+          for (j=0; colorspace[j] != '\0'; j++)
+            if (colorspace[j] == ',')
+              break;
+          colorspace[j--]='\0';
+          i+=j+3;
+          scale=(MagickRealType) QuantumRange;
+        }
       LocaleLower(colorspace);
       color->matte=MagickFalse;
       if ((i > 0) && (colorspace[i] == 'a'))
@@ -2302,7 +2316,6 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
         color->colorspace=sRGBColorspace;  /* as required by SVG standard */
       SetGeometryInfo(&geometry_info);
       flags=ParseGeometry(name+i+1,&geometry_info);
-      scale=(MagickRealType) ScaleCharToQuantum(1);
       if ((flags & PercentValue) != 0)
         scale=(MagickRealType) (QuantumRange/100.0);
       if ((flags & RhoValue) != 0)

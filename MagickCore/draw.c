@@ -1799,8 +1799,6 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
     exception);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
   status=MagickTrue;
   for (q=primitive; *q != '\0'; )
   {
@@ -4164,6 +4162,10 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
         draw_info->affine.rx,draw_info->affine.ry,draw_info->affine.sy,
         draw_info->affine.tx,draw_info->affine.ty);
     }
+  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
+      ((IsPixelInfoGray(&draw_info->fill) == MagickFalse) ||
+       (IsPixelInfoGray(&draw_info->stroke) == MagickFalse)))
+    (void) SetImageColorspace(image,sRGBColorspace,exception);
   status=MagickTrue;
   x=(ssize_t) ceil(primitive_info->point.x-0.5);
   y=(ssize_t) ceil(primitive_info->point.y-0.5);
