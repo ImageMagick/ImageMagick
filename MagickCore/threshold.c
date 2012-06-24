@@ -1562,8 +1562,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
           else
             threshold=(MagickRealType) (QuantumRange*
               GetPseudoRandomValue(random_info[id]));
-          q[i]=(Quantum) ((MagickRealType) q[i] <= threshold ? 0 :
-            QuantumRange);
+        q[i]=(MagickRealType) q[i] <= threshold ? 0 : QuantumRange;
       }
       q+=GetPixelChannels(image);
     }
