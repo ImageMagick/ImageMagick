@@ -2833,7 +2833,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           }
       }
     if ((photometric == PHOTOMETRIC_RGB) &&
-        (IssRGBColorspace(image->colorspace) == MagickFalse))
+        (IssRGBColorspace(image->colorspace) == MagickFalse) &&
+        (IsRGBColorspace(image->colorspace) == MagickFalse))
       (void) TransformImageColorspace(image,sRGBColorspace);
     switch (image->endian)
     {
