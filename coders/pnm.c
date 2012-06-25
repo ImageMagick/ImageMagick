@@ -1541,9 +1541,6 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       }
     if (format != '7')
       {
-        if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
-            (IsImageGray(image,exception) == MagickFalse))
-          (void) TransformImageColorspace(image,sRGBColorspace,exception);
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g %.20g\n",
           (double) image->columns,(double) image->rows);
         (void) WriteBlobString(image,buffer);
@@ -1615,6 +1612,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         /*
           Convert image to a PBM image.
         */
+        if (IsImageGray(image,exception) == MagickFalse)
+          (void) TransformImageColorspace(image,GRAYColorspace,exception);
         q=pixels;
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -1664,6 +1663,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         /*
           Convert image to a PGM image.
         */
+        if (IsImageGray(image,exception) == MagickFalse)
+          (void) TransformImageColorspace(image,GRAYColorspace,exception);
         if (image->depth <= 8)
           (void) WriteBlobString(image,"255\n");
         else
@@ -1723,6 +1724,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         /*
           Convert image to a PNM image.
         */
+        if (IssRGBColorspace(image->colorspace) == MagickFalse)
+          (void) TransformImageColorspace(image,sRGBColorspace,exception);
         if (image->depth <= 8)
           (void) WriteBlobString(image,"255\n");
         else
@@ -1782,6 +1785,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         /*
           Convert image to a PBM image.
         */
+        if (IsImageGray(image,exception) == MagickFalse)
+          (void) TransformImageColorspace(image,GRAYColorspace,exception);
         image->depth=1;
         quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);
         if (quantum_info == (QuantumInfo *) NULL)
@@ -1820,6 +1825,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         /*
           Convert image to a PGM image.
         */
+        if (IsImageGray(image,exception) == MagickFalse)
+          (void) TransformImageColorspace(image,GRAYColorspace,exception);
         if (image->depth > 8)
           image->depth=16;
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double)
@@ -1903,6 +1910,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
         /*
           Convert image to a PNM image.
         */
+        if (IssRGBColorspace(image->colorspace) == MagickFalse)
+          (void) TransformImageColorspace(image,sRGBColorspace,exception);
         if (image->depth > 8)
           image->depth=16;
         (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g\n",(double)
