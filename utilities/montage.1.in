@@ -3,7 +3,7 @@
 montage \- create a composite image by combining several separate images. The images are tiled on the composite image optionally adorned with a border, frame, image name, and more.
 .SH SYNOPSIS
 .TP
-\fBmontage\fP \fIinput-file\fP [\fIoptions\fP] \fIoutput-file\fP
+\fBmontage\fP \fIinput-file[s]\fP [\fIoptions\fP] \fIoutput-file\fP
 .SH OVERVIEW
 The \fBmontage\fP program is a member of the ImageMagick(1) suite of tools.  Use it to create a composite image by combining several separate images. The images are tiled on the composite image optionally adorned with a border, frame, image name, and more.
 
