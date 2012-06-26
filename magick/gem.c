@@ -594,7 +594,8 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %  The format of the GenerateDifferentialNoise method is:
 %
 %      double GenerateDifferentialNoise(RandomInfo *random_info,
-%        const Quantum pixel,const NoiseType noise_type,const double attenuate)
+%        const Quantum pixel,const NoiseType noise_type,
+%        const MagickRealType attenuate)
 %
 %  A description of each parameter follows:
 %
@@ -608,7 +609,7 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %
 */
 MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
-  const Quantum pixel,const NoiseType noise_type,const double attenuate)
+  const Quantum pixel,const NoiseType noise_type,const MagickRealType attenuate)
 {
 #define SigmaUniform  (attenuate*0.015625)
 #define SigmaGaussian  (attenuate*0.015625)
