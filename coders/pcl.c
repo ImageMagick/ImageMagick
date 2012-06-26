@@ -705,6 +705,7 @@ static MagickBooleanType WritePCLImage(const ImageInfo *image_info,Image *image)
   do
   {
     if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+        (IsRGBColorspace(image->colorspace) == MagickFalse) &&
         (IsGrayImage(image,&image->exception) == MagickFalse))
       (void) TransformImageColorspace(image,sRGBColorspace);
     /*

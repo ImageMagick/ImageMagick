@@ -354,7 +354,8 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image)
     /*
       Write AVS header.
     */
-    if (IssRGBColorspace(image->colorspace) == MagickFalse)
+    if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+        (IsRGBColorspace(image->colorspace) == MagickFalse))
       (void) TransformImageColorspace(image,sRGBColorspace);
     (void) WriteBlobMSBLong(image,(unsigned int) image->columns);
     (void) WriteBlobMSBLong(image,(unsigned int) image->rows);

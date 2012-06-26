@@ -574,7 +574,8 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   ipl_info.width = (unsigned int) image->columns;
   ipl_info.height = (unsigned int) image->rows;
   
-  if (IssRGBColorspace(image->colorspace) == MagickFalse)
+  if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+      (IsRGBColorspace(image->colorspace) == MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace);
   
   if(IssRGBColorspace(image->colorspace) == MagickTrue) { ipl_info.colors = 3; }
