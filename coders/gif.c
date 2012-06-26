@@ -1194,6 +1194,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     (void) CopyMagickString(name,"magick",sizeof(name));
                     image->gamma=StringToDouble((char *) info+6,(char **) NULL);
+                    if (image->gamma == 1.0)
+                      image->colorspace=RGBColorspace;
                   }
                 else
                   (void) FormatLocaleString(name,sizeof(name),"gif:%.11s",
