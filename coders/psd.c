@@ -706,8 +706,8 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
         }
         case 4:
         {
-          if ((IssRGBColorspace(image->colorspace) == MagickTrue) &&
-              (IsRGBColorspace(image->colorspace) == MagickTrue) &&
+          if (((IssRGBColorspace(image->colorspace) != MagickFalse) ||
+               (IsRGBColorspace(image->colorspace) != MagickFalse)) &&
               (channels > 3))
             break;
           if (image->matte != MagickFalse)

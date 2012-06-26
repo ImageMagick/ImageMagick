@@ -2959,8 +2959,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
         if (image_info->quality != UndefinedCompressionQuality)
           (void) TIFFSetField(tiff,TIFFTAG_JPEGQUALITY,image_info->quality);
         (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RAW);
-        if ((IssRGBColorspace(image->colorspace) == MagickTrue) ||
-            (IsRGBColorspace(image->colorspace) == MagickTrue))
+        if ((IssRGBColorspace(image->colorspace) != MagickFalse) ||
+            (IsRGBColorspace(image->colorspace) != MagickFalse))
           {
             const char
               *value;
