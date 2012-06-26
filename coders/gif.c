@@ -1194,8 +1194,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     (void) CopyMagickString(name,"magick",sizeof(name));
                     image->gamma=StringToDouble((char *) info+6,(char **) NULL);
-                    if (image->gamma == 1.0)
-                      image->colorspace=RGBColorspace;
                   }
                 else
                   (void) FormatLocaleString(name,sizeof(name),"gif:%.11s",
@@ -1333,12 +1331,14 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         colormap=(unsigned char *) RelinquishMagickMemory(colormap);
       }
-    for (i=0; i < (ssize_t) image->colors; i++)
-      if ((image->colormap[i].red != image->colormap[i].green) ||
-          (image->colormap[i].green != image->colormap[i].blue))
-        break;
-    if ((i == (ssize_t) image->colors) && (image->gamma == 1.0))
-      SetImageColorspace(image,GRAYColorspace,exception);
+    if (image->gamma == 1.0)
+      {
+        for (i=0; i < (ssize_t) image->colors; i++)
+          if (IsGrayPixel(image->colormap+i) == MagickFalse)
+            break;
+        (void) SetImageColorspace(image,i == (ssize_t) image->colors ? 
+          GRAYColorspace : RGBColorspace,exception);
+      }
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
