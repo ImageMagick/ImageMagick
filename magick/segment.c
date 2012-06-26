@@ -1794,6 +1794,9 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
   const ColorspaceType colorspace,const MagickBooleanType verbose,
   const double cluster_threshold,const double smooth_threshold)
 {
+  ColorspaceType
+    previous_colorspace;
+
   MagickBooleanType
     status;
 
@@ -1828,12 +1831,11 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
           image->filename)
       }
   }
-  if ((IssRGBColorspace(colorspace) == MagickFalse) &&
-      (IsGrayColorspace(colorspace) == MagickFalse))
-    (void) TransformImageColorspace(image,colorspace);
   /*
     Initialize histogram.
   */
+  previous_colorspace=image->colorspace;
+  (void) TransformImageColorspace(image,colorspace);
   InitializeHistogram(image,histogram,&image->exception);
   (void) OptimalTau(histogram[Red],Tau,0.2,DeltaTau,
     smooth_threshold == 0.0 ? 1.0 : smooth_threshold,extrema[Red]);
@@ -1845,9 +1847,7 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
     Classify using the fuzzy c-Means technique.
   */
   status=Classify(image,extrema,cluster_threshold,WeightingExponent,verbose);
-  if ((IssRGBColorspace(colorspace) == MagickFalse) &&
-      (IsGrayColorspace(colorspace) == MagickFalse))
-    (void) TransformImageColorspace(image,colorspace);
+  (void) TransformImageColorspace(image,previous_colorspace);
   /*
     Relinquish resources.
   */

@@ -446,9 +446,7 @@ static MagickBooleanType WriteJBIGImage(const ImageInfo *image_info,
     /*
       Allocate pixel data.
     */
-    if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
-        (IsRGBColorspace(image->colorspace) == MagickFalse) &&
-        (IsGrayImage(image,&image->exception) == MagickFalse))
+    if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,sRGBColorspace);
     number_packets=(image->columns+7)/8;
     pixels=(unsigned char *) AcquireQuantumMemory(number_packets,

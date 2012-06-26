@@ -96,6 +96,14 @@ static inline MagickBooleanType IssRGBColorspace(
   return(MagickFalse);
 }
 
+static inline MagickBooleanType IssRGBCompatibleColorspace(
+  const ColorspaceType colorspace)
+{
+  if ((colorspace == sRGBColorspace) || (colorspace == TransparentColorspace) ||      (colorspace == RGBColorspace) || (colorspace == GRAYColorspace))
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

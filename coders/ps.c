@@ -712,8 +712,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         resolution.y/delta.y)-0.5);
     }
   (void) CloseBlob(image);
-  if ((IssRGBColorspace(image_info->colorspace) != MagickFalse) ||
-      (IsRGBColorspace(image_info->colorspace) != MagickFalse))
+  if (IssRGBCompatibleColorspace(image_info->colorspace) != MagickFalse)
     cmyk=MagickFalse;
   /*
     Create Ghostscript control file.
@@ -1448,9 +1447,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
     /*
       Scale relative to dots-per-inch.
     */
-    if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
-        (IsRGBColorspace(image->colorspace) == MagickFalse) &&
-        (IsGrayImage(image,&image->exception) == MagickFalse) &&
+    if ((IssRGBCompatibleColorspace(image->colorspace) == MagickFalse) &&
         (image->colorspace != CMYKColorspace))
       (void) TransformImageColorspace(image,sRGBColorspace);
     delta.x=DefaultResolution;
