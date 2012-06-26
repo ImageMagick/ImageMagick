@@ -1334,7 +1334,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->gamma == 1.0)
       {
         for (i=0; i < (ssize_t) image->colors; i++)
-          if (IsGrayPixel(image->colormap+i) == MagickFalse)
+          if (IsPixelInfoGray(image->colormap+i) == MagickFalse)
             break;
         (void) SetImageColorspace(image,i == (ssize_t) image->colors ? 
           GRAYColorspace : RGBColorspace,exception);
