@@ -53,38 +53,6 @@ extern MagickExport MagickBooleanType
   SetImageColorspace(Image *,const ColorspaceType,ExceptionInfo *),
   TransformImageColorspace(Image *,const ColorspaceType,ExceptionInfo *);
 
-static inline MagickBooleanType IsCMYKColorspace(
-  const ColorspaceType colorspace)
-{
-  if (colorspace == CMYKColorspace)
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
-static inline MagickBooleanType IsGrayColorspace(
-  const ColorspaceType colorspace)
-{
-  if ((colorspace == GRAYColorspace) || (colorspace == Rec601LumaColorspace) ||
-      (colorspace == Rec709LumaColorspace))
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
-static inline MagickBooleanType IsRGBColorspace(const ColorspaceType colorspace)
-{
-  if (colorspace == RGBColorspace)
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
-static inline MagickBooleanType IssRGBColorspace(
-  const ColorspaceType colorspace)
-{
-  if ((colorspace == sRGBColorspace) || (colorspace == TransparentColorspace))
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

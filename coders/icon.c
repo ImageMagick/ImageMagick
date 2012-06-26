@@ -46,6 +46,7 @@
 #include "MagickCore/cache.h"
 #include "MagickCore/colormap.h"
 #include "MagickCore/colorspace.h"
+#include "MagickCore/colorspace-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/image.h"
@@ -912,8 +913,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         /*
           Initialize ICON raster file header.
         */
-        if ((IssRGBColorspace(next->colorspace) == MagickFalse) &&
-            (IsRGBColorspace(next->colorspace) == MagickFalse))
+        if (IssRGBCompatibleColorspace(next->colorspace) == MagickFalse)
           (void) TransformImageColorspace(next,sRGBColorspace,exception);
         icon_info.file_size=14+12+28;
         icon_info.offset_bits=icon_info.file_size;

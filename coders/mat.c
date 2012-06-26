@@ -1239,9 +1239,7 @@ static MagickBooleanType WriteMATImage(const ImageInfo *image_info,Image *image,
   scene=0;
   do
   {
-    if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
-        (IsRGBColorspace(image->colorspace) == MagickFalse) &&
-        (IsImageGray(image,exception) == MagickFalse))
+    if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
     is_gray = IsImageGray(image,exception);
     z = is_gray ? 0 : 3;

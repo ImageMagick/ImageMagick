@@ -412,8 +412,7 @@ static MagickBooleanType WriteGRAYImage(const ImageInfo *image_info,
     /*
       Write grayscale pixels.
     */
-    if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
-        (IsImageGray(image,exception) == MagickFalse))
+    if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
     quantum_type=GrayQuantum;
     quantum_info=AcquireQuantumInfo(image_info,image);
