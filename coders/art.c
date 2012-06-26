@@ -310,7 +310,7 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image,
   if ((image->columns > 65535UL) || (image->rows > 65535UL))
     ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
-      (IssRGBColorspace(image->colorspace) == MagickFalse))
+      (IsRGBColorspace(image->colorspace) == MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   (void) SetImageType(image,BilevelType,exception);
   image->endian=MSBEndian;

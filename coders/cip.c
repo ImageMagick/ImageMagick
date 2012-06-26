@@ -236,7 +236,7 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<Data>");
   if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
-      (IssRGBColorspace(image->colorspace) == MagickFalse))
+      (IsRGBColorspace(image->colorspace) == MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
