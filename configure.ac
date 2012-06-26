@@ -2028,10 +2028,10 @@ dnl ===========================================================================
 # Check for GVC delegate library.
 #
 AC_ARG_WITH(gvc,
-    [AC_HELP_STRING([--without-gvc],
+    [AC_HELP_STRING([--with-gvc],
                     [disable GVC support])],
     [with_gvc=$withval],
-    [with_gvc='yes'])
+    [with_gvc='no'])
 
 if test "$with_gvc" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-gvc=$with_gvc "
