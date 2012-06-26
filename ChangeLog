@@ -1,5 +1,9 @@
 2012-06-25  6.7.7-10 Cristy  <quetzlzacatenango@image...>
   * Permit linear RGB for PNM and TIFF image formats.
+  * Fix conflicting types for 'GenerateDifferentialNoise' (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21286).
+  * Fix cast to pointer from integer of different size (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21286).
 
 2012-06-24  6.7.7-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.7-9, SVN revision 8460.

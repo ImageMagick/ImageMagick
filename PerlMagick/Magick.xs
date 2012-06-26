@@ -901,7 +901,7 @@ static Image *GetList(pTHX_ SV *reference,SV ***reference_vector,
       /*
         Blessed scalar, one image.
       */
-      image=(Image *) SvIV(reference);
+      image=INT2PTR(Image *,SvIV(reference));
       if (image == (Image *) NULL)
         return(NULL);
       image->previous=(Image *) NULL;
