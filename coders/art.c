@@ -321,7 +321,7 @@ static MagickBooleanType WriteARTImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobLSBShort(image,0);
   (void) WriteBlobLSBShort(image,(unsigned short) image->rows);
   if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
-      (IsRGBColorspace(image->colorspace) == MagickFalse)0
+      (IsRGBColorspace(image->colorspace) == MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace);
   length=(image->columns+7)/8;
   pixels=(unsigned char *) AcquireQuantumMemory(length,sizeof(*pixels));
