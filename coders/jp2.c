@@ -909,6 +909,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image)
     Initialize JPEG 2000 API.
   */
   if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+      (IsRGBColorspace(image->colorspace) == MagickFalse) &&
       (IsGrayImage(image,&image->exception) == MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace);
   jp2_stream=JP2StreamManager(image);

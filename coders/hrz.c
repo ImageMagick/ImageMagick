@@ -301,7 +301,8 @@ static MagickBooleanType WriteHRZImage(const ImageInfo *image_info,Image *image)
     &image->exception);
   if (hrz_image == (Image *) NULL)
     return(MagickFalse);
-  if (IssRGBColorspace(hrz_image->colorspace) == MagickFalse)
+  if ((IssRGBColorspace(hrz_image->colorspace) == MagickFalse) &&
+      (IssRGBColorspace(hrz_image->colorspace) == MagickFalse))
     (void) TransformImageColorspace(hrz_image,sRGBColorspace);
   /*
     Allocate memory for pixels.

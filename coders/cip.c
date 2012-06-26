@@ -228,7 +228,8 @@ static MagickBooleanType WriteCIPImage(const ImageInfo *image_info,Image *image)
   (void) FormatLocaleString(buffer,MaxTextExtent,"<Depth>2</Depth>\n");
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<Data>");
-  if (IssRGBColorspace(image->colorspace) == MagickFalse)
+  if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+      (IsRGBColorspace(image->colorspace) == MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace);
   for (y=0; y < (ssize_t) image->rows; y++)
   {

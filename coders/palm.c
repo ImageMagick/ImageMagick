@@ -740,7 +740,8 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
   scene=0;
   do
   {
-    if (IssRGBColorspace(image->colorspace) == MagickFalse)
+    if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+        (IsRGBColorspace(image->colorspace) == MagickFalse))
       (void) TransformImageColorspace(image,sRGBColorspace);
     count=GetNumberColors(image,NULL,&exception);
     for (bits_per_pixel=1;  (one << bits_per_pixel) < count; bits_per_pixel*=2) ;

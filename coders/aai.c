@@ -356,7 +356,8 @@ static MagickBooleanType WriteAAIImage(const ImageInfo *image_info,Image *image)
     /*
       Write AAI header.
     */
-    if (IssRGBColorspace(image->colorspace) == MagickFalse)
+    if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+        (IsRGBColorspace(image->colorspace) == MagickFalse))
       (void) TransformImageColorspace(image,sRGBColorspace);
     (void) WriteBlobLSBLong(image,(unsigned int) image->columns);
     (void) WriteBlobLSBLong(image,(unsigned int) image->rows);

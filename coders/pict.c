@@ -1387,7 +1387,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         (void) SetImageExtent(image,
           MagickMax(image->columns,tile_image->columns),
           MagickMax(image->rows,tile_image->rows));
-        if (IssRGBColorspace(image->colorspace) == MagickFalse)
+        if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+            (IsRGBColorspace(image->colorspace) == MagickFalse))
           (void) TransformImageColorspace(image,tile_image->colorspace);
         (void) CompositeImage(image,CopyCompositeOp,tile_image,frame.left,
           frame.right);
@@ -1604,7 +1605,8 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  if (IssRGBColorspace(image->colorspace) == MagickFalse)
+  if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+      (IsRGBColorspace(image->colorspace) == MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace);
   /*
     Initialize image info.
