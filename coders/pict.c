@@ -1385,7 +1385,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         (void) SetImageExtent(image,
           MagickMax(image->columns,tile_image->columns),
           MagickMax(image->rows,tile_image->rows),exception);
-        if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+        if (IssRGBCompatibleColorspace(tile_image->colorspace) == MagickFalse)
           (void) TransformImageColorspace(image,tile_image->colorspace,
             exception);
         (void) CompositeImage(image,tile_image,CopyCompositeOp,MagickTrue,
