@@ -7701,9 +7701,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         }
     }
 
-  if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
-      (IsRGBColorspace(image->colorspace) == MagickFalse) &&
-      (IsGrayImage(image,&image->exception) == MagickFalse))
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace);
 
   /*
@@ -8209,9 +8207,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
      if (mng_info->write_png_colortype != 7) /* We won't need this info */
        {
          ping_have_color=MagickFalse;
-         if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
-             (IsRGBColorspace(image->colorspace) == MagickFalse) &&
-             (IsGrayColorspace(image->colorspace) == MagickFalse))
+         if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
            ping_have_color=MagickTrue;
          ping_have_non_bw=MagickFalse;
 
@@ -9565,7 +9561,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                 ping_bit_depth=1;
                 one=1;
 
-                while ((one << ping_bit_depth) < number_colors)
+                while ((one << ping_bit_depth) < (size_t) number_colors)
                   ping_bit_depth <<= 1;
               }
 
