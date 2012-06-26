@@ -28,7 +28,7 @@ extern "C" {
 extern MagickExport double
   ExpandAffine(const AffineMatrix *),
   GenerateDifferentialNoise(RandomInfo *,const Quantum,const NoiseType,
-    const double);
+    const MagickRealType);
 
 extern MagickExport size_t
   GetOptimalKernelWidth(const double,const double),
