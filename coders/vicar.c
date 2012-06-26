@@ -458,6 +458,7 @@ static MagickBooleanType WriteVICARImage(const ImageInfo *image_info,
   if (status == MagickFalse)
     return(status);
   if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+      (IsRGBColorspace(image->colorspace) == MagickFalse) &&
       (IsImageGray(image,exception) == MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   /*

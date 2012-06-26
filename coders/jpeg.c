@@ -2109,7 +2109,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     }
     default:
     {
-      if (IssRGBColorspace(image->colorspace) == MagickFalse)
+      if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+          (IsRGBColorspace(image->colorspace) == MagickFalse))
         (void) TransformImageColorspace(image,sRGBColorspace,exception);
       break;
     }

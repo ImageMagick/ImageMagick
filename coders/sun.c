@@ -762,6 +762,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
       Initialize SUN raster file header.
     */
     if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+        (IsRGBColorspace(image->colorspace) == MagickFalse) &&
         (IsImageGray(image,exception) == MagickFalse))
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
     sun_info.magic=0x59a66a95;

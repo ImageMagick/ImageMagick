@@ -7777,6 +7777,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     }
 
   if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+      (IsRGBColorspace(image->colorspace) == MagickFalse) &&
       (IsImageGray(image,exception) == MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
 

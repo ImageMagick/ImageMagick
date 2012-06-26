@@ -912,7 +912,8 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         /*
           Initialize ICON raster file header.
         */
-        if (next->colorspace != RGBColorspace)
+        if ((IssRGBColorspace(next->colorspace) == MagickFalse) &&
+            (IsRGBColorspace(next->colorspace) == MagickFalse))
           (void) TransformImageColorspace(next,sRGBColorspace,exception);
         icon_info.file_size=14+12+28;
         icon_info.offset_bits=icon_info.file_size;

@@ -699,6 +699,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   if ((image->columns > 65535L) || (image->rows > 65535L))
     ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
   if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+      (IsRGBColorspace(image->colorspace) == MagickFalse) &&
       (IsImageGray(image,exception) == MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   targa_info.id_length=0;

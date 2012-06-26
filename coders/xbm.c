@@ -512,6 +512,7 @@ static MagickBooleanType WriteXBMImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   if ((IssRGBColorspace(image->colorspace) == MagickFalse) &&
+      (IsRGBColorspace(image->colorspace) == MagickFalse) &&
       (IsImageGray(image,exception) == MagickFalse))
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   /*
