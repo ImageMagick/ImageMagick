@@ -75,6 +75,7 @@
   <delegate decode="cgm" thread-support="False" command="&quot;@CGMDecodeDelegate@&quot; -d ps -oC &lt; &quot;%i&quot; &gt; &quot;%o&quot; 2&gt; &quot;%Z&quot;"/>
   <delegate decode="dvi" command="&quot;@DVIDecodeDelegate@&quot; -q -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="dng:decode" command="&quot;@DNGDecodeDelegate@&quot; --silent --create-id=also --out-type=png --out-depth=16 &quot;--output=%u.png&quot; &quot;%i&quot;"/>
+  <delegate decode="dot" command='&quot;@GVCDecodeDelegate@&quot; -Tps &quot;%i&quot; -o &quot;%o&quot;' />
   <delegate decode="edit" stealth="True" command="&quot;@EditorDelegate@&quot; -title &quot;Edit Image Comment&quot; -e vi &quot;%o&quot;"/>
   <delegate decode="eps" encode="pdf" mode="bi" command="&quot;@PSDelegate@&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 &quot;-sDEVICE=@GSPDFDevice@&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
   <delegate decode="eps" encode="ps" mode="bi" command="&quot;@PSDelegate@&quot; -q -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSPSDevice@&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
