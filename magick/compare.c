@@ -189,8 +189,8 @@ MagickExport Image *CompareImageChannels(Image *image,
     (void) QueryMagickColor(artifact,&lowlight,exception);
   if (highlight_image->colorspace == CMYKColorspace)
     {
-      ConvertsRGBToCMYK(&highlight);
-      ConvertsRGBToCMYK(&lowlight);
+      ConvertRGBToCMYK(&highlight);
+      ConvertRGBToCMYK(&lowlight);
     }
   /*
     Generate difference image.
