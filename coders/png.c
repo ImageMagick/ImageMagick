@@ -8172,6 +8172,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             {
                opaque[i] = image->background_color;
                ping_background.index = i;
+               number_opaque++;
                if (logging != MagickFalse)
                  {
                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
