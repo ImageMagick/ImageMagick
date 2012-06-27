@@ -2853,12 +2853,9 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
     *artifact;
 
   double
-    blue,
-    green,
     percent_brightness,
     percent_hue,
-    percent_saturation,
-    red;
+    percent_saturation;
 
   GeometryInfo
     geometry_info;
@@ -2913,6 +2910,11 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
+        double
+          blue,
+          green,
+          red;
+
         red=image->colormap[i].red;
         green=image->colormap[i].green;
         blue=image->colormap[i].blue;
@@ -2968,6 +2970,11 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      double
+        blue,
+        green,
+        red;
+
       red=(double) GetPixelRed(image,q);
       green=(double) GetPixelGreen(image,q);
       blue=(double) GetPixelBlue(image,q);
