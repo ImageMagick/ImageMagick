@@ -10,6 +10,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21286).
   * Fix broken MSL profile tag (reference
     http://www.imagemagick.org/discourse-server/viewforum.php?f=9).
+  * Better recognition of a CMYK PDF.
 
 2012-06-24  6.7.7-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.7-9, SVN revision 8460.
