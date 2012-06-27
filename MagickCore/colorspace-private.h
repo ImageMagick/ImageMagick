@@ -38,9 +38,18 @@ static inline void ConvertRGBToCMYK(PixelInfo *pixel)
     red,
     yellow;
                                                                                 
-  red=QuantumScale*pixel->red;
-  green=QuantumScale*pixel->green;
-  blue=QuantumScale*pixel->blue;
+  if (pixel->colorspace != sRGBColorspace)
+    {
+      red=QuantumScale*pixel->red;
+      green=QuantumScale*pixel->green;
+      blue=QuantumScale*pixel->blue;
+    }
+  else
+    {
+      red=QuantumRange*DecompandsRGB(QuantumScale*pixel->red);
+      green=QuantumRange*DecompandsRGB(QuantumScale*pixel->green);
+      blue=QuantumRange*DecompandsRGB(QuantumScale*pixel->blue);
+    }
   if ((fabs(red) < MagickEpsilon) && (fabs(green) < MagickEpsilon) &&
       (fabs(blue) < MagickEpsilon))
     {
