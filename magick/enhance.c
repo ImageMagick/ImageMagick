@@ -3270,6 +3270,11 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
   MagickStatusType
     flags;
 
+  Quantum
+    blue,
+    green,
+    red;
+
   register ssize_t
     i;
 
@@ -3310,31 +3315,45 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
         dynamic_number_threads(image,image->columns,1,1)
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
+      {
+        red=image->colormap[i].red;
+        green=image->colormap[i].green;
+        blue=image->colormap[i].blue;
+        if (IssRGBColorspace(image->colorspace) == MagickFalse)
+          {
+            red=(Quantum) (QuantumRange*CompandsRGB(QuantumScale*red));
+            green=(Quantum) (QuantumRange*CompandsRGB(QuantumScale*green));
+            blue=(Quantum) (QuantumRange*CompandsRGB(QuantumScale*blue));
+          }
         switch (colorspace)
         {
           case HSBColorspace:
           {
             ModulateHSB(percent_hue,percent_saturation,percent_brightness,
-              &image->colormap[i].red,&image->colormap[i].green,
-              &image->colormap[i].blue);
+              &red,&green,&blue);
             break;
           }
           case HSLColorspace:
           default:
           {
             ModulateHSL(percent_hue,percent_saturation,percent_brightness,
-              &image->colormap[i].red,&image->colormap[i].green,
-              &image->colormap[i].blue);
+              &red,&green,&blue);
             break;
           }
           case HWBColorspace:
           {
             ModulateHWB(percent_hue,percent_saturation,percent_brightness,
-              &image->colormap[i].red,&image->colormap[i].green,
-              &image->colormap[i].blue);
+              &red,&green,&blue);
             break;
           }
         }
+        if (IssRGBColorspace(image->colorspace) == MagickFalse)
+          {
+            red=(Quantum) (QuantumRange*DecompandsRGB(QuantumScale*red));
+            green=(Quantum) (QuantumRange*DecompandsRGB(QuantumScale*green));
+            blue=(Quantum) (QuantumRange*DecompandsRGB(QuantumScale*blue));
+          }
+      }
     }
   /*
     Modulate image.
@@ -3349,11 +3368,6 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    Quantum
-      blue,
-      green,
-      red;
-
     register PixelPacket
       *restrict q;
 
@@ -3373,6 +3387,12 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
       red=GetPixelRed(q);
       green=GetPixelGreen(q);
       blue=GetPixelBlue(q);
+      if (IssRGBColorspace(image->colorspace) == MagickFalse)
+        {
+          red=(Quantum) (QuantumRange*CompandsRGB(QuantumScale*red));
+          green=(Quantum) (QuantumRange*CompandsRGB(QuantumScale*green));
+          blue=(Quantum) (QuantumRange*CompandsRGB(QuantumScale*blue));
+        }
       switch (colorspace)
       {
         case HSBColorspace:
@@ -3395,6 +3415,12 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
           break;
         }
       }
+      if (IssRGBColorspace(image->colorspace) == MagickFalse)
+        {
+          red=(Quantum) (QuantumRange*DecompandsRGB(QuantumScale*red));
+          green=(Quantum) (QuantumRange*DecompandsRGB(QuantumScale*green));
+          blue=(Quantum) (QuantumRange*DecompandsRGB(QuantumScale*blue));
+        }
       SetPixelRed(q,red);
       SetPixelGreen(q,green);
       SetPixelBlue(q,blue);
