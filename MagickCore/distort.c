@@ -2376,7 +2376,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
 
       invalid=distort_image->matte_color;
       if (distort_image->colorspace == CMYKColorspace)
-        ConvertsRGBToCMYK(&invalid);   /* what about other color spaces? */
+        ConvertRGBToCMYK(&invalid);   /* what about other color spaces? */
       for (i=0; i < (ssize_t) distort_image->columns; i++)
       {
         /* map pixel coordinate to distortion space coordinate */

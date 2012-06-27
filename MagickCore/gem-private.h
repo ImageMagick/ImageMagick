@@ -32,13 +32,13 @@ extern MagickPrivate size_t
   GetOptimalKernelWidth2D(const double,const double);
 
 extern MagickPrivate void
-  ConvertHSBTosRGB(const double,const double,const double,double *,double *,
+  ConvertHSBToRGB(const double,const double,const double,double *,double *,
     double *),
-  ConvertHWBTosRGB(const double,const double,const double,double *,double *,
+  ConvertHWBToRGB(const double,const double,const double,double *,double *,
     double *),
-  ConvertsRGBToHSB(const double,const double,const double,double *,double *,
+  ConvertRGBToHSB(const double,const double,const double,double *,double *,
     double *),
-  ConvertsRGBToHWB(const double,const double,const double,double *,double *,
+  ConvertRGBToHWB(const double,const double,const double,double *,double *,
     double *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

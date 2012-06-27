@@ -606,8 +606,8 @@ namespace Magick
   using MagickCore::ConfigureWarning;
   using MagickCore::ConstituteImage;
   using MagickCore::ContrastImage;
-  using MagickCore::ConvertHSLTosRGB;
-  using MagickCore::ConvertsRGBToHSL;
+  using MagickCore::ConvertHSLToRGB;
+  using MagickCore::ConvertRGBToHSL;
   using MagickCore::ConvolveImage;
   using MagickCore::CopyMagickString;
   using MagickCore::CorruptImageError;

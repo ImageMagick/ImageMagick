@@ -27,7 +27,7 @@ extern "C" {
 #include <MagickCore/pixel.h>
 #include <MagickCore/pixel-accessor.h>
 
-static inline void ConvertsRGBToCMYK(PixelInfo *pixel)
+static inline void ConvertRGBToCMYK(PixelInfo *pixel)
 {
   MagickRealType
     black,
@@ -38,9 +38,9 @@ static inline void ConvertsRGBToCMYK(PixelInfo *pixel)
     red,
     yellow;
                                                                                 
-  red=DecompandsRGB(QuantumScale*pixel->red);
-  green=DecompandsRGB(QuantumScale*pixel->green);
-  blue=DecompandsRGB(QuantumScale*pixel->blue);
+  red=QuantumScale*pixel->red;
+  green=QuantumScale*pixel->green;
+  blue=QuantumScale*pixel->blue;
   if ((fabs(red) < MagickEpsilon) && (fabs(green) < MagickEpsilon) &&
       (fabs(blue) < MagickEpsilon))
     {
