@@ -66,7 +66,7 @@ testReadCompare('granite:', 'reference/read/granite.miff', q/size=>"70x46"/, 0.0
 
 print("MAT (MatLab gray 8-bit LSB integer) ...\n");
 ++$test;
-testReadCompare('input_gray_lsb_08bit.mat', 'reference/read/input_gray_lsb_08bit_mat.miff', q//, 0.2, 1.0);
+testReadCompare('input_gray_lsb_08bit.mat', 'reference/read/input_gray_lsb_08bit_mat.miff', q//, 0.3, 1.03);
 
 print("MAT (MatLab gray 8-bit MSB integer) ...\n");
 ++$test;
