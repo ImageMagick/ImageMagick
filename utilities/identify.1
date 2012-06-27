@@ -57,7 +57,7 @@ Miscellaneous Options:
 
 By default, the image format of `file' is determined by its magic number.  To specify a particular image format, precede the filename with an image format name and a colon (i.e. ps:image) or specify the image type as the filename suffix (i.e. image.ps).  Specify 'file' as '-' for standard input or output.
 .SH NOTE
-Even if some options seem to modify the file to be identified, identify command is strictly \fBread only\fP. For instance crop option made a crop in memory then identify the cropped in memory image.
+Although some options appear to modify the file to be identified, the identify command is strictly \fBread only\fP. For instance, the crop option crops the in-memory image and then describes the result.
 
 .SH SEE ALSO
 ImageMagick(1)
