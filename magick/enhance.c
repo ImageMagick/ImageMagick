@@ -617,7 +617,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
         double
           luma;
 
-        luma=0.21267*image->colormap[i].red+0.71526*image->colormap[i].green+
+        luma=0.21267*image->colormap[i].red+0.71516*image->colormap[i].green+
           0.07217*image->colormap[i].blue;
         image->colormap[i].red=ClampToQuantum(luma+color_correction.saturation*
           cdl_map[ScaleQuantumToMap(image->colormap[i].red)].red-luma);
