@@ -6878,11 +6878,8 @@ static void MSLStartElement(void *context,const xmlChar *tag,
       }
       if (LocaleCompare((const char *) tag,"strip") == 0)
         {
-          Image
-            *magnify_image;
-
           /*
-            Magnify image.
+            Strip image.
           */
           if (msl_info->image[n] == (Image *) NULL)
             {
