@@ -1,3 +1,7 @@
+2012-06-26  6.7.7-10 Glenn Randers-Pehrson <glennrp@image...>
+  * Don't attempt to use Z_RLE compression strategy with old zlib (prior to
+    zlib-1.2.0) that does not support it.
+
 2012-06-25  6.7.7-10 Cristy  <quetzlzacatenango@image...>
   * Permit linear RGB for PNM and TIFF image formats.
   * Fix conflicting types for 'GenerateDifferentialNoise' (reference
