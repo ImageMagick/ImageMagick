@@ -293,7 +293,9 @@ static MagickBooleanType IsPDFRendered(const char *path)
 
 static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+#define CMYKProcessColor  "CMYKProcessColor"
 #define CropBox  "CropBox"
+#define DefaultCMYK  "DefaultCMYK"
 #define DeviceCMYK  "DeviceCMYK"
 #define MediaBox  "MediaBox"
 #define RenderPostscriptText  "Rendering Postscript...  "
@@ -453,7 +455,11 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Is this a CMYK document?
     */
+    if (LocaleNCompare(DefaultCMYK,command,strlen(DefaultCMYK)) == 0)
+      cmyk=MagickTrue;
     if (LocaleNCompare(DeviceCMYK,command,strlen(DeviceCMYK)) == 0)
+      cmyk=MagickTrue;
+    if (LocaleNCompare(CMYKProcessColor,command,strlen(CMYKProcessColor)) == 0)
       cmyk=MagickTrue;
     if (LocaleNCompare(SpotColor,command,strlen(SpotColor)) == 0)
       {

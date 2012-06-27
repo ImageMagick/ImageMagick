@@ -1651,7 +1651,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
             lightness,
             saturation;
 
-          ConvertsRGBToHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,
+          ConvertRGBToHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,
             &lightness);
           return(hue);
         }
@@ -1695,7 +1695,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
             lightness,
             saturation;
 
-          ConvertsRGBToHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,
+          ConvertRGBToHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,
             &lightness);
           return(lightness);
         }
@@ -1770,7 +1770,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
             lightness,
             saturation;
 
-          ConvertsRGBToHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,
+          ConvertRGBToHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,
             &lightness);
           return(saturation);
         }

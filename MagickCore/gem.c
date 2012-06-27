@@ -63,18 +63,18 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t H S B T o s R G B                                           %
+%   C o n v e r t H S B T o R G B                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertHSBTosRGB() transforms a (hue, saturation, brightness) to a (red,
+%  ConvertHSBToRGB() transforms a (hue, saturation, brightness) to a (red,
 %  green, blue) triple.
 %
-%  The format of the ConvertHSBTosRGBImage method is:
+%  The format of the ConvertHSBToRGBImage method is:
 %
-%      void ConvertHSBTosRGB(const double hue,const double saturation,
+%      void ConvertHSBToRGB(const double hue,const double saturation,
 %        const double brightness,double *red,double *green,double *blue)
 %
 %  A description of each parameter follows:
@@ -85,7 +85,7 @@
 %    o red, green, blue: A pointer to a pixel component of type Quantum.
 %
 */
-MagickPrivate void ConvertHSBTosRGB(const double hue,const double saturation,
+MagickPrivate void ConvertHSBToRGB(const double hue,const double saturation,
   const double brightness,double *red,double *green,double *blue)
 {
   double
@@ -118,44 +118,44 @@ MagickPrivate void ConvertHSBTosRGB(const double hue,const double saturation,
     case 0:
     default:
     {
-      *red=QuantumRange*CompandsRGB(brightness);
-      *green=QuantumRange*CompandsRGB(t);
-      *blue=QuantumRange*CompandsRGB(p);
+      *red=QuantumRange*brightness;
+      *green=QuantumRange*t;
+      *blue=QuantumRange*p;
       break;
     }
     case 1:
     {
-      *red=QuantumRange*CompandsRGB(q);
-      *green=QuantumRange*CompandsRGB(brightness);
-      *blue=QuantumRange*CompandsRGB(p);
+      *red=QuantumRange*q;
+      *green=QuantumRange*brightness;
+      *blue=QuantumRange*p;
       break;
     }
     case 2:
     {
-      *red=QuantumRange*CompandsRGB(p);
-      *green=QuantumRange*CompandsRGB(brightness);
-      *blue=QuantumRange*CompandsRGB(t);
+      *red=QuantumRange*p;
+      *green=QuantumRange*brightness;
+      *blue=QuantumRange*t;
       break;
     }
     case 3:
     {
-      *red=QuantumRange*CompandsRGB(p);
-      *green=QuantumRange*CompandsRGB(q);
-      *blue=QuantumRange*CompandsRGB(brightness);
+      *red=QuantumRange*p;
+      *green=QuantumRange*q;
+      *blue=QuantumRange*brightness;
       break;
     }
     case 4:
     {
-      *red=QuantumRange*CompandsRGB(t);
-      *green=QuantumRange*CompandsRGB(p);
-      *blue=QuantumRange*CompandsRGB(brightness);
+      *red=QuantumRange*t;
+      *green=QuantumRange*p;
+      *blue=QuantumRange*brightness;
       break;
     }
     case 5:
     {
-      *red=QuantumRange*CompandsRGB(brightness);
-      *green=QuantumRange*CompandsRGB(p);
-      *blue=QuantumRange*CompandsRGB(q);
+      *red=QuantumRange*brightness;
+      *green=QuantumRange*p;
+      *blue=QuantumRange*q;
       break;
     }
   }
@@ -166,18 +166,18 @@ MagickPrivate void ConvertHSBTosRGB(const double hue,const double saturation,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t H S L T o s R G B                                           %
+%   C o n v e r t H S L T o R G B                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertHSLTosRGB() transforms a (hue, saturation, lightness) to a (red,
+%  ConvertHSLToRGB() transforms a (hue, saturation, lightness) to a (red,
 %  green, blue) triple.
 %
-%  The format of the ConvertHSLTosRGBImage method is:
+%  The format of the ConvertHSLToRGBImage method is:
 %
-%      void ConvertHSLTosRGB(const double hue,const double saturation,
+%      void ConvertHSLToRGB(const double hue,const double saturation,
 %        const double lightness,double *red,double *green,double *blue)
 %
 %  A description of each parameter follows:
@@ -189,7 +189,7 @@ MagickPrivate void ConvertHSBTosRGB(const double hue,const double saturation,
 %
 */
 
-static inline double ConvertHueTosRGB(double m1,double m2,double hue)
+static inline double ConvertHueToRGB(double m1,double m2,double hue)
 {
   if (hue < 0.0)
     hue+=1.0;
@@ -204,7 +204,7 @@ static inline double ConvertHueTosRGB(double m1,double m2,double hue)
   return(m1);
 }
 
-MagickExport void ConvertHSLTosRGB(const double hue,const double saturation,
+MagickExport void ConvertHSLToRGB(const double hue,const double saturation,
   const double lightness,double *red,double *green,double *blue)
 {
   double
@@ -232,12 +232,12 @@ MagickExport void ConvertHSLTosRGB(const double hue,const double saturation,
   else
     m2=(lightness+saturation)-(lightness*saturation);
   m1=2.0*lightness-m2;
-  r=ConvertHueTosRGB(m1,m2,hue+1.0/3.0);
-  g=ConvertHueTosRGB(m1,m2,hue);
-  b=ConvertHueTosRGB(m1,m2,hue-1.0/3.0);
-  *red=QuantumRange*CompandsRGB(r);
-  *green=QuantumRange*CompandsRGB(g);
-  *blue=QuantumRange*CompandsRGB(b);
+  r=ConvertHueToRGB(m1,m2,hue+1.0/3.0);
+  g=ConvertHueToRGB(m1,m2,hue);
+  b=ConvertHueToRGB(m1,m2,hue-1.0/3.0);
+  *red=QuantumRange*r;
+  *green=QuantumRange*g;
+  *blue=QuantumRange*b;
 }
 
 /*
@@ -245,18 +245,18 @@ MagickExport void ConvertHSLTosRGB(const double hue,const double saturation,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t H W B T o s R G B                                           %
+%   C o n v e r t H W B T o R G B                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertHWBTosRGB() transforms a (hue, whiteness, blackness) to a (red, green,
+%  ConvertHWBToRGB() transforms a (hue, whiteness, blackness) to a (red, green,
 %  blue) triple.
 %
-%  The format of the ConvertHWBTosRGBImage method is:
+%  The format of the ConvertHWBToRGBImage method is:
 %
-%      void ConvertHWBTosRGB(const double hue,const double whiteness,
+%      void ConvertHWBToRGB(const double hue,const double whiteness,
 %        const double blackness,double *red,double *green,double *blue)
 %
 %  A description of each parameter follows:
@@ -267,7 +267,7 @@ MagickExport void ConvertHSLTosRGB(const double hue,const double saturation,
 %    o red, green, blue: A pointer to a pixel component of type Quantum.
 %
 */
-MagickPrivate void ConvertHWBTosRGB(const double hue,const double whiteness,
+MagickPrivate void ConvertHWBToRGB(const double hue,const double whiteness,
   const double blackness,double *red,double *green,double *blue)
 {
   double
@@ -290,9 +290,9 @@ MagickPrivate void ConvertHWBTosRGB(const double hue,const double whiteness,
   v=1.0-blackness;
   if (hue == -1.0)
     {
-      *red=QuantumRange*CompandsRGB(v);
-      *green=QuantumRange*CompandsRGB(v);
-      *blue=QuantumRange*CompandsRGB(v);
+      *red=QuantumRange*v;
+      *green=QuantumRange*v;
+      *blue=QuantumRange*v;
       return;
     }
   i=(ssize_t) floor(6.0*hue);
@@ -311,9 +311,9 @@ MagickPrivate void ConvertHWBTosRGB(const double hue,const double whiteness,
     case 4: r=n; g=whiteness; b=v; break;
     case 5: r=v; g=whiteness; b=n; break;
   }
-  *red=QuantumRange*CompandsRGB(r);
-  *green=QuantumRange*CompandsRGB(g);
-  *blue=QuantumRange*CompandsRGB(b);
+  *red=QuantumRange*r;
+  *green=QuantumRange*g;
+  *blue=QuantumRange*b;
 }
 
 /*
@@ -321,18 +321,18 @@ MagickPrivate void ConvertHWBTosRGB(const double hue,const double whiteness,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t s R G B T o H S B                                           %
+%   C o n v e r t R G B T o H S B                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertsRGBToHSB() transforms a (red, green, blue) to a (hue, saturation,
+%  ConvertRGBToHSB() transforms a (red, green, blue) to a (hue, saturation,
 %  brightness) triple.
 %
-%  The format of the ConvertsRGBToHSB method is:
+%  The format of the ConvertRGBToHSB method is:
 %
-%      void ConvertsRGBToHSB(const double red,const double green,
+%      void ConvertRGBToHSB(const double red,const double green,
 %        const double blue,double *hue,double *saturation,double *brightness)
 %
 %  A description of each parameter follows:
@@ -344,7 +344,7 @@ MagickPrivate void ConvertHWBTosRGB(const double hue,const double whiteness,
 %      component of the HSB color space.
 %
 */
-MagickPrivate void ConvertsRGBToHSB(const double red,const double green,
+MagickPrivate void ConvertRGBToHSB(const double red,const double green,
   const double blue,double *hue,double *saturation,double *brightness)
 {
   double
@@ -364,9 +364,9 @@ MagickPrivate void ConvertsRGBToHSB(const double red,const double green,
   *hue=0.0;
   *saturation=0.0;
   *brightness=0.0;
-  r=QuantumRange*DecompandsRGB(QuantumScale*red);
-  g=QuantumRange*DecompandsRGB(QuantumScale*green);
-  b=QuantumRange*DecompandsRGB(QuantumScale*blue);
+  r=red;
+  g=green;
+  b=blue;
   min=r < g ? r : g;
   if (b < min)
     min=b;
@@ -397,18 +397,18 @@ MagickPrivate void ConvertsRGBToHSB(const double red,const double green,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t s R G B T o H S L                                           %
+%   C o n v e r t R G B T o H S L                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertsRGBToHSL() transforms a (red, green, blue) to a (hue, saturation,
+%  ConvertRGBToHSL() transforms a (red, green, blue) to a (hue, saturation,
 %  lightness) triple.
 %
-%  The format of the ConvertsRGBToHSL method is:
+%  The format of the ConvertRGBToHSL method is:
 %
-%      void ConvertsRGBToHSL(const double red,const double green,
+%      void ConvertRGBToHSL(const double red,const double green,
 %        const double blue,double *hue,double *saturation,double *lightness)
 %
 %  A description of each parameter follows:
@@ -435,7 +435,7 @@ static inline double MagickMin(const double x,const double y)
   return(y);
 }
 
-MagickExport void ConvertsRGBToHSL(const double red,const double green,
+MagickExport void ConvertRGBToHSL(const double red,const double green,
   const double blue,double *hue,double *saturation,double *lightness)
 {
   double
@@ -452,9 +452,9 @@ MagickExport void ConvertsRGBToHSL(const double red,const double green,
   assert(hue != (double *) NULL);
   assert(saturation != (double *) NULL);
   assert(lightness != (double *) NULL);
-  r=DecompandsRGB(QuantumScale*red);
-  g=DecompandsRGB(QuantumScale*green);
-  b=DecompandsRGB(QuantumScale*blue);
+  r=QuantumScale*red;
+  g=QuantumScale*green;
+  b=QuantumScale*blue;
   max=MagickMax(r,MagickMax(g,b));
   min=MagickMin(r,MagickMin(g,b));
   *lightness=(double) ((min+max)/2.0);
@@ -490,18 +490,18 @@ MagickExport void ConvertsRGBToHSL(const double red,const double green,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n v e r t s R G B T o H W B                                           %
+%   C o n v e r t R G B T o H W B                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConvertsRGBToHWB() transforms a (red, green, blue) to a (hue, whiteness,
+%  ConvertRGBToHWB() transforms a (red, green, blue) to a (hue, whiteness,
 %  blackness) triple.
 %
-%  The format of the ConvertsRGBToHWB method is:
+%  The format of the ConvertRGBToHWB method is:
 %
-%      void ConvertsRGBToHWB(const double red,const double green,
+%      void ConvertRGBToHWB(const double red,const double green,
 %        const double blue,double *hue,double *whiteness,double *blackness)
 %
 %  A description of each parameter follows:
@@ -513,7 +513,7 @@ MagickExport void ConvertsRGBToHSL(const double red,const double green,
 %      component of the HWB color space.
 %
 */
-MagickPrivate void ConvertsRGBToHWB(const double red,const double green,
+MagickPrivate void ConvertRGBToHWB(const double red,const double green,
   const double blue,double *hue,double *whiteness,double *blackness)
 {
   double
@@ -531,9 +531,9 @@ MagickPrivate void ConvertsRGBToHWB(const double red,const double green,
   assert(hue != (double *) NULL);
   assert(whiteness != (double *) NULL);
   assert(blackness != (double *) NULL);
-  r=QuantumRange*DecompandsRGB(QuantumScale*red);
-  g=QuantumRange*DecompandsRGB(QuantumScale*green);
-  b=QuantumRange*DecompandsRGB(QuantumScale*blue);
+  r=red;
+  g=green;
+  b=blue;
   w=MagickMin(r,MagickMin(g,b));
   v=MagickMax(r,MagickMax(g,b));
   *blackness=1.0-QuantumScale*v;
