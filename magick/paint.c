@@ -350,7 +350,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
           (void) GetFillColor(draw_info,x,y,&fill_color);
           SetMagickPixelPacket(image,&fill_color,(IndexPacket *) NULL,&fill);
           if (image->colorspace == CMYKColorspace)
-            ConvertsRGBToCMYK(&fill);
+            ConvertRGBToCMYK(&fill);
           if ((channel & RedChannel) != 0)
             SetPixelRed(q,ClampToQuantum(fill.red));
           if ((channel & GreenChannel) != 0)

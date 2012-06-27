@@ -1419,7 +1419,7 @@ static MagickBooleanType XShearImage(Image *image,const MagickRealType degrees,
   SetMagickPixelPacket(image,&image->background_color,(IndexPacket *) NULL,
     &background);
   if (image->colorspace == CMYKColorspace)
-    ConvertsRGBToCMYK(&background);
+    ConvertRGBToCMYK(&background);
   /*
     X shear image.
   */
@@ -1640,7 +1640,7 @@ static MagickBooleanType YShearImage(Image *image,const MagickRealType degrees,
   SetMagickPixelPacket(image,&image->background_color,(IndexPacket *) NULL,
     &background);
   if (image->colorspace == CMYKColorspace)
-    ConvertsRGBToCMYK(&background);
+    ConvertRGBToCMYK(&background);
   /*
     Y Shear image.
   */

@@ -12,7 +12,9 @@
 /* #undef AUTOTRACE_DELEGATE */
 
 /* Define if coders and filters are to be built as modules. */
-/* #undef BUILD_MODULES */
+#ifndef MAGICKCORE_BUILD_MODULES
+#define MAGICKCORE_BUILD_MODULES 1
+#endif
 
 /* Define if you have the bzip2 library */
 #ifndef MAGICKCORE_BZLIB_DELEGATE
@@ -75,9 +77,7 @@
 #endif
 
 /* Define if you have FFTW library */
-#ifndef MAGICKCORE_FFTW_DELEGATE
-#define MAGICKCORE_FFTW_DELEGATE 1
-#endif
+/* #undef FFTW_DELEGATE */
 
 /* Location of filter modules */
 #ifndef MAGICKCORE_FILTER_PATH
@@ -106,9 +106,7 @@
 /* #undef GS_DELEGATE */
 
 /* Define if you have GVC library */
-#ifndef MAGICKCORE_GVC_DELEGATE
-#define MAGICKCORE_GVC_DELEGATE 1
-#endif
+/* #undef GVC_DELEGATE */
 
 /* Define to 1 if you have the `acosh' function. */
 #ifndef MAGICKCORE_HAVE_ACOSH
@@ -442,15 +440,15 @@
 #endif
 
 /* Define if you have the <lcms2.h> header file. */
-#ifndef MAGICKCORE_HAVE_LCMS2_H
-#define MAGICKCORE_HAVE_LCMS2_H 1
-#endif
+/* #undef HAVE_LCMS2_H */
 
 /* Define if you have the <lcms2/lcms2.h> header file. */
 /* #undef HAVE_LCMS2_LCMS2_H */
 
 /* Define if you have the <lcms.h> header file. */
-/* #undef HAVE_LCMS_H */
+#ifndef MAGICKCORE_HAVE_LCMS_H
+#define MAGICKCORE_HAVE_LCMS_H 1
+#endif
 
 /* Define if you have the <lcms/lcms.h> header file. */
 /* #undef HAVE_LCMS_LCMS_H */
@@ -513,9 +511,7 @@
 #endif
 
 /* Define this if a modern libltdl is already installed */
-#ifndef MAGICKCORE_HAVE_LTDL
-#define MAGICKCORE_HAVE_LTDL 1
-#endif
+/* #undef HAVE_LTDL */
 
 /* Define to 1 if you have the <machine/param.h> header file. */
 /* #undef HAVE_MACHINE_PARAM_H */
@@ -554,9 +550,7 @@
 #endif
 
 /* Define to 1 if you have a working `mmap' system call. */
-#ifndef MAGICKCORE_HAVE_MMAP_FILEIO
-#define MAGICKCORE_HAVE_MMAP_FILEIO 1
-#endif
+/* #undef HAVE_MMAP_FILEIO */
 
 /* Define to 1 if you have the `munmap' function. */
 #ifndef MAGICKCORE_HAVE_MUNMAP
@@ -671,9 +665,7 @@
 #endif
 
 /* Define to 1 if you have the `qsort_r' function. */
-#ifndef MAGICKCORE_HAVE_QSORT_R
-#define MAGICKCORE_HAVE_QSORT_R 1
-#endif
+/* #undef HAVE_QSORT_R */
 
 /* Define to 1 if you have the `raise' function. */
 #ifndef MAGICKCORE_HAVE_RAISE
@@ -1142,9 +1134,7 @@
 #endif
 
 /* Define to 1 if the system has the type `_Bool'. */
-#ifndef MAGICKCORE_HAVE__BOOL
-#define MAGICKCORE_HAVE__BOOL 1
-#endif
+/* #undef HAVE__BOOL */
 
 /* Define to 1 if you have the `_exit' function. */
 #ifndef MAGICKCORE_HAVE__EXIT
@@ -1229,7 +1219,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/freetype-freeworld:/usr/lib/llvm:/usr/lib64/llvm:/usr/local/lib:/usr/lib64/mysql:/usr/lib64/nvidia:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.5/tclx8.4:/usr/lib64/tcl8.5:/usr/lib64/tracker-0.14:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-2"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/local/lib:/usr/lib/mysql:/usr/lib64/mysql:/usr/lib64/qt-3.3/lib:/usr/lib/xulrunner-2:/usr/lib64/xulrunner-2:/usr/lib/nsr:/usr/lib/nsr/lib64"
 #endif
 
 /* The archive extension */
@@ -1263,9 +1253,7 @@
 /* #undef LT_SHARED_EXT */
 
 /* Define if you have LZMA library */
-#ifndef MAGICKCORE_LZMA_DELEGATE
-#define MAGICKCORE_LZMA_DELEGATE 1
-#endif
+/* #undef LZMA_DELEGATE */
 
 /* Define to prepend to default font search path. */
 /* #undef MAGICK_FONT_PATH */
@@ -1323,14 +1311,10 @@
 #endif
 
 /* Define if you have PANGOCAIRO library */
-#ifndef MAGICKCORE_PANGOCAIRO_DELEGATE
-#define MAGICKCORE_PANGOCAIRO_DELEGATE 1
-#endif
+/* #undef PANGOCAIRO_DELEGATE */
 
 /* Define if you have PANGO library */
-#ifndef MAGICKCORE_PANGO_DELEGATE
-#define MAGICKCORE_PANGO_DELEGATE 1
-#endif
+/* #undef PANGO_DELEGATE */
 
 /* Define if you have PNG library */
 #ifndef MAGICKCORE_PNG_DELEGATE

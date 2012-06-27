@@ -3319,12 +3319,6 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
         red=image->colormap[i].red;
         green=image->colormap[i].green;
         blue=image->colormap[i].blue;
-        if (IssRGBColorspace(image->colorspace) == MagickFalse)
-          {
-            red=(Quantum) (QuantumRange*CompandsRGB(QuantumScale*red));
-            green=(Quantum) (QuantumRange*CompandsRGB(QuantumScale*green));
-            blue=(Quantum) (QuantumRange*CompandsRGB(QuantumScale*blue));
-          }
         switch (colorspace)
         {
           case HSBColorspace:
@@ -3347,12 +3341,6 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
             break;
           }
         }
-        if (IssRGBColorspace(image->colorspace) == MagickFalse)
-          {
-            red=(Quantum) (QuantumRange*DecompandsRGB(QuantumScale*red));
-            green=(Quantum) (QuantumRange*DecompandsRGB(QuantumScale*green));
-            blue=(Quantum) (QuantumRange*DecompandsRGB(QuantumScale*blue));
-          }
       }
     }
   /*
@@ -3387,12 +3375,6 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
       red=GetPixelRed(q);
       green=GetPixelGreen(q);
       blue=GetPixelBlue(q);
-      if (IssRGBColorspace(image->colorspace) == MagickFalse)
-        {
-          red=(Quantum) (QuantumRange*CompandsRGB(QuantumScale*red));
-          green=(Quantum) (QuantumRange*CompandsRGB(QuantumScale*green));
-          blue=(Quantum) (QuantumRange*CompandsRGB(QuantumScale*blue));
-        }
       switch (colorspace)
       {
         case HSBColorspace:
@@ -3415,12 +3397,6 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
           break;
         }
       }
-      if (IssRGBColorspace(image->colorspace) == MagickFalse)
-        {
-          red=(Quantum) (QuantumRange*DecompandsRGB(QuantumScale*red));
-          green=(Quantum) (QuantumRange*DecompandsRGB(QuantumScale*green));
-          blue=(Quantum) (QuantumRange*DecompandsRGB(QuantumScale*blue));
-        }
       SetPixelRed(q,red);
       SetPixelGreen(q,green);
       SetPixelBlue(q,blue);
