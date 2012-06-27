@@ -3270,11 +3270,6 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
   MagickStatusType
     flags;
 
-  Quantum
-    blue,
-    green,
-    red;
-
   register ssize_t
     i;
 
@@ -3316,6 +3311,11 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
+        Quantum
+          blue,
+          green,
+          red;
+
         red=image->colormap[i].red;
         green=image->colormap[i].green;
         blue=image->colormap[i].blue;
@@ -3372,6 +3372,11 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      Quantum
+        blue,
+        green,
+        red;
+
       red=GetPixelRed(q);
       green=GetPixelGreen(q);
       blue=GetPixelBlue(q);
