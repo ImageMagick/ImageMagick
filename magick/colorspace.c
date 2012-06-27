@@ -2604,9 +2604,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             GetPixelGreen(q)));
           blue=(Quantum) (QuantumRange*CompandsRGB(QuantumScale*
             GetPixelBlue(q)));
-          SetPixelRed(q,ClampToQuantum(red));
-          SetPixelGreen(q,ClampToQuantum(green));
-          SetPixelBlue(q,ClampToQuantum(blue));
+          SetPixelRed(q,red);
+          SetPixelGreen(q,green);
+          SetPixelBlue(q,blue);
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2819,41 +2819,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         y_map[i].z=(1.855600*0.50000)*(2.00000*(MagickRealType) i-
           (MagickRealType) MaxMap);
         z_map[i].z=0.00000f;
-      }
-      break;
-    }
-    case RGBColorspace:
-    {
-      /*
-        Nonlinear sRGB to linear RGB (http://www.w3.org/Graphics/Color/sRGB):
-
-          R = 1.0*R+0.0*G+0.0*B
-          G = 0.0*R+1.0*G+0.0*B
-          B = 0.0*R+0.0*G+1.0*B
-      */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) \
-        dynamic_number_threads(image,image->columns,1,1)
-#endif
-      for (i=0; i <= (ssize_t) MaxMap; i++)
-      {
-        MagickRealType
-          v;
-
-        v=(MagickRealType) i/(MagickRealType) MaxMap;
-        if (((MagickRealType) i/(MagickRealType) MaxMap) <= 0.00313066844250063)
-          v*=12.92f;
-        else
-          v=(MagickRealType) (1.055*pow((double) i/MaxMap,1.0/2.4)-0.055);
-        x_map[i].x=1.0*MaxMap*v;
-        y_map[i].x=0.0*MaxMap*v;
-        z_map[i].x=0.0*MaxMap*v;
-        x_map[i].y=0.0*MaxMap*v;
-        y_map[i].y=1.0*MaxMap*v;
-        z_map[i].y=0.0*MaxMap*v;
-        x_map[i].z=0.0*MaxMap*v;
-        y_map[i].z=0.0*MaxMap*v;
-        z_map[i].z=1.0*MaxMap*v;
       }
       break;
     }
