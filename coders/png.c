@@ -9818,7 +9818,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (mng_info->write_png_compression_strategy == 0)
     {
         if ((quality %10) == 8 || (quality %10) == 9)
-            mng_info->write_png_compression_strategy=Z_RLE;
+#ifdef Z_RLE  /* Z_RLE was added to zlib-1.2.0 */
+          mng_info->write_png_compression_strategy=Z_RLE+1;
+#else
+          mng_info->write_png_compression_strategy = Z_DEFAULT_STRATEGY+1;
+#endif
     }
 
   if (mng_info->write_png_compression_filter == 0)
