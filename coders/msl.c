@@ -4316,7 +4316,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               attribute=InterpretImageProperties(msl_info->image_info[n],
                 msl_info->attributes[n],(const char *) attributes[i]);
               CloneString(&value,attribute);
-              if (*keyword == '+')
+              if (*keyword == '!')
                 {
                   /*
                     Remove a profile from the image.
@@ -6826,6 +6826,29 @@ static void MSLStartElement(void *context,const xmlChar *tag,
         } else
           ThrowMSLException(OptionError,"Missing stereo image",keyword);
       }
+      if (LocaleCompare((const char *) tag,"strip") == 0)
+        {
+          /*
+            Strip image.
+          */
+          if (msl_info->image[n] == (Image *) NULL)
+            {
+              ThrowMSLException(OptionError,"NoImagesDefined",
+                (const char *) tag);
+              break;
+            }
+          if (attributes != (const xmlChar **) NULL)
+            for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
+            {
+              keyword=(const char *) attributes[i++];
+              attribute=InterpretImageProperties(msl_info->image_info[n],
+                msl_info->attributes[n],(const char *) attributes[i]);
+              CloneString(&value,attribute);
+              ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
+            }
+          (void) StripImage(msl_info->image[n],&msl_info->image[n]->exception);
+          break;
+        }
       if (LocaleCompare((const char *) tag,"swap") == 0)
         {
           Image
