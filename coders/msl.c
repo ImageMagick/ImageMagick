@@ -6846,7 +6846,7 @@ static void MSLStartElement(void *context,const xmlChar *tag,
               CloneString(&value,attribute);
               ThrowMSLException(OptionError,"UnrecognizedAttribute",keyword);
             }
-          (void) StripImage(msl_info->image[n],&msl_info->image[n]->exception);
+          (void) StripImage(msl_info->image[n]);
           break;
         }
       if (LocaleCompare((const char *) tag,"swap") == 0)
