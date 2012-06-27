@@ -426,11 +426,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          brightness,
-          hue,
-          saturation;
-
         MagickBooleanType
           sync;
 
@@ -449,11 +444,13 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        hue=0.0;
-        saturation=0.0;
-        brightness=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
+          double
+            brightness,
+            hue,
+            saturation;
+
           Quantum
             blue,
             green,
@@ -502,11 +499,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          hue,
-          lightness,
-          saturation;
-
         MagickBooleanType
           sync;
 
@@ -525,11 +517,13 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        hue=0.0;
-        saturation=0.0;
-        lightness=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
+          double
+            hue,
+            lightness,
+            saturation;
+
           Quantum
             blue,
             green,
@@ -542,7 +536,8 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           blue=ClampToQuantum((MagickRealType) QuantumRange*
             DecompandsRGB(QuantumScale*GetPixelBlue(q)));
           ConvertRGBToHSL(red,green,blue,&hue,&saturation,&lightness);
-          SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*hue));
+          SetPixelRed(q,ClampToQuantum((MagickRealType)
+            QuantumRange*hue));
           SetPixelGreen(q,ClampToQuantum((MagickRealType)
             QuantumRange*saturation));
           SetPixelBlue(q,ClampToQuantum((MagickRealType)
@@ -577,11 +572,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          blackness,
-          hue,
-          whiteness;
-
         MagickBooleanType
           sync;
 
@@ -600,11 +590,13 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        hue=0.0;
-        whiteness=0.0;
-        blackness=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
+          double
+            blackness,
+            hue,
+            whiteness;
+
           Quantum
             blue,
             green,
@@ -653,14 +645,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          a,
-          b,
-          L,
-          X,
-          Y,
-          Z;
-
         MagickBooleanType
           sync;
 
@@ -679,14 +663,16 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        L=0.0;
-        a=0.0;
-        b=0.0;
-        X=0.0;
-        Y=0.0;
-        Z=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
+          double
+            a,
+            b,
+            L,
+            X,
+            Y,
+            Z;
+
           Quantum
             blue,
             green,
@@ -845,9 +831,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          gray;
-
         MagickBooleanType
           sync;
 
@@ -868,6 +851,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
+          double
+            gray;
+
           Quantum
             blue,
             green,
@@ -976,11 +962,6 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          X,
-          Y,
-          Z;
-
         MagickBooleanType
           sync;
 
@@ -999,11 +980,13 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        X=0.0;
-        Y=0.0;
-        Z=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
+          double
+            X,
+            Y,
+            Z;
+
           Quantum
             blue,
             green,
@@ -2164,11 +2147,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         MagickBooleanType
           sync;
 
-        Quantum
-          blue,
-          green,
-          red;
-
         register ssize_t
           x;
 
@@ -2184,15 +2162,17 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        red=0;
-        green=0;
-        blue=0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
             brightness,
             hue,
             saturation;
+
+          Quantum
+            blue,
+            green,
+            red;
 
           hue=(double) (QuantumScale*GetPixelRed(q));
           saturation=(double) (QuantumScale*GetPixelGreen(q));
@@ -2240,11 +2220,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         MagickBooleanType
           sync;
 
-        Quantum
-          blue,
-          green,
-          red;
-
         register ssize_t
           x;
 
@@ -2260,15 +2235,17 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        red=0;
-        green=0;
-        blue=0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
             hue,
             lightness,
             saturation;
+
+          Quantum
+            blue,
+            green,
+            red;
 
           hue=(double) (QuantumScale*GetPixelRed(q));
           saturation=(double) (QuantumScale*GetPixelGreen(q));
@@ -2316,11 +2293,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         MagickBooleanType
           sync;
 
-        Quantum
-          blue,
-          green,
-          red;
-
         register ssize_t
           x;
 
@@ -2336,15 +2308,17 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        red=0;
-        green=0;
-        blue=0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
             blackness,
             hue,
             whiteness;
+
+          Quantum
+            blue,
+            green,
+            red;
 
           hue=(double) (QuantumScale*GetPixelRed(q));
           whiteness=(double) (QuantumScale*GetPixelGreen(q));
@@ -2389,18 +2363,8 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          X,
-          Y,
-          Z;
-
         MagickBooleanType
           sync;
-
-        Quantum
-          blue,
-          green,
-          red;
 
         register ssize_t
           x;
@@ -2417,18 +2381,20 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        X=0.0;
-        Y=0.0;
-        Z=0.0;
-        red=0;
-        green=0;
-        blue=0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
             a,
             b,
-            L;
+            L,
+            X,
+            Y,
+            Z;
+
+          Quantum
+            blue,
+            green,
+            red;
 
           L=QuantumScale*GetPixelRed(q);
           a=QuantumScale*GetPixelGreen(q);
@@ -2551,9 +2517,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             QuantumScale*logmap[ScaleQuantumToMap(GetPixelGreen(q))]));
           blue=ClampToQuantum((MagickRealType) QuantumRange*CompandsRGB(
             QuantumScale*logmap[ScaleQuantumToMap(GetPixelBlue(q))]));
-          SetPixelRed(q,ClampToQuantum(red));
-          SetPixelGreen(q,ClampToQuantum(green));
-          SetPixelBlue(q,ClampToQuantum(blue));
+          SetPixelRed(q,red);
+          SetPixelGreen(q,green);
+          SetPixelBlue(q,blue);
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2652,11 +2618,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         MagickBooleanType
           sync;
 
-        Quantum
-          blue,
-          green,
-          red;
-
         register ssize_t
           x;
 
@@ -2672,15 +2633,17 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        red=0;
-        green=0;
-        blue=0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
             X,
             Y,
             Z;
+
+          Quantum
+            blue,
+            green,
+            red;
 
           X=QuantumScale*GetPixelRed(q);
           Y=QuantumScale*GetPixelGreen(q);
