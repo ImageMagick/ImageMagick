@@ -3285,6 +3285,8 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (modulate == (char *) NULL)
     return(MagickFalse);
+  if (IssRGBColorspace(image->colorspace) == MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace);
   flags=ParseGeometry(modulate,&geometry_info);
   percent_brightness=geometry_info.rho;
   percent_saturation=geometry_info.sigma;
