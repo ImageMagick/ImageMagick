@@ -432,11 +432,6 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          brightness,
-          hue,
-          saturation;
-
         MagickBooleanType
           sync;
 
@@ -455,15 +450,15 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        hue=0.0;
-        saturation=0.0;
-        brightness=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
             blue,
+            brightness,
             green,
-            red;
+            hue,
+            red,
+            saturation;
 
           red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
           green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
@@ -505,11 +500,6 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          hue,
-          lightness,
-          saturation;
-
         MagickBooleanType
           sync;
 
@@ -528,15 +518,15 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        hue=0.0;
-        saturation=0.0;
-        lightness=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
             blue,
             green,
-            red;
+            hue,
+            lightness,
+            red,
+            saturation;
 
           red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
           green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
@@ -578,11 +568,6 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          blackness,
-          hue,
-          whiteness;
-
         MagickBooleanType
           sync;
 
@@ -601,15 +586,15 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        hue=0.0;
-        whiteness=0.0;
-        blackness=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
+            blackness,
             blue,
             green,
-            red;
+            hue,
+            red,
+            whiteness;
 
           red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
           green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
@@ -651,14 +636,6 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          a,
-          b,
-          L,
-          X,
-          Y,
-          Z;
-
         MagickBooleanType
           sync;
 
@@ -677,18 +654,18 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        L=0.0;
-        a=0.0;
-        b=0.0;
-        X=0.0;
-        Y=0.0;
-        Z=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
+            a,
+            b,
             blue,
             green,
-            red;
+            L,
+            red,
+            X,
+            Y,
+            Z;
 
           red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
           green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
@@ -963,11 +940,6 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          X,
-          Y,
-          Z;
-
         MagickBooleanType
           sync;
 
@@ -986,15 +958,15 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        X=0.0;
-        Y=0.0;
-        Z=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
             blue,
             green,
-            red;
+            red,
+            X,
+            Y,
+            Z;
 
           red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
           green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
@@ -2121,11 +2093,6 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          blue,
-          green,
-          red;
-
         MagickBooleanType
           sync;
 
@@ -2144,14 +2111,14 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        red=0.0;
-        green=0.0;
-        blue=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
+            blue,
             brightness,
+            green,
             hue,
+            red,
             saturation;
 
           hue=(double) (QuantumScale*GetPixelRed(image,q));
@@ -2194,11 +2161,6 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          blue,
-          green,
-          red;
-
         MagickBooleanType
           sync;
 
@@ -2217,14 +2179,14 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        red=0.0;
-        green=0.0;
-        blue=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
+            blue,
+            green,
             hue,
             lightness,
+            red,
             saturation;
 
           hue=(double) (QuantumScale*GetPixelRed(image,q));
@@ -2267,11 +2229,6 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          blue,
-          green,
-          red;
-
         MagickBooleanType
           sync;
 
@@ -2290,14 +2247,14 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        red=0.0;
-        green=0.0;
-        blue=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
             blackness,
+            blue,
+            green,
             hue,
+            red,
             whiteness;
 
           hue=(double) (QuantumScale*GetPixelRed(image,q));
@@ -2340,17 +2297,6 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          X,
-          Y,
-          Z;
-
-        double
-          blue,
-          green,
-          red;
-
-
         MagickBooleanType
           sync;
 
@@ -2369,18 +2315,18 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        X=0.0;
-        Y=0.0;
-        Z=0.0;
-        red=0.0;
-        green=0.0;
-        blue=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
             a,
             b,
-            L;
+            blue,
+            green,
+            L,
+            red,
+            X,
+            Y,
+            Z;
 
           L=QuantumScale*GetPixelRed(image,q);
           a=QuantumScale*GetPixelGreen(image,q);
@@ -2595,11 +2541,6 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
-        double
-          blue,
-          green,
-          red;
-
         MagickBooleanType
           sync;
 
@@ -2618,12 +2559,12 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             status=MagickFalse;
             continue;
           }
-        red=0.0;
-        green=0.0;
-        blue=0.0;
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           double
+            blue,
+            green,
+            red,
             X,
             Y,
             Z;
