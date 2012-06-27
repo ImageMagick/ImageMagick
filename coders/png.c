@@ -1995,6 +1995,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     num_text,
     num_text_total,
     num_passes,
+    number_colors,
     pass,
     ping_bit_depth,
     ping_color_type,
@@ -2119,6 +2120,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   transparent_color.blue=65537;
   transparent_color.alpha=65537;
 
+  number_colors=0;
   num_text = 0;
   num_text_total = 0;
   num_raw_profiles = 0;
@@ -2478,9 +2480,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   if (png_get_valid(ping,ping_info,PNG_INFO_PLTE))
     {
-      int
-        number_colors;
-
       png_colorp
         palette;
 
@@ -2753,9 +2752,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #endif
       if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
         {
-          int
-            number_colors;
-
           png_colorp
             palette;
 
@@ -2778,9 +2774,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       if ((int) ping_color_type == PNG_COLOR_TYPE_PALETTE)
         {
-          int
-            number_colors;
-
           png_colorp
             palette;
 
@@ -2840,9 +2833,30 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          Magick_ColorType_from_PNG_ColorType((int)ping_color_type));
      (void) SetImageProperty(image,"png:IHDR.color_type      ",msg,exception);
 
-     (void) FormatLocaleString(msg,MaxTextExtent,"%d",
-        (int) ping_interlace_method);
-     (void) SetImageProperty(image,"png:IHDR.interlace_method",msg,exception);
+     if (ping_interlace_method == 0)
+       {
+         (void) FormatLocaleString(msg,MaxTextExtent,"%d (Not interlaced)",
+            (int) ping_interlace_method);
+       }
+     else if (ping_interlace_method == 1)
+       {
+         (void) FormatLocaleString(msg,MaxTextExtent,"%d (Adam7 method)",
+            (int) ping_interlace_method);
+       }
+     else
+       {
+         (void) FormatLocaleString(msg,MaxTextExtent,"%d (Unknown method)",
+            (int) ping_interlace_method);
+       }
+       (void) SetImageProperty(image,"png:IHDR.interlace_method",msg,exception);
+
+     if (number_colors != 0)
+       {
+         (void) FormatLocaleString(msg,MaxTextExtent,"%d",
+            (int) number_colors);
+         (void) SetImageProperty(image,"png:PLTE.number_colors   ",msg,
+            exception);
+       }
    }
 
   /*
@@ -3493,9 +3507,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
           if (png_get_valid(ping,ping_info,PNG_INFO_PLTE))
             {
-              int
-                number_colors;
-
               png_colorp
                 plte;
 
