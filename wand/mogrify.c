@@ -365,7 +365,7 @@ static inline Image *GetImageCache(const ImageInfo *image_info,const char *path,
   return(image);
 }
 
-static MagickBooleanType IsPathWritable(const char *path)
+static inline MagickBooleanType IsPathWritable(const char *path)
 {
   if (IsPathAccessible(path) == MagickFalse)
     return(MagickFalse);
