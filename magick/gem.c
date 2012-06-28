@@ -361,9 +361,9 @@ MagickExport void ConvertRGBToHSB(const Quantum red,const Quantum green,
   *hue=0.0;
   *saturation=0.0;
   *brightness=0.0;
-  r=red;
-  g=green;
-  b=blue;
+  r=(double) red;
+  g=(double) green;
+  b=(double) blue;
   min=r < g ? r : g;
   if (b < min)
     min=b;
@@ -528,9 +528,9 @@ MagickExport void ConvertRGBToHWB(const Quantum red,const Quantum green,
   assert(hue != (double *) NULL);
   assert(whiteness != (double *) NULL);
   assert(blackness != (double *) NULL);
-  r=red;
-  g=green;
-  b=blue;
+  r=(double) red;
+  g=(double) green;
+  b=(double) blue;
   w=MagickMin(r,MagickMin(g,b));
   v=MagickMax(r,MagickMax(g,b));
   *blackness=1.0-QuantumScale*v;
