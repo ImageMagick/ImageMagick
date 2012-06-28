@@ -176,7 +176,7 @@ MagickExport void *CropImageToHBITMAP(Image *image,
   bitmap_bits=(RGBQUAD *) GlobalLock((HGLOBAL) bitmap_bitsH);
   if ( bitmap.bmBits == NULL )
     bitmap.bmBits = bitmap_bits;
-  if (IssCompatibleRGBColorspace(image->colorspace) == MagickFalse)
+  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     TransformImageColorspace(image,sRGBColorspace);
   /*
     Extract crop image.
