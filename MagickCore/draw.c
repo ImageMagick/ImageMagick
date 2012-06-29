@@ -970,7 +970,7 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
   inverse_edge.x2=edge->x2;
   inverse_edge.y2=edge->y2;
   z=affine->ry*y+affine->tx;
-  if (affine->sx > MagickEpsilon)
+  if (affine->sx >= MagickEpsilon)
     {
       intercept=(-z/affine->sx);
       x=intercept;
@@ -1003,7 +1003,7 @@ static SegmentInfo AffineEdge(const Image *image,const AffineMatrix *affine,
     Determine top and bottom edges.
   */
   z=affine->sy*y+affine->ty;
-  if (affine->rx > MagickEpsilon)
+  if (affine->rx >= MagickEpsilon)
     {
       intercept=(-z/affine->rx);
       x=intercept;
@@ -1609,8 +1609,6 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   if ((total_length <= maximum_length) && ((n & 0x01) == 0) && (j > 1))
     {
       dash_polygon[j]=primitive_info[i-1];
-      dash_polygon[j].point.x+=MagickEpsilon;
-      dash_polygon[j].point.y+=MagickEpsilon;
       dash_polygon[j].coordinates=1;
       j++;
       dash_polygon[0].coordinates=(size_t) j;
@@ -4544,7 +4542,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
       scale=ExpandAffine(&draw_info->affine);
       if ((draw_info->dash_pattern != (double *) NULL) &&
           (draw_info->dash_pattern[0] != 0.0) &&
-          ((scale*draw_info->stroke_width) > MagickEpsilon) &&
+          ((scale*draw_info->stroke_width) >= MagickEpsilon) &&
           (draw_info->stroke.alpha != (Quantum) TransparentAlpha))
         {
           /*
