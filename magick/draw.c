@@ -4912,6 +4912,16 @@ static inline MagickRealType Permutate(const ssize_t n,const ssize_t k)
 %
 */
 
+static inline MagickRealType DrawEpsilonReciprocal(const MagickRealType x)
+{
+#define DrawEpsilon  ((MagickRealType) 1.0e-12)
+
+  MagickRealType sign = x < (MagickRealType) 0.0 ? (MagickRealType) -1.0 :
+    (MagickRealType) 1.0;
+  return((sign*x) > DrawEpsilon ? (MagickRealType) 1.0/x : sign*(
+    (MagickRealType) 1.0/DrawEpsilon));
+}
+
 static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo end,const PointInfo degrees)
 {
@@ -5848,28 +5858,8 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   }
   if (n == (ssize_t) number_vertices)
     n=(ssize_t) number_vertices-1L;
-  slope.p=0.0;
-  inverse_slope.p=0.0;
-  if (fabs(dx.p) < MagickEpsilon)
-    {
-      if (dx.p >= 0.0)
-        slope.p=dy.p < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
-      else
-        slope.p=dy.p < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
-    }
-  else
-    if (fabs(dy.p) < MagickEpsilon)
-      {
-        if (dy.p >= 0.0)
-          inverse_slope.p=dx.p < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
-        else
-          inverse_slope.p=dx.p < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
-      }
-    else
-      {
-        slope.p=dy.p/dx.p;
-        inverse_slope.p=(-1.0/slope.p);
-      }
+  slope.p=DrawEpsilonReciprocal(dx.p)*dy.p;
+  inverse_slope.p=(-1.0*DrawEpsilonReciprocal(slope.p));
   mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   miterlimit=(MagickRealType) (draw_info->miterlimit*draw_info->miterlimit*
     mid*mid);
@@ -5916,28 +5906,8 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     dot_product=dx.q*dx.q+dy.q*dy.q;
     if (dot_product < 0.25)
       continue;
-    slope.q=0.0;
-    inverse_slope.q=0.0;
-    if (fabs(dx.q) < MagickEpsilon)
-      {
-        if (dx.q >= 0.0)
-          slope.q=dy.q < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
-        else
-          slope.q=dy.q < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
-      }
-    else
-      if (fabs(dy.q) < MagickEpsilon)
-        {
-          if (dy.q >= 0.0)
-            inverse_slope.q=dx.q < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
-          else
-            inverse_slope.q=dx.q < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
-        }
-      else
-        {
-          slope.q=dy.q/dx.q;
-          inverse_slope.q=(-1.0/slope.q);
-        }
+    slope.q=DrawEpsilonReciprocal(dx.q)*dy.q;
+    inverse_slope.q=(-1.0*DrawEpsilonReciprocal(slope.q));
     offset.x=sqrt((double) (mid*mid/(inverse_slope.q*inverse_slope.q+1.0)));
     offset.y=(double) (offset.x*inverse_slope.q);
     dot_product=dy.q*offset.x-dx.q*offset.y;
