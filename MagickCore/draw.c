@@ -1609,6 +1609,8 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   if ((total_length <= maximum_length) && ((n & 0x01) == 0) && (j > 1))
     {
       dash_polygon[j]=primitive_info[i-1];
+      dash_polygon[j].point.x+=MagickEpsilon;
+      dash_polygon[j].point.y+=MagickEpsilon;
       dash_polygon[j].coordinates=1;
       j++;
       dash_polygon[0].coordinates=(size_t) j;
