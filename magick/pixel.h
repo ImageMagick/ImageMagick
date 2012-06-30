@@ -30,6 +30,8 @@ extern "C" {
 #define ClampPixelBlue(pixel) ClampToQuantum((pixel)->blue)
 #define ClampPixelIndex(indexes) ClampToQuantum(*(indexes))
 #define ClampPixelOpacity(pixel) ClampToQuantum((pixel)->opacity)
+#define GetPixela(pixel) ((pixel)->green)
+#define GetPixelb(pixel) ((pixel)->blue)
 #define GetPixelAlpha(pixel) (QuantumRange-(pixel)->opacity)
 #define GetPixelBlack(indexes) (*(indexes))
 #define GetPixelBlue(pixel) ((pixel)->blue)
@@ -39,6 +41,7 @@ extern "C" {
 #define GetPixelGray(pixel) ((pixel)->red)
 #define GetPixelGreen(pixel) ((pixel)->green)
 #define GetPixelIndex(indexes) (*(indexes))
+#define GetPixelL(pixel) ((pixel)->red)
 #define GetPixelMagenta(pixel) ((pixel)->green)
 #define GetPixelNext(pixel)  ((pixel)+1)
 #define GetPixelOpacity(pixel) ((pixel)->opacity)
@@ -58,8 +61,10 @@ extern "C" {
 }
 #define GetPixelY(pixel) ((pixel)->red)
 #define GetPixelYellow(pixel) ((pixel)->blue)
+#define SetPixela(pixel,value) ((pixel)->green=(Quantum) (value))
 #define SetPixelAlpha(pixel,value) \
   ((pixel)->opacity=(Quantum) (QuantumRange-(value)))
+#define SetPixelb(pixel,value) ((pixel)->blue=(Quantum) (value))
 #define SetPixelBlack(indexes,value) (*(indexes)=(Quantum) (value))
 #define SetPixelBlue(pixel,value) ((pixel)->blue=(Quantum) (value))
 #define SetPixelCb(pixel,value) ((pixel)->green=(Quantum) (value))
@@ -69,6 +74,7 @@ extern "C" {
   ((pixel)->red=(pixel)->green=(pixel)->blue=(Quantum) (value))
 #define SetPixelGreen(pixel,value) ((pixel)->green=(Quantum) (value))
 #define SetPixelIndex(indexes,value) (*(indexes)=(IndexPacket) (value))
+#define SetPixelL(pixel,value) ((pixel)->red=(Quantum) (value))
 #define SetPixelMagenta(pixel,value) ((pixel)->green=(Quantum) (value))
 #define SetPixelOpacity(pixel,value) \
   ((pixel)->opacity=(Quantum) (value))
