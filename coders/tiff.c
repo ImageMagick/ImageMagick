@@ -426,6 +426,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
 %
 */
 
+#if defined(MAGICKCORE_HDRI_SUPPORT)
 static MagickBooleanType LabImage(Image *image,ExceptionInfo *exception)
 {
   CacheView
@@ -469,6 +470,7 @@ static MagickBooleanType LabImage(Image *image,ExceptionInfo *exception)
   image_view=DestroyCacheView(image_view);
   return(status);
 }
+#endif
 
 static inline size_t MagickMax(const size_t x,const size_t y)
 {
