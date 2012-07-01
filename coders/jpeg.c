@@ -2296,6 +2296,30 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
 #endif
     }
   jpeg_set_quality(&jpeg_info,quality,MagickTrue);
+#if (JPEG_LIB_VERSION >= 70)
+  option=GetImageOption(image_info,"quality");
+  if (option != (const char *) NULL)
+    {
+      GeometryInfo
+        geometry_info;
+
+      int
+        flags;
+
+      /*
+        Set quality scaling for luminance and chrominance separately.
+      */
+      flags=ParseGeometry(option,&geometry_info);
+      if (((flags & RhoValue) != 0) && ((flags & SigmaValue) != 0))
+        {
+          jpeg_info.q_scale_factor[0]=jpeg_quality_scaling((int)
+            (geometry_info.rho+0.5));
+          jpeg_info.q_scale_factor[1]=jpeg_quality_scaling((int)
+            (geometry_info.sigma+0.5));
+          jpeg_default_qtables(&jpeg_info,MagickTrue);
+        }
+    }
+#endif
   sampling_factor=(const char *) NULL;
   value=GetImageProperty(image,"jpeg:sampling-factor",exception);
   if (value != (char *) NULL)
