@@ -1930,7 +1930,7 @@ Optional Packages:
   --without-gslib         enable Ghostscript library support
   --with-fontpath=DIR     prepend to default font search path
   --with-gs-font-dir=DIR  Ghostscript font directory
-  --without-gvc           disable GVC support
+  --with-gvc              disable GVC support
   --without-jbig          disable JBIG support
   --without-jpeg          disable JPEG support
   --without-jp2           disable JPEG-2000 support
@@ -3648,7 +3648,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=8354
+MAGICK_SVN_REVISION=8543
 
 
 
@@ -29809,7 +29809,7 @@ fi
 if test "${with_gvc+set}" = set; then :
   withval=$with_gvc; with_gvc=$withval
 else
-  with_gvc='yes'
+  with_gvc='no'
 fi
 
 

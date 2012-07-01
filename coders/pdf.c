@@ -70,6 +70,7 @@
 #include "MagickCore/quantum-private.h"
 #include "MagickCore/resource_.h"
 #include "MagickCore/resize.h"
+#include "MagickCore/signature.h"
 #include "MagickCore/static.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/module.h"
@@ -954,6 +955,11 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       "      <rdf:Description rdf:about=\"\"\n"
       "            xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n"
       "         <dc:format>application/pdf</dc:format>\n"
+      "         <dc:title>\n"
+      "           <rdf:Alt>\n"
+      "              <rdf:li xml:lang=\"x-default\">%s</rdf:li>\n"
+      "           </rdf:Alt>\n"
+      "         </dc:title>\n"
       "      </rdf:Description>\n"
       "      <rdf:Description rdf:about=\"\"\n"
       "            xmlns:xapMM=\"http://ns.adobe.com/xap/1.0/mm/\">\n"
@@ -966,7 +972,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       "      </rdf:Description>\n"
       "      <rdf:Description rdf:about=\"\"\n"
       "            xmlns:pdfaid=\"http://www.aiim.org/pdfa/ns/id/\">\n"
-      "         <pdfaid:part>1</pdfaid:part>\n"
+      "         <pdfaid:part>2</pdfaid:part>\n"
       "         <pdfaid:conformance>B</pdfaid:conformance>\n"
       "      </rdf:Description>\n"
       "   </rdf:RDF>\n"
@@ -1116,6 +1122,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobString(image,"/Type /Catalog\n");
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"endobj\n");
+  GetPathComponent(image->filename,BasePath,basename);
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
     {
       char
@@ -1147,14 +1154,15 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       (void) FormatMagickTime(time((time_t *) NULL),MaxTextExtent,timestamp);
       i=FormatLocaleString(xmp_profile,MaxTextExtent,XMPProfile,
         XMPProfileMagick,modify_date,create_date,timestamp,
-        GetMagickVersion(&version),GetMagickVersion(&version));
+        GetMagickVersion(&version),EscapeParenthesis(basename),
+        GetMagickVersion(&version));
       (void) FormatLocaleString(buffer,MaxTextExtent,"/Length %.20g\n",(double)
         i);
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"/Type /Metadata\n");
       (void) WriteBlobString(image,">>\nstream\n");
       (void) WriteBlobString(image,xmp_profile);
-      (void) WriteBlobString(image,"endstream\n");
+      (void) WriteBlobString(image,"\nendstream\n");
       (void) WriteBlobString(image,"endobj\n");
     }
   /*
@@ -1414,7 +1422,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"Q\n");
     offset=TellBlob(image)-offset;
-    (void) WriteBlobString(image,"endstream\n");
+    (void) WriteBlobString(image,"\nendstream\n");
     (void) WriteBlobString(image,"endobj\n");
     /*
       Write Length object.
@@ -2540,7 +2548,6 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     object);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"<<\n");
-  GetPathComponent(image->filename,BasePath,basename);
   (void) FormatLocaleString(buffer,MaxTextExtent,"/Title (%s)\n",
     EscapeParenthesis(basename));
   (void) WriteBlobString(image,buffer);
@@ -2588,6 +2595,11 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   (void) WriteBlobString(image,buffer);
   (void) FormatLocaleString(buffer,MaxTextExtent,"/Root %.20g 0 R\n",(double)
     root_id);
+  (void) WriteBlobString(image,buffer);
+  (void) SignatureImage(image,exception);
+  (void) FormatLocaleString(buffer,MaxTextExtent,"/ID [<%s> <%s>]\n",
+    GetImageProperty(image,"signature",exception),
+    GetImageProperty(image,"signature",exception));
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"startxref\n");
