@@ -184,7 +184,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       if (draw_info->direction == RightToLeftDirection)
         (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
           image->columns-(metrics.bounds.x2+draw_info->stroke_width/2.0),
-          draw_info->stroke_width/2.0);
+          metrics.ascent+draw_info->stroke_width/2.0);
       (void) CloneString(&draw_info->geometry,geometry);
     }
   if (image->rows == 0)
