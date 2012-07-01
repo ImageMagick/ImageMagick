@@ -57,6 +57,7 @@
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/string-private.h"
+#include "MagickCore/pixel-private.h"
 
 /*
   Define declarations.
@@ -1602,14 +1603,14 @@ interpret Percent Escapes in Arguments, At least not yet */
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WandSimpleOperatorImages() applys one simple image operation given to all
+%  WandSimpleOperatorImages() andSimpleOperatorImagespplys one simple image operation given to all
 %  the images in the CLI wand,  with the settings that was previously saved in
 %  the CLI wand.
 %
 %  It is assumed that any per-image settings are up-to-date with respect to
 %  extra settings that were already saved in the wand.
 %
-%  The format of the WandSimpleOperatorImage method is:
+%  The format of the WandSimpleOperatorImages method is:
 %
 %    void CLISimpleOperatorImages(MagickCLI *cli_wand,
 %        const char *option, const char *arg1, const char *arg2)
@@ -2428,13 +2429,26 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
     {
       if (LocaleCompare("gamma",option+1) == 0)
         {
+          double
+            constant;
+
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
+          constant=StringToDouble(arg1,(char **) NULL);
+#if 0
+          /* Using Gamma, via a cache */
+          if (IfPlusOp)
+            constant=MagickEpsilonReciprocal(constant);
+          (void) GammaImage(_image,constant,_exception);
+#else
+          /* Using Evaluate POW, direct update of values - more accurite */
           if (IfNormalOp)
-            (void) GammaImage(_image,StringToDouble(arg1,(char **) NULL),
-                 _exception);
-          else
-            _image->gamma=StringToDouble(arg1,(char **) NULL);
+            constant=MagickEpsilonReciprocal(constant);
+          (void) EvaluateImage(_image,PowEvaluateOperator,constant,_exception);
+#endif
+          /* Set gamma setting -- Old meaning of "+gamma"
+           * _image->gamma=StringToDouble(arg1,(char **) NULL);
+           */
           break;
         }
       if (LocaleCompare("gaussian-blur",option+1) == 0)
