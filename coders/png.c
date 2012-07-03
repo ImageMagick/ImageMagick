@@ -3348,12 +3348,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
            */
           SetImageColorspace(image,GRAYColorspace);
         }
-    
-      else
-        {
-          /* Use colorspace data from PNG ancillary chunks */
-          image->colorspace=GRAYColorspace;
-        }
     }
 
   for (j = 0; j < 2; j++)

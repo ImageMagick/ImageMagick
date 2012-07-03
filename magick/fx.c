@@ -4882,6 +4882,7 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
       stereo_image=DestroyImage(stereo_image);
       return((Image *) NULL);
     }
+  (void) SetImageColorspace(stereo_image,sRGBColorspace);
   /*
     Copy left image to red channel and right image to blue channel.
   */
