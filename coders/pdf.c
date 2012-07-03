@@ -2582,10 +2582,9 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) FormatLocaleString(buffer,MaxTextExtent,"/Root %.20g 0 R\n",(double)
     root_id);
   (void) WriteBlobString(image,buffer);
-  (void) SignatureImage(image,exception);
+  (void) SignatureImage(image);
   (void) FormatLocaleString(buffer,MaxTextExtent,"/ID [<%s> <%s>]\n",
-    GetImageProperty(image,"signature",exception),
-    GetImageProperty(image,"signature",exception));
+    GetImageProperty(image,"signature"),GetImageProperty(image,"signature"));
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"startxref\n");
