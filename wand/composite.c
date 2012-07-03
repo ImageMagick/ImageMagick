@@ -126,20 +126,22 @@ static MagickBooleanType CompositeImageList(ImageInfo *image_info,Image **image,
     {
       assert(composite_image->signature == MagickSignature);
       switch( composite_options->compose )
+      {
+        case BlendCompositeOp:
+        case BlurCompositeOp:
+        case DisplaceCompositeOp:
+        case DistortCompositeOp:
+        case DissolveCompositeOp:
+        case ModulateCompositeOp:
+        case ThresholdCompositeOp:
         {
-          case BlendCompositeOp:
-          case BlurCompositeOp:
-          case DisplaceCompositeOp:
-          case DistortCompositeOp:
-          case DissolveCompositeOp:
-          case ModulateCompositeOp:
-          case ThresholdCompositeOp:
-            (void) SetImageArtifact(composite_image,"compose:args",
-              composite_options->compose_args);
-            break;
-          default:
-            break;
+          (void) SetImageArtifact(composite_image,"compose:args",
+            composite_options->compose_args);
+          break;
         }
+        default:
+          break;
+      }
       /*
         Composite image.
       */
