@@ -2399,7 +2399,6 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
-  (void) SetImageColorspace(image,GRAYColorspace);
   /*
     Separate image channels.
   */
@@ -2531,7 +2530,7 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
   image_view=DestroyCacheView(image_view);
   if (channel != GrayChannels)
     image->matte=MagickFalse;
-  (void) SetImageColorspace(image,sRGBColorspace);
+  (void) TransformImageColorspace(image,GRAYColorspace);
   return(status);
 }
 
