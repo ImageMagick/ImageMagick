@@ -2726,12 +2726,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
            */
           SetImageColorspace(image,GRAYColorspace,exception);
         }
-    
-      else
-        {
-          /* Use colorspace data from PNG ancillary chunks */
-          image->colorspace=GRAYColorspace;
-        }
     }
 
   if (((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
