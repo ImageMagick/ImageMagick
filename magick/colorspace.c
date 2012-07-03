@@ -1467,6 +1467,8 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 MagickExport MagickBooleanType SetImageColorspace(Image *image,
   const ColorspaceType colorspace)
 {
+  if (image->colorspace == colorspace)
+    return(MagickTrue);
   image->colorspace=colorspace;
   image->rendering_intent=UndefinedIntent;
   image->gamma=1.000f;
@@ -1490,6 +1492,8 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
     }
   if (IsGrayColorspace(colorspace) != MagickFalse)
     image->type=GrayscaleType;
+  (void) DeleteImageProfile(image,"icc");  /* remove color profile */
+  (void) DeleteImageProfile(image,"icm");
   return(SyncImagePixelCache(image,&image->exception));
 }
 
