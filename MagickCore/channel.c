@@ -651,7 +651,6 @@ MagickExport Image *SeparateImage(const Image *image,
       return((Image *) NULL);
     }
   separate_image->matte=MagickFalse;
-  (void) SetImageColorspace(separate_image,GRAYColorspace,exception);
   /*
     Separate image.
   */
@@ -731,8 +730,10 @@ MagickExport Image *SeparateImage(const Image *image,
   }
   separate_view=DestroyCacheView(separate_view);
   image_view=DestroyCacheView(image_view);
-  (void) SetImageColorspace(separate_image,image->colorspace,exception);
-  (void) TransformImageColorspace(separate_image,GRAYColorspace,exception);
+  if (IssRGBColorspace(image->colorspace) == MagickFalse)
+    (void) SetImageColorspace(separate_image,GRAYColorspace,exception);
+  else
+    (void) TransformImageColorspace(separate_image,GRAYColorspace,exception);
   return(separate_image);
 }
 
