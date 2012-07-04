@@ -322,7 +322,7 @@ extern WandExport MagickWand
   *MagickAppendImages(MagickWand *,const MagickBooleanType),
   *MagickChannelFxImage(MagickWand *,const char *),
   *MagickCoalesceImages(MagickWand *),
-  *MagickCombineImages(MagickWand *),
+  *MagickCombineImages(MagickWand *,const ColorspaceType),
   *MagickCompareImages(MagickWand *,const MagickWand *,const MetricType,
     double *),
   *MagickCompareImagesLayers(MagickWand *,const ImageLayerMethod),
