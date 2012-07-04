@@ -4146,7 +4146,22 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("combine",option+1) == 0)
-          break;
+          {
+            ssize_t
+              colorspace;
+
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            colorspace=ParseCommandOption(MagickColorspaceOptions,MagickFalse,
+              argv[i]);
+            if (colorspace < 0)
+              ThrowMogrifyException(OptionError,"UnrecognizedColorspace",
+                argv[i]);
+            break;
+          }
         if (LocaleCompare("comment",option+1) == 0)
           {
             if (*option == '+')
@@ -7403,11 +7418,16 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
           }
         if (LocaleCompare("combine",option+1) == 0)
           {
+            ColorspaceType
+              colorspace;
+
             Image
               *combine_image;
 
             (void) SyncImagesSettings(mogrify_info,*images,exception);
-            combine_image=CombineImages(*images,exception);
+            colorspace=(ColorspaceType) ParseCommandOption(
+              MagickColorspaceOptions,MagickFalse,argv[i+1]);
+            combine_image=CombineImages(*images,colorspace,exception);
             if (combine_image == (Image *) NULL)
               {
                 status=MagickFalse;
