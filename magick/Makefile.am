@@ -74,6 +74,8 @@ MAGICK_BASE_SRCS = \
 	magick/cache-private.h \
 	magick/cache-view.c \
 	magick/cache-view.h \
+	magick/channel.c \
+	magick/channel.h \
 	magick/cipher.c \
 	magick/cipher.h \
 	magick/client.c \
@@ -296,6 +298,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/blob.h \
 	magick/cache.h \
 	magick/cache-view.h \
+	magick/channel.h \
 	magick/cipher.h \
 	magick/client.h \
 	magick/coder.h \

@@ -45,6 +45,7 @@
 #include "magick/blob.h"
 #include "magick/blob-private.h"
 #include "magick/cache.h"
+#include "magick/channel.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
 #include "magick/compress.h"

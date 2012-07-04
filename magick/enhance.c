@@ -44,6 +44,7 @@
 #include "magick/artifact.h"
 #include "magick/cache.h"
 #include "magick/cache-view.h"
+#include "magick/channel.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
 #include "magick/colorspace.h"

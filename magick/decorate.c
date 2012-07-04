@@ -42,6 +42,7 @@
 */
 #include "magick/studio.h"
 #include "magick/cache-view.h"
+#include "magick/channel.h"
 #include "magick/color-private.h"
 #include "magick/colorspace-private.h"
 #include "magick/composite.h"

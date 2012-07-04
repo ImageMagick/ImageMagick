@@ -42,6 +42,7 @@
 #include "magick/studio.h"
 #include "magick/blob.h"
 #include "magick/blob-private.h"
+#include "magick/channel.h"
 #include "magick/color.h"
 #include "magick/color-private.h"
 #include "magick/colorspace-private.h"

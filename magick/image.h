@@ -498,14 +498,12 @@ extern MagickExport Image
   *AppendImages(const Image *,const MagickBooleanType,ExceptionInfo *),
   *CloneImage(const Image *,const size_t,const size_t,const MagickBooleanType,
     ExceptionInfo *),
-  *CombineImages(const Image *,const ChannelType,ExceptionInfo *),
   *DestroyImage(Image *),
   *GetImageClipMask(const Image *,ExceptionInfo *),
   *GetImageMask(const Image *,ExceptionInfo *),
   *NewMagickImage(const ImageInfo *,const size_t,const size_t,
     const MagickPixelPacket *),
   *ReferenceImage(Image *),
-  *SeparateImages(const Image *,const ChannelType,ExceptionInfo *),
   *SmushImages(const Image *,const MagickBooleanType,const ssize_t,
     ExceptionInfo *);
 
@@ -517,7 +515,6 @@ extern MagickExport ImageInfo
 extern MagickExport MagickBooleanType
   ClipImage(Image *),
   ClipImagePath(Image *,const char *,const MagickBooleanType),
-  GetImageAlphaChannel(const Image *),
   IsTaintImage(const Image *),
   IsMagickConflict(const char *),
   IsHighDynamicRangeImage(const Image *,ExceptionInfo *),
@@ -525,8 +522,6 @@ extern MagickExport MagickBooleanType
   ListMagickInfo(FILE *,ExceptionInfo *),
   ModifyImage(Image **,ExceptionInfo *),
   ResetImagePage(Image *,const char *),
-  SeparateImageChannel(Image *,const ChannelType),
-  SetImageAlphaChannel(Image *,const AlphaChannelType),
   SetImageBackgroundColor(Image *),
   SetImageClipMask(Image *,const Image *),
   SetImageColor(Image *,const MagickPixelPacket *),
