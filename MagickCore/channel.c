@@ -439,16 +439,20 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
 %
 %  The format of the CombineImages method is:
 %
-%      Image *CombineImages(const Image *image,ExceptionInfo *exception)
+%      Image *CombineImages(const Image *images,const ColorspaceType colorspace,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o images: the image sequence.
+%
+%    o colorspace: the image colorspace.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
+MagickExport Image *CombineImages(const Image *image,
+  const ColorspaceType colorspace,ExceptionInfo *exception)
 {
 #define CombineImageTag  "Combine/Image"
 
@@ -485,7 +489,7 @@ MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
       return((Image *) NULL);
     }
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) SetImageColorspace(combine_image,sRGBColorspace,exception);
+    (void) SetImageColorspace(combine_image,RGBColorspace,exception);
   if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
     combine_image->matte=MagickTrue;
   /*
@@ -574,6 +578,7 @@ MagickExport Image *CombineImages(const Image *image,ExceptionInfo *exception)
   combine_view=DestroyCacheView(combine_view);
   if (status == MagickFalse)
     combine_image=DestroyImage(combine_image);
+  (void) TransformImageColorspace(combine_image,colorspace,exception);
   return(combine_image);
 }
 

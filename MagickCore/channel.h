@@ -24,7 +24,7 @@ extern "C" {
 
 extern MagickExport Image
   *ChannelFxImage(const Image *,const char *,ExceptionInfo *),
-  *CombineImages(const Image *,ExceptionInfo *),
+  *CombineImages(const Image *,const ColorspaceType,ExceptionInfo *),
   *SeparateImage(const Image *,const ChannelType,ExceptionInfo *),
   *SeparateImages(const Image *,ExceptionInfo *);
 

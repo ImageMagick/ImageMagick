@@ -3676,7 +3676,8 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
       if (LocaleCompare("combine",option+1) == 0)
         {
           /* FUTURE - this may be replaced by a 'channel' method */
-          new_images=CombineImages(_images,_exception);
+          parse = ParseCommandOption(MagickColorspaceOptions,MagickFalse,arg1);
+          new_images=CombineImages(_images,(ColorspaceType) parse,_exception);
           break;
         }
       if (LocaleCompare("composite",option+1) == 0)
