@@ -368,12 +368,12 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
+  if (channel == GrayChannels)
+    image->matte=MagickTrue;
   /*
     Separate image channels.
   */
   status=MagickTrue;
-  if (channel == GrayChannels)
-    image->matte=MagickTrue;
   progress=0;
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
@@ -499,7 +499,10 @@ MagickExport MagickBooleanType SeparateImageChannel(Image *image,
   image_view=DestroyCacheView(image_view);
   if (channel != GrayChannels)
     image->matte=MagickFalse;
-  (void) TransformImageColorspace(image,GRAYColorspace);
+  if (IssRGBColorspace(image->colorspace) == MagickFalse)
+    (void) SetImageColorspace(image,GRAYColorspace);
+  else
+    (void) TransformImageColorspace(image,GRAYColorspace);
   return(status);
 }
 
