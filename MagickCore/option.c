@@ -283,7 +283,7 @@ static const OptionInfo
     { "-colors", 1L, SimpleOperatorFlag, MagickFalse },
     { "+colorspace", 0L, ImageInfoOptionFlag | SimpleOperatorFlag, MagickFalse },
     { "-colorspace", 1L, ImageInfoOptionFlag | SimpleOperatorFlag, MagickFalse },
-    { "+combine", 0L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
+    { "+combine", 1L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
     { "-combine", 1L, ListOperatorFlag | FireOptionFlag, MagickFalse },
     { "+comment", 0L, ImageInfoOptionFlag | NeverInterpretArgsFlag, MagickFalse },
     { "-comment", 1L, ImageInfoOptionFlag | NeverInterpretArgsFlag, MagickFalse },
