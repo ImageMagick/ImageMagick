@@ -1642,14 +1642,18 @@ WandExport MagickBooleanType MagickColorMatrixImage(MagickWand *wand,
 %
 %  The format of the MagickCombineImages method is:
 %
-%      MagickWand *MagickCombineImages(MagickWand *wand)
+%      MagickWand *MagickCombineImages(MagickWand *wand,
+%        const ColorspaceType colorspace)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
 %
+%    o colorspace: the colorspace.
+%
 */
-WandExport MagickWand *MagickCombineImages(MagickWand *wand)
+WandExport MagickWand *MagickCombineImages(MagickWand *wand,
+  const ColorspaceType colorspace)
 {
   Image
     *combine_image;
@@ -1661,7 +1665,7 @@ WandExport MagickWand *MagickCombineImages(MagickWand *wand)
 
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
-  combine_image=CombineImages(wand->images,wand->exception);
+  combine_image=CombineImages(wand->images,colorspace,wand->exception);
   if (combine_image == (Image *) NULL)
     return((MagickWand *) NULL);
   return(CloneMagickWandFromImages(wand,combine_image));
