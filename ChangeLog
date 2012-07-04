@@ -1,3 +1,6 @@
+2012-07-04  6.7.8-1 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-1, SVN revision 8590.
+
 2012-07-02  6.7.8-1 Cristy  <quetzlzacatenango@image...>
   * A single argument -stereo option now works as documented (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21348).
