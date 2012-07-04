@@ -40,7 +40,8 @@
  Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/color.h"
+#include "magick/cache.h"
+#include "magick/channel.h"
 #include "magick/color-private.h"
 #include "magick/colorspace-private.h"
 #include "magick/composite.h"

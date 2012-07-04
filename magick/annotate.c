@@ -46,6 +46,7 @@
 #include "magick/annotate.h"
 #include "magick/attribute.h"
 #include "magick/cache-view.h"
+#include "magick/channel.h"
 #include "magick/client.h"
 #include "magick/color.h"
 #include "magick/color-private.h"

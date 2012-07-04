@@ -1409,25 +1409,26 @@ am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 	magick/attribute.h magick/blob.c magick/blob.h \
 	magick/blob-private.h magick/cache.c magick/cache.h \
 	magick/cache-private.h magick/cache-view.c magick/cache-view.h \
-	magick/cipher.c magick/cipher.h magick/client.c \
-	magick/client.h magick/coder.c magick/coder.h magick/color.c \
-	magick/color.h magick/color-private.h magick/colormap.c \
-	magick/colormap.h magick/colormap-private.h \
-	magick/colorspace.c magick/colorspace.h \
-	magick/colorspace-private.h magick/compare.c magick/compare.h \
-	magick/composite.c magick/composite.h \
-	magick/composite-private.h magick/compress.c magick/compress.h \
-	magick/configure.c magick/configure.h magick/constitute.c \
-	magick/constitute.h magick/decorate.c magick/decorate.h \
-	magick/delegate.c magick/delegate.h magick/delegate-private.h \
-	magick/deprecate.c magick/deprecate.h magick/display.c \
-	magick/display.h magick/display-private.h magick/distort.c \
-	magick/distort.h magick/draw.c magick/draw.h \
-	magick/draw-private.h magick/effect.c magick/effect.h \
-	magick/enhance.c magick/enhance.h magick/exception.c \
-	magick/exception.h magick/exception-private.h magick/feature.c \
-	magick/feature.h magick/fourier.c magick/fourier.h magick/fx.c \
-	magick/fx.h magick/fx-private.h magick/gem.c magick/gem.h \
+	magick/channel.c magick/channel.h magick/cipher.c \
+	magick/cipher.h magick/client.c magick/client.h magick/coder.c \
+	magick/coder.h magick/color.c magick/color.h \
+	magick/color-private.h magick/colormap.c magick/colormap.h \
+	magick/colormap-private.h magick/colorspace.c \
+	magick/colorspace.h magick/colorspace-private.h \
+	magick/compare.c magick/compare.h magick/composite.c \
+	magick/composite.h magick/composite-private.h \
+	magick/compress.c magick/compress.h magick/configure.c \
+	magick/configure.h magick/constitute.c magick/constitute.h \
+	magick/decorate.c magick/decorate.h magick/delegate.c \
+	magick/delegate.h magick/delegate-private.h magick/deprecate.c \
+	magick/deprecate.h magick/display.c magick/display.h \
+	magick/display-private.h magick/distort.c magick/distort.h \
+	magick/draw.c magick/draw.h magick/draw-private.h \
+	magick/effect.c magick/effect.h magick/enhance.c \
+	magick/enhance.h magick/exception.c magick/exception.h \
+	magick/exception-private.h magick/feature.c magick/feature.h \
+	magick/fourier.c magick/fourier.h magick/fx.c magick/fx.h \
+	magick/fx-private.h magick/gem.c magick/gem.h \
 	magick/geometry.c magick/geometry.h magick/hashmap.c \
 	magick/hashmap.h magick/histogram.c magick/histogram.h \
 	magick/identify.c magick/identify.h magick/image.c \
@@ -1512,6 +1513,7 @@ am__objects_2 = magick/magick_libMagickCore_la-accelerate.lo \
 	magick/magick_libMagickCore_la-blob.lo \
 	magick/magick_libMagickCore_la-cache.lo \
 	magick/magick_libMagickCore_la-cache-view.lo \
+	magick/magick_libMagickCore_la-channel.lo \
 	magick/magick_libMagickCore_la-cipher.lo \
 	magick/magick_libMagickCore_la-client.lo \
 	magick/magick_libMagickCore_la-coder.lo \
@@ -3981,6 +3983,8 @@ MAGICK_BASE_SRCS = \
 	magick/cache-private.h \
 	magick/cache-view.c \
 	magick/cache-view.h \
+	magick/channel.c \
+	magick/channel.h \
 	magick/cipher.c \
 	magick/cipher.h \
 	magick/client.c \
@@ -4198,6 +4202,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/blob.h \
 	magick/cache.h \
 	magick/cache-view.h \
+	magick/channel.h \
 	magick/cipher.h \
 	magick/client.h \
 	magick/coder.h \
@@ -5749,6 +5754,8 @@ magick/magick_libMagickCore_la-cache.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-cache-view.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libMagickCore_la-channel.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-cipher.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_la-client.lo: magick/$(am__dirstamp) \
@@ -7088,6 +7095,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libMagickCore_la-cache-view.lo
 	-rm -f magick/magick_libMagickCore_la-cache.$(OBJEXT)
 	-rm -f magick/magick_libMagickCore_la-cache.lo
+	-rm -f magick/magick_libMagickCore_la-channel.$(OBJEXT)
+	-rm -f magick/magick_libMagickCore_la-channel.lo
 	-rm -f magick/magick_libMagickCore_la-cipher.$(OBJEXT)
 	-rm -f magick/magick_libMagickCore_la-cipher.lo
 	-rm -f magick/magick_libMagickCore_la-client.$(OBJEXT)
@@ -7612,6 +7621,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-blob.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-cache-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-cache.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-cipher.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-client.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_la-coder.Plo@am__quote@
@@ -8731,6 +8741,13 @@ magick/magick_libMagickCore_la-cache-view.lo: magick/cache-view.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='magick/cache-view.c' object='magick/magick_libMagickCore_la-cache-view.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_la-cache-view.lo `test -f 'magick/cache-view.c' || echo '$(srcdir)/'`magick/cache-view.c
+
+magick/magick_libMagickCore_la-channel.lo: magick/channel.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_la-channel.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_la-channel.Tpo -c -o magick/magick_libMagickCore_la-channel.lo `test -f 'magick/channel.c' || echo '$(srcdir)/'`magick/channel.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libMagickCore_la-channel.Tpo magick/$(DEPDIR)/magick_libMagickCore_la-channel.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='magick/channel.c' object='magick/magick_libMagickCore_la-channel.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_la-channel.lo `test -f 'magick/channel.c' || echo '$(srcdir)/'`magick/channel.c
 
 magick/magick_libMagickCore_la-cipher.lo: magick/cipher.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_la-cipher.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_la-cipher.Tpo -c -o magick/magick_libMagickCore_la-cipher.lo `test -f 'magick/cipher.c' || echo '$(srcdir)/'`magick/cipher.c

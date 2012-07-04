@@ -53,6 +53,7 @@
 #include "magick/artifact.h"
 #include "magick/cache-view.h"
 #include "magick/color-private.h"
+#include "magick/channel.h"
 #include "magick/enhance.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"

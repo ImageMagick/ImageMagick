@@ -49,6 +49,7 @@
 #include "magick/attribute.h"
 #include "magick/blob-private.h"
 #include "magick/cache-private.h"
+#include "magick/channel.h"
 #include "magick/color-private.h"
 #include "magick/colorspace-private.h"
 #include "magick/composite.h"
