@@ -179,9 +179,9 @@ MagickPrivate void ConstituteComponentTerminus(void)
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *ConstituteImage(const size_t columns,
-  const size_t rows,const char *map,const StorageType storage,
-  const void *pixels,ExceptionInfo *exception)
+MagickExport Image *ConstituteImage(const size_t columns,const size_t rows,
+  const char *map,const StorageType storage,const void *pixels,
+  ExceptionInfo *exception)
 {
   Image
     *image;
