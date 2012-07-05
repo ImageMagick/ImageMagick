@@ -352,7 +352,7 @@ MagickExport PixelChannelMap *DestroyPixelChannelMap(
 %
 */
 
-static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
+static void ExportCharPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -427,6 +427,7 @@ static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
     }
   if (LocaleCompare(map,"I") == 0)
     {
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       for (y=0; y < (ssize_t) roi->height; y++)
       {
         p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -558,7 +559,7 @@ static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
+static void ExportDoublePixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -633,6 +634,7 @@ static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
     }
   if (LocaleCompare(map,"I") == 0)
     {
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       for (y=0; y < (ssize_t) roi->height; y++)
       {
         p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -765,7 +767,7 @@ static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
+static void ExportFloatPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -840,6 +842,7 @@ static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
     }
   if (LocaleCompare(map,"I") == 0)
     {
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       for (y=0; y < (ssize_t) roi->height; y++)
       {
         p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -971,7 +974,7 @@ static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
+static void ExportLongPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1046,6 +1049,7 @@ static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
     }
   if (LocaleCompare(map,"I") == 0)
     {
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       for (y=0; y < (ssize_t) roi->height; y++)
       {
         p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -1177,7 +1181,7 @@ static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportLongLongPixel(const Image *image,const RectangleInfo *roi,
+static void ExportLongLongPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1252,6 +1256,7 @@ static void ExportLongLongPixel(const Image *image,const RectangleInfo *roi,
     }
   if (LocaleCompare(map,"I") == 0)
     {
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       for (y=0; y < (ssize_t) roi->height; y++)
       {
         p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -1383,7 +1388,7 @@ static void ExportLongLongPixel(const Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
+static void ExportQuantumPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1458,6 +1463,7 @@ static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
     }
   if (LocaleCompare(map,"I") == 0)
     {
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       for (y=0; y < (ssize_t) roi->height; y++)
       {
         p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -1592,7 +1598,7 @@ static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
+static void ExportShortPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1667,6 +1673,7 @@ static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
     }
   if (LocaleCompare(map,"I") == 0)
     {
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       for (y=0; y < (ssize_t) roi->height; y++)
       {
         p=GetVirtualPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -1798,7 +1805,7 @@ static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
   }
 }
 
-MagickExport MagickBooleanType ExportImagePixels(const Image *image,
+MagickExport MagickBooleanType ExportImagePixels(Image *image,
   const ssize_t x,const ssize_t y,const size_t width,const size_t height,
   const char *map,const StorageType type,void *pixels,ExceptionInfo *exception)
 {
@@ -2181,6 +2188,7 @@ static void ImportCharPixel(Image *image,const RectangleInfo *roi,
     }
   if (LocaleCompare(map,"I") == 0)
     {
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       for (y=0; y < (ssize_t) roi->height; y++)
       {
         q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -2441,6 +2449,7 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
     }
   if (LocaleCompare(map,"I") == 0)
     {
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       for (y=0; y < (ssize_t) roi->height; y++)
       {
         q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -2709,6 +2718,7 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
     }
   if (LocaleCompare(map,"I") == 0)
     {
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       for (y=0; y < (ssize_t) roi->height; y++)
       {
         q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -2957,6 +2967,7 @@ static void ImportLongPixel(Image *image,const RectangleInfo *roi,
     }
   if (LocaleCompare(map,"I") == 0)
     {
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       for (y=0; y < (ssize_t) roi->height; y++)
       {
         q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -3177,6 +3188,7 @@ static void ImportLongLongPixel(Image *image,const RectangleInfo *roi,
     }
   if (LocaleCompare(map,"I") == 0)
     {
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       for (y=0; y < (ssize_t) roi->height; y++)
       {
         q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -3397,6 +3409,7 @@ static void ImportQuantumPixel(Image *image,const RectangleInfo *roi,
     }
   if (LocaleCompare(map,"I") == 0)
     {
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       for (y=0; y < (ssize_t) roi->height; y++)
       {
         q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
@@ -3617,6 +3630,7 @@ static void ImportShortPixel(Image *image,const RectangleInfo *roi,
     }
   if (LocaleCompare(map,"I") == 0)
     {
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       for (y=0; y < (ssize_t) roi->height; y++)
       {
         q=GetAuthenticPixels(image,roi->x,roi->y+y,roi->width,1,exception);
