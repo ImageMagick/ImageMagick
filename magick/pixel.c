@@ -157,7 +157,7 @@ MagickExport MagickPixelPacket *CloneMagickPixelPacket(
 %
 */
 
-static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
+static void ExportCharPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -368,7 +368,7 @@ static void ExportCharPixel(const Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
+static void ExportDoublePixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -582,7 +582,7 @@ static void ExportDoublePixel(const Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
+static void ExportFloatPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -793,7 +793,7 @@ static void ExportFloatPixel(const Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportIntegerPixel(const Image *image,const RectangleInfo *roi,
+static void ExportIntegerPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1006,7 +1006,7 @@ static void ExportIntegerPixel(const Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
+static void ExportLongPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1217,7 +1217,7 @@ static void ExportLongPixel(const Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
+static void ExportQuantumPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1431,7 +1431,7 @@ static void ExportQuantumPixel(const Image *image,const RectangleInfo *roi,
   }
 }
 
-static void ExportShortPixel(const Image *image,const RectangleInfo *roi,
+static void ExportShortPixel(Image *image,const RectangleInfo *roi,
   const char *restrict map,const QuantumType *quantum_map,void *pixels,
   ExceptionInfo *exception)
 {
@@ -1777,37 +1777,37 @@ MagickExport MagickBooleanType ExportImagePixels(const Image *image,
   {
     case CharPixel:
     {
-      ExportCharPixel(image,&roi,map,quantum_map,pixels,exception);
+      ExportCharPixel((Image *) image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case DoublePixel:
     {
-      ExportDoublePixel(image,&roi,map,quantum_map,pixels,exception);
+      ExportDoublePixel((Image *) image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case FloatPixel:
     {
-      ExportFloatPixel(image,&roi,map,quantum_map,pixels,exception);
+      ExportFloatPixel((Image *) image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case IntegerPixel:
     {
-      ExportIntegerPixel(image,&roi,map,quantum_map,pixels,exception);
+      ExportIntegerPixel((Image *) image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case LongPixel:
     {
-      ExportLongPixel(image,&roi,map,quantum_map,pixels,exception);
+      ExportLongPixel((Image *) image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case QuantumPixel:
     {
-      ExportQuantumPixel(image,&roi,map,quantum_map,pixels,exception);
+      ExportQuantumPixel((Image *) image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     case ShortPixel:
     {
-      ExportShortPixel(image,&roi,map,quantum_map,pixels,exception);
+      ExportShortPixel((Image *) image,&roi,map,quantum_map,pixels,exception);
       break;
     }
     default:
