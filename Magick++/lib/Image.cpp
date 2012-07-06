@@ -2824,6 +2824,11 @@ Magick::ColorspaceType Magick::Image::colorSpace ( void ) const
 void Magick::Image::colorspaceType( const ColorspaceType colorSpace_ )
 {
   modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  SetImageColorspace(image(), colorSpace_, &exceptionInfo);
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
   options()->colorspaceType( colorSpace_ );
 }
 Magick::ColorspaceType Magick::Image::colorspaceType ( void ) const
