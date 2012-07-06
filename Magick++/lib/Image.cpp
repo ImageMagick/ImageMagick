@@ -2672,7 +2672,7 @@ void Magick::Image::colorSpace( const ColorspaceType colorSpace_ )
     return;
 
   modifyImage();
-  TransformRGBImage( image(), colorSpace_ );
+  TransformImageColorspace( image(), colorSpace_ );
   throwImageException();
 }
 Magick::ColorspaceType Magick::Image::colorSpace ( void ) const
@@ -2684,6 +2684,8 @@ Magick::ColorspaceType Magick::Image::colorSpace ( void ) const
 void Magick::Image::colorspaceType( const ColorspaceType colorSpace_ )
 {
   modifyImage();
+  SetImageColorspace( image(), colorSpace_ );
+  throwImageException();
   options()->colorspaceType( colorSpace_ );
 }
 Magick::ColorspaceType Magick::Image::colorspaceType ( void ) const
