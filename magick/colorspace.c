@@ -153,14 +153,8 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   else
     z=(CIEK*Z/D50Z+16.0)/116.0;
   *L=((116.0*y)-16.0)/100.0;
-  *a=(500.0*(x-y))/255.0;
-  *b=(200.0*(y-z))/255.0;
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-  if (*a < 0.0)
-    *a+=1.0;
-  if (*b < 0.0)
-    *b+=1.0;
-#endif
+  *a=(500.0*(x-y))/255.0+0.5;
+  *b=(200.0*(y-z))/255.0+0.5;
 }
 
 MagickExport MagickBooleanType RGBTransformImage(Image *image,
@@ -1595,13 +1589,8 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
   y=(100.0*L+16.0)/116.0;
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-  x=y+255.0*(a > 0.5 ? a-1.0 : a)/500.0;
-  z=y-255.0*(b > 0.5 ? b-1.0 : b)/200.0;
-#else
-  x=y+255.0*a/500.0;
-  z=y-255.0*b/200.0;
-#endif
+  x=y+255.0*(a-0.5)/500.0;
+  z=y-255.0*(b-0.5)/200.0;
   if (pow(x,3.0) > CIEEpsilon)
     x=pow(x,3.0);
   else
