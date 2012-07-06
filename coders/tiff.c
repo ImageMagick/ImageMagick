@@ -426,8 +426,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
 %
 */
 
-#if defined(MAGICKCORE_HDRI_SUPPORT)
-static MagickBooleanType LabImage(Image *image,ExceptionInfo *exception)
+static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
 {
   CacheView
     *image_view;
@@ -458,10 +457,20 @@ static MagickBooleanType LabImage(Image *image,ExceptionInfo *exception)
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((QuantumScale*GetPixela(image,q)) > 0.5)
-        SetPixela(image,QuantumRange*(QuantumScale*GetPixela(image,q)-1.0),q);
-      if ((QuantumScale*GetPixelb(image,q)) > 0.5)
-        SetPixelb(image,QuantumRange*(QuantumScale*GetPixelb(image,q)-1.0),q);
+      double
+        a,
+        b;
+
+      a=QuantumScale*GetPixela(image,q);
+      if (a > 0.5)
+        a-=1.0;
+      b=QuantumScale*GetPixelb(image,q);
+      if (b > 0.5)
+        b-=1.0;
+      a+=0.5;
+      b+=0.5;
+      SetPixela(image,QuantumRange*a,q);
+      SetPixelb(image,QuantumRange*b,q);
       q+=GetPixelChannels(image);
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -470,7 +479,6 @@ static MagickBooleanType LabImage(Image *image,ExceptionInfo *exception)
   image_view=DestroyCacheView(image_view);
   return(status);
 }
-#endif
 
 static inline size_t MagickMax(const size_t x,const size_t y)
 {
@@ -1727,10 +1735,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     SetQuantumImageType(image,quantum_type);
   next_tiff_frame:
     quantum_info=DestroyQuantumInfo(quantum_info);
-#if defined(MAGICKCORE_HDRI_SUPPORT)
     if (photometric == PHOTOMETRIC_CIELAB)
-      LabImage(image,exception);
-#endif
+      DecodeLabImage(image,exception);
     if ((photometric == PHOTOMETRIC_LOGL) ||
         (photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
@@ -2289,6 +2295,58 @@ static void DestroyTIFFInfo(TIFFInfo *tiff_info)
       tiff_info->pixels);
 }
 
+static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register Quantum
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      double
+        a,
+        b;
+
+      a=QuantumScale*GetPixela(image,q)-0.5;
+      if (a < 0.0)
+        a+=1.0;
+      b=QuantumScale*GetPixelb(image,q)-0.5;
+      if (b < 0.0)
+        b+=1.0;
+      SetPixela(image,QuantumRange*a,q);
+      SetPixelb(image,QuantumRange*b,q);
+      q+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
+}
+
 static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,TIFF *tiff,
   TIFFInfo *tiff_info)
 {
@@ -2843,7 +2901,10 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           Full color TIFF raster.
         */
         if (image->colorspace == LabColorspace)
-          photometric=PHOTOMETRIC_CIELAB;
+          {
+            photometric=PHOTOMETRIC_CIELAB;
+            EncodeLabImage(image,exception);
+          }
         else
           if (image->colorspace == YCbCrColorspace)
             {
@@ -3423,6 +3484,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       }
     }
     quantum_info=DestroyQuantumInfo(quantum_info);
+    if (image->colorspace == LabColorspace)
+      DecodeLabImage(image,exception);
     DestroyTIFFInfo(&tiff_info);
     if (0 && (image_info->verbose == MagickTrue))
       TIFFPrintDirectory(tiff,stdout,MagickFalse);
