@@ -426,8 +426,7 @@ static Image *ReadGROUP4Image(const ImageInfo *image_info,
 %
 */
 
-#if defined(MAGICKCORE_HDRI_SUPPORT)
-static MagickBooleanType LabImage(Image *image,ExceptionInfo *exception)
+static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
 {
   CacheView
     *image_view;
@@ -458,10 +457,20 @@ static MagickBooleanType LabImage(Image *image,ExceptionInfo *exception)
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((QuantumScale*GetPixela(q)) > 0.5)
-        SetPixela(q,QuantumRange*(QuantumScale*GetPixela(q)-1.0));
-      if ((QuantumScale*GetPixelb(q)) > 0.5)
-        SetPixelb(q,QuantumRange*(QuantumScale*GetPixelb(q)-1.0));
+      double
+        a,
+        b;
+
+      a=QuantumScale*GetPixela(q);
+      if (a > 0.5)
+        a-=1.0;
+      b=QuantumScale*GetPixelb(q);
+      if (b > 0.5)
+        b-=1.0;
+      a+=0.5;
+      b+=0.5;
+      SetPixela(q,QuantumRange*a);
+      SetPixelb(q,QuantumRange*b);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -470,7 +479,6 @@ static MagickBooleanType LabImage(Image *image,ExceptionInfo *exception)
   image_view=DestroyCacheView(image_view);
   return(status);
 }
-#endif
 
 static inline size_t MagickMax(const size_t x,const size_t y)
 {
@@ -1723,10 +1731,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     SetQuantumImageType(image,quantum_type);
   next_tiff_frame:
     quantum_info=DestroyQuantumInfo(quantum_info);
-#if defined(MAGICKCORE_HDRI_SUPPORT)
     if (photometric == PHOTOMETRIC_CIELAB)
-      LabImage(image,exception);
-#endif
+      DecodeLabImage(image,exception);
     if ((photometric == PHOTOMETRIC_LOGL) ||
         (photometric == PHOTOMETRIC_MINISBLACK) ||
         (photometric == PHOTOMETRIC_MINISWHITE))
@@ -2277,6 +2283,58 @@ static void DestroyTIFFInfo(TIFFInfo *tiff_info)
   if (tiff_info->pixels != (unsigned char *) NULL)
     tiff_info->pixels=(unsigned char *) RelinquishMagickMemory(
       tiff_info->pixels);
+}
+
+static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
+{
+  CacheView
+    *image_view;
+
+  MagickBooleanType
+    status;
+
+  ssize_t
+    y;
+
+  status=MagickTrue;
+  image_view=AcquireAuthenticCacheView(image,exception);
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register PixelPacket
+      *restrict q;
+
+    register ssize_t
+      x;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (PixelPacket *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      double
+        a,
+        b;
+
+      a=QuantumScale*GetPixela(q)-0.5;
+      if (a < 0.0)
+        a+=1.0;
+      b=QuantumScale*GetPixelb(q)-0.5;
+      if (b < 0.0)
+        b+=1.0;
+      SetPixela(q,QuantumRange*a);
+      SetPixelb(q,QuantumRange*b);
+      q++;
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
 }
 
 static MagickBooleanType GetTIFFInfo(const ImageInfo *image_info,TIFF *tiff,
@@ -2830,7 +2888,10 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           Full color TIFF raster.
         */
         if (image->colorspace == LabColorspace)
-          photometric=PHOTOMETRIC_CIELAB;
+          {
+            photometric=PHOTOMETRIC_CIELAB;
+            EncodeLabImage(image,&image->exception);
+          }
         else
           if (image->colorspace == YCbCrColorspace)
             {
@@ -3411,6 +3472,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
       }
     }
     quantum_info=DestroyQuantumInfo(quantum_info);
+    if (image->colorspace == LabColorspace)
+      DecodeLabImage(image,&image->exception);
     DestroyTIFFInfo(&tiff_info);
     if (0 && (image_info->verbose == MagickTrue))
       TIFFPrintDirectory(tiff,stdout,MagickFalse);

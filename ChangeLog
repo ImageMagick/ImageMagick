@@ -1,6 +1,7 @@
 2012-07-02  6.7.8-2 Cristy  <quetzlzacatenango@image...>
   * Set the colorspace to linear gray when reading intensity values (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21362).
+  * Change Lab encoding to permit blurring, resize, etc.
 
 2012-07-04  6.7.8-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.8-1, SVN revision 8595.
