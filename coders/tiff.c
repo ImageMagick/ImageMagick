@@ -461,14 +461,12 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
         a,
         b;
 
-      a=QuantumScale*GetPixela(image,q);
-      if (a > 0.5)
+      a=QuantumScale*GetPixela(image,q)+0.5;
+      if (a > 1.0)
         a-=1.0;
-      b=QuantumScale*GetPixelb(image,q);
-      if (b > 0.5)
+      b=QuantumScale*GetPixelb(image,q)+0.5;
+      if (b > 1.0)
         b-=1.0;
-      a+=0.5;
-      b+=0.5;
       SetPixela(image,QuantumRange*a,q);
       SetPixelb(image,QuantumRange*b,q);
       q+=GetPixelChannels(image);
