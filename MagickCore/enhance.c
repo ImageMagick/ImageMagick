@@ -2360,9 +2360,8 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
   ExceptionInfo *exception)
 {
 #define LevelizeImageTag  "Levelize/Image"
-#define LevelizeValue(x) (ClampToQuantum(((MagickRealType) \
-  pow((double) (QuantumScale*(x)),1.0/gamma))*(white_point-black_point)+ \
-  black_point))
+#define LevelizeValue(x) (ClampToQuantum((pow((double) (QuantumScale*(x)), \
+  1.0/gamma))*(white_point-black_point)+black_point))
 
   CacheView
     *image_view;

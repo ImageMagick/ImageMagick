@@ -3111,7 +3111,7 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
         alpha=0.0;
         (void) FxEvaluateChannelExpression(fx_info[id],channel,x,y,&alpha,
           exception);
-        q[i]=ClampToQuantum((MagickRealType) QuantumRange*alpha);
+        q[i]=ClampToQuantum(QuantumRange*alpha);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(fx_image);

@@ -2332,20 +2332,20 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
               geometry_info.psi);
           else
             if (color->matte != MagickFalse)
-              color->alpha=(MagickRealType) ClampToQuantum((MagickRealType)
-                QuantumRange*geometry_info.psi);
+              color->alpha=(MagickRealType) ClampToQuantum(QuantumRange*
+                geometry_info.psi);
         }
       if (((flags & ChiValue) != 0) && (color->matte != MagickFalse))
-        color->alpha=(MagickRealType) ClampToQuantum((MagickRealType)
-          QuantumRange*geometry_info.chi);
+        color->alpha=(MagickRealType) ClampToQuantum(QuantumRange*
+          geometry_info.chi);
       if (LocaleCompare(colorspace,"gray") == 0)
         {
           color->colorspace=GRAYColorspace;
           color->green=color->red;
           color->blue=color->red;
           if (((flags & SigmaValue) != 0) && (color->matte != MagickFalse))
-            color->alpha=(MagickRealType) ClampToQuantum((MagickRealType)
-              QuantumRange*geometry_info.sigma);
+            color->alpha=(MagickRealType) ClampToQuantum(QuantumRange*
+              geometry_info.sigma);
         }
       if ((LocaleCompare(colorspace,"HSB") == 0) ||
           (LocaleCompare(colorspace,"HSL") == 0) ||

@@ -289,7 +289,7 @@ static void ImportAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelAlpha(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -573,13 +573,13 @@ static void ImportBGRQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelRed(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelGreen(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelBlue(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -792,16 +792,16 @@ static void ImportBGRAQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelRed(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelGreen(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelBlue(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelAlpha(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -951,7 +951,7 @@ static void ImportBlackQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelBlack(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelBlack(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -1066,7 +1066,7 @@ static void ImportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelBlue(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -1285,16 +1285,16 @@ static void ImportCMYKQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelRed(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelGreen(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelBlue(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelBlack(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelBlack(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -1452,19 +1452,19 @@ static void ImportCMYKAQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelRed(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelGreen(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelBlue(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelBlack(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelBlack(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelAlpha(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -1816,7 +1816,7 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelGray(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelGray(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -2011,10 +2011,10 @@ static void ImportGrayAlphaQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelGray(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelGray(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelAlpha(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -2139,7 +2139,7 @@ static void ImportGreenQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelGreen(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -2540,8 +2540,8 @@ static void ImportIndexAlphaQuantum(const Image *image,
             SetPixelInfoPixel(image,image->colormap+(ssize_t)
               GetPixelIndex(image,q),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelAlpha(image,ClampToQuantum((MagickRealType)
-              QuantumRange*HalfToSinglePrecision(pixel)),q);
+            SetPixelAlpha(image,ClampToQuantum(QuantumRange*
+              HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
           }
@@ -2680,7 +2680,7 @@ static void ImportOpacityQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelOpacity(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelOpacity(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -2794,7 +2794,7 @@ static void ImportRedQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelRed(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -3078,13 +3078,13 @@ static void ImportRGBQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelRed(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelGreen(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelBlue(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
@@ -3297,16 +3297,16 @@ static void ImportRGBAQuantum(const Image *image,QuantumInfo *quantum_info,
           for (x=0; x < (ssize_t) number_pixels; x++)
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelRed(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelGreen(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelBlue(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p=PushShortPixel(quantum_info->endian,p,&pixel);
-            SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
+            SetPixelAlpha(image,ClampToQuantum(QuantumRange*
               HalfToSinglePrecision(pixel)),q);
             p+=quantum_info->pad;
             q+=GetPixelChannels(image);
