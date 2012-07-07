@@ -1040,7 +1040,7 @@ static inline MagickRealType DrawEpsilonReciprocal(const MagickRealType x)
 {
   MagickRealType sign = x < (MagickRealType) 0.0 ? (MagickRealType) -1.0 :
     (MagickRealType) 1.0;
-  return((sign*x) > DrawEpsilon ? (MagickRealType) 1.0/x : sign*(
+  return((sign*x) >= DrawEpsilon ? (MagickRealType) 1.0/x : sign*(
     (MagickRealType) 1.0/DrawEpsilon));
 }
 
@@ -3697,8 +3697,9 @@ static MagickRealType GetFillAlpha(PolygonInfo *polygon_info,
             }
           else
             {
+              alpha=1.0/alpha;
               beta=delta.x*(y-q->y)-delta.y*(x-q->x);
-              distance=DrawEpsilonReciprocal(alpha)*beta*beta;
+              distance=alpha*beta*beta;
             }
         }
       /*

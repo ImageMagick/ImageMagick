@@ -26,7 +26,7 @@ static inline MagickRealType MagickEpsilonReciprocal(const MagickRealType x)
 {
   MagickRealType sign = x < (MagickRealType) 0.0 ? (MagickRealType) -1.0 : 
     (MagickRealType) 1.0;
-  return((sign*x) > MagickEpsilon ? (MagickRealType) 1.0/x : sign*(
+  return((sign*x) >= MagickEpsilon ? (MagickRealType) 1.0/x : sign*(
     (MagickRealType) 1.0/MagickEpsilon));
 }
 
