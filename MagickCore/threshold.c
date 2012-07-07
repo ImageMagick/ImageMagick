@@ -1384,7 +1384,7 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
         threshold=(ssize_t) (QuantumScale*q[i]*(levels[n]*(map->divisor-1)+1));
         level=threshold/(map->divisor-1);
         threshold-=level*(map->divisor-1);
-        q[i]=ClampToQuantum((level+(threshold >=
+        q[i]=ClampToQuantum((double) (level+(threshold >=
           map->levels[(x % map->width)+map->width*(y % map->height)]))*
           QuantumRange/levels[n]);
         n++;
