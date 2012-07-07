@@ -1,3 +1,6 @@
+2012-07-08  6.7.8-2 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-2, SVN revision 8614.
+
 2012-07-02  6.7.8-2 Cristy  <quetzlzacatenango@image...>
   * Set the colorspace to linear gray when reading intensity values (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21362).
