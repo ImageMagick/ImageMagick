@@ -583,7 +583,7 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
       fourier_info.width=(extent & 0x01) == 1 ? extent+1UL : extent;
     }
   fourier_info.height=fourier_info.width;
-  fourier_info.center=(ssize_t) floor((double) fourier_info.width/2.0)+1L;
+  fourier_info.center=(ssize_t) floor((double) fourier_info.width/2L)+1L;
   fourier_info.channel=channel;
   fourier_info.modulus=modulus;
   magnitude=(double *) AcquireQuantumMemory((size_t) fourier_info.height,
@@ -810,7 +810,7 @@ static MagickBooleanType InverseQuadrantSwap(const size_t width,
   /*
     Swap quadrants.
   */
-  center=(ssize_t) floor((double) width/2.0)+1L;
+  center=(ssize_t) floor((double) width/2L)+1L;
   for (y=1L; y < (ssize_t) height; y++)
     for (x=0L; x < (ssize_t) (width/2L+1L); x++)
       destination[center*(height-y)-x+width/2L]=source[y*width+x];
@@ -1089,7 +1089,7 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
     fftw_destroy_plan(fftw_c2r_plan);
   }
   i=0L;
-  image_view=AcquireVirtualCacheView(image,exception);
+  image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     if (y >= (ssize_t) image->rows)
@@ -1101,41 +1101,41 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0L; x < (ssize_t) fourier_info->width; x++)
     {
-      switch (fourier_info->channel)
-      {
-        case RedChannel:
-        default:
+      if (x < (ssize_t) image->columns)
+        switch (fourier_info->channel)
         {
-          SetPixelRed(q,ClampToQuantum(QuantumRange*source[i]));
-          break;
+          case RedChannel:
+          default:
+          {
+            SetPixelRed(q,ClampToQuantum(QuantumRange*source[i]));
+            break;
+          }
+          case GreenChannel:
+          {
+            SetPixelGreen(q,ClampToQuantum(QuantumRange*source[i]));
+            break;
+          }
+          case BlueChannel:
+          {
+            SetPixelBlue(q,ClampToQuantum(QuantumRange*source[i]));
+            break;
+          }
+          case OpacityChannel:
+          {
+            SetPixelOpacity(q,ClampToQuantum(QuantumRange*source[i]));
+            break;
+          }
+          case IndexChannel:
+          {
+            SetPixelIndex(indexes+x,ClampToQuantum(QuantumRange*source[i]));
+            break;
+          }
+          case GrayChannels:
+          {
+            SetPixelGray(q,ClampToQuantum(QuantumRange*source[i]));
+            break;
+          }
         }
-        case GreenChannel:
-        {
-          SetPixelGreen(q,ClampToQuantum(QuantumRange*source[i]));
-          break;
-        }
-        case BlueChannel:
-        {
-          SetPixelBlue(q,ClampToQuantum(QuantumRange*source[i]));
-          break;
-        }
-        case OpacityChannel:
-        {
-          SetPixelOpacity(q,ClampToQuantum(QuantumRange*source[i]));
-          break;
-        }
-        case IndexChannel:
-        {
-          SetPixelIndex(indexes+x,ClampToQuantum(QuantumRange*
-            source[i]));
-          break;
-        }
-        case GrayChannels:
-        {
-          SetPixelGray(q,ClampToQuantum(QuantumRange*source[i]));
-          break;
-        }
-      }
       i++;
       q++;
     }
@@ -1178,7 +1178,7 @@ static MagickBooleanType InverseFourierTransformChannel(
       fourier_info.width=(extent & 0x01) == 1 ? extent+1UL : extent;
     }
   fourier_info.height=fourier_info.width;
-  fourier_info.center=(ssize_t) floor((double) fourier_info.width/2.0)+1L;
+  fourier_info.center=(ssize_t) floor((double) fourier_info.width/2L)+1L;
   fourier_info.channel=channel;
   fourier_info.modulus=modulus;
   magnitude=(double *) AcquireQuantumMemory((size_t) fourier_info.height,
