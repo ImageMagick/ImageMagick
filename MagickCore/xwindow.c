@@ -2236,11 +2236,11 @@ static void XDitherImage(Image *image,XImage *ximage,ExceptionInfo *exception)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      color.red=(double) ClampToQuantum((red_map[i][j][
+      color.red=(double) ClampToQuantum((double) (red_map[i][j][
         (int) ScaleQuantumToChar(GetPixelRed(image,p))] << 8));
-      color.green=(double) ClampToQuantum((green_map[i][j][
+      color.green=(double) ClampToQuantum((double) (green_map[i][j][
         (int) ScaleQuantumToChar(GetPixelGreen(image,p))] << 8));
-      color.blue=(double) ClampToQuantum((blue_map[i][j][
+      color.blue=(double) ClampToQuantum((double) (blue_map[i][j][
         (int) ScaleQuantumToChar(GetPixelBlue(image,p))] << 8));
       pixel=(size_t) (((size_t) color.red & 0xe0) |
         (((size_t) color.green & 0xe0) >> 3) |
