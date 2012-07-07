@@ -227,13 +227,13 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ImfInputReadPixels(file,min_y+y,min_y+y);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
+      SetPixelRed(image,ClampToQuantum(QuantumRange*
         ImfHalfToFloat(scanline[x].r)),q);
-      SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
+      SetPixelGreen(image,ClampToQuantum(QuantumRange*
         ImfHalfToFloat(scanline[x].g)),q);
-      SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
+      SetPixelBlue(image,ClampToQuantum(QuantumRange*
         ImfHalfToFloat(scanline[x].b)),q);
-      SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
+      SetPixelAlpha(image,ClampToQuantum(QuantumRange*
         ImfHalfToFloat(scanline[x].a)),q);
       q+=GetPixelChannels(image);
     }

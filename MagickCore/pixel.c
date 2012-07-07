@@ -2369,14 +2369,11 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2394,17 +2391,13 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2422,14 +2415,11 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
           p++;
           q+=GetPixelChannels(image);
@@ -2448,8 +2438,7 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelGray(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelGray(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2467,14 +2456,11 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2492,17 +2478,13 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2520,14 +2502,11 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2554,46 +2533,39 @@ static void ImportDoublePixel(Image *image,const RectangleInfo *roi,
           case RedQuantum:
           case CyanQuantum:
           {
-            SetPixelRed(image,ClampToQuantum((MagickRealType)
-              QuantumRange*(*p)),q);
+            SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
             break;
           }
           case GreenQuantum:
           case MagentaQuantum:
           {
-            SetPixelGreen(image,ClampToQuantum((MagickRealType)
-              QuantumRange*(*p)),q);
+            SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
             break;
           }
           case BlueQuantum:
           case YellowQuantum:
           {
-            SetPixelBlue(image,ClampToQuantum((MagickRealType)
-              QuantumRange*(*p)),q);
+            SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
             break;
           }
           case AlphaQuantum:
           {
-            SetPixelAlpha(image,ClampToQuantum((MagickRealType)
-              QuantumRange*(*p)),q);
+            SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
             break;
           }
           case OpacityQuantum:
           {
-            SetPixelAlpha(image,ClampToQuantum((MagickRealType)
-              QuantumRange*(*p)),q);
+            SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
             break;
           }
           case BlackQuantum:
           {
-            SetPixelBlack(image,ClampToQuantum((MagickRealType)
-              QuantumRange*(*p)),q);
+            SetPixelBlack(image,ClampToQuantum(QuantumRange*(*p)),q);
             break;
           }
           case IndexQuantum:
           {
-            SetPixelGray(image,ClampToQuantum((MagickRealType)
-              QuantumRange*(*p)),q);
+            SetPixelGray(image,ClampToQuantum(QuantumRange*(*p)),q);
             break;
           }
           default:
@@ -2637,14 +2609,11 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2662,17 +2631,13 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2690,14 +2655,11 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
           p++;
           q+=GetPixelChannels(image);
@@ -2716,8 +2678,7 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelGray(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelGray(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2735,14 +2696,11 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2760,17 +2718,13 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelRed(image,ClampToQuantum((MagickRealType)
-            QuantumRange*(*p)),q);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelAlpha(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2788,14 +2742,11 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
           break;
         for (x=0; x < (ssize_t) roi->width; x++)
         {
-          SetPixelRed(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelGreen(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
-          SetPixelBlue(image,ClampToQuantum((MagickRealType) QuantumRange*
-            (*p)),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
           p++;
           q+=GetPixelChannels(image);
         }
@@ -2822,46 +2773,39 @@ static void ImportFloatPixel(Image *image,const RectangleInfo *roi,
           case RedQuantum:
           case CyanQuantum:
           {
-            SetPixelRed(image,ClampToQuantum((MagickRealType)
-              QuantumRange*(*p)),q);
+            SetPixelRed(image,ClampToQuantum(QuantumRange*(*p)),q);
             break;
           }
           case GreenQuantum:
           case MagentaQuantum:
           {
-            SetPixelGreen(image,ClampToQuantum((MagickRealType)
-              QuantumRange*(*p)),q);
+            SetPixelGreen(image,ClampToQuantum(QuantumRange*(*p)),q);
             break;
           }
           case BlueQuantum:
           case YellowQuantum:
           {
-            SetPixelBlue(image,ClampToQuantum((MagickRealType)
-              QuantumRange*(*p)),q);
+            SetPixelBlue(image,ClampToQuantum(QuantumRange*(*p)),q);
             break;
           }
           case AlphaQuantum:
           {
-            SetPixelAlpha(image,ClampToQuantum((MagickRealType)
-              QuantumRange*(*p)),q);
+            SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
             break;
           }
           case OpacityQuantum:
           {
-            SetPixelAlpha(image,ClampToQuantum((MagickRealType)
-              QuantumRange*(*p)),q);
+            SetPixelAlpha(image,ClampToQuantum(QuantumRange*(*p)),q);
             break;
           }
           case BlackQuantum:
           {
-            SetPixelBlack(image,ClampToQuantum((MagickRealType)
-              QuantumRange*(*p)),q);
+            SetPixelBlack(image,ClampToQuantum(QuantumRange*(*p)),q);
             break;
           }
           case IndexQuantum:
           {
-            SetPixelGray(image,ClampToQuantum((MagickRealType)
-              QuantumRange*(*p)),q);
+            SetPixelGray(image,ClampToQuantum(QuantumRange*(*p)),q);
             break;
           }
           default:

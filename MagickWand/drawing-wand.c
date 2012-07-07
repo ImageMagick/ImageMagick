@@ -4734,7 +4734,7 @@ WandExport void DrawSetFillAlpha(DrawingWand *wand,const double fill_alpha)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  alpha=(double) ClampToQuantum((double) QuantumRange*(1.0-fill_alpha));
+  alpha=(double) ClampToQuantum(QuantumRange*(1.0-fill_alpha));
   if ((wand->filter_off != MagickFalse) ||
       (CurrentContext->fill.alpha != alpha))
     {
@@ -4820,7 +4820,7 @@ WandExport void DrawSetAlpha(DrawingWand *wand,const double alpha)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  quantum_alpha=ClampToQuantum((double) QuantumRange*(1.0-alpha));
+  quantum_alpha=ClampToQuantum(QuantumRange*(1.0-alpha));
   if ((wand->filter_off != MagickFalse) ||
       (CurrentContext->alpha != quantum_alpha))
     {
@@ -5701,7 +5701,7 @@ WandExport void DrawSetStrokeAlpha(DrawingWand *wand,
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  alpha=(double) ClampToQuantum((double) QuantumRange*(1.0-stroke_alpha));
+  alpha=(double) ClampToQuantum(QuantumRange*(1.0-stroke_alpha));
   if ((wand->filter_off != MagickFalse) ||
       (CurrentContext->stroke.alpha != alpha))
     {
@@ -6188,8 +6188,8 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->fill.alpha=(double) ClampToQuantum((MagickRealType)
-          QuantumRange*(1.0-StringToDouble(value,(char **) NULL)));
+        CurrentContext->fill.alpha=(double) ClampToQuantum(QuantumRange*
+          (1.0-StringToDouble(value,(char **) NULL)));
     }
   child=GetXMLTreeChild(xml_info,"fill-rule");
   if (child != (XMLTreeInfo *) NULL)
@@ -6352,8 +6352,8 @@ WandExport MagickBooleanType DrawSetVectorGraphics(DrawingWand *wand,
     {
       value=GetXMLTreeContent(child);
       if (value != (const char *) NULL)
-        CurrentContext->stroke.alpha=(double) ClampToQuantum((MagickRealType)
-          QuantumRange*(1.0-StringToDouble(value,(char **) NULL)));
+        CurrentContext->stroke.alpha=(double) ClampToQuantum(QuantumRange*
+          (1.0-StringToDouble(value,(char **) NULL)));
     }
   child=GetXMLTreeChild(xml_info,"stroke-width");
   if (child != (XMLTreeInfo *) NULL)

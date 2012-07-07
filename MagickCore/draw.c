@@ -2212,9 +2212,9 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
           {
             GetMagickToken(q,&q,token);
             factor=strchr(token,'%') != (char *) NULL ? 0.01 : 1.0;
-            graphic_context[n]->alpha=ClampToQuantum((MagickRealType)
-              QuantumRange*(1.0-((1.0-QuantumScale*graphic_context[n]->alpha)*
-              factor*StringToDouble(token,(char **) NULL))));
+            graphic_context[n]->alpha=ClampToQuantum(QuantumRange*(1.0-((1.0-
+              QuantumScale*graphic_context[n]->alpha)*factor*
+              StringToDouble(token,(char **) NULL))));
             graphic_context[n]->fill.alpha=(double) graphic_context[n]->alpha;
             graphic_context[n]->stroke.alpha=(double) graphic_context[n]->alpha;
             break;
