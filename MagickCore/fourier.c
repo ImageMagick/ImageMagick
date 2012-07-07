@@ -565,7 +565,7 @@ static MagickBooleanType ForwardFourierTransformChannel(const Image *image,
       fourier_info.width=(extent & 0x01) == 1 ? extent+1UL : extent;
     }
   fourier_info.height=fourier_info.width;
-  fourier_info.center=(ssize_t) floor((double) fourier_info.width/2.0)+1L;
+  fourier_info.center=(ssize_t) floor((double) fourier_info.width/2L)+1L;
   fourier_info.channel=channel;
   fourier_info.modulus=modulus;
   magnitude=(double *) AcquireQuantumMemory((size_t) fourier_info.height,
@@ -792,7 +792,7 @@ static MagickBooleanType InverseQuadrantSwap(const size_t width,
   /*
     Swap quadrants.
   */
-  center=(ssize_t) floor((double) width/2.0)+1L;
+  center=(ssize_t) floor((double) width/2L)+1L;
   for (y=1L; y < (ssize_t) height; y++)
     for (x=0L; x < (ssize_t) (width/2L+1L); x++)
       destination[center*(height-y)-x+width/2L]=source[y*width+x];
@@ -1064,35 +1064,36 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
       break;
     for (x=0L; x < (ssize_t) fourier_info->width; x++)
     {
-      switch (fourier_info->channel)
-      {
-        case RedPixelChannel:
-        default:
+      if (x < (ssize_t) image->columns)
+        switch (fourier_info->channel)
         {
-          SetPixelRed(image,ClampToQuantum(QuantumRange*source[i]),q);
-          break;
+          case RedPixelChannel:
+          default:
+          {
+            SetPixelRed(image,ClampToQuantum(QuantumRange*source[i]),q);
+            break;
+          }
+          case GreenPixelChannel:
+          {
+            SetPixelGreen(image,ClampToQuantum(QuantumRange*source[i]),q);
+            break;
+          }
+          case BluePixelChannel:
+          {
+            SetPixelBlue(image,ClampToQuantum(QuantumRange*source[i]),q);
+            break;
+          }
+          case BlackPixelChannel:
+          {
+            SetPixelBlack(image,ClampToQuantum(QuantumRange*source[i]),q);
+            break;
+          }
+          case AlphaPixelChannel:
+          {
+            SetPixelAlpha(image,ClampToQuantum(QuantumRange*source[i]),q);
+            break;
+          }
         }
-        case GreenPixelChannel:
-        {
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*source[i]),q);
-          break;
-        }
-        case BluePixelChannel:
-        {
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*source[i]),q);
-          break;
-        }
-        case BlackPixelChannel:
-        {
-          SetPixelBlack(image,ClampToQuantum(QuantumRange*source[i]),q);
-          break;
-        }
-        case AlphaPixelChannel:
-        {
-          SetPixelAlpha(image,ClampToQuantum(QuantumRange*source[i]),q);
-          break;
-        }
-      }
       i++;
       q+=GetPixelChannels(image);
     }
@@ -1135,7 +1136,7 @@ static MagickBooleanType InverseFourierTransformChannel(
       fourier_info.width=(extent & 0x01) == 1 ? extent+1UL : extent;
     }
   fourier_info.height=fourier_info.width;
-  fourier_info.center=(ssize_t) floor((double) fourier_info.width/2.0)+1L;
+  fourier_info.center=(ssize_t) floor((double) fourier_info.width/2L)+1L;
   fourier_info.channel=channel;
   fourier_info.modulus=modulus;
   magnitude=(double *) AcquireQuantumMemory((size_t) fourier_info.height,
