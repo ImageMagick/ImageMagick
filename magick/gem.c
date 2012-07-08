@@ -617,6 +617,7 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
 #define SigmaLaplacian (attenuate*0.0390625)
 #define SigmaMultiplicativeGaussian  (attenuate*0.5)
 #define SigmaPoisson  (attenuate*12.5)
+#define SigmaRandom  (attenuate)
 #define TauGaussian  (attenuate*0.078125)
 
   double
@@ -708,7 +709,7 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
     }
     case RandomNoise:
     {
-      noise=(double) (QuantumRange*alpha);
+      noise=(double) (QuantumRange*SigmaRandom*alpha);
       break;
     }
   }
