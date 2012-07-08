@@ -1,5 +1,5 @@
 2012-07-08  6.7.8-2 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.8-2, SVN revision 8614.
+  * New version 6.7.8-2, SVN revision 8621.
 
 2012-07-02  6.7.8-2 Cristy  <quetzlzacatenango@image...>
   * Set the colorspace to linear gray when reading intensity values (reference
