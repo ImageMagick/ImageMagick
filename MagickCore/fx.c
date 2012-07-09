@@ -301,6 +301,8 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
       noise_image=DestroyImage(noise_image);
       return((Image *) NULL);
     }
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(noise_image,sRGBColorspace,exception);
   /*
     Add noise in each row.
   */
