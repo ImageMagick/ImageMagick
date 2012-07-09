@@ -154,6 +154,7 @@
     previous to this version it was equivalent to 'Average16'.
     The 'Background' method is for showing 'resample errors' be it
     accidental, or on purpose.  See IM Examples, Cylindrical Filters.
+  * added -interpolative-resize added around this version
 
 2012-05-26  6.7.7-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.7-2, SVN revision 8066.
