@@ -165,13 +165,10 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   (void) SetImageColorspace(image,start_color.colorspace,exception);
+  if (IssRGBColorspace(start_color.colorspace) != MagickFalse)
+    (void) SetImageColorspace(image,RGBColorspace,exception);
   if ((start_color.matte == MagickFalse) && (stop_color.matte == MagickFalse))
     (void) SetImageAlphaChannel(image,DeactivateAlphaChannel,exception);
-  if (IssRGBColorspace(start_color.colorspace) != MagickFalse)
-    {
-      (void) SetImageColorspace(image,RGBColorspace,exception);
-      (void) TransformImageColorspace(image,sRGBColorspace,exception);
-    }
   return(GetFirstImageInList(image));
 }
 
