@@ -417,7 +417,7 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    if (channel == DefaultChannels)
+    if ((channel & SyncChannels) != 0)
       {
         for (x=0; x < (ssize_t) image->columns; x++)
         {
@@ -616,7 +616,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (channel == DefaultChannels)
+      if ((channel & SyncChannels) != 0)
         {
           if (PixelIntensity(q) < intensity)
             {
@@ -2084,7 +2084,7 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (channel == DefaultChannels)
+      if ((channel & SyncChannels) != 0)
         {
           if (PixelIntensity(q) > intensity)
             {

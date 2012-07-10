@@ -1197,7 +1197,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
         continue;
       }
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
-    if (channel == DefaultChannels)
+    if ((channel & SyncChannels) != 0)
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         Quantum
@@ -2198,7 +2198,7 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (channel == DefaultChannels)
+      if ((channel & SyncChannels) != 0)
         {
           SetPixelRed(q,gamma_map[ScaleQuantumToMap(GetPixelRed(q))]);
           SetPixelGreen(q,gamma_map[ScaleQuantumToMap(GetPixelGreen(q))]);
