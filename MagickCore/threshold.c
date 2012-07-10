@@ -413,6 +413,9 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      double
+        pixel;
+
       register ssize_t
         i;
 
@@ -421,6 +424,7 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
           q+=GetPixelChannels(image);
           continue;
         }
+      pixel=(double) GetPixelIntensity(image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -433,7 +437,9 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=(Quantum) ((MagickRealType) q[i] <= threshold ? 0 : QuantumRange);
+        if ((image->channel_mask & SyncChannels) == 0)
+          pixel=q[i];
+        q[i]=(Quantum) (pixel <= threshold ? 0 : QuantumRange);
       }
       q+=GetPixelChannels(image);
     }
