@@ -40,6 +40,7 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/attribute.h"
 #include "MagickCore/blob.h"
 #include "MagickCore/blob-private.h"
 #include "MagickCore/color.h"
@@ -146,6 +147,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
         start_color.green);
       start_color.blue=QuantumRange*DecompandsRGB(QuantumScale*
         start_color.blue);
+      start_color.colorspace=RGBColorspace;
     }
   if (IssRGBColorspace(stop_color.colorspace) != MagickFalse)
     {
@@ -155,6 +157,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
         stop_color.green);
       stop_color.blue=QuantumRange*DecompandsRGB(QuantumScale*
         stop_color.blue);
+      stop_color.colorspace=RGBColorspace;
     }
   status=GradientImage(image,LocaleCompare(image_info->magick,"GRADIENT") == 0 ?
     LinearGradient : RadialGradient,PadSpread,&start_color,&stop_color,
@@ -165,8 +168,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   (void) SetImageColorspace(image,start_color.colorspace,exception);
-  if (IssRGBColorspace(start_color.colorspace) != MagickFalse)
-    (void) SetImageColorspace(image,RGBColorspace,exception);
+  if (IsImageGray(image,exception) != MagickFalse)
+    (void) SetImageColorspace(image,GRAYColorspace,exception);
   if ((start_color.matte == MagickFalse) && (stop_color.matte == MagickFalse))
     (void) SetImageAlphaChannel(image,DeactivateAlphaChannel,exception);
   return(GetFirstImageInList(image));
