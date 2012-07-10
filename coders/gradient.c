@@ -168,7 +168,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   (void) SetImageColorspace(image,start_color.colorspace,exception);
-  if (IsImageGray(image,exception) != MagickFalse)
+  if ((IsPixelInfoGray(&start_color) != MagickFalse) &&
+      (IsPixelInfoGray(&stop_color) != MagickFalse))
     (void) SetImageColorspace(image,GRAYColorspace,exception);
   if ((start_color.matte == MagickFalse) && (stop_color.matte == MagickFalse))
     (void) SetImageAlphaChannel(image,DeactivateAlphaChannel,exception);
