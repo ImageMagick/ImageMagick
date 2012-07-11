@@ -1084,11 +1084,19 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      double
+        pixel;
+
       register ssize_t
         i;
 
+      pixel=(double) GetPixelIntensity(image,p);      
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-        histogram[GetPixelChannels(image)*ScaleQuantumToMap(p[i])+i]++;
+      {
+        if (image->channel_mask != DefaultChannels)
+          pixel=p[i];
+        histogram[GetPixelChannels(image)*ScaleQuantumToMap(pixel)+i]++;
+      }
       p+=GetPixelChannels(image);
     }
   }

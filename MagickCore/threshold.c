@@ -437,7 +437,7 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if (image->channel_mask == DefaultChannels)
+        if (image->channel_mask != DefaultChannels)
           pixel=q[i];
         q[i]=(Quantum) (pixel <= threshold ? 0 : QuantumRange);
       }
