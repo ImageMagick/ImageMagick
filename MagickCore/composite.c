@@ -578,9 +578,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   assert(composite_image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
-      (IsGrayColorspace(composite_image->colorspace) == MagickFalse))
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    {
+      if (IsGrayColorspace(composite_image->colorspace) != MagickFalse)
+        (void) SetImageColorspace(image,RGBColorspace,exception);
+      else
+        (void) TransformImageColorspace(image,composite_image->colorspace,
+          exception);
+    }
   if ((compose == OverCompositeOp) || (compose == SrcOverCompositeOp))
     {
       status=CompositeOverImage(image,composite_image,clip_to_self,x_offset,
