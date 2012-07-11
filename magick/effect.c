@@ -1189,8 +1189,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
           gamma=0.0;
           for (i=0; i < (ssize_t) width; i++)
           {
-            alpha=(MagickRealType) (QuantumScale*
-              GetPixelAlpha(kernel_pixels));
+            alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(kernel_pixels));
             pixel.red+=(*k)*alpha*GetPixelRed(kernel_pixels);
             pixel.green+=(*k)*alpha*GetPixelGreen(kernel_pixels);
             pixel.blue+=(*k)*alpha*GetPixelBlue(kernel_pixels);
