@@ -302,7 +302,7 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
       return((Image *) NULL);
     }
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(noise_image,sRGBColorspace,exception);
+    (void) TransformImageColorspace(noise_image,RGBColorspace,exception);
   /*
     Add noise in each row.
   */
@@ -709,7 +709,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     }
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsPixelInfoGray(colorize) != MagickFalse))
-    (void) SetImageColorspace(colorize_image,sRGBColorspace,exception);
+    (void) SetImageColorspace(colorize_image,RGBColorspace,exception);
   if ((colorize_image->matte == MagickFalse) &&
       (colorize->matte != MagickFalse))
     (void) SetImageAlpha(colorize_image,OpaqueAlpha,exception);
@@ -4292,7 +4292,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(clone_image,sRGBColorspace,exception);
+    (void) TransformImageColorspace(clone_image,RGBColorspace,exception);
   (void) SetImageVirtualPixelMethod(clone_image,TransparentVirtualPixelMethod,
     exception);
   border_info.width=(size_t) floor(2.0*sigma+0.5);
@@ -5293,7 +5293,7 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
     }
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsPixelInfoGray(tint) == MagickFalse))
-    (void) SetImageColorspace(tint_image,sRGBColorspace,exception);
+    (void) SetImageColorspace(tint_image,RGBColorspace,exception);
   if (blend == (const char *) NULL)
     return(tint_image);
   /*

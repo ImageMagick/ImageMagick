@@ -2364,7 +2364,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
   if (texture_image == (const Image *) NULL)
     return(MagickFalse);
   if (IsGrayColorspace(texture_image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(texture_image,sRGBColorspace,exception);
+    (void) TransformImageColorspace(texture_image,RGBColorspace,exception);
   (void) SetImageVirtualPixelMethod(texture_image,TileVirtualPixelMethod,
     exception);
   status=MagickTrue;

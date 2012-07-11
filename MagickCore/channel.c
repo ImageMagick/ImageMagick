@@ -240,7 +240,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
   if (destination_image == (Image *) NULL)
     return((Image *) NULL);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace((Image *) image,sRGBColorspace,exception);
+    (void) TransformImageColorspace((Image *) image,RGBColorspace,exception);
   if (expression == (const char *) NULL)
     return(destination_image);
   destination_channel=RedPixelChannel;
@@ -291,7 +291,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
             return(destination_image);
           }
         if (IsGrayColorspace(canvas->colorspace) != MagickFalse)
-          (void) TransformImageColorspace(canvas,sRGBColorspace,exception);
+          (void) TransformImageColorspace(canvas,RGBColorspace,exception);
         AppendImageToList(&destination_image,canvas);
         destination_image=GetLastImageInList(destination_image);
         GetMagickToken(p,&p,token);

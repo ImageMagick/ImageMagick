@@ -4972,7 +4972,7 @@ MagickPrivate VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
           (void) SetCacheAlphaChannel(image,OpaqueAlpha,exception);
         if ((IsPixelInfoGray(&image->background_color) == MagickFalse) &&
             (IsGrayColorspace(image->colorspace) != MagickFalse))
-          (void) TransformImageColorspace(image,sRGBColorspace,exception);
+          (void) TransformImageColorspace(image,RGBColorspace,exception);
         break;
       }
       case TransparentVirtualPixelMethod:
