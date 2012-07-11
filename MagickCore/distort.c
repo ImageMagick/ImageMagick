@@ -2282,7 +2282,7 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
     }
   if ((IsPixelInfoGray(&distort_image->background_color) == MagickFalse) &&
       (IsGrayColorspace(distort_image->colorspace) != MagickFalse))
-    (void) TransformImageColorspace(distort_image,sRGBColorspace,exception);
+    (void) TransformImageColorspace(distort_image,RGBColorspace,exception);
   if (distort_image->background_color.matte != MagickFalse)
     distort_image->matte=MagickTrue;
   distort_image->page.x=geometry.x;
