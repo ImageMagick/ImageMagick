@@ -1223,8 +1223,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
           histogram[ScaleQuantumToMap(GetPixelOpacity(p))].opacity++;
         if (((channel & IndexChannel) != 0) &&
             (image->colorspace == CMYKColorspace))
-          histogram[ScaleQuantumToMap(GetPixelIndex(
-            indexes+x))].index++;
+          histogram[ScaleQuantumToMap(GetPixelIndex(indexes+x))].index++;
         p++;
       }
   }
