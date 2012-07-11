@@ -2150,7 +2150,7 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image)
     return(MagickFalse);
   if ((IsPixelGray(&image->background_color) == MagickFalse) &&
       (IsGrayColorspace(image->colorspace) != MagickFalse))
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) TransformImageColorspace(image,RGBColorspace);
   if ((image->background_color.opacity != OpaqueOpacity) &&
       (image->matte == MagickFalse))
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);

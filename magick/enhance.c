@@ -779,7 +779,7 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) TransformImageColorspace(image,RGBColorspace);
   clut_map=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*clut_map));
   if (clut_map == (MagickPixelPacket *) NULL)
@@ -2347,7 +2347,7 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace);
+    (void) TransformImageColorspace(image,RGBColorspace);
   if (image->matte == MagickFalse)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);
   /*
@@ -2826,7 +2826,7 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    (void) SetImageColorspace(image,sRGBColorspace);
+    (void) SetImageColorspace(image,RGBColorspace);
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static,4) shared(progress,status) \
