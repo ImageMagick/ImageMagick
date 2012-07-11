@@ -139,6 +139,8 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=(size_t) ReadBlobLSBShort(image);
   (void) ReadBlobLSBShort(image);
   image->rows=(size_t) ReadBlobLSBShort(image);
+  if ((image->columns == 0) || (image->rows == 0))
+    ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if (image_info->ping != MagickFalse)
     {
       (void) CloseBlob(image);
