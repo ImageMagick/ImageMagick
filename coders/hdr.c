@@ -371,8 +371,9 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
+  (void) SetImageColorspace(image,RGBColorspace);
   if (LocaleCompare(format,"32-bit_rle_xyze") == 0)
-    SetImageColorspace(image,XYZColorspace);
+    (void) SetImageColorspace(image,XYZColorspace);
   image->compression=(image->columns < 8) || (image->columns > 0x7ffff) ?
     NoCompression : RLECompression;
   if (image_info->ping != MagickFalse)
@@ -682,7 +683,7 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace);
   /*
     Write header.
@@ -765,10 +766,8 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image)
 
           gamma=frexp(gamma,&exponent)*256.0/gamma;
           pixel[0]=(unsigned char) (gamma*QuantumScale*GetPixelRed(p));
-          pixel[1]=(unsigned char) (gamma*QuantumScale*
-            GetPixelGreen(p));
-          pixel[2]=(unsigned char) (gamma*QuantumScale*
-            GetPixelBlue(p));
+          pixel[1]=(unsigned char) (gamma*QuantumScale*GetPixelGreen(p));
+          pixel[2]=(unsigned char) (gamma*QuantumScale*GetPixelBlue(p));
           pixel[3]=(unsigned char) (exponent+128);
         }
       if ((image->columns >= 8) && (image->columns <= 0x7ffff))
