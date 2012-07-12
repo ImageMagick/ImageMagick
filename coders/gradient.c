@@ -127,6 +127,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   (void) SetImageOpacity(image,(Quantum) TransparentOpacity);
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   (void) CopyMagickString(colorname,image_info->filename,MaxTextExtent);
+  (void) sscanf(image_info->filename,"%[^-]",colorname);
   icc_color=MagickFalse;
   if (LocaleCompare(colorname,"icc") == 0)
     {
