@@ -3146,8 +3146,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                 traits=GetPixelChannelMapTraits(image,channel);
                 if ((traits & BlendPixelTrait) == 0)
                   {
-                    x_vector[x*GetPixelChannels(image)+i]=(MagickRealType)
-                      p[i];
+                    x_vector[x*GetPixelChannels(image)+i]=(MagickRealType) p[i];
                     continue;
                   }
                 alpha=QuantumScale*GetPixelAlpha(image,p);
@@ -3308,10 +3307,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
                 scale_scanline[x*MaxPixelChannels+channel]),q);
               continue;
             }
-          alpha=QuantumScale*scanline[x*GetPixelChannels(image)+
-            GetPixelChannelMapChannel(image,AlphaPixelChannel)];
-          gamma=MagickEpsilonReciprocal(alpha);
-          SetPixelChannel(scale_image,channel,ClampToQuantum(gamma*
+          SetPixelChannel(scale_image,channel,ClampToQuantum(
             scale_scanline[x*MaxPixelChannels+channel]),q);
         }
         q+=GetPixelChannels(scale_image);
