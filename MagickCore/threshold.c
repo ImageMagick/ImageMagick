@@ -584,6 +584,9 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      double
+        pixel;
+
       register ssize_t
         i;
 
@@ -592,6 +595,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
           q+=GetPixelChannels(image);
           continue;
         }
+      pixel=(double) GetPixelIntensity(image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -604,7 +608,9 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if ((double) q[i] <= GetPixelInfoChannel(&threshold,channel))
+        if (image->channel_mask != DefaultChannels)
+          pixel=q[i];
+        if (pixel <= GetPixelInfoChannel(&threshold,channel))
           q[i]=0;
       }
       q+=GetPixelChannels(image);
@@ -1717,6 +1723,9 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      double
+        pixel;
+
       register ssize_t
         i;
 
@@ -1725,6 +1734,7 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
           q+=GetPixelChannels(image);
           continue;
         }
+      pixel=(double) GetPixelIntensity(image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -1737,7 +1747,9 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if ((double) q[i] > GetPixelInfoChannel(&threshold,channel))
+        if (image->channel_mask != DefaultChannels)
+          pixel=q[i];
+        if (pixel > GetPixelInfoChannel(&threshold,channel))
           q[i]=QuantumRange;
       }
       q+=GetPixelChannels(image);
