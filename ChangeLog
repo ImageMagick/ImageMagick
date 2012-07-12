@@ -3,6 +3,9 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21387).
   * Return linear grayscale for gradient:white-black.
   * Promote linear grayscale to linear RGB when compositing.
+  * gradient:white-black is sRGB whereas gradient:'icc-color(rgb,255,255,255)-
+    icc-color(rgb,0,0,0)' is linear RGB whereas gradient:'gray(255)-gray(0)' is
+    linear grayscale.
 
 2012-07-08  6.7.8-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.8-2, SVN revision 8621.
