@@ -97,6 +97,7 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
     colorname[MaxTextExtent];
 
   MagickBooleanType
+    icc_color,
     status;
 
   MagickPixelPacket
@@ -126,7 +127,13 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   (void) SetImageOpacity(image,(Quantum) TransparentOpacity);
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
   (void) CopyMagickString(colorname,image_info->filename,MaxTextExtent);
-  (void) sscanf(image_info->filename,"%[^-]",colorname);
+  icc_color=MagickFalse;
+  if (LocaleCompare(colorname,"icc") == 0)
+    {
+      (void) ConcatenateMagickString(colorname,"-",MaxTextExtent);
+      (void) sscanf(image_info->filename,"%*[^-]-%[^-]",colorname+4);
+      icc_color=MagickTrue;
+    }
   if (QueryColorDatabase(colorname,&start_color,exception) == MagickFalse)
     {
       image=DestroyImage(image);
@@ -136,7 +143,10 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   (void) CopyMagickString(colorname,"white",MaxTextExtent);
   if (PixelIntensityToQuantum(image,&start_color) > (Quantum) (QuantumRange/2))
     (void) CopyMagickString(colorname,"black",MaxTextExtent);
-  (void) sscanf(image_info->filename,"%*[^-]-%s",colorname);
+  if (icc_color == MagickFalse)
+    (void) sscanf(image_info->filename,"%*[^-]-%s",colorname);
+  else
+    (void) sscanf(image_info->filename,"%*[^-]-%*[^-]-%s",colorname);
   if (QueryColorDatabase(colorname,&stop_color,exception) == MagickFalse)
     {
       image=DestroyImage(image);
