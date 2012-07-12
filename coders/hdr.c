@@ -372,8 +372,9 @@ static Image *ReadHDRImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize");
+  (void) SetImageColorspace(image,RGBColorspace,exception);
   if (LocaleCompare(format,"32-bit_rle_xyze") == 0)
-    SetImageColorspace(image,XYZColorspace,exception);
+    (void) SetImageColorspace(image,XYZColorspace,exception);
   image->compression=(image->columns < 8) || (image->columns > 0x7ffff) ?
     NoCompression : RLECompression;
   if (image_info->ping != MagickFalse)
@@ -686,8 +687,8 @@ static MagickBooleanType WriteHDRImage(const ImageInfo *image_info,Image *image,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,exception);
   if (status == MagickFalse)
     return(status);
-  if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
-    (void) TransformImageColorspace(image,sRGBColorspace,exception);
+  if (IsRGBColorspace(image->colorspace) == MagickFalse)
+    (void) TransformImageColorspace(image,RGBColorspace,exception);
   /*
     Write header.
   */
