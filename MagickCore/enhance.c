@@ -3380,7 +3380,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     if (sharpen != MagickFalse)
       {
 #define sigmoidal(a,b,x)  (1/(1+exp((a)*((b)-(x)))))
-#if 1
+#if 0
         /* Simpilified function scaling,
          * with better 'contrast=0' or 'flatline' handling (greyscale)
          */
@@ -3404,7 +3404,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
 #endif
         continue;
       }
-#if 1
+#if 0
     {
       /* Inverse -- See
          http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html
