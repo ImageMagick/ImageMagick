@@ -552,28 +552,28 @@ MagickExport Image *CombineImages(const Image *image,
       q=pixels;
       for (x=0; x < (ssize_t) combine_image->columns; x++)
       {
-        if (x < (ssize_t) image->columns)
+        if (x < (ssize_t) next->columns)
           {
-            q[i]=GetPixelGray(image,p);
-            p+=GetPixelChannels(image);
+            q[i]=GetPixelGray(next,p);
+            p+=GetPixelChannels(next);
           }
         q+=GetPixelChannels(combine_image);
       }
       image_view=DestroyCacheView(image_view);
       next=GetNextImageInList(next);
-      if (SyncCacheViewAuthenticPixels(combine_view,exception) == MagickFalse)
-        status=MagickFalse;
-      if (image->progress_monitor != (MagickProgressMonitor) NULL)
-        {
-          MagickBooleanType
-            proceed;
-
-          proceed=SetImageProgress(image,CombineImageTag,progress++,
-            combine_image->rows);
-          if (proceed == MagickFalse)
-            status=MagickFalse;
-        }
     }
+    if (SyncCacheViewAuthenticPixels(combine_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+        proceed=SetImageProgress(image,CombineImageTag,progress++,
+          combine_image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
   }
   combine_view=DestroyCacheView(combine_view);
   if (status == MagickFalse)
