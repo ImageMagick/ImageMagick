@@ -114,14 +114,16 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image)
 MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
   const ChannelType channel)
 {
+  double
+    gamma,
+    mean,
+    logmean,
+    sans;
+
   MagickStatusType
     status;
 
-  double
-    mean,sans,gamma,logmean;
-
   logmean=log(0.5);
-
   if ((channel & SyncChannels) != 0 )
     {
       /*
@@ -129,12 +131,10 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
       */
       (void) GetImageChannelMean(image,channel,&mean,&sans,&image->exception);
       gamma=log(mean*QuantumScale)/logmean;
-      return LevelImageChannel(image, channel,
-                               0.0, (double)QuantumRange, gamma);
+      return(LevelImageChannel(image,channel,0.0,(double) QuantumRange,gamma));
     }
-
   /*
-    auto-gamma each channel separateally
+    Auto-gamma each channel separateally
   */
   status = MagickTrue;
   if ((channel & RedChannel) != 0)
@@ -150,16 +150,16 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
       (void) GetImageChannelMean(image,GreenChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/logmean;
-      status = status && LevelImageChannel(image, GreenChannel,
-                               0.0, (double)QuantumRange, gamma);
+      status&=LevelImageChannel(image,GreenChannel,0.0,(double) QuantumRange,
+        gamma);
     }
   if ((channel & BlueChannel) != 0)
     {
       (void) GetImageChannelMean(image,BlueChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/logmean;
-      status = status && LevelImageChannel(image, BlueChannel,
-                               0.0, (double)QuantumRange, gamma);
+      status&=LevelImageChannel(image,BlueChannel,0.0,(double) QuantumRange,
+        gamma);
     }
   if (((channel & OpacityChannel) != 0) &&
       (image->matte == MagickTrue))
@@ -167,8 +167,8 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
       (void) GetImageChannelMean(image,OpacityChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/logmean;
-      status = status && LevelImageChannel(image, OpacityChannel,
-                               0.0, (double)QuantumRange, gamma);
+      status&=LevelImageChannel(image,OpacityChannel,0.0,(double) QuantumRange,
+        gamma);
     }
   if (((channel & IndexChannel) != 0) &&
       (image->colorspace == CMYKColorspace))
@@ -176,8 +176,8 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
       (void) GetImageChannelMean(image,IndexChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/logmean;
-      status = status && LevelImageChannel(image, IndexChannel,
-                               0.0, (double)QuantumRange, gamma);
+      status&=LevelImageChannel(image,IndexChannel,0.0,(double) QuantumRange,
+        gamma);
     }
   return(status != 0 ? MagickTrue : MagickFalse);
 }
