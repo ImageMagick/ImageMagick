@@ -8161,7 +8161,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                        ping_trans_color.blue=(unsigned short)
                          GetPixelBlue(image,q);
                        ping_trans_color.gray=(unsigned short)
-                         GetPixelRed(image,q);
+                         GetPixelGray(image,q);
                        number_transparent = 1;
                      }
 
