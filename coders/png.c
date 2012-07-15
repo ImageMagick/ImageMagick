@@ -8275,6 +8275,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          ping_have_color=MagickFalse;
          if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
            ping_have_color=MagickTrue;
+         if (IssRGBColorspace(image->colorspace) != MagickFalse)
+           ping_have_color=MagickTrue;
+
          ping_have_non_bw=MagickFalse;
 
          if(image_colors > 256)
