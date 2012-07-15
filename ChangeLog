@@ -1,3 +1,6 @@
+2012-07-14  6.7.8-3 Glenn Randers-Pehrson <glennrp@image...>
+  * Always write a color PNG when image->colorspace is sRGB.
+
 2012-07-08  6.7.8-3 Cristy  <quetzlzacatenango@image...>
   * Attenuate random noise (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21387).
