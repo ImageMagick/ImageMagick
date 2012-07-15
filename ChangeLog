@@ -1,3 +1,6 @@
+2012-07-15  6.7.8-3 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-3, SVN revision 8675.
+
 2012-07-14  6.7.8-3 Glenn Randers-Pehrson <glennrp@image...>
   * Always write a color PNG when image->colorspace is sRGB.
 
