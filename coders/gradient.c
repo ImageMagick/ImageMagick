@@ -158,6 +158,8 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  if (IssRGBColorspace(start_color.colorspace) != MagickFalse)
+    TransformImageColorspace(image,start_color.colorspace,exception);
   if ((start_color.matte == MagickFalse) && (stop_color.matte == MagickFalse))
     (void) SetImageAlphaChannel(image,DeactivateAlphaChannel,exception);
   return(GetFirstImageInList(image));
