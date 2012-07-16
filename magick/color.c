@@ -2700,10 +2700,15 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
           char
             *colorname;
 
+          ColorspaceType
+            colorspace;
+
+          colorspace=color->colorspace;
           colorname=AcquireString(name+i+1);
           (void) SubstituteString(&colorname,")","");
           (void) QueryMagickColor(colorname,color,exception);
           colorname=DestroyString(colorname);
+          color->colorspace=colorspace;
         }
       else
         {
