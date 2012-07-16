@@ -124,12 +124,17 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image->rows == 0)
     image->rows=1;
   (void) CopyMagickString(image->filename,image_info->filename,MaxTextExtent);
-  status=QueryColorCompliance((char *) image_info->filename,AllCompliance,
-    &pixel,exception);
-  if (status == MagickFalse)
+  if (*image_info->filename == '\0')
+    pixel=image->background_color;
+  else
     {
-      image=DestroyImage(image);
-      return((Image *) NULL);
+      status=QueryColorCompliance((char *) image_info->filename,AllCompliance,
+        &pixel,exception);
+      if (status == MagickFalse)
+        {
+          image=DestroyImage(image);
+          return((Image *) NULL);
+        }
     }
   SetImageColorspace(image,pixel.colorspace,exception);
   image->matte=pixel.matte;
