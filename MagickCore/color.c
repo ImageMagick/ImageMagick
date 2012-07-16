@@ -2326,10 +2326,15 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           char
             *colorname;
 
+          ColorspaceType
+            colorspace;
+
+          colorspace=color->colorspace;
           colorname=AcquireString(name+i+1);
           (void) SubstituteString(&colorname,")","");
           (void) QueryColorCompliance(colorname,AllCompliance,color,exception);
           colorname=DestroyString(colorname);
+          color->colorspace=colorspace;
         }
       else
         {
