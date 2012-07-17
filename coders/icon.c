@@ -746,6 +746,10 @@ ModuleExport void UnregisterICONImage(void)
 %  image format, version 3 for Windows or (if the image has a matte channel)
 %  version 4.
 %
+%  It encodes any subimage as a compressed PNG image ("BI_PNG)",
+%  only when its dimensions are 256x256 and image->compression is
+%  undefined or is defined as ZipCompression.
+%
 %  The format of the WriteICONImage method is:
 %
 %      MagickBooleanType WriteICONImage(const ImageInfo *image_info,
@@ -851,8 +855,9 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
   next=image;
   do
   {
-    if ((next->columns > 256L) && (next->rows > 256L) &&
-        (next->compression == ZipCompression))
+    if ((next->columns > 255L) && (next->rows > 255L) &&
+        ((next->compression == UndefinedCompression) ||
+        (next->compression == ZipCompression)))
       {
         Image
           *write_image;
@@ -866,19 +871,18 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
         unsigned char
           *png;
 
-        /*
-          Icon image encoded as a compressed PNG image.
-        */
         write_image=CloneImage(next,0,0,MagickTrue,&image->exception);
         if (write_image == (Image *) NULL)
           return(MagickFalse);
         write_info=CloneImageInfo(image_info);
         (void) CopyMagickString(write_info->filename,"PNG:",MaxTextExtent);
-        /*
-          Don't write any ancillary chunks except for gAMA and tRNS
-        */
-        (void) SetImageArtifact(write_image,"png:include-chunk",
-           "none,trns,gama");
+
+        /* Don't write any ancillary chunks except for gAMA */
+        (void) SetImageArtifact(write_image,"png:include-chunk","none,gama");
+
+        /* Only write PNG32 formatted PNG (32-bit RGBA), 8 bits per channel */
+        (void) SetImageArtifact(write_image,"png:format","png32");
+
         png=(unsigned char *) ImageToBlob(write_info,write_image,&length,
           &image->exception);
         write_image=DestroyImage(write_image);

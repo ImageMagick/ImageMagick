@@ -1,3 +1,7 @@
+2012-07-17  6.7.8-4 Glenn Randers-Pehrson <glennrp@image...>
+  * Write ICON subimage as PNG32, only when its dimensions are 256x256
+    and image->compression is UndefinedCompression or ZipCompression.
+
 2012-07-16  6.7.8-4 Cristy  <quetzlzacatenango@image...>
   * sRGB color gradients should be in a non-linear colorspace.
 
