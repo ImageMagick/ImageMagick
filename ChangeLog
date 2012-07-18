@@ -5,6 +5,7 @@
 2012-07-16  6.7.8-4 Cristy  <quetzlzacatenango@image...>
   * sRGB color gradients should be in a non-linear colorspace.
   * Fix -fx to interpret scientific notation properly.
+  * The draw epsilon was too sensitive.
 
 2012-07-15  6.7.8-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.8-3, SVN revision 8675.
