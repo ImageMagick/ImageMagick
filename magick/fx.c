@@ -196,6 +196,8 @@ MagickExport FxInfo *AcquireFxInfo(const Image *image,const char *expression)
     Force right-to-left associativity for unary negation.
   */
   (void) SubstituteString(&fx_info->expression,"-","-1.0*");
+  (void) SubstituteString(&fx_info->expression,"E-1.0*","E-");
+  (void) SubstituteString(&fx_info->expression,"e-1.0*","e-");
   /*
     Convert complex to simple operators.
   */
