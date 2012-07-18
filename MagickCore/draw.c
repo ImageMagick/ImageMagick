@@ -5755,7 +5755,7 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
 
 static inline MagickRealType DrawEpsilonReciprocal(const MagickRealType x)
 {
-#define DrawEpsilon  ((MagickRealType) 1.0e-12)
+#define DrawEpsilon  ((MagickRealType) 1.0e-10)
 
   MagickRealType sign = x < (MagickRealType) 0.0 ? (MagickRealType) -1.0 :
     (MagickRealType) 1.0;
