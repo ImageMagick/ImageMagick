@@ -3406,9 +3406,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       }
 #if 0
     {
-      /* Inverse -- See
-         http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html
-      */
+      /* Broken: not the inverse of any of the above variants */
       double
         min = sigmoidal(contrast,1.0,0.0),
         max = sigmoidal(contrast,QuantumScale*midpoint,1.0),
@@ -3418,7 +3416,11 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
              QuantumScale*midpoint-log((1-xi)/xi)/contrast) ));
     }
 #else
-    /* expanded form of the above */
+    /* Inverse of the second -sigmoidal-contrast function above
+     * and pretty close to being an inverse of the second version
+     * (with MagickEpsilon). See
+     * http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html.
+     */
     sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
       (MaxMap*(QuantumScale*midpoint-log((1.0-(1.0/(1.0+exp(midpoint/
       (double) QuantumRange*contrast))+((double) i/MaxMap)*((1.0/
