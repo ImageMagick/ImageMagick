@@ -1257,8 +1257,8 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         Initialize YUV tables:
 
           Y =  0.298839*R+0.586811*G+0.114350*B
-          U = -0.14740*R-0.28950*G+0.43690*B
-          V =  0.61500*R-0.51500*G-0.10000*B
+          U = -0.168736*R-0.331264*G+0.500000*B
+          V =  0.500000*R-0.418688*G-0.081312*B
 
         U and V, normally -0.5 through 0.5, are normalized to the range 0
         through QuantumRange.  Note that U = 0.493*(B-Y), V = 0.877*(R-Y).
@@ -1274,12 +1274,12 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         x_map[i].x=0.298839*(MagickRealType) i;
         y_map[i].x=0.586811*(MagickRealType) i;
         z_map[i].x=0.114350*(MagickRealType) i;
-        x_map[i].y=(-0.14740)*(MagickRealType) i;
-        y_map[i].y=(-0.28950)*(MagickRealType) i;
-        z_map[i].y=0.43690*(MagickRealType) i;
-        x_map[i].z=0.61500*(MagickRealType) i;
-        y_map[i].z=(-0.51500)*(MagickRealType) i;
-        z_map[i].z=(-0.10000)*(MagickRealType) i;
+        x_map[i].y=(-0.168736)*(MagickRealType) i;
+        y_map[i].y=(-0.331264)*(MagickRealType) i;
+        z_map[i].y=0.500000*(MagickRealType) i;
+        x_map[i].z=0.500000*(MagickRealType) i;
+        y_map[i].z=(-0.418688)*(MagickRealType) i;
+        z_map[i].z=(-0.081312)*(MagickRealType) i;
       }
       break;
     }
@@ -2901,9 +2901,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       /*
         Initialize YUV tables:
 
-          R = Y          +1.13980*V
-          G = Y-0.39380*U-0.58050*V
-          B = Y+2.02790*U
+          R = Y          +1.4075*V
+          G = Y-0.3455*U-0.7169*V
+          B = Y+1.7790*U
 
         U and V, normally -0.5 through 0.5, must be normalized to the range 0
         through QuantumRange.
@@ -2915,18 +2915,16 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
         x_map[i].x=(MagickRealType) i;
-        y_map[i].x=0.00000f;
-        z_map[i].x=0.56990*(2.0000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
+        y_map[i].x=0.00000;
+        z_map[i].x=0.70375*(2.0000*(MagickRealType) i-(MagickRealType) MaxMap);
         x_map[i].y=(MagickRealType) i;
-        y_map[i].y=(-0.19690)*(2.00000*(MagickRealType) i-(MagickRealType)
+        y_map[i].y=(-0.17275)*(2.00000*(MagickRealType) i-(MagickRealType)
           MaxMap);
-        z_map[i].y=(-0.29025)*(2.00000*(MagickRealType) i-(MagickRealType)
+        z_map[i].y=(-0.35845)*(2.00000*(MagickRealType) i-(MagickRealType)
           MaxMap);
         x_map[i].z=(MagickRealType) i;
-        y_map[i].z=1.01395*(2.00000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
-        z_map[i].z=0.00000f;
+        y_map[i].z=0.8895*(2.00000*(MagickRealType) i-(MagickRealType) MaxMap);
+        z_map[i].z=0.00000;
       }
       break;
     }

@@ -455,6 +455,12 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         "NotAuthorized","`%s'",read_info->filename);
       return((Image *) NULL);
     }
+  if ((LocaleNCompare(filename,"fd:",3) == 0) &&
+      (image_info->file == (FILE *) NULL))
+    {
+      read_info->file=fdopen(StringToLong(filename+3),"rb");
+      SetImageInfoFile((ImageInfo *) image_info,read_info->file);
+    }
   /*
     Call appropriate image reader based on image type.
   */

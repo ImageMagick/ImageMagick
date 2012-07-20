@@ -1,3 +1,8 @@
+2012-07-19  6.7.8-5 Cristy  <quetzlzacatenango@image...>
+  * Inverse YUV colorspace now produces pure red as expected.
+  * Support halted streams:
+    cat image.pnm | convert 'pnm:fd:0[0]' 'pnm:fd:0[0]' x:.
+
 2012-07-18  6.7.8-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.8-4, SVN revision 8697.
 
