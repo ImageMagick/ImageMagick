@@ -1074,7 +1074,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   if ((LocaleNCompare(filename,"fd:",3) == 0) &&
       (image_info->file == (FILE *) NULL))
     {
-      write_info->file=fdopen(StringToLong(filename+3),"rb");
+      write_info->file=fdopen(StringToLong(filename+3),"wb");
       SetImageInfoFile((ImageInfo *) image_info,write_info->file);
     }
   /*
