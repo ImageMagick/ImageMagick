@@ -2411,22 +2411,6 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       image->blob->exempt=MagickTrue;
       return(MagickTrue);
     }
-  if (LocaleNCompare(filename,"fd:",3) == 0)
-    {
-      char
-        mode[MaxTextExtent];
-
-      *mode=(*type);
-      mode[1]='\0';
-      image->blob->file_info.file=fdopen(StringToLong(filename+3),mode);
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__)
-      if (strchr(type,'b') != (char *) NULL)
-        setmode(_fileno(image->blob->file_info.file),_O_BINARY);
-#endif
-      image->blob->type=StandardStream;
-      image->blob->exempt=MagickTrue;
-      return(MagickTrue);
-    }
 #if defined(MAGICKCORE_HAVE_POPEN)
   if (*filename == '|')
     {
