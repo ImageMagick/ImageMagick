@@ -1077,6 +1077,15 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
       errno=EPERM;
       ThrowBinaryException(PolicyError,"NotAuthorized",filename);
     }
+  if ((LocaleNCompare(filename,"fd:",3) == 0) &&
+      (image_info->file == (FILE *) NULL))
+    {
+      write_info->file=fdopen(StringToLong(filename+3),"rb");
+      SetImageInfoFile((ImageInfo *) image_info,write_info->file);
+    }
+  /*
+    Call appropriate image reader based on image type.
+  */
   magick_info=GetMagickInfo(write_info->magick,sans_exception);
   sans_exception=DestroyExceptionInfo(sans_exception);
   if (magick_info != (const MagickInfo *) NULL)
