@@ -2821,16 +2821,14 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       {
         x_map[i].x=(MagickRealType) i;
         y_map[i].x=0.00000;
-        z_map[i].x=0.70375*(2.0000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
+        z_map[i].x=0.70375*(2.0000*(MagickRealType) i-(MagickRealType) MaxMap);
         x_map[i].y=(MagickRealType) i;
         y_map[i].y=(-0.17275)*(2.00000*(MagickRealType) i-(MagickRealType)
           MaxMap);
         z_map[i].y=(-0.35845)*(2.00000*(MagickRealType) i-(MagickRealType)
           MaxMap);
         x_map[i].z=(MagickRealType) i;
-        y_map[i].z=0.8895*(2.00000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
+        y_map[i].z=0.8895*(2.00000*(MagickRealType) i-(MagickRealType) MaxMap);
         z_map[i].z=0.00000;
       }
       break;
