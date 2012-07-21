@@ -1,3 +1,6 @@
+2012-07-21  6.7.8-5 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-5, SVN revision 8717.
+
 2012-07-20  6.7.8-5 Glenn Randers-Pehrson <glennrp@image...>
   * Corrected an error in the logic introduced in 6.7.8-3 to always write
     a color PNG when image->colorspace is sRGB.
