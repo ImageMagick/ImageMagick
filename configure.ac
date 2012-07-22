@@ -3763,6 +3763,7 @@ AC_SUBST(MAGICK_FEATURES)
 
 # Set configured scripts to executable.
 AC_CONFIG_COMMANDS([default],[],[])
+AC_CONFIG_COMMANDS([magick.sh.in],[chmod +x magick.sh])
 AC_CONFIG_COMMANDS([MagickCore-config.in],[chmod +x MagickCore/MagickCore-config])
 AC_CONFIG_COMMANDS([MagickWand-config.in],[chmod +x MagickWand/MagickWand-config])
 AC_CONFIG_COMMANDS([Magick++-config.in],[chmod +x Magick++/bin/Magick++-config])
