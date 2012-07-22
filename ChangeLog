@@ -1,3 +1,6 @@
+2012-07-22  6.7.8-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-6, SVN revision 8720.
+
 2012-07-21  6.7.8-6 Glenn Randers-Pehrson <glennrp@image...>
   * Make sure "intent" is initialized in the PNG decoder.
  
