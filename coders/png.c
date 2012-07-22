@@ -1117,6 +1117,28 @@ Magick_RenderingIntent_from_PNG_RenderingIntent(const int ping_intent)
     }
 }
 
+static char *
+Magick_RenderingIntentString_from_PNG_RenderingIntent(const int ping_intent)
+{
+  switch (ping_intent)
+  {
+    case 0:
+      return "Perceptual Intent";
+
+    case 1:
+      return "Relative Intent";
+
+    case 2:
+      return "Saturation Intent";
+
+    case 3:
+      return "Absolute Intent";
+
+    default:
+      return "Undefined Intent";
+    }
+}
+
 
 static char *
 Magick_ColorType_from_PNG_ColorType(const int ping_colortype)
@@ -1960,7 +1982,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     *image;
 
   int
-    intent,
+    intent, /* "PNG Rendering intent", which is ICC intent + 1 */
     num_raw_profiles,
     num_text,
     num_text_total,
@@ -2076,8 +2098,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   image=mng_info->image;
 
   if (logging != MagickFalse)
+  {
     (void)LogMagickEvent(CoderEvent,GetMagickModule(),
       "  image->matte=%d",(int) image->matte);
+
+    (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+      "  image->rendering_intent=%d",(int) image->rendering_intent);
+  }
+  intent=Magick_RenderingIntent_to_PNG_RenderingIntent(image->rendering_intent);
 
   /* Set to an out-of-range color unless tRNS chunk is present */
   transparent_color.red=65537;
@@ -2245,14 +2273,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   image->depth=ping_bit_depth;
   image->depth=GetImageQuantumDepth(image,MagickFalse);
   image->interlace=ping_interlace_method != 0 ? PNGInterlace : NoInterlace;
+
   if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
       ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
     {
       image->rendering_intent=UndefinedIntent;
+      intent=Magick_RenderingIntent_to_PNG_RenderingIntent(UndefinedIntent);
       image->gamma=1.000;
       (void) ResetMagickMemory(&image->chromaticity,0,
         sizeof(image->chromaticity));
     }
+
   if (logging != MagickFalse)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -3551,8 +3582,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
        {
          (void) FormatLocaleString(msg,MaxTextExtent,
-            "intent=%d (See Rendering intent)",
-            (int) intent);
+            "intent=%d (%s)",
+            (int) intent,
+            Magick_RenderingIntentString_from_PNG_RenderingIntent(intent));
          (void) SetImageProperty(image,"png:sRGB                 ",msg);
        }
 #endif
