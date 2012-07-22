@@ -35769,6 +35769,8 @@ MAGICK_LIBS="-lMagickCore $MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL"
 # Set configured scripts to executable.
 ac_config_commands="$ac_config_commands default"
 
+ac_config_commands="$ac_config_commands magick.sh.in"
+
 ac_config_commands="$ac_config_commands MagickCore-config.in"
 
 ac_config_commands="$ac_config_commands Magick-config.in"
@@ -37147,6 +37149,7 @@ do
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "default") CONFIG_COMMANDS="$CONFIG_COMMANDS default" ;;
+    "magick.sh.in") CONFIG_COMMANDS="$CONFIG_COMMANDS magick.sh.in" ;;
     "MagickCore-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickCore-config.in" ;;
     "Magick-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS Magick-config.in" ;;
     "MagickWand-config.in") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickWand-config.in" ;;
@@ -38731,6 +38734,7 @@ compiler_lib_search_path=$lt_compiler_lib_search_path_CXX
 _LT_EOF
 
  ;;
+    "magick.sh.in":C) chmod +x magick.sh ;;
     "MagickCore-config.in":C) chmod +x magick/MagickCore-config ;;
     "Magick-config.in":C) chmod +x magick/Magick-config ;;
     "MagickWand-config.in":C) chmod +x wand/MagickWand-config ;;
