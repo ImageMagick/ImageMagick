@@ -1,3 +1,8 @@
+2012-07-22  6.7.8-3 Glenn Randers-Pehrson <glennrp@image...>
+  * Only report sRGB, iCCP, gAMA, cHRM chunks in "identify" output when
+    these chunks were actually present in input, and not when they were
+    inserted by the PNG decoder.
+
 2012-07-22  6.7.8-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.8-6, SVN revision 8720.
 

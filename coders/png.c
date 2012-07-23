@@ -2005,6 +2005,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   MagickBooleanType
     logging,
+    ping_found_cHRM,
+    ping_found_gAMA,
+    ping_found_iCCP,
+    ping_found_sRGB,
     status;
 
   png_bytep
@@ -2117,6 +2121,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   num_text = 0;
   num_text_total = 0;
   num_raw_profiles = 0;
+
+  ping_found_cHRM = MagickFalse;
+  ping_found_gAMA = MagickFalse;
+  ping_found_iCCP = MagickFalse;
+  ping_found_sRGB = MagickFalse;
 
   /*
     Allocate the PNG structures
@@ -2303,6 +2312,38 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         ping_interlace_method,ping_filter_method);
     }
 
+  if (png_get_valid(ping,ping_info,PNG_INFO_gAMA))
+    {
+      ping_found_gAMA=MagickTrue;
+      if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Found PNG gAMA chunk.");
+    }
+
+  if (png_get_valid(ping,ping_info,PNG_INFO_cHRM))
+    {
+      ping_found_cHRM=MagickTrue;
+      if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Found PNG cHRM chunk.");
+    }
+
+  if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
+    {
+      ping_found_iCCP=MagickTrue;
+      if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Found PNG iCCP chunk.");
+    }
+
+  if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
+    {
+      ping_found_sRGB=MagickTrue;
+      if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Found PNG sRGB chunk.");
+    }
+
 #ifdef PNG_READ_iCCP_SUPPORTED
   if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
     {
@@ -2382,6 +2423,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
              "    Reading PNG gAMA chunk: gamma: %f",file_gamma);
        }
   }
+
   if (!png_get_valid(ping,ping_info,PNG_INFO_cHRM))
     {
       if (mng_info->have_global_chrm != MagickFalse)
@@ -2410,9 +2452,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         &image->chromaticity.blue_primary.x,
         &image->chromaticity.blue_primary.y);
 
-      if (logging != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Reading PNG cHRM chunk.");
     }
 
   if (image->rendering_intent != UndefinedIntent)
@@ -3555,7 +3594,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (void) SetImageProperty(image,"png:text-encoded profiles",msg);
        }
 
-     if (png_get_valid(ping,ping_info,PNG_INFO_cHRM))
+     if (ping_found_cHRM != MagickFalse)
        {
          (void) FormatLocaleString(msg,MaxTextExtent,"%s",
             "chunk was found (see Chromaticity, above)");
@@ -3572,14 +3611,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      (void) FormatLocaleString(msg,MaxTextExtent,"%s",
         "chunk was found");
 
-     if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
+     if (ping_found_iCCP != MagickFalse)
         (void) SetImageProperty(image,"png:iCCP                 ",msg);
 
      if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
         (void) SetImageProperty(image,"png:tRNS                 ",msg);
 
 #if defined(PNG_sRGB_SUPPORTED)
-     if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
+     if (ping_found_sRGB != MagickFalse)
        {
          (void) FormatLocaleString(msg,MaxTextExtent,
             "intent=%d (%s)",
@@ -3589,7 +3628,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
        }
 #endif
 
-     if (png_get_valid(ping,ping_info,PNG_INFO_gAMA))
+     if (ping_found_gAMA != MagickFalse)
        {
          (void) FormatLocaleString(msg,MaxTextExtent,
             "gamma=%.8g (See Gamma, above)", file_gamma);
