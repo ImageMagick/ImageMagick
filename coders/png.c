@@ -1123,6 +1123,28 @@ Magick_RenderingIntent_from_PNG_RenderingIntent(const int ping_intent)
     }
 }
 
+static char *
+Magick_RenderingIntentString_from_PNG_RenderingIntent(const int ping_intent)
+{
+  switch (ping_intent)
+  {
+    case 0:
+      return "Perceptual Intent";
+
+    case 1:
+      return "Relative Intent";
+
+    case 2:
+      return "Saturation Intent";
+
+    case 3:
+      return "Absolute Intent";
+
+    default:
+      return "Undefined Intent";
+    }
+}
+
 static inline ssize_t MagickMax(const ssize_t x,const ssize_t y)
 {
   if (x > y)
@@ -1990,7 +2012,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     *image;
 
   int
-    intent,
+    intent, /* "PNG Rendering intent", which is ICC intent + 1 */
     num_raw_profiles,
     num_text,
     num_text_total,
@@ -2010,6 +2032,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   MagickBooleanType
     logging,
+    ping_found_cHRM,
+    ping_found_gAMA,
+    ping_found_iCCP,
+    ping_found_sRGB,
     status;
 
   PixelInfo
@@ -2111,8 +2137,14 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   image=mng_info->image;
 
   if (logging != MagickFalse)
+  {
     (void)LogMagickEvent(CoderEvent,GetMagickModule(),
       "  image->matte=%d",(int) image->matte);
+
+    (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+      "  image->rendering_intent=%d",(int) image->rendering_intent);
+  }
+  intent=Magick_RenderingIntent_to_PNG_RenderingIntent(image->rendering_intent);
 
   /* Set to an out-of-range color unless tRNS chunk is present */
   transparent_color.red=65537;
@@ -2124,6 +2156,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   num_text = 0;
   num_text_total = 0;
   num_raw_profiles = 0;
+
+  ping_found_cHRM = MagickFalse;
+  ping_found_gAMA = MagickFalse;
+  ping_found_iCCP = MagickFalse;
+  ping_found_sRGB = MagickFalse;
 
   /*
     Allocate the PNG structures
@@ -2282,14 +2319,17 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   image->depth=ping_bit_depth;
   image->depth=GetImageQuantumDepth(image,MagickFalse);
   image->interlace=ping_interlace_method != 0 ? PNGInterlace : NoInterlace;
+
   if (((int) ping_color_type == PNG_COLOR_TYPE_GRAY) ||
       ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
     {
       image->rendering_intent=UndefinedIntent;
+      intent=Magick_RenderingIntent_to_PNG_RenderingIntent(UndefinedIntent);
       image->gamma=1.000;
       (void) ResetMagickMemory(&image->chromaticity,0,
         sizeof(image->chromaticity));
     }
+
   if (logging != MagickFalse)
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2307,6 +2347,38 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    PNG interlace_method: %d, filter_method: %d",
         ping_interlace_method,ping_filter_method);
+    }
+
+  if (png_get_valid(ping,ping_info,PNG_INFO_gAMA))
+    {
+      ping_found_gAMA=MagickTrue;
+      if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Found PNG gAMA chunk.");
+    }
+
+  if (png_get_valid(ping,ping_info,PNG_INFO_cHRM))
+    {
+      ping_found_cHRM=MagickTrue;
+      if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Found PNG cHRM chunk.");
+    }
+
+  if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
+    {
+      ping_found_iCCP=MagickTrue;
+      if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Found PNG iCCP chunk.");
+    }
+
+  if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
+    {
+      ping_found_sRGB=MagickTrue;
+      if (logging != MagickFalse)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "    Found PNG sRGB chunk.");
     }
 
 #ifdef PNG_READ_iCCP_SUPPORTED
@@ -2386,6 +2458,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
              "    Reading PNG gAMA chunk: gamma: %f",file_gamma);
        }
   }
+
   if (!png_get_valid(ping,ping_info,PNG_INFO_cHRM))
     {
       if (mng_info->have_global_chrm != MagickFalse)
@@ -2414,9 +2487,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         &image->chromaticity.blue_primary.x,
         &image->chromaticity.blue_primary.y);
 
-      if (logging != MagickFalse)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    Reading PNG cHRM chunk.");
     }
 
   if (image->rendering_intent != UndefinedIntent)
@@ -3553,7 +3623,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 exception);
        }
 
-     if (png_get_valid(ping,ping_info,PNG_INFO_cHRM))
+     if (ping_found_cHRM != MagickFalse)
        {
          (void) FormatLocaleString(msg,MaxTextExtent,"%s",
             "chunk was found (see Chromaticity, above)");
@@ -3572,25 +3642,29 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
      (void) FormatLocaleString(msg,MaxTextExtent,"%s",
         "chunk was found");
 
-     if (png_get_valid(ping,ping_info,PNG_INFO_iCCP))
+#if defined(PNG_iCCP_SUPPORTED)
+     if (ping_found_iCCP != MagickFalse)
         (void) SetImageProperty(image,"png:iCCP                 ",msg,
                 exception);
+#endif
 
      if (png_get_valid(ping,ping_info,PNG_INFO_tRNS))
         (void) SetImageProperty(image,"png:tRNS                 ",msg,
                 exception);
 
 #if defined(PNG_sRGB_SUPPORTED)
-     if (png_get_valid(ping,ping_info,PNG_INFO_sRGB))
+     if (ping_found_sRGB != MagickFalse)
        {
          (void) FormatLocaleString(msg,MaxTextExtent,
-            "intent=%d (See Rendering intent)", (int) intent);
+            "intent=%d (%s)",
+            (int) intent,
+            Magick_RenderingIntentString_from_PNG_RenderingIntent(intent));
          (void) SetImageProperty(image,"png:sRGB                 ",msg,
-           exception);
+                 exception);
        }
 #endif
 
-     if (png_get_valid(ping,ping_info,PNG_INFO_gAMA))
+     if (ping_found_gAMA != MagickFalse)
        {
          (void) FormatLocaleString(msg,MaxTextExtent,
             "gamma=%.8g (See Gamma, above)",
