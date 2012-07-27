@@ -740,6 +740,9 @@
 /* Define to 1 if you have the <xlocale.h> header file. */
 #undef HAVE_XLOCALE_H
 
+/* Define to 1 if you have the `_aligned_malloc' function. */
+#undef HAVE__ALIGNED_MALLOC
+
 /* Define to 1 if the system has the type `_Bool'. */
 #undef HAVE__BOOL
 
