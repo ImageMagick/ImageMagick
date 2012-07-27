@@ -1139,6 +1139,9 @@
 #define MAGICKCORE_HAVE_XLOCALE_H 1
 #endif
 
+/* Define to 1 if you have the `_aligned_malloc' function. */
+/* #undef HAVE__ALIGNED_MALLOC */
+
 /* Define to 1 if the system has the type `_Bool'. */
 #ifndef MAGICKCORE_HAVE__BOOL
 #define MAGICKCORE_HAVE__BOOL 1
