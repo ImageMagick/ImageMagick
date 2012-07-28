@@ -1356,7 +1356,9 @@
 #endif
 
 /* Define if you have RSVG library */
-/* #undef RSVG_DELEGATE */
+#ifndef MAGICKCORE_RSVG_DELEGATE
+#define MAGICKCORE_RSVG_DELEGATE 1
+#endif
 
 /* Define to the type of arg 1 for `select'. */
 #ifndef MAGICKCORE_SELECT_TYPE_ARG1
