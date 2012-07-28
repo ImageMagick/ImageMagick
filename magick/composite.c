@@ -1589,7 +1589,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
 MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   const ChannelType channel,const CompositeOperator compose,
-  const Image *composite_image,const ssize_t x_offset,const ssize_t y_offset)
+  const Image *composite,const ssize_t x_offset,const ssize_t y_offset)
 {
 #define CompositeImageTag  "Composite/Image"
 
@@ -1607,6 +1607,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     geometry_info;
 
   Image
+    *composite_image,
     *destination_image;
 
   MagickBooleanType
@@ -1645,13 +1646,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   assert(composite_image->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    {
-      if (IsGrayColorspace(composite_image->colorspace) != MagickFalse)
-        (void) SetImageColorspace(image,RGBColorspace);
-      else
-        (void) TransformImageColorspace(image,composite_image->colorspace);
-    }
+  composite_image=CloneImage(composite,0,0,MagickTrue,exception);
+  if (composite_image == (const Image *) NULL)
+    return(MagickFalse);
+  (void) TransformImageColorspace(composite_image,image->colorspace);
   GetMagickPixelPacket(image,&zero);
   exception=(&image->exception);
   destination_image=(Image *) NULL;
@@ -2827,6 +2825,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   image_view=DestroyCacheView(image_view);
   if (destination_image != (Image * ) NULL)
     destination_image=DestroyImage(destination_image);
+  composite_image=DestroyImage(composite_image);
   return(status);
 }
 
@@ -2887,8 +2886,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
   texture_image=CloneImage(texture,0,0,MagickTrue,exception);
   if (texture_image == (const Image *) NULL)
     return(MagickFalse);
-  if (IsGrayColorspace(texture_image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(texture_image,RGBColorspace);
+  (void) TransformImageColorspace(texture_image,image->colorspace);
   (void) SetImageVirtualPixelMethod(texture_image,TileVirtualPixelMethod);
   status=MagickTrue;
   if ((image->compose != CopyCompositeOp) &&
@@ -2977,7 +2975,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture)
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(texture_view,texture_image->tile_offset.x,(y+
-      texture_image->tile_offset.y) % texture_image->rows,texture_image->columns,1,exception);
+      texture_image->tile_offset.y) % texture_image->rows,
+      texture_image->columns,1,exception);
     q=QueueCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
