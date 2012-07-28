@@ -689,6 +689,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       }
       composite_view=DestroyCacheView(composite_view);
       image_view=DestroyCacheView(image_view);
+      composite_image=DestroyImage(composite_image);
       return(status);
     }
     case CopyAlphaCompositeOp:
@@ -736,7 +737,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       destination_image=CloneImage(image,image->columns,image->rows,MagickTrue,
         exception);
       if (destination_image == (Image *) NULL)
-        return(MagickFalse);
+        {
+          composite_image=DestroyImage(composite_image);
+          return(MagickFalse);
+        }
       /*
         Gather the maximum blur sigma values from user.
       */
@@ -749,6 +753,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           (void) ThrowMagickException(exception,GetMagickModule(),
                OptionWarning,"InvalidSetting","'%s' '%s'",
                "compose:args",value);
+          composite_image=DestroyImage(composite_image);
           destination_image=DestroyImage(destination_image);
           return(MagickFalse);
         }
@@ -904,7 +909,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       destination_image=CloneImage(image,image->columns,image->rows,MagickTrue,
         exception);
       if (destination_image == (Image *) NULL)
-        return(MagickFalse);
+        {
+          composite_image=DestroyImage(composite_image);
+          return(MagickFalse);
+        }
       SetGeometryInfo(&geometry_info);
       flags=NoValue;
       value=GetImageArtifact(composite_image,"compose:args");
