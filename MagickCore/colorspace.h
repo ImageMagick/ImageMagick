@@ -25,28 +25,28 @@ extern "C" {
 typedef enum
 {
   UndefinedColorspace,
-  RGBColorspace,
+  CMYColorspace,
+  CMYKColorspace,
   GRAYColorspace,
-  TransparentColorspace,
-  OHTAColorspace,
+  HSBColorspace,
+  HSLColorspace,
+  HWBColorspace,
   LabColorspace,
+  LogColorspace,
+  OHTAColorspace,
+  Rec601LumaColorspace,
+  Rec601YCbCrColorspace,
+  Rec709LumaColorspace,
+  Rec709YCbCrColorspace,
+  RGBColorspace,
+  sRGBColorspace,
+  TransparentColorspace,
   XYZColorspace,
   YCbCrColorspace,
   YCCColorspace,
   YIQColorspace,
   YPbPrColorspace,
-  YUVColorspace,
-  CMYKColorspace,
-  sRGBColorspace,
-  HSBColorspace,
-  HSLColorspace,
-  HWBColorspace,
-  Rec601LumaColorspace,
-  Rec601YCbCrColorspace,
-  Rec709LumaColorspace,
-  Rec709YCbCrColorspace,
-  LogColorspace,
-  CMYColorspace
+  YUVColorspace
 } ColorspaceType;
 
 extern MagickExport MagickBooleanType
