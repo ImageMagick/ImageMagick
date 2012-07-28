@@ -1646,12 +1646,12 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   assert(composite->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
+  exception=(&image->exception);
   composite_image=CloneImage(composite,0,0,MagickTrue,exception);
   if (composite_image == (const Image *) NULL)
     return(MagickFalse);
   (void) TransformImageColorspace(composite_image,image->colorspace);
   GetMagickPixelPacket(image,&zero);
-  exception=(&image->exception);
   destination_image=(Image *) NULL;
   amount=0.5;
   destination_dissolve=1.0;
