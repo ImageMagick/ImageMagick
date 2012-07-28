@@ -326,9 +326,10 @@ struct _Image
   SemaphoreInfo
     *semaphore;
 
+
   struct _Image
-    *previous,         /* Image sequence list links */
-    *list,
+    *list,             /* Undo/Redo image processing list (for display) */
+    *previous,         /* Image list links */
     *next;
 
   size_t
