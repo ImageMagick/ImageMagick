@@ -1,4 +1,4 @@
-/*
+  /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -870,6 +870,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       resample_filter=DestroyResampleFilter(resample_filter);
       composite_view=DestroyCacheView(composite_view);
       destination_view=DestroyCacheView(destination_view);
+      composite_image=DestroyImage(composite_image);
       composite_image=destination_image;
       break;
     }
@@ -1044,6 +1045,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       destination_view=DestroyCacheView(destination_view);
       composite_view=DestroyCacheView(composite_view);
       image_view=DestroyCacheView(image_view);
+      composite_image=DestroyImage(composite_image);
       composite_image=destination_image;
       break;
     }
@@ -2303,7 +2305,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   image_view=DestroyCacheView(image_view);
   if (destination_image != (Image * ) NULL)
     destination_image=DestroyImage(destination_image);
-  composite_image=DestroyImage(composite_image);
+  else
+    composite_image=DestroyImage(composite_image);
   return(status);
 }
 
