@@ -1642,8 +1642,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(composite_image != (Image *) NULL);
-  assert(composite_image->signature == MagickSignature);
+  assert(composite != (Image *) NULL);
+  assert(composite->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   composite_image=CloneImage(composite,0,0,MagickTrue,exception);
