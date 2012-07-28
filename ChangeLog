@@ -1,3 +1,6 @@
+2012-07-28  6.7.8-7 Cristy  <quetzlzacatenango@image...>
+  * Set DICOM grayscale images to the gray colorspace.
+
 2012-07-22  6.7.8-3 Glenn Randers-Pehrson <glennrp@image...>
   * Only report sRGB, iCCP, gAMA, cHRM chunks in "identify" output when
     these chunks were actually present in input, and not when they were

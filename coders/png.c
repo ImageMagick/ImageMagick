@@ -1779,7 +1779,11 @@ static void MagickPNGWarningHandler(png_struct *ping,png_const_charp message)
 }
 
 #ifdef PNG_USER_MEM_SUPPORTED
-static png_voidp Magick_png_malloc(png_structp png_ptr,png_uint_32 size)
+#if PNG_LIBPNG_VER >= 14000
+static png_voidp Magick_png_malloc(png_structp png_ptr,png_alloc_size_t size)
+#else
+static png_voidp Magick_png_malloc(png_structp png_ptr,png_size_t size)
+#endif
 {
   (void) png_ptr;
   return((png_voidp) AcquireMagickMemory((size_t) size));
@@ -7375,12 +7379,22 @@ Magick_png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
          (char *) profile_type, (double) length);
      }
 
-   text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
+#if PNG_LIBPNG_VER >= 14000
+   text=(png_textp) png_malloc(ping,(png_alloc_size_t) sizeof(png_text));
+#else
+   text=(png_textp) png_malloc(ping,(png_size_t) sizeof(png_text));
+#endif
    description_length=(png_uint_32) strlen((const char *) profile_description);
    allocated_length=(png_uint_32) (length*2 + (length >> 5) + 20
       + description_length);
-   text[0].text=(png_charp) png_malloc(ping,allocated_length);
-   text[0].key=(png_charp) png_malloc(ping, (png_uint_32) 80);
+#if PNG_LIBPNG_VER >= 14000
+   text[0].text=(png_charp) png_malloc(ping,
+      (png_alloc_size_t) allocated_length);
+   text[0].key=(png_charp) png_malloc(ping, (png_alloc_size_t) 80);
+#else
+   text[0].text=(png_charp) png_malloc(ping, (png_size_t) allocated_length);
+   text[0].key=(png_charp) png_malloc(ping, (png_size_t) 80);
+#endif
    text[0].key[0]='\0';
    (void) ConcatenateMagickString(text[0].key,
       "Raw profile type ",MaxTextExtent);
@@ -10744,7 +10758,13 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
         {
         if (value != (const char *) NULL)
           {
-            text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
+
+#if PNG_LIBPNG_VER >= 14000
+            text=(png_textp) png_malloc(ping,
+                 (png_alloc_size_t) sizeof(png_text));
+#else
+            text=(png_textp) png_malloc(ping,(png_size_t) sizeof(png_text));
+#endif
             text[0].key=(char *) property;
             text[0].text=(char *) value;
             text[0].text_length=strlen(value);

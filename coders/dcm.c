@@ -3640,6 +3640,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=(size_t) width;
     image->rows=(size_t) height;
     image->depth=depth;
+    image->colorspace=RGBColorspace;
     if ((image->colormap == (PixelPacket *) NULL) && (samples_per_pixel == 1))
       {
         size_t
@@ -4056,6 +4057,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
           }
       }
+    if (IsGrayImage(image,exception) != MagickFalse)
+      (void) SetImageColorspace(image,GRAYColorspace);
     if (EOFBlob(image) != MagickFalse)
       {
         ThrowFileException(exception,CorruptImageError,"UnexpectedEndOfFile",
