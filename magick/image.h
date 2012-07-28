@@ -306,7 +306,7 @@ struct _Image
 
   struct _Image
     *previous,         /* Image list links */
-    *list,             /* Unod/Redo image processing list (for display) */
+    *list,             /* Undo/Redo image processing list (for display) */
     *next;             /* Image list links */
 
   InterpolatePixelMethod
