@@ -74,7 +74,7 @@ static inline Quantum GetPixelBlack(const Image *restrict image,
   const Quantum *restrict pixel)
 {
   if (image->channel_map[BlackPixelChannel].traits == UndefinedPixelTrait)
-    return(0);
+    return((Quantum) 0);
   return(pixel[image->channel_map[BlackPixelChannel].offset]);
 }
 
@@ -109,7 +109,7 @@ static inline Quantum GetPixelChannel(const Image *restrict image,
   const PixelChannel channel,const Quantum *restrict pixel)
 {
   if (image->channel_map[channel].traits == UndefinedPixelTrait)
-    return(0);
+    return((Quantum) 0);
   return(pixel[image->channel_map[channel].offset]);
 }
 
@@ -184,7 +184,7 @@ static inline Quantum GetPixelIndex(const Image *restrict image,
   const Quantum *restrict pixel)
 {
   if (image->channel_map[IndexPixelChannel].traits == UndefinedPixelTrait)
-    return(0);
+    return((Quantum) 0);
   return(pixel[image->channel_map[IndexPixelChannel].offset]);
 }
 
@@ -313,7 +313,7 @@ static inline Quantum GetPixelMask(const Image *restrict image,
   const Quantum *restrict pixel)
 {
   if (image->channel_map[MaskPixelChannel].traits == UndefinedPixelTrait)
-    return(0);
+    return((Quantum) 0);
   return(pixel[image->channel_map[MaskPixelChannel].offset]);
 }
 

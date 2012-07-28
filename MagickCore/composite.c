@@ -533,7 +533,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
 }
 
 MagickExport MagickBooleanType CompositeImage(Image *image,
-  const Image *composite_image,const CompositeOperator compose,
+  const Image *composite,const CompositeOperator compose,
   const MagickBooleanType clip_to_self,const ssize_t x_offset,
   const ssize_t y_offset,ExceptionInfo *exception)
 {
@@ -547,6 +547,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     geometry_info;
 
   Image
+    *composite_image,
     *destination_image;
 
   MagickBooleanType
@@ -574,22 +575,19 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  assert(composite_image != (Image *) NULL);
-  assert(composite_image->signature == MagickSignature);
+  assert(composite!= (Image *) NULL);
+  assert(composite->signature == MagickSignature);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if (IsGrayColorspace(image->colorspace) != MagickFalse)
-    {
-      if (IsGrayColorspace(composite_image->colorspace) != MagickFalse)
-        (void) SetImageColorspace(image,RGBColorspace,exception);
-      else
-        (void) TransformImageColorspace(image,composite_image->colorspace,
-          exception);
-    }
+  composite_image=CloneImage(composite,0,0,MagickTrue,exception);
+  if (composite_image == (const Image *) NULL)
+    return(MagickFalse);
+  (void) TransformImageColorspace(composite_image,image->colorspace,exception);
   if ((compose == OverCompositeOp) || (compose == SrcOverCompositeOp))
     {
       status=CompositeOverImage(image,composite_image,clip_to_self,x_offset,
         y_offset,exception);
+      composite_image=DestroyImage(composite_image);
       return(status);
     }
   destination_image=(Image *) NULL;
@@ -2305,6 +2303,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   image_view=DestroyCacheView(image_view);
   if (destination_image != (Image * ) NULL)
     destination_image=DestroyImage(destination_image);
+  composite_image=DestroyImage(composite_image);
   return(status);
 }
 
@@ -2363,8 +2362,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
   texture_image=CloneImage(texture,0,0,MagickTrue,exception);
   if (texture_image == (const Image *) NULL)
     return(MagickFalse);
-  if (IsGrayColorspace(texture_image->colorspace) != MagickFalse)
-    (void) TransformImageColorspace(texture_image,RGBColorspace,exception);
+  (void) TransformImageColorspace(texture_image,image->colorspace,exception);
   (void) SetImageVirtualPixelMethod(texture_image,TileVirtualPixelMethod,
     exception);
   status=MagickTrue;
