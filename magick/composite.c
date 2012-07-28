@@ -1753,6 +1753,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       }
       composite_view=DestroyCacheView(composite_view);
       image_view=DestroyCacheView(image_view);
+      composite_image=DestroyImage(composite_image);
       return(status);
     }
     case CopyOpacityCompositeOp:
@@ -1797,7 +1798,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       destination_image=CloneImage(image,image->columns,image->rows,MagickTrue,
         exception);
       if (destination_image == (Image *) NULL)
-        return(MagickFalse);
+        {
+          composite_image=DestroyImage(composite_image);
+          return(MagickFalse);
+        }
       /*
         Gather the maximum blur sigma values from user.
       */
@@ -1810,6 +1814,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           (void) ThrowMagickException(exception,GetMagickModule(),
                OptionWarning,"InvalidGeometry","'%s' '%s'",
                "compose:args",value);
+          composite_image=DestroyImage(composite_image);
           destination_image=DestroyImage(destination_image);
           return(MagickFalse);
         }
@@ -1937,6 +1942,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       resample_filter=DestroyResampleFilter(resample_filter);
       composite_view=DestroyCacheView(composite_view);
       destination_view=DestroyCacheView(destination_view);
+      composite_image=DestroyImage(composite_image);
       composite_image=destination_image;
       break;
     }
@@ -1973,7 +1979,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       destination_image=CloneImage(image,image->columns,image->rows,MagickTrue,
         exception);
       if (destination_image == (Image *) NULL)
-        return(MagickFalse);
+        {
+          composite_image=DestroyImage(composite_image);
+          return(MagickFalse);
+        }
       SetGeometryInfo(&geometry_info);
       flags=NoValue;
       value=GetImageArtifact(composite_image,"compose:args");
@@ -2112,6 +2121,7 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       destination_view=DestroyCacheView(destination_view);
       composite_view=DestroyCacheView(composite_view);
       image_view=DestroyCacheView(image_view);
+      composite_image=DestroyImage(composite_image);
       composite_image=destination_image;
       break;
     }
@@ -2825,7 +2835,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   image_view=DestroyCacheView(image_view);
   if (destination_image != (Image * ) NULL)
     destination_image=DestroyImage(destination_image);
-  composite_image=DestroyImage(composite_image);
+  else
+    composite_image=DestroyImage(composite_image);
   return(status);
 }
 
