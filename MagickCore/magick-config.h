@@ -1271,6 +1271,21 @@
 /* Define to prepend to default font search path. */
 /* #undef MAGICK_FONT_PATH */
 
+/* Target Host CPU */
+#ifndef MAGICKCORE_MAGICK_TARGET_CPU
+#define MAGICKCORE_MAGICK_TARGET_CPU x86_64
+#endif
+
+/* Target Host OS */
+#ifndef MAGICKCORE_MAGICK_TARGET_OS
+#define MAGICKCORE_MAGICK_TARGET_OS linux-gnu
+#endif
+
+/* Target Host Vendor */
+#ifndef MAGICKCORE_MAGICK_TARGET_VENDOR
+#define MAGICKCORE_MAGICK_TARGET_VENDOR unknown
+#endif
+
 /* Magick API method prefix */
 /* #undef NAMESPACE_PREFIX */
 
