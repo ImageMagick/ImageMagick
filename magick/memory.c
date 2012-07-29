@@ -188,6 +188,9 @@ static MagickBooleanType
 */
 MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
 {
+#define AlignedExtent(size,alignment) \
+  (((size)+((alignment)-1)) & ~((alignment)-1))
+
   size_t
     alignment,
     extent,
@@ -204,11 +207,11 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     }
   memory=NULL;
   alignment=CACHE_LINE_SIZE;
-  extent=(size+alignment-1)+sizeof(void *);
-  if ((size == 0) || (alignment < sizeof(void *)) || (extent <= size))
+  extent=AlignedExtent(size,alignment);
+  if ((size == 0) || (alignment < sizeof(void *)) || (extent < size))
     return((void *) NULL);
 #if defined(MAGICKCORE_HAVE_POSIX_MEMALIGN)
-  if (posix_memalign(&memory,alignment,size) != 0)
+  if (posix_memalign(&memory,alignment,extent) != 0)
     memory=NULL;
 #elif defined(MAGICKCORE_HAVE__ALIGNED_MALLOC)
   memory=_aligned_malloc(size,alignment);
@@ -217,12 +220,15 @@ MagickExport void *AcquireAlignedMemory(const size_t count,const size_t quantum)
     void
       *p;
 
-    p=malloc(extent);
-    if (p != NULL)
+    extent=(size+alignment-1)+sizeof(void *);
+    if (extent > size)
       {
-        memory=(void *) (((size_t) p+sizeof(void *)+alignment-1) &
-          ~(alignment-1));
-        *((void **) memory-1)=p;
+        p=malloc(extent);
+        if (p != NULL)
+          {
+            memory=(void *) AlignedExtent((size_t) p+sizeof(void *),alignment);
+            *((void **) memory-1)=p;
+          }
       }
   }
 #endif
