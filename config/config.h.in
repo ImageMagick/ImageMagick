@@ -836,6 +836,15 @@
 /* Define to prepend to default font search path. */
 #undef MAGICK_FONT_PATH
 
+/* Target Host CPU */
+#undef MAGICK_TARGET_CPU
+
+/* Target Host OS */
+#undef MAGICK_TARGET_OS
+
+/* Target Host Vendor */
+#undef MAGICK_TARGET_VENDOR
+
 /* Magick API method prefix */
 #undef NAMESPACE_PREFIX
 
