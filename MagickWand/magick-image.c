@@ -7341,6 +7341,46 @@ WandExport MagickWand *MagickOptimizeImageLayers(MagickWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k O p t i m i z e I m a g e T r a n s p a r e n c y             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickOptimizeImageTransparency() takes a frame optimized GIF animation, and
+%  compares the overlayed pixels against the disposal image resulting from all
+%  the previous frames in the animation.  Any pixel that does not change the
+%  disposal image (and thus does not effect the outcome of an overlay) is made
+%  transparent.
+%
+%  WARNING: This modifies the current images directly, rather than generate
+%  a new image sequence.
+%  The format of the MagickOptimizeImageTransparency method is:
+%
+%      MagickBooleanType MagickOptimizeImageTransparency(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: the magick wand.
+%
+*/
+WandExport MagickBooleanType MagickOptimizeImageTransparency(MagickWand *wand)
+{
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == WandSignature);
+  if( IfMagickTrue(wand->debug) )
+    (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
+  if (wand->images == (Image *) NULL)
+    return(MagickFalse);
+  OptimizeImageTransparency(wand->images,wand->exception);
+  return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     M a g i c k O r d e r e d P o s t e r i z e I m a g e                   %
 %                                                                             %
 %                                                                             %
