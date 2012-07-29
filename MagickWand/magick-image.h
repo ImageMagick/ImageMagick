@@ -196,6 +196,7 @@ extern WandExport MagickBooleanType
   MagickOilPaintImage(MagickWand *,const double,const double),
   MagickOpaquePaintImage(MagickWand *,const PixelWand *,const PixelWand *,
     const double,const MagickBooleanType),
+  MagickOptimizeImageTransparency(MagickWand *),
   MagickOrderedPosterizeImage(MagickWand *,const char *),
   MagickTransparentPaintImage(MagickWand *,const PixelWand *,
     const double,const double,const MagickBooleanType invert),
