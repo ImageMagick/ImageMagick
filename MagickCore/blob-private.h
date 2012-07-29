@@ -33,8 +33,8 @@ extern "C" {
 typedef enum
 {
   UndefinedStream,
-  FileStream,
   StandardStream,
+  FileStream,
   PipeStream,
   ZipStream,
   BZipStream,

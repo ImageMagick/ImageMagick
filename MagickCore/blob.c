@@ -528,9 +528,9 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
   switch (image->blob->type)
   {
     case UndefinedStream:
+    case StandardStream:
       break;
     case FileStream:
-    case StandardStream:
     case PipeStream:
     {
       status=ferror(image->blob->file_info.file);
@@ -558,9 +558,9 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
   switch (image->blob->type)
   {
     case UndefinedStream:
+    case StandardStream:
       break;
     case FileStream:
-    case StandardStream:
     {
       if (image->blob->synchronize != MagickFalse)
         {
@@ -857,9 +857,9 @@ MagickExport int EOFBlob(const Image *image)
   switch (image->blob->type)
   {
     case UndefinedStream:
+    case StandardStream:
       break;
     case FileStream:
-    case StandardStream:
     case PipeStream:
     {
       image->blob->eof=feof(image->blob->file_info.file) != 0 ? MagickTrue :
@@ -1355,13 +1355,17 @@ MagickExport MagickSizeType GetBlobSize(const Image *image)
       extent=image->blob->size;
       break;
     }
+    case StandardStream:
+    {
+      extent=image->blob->size;
+      break;
+    }
     case FileStream:
     {
       if (fstat(fileno(image->blob->file_info.file),&image->blob->properties) == 0)
         extent=(MagickSizeType) image->blob->properties.st_size;
       break;
     }
-    case StandardStream:
     case PipeStream:
     {
       extent=image->blob->size;
@@ -2402,6 +2406,22 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
       image->blob->exempt=MagickTrue;
       return(MagickTrue);
     }
+  if (LocaleNCompare(filename,"fd:",3) == 0)
+    {
+      char
+        mode[MaxTextExtent];
+
+      *mode=(*type);
+      mode[1]='\0';
+      image->blob->file_info.file=fdopen(StringToLong(filename+3),mode);
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__)
+      if (strchr(type,'b') != (char *) NULL)
+        setmode(_fileno(image->blob->file_info.file),_O_BINARY);
+#endif
+      image->blob->type=StandardStream;
+      image->blob->exempt=MagickTrue;
+      return(MagickTrue);
+    }
 #if defined(MAGICKCORE_HAVE_POPEN)
   if (*filename == '|')
     {
@@ -2756,8 +2776,12 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
   {
     case UndefinedStream:
       break;
-    case FileStream:
     case StandardStream:
+    {
+      count=(ssize_t) read(fileno(image->blob->file_info.file),q,length);
+      break;
+    }
+    case FileStream:
     case PipeStream:
     {
       switch (length)
@@ -3542,6 +3566,8 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
   {
     case UndefinedStream:
       break;
+    case StandardStream:
+      return(-1);
     case FileStream:
     {
       if (fseek(image->blob->file_info.file,offset,whence) < 0)
@@ -3549,7 +3575,6 @@ MagickExport MagickOffsetType SeekBlob(Image *image,
       image->blob->offset=TellBlob(image);
       break;
     }
-    case StandardStream:
     case PipeStream:
     case ZipStream:
     {
@@ -3690,6 +3715,8 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
   {
     case UndefinedStream:
       break;
+    case StandardStream:
+      return(MagickFalse);
     case FileStream:
     {
       if (extent != (MagickSizeType) ((off_t) extent))
@@ -3713,7 +3740,6 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
 #endif
       break;
     }
-    case StandardStream:
     case PipeStream:
     case ZipStream:
       return(MagickFalse);
@@ -3807,9 +3833,9 @@ static int SyncBlob(Image *image)
   switch (image->blob->type)
   {
     case UndefinedStream:
+    case StandardStream:
       break;
     case FileStream:
-    case StandardStream:
     case PipeStream:
     {
       status=fflush(image->blob->file_info.file);
@@ -3880,13 +3906,13 @@ MagickExport MagickOffsetType TellBlob(const Image *image)
   switch (image->blob->type)
   {
     case UndefinedStream:
+    case StandardStream:
       break;
     case FileStream:
     {
       offset=ftell(image->blob->file_info.file);
       break;
     }
-    case StandardStream:
     case PipeStream:
       break;
     case ZipStream:
@@ -4003,8 +4029,12 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
   {
     case UndefinedStream:
       break;
-    case FileStream:
     case StandardStream:
+    {
+      count=(ssize_t) write(fileno(image->blob->file_info.file),data,length);
+      break;
+    }
+    case FileStream:
     case PipeStream:
     {
       switch (length)
