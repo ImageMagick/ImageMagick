@@ -240,6 +240,7 @@ extern WandExport MagickBooleanType
   MagickOrderedPosterizeImage(MagickWand *,const char *),
   MagickOrderedPosterizeImageChannel(MagickWand *,const ChannelType,
     const char *),
+  MagickOptimizeImageTransparency(MagickWand *),
   MagickTransparentPaintImage(MagickWand *,const PixelWand *,
     const double,const double,const MagickBooleanType invert),
   MagickPingImage(MagickWand *,const char *),
