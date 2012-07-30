@@ -31,7 +31,7 @@ static inline RandomInfo **DestroyRandomInfoThreadSet(
     i;
 
   assert(random_info != (RandomInfo **) NULL);
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (random_info[i] != (RandomInfo *) NULL)
       random_info[i]=DestroyRandomInfo(random_info[i]);
   return((RandomInfo **) RelinquishAlignedMemory(random_info));
@@ -48,7 +48,7 @@ static inline RandomInfo **AcquireRandomInfoThreadSet(void)
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   random_info=(RandomInfo **) AcquireAlignedMemory(number_threads,
     sizeof(*random_info));
   if (random_info == (RandomInfo **) NULL)
