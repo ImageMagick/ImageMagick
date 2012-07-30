@@ -204,7 +204,7 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
   cache_info->id=GetMagickThreadId();
   cache_info->number_threads=number_threads;
   if (number_threads == 0)
-    cache_info->number_threads=GetOpenMPMaximumThreads();
+    cache_info->number_threads=GetMagickResourceLimit(ThreadResource);
   cache_info->nexus_info=AcquirePixelCacheNexus(cache_info->number_threads);
   if (cache_info->nexus_info == (NexusInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");

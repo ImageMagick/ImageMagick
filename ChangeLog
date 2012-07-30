@@ -6,6 +6,8 @@
   * Set DICOM grayscale images to the gray colorspace.
   * Missing grestore from ps3.c (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20445).
+  * Use GetMagickResourceLimit(ThreadResource) to set the # threads (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21543).
 
 2012-07-22  6.7.8-6 Glenn Randers-Pehrson <glennrp@image...>
   * Only report sRGB, iCCP, gAMA, cHRM chunks in "identify" output when
