@@ -212,7 +212,7 @@ MagickExport CacheView *CloneCacheView(const CacheView *cache_view)
   if (cache_view->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_view->image->filename);
-  clone_view=(CacheView *) AcquireAlignedMemory(sizeof(*clone_view));
+  clone_view=(CacheView *) AcquireAlignedMemory(1,sizeof(*clone_view));
   if (clone_view == (CacheView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(clone_view,0,sizeof(*clone_view));
