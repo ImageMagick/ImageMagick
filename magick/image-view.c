@@ -737,7 +737,7 @@ MagickExport ImageView *NewImageView(Image *image)
   image_view->extent.height=image->rows;
   image_view->extent.x=0;
   image_view->extent.y=0;
-  image_view->number_threads=GetMagickResourceLimit(ThreadResource);
+  image_view->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   image_view->debug=IsEventLogging();
   image_view->signature=MagickSignature;
   return(image_view);
@@ -791,7 +791,7 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
   image_view->extent.height=height;
   image_view->extent.x=x;
   image_view->extent.y=y;
-  image_view->number_threads=GetMagickResourceLimit(ThreadResource);
+  image_view->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   image_view->debug=IsEventLogging();
   image_view->signature=MagickSignature;
   return(image_view);
@@ -992,7 +992,7 @@ MagickExport void SetImageViewThreads(ImageView *image_view,
   assert(image_view->signature == MagickSignature);
   image_view->number_threads=number_threads;
   if (number_threads > (size_t) GetMagickResourceLimit(ThreadResource))
-    image_view->number_threads=GetMagickResourceLimit(ThreadResource);
+    image_view->number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
 }
 
 /*
