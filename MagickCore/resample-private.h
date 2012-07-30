@@ -31,7 +31,7 @@ static inline ResampleFilter **DestroyResampleFilterThreadSet(
     i;
 
   assert(filter != (ResampleFilter **) NULL);
-  for (i=0; i < (ssize_t) GetOpenMPMaximumThreads(); i++)
+  for (i=0; i < (ssize_t) GetMagickResourceLimit(ThreadResource); i++)
     if (filter[i] != (ResampleFilter *) NULL)
       filter[i]=DestroyResampleFilter(filter[i]);
   filter=(ResampleFilter **) RelinquishMagickMemory(filter);
@@ -51,7 +51,7 @@ static inline ResampleFilter **AcquireResampleFilterThreadSet(
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   filter=(ResampleFilter **) AcquireQuantumMemory(number_threads,
     sizeof(*filter));
   if (filter == (ResampleFilter **) NULL)
