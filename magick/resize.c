@@ -2116,7 +2116,7 @@ static ContributionInfo **AcquireContributionThreadSet(const size_t count)
   size_t
     number_threads;
 
-  number_threads=GetOpenMPMaximumThreads();
+  number_threads=GetMagickResourceLimit(ThreadResource);
   contribution=(ContributionInfo **) AcquireQuantumMemory(number_threads,
     sizeof(*contribution));
   if (contribution == (ContributionInfo **) NULL)
