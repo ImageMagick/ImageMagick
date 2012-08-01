@@ -31,7 +31,7 @@
 
 2012-07-21  6.7.8-6 Glenn Randers-Pehrson <glennrp@image...>
   * Make sure "intent" is initialized in the PNG decoder.
- 
+
 2012-07-21  6.7.8-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.8-5, SVN revision 8717.
 
@@ -459,7 +459,7 @@
   * New version 6.7.5-8, SVN revision 7027.
 
 2012-03-02  6.7.5-8 Glenn Randers-Pehrson <glennrp@image...>
-  * non-verbose identify now reports DirectClass for transparent PNG images 
+  * non-verbose identify now reports DirectClass for transparent PNG images
     to agree with the report by identify -verbose.  (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=20448 and
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=15482).
@@ -642,7 +642,7 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=19964).
   * MagickGetImageDepth() no longer returns the depth setting but instead
     computes the depth of the image.
-   
+
 2011-12-02  6.7.4-0 Anthony  <quetzlzacatenango@image...>
   * Fixed Equal-Area Cropping (size and minimum of delta increments)
 
@@ -1059,7 +1059,7 @@
 2011-05-20  6.6.9-10 Glenn Randers-Pehrson <glennrp@image...>
   * The PNG encoder now respects the -depth setting, including 1, 2, 4.
     Previously settings other than 8 and 16 were ignored (reference
-    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18412). 
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18412).
 
 2011-05-16  6.6.9-10 Cristy  <quetzlzacatenango@image...>
   * Don't use comma as a separator for stroked text (reference
