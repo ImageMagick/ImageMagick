@@ -3389,9 +3389,9 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
 	 * 'flatline' handling (greyscale):
          *
 	 * (1/(1+exp(a*(b-u))) - (1/(1+exp(a*b)) + 1/(1+exp(a*(b-1))))/2 )
-         * / (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)) + epsilon )
+         * / (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)) + epsilon ) + 0.5
          *
-	 * "+0.5" is to center things around the middle of the Quantum
+	 * "+ 0.5" is to center things around the middle of the Quantum
 	 * range.
 	 *
 	 * "+epsilon" is to allow a=0 without division by zero.
