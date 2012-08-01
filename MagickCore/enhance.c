@@ -3396,16 +3396,15 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
 	 * range.
 	 *
 	 * "+epsilon" is to allow a=0 without division by zero.
-         *
-     	 * Nicolas is still trying to figure out what the "+0.5" is for.
-	 * They may be gone later.
          */
         sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-          (MaxMap*(0.5+(uu-(u0+u1)/2.0)/(u1-u0+MagickEpsilon))+0.5));
+          (MaxMap*(0.5+(uu-(u0+u1)/2.0)/(u1-u0+MagickEpsilon))));
 #else
         /* Scaled sigmoidal formula: (1/(1+exp(a*(b-u))) - 1/(1+exp(a*b)))
          *                           /
          *                           (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)))
+         *
+     	 * Nicolas is still trying to figure out what the "+0.5" is for.
          */
         sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
           (MaxMap*((uu-u0)/(u1-u0))+0.5));
