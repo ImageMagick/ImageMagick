@@ -168,7 +168,6 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   *b=(200.0*(y-z))/255.0+0.5;
 }
 
-
 static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
   double *L,double *u,double *v)
 {
