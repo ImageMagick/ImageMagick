@@ -3851,8 +3851,8 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
 	 *
 	 * "+0.5" is to round by casting.
          */
-        sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum(
-          (MagickRealType) (MaxMap*((uu-u0)/(u1-u0))+0.5));
+        sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
+          (MaxMap*((uu-u0)/(u1-u0))+0.5));
 #endif
         continue;
       }
