@@ -22,7 +22,11 @@
 extern "C" {
 #endif
 
-#define CACHE_LINE_SIZE  (16*sizeof(void *))
+#if defined(MAGICK_TARGET_CPU) && (MAGICK_TARGET_CPU == powerpc)
+#  define CACHE_LINE_SIZE (16*sizeof(void *))
+#else
+#  define CACHE_LINE_SIZE (8*sizeof(void *))
+#endif
 #define CacheAlign(size)  ((size) < CACHE_LINE_SIZE ? CACHE_LINE_SIZE : (size))
 
 #if defined(__cplusplus) || defined(c_plusplus)
