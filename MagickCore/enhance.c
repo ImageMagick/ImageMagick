@@ -3388,16 +3388,19 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
         /* Scaled sigmoidal formula with better 'contrast=0' or
 	 * 'flatline' handling (greyscale):
          *
-	 * ( 1/(1+exp(a*(b-u))) - (1/(1+exp(a*b)) + 1/(1+exp(a*(b-1))))/2 )
-         * / ( 1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)) + epsilon ) + 0.5
+	 * 0.5 +
+         * ( 1/(1+exp(a*(b-u))) - (1/(1+exp(a*b)) + 1/(1+exp(a*(b-1))))/2 )
+         * / ( 1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)) + epsilon )
          *
-	 * "+ 0.5" is to center things around the middle of the Quantum
+	 * "0.5 +" is to center things around the middle of the Quantum
 	 * range.
 	 *
 	 * "+epsilon" is to allow a=0 without division by zero.
+         *
+     	 * "+0.5" below is to round by casting.
          */
         sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-          (MaxMap*((uu-(u0+u1)/2.0)/(u1-u0+MagickEpsilon)+0.5)));
+          (MaxMap*(0.5+(uu-(u0+u1)/2.0)/(u1-u0+MagickEpsilon))+0.5));
 #else
         /* Scaled sigmoidal formula: (1/(1+exp(a*(b-u))) - 1/(1+exp(a*b)))
          *                           /
@@ -3406,7 +3409,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
 	 * "+0.5" below is to round by casting.
          */
         sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-	  (MaxMap*((uu-u0)/(u1-u0))+0.5));
+          (MaxMap*((uu-u0)/(u1-u0))+0.5));
 #endif
         continue;
       }
