@@ -3381,7 +3381,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       {
 #define sigmoidal(a,b,x)  (1/(1+exp((a)*((b)-(x)))))
 #if 0
-        /* Simpilified function scaling,
+        /* Simplified function scaling,
          * with better 'contrast=0' or 'flatline' handling (greyscale)
          */
         double
@@ -3390,7 +3390,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
         sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum(
            (MagickRealType)(MaxMap*(
                (sigmoidal(contrast,QuantumScale*midpoint,(double)i/MaxMap)
-                  -(u0+u1)/2.0)/(u1-u0+MagickEpsilon)+0.5)   ));
+		-(u0+u1)/2.0)/(u1-u0+MagickEpsilon))+0.5   ));
 #else
         /* Scaled sigmoidal formula:
          *   (1/(1+exp(a*(b-u))) - 1/(1+exp(a*b)))
