@@ -3388,8 +3388,8 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
         /* Scaled sigmoidal formula with better 'contrast=0' or
 	 * 'flatline' handling (greyscale):
          *
-	 * (1/(1+exp(a*(b-u))) - (1/(1+exp(a*b)) + 1/(1+exp(a*(b-1))))/2 )
-         * / (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)) + epsilon ) + 0.5
+	 * ( 1/(1+exp(a*(b-u))) - (1/(1+exp(a*b)) + 1/(1+exp(a*(b-1))))/2 )
+         * / ( 1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)) + epsilon ) + 0.5
          *
 	 * "+ 0.5" is to center things around the middle of the Quantum
 	 * range.
