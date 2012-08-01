@@ -3380,28 +3380,26 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     if (sharpen != MagickFalse)
       {
 #define sigmoidal(a,b,x)  (1/(1+exp((a)*((b)-(x)))))
-#if 0
-        /* Simplified function scaling,
-         * with better 'contrast=0' or 'flatline' handling (greyscale)
-         */
         double
           u0 = sigmoidal(contrast,QuantumScale*midpoint,0.0),
-          u1 = sigmoidal(contrast,QuantumScale*midpoint,1.0);
+          u1 = sigmoidal(contrast,QuantumScale*midpoint,1.0),
+ 	  uu = sigmoidal(contrast,QuantumScale*midpoint,(double)i/MaxMap);
+#if 0
+        /* Scaled sigmoidal formula with better 'contrast=0' or
+	 * 'flatline' handling (greyscale)
+         */
         sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum(
-           (MagickRealType)(MaxMap*(
-               (sigmoidal(contrast,QuantumScale*midpoint,(double)i/MaxMap)
-		-(u0+u1)/2.0)/(u1-u0+MagickEpsilon))+0.5   ));
+          (MagickRealType) (MaxMap*((uu-(u0+u1)/2.0)/(u1-u0+MagickEpsilon))
+			    +0.5));
 #else
         /* Scaled sigmoidal formula:
-         *   (1/(1+exp(a*(b-u))) - 1/(1+exp(a*b)))
-         * / (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)))
+         * (1/(1+exp(a*(b-u))) - 1/(1+exp(a*b)))
+         * /
+         * (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)))
          */
-        sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-          (MaxMap*((1.0/(1.0+exp(contrast*(midpoint/(double) QuantumRange-
-          (double) i/MaxMap))))-(1.0/(1.0+exp(contrast*(midpoint/
-          (double) QuantumRange)))))/((1.0/(1.0+exp(contrast*(midpoint/
-          (double) QuantumRange-1.0))))-(1.0/(1.0+exp(contrast*(midpoint/
-          (double) QuantumRange)))))+0.5));
+        sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum(
+          (MagickRealType) (MaxMap*((uu-u0)/(u1-u0))
+			    +0.5));
 #endif
         continue;
       }
