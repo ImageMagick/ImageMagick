@@ -582,7 +582,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   composite_image=CloneImage(composite,0,0,MagickTrue,exception);
   if (composite_image == (const Image *) NULL)
     return(MagickFalse);
-  (void) TransformImageColorspace(composite_image,image->colorspace,exception);
+  (void) SetImageColorspace(composite_image,image->colorspace,exception);
   if ((compose == OverCompositeOp) || (compose == SrcOverCompositeOp))
     {
       status=CompositeOverImage(image,composite_image,clip_to_self,x_offset,
