@@ -1090,7 +1090,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       register ssize_t
         i;
 
-      pixel=(double) GetPixelIntensity(image,p);      
+      pixel=(double) GetPixelIntensity(image,p);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         if (image->channel_mask != DefaultChannels)
@@ -3386,16 +3386,24 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
  	  uu = sigmoidal(contrast,QuantumScale*midpoint,(double) i/MaxMap);
 #if 0
         /* Scaled sigmoidal formula with better 'contrast=0' or
-	 * 'flatline' handling (greyscale)
+	 * 'flatline' handling (greyscale):
+         *
+	 * (1/(1+exp(a*(b-u))) - (1/(1+exp(a*b)) + 1/(1+exp(a*(b-1))))/2 )
+         * / (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)) + epsilon )
+         *
+	 * "+0.5" is to center things around the middle of the Quantum
+	 * range.
+	 *
+	 * "+epsilon" is to allow a=0 without division by zero.
          */
-        sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum(
-          (MagickRealType) (MaxMap*((uu-(u0+u1)/2.0)/(u1-u0+MagickEpsilon))
-			    +0.5));
+        sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
+          (MaxMap*((uu-(u0+u1)/2.0)/(u1-u0+MagickEpsilon)+0.5)));
 #else
-        /* Scaled sigmoidal formula:
-         * (1/(1+exp(a*(b-u))) - 1/(1+exp(a*b)))
-         * /
-         * (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)))
+        /* Scaled sigmoidal formula: (1/(1+exp(a*(b-u))) - 1/(1+exp(a*b)))
+         *                           /
+         *                           (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)))
+	 *
+	 * "+0.5" is to round by casting.
          */
         sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum(
           (MagickRealType) (MaxMap*((uu-u0)/(u1-u0))+0.5));
