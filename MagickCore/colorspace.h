@@ -33,6 +33,7 @@ typedef enum
   HWBColorspace,
   LabColorspace,
   LogColorspace,
+  LuvColorspace,
   OHTAColorspace,
   Rec601LumaColorspace,
   Rec601YCbCrColorspace,

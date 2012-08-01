@@ -168,6 +168,24 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   *b=(200.0*(y-z))/255.0+0.5;
 }
 
+
+static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
+  double *L,double *u,double *v)
+{
+  assert(L != (double *) NULL);
+  assert(u != (double *) NULL);
+  assert(v != (double *) NULL);
+  if ((Y/D50Y) > CIEEpsilon)
+    *L=(double) (116.0*pow(Y/D50Y,1/3.0)-16.0);
+  else
+    *L=CIEK*(Y/D50Y);
+  *u=13.0**L*((4.0*X/(X+15.0*Y+3.0*Z))-(4.0*D50X/(D50X+15.0*D50Y+3.0*D50Z)));
+  *v=13.0**L*((9.0*Y/(X+15.0*Y+3.0*Z))-(9.0*D50Y/(D50X+15.0*D50Y+3.0*D50Z)));
+  *L/=100.0;
+  *u=(*u+134.0)/354.0;
+  *v=(*v+140.0)/256.0;
+}
+
 static MagickBooleanType sRGBTransformImage(Image *image,
   const ColorspaceType colorspace,ExceptionInfo *exception)
 {
@@ -773,6 +791,75 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       }
       image_view=DestroyCacheView(image_view);
       logmap=(Quantum *) RelinquishMagickMemory(logmap);
+      if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
+        return(MagickFalse);
+      return(status);
+    }
+    case LuvColorspace:
+    {
+      /*
+        Transform image from sRGB to Luv.
+      */
+      if (image->storage_class == PseudoClass)
+        {
+          if (SyncImage(image,exception) == MagickFalse)
+            return(MagickFalse);
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+            return(MagickFalse);
+        }
+      image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        dynamic_number_threads(image,image->columns,image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        MagickBooleanType
+          sync;
+
+        register ssize_t
+          x;
+
+        register Quantum
+          *restrict q;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (Quantum *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          double
+            blue,
+            green,
+            L,
+            red,
+            u,
+            v,
+            X,
+            Y,
+            Z;
+
+          red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
+          green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
+          blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
+          ConvertXYZToLuv(X,Y,Z,&L,&u,&v);
+          SetPixelRed(image,ClampToQuantum(QuantumRange*L),q);
+          SetPixelGreen(image,ClampToQuantum(QuantumRange*u),q);
+          SetPixelBlue(image,ClampToQuantum(QuantumRange*v),q);
+          q+=GetPixelChannels(image);
+        }
+        sync=SyncCacheViewAuthenticPixels(image_view,exception);
+        if (sync == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
       if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
         return(MagickFalse);
       return(status);
@@ -1547,6 +1634,24 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   *X=D50X*x;
   *Y=D50Y*y;
   *Z=D50Z*z;
+}
+
+static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
+  double *X,double *Y,double *Z)
+{
+  assert(X != (double *) NULL);
+  assert(Y != (double *) NULL);
+  assert(Z != (double *) NULL);
+  if ((100.0*L) > (CIEK*CIEEpsilon))
+    *Y=(double) pow(((100.0*L)+16.0)/116.0,3.0);
+  else
+    *Y=(100.0*L)/CIEK;
+  *X=((*Y*((39.0*(100.0*L)/((256.0*v-140.0)+13.0*(100.0*L)*(9.0*D50Y/
+     (D50X+15.0*D50Y+3.0*D50Z))))-5.0))+5.0*(*Y))/((((52.0*(100.0*L)/
+     ((354.0*u-134.0)+13.0*(100.0*L)*(4.0*D50X/(D50X+15.0*D50Y+3.0*D50Z))))-
+     1.0)/3.0)-(-1.0/3.0));
+  *Z=(*X*(((52.0*(100.0*L)/((354.0*u-134.0)+13.0*(100.0*L)*(4.0*D50X/
+     (D50X+15.0*D50Y+3.0*D50Z))))-1.0)/3.0))-5.0*(*Y);
 }
 
 static inline ssize_t RoundToYCC(const MagickRealType value)
@@ -2434,6 +2539,78 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       }
       image_view=DestroyCacheView(image_view);
       logmap=(Quantum *) RelinquishMagickMemory(logmap);
+      if (SetImageColorspace(image,sRGBColorspace,exception) == MagickFalse)
+        return(MagickFalse);
+      return(status);
+    }
+    case LuvColorspace:
+    {
+      /*
+        Transform image from Luv to sRGB.
+      */
+      if (image->storage_class == PseudoClass)
+        {
+          if (SyncImage(image,exception) == MagickFalse)
+            return(MagickFalse);
+          if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
+            return(MagickFalse);
+        }
+      image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        dynamic_number_threads(image,image->columns,image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        MagickBooleanType
+          sync;
+
+        register ssize_t
+          x;
+
+        register Quantum
+          *restrict q;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (Quantum *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          double
+            blue,
+            green,
+            L,
+            red,
+            u,
+            v,
+            X,
+            Y,
+            Z;
+
+          L=QuantumScale*GetPixelRed(image,q);
+          u=QuantumScale*GetPixelGreen(image,q);
+          v=QuantumScale*GetPixelBlue(image,q);
+          ConvertLuvToXYZ(L,u,v,&X,&Y,&Z);
+          ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
+          red=QuantumRange*CompandsRGB(QuantumScale*red);
+          green=QuantumRange*CompandsRGB(QuantumScale*green);
+          blue=QuantumRange*CompandsRGB(QuantumScale*blue);
+          SetPixelRed(image,ClampToQuantum(red),q);
+          SetPixelGreen(image,ClampToQuantum(green),q);
+          SetPixelBlue(image,ClampToQuantum(blue),q);
+          q+=GetPixelChannels(image);
+        }
+        sync=SyncCacheViewAuthenticPixels(image_view,exception);
+        if (sync == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
       if (SetImageColorspace(image,sRGBColorspace,exception) == MagickFalse)
         return(MagickFalse);
       return(status);

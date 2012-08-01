@@ -870,6 +870,7 @@ static const OptionInfo
     { "HWB", HWBColorspace, UndefinedOptionFlag, MagickFalse },
     { "Lab", LabColorspace, UndefinedOptionFlag, MagickFalse },
     { "Log", LogColorspace, UndefinedOptionFlag, MagickFalse },
+    { "Luv", LuvColorspace, UndefinedOptionFlag, MagickFalse },
     { "OHTA", OHTAColorspace, UndefinedOptionFlag, MagickFalse },
     { "Rec601Luma", Rec601LumaColorspace, UndefinedOptionFlag, MagickFalse },
     { "Rec601YCbCr", Rec601YCbCrColorspace, UndefinedOptionFlag, MagickFalse },
