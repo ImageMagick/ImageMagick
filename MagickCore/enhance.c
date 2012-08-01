@@ -3395,10 +3395,6 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
         /* Scaled sigmoidal formula:
          *   (1/(1+exp(a*(b-u))) - 1/(1+exp(a*b)))
          * / (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)))
-         * + 0.5
-	 * 
-	 * Nicolas strongly suspects that the +0.5 in the code is at the
-	 * wrong paren nesting (does not match the previous one).
          */
         sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
           (MaxMap*((1.0/(1.0+exp(contrast*(midpoint/(double) QuantumRange-
