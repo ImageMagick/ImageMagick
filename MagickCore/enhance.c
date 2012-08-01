@@ -3403,7 +3403,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
          *                           /
          *                           (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)))
 	 *
-	 * "+0.5" is to round by casting.
+	 * "+0.5" below is to round by casting.
          */
         sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
 	  (MaxMap*((uu-u0)/(u1-u0))+0.5));
