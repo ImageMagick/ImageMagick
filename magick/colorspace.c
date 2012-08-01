@@ -1598,7 +1598,7 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   if (pow(y,3.0) > CIEEpsilon)
     y=pow(y,3.0);
   else
-    y=L/CIEK;
+    y=(100.0*L)/CIEK;
   if (pow(z,3.0) > CIEEpsilon)
     z=pow(z,3.0);
   else
