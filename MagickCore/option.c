@@ -1117,6 +1117,7 @@ static const OptionInfo
     { "LoG", LoGKernel, UndefinedOptionFlag, MagickFalse },
     { "Blur", BlurKernel, UndefinedOptionFlag, MagickFalse },
     { "Comet", CometKernel, UndefinedOptionFlag, MagickFalse },
+    { "Binomial", BinomialKernel, UndefinedOptionFlag, MagickFalse },
     { "Laplacian", LaplacianKernel, UndefinedOptionFlag, MagickFalse },
     { "Sobel", SobelKernel, UndefinedOptionFlag, MagickFalse },
     { "FreiChen", FreiChenKernel, UndefinedOptionFlag, MagickFalse },
@@ -1709,7 +1710,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloneImageOptions() clones one or more image options.
+%  CloneImageOptions() clones all global image options, to another image_info
 %
 %  The format of the CloneImageOptions method is:
 %
@@ -1718,9 +1719,9 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: the image info.
+%    o image_info: the image info to recieve the cloned options.
 %
-%    o clone_info: the clone image info.
+%    o clone_info: the source image info for options to clone.
 %
 */
 MagickExport MagickBooleanType CloneImageOptions(ImageInfo *image_info,
@@ -1751,7 +1752,8 @@ MagickExport MagickBooleanType CloneImageOptions(ImageInfo *image_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DefineImageOption() associates an assignment string of the form
-%  "key=value" with an image option. It is equivelent to SetImageOption().
+%  "key=value" with a global image option. It is equivelent to
+%  SetImageOption().
 %
 %  The format of the DefineImageOption method is:
 %
@@ -1799,7 +1801,7 @@ MagickExport MagickBooleanType DefineImageOption(ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DeleteImageOption() deletes an key from the image map.
+%  DeleteImageOption() deletes an key from the global image options.
 %
 %  Returns MagickTrue is the option is found and deleted from the Options.
 %
@@ -1839,7 +1841,8 @@ MagickExport MagickBooleanType DeleteImageOption(ImageInfo *image_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyImageOptions() releases memory associated with image option values.
+%  DestroyImageOptions() destroys all global options and associated memory
+%  attached to the given image_info image list.
 %
 %  The format of the DestroyDefines method is:
 %
@@ -1872,7 +1875,10 @@ MagickExport void DestroyImageOptions(ImageInfo *image_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageOption() gets a value associated with an image option.
+%  GetImageOption() gets a value associated with the global image options.
+%
+%  The returned string is a constant string in the tree and should NOT be
+%  freed by the caller.
 %
 %  The format of the GetImageOption method is:
 %
@@ -2151,7 +2157,7 @@ MagickExport char **GetCommandOptions(const CommandOption value)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetNextImageOption() gets the next image option value.
+%  GetNextImageOption() gets the next global option value.
 %
 %  The format of the GetNextImageOption method is:
 %
@@ -2595,6 +2601,9 @@ MagickExport ssize_t ParsePixelChannelOption(const char *channels)
 %
 %  RemoveImageOption() removes an option from the image and returns its value.
 %
+%  In this case the ConstantString() value returned should be freed by the
+%  caller when finished.
+%
 %  The format of the RemoveImageOption method is:
 %
 %      char *RemoveImageOption(ImageInfo *image_info,const char *option)
@@ -2635,7 +2644,7 @@ MagickExport char *RemoveImageOption(ImageInfo *image_info,const char *option)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ResetImageOptions() resets the image_info option.  That is, it deletes
-%  all options associated with the image_info structure.
+%  all global options associated with the image_info structure.
 %
 %  The format of the ResetImageOptions method is:
 %
@@ -2739,7 +2748,7 @@ MagickExport MagickBooleanType SetImageOption(ImageInfo *image_info,
     image_info->options=NewSplayTree(CompareSplayTreeString,
       RelinquishMagickMemory,RelinquishMagickMemory);
 
-  /* Delete Option if NULL */
+  /* Delete Option if NULL --  empty string values are valid! */
   if (value == (const char *) NULL)
     return(DeleteImageOption(image_info,option));
 
