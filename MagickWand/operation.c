@@ -1888,9 +1888,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             value;
 
           flags=ParsePageGeometry(_image,arg1,&geometry,_exception);
-          if ((flags & RhoValue) == 0)
+          if ((flags & WidthValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          if ((flags & SigmaValue) == 0)
+          if ((flags & HeightValue) == 0)
             geometry.height=geometry.width;
 
           value=GetImageOption(_image_info,"compose");

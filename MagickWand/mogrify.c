@@ -965,7 +965,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
             flags=ParsePageGeometry(*image,argv[i+1],&geometry,exception);
-            if ((flags & SigmaValue) == 0)
+            if ((flags & HeightValue) == 0)
               geometry.height=geometry.width;
             mogrify_image=BorderImage(*image,&geometry,compose,exception);
             break;
