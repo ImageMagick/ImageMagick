@@ -809,7 +809,7 @@ MagickExport MagickBooleanType HuffmanEncodeImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (ssize_t) huffman_image->columns; x++)
     {
-      *q++=(unsigned char) (PixelIntensity(p) >= ((MagickRealType)
+      *q++=(unsigned char) (PixelIntensity(huffman_image,p) >= ((MagickRealType)
         QuantumRange/2.0) ? 0 : 1);
       p++;
     }

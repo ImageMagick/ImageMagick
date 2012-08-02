@@ -618,7 +618,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
     {
       if ((channel & SyncChannels) != 0)
         {
-          if (PixelIntensity(q) < intensity)
+          if (PixelIntensity(image,q) < intensity)
             {
               SetPixelRed(q,0);
               SetPixelGreen(q,0);
@@ -2086,7 +2086,7 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
     {
       if ((channel & SyncChannels) != 0)
         {
-          if (PixelIntensity(q) > intensity)
+          if (PixelIntensity(image,q) > intensity)
             {
               SetPixelRed(q,QuantumRange);
               SetPixelGreen(q,QuantumRange);

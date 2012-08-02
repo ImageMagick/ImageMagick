@@ -5929,8 +5929,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
       polarity=(unsigned short) ((PixelIntensityToQuantum(image,
         &canvas->colormap[0])) < (QuantumRange/2) ? 1 : 0);
       if (canvas->colors == 2)
-        polarity=PixelIntensity(&canvas->colormap[0]) <
-          PixelIntensity(&canvas->colormap[1]);
+        polarity=PixelIntensity(canvas,&canvas->colormap[0]) <
+          PixelIntensity(canvas,&canvas->colormap[1]);
       for (y=0; y < (int) canvas->rows; y++)
       {
         p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,canvas->columns,1,
@@ -6547,8 +6547,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
       polarity=(unsigned short) ((PixelIntensityToQuantum(image,
         &canvas->colormap[0])) < (QuantumRange/2) ? 1 : 0);
       if (canvas->colors == 2)
-        polarity=PixelIntensity(&canvas->colormap[0]) <
-          PixelIntensity(&canvas->colormap[1]);
+        polarity=PixelIntensity(canvas,&canvas->colormap[0]) <
+          PixelIntensity(canvas,&canvas->colormap[1]);
       for (y=0; y < (int) canvas->rows; y++)
       {
         p=GetCacheViewVirtualPixels(canvas_view,0,(ssize_t) y,canvas->columns,1,
