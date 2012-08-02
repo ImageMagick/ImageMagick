@@ -1,3 +1,6 @@
+2012-08-03  6.7.8-8 Anthony Thyssen <A.Thyssen@griffith...>
+  * Added 2d named convolution kernel Binomial (for Fred Wienhaus)
+
 2012-08-01  6.7.8-8 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Clean up sigmoidal-contrast.
 

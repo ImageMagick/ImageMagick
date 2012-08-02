@@ -62,7 +62,8 @@ typedef enum
   ManhattanKernel,
   OctagonalKernel,
   EuclideanKernel,
-  UserDefinedKernel   /* User Specified Kernel Array */
+  UserDefinedKernel,   /* User Specified Kernel Array */
+  BinomialKernel
 } KernelInfoType;
 
 typedef enum
