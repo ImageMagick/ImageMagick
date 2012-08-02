@@ -170,6 +170,13 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
         (void) CopyMagickString(p,p+1,MaxTextExtent);
         break;
       }
+      case 'x':
+      case 'X':
+      {
+        flags|=SeparatorValue;
+        p++;
+        break;
+      }
       case '-':
       case '.':
       case ',':
@@ -184,8 +191,6 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       case '7':
       case '8':
       case '9':
-      case 'x':
-      case 'X':
       case 215:
       {
         p++;
@@ -279,6 +284,19 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
           flags|=YValue;
           if ((flags & YNegative) != 0)
             *y=(-*y);
+        }
+    }
+  if ((flags & SeparatorValue) == 0)
+    {
+      if (((flags & PercentValue) != 0) && ((flags & WidthValue) == 0))
+        {
+          *width=(*height);
+          flags|=WidthValue;
+        }
+      if (((flags & PercentValue) != 0) && ((flags & HeightValue) == 0))
+        {
+          *height=(*width);
+          flags|=HeightValue;
         }
     }
 #if 0
@@ -867,6 +885,13 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
         (void) CopyMagickString(p,p+1,MaxTextExtent);
         break;
       }
+      case 'x':
+      case 'X':
+      {
+        flags|=SeparatorValue;
+        p++;
+        break;
+      }
       case '-':
       case '+':
       case ',':
@@ -880,8 +905,6 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       case '7':
       case '8':
       case '9':
-      case 'x':
-      case 'X':
       case '/':
       case ':':
       case 215:
@@ -1048,6 +1071,19 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       geometry_info->xi=0.0;
       flags|=SigmaValue;
       flags&=(~XiValue);
+    }
+  if ((flags & SeparatorValue) == 0)
+    {
+      if (((flags & PercentValue) != 0) && ((flags & RhoValue) == 0))
+        {
+          geometry_info->rho=geometry_info->sigma;
+          flags|=RhoValue;
+        }
+      if (((flags & PercentValue) != 0) && ((flags & SigmaValue) == 0))
+        {
+          geometry_info->sigma=geometry_info->rho;
+          flags|=SigmaValue;
+        }
     }
 #if 0
   /* Debugging Geometry */
