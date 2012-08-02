@@ -3164,7 +3164,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
               for (u=0; u < (ssize_t) kernel->width; u++, k++) {
                 if ( IsNan(*k) || (*k) < 0.5 ) continue;
                 if ( result.red == 0.0 ||
-                     PixelIntensity(&(k_pixels[u])) < PixelIntensity(q) ) {
+                     PixelIntensity(image,&(k_pixels[u])) < PixelIntensity(result_image,q) ) {
                   /* copy the whole pixel - no channel selection */
                   *q = k_pixels[u];
                   if ( result.red > 0.0 ) changed++;
@@ -3194,7 +3194,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
               for (u=0; u < (ssize_t) kernel->width; u++, k--) {
                 if ( IsNan(*k) || (*k) < 0.5 ) continue; /* boolean kernel */
                 if ( result.red == 0.0 ||
-                     PixelIntensity(&(k_pixels[u])) > PixelIntensity(q) ) {
+                     PixelIntensity(image,&(k_pixels[u])) > PixelIntensity(result_image,q) ) {
                   /* copy the whole pixel - no channel selection */
                   *q = k_pixels[u];
                   if ( result.red > 0.0 ) changed++;

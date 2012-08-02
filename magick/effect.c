@@ -321,7 +321,8 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
         v;
 
       gamma=0.0;
-      i=(ssize_t) ceil((double) width*QuantumScale*PixelIntensity(r)-0.5);
+      i=(ssize_t) ceil((double) width*QuantumScale*PixelIntensity(edge_image,r)-
+        0.5);
       if (i < 0)
         i=0;
       else
@@ -640,7 +641,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
 
       gamma=0.0;
       i=(ssize_t) ceil((double) width*(QuantumRange-QuantumScale*
-        PixelIntensity(r))-0.5);
+        PixelIntensity(edge_image,r))-0.5);
       if (i < 0)
         i=0;
       else
@@ -3681,10 +3682,11 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
 %
 */
 
-static inline MagickBooleanType SelectiveContrast(const PixelPacket *p,
-  const PixelPacket *q,const double threshold)
+static inline MagickBooleanType SelectiveContrast(const Image *image,
+  const PixelPacket *p,const Image *blur_image,const PixelPacket *q,
+  const double threshold)
 {
-  if (fabs(PixelIntensity(p)-PixelIntensity(q)) < threshold)
+  if (fabs(PixelIntensity(image,p)-PixelIntensity(blur_image,q)) < threshold)
     return(MagickTrue);
   return(MagickFalse);
 }
@@ -3873,7 +3875,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
           {
             for (u=0; u < (ssize_t) width; u++)
             {
-              if (SelectiveContrast(p+u+j,q,threshold) != MagickFalse)
+              status=SelectiveContrast(image,p+u+j,blur_image,q,threshold);
+              if (status != MagickFalse)
                 {
                   pixel.red+=(*k)*GetPixelRed(p+u+j);
                   pixel.green+=(*k)*GetPixelGreen(p+u+j);
@@ -3902,7 +3905,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
               {
                 for (u=0; u < (ssize_t) width; u++)
                 {
-                  if (SelectiveContrast(p+u+j,q,threshold) != MagickFalse)
+                  status=SelectiveContrast(image,p+u+j,blur_image,q,threshold);
+                  if (status != MagickFalse)
                     {
                       pixel.opacity+=(*k)*(p+u+j)->opacity;
                       gamma+=(*k);
@@ -3923,7 +3927,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
               {
                 for (u=0; u < (ssize_t) width; u++)
                 {
-                  if (SelectiveContrast(p+u+j,q,threshold) != MagickFalse)
+                  status=SelectiveContrast(image,p+u+j,blur_image,q,threshold);
+                  if (status != MagickFalse)
                     {
                       pixel.index+=(*k)*GetPixelIndex(indexes+x+u+j);
                       gamma+=(*k);
@@ -3945,7 +3950,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
           {
             for (u=0; u < (ssize_t) width; u++)
             {
-              if (SelectiveContrast(p+u+j,q,threshold) != MagickFalse)
+              status=SelectiveContrast(image,p+u+j,blur_image,q,threshold);
+              if (status != MagickFalse)
                 {
                   alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(p+u+j));
                   pixel.red+=(*k)*alpha*GetPixelRed(p+u+j);
@@ -3976,7 +3982,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
               {
                 for (u=0; u < (ssize_t) width; u++)
                 {
-                  if (SelectiveContrast(p+u+j,q,threshold) != MagickFalse)
+                  status=SelectiveContrast(image,p+u+j,blur_image,q,threshold);
+                  if (status != MagickFalse)
                     {
                       pixel.opacity+=(*k)*GetPixelOpacity(p+u+j);
                       gamma+=(*k);
@@ -3997,7 +4004,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
               {
                 for (u=0; u < (ssize_t) width; u++)
                 {
-                  if (SelectiveContrast(p+u+j,q,threshold) != MagickFalse)
+                  status=SelectiveContrast(image,p+u+j,blur_image,q,threshold);
+                  if (status != MagickFalse)
                     {
                       alpha=(MagickRealType) (QuantumScale*
                         GetPixelAlpha(p+u+j));
@@ -4178,12 +4186,12 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
       /*
         Determine the surface normal and compute shading.
       */
-      normal.x=(double) (PixelIntensity(s0-1)+PixelIntensity(s1-1)+
-        PixelIntensity(s2-1)-PixelIntensity(s0+1)-PixelIntensity(s1+1)-
-        PixelIntensity(s2+1));
-      normal.y=(double) (PixelIntensity(s2-1)+PixelIntensity(s2)+
-        PixelIntensity(s2+1)-PixelIntensity(s0-1)-PixelIntensity(s0)-
-        PixelIntensity(s0+1));
+      normal.x=(double) (PixelIntensity(image,s0-1)+PixelIntensity(image,s1-1)+
+        PixelIntensity(image,s2-1)-PixelIntensity(image,s0+1)-
+        PixelIntensity(image,s1+1)-PixelIntensity(image,s2+1));
+      normal.y=(double) (PixelIntensity(image,s2-1)+PixelIntensity(image,s2)+
+        PixelIntensity(image,s2+1)-PixelIntensity(image,s0-1)-
+        PixelIntensity(image,s0)-PixelIntensity(image,s0+1));
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else

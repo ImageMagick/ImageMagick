@@ -362,7 +362,7 @@ static MagickBooleanType WriteOTBImage(const ImageInfo *image_info,Image *image)
     byte=0;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (PixelIntensity(p) < (QuantumRange/2.0))
+      if (PixelIntensity(image,p) < (QuantumRange/2.0))
         byte|=0x1 << (7-bit);
       bit++;
       if (bit == 8)
