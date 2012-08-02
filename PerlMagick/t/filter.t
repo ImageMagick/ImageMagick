@@ -105,7 +105,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/GaussianBlur.miff', 'Gau
 testFilterCompare('input.miff',  q//, 'reference/filter/Implode.miff', 'Implode', q/0.5/, 0.002, 0.02);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Level.miff', 'Level', q/'20%'/, 0.2, 1.02);
+testFilterCompare('input.miff',  q//, 'reference/filter/Level.miff', 'Level', q/'20%x'/, 0.2, 1.02);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Magnify.miff', 'Magnify', q//, 0.05, 0.5);
