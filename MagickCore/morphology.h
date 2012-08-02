@@ -33,6 +33,7 @@ typedef enum
   LoGKernel,
   BlurKernel,
   CometKernel,
+  BinomialKernel,
   LaplacianKernel,    /* Convolution Kernels, by Name */
   SobelKernel,
   FreiChenKernel,

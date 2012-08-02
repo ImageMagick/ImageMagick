@@ -114,6 +114,21 @@ static inline double MagickMax(const double x,const double y)
 #define Minimize(assign,value) assign=MagickMin(assign,value)
 #define Maximize(assign,value) assign=MagickMax(assign,value)
 
+/* Integer Factorial Function - for a Binomial kernel */
+#if 1
+static inline size_t fact(size_t n)
+{
+  size_t l,f;
+  for(f=1, l=2; l <= n; f=f*l, l++);
+  return(f);
+}
+#elif 1 /* glibc floating point alternatives */
+#define fact(n) ((size_t)tgamma((double)n+1))
+#else
+#define fact(n) ((size_t)lgamma((double)n+1))
+#endif
+
+
 /* Currently these are only internal to this module */
 static void
   CalcKernelMetaData(KernelInfo *),
@@ -633,6 +648,10 @@ MagickExport KernelInfo *AcquireKernelInfo(const char *kernel_string)
 %       Note that the first argument is the width of the kernel and not the
 %       radius of the kernel.
 %
+%    Binomial:[{radius}]
+%       Generate a discrete kernel using a 2 dimentional Pascel's Triangle
+%       of values.
+%
 %    # Still to be implemented...
 %    #
 %    # Filter2D
@@ -995,6 +1014,7 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
     case LoGKernel:
     case BlurKernel:
     case CometKernel:
+    case BinomialKernel:
     case DiamondKernel:
     case SquareKernel:
     case RectangleKernel:
@@ -1287,6 +1307,37 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
         ScaleKernelInfo(kernel, 1.0, NormalizeValue); /* Normalize */
         RotateKernelInfo(kernel, args->xi); /* Rotate by angle */
+        break;
+      }
+    case BinomialKernel:
+      {
+        size_t
+          order_f;
+
+        if (args->rho < 1.0)
+          kernel->width = kernel->height = 3;  /* default radius = 1 */
+        else
+          kernel->width = kernel->height = ((size_t)args->rho)*2+1;
+        kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
+
+        order_f = fact(kernel->width-1);
+
+        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->height*sizeof(*kernel->values));
+        if (kernel->values == (double *) NULL)
+          return(DestroyKernelInfo(kernel));
+
+        /* set all kernel values within diamond area to scale given */
+        for ( i=0, v=0; v < (ssize_t)kernel->height; v++)
+          { size_t
+              alpha = order_f / ( fact(v) * fact(kernel->height-v-1) );
+            for ( u=0; u < (ssize_t)kernel->width; u++, i++)
+              kernel->positive_range += kernel->values[i] = (double)
+                (alpha * order_f / ( fact(u) * fact(kernel->height-u-1) ));
+          }
+        kernel->minimum = 1.0;
+        kernel->maximum = kernel->values[kernel->x+kernel->y*kernel->width];
+        kernel->negative_range = 0.0;
         break;
       }
 
