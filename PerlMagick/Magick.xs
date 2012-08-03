@@ -7689,12 +7689,8 @@ Mogrify(ref,...)
           geometry.width=0;
           geometry.height=0;
           if (attribute_flag[0] != 0)
-            {
-              flags=ParsePageGeometry(image,argument_list[0].string_reference,
-                &geometry,exception);
-              if ((flags & HeightValue) == 0)
-                geometry.height=geometry.width;
-            }
+            flags=ParsePageGeometry(image,argument_list[0].string_reference,
+              &geometry,exception);
           if (attribute_flag[1] != 0)
             geometry.width=argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
@@ -7830,8 +7826,6 @@ Mogrify(ref,...)
             {
               flags=ParsePageGeometry(image,argument_list[0].string_reference,
                 &geometry,exception);
-              if ((flags & HeightValue) == 0)
-                geometry.height=geometry.width;
               frame_info.width=geometry.width;
               frame_info.height=geometry.height;
               frame_info.outer_bevel=geometry.x;
@@ -9912,8 +9906,8 @@ Mogrify(ref,...)
           if (attribute_flag[1] == 0)
             argument_list[1].integer_reference=0;
           (void) PosterizeImage(image,argument_list[0].integer_reference,
-            argument_list[1].integer_reference ? MagickTrue : MagickFalse,
-            exception);
+            argument_list[1].integer_reference ? RiemersmaDitherMethod :
+            NoDitherMethod,exception);
           break;
         }
         case 89:  /* Shadow */
