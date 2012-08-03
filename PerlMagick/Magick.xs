@@ -7594,12 +7594,8 @@ Mogrify(ref,...)
           geometry.width=0;
           geometry.height=0;
           if (attribute_flag[0] != 0)
-            {
-              flags=ParsePageGeometry(image,argument_list[0].string_reference,
-                &geometry,exception);
-              if ((flags & HeightValue) == 0)
-                geometry.height=geometry.width;
-            }
+            flags=ParsePageGeometry(image,argument_list[0].string_reference,
+              &geometry,exception);
           if (attribute_flag[1] != 0)
             geometry.width=argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
@@ -7614,7 +7610,8 @@ Mogrify(ref,...)
             QueryColorDatabase(argument_list[5].string_reference,
               &image->border_color,exception);
           if (attribute_flag[6] != 0)
-            image->compose=(CompositeOperator) argument_list[6].integer_reference;
+            image->compose=(CompositeOperator)
+              argument_list[6].integer_reference;
           image=BorderImage(image,&geometry,exception);
           break;
         }
@@ -7727,8 +7724,6 @@ Mogrify(ref,...)
             {
               flags=ParsePageGeometry(image,argument_list[0].string_reference,
                 &geometry,exception);
-              if ((flags & HeightValue) == 0)
-                geometry.height=geometry.width;
               frame_info.width=geometry.width;
               frame_info.height=geometry.height;
               frame_info.outer_bevel=geometry.x;
