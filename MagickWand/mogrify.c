@@ -965,8 +965,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
             flags=ParsePageGeometry(*image,argv[i+1],&geometry,exception);
-            if ((flags & HeightValue) == 0)
-              geometry.height=geometry.width;
             mogrify_image=BorderImage(*image,&geometry,compose,exception);
             break;
           }
@@ -1661,8 +1659,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             flags=ParsePageGeometry(*image,argv[i+1],&geometry,exception);
             frame_info.width=geometry.width;
             frame_info.height=geometry.height;
-            if ((flags & HeightValue) == 0)
-              frame_info.height=geometry.width;
             frame_info.outer_bevel=geometry.x;
             frame_info.inner_bevel=geometry.y;
             frame_info.x=(ssize_t) frame_info.width;
@@ -2424,8 +2420,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Surround image with a raise of solid color.
             */
             flags=ParsePageGeometry(*image,argv[i+1],&geometry,exception);
-            if ((flags & SigmaValue) == 0)
-              geometry.height=geometry.width;
             (void) RaiseImage(*image,&geometry,*option == '-' ? MagickTrue :
               MagickFalse,exception);
             break;
