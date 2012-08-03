@@ -1447,7 +1447,7 @@ MagickExport MagickStatusType ParsePageGeometry(const Image *image,
     }
   flags=ParseMetaGeometry(geometry,&region_info->x,&region_info->y,
     &region_info->width,&region_info->height);
-  if ((flags & PercentValue) != 0)
+  if (((flags & PercentValue) != 0) || ((flags & SeparatorValue) == 0))
     {
       if ((flags & WidthValue) == 0)
         region_info->width=region_info->height;

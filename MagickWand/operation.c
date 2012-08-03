@@ -1890,8 +1890,6 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           flags=ParsePageGeometry(_image,arg1,&geometry,_exception);
           if ((flags & (WidthValue | HeightValue)) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
-          if ((flags & HeightValue) == 0)
-            geometry.height=geometry.width;
           compose=OverCompositeOp;
           value=GetImageOption(_image_info,"compose");
           if (value != (const char *) NULL)
@@ -2361,7 +2359,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           (void) ParsePageGeometry(_image,arg1,&geometry,_exception);
           (void) QueryColorCompliance(arg2,AllCompliance,&target,_exception);
           (void) FloodfillPaintImage(_image,_draw_info,&target,geometry.x,
-                    geometry.y,plus_alt_op,_exception);
+            geometry.y,plus_alt_op,_exception);
           break;
         }
       if (LocaleCompare("frame",option+1) == 0)
@@ -2376,19 +2374,15 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             value;
 
           value=GetImageOption(_image_info,"compose");
-          if (value != (const char *) NULL)
-            compose=(CompositeOperator) ParseCommandOption(
-                 MagickComposeOptions,MagickFalse,value);
-          else
             compose=OverCompositeOp;  /* use Over not _image->compose */
-
+          if (value != (const char *) NULL)
+            compose=(CompositeOperator) ParseCommandOption(MagickComposeOptions,
+              MagickFalse,value);
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParsePageGeometry(_image,arg1,&geometry,_exception);
           frame_info.width=geometry.width;
           frame_info.height=geometry.height;
-          if ((flags & HeightValue) == 0)
-            frame_info.height=geometry.width;
           frame_info.outer_bevel=geometry.x;
           frame_info.inner_bevel=geometry.y;
           frame_info.x=(ssize_t) frame_info.width;
@@ -2972,8 +2966,6 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           flags=ParsePageGeometry(_image,arg1,&geometry,_exception);
-          if ((flags & SigmaValue) == 0)
-            geometry.height=geometry.width;
           (void) RaiseImage(_image,&geometry,normal_op,_exception);
           break;
         }
@@ -3209,8 +3201,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=geometry_info.rho;
-          new_image=ShearImage(_image,geometry_info.rho,
-            geometry_info.sigma,_exception);
+          new_image=ShearImage(_image,geometry_info.rho,geometry_info.sigma,
+            _exception);
           break;
         }
       if (LocaleCompare("sigmoidal-contrast",option+1) == 0)
