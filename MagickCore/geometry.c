@@ -286,18 +286,15 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
             *y=(-*y);
         }
     }
-  if ((flags & SeparatorValue) == 0)
+  if ((flags & PercentValue) != 0)
     {
-      if (((flags & PercentValue) != 0) && ((flags & WidthValue) == 0))
-        {
-          *width=(*height);
-          flags|=WidthValue;
-        }
-      if (((flags & PercentValue) != 0) && ((flags & HeightValue) == 0))
+      if (((flags & SeparatorValue) == 0) && ((flags & HeightValue) == 0))
         {
           *height=(*width);
           flags|=HeightValue;
         }
+      if (((flags & SeparatorValue) != 0) && ((flags & WidthValue) == 0))
+        *width=(*height);
     }
 #if 0
   /* Debugging Geometry */
@@ -1072,18 +1069,15 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       flags|=SigmaValue;
       flags&=(~XiValue);
     }
-  if ((flags & SeparatorValue) == 0)
+  if ((flags & PercentValue) != 0)
     {
-      if (((flags & PercentValue) != 0) && ((flags & RhoValue) == 0))
-        {
-          geometry_info->rho=geometry_info->sigma;
-          flags|=RhoValue;
-        }
-      if (((flags & PercentValue) != 0) && ((flags & SigmaValue) == 0))
+      if (((flags & SeparatorValue) == 0) && ((flags & SigmaValue) == 0))
         {
           geometry_info->sigma=geometry_info->rho;
           flags|=SigmaValue;
         }
+      if (((flags & SeparatorValue) != 0) && ((flags & RhoValue) == 0))
+        geometry_info->rho=geometry_info->sigma;
     }
 #if 0
   /* Debugging Geometry */
@@ -1457,6 +1451,13 @@ MagickExport MagickStatusType ParsePageGeometry(const Image *image,
     }
   flags=ParseMetaGeometry(geometry,&region_info->x,&region_info->y,
     &region_info->width,&region_info->height);
+  if ((flags & PercentValue) != 0)
+    {
+      if ((flags & WidthValue) == 0)
+        region_info->width=region_info->height;
+      if ((flags & HeightValue) == 0)
+        region_info->height=region_info->width;
+    }
   return(flags);
 }
 

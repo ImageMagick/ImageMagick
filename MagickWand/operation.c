@@ -1888,18 +1888,15 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             value;
 
           flags=ParsePageGeometry(_image,arg1,&geometry,_exception);
-          if ((flags & WidthValue) == 0)
+          if ((flags & (WidthValue | HeightValue)) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & HeightValue) == 0)
             geometry.height=geometry.width;
-
+          compose=OverCompositeOp;
           value=GetImageOption(_image_info,"compose");
           if (value != (const char *) NULL)
-            compose=(CompositeOperator) ParseCommandOption(
-                 MagickComposeOptions,MagickFalse,value);
-          else
-            compose=OverCompositeOp;  /* use Over not _image->compose */
-
+            compose=(CompositeOperator) ParseCommandOption(MagickComposeOptions,
+              MagickFalse,value);
           new_image=BorderImage(_image,&geometry,compose,_exception);
           break;
         }
