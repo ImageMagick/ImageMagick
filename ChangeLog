@@ -9,6 +9,7 @@
   * Caption no longer chops off text (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21558).
   * Support LUV colorspace.
+  * Support HCL colorspace.
   * Don't transform the composite image colorspace, set it instead.
   * Interpret -border 5% as 5% of width and 5% of height (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21537).
