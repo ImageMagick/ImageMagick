@@ -865,6 +865,7 @@ static const OptionInfo
     { "CMY", CMYColorspace, UndefinedOptionFlag, MagickFalse },
     { "CMYK", CMYKColorspace, UndefinedOptionFlag, MagickFalse },
     { "Gray", GRAYColorspace, UndefinedOptionFlag, MagickFalse },
+    { "HCL", HCLColorspace, UndefinedOptionFlag, MagickFalse },
     { "HSB", HSBColorspace, UndefinedOptionFlag, MagickFalse },
     { "HSL", HSLColorspace, UndefinedOptionFlag, MagickFalse },
     { "HWB", HWBColorspace, UndefinedOptionFlag, MagickFalse },
