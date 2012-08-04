@@ -28,6 +28,7 @@ typedef enum
   CMYColorspace,
   CMYKColorspace,
   GRAYColorspace,
+  HCLColorspace,
   HSBColorspace,
   HSLColorspace,
   HWBColorspace,
