@@ -799,7 +799,7 @@ MagickExport MagickBooleanType OpaquePaintImageChannel(Image *image,
   if (SetImageStorageClass(image,DirectClass) == MagickFalse)
     return(MagickFalse);
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
-      (IsMagickGray(fill) != MagickFalse))
+      (IsMagickGray(fill) == MagickFalse))
     (void) TransformImageColorspace(image,RGBColorspace);
   if ((fill->opacity != OpaqueOpacity) && (image->matte == MagickFalse))
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel);

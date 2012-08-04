@@ -1415,7 +1415,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
   gamma=0.0;
   for (i=0; i < (ssize_t) (width*width); i++)
     gamma+=kernel[i];
-  gamma=MagickEpsilonReciprocal(gamma);
+  gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);
   for (i=0; i < (ssize_t) (width*width); i++)
     normal_kernel[i]=gamma*kernel[i];
   /*
