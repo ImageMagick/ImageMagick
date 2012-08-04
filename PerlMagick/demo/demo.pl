@@ -247,7 +247,7 @@ push(@$images,$example);
 print "Level...\n";
 $example=$model->Clone();
 $example->Label('Level');
-$example->Level('20%');
+$example->Level('20%x');
 push(@$images,$example);
 
 print "Median Filter...\n";
