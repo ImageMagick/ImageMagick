@@ -36,12 +36,16 @@ extern MagickExport size_t
   GetOptimalKernelWidth2D(const double,const double);
 
 extern MagickExport void
+  ConvertHCLToRGB(const double,const double,const double,Quantum *,Quantum *,
+    Quantum *),
   ConvertHSBToRGB(const double,const double,const double,Quantum *,Quantum *,
     Quantum *),
   ConvertHSLToRGB(const double,const double,const double,Quantum *,Quantum *,
     Quantum *),
   ConvertHWBToRGB(const double,const double,const double,Quantum *,Quantum *,
     Quantum *),
+  ConvertRGBToHCL(const Quantum,const Quantum,const Quantum,double *,double *,
+    double *),
   ConvertRGBToHSB(const Quantum,const Quantum,const Quantum,double *,double *,
     double *),
   ConvertRGBToHSL(const Quantum,const Quantum,const Quantum,double *,double *,

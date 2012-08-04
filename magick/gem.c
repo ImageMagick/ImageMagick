@@ -60,6 +60,98 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o n v e r t H C L T o R G B                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertHCLToRGB() transforms a (hue, chroma, luma) to a (red, green,
+%  blue) triple.
+%
+%  The format of the ConvertHCLToRGBImage method is:
+%
+%      void ConvertHCLToRGB(const double hue,const double chroma,
+%        const double luma,Quantum *red,Quantum *green,Quantum *blue)
+%
+%  A description of each parameter follows:
+%
+%    o hue, chroma, luma: A double value representing a
+%      component of the HCL color space.
+%
+%    o red, green, blue: A pointer to a pixel component of type Quantum.
+%
+*/
+MagickExport void ConvertHCLToRGB(const double hue,const double chroma,
+  const double luma,Quantum *red,Quantum *green,Quantum *blue)
+{
+  double
+    b,
+    c,
+    g,
+    h,
+    m,
+    r,
+    x;
+
+  /*
+    Convert HCL to RGB colorspace.
+  */
+  assert(red != (Quantum *) NULL);
+  assert(green != (Quantum *) NULL);
+  assert(blue != (Quantum *) NULL);
+  h=6.0*hue;
+  c=chroma;
+  x=c*(1.0-fabs(fmod(h,2.0)-1.0));
+  r=0.0;
+  g=0.0;
+  b=0.0;
+  if ((0.0 <= h) && (h < 1.0))
+    {
+      r=c;      
+      g=x;      
+    }
+  else
+    if ((1.0 <= h) && (h < 2.0))
+      {
+        r=x;      
+        g=c;      
+      }
+    else
+      if ((2.0 <= h) && (h < 3.0))
+        {
+          g=c;      
+          b=x;      
+        }
+      else
+        if ((3.0 <= h) && (h < 4.0))
+          {
+            g=x;      
+            b=c;      
+          }
+        else
+          if ((4.0 <= h) && (h < 5.0))
+            {
+              r=x;      
+              b=c;      
+            }
+          else
+            if ((5.0 <= h) && (h < 6.0))
+              {
+                r=c;      
+                b=x;      
+              }
+  m=luma-0.298839*r+0.586811*g+0.114350*b;
+  *red=QuantumRange*(r+m);
+  *green=QuantumRange*(g+m);
+  *blue=QuantumRange*(b+m);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n v e r t H S B T o R G B                                             %
 %                                                                             %
 %                                                                             %
@@ -318,6 +410,88 @@ MagickExport void ConvertHWBToRGB(const double hue,const double whiteness,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o n v e r t R G B T o H C L                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConvertRGBToHCL() transforms a (red, green, blue) to a (hue, chroma,
+%  luma) triple.
+%
+%  The format of the ConvertRGBToHCL method is:
+%
+%      void ConvertRGBToHCL(const Quantum red,const Quantum green,
+%        const Quantum blue,double *hue,double *chroma,double *luma)
+%
+%  A description of each parameter follows:
+%
+%    o red, green, blue: A Quantum value representing the red, green, and
+%      blue component of a pixel.
+%
+%    o hue, chroma, luma: A pointer to a double value representing a
+%      component of the HCL color space.
+%
+*/
+
+static inline double MagickMax(const double x,const double y)
+{
+  if (x > y)
+    return(x);
+  return(y);
+}
+
+static inline double MagickMin(const double x,const double y)
+{
+  if (x < y)
+    return(x);
+  return(y);
+}
+
+MagickExport void ConvertRGBToHCL(const Quantum red,const Quantum green,
+  const Quantum blue,double *hue,double *chroma,double *luma)
+{
+  double
+    b,
+    c,
+    g,
+    h,
+    max,
+    r;
+
+  /*
+    Convert RGB to HCL colorspace.
+  */
+  assert(hue != (double *) NULL);
+  assert(chroma != (double *) NULL);
+  assert(luma != (double *) NULL);
+  r=red;
+  g=green;
+  b=blue;
+  max=MagickMax(r,MagickMax(g,b));
+  c=max-(double) MagickMin(r,MagickMin(g,b));
+  h=0.0;
+  if (c == 0)
+    h=0.0;
+  else
+    if (red == max)
+      h=fmod((g-b)/c,6.0);
+    else
+      if (green == max)
+        h=((b-r)/c)+2.0;
+      else
+        if (blue == max)
+          h=((r-g)/c)+4.0;
+  *hue=(h/6.0);
+  *chroma=QuantumScale*c;
+  *luma=QuantumScale*(0.298839*r+0.586811*g+0.114350*b);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n v e r t R G B T o H S B                                             %
 %                                                                             %
 %                                                                             %
@@ -417,21 +591,6 @@ MagickExport void ConvertRGBToHSB(const Quantum red,const Quantum green,
 %      component of the HSL color space.
 %
 */
-
-static inline double MagickMax(const double x,const double y)
-{
-  if (x > y)
-    return(x);
-  return(y);
-}
-
-static inline double MagickMin(const double x,const double y)
-{
-  if (x < y)
-    return(x);
-  return(y);
-}
-
 MagickExport void ConvertRGBToHSL(const Quantum red,const Quantum green,
   const Quantum blue,double *hue,double *saturation,double *lightness)
 {
