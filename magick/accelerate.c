@@ -194,6 +194,13 @@ static char
     "#endif\n"
     "}\n"
     "\n"
+    "static inline float MagickEpsilonReciprocal(const float x)\n"
+    "{\n"
+    "  float sign = x < (float) 0.0 ? (float) -1.0 : (float) 1.0;\n"
+    "  return((sign*x) >= MagickEpsilon ? (float) 1.0/x : sign*((float) 1.0/\n"
+    "    MagickEpsilon));\n"
+    "}\n"
+    "\n"
     "__kernel void Convolve(const __global CLPixelType *input,\n"
     "  __constant float *filter,const unsigned long width,const unsigned long height,\n"
     "  const unsigned int matte,__global CLPixelType *output)\n"
@@ -294,7 +301,7 @@ static char
     "      break;\n"
     "    }\n"
     "  }\n"
-    "  gamma=1.0/(fabs((double) gamma) <= MagickEpsilon ? 1.0 : gamma);\n"
+    "  gamma=MagickEpsilonReciprocal(gamma);\n"
     "  const unsigned long index = y*columns+x;\n"
     "  output[index].x=ClampToQuantum(gamma*sum.x);\n"
     "  output[index].y=ClampToQuantum(gamma*sum.y);\n"
@@ -661,7 +668,7 @@ MagickExport MagickBooleanType AccelerateConvolveImage(const Image *image,
   assert(convolve_image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((image->storage_class != DirectClass) || 
+  if ((image->storage_class != DirectClass) ||
       (image->colorspace == CMYKColorspace))
     return(MagickFalse);
   if ((GetImageVirtualPixelMethod(image) != UndefinedVirtualPixelMethod) &&

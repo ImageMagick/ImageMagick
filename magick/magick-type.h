@@ -99,7 +99,7 @@ typedef double Quantum;
 # error "MAGICKCORE_QUANTUM_DEPTH must be one of 8, 16, 32, or 64"
 #endif
 #endif
-#define MagickEpsilon  ((MagickRealType) 2.220446e-16)
+#define MagickEpsilon  ((MagickRealType) 1.0e-16)
 #define MagickHuge  ((MagickRealType) 1.0/MagickEpsilon)
 
 /*
