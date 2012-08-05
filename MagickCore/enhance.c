@@ -3371,74 +3371,44 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   (void) ResetMagickMemory(sigmoidal_map,0,(MaxMap+1)*sizeof(*sigmoidal_map));
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) \
-    dynamic_number_threads(image,image->columns,1,1)
-#endif
-  for (i=0; i <= (ssize_t) MaxMap; i++)
-  {
-    if (sharpen != MagickFalse)
-      {
-#define sigmoidal(a,b,x)  (1/(1+exp((a)*((b)-(x)))))
-        double
-          u0 = sigmoidal(contrast,QuantumScale*midpoint,0.0),
-          u1 = sigmoidal(contrast,QuantumScale*midpoint,1.0),
- 	  uu = sigmoidal(contrast,QuantumScale*midpoint,(double) i/MaxMap);
-#if 0
-        /* Scaled sigmoidal formula with better 'contrast=0' or
-	 * 'flatline' handling (greyscale):
-         *
-	 * 0.5 +
-         * ( 1/(1+exp(a*(b-u))) - (1/(1+exp(a*b)) + 1/(1+exp(a*(b-1))))/2 )
-         * / ( 1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)) + epsilon )
-         *
-	 * "0.5 +" is to center things around the middle of the Quantum
-	 * range.
-	 *
-	 * "+epsilon" is to allow a=0 without division by zero.
-         */
-        sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-          (MaxMap*(0.5+(uu-(u0+u1)/2.0)/(u1-u0+MagickEpsilon))));
-#else
-        /* Scaled sigmoidal formula: (1/(1+exp(a*(b-u))) - 1/(1+exp(a*b)))
-         *                           /
-         *                           (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)))
-         *
-     	 * Nicolas is still trying to figure out what the "+0.5" is for.
-         */
-        sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-          (MaxMap*((uu-u0)/(u1-u0))+0.5));
-#endif
-        continue;
-      }
-#if 0
-    {
-      /* Broken: not the inverse of any of the above variants */
-      double
-        min = sigmoidal(contrast,1.0,0.0),
-        max = sigmoidal(contrast,QuantumScale*midpoint,1.0),
-        xi  = min+(double)i/MaxMap*(max-min);
-      sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum(
-         (MagickRealType)(MaxMap*(
-             QuantumScale*midpoint-log((1-xi)/xi)/contrast) ));
-    }
-#else
-    /* Inverse of the second -sigmoidal-contrast function above
-     * and pretty close to being an inverse of the second version
-     * (with MagickEpsilon). See
-     * http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html.
-     */
-    sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-      (MaxMap*(QuantumScale*midpoint-log((1.0-(1.0/(1.0+exp(midpoint/
-      (double) QuantumRange*contrast))+((double) i/MaxMap)*((1.0/
-      (1.0+exp(contrast*(midpoint/(double) QuantumRange-1.0))))-(1.0/
-      (1.0+exp(midpoint/(double) QuantumRange*contrast))))))/
-      (1.0/(1.0+exp(midpoint/(double) QuantumRange*contrast))+
-      ((double) i/MaxMap)*((1.0/(1.0+exp(contrast*(midpoint/
-      (double) QuantumRange-1.0))))-(1.0/(1.0+exp(midpoint/
-      (double) QuantumRange*contrast))))))/contrast)));
-#endif
-  }
+/* Sigmoidal with inflexion point moved to b and "slope constant" set to a.
+ */
+#define SIGMOIDAL(a,b,x) ( 1.0/(1.0+exp((a)*((b)-(x)))) )
+/* Scaled sigmoidal formula: (1/(1+exp(a*(b-x))) - 1/(1+exp(a*b)))
+ *                           /
+ *                           (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b))).
+ * See http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html and
+ * http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.
+ */
+#define SCALED_SIGMOIDAL(a,b,x) (                   \
+  (SIGMOIDAL((a),(b),(x))-SIGMOIDAL((a),(b),0.0)) / \
+  (SIGMOIDAL((a),(b),1.0)-SIGMOIDAL((a),(b),0.0)) )
+#define INVERSE_SCALED_SIGMOIDAL(a,b,x) (                                      \
+  (b) -                                                                        \
+  log( -1.0 + 1.0 /                                                            \
+  ((SIGMOIDAL((a),(b),1.0)-SIGMOIDAL((a),(b),0.0))*(x)+SIGMOIDAL((a),(b),0.0)) \
+  ) / (a) )
+/* The limit of SCALED_SIGMOIDAL as a->0 is the identity, but a=0 gives a
+ * division by zero. This is fixed below by hardwiring the identity when a is
+ * small. This would appear to be safe because the series expansion of the
+ * sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that s(1)-s(0) is
+ * about a/4.
+ */
+  if (contrast<4.0*MagickEpsilon)
+    for (i=0; i <= (ssize_t) MaxMap; i++)
+      sigmoidal_map[i]=
+        (MagickRealType) ScaleMapToQuantum((MagickRealType) i);
+  else if (sharpen != MagickFalse)
+    for (i=0; i <= (ssize_t) MaxMap; i++)
+      sigmoidal_map[i]=
+       (MagickRealType) ScaleMapToQuantum( (MagickRealType) (MaxMap*
+       SCALED_SIGMOIDAL(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
+  else
+    for (i=0; i <= (ssize_t) MaxMap; i++)
+      sigmoidal_map[i]=
+        (MagickRealType) ScaleMapToQuantum( (MagickRealType) (MaxMap*
+        INVERSE_SCALED_SIGMOIDAL(contrast,QuantumScale*midpoint,
+        (double) i/MaxMap)));
   if (image->storage_class == PseudoClass)
     {
       /*
