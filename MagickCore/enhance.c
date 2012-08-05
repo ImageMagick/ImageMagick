@@ -3383,11 +3383,9 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
 #define SCALED_SIGMOIDAL(a,b,x) (                   \
   (SIGMOIDAL((a),(b),(x))-SIGMOIDAL((a),(b),0.0)) / \
   (SIGMOIDAL((a),(b),1.0)-SIGMOIDAL((a),(b),0.0)) )
-#define INVERSE_SCALED_SIGMOIDAL(a,b,x) (                                      \
-  (b) -                                                                        \
-  log( -1.0 + 1.0 /                                                            \
-  ((SIGMOIDAL((a),(b),1.0)-SIGMOIDAL((a),(b),0.0))*(x)+SIGMOIDAL((a),(b),0.0)) \
-  ) / (a) )
+#define INVERSE_SCALED_SIGMOIDAL(a,b,x) (                                   \
+  (b) - log( -1.0+1.0/((SIGMOIDAL((a),(b),1.0)-SIGMOIDAL((a),(b),0.0))*(x)+ \
+  SIGMOIDAL((a),(b),0.0)) ) / (a) )
 /* The limit of SCALED_SIGMOIDAL as a->0 is the identity, but a=0 gives a
  * division by zero. This is fixed below by hardwiring the identity when a is
  * small. This would appear to be safe because the series expansion of the
