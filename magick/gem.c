@@ -142,9 +142,9 @@ MagickExport void ConvertHCLToRGB(const double hue,const double chroma,
                 b=x;      
               }
   m=luma-0.298839*r+0.586811*g+0.114350*b;
-  *red=QuantumRange*(r+m);
-  *green=QuantumRange*(g+m);
-  *blue=QuantumRange*(b+m);
+  *red=ClampToQuantum(QuantumRange*(r+m));
+  *green=ClampToQuantum(QuantumRange*(g+m));
+  *blue=ClampToQuantum(QuantumRange*(b+m));
 }
 
 /*
@@ -465,22 +465,22 @@ MagickExport void ConvertRGBToHCL(const Quantum red,const Quantum green,
   assert(hue != (double *) NULL);
   assert(chroma != (double *) NULL);
   assert(luma != (double *) NULL);
-  r=red;
-  g=green;
-  b=blue;
+  r=(double) red;
+  g=(double) green;
+  b=(double) blue;
   max=MagickMax(r,MagickMax(g,b));
   c=max-(double) MagickMin(r,MagickMin(g,b));
   h=0.0;
   if (c == 0)
     h=0.0;
   else
-    if (red == max)
+    if (red == (Quantum) max)
       h=fmod((g-b)/c,6.0);
     else
-      if (green == max)
+      if (green == (Quantum) max)
         h=((b-r)/c)+2.0;
       else
-        if (blue == max)
+        if (blue == (Quantum) max)
           h=((r-g)/c)+4.0;
   *hue=(h/6.0);
   *chroma=QuantumScale*c;
