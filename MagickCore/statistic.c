@@ -1180,8 +1180,8 @@ MagickExport MagickBooleanType GetImageExtrema(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageMean() returns the mean and standard deviation of one or more
-%  image channels.
+%  GetImageMean() returns the mean and standard deviation of one or more image
+%  channels.
 %
 %  The format of the GetImageMean method is:
 %
@@ -1202,14 +1202,14 @@ MagickExport MagickBooleanType GetImageExtrema(const Image *image,
 MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
   double *standard_deviation,ExceptionInfo *exception)
 {
+  double
+    area;
+
   ChannelStatistics
     *channel_statistics;
 
   register ssize_t
     i;
-
-  size_t
-    area;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1218,7 +1218,7 @@ MagickExport MagickBooleanType GetImageMean(const Image *image,double *mean,
   channel_statistics=GetImageStatistics(image,exception);
   if (channel_statistics == (ChannelStatistics *) NULL)
     return(MagickFalse);
-  area=0;
+  area=0.0;
   channel_statistics[CompositePixelChannel].mean=0.0;
   channel_statistics[CompositePixelChannel].standard_deviation=0.0;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
@@ -1528,10 +1528,10 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageStatistics() returns statistics for each channel in the
-%  image.  The statistics include the channel depth, its minima, maxima, mean,
-%  standard deviation, kurtosis and skewness.  You can access the red channel
-%  mean, for example, like this:
+%  GetImageStatistics() returns statistics for each channel in the image.  The
+%  statistics include the channel depth, its minima, maxima, mean, standard
+%  deviation, kurtosis and skewness.  You can access the red channel mean, for
+%  example, like this:
 %
 %      channel_statistics=GetImageStatistics(image,exception);
 %      red_mean=channel_statistics[RedPixelChannel].mean;
@@ -1582,9 +1582,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   ChannelStatistics
     *channel_statistics;
 
-  double
-    area;
-
   MagickStatusType
     initialize,
     status;
@@ -1613,11 +1610,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   (void) ResetMagickMemory(channel_statistics,0,(MaxPixelChannels+1)*
     sizeof(*channel_statistics));
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
-  {
     channel_statistics[i].depth=1;
-    channel_statistics[i].maxima=0.0;
-    channel_statistics[i].minima=0.0;
-  }
   initialize=MagickTrue;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1683,17 +1676,18 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
         channel_statistics[channel].sum_cubed+=(double) p[i]*p[i]*p[i];
         channel_statistics[channel].sum_fourth_power+=(double) p[i]*p[i]*p[i]*
           p[i];
+        channel_statistics[channel].area++;
       }
       p+=GetPixelChannels(image);
     }
   }
-  area=(double) image->columns*image->rows;
   for (i=0; i < (ssize_t) MaxPixelChannels; i++)
   {
-    channel_statistics[i].sum/=area;
-    channel_statistics[i].sum_squared/=area;
-    channel_statistics[i].sum_cubed/=area;
-    channel_statistics[i].sum_fourth_power/=area;
+    if (channel_statistics[i].area != 0.0)
+      channel_statistics[i].sum/=channel_statistics[i].area;
+    channel_statistics[i].sum_squared/=channel_statistics[i].area;
+    channel_statistics[i].sum_cubed/=channel_statistics[i].area;
+    channel_statistics[i].sum_fourth_power/=channel_statistics[i].area;
     channel_statistics[i].mean=channel_statistics[i].sum;
     channel_statistics[i].variance=channel_statistics[i].sum_squared;
     channel_statistics[i].standard_deviation=sqrt(

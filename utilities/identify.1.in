@@ -28,6 +28,7 @@ Image Settings:
   \-limit type value    pixel cache resource limit
   \-list type           Color, Configure, Delegate, Format, Magic, Module,
                        Resource, or Type
+  \-mask filename       associate a mask with the image
   \-matte               store matte channel if the image has one
   \-monitor             monitor progress
   \-ping                efficiently determine image attributes

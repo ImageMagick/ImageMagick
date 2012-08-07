@@ -3673,8 +3673,8 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
            (LocaleCompare("min",property) == 0) ||
            (LocaleCompare("min",property) == 0) )
         {
-          (void) ThrowMagickException(exception,GetMagickModule(),
-               OptionError,"SetReadOnlyProperty","'%s'",property);
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
+             "SetReadOnlyProperty","'%s'",property);
           status=MagickFalse;
           break;
         }

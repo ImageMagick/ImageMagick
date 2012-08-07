@@ -28,6 +28,7 @@ typedef struct _ChannelStatistics
     depth;
 
   double
+    area,
     minima,
     maxima,
     sum,
