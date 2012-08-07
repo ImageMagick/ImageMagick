@@ -82,18 +82,18 @@ static inline MagickRealType MagickEpsilonReciprocal(const MagickRealType x)
     (MagickRealType) 1.0/MagickEpsilon));
 }
 
-static inline double CompandsRGB(const double intensity)
+static inline MagickRealType CompandsRGB(const MagickRealType pixel)
 {
-  if (intensity <= 0.0031308)
-    return(intensity*12.92);
-  return(1.055*pow(intensity,1.0/2.4)-0.055);
+  if (pixel <= (0.0031308*QuantumRange))
+    return(12.92*pixel);
+  return(1.055*QuantumRange*pow(QuantumScale*pixel,1.0/2.4)-0.055);
 }
 
-static inline double DecompandsRGB(const double intensity)
+static inline MagickRealType DecompandsRGB(const MagickRealType pixel)
 {
-  if (intensity <= 0.04045)
-    return(intensity/12.92);
-  return(pow((intensity+0.055)/1.055,2.4));
+  if (pixel <= (0.04045*QuantumRange))
+    return(pixel/12.92);
+  return(QuantumRange*pow((QuantumScale*pixel+0.055)/1.055,2.4));
 }
 
 static inline void SetMagickPixelPacket(const Image *image,
