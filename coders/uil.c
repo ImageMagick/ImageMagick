@@ -307,7 +307,7 @@ static MagickBooleanType WriteUILImage(const ImageInfo *image_info,Image *image,
     pixel=image->colormap[i];
     pixel.colorspace=sRGBColorspace;
     pixel.depth=8;
-    pixel.alpha=(MagickRealType) OpaqueAlpha;
+    pixel.alpha=(double) OpaqueAlpha;
     GetColorTuple(&pixel,MagickTrue,name);
     if (transparent != MagickFalse)
       if (i == (ssize_t) (colors-1))

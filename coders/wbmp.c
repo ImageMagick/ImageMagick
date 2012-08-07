@@ -396,7 +396,7 @@ static MagickBooleanType WriteWBMPImage(const ImageInfo *image_info,
     byte=0;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelIntensity(image,p) >= ((MagickRealType) QuantumRange/2.0))
+      if (GetPixelIntensity(image,p) >= ((double) QuantumRange/2.0))
         byte|=0x1 << (7-bit);
       bit++;
       if (bit == 8)

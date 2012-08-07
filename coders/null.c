@@ -128,7 +128,7 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
     image->rows=1;
   image->matte=MagickTrue;
   GetPixelInfo(image,&background);
-  background.alpha=(MagickRealType) TransparentAlpha;
+  background.alpha=(double) TransparentAlpha;
   if (image->colorspace == CMYKColorspace)
     ConvertRGBToCMYK(&background);
   for (y=0; y < (ssize_t) image->rows; y++)

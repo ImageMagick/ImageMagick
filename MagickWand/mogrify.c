@@ -1234,7 +1234,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 black_point*=(double) (*image)->columns*(*image)->rows/100.0;
                 white_point*=(double) (*image)->columns*(*image)->rows/100.0;
               }
-            white_point=(MagickRealType) (*image)->columns*(*image)->rows-
+            white_point=(double) (*image)->columns*(*image)->rows-
               white_point;
             (void) ContrastStretchImage(*image,black_point,white_point,
               exception);
@@ -1903,7 +1903,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("level",option+1) == 0)
           {
-            MagickRealType
+            double
               black_point,
               gamma,
               white_point;
@@ -1917,7 +1917,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image,exception);
             flags=ParseGeometry(argv[i+1],&geometry_info);
             black_point=geometry_info.rho;
-            white_point=(MagickRealType) QuantumRange;
+            white_point=(double) QuantumRange;
             if ((flags & SigmaValue) != 0)
               white_point=geometry_info.sigma;
             gamma=1.0;
@@ -1925,11 +1925,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               gamma=geometry_info.xi;
             if ((flags & PercentValue) != 0)
               {
-                black_point*=(MagickRealType) (QuantumRange/100.0);
-                white_point*=(MagickRealType) (QuantumRange/100.0);
+                black_point*=(double) (QuantumRange/100.0);
+                white_point*=(double) (QuantumRange/100.0);
               }
             if ((flags & SigmaValue) == 0)
-              white_point=(MagickRealType) QuantumRange-black_point;
+              white_point=(double) QuantumRange-black_point;
             if ((*option == '+') || ((flags & AspectValue) != 0))
               (void) LevelizeImage(*image,black_point,white_point,gamma,
                 exception);
@@ -1989,7 +1989,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image,exception);
             flags=ParseGeometry(argv[i+1],&geometry_info);
             black_point=geometry_info.rho;
-            white_point=(MagickRealType) (*image)->columns*(*image)->rows;
+            white_point=(double) (*image)->columns*(*image)->rows;
             if ((flags & SigmaValue) != 0)
               white_point=geometry_info.sigma;
             if ((flags & PercentValue) != 0)
@@ -1998,7 +1998,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
                 white_point*=(double) (*image)->columns*(*image)->rows/100.0;
               }
             if ((flags & SigmaValue) == 0)
-              white_point=(MagickRealType) (*image)->columns*(*image)->rows-
+              white_point=(double) (*image)->columns*(*image)->rows-
                 black_point;
             (void) LinearStretchImage(*image,black_point,white_point,exception);
             break;

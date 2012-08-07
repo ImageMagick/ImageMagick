@@ -3220,7 +3220,7 @@ MagickExport size_t ExportQuantumPixels(const Image *image,
     }
   if (quantum_info->alpha_type == AssociatedQuantumAlpha)
     {
-      MagickRealType
+      double
         Sa;
 
       register Quantum

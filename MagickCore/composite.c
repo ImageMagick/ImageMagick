@@ -201,7 +201,7 @@ static void CompositeHSB(const double red,const double green,
   if (fabs((double) max) < MagickEpsilon)
     return;
   *saturation=(double) (1.0-min/max);
-  delta=(MagickRealType) max-min;
+  delta=(double) max-min;
   if (fabs(delta) < MagickEpsilon)
     return;
   if (fabs((double) red-max) < MagickEpsilon)
@@ -389,7 +389,7 @@ static MagickBooleanType CompositeOverImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      MagickRealType
+      double
         alpha,
         Da,
         Dc,
@@ -500,8 +500,8 @@ static MagickBooleanType CompositeOverImage(Image *image,
           Sc: source color.
           Dc: destination color.
         */
-        Sc=(MagickRealType) GetPixelChannel(composite_image,channel,p);
-        Dc=(MagickRealType) q[i];
+        Sc=(double) GetPixelChannel(composite_image,channel,p);
+        Dc=(double) q[i];
         gamma=MagickEpsilonReciprocal(alpha);
         q[i]=ClampToQuantum(gamma*(Sa*Sc-Sa*Da*Dc+Da*Dc));
       }
@@ -556,7 +556,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   MagickOffsetType
     progress;
 
-  MagickRealType
+  double
     amount,
     destination_dissolve,
     midpoint,
@@ -716,7 +716,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       PixelInfo
         pixel;
 
-      MagickRealType
+      double
         angle_range,
         angle_start,
         height,
@@ -774,7 +774,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       /* rotate vectors if a rotation angle is given */
       if ((flags & XValue) != 0 )
         {
-          MagickRealType
+          double
             angle;
 
           angle=DegreesToRadians(geometry_info.xi);
@@ -840,7 +840,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             }
           if (fabs(angle_range) > MagickEpsilon)
             {
-              MagickRealType
+              double
                 angle;
 
               angle=angle_start+angle_range*QuantumScale*
@@ -893,7 +893,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       PixelInfo
         pixel;
 
-      MagickRealType
+      double
         horizontal_scale,
         vertical_scale;
 
@@ -922,14 +922,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         {
           if ((flags & AspectValue) == 0)
             {
-              horizontal_scale=(MagickRealType) (composite_image->columns-1.0)/
+              horizontal_scale=(double) (composite_image->columns-1.0)/
                 2.0;
-              vertical_scale=(MagickRealType) (composite_image->rows-1.0)/2.0;
+              vertical_scale=(double) (composite_image->rows-1.0)/2.0;
             }
           else
             {
-              horizontal_scale=(MagickRealType) (image->columns-1.0)/2.0;
-              vertical_scale=(MagickRealType) (image->rows-1.0)/2.0;
+              horizontal_scale=(double) (image->columns-1.0)/2.0;
+              vertical_scale=(double) (image->rows-1.0)/2.0;
             }
         }
       else
@@ -960,29 +960,29 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
            default = center of overlay image
            arg flag '!' = locations/percentage relative to background image
       */
-      center.x=(MagickRealType) x_offset;
-      center.y=(MagickRealType) y_offset;
+      center.x=(double) x_offset;
+      center.y=(double) y_offset;
       if (compose == DistortCompositeOp)
         {
           if ((flags & XValue) == 0)
             if ((flags & AspectValue) == 0)
-              center.x=(MagickRealType) x_offset+(composite_image->columns-1)/
+              center.x=(double) x_offset+(composite_image->columns-1)/
                 2.0;
             else
-              center.x=((MagickRealType) image->columns-1)/2.0;
+              center.x=((double) image->columns-1)/2.0;
           else
             if ((flags & AspectValue) == 0)
-              center.x=(MagickRealType) x_offset+geometry_info.xi;
+              center.x=(double) x_offset+geometry_info.xi;
             else
               center.x=geometry_info.xi;
           if ((flags & YValue) == 0)
             if ((flags & AspectValue) == 0)
-              center.y=(MagickRealType) y_offset+(composite_image->rows-1)/2.0;
+              center.y=(double) y_offset+(composite_image->rows-1)/2.0;
             else
-              center.y=((MagickRealType) image->rows-1)/2.0;
+              center.y=((double) image->rows-1)/2.0;
           else
             if ((flags & AspectValue) == 0)
-              center.y=(MagickRealType) y_offset+geometry_info.psi;
+              center.y=(double) y_offset+geometry_info.psi;
             else
               center.y=geometry_info.psi;
         }
@@ -1027,11 +1027,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             Displace the offset.
           */
           offset.x=(horizontal_scale*(GetPixelRed(composite_image,p)-
-            (((MagickRealType) QuantumRange+1.0)/2.0)))/(((MagickRealType)
+            (((double) QuantumRange+1.0)/2.0)))/(((double)
             QuantumRange+1.0)/2.0)+center.x+((compose == DisplaceCompositeOp) ?
             x : 0);
           offset.y=(vertical_scale*(GetPixelGreen(composite_image,p)-
-            (((MagickRealType) QuantumRange+1.0)/2.0)))/(((MagickRealType)
+            (((double) QuantumRange+1.0)/2.0)))/(((double)
             QuantumRange+1.0)/2.0)+center.y+((compose == DisplaceCompositeOp) ?
             y : 0);
           (void) InterpolatePixelInfo(image,image_view,
@@ -1040,7 +1040,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           /*
             Mask with the 'invalid pixel mask' in alpha channel.
           */
-          pixel.alpha=(MagickRealType) QuantumRange*(1.0-(1.0-QuantumScale*
+          pixel.alpha=(double) QuantumRange*(1.0-(1.0-QuantumScale*
             pixel.alpha)*(1.0-QuantumScale*GetPixelAlpha(composite_image,p)));
           SetPixelInfoPixel(destination_image,&pixel,q);
           p+=GetPixelChannels(composite_image);
@@ -1174,7 +1174,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  midpoint=((MagickRealType) QuantumRange+1.0)/2;
+  midpoint=((double) QuantumRange+1.0)/2;
   composite_view=AcquireVirtualCacheView(composite_image,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1247,7 +1247,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     GetPixelInfo(composite_image,&source_pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      MagickRealType
+      double
         alpha,
         Da,
         Dc,
@@ -1293,7 +1293,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            MagickRealType
+            double
               pixel;
 
             PixelChannel
@@ -1322,9 +1322,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               case SrcInCompositeOp:
               case SrcOutCompositeOp:
               {
-                pixel=(MagickRealType) q[i];
+                pixel=(double) q[i];
                 if (channel == AlphaPixelChannel)
-                  pixel=(MagickRealType) TransparentAlpha;
+                  pixel=(double) TransparentAlpha;
                 break;
               }
               case ClearCompositeOp:
@@ -1334,7 +1334,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               {
                 if (channel == AlphaPixelChannel)
                   {
-                    pixel=(MagickRealType) TransparentAlpha;
+                    pixel=(double) TransparentAlpha;
                     break;
                   }
                 pixel=0.0;
@@ -1349,12 +1349,12 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                       source);
                     break;
                   }
-                pixel=(MagickRealType) source[channel];
+                pixel=(double) source[channel];
                 break;
               }
               default:
               {
-                pixel=(MagickRealType) source[channel];
+                pixel=(double) source[channel];
                 break;
               }
             }
@@ -1484,7 +1484,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         double
           sans;
 
-        MagickRealType
+        double
           pixel;
 
         PixelChannel
@@ -1506,8 +1506,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           Sc: source color.
           Dc: destination color.
         */
-        Sc=(MagickRealType) GetPixelChannel(composite_image,channel,p);
-        Dc=(MagickRealType) q[i];
+        Sc=(double) GetPixelChannel(composite_image,channel,p);
+        Dc=(double) q[i];
         if ((traits & CopyPixelTrait) != 0)
           {
             if (channel != AlphaPixelChannel)
@@ -1548,23 +1548,23 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 MagickBooleanType
                   equivalent;
 
-                if (Da > ((MagickRealType) QuantumRange/2.0))
+                if (Da > ((double) QuantumRange/2.0))
                   {
-                    pixel=(MagickRealType) TransparentAlpha;
+                    pixel=(double) TransparentAlpha;
                     break;
                   }
                 equivalent=IsFuzzyEquivalencePixel(composite_image,p,image,q);
                 if (equivalent != MagickFalse)
                   {
-                    pixel=(MagickRealType) TransparentAlpha;
+                    pixel=(double) TransparentAlpha;
                     break;
                   }
-                pixel=(MagickRealType) OpaqueAlpha;
+                pixel=(double) OpaqueAlpha;
                 break;
               }
               case ClearCompositeOp:
               {
-                pixel=(MagickRealType) TransparentAlpha;
+                pixel=(double) TransparentAlpha;
                 break;
               }
               case ColorizeCompositeOp:
@@ -1615,7 +1615,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               }
               case IntensityCompositeOp:
               {
-                pixel=(MagickRealType) GetPixelIntensity(composite_image,p);
+                pixel=(double) GetPixelIntensity(composite_image,p);
                 break;
               }
               case LightenIntensityCompositeOp:
@@ -1782,28 +1782,28 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           case CopyBlackCompositeOp:
           {
             if (channel == BlackPixelChannel)
-              pixel=(MagickRealType) GetPixelBlack(composite_image,p);
+              pixel=(double) GetPixelBlack(composite_image,p);
             break;
           }
           case CopyBlueCompositeOp:
           case CopyYellowCompositeOp:
           {
             if (channel == BluePixelChannel)
-              pixel=(MagickRealType) GetPixelBlue(composite_image,p);
+              pixel=(double) GetPixelBlue(composite_image,p);
             break;
           }
           case CopyGreenCompositeOp:
           case CopyMagentaCompositeOp:
           {
             if (channel == GreenPixelChannel)
-              pixel=(MagickRealType) GetPixelGreen(composite_image,p);
+              pixel=(double) GetPixelGreen(composite_image,p);
             break;
           }
           case CopyRedCompositeOp:
           case CopyCyanCompositeOp:
           {
             if (channel == RedPixelChannel)
-              pixel=(MagickRealType) GetPixelRed(composite_image,p);
+              pixel=(double) GetPixelRed(composite_image,p);
             break;
           }
           case DarkenCompositeOp:
@@ -2239,11 +2239,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           }
           case ThresholdCompositeOp:
           {
-            MagickRealType
+            double
               delta;
 
             delta=Sc-Dc;
-            if ((MagickRealType) fabs((double) (2.0*delta)) < threshold)
+            if ((double) fabs((double) (2.0*delta)) < threshold)
               {
                 pixel=gamma*Dc;
                 break;

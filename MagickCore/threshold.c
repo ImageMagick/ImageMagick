@@ -248,7 +248,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        MagickRealType
+        double
           mean,
           pixel;
 
@@ -290,8 +290,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
           }
           pixels+=image->columns*GetPixelChannels(image);
         }
-        mean=(MagickRealType) (pixel/number_pixels+bias);
-        SetPixelChannel(threshold_image,channel,(Quantum) ((MagickRealType)
+        mean=(double) (pixel/number_pixels+bias);
+        SetPixelChannel(threshold_image,channel,(Quantum) ((double)
           p[center+i] <= mean ? 0 : QuantumRange),q);
       }
       p+=GetPixelChannels(image);
@@ -1281,7 +1281,7 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
   MagickOffsetType
     progress;
 
-  MagickRealType
+  double
     levels[CompositePixelChannel];
 
   register ssize_t
@@ -1477,7 +1477,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
   PixelInfo
     threshold;
 
-  MagickRealType
+  double
     min_threshold,
     max_threshold;
 
@@ -1502,7 +1502,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
     return(MagickFalse);
   GetPixelInfo(image,&threshold);
   min_threshold=0.0;
-  max_threshold=(MagickRealType) QuantumRange;
+  max_threshold=(double) QuantumRange;
   flags=ParseGeometry(thresholds,&geometry_info);
   min_threshold=geometry_info.rho;
   max_threshold=geometry_info.sigma;
@@ -1510,8 +1510,8 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
     max_threshold=min_threshold;
   if (strchr(thresholds,'%') != (char *) NULL)
     {
-      max_threshold*=(MagickRealType) (0.01*QuantumRange);
-      min_threshold*=(MagickRealType) (0.01*QuantumRange);
+      max_threshold*=(double) (0.01*QuantumRange);
+      min_threshold*=(double) (0.01*QuantumRange);
     }
   /*
     Random threshold image.
@@ -1556,7 +1556,7 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        MagickRealType
+        double
           threshold;
 
         PixelChannel
@@ -1569,15 +1569,15 @@ MagickExport MagickBooleanType RandomThresholdImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        if ((MagickRealType) q[i] < min_threshold)
+        if ((double) q[i] < min_threshold)
           threshold=min_threshold;
         else
-          if ((MagickRealType) q[i] > max_threshold)
+          if ((double) q[i] > max_threshold)
             threshold=max_threshold;
           else
-            threshold=(MagickRealType) (QuantumRange*
+            threshold=(double) (QuantumRange*
               GetPseudoRandomValue(random_info[id]));
-        q[i]=(MagickRealType) q[i] <= threshold ? 0 : QuantumRange;
+        q[i]=(double) q[i] <= threshold ? 0 : QuantumRange;
       }
       q+=GetPixelChannels(image);
     }

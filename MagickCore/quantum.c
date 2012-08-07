@@ -412,11 +412,11 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
   else
     if (quantum_info->minimum == quantum_info->maximum)
       {
-        quantum_info->scale=(MagickRealType) QuantumRange/quantum_info->minimum;
+        quantum_info->scale=(double) QuantumRange/quantum_info->minimum;
         quantum_info->minimum=0.0;
       }
     else
-      quantum_info->scale=(MagickRealType) QuantumRange/(quantum_info->maximum-
+      quantum_info->scale=(double) QuantumRange/(quantum_info->maximum-
         quantum_info->minimum);
   option=GetImageOption(image_info,"quantum:scale");
   if (option != (char *) NULL)

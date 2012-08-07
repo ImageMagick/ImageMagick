@@ -402,10 +402,10 @@ static void MvgAppendColor(DrawingWand *wand,const PixelInfo *packet)
       GetPixelInfo(wand->image,&pixel);
       pixel.colorspace=sRGBColorspace;
       pixel.matte=packet->alpha != OpaqueAlpha ? MagickTrue : MagickFalse;
-      pixel.red=(MagickRealType) packet->red;
-      pixel.green=(MagickRealType) packet->green;
-      pixel.blue=(MagickRealType) packet->blue;
-      pixel.alpha=(MagickRealType) packet->alpha;
+      pixel.red=(double) packet->red;
+      pixel.green=(double) packet->green;
+      pixel.blue=(double) packet->blue;
+      pixel.alpha=(double) packet->alpha;
       GetColorTuple(&pixel,MagickTrue,tuple);
       (void) MvgPrintf(wand,"%s",tuple);
     }

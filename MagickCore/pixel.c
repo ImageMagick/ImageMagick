@@ -2013,7 +2013,7 @@ MagickExport void GetPixelInfo(const Image *image,PixelInfo *pixel)
   pixel->green=0.0;
   pixel->blue=0.0;
   pixel->black=0.0;
-  pixel->alpha=(MagickRealType) OpaqueAlpha;
+  pixel->alpha=(double) OpaqueAlpha;
   pixel->index=0.0;
   if (image == (const Image *) NULL)
     return;
@@ -3985,15 +3985,15 @@ MagickExport void InitializePixelChannelMap(Image *image)
 %
 */
 
-static inline double MagickMax(const MagickRealType x,const MagickRealType y)
+static inline double MagickMax(const double x,const double y)
 {
   if (x > y)
     return(x);
   return(y);
 }
 
-static inline void CatromWeights(const MagickRealType x,
-  MagickRealType (*weights)[4])
+static inline void CatromWeights(const double x,
+  double (*weights)[4])
 {
   /*
     Nicolas Robidoux' 10 flops (4* + 5- + 1+) refactoring of the
@@ -4003,13 +4003,13 @@ static inline void CatromWeights(const MagickRealType x,
     input pixel location. Formulas originally derived for the VIPS
     (Virtual Image Processing System) library.
   */
-  MagickRealType
+  double
     alpha,
     beta,
     gamma;
 
-  alpha=(MagickRealType) 1.0-x;
-  beta=(MagickRealType) (-0.5)*x*alpha;
+  alpha=(double) 1.0-x;
+  beta=(double) (-0.5)*x*alpha;
   (*weights)[0]=alpha*beta;
   (*weights)[3]=x*beta;
   /*
@@ -4021,8 +4021,8 @@ static inline void CatromWeights(const MagickRealType x,
   (*weights)[2]=x-(*weights)[3]-gamma;
 }
 
-static inline void SplineWeights(const MagickRealType x,
-  MagickRealType (*weights)[4])
+static inline void SplineWeights(const double x,
+  double (*weights)[4])
 {
   /*
     Nicolas Robidoux' 12 flops (6* + 5- + 1+) refactoring of the
@@ -4031,13 +4031,13 @@ static inline void SplineWeights(const MagickRealType x,
     third input pixel locations, and x is the position relative to the
     second input pixel location.
   */
-  MagickRealType
+  double
     alpha,
     beta;
 
-  alpha=(MagickRealType) 1.0-x;
-  (*weights)[3]=(MagickRealType) (1.0/6.0)*x*x*x;
-  (*weights)[0]=(MagickRealType) (1.0/6.0)*alpha*alpha*alpha;
+  alpha=(double) 1.0-x;
+  (*weights)[3]=(double) (1.0/6.0)*x*x*x;
+  (*weights)[0]=(double) (1.0/6.0)*alpha*alpha*alpha;
   beta=(*weights)[3]-(*weights)[0];
   (*weights)[1]=alpha-(*weights)[0]+beta;
   (*weights)[2]=x-(*weights)[3]-beta;
@@ -4050,7 +4050,7 @@ static inline double MeshInterpolate(const PointInfo *delta,const double p,
 }
 
 /*
-static inline ssize_t NearestNeighbor(const MagickRealType x)
+static inline ssize_t NearestNeighbor(const double x)
 {
   if (x >= 0.0)
     return((ssize_t) (x+0.5));
@@ -4066,7 +4066,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
   MagickBooleanType
     status;
 
-  MagickRealType
+  double
     alpha[16],
     gamma,
     pixels[16];
@@ -4133,7 +4133,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
         for (i=0; i < (ssize_t) count; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(MagickRealType) p[i*GetPixelChannels(image)+channel];
+          pixels[i]=(double) p[i*GetPixelChannels(image)+channel];
         }
       else
         for (i=0; i < (ssize_t) count; i++)
@@ -4166,7 +4166,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
         for (i=0; i < 4; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(MagickRealType) p[i*GetPixelChannels(image)+channel];
+          pixels[i]=(double) p[i*GetPixelChannels(image)+channel];
         }
       else
         for (i=0; i < 4; i++)
@@ -4188,7 +4188,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
     }
     case CatromInterpolatePixel:
     {
-      MagickRealType
+      double
         cx[4],
         cy[4];
 
@@ -4203,7 +4203,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
         for (i=0; i < 16; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(MagickRealType) p[i*GetPixelChannels(image)+channel];
+          pixels[i]=(double) p[i*GetPixelChannels(image)+channel];
         }
       else
         for (i=0; i < 16; i++)
@@ -4212,9 +4212,9 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
             GetPixelChannels(image));
           pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+channel];
         }
-      CatromWeights((MagickRealType) (x-x_offset),&cx);
-      CatromWeights((MagickRealType) (y-y_offset),&cy);
-      gamma=(channel == AlphaPixelChannel ? (MagickRealType) 1.0 :
+      CatromWeights((double) (x-x_offset),&cx);
+      CatromWeights((double) (y-y_offset),&cy);
+      gamma=(channel == AlphaPixelChannel ? (double) 1.0 :
         MagickEpsilonReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
         alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+cx[2]*
         alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+cx[1]*alpha[9]+cx[2]*
@@ -4306,7 +4306,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
         for (i=0; i < 4; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(MagickRealType) p[i*GetPixelChannels(image)+channel];
+          pixels[i]=(double) p[i*GetPixelChannels(image)+channel];
         }
       else
         for (i=0; i < 4; i++)
@@ -4381,7 +4381,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
     }
     case SplineInterpolatePixel:
     {
-      MagickRealType
+      double
         cx[4],
         cy[4];
 
@@ -4396,7 +4396,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
         for (i=0; i < 16; i++)
         {
           alpha[i]=1.0;
-          pixels[i]=(MagickRealType) p[i*GetPixelChannels(image)+channel];
+          pixels[i]=(double) p[i*GetPixelChannels(image)+channel];
         }
       else
         for (i=0; i < 16; i++)
@@ -4405,9 +4405,9 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
             GetPixelChannels(image));
           pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+channel];
         }
-      SplineWeights((MagickRealType) (x-x_offset),&cx);
-      SplineWeights((MagickRealType) (y-y_offset),&cy);
-      gamma=(channel == AlphaPixelChannel ? (MagickRealType) 1.0 :
+      SplineWeights((double) (x-x_offset),&cx);
+      SplineWeights((double) (y-y_offset),&cy);
+      gamma=(channel == AlphaPixelChannel ? (double) 1.0 :
         MagickEpsilonReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
         alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+cx[2]*
         alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+cx[1]*alpha[9]+cx[2]*
@@ -4474,7 +4474,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
   MagickBooleanType
     status;
 
-  MagickRealType
+  double
     alpha[16],
     gamma,
     pixels[16];
@@ -4553,7 +4553,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
             (destination_traits == UndefinedPixelTrait))
           continue;
         for (j=0; j < (ssize_t) count; j++)
-          pixels[j]=(MagickRealType) p[j*GetPixelChannels(source)+i];
+          pixels[j]=(double) p[j*GetPixelChannels(source)+i];
         sum=0.0;
         if ((traits & BlendPixelTrait) == 0)
           {
@@ -4601,10 +4601,10 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         delta.y=y-y_offset;
         epsilon.x=1.0-delta.x;
         epsilon.y=1.0-delta.y;
-        pixels[0]=(MagickRealType) p[i];
-        pixels[1]=(MagickRealType) p[GetPixelChannels(source)+i];
-        pixels[2]=(MagickRealType) p[2*GetPixelChannels(source)+i];
-        pixels[3]=(MagickRealType) p[3*GetPixelChannels(source)+i];
+        pixels[0]=(double) p[i];
+        pixels[1]=(double) p[GetPixelChannels(source)+i];
+        pixels[2]=(double) p[2*GetPixelChannels(source)+i];
+        pixels[3]=(double) p[3*GetPixelChannels(source)+i];
         if ((traits & BlendPixelTrait) == 0)
           {
             gamma=((epsilon.y*(epsilon.x+delta.x)+delta.y*(epsilon.x+delta.x)));
@@ -4635,7 +4635,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
     }
     case CatromInterpolatePixel:
     {
-      MagickRealType
+      double
         cx[4],
         cy[4];
 
@@ -4661,7 +4661,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           for (j=0; j < 16; j++)
           {
             alpha[j]=1.0;
-            pixels[j]=(MagickRealType) p[j*GetPixelChannels(source)+i];
+            pixels[j]=(double) p[j*GetPixelChannels(source)+i];
           }
         else
           for (j=0; j < 16; j++)
@@ -4670,9 +4670,9 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
               GetPixelChannels(source));
             pixels[j]=alpha[j]*p[j*GetPixelChannels(source)+i];
           }
-        CatromWeights((MagickRealType) (x-x_offset),&cx);
-        CatromWeights((MagickRealType) (y-y_offset),&cy);
-        gamma=((traits & BlendPixelTrait) ? (MagickRealType) (1.0) :
+        CatromWeights((double) (x-x_offset),&cx);
+        CatromWeights((double) (y-y_offset),&cy);
+        gamma=((traits & BlendPixelTrait) ? (double) (1.0) :
           MagickEpsilonReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
           alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+cx[2]*
           alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+cx[1]*alpha[9]+cx[2]*
@@ -4799,10 +4799,10 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         if ((traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
           continue;
-        pixels[0]=(MagickRealType) p[i];
-        pixels[1]=(MagickRealType) p[GetPixelChannels(source)+i];
-        pixels[2]=(MagickRealType) p[2*GetPixelChannels(source)+i];
-        pixels[3]=(MagickRealType) p[3*GetPixelChannels(source)+i];
+        pixels[0]=(double) p[i];
+        pixels[1]=(double) p[GetPixelChannels(source)+i];
+        pixels[2]=(double) p[2*GetPixelChannels(source)+i];
+        pixels[3]=(double) p[3*GetPixelChannels(source)+i];
         if ((traits & BlendPixelTrait) == 0)
           {
             alpha[0]=1.0;
@@ -4889,7 +4889,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
     }
     case SplineInterpolatePixel:
     {
-      MagickRealType
+      double
         cx[4],
         cy[4];
 
@@ -4915,7 +4915,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           for (j=0; j < 16; j++)
           {
             alpha[j]=1.0;
-            pixels[j]=(MagickRealType) p[j*GetPixelChannels(source)+i];
+            pixels[j]=(double) p[j*GetPixelChannels(source)+i];
           }
         else
           for (j=0; j < 16; j++)
@@ -4924,9 +4924,9 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
               GetPixelChannels(source));
             pixels[j]=alpha[j]*p[j*GetPixelChannels(source)+i];
           }
-        SplineWeights((MagickRealType) (x-x_offset),&cx);
-        SplineWeights((MagickRealType) (y-y_offset),&cy);
-        gamma=((traits & BlendPixelTrait) ? (MagickRealType) (1.0) :
+        SplineWeights((double) (x-x_offset),&cx);
+        SplineWeights((double) (y-y_offset),&cy);
+        gamma=((traits & BlendPixelTrait) ? (double) (1.0) :
           MagickEpsilonReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
           alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+cx[2]*
           alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+cx[1]*alpha[9]+cx[2]*
@@ -4986,18 +4986,18 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
 */
 
 static inline void AlphaBlendPixelInfo(const Image *image,
-  const Quantum *pixel,PixelInfo *pixel_info,MagickRealType *alpha)
+  const Quantum *pixel,PixelInfo *pixel_info,double *alpha)
 {
   if (image->matte == MagickFalse)
     {
       *alpha=1.0;
-      pixel_info->red=(MagickRealType) GetPixelRed(image,pixel);
-      pixel_info->green=(MagickRealType) GetPixelGreen(image,pixel);
-      pixel_info->blue=(MagickRealType) GetPixelBlue(image,pixel);
+      pixel_info->red=(double) GetPixelRed(image,pixel);
+      pixel_info->green=(double) GetPixelGreen(image,pixel);
+      pixel_info->blue=(double) GetPixelBlue(image,pixel);
       pixel_info->black=0.0;
       if (image->colorspace == CMYKColorspace)
-        pixel_info->black=(MagickRealType) GetPixelBlack(image,pixel);
-      pixel_info->alpha=(MagickRealType) GetPixelAlpha(image,pixel);
+        pixel_info->black=(double) GetPixelBlack(image,pixel);
+      pixel_info->alpha=(double) GetPixelAlpha(image,pixel);
       return;
     }
   *alpha=QuantumScale*GetPixelAlpha(image,pixel);
@@ -5007,7 +5007,7 @@ static inline void AlphaBlendPixelInfo(const Image *image,
   pixel_info->black=0.0;
   if (image->colorspace == CMYKColorspace)
     pixel_info->black=(*alpha*GetPixelBlack(image,pixel));
-  pixel_info->alpha=(MagickRealType) GetPixelAlpha(image,pixel);
+  pixel_info->alpha=(double) GetPixelAlpha(image,pixel);
 }
 
 MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
@@ -5017,7 +5017,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
   MagickBooleanType
     status;
 
-  MagickRealType
+  double
     alpha[16],
     gamma;
 
@@ -5195,7 +5195,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
     }
     case CatromInterpolatePixel:
     {
-      MagickRealType
+      double
         cx[4],
         cy[4];
 
@@ -5208,8 +5208,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         }
       for (i=0; i < 16L; i++)
         AlphaBlendPixelInfo(image,p+i*GetPixelChannels(image),pixels+i,alpha+i);
-      CatromWeights((MagickRealType) (x-x_offset),&cx);
-      CatromWeights((MagickRealType) (y-y_offset),&cy);
+      CatromWeights((double) (x-x_offset),&cx);
+      CatromWeights((double) (y-y_offset),&cy);
       pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*
         pixels[1].red+cx[2]*pixels[2].red+cx[3]*
         pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
@@ -5436,7 +5436,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
     }
     case SplineInterpolatePixel:
     {
-      MagickRealType
+      double
         cx[4],
         cy[4];
 
@@ -5449,8 +5449,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         }
       for (i=0; i < 16L; i++)
         AlphaBlendPixelInfo(image,p+i*GetPixelChannels(image),pixels+i,alpha+i);
-      SplineWeights((MagickRealType) (x-x_offset),&cx);
-      SplineWeights((MagickRealType) (y-y_offset),&cy);
+      SplineWeights((double) (x-x_offset),&cx);
+      SplineWeights((double) (y-y_offset),&cy);
       pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*
         pixels[1].red+cx[2]*pixels[2].red+cx[3]*
         pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
@@ -5532,16 +5532,16 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
 MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
   const Quantum *p,const Image *destination,const Quantum *q)
 {
-  MagickRealType
+  double
     fuzz,
     pixel;
 
-  register MagickRealType
+  register double
     distance,
     scale;
 
-  fuzz=MagickMax(source->fuzz,(MagickRealType) MagickSQ1_2)*MagickMax(
-    destination->fuzz,(MagickRealType) MagickSQ1_2);
+  fuzz=MagickMax(source->fuzz,(double) MagickSQ1_2)*MagickMax(
+    destination->fuzz,(double) MagickSQ1_2);
   scale=1.0;
   distance=0.0;
   if (source->matte != MagickFalse)
@@ -5549,7 +5549,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
       /*
         Transparencies are involved - set alpha distance
       */
-      pixel=GetPixelAlpha(source,p)-(MagickRealType)
+      pixel=GetPixelAlpha(source,p)-(double)
         GetPixelAlpha(destination,q);
       distance=pixel*pixel;
       if (distance > fuzz)
@@ -5568,7 +5568,7 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
   */
   distance*=3.0;  /* rescale appropriately */
   fuzz*=3.0;
-  pixel=GetPixelRed(source,p)-(MagickRealType) GetPixelRed(destination,q);
+  pixel=GetPixelRed(source,p)-(double) GetPixelRed(destination,q);
   if ((source->colorspace == HSLColorspace) ||
       (source->colorspace == HSBColorspace) ||
       (source->colorspace == HWBColorspace))
@@ -5584,11 +5584,11 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=GetPixelGreen(source,p)-(MagickRealType) GetPixelGreen(destination,q);
+  pixel=GetPixelGreen(source,p)-(double) GetPixelGreen(destination,q);
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
-  pixel=GetPixelBlue(source,p)-(MagickRealType) GetPixelBlue(destination,q);
+  pixel=GetPixelBlue(source,p)-(double) GetPixelBlue(destination,q);
   distance+=scale*pixel*pixel;
   if (distance > fuzz)
     return(MagickFalse);
@@ -5642,25 +5642,25 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixel(const Image *source,
 MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
   const PixelInfo *q)
 {
-  MagickRealType
+  double
     fuzz,
     pixel;
 
-  register MagickRealType
+  register double
     scale,
     distance;
 
   if ((p->fuzz == 0.0) && (q->fuzz == 0.0))
     return(IsPixelInfoEquivalent(p,q));
   if (p->fuzz == 0.0)
-    fuzz=MagickMax(q->fuzz,(MagickRealType) MagickSQ1_2)*MagickMax(q->fuzz,
-      (MagickRealType) MagickSQ1_2);
+    fuzz=MagickMax(q->fuzz,(double) MagickSQ1_2)*MagickMax(q->fuzz,
+      (double) MagickSQ1_2);
   else if (q->fuzz == 0.0)
-    fuzz=MagickMax(p->fuzz,(MagickRealType) MagickSQ1_2)*MagickMax(p->fuzz,
-      (MagickRealType) MagickSQ1_2);
+    fuzz=MagickMax(p->fuzz,(double) MagickSQ1_2)*MagickMax(p->fuzz,
+      (double) MagickSQ1_2);
   else
-    fuzz=MagickMax(p->fuzz,(MagickRealType) MagickSQ1_2)*MagickMax(q->fuzz,
-      (MagickRealType) MagickSQ1_2);
+    fuzz=MagickMax(p->fuzz,(double) MagickSQ1_2)*MagickMax(q->fuzz,
+      (double) MagickSQ1_2);
   scale=1.0;
   distance=0.0;
   if ((p->matte != MagickFalse) || (q->matte != MagickFalse))
@@ -5693,8 +5693,8 @@ MagickExport MagickBooleanType IsFuzzyEquivalencePixelInfo(const PixelInfo *p,
       distance+=pixel*pixel*scale;
       if (distance > fuzz)
         return(MagickFalse);
-      scale*=(MagickRealType) (QuantumScale*(QuantumRange-p->black));
-      scale*=(MagickRealType) (QuantumScale*(QuantumRange-q->black));
+      scale*=(double) (QuantumScale*(QuantumRange-p->black));
+      scale*=(double) (QuantumScale*(QuantumRange-q->black));
     }
   /*
     RGB or CMY color cube.

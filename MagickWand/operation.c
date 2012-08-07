@@ -2113,7 +2113,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
               black_point*=(double) _image->columns*_image->rows/100.0;
               white_point*=(double) _image->columns*_image->rows/100.0;
             }
-          white_point=(MagickRealType) _image->columns*_image->rows-
+          white_point=(double) _image->columns*_image->rows-
             white_point;
           (void) ContrastStretchImage(_image,black_point,white_point,
             _exception);
@@ -2544,7 +2544,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("level",option+1) == 0)
         {
-          MagickRealType
+          double
             black_point,
             gamma,
             white_point;
@@ -2556,7 +2556,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & RhoValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           black_point=geometry_info.rho;
-          white_point=(MagickRealType) QuantumRange;
+          white_point=(double) QuantumRange;
           if ((flags & SigmaValue) != 0)
             white_point=geometry_info.sigma;
           gamma=1.0;
@@ -2564,11 +2564,11 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             gamma=geometry_info.xi;
           if ((flags & PercentValue) != 0)
             {
-              black_point*=(MagickRealType) (QuantumRange/100.0);
-              white_point*=(MagickRealType) (QuantumRange/100.0);
+              black_point*=(double) (QuantumRange/100.0);
+              white_point*=(double) (QuantumRange/100.0);
             }
           if ((flags & SigmaValue) == 0)
-            white_point=(MagickRealType) QuantumRange-black_point;
+            white_point=(double) QuantumRange-black_point;
           if (IfPlusOp || ((flags & AspectValue) != 0))
             (void) LevelizeImage(_image,black_point,white_point,gamma,_exception);
           else
@@ -2627,7 +2627,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           if ((flags & RhoValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           black_point=geometry_info.rho;
-          white_point=(MagickRealType) _image->columns*_image->rows;
+          white_point=(double) _image->columns*_image->rows;
           if ((flags & SigmaValue) != 0)
             white_point=geometry_info.sigma;
           if ((flags & PercentValue) != 0)
@@ -2636,7 +2636,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
               white_point*=(double) _image->columns*_image->rows/100.0;
             }
           if ((flags & SigmaValue) == 0)
-            white_point=(MagickRealType) _image->columns*_image->rows-
+            white_point=(double) _image->columns*_image->rows-
               black_point;
           (void) LinearStretchImage(_image,black_point,white_point,_exception);
           break;

@@ -1524,7 +1524,7 @@ WandExport void PixelSetAlphaQuantum(PixelWand *wand,const Quantum alpha)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.alpha=(MagickRealType) alpha;
+  wand->pixel.alpha=(double) alpha;
 }
 
 /*
@@ -1557,7 +1557,7 @@ WandExport void PixelSetBlack(PixelWand *wand,const double black)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.black=(MagickRealType) ClampToQuantum(QuantumRange*black);
+  wand->pixel.black=(double) ClampToQuantum(QuantumRange*black);
 }
 
 /*
@@ -1590,7 +1590,7 @@ WandExport void PixelSetBlackQuantum(PixelWand *wand,const Quantum black)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.black=(MagickRealType) black;
+  wand->pixel.black=(double) black;
 }
 
 /*
@@ -1623,7 +1623,7 @@ WandExport void PixelSetBlue(PixelWand *wand,const double blue)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.blue=(MagickRealType) ClampToQuantum(QuantumRange*blue);
+  wand->pixel.blue=(double) ClampToQuantum(QuantumRange*blue);
 }
 
 /*
@@ -1656,7 +1656,7 @@ WandExport void PixelSetBlueQuantum(PixelWand *wand,const Quantum blue)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.blue=(MagickRealType) blue;
+  wand->pixel.blue=(double) blue;
 }
 
 /*
@@ -1799,7 +1799,7 @@ WandExport void PixelSetCyan(PixelWand *wand,const double cyan)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.red=(MagickRealType) ClampToQuantum(QuantumRange*cyan);
+  wand->pixel.red=(double) ClampToQuantum(QuantumRange*cyan);
 }
 
 /*
@@ -1832,7 +1832,7 @@ WandExport void PixelSetCyanQuantum(PixelWand *wand,const Quantum cyan)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.red=(MagickRealType) cyan;
+  wand->pixel.red=(double) cyan;
 }
 
 /*
@@ -1865,7 +1865,7 @@ WandExport void PixelSetFuzz(PixelWand *wand,const double fuzz)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.fuzz=(MagickRealType) fuzz;
+  wand->pixel.fuzz=(double) fuzz;
 }
 
 /*
@@ -1898,7 +1898,7 @@ WandExport void PixelSetGreen(PixelWand *wand,const double green)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.green=(MagickRealType) ClampToQuantum(QuantumRange*green);
+  wand->pixel.green=(double) ClampToQuantum(QuantumRange*green);
 }
 
 /*
@@ -1931,7 +1931,7 @@ WandExport void PixelSetGreenQuantum(PixelWand *wand,const Quantum green)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.green=(MagickRealType) green;
+  wand->pixel.green=(double) green;
 }
 
 /*
@@ -1973,9 +1973,9 @@ WandExport void PixelSetHSL(PixelWand *wand,const double hue,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   ConvertHSLToRGB(hue,saturation,lightness,&red,&green,&blue);
-  wand->pixel.red=(MagickRealType) red;
-  wand->pixel.green=(MagickRealType) green;
-  wand->pixel.blue=(MagickRealType) blue;
+  wand->pixel.red=(double) red;
+  wand->pixel.green=(double) green;
+  wand->pixel.blue=(double) blue;
 }
 
 /*
@@ -2008,7 +2008,7 @@ WandExport void PixelSetIndex(PixelWand *wand,const Quantum index)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.index=(MagickRealType) index;
+  wand->pixel.index=(double) index;
 }
 
 /*
@@ -2041,7 +2041,7 @@ WandExport void PixelSetMagenta(PixelWand *wand,const double magenta)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.green=(MagickRealType) ClampToQuantum(QuantumRange*magenta);
+  wand->pixel.green=(double) ClampToQuantum(QuantumRange*magenta);
 }
 
 /*
@@ -2075,7 +2075,7 @@ WandExport void PixelSetMagentaQuantum(PixelWand *wand,const Quantum magenta)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.green=(MagickRealType) magenta;
+  wand->pixel.green=(double) magenta;
 }
 
 /*
@@ -2145,11 +2145,11 @@ WandExport void PixelSetQuantumPixel(const Image *image,const Quantum *pixel,
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   assert(pixel != (Quantum *) NULL);
-  wand->pixel.red=(MagickRealType) GetPixelRed(image,pixel);
-  wand->pixel.green=(MagickRealType) GetPixelGreen(image,pixel);
-  wand->pixel.blue=(MagickRealType) GetPixelBlue(image,pixel);
-  wand->pixel.black=(MagickRealType) GetPixelBlack(image,pixel);
-  wand->pixel.alpha=(MagickRealType) GetPixelAlpha(image,pixel);
+  wand->pixel.red=(double) GetPixelRed(image,pixel);
+  wand->pixel.green=(double) GetPixelGreen(image,pixel);
+  wand->pixel.blue=(double) GetPixelBlue(image,pixel);
+  wand->pixel.black=(double) GetPixelBlack(image,pixel);
+  wand->pixel.alpha=(double) GetPixelAlpha(image,pixel);
   wand->pixel.matte=GetPixelAlpha(image,pixel) != OpaqueAlpha ? MagickTrue :
     MagickFalse;
 }
@@ -2184,7 +2184,7 @@ WandExport void PixelSetRed(PixelWand *wand,const double red)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.red=(MagickRealType) ClampToQuantum(QuantumRange*red);
+  wand->pixel.red=(double) ClampToQuantum(QuantumRange*red);
 }
 
 /*
@@ -2217,7 +2217,7 @@ WandExport void PixelSetRedQuantum(PixelWand *wand,const Quantum red)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.red=(MagickRealType) red;
+  wand->pixel.red=(double) red;
 }
 
 /*
@@ -2250,7 +2250,7 @@ WandExport void PixelSetYellow(PixelWand *wand,const double yellow)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.blue=(MagickRealType) ClampToQuantum(QuantumRange*yellow);
+  wand->pixel.blue=(double) ClampToQuantum(QuantumRange*yellow);
 }
 
 /*
@@ -2283,5 +2283,5 @@ WandExport void PixelSetYellowQuantum(PixelWand *wand,const Quantum yellow)
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-  wand->pixel.blue=(MagickRealType) yellow;
+  wand->pixel.blue=(double) yellow;
 }

@@ -574,11 +574,11 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         else
           if (min_value == max_value)
             {
-              scale_factor=(MagickRealType) QuantumRange/min_value;
+              scale_factor=(double) QuantumRange/min_value;
               min_value=0;
             }
           else
-            scale_factor=(MagickRealType) QuantumRange/(max_value-min_value);
+            scale_factor=(double) QuantumRange/(max_value-min_value);
       }
     /*
       Convert pixels to Quantum size.
@@ -626,7 +626,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           {
             for (bit=0; bit < 8; bit++)
             {
-              if (GetPixelIntensity(image,q) < ((MagickRealType) QuantumRange/2.0))
+              if (GetPixelIntensity(image,q) < ((double) QuantumRange/2.0))
                 {
                   quantum=(size_t) GetPixelIndex(image,q);
                   quantum|=0x01;
@@ -639,7 +639,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           if ((image->columns % 8) != 0)
             {
               for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
-                if (GetPixelIntensity(image,q) < ((MagickRealType) QuantumRange/2.0))
+                if (GetPixelIntensity(image,q) < ((double) QuantumRange/2.0))
                   {
                     quantum=(size_t) GetPixelIndex(image,q);
                     quantum|=0x01;
@@ -1188,7 +1188,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte>>=1;
-                if (GetPixelIntensity(image,p) < ((MagickRealType) QuantumRange/2.0))
+                if (GetPixelIntensity(image,p) < ((double) QuantumRange/2.0))
                   byte|=0x80;
                 bit++;
                 if (bit == 8)

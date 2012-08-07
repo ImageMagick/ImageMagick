@@ -2946,7 +2946,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
 #endif
               CompositePixelOver(image,&fill_color,fill_color.alpha,q,
-                (MagickRealType) GetPixelAlpha(image,q),q);
+                (double) GetPixelAlpha(image,q),q);
               q+=GetPixelChannels(image);
             }
             if (SyncAuthenticPixels(image,exception) == MagickFalse)

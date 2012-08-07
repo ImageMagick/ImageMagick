@@ -648,7 +648,7 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
   MagickWand
     *magick_wand;
 
-  MagickRealType
+  double
     height,
     width;
 

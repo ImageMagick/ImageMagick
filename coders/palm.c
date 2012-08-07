@@ -356,9 +356,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         (void) bluebits;
         ReadBlobByte(image);  /* reserved by Palm */
         ReadBlobByte(image);  /* reserved by Palm */
-        transpix.red=(MagickRealType) (QuantumRange*ReadBlobByte(image)/31);
-        transpix.green=(MagickRealType) (QuantumRange*ReadBlobByte(image)/63);
-        transpix.blue=(MagickRealType) (QuantumRange*ReadBlobByte(image)/31);
+        transpix.red=(double) (QuantumRange*ReadBlobByte(image)/31);
+        transpix.green=(double) (QuantumRange*ReadBlobByte(image)/63);
+        transpix.blue=(double) (QuantumRange*ReadBlobByte(image)/31);
       }
     if (bits_per_pixel == 8)
       {

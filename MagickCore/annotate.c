@@ -1393,7 +1393,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
             active,
             sync;
 
-          MagickRealType
+          double
             fill_opacity;
 
           PixelInfo
@@ -1436,7 +1436,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
                 continue;
               }
             if (bitmap->bitmap.pixel_mode != ft_pixel_mode_mono)
-              fill_opacity=(MagickRealType) (p[n])/(bitmap->bitmap.num_grays-1);
+              fill_opacity=(double) (p[n])/(bitmap->bitmap.num_grays-1);
             else
               fill_opacity=((p[(x >> 3)+y*bitmap->bitmap.pitch] &
                 (1 << (~x & 0x07)))) == 0 ? 0.0 : 1.0;

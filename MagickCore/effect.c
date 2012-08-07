@@ -354,7 +354,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        MagickRealType
+        double
           alpha,
           gamma,
           pixel;
@@ -419,7 +419,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
         {
           for (u=0; u < (ssize_t) (width-j); u++)
           {
-            alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,pixels));
+            alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
             pixel+=(*k)*alpha*pixels[i];
             gamma+=(*k)*alpha;
             k++;
@@ -681,7 +681,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(sharp_image); i++)
       {
-        MagickRealType
+        double
           alpha,
           gamma,
           pixel;
@@ -746,7 +746,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
         {
           for (u=0; u < (ssize_t) (width-j); u++)
           {
-            alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,pixels));
+            alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
             pixel+=(*k)*alpha*pixels[i];
             gamma+=(*k)*alpha;
             k++;
@@ -990,7 +990,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        MagickRealType
+        double
           alpha,
           gamma,
           pixel;
@@ -1045,7 +1045,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
         gamma=0.0;
         for (u=0; u < (ssize_t) width; u++)
         {
-          alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,pixels));
+          alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
           pixel+=(*k)*alpha*pixels[i];
           gamma+=(*k)*alpha;
           k++;
@@ -1119,7 +1119,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(blur_image); i++)
       {
-        MagickRealType
+        double
           alpha,
           gamma,
           pixel;
@@ -1174,7 +1174,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
         gamma=0.0;
         for (u=0; u < (ssize_t) width; u++)
         {
-          alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(blur_image,
+          alpha=(double) (QuantumScale*GetPixelAlpha(blur_image,
             pixels));
           pixel+=(*k)*alpha*pixels[i];
           gamma+=(*k)*alpha;
@@ -1993,7 +1993,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        MagickRealType
+        double
           alpha,
           gamma,
           pixel;
@@ -2055,7 +2055,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
               status=MagickFalse;
               continue;
             }
-          alpha=(MagickRealType) (QuantumScale*GetPixelAlpha(image,r));
+          alpha=(double) (QuantumScale*GetPixelAlpha(image,r));
           pixel+=(*k)*alpha*r[i];
           gamma+=(*k)*alpha;
           k++;
@@ -2414,10 +2414,10 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         preview_image=CloneImage(thumbnail,0,0,MagickTrue,exception);
         if (preview_image == (Image *) NULL)
           break;
-        (void) BilevelImage(thumbnail,(double) (percentage*((MagickRealType)
+        (void) BilevelImage(thumbnail,(double) (percentage*((double)
           QuantumRange+1.0))/100.0,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"threshold %g",
-          (double) (percentage*((MagickRealType) QuantumRange+1.0))/100.0);
+          (double) (percentage*((double) QuantumRange+1.0))/100.0);
         break;
       }
       case EdgeDetectPreview:
@@ -2671,7 +2671,7 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
   MagickOffsetType
     progress;
 
-  MagickRealType
+  double
     blur_radius,
     *cos_theta,
     offset,
@@ -2711,18 +2711,18 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
   blur_center.y=(double) image->rows/2.0;
   blur_radius=hypot(blur_center.x,blur_center.y);
   n=(size_t) fabs(4.0*DegreesToRadians(angle)*sqrt((double) blur_radius)+2UL);
-  theta=DegreesToRadians(angle)/(MagickRealType) (n-1);
-  cos_theta=(MagickRealType *) AcquireQuantumMemory((size_t) n,
+  theta=DegreesToRadians(angle)/(double) (n-1);
+  cos_theta=(double *) AcquireQuantumMemory((size_t) n,
     sizeof(*cos_theta));
-  sin_theta=(MagickRealType *) AcquireQuantumMemory((size_t) n,
+  sin_theta=(double *) AcquireQuantumMemory((size_t) n,
     sizeof(*sin_theta));
-  if ((cos_theta == (MagickRealType *) NULL) ||
-      (sin_theta == (MagickRealType *) NULL))
+  if ((cos_theta == (double *) NULL) ||
+      (sin_theta == (double *) NULL))
     {
       blur_image=DestroyImage(blur_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  offset=theta*(MagickRealType) (n-1)/2.0;
+  offset=theta*(double) (n-1)/2.0;
   for (i=0; i < (ssize_t) n; i++)
   {
     cos_theta[i]=cos((double) (theta*i-offset));
@@ -2763,7 +2763,7 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      MagickRealType
+      double
         radius;
 
       PointInfo
@@ -2797,7 +2797,7 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        MagickRealType
+        double
           gamma,
           pixel;
 
@@ -2885,8 +2885,8 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
   blur_view=DestroyCacheView(blur_view);
   radial_view=DestroyCacheView(radial_view);
   image_view=DestroyCacheView(image_view);
-  cos_theta=(MagickRealType *) RelinquishMagickMemory(cos_theta);
-  sin_theta=(MagickRealType *) RelinquishMagickMemory(sin_theta);
+  cos_theta=(double *) RelinquishMagickMemory(cos_theta);
+  sin_theta=(double *) RelinquishMagickMemory(sin_theta);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
   return(blur_image);
@@ -3076,7 +3076,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        MagickRealType
+        double
           alpha,
           gamma,
           intensity,
@@ -3115,7 +3115,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
         k=kernel;
         pixel=0.0;
         pixels=p;
-        intensity=(MagickRealType) GetPixelIntensity(image,p+center);
+        intensity=(double) GetPixelIntensity(image,p+center);
         gamma=0.0;
         if ((blur_traits & BlendPixelTrait) == 0)
           {
@@ -3150,7 +3150,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
             contrast=GetPixelIntensity(image,pixels)-intensity;
             if (fabs(contrast) < threshold)
               {
-                alpha=(MagickRealType) (QuantumScale*
+                alpha=(double) (QuantumScale*
                   GetPixelAlpha(image,pixels));
                 pixel+=(*k)*alpha*pixels[i];
                 gamma+=(*k)*alpha;
@@ -3291,7 +3291,7 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    MagickRealType
+    double
       distance,
       normal_distance,
       shade;
@@ -3731,7 +3731,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   MagickOffsetType
     progress;
 
-  MagickRealType
+  double
     quantum_threshold;
 
   ssize_t
@@ -3745,7 +3745,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   unsharp_image=BlurImage(image,radius,sigma,exception);
   if (unsharp_image == (Image *) NULL)
     return((Image *) NULL);
-  quantum_threshold=(MagickRealType) QuantumRange*threshold;
+  quantum_threshold=(double) QuantumRange*threshold;
   /*
     Unsharp-mask image.
   */
@@ -3791,7 +3791,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        MagickRealType
+        double
           pixel;
 
         PixelChannel
@@ -3812,11 +3812,11 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
             SetPixelChannel(unsharp_image,channel,p[i],q);
             continue;
           }
-        pixel=p[i]-(MagickRealType) GetPixelChannel(unsharp_image,channel,q);
+        pixel=p[i]-(double) GetPixelChannel(unsharp_image,channel,q);
         if (fabs(2.0*pixel) < quantum_threshold)
-          pixel=(MagickRealType) p[i];
+          pixel=(double) p[i];
         else
-          pixel=(MagickRealType) p[i]+amount*pixel;
+          pixel=(double) p[i]+amount*pixel;
         SetPixelChannel(unsharp_image,channel,ClampToQuantum(pixel),q);
       }
       p+=GetPixelChannels(image);

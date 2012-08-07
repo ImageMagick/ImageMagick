@@ -198,7 +198,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   PixelInfo
     *histogram;
 
-  MagickRealType
+  double
     maximum,
     scale;
 
@@ -286,7 +286,7 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
         (maximum < histogram[x].blue))
       maximum=histogram[x].blue;
   }
-  scale=(MagickRealType) histogram_image->rows/maximum;
+  scale=(double) histogram_image->rows/maximum;
   /*
     Initialize histogram image.
   */

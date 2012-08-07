@@ -1981,7 +1981,7 @@ MagickExport const char *GetImageProperty(const Image *image,
   FxInfo
     *fx_info;
 
-  MagickRealType
+  double
     alpha;
 
   MagickStatusType
@@ -2100,22 +2100,22 @@ MagickExport const char *GetImageProperty(const Image *image,
           fx_info=AcquireFxInfo(image,property+6,exception);
           status=FxEvaluateChannelExpression(fx_info,RedPixelChannel,0,0,
             &alpha,exception);
-          pixel.red=(MagickRealType) QuantumRange*alpha;
+          pixel.red=(double) QuantumRange*alpha;
           status|=FxEvaluateChannelExpression(fx_info,GreenPixelChannel,0,0,
             &alpha,exception);
-          pixel.green=(MagickRealType) QuantumRange*alpha;
+          pixel.green=(double) QuantumRange*alpha;
           status|=FxEvaluateChannelExpression(fx_info,BluePixelChannel,0,0,
             &alpha,exception);
-          pixel.blue=(MagickRealType) QuantumRange*alpha;
+          pixel.blue=(double) QuantumRange*alpha;
           if (image->colorspace == CMYKColorspace)
             {
               status|=FxEvaluateChannelExpression(fx_info,BlackPixelChannel,0,0,
                 &alpha,exception);
-              pixel.black=(MagickRealType) QuantumRange*alpha;
+              pixel.black=(double) QuantumRange*alpha;
             }
           status|=FxEvaluateChannelExpression(fx_info,AlphaPixelChannel,0,0,
             &alpha,exception);
-          pixel.alpha=(MagickRealType) QuantumRange*(1.0-alpha);
+          pixel.alpha=(double) QuantumRange*(1.0-alpha);
           fx_info=DestroyFxInfo(fx_info);
           if( IfMagickTrue(status) )
             {

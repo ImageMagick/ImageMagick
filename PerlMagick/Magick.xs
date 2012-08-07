@@ -163,7 +163,7 @@ struct ArgumentList
   ssize_t
     integer_reference;
 
-  MagickRealType
+  double
     real_reference;
 
   const char
@@ -9548,7 +9548,7 @@ Mogrify(ref,...)
             white_point;
 
           black_point=0.0;
-          white_point=(MagickRealType) image->columns*image->rows;
+          white_point=(double) image->columns*image->rows;
           gamma=1.0;
           if (attribute_flag[0] != 0)
             {
@@ -10058,7 +10058,7 @@ Mogrify(ref,...)
             white_point;
 
           black_point=0.0;
-          white_point=(MagickRealType) image->columns*image->rows;
+          white_point=(double) image->columns*image->rows;
           if (attribute_flag[0] != 0)
             {
               flags=ParseGeometry(argument_list[0].string_reference,
@@ -10071,7 +10071,7 @@ Mogrify(ref,...)
                   black_point*=(double) image->columns*image->rows/100.0;
                   white_point*=(double) image->columns*image->rows/100.0;
                 }
-              white_point=(MagickRealType) image->columns*image->rows-
+              white_point=(double) image->columns*image->rows-
                 white_point;
             }
           if (attribute_flag[1] != 0)
@@ -10266,7 +10266,7 @@ Mogrify(ref,...)
              white_point;
 
            black_point=0.0;
-           white_point=(MagickRealType) image->columns*image->rows;
+           white_point=(double) image->columns*image->rows;
            if (attribute_flag[0] != 0)
              {
                flags=ParseGeometry(argument_list[0].string_reference,

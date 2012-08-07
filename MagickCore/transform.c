@@ -694,7 +694,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
 %
 */
 
-static inline ssize_t MagickRound(MagickRealType x)
+static inline ssize_t MagickRound(double x)
 {
   /*
     Round the fraction to nearest integer.
@@ -766,18 +766,18 @@ MagickExport Image *CropImageToTiles(const Image *image,
       {
         if ((flags & AspectValue) == 0)
           {
-            crop.y=(ssize_t) MagickRound((MagickRealType) (offset.y-
+            crop.y=(ssize_t) MagickRound((double) (offset.y-
               (geometry.y > 0 ? 0 : geometry.y)));
             offset.y+=delta.y;   /* increment now to find width */
-            crop.height=(size_t) MagickRound((MagickRealType) (offset.y+
+            crop.height=(size_t) MagickRound((double) (offset.y+
               (geometry.y < 0 ? 0 : geometry.y)));
           }
         else
           {
-            crop.y=(ssize_t) MagickRound((MagickRealType) (offset.y-
+            crop.y=(ssize_t) MagickRound((double) (offset.y-
               (geometry.y > 0 ? geometry.y : 0)));
             offset.y+=delta.y;  /* increment now to find width */
-            crop.height=(size_t) MagickRound((MagickRealType)
+            crop.height=(size_t) MagickRound((double)
               (offset.y+(geometry.y < -1 ? geometry.y : 0)));
           }
         crop.height-=crop.y;
@@ -786,18 +786,18 @@ MagickExport Image *CropImageToTiles(const Image *image,
         {
           if ((flags & AspectValue) == 0)
             {
-              crop.x=(ssize_t) MagickRound((MagickRealType) (offset.x-
+              crop.x=(ssize_t) MagickRound((double) (offset.x-
                 (geometry.x > 0 ? 0 : geometry.x)));
               offset.x+=delta.x;  /* increment now to find height */
-              crop.width=(size_t) MagickRound((MagickRealType) (offset.x+
+              crop.width=(size_t) MagickRound((double) (offset.x+
                 (geometry.x < 0 ? 0 : geometry.x)));
             }
           else
             {
-              crop.x=(ssize_t) MagickRound((MagickRealType) (offset.x-
+              crop.x=(ssize_t) MagickRound((double) (offset.x-
                 (geometry.x > 0 ? geometry.x : 0)));
               offset.x+=delta.x;  /* increment now to find height */
-              crop.width=(size_t) MagickRound((MagickRealType) (offset.x+
+              crop.width=(size_t) MagickRound((double) (offset.x+
                 (geometry.x < 0 ? geometry.x : 0)));
             }
           crop.width-=crop.x;

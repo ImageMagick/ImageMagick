@@ -130,7 +130,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status;
 
-  MagickRealType
+  double
     height,
     width;
 
