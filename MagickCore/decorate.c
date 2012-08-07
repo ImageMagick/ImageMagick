@@ -248,23 +248,23 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   interior=image->border_color;
   matte=image->matte_color;
   accentuate=matte;
-  accentuate.red=(MagickRealType) (QuantumScale*((QuantumRange-
+  accentuate.red=(double) (QuantumScale*((QuantumRange-
     AccentuateModulate)*matte.red+(QuantumRange*AccentuateModulate)));
-  accentuate.green=(MagickRealType) (QuantumScale*((QuantumRange-
+  accentuate.green=(double) (QuantumScale*((QuantumRange-
     AccentuateModulate)*matte.green+(QuantumRange*AccentuateModulate)));
-  accentuate.blue=(MagickRealType) (QuantumScale*((QuantumRange-
+  accentuate.blue=(double) (QuantumScale*((QuantumRange-
     AccentuateModulate)*matte.blue+(QuantumRange*AccentuateModulate)));
-  accentuate.black=(MagickRealType) (QuantumScale*((QuantumRange-
+  accentuate.black=(double) (QuantumScale*((QuantumRange-
     AccentuateModulate)*matte.black+(QuantumRange*AccentuateModulate)));
   accentuate.alpha=matte.alpha;
   highlight=matte;
-  highlight.red=(MagickRealType) (QuantumScale*((QuantumRange-
+  highlight.red=(double) (QuantumScale*((QuantumRange-
     HighlightModulate)*matte.red+(QuantumRange*HighlightModulate)));
-  highlight.green=(MagickRealType) (QuantumScale*((QuantumRange-
+  highlight.green=(double) (QuantumScale*((QuantumRange-
     HighlightModulate)*matte.green+(QuantumRange*HighlightModulate)));
-  highlight.blue=(MagickRealType) (QuantumScale*((QuantumRange-
+  highlight.blue=(double) (QuantumScale*((QuantumRange-
     HighlightModulate)*matte.blue+(QuantumRange*HighlightModulate)));
-  highlight.black=(MagickRealType) (QuantumScale*((QuantumRange-
+  highlight.black=(double) (QuantumScale*((QuantumRange-
     HighlightModulate)*matte.black+(QuantumRange*HighlightModulate)));
   highlight.alpha=matte.alpha;
   shadow=matte;
@@ -728,8 +728,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*HighlightFactor+
-          (MagickRealType) foreground*(QuantumRange-HighlightFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*HighlightFactor+
+          (double) foreground*(QuantumRange-HighlightFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -752,8 +752,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*
-          AccentuateFactor+(MagickRealType) foreground*(QuantumRange-
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*
+          AccentuateFactor+(double) foreground*(QuantumRange-
           AccentuateFactor)));
       }
       q+=GetPixelChannels(image);
@@ -777,8 +777,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*ShadowFactor+
-          (MagickRealType) background*(QuantumRange-ShadowFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*ShadowFactor+
+          (double) background*(QuantumRange-ShadowFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -834,8 +834,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*HighlightFactor+
-          (MagickRealType) foreground*(QuantumRange-HighlightFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*HighlightFactor+
+          (double) foreground*(QuantumRange-HighlightFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -860,8 +860,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*ShadowFactor+
-          (MagickRealType) background*(QuantumRange-ShadowFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*ShadowFactor+
+          (double) background*(QuantumRange-ShadowFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -917,8 +917,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*HighlightFactor+
-          (MagickRealType) foreground*(QuantumRange-HighlightFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*HighlightFactor+
+          (double) foreground*(QuantumRange-HighlightFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -936,8 +936,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*TroughFactor+
-          (MagickRealType) background*(QuantumRange-TroughFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*TroughFactor+
+          (double) background*(QuantumRange-TroughFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -960,8 +960,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((MagickRealType) q[i]*ShadowFactor+
-          (MagickRealType) background*(QuantumRange-ShadowFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*ShadowFactor+
+          (double) background*(QuantumRange-ShadowFactor)));
       }
       q+=GetPixelChannels(image);
     }

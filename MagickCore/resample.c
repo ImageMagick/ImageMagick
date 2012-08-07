@@ -499,7 +499,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
                  color and the current background color */
 
               /* image's average pixel color */
-              weight = QuantumScale*((MagickRealType)
+              weight = QuantumScale*((double)
                 resample_filter->average_pixel.alpha);
               resample_filter->average_pixel.red *= weight;
               resample_filter->average_pixel.green *= weight;
@@ -507,7 +507,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
               divisor_c = weight;
 
               /* background color */
-              weight = QuantumScale*((MagickRealType)
+              weight = QuantumScale*((double)
                 resample_filter->image->background_color.alpha);
               resample_filter->average_pixel.red +=
                       weight*resample_filter->image->background_color.red;
@@ -608,7 +608,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
         divisor_m += weight;
 
         if (pixel->matte != MagickFalse)
-          weight *= QuantumScale*((MagickRealType) GetPixelAlpha(resample_filter->image,pixels));
+          weight *= QuantumScale*((double) GetPixelAlpha(resample_filter->image,pixels));
         pixel->red   += weight*GetPixelRed(resample_filter->image,pixels);
         pixel->green += weight*GetPixelGreen(resample_filter->image,pixels);
         pixel->blue  += weight*GetPixelBlue(resample_filter->image,pixels);
@@ -663,13 +663,13 @@ MagickExport MagickBooleanType ResamplePixelColor(
     Finialize results of resampling
   */
   divisor_m = 1.0/divisor_m;
-  pixel->alpha = (MagickRealType) ClampToQuantum(divisor_m*pixel->alpha);
+  pixel->alpha = (double) ClampToQuantum(divisor_m*pixel->alpha);
   divisor_c = 1.0/divisor_c;
-  pixel->red   = (MagickRealType) ClampToQuantum(divisor_c*pixel->red);
-  pixel->green = (MagickRealType) ClampToQuantum(divisor_c*pixel->green);
-  pixel->blue  = (MagickRealType) ClampToQuantum(divisor_c*pixel->blue);
+  pixel->red   = (double) ClampToQuantum(divisor_c*pixel->red);
+  pixel->green = (double) ClampToQuantum(divisor_c*pixel->green);
+  pixel->blue  = (double) ClampToQuantum(divisor_c*pixel->blue);
   if (pixel->colorspace == CMYKColorspace)
-    pixel->black = (MagickRealType) ClampToQuantum(divisor_c*pixel->black);
+    pixel->black = (double) ClampToQuantum(divisor_c*pixel->black);
   return(MagickTrue);
 }
 

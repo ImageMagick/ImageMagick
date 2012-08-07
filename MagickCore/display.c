@@ -1856,7 +1856,7 @@ static MagickBooleanType XAnnotateEditImage(Display *display,
     transparent_box = MagickTrue,
     transparent_pen = MagickFalse;
 
-  static MagickRealType
+  static double
     degrees = 0.0;
 
   static unsigned int
@@ -2907,7 +2907,7 @@ static MagickBooleanType XChopImage(Display *display,
     x,
     y;
 
-  MagickRealType
+  double
     scale_factor;
 
   RectangleInfo
@@ -3232,11 +3232,11 @@ static MagickBooleanType XChopImage(Display *display,
   y=0;
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
-  scale_factor=(MagickRealType) width/windows->image.ximage->width;
+  scale_factor=(double) width/windows->image.ximage->width;
   chop_info.x+=x;
   chop_info.x=(ssize_t) (scale_factor*chop_info.x+0.5);
   chop_info.width=(unsigned int) (scale_factor*chop_info.width+0.5);
-  scale_factor=(MagickRealType) height/windows->image.ximage->height;
+  scale_factor=(double) height/windows->image.ximage->height;
   chop_info.y+=y;
   chop_info.y=(ssize_t) (scale_factor*chop_info.y+0.5);
   chop_info.height=(unsigned int) (scale_factor*chop_info.height+0.5);
@@ -3825,11 +3825,11 @@ static MagickBooleanType XColorEditImage(Display *display,
               y_offset,&target,exception);
             if (method == FillToBorderMethod)
               {
-                target.red=(MagickRealType)
+                target.red=(double)
                   ScaleShortToQuantum(border_color.red);
-                target.green=(MagickRealType)
+                target.green=(double)
                   ScaleShortToQuantum(border_color.green);
-                target.blue=(MagickRealType)
+                target.blue=(double)
                   ScaleShortToQuantum(border_color.blue);
               }
             draw_info=CloneDrawInfo(resource_info->image_info,
@@ -3961,7 +3961,7 @@ static MagickBooleanType XCompositeImage(Display *display,
     x,
     y;
 
-  MagickRealType
+  double
     blend,
     scale_factor;
 
@@ -4280,11 +4280,11 @@ static MagickBooleanType XCompositeImage(Display *display,
   y=0;
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
-  scale_factor=(MagickRealType) width/windows->image.ximage->width;
+  scale_factor=(double) width/windows->image.ximage->width;
   composite_info.x+=x;
   composite_info.x=(ssize_t) (scale_factor*composite_info.x+0.5);
   composite_info.width=(unsigned int) (scale_factor*composite_info.width+0.5);
-  scale_factor=(MagickRealType) height/windows->image.ximage->height;
+  scale_factor=(double) height/windows->image.ximage->height;
   composite_info.y+=y;
   composite_info.y=(ssize_t) (scale_factor*composite_info.y+0.5);
   composite_info.height=(unsigned int) (scale_factor*composite_info.height+0.5);
@@ -4632,7 +4632,7 @@ static MagickBooleanType XCropImage(Display *display,
   Image
     *crop_image;
 
-  MagickRealType
+  double
     scale_factor;
 
   RectangleInfo
@@ -5331,11 +5331,11 @@ static MagickBooleanType XCropImage(Display *display,
   y=0;
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
-  scale_factor=(MagickRealType) width/windows->image.ximage->width;
+  scale_factor=(double) width/windows->image.ximage->width;
   crop_info.x+=x;
   crop_info.x=(ssize_t) (scale_factor*crop_info.x+0.5);
   crop_info.width=(unsigned int) (scale_factor*crop_info.width+0.5);
-  scale_factor=(MagickRealType) height/windows->image.ximage->height;
+  scale_factor=(double) height/windows->image.ximage->height;
   crop_info.y+=y;
   crop_info.y=(ssize_t) (scale_factor*crop_info.y+0.5);
   crop_info.height=(unsigned int) (scale_factor*crop_info.height+0.5);
@@ -5468,7 +5468,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
     x,
     y;
 
-  MagickRealType
+  double
     degrees;
 
   MagickStatusType
@@ -6371,7 +6371,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
 */
 static void XDrawPanRectangle(Display *display,XWindows *windows)
 {
-  MagickRealType
+  double
     scale_factor;
 
   RectangleInfo
@@ -6380,10 +6380,10 @@ static void XDrawPanRectangle(Display *display,XWindows *windows)
   /*
     Determine dimensions of the panning rectangle.
   */
-  scale_factor=(MagickRealType) windows->pan.width/windows->image.ximage->width;
+  scale_factor=(double) windows->pan.width/windows->image.ximage->width;
   highlight_info.x=(ssize_t) (scale_factor*windows->image.x+0.5);
   highlight_info.width=(unsigned int) (scale_factor*windows->image.width+0.5);
-  scale_factor=(MagickRealType)
+  scale_factor=(double)
     windows->pan.height/windows->image.ximage->height;
   highlight_info.y=(ssize_t) (scale_factor*windows->image.y+0.5);
   highlight_info.height=(unsigned int) (scale_factor*windows->image.height+0.5);
@@ -7904,7 +7904,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           black_point*=(double) (*image)->columns*(*image)->rows/100.0;
           white_point*=(double) (*image)->columns*(*image)->rows/100.0;
         }
-      white_point=(MagickRealType) (*image)->columns*(*image)->rows-white_point;
+      white_point=(double) (*image)->columns*(*image)->rows-white_point;
       (void) ContrastStretchImage(*image,black_point,white_point,
         exception);
       XSetCursorState(display,windows,MagickFalse);
@@ -10161,16 +10161,16 @@ static MagickBooleanType XMatteEditImage(Display *display,
               y_offset,&target,exception);
             if (method == FillToBorderMethod)
               {
-                target.red=(MagickRealType) ScaleShortToQuantum(
+                target.red=(double) ScaleShortToQuantum(
                   border_color.red);
-                target.green=(MagickRealType) ScaleShortToQuantum(
+                target.green=(double) ScaleShortToQuantum(
                   border_color.green);
-                target.blue=(MagickRealType) ScaleShortToQuantum(
+                target.blue=(double) ScaleShortToQuantum(
                   border_color.blue);
               }
             draw_info=CloneDrawInfo(resource_info->image_info,
               (DrawInfo *) NULL);
-            draw_info->fill.alpha=(MagickRealType) ClampToQuantum(
+            draw_info->fill.alpha=(double) ClampToQuantum(
               StringToDouble(matte,(char **) NULL));
             channel_mask=SetPixelChannelMask(*image,AlphaChannel); 
             (void) FloodfillPaintImage(*image,draw_info,&target,(ssize_t)
@@ -10440,7 +10440,7 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event,
   Cursor
     cursor;
 
-  MagickRealType
+  double
     x_factor,
     y_factor;
 
@@ -10468,8 +10468,8 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event,
   /*
     Pan image as pointer moves until the mouse button is released.
   */
-  x_factor=(MagickRealType) windows->image.ximage->width/windows->pan.width;
-  y_factor=(MagickRealType) windows->image.ximage->height/windows->pan.height;
+  x_factor=(double) windows->image.ximage->width/windows->pan.width;
+  y_factor=(double) windows->image.ximage->height/windows->pan.height;
   pan_info.width=windows->pan.width*windows->image.width/
     windows->image.ximage->width;
   pan_info.height=windows->pan.height*windows->image.height/
@@ -10644,7 +10644,7 @@ static MagickBooleanType XPasteImage(Display *display,
     x,
     y;
 
-  MagickRealType
+  double
     scale_factor;
 
   RectangleInfo
@@ -10784,9 +10784,9 @@ static MagickBooleanType XPasteImage(Display *display,
         if (windows->image.crop_geometry != (char *) NULL)
           (void) XParseGeometry(windows->image.crop_geometry,&x,&y,
             &width,&height);
-        scale_factor=(MagickRealType) windows->image.ximage->width/width;
+        scale_factor=(double) windows->image.ximage->width/width;
         paste_info.width=(unsigned int) (scale_factor*paste_image->columns+0.5);
-        scale_factor=(MagickRealType) windows->image.ximage->height/height;
+        scale_factor=(double) windows->image.ximage->height/height;
         paste_info.height=(unsigned int) (scale_factor*paste_image->rows+0.5);
         (void) XCheckDefineCursor(display,windows->image.id,cursor);
         paste_info.x=(ssize_t) windows->image.x+event.xbutton.x;
@@ -10919,11 +10919,11 @@ static MagickBooleanType XPasteImage(Display *display,
   y=0;
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
-  scale_factor=(MagickRealType) width/windows->image.ximage->width;
+  scale_factor=(double) width/windows->image.ximage->width;
   paste_info.x+=x;
   paste_info.x=(ssize_t) (scale_factor*paste_info.x+0.5);
   paste_info.width=(unsigned int) (scale_factor*paste_info.width+0.5);
-  scale_factor=(MagickRealType) height/windows->image.ximage->height;
+  scale_factor=(double) height/windows->image.ximage->height;
   paste_info.y+=y;
   paste_info.y=(ssize_t) (scale_factor*paste_info.y*scale_factor+0.5);
   paste_info.height=(unsigned int) (scale_factor*paste_info.height+0.5);
@@ -11294,7 +11294,7 @@ static MagickBooleanType XROIImage(Display *display,
     x,
     y;
 
-  MagickRealType
+  double
     scale_factor;
 
   MagickProgressMonitor
@@ -11638,11 +11638,11 @@ static MagickBooleanType XROIImage(Display *display,
               if (windows->image.crop_geometry != (char *) NULL)
                 (void) XParseGeometry(windows->image.crop_geometry,&x,&y,
                   &width,&height);
-              scale_factor=(MagickRealType) width/windows->image.ximage->width;
+              scale_factor=(double) width/windows->image.ximage->width;
               crop_info.x+=x;
               crop_info.x=(ssize_t) (scale_factor*crop_info.x+0.5);
               crop_info.width=(unsigned int) (scale_factor*crop_info.width+0.5);
-              scale_factor=(MagickRealType)
+              scale_factor=(double)
                 height/windows->image.ximage->height;
               crop_info.y+=y;
               crop_info.y=(ssize_t) (scale_factor*crop_info.y+0.5);
@@ -12060,7 +12060,7 @@ static MagickBooleanType XRotateImage(Display *display,
     x,
     y;
 
-  MagickRealType
+  double
     normalized_degrees;
 
   register int
@@ -12966,7 +12966,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
     x,
     y;
 
-  MagickRealType
+  double
     scale_factor;
 
   unsigned int
@@ -12997,13 +12997,13 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
   /*
     Define the crop geometry string from the cropping rectangle.
   */
-  scale_factor=(MagickRealType) width/windows->image.ximage->width;
+  scale_factor=(double) width/windows->image.ximage->width;
   if (crop_info->x > 0)
     x+=(int) (scale_factor*crop_info->x+0.5);
   width=(unsigned int) (scale_factor*crop_info->width+0.5);
   if (width == 0)
     width=1;
-  scale_factor=(MagickRealType) height/windows->image.ximage->height;
+  scale_factor=(double) height/windows->image.ximage->height;
   if (crop_info->y > 0)
     y+=(int) (scale_factor*crop_info->y+0.5);
   height=(unsigned int) (scale_factor*crop_info->height+0.5);
@@ -13090,7 +13090,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
     x,
     y;
 
-  MagickRealType
+  double
     scale_factor;
 
   register char
@@ -13113,10 +13113,10 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   height=(unsigned int) image->rows;
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
-  scale_factor=(MagickRealType) width/windows->image.ximage->width;
+  scale_factor=(double) width/windows->image.ximage->width;
   event->xbutton.x+=windows->image.x;
   event->xbutton.x=(int) (scale_factor*event->xbutton.x+x+0.5);
-  scale_factor=(MagickRealType) height/windows->image.ximage->height;
+  scale_factor=(double) height/windows->image.ximage->height;
   event->xbutton.y+=windows->image.y;
   event->xbutton.y=(int) (scale_factor*event->xbutton.y+y+0.5);
   /*

@@ -2332,7 +2332,7 @@ static void ImportIndexQuantum(const Image *image,QuantumInfo *quantum_info,
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
             SetPixelIndex(image,PushColormapIndex(image,ClampToQuantum(
-              (MagickRealType) QuantumRange*HalfToSinglePrecision(pixel)),
+              (double) QuantumRange*HalfToSinglePrecision(pixel)),
               &range_exception),q);
             SetPixelInfoPixel(image,image->colormap+(ssize_t)
               GetPixelIndex(image,q),q);
@@ -2535,7 +2535,7 @@ static void ImportIndexAlphaQuantum(const Image *image,
           {
             p=PushShortPixel(quantum_info->endian,p,&pixel);
             SetPixelIndex(image,PushColormapIndex(image,ClampToQuantum(
-              (MagickRealType) QuantumRange*HalfToSinglePrecision(pixel)),
+              (double) QuantumRange*HalfToSinglePrecision(pixel)),
               &range_exception),q);
             SetPixelInfoPixel(image,image->colormap+(ssize_t)
               GetPixelIndex(image,q),q);
@@ -3586,7 +3586,7 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
     }
   if (quantum_info->alpha_type == DisassociatedQuantumAlpha)
     {
-      MagickRealType
+      double
         gamma,
         Sa;
 

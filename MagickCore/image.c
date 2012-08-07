@@ -787,7 +787,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   Image
     *clone_image;
 
-  MagickRealType
+  double
     scale;
 
   size_t
@@ -872,11 +872,11 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
       clone_image->cache=ReferencePixelCache(image->cache);
       return(clone_image);
     }
-  scale=(MagickRealType) columns/(MagickRealType) image->columns;
+  scale=(double) columns/(double) image->columns;
   clone_image->page.width=(size_t) floor(scale*image->page.width+0.5);
   clone_image->page.x=(ssize_t) ceil(scale*image->page.x-0.5);
   clone_image->tile_offset.x=(ssize_t) ceil(scale*image->tile_offset.x-0.5);
-  scale=(MagickRealType) rows/(MagickRealType) image->rows;
+  scale=(double) rows/(double) image->rows;
   clone_image->page.height=(size_t) floor(scale*image->page.height+0.5);
   clone_image->page.y=(ssize_t) ceil(scale*image->page.y-0.5);
   clone_image->tile_offset.y=(ssize_t) ceil(scale*image->tile_offset.y-0.5);
@@ -1679,13 +1679,13 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        MagickRealType
+        double
           pixel;
 
         traits=GetPixelChannelMapTraits(image,i);
         if (traits == UndefinedPixelTrait)
           continue;
-        pixel=(MagickRealType) p[i];
+        pixel=(double) p[i];
         if ((pixel < 0.0) || (pixel > QuantumRange) ||
             (pixel != (QuantumAny) pixel))
           break;
@@ -2070,10 +2070,10 @@ MagickExport MagickBooleanType ResetImagePage(Image *image,const char *page)
 */
 
 static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
-  const MagickRealType alpha,const Quantum *q,const MagickRealType beta,
+  const double alpha,const Quantum *q,const double beta,
   Quantum *composite)
 {
-  MagickRealType
+  double
     Da,
     gamma,
     Sa;
@@ -2104,26 +2104,26 @@ static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
     {
       case RedPixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((MagickRealType) q[i],
-          beta,(MagickRealType) p->red,alpha));
+        composite[i]=ClampToQuantum(gamma*MagickOver_((double) q[i],
+          beta,(double) p->red,alpha));
         break;
       }
       case GreenPixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((MagickRealType) q[i],
-          beta,(MagickRealType) p->green,alpha));
+        composite[i]=ClampToQuantum(gamma*MagickOver_((double) q[i],
+          beta,(double) p->green,alpha));
         break;
       }
       case BluePixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((MagickRealType) q[i],
-          beta,(MagickRealType) p->blue,alpha));
+        composite[i]=ClampToQuantum(gamma*MagickOver_((double) q[i],
+          beta,(double) p->blue,alpha));
         break;
       }
       case BlackPixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((MagickRealType) q[i],
-          beta,(MagickRealType) p->black,alpha));
+        composite[i]=ClampToQuantum(gamma*MagickOver_((double) q[i],
+          beta,(double) p->black,alpha));
         break;
       }
       case AlphaPixelChannel:
@@ -2274,7 +2274,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           FlattenPixelInfo(image,&image->background_color,
-            image->background_color.alpha,q,(MagickRealType)
+            image->background_color.alpha,q,(double)
             GetPixelAlpha(image,q),q);
           q+=GetPixelChannels(image);
         }

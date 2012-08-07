@@ -596,19 +596,19 @@ extern MagickExport void
 extern MagickExport XrmDatabase
   XGetResourceDatabase(Display *,const char *);
 
-static inline MagickRealType XPixelIntensity(const XColor *pixel)
+static inline double XPixelIntensity(const XColor *pixel)
 {
   double
     blue,
     green,
     red;
 
-  MagickRealType
+  double
     intensity;
 
-  red=QuantumRange*DecompandsRGB(QuantumScale*pixel->red);
-  green=QuantumRange*DecompandsRGB(QuantumScale*pixel->green);
-  blue=QuantumRange*DecompandsRGB(QuantumScale*pixel->blue);
+  red=DecompandsRGB(pixel->red);
+  green=DecompandsRGB(pixel->green);
+  blue=DecompandsRGB(pixel->blue);
   intensity=0.298839*red+0.586811*green+0.114350*blue;
   return(intensity);
 }

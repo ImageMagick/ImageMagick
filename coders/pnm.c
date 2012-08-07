@@ -557,16 +557,16 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            pixel.red=(MagickRealType) PNMInteger(image,10,exception);
-            pixel.green=(MagickRealType) PNMInteger(image,10,exception);
-            pixel.blue=(MagickRealType) PNMInteger(image,10,exception);
+            pixel.red=(double) PNMInteger(image,10,exception);
+            pixel.green=(double) PNMInteger(image,10,exception);
+            pixel.blue=(double) PNMInteger(image,10,exception);
             if (scale != (Quantum *) NULL)
               {
-                pixel.red=(MagickRealType) scale[ConstrainPixel(image,(ssize_t)
+                pixel.red=(double) scale[ConstrainPixel(image,(ssize_t)
                   pixel.red,max_value,exception)];
-                pixel.green=(MagickRealType) scale[ConstrainPixel(image,
+                pixel.green=(double) scale[ConstrainPixel(image,
                   (ssize_t) pixel.green,max_value,exception)];
-                pixel.blue=(MagickRealType) scale[ConstrainPixel(image,(ssize_t)
+                pixel.blue=(double) scale[ConstrainPixel(image,(ssize_t)
                   pixel.blue,max_value,exception)];
               }
             SetPixelRed(image,ClampToQuantum(pixel.red),q);
@@ -1159,7 +1159,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         status=SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
         if (status == MagickFalse)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-        SetQuantumScale(quantum_info,(MagickRealType) QuantumRange*
+        SetQuantumScale(quantum_info,(double) QuantumRange*
           fabs(quantum_scale));
         extent=GetQuantumExtent(image,quantum_info,quantum_type);
         for (y=0; y < (ssize_t) image->rows; y++)

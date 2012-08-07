@@ -206,7 +206,7 @@ static MagickBooleanType
 static const char
   *XVisualClassName(const int);
 
-static MagickRealType
+static double
   blue_gamma = 1.0,
   green_gamma = 1.0,
   red_gamma = 1.0;
@@ -639,7 +639,7 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
       int
         rotations;
 
-      MagickRealType
+      double
         normalized_degrees;
 
       /*
@@ -904,7 +904,7 @@ MagickPrivate void XBestIconSize(Display *display,XWindowInfo *window,
     i,
     number_sizes;
 
-  MagickRealType
+  double
     scale_factor;
 
   unsigned int
@@ -965,9 +965,9 @@ MagickPrivate void XBestIconSize(Display *display,XWindowInfo *window,
   /*
     Look for an icon size that maintains the aspect ratio of image.
   */
-  scale_factor=(MagickRealType) icon_size->max_width/width;
-  if (scale_factor > ((MagickRealType) icon_size->max_height/height))
-    scale_factor=(MagickRealType) icon_size->max_height/height;
+  scale_factor=(double) icon_size->max_width/width;
+  if (scale_factor > ((double) icon_size->max_height/height))
+    scale_factor=(double) icon_size->max_height/height;
   icon_width=(unsigned int) icon_size->min_width;
   while ((int) icon_width < icon_size->max_width)
   {
@@ -1034,10 +1034,10 @@ MagickPrivate void XBestPixel(Display *display,const Colormap colormap,
   PixelInfo
     pixel;
 
-  MagickRealType
+  double
     min_distance;
 
-  register MagickRealType
+  register double
     distance;
 
   register int
@@ -1075,20 +1075,20 @@ MagickPrivate void XBestPixel(Display *display,const Colormap colormap,
         number_colors=256;
       (void) XQueryColors(display,colormap,colors,(int) number_colors);
     }
-  min_distance=3.0*((MagickRealType) QuantumRange+1.0)*((MagickRealType)
+  min_distance=3.0*((double) QuantumRange+1.0)*((double)
     QuantumRange+1.0);
   j=0;
   for (i=0; i < (int) number_colors; i++)
   {
-    pixel.red=colors[i].red-(MagickRealType) color->red;
+    pixel.red=colors[i].red-(double) color->red;
     distance=pixel.red*pixel.red;
     if (distance > min_distance)
       continue;
-    pixel.green=colors[i].green-(MagickRealType) color->green;
+    pixel.green=colors[i].green-(double) color->green;
     distance+=pixel.green*pixel.green;
     if (distance > min_distance)
       continue;
-    pixel.blue=colors[i].blue-(MagickRealType) color->blue;
+    pixel.blue=colors[i].blue-(double) color->blue;
     distance+=pixel.blue*pixel.blue;
     if (distance > min_distance)
       continue;
@@ -2555,7 +2555,7 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
       int
         rotations;
 
-      MagickRealType
+      double
         normalized_degrees;
 
       /*
@@ -3159,33 +3159,33 @@ MagickPrivate void XGetPixelInfo(Display *display,
   /*
     Set shadow color.
   */
-  pixel->shadow_color.red=(unsigned short) (((MagickRealType)
+  pixel->shadow_color.red=(unsigned short) (((double)
     pixel->matte_color.red*ScaleQuantumToShort(ShadowModulate))/65535L);
-  pixel->shadow_color.green=(unsigned short) (((MagickRealType)
+  pixel->shadow_color.green=(unsigned short) (((double)
     pixel->matte_color.green*ScaleQuantumToShort(ShadowModulate))/65535L);
-  pixel->shadow_color.blue=(unsigned short) (((MagickRealType)
+  pixel->shadow_color.blue=(unsigned short) (((double)
     pixel->matte_color.blue*ScaleQuantumToShort(ShadowModulate))/65535L);
   pixel->shadow_color.pixel=XStandardPixel(map_info,&pixel->shadow_color);
   pixel->shadow_color.flags=(char) (DoRed | DoGreen | DoBlue);
   /*
     Set depth color.
   */
-  pixel->depth_color.red=(unsigned short) (((MagickRealType)
+  pixel->depth_color.red=(unsigned short) (((double)
     pixel->matte_color.red*ScaleQuantumToShort(DepthModulate))/65535L);
-  pixel->depth_color.green=(unsigned short) (((MagickRealType)
+  pixel->depth_color.green=(unsigned short) (((double)
     pixel->matte_color.green*ScaleQuantumToShort(DepthModulate))/65535L);
-  pixel->depth_color.blue=(unsigned short) (((MagickRealType)
+  pixel->depth_color.blue=(unsigned short) (((double)
     pixel->matte_color.blue*ScaleQuantumToShort(DepthModulate))/65535L);
   pixel->depth_color.pixel=XStandardPixel(map_info,&pixel->depth_color);
   pixel->depth_color.flags=(char) (DoRed | DoGreen | DoBlue);
   /*
     Set trough color.
   */
-  pixel->trough_color.red=(unsigned short) (((MagickRealType)
+  pixel->trough_color.red=(unsigned short) (((double)
     pixel->matte_color.red*ScaleQuantumToShort(TroughModulate))/65535L);
-  pixel->trough_color.green=(unsigned short) (((MagickRealType)
+  pixel->trough_color.green=(unsigned short) (((double)
     pixel->matte_color.green*ScaleQuantumToShort(TroughModulate))/65535L);
-  pixel->trough_color.blue=(unsigned short) (((MagickRealType)
+  pixel->trough_color.blue=(unsigned short) (((double)
     pixel->matte_color.blue*ScaleQuantumToShort(TroughModulate))/65535L);
   pixel->trough_color.pixel=XStandardPixel(map_info,&pixel->trough_color);
   pixel->trough_color.flags=(char) (DoRed | DoGreen | DoBlue);
@@ -7695,10 +7695,10 @@ static MagickBooleanType XMakePixmap(Display *display,
 extern "C" {
 #endif
 
-static inline MagickRealType DiversityPixelIntensity(
+static inline double DiversityPixelIntensity(
   const DiversityPacket *pixel)
 {
-  MagickRealType
+  double
     intensity;
 
   intensity=0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue;
@@ -7739,7 +7739,7 @@ static int PopularityCompare(const void *x,const void *y)
 static inline Quantum ScaleXToQuantum(const size_t x,
   const size_t scale)
 {
-  return((Quantum) (((MagickRealType) QuantumRange*x)/scale+0.5));
+  return((Quantum) (((double) QuantumRange*x)/scale+0.5));
 }
 
 MagickPrivate void XMakeStandardColormap(Display *display,

@@ -25,9 +25,9 @@ extern "C" {
 typedef struct _ResizeFilter
   ResizeFilter;
 
-extern MagickPrivate MagickRealType
+extern MagickPrivate double
   GetResizeFilterSupport(const ResizeFilter *),
-  GetResizeFilterWeight(const ResizeFilter *,const MagickRealType);
+  GetResizeFilterWeight(const ResizeFilter *,const double);
 
 extern MagickPrivate ResizeFilter
   *AcquireResizeFilter(const Image *,const FilterTypes,const MagickBooleanType,

@@ -54,9 +54,9 @@ static inline double DegreesToRadians(const double degrees)
   return((double) (MagickPI*degrees/180.0));
 }
 
-static inline MagickRealType RadiansToDegrees(const MagickRealType radians)
+static inline double RadiansToDegrees(const double radians)
 {
-  return((MagickRealType) (180.0*radians/MagickPI));
+  return((double) (180.0*radians/MagickPI));
 }
 
 static inline unsigned char ScaleColor5to8(const unsigned int color)

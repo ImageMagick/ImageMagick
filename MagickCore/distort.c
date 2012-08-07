@@ -2804,7 +2804,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
     *distort_image,
     *rotate_image;
 
-  MagickRealType
+  double
     angle;
 
   PointInfo

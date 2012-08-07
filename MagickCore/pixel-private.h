@@ -22,12 +22,12 @@
 extern "C" {
 #endif
 
-static inline MagickRealType MagickEpsilonReciprocal(const MagickRealType x)
+static inline double MagickEpsilonReciprocal(const double x)
 {
-  MagickRealType sign = x < (MagickRealType) 0.0 ? (MagickRealType) -1.0 : 
-    (MagickRealType) 1.0;
-  return((sign*x) >= MagickEpsilon ? (MagickRealType) 1.0/x : sign*(
-    (MagickRealType) 1.0/MagickEpsilon));
+  double sign = x < (double) 0.0 ? (double) -1.0 : 
+    (double) 1.0;
+  return((sign*x) >= MagickEpsilon ? (double) 1.0/x : sign*(
+    (double) 1.0/MagickEpsilon));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -131,7 +131,7 @@
 
 typedef struct _PixelChannels
 {
-  MagickRealType
+  double
     channel[CompositePixelChannel];
 } PixelChannels;
 
@@ -207,7 +207,7 @@ static int IntensityCompare(const void *x,const void *y)
     *color_1,
     *color_2;
 
-  MagickRealType
+  double
     distance;
 
   register ssize_t
@@ -217,7 +217,7 @@ static int IntensityCompare(const void *x,const void *y)
   color_2=(const PixelChannels *) y;
   distance=0.0;
   for (i=0; i < MaxPixelChannels; i++)
-    distance+=color_1->channel[i]-(MagickRealType) color_2->channel[i];
+    distance+=color_1->channel[i]-(double) color_2->channel[i];
   return(distance < 0 ? -1 : distance > 0 ? 1 : 0);
 }
 
@@ -232,10 +232,10 @@ static inline double MagickMin(const double x,const double y)
   return(y);
 }
 
-static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
-  Quantum pixel,const MagickEvaluateOperator op,const MagickRealType value)
+static double ApplyEvaluateOperator(RandomInfo *random_info,
+  Quantum pixel,const MagickEvaluateOperator op,const double value)
 {
-  MagickRealType
+  double
     result;
 
   result=0.0;
@@ -245,12 +245,12 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
       break;
     case AbsEvaluateOperator:
     {
-      result=(MagickRealType) fabs((double) (pixel+value));
+      result=(double) fabs((double) (pixel+value));
       break;
     }
     case AddEvaluateOperator:
     {
-      result=(MagickRealType) (pixel+value);
+      result=(double) (pixel+value);
       break;
     }
     case AddModulusEvaluateOperator:
@@ -267,12 +267,12 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case AndEvaluateOperator:
     {
-      result=(MagickRealType) ((size_t) pixel & (size_t) (value+0.5));
+      result=(double) ((size_t) pixel & (size_t) (value+0.5));
       break;
     }
     case CosineEvaluateOperator:
     {
-      result=(MagickRealType) (QuantumRange*(0.5*cos((double) (2.0*MagickPI*
+      result=(double) (QuantumRange*(0.5*cos((double) (2.0*MagickPI*
         QuantumScale*pixel*value))+0.5));
       break;
     }
@@ -283,91 +283,91 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case ExponentialEvaluateOperator:
     {
-      result=(MagickRealType) (QuantumRange*exp((double) (value*QuantumScale*
+      result=(double) (QuantumRange*exp((double) (value*QuantumScale*
         pixel)));
       break;
     }
     case GaussianNoiseEvaluateOperator:
     {
-      result=(MagickRealType) GenerateDifferentialNoise(random_info,pixel,
+      result=(double) GenerateDifferentialNoise(random_info,pixel,
         GaussianNoise,value);
       break;
     }
     case ImpulseNoiseEvaluateOperator:
     {
-      result=(MagickRealType) GenerateDifferentialNoise(random_info,pixel,
+      result=(double) GenerateDifferentialNoise(random_info,pixel,
         ImpulseNoise,value);
       break;
     }
     case LaplacianNoiseEvaluateOperator:
     {
-      result=(MagickRealType) GenerateDifferentialNoise(random_info,pixel,
+      result=(double) GenerateDifferentialNoise(random_info,pixel,
         LaplacianNoise,value);
       break;
     }
     case LeftShiftEvaluateOperator:
     {
-      result=(MagickRealType) ((size_t) pixel << (size_t) (value+0.5));
+      result=(double) ((size_t) pixel << (size_t) (value+0.5));
       break;
     }
     case LogEvaluateOperator:
     {
       if ((QuantumScale*pixel) >= MagickEpsilon)
-        result=(MagickRealType) (QuantumRange*log((double) (QuantumScale*value*
+        result=(double) (QuantumRange*log((double) (QuantumScale*value*
           pixel+1.0))/log((double) (value+1.0)));
       break;
     }
     case MaxEvaluateOperator:
     {
-      result=(MagickRealType) EvaluateMax((double) pixel,value);
+      result=(double) EvaluateMax((double) pixel,value);
       break;
     }
     case MeanEvaluateOperator:
     {
-      result=(MagickRealType) (pixel+value);
+      result=(double) (pixel+value);
       break;
     }
     case MedianEvaluateOperator:
     {
-      result=(MagickRealType) (pixel+value);
+      result=(double) (pixel+value);
       break;
     }
     case MinEvaluateOperator:
     {
-      result=(MagickRealType) MagickMin((double) pixel,value);
+      result=(double) MagickMin((double) pixel,value);
       break;
     }
     case MultiplicativeNoiseEvaluateOperator:
     {
-      result=(MagickRealType) GenerateDifferentialNoise(random_info,pixel,
+      result=(double) GenerateDifferentialNoise(random_info,pixel,
         MultiplicativeGaussianNoise,value);
       break;
     }
     case MultiplyEvaluateOperator:
     {
-      result=(MagickRealType) (value*pixel);
+      result=(double) (value*pixel);
       break;
     }
     case OrEvaluateOperator:
     {
-      result=(MagickRealType) ((size_t) pixel | (size_t) (value+0.5));
+      result=(double) ((size_t) pixel | (size_t) (value+0.5));
       break;
     }
     case PoissonNoiseEvaluateOperator:
     {
-      result=(MagickRealType) GenerateDifferentialNoise(random_info,pixel,
+      result=(double) GenerateDifferentialNoise(random_info,pixel,
         PoissonNoise,value);
       break;
     }
     case PowEvaluateOperator:
     {
-      result=(MagickRealType) (QuantumRange*pow((double) (QuantumScale*pixel),
+      result=(double) (QuantumRange*pow((double) (QuantumScale*pixel),
         (double) value));
       break;
     }
     case RightShiftEvaluateOperator:
     {
-      result=(MagickRealType) ((size_t) pixel >> (size_t) (value+0.5));
+      result=(double) ((size_t) pixel >> (size_t) (value+0.5));
       break;
     }
     case SetEvaluateOperator:
@@ -377,46 +377,46 @@ static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case SineEvaluateOperator:
     {
-      result=(MagickRealType) (QuantumRange*(0.5*sin((double) (2.0*MagickPI*
+      result=(double) (QuantumRange*(0.5*sin((double) (2.0*MagickPI*
         QuantumScale*pixel*value))+0.5));
       break;
     }
     case SubtractEvaluateOperator:
     {
-      result=(MagickRealType) (pixel-value);
+      result=(double) (pixel-value);
       break;
     }
     case SumEvaluateOperator:
     {
-      result=(MagickRealType) (pixel+value);
+      result=(double) (pixel+value);
       break;
     }
     case ThresholdEvaluateOperator:
     {
-      result=(MagickRealType) (((MagickRealType) pixel <= value) ? 0 :
+      result=(double) (((double) pixel <= value) ? 0 :
         QuantumRange);
       break;
     }
     case ThresholdBlackEvaluateOperator:
     {
-      result=(MagickRealType) (((MagickRealType) pixel <= value) ? 0 : pixel);
+      result=(double) (((double) pixel <= value) ? 0 : pixel);
       break;
     }
     case ThresholdWhiteEvaluateOperator:
     {
-      result=(MagickRealType) (((MagickRealType) pixel > value) ? QuantumRange :
+      result=(double) (((double) pixel > value) ? QuantumRange :
         pixel);
       break;
     }
     case UniformNoiseEvaluateOperator:
     {
-      result=(MagickRealType) GenerateDifferentialNoise(random_info,pixel,
+      result=(double) GenerateDifferentialNoise(random_info,pixel,
         UniformNoise,value);
       break;
     }
     case XorEvaluateOperator:
     {
-      result=(MagickRealType) ((size_t) pixel ^ (size_t) (value+0.5));
+      result=(double) ((size_t) pixel ^ (size_t) (value+0.5));
       break;
     }
   }
@@ -713,7 +713,7 @@ MagickExport Image *EvaluateImages(const Image *images,
             case MeanEvaluateOperator:
             {
               for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-                evaluate_pixel[x].channel[i]/=(MagickRealType) number_images;
+                evaluate_pixel[x].channel[i]/=(double) number_images;
               break;
             }
             case MultiplyEvaluateOperator:
@@ -929,7 +929,7 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
   const size_t number_parameters,const double *parameters,
   ExceptionInfo *exception)
 {
-  MagickRealType
+  double
     result;
 
   register ssize_t
@@ -953,7 +953,7 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
     }
     case SinusoidFunction:
     {
-      MagickRealType
+      double
         amplitude,
         bias,
         frequency,
@@ -966,13 +966,13 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
       phase=(number_parameters >= 2) ? parameters[1] : 0.0;
       amplitude=(number_parameters >= 3) ? parameters[2] : 0.5;
       bias=(number_parameters >= 4) ? parameters[3] : 0.5;
-      result=(MagickRealType) (QuantumRange*(amplitude*sin((double) (2.0*
+      result=(double) (QuantumRange*(amplitude*sin((double) (2.0*
         MagickPI*(frequency*QuantumScale*pixel+phase/360.0)))+bias));
       break;
     }
     case ArcsinFunction:
     {
-      MagickRealType
+      double
         bias,
         center,
         range,
@@ -993,13 +993,13 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
         if (result >= 1.0)
           result=bias+range/2.0;
         else
-          result=(MagickRealType) (range/MagickPI*asin((double) result)+bias);
+          result=(double) (range/MagickPI*asin((double) result)+bias);
       result*=QuantumRange;
       break;
     }
     case ArctanFunction:
     {
-      MagickRealType
+      double
         center,
         bias,
         range,
@@ -1012,8 +1012,8 @@ static Quantum ApplyFunction(Quantum pixel,const MagickFunction function,
       center=(number_parameters >= 2) ? parameters[1] : 0.5;
       range=(number_parameters >= 3) ? parameters[2] : 1.0;
       bias=(number_parameters >= 4) ? parameters[3] : 0.5;
-      result=(MagickRealType) (MagickPI*slope*(QuantumScale*pixel-center));
-      result=(MagickRealType) (QuantumRange*(range/MagickPI*atan((double)
+      result=(double) (MagickPI*slope*(QuantumScale*pixel-center));
+      result=(double) (QuantumRange*(range/MagickPI*atan((double)
         result)+bias));
       break;
     }
@@ -1978,7 +1978,7 @@ static inline void GetMaximumPixelList(PixelList *pixel_list,Quantum *pixel)
 
 static inline void GetMeanPixelList(PixelList *pixel_list,Quantum *pixel)
 {
-  MagickRealType
+  double
     sum;
 
   register SkipList
@@ -2000,7 +2000,7 @@ static inline void GetMeanPixelList(PixelList *pixel_list,Quantum *pixel)
   do
   {
     color=p->nodes[color].next[0];
-    sum+=(MagickRealType) p->nodes[color].count*color;
+    sum+=(double) p->nodes[color].count*color;
     count+=p->nodes[color].count;
   } while (count < (ssize_t) pixel_list->length);
   sum/=pixel_list->length;
@@ -2133,7 +2133,7 @@ static inline void GetNonpeakPixelList(PixelList *pixel_list,Quantum *pixel)
 static inline void GetStandardDeviationPixelList(PixelList *pixel_list,
   Quantum *pixel)
 {
-  MagickRealType
+  double
     sum,
     sum_squared;
 
@@ -2160,9 +2160,9 @@ static inline void GetStandardDeviationPixelList(PixelList *pixel_list,
       i;
 
     color=p->nodes[color].next[0];
-    sum+=(MagickRealType) p->nodes[color].count*color;
+    sum+=(double) p->nodes[color].count*color;
     for (i=0; i < (ssize_t) p->nodes[color].count; i++)
-      sum_squared+=((MagickRealType) color)*((MagickRealType) color);
+      sum_squared+=((double) color)*((double) color);
     count+=p->nodes[color].count;
   } while (count < (ssize_t) pixel_list->length);
   sum/=pixel_list->length;
@@ -2189,7 +2189,7 @@ static inline void InsertPixelList(const Image *image,const Quantum pixel,
   AddNodePixelList(pixel_list,index);
 }
 
-static inline MagickRealType MagickAbsoluteValue(const MagickRealType x)
+static inline double MagickAbsoluteValue(const double x)
 {
   if (x < 0)
     return(-x);
@@ -2371,14 +2371,14 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
         {
           case GradientStatistic:
           {
-            MagickRealType
+            double
               maximum,
               minimum;
 
             GetMinimumPixelList(pixel_list[id],&pixel);
-            minimum=(MagickRealType) pixel;
+            minimum=(double) pixel;
             GetMaximumPixelList(pixel_list[id],&pixel);
-            maximum=(MagickRealType) pixel;
+            maximum=(double) pixel;
             pixel=ClampToQuantum(MagickAbsoluteValue(maximum-minimum));
             break;
           }

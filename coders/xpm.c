@@ -740,7 +740,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
     pixel=picon->colormap[i];
     pixel.colorspace=sRGBColorspace;
     pixel.depth=8;
-    pixel.alpha=(MagickRealType) OpaqueAlpha;
+    pixel.alpha=(double) OpaqueAlpha;
     (void) QueryColorname(image,&pixel,XPMCompliance,name,exception);
     if (transparent != MagickFalse)
       {
@@ -888,7 +888,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
     }
   else
     {
-      MagickRealType
+      double
         alpha,
         beta;
 
@@ -905,9 +905,9 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
                 opacity=i;
                 continue;
               }
-            alpha=(MagickRealType) TransparentAlpha-(MagickRealType)
+            alpha=(double) TransparentAlpha-(double)
               image->colormap[i].alpha;
-            beta=(MagickRealType) TransparentAlpha-(MagickRealType)
+            beta=(double) TransparentAlpha-(double)
               image->colormap[opacity].alpha;
             if (alpha < beta)
               opacity=i;
@@ -923,9 +923,9 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
                     opacity=i;
                     continue;
                   }
-                alpha=(Quantum) TransparentAlpha-(MagickRealType)
+                alpha=(Quantum) TransparentAlpha-(double)
                   image->colormap[i].alpha;
-                beta=(Quantum) TransparentAlpha-(MagickRealType)
+                beta=(Quantum) TransparentAlpha-(double)
                   image->colormap[opacity].alpha;
                 if (alpha < beta)
                   opacity=i;
@@ -976,7 +976,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
     pixel=image->colormap[i];
     pixel.colorspace=sRGBColorspace;
     pixel.depth=8;
-    pixel.alpha=(MagickRealType) OpaqueAlpha;
+    pixel.alpha=(double) OpaqueAlpha;
     (void) QueryColorname(image,&pixel,XPMCompliance,name,exception);
     if (i == opacity)
       (void) CopyMagickString(name,"None",MaxTextExtent);

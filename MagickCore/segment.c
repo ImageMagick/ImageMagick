@@ -124,7 +124,7 @@
 */
 typedef struct _ExtentPacket
 {
-  MagickRealType
+  double
     center;
 
   ssize_t
@@ -150,14 +150,14 @@ typedef struct _Cluster
 
 typedef struct _IntervalTree
 {
-  MagickRealType
+  double
     tau;
 
   ssize_t
     left,
     right;
 
-  MagickRealType
+  double
     mean_stability,
     stability;
 
@@ -168,7 +168,7 @@ typedef struct _IntervalTree
 
 typedef struct _ZeroCrossing
 {
-  MagickRealType
+  double
     tau,
     histogram[256];
 
@@ -189,7 +189,7 @@ static const int
 /*
   Method prototypes.
 */
-static MagickRealType
+static double
   OptimalTau(const ssize_t *,const double,const double,const double,
     const double,short *);
 
@@ -198,8 +198,8 @@ static ssize_t
 
 static void
   InitializeHistogram(const Image *,ssize_t **,ExceptionInfo *),
-  ScaleSpace(const ssize_t *,const MagickRealType,MagickRealType *),
-  ZeroCrossHistogram(MagickRealType *,const MagickRealType,short *);
+  ScaleSpace(const ssize_t *,const double,double *),
+  ZeroCrossHistogram(double *,const double,short *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -219,8 +219,8 @@ static void
 %  The format of the Classify method is:
 %
 %      MagickBooleanType Classify(Image *image,short **extrema,
-%        const MagickRealType cluster_threshold,
-%        const MagickRealType weighting_exponent,
+%        const double cluster_threshold,
+%        const double weighting_exponent,
 %        const MagickBooleanType verbose,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
@@ -231,7 +231,7 @@ static void
 %      represent the peaks and valleys of the histogram for each color
 %      component.
 %
-%    o cluster_threshold:  This MagickRealType represents the minimum number of
+%    o cluster_threshold:  This double represents the minimum number of
 %      pixels contained in a hexahedra before it can be considered valid
 %      (expressed as a percentage).
 %
@@ -244,8 +244,8 @@ static void
 %
 */
 static MagickBooleanType Classify(Image *image,short **extrema,
-  const MagickRealType cluster_threshold,
-  const MagickRealType weighting_exponent,const MagickBooleanType verbose,
+  const double cluster_threshold,
+  const double weighting_exponent,const MagickBooleanType verbose,
   ExceptionInfo *exception)
 {
 #define SegmentImageTag  "Segment/Image"
@@ -267,7 +267,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   MagickOffsetType
     progress;
 
-  MagickRealType
+  double
     *free_squares;
 
   MagickStatusType
@@ -276,7 +276,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   register ssize_t
     i;
 
-  register MagickRealType
+  register double
     *squares;
 
   size_t
@@ -387,11 +387,11 @@ static MagickBooleanType Classify(Image *image,short **extrema,
               Count this pixel.
             */
             count++;
-            cluster->red.center+=(MagickRealType) ScaleQuantumToChar(
+            cluster->red.center+=(double) ScaleQuantumToChar(
               GetPixelRed(image,p));
-            cluster->green.center+=(MagickRealType) ScaleQuantumToChar(
+            cluster->green.center+=(double) ScaleQuantumToChar(
               GetPixelGreen(image,p));
-            cluster->blue.center+=(MagickRealType) ScaleQuantumToChar(
+            cluster->blue.center+=(double) ScaleQuantumToChar(
               GetPixelBlue(image,p));
             cluster->count++;
             break;
@@ -504,13 +504,13 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   /*
     Speed up distance calculations.
   */
-  squares=(MagickRealType *) AcquireQuantumMemory(513UL,sizeof(*squares));
-  if (squares == (MagickRealType *) NULL)
+  squares=(double *) AcquireQuantumMemory(513UL,sizeof(*squares));
+  if (squares == (double *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   squares+=255;
   for (i=(-255); i <= 255; i++)
-    squares[i]=(MagickRealType) i*(MagickRealType) i;
+    squares[i]=(double) i*(double) i;
   /*
     Allocate image colormap.
   */
@@ -585,7 +585,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
       }
       if (cluster == (Cluster *) NULL)
         {
-          MagickRealType
+          double
             distance_squared,
             local_minima,
             numerator,
@@ -665,7 +665,7 @@ static MagickBooleanType Classify(Image *image,short **extrema,
   }
   squares-=255;
   free_squares=squares;
-  free_squares=(MagickRealType *) RelinquishMagickMemory(free_squares);
+  free_squares=(double *) RelinquishMagickMemory(free_squares);
   return(MagickTrue);
 }
 
@@ -878,21 +878,21 @@ static ssize_t DefineRegion(const short *extrema,ExtentPacket *extents)
 %
 %  The format of the DerivativeHistogram method is:
 %
-%      DerivativeHistogram(const MagickRealType *histogram,
-%        MagickRealType *derivative)
+%      DerivativeHistogram(const double *histogram,
+%        double *derivative)
 %
 %  A description of each parameter follows.
 %
-%    o histogram: Specifies an array of MagickRealTypes representing the number
+%    o histogram: Specifies an array of doubles representing the number
 %      of pixels for each intensity of a particular color component.
 %
-%    o derivative: This array of MagickRealTypes is initialized by
+%    o derivative: This array of doubles is initialized by
 %      DerivativeHistogram to the derivative of the histogram using central
 %      differencing.
 %
 */
-static void DerivativeHistogram(const MagickRealType *histogram,
-  MagickRealType *derivative)
+static void DerivativeHistogram(const double *histogram,
+  double *derivative)
 {
   register ssize_t
     i,
@@ -935,7 +935,7 @@ static void DerivativeHistogram(const MagickRealType *histogram,
 %
 %    o image: the image.
 %
-%    o cluster_threshold:  This MagickRealType represents the minimum number of
+%    o cluster_threshold:  This double represents the minimum number of
 %      pixels contained in a hexahedra before it can be considered valid
 %      (expressed as a percentage).
 %
@@ -968,7 +968,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
   MagickBooleanType
     proceed;
 
-  MagickRealType
+  double
     threshold;
 
   register const Quantum
@@ -1119,11 +1119,11 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
               Count this pixel.
             */
             count++;
-            cluster->red.center+=(MagickRealType) ScaleQuantumToChar(
+            cluster->red.center+=(double) ScaleQuantumToChar(
               GetPixelRed(image,p));
-            cluster->green.center+=(MagickRealType) ScaleQuantumToChar(
+            cluster->green.center+=(double) ScaleQuantumToChar(
               GetPixelGreen(image,p));
-            cluster->blue.center+=(MagickRealType) ScaleQuantumToChar(
+            cluster->blue.center+=(double) ScaleQuantumToChar(
               GetPixelBlue(image,p));
             cluster->count++;
             break;
@@ -1187,13 +1187,13 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
       }
     }
   threshold=(background->red.center+object->red.center)/2.0;
-  pixel->red=(MagickRealType) ScaleCharToQuantum((unsigned char)
+  pixel->red=(double) ScaleCharToQuantum((unsigned char)
     (threshold+0.5));
   threshold=(background->green.center+object->green.center)/2.0;
-  pixel->green=(MagickRealType) ScaleCharToQuantum((unsigned char)
+  pixel->green=(double) ScaleCharToQuantum((unsigned char)
     (threshold+0.5));
   threshold=(background->blue.center+object->blue.center)/2.0;
-  pixel->blue=(MagickRealType) ScaleCharToQuantum((unsigned char)
+  pixel->blue=(double) ScaleCharToQuantum((unsigned char)
     (threshold+0.5));
   /*
     Relinquish resources.
@@ -1327,7 +1327,7 @@ static void MeanStability(IntervalTree *node)
       register ssize_t
         count;
 
-      register MagickRealType
+      register double
         sum;
 
       sum=0.0;
@@ -1337,7 +1337,7 @@ static void MeanStability(IntervalTree *node)
         sum+=child->stability;
         count++;
       }
-      node->mean_stability=sum/(MagickRealType) count;
+      node->mean_stability=sum/(double) count;
     }
   MeanStability(node->sibling);
   MeanStability(node->child);
@@ -1465,7 +1465,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
 %
 %  The format of the OptimalTau method is:
 %
-%    MagickRealType OptimalTau(const ssize_t *histogram,const double max_tau,
+%    double OptimalTau(const ssize_t *histogram,const double max_tau,
 %      const double min_tau,const double delta_tau,
 %      const double smooth_threshold,short *extrema)
 %
@@ -1506,7 +1506,7 @@ static void FreeNodes(IntervalTree *node)
   node=(IntervalTree *) RelinquishMagickMemory(node);
 }
 
-static MagickRealType OptimalTau(const ssize_t *histogram,const double max_tau,
+static double OptimalTau(const ssize_t *histogram,const double max_tau,
   const double min_tau,const double delta_tau,const double smooth_threshold,
   short *extrema)
 {
@@ -1518,7 +1518,7 @@ static MagickRealType OptimalTau(const ssize_t *histogram,const double max_tau,
   MagickBooleanType
     peak;
 
-  MagickRealType
+  double
     average_tau,
     *derivative,
     *second_derivative,
@@ -1562,11 +1562,11 @@ static MagickRealType OptimalTau(const ssize_t *histogram,const double max_tau,
   /*
     Initialize zero crossing list.
   */
-  derivative=(MagickRealType *) AcquireQuantumMemory(256,sizeof(*derivative));
-  second_derivative=(MagickRealType *) AcquireQuantumMemory(256,
+  derivative=(double *) AcquireQuantumMemory(256,sizeof(*derivative));
+  second_derivative=(double *) AcquireQuantumMemory(256,
     sizeof(*second_derivative));
-  if ((derivative == (MagickRealType *) NULL) ||
-      (second_derivative == (MagickRealType *) NULL))
+  if ((derivative == (double *) NULL) ||
+      (second_derivative == (double *) NULL))
     ThrowFatalException(ResourceLimitFatalError,
       "UnableToAllocateDerivatives");
   i=0;
@@ -1585,14 +1585,14 @@ static MagickRealType OptimalTau(const ssize_t *histogram,const double max_tau,
   */
   zero_crossing[i].tau=0.0;
   for (j=0; j <= 255; j++)
-    zero_crossing[i].histogram[j]=(MagickRealType) histogram[j];
+    zero_crossing[i].histogram[j]=(double) histogram[j];
   DerivativeHistogram(zero_crossing[i].histogram,derivative);
   DerivativeHistogram(derivative,second_derivative);
   ZeroCrossHistogram(second_derivative,smooth_threshold,
     zero_crossing[i].crossings);
   number_crossings=(size_t) i;
-  derivative=(MagickRealType *) RelinquishMagickMemory(derivative);
-  second_derivative=(MagickRealType *)
+  derivative=(double *) RelinquishMagickMemory(derivative);
+  second_derivative=(double *)
     RelinquishMagickMemory(second_derivative);
   /*
     Ensure the scale-space fingerprints form lines in scale-space, not loops.
@@ -1679,7 +1679,7 @@ static MagickRealType OptimalTau(const ssize_t *histogram,const double max_tau,
   average_tau=0.0;
   for (i=0; i < number_nodes; i++)
     average_tau+=list[i]->tau;
-  average_tau/=(MagickRealType) number_nodes;
+  average_tau/=(double) number_nodes;
   /*
     Relinquish resources.
   */
@@ -1704,20 +1704,20 @@ static MagickRealType OptimalTau(const ssize_t *histogram,const double max_tau,
 %
 %  The format of the ScaleSpace method is:
 %
-%      ScaleSpace(const ssize_t *histogram,const MagickRealType tau,
-%        MagickRealType *scale_histogram)
+%      ScaleSpace(const ssize_t *histogram,const double tau,
+%        double *scale_histogram)
 %
 %  A description of each parameter follows.
 %
-%    o histogram: Specifies an array of MagickRealTypes representing the number
+%    o histogram: Specifies an array of doubles representing the number
 %      of pixels for each intensity of a particular color component.
 %
 */
 
-static void ScaleSpace(const ssize_t *histogram,const MagickRealType tau,
-  MagickRealType *scale_histogram)
+static void ScaleSpace(const ssize_t *histogram,const double tau,
+  double *scale_histogram)
 {
-  MagickRealType
+  double
     alpha,
     beta,
     *gamma,
@@ -1727,8 +1727,8 @@ static void ScaleSpace(const ssize_t *histogram,const MagickRealType tau,
     u,
     x;
 
-  gamma=(MagickRealType *) AcquireQuantumMemory(256,sizeof(*gamma));
-  if (gamma == (MagickRealType *) NULL)
+  gamma=(double *) AcquireQuantumMemory(256,sizeof(*gamma));
+  if (gamma == (double *) NULL)
     ThrowFatalException(ResourceLimitFatalError,
       "UnableToAllocateGammaMap");
   alpha=MagickEpsilonReciprocal(tau*sqrt(2.0*MagickPI));
@@ -1745,10 +1745,10 @@ static void ScaleSpace(const ssize_t *histogram,const MagickRealType tau,
   {
     sum=0.0;
     for (u=0; u <= 255; u++)
-      sum+=(MagickRealType) histogram[u]*gamma[MagickAbsoluteValue(x-u)];
+      sum+=(double) histogram[u]*gamma[MagickAbsoluteValue(x-u)];
     scale_histogram[x]=alpha*sum;
   }
-  gamma=(MagickRealType *) RelinquishMagickMemory(gamma);
+  gamma=(double *) RelinquishMagickMemory(gamma);
 }
 
 /*
@@ -1881,12 +1881,12 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
 %
 %  The format of the ZeroCrossHistogram method is:
 %
-%      ZeroCrossHistogram(MagickRealType *second_derivative,
-%        const MagickRealType smooth_threshold,short *crossings)
+%      ZeroCrossHistogram(double *second_derivative,
+%        const double smooth_threshold,short *crossings)
 %
 %  A description of each parameter follows.
 %
-%    o second_derivative: Specifies an array of MagickRealTypes representing the
+%    o second_derivative: Specifies an array of doubles representing the
 %      second derivative of the histogram of a particular color component.
 %
 %    o crossings:  This array of integers is initialized with
@@ -1894,8 +1894,8 @@ MagickExport MagickBooleanType SegmentImage(Image *image,
 %      of a particular color component.
 %
 */
-static void ZeroCrossHistogram(MagickRealType *second_derivative,
-  const MagickRealType smooth_threshold,short *crossings)
+static void ZeroCrossHistogram(double *second_derivative,
+  const double smooth_threshold,short *crossings)
 {
   register ssize_t
     i;

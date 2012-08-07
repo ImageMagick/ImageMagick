@@ -72,7 +72,7 @@
 */
 typedef struct _TransformPacket
 {
-  MagickRealType
+  double
     x,
     y,
     z;
@@ -268,12 +268,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             magenta,
             yellow;
 
-          cyan=QuantumRange*DecompandsRGB(QuantumScale*
-            GetPixelCyan(image,q));
-          magenta=QuantumRange*DecompandsRGB(QuantumScale*
-            GetPixelMagenta(image,q));
-          yellow=QuantumRange*DecompandsRGB(QuantumScale*
-            GetPixelYellow(image,q));
+          cyan=DecompandsRGB((double) GetPixelCyan(image,q));
+          magenta=DecompandsRGB((double) GetPixelMagenta(image,q));
+          yellow=DecompandsRGB((double) GetPixelYellow(image,q));
           SetPixelCyan(image,ClampToQuantum(QuantumRange-cyan),q);
           SetPixelMagenta(image,ClampToQuantum(QuantumRange-magenta),q);
           SetPixelYellow(image,ClampToQuantum(QuantumRange-yellow),q);
@@ -340,9 +337,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           GetPixelInfoPixel(image,q,&pixel);
-          pixel.red=QuantumRange*DecompandsRGB(QuantumScale*pixel.red);
-          pixel.green=QuantumRange*DecompandsRGB(QuantumScale*pixel.green);
-          pixel.blue=QuantumRange*DecompandsRGB(QuantumScale*pixel.blue);
+          pixel.red=DecompandsRGB(pixel.red);
+          pixel.green=DecompandsRGB(pixel.green);
+          pixel.blue=DecompandsRGB(pixel.blue);
           ConvertRGBToCMYK(&pixel);
           SetPixelInfoPixel(image,&pixel,q);
           q+=GetPixelChannels(image);
@@ -404,9 +401,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             green,
             red;
 
-          red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
-          green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
-          blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          red=DecompandsRGB((double) GetPixelRed(image,q));
+          green=DecompandsRGB((double) GetPixelGreen(image,q));
+          blue=DecompandsRGB((double) GetPixelBlue(image,q));
           gray=0.298839*red+0.586811*green+0.114350*blue;
           SetPixelGray(image,ClampToQuantum(gray),q);
           q+=GetPixelChannels(image);
@@ -468,9 +465,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             luma,
             red;
 
-          red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
-          green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
-          blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          red=DecompandsRGB((double) GetPixelRed(image,q));
+          green=DecompandsRGB((double) GetPixelGreen(image,q));
+          blue=DecompandsRGB((double) GetPixelBlue(image,q));
           ConvertRGBToHCL(red,green,blue,&hue,&chroma,&luma);
           SetPixelRed(image,ClampToQuantum(QuantumRange*hue),q);
           SetPixelGreen(image,ClampToQuantum(QuantumRange*chroma),q);
@@ -533,9 +530,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             red,
             saturation;
 
-          red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
-          green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
-          blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          red=DecompandsRGB((double) GetPixelRed(image,q));
+          green=DecompandsRGB((double) GetPixelGreen(image,q));
+          blue=DecompandsRGB((double) GetPixelBlue(image,q));
           ConvertRGBToHSB(red,green,blue,&hue,&saturation,&brightness);
           SetPixelRed(image,ClampToQuantum(QuantumRange*hue),q);
           SetPixelGreen(image,ClampToQuantum(QuantumRange*saturation),q);
@@ -598,9 +595,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             red,
             saturation;
 
-          red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
-          green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
-          blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          red=DecompandsRGB((double) GetPixelRed(image,q));
+          green=DecompandsRGB((double) GetPixelGreen(image,q));
+          blue=DecompandsRGB((double) GetPixelBlue(image,q));
           ConvertRGBToHSL(red,green,blue,&hue,&saturation,&lightness);
           SetPixelRed(image,ClampToQuantum(QuantumRange*hue),q);
           SetPixelGreen(image,ClampToQuantum(QuantumRange*saturation),q);
@@ -663,9 +660,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             red,
             whiteness;
 
-          red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
-          green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
-          blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          red=DecompandsRGB((double) GetPixelRed(image,q));
+          green=DecompandsRGB((double) GetPixelGreen(image,q));
+          blue=DecompandsRGB((double) GetPixelBlue(image,q));
           ConvertRGBToHWB(red,green,blue,&hue,&whiteness,&blackness);
           SetPixelRed(image,ClampToQuantum(QuantumRange*hue),q);
           SetPixelGreen(image,ClampToQuantum(QuantumRange*whiteness),q);
@@ -731,9 +728,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             Y,
             Z;
 
-          red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
-          green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
-          blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          red=DecompandsRGB((double) GetPixelRed(image,q));
+          green=DecompandsRGB((double) GetPixelGreen(image,q));
+          blue=DecompandsRGB((double) GetPixelBlue(image,q));
           ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
           ConvertXYZToLab(X,Y,Z,&L,&a,&b);
           SetPixelRed(image,ClampToQuantum(QuantumRange*L),q);
@@ -803,8 +800,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         dynamic_number_threads(image,image->columns,1,1)
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
-        logmap[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*(reference_white+
-          log10(black+((MagickRealType) i/MaxMap)*(1.0-black))/((gamma/density)*
+        logmap[i]=ScaleMapToQuantum((double) (MaxMap*(reference_white+
+          log10(black+((double) i/MaxMap)*(1.0-black))/((gamma/density)*
           0.002/film_gamma))/1024.0));
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -838,9 +835,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             green,
             red;
 
-          red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
-          green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
-          blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          red=DecompandsRGB((double) GetPixelRed(image,q));
+          green=DecompandsRGB((double) GetPixelGreen(image,q));
+          blue=DecompandsRGB((double) GetPixelBlue(image,q));
           SetPixelRed(image,logmap[ScaleQuantumToMap(
             ClampToQuantum(red))],q);
           SetPixelGreen(image,logmap[ScaleQuantumToMap(
@@ -909,9 +906,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             Y,
             Z;
 
-          red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
-          green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
-          blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          red=DecompandsRGB((double) GetPixelRed(image,q));
+          green=DecompandsRGB((double) GetPixelGreen(image,q));
+          blue=DecompandsRGB((double) GetPixelBlue(image,q));
           ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
           ConvertXYZToLuv(X,Y,Z,&L,&u,&v);
           SetPixelRed(image,ClampToQuantum(QuantumRange*L),q);
@@ -973,9 +970,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             green,
             red;
 
-          red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
-          green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
-          blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          red=DecompandsRGB((double) GetPixelRed(image,q));
+          green=DecompandsRGB((double) GetPixelGreen(image,q));
+          blue=DecompandsRGB((double) GetPixelBlue(image,q));
           gray=0.212600*red+0.715200*green+0.072200*blue;
           SetPixelGray(image,ClampToQuantum(gray),q);
           q+=GetPixelChannels(image);
@@ -1034,9 +1031,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             green,
             red;
 
-          red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
-          green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
-          blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          red=DecompandsRGB((double) GetPixelRed(image,q));
+          green=DecompandsRGB((double) GetPixelGreen(image,q));
+          blue=DecompandsRGB((double) GetPixelBlue(image,q));
           SetPixelRed(image,ClampToQuantum(red),q);
           SetPixelGreen(image,ClampToQuantum(green),q);
           SetPixelBlue(image,ClampToQuantum(blue),q);
@@ -1098,9 +1095,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             Y,
             Z;
 
-          red=QuantumRange*DecompandsRGB(QuantumScale*GetPixelRed(image,q));
-          green=QuantumRange*DecompandsRGB(QuantumScale*GetPixelGreen(image,q));
-          blue=QuantumRange*DecompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          red=DecompandsRGB((double) GetPixelRed(image,q));
+          green=DecompandsRGB((double) GetPixelGreen(image,q));
+          blue=DecompandsRGB((double) GetPixelBlue(image,q));
           ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
           SetPixelRed(image,ClampToQuantum(QuantumRange*X),q);
           SetPixelGreen(image,ClampToQuantum(QuantumRange*Y),q);
@@ -1156,15 +1153,15 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.33333*(MagickRealType) i;
-        y_map[i].x=0.33334*(MagickRealType) i;
-        z_map[i].x=0.33333*(MagickRealType) i;
-        x_map[i].y=0.50000*(MagickRealType) i;
-        y_map[i].y=0.00000*(MagickRealType) i;
-        z_map[i].y=(-0.50000)*(MagickRealType) i;
-        x_map[i].z=(-0.25000)*(MagickRealType) i;
-        y_map[i].z=0.50000*(MagickRealType) i;
-        z_map[i].z=(-0.25000)*(MagickRealType) i;
+        x_map[i].x=0.33333*(double) i;
+        y_map[i].x=0.33334*(double) i;
+        z_map[i].x=0.33333*(double) i;
+        x_map[i].y=0.50000*(double) i;
+        y_map[i].y=0.00000*(double) i;
+        z_map[i].y=(-0.50000)*(double) i;
+        x_map[i].z=(-0.25000)*(double) i;
+        y_map[i].z=0.50000*(double) i;
+        z_map[i].z=(-0.25000)*(double) i;
       }
       break;
     }
@@ -1189,15 +1186,15 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.298839*(MagickRealType) i;
-        y_map[i].x=0.586811*(MagickRealType) i;
-        z_map[i].x=0.114350*(MagickRealType) i;
-        x_map[i].y=(-0.168730)*(MagickRealType) i;
-        y_map[i].y=(-0.331264)*(MagickRealType) i;
-        z_map[i].y=0.500000*(MagickRealType) i;
-        x_map[i].z=0.500000*(MagickRealType) i;
-        y_map[i].z=(-0.418688)*(MagickRealType) i;
-        z_map[i].z=(-0.081312)*(MagickRealType) i;
+        x_map[i].x=0.298839*(double) i;
+        y_map[i].x=0.586811*(double) i;
+        z_map[i].x=0.114350*(double) i;
+        x_map[i].y=(-0.168730)*(double) i;
+        y_map[i].y=(-0.331264)*(double) i;
+        z_map[i].y=0.500000*(double) i;
+        x_map[i].z=0.500000*(double) i;
+        y_map[i].z=(-0.418688)*(double) i;
+        z_map[i].z=(-0.081312)*(double) i;
       }
       break;
     }
@@ -1221,15 +1218,15 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.212600*(MagickRealType) i;
-        y_map[i].x=0.715200*(MagickRealType) i;
-        z_map[i].x=0.072200*(MagickRealType) i;
-        x_map[i].y=(-0.114572)*(MagickRealType) i;
-        y_map[i].y=(-0.385428)*(MagickRealType) i;
-        z_map[i].y=0.500000*(MagickRealType) i;
-        x_map[i].z=0.500000*(MagickRealType) i;
-        y_map[i].z=(-0.454153)*(MagickRealType) i;
-        z_map[i].z=(-0.045847)*(MagickRealType) i;
+        x_map[i].x=0.212600*(double) i;
+        y_map[i].x=0.715200*(double) i;
+        z_map[i].x=0.072200*(double) i;
+        x_map[i].y=(-0.114572)*(double) i;
+        y_map[i].y=(-0.385428)*(double) i;
+        z_map[i].y=0.500000*(double) i;
+        x_map[i].z=0.500000*(double) i;
+        y_map[i].z=(-0.454153)*(double) i;
+        z_map[i].z=(-0.045847)*(double) i;
       }
       break;
     }
@@ -1248,27 +1245,27 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       primary_info.z=(double) ScaleQuantumToMap(ScaleCharToQuantum(137));
       for (i=0; i <= (ssize_t) (0.018*MaxMap); i++)
       {
-        x_map[i].x=0.003962014134275617*(MagickRealType) i;
-        y_map[i].x=0.007778268551236748*(MagickRealType) i;
-        z_map[i].x=0.001510600706713781*(MagickRealType) i;
-        x_map[i].y=(-0.002426619775463276)*(MagickRealType) i;
-        y_map[i].y=(-0.004763965913702149)*(MagickRealType) i;
-        z_map[i].y=0.007190585689165425*(MagickRealType) i;
-        x_map[i].z=0.006927257754597858*(MagickRealType) i;
-        y_map[i].z=(-0.005800713697502058)*(MagickRealType) i;
-        z_map[i].z=(-0.0011265440570958)*(MagickRealType) i;
+        x_map[i].x=0.003962014134275617*(double) i;
+        y_map[i].x=0.007778268551236748*(double) i;
+        z_map[i].x=0.001510600706713781*(double) i;
+        x_map[i].y=(-0.002426619775463276)*(double) i;
+        y_map[i].y=(-0.004763965913702149)*(double) i;
+        z_map[i].y=0.007190585689165425*(double) i;
+        x_map[i].z=0.006927257754597858*(double) i;
+        y_map[i].z=(-0.005800713697502058)*(double) i;
+        z_map[i].z=(-0.0011265440570958)*(double) i;
       }
       for ( ; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.2201118963486454*(1.099*(MagickRealType) i-0.099);
-        y_map[i].x=0.4321260306242638*(1.099*(MagickRealType) i-0.099);
-        z_map[i].x=0.08392226148409894*(1.099*(MagickRealType) i-0.099);
-        x_map[i].y=(-0.1348122097479598)*(1.099*(MagickRealType) i-0.099);
-        y_map[i].y=(-0.2646647729834528)*(1.099*(MagickRealType) i-0.099);
-        z_map[i].y=0.3994769827314126*(1.099*(MagickRealType) i-0.099);
-        x_map[i].z=0.3848476530332144*(1.099*(MagickRealType) i-0.099);
-        y_map[i].z=(-0.3222618720834477)*(1.099*(MagickRealType) i-0.099);
-        z_map[i].z=(-0.06258578094976668)*(1.099*(MagickRealType) i-0.099);
+        x_map[i].x=0.2201118963486454*(1.099*(double) i-0.099);
+        y_map[i].x=0.4321260306242638*(1.099*(double) i-0.099);
+        z_map[i].x=0.08392226148409894*(1.099*(double) i-0.099);
+        x_map[i].y=(-0.1348122097479598)*(1.099*(double) i-0.099);
+        y_map[i].y=(-0.2646647729834528)*(1.099*(double) i-0.099);
+        z_map[i].y=0.3994769827314126*(1.099*(double) i-0.099);
+        x_map[i].z=0.3848476530332144*(1.099*(double) i-0.099);
+        y_map[i].z=(-0.3222618720834477)*(1.099*(double) i-0.099);
+        z_map[i].z=(-0.06258578094976668)*(1.099*(double) i-0.099);
       }
       break;
     }
@@ -1292,15 +1289,15 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.298839*(MagickRealType) i;
-        y_map[i].x=0.586811*(MagickRealType) i;
-        z_map[i].x=0.114350*(MagickRealType) i;
-        x_map[i].y=0.59600*(MagickRealType) i;
-        y_map[i].y=(-0.27400)*(MagickRealType) i;
-        z_map[i].y=(-0.32200)*(MagickRealType) i;
-        x_map[i].z=0.21100*(MagickRealType) i;
-        y_map[i].z=(-0.52300)*(MagickRealType) i;
-        z_map[i].z=0.31200*(MagickRealType) i;
+        x_map[i].x=0.298839*(double) i;
+        y_map[i].x=0.586811*(double) i;
+        z_map[i].x=0.114350*(double) i;
+        x_map[i].y=0.59600*(double) i;
+        y_map[i].y=(-0.27400)*(double) i;
+        z_map[i].y=(-0.32200)*(double) i;
+        x_map[i].z=0.21100*(double) i;
+        y_map[i].z=(-0.52300)*(double) i;
+        z_map[i].z=0.31200*(double) i;
       }
       break;
     }
@@ -1324,15 +1321,15 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.298839*(MagickRealType) i;
-        y_map[i].x=0.586811*(MagickRealType) i;
-        z_map[i].x=0.114350*(MagickRealType) i;
-        x_map[i].y=(-0.168736)*(MagickRealType) i;
-        y_map[i].y=(-0.331264)*(MagickRealType) i;
-        z_map[i].y=0.500000*(MagickRealType) i;
-        x_map[i].z=0.500000*(MagickRealType) i;
-        y_map[i].z=(-0.418688)*(MagickRealType) i;
-        z_map[i].z=(-0.081312)*(MagickRealType) i;
+        x_map[i].x=0.298839*(double) i;
+        y_map[i].x=0.586811*(double) i;
+        z_map[i].x=0.114350*(double) i;
+        x_map[i].y=(-0.168736)*(double) i;
+        y_map[i].y=(-0.331264)*(double) i;
+        z_map[i].y=0.500000*(double) i;
+        x_map[i].z=0.500000*(double) i;
+        y_map[i].z=(-0.418688)*(double) i;
+        z_map[i].z=(-0.081312)*(double) i;
       }
       break;
     }
@@ -1356,15 +1353,15 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.298839*(MagickRealType) i;
-        y_map[i].x=0.586811*(MagickRealType) i;
-        z_map[i].x=0.114350*(MagickRealType) i;
-        x_map[i].y=(-0.168736)*(MagickRealType) i;
-        y_map[i].y=(-0.331264)*(MagickRealType) i;
-        z_map[i].y=0.500000*(MagickRealType) i;
-        x_map[i].z=0.500000*(MagickRealType) i;
-        y_map[i].z=(-0.418688)*(MagickRealType) i;
-        z_map[i].z=(-0.081312)*(MagickRealType) i;
+        x_map[i].x=0.298839*(double) i;
+        y_map[i].x=0.586811*(double) i;
+        z_map[i].x=0.114350*(double) i;
+        x_map[i].y=(-0.168736)*(double) i;
+        y_map[i].y=(-0.331264)*(double) i;
+        z_map[i].y=0.500000*(double) i;
+        x_map[i].z=0.500000*(double) i;
+        y_map[i].z=(-0.418688)*(double) i;
+        z_map[i].z=(-0.081312)*(double) i;
       }
       break;
     }
@@ -1379,15 +1376,15 @@ static MagickBooleanType sRGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) i;
+        x_map[i].x=(double) i;
         y_map[i].x=0.0f;
         z_map[i].x=0.0f;
         x_map[i].y=0.0f;
-        y_map[i].y=(MagickRealType) i;
+        y_map[i].y=(double) i;
         z_map[i].y=0.0f;
         x_map[i].z=0.0f;
         y_map[i].z=0.0f;
-        z_map[i].z=(MagickRealType) i;
+        z_map[i].z=(double) i;
       }
       break;
     }
@@ -1438,18 +1435,18 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          red=ScaleQuantumToMap(ClampToQuantum(QuantumRange*DecompandsRGB(
-            QuantumScale*GetPixelRed(image,q))));
-          green=ScaleQuantumToMap(ClampToQuantum(QuantumRange*DecompandsRGB(
-            QuantumScale*GetPixelGreen(image,q))));
-          blue=ScaleQuantumToMap(ClampToQuantum(QuantumRange*DecompandsRGB(
-            QuantumScale*GetPixelBlue(image,q))));
+          red=ScaleQuantumToMap(ClampToQuantum(DecompandsRGB((double) 
+            GetPixelRed(image,q))));
+          green=ScaleQuantumToMap(ClampToQuantum(DecompandsRGB((double) 
+            GetPixelGreen(image,q))));
+          blue=ScaleQuantumToMap(ClampToQuantum(DecompandsRGB((double) 
+            GetPixelBlue(image,q))));
           pixel.red=(x_map[red].x+y_map[green].x+z_map[blue].x)+
-            (MagickRealType) primary_info.x;
+            (double) primary_info.x;
           pixel.green=(x_map[red].y+y_map[green].y+z_map[blue].y)+
-            (MagickRealType) primary_info.y;
+            (double) primary_info.y;
           pixel.blue=(x_map[red].z+y_map[green].z+z_map[blue].z)+
-            (MagickRealType) primary_info.z;
+            (double) primary_info.z;
           SetPixelRed(image,ScaleMapToQuantum(pixel.red),q);
           SetPixelGreen(image,ScaleMapToQuantum(pixel.green),q);
           SetPixelBlue(image,ScaleMapToQuantum(pixel.blue),q);
@@ -1490,12 +1487,12 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         PixelInfo
           pixel;
 
-        red=ScaleQuantumToMap(ClampToQuantum(QuantumRange*DecompandsRGB(
-          QuantumScale*image->colormap[i].red)));
-        green=ScaleQuantumToMap(ClampToQuantum(QuantumRange*DecompandsRGB(
-          QuantumScale*image->colormap[i].green)));
-        blue=ScaleQuantumToMap(ClampToQuantum(QuantumRange*DecompandsRGB(
-          QuantumScale*image->colormap[i].blue)));
+        red=ScaleQuantumToMap(ClampToQuantum(DecompandsRGB(
+          image->colormap[i].red)));
+        green=ScaleQuantumToMap(ClampToQuantum(DecompandsRGB(
+          image->colormap[i].green)));
+        blue=ScaleQuantumToMap(ClampToQuantum(DecompandsRGB(
+          image->colormap[i].blue)));
         pixel.red=x_map[red].x+y_map[green].x+z_map[blue].x+primary_info.x;
         pixel.green=x_map[red].y+y_map[green].y+z_map[blue].y+primary_info.y;
         pixel.blue=x_map[red].z+y_map[green].z+z_map[blue].z+primary_info.z;
@@ -1718,7 +1715,7 @@ static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
      (D50X+15.0*D50Y+3.0*D50Z))))-1.0)/3.0))-5.0*(*Y);
 }
 
-static inline ssize_t RoundToYCC(const MagickRealType value)
+static inline ssize_t RoundToYCC(const double value)
 {
   if (value <= 0.0)
     return(0);
@@ -2075,12 +2072,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             magenta,
             yellow;
 
-          cyan=QuantumRange*CompandsRGB(QuantumScale*(QuantumRange-
-            GetPixelCyan(image,q)));
-          magenta=QuantumRange*CompandsRGB(QuantumScale*(QuantumRange-
-            GetPixelMagenta(image,q)));
-          yellow=QuantumRange*CompandsRGB(QuantumScale*(QuantumRange-
-            GetPixelYellow(image,q)));
+          cyan=CompandsRGB((double) (QuantumRange-GetPixelCyan(image,q)));
+          magenta=CompandsRGB((double) (QuantumRange-GetPixelMagenta(image,q)));
+          yellow=CompandsRGB((double) (QuantumRange-GetPixelYellow(image,q)));
           SetPixelCyan(image,ClampToQuantum(cyan),q);
           SetPixelMagenta(image,ClampToQuantum(magenta),q);
           SetPixelYellow(image,ClampToQuantum(yellow),q);
@@ -2144,9 +2138,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         {
           GetPixelInfoPixel(image,q,&pixel);
           ConvertCMYKToRGB(&pixel);
-          pixel.red=QuantumRange*CompandsRGB(QuantumScale*pixel.red);
-          pixel.green=QuantumRange*CompandsRGB(QuantumScale*pixel.green);
-          pixel.blue=QuantumRange*CompandsRGB(QuantumScale*pixel.blue);
+          pixel.red=CompandsRGB(pixel.red);
+          pixel.green=CompandsRGB(pixel.green);
+          pixel.blue=CompandsRGB(pixel.blue);
           SetPixelInfoPixel(image,&pixel,q);
           q+=GetPixelChannels(image);
         }
@@ -2205,7 +2199,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           double
             gray;
 
-          gray=QuantumRange*CompandsRGB(QuantumScale*GetPixelGray(image,q));
+          gray=CompandsRGB((double) GetPixelGray(image,q));
           SetPixelRed(image,ClampToQuantum(gray),q);
           SetPixelGreen(image,ClampToQuantum(gray),q);
           SetPixelBlue(image,ClampToQuantum(gray),q);
@@ -2271,12 +2265,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           chroma=(double) (QuantumScale*GetPixelGreen(image,q));
           luma=(double) (QuantumScale*GetPixelBlue(image,q));
           ConvertHCLToRGB(hue,chroma,luma,&red,&green,&blue);
-          red=QuantumRange*CompandsRGB(QuantumScale*red);
-          green=QuantumRange*CompandsRGB(QuantumScale*green);
-          blue=QuantumRange*CompandsRGB(QuantumScale*blue);
-          SetPixelRed(image,ClampToQuantum(red),q);
-          SetPixelGreen(image,ClampToQuantum(green),q);
-          SetPixelBlue(image,ClampToQuantum(blue),q);
+          SetPixelRed(image,ClampToQuantum(CompandsRGB(red)),q);
+          SetPixelGreen(image,ClampToQuantum(CompandsRGB(green)),q);
+          SetPixelBlue(image,ClampToQuantum(CompandsRGB(blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2339,12 +2330,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           saturation=(double) (QuantumScale*GetPixelGreen(image,q));
           brightness=(double) (QuantumScale*GetPixelBlue(image,q));
           ConvertHSBToRGB(hue,saturation,brightness,&red,&green,&blue);
-          red=QuantumRange*CompandsRGB(QuantumScale*red);
-          green=QuantumRange*CompandsRGB(QuantumScale*green);
-          blue=QuantumRange*CompandsRGB(QuantumScale*blue);
-          SetPixelRed(image,ClampToQuantum(red),q);
-          SetPixelGreen(image,ClampToQuantum(green),q);
-          SetPixelBlue(image,ClampToQuantum(blue),q);
+          SetPixelRed(image,ClampToQuantum(CompandsRGB(red)),q);
+          SetPixelGreen(image,ClampToQuantum(CompandsRGB(green)),q);
+          SetPixelBlue(image,ClampToQuantum(CompandsRGB(blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2407,12 +2395,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           saturation=(double) (QuantumScale*GetPixelGreen(image,q));
           lightness=(double) (QuantumScale*GetPixelBlue(image,q));
           ConvertHSLToRGB(hue,saturation,lightness,&red,&green,&blue);
-          red=QuantumRange*CompandsRGB(QuantumScale*red);
-          green=QuantumRange*CompandsRGB(QuantumScale*green);
-          blue=QuantumRange*CompandsRGB(QuantumScale*blue);
-          SetPixelRed(image,ClampToQuantum(red),q);
-          SetPixelGreen(image,ClampToQuantum(green),q);
-          SetPixelBlue(image,ClampToQuantum(blue),q);
+          SetPixelRed(image,ClampToQuantum(CompandsRGB(red)),q);
+          SetPixelGreen(image,ClampToQuantum(CompandsRGB(green)),q);
+          SetPixelBlue(image,ClampToQuantum(CompandsRGB(blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2475,12 +2460,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           whiteness=(double) (QuantumScale*GetPixelGreen(image,q));
           blackness=(double) (QuantumScale*GetPixelBlue(image,q));
           ConvertHWBToRGB(hue,whiteness,blackness,&red,&green,&blue);
-          red=QuantumRange*CompandsRGB(QuantumScale*red);
-          green=QuantumRange*CompandsRGB(QuantumScale*green);
-          blue=QuantumRange*CompandsRGB(QuantumScale*blue);
-          SetPixelRed(image,ClampToQuantum(red),q);
-          SetPixelGreen(image,ClampToQuantum(green),q);
-          SetPixelBlue(image,ClampToQuantum(blue),q);
+          SetPixelRed(image,ClampToQuantum(CompandsRGB(red)),q);
+          SetPixelGreen(image,ClampToQuantum(CompandsRGB(green)),q);
+          SetPixelBlue(image,ClampToQuantum(CompandsRGB(blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2547,12 +2529,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           b=QuantumScale*GetPixelBlue(image,q);
           ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
-          red=QuantumRange*CompandsRGB(QuantumScale*red);
-          green=QuantumRange*CompandsRGB(QuantumScale*green);
-          blue=QuantumRange*CompandsRGB(QuantumScale*blue);
-          SetPixelRed(image,ClampToQuantum(red),q);
-          SetPixelGreen(image,ClampToQuantum(green),q);
-          SetPixelBlue(image,ClampToQuantum(blue),q);
+          SetPixelRed(image,ClampToQuantum(CompandsRGB(red)),q);
+          SetPixelGreen(image,ClampToQuantum(CompandsRGB(green)),q);
+          SetPixelBlue(image,ClampToQuantum(CompandsRGB(blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2654,11 +2633,11 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             green,
             red;
 
-          red=QuantumRange*CompandsRGB(QuantumScale*logmap[ScaleQuantumToMap(
+          red=CompandsRGB((double) logmap[ScaleQuantumToMap(
             GetPixelRed(image,q))]);
-          green=QuantumRange*CompandsRGB(QuantumScale*logmap[ScaleQuantumToMap(
+          green=CompandsRGB((double) logmap[ScaleQuantumToMap(
             GetPixelGreen(image,q))]);
-          blue=QuantumRange*CompandsRGB(QuantumScale*logmap[ScaleQuantumToMap(
+          blue=CompandsRGB((double) logmap[ScaleQuantumToMap(
             GetPixelBlue(image,q))]);
           SetPixelRed(image,ClampToQuantum(red),q);
           SetPixelGreen(image,ClampToQuantum(green),q);
@@ -2730,12 +2709,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           v=QuantumScale*GetPixelBlue(image,q);
           ConvertLuvToXYZ(L,u,v,&X,&Y,&Z);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
-          red=QuantumRange*CompandsRGB(QuantumScale*red);
-          green=QuantumRange*CompandsRGB(QuantumScale*green);
-          blue=QuantumRange*CompandsRGB(QuantumScale*blue);
-          SetPixelRed(image,ClampToQuantum(red),q);
-          SetPixelGreen(image,ClampToQuantum(green),q);
-          SetPixelBlue(image,ClampToQuantum(blue),q);
+          SetPixelRed(image,ClampToQuantum(CompandsRGB(red)),q);
+          SetPixelGreen(image,ClampToQuantum(CompandsRGB(green)),q);
+          SetPixelBlue(image,ClampToQuantum(CompandsRGB(blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2791,9 +2767,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             green,
             red;
 
-          red=QuantumRange*CompandsRGB(QuantumScale*GetPixelRed(image,q));
-          green=QuantumRange*CompandsRGB(QuantumScale*GetPixelGreen(image,q));
-          blue=QuantumRange*CompandsRGB(QuantumScale*GetPixelBlue(image,q));
+          red=CompandsRGB((double) GetPixelRed(image,q));
+          green=CompandsRGB((double) GetPixelGreen(image,q));
+          blue=CompandsRGB((double) GetPixelBlue(image,q));
           SetPixelRed(image,ClampToQuantum(red),q);
           SetPixelGreen(image,ClampToQuantum(green),q);
           SetPixelBlue(image,ClampToQuantum(blue),q);
@@ -2859,12 +2835,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           Y=QuantumScale*GetPixelGreen(image,q);
           Z=QuantumScale*GetPixelBlue(image,q);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
-          red=QuantumRange*CompandsRGB(QuantumScale*red);
-          green=QuantumRange*CompandsRGB(QuantumScale*green);
-          blue=QuantumRange*CompandsRGB(QuantumScale*blue);
-          SetPixelRed(image,ClampToQuantum(red),q);
-          SetPixelGreen(image,ClampToQuantum(green),q);
-          SetPixelBlue(image,ClampToQuantum(blue),q);
+          SetPixelRed(image,ClampToQuantum(CompandsRGB(red)),q);
+          SetPixelGreen(image,ClampToQuantum(CompandsRGB(green)),q);
+          SetPixelBlue(image,ClampToQuantum(CompandsRGB(blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2921,19 +2894,19 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) i;
-        y_map[i].x=0.500000*(2.000000*(MagickRealType) i-(MagickRealType)
+        x_map[i].x=(double) i;
+        y_map[i].x=0.500000*(2.000000*(double) i-(double)
           MaxMap);
-        z_map[i].x=(-0.333340)*(2.000000*(MagickRealType) i-(MagickRealType)
+        z_map[i].x=(-0.333340)*(2.000000*(double) i-(double)
           MaxMap);
-        x_map[i].y=(MagickRealType) i;
+        x_map[i].y=(double) i;
         y_map[i].y=0.000000;
-        z_map[i].y=0.666665*(2.000000*(MagickRealType) i-(MagickRealType)
+        z_map[i].y=0.666665*(2.000000*(double) i-(double)
           MaxMap);
-        x_map[i].z=(MagickRealType) i;
-        y_map[i].z=(-0.500000)*(2.000000*(MagickRealType) i-(MagickRealType)
+        x_map[i].z=(double) i;
+        y_map[i].z=(-0.500000)*(2.000000*(double) i-(double)
           MaxMap);
-        z_map[i].z=(-0.333340)*(2.000000*(MagickRealType) i-(MagickRealType)
+        z_map[i].z=(-0.333340)*(2.000000*(double) i-(double)
           MaxMap);
       }
       break;
@@ -2957,18 +2930,18 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) i;
+        x_map[i].x=(double) i;
         y_map[i].x=0.000000;
-        z_map[i].x=(1.402000*0.500000)*(2.000000*(MagickRealType) i-
-          (MagickRealType) MaxMap);
-        x_map[i].y=(MagickRealType) i;
-        y_map[i].y=(-0.344136*0.500000)*(2.000000*(MagickRealType) i-
-          (MagickRealType) MaxMap);
-        z_map[i].y=(-0.714136*0.500000)*(2.000000*(MagickRealType) i-
-          (MagickRealType) MaxMap);
-        x_map[i].z=(MagickRealType) i;
-        y_map[i].z=(1.772000*0.500000)*(2.000000*(MagickRealType) i-
-          (MagickRealType) MaxMap);
+        z_map[i].x=(1.402000*0.500000)*(2.000000*(double) i-
+          (double) MaxMap);
+        x_map[i].y=(double) i;
+        y_map[i].y=(-0.344136*0.500000)*(2.000000*(double) i-
+          (double) MaxMap);
+        z_map[i].y=(-0.714136*0.500000)*(2.000000*(double) i-
+          (double) MaxMap);
+        x_map[i].z=(double) i;
+        y_map[i].z=(1.772000*0.500000)*(2.000000*(double) i-
+          (double) MaxMap);
         z_map[i].z=0.000000;
       }
       break;
@@ -2991,18 +2964,18 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) i;
+        x_map[i].x=(double) i;
         y_map[i].x=0.000000;
-        z_map[i].x=(1.574800*0.50000)*(2.00000*(MagickRealType) i-
-          (MagickRealType) MaxMap);
-        x_map[i].y=(MagickRealType) i;
-        y_map[i].y=(-0.187324*0.50000)*(2.00000*(MagickRealType) i-
-          (MagickRealType) MaxMap);
-        z_map[i].y=(-0.468124*0.50000)*(2.00000*(MagickRealType) i-
-          (MagickRealType) MaxMap);
-        x_map[i].z=(MagickRealType) i;
-        y_map[i].z=(1.855600*0.50000)*(2.00000*(MagickRealType) i-
-          (MagickRealType) MaxMap);
+        z_map[i].x=(1.574800*0.50000)*(2.00000*(double) i-
+          (double) MaxMap);
+        x_map[i].y=(double) i;
+        y_map[i].y=(-0.187324*0.50000)*(2.00000*(double) i-
+          (double) MaxMap);
+        z_map[i].y=(-0.468124*0.50000)*(2.00000*(double) i-
+          (double) MaxMap);
+        x_map[i].z=(double) i;
+        y_map[i].z=(1.855600*0.50000)*(2.00000*(double) i-
+          (double) MaxMap);
         z_map[i].z=0.00000;
       }
       break;
@@ -3024,17 +2997,17 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=1.3584000*(MagickRealType) i;
+        x_map[i].x=1.3584000*(double) i;
         y_map[i].x=0.0000000;
-        z_map[i].x=1.8215000*((MagickRealType) i-(MagickRealType)
+        z_map[i].x=1.8215000*((double) i-(double)
           ScaleQuantumToMap(ScaleCharToQuantum(137)));
-        x_map[i].y=1.3584000*(MagickRealType) i;
-        y_map[i].y=(-0.4302726)*((MagickRealType) i-(MagickRealType)
+        x_map[i].y=1.3584000*(double) i;
+        y_map[i].y=(-0.4302726)*((double) i-(double)
           ScaleQuantumToMap(ScaleCharToQuantum(156)));
-        z_map[i].y=(-0.9271435)*((MagickRealType) i-(MagickRealType)
+        z_map[i].y=(-0.9271435)*((double) i-(double)
           ScaleQuantumToMap(ScaleCharToQuantum(137)));
-        x_map[i].z=1.3584000*(MagickRealType) i;
-        y_map[i].z=2.2179000*((MagickRealType) i-(MagickRealType)
+        x_map[i].z=1.3584000*(double) i;
+        y_map[i].z=2.2179000*((double) i-(double)
           ScaleQuantumToMap(ScaleCharToQuantum(156)));
         z_map[i].z=0.0000000;
       }
@@ -3058,20 +3031,20 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) i;
-        y_map[i].x=0.47810*(2.00000*(MagickRealType) i-(MagickRealType)
+        x_map[i].x=(double) i;
+        y_map[i].x=0.47810*(2.00000*(double) i-(double)
           MaxMap);
-        z_map[i].x=0.31070*(2.00000*(MagickRealType) i-(MagickRealType)
+        z_map[i].x=0.31070*(2.00000*(double) i-(double)
           MaxMap);
-        x_map[i].y=(MagickRealType) i;
-        y_map[i].y=(-0.13635)*(2.00000*(MagickRealType) i-(MagickRealType)
+        x_map[i].y=(double) i;
+        y_map[i].y=(-0.13635)*(2.00000*(double) i-(double)
           MaxMap);
-        z_map[i].y=(-0.32340)*(2.00000*(MagickRealType) i-(MagickRealType)
+        z_map[i].y=(-0.32340)*(2.00000*(double) i-(double)
           MaxMap);
-        x_map[i].z=(MagickRealType) i;
-        y_map[i].z=(-0.55185)*(2.00000*(MagickRealType) i-(MagickRealType)
+        x_map[i].z=(double) i;
+        y_map[i].z=(-0.55185)*(2.00000*(double) i-(double)
           MaxMap);
-        z_map[i].z=0.85030*(2.00000*(MagickRealType) i-(MagickRealType)
+        z_map[i].z=0.85030*(2.00000*(double) i-(double)
           MaxMap);
       }
       break;
@@ -3094,17 +3067,17 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) i;
+        x_map[i].x=(double) i;
         y_map[i].x=0.000000;
-        z_map[i].x=0.701000*(2.00000*(MagickRealType) i-(MagickRealType)
+        z_map[i].x=0.701000*(2.00000*(double) i-(double)
           MaxMap);
-        x_map[i].y=(MagickRealType) i;
-        y_map[i].y=(-0.172068)*(2.00000*(MagickRealType) i-(MagickRealType)
+        x_map[i].y=(double) i;
+        y_map[i].y=(-0.172068)*(2.00000*(double) i-(double)
           MaxMap);
-        z_map[i].y=0.357068*(2.00000*(MagickRealType) i-(MagickRealType)
+        z_map[i].y=0.357068*(2.00000*(double) i-(double)
           MaxMap);
-        x_map[i].z=(MagickRealType) i;
-        y_map[i].z=0.88600*(2.00000*(MagickRealType) i-(MagickRealType)
+        x_map[i].z=(double) i;
+        y_map[i].z=0.88600*(2.00000*(double) i-(double)
           MaxMap);
         z_map[i].z=0.00000;
       }
@@ -3128,16 +3101,16 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) i;
+        x_map[i].x=(double) i;
         y_map[i].x=0.00000;
-        z_map[i].x=0.70375*(2.0000*(MagickRealType) i-(MagickRealType) MaxMap);
-        x_map[i].y=(MagickRealType) i;
-        y_map[i].y=(-0.17275)*(2.00000*(MagickRealType) i-(MagickRealType)
+        z_map[i].x=0.70375*(2.0000*(double) i-(double) MaxMap);
+        x_map[i].y=(double) i;
+        y_map[i].y=(-0.17275)*(2.00000*(double) i-(double)
           MaxMap);
-        z_map[i].y=(-0.35845)*(2.00000*(MagickRealType) i-(MagickRealType)
+        z_map[i].y=(-0.35845)*(2.00000*(double) i-(double)
           MaxMap);
-        x_map[i].z=(MagickRealType) i;
-        y_map[i].z=0.8895*(2.00000*(MagickRealType) i-(MagickRealType) MaxMap);
+        x_map[i].z=(double) i;
+        y_map[i].z=0.8895*(2.00000*(double) i-(double) MaxMap);
         z_map[i].z=0.00000;
       }
       break;
@@ -3153,15 +3126,15 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) i;
+        x_map[i].x=(double) i;
         y_map[i].x=0.0;
         z_map[i].x=0.0;
         x_map[i].y=0.0;
-        y_map[i].y=(MagickRealType) i;
+        y_map[i].y=(double) i;
         z_map[i].y=0.0;
         x_map[i].z=0.0;
         y_map[i].z=0.0;
-        z_map[i].z=(MagickRealType) i;
+        z_map[i].z=(double) i;
       }
       break;
     }
@@ -3229,12 +3202,12 @@ static MagickBooleanType TransformsRGBImage(Image *image,
                 pixel.blue)];
 #endif
             }
-          SetPixelRed(image,ClampToQuantum(QuantumRange*CompandsRGB(
-            QuantumScale*ScaleMapToQuantum(pixel.red))),q);
-          SetPixelGreen(image,ClampToQuantum(QuantumRange*CompandsRGB(
-            QuantumScale*ScaleMapToQuantum(pixel.green))),q);
-          SetPixelBlue(image,ClampToQuantum(QuantumRange*CompandsRGB(
-            QuantumScale*ScaleMapToQuantum(pixel.blue))),q);
+          SetPixelRed(image,ClampToQuantum(CompandsRGB((double) 
+            ScaleMapToQuantum(pixel.red))),q);
+          SetPixelGreen(image,ClampToQuantum(CompandsRGB((double) 
+            ScaleMapToQuantum(pixel.green))),q);
+          SetPixelBlue(image,ClampToQuantum(CompandsRGB((double) 
+            ScaleMapToQuantum(pixel.blue))),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -3293,12 +3266,12 @@ static MagickBooleanType TransformsRGBImage(Image *image,
               pixel.blue)];
 #endif
           }
-        image->colormap[i].red=(double) ClampToQuantum(QuantumRange*
-          CompandsRGB(QuantumScale*ScaleMapToQuantum(pixel.red)));
-        image->colormap[i].green=(double) ClampToQuantum(QuantumRange*
-          CompandsRGB(QuantumScale*ScaleMapToQuantum(pixel.green)));
-        image->colormap[i].blue=(double) ClampToQuantum(QuantumRange*
-          CompandsRGB(QuantumScale*ScaleMapToQuantum(pixel.blue)));
+        image->colormap[i].red=(double) ClampToQuantum(
+          CompandsRGB((double) ScaleMapToQuantum(pixel.red)));
+        image->colormap[i].green=(double) ClampToQuantum(
+          CompandsRGB((double) ScaleMapToQuantum(pixel.green)));
+        image->colormap[i].blue=(double) ClampToQuantum(
+          CompandsRGB((double) ScaleMapToQuantum(pixel.blue)));
       }
       (void) SyncImage(image,exception);
       break;

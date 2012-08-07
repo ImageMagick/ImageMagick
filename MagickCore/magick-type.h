@@ -40,11 +40,6 @@ extern "C" {
 #define MaxColormapSize  256UL
 #define MaxMap  255UL
 
-#if defined __arm__ || defined __thumb__
-typedef float MagickRealType;
-#else
-typedef double MagickRealType;
-#endif
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef float Quantum;
 #define QuantumRange  255.0
@@ -58,11 +53,6 @@ typedef unsigned char Quantum;
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
 
-#if defined __arm__ || defined __thumb__
-typedef float MagickRealType;
-#else
-typedef double MagickRealType;
-#endif
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef float Quantum;
 #define QuantumRange  65535.0
@@ -76,7 +66,6 @@ typedef unsigned short Quantum;
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
 
-typedef double MagickRealType;
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef float Quantum;
 #define QuantumRange  4294967295.0
@@ -90,7 +79,6 @@ typedef unsigned int Quantum;
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
 
-typedef long double MagickRealType;
 typedef double Quantum;
 #define QuantumRange  18446744073709551615.0
 #define QuantumFormat  "%g"
@@ -99,8 +87,8 @@ typedef double Quantum;
 # error "MAGICKCORE_QUANTUM_DEPTH must be one of 8, 16, 32, or 64"
 #endif
 #endif
-#define MagickEpsilon  ((MagickRealType) 1.0e-16)
-#define MagickHuge  ((MagickRealType) 1.0/MagickEpsilon)
+#define MagickEpsilon  (1.0e-16)
+#define MagickHuge  (1.0/MagickEpsilon)
 #define MagickPI  3.14159265358979323846264338327950288419716939937510L
 #define QuantumScale  ((double) 1.0/(double) QuantumRange)
 

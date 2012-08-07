@@ -1438,8 +1438,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[3] = +(MagickRealType) MagickSQ2;
-            kernel->values[5] = -(MagickRealType) MagickSQ2;
+            kernel->values[3] = +(double) MagickSQ2;
+            kernel->values[5] = -(double) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             break;
           case 2:
@@ -1447,8 +1447,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[1] = kernel->values[3]= +(MagickRealType) MagickSQ2;
-            kernel->values[5] = kernel->values[7]= -(MagickRealType) MagickSQ2;
+            kernel->values[1] = kernel->values[3]= +(double) MagickSQ2;
+            kernel->values[5] = kernel->values[7]= -(double) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1463,8 +1463,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[3] = +(MagickRealType) MagickSQ2;
-            kernel->values[5] = -(MagickRealType) MagickSQ2;
+            kernel->values[3] = +(double) MagickSQ2;
+            kernel->values[5] = -(double) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1473,8 +1473,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[1] = +(MagickRealType) MagickSQ2;
-            kernel->values[7] = +(MagickRealType) MagickSQ2;
+            kernel->values[1] = +(double) MagickSQ2;
+            kernel->values[7] = +(double) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1483,8 +1483,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[0] = +(MagickRealType) MagickSQ2;
-            kernel->values[8] = -(MagickRealType) MagickSQ2;
+            kernel->values[0] = +(double) MagickSQ2;
+            kernel->values[8] = -(double) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1493,8 +1493,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[2] = -(MagickRealType) MagickSQ2;
-            kernel->values[6] = +(MagickRealType) MagickSQ2;
+            kernel->values[2] = -(double) MagickSQ2;
+            kernel->values[6] = +(double) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -2748,7 +2748,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             ** Weight the color channels with Alpha Channel so that
             ** transparent pixels are not part of the results.
             */
-            MagickRealType
+            double
               alpha,  /* alpha weighting for colors : alpha  */
               gamma;  /* divisor, sum of color alpha weighting */
             size_t
@@ -2885,20 +2885,20 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
       min.green   =
       min.blue    =
       min.alpha =
-      min.black   = (MagickRealType) QuantumRange;
+      min.black   = (double) QuantumRange;
       max.red     =
       max.green   =
       max.blue    =
       max.alpha =
-      max.black   = (MagickRealType) 0;
+      max.black   = (double) 0;
       /* default result is the original pixel value */
-      result.red     = (MagickRealType) GetPixelRed(image,p+r*GetPixelChannels(image));
-      result.green   = (MagickRealType) GetPixelGreen(image,p+r*GetPixelChannels(image));
-      result.blue    = (MagickRealType) GetPixelBlue(image,p+r*GetPixelChannels(image));
+      result.red     = (double) GetPixelRed(image,p+r*GetPixelChannels(image));
+      result.green   = (double) GetPixelGreen(image,p+r*GetPixelChannels(image));
+      result.blue    = (double) GetPixelBlue(image,p+r*GetPixelChannels(image));
       result.black   = 0.0;
       if (image->colorspace == CMYKColorspace)
-        result.black = (MagickRealType) GetPixelBlack(image,p+r*GetPixelChannels(image));
-      result.alpha=(MagickRealType) GetPixelAlpha(image,p+r*GetPixelChannels(image));
+        result.black = (double) GetPixelBlack(image,p+r*GetPixelChannels(image));
+      result.alpha=(double) GetPixelAlpha(image,p+r*GetPixelChannels(image));
 
       switch (method) {
         case ConvolveMorphology:
@@ -2985,7 +2985,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 ** Weight the color channels with Alpha Channel so that
                 ** transparent pixels are not part of the results.
                 */
-                MagickRealType
+                double
                   alpha,  /* alpha weighting for colors : alpha  */
                   gamma;  /* divisor, sum of color alpha weighting */
                 size_t
@@ -4486,7 +4486,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
     {
       if ( kernel->width == 3 && kernel->height == 3 )
         { /* Rotate a 3x3 square by 45 degree angle */
-          MagickRealType t  = kernel->values[0];
+          double t  = kernel->values[0];
           kernel->values[0] = kernel->values[3];
           kernel->values[3] = kernel->values[6];
           kernel->values[6] = kernel->values[7];

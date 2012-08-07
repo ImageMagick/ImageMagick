@@ -29,7 +29,7 @@ extern "C" {
 
 static inline void ConvertRGBToCMYK(PixelInfo *pixel)
 {
-  MagickRealType
+  double
     black,
     blue,
     cyan,
@@ -46,27 +46,27 @@ static inline void ConvertRGBToCMYK(PixelInfo *pixel)
     }
   else
     {
-      red=QuantumRange*DecompandsRGB(QuantumScale*pixel->red);
-      green=QuantumRange*DecompandsRGB(QuantumScale*pixel->green);
-      blue=QuantumRange*DecompandsRGB(QuantumScale*pixel->blue);
+      red=DecompandsRGB(pixel->red);
+      green=DecompandsRGB(pixel->green);
+      blue=DecompandsRGB(pixel->blue);
     }
   if ((fabs(red) < MagickEpsilon) && (fabs(green) < MagickEpsilon) &&
       (fabs(blue) < MagickEpsilon))
     {
-      pixel->black=(MagickRealType) QuantumRange;
+      pixel->black=(double) QuantumRange;
       return;
     }
-  cyan=(MagickRealType) (1.0-red);
-  magenta=(MagickRealType) (1.0-green);
-  yellow=(MagickRealType) (1.0-blue);
+  cyan=(double) (1.0-red);
+  magenta=(double) (1.0-green);
+  yellow=(double) (1.0-blue);
   black=cyan;
   if (magenta < black)
     black=magenta;
   if (yellow < black)
     black=yellow;
-  cyan=(MagickRealType) ((cyan-black)/(1.0-black));
-  magenta=(MagickRealType) ((magenta-black)/(1.0-black));
-  yellow=(MagickRealType) ((yellow-black)/(1.0-black));
+  cyan=(double) ((cyan-black)/(1.0-black));
+  magenta=(double) ((magenta-black)/(1.0-black));
+  yellow=(double) ((yellow-black)/(1.0-black));
   pixel->colorspace=CMYKColorspace;
   pixel->red=QuantumRange*cyan;
   pixel->green=QuantumRange*magenta;
