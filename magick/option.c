@@ -149,7 +149,7 @@ static const OptionInfo
     { "Saturation", GreenChannel, UndefinedOptionFlag, MagickFalse },
     { "S", GreenChannel, UndefinedOptionFlag, MagickFalse },
     { "Sync", SyncChannels, UndefinedOptionFlag, MagickFalse },
-    { "Yellow", YellowChannel, UndefinedOptionFlag, MagickFalse },
+    { "Y", YellowChannel, UndefinedOptionFlag, MagickFalse },
     { "Yellow", YellowChannel, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedChannel, UndefinedOptionFlag, MagickFalse }
   },
