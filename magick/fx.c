@@ -1145,16 +1145,13 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
 
   for (p=symbol; (*p != '.') && (*p != '\0'); p++) ;
   if (*p == '.')
-    switch (*++p)  /* e.g. depth.r */
     {
-      case 'r': channel=RedChannel; break;
-      case 'g': channel=GreenChannel; break;
-      case 'b': channel=BlueChannel; break;
-      case 'c': channel=CyanChannel; break;
-      case 'm': channel=MagentaChannel; break;
-      case 'y': channel=YellowChannel; break;
-      case 'k': channel=BlackChannel; break;
-      default: break;
+      ssize_t
+        option;
+
+      option=ParseCommandOption(MagickChannelOptions,MagickTrue,p+1);
+      if (option >= 0)
+        channel=(ChannelType) option;
     }
   (void) FormatLocaleString(key,MaxTextExtent,"%p.%.20g.%s",(void *) image,
     (double) channel,symbol);
