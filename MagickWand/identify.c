@@ -132,6 +132,7 @@ static MagickBooleanType IdentifyUsage(void)
       "-interlace type      type of image interlacing scheme",
       "-interpolate method  pixel color interpolation method",
       "-limit type value    pixel cache resource limit",
+      "-mask filename       associate a mask with the image",
       "-monitor             monitor progress",
       "-ping                efficiently determine image attributes",
       "-quiet               suppress all warning messages",
@@ -678,6 +679,15 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
       }
       case 'm':
       {
+        if (LocaleCompare("mask",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowIdentifyException(OptionError,"MissingArgument",option);
+            break;
+          }
         if (LocaleCompare("matte",option+1) == 0)
           break;
         if (LocaleCompare("monitor",option+1) == 0)

@@ -1128,9 +1128,12 @@ static inline double MagickMin(const double x,const double y)
   return(y);
 }
 
-static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
+static MagickRealType FxChannelStatistics(FxInfo *fx_info,Image *image,
   PixelChannel channel,const char *symbol,ExceptionInfo *exception)
 {
+  ChannelType
+    channel_mask;
+
   char
     key[MaxTextExtent],
     statistic[MaxTextExtent];
@@ -1141,24 +1144,30 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
   register const char
     *p;
 
+  channel_mask=UndefinedChannel;
   for (p=symbol; (*p != '.') && (*p != '\0'); p++) ;
   if (*p == '.')
-    switch (*++p)  /* e.g. depth.r */
     {
-      case 'r': channel=RedPixelChannel; break;
-      case 'g': channel=GreenPixelChannel; break;
-      case 'b': channel=BluePixelChannel; break;
-      case 'c': channel=CyanPixelChannel; break;
-      case 'm': channel=MagentaPixelChannel; break;
-      case 'y': channel=YellowPixelChannel; break;
-      case 'k': channel=BlackPixelChannel; break;
-      default: break;
+      ssize_t
+        option;
+
+      option=ParseCommandOption(MagickPixelChannelOptions,MagickTrue,p+1);
+      if (option >= 0)
+        {
+          channel=(PixelChannel) option;
+          channel_mask=(ChannelType) (channel_mask | (1 << channel));
+          SetPixelChannelMapMask(image,channel_mask);
+        }
     }
   (void) FormatLocaleString(key,MaxTextExtent,"%p.%.20g.%s",(void *) image,
     (double) channel,symbol);
   value=(const char *) GetValueFromSplayTree(fx_info->symbols,key);
   if (value != (const char *) NULL)
-    return(QuantumScale*StringToDouble(value,(char **) NULL));
+    {
+      if (channel_mask != UndefinedChannel)
+        SetPixelChannelMapMask(image,channel_mask);
+      return(QuantumScale*StringToDouble(value,(char **) NULL));
+    }
   (void) DeleteNodeFromSplayTree(fx_info->symbols,key);
   if (LocaleNCompare(symbol,"depth",5) == 0)
     {
@@ -1223,6 +1232,8 @@ static MagickRealType FxChannelStatistics(FxInfo *fx_info,const Image *image,
       (void) FormatLocaleString(statistic,MaxTextExtent,"%g",
         standard_deviation);
     }
+  if (channel_mask != UndefinedChannel)
+    SetPixelChannelMapMask(image,channel_mask);
   (void) AddValueToSplayTree(fx_info->symbols,ConstantString(key),
     ConstantString(statistic));
   return(QuantumScale*StringToDouble(statistic,(char **) NULL));
