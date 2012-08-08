@@ -723,25 +723,22 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
   }
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
-      {
-	/*
-	  Apply transfer function to colormap.
-	*/
-        double
-          luma;
+    {
+      /*
+	Apply transfer function to colormap.
+      */
+      double
+	luma;
 
-        luma=0.21267*image->colormap[i].red+0.71526*image->colormap[i].green+
-          0.07217*image->colormap[i].blue;
-        image->colormap[i].red=luma+color_correction.saturation*cdl_map[
-          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))].red-
-          luma;
-        image->colormap[i].green=luma+color_correction.saturation*cdl_map[
-          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))].green-
-          luma;
-        image->colormap[i].blue=luma+color_correction.saturation*cdl_map[
-          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))].blue-
-          luma;
-      }
+      luma=0.21267*image->colormap[i].red+0.71526*image->colormap[i].green+
+	0.07217*image->colormap[i].blue;
+      image->colormap[i].red=luma+color_correction.saturation*cdl_map[
+	ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))].red-luma;
+      image->colormap[i].green=luma+color_correction.saturation*cdl_map[
+        ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))].green-luma;
+      image->colormap[i].blue=luma+color_correction.saturation*cdl_map[
+        ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))].blue-luma;
+    }
   /*
     Apply transfer function to image.
   */
@@ -1834,23 +1831,23 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
         MaxMap,1.0/gamma)));
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
-      {
-	/*
-	  Gamma-correct colormap.
-	*/
-        if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].red=(double) gamma_map[
-            ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))];
-        if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].green=(double) gamma_map[
-            ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))];
-        if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].blue=(double) gamma_map[
-            ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))];
-        if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].alpha=(double) gamma_map[
-            ScaleQuantumToMap(ClampToQuantum(image->colormap[i].alpha))];
-      }
+    {
+      /*
+	Gamma-correct colormap.
+      */
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+	image->colormap[i].red=(double) gamma_map[
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))];
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+        image->colormap[i].green=(double) gamma_map[
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))];
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+        image->colormap[i].blue=(double) gamma_map[
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))];
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+        image->colormap[i].alpha=(double) gamma_map[
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].alpha))];
+    }
   /*
     Gamma-correct image.
   */
@@ -2881,41 +2878,41 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
       MagickFalse,artifact);
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
-      {
-        double
-          blue,
-          green,
-          red;
+    {
+      double
+        blue,
+        green,
+        red;
 
-	/*
-	  Modulate colormap.
-	*/
-        red=image->colormap[i].red;
-        green=image->colormap[i].green;
-        blue=image->colormap[i].blue;
-        switch (colorspace)
+      /*
+	Modulate colormap.
+      */
+      red=image->colormap[i].red;
+      green=image->colormap[i].green;
+      blue=image->colormap[i].blue;
+      switch (colorspace)
+      {
+        case HSBColorspace:
         {
-          case HSBColorspace:
-          {
-            ModulateHSB(percent_hue,percent_saturation,percent_brightness,
-              &red,&green,&blue);
-            break;
-          }
-          case HSLColorspace:
-          default:
-          {
-            ModulateHSL(percent_hue,percent_saturation,percent_brightness,
-              &red,&green,&blue);
-            break;
-          }
-          case HWBColorspace:
-          {
-            ModulateHWB(percent_hue,percent_saturation,percent_brightness,
-              &red,&green,&blue);
-            break;
-          }
+          ModulateHSB(percent_hue,percent_saturation,percent_brightness,
+            &red,&green,&blue);
+          break;
+        }
+        case HSLColorspace:
+        default:
+        {
+          ModulateHSL(percent_hue,percent_saturation,percent_brightness,
+            &red,&green,&blue);
+          break;
+        }
+        case HWBColorspace:
+        {
+          ModulateHWB(percent_hue,percent_saturation,percent_brightness,
+            &red,&green,&blue);
+          break;
         }
       }
+    }
   /*
     Modulate image.
   */
@@ -3052,24 +3049,21 @@ MagickExport MagickBooleanType NegateImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
-      {
-	/*
-	  Negate colormap.
-	*/
-        if (grayscale != MagickFalse)
-          if ((image->colormap[i].red != image->colormap[i].green) ||
-              (image->colormap[i].green != image->colormap[i].blue))
-            continue;
-        if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].red=QuantumRange-
-            image->colormap[i].red;
-        if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].green=QuantumRange-
-            image->colormap[i].green;
-        if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].blue=QuantumRange-
-            image->colormap[i].blue;
-      }
+    {
+      /*
+	Negate colormap.
+      */
+      if (grayscale != MagickFalse)
+	if ((image->colormap[i].red != image->colormap[i].green) ||
+	  (image->colormap[i].green != image->colormap[i].blue))
+	  continue;
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+	image->colormap[i].red=QuantumRange-image->colormap[i].red;
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+	image->colormap[i].green=QuantumRange-image->colormap[i].green;
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+	image->colormap[i].blue=QuantumRange-image->colormap[i].blue;
+    }
   /*
     Negate image.
   */
@@ -3367,23 +3361,23 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
         (double) i/MaxMap)));
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
-      {
-	/*
-	  Sigmoidal-contrast enhance colormap.
-	*/
-        if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].red=(double) ClampToQuantum((double) sigmoidal_map[
-            ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))]);
-        if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].green=(double) ClampToQuantum((double) sigmoidal_map[
-            ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))]);
-        if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].blue=(double) ClampToQuantum((double) sigmoidal_map[
-            ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))]);
-        if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].alpha=(double) ClampToQuantum((double) sigmoidal_map[
-            ScaleQuantumToMap(ClampToQuantum(image->colormap[i].alpha))]);
-      }
+    {
+      /*
+	Sigmoidal-contrast enhance colormap.
+      */
+      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+	image->colormap[i].red=(double) ClampToQuantum((double) sigmoidal_map[
+        ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))]);
+      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+	image->colormap[i].green=(double) ClampToQuantum((double) sigmoidal_map[
+        ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))]);
+      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+	image->colormap[i].blue=(double) ClampToQuantum((double) sigmoidal_map[
+        ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))]);
+      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+	image->colormap[i].alpha=(double) ClampToQuantum((double) sigmoidal_map[
+        ScaleQuantumToMap(ClampToQuantum(image->colormap[i].alpha))]);
+    }
   /*
     Sigmoidal-contrast enhance image.
   */
