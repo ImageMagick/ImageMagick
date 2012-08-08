@@ -1,5 +1,6 @@
 2012-08-08  6.7.8-9 Nicolas Robidoux <nicolas.robidoux@gmail...>
-  * Move ClampToQuantum in IM7 sigmoidal loop to same position as in IM6.
+  * IM7: Move ClampToQuantum in sigmoidal loop to same position as in IM6.
+  * IM7: Remove OpenMP for from colormap update loop.
 
 2012-08-07  6.7.8-9 Cristy  <quetzlzacatenango@image...>
   * Selective blur stopped working after version 6.7.4-10 (reference
