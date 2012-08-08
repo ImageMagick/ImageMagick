@@ -1088,8 +1088,9 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         if (image->channel_mask != DefaultChannels)
-          pixel=p[i];
-        histogram[GetPixelChannels(image)*ScaleQuantumToMap(pixel)+i]++;
+          pixel=(double) p[i];
+        histogram[GetPixelChannels(image)*ScaleQuantumToMap(
+          ClampToQuantum(pixel))+i]++;
       }
       p+=GetPixelChannels(image);
     }
@@ -3309,7 +3310,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   MagickOffsetType
     progress;
 
-  double
+  Quantum
     *sigmoidal_map;
 
   register ssize_t
@@ -3325,9 +3326,9 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  sigmoidal_map=(double *) AcquireQuantumMemory(MaxMap+1UL,
+  sigmoidal_map=(Quantum *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*sigmoidal_map));
-  if (sigmoidal_map == (double *) NULL)
+  if (sigmoidal_map == (Quantum *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   (void) ResetMagickMemory(sigmoidal_map,0,(MaxMap+1)*sizeof(*sigmoidal_map));
@@ -3354,17 +3355,14 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
    */
   if (contrast<4.0*MagickEpsilon)
     for (i=0; i <= (ssize_t) MaxMap; i++)
-      sigmoidal_map[i]=
-        (double) ScaleMapToQuantum((double) i);
+      sigmoidal_map[i]=ScaleMapToQuantum((double) i);
   else if (sharpen != MagickFalse)
     for (i=0; i <= (ssize_t) MaxMap; i++)
-      sigmoidal_map[i]=
-        (double) ScaleMapToQuantum( (double) (MaxMap*
+      sigmoidal_map[i]=ScaleMapToQuantum( (double) (MaxMap*
         SCALED_SIGMOIDAL(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
   else
     for (i=0; i <= (ssize_t) MaxMap; i++)
-      sigmoidal_map[i]=
-        (double) ScaleMapToQuantum( (double) (MaxMap*
+      sigmoidal_map[i]=ScaleMapToQuantum((double) (MaxMap*
         INVERSE_SCALED_SIGMOIDAL(contrast,QuantumScale*midpoint,
         (double) i/MaxMap)));
   if (image->storage_class == PseudoClass)
@@ -3374,16 +3372,16 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
 	  Sigmoidal-contrast enhance colormap.
 	*/
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].red=ClampToQuantum(sigmoidal_map[
+          image->colormap[i].red=(double) ClampToQuantum((double) sigmoidal_map[
             ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))]);
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].green=ClampToQuantum(sigmoidal_map[
+          image->colormap[i].green=(double) ClampToQuantum((double) sigmoidal_map[
             ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))]);
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].blue=ClampToQuantum(sigmoidal_map[
+          image->colormap[i].blue=(double) ClampToQuantum((double) sigmoidal_map[
             ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))]);
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].alpha=ClampToQuantum(sigmoidal_map[
+          image->colormap[i].alpha=(double) ClampToQuantum((double) sigmoidal_map[
             ScaleQuantumToMap(ClampToQuantum(image->colormap[i].alpha))]);
       }
   /*
@@ -3434,7 +3432,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(q[i])]);
+        q[i]=ClampToQuantum((double) sigmoidal_map[ScaleQuantumToMap(q[i])]);
       }
       q+=GetPixelChannels(image);
     }
@@ -3455,6 +3453,6 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  sigmoidal_map=(double *) RelinquishMagickMemory(sigmoidal_map);
+  sigmoidal_map=(Quantum *) RelinquishMagickMemory(sigmoidal_map);
   return(status);
 }
