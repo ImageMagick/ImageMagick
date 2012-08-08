@@ -3314,19 +3314,6 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     y;
 
   /*
-    Allocate and initialize sigmoidal maps.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (image->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  sigmoidal_map=(Quantum *) AcquireQuantumMemory(MaxMap+1UL,
-    sizeof(*sigmoidal_map));
-  if (sigmoidal_map == (Quantum *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
-  (void) ResetMagickMemory(sigmoidal_map,0,(MaxMap+1)*sizeof(*sigmoidal_map));
-  /*
     Sigmoidal with inflexion point moved to b and "slope constant" set to a.
   */
 #define Sigmoidal(a,b,x) ( 1.0/(1.0+exp((a)*((b)-(x)))) )
@@ -3350,6 +3337,20 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that s(1)-s(0) is
     about a/4.
   */
+
+  /*
+    Allocate and initialize sigmoidal maps.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  sigmoidal_map=(Quantum *) AcquireQuantumMemory(MaxMap+1UL,
+    sizeof(*sigmoidal_map));
+  if (sigmoidal_map == (Quantum *) NULL)
+    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      image->filename);
+  (void) ResetMagickMemory(sigmoidal_map,0,(MaxMap+1)*sizeof(*sigmoidal_map));
   if (contrast<4.0*MagickEpsilon)
     for (i=0; i <= (ssize_t) MaxMap; i++)
       sigmoidal_map[i]=ScaleMapToQuantum((double) i);
