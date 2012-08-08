@@ -111,9 +111,9 @@ static inline MagickRealType MagickPixelIntensity(
     return(pixel->red);
   if (pixel->colorspace != sRGBColorspace)
     return(0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue);
-  red=DecompandsRGB(pixel->red);
-  green=DecompandsRGB(pixel->green);
-  blue=DecompandsRGB(pixel->blue);
+  red=InversesRGBCompandor(pixel->red);
+  green=InversesRGBCompandor(pixel->green);
+  blue=InversesRGBCompandor(pixel->blue);
   return(0.298839*red+0.586811*green+0.114350*blue);
 }
 
@@ -130,9 +130,9 @@ static inline Quantum MagickPixelIntensityToQuantum(
   if (pixel->colorspace != sRGBColorspace)
     return(ClampToQuantum(0.298839*pixel->red+0.586811*pixel->green+
       0.114350*pixel->blue));
-  red=DecompandsRGB(pixel->red);
-  green=DecompandsRGB(pixel->green);
-  blue=DecompandsRGB(pixel->blue);
+  red=InversesRGBCompandor(pixel->red);
+  green=InversesRGBCompandor(pixel->green);
+  blue=InversesRGBCompandor(pixel->blue);
   return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
 }
 
@@ -148,9 +148,9 @@ static inline MagickRealType MagickPixelLuminance(
     return(pixel->red);
   if (pixel->colorspace != sRGBColorspace)
     return(0.21267*pixel->red+0.71516*pixel->green+0.07217*pixel->blue);
-  red=DecompandsRGB(pixel->red);
-  green=DecompandsRGB(pixel->green);
-  blue=DecompandsRGB(pixel->blue);
+  red=InversesRGBCompandor(pixel->red);
+  green=InversesRGBCompandor(pixel->green);
+  blue=InversesRGBCompandor(pixel->blue);
   return(0.21267*red+0.71516*green+0.07217*blue);
 }
 
@@ -169,9 +169,9 @@ static inline MagickRealType PixelIntensity(const Image *image,
     return((MagickRealType) pixel->red);
   if (image->colorspace != sRGBColorspace)
     return(0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue);
-  red=DecompandsRGB((MagickRealType) pixel->red);
-  green=DecompandsRGB((MagickRealType) pixel->green);
-  blue=DecompandsRGB((MagickRealType) pixel->blue);
+  red=InversesRGBCompandor((MagickRealType) pixel->red);
+  green=InversesRGBCompandor((MagickRealType) pixel->green);
+  blue=InversesRGBCompandor((MagickRealType) pixel->blue);
   intensity=(MagickRealType) (0.298839*red+0.586811*green+0.114350*blue);
   return(intensity);
 }
@@ -183,9 +183,9 @@ static inline Quantum PixelPacketIntensity(const PixelPacket *pixel)
     green,
     red;
 
-  red=DecompandsRGB((MagickRealType) pixel->red);
-  green=DecompandsRGB((MagickRealType) pixel->green);
-  blue=DecompandsRGB((MagickRealType) pixel->blue);
+  red=InversesRGBCompandor((MagickRealType) pixel->red);
+  green=InversesRGBCompandor((MagickRealType) pixel->green);
+  blue=InversesRGBCompandor((MagickRealType) pixel->blue);
   return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
 }
 
@@ -202,9 +202,9 @@ static inline Quantum PixelIntensityToQuantum(const Image *restrict image,
   if (image->colorspace != sRGBColorspace)
     return(ClampToQuantum(0.298839*pixel->red+0.586811*pixel->green+0.114350*
       pixel->blue));
-  red=DecompandsRGB((MagickRealType) pixel->red);
-  green=DecompandsRGB((MagickRealType) pixel->green);
-  blue=DecompandsRGB((MagickRealType) pixel->blue);
+  red=InversesRGBCompandor((MagickRealType) pixel->red);
+  green=InversesRGBCompandor((MagickRealType) pixel->green);
+  blue=InversesRGBCompandor((MagickRealType) pixel->blue);
   return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
 }
 
