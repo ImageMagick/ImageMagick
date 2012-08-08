@@ -3326,27 +3326,30 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   (void) ResetMagickMemory(sigmoidal_map,0,(MaxMap+1)*sizeof(*sigmoidal_map));
-  /* Sigmoidal with inflexion point moved to b and "slope constant" set to a.
-   */
+  /*
+    Sigmoidal with inflexion point moved to b and "slope constant" set to a.
+  */
 #define Sigmoidal(a,b,x) ( 1.0/(1.0+exp((a)*((b)-(x)))) )
-  /* Scaled sigmoidal formula: (1/(1+exp(a*(b-x))) - 1/(1+exp(a*b)))
-   *                           /
-   *                           (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b))).
-   * See http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html and
-   * http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.
-   */
+  /*
+    Scaled sigmoidal formula: (1/(1+exp(a*(b-x))) - 1/(1+exp(a*b)))
+                              /
+                              (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b))).
+    See http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html and
+    http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.
+  */
 #define ScaledSigmoidal(a,b,x) (                    \
   (Sigmoidal((a),(b),(x))-Sigmoidal((a),(b),0.0)) / \
   (Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0)) )
 #define InverseScaledSigmoidal(a,b,x) (                                     \
   (b) - log( -1.0+1.0/((Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0))*(x)+ \
   Sigmoidal((a),(b),0.0)) ) / (a) )
-  /* The limit of ScaledSigmoidal as a->0 is the identity, but a=0 gives a
-   * division by zero. This is fixed below by hardwiring the identity when a is
-   * small. This would appear to be safe because the series expansion of the
-   * sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that s(1)-s(0) is
-   * about a/4.
-   */
+  /* 
+    The limit of ScaledSigmoidal as a->0 is the identity, but a=0 gives a
+    division by zero. This is fixed below by hardwiring the identity when a is
+    small. This would appear to be safe because the series expansion of the
+    sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that s(1)-s(0) is
+    about a/4.
+  */
   if (contrast<4.0*MagickEpsilon)
     for (i=0; i <= (ssize_t) MaxMap; i++)
       sigmoidal_map[i]=ScaleMapToQuantum((double) i);
