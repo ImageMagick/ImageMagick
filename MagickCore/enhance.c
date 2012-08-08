@@ -3419,17 +3419,17 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].red=sigmoidal_map[ScaleQuantumToMap(
-            ClampToQuantum(image->colormap[i].red))];
+          image->colormap[i].red=ClampToQuantum(sigmoidal_map[
+	    ScaleQuantumToMap(image->colormap[i].red)]);
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].green=sigmoidal_map[ScaleQuantumToMap(
-            ClampToQuantum(image->colormap[i].green))];
+          image->colormap[i].green=ClampToQuantum(sigmoidal_map[
+	    ScaleQuantumToMap(image->colormap[i].green)]);
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].blue=sigmoidal_map[ScaleQuantumToMap(
-            ClampToQuantum(image->colormap[i].blue))];
+          image->colormap[i].blue=ClampToQuantum(sigmoidal_map[
+	    ScaleQuantumToMap(image->colormap[i].blue)]);
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-          image->colormap[i].alpha=sigmoidal_map[ScaleQuantumToMap(
-            ClampToQuantum(image->colormap[i].alpha))];
+          image->colormap[i].alpha=ClampToQuantum(sigmoidal_map[
+	    ScaleQuantumToMap(image->colormap[i].alpha)]);
       }
     }
   /*
