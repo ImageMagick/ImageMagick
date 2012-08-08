@@ -3358,7 +3358,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     for (i=0; i <= (ssize_t) MaxMap; i++)
       sigmoidal_map[i]=ScaleMapToQuantum((double) (MaxMap*
         INVERSE_SCALED_SIGMOIDAL(contrast,QuantumScale*midpoint,
-        (double) i/MaxMap)));
+	(double) i/MaxMap)));
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
     {
@@ -3367,16 +3367,16 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       */
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
 	image->colormap[i].red=(double) ClampToQuantum((double) sigmoidal_map[
-        ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))]);
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))]);
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
 	image->colormap[i].green=(double) ClampToQuantum((double) sigmoidal_map[
-        ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))]);
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))]);
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
 	image->colormap[i].blue=(double) ClampToQuantum((double) sigmoidal_map[
-        ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))]);
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))]);
       if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
 	image->colormap[i].alpha=(double) ClampToQuantum((double) sigmoidal_map[
-        ScaleQuantumToMap(ClampToQuantum(image->colormap[i].alpha))]);
+          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].alpha))]);
     }
   /*
     Sigmoidal-contrast enhance image.
