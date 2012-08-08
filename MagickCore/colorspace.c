@@ -268,9 +268,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             magenta,
             yellow;
 
-          cyan=DecompandsRGB((double) GetPixelCyan(image,q));
-          magenta=DecompandsRGB((double) GetPixelMagenta(image,q));
-          yellow=DecompandsRGB((double) GetPixelYellow(image,q));
+          cyan=InversesRGBCompandor((double) GetPixelCyan(image,q));
+          magenta=InversesRGBCompandor((double) GetPixelMagenta(image,q));
+          yellow=InversesRGBCompandor((double) GetPixelYellow(image,q));
           SetPixelCyan(image,ClampToQuantum(QuantumRange-cyan),q);
           SetPixelMagenta(image,ClampToQuantum(QuantumRange-magenta),q);
           SetPixelYellow(image,ClampToQuantum(QuantumRange-yellow),q);
@@ -337,9 +337,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           GetPixelInfoPixel(image,q,&pixel);
-          pixel.red=DecompandsRGB(pixel.red);
-          pixel.green=DecompandsRGB(pixel.green);
-          pixel.blue=DecompandsRGB(pixel.blue);
+          pixel.red=InversesRGBCompandor(pixel.red);
+          pixel.green=InversesRGBCompandor(pixel.green);
+          pixel.blue=InversesRGBCompandor(pixel.blue);
           ConvertRGBToCMYK(&pixel);
           SetPixelInfoPixel(image,&pixel,q);
           q+=GetPixelChannels(image);
@@ -401,9 +401,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             green,
             red;
 
-          red=DecompandsRGB((double) GetPixelRed(image,q));
-          green=DecompandsRGB((double) GetPixelGreen(image,q));
-          blue=DecompandsRGB((double) GetPixelBlue(image,q));
+          red=InversesRGBCompandor((double) GetPixelRed(image,q));
+          green=InversesRGBCompandor((double) GetPixelGreen(image,q));
+          blue=InversesRGBCompandor((double) GetPixelBlue(image,q));
           gray=0.298839*red+0.586811*green+0.114350*blue;
           SetPixelGray(image,ClampToQuantum(gray),q);
           q+=GetPixelChannels(image);
@@ -465,9 +465,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             luma,
             red;
 
-          red=DecompandsRGB((double) GetPixelRed(image,q));
-          green=DecompandsRGB((double) GetPixelGreen(image,q));
-          blue=DecompandsRGB((double) GetPixelBlue(image,q));
+          red=InversesRGBCompandor((double) GetPixelRed(image,q));
+          green=InversesRGBCompandor((double) GetPixelGreen(image,q));
+          blue=InversesRGBCompandor((double) GetPixelBlue(image,q));
           ConvertRGBToHCL(red,green,blue,&hue,&chroma,&luma);
           SetPixelRed(image,ClampToQuantum(QuantumRange*hue),q);
           SetPixelGreen(image,ClampToQuantum(QuantumRange*chroma),q);
@@ -530,9 +530,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             red,
             saturation;
 
-          red=DecompandsRGB((double) GetPixelRed(image,q));
-          green=DecompandsRGB((double) GetPixelGreen(image,q));
-          blue=DecompandsRGB((double) GetPixelBlue(image,q));
+          red=InversesRGBCompandor((double) GetPixelRed(image,q));
+          green=InversesRGBCompandor((double) GetPixelGreen(image,q));
+          blue=InversesRGBCompandor((double) GetPixelBlue(image,q));
           ConvertRGBToHSB(red,green,blue,&hue,&saturation,&brightness);
           SetPixelRed(image,ClampToQuantum(QuantumRange*hue),q);
           SetPixelGreen(image,ClampToQuantum(QuantumRange*saturation),q);
@@ -595,9 +595,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             red,
             saturation;
 
-          red=DecompandsRGB((double) GetPixelRed(image,q));
-          green=DecompandsRGB((double) GetPixelGreen(image,q));
-          blue=DecompandsRGB((double) GetPixelBlue(image,q));
+          red=InversesRGBCompandor((double) GetPixelRed(image,q));
+          green=InversesRGBCompandor((double) GetPixelGreen(image,q));
+          blue=InversesRGBCompandor((double) GetPixelBlue(image,q));
           ConvertRGBToHSL(red,green,blue,&hue,&saturation,&lightness);
           SetPixelRed(image,ClampToQuantum(QuantumRange*hue),q);
           SetPixelGreen(image,ClampToQuantum(QuantumRange*saturation),q);
@@ -660,9 +660,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             red,
             whiteness;
 
-          red=DecompandsRGB((double) GetPixelRed(image,q));
-          green=DecompandsRGB((double) GetPixelGreen(image,q));
-          blue=DecompandsRGB((double) GetPixelBlue(image,q));
+          red=InversesRGBCompandor((double) GetPixelRed(image,q));
+          green=InversesRGBCompandor((double) GetPixelGreen(image,q));
+          blue=InversesRGBCompandor((double) GetPixelBlue(image,q));
           ConvertRGBToHWB(red,green,blue,&hue,&whiteness,&blackness);
           SetPixelRed(image,ClampToQuantum(QuantumRange*hue),q);
           SetPixelGreen(image,ClampToQuantum(QuantumRange*whiteness),q);
@@ -728,9 +728,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             Y,
             Z;
 
-          red=DecompandsRGB((double) GetPixelRed(image,q));
-          green=DecompandsRGB((double) GetPixelGreen(image,q));
-          blue=DecompandsRGB((double) GetPixelBlue(image,q));
+          red=InversesRGBCompandor((double) GetPixelRed(image,q));
+          green=InversesRGBCompandor((double) GetPixelGreen(image,q));
+          blue=InversesRGBCompandor((double) GetPixelBlue(image,q));
           ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
           ConvertXYZToLab(X,Y,Z,&L,&a,&b);
           SetPixelRed(image,ClampToQuantum(QuantumRange*L),q);
@@ -835,9 +835,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             green,
             red;
 
-          red=DecompandsRGB((double) GetPixelRed(image,q));
-          green=DecompandsRGB((double) GetPixelGreen(image,q));
-          blue=DecompandsRGB((double) GetPixelBlue(image,q));
+          red=InversesRGBCompandor((double) GetPixelRed(image,q));
+          green=InversesRGBCompandor((double) GetPixelGreen(image,q));
+          blue=InversesRGBCompandor((double) GetPixelBlue(image,q));
           SetPixelRed(image,logmap[ScaleQuantumToMap(
             ClampToQuantum(red))],q);
           SetPixelGreen(image,logmap[ScaleQuantumToMap(
@@ -906,9 +906,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             Y,
             Z;
 
-          red=DecompandsRGB((double) GetPixelRed(image,q));
-          green=DecompandsRGB((double) GetPixelGreen(image,q));
-          blue=DecompandsRGB((double) GetPixelBlue(image,q));
+          red=InversesRGBCompandor((double) GetPixelRed(image,q));
+          green=InversesRGBCompandor((double) GetPixelGreen(image,q));
+          blue=InversesRGBCompandor((double) GetPixelBlue(image,q));
           ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
           ConvertXYZToLuv(X,Y,Z,&L,&u,&v);
           SetPixelRed(image,ClampToQuantum(QuantumRange*L),q);
@@ -970,9 +970,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             green,
             red;
 
-          red=DecompandsRGB((double) GetPixelRed(image,q));
-          green=DecompandsRGB((double) GetPixelGreen(image,q));
-          blue=DecompandsRGB((double) GetPixelBlue(image,q));
+          red=InversesRGBCompandor((double) GetPixelRed(image,q));
+          green=InversesRGBCompandor((double) GetPixelGreen(image,q));
+          blue=InversesRGBCompandor((double) GetPixelBlue(image,q));
           gray=0.212600*red+0.715200*green+0.072200*blue;
           SetPixelGray(image,ClampToQuantum(gray),q);
           q+=GetPixelChannels(image);
@@ -1031,9 +1031,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             green,
             red;
 
-          red=DecompandsRGB((double) GetPixelRed(image,q));
-          green=DecompandsRGB((double) GetPixelGreen(image,q));
-          blue=DecompandsRGB((double) GetPixelBlue(image,q));
+          red=InversesRGBCompandor((double) GetPixelRed(image,q));
+          green=InversesRGBCompandor((double) GetPixelGreen(image,q));
+          blue=InversesRGBCompandor((double) GetPixelBlue(image,q));
           SetPixelRed(image,ClampToQuantum(red),q);
           SetPixelGreen(image,ClampToQuantum(green),q);
           SetPixelBlue(image,ClampToQuantum(blue),q);
@@ -1095,9 +1095,9 @@ static MagickBooleanType sRGBTransformImage(Image *image,
             Y,
             Z;
 
-          red=DecompandsRGB((double) GetPixelRed(image,q));
-          green=DecompandsRGB((double) GetPixelGreen(image,q));
-          blue=DecompandsRGB((double) GetPixelBlue(image,q));
+          red=InversesRGBCompandor((double) GetPixelRed(image,q));
+          green=InversesRGBCompandor((double) GetPixelGreen(image,q));
+          blue=InversesRGBCompandor((double) GetPixelBlue(image,q));
           ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
           SetPixelRed(image,ClampToQuantum(QuantumRange*X),q);
           SetPixelGreen(image,ClampToQuantum(QuantumRange*Y),q);
@@ -1435,11 +1435,11 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          red=ScaleQuantumToMap(ClampToQuantum(DecompandsRGB((double) 
+          red=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor((double) 
             GetPixelRed(image,q))));
-          green=ScaleQuantumToMap(ClampToQuantum(DecompandsRGB((double) 
+          green=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor((double) 
             GetPixelGreen(image,q))));
-          blue=ScaleQuantumToMap(ClampToQuantum(DecompandsRGB((double) 
+          blue=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor((double) 
             GetPixelBlue(image,q))));
           pixel.red=(x_map[red].x+y_map[green].x+z_map[blue].x)+
             (double) primary_info.x;
@@ -1487,11 +1487,11 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         PixelInfo
           pixel;
 
-        red=ScaleQuantumToMap(ClampToQuantum(DecompandsRGB(
+        red=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor(
           image->colormap[i].red)));
-        green=ScaleQuantumToMap(ClampToQuantum(DecompandsRGB(
+        green=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor(
           image->colormap[i].green)));
-        blue=ScaleQuantumToMap(ClampToQuantum(DecompandsRGB(
+        blue=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor(
           image->colormap[i].blue)));
         pixel.red=x_map[red].x+y_map[green].x+z_map[blue].x+primary_info.x;
         pixel.green=x_map[red].y+y_map[green].y+z_map[blue].y+primary_info.y;
@@ -2072,9 +2072,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             magenta,
             yellow;
 
-          cyan=CompandsRGB((double) (QuantumRange-GetPixelCyan(image,q)));
-          magenta=CompandsRGB((double) (QuantumRange-GetPixelMagenta(image,q)));
-          yellow=CompandsRGB((double) (QuantumRange-GetPixelYellow(image,q)));
+          cyan=sRGBCompandor((double) (QuantumRange-GetPixelCyan(image,q)));
+          magenta=sRGBCompandor((double) (QuantumRange-GetPixelMagenta(image,q)));
+          yellow=sRGBCompandor((double) (QuantumRange-GetPixelYellow(image,q)));
           SetPixelCyan(image,ClampToQuantum(cyan),q);
           SetPixelMagenta(image,ClampToQuantum(magenta),q);
           SetPixelYellow(image,ClampToQuantum(yellow),q);
@@ -2138,9 +2138,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         {
           GetPixelInfoPixel(image,q,&pixel);
           ConvertCMYKToRGB(&pixel);
-          pixel.red=CompandsRGB(pixel.red);
-          pixel.green=CompandsRGB(pixel.green);
-          pixel.blue=CompandsRGB(pixel.blue);
+          pixel.red=sRGBCompandor(pixel.red);
+          pixel.green=sRGBCompandor(pixel.green);
+          pixel.blue=sRGBCompandor(pixel.blue);
           SetPixelInfoPixel(image,&pixel,q);
           q+=GetPixelChannels(image);
         }
@@ -2199,7 +2199,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           double
             gray;
 
-          gray=CompandsRGB((double) GetPixelGray(image,q));
+          gray=sRGBCompandor((double) GetPixelGray(image,q));
           SetPixelRed(image,ClampToQuantum(gray),q);
           SetPixelGreen(image,ClampToQuantum(gray),q);
           SetPixelBlue(image,ClampToQuantum(gray),q);
@@ -2265,9 +2265,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           chroma=(double) (QuantumScale*GetPixelGreen(image,q));
           luma=(double) (QuantumScale*GetPixelBlue(image,q));
           ConvertHCLToRGB(hue,chroma,luma,&red,&green,&blue);
-          SetPixelRed(image,ClampToQuantum(CompandsRGB(red)),q);
-          SetPixelGreen(image,ClampToQuantum(CompandsRGB(green)),q);
-          SetPixelBlue(image,ClampToQuantum(CompandsRGB(blue)),q);
+          SetPixelRed(image,ClampToQuantum(sRGBCompandor(red)),q);
+          SetPixelGreen(image,ClampToQuantum(sRGBCompandor(green)),q);
+          SetPixelBlue(image,ClampToQuantum(sRGBCompandor(blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2330,9 +2330,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           saturation=(double) (QuantumScale*GetPixelGreen(image,q));
           brightness=(double) (QuantumScale*GetPixelBlue(image,q));
           ConvertHSBToRGB(hue,saturation,brightness,&red,&green,&blue);
-          SetPixelRed(image,ClampToQuantum(CompandsRGB(red)),q);
-          SetPixelGreen(image,ClampToQuantum(CompandsRGB(green)),q);
-          SetPixelBlue(image,ClampToQuantum(CompandsRGB(blue)),q);
+          SetPixelRed(image,ClampToQuantum(sRGBCompandor(red)),q);
+          SetPixelGreen(image,ClampToQuantum(sRGBCompandor(green)),q);
+          SetPixelBlue(image,ClampToQuantum(sRGBCompandor(blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2395,9 +2395,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           saturation=(double) (QuantumScale*GetPixelGreen(image,q));
           lightness=(double) (QuantumScale*GetPixelBlue(image,q));
           ConvertHSLToRGB(hue,saturation,lightness,&red,&green,&blue);
-          SetPixelRed(image,ClampToQuantum(CompandsRGB(red)),q);
-          SetPixelGreen(image,ClampToQuantum(CompandsRGB(green)),q);
-          SetPixelBlue(image,ClampToQuantum(CompandsRGB(blue)),q);
+          SetPixelRed(image,ClampToQuantum(sRGBCompandor(red)),q);
+          SetPixelGreen(image,ClampToQuantum(sRGBCompandor(green)),q);
+          SetPixelBlue(image,ClampToQuantum(sRGBCompandor(blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2460,9 +2460,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           whiteness=(double) (QuantumScale*GetPixelGreen(image,q));
           blackness=(double) (QuantumScale*GetPixelBlue(image,q));
           ConvertHWBToRGB(hue,whiteness,blackness,&red,&green,&blue);
-          SetPixelRed(image,ClampToQuantum(CompandsRGB(red)),q);
-          SetPixelGreen(image,ClampToQuantum(CompandsRGB(green)),q);
-          SetPixelBlue(image,ClampToQuantum(CompandsRGB(blue)),q);
+          SetPixelRed(image,ClampToQuantum(sRGBCompandor(red)),q);
+          SetPixelGreen(image,ClampToQuantum(sRGBCompandor(green)),q);
+          SetPixelBlue(image,ClampToQuantum(sRGBCompandor(blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2529,9 +2529,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           b=QuantumScale*GetPixelBlue(image,q);
           ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
-          SetPixelRed(image,ClampToQuantum(CompandsRGB(red)),q);
-          SetPixelGreen(image,ClampToQuantum(CompandsRGB(green)),q);
-          SetPixelBlue(image,ClampToQuantum(CompandsRGB(blue)),q);
+          SetPixelRed(image,ClampToQuantum(sRGBCompandor(red)),q);
+          SetPixelGreen(image,ClampToQuantum(sRGBCompandor(green)),q);
+          SetPixelBlue(image,ClampToQuantum(sRGBCompandor(blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2633,11 +2633,11 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             green,
             red;
 
-          red=CompandsRGB((double) logmap[ScaleQuantumToMap(
+          red=sRGBCompandor((double) logmap[ScaleQuantumToMap(
             GetPixelRed(image,q))]);
-          green=CompandsRGB((double) logmap[ScaleQuantumToMap(
+          green=sRGBCompandor((double) logmap[ScaleQuantumToMap(
             GetPixelGreen(image,q))]);
-          blue=CompandsRGB((double) logmap[ScaleQuantumToMap(
+          blue=sRGBCompandor((double) logmap[ScaleQuantumToMap(
             GetPixelBlue(image,q))]);
           SetPixelRed(image,ClampToQuantum(red),q);
           SetPixelGreen(image,ClampToQuantum(green),q);
@@ -2709,9 +2709,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           v=QuantumScale*GetPixelBlue(image,q);
           ConvertLuvToXYZ(L,u,v,&X,&Y,&Z);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
-          SetPixelRed(image,ClampToQuantum(CompandsRGB(red)),q);
-          SetPixelGreen(image,ClampToQuantum(CompandsRGB(green)),q);
-          SetPixelBlue(image,ClampToQuantum(CompandsRGB(blue)),q);
+          SetPixelRed(image,ClampToQuantum(sRGBCompandor(red)),q);
+          SetPixelGreen(image,ClampToQuantum(sRGBCompandor(green)),q);
+          SetPixelBlue(image,ClampToQuantum(sRGBCompandor(blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -2767,9 +2767,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             green,
             red;
 
-          red=CompandsRGB((double) GetPixelRed(image,q));
-          green=CompandsRGB((double) GetPixelGreen(image,q));
-          blue=CompandsRGB((double) GetPixelBlue(image,q));
+          red=sRGBCompandor((double) GetPixelRed(image,q));
+          green=sRGBCompandor((double) GetPixelGreen(image,q));
+          blue=sRGBCompandor((double) GetPixelBlue(image,q));
           SetPixelRed(image,ClampToQuantum(red),q);
           SetPixelGreen(image,ClampToQuantum(green),q);
           SetPixelBlue(image,ClampToQuantum(blue),q);
@@ -2835,9 +2835,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           Y=QuantumScale*GetPixelGreen(image,q);
           Z=QuantumScale*GetPixelBlue(image,q);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
-          SetPixelRed(image,ClampToQuantum(CompandsRGB(red)),q);
-          SetPixelGreen(image,ClampToQuantum(CompandsRGB(green)),q);
-          SetPixelBlue(image,ClampToQuantum(CompandsRGB(blue)),q);
+          SetPixelRed(image,ClampToQuantum(sRGBCompandor(red)),q);
+          SetPixelGreen(image,ClampToQuantum(sRGBCompandor(green)),q);
+          SetPixelBlue(image,ClampToQuantum(sRGBCompandor(blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -3202,11 +3202,11 @@ static MagickBooleanType TransformsRGBImage(Image *image,
                 pixel.blue)];
 #endif
             }
-          SetPixelRed(image,ClampToQuantum(CompandsRGB((double) 
+          SetPixelRed(image,ClampToQuantum(sRGBCompandor((double) 
             ScaleMapToQuantum(pixel.red))),q);
-          SetPixelGreen(image,ClampToQuantum(CompandsRGB((double) 
+          SetPixelGreen(image,ClampToQuantum(sRGBCompandor((double) 
             ScaleMapToQuantum(pixel.green))),q);
-          SetPixelBlue(image,ClampToQuantum(CompandsRGB((double) 
+          SetPixelBlue(image,ClampToQuantum(sRGBCompandor((double) 
             ScaleMapToQuantum(pixel.blue))),q);
           q+=GetPixelChannels(image);
         }
@@ -3267,11 +3267,11 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 #endif
           }
         image->colormap[i].red=(double) ClampToQuantum(
-          CompandsRGB((double) ScaleMapToQuantum(pixel.red)));
+          sRGBCompandor((double) ScaleMapToQuantum(pixel.red)));
         image->colormap[i].green=(double) ClampToQuantum(
-          CompandsRGB((double) ScaleMapToQuantum(pixel.green)));
+          sRGBCompandor((double) ScaleMapToQuantum(pixel.green)));
         image->colormap[i].blue=(double) ClampToQuantum(
-          CompandsRGB((double) ScaleMapToQuantum(pixel.blue)));
+          sRGBCompandor((double) ScaleMapToQuantum(pixel.blue)));
       }
       (void) SyncImage(image,exception);
       break;
