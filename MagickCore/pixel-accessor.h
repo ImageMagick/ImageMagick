@@ -244,7 +244,7 @@ static inline double GetPixelInfoLuminance(const PixelInfo *restrict pixel_info)
   return(0.21267*red+0.71516*green+0.07217*blue);
 }
 
-static inline Quantum GetPixelIntensity(const Image *restrict image,
+static inline double GetPixelIntensity(const Image *restrict image,
   const Quantum *restrict pixel)
 {
   double
@@ -253,19 +253,18 @@ static inline Quantum GetPixelIntensity(const Image *restrict image,
     red;
 
   if (image->colorspace == GRAYColorspace)
-    return(pixel[image->channel_map[GrayPixelChannel].offset]);
+    return((double) pixel[image->channel_map[GrayPixelChannel].offset]);
   if (image->colorspace != sRGBColorspace)
-    return(ClampToQuantum(
-      0.298839*pixel[image->channel_map[RedPixelChannel].offset]+
+    return(0.298839*pixel[image->channel_map[RedPixelChannel].offset]+
       0.586811*pixel[image->channel_map[GreenPixelChannel].offset]+
-      0.114350*pixel[image->channel_map[BluePixelChannel].offset]));
+      0.114350*pixel[image->channel_map[BluePixelChannel].offset]);
   red=InversesRGBCompandor((double)
     pixel[image->channel_map[RedPixelChannel].offset]);
   green=InversesRGBCompandor((double)
     pixel[image->channel_map[GreenPixelChannel].offset]);
   blue=InversesRGBCompandor((double)
     pixel[image->channel_map[BluePixelChannel].offset]);
-  return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
+  return(0.298839*red+0.586811*green+0.114350*blue);
 }
 
 static inline Quantum GetPixelL(const Image *restrict image,
@@ -274,7 +273,7 @@ static inline Quantum GetPixelL(const Image *restrict image,
   return(pixel[image->channel_map[LPixelChannel].offset]);
 }
 
-static inline Quantum GetPixelLuminance(const Image *restrict image,
+static inline double GetPixelLuminance(const Image *restrict image,
   const Quantum *restrict pixel)
 {
   double
@@ -283,19 +282,18 @@ static inline Quantum GetPixelLuminance(const Image *restrict image,
     red;
 
   if (image->colorspace == GRAYColorspace)
-    return(pixel[image->channel_map[GrayPixelChannel].offset]);
+    return((double) pixel[image->channel_map[GrayPixelChannel].offset]);
   if (image->colorspace != sRGBColorspace)
-    return(ClampToQuantum(
-      0.298839*pixel[image->channel_map[RedPixelChannel].offset]+
+    return(0.298839*pixel[image->channel_map[RedPixelChannel].offset]+
       0.586811*pixel[image->channel_map[GreenPixelChannel].offset]+
-      0.114350*pixel[image->channel_map[BluePixelChannel].offset]));
+      0.114350*pixel[image->channel_map[BluePixelChannel].offset]);
   red=InversesRGBCompandor((double)
     pixel[image->channel_map[RedPixelChannel].offset]);
   green=InversesRGBCompandor((double)
     pixel[image->channel_map[GreenPixelChannel].offset]);
   blue=InversesRGBCompandor((double)
     pixel[image->channel_map[BluePixelChannel].offset]);
-  return(ClampToQuantum(0.21267*red+0.71516*green+0.07217*blue));
+  return(0.21267*red+0.71516*green+0.07217*blue);
 }
 
 static inline Quantum GetPixelMagenta(const Image *restrict image,

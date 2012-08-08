@@ -3100,7 +3100,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
           q+=GetPixelChannels(blur_image);
           continue;
         }
-      intensity=(double) GetPixelIntensity(image,p+center);
+      intensity=GetPixelIntensity(image,p+center);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -3150,8 +3150,8 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
             {
               for (u=0; u < (ssize_t) width; u++)
               {
-                contrast=(double) GetPixelIntensity(luminance_image,
-                  luminance_pixels)-intensity;
+                contrast=GetPixelIntensity(luminance_image,luminance_pixels)-
+                  intensity;
                 if (fabs(contrast) < threshold)
                   {
                     pixel+=(*k)*pixels[i];

@@ -424,7 +424,7 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
           q+=GetPixelChannels(image);
           continue;
         }
-      pixel=(double) GetPixelIntensity(image,q);
+      pixel=GetPixelIntensity(image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -438,7 +438,7 @@ MagickExport MagickBooleanType BilevelImage(Image *image,const double threshold,
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         if (image->channel_mask != DefaultChannels)
-          pixel=q[i];
+          pixel=(double) q[i];
         q[i]=(Quantum) (pixel <= threshold ? 0 : QuantumRange);
       }
       q+=GetPixelChannels(image);
@@ -595,7 +595,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
           q+=GetPixelChannels(image);
           continue;
         }
-      pixel=(double) GetPixelIntensity(image,q);
+      pixel=GetPixelIntensity(image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -609,7 +609,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         if (image->channel_mask != DefaultChannels)
-          pixel=q[i];
+          pixel=(double) q[i];
         if (pixel <= GetPixelInfoChannel(&threshold,channel))
           q[i]=0;
       }
@@ -1734,7 +1734,7 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
           q+=GetPixelChannels(image);
           continue;
         }
-      pixel=(double) GetPixelIntensity(image,q);
+      pixel=GetPixelIntensity(image,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -1748,7 +1748,7 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         if (image->channel_mask != DefaultChannels)
-          pixel=q[i];
+          pixel=(double) q[i];
         if (pixel > GetPixelInfoChannel(&threshold,channel))
           q[i]=QuantumRange;
       }
