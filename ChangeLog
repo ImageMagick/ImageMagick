@@ -1,6 +1,5 @@
 2012-08-08  6.7.8-9 Nicolas Robidoux <nicolas.robidoux@gmail...>
-  * IM7 enhance.c: Move ClampToQuantum in sigmoidal loop to same
-    position as in IM6.
+  * IM7 enhance.c: Add final ClampToQuantum in sigmoidal colormap loop.
   * IM7 enhance.c: Remove OpenMP for from colormap update loops.
 
 2012-08-07  6.7.8-9 Cristy  <quetzlzacatenango@image...>
