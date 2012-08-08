@@ -1,3 +1,7 @@
+2012-08-07  6.7.8-9 Cristy  <quetzlzacatenango@image...>
+  * Selective blur stopped working after version 6.7.4-10 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21604).
+
 2012-08-05  6.7.8-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.8-8, SVN revision 8845.
 
