@@ -2934,13 +2934,15 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
 
   CacheView
     *blur_view,
-    *image_view;
+    *image_view,
+    *luminance_view;
 
   double
     *kernel;
 
   Image
-    *blur_image;
+    *blur_image,
+    *luminance_image;
 
   MagickBooleanType
     status;
@@ -3020,6 +3022,22 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   if (SetImageStorageClass(blur_image,DirectClass,exception) == MagickFalse)
     {
       blur_image=DestroyImage(blur_image);
+      kernel=(double *) RelinquishAlignedMemory(kernel);
+      return((Image *) NULL);
+    }
+  luminance_image=CloneImage(image,0,0,MagickTrue,exception);
+  if (luminance_image == (Image *) NULL)
+    {
+      blur_image=DestroyImage(blur_image);
+      kernel=(double *) RelinquishAlignedMemory(kernel);
+      return((Image *) NULL);
+    }
+  status=TransformImageColorspace(luminance_image,GRAYColorspace,exception);
+  if (status == MagickFalse)
+    {
+      luminance_image=DestroyImage(luminance_image);
+      blur_image=DestroyImage(blur_image);
+      kernel=(double *) RelinquishAlignedMemory(kernel);
       return((Image *) NULL);
     }
   /*
@@ -3030,8 +3048,9 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   center=(ssize_t) (GetPixelChannels(image)*(image->columns+width)*(width/2L)+
     GetPixelChannels(image)*(width/2L));
   image_view=AcquireVirtualCacheView(image,exception);
+  luminance_view=AcquireVirtualCacheView(luminance_image,exception);
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MMAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -3044,6 +3063,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
       sync;
 
     register const Quantum
+      *restrict l,
       *restrict p;
 
     register Quantum
@@ -3056,6 +3076,8 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
       continue;
     p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
       (width/2L),image->columns+width,width,exception);
+    l=GetCacheViewVirtualPixels(luminance_view,-((ssize_t) width/2L),y-(ssize_t)
+      (width/2L),luminance_image->columns+width,width,exception);
     q=QueueCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
       exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
@@ -3065,21 +3087,25 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      double
+        intensity;
+
       register ssize_t
         i;
 
       if (GetPixelMask(image,p) != 0)
         {
           p+=GetPixelChannels(image);
+          l+=GetPixelChannels(luminance_image);
           q+=GetPixelChannels(blur_image);
           continue;
         }
+      intensity=(double) GetPixelIntensity(image,p+center);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
           alpha,
           gamma,
-          intensity,
           pixel;
 
         PixelChannel
@@ -3093,6 +3119,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
           *restrict k;
 
         register const Quantum
+          *restrict luminance_pixels,
           *restrict pixels;
 
         register ssize_t
@@ -3115,7 +3142,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
         k=kernel;
         pixel=0.0;
         pixels=p;
-        intensity=(double) GetPixelIntensity(image,p+center);
+        luminance_pixels=l;
         gamma=0.0;
         if ((blur_traits & BlendPixelTrait) == 0)
           {
@@ -3123,7 +3150,8 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
             {
               for (u=0; u < (ssize_t) width; u++)
               {
-                contrast=GetPixelIntensity(image,pixels)-intensity;
+                contrast=(double) GetPixelIntensity(luminance_image,
+                  luminance_pixels)-intensity;
                 if (fabs(contrast) < threshold)
                   {
                     pixel+=(*k)*pixels[i];
@@ -3131,8 +3159,11 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
                   }
                 k++;
                 pixels+=GetPixelChannels(image);
+                luminance_pixels+=GetPixelChannels(luminance_image);
               }
               pixels+=image->columns*GetPixelChannels(image);
+              luminance_pixels+=luminance_image->columns*
+                GetPixelChannels(luminance_image);
             }
             if (fabs((double) gamma) < MagickEpsilon)
               {
@@ -3157,8 +3188,11 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
               }
             k++;
             pixels+=GetPixelChannels(image);
+            luminance_pixels+=GetPixelChannels(luminance_image);
           }
           pixels+=image->columns*GetPixelChannels(image);
+          luminance_pixels+=luminance_image->columns*
+            GetPixelChannels(luminance_image);
         }
         if (fabs((double) gamma) < MagickEpsilon)
           {
@@ -3169,6 +3203,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
         SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       p+=GetPixelChannels(image);
+      l+=GetPixelChannels(luminance_image);
       q+=GetPixelChannels(blur_image);
     }
     sync=SyncCacheViewAuthenticPixels(blur_view,exception);
@@ -3191,6 +3226,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   blur_image->type=image->type;
   blur_view=DestroyCacheView(blur_view);
   image_view=DestroyCacheView(image_view);
+  luminance_image=DestroyImage(luminance_image);
   kernel=(double *) RelinquishAlignedMemory(kernel);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
