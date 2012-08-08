@@ -606,9 +606,9 @@ static inline double XPixelIntensity(const XColor *pixel)
   double
     intensity;
 
-  red=DecompandsRGB(pixel->red);
-  green=DecompandsRGB(pixel->green);
-  blue=DecompandsRGB(pixel->blue);
+  red=InversesRGBCompandor(pixel->red);
+  green=InversesRGBCompandor(pixel->green);
+  blue=InversesRGBCompandor(pixel->blue);
   intensity=0.298839*red+0.586811*green+0.114350*blue;
   return(intensity);
 }
