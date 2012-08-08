@@ -4193,7 +4193,7 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
         intensity,
         tone;
 
-      intensity=(double) GetPixelIntensity(image,p);
+      intensity=GetPixelIntensity(image,p);
       tone=intensity > threshold ? (double) QuantumRange : intensity+
         (double) QuantumRange-threshold;
       SetPixelRed(sepia_image,ClampToQuantum(tone),q);

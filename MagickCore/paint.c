@@ -645,8 +645,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       {
         for (u=0; u < (ssize_t) width; u++)
         {
-          n=(ssize_t) ScaleQuantumToChar(GetPixelIntensity(image,p+
-            GetPixelChannels(image)*(u+k)));
+          n=(ssize_t) ScaleQuantumToChar(ClampToQuantum(GetPixelIntensity(image,
+            p+GetPixelChannels(image)*(u+k))));
           histogram[n]++;
           if (histogram[n] > count)
             {

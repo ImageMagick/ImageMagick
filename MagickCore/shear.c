@@ -683,7 +683,7 @@ static MagickBooleanType RadonTransform(const Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte<<=1;
-      if ((double) GetPixelIntensity(image,p) < threshold)
+      if (GetPixelIntensity(image,p) < threshold)
         byte|=0x01;
       bit++;
       if (bit == 8)
@@ -733,7 +733,7 @@ static MagickBooleanType RadonTransform(const Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       byte<<=1;
-      if ((double) GetPixelIntensity(image,p) < threshold)
+      if (GetPixelIntensity(image,p) < threshold)
         byte|=0x01;
       bit++;
       if (bit == 8)

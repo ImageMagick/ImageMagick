@@ -1615,7 +1615,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               }
               case IntensityCompositeOp:
               {
-                pixel=(double) GetPixelIntensity(composite_image,p);
+                pixel=GetPixelIntensity(composite_image,p);
                 break;
               }
               case LightenIntensityCompositeOp:

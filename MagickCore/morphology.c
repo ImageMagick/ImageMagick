@@ -118,7 +118,7 @@ static inline double MagickMax(const double x,const double y)
 #if 1
 static inline size_t fact(size_t n)
 {
-  size_t l,f;
+  size_t f,l;
   for(f=1, l=2; l <= n; f=f*l, l++);
   return(f);
 }
@@ -1330,10 +1330,10 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         /* set all kernel values within diamond area to scale given */
         for ( i=0, v=0; v < (ssize_t)kernel->height; v++)
           { size_t
-              alpha = order_f / ( fact(v) * fact(kernel->height-v-1) );
+              alpha = order_f / ( fact((size_t) v) * fact(kernel->height-v-1) );
             for ( u=0; u < (ssize_t)kernel->width; u++, i++)
               kernel->positive_range += kernel->values[i] = (double)
-                (alpha * order_f / ( fact(u) * fact(kernel->height-u-1) ));
+                (alpha * order_f / ( fact((size_t) u) * fact(kernel->height-u-1) ));
           }
         kernel->minimum = 1.0;
         kernel->maximum = kernel->values[kernel->x+kernel->y*kernel->width];

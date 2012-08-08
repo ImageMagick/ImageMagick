@@ -1081,7 +1081,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       register ssize_t
         i;
 
-      pixel=(double) GetPixelIntensity(image,p);
+      pixel=GetPixelIntensity(image,p);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         if (image->channel_mask != DefaultChannels)
@@ -2680,7 +2680,11 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      histogram[ScaleQuantumToMap(GetPixelIntensity(image,p))]++;
+      double
+        intensity;
+
+      intensity=GetPixelIntensity(image,p);
+      histogram[ScaleQuantumToMap(ClampToQuantum(intensity))]++;
       p+=GetPixelChannels(image);
     }
   }
