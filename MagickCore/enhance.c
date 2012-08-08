@@ -3399,8 +3399,8 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   else if (sharpen != MagickFalse)
     for (i=0; i <= (ssize_t) MaxMap; i++)
       sigmoidal_map[i]=
-       (double) ScaleMapToQuantum( (double) (MaxMap*
-       SCALED_SIGMOIDAL(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
+        (double) ScaleMapToQuantum( (double) (MaxMap*
+        SCALED_SIGMOIDAL(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
   else
     for (i=0; i <= (ssize_t) MaxMap; i++)
       sigmoidal_map[i]=
