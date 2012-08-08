@@ -3852,6 +3852,9 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
     blur_indexes=GetCacheViewAuthenticIndexQueue(blur_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      MagickBooleanType
+        status;
+
       MagickPixelPacket
         pixel;
 
