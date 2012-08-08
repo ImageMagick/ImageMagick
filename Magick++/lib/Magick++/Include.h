@@ -131,7 +131,6 @@ namespace Magick
 {
   // The datatype for an RGB component
   using MagickCore::Quantum;
-  using MagickCore::MagickRealType;
   using MagickCore::MagickSizeType;
 
   // Boolean types
