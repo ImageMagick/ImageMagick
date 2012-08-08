@@ -35,7 +35,7 @@ static inline double CompandsRGB(const double pixel)
 {
   if (pixel <= (0.0031308*QuantumRange))
     return(12.92*pixel);
-  return(1.055*QuantumRange*pow(QuantumScale*pixel,1.0/2.4)-0.055);
+  return(QuantumRange*(1.055*pow(QuantumScale*pixel,1.0/2.4)-0.055));
 }
 
 static inline double DecompandsRGB(const double pixel)
