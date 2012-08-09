@@ -33,10 +33,8 @@ static inline MagickRealType GetPixelIntensity(const Image *image,
   MagickRealType
     blue,
     green,
+    intensity,
     red;
-
-  MagickRealType
-    intensity;
 
   if (image->colorspace == GRAYColorspace)
     return((MagickRealType) pixel->red);
