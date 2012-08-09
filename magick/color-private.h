@@ -33,7 +33,6 @@ static inline MagickRealType GetPixelIntensity(const Image *image,
   MagickRealType
     blue,
     green,
-    intensity,
     red;
 
   if (image->colorspace == GRAYColorspace)
@@ -43,8 +42,7 @@ static inline MagickRealType GetPixelIntensity(const Image *image,
   red=InversesRGBCompandor((MagickRealType) pixel->red);
   green=InversesRGBCompandor((MagickRealType) pixel->green);
   blue=InversesRGBCompandor((MagickRealType) pixel->blue);
-  intensity=(MagickRealType) (0.298839*red+0.586811*green+0.114350*blue);
-  return(intensity);
+  return((MagickRealType) (0.298839*red+0.586811*green+0.114350*blue));
 }
 
 static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
