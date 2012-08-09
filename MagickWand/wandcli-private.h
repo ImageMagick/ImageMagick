@@ -100,8 +100,8 @@ typedef struct _Stack
 */
 struct _MagickCLI       /* CLI interface version of MagickWand */
 {
-  struct _MagickWand    /* this must be the first structure */
-     wand;
+  struct _MagickWand    /* This must be the first structure */
+     wand;              /* The Image List and Global Option Settings */
 
   QuantizeInfo
     *quantize_info;     /* for CLI API usage, not used by MagickWand API */
