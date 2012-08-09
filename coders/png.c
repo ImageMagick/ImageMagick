@@ -9759,7 +9759,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
          ping_background.gray=(png_uint_16)
            ((maxval/65535.)*(ScaleQuantumToShort((Quantum)
-              PixelIntensity(image,&image->background_color)))+.5);
+              GetPixelIntensity(image,&image->background_color)))+.5);
          if (logging != MagickFalse)
          {
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
