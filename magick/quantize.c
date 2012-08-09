@@ -654,7 +654,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info)
       q=image->colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
       {
-        intensity=(Quantum) (PixelIntensity(image,q) < ((MagickRealType)
+        intensity=(Quantum) (GetPixelIntensity(image,q) < ((MagickRealType)
           QuantumRange/2.0) ? 0 : QuantumRange);
         SetPixelRed(q,intensity);
         SetPixelGreen(q,intensity);

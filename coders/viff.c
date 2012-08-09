@@ -628,7 +628,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           for (x=0; x < (ssize_t) (image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
-              if (PixelIntensity(image,q) < ((MagickRealType) QuantumRange/2.0))
+              if (GetPixelIntensity(image,q) < (QuantumRange/2.0))
                 {
                   quantum=(size_t) GetPixelIndex(indexes+x+bit);
                   quantum|=0x01;
@@ -639,7 +639,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           if ((image->columns % 8) != 0)
             {
               for (bit=0; bit < (ssize_t) (image->columns % 8); bit++)
-                if (PixelIntensity(image,q) < ((MagickRealType) QuantumRange/2.0))
+                if (GetPixelIntensity(image,q) < (QuantumRange/2.0))
                   {
                     quantum=(size_t) GetPixelIndex(indexes+x+bit);
                     quantum|=0x01;
@@ -1185,7 +1185,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
               for (x=0; x < (ssize_t) image->columns; x++)
               {
                 byte>>=1;
-                if (PixelIntensity(image,p) < ((MagickRealType) QuantumRange/2.0))
+                if (GetPixelIntensity(image,p) < (QuantumRange/2.0))
                   byte|=0x80;
                 bit++;
                 if (bit == 8)
