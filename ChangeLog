@@ -1,12 +1,10 @@
-2012-08-08  6.7.8-9 Nicolas Robidoux <nicolas.robidoux@gmail...>
-  * IM7 enhance.c: Add final ClampToQuantum in sigmoidal colormap loop.
-  * IM7 enhance.c: Remove OpenMP for from colormap update loops.
-
 2012-08-07  6.7.8-9 Cristy  <quetzlzacatenango@image...>
   * Selective blur stopped working after version 6.7.4-10 (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21604).
   * Color reduction now handles transparent pixel properly (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=18463).
+  * ClipImagePath() now returns a valid SVG XML for Windows x64 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21617).
 
 2012-08-05  6.7.8-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.8-8, SVN revision 8845.
