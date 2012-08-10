@@ -597,7 +597,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
     if ((count != 0) && ((size_t) count <= length))
       {
         resource=(char *) NULL;
-        if (~(1UL*count) >= (MaxTextExtent-1))
+        if (~((size_t) count) >= (MaxTextExtent-1))
           resource=(char *) AcquireQuantumMemory((size_t) count+MaxTextExtent,
             sizeof(*resource));
         if (resource != (char *) NULL)
@@ -634,7 +634,7 @@ static MagickBooleanType Get8BIMProperty(const Image *image,const char *key)
       We have the resource of interest.
     */
     attribute=(char *) NULL;
-    if (~(1UL*count) >= (MaxTextExtent-1))
+    if (~((size_t) count) >= (MaxTextExtent-1))
       attribute=(char *) AcquireQuantumMemory((size_t) count+MaxTextExtent,
         sizeof(*attribute));
     if (attribute != (char *) NULL)
@@ -1378,7 +1378,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             case EXIF_FMT_STRING:
             {
               value=(char *) NULL;
-              if (~(1UL*number_bytes) >= 1)
+              if (~((size_t) number_bytes) >= 1)
                 value=(char *) AcquireQuantumMemory((size_t) number_bytes+1UL,
                   sizeof(*value));
               if (value != (char *) NULL)
