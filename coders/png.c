@@ -1117,7 +1117,7 @@ Magick_RenderingIntent_from_PNG_RenderingIntent(const int ping_intent)
     }
 }
 
-static char *
+static const char *
 Magick_RenderingIntentString_from_PNG_RenderingIntent(const int ping_intent)
 {
   switch (ping_intent)

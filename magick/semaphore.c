@@ -307,7 +307,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
   DeleteCriticalSection(&(*semaphore_info)->mutex);
 #endif
   (*semaphore_info)->signature=(~MagickSignature);
-  *semaphore_info=RelinquishSemaphoreMemory(*semaphore_info);
+  *semaphore_info=(SemaphoreInfo *) RelinquishSemaphoreMemory(*semaphore_info);
   UnlockMagickMutex();
 }
 
