@@ -3786,7 +3786,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
       }
       message=DestroyString(message);
     }
-  blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
+  blur_image=CloneImage(image,0,0,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     {
       kernel=(double *) RelinquishAlignedMemory(kernel);
