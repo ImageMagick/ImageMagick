@@ -147,7 +147,7 @@ static Image *ReadINLINEImage(const ImageInfo *image_info,
         if (errno != EINTR)
           break;
       }
-    if (~(1UL*i) < (quantum+1))
+    if (~((size_t) i) < (quantum+1))
       {
         inline_image=(unsigned char *) RelinquishMagickMemory(inline_image);
         break;
