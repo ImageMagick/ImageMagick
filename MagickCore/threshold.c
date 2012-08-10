@@ -240,12 +240,6 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
-        {
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(threshold_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -274,7 +268,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
         if ((traits == UndefinedPixelTrait) ||
             (threshold_traits == UndefinedPixelTrait))
           continue;
-        if ((threshold_traits & CopyPixelTrait) != 0)
+        if (((threshold_traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(image,p) != 0))
           {
             SetPixelChannel(threshold_image,channel,p[center+i],q);
             continue;

@@ -2291,11 +2291,6 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       register ssize_t
         i;
 
-      if (GetPixelMask(resize_image,q) != 0)
-        {
-          q+=GetPixelChannels(resize_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(resize_image); i++)
       {
         double
@@ -2322,7 +2317,8 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
         if ((traits == UndefinedPixelTrait) ||
             (resize_traits == UndefinedPixelTrait))
           continue;
-        if ((resize_traits & CopyPixelTrait) != 0)
+        if (((resize_traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(resize_image,q) != 0))
           {
             j=(ssize_t) (MagickMin(MagickMax(bisect,(double) start),(double)
               stop-1.0)+0.5);
@@ -2510,11 +2506,6 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       register ssize_t
         i;
 
-      if (GetPixelMask(resize_image,q) != 0)
-        {
-          q+=GetPixelChannels(resize_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(resize_image); i++)
       {
         double
@@ -2541,7 +2532,8 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
         if ((traits == UndefinedPixelTrait) ||
             (resize_traits == UndefinedPixelTrait))
           continue;
-        if ((resize_traits & CopyPixelTrait) != 0)
+        if (((resize_traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(resize_image,q) != 0))
           {
             j=(ssize_t) (MagickMin(MagickMax(bisect,(double) start),(double)
               stop-1.0)+0.5);

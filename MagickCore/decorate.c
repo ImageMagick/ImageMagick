@@ -728,8 +728,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*HighlightFactor+
-          (double) foreground*(QuantumRange-HighlightFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*HighlightFactor+(double)
+          foreground*(QuantumRange-HighlightFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -752,9 +752,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*
-          AccentuateFactor+(double) foreground*(QuantumRange-
-          AccentuateFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*AccentuateFactor+
+          (double) foreground*(QuantumRange-AccentuateFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -777,8 +776,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*ShadowFactor+
-          (double) background*(QuantumRange-ShadowFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*ShadowFactor+(double)
+          background*(QuantumRange-ShadowFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -834,8 +833,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*HighlightFactor+
-          (double) foreground*(QuantumRange-HighlightFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*HighlightFactor+(double)
+          foreground*(QuantumRange-HighlightFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -860,8 +859,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*ShadowFactor+
-          (double) background*(QuantumRange-ShadowFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*ShadowFactor+(double)
+          background*(QuantumRange-ShadowFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -917,8 +916,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*HighlightFactor+
-          (double) foreground*(QuantumRange-HighlightFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*HighlightFactor+(double)
+          foreground*(QuantumRange-HighlightFactor)));
       }
       q+=GetPixelChannels(image);
     }
@@ -960,8 +959,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*ShadowFactor+
-          (double) background*(QuantumRange-ShadowFactor)));
+        q[i]=ClampToQuantum(QuantumScale*((double) q[i]*ShadowFactor+(double)
+          background*(QuantumRange-ShadowFactor)));
       }
       q+=GetPixelChannels(image);
     }

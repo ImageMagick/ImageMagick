@@ -245,8 +245,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
-        distance=p[i]-(double) GetPixelChannel(reconstruct_image,
-          channel,q);
+        distance=p[i]-(double) GetPixelChannel(reconstruct_image,channel,q);
         if (fabs((double) distance) >= MagickEpsilon)
           difference=MagickTrue;
       }
@@ -509,8 +508,8 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
-        distance=QuantumScale*(p[i]-(double) GetPixelChannel(
-          reconstruct_image,channel,q));
+        distance=QuantumScale*(p[i]-(double) GetPixelChannel(reconstruct_image,
+          channel,q));
         distance*=distance;
         channel_distortion[i]+=distance;
         channel_distortion[CompositePixelChannel]+=distance;
