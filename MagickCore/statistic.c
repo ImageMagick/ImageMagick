@@ -847,11 +847,6 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,q) != 0)
-        {
-          q+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -864,7 +859,8 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if ((traits & CopyPixelTrait) != 0)
+        if (((traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(image,q) != 0))
           continue;
         q[i]=ClampToQuantum(ApplyEvaluateOperator(random_info[id],q[i],op,
           value));
@@ -1341,11 +1337,6 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
-        {
-          p+=GetPixelChannels(image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -1358,7 +1349,8 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
         traits=GetPixelChannelMapTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        if ((traits & UpdatePixelTrait) == 0)
+        if (((traits & UpdatePixelTrait) == 0) ||
+            (GetPixelMask(image,p) != 0))
           continue;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_GetImageKurtosis)
@@ -2318,12 +2310,6 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
-        {
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(statistic_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -2351,7 +2337,8 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
         if ((traits == UndefinedPixelTrait) ||
             (statistic_traits == UndefinedPixelTrait))
           continue;
-        if ((statistic_traits & CopyPixelTrait) != 0)
+        if (((statistic_traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(image,p) != 0))
           {
             SetPixelChannel(statistic_image,channel,p[center+i],q);
             continue;

@@ -350,12 +350,6 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
-        {
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(noise_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -371,7 +365,8 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
         if ((traits == UndefinedPixelTrait) ||
             (noise_traits == UndefinedPixelTrait))
           continue;
-        if ((noise_traits & CopyPixelTrait) != 0)
+        if (((noise_traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(image,p) != 0))
           {
             SetPixelChannel(noise_image,channel,p[i],q);
             continue;
@@ -3094,12 +3089,6 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
-        {
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(fx_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
@@ -3118,7 +3107,8 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
         if ((traits == UndefinedPixelTrait) ||
             (fx_traits == UndefinedPixelTrait))
           continue;
-        if ((fx_traits & CopyPixelTrait) != 0)
+        if (((fx_traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(image,p) != 0))
           {
             SetPixelChannel(fx_image,channel,p[i],q);
             continue;
@@ -3540,12 +3530,6 @@ MagickExport Image *MorphImages(const Image *image,
           register ssize_t
             i;
 
-          if (GetPixelMask(image,p) != 0)
-            {
-              p+=GetPixelChannels(image);
-              q+=GetPixelChannels(morph_image);
-              continue;
-            }
           for (i=0; i < (ssize_t) GetPixelChannels(morph_image); i++)
           {
             PixelChannel
@@ -3561,7 +3545,8 @@ MagickExport Image *MorphImages(const Image *image,
             if ((traits == UndefinedPixelTrait) ||
                 (morph_traits == UndefinedPixelTrait))
               continue;
-            if ((morph_traits & CopyPixelTrait) != 0)
+            if (((morph_traits & CopyPixelTrait) != 0) ||
+                (GetPixelMask(image,p) != 0))
               {
                 SetPixelChannel(morph_image,channel,p[i],q);
                 continue;
@@ -5386,12 +5371,6 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
       register ssize_t
         i;
 
-      if (GetPixelMask(image,p) != 0)
-        {
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(tint_image);
-          continue;
-        }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         PixelChannel
@@ -5407,7 +5386,8 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
         if ((traits == UndefinedPixelTrait) ||
             (tint_traits == UndefinedPixelTrait))
           continue;
-        if ((tint_traits & CopyPixelTrait) != 0)
+        if (((tint_traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(image,p) != 0))
           {
             SetPixelChannel(tint_image,channel,p[i],q);
             continue;
@@ -5415,17 +5395,17 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
       }
       GetPixelInfo(image,&pixel);
       weight=QuantumScale*GetPixelRed(image,p)-0.5;
-      pixel.red=(double) GetPixelRed(image,p)+color_vector.red*
-        (1.0-(4.0*(weight*weight)));
+      pixel.red=(double) GetPixelRed(image,p)+color_vector.red*(1.0-(4.0*
+        (weight*weight)));
       weight=QuantumScale*GetPixelGreen(image,p)-0.5;
-      pixel.green=(double) GetPixelGreen(image,p)+color_vector.green*
-        (1.0-(4.0*(weight*weight)));
+      pixel.green=(double) GetPixelGreen(image,p)+color_vector.green*(1.0-(4.0*
+        (weight*weight)));
       weight=QuantumScale*GetPixelBlue(image,p)-0.5;
-      pixel.blue=(double) GetPixelBlue(image,p)+color_vector.blue*
-        (1.0-(4.0*(weight*weight)));
+      pixel.blue=(double) GetPixelBlue(image,p)+color_vector.blue*(1.0-(4.0*
+        (weight*weight)));
       weight=QuantumScale*GetPixelBlack(image,p)-0.5;
-      pixel.black=(double) GetPixelBlack(image,p)+color_vector.black*
-        (1.0-(4.0*(weight*weight)));
+      pixel.black=(double) GetPixelBlack(image,p)+color_vector.black*(1.0-(4.0*
+        (weight*weight)));
       SetPixelInfoPixel(tint_image,&pixel,q);
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(tint_image);
