@@ -38,7 +38,7 @@ while test $# -gt 0; do
       echo $exec_prefix
       ;;
     --version)
-      echo '7.0.0 Q16 '
+      echo '7.0.0 Q16 HDRI'
       ;;
     --cflags)
       pkg-config --cflags Magick++

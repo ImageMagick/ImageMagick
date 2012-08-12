@@ -1173,7 +1173,9 @@
 #endif
 
 /* accurately represent the wide range of intensity levels in real scenes */
-/* #undef HDRI_SUPPORT */
+#ifndef MAGICKCORE_HDRI_SUPPORT
+#define MAGICKCORE_HDRI_SUPPORT 1
+#endif
 
 /* Define if you have umem memory allocation library */
 /* #undef HasUMEM */
