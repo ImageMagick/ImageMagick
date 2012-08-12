@@ -289,10 +289,7 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
   if ((flags & PercentValue) != 0)
     {
       if (((flags & SeparatorValue) == 0) && ((flags & HeightValue) == 0))
-        {
-          *height=(*width);
-          flags|=HeightValue;
-        }
+        *height=(*width);
       if (((flags & SeparatorValue) != 0) && ((flags & WidthValue) == 0))
         *width=(*height);
     }
@@ -1076,10 +1073,7 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
   if ((flags & PercentValue) != 0)
     {
       if (((flags & SeparatorValue) == 0) && ((flags & SigmaValue) == 0))
-        {
-          geometry_info->sigma=geometry_info->rho;
-          flags|=SigmaValue;
-        }
+        geometry_info->sigma=geometry_info->rho;
       if (((flags & SeparatorValue) != 0) && ((flags & RhoValue) == 0))
         geometry_info->rho=geometry_info->sigma;
     }
