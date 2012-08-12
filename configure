@@ -1871,7 +1871,7 @@ Optional Features:
   --enable-zero-configuration
                           enable self-contained, embeddable,
                           zero-configuration ImageMagick
-  --enable-hdri           accurately represent the wide range of intensity
+  --disable-hdri          accurately represent the wide range of intensity
                           levels found in real scenes
   --disable-assert        disable assert() statements in build
   --enable-maintainer-mode
@@ -3666,7 +3666,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=8850M
+MAGICK_SVN_REVISION=8906:8907M
 
 
 
@@ -21807,7 +21807,7 @@ fi
 if test "${enable_hdri+set}" = set; then :
   enableval=$enable_hdri; enable_hdri=$enableval
 else
-  enable_hdri='no'
+  enable_hdri='yes'
 fi
 
 
