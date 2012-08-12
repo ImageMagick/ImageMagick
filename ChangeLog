@@ -1,10 +1,11 @@
 2012-08-12  6.7.8-10 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.8-10, SVN revision 8911.
+  * New version 6.7.8-10, SVN revision 8912.
 
 2012-08-10  6.7.8-9 Cristy  <quetzlzacatenango@image...>
   * Respect the image mask for option -selective-blur (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21631).
-  * Restore -blend option geometry behavior.
+  * Fix multiple issues with BMPv5 colorimetry (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21640).
 
 2012-08-10  6.7.8-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.8-9, SVN revision 8902.
