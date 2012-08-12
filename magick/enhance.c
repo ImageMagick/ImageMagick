@@ -73,6 +73,7 @@
 #include "magick/string_.h"
 #include "magick/string-private.h"
 #include "magick/thread-private.h"
+#include "magick/threshold.h"
 #include "magick/token.h"
 #include "magick/xml-tree.h"
 
@@ -2733,6 +2734,8 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
+  if (status != MagickFalse)
+    (void) ClampImage(image);
   return(status);
 }
 
