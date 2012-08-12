@@ -289,7 +289,10 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
   if ((flags & PercentValue) != 0)
     {
       if (((flags & SeparatorValue) == 0) && ((flags & HeightValue) == 0))
-        *height=(*width);
+        {
+          *height=(*width);
+          flags|=HeightValue;
+        }
       if (((flags & SeparatorValue) != 0) && ((flags & WidthValue) == 0))
         *width=(*height);
     }
