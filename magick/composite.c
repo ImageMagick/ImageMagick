@@ -71,6 +71,7 @@
 #include "magick/resource_.h"
 #include "magick/string_.h"
 #include "magick/thread-private.h"
+#include "magick/threshold.h"
 #include "magick/token.h"
 #include "magick/utility.h"
 #include "magick/version.h"
@@ -2837,6 +2838,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     destination_image=DestroyImage(destination_image);
   else
     composite_image=DestroyImage(composite_image);
+  if (status != MagickFalse)
+    (void) ClampImage(image);
   return(status);
 }
 

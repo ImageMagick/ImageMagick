@@ -698,15 +698,11 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
 
 static inline Quantum ClampToUnsignedQuantum(const Quantum quantum)
 {
-#if defined(MAGICKCORE_HDRI_SUPPORT)
   if (quantum <= 0)
     return(0);
   if (quantum >= QuantumRange)
     return(QuantumRange);
   return(quantum);
-#else
-  return(quantum);
-#endif
 }
 
 MagickExport MagickBooleanType ClampImage(Image *image)
@@ -738,6 +734,9 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
   ssize_t
     y;
 
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+  return(MagickTrue);
+#else
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
@@ -825,6 +824,7 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
   }
   image_view=DestroyCacheView(image_view);
   return(status);
+#endif
 }
 
 /*
