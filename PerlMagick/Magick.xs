@@ -9358,9 +9358,9 @@ Mogrify(ref,...)
               order=(size_t) sqrt(av_len(av)+1);
               kernel->width=order;
               kernel->height=order;
-              kernel->values=(double *) AcquireAlignedMemory(order,order*
-                sizeof(*kernel->values));
-              if (kernel->values == (double *) NULL)
+              kernel->values=(MagickRealType *) AcquireAlignedMemory(order,
+                order*sizeof(*kernel->values));
+              if (kernel->values == (MagickRealType *) NULL)
                 {
                   kernel=DestroyKernelInfo(kernel);
                   ThrowPerlException(exception,ResourceLimitFatalError,
@@ -9368,7 +9368,7 @@ Mogrify(ref,...)
                   goto PerlException;
                 }
               for (j=0; (j < (ssize_t) (order*order)) && (j < (av_len(av)+1)); j++)
-                kernel->values[j]=(double) SvNV(*(av_fetch(av,j,0)));
+                kernel->values[j]=(MagickRealType) SvNV(*(av_fetch(av,j,0)));
               for ( ; j < (ssize_t) (order*order); j++)
                 kernel->values[j]=0.0;
             }
@@ -10323,9 +10323,14 @@ Mogrify(ref,...)
             break;
           kernel_info->width=order;
           kernel_info->height=order;
-          kernel_info->values=color_matrix;
-          image=ColorMatrixImage(image,kernel_info,exception);
-          kernel_info->values=(double *) NULL;
+          kernel_info->values=(MagickRealType *) AcquireAlignedMemory(order,
+            order*sizeof(*kernel_info->values));
+          if (kernel_info->values != (MagickRealType *) NULL)
+            {
+              for (i=0; i < (ssize_t) (order*order); i++)
+                kernel_info->values[i]=(MagickRealType) color_matrix[i];
+              image=ColorMatrixImage(image,kernel_info,exception);
+            }
           kernel_info=DestroyKernelInfo(kernel_info);
           color_matrix=(double *) RelinquishMagickMemory(color_matrix);
           break;

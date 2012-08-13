@@ -1580,9 +1580,9 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->values=(double *) AcquireAlignedMemory(kernel_info->width,
-    kernel_info->width*sizeof(*kernel_info->values));
-  if (kernel_info->values == (double *) NULL)
+  kernel_info->values=(MagickRealType *) AcquireAlignedMemory(
+    kernel_info->width,kernel_info->width*sizeof(*kernel_info->values));
+  if (kernel_info->values == (MagickRealType *) NULL)
     {
       kernel_info=DestroyKernelInfo(kernel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1593,11 +1593,11 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   {
     for (u=(-j); u <= j; u++)
     {
-      kernel_info->values[i]=(-1.0);
+      kernel_info->values[i]=(MagickRealType) (-1.0);
       i++;
     }
   }
-  kernel_info->values[i/2]=(double) (width*width-1.0);
+  kernel_info->values[i/2]=(MagickRealType) (width*width-1.0);
   edge_image=ConvolveImage(image,kernel_info,exception);
   if (edge_image != (Image *) NULL)
     (void) ClampImage(edge_image,exception);
@@ -1671,9 +1671,9 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->values=(double *) AcquireAlignedMemory(kernel_info->width,
-    kernel_info->width*sizeof(*kernel_info->values));
-  if (kernel_info->values == (double *) NULL)
+  kernel_info->values=(MagickRealType *) AcquireAlignedMemory(
+    kernel_info->width,kernel_info->width*sizeof(*kernel_info->values));
+  if (kernel_info->values == (MagickRealType *) NULL)
     {
       kernel_info=DestroyKernelInfo(kernel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1685,8 +1685,8 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   {
     for (u=(-j); u <= j; u++)
     {
-      kernel_info->values[i]=(double) (((u < 0) || (v < 0) ? -8.0 : 8.0)*
-        exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
+      kernel_info->values[i]=(MagickRealType) (((u < 0) || (v < 0) ? -8.0 :
+        8.0)*exp(-((double) u*u+v*v)/(2.0*MagickSigma*MagickSigma))/
         (2.0*MagickPI*MagickSigma*MagickSigma));
       if (u != k)
         kernel_info->values[i]=0.0;
@@ -1768,9 +1768,9 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   kernel_info->width=width;
   kernel_info->height=width;
   kernel_info->signature=MagickSignature;
-  kernel_info->values=(double *) AcquireAlignedMemory(
+  kernel_info->values=(MagickRealType *) AcquireAlignedMemory(
     kernel_info->width,kernel_info->width*sizeof(*kernel_info->values));
-  if (kernel_info->values == (double *) NULL)
+  if (kernel_info->values == (MagickRealType *) NULL)
     {
       kernel_info=DestroyKernelInfo(kernel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1781,7 +1781,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   {
     for (u=(-j); u <= j; u++)
     {
-      kernel_info->values[i]=(double) (exp(-((double) u*u+v*v)/(2.0*
+      kernel_info->values[i]=(MagickRealType) (exp(-((double) u*u+v*v)/(2.0*
         MagickSigma*MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
       i++;
     }
@@ -3494,9 +3494,9 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   kernel_info->width=width;
   kernel_info->height=width;
   kernel_info->signature=MagickSignature;
-  kernel_info->values=(double *) AcquireAlignedMemory(
+  kernel_info->values=(MagickRealType *) AcquireAlignedMemory(
     kernel_info->width,kernel_info->width*sizeof(*kernel_info->values));
-  if (kernel_info->values == (double *) NULL)
+  if (kernel_info->values == (MagickRealType *) NULL)
     {
       kernel_info=DestroyKernelInfo(kernel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -3508,7 +3508,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   {
     for (u=(-j); u <= j; u++)
     {
-      kernel_info->values[i]=(double) (-exp(-((double) u*u+v*v)/(2.0*
+      kernel_info->values[i]=(MagickRealType) (-exp(-((double) u*u+v*v)/(2.0*
         MagickSigma*MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
       normalize+=kernel_info->values[i];
       i++;
@@ -3516,6 +3516,8 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   }
   kernel_info->values[i/2]=(double) ((-2.0)*normalize);
   sharp_image=ConvolveImage(image,kernel_info,exception);
+  if (sharp_image != (Image *) NULL)
+    (void) ClampImage(sharp_image,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(sharp_image);
 }
@@ -3829,6 +3831,8 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   }
   unsharp_image->type=image->type;
   unsharp_view=DestroyCacheView(unsharp_view);
+  if (unsharp_image != (Image *) NULL)
+    (void) ClampImage(unsharp_image,exception);
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
     unsharp_image=DestroyImage(unsharp_image);

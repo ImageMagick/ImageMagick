@@ -74,6 +74,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
+#include "MagickCore/threshold.h"
 #include "MagickCore/token.h"
 #include "MagickCore/xml-tree.h"
 #include "MagickCore/xml-tree-private.h"
@@ -2292,6 +2293,8 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
       }
   }
   image_view=DestroyCacheView(image_view);
+  if (status != MagickFalse)
+    (void) ClampImage(image,exception);
   return(status);
 }
 
