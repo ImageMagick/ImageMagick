@@ -114,6 +114,7 @@ MAGICK_CODER_SRCS = \
 	coders/histogram.c \
 	coders/hrz.c \
 	coders/html.c \
+	coders/jnx.c \
 	coders/icon.c \
 	coders/info.c \
 	coders/inline.c \
@@ -233,6 +234,7 @@ coders_LTLIBRARIES = \
 	coders/histogram.la \
 	coders/hrz.la \
 	coders/html.la \
+	coders/jnx.la \
 	coders/icon.la \
 	coders/info.la \
 	coders/inline.la \
@@ -549,6 +551,12 @@ coders_html_la_SOURCES     = coders/html.c
 coders_html_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_html_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 coders_html_la_LIBADD      = $(MAGICKCORE_LIBS)
+
+# JNX coder module
+coders_jnx_la_SOURCES     = coders/jnx.c
+coders_jnx_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
+coders_jnx_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+coders_jnx_la_LIBADD      = $(MAGICKCORE_LIBS)
 
 # ICON coder module
 coders_icon_la_SOURCES     = coders/icon.c
