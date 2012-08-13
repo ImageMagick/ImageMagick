@@ -292,10 +292,10 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (*jnx_level_info[i].copyright != '\0')
         (void) SetImageProperty(tile_image,"jnx:copyright",
           jnx_level_info[i].copyright,exception);
-      (void) FormatImageProperty(tile_image,"jnx:northeast","%g,%g",northeast.x,
-        northeast.y);
-      (void) FormatImageProperty(tile_image,"jnx:southwest","%g,%g",southwest.x,
-        southwest.y);
+      (void) FormatImageProperty(tile_image,"jnx:northeast","%.20g,%.20g",
+        northeast.x,northeast.y);
+      (void) FormatImageProperty(tile_image,"jnx:southwest","%.20g,%.20g",
+        southwest.x,southwest.y);
       AppendImageToList(&images,tile_image);
     }
     if (image->progress_monitor != (MagickProgressMonitor) NULL)
