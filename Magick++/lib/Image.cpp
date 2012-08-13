@@ -643,12 +643,17 @@ void Magick::Image::colorMatrix (const size_t order_,
   kernel_info=AcquireKernelInfo((const char *) NULL);
   kernel_info->width=order_;
   kernel_info->height=order_;
-  kernel_info->values=(double *) color_matrix_;
-  MagickCore::Image* newImage =
-    ColorMatrixImage( image(), kernel_info, &exceptionInfo );
-  kernel_info->values=(double *) NULL;
+  kernel_info->values=(MagickRealType *)  AcquireAlignedMemory(order_,
+    order_*sizeof(*kernel_info->values));
+  if (kernel_info->values != (MagickRealType *) NULL)
+    {
+      for (ssize_t i=0; i < (order_*order_); i++)
+        kernel_info->values[i]=color_matrix_[i];
+      MagickCore::Image* newImage =
+        ColorMatrixImage( image(), kernel_info, &exceptionInfo );
+      replaceImage( newImage );
+    }
   kernel_info=DestroyKernelInfo(kernel_info);
-  replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
@@ -760,12 +765,17 @@ void Magick::Image::convolve ( const size_t order_,
   kernel_info=AcquireKernelInfo((const char *) NULL);
   kernel_info->width=order_;
   kernel_info->height=order_;
-  kernel_info->values=(double *) kernel_;
-  MagickCore::Image* newImage =
-    ConvolveImage ( image(), kernel_info, &exceptionInfo );
-  kernel_info->values=(double *) NULL;
+  kernel_info->values=(MagickRealType *)  AcquireAlignedMemory(order_,
+    order_*sizeof(*kernel_info->values));
+  if (kernel_info->values != (MagickRealType *) NULL)
+    {
+      for (ssize_t i=0; i < (order_*order_); i++)
+        kernel_info->values[i]=kernel_[i];
+      MagickCore::Image* newImage =
+        ConvolveImage ( image(), kernel_info, &exceptionInfo );
+      replaceImage( newImage );
+    }
   kernel_info=DestroyKernelInfo(kernel_info);
-  replaceImage( newImage );
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 }

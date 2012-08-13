@@ -131,6 +131,7 @@ namespace Magick
 {
   // The datatype for an RGB component
   using MagickCore::Quantum;
+  using MagickCore::MagickRealType;
   using MagickCore::MagickSizeType;
 
   // Boolean types
@@ -553,6 +554,7 @@ namespace Magick
   //
   // ImageMagick symbols used in implementation code
   //
+  using MagickCore::AcquireAlignedMemory;
   using MagickCore::AcquireAuthenticCacheView;
   using MagickCore::AcquireExceptionInfo;
   using MagickCore::AcquireVirtualCacheView;

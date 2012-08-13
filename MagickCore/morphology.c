@@ -333,9 +333,9 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
     }
 
   /* Read in the kernel values from rest of input string argument */
-  kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+  kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
     kernel->height*sizeof(*kernel->values));
-  if (kernel->values == (double *) NULL)
+  if (kernel->values == (MagickRealType *) NULL)
     return(DestroyKernelInfo(kernel));
   kernel->minimum = +MagickHuge;
   kernel->maximum = -MagickHuge;
@@ -1052,9 +1052,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       {
         kernel->height = kernel->width = (size_t) 1;
         kernel->x = kernel->y = (ssize_t) 0;
-        kernel->values=(double *) AcquireAlignedMemory(1,
+        kernel->values=(MagickRealType *) AcquireAlignedMemory(1,
           sizeof(*kernel->values));
-        if (kernel->values == (double *) NULL)
+        if (kernel->values == (MagickRealType *) NULL)
           return(DestroyKernelInfo(kernel));
         kernel->maximum = kernel->values[0] = args->rho;
         break;
@@ -1076,9 +1076,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = GetOptimalKernelWidth2D(args->rho,sigma2);
         kernel->height = kernel->width;
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
           kernel->height*sizeof(*kernel->values));
-        if (kernel->values == (double *) NULL)
+        if (kernel->values == (MagickRealType *) NULL)
           return(DestroyKernelInfo(kernel));
 
         /* WARNING: The following generates a 'sampled gaussian' kernel.
@@ -1167,9 +1167,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->x = (ssize_t) (kernel->width-1)/2;
         kernel->y = 0;
         kernel->negative_range = kernel->positive_range = 0.0;
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
           kernel->height*sizeof(*kernel->values));
-        if (kernel->values == (double *) NULL)
+        if (kernel->values == (MagickRealType *) NULL)
           return(DestroyKernelInfo(kernel));
 
 #if 1
@@ -1253,9 +1253,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
         kernel->x = kernel->y = 0;
         kernel->height = 1;
         kernel->negative_range = kernel->positive_range = 0.0;
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
           kernel->height*sizeof(*kernel->values));
-        if (kernel->values == (double *) NULL)
+        if (kernel->values == (MagickRealType *) NULL)
           return(DestroyKernelInfo(kernel));
 
         /* A comet blur is half a 1D gaussian curve, so that the object is
@@ -1322,9 +1322,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
         order_f = fact(kernel->width-1);
 
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
           kernel->height*sizeof(*kernel->values));
-        if (kernel->values == (double *) NULL)
+        if (kernel->values == (MagickRealType *) NULL)
           return(DestroyKernelInfo(kernel));
 
         /* set all kernel values within diamond area to scale given */
@@ -1438,8 +1438,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[3] = +(double) MagickSQ2;
-            kernel->values[5] = -(double) MagickSQ2;
+            kernel->values[3] = +(MagickRealType) MagickSQ2;
+            kernel->values[5] = -(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             break;
           case 2:
@@ -1447,8 +1447,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[1] = kernel->values[3]= +(double) MagickSQ2;
-            kernel->values[5] = kernel->values[7]= -(double) MagickSQ2;
+            kernel->values[1] = kernel->values[3]= +(MagickRealType) MagickSQ2;
+            kernel->values[5] = kernel->values[7]= -(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1463,8 +1463,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[3] = +(double) MagickSQ2;
-            kernel->values[5] = -(double) MagickSQ2;
+            kernel->values[3] = +(MagickRealType) MagickSQ2;
+            kernel->values[5] = -(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);     /* recalculate meta-data */
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1483,8 +1483,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[0] = +(double) MagickSQ2;
-            kernel->values[8] = -(double) MagickSQ2;
+            kernel->values[0] = +(MagickRealType) MagickSQ2;
+            kernel->values[8] = -(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1493,8 +1493,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[2] = -(double) MagickSQ2;
-            kernel->values[6] = +(double) MagickSQ2;
+            kernel->values[2] = -(MagickRealType) MagickSQ2;
+            kernel->values[6] = +(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
@@ -1554,9 +1554,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = kernel->height = ((size_t)args->rho)*2+1;
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
           kernel->height*sizeof(*kernel->values));
-        if (kernel->values == (double *) NULL)
+        if (kernel->values == (MagickRealType *) NULL)
           return(DestroyKernelInfo(kernel));
 
         /* set all kernel values within diamond area to scale given */
@@ -1595,9 +1595,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->y = (ssize_t) args->psi;
             scale = 1.0;
           }
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
           kernel->height*sizeof(*kernel->values));
-        if (kernel->values == (double *) NULL)
+        if (kernel->values == (MagickRealType *) NULL)
           return(DestroyKernelInfo(kernel));
 
         /* set all kernel values to scale given */
@@ -1616,9 +1616,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->width = kernel->height = ((size_t)args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-          kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
             kernel->height*sizeof(*kernel->values));
-          if (kernel->values == (double *) NULL)
+          if (kernel->values == (MagickRealType *) NULL)
             return(DestroyKernelInfo(kernel));
 
           for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
@@ -1642,9 +1642,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->width = kernel->height = (size_t)fabs(args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-          kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
             kernel->height*sizeof(*kernel->values));
-          if (kernel->values == (double *) NULL)
+          if (kernel->values == (MagickRealType *) NULL)
             return(DestroyKernelInfo(kernel));
 
           for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
@@ -1664,9 +1664,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->width = kernel->height = ((size_t)args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-          kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
             kernel->height*sizeof(*kernel->values));
-          if (kernel->values == (double *) NULL)
+          if (kernel->values == (MagickRealType *) NULL)
             return(DestroyKernelInfo(kernel));
 
           /* set all kernel values along axises to given scale */
@@ -1685,9 +1685,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->width = kernel->height = ((size_t)args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-          kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
             kernel->height*sizeof(*kernel->values));
-          if (kernel->values == (double *) NULL)
+          if (kernel->values == (MagickRealType *) NULL)
             return(DestroyKernelInfo(kernel));
 
           /* set all kernel values along axises to given scale */
@@ -1726,9 +1726,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
 
           kernel->height = kernel->width;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
-          kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
             kernel->height*sizeof(*kernel->values));
-          if (kernel->values == (double *) NULL)
+          if (kernel->values == (MagickRealType *) NULL)
             return(DestroyKernelInfo(kernel));
 
           /* set a ring of points of 'scale' ( 0.0 for PeaksKernel ) */
@@ -2096,9 +2096,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->width = kernel->height = ((size_t)args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-          kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
             kernel->height*sizeof(*kernel->values));
-          if (kernel->values == (double *) NULL)
+          if (kernel->values == (MagickRealType *) NULL)
             return(DestroyKernelInfo(kernel));
 
           for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
@@ -2116,9 +2116,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             kernel->width = kernel->height = ((size_t)args->rho)*2+1;
           kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-          kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+          kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
             kernel->height*sizeof(*kernel->values));
-          if (kernel->values == (double *) NULL)
+          if (kernel->values == (MagickRealType *) NULL)
             return(DestroyKernelInfo(kernel));
 
           for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
@@ -2136,9 +2136,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = kernel->height = ((size_t)args->rho)*2+1;
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
           kernel->height*sizeof(*kernel->values));
-        if (kernel->values == (double *) NULL)
+        if (kernel->values == (MagickRealType *) NULL)
           return(DestroyKernelInfo(kernel));
 
         for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
@@ -2161,9 +2161,9 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = kernel->height = ((size_t)args->rho)*2+1;
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
 
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+        kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
           kernel->height*sizeof(*kernel->values));
-        if (kernel->values == (double *) NULL)
+        if (kernel->values == (MagickRealType *) NULL)
           return(DestroyKernelInfo(kernel));
 
         for ( i=0, v=-kernel->y; v <= (ssize_t)kernel->y; v++)
@@ -2226,9 +2226,9 @@ MagickExport KernelInfo *CloneKernelInfo(const KernelInfo *kernel)
   *new_kernel=(*kernel); /* copy values in structure */
 
   /* replace the values with a copy of the values */
-  new_kernel->values=(double *) AcquireAlignedMemory(kernel->width,
+  new_kernel->values=(MagickRealType *) AcquireAlignedMemory(kernel->width,
     kernel->height*sizeof(*kernel->values));
-  if (new_kernel->values == (double *) NULL)
+  if (new_kernel->values == (MagickRealType *) NULL)
     return(DestroyKernelInfo(new_kernel));
   for (i=0; i < (ssize_t) (kernel->width*kernel->height); i++)
     new_kernel->values[i]=kernel->values[i];
@@ -2271,7 +2271,7 @@ MagickExport KernelInfo *DestroyKernelInfo(KernelInfo *kernel)
   assert(kernel != (KernelInfo *) NULL);
   if ( kernel->next != (KernelInfo *) NULL )
     kernel->next=DestroyKernelInfo(kernel->next);
-  kernel->values=(double *) RelinquishAlignedMemory(kernel->values);
+  kernel->values=(MagickRealType *) RelinquishAlignedMemory(kernel->values);
   kernel=(KernelInfo *) RelinquishMagickMemory(kernel);
   return(kernel);
 }
@@ -2676,14 +2676,14 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         PixelInfo
           result;
 
-        register ssize_t
-          v;
-
-        register const double
+        register const MagickRealType
           *restrict k;
 
         register const Quantum
           *restrict k_pixels;
+
+        register ssize_t
+          v;
 
         /* Copy input image to the output image for unused channels
         * This removes need for 'cloning' a new image every iteration
@@ -2850,22 +2850,22 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-       ssize_t
-        v;
+      PixelInfo
+        result,
+        min,
+        max;
 
-      register ssize_t
-        u;
-
-      register const double
+      register const MagickRealType
         *restrict k;
 
       register const Quantum
         *restrict k_pixels;
 
-      PixelInfo
-        result,
-        min,
-        max;
+      register ssize_t
+        u;
+
+      ssize_t
+        v;
 
       /* Copy input image to the output image for unused channels
        * This removes need for 'cloning' a new image every iteration
@@ -3465,20 +3465,20 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
 
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      ssize_t
-        v;
+      PixelInfo
+        result;
 
-      register ssize_t
-        u;
-
-      register const double
+      register const MagickRealType
         *restrict k;
 
       register const Quantum
         *restrict k_pixels;
 
-      PixelInfo
-        result;
+      register ssize_t
+        u;
+
+      ssize_t
+        v;
 
       /* Starting Defaults */
       GetPixelInfo(image,&result);
@@ -3651,20 +3651,20 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
 
     for (x=(ssize_t)image->columns-1; x >= 0; x--)
     {
-      ssize_t
-        v;
+      PixelInfo
+        result;
 
-      register ssize_t
-        u;
-
-      register const double
+      register const MagickRealType
         *restrict k;
 
       register const Quantum
         *restrict k_pixels;
 
-      PixelInfo
-        result;
+      register ssize_t
+        u;
+
+      ssize_t
+        v;
 
       /* Default - previously modified pixel */
       GetPixelInfo(image,&result);
@@ -4537,13 +4537,15 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
         }
       else if ( kernel->width == kernel->height )
         { /* Rotate a square array of values by 90 degrees */
-          { register size_t
+          { register ssize_t
               i,j,x,y;
-            register double
+
+            register MagickRealType
               *k,t;
+
             k=kernel->values;
-            for( i=0, x=kernel->width-1;  i<=x;   i++, x--)
-              for( j=0, y=kernel->height-1;  j<y;   j++, y--)
+            for( i=0, x=(ssize_t) kernel->width-1;  i<=x;   i++, x--)
+              for( j=0, y=(ssize_t) kernel->height-1;  j<y;   j++, y--)
                 { t                    = k[i+j*kernel->width];
                   k[i+j*kernel->width] = k[j+x*kernel->width];
                   k[j+x*kernel->width] = k[x+y*kernel->width];
@@ -4574,7 +4576,7 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
       double
         t;
 
-      register double
+      register MagickRealType
         *k;
 
       ssize_t
@@ -4866,7 +4868,7 @@ MagickPrivate void ShowKernelInfo(const KernelInfo *kernel)
           (void) FormatLocaleFile(stderr," %*s", GetMagickPrecision()+3, "nan");
         else
           (void) FormatLocaleFile(stderr," %*.*lg", GetMagickPrecision()+3,
-              GetMagickPrecision(), k->values[i]);
+              GetMagickPrecision(), (double) k->values[i]);
       (void) FormatLocaleFile(stderr,"\n");
     }
   }
