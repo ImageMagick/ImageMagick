@@ -176,123 +176,6 @@
        performed as 'pure' mathematical operations, rather than as image
        operations.
 */
-static void CompositeHSB(const double red,const double green,
-  const double blue,double *hue,double *saturation,double *brightness)
-{
-  double
-    delta,
-    max,
-    min;
-
-  /*
-    Convert RGB to HSB colorspace.
-  */
-  assert(hue != (double *) NULL);
-  assert(saturation != (double *) NULL);
-  assert(brightness != (double *) NULL);
-  max=(red > green ? red : green);
-  if (blue > max)
-    max=blue;
-  min=(red < green ? red : green);
-  if (blue < min)
-    min=blue;
-  *hue=0.0;
-  *saturation=0.0;
-  *brightness=(double) (QuantumScale*max);
-  if (fabs((double) max) < MagickEpsilon)
-    return;
-  *saturation=(double) (1.0-min/max);
-  delta=(double) max-min;
-  if (fabs(delta) < MagickEpsilon)
-    return;
-  if (fabs((double) red-max) < MagickEpsilon)
-    *hue=(double) ((green-blue)/delta);
-  else
-    if (fabs((double) green-max) < MagickEpsilon)
-      *hue=(double) (2.0+(blue-red)/delta);
-    else
-      if (fabs((double) blue-max) < MagickEpsilon)
-        *hue=(double) (4.0+(red-green)/delta);
-  *hue/=6.0;
-  if (*hue < 0.0)
-    *hue+=1.0;
-}
-
-static void HSBComposite(const double hue,const double saturation,
-  const double brightness,double *red,double *green,double *blue)
-{
-  double
-    f,
-    h,
-    p,
-    q,
-    t;
-
-  /*
-    Convert HSB to RGB colorspace.
-  */
-  assert(red != (double *) NULL);
-  assert(green != (double *) NULL);
-  assert(blue != (double *) NULL);
-  if (saturation == 0.0)
-    {
-      *red=(double) QuantumRange*brightness;
-      *green=(*red);
-      *blue=(*red);
-      return;
-    }
-  h=6.0*(hue-floor(hue));
-  f=h-floor((double) h);
-  p=brightness*(1.0-saturation);
-  q=brightness*(1.0-saturation*f);
-  t=brightness*(1.0-saturation*(1.0-f));
-  switch ((int) h)
-  {
-    case 0:
-    default:
-    {
-      *red=(double) QuantumRange*brightness;
-      *green=(double) QuantumRange*t;
-      *blue=(double) QuantumRange*p;
-      break;
-    }
-    case 1:
-    {
-      *red=(double) QuantumRange*q;
-      *green=(double) QuantumRange*brightness;
-      *blue=(double) QuantumRange*p;
-      break;
-    }
-    case 2:
-    {
-      *red=(double) QuantumRange*p;
-      *green=(double) QuantumRange*brightness;
-      *blue=(double) QuantumRange*t;
-      break;
-    }
-    case 3:
-    {
-      *red=(double) QuantumRange*p;
-      *green=(double) QuantumRange*q;
-      *blue=(double) QuantumRange*brightness;
-      break;
-    }
-    case 4:
-    {
-      *red=(double) QuantumRange*t;
-      *green=(double) QuantumRange*p;
-      *blue=(double) QuantumRange*brightness;
-      break;
-    }
-    case 5:
-    {
-      *red=(double) QuantumRange*brightness;
-      *green=(double) QuantumRange*p;
-      *blue=(double) QuantumRange*q;
-      break;
-    }
-  }
-}
 
 static inline double MagickMin(const double x,const double y)
 {
@@ -306,6 +189,108 @@ static inline double MagickMax(const double x,const double y)
   if (x > y)
     return(x);
   return(y);
+}
+
+static inline double ConvertHueToRGB(double m1,
+  double m2,double hue)
+{
+  if (hue < 0.0)
+    hue+=1.0;
+  if (hue > 1.0)
+    hue-=1.0;
+  if ((6.0*hue) < 1.0)
+    return(m1+6.0*(m2-m1)*hue);
+  if ((2.0*hue) < 1.0)
+    return(m2);
+  if ((3.0*hue) < 2.0)
+    return(m1+6.0*(m2-m1)*(2.0/3.0-hue));
+  return(m1);
+}
+
+static void HSLComposite(const double hue,const double saturation,
+  const double lightness,double *red,double *green,double *blue)
+{
+  double
+    b,
+    g,
+    r,
+    m1,
+    m2;
+
+  /*
+    Convert HSL to RGB colorspace.
+  */
+  assert(red != (double *) NULL);
+  assert(green != (double *) NULL);
+  assert(blue != (double *) NULL);
+  if (saturation == 0)
+    {
+      *red=(double) QuantumRange*lightness;
+      *green=(*red);
+      *blue=(*red);
+      return;
+    }
+  if (lightness < 0.5)
+    m2=lightness*(saturation+1.0);
+  else
+    m2=(lightness+saturation)-(lightness*saturation);
+  m1=2.0*lightness-m2;
+  r=ConvertHueToRGB(m1,m2,hue+1.0/3.0);
+  g=ConvertHueToRGB(m1,m2,hue);
+  b=ConvertHueToRGB(m1,m2,hue-1.0/3.0);
+  *red=(double) QuantumRange*r;
+  *green=(double) QuantumRange*g;
+  *blue=(double) QuantumRange*b;
+}
+
+static void CompositeHSL(const double red,const double green,const double blue,
+  double *hue,double *saturation,double *lightness)
+{
+  double
+    b,
+    delta,
+    g,
+    max,
+    min,
+    r;
+
+  /*
+    Convert RGB to HSL colorspace.
+  */
+  assert(hue != (double *) NULL);
+  assert(saturation != (double *) NULL);
+  assert(lightness != (double *) NULL);
+  r=QuantumScale*red;
+  g=QuantumScale*green;
+  b=QuantumScale*blue;
+  max=MagickMax(r,MagickMax(g,b));
+  min=MagickMin(r,MagickMin(g,b));
+  *lightness=(double) ((min+max)/2.0);
+  delta=max-min;
+  if (delta == 0.0)
+    {
+      *hue=0.0;
+      *saturation=0.0;
+      return;
+    }
+  if (*lightness < 0.5)
+    *saturation=(double) (delta/(min+max));
+  else
+    *saturation=(double) (delta/(2.0-max-min));
+  if (r == max)
+    *hue=((((max-b)/6.0)+(delta/2.0))-(((max-g)/6.0)+(delta/2.0)))/delta;
+  else
+    if (g == max)
+      *hue=(1.0/3.0)+((((max-r)/6.0)+(delta/2.0))-(((max-b)/6.0)+(delta/2.0)))/
+        delta;
+    else
+      if (b == max)
+        *hue=(2.0/3.0)+((((max-g)/6.0)+(delta/2.0))-(((max-r)/6.0)+
+          (delta/2.0)))/delta;
+  if (*hue < 0.0)
+    *hue+=1.0;
+  if (*hue > 1.0)
+    *hue-=1.0;
 }
 
 static MagickBooleanType CompositeOverImage(Image *image,
@@ -1760,11 +1745,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Sc;
                 break;
               }
-            CompositeHSB(destination_pixel.red,destination_pixel.green,
+            CompositeHSL(destination_pixel.red,destination_pixel.green,
               destination_pixel.blue,&sans,&sans,&brightness);
-            CompositeHSB(source_pixel.red,source_pixel.green,source_pixel.blue,
+            CompositeHSL(source_pixel.red,source_pixel.green,source_pixel.blue,
               &hue,&saturation,&sans);
-            HSBComposite(hue,saturation,brightness,&red,&green,&blue);
+            HSLComposite(hue,saturation,brightness,&red,&green,&blue);
             switch (channel)
             {
               case RedPixelChannel: pixel=red; break;
@@ -1925,11 +1910,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Sc;
                 break;
               }
-            CompositeHSB(destination_pixel.red,destination_pixel.green,
+            CompositeHSL(destination_pixel.red,destination_pixel.green,
               destination_pixel.blue,&hue,&saturation,&brightness);
-            CompositeHSB(source_pixel.red,source_pixel.green,source_pixel.blue,
+            CompositeHSL(source_pixel.red,source_pixel.green,source_pixel.blue,
               &hue,&sans,&sans);
-            HSBComposite(hue,saturation,brightness,&red,&green,&blue);
+            HSLComposite(hue,saturation,brightness,&red,&green,&blue);
             switch (channel)
             {
               case RedPixelChannel: pixel=red; break;
@@ -2005,11 +1990,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Sc;
                 break;
               }
-            CompositeHSB(destination_pixel.red,destination_pixel.green,
+            CompositeHSL(destination_pixel.red,destination_pixel.green,
               destination_pixel.blue,&hue,&saturation,&brightness);
-            CompositeHSB(source_pixel.red,source_pixel.green,source_pixel.blue,
+            CompositeHSL(source_pixel.red,source_pixel.green,source_pixel.blue,
               &sans,&sans,&brightness);
-            HSBComposite(hue,saturation,brightness,&red,&green,&blue);
+            HSLComposite(hue,saturation,brightness,&red,&green,&blue);
             switch (channel)
             {
               case RedPixelChannel: pixel=red; break;
@@ -2076,11 +2061,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Dc;
                 break;
               }
-            CompositeHSB(destination_pixel.red,destination_pixel.green,
+            CompositeHSL(destination_pixel.red,destination_pixel.green,
               destination_pixel.blue,&hue,&saturation,&brightness);
             brightness+=(0.01*percent_brightness*offset)/midpoint;
             saturation*=0.01*percent_saturation;
-            HSBComposite(hue,saturation,brightness,&red,&green,&blue);
+            HSLComposite(hue,saturation,brightness,&red,&green,&blue);
             switch (channel)
             {
               case RedPixelChannel: pixel=red; break;
@@ -2192,11 +2177,11 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
                 pixel=Sc;
                 break;
               }
-            CompositeHSB(destination_pixel.red,destination_pixel.green,
+            CompositeHSL(destination_pixel.red,destination_pixel.green,
               destination_pixel.blue,&hue,&saturation,&brightness);
-            CompositeHSB(source_pixel.red,source_pixel.green,source_pixel.blue,
+            CompositeHSL(source_pixel.red,source_pixel.green,source_pixel.blue,
               &sans,&saturation,&sans);
-            HSBComposite(hue,saturation,brightness,&red,&green,&blue);
+            HSLComposite(hue,saturation,brightness,&red,&green,&blue);
             switch (channel)
             {
               case RedPixelChannel: pixel=red; break;
