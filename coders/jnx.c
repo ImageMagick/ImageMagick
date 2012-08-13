@@ -48,6 +48,7 @@
 #include "magick/cache.h"
 #include "magick/colorspace.h"
 #include "magick/colorspace-private.h"
+#include "magick/draw.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/image.h"
@@ -158,7 +159,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image_info->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=AcquireImage(image_info,exception);
+  image=AcquireImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
@@ -289,7 +290,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         continue;
       if (*jnx_level_info[i].copyright != '\0')
         (void) SetImageProperty(tile_image,"jnx:copyright",
-          jnx_level_info[i].copyright,exception);
+          jnx_level_info[i].copyright);
       (void) FormatImageProperty(tile_image,"jnx:northeast","%g,%g",northeast.x,
         northeast.y);
       (void) FormatImageProperty(tile_image,"jnx:southwest","%g,%g",southwest.x,
