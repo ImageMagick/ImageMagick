@@ -643,91 +643,108 @@ static inline MagickRealType ConvertHueToRGB(MagickRealType m1,
   return(m1);
 }
 
-static void HSLComposite(const double hue,const double saturation,
-  const double lightness,MagickRealType *red,MagickRealType *green,
-  MagickRealType *blue)
+static void HCLComposite(const double hue,const double chroma,const double luma,
+  MagickRealType *red,MagickRealType *green,MagickRealType *blue)
 {
-  MagickRealType
+  double
     b,
+    c,
     g,
+    h,
+    m,
     r,
-    m1,
-    m2;
+    x;
 
   /*
-    Convert HSL to RGB colorspace.
+    Convert HCL to RGB colorspace.
   */
   assert(red != (MagickRealType *) NULL);
   assert(green != (MagickRealType *) NULL);
   assert(blue != (MagickRealType *) NULL);
-  if (saturation == 0)
+  h=6.0*hue;
+  c=chroma;
+  x=c*(1.0-fabs(fmod(h,2.0)-1.0));
+  r=0.0;
+  g=0.0;
+  b=0.0;
+  if ((0.0 <= h) && (h < 1.0))
     {
-      *red=(MagickRealType) QuantumRange*lightness;
-      *green=(*red);
-      *blue=(*red);
-      return;
+      r=c;      
+      g=x;      
     }
-  if (lightness < 0.5)
-    m2=lightness*(saturation+1.0);
   else
-    m2=(lightness+saturation)-(lightness*saturation);
-  m1=2.0*lightness-m2;
-  r=ConvertHueToRGB(m1,m2,hue+1.0/3.0);
-  g=ConvertHueToRGB(m1,m2,hue);
-  b=ConvertHueToRGB(m1,m2,hue-1.0/3.0);
-  *red=(MagickRealType) QuantumRange*r;
-  *green=(MagickRealType) QuantumRange*g;
-  *blue=(MagickRealType) QuantumRange*b;
+    if ((1.0 <= h) && (h < 2.0))
+      {
+        r=x;      
+        g=c;      
+      }
+    else
+      if ((2.0 <= h) && (h < 3.0))
+        {
+          g=c;      
+          b=x;      
+        }
+      else
+        if ((3.0 <= h) && (h < 4.0))
+          {
+            g=x;      
+            b=c;      
+          }
+        else
+          if ((4.0 <= h) && (h < 5.0))
+            {
+              r=x;      
+              b=c;      
+            }
+          else
+            if ((5.0 <= h) && (h < 6.0))
+              {
+                r=c;      
+                b=x;      
+              }
+  m=luma-0.298839*r+0.586811*g+0.114350*b;
+  *red=ClampToQuantum(QuantumRange*(r+m));
+  *green=ClampToQuantum(QuantumRange*(g+m));
+  *blue=ClampToQuantum(QuantumRange*(b+m));
 }
 
-static void CompositeHSL(const MagickRealType red,const MagickRealType green,
-  const MagickRealType blue,double *hue,double *saturation,double *lightness)
+static void CompositeHCL(const MagickRealType red,const MagickRealType green,
+  const MagickRealType blue,double *hue,double *chroma,double *luma)
 {
-  MagickRealType
+  double
     b,
-    delta,
+    c,
     g,
+    h,
     max,
-    min,
     r;
 
   /*
-    Convert RGB to HSL colorspace.
+    Convert RGB to HCL colorspace.
   */
   assert(hue != (double *) NULL);
-  assert(saturation != (double *) NULL);
-  assert(lightness != (double *) NULL);
-  r=QuantumScale*red;
-  g=QuantumScale*green;
-  b=QuantumScale*blue;
+  assert(chroma != (double *) NULL);
+  assert(luma != (double *) NULL);
+  r=(double) red;
+  g=(double) green;
+  b=(double) blue;
   max=MagickMax(r,MagickMax(g,b));
-  min=MagickMin(r,MagickMin(g,b));
-  *lightness=(double) ((min+max)/2.0);
-  delta=max-min;
-  if (delta == 0.0)
-    {
-      *hue=0.0;
-      *saturation=0.0;
-      return;
-    }
-  if (*lightness < 0.5)
-    *saturation=(double) (delta/(min+max));
+  c=max-(double) MagickMin(r,MagickMin(g,b));
+  h=0.0;
+  if (c == 0)
+    h=0.0;
   else
-    *saturation=(double) (delta/(2.0-max-min));
-  if (r == max)
-    *hue=((((max-b)/6.0)+(delta/2.0))-(((max-g)/6.0)+(delta/2.0)))/delta;
-  else
-    if (g == max)
-      *hue=(1.0/3.0)+((((max-r)/6.0)+(delta/2.0))-(((max-b)/6.0)+(delta/2.0)))/
-        delta;
+    if (red == (Quantum) max)
+      h=fmod((g-b)/c,6.0);
     else
-      if (b == max)
-        *hue=(2.0/3.0)+((((max-g)/6.0)+(delta/2.0))-(((max-r)/6.0)+
-          (delta/2.0)))/delta;
-  if (*hue < 0.0)
-    *hue+=1.0;
-  if (*hue > 1.0)
-    *hue-=1.0;
+      if (green == (Quantum) max)
+        h=((b-r)/c)+2.0;
+      else
+        if (blue == (Quantum) max)
+          h=((r-g)/c)+4.0;
+  *hue=(h/6.0);
+  *chroma=QuantumScale*c;
+  *luma=QuantumScale*(0.298839*r+0.586811*g+0.114350*b);
 }
 
 static inline MagickRealType In(const MagickRealType p,const MagickRealType Sa,
@@ -1608,8 +1625,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     amount,
     destination_dissolve,
     midpoint,
-    percent_brightness,
-    percent_saturation,
+    percent_luma,
+    percent_chroma,
     source_dissolve,
     threshold;
 
@@ -1640,8 +1657,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   amount=0.5;
   destination_dissolve=1.0;
   clip_to_self=MagickTrue;
-  percent_brightness=100.0;
-  percent_saturation=100.0;
+  percent_luma=100.0;
+  percent_chroma=100.0;
   source_dissolve=1.0;
   threshold=0.05f;
   switch (compose)
@@ -2175,15 +2192,15 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     case ModulateCompositeOp:
     {
       /*
-        Determine the brightness and saturation scale.
+        Determine the luma and chroma scale.
       */
       value=GetImageArtifact(composite_image,"compose:args");
       if (value != (char *) NULL)
         {
           flags=ParseGeometry(value,&geometry_info);
-          percent_brightness=geometry_info.rho;
+          percent_luma=geometry_info.rho;
           if ((flags & SigmaValue) != 0)
-            percent_saturation=geometry_info.sigma;
+            percent_chroma=geometry_info.sigma;
         }
       break;
     }
@@ -2230,9 +2247,9 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
       *pixels;
 
     double
-      brightness,
+      luma,
       hue,
-      saturation,
+      chroma,
       sans;
 
     MagickPixelPacket
@@ -2293,8 +2310,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     GetMagickPixelPacket(composite_image,&source);
     GetMagickPixelPacket(image,&destination);
     hue=0.0;
-    saturation=0.0;
-    brightness=0.0;
+    chroma=0.0;
+    luma=0.0;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if (clip_to_self != MagickFalse)
@@ -2651,11 +2668,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           offset=(ssize_t) (MagickPixelIntensityToQuantum(&source)-midpoint);
           if (offset == 0)
             break;
-          CompositeHSL(destination.red,destination.green,destination.blue,&hue,
-            &saturation,&brightness);
-          brightness+=(0.01*percent_brightness*offset)/midpoint;
-          saturation*=0.01*percent_saturation;
-          HSLComposite(hue,saturation,brightness,&composite.red,
+          CompositeHCL(destination.red,destination.green,destination.blue,&hue,
+            &chroma,&luma);
+          luma+=(0.01*percent_luma*offset)/midpoint;
+          chroma*=0.01*percent_chroma;
+          HCLComposite(hue,chroma,luma,&composite.red,
             &composite.green,&composite.blue);
           break;
         }
@@ -2668,10 +2685,10 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
               composite=source;
               break;
             }
-          CompositeHSL(destination.red,destination.green,destination.blue,&hue,
-            &saturation,&brightness);
-          CompositeHSL(source.red,source.green,source.blue,&hue,&sans,&sans);
-          HSLComposite(hue,saturation,brightness,&composite.red,
+          CompositeHCL(destination.red,destination.green,destination.blue,&hue,
+            &chroma,&luma);
+          CompositeHCL(source.red,source.green,source.blue,&hue,&sans,&sans);
+          HCLComposite(hue,chroma,luma,&composite.red,
             &composite.green,&composite.blue);
           if (source.opacity < destination.opacity)
             composite.opacity=source.opacity;
@@ -2686,11 +2703,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
               composite=source;
               break;
             }
-          CompositeHSL(destination.red,destination.green,destination.blue,&hue,
-            &saturation,&brightness);
-          CompositeHSL(source.red,source.green,source.blue,&sans,&saturation,
+          CompositeHCL(destination.red,destination.green,destination.blue,&hue,
+            &chroma,&luma);
+          CompositeHCL(source.red,source.green,source.blue,&sans,&chroma,
             &sans);
-          HSLComposite(hue,saturation,brightness,&composite.red,
+          HCLComposite(hue,chroma,luma,&composite.red,
             &composite.green,&composite.blue);
           if (source.opacity < destination.opacity)
             composite.opacity=source.opacity;
@@ -2705,11 +2722,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
               composite=source;
               break;
             }
-          CompositeHSL(destination.red,destination.green,destination.blue,&hue,
-            &saturation,&brightness);
-          CompositeHSL(source.red,source.green,source.blue,&sans,&sans,
-            &brightness);
-          HSLComposite(hue,saturation,brightness,&composite.red,
+          CompositeHCL(destination.red,destination.green,destination.blue,&hue,
+            &chroma,&luma);
+          CompositeHCL(source.red,source.green,source.blue,&sans,&sans,
+            &luma);
+          HCLComposite(hue,chroma,luma,&composite.red,
             &composite.green,&composite.blue);
           if (source.opacity < destination.opacity)
             composite.opacity=source.opacity;
@@ -2724,11 +2741,11 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
               composite=source;
               break;
             }
-          CompositeHSL(destination.red,destination.green,destination.blue,&sans,
-            &sans,&brightness);
-          CompositeHSL(source.red,source.green,source.blue,&hue,&saturation,
+          CompositeHCL(destination.red,destination.green,destination.blue,&sans,
+            &sans,&luma);
+          CompositeHCL(source.red,source.green,source.blue,&hue,&chroma,
             &sans);
-          HSLComposite(hue,saturation,brightness,&composite.red,
+          HCLComposite(hue,chroma,luma,&composite.red,
             &composite.green,&composite.blue);
           if (source.opacity < destination.opacity)
             composite.opacity=source.opacity;
