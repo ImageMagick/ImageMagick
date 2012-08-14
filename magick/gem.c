@@ -141,7 +141,7 @@ MagickExport void ConvertHCLToRGB(const double hue,const double chroma,
                 r=c;      
                 b=x;      
               }
-  m=luma-0.298839*r+0.586811*g+0.114350*b;
+  m=luma-(0.298839*r+0.586811*g+0.114350*b);
   *red=ClampToQuantum(QuantumRange*(r+m));
   *green=ClampToQuantum(QuantumRange*(g+m));
   *blue=ClampToQuantum(QuantumRange*(b+m));
@@ -475,7 +475,7 @@ MagickExport void ConvertRGBToHCL(const Quantum red,const Quantum green,
     h=0.0;
   else
     if (red == (Quantum) max)
-      h=fmod((g-b)/c,6.0);
+      h=fmod(6.0+(g-b)/c,6.0);
     else
       if (green == (Quantum) max)
         h=((b-r)/c)+2.0;
