@@ -223,10 +223,15 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   images=NewImageList();
   for (i=0; i < (ssize_t) jnx_info.levels; i++)
   {
+    MagickOffsetType
+      offset;
+
     register ssize_t
       j;
 
-    (void) SeekBlob(image,(MagickOffsetType) jnx_level_info[i].offset,SEEK_SET);
+    offset=SeekBlob(image,(MagickOffsetType) jnx_level_info[i].offset,SEEK_SET);
+    if (offset != (MagickOffsetType) jnx_level_info[i].offset)
+      continue;
     for (j=0; j < (ssize_t) jnx_level_info[i].count; j++)
     {
       Image
@@ -237,9 +242,6 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       int
         tile_offset;
-
-      MagickOffsetType
-        offset;
 
       PointInfo
         northeast,
