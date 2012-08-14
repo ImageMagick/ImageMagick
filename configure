@@ -703,6 +703,7 @@ WWWDecodeDelegate
 WMFDecodeDelegate
 UniconvertorDelegate
 TXTDelegate
+SVGDecodeDelegate
 SCANDecodeDelegate
 RSVGDecodeDelegate
 RMDelegate
@@ -3662,7 +3663,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=8921:8923M
+MAGICK_SVN_REVISION=8921:8948M
 
 
 
@@ -32823,6 +32824,7 @@ RLEEncodeDelegateDefault='rawtorle'
 RMDelegateDefault='rm'
 RSVGDecodeDelegateDefault='rsvg-convert'
 SCANDecodeDelegateDefault='scanimage'
+SVGDecodeDelegateDefault='inkscape'
 TXTDelegateDefault='enscript'
 UniconvertorDelegateDefault='uniconvertor'
 WMFDecodeDelegateDefault='wmf2eps'
@@ -34394,6 +34396,47 @@ $as_echo "no" >&6; }
 fi
 
 
+# Extract the first word of ""$SVGDecodeDelegateDefault"", so it can be a program name with args.
+set dummy "$SVGDecodeDelegateDefault"; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_SVGDecodeDelegate+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $SVGDecodeDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_SVGDecodeDelegate="$SVGDecodeDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_SVGDecodeDelegate="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_SVGDecodeDelegate" && ac_cv_path_SVGDecodeDelegate=""$SVGDecodeDelegateDefault""
+  ;;
+esac
+fi
+SVGDecodeDelegate=$ac_cv_path_SVGDecodeDelegate
+if test -n "$SVGDecodeDelegate"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $SVGDecodeDelegate" >&5
+$as_echo "$SVGDecodeDelegate" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
 # Extract the first word of ""$TXTDelegateDefault"", so it can be a program name with args.
 set dummy "$TXTDelegateDefault"; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -34807,6 +34850,7 @@ if test "$with_frozenpaths" != 'yes'; then
   RSVGDecodeDelegate="$RSVGDecodeDelegateDefault"
   SCANDecodeDelegate="$SCANDecodeDelegateDefault"
   ShowImageDelegate="$ShowImageDelegateDefault"
+  SVGDecodeDelegate="$SVGDecodeDelegateDefault"
   TXTDelegate="$TXTDelegateDefault"
   UniconvertorDelegate="$UniconvertorDelegateDefault"
   WMFDecodeDelegate="$WMFDecodeDelegateDefault"
