@@ -291,6 +291,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) SeekBlob(image,offset,SEEK_SET);
       if (tile_image == (Image *) NULL)
         continue;
+      (void) CopyMagickString(tile_image->magick,image->magick,MaxTextExtent);
       (void) FormatImageProperty(tile_image,"jnx:northeast","%.20g,%.20g",
         northeast.x,northeast.y);
       (void) FormatImageProperty(tile_image,"jnx:southwest","%.20g,%.20g",
