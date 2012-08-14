@@ -266,7 +266,7 @@ static void HCLComposite(const double hue,const double chroma,const double luma,
                 r=c;      
                 b=x;      
               }
-  m=luma-0.298839*r+0.586811*g+0.114350*b;
+  m=luma-(0.298839*r+0.586811*g+0.114350*b);
   *red=QuantumRange*(r+m);
   *green=QuantumRange*(g+m);
   *blue=QuantumRange*(b+m);
@@ -299,7 +299,7 @@ static void CompositeHCL(const double red,const double green,const double blue,
     h=0.0;
   else
     if (red == max)
-      h=fmod((g-b)/c,6.0);
+      h=fmod(6.0+(g-b)/c,6.0);
     else
       if (green == max)
         h=((b-r)/c)+2.0;
