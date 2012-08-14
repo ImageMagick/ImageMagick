@@ -408,10 +408,10 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       */
       for (images=GetFirstImageInList(image); images != (Image *) NULL; )
       {
-        (void) CopyMagickMemory(images->magick_filename,image_info->filename,
-          sizeof(images->magick_filename));
         (void) CopyMagickMemory(images->filename,image_info->filename,
           sizeof(images->filename));
+        (void) CopyMagickMemory(images->magick_filename,image_info->filename,
+          sizeof(images->magick_filename));
         images=GetNextImageInList(images);
       }
     }
