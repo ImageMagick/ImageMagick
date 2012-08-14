@@ -242,6 +242,9 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       int
         tile_offset;
 
+      MagickOffsetType
+        restore_offset;
+
       PointInfo
         northeast,
         southwest;
@@ -263,7 +266,10 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) ReadBlobLSBShort(image); /* height */
       tile_length=ReadBlobLSBLong(image);
       tile_offset=(int) ReadBlobLSBLong(image);
-      offset=TellBlob(image);
+      restore_offset=TellBlob(image);
+      offset=SeekBlob(image,(MagickOffsetType) tile_offset,SEEK_SET);
+      if (offset != (MagickOffsetType) tile_offset)
+        continue;
       /*
         Read a tile.
       */
@@ -274,7 +280,6 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             images=DestroyImageList(images);
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         }
-      (void) SeekBlob(image,tile_offset,SEEK_SET);
       blob[0]=0xFF;
       blob[1]=0xD8;
       count=ReadBlob(image,tile_length,blob+2);
@@ -290,7 +295,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       tile_image=BlobToImage(read_info,blob,tile_length+2,exception);
       read_info=DestroyImageInfo(read_info);
       blob=(unsigned char *) RelinquishMagickMemory(blob);
-      (void) SeekBlob(image,offset,SEEK_SET);
+      offset=SeekBlob(image,restore_offset,SEEK_SET);
       if (tile_image == (Image *) NULL)
         continue;
       (void) CopyMagickString(tile_image->magick,image->magick,MaxTextExtent);
