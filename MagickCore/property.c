@@ -2217,7 +2217,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     case 'c':  /* image comment property - empty string by default */
     {
       string=GetImageProperty(image,"comment",exception);
-      if ( string == (const char *)NULL)
+      if (string == (const char *) NULL)
         string="";
       break;
     }
@@ -2245,8 +2245,8 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     }
     case 'h': /* Image height (current) */
     {
-      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",
-        (double) (image->rows != 0 ? image->rows : image->magick_rows));
+      (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
+        (image->rows != 0 ? image->rows : image->magick_rows));
       break;
     }
     case 'i': /* Filename last used for image (read or write) */
@@ -2256,7 +2256,9 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     }
     case 'k': /* Number of unique colors  */
     {
-      /* FUTURE: ensure this does not generate the formatted comment! */
+      /*
+        FUTURE: ensure this does not generate the formatted comment!
+      */
       (void) FormatLocaleString(value,MaxTextExtent,"%.20g",(double)
         GetNumberColors(image,(FILE *) NULL,exception));
       break;
@@ -2307,7 +2309,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
       (void) FormatLocaleString(value,MaxTextExtent,"%s %s %s",
         CommandOptionToMnemonic(MagickClassOptions,(ssize_t) image->storage_class),
         CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t) colorspace),
-        IfMagickTrue(image->matte)?"Matte":"");
+        IfMagickTrue(image->matte) ? "Matte" : "");
       break;
     }
     case 's': /* Image scene number */
@@ -2475,8 +2477,8 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     string=value;
   if (string != (char *) NULL)
     {
-      (void) SetImageArtifact(image, "get-property", string);
-      return(GetImageArtifact(image, "get-property"));
+      (void) SetImageArtifact(image,"get-property",string);
+      return(GetImageArtifact(image,"get-property"));
     }
   return((char *)NULL);
 }

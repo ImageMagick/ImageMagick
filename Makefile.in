@@ -2747,6 +2747,7 @@ SHAREDSTATE_DIR = @SHAREDSTATE_DIR@
 SHARE_PATH = @SHARE_PATH@
 SHELL = @SHELL@
 STRIP = @STRIP@
+SVGDecodeDelegate = @SVGDecodeDelegate@
 SYSCONF_DIR = @SYSCONF_DIR@
 ShowImageDelegate = @ShowImageDelegate@
 TAR = @TAR@
