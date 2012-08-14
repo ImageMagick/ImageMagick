@@ -268,7 +268,7 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read a tile.
       */
-      blob=(unsigned char *) AcquireMagickMemory((tile_length+2)*sizeof(*blob));
+      blob=(unsigned char *) AcquireQuantumMemory(tile_length+2,sizeof(*blob));
       if (blob == (unsigned char *) NULL)
         {
           if (images != (Image *) NULL)
