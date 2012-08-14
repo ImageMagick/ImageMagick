@@ -173,10 +173,10 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((jnx_info.version != 3) && (jnx_info.version != 4))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   jnx_info.serial=(int) ReadBlobLSBLong(image);
-  jnx_info.northeast.x=180.0*ReadBlobLSBLong(image)/0x7fffffff;
-  jnx_info.northeast.y=180.0*ReadBlobLSBLong(image)/0x7fffffff;
-  jnx_info.southwest.x=180.0*ReadBlobLSBLong(image)/0x7fffffff;
-  jnx_info.southwest.y=180.0*ReadBlobLSBLong(image)/0x7fffffff;
+  jnx_info.northeast.x=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
+  jnx_info.northeast.y=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
+  jnx_info.southwest.x=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
+  jnx_info.southwest.y=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
   jnx_info.levels=(int) ReadBlobLSBLong(image);
   if (jnx_info.levels > JNXMaxLevels)
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
@@ -259,10 +259,10 @@ static Image *ReadJNXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       unsigned int
         tile_length;
 
-      northeast.x=180.0*ReadBlobLSBLong(image)/0x7fffffff;
-      northeast.y=180.0*ReadBlobLSBLong(image)/0x7fffffff;
-      southwest.x=180.0*ReadBlobLSBLong(image)/0x7fffffff;
-      southwest.y=180.0*ReadBlobLSBLong(image)/0x7fffffff;
+      northeast.x=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
+      northeast.y=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
+      southwest.x=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
+      southwest.y=180.0*((int) ReadBlobLSBLong(image))/0x7fffffff;
       (void) ReadBlobLSBShort(image); /* width */
       (void) ReadBlobLSBShort(image); /* height */
       tile_length=ReadBlobLSBLong(image);
