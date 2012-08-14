@@ -1,3 +1,7 @@
+2012-08-14  6.7.9-0 Cristy  <quetzlzacatenango@image...>
+  * RGB -> HCL, return correct hue when g < b < r (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21646).
+
 2012-08-12  6.7.8-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.8-10, SVN revision 8915.
 
