@@ -2621,9 +2621,9 @@ dnl ===========================================================================
 #
 AC_ARG_WITH([rsvg],
     [AC_HELP_STRING([--without-rsvg],
-                    [disable RSVG support])],
+                    [enable RSVG support])],
     [with_rsvg=$withval],
-    [with_rsvg='yes'])
+    [with_rsvg='no'])
 
 if test "$with_rsvg" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-rsvg=$with_rsvg "
