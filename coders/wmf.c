@@ -2692,14 +2692,14 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   /* User specified resolution */
   resolution_y=DefaultResolution;
-  if (image->resolution.y > 0)
+  if (image->resolution.y != 0.0)
     {
       resolution_y = image->resolution.y;
       if (image->units == PixelsPerCentimeterResolution)
         resolution_y *= CENTIMETERS_PER_INCH;
     }
   resolution_x=DefaultResolution;
-  if (image->resolution.x > 0)
+  if (image->resolution.x != 0.0)
     {
       resolution_x = image->resolution.x;
       if (image->units == PixelsPerCentimeterResolution)
