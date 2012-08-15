@@ -20,9 +20,7 @@
 #endif
 
 /* Define if you have CAIRO library */
-#ifndef MAGICKCORE_CAIRO_DELEGATE
-#define MAGICKCORE_CAIRO_DELEGATE 1
-#endif
+/* #undef CAIRO_DELEGATE */
 
 /* permit enciphering and deciphering image pixels */
 #ifndef MAGICKCORE_CIPHER_SUPPORT
@@ -1371,9 +1369,7 @@
 #endif
 
 /* Define if you have RSVG library */
-#ifndef MAGICKCORE_RSVG_DELEGATE
-#define MAGICKCORE_RSVG_DELEGATE 1
-#endif
+/* #undef RSVG_DELEGATE */
 
 /* Define to the type of arg 1 for `select'. */
 #ifndef MAGICKCORE_SELECT_TYPE_ARG1
