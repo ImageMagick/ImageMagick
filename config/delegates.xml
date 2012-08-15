@@ -112,6 +112,7 @@
   <delegate decode="miff" encode="show" spawn="True" command="&quot;/usr/local/bin/display&quot; -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
   <delegate decode="shtml" command="&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="svg" command="&quot;rsvg-convert&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
+  <delegate decode="svg:decode" stealth="True" command="&quot;inkscape&quot; &quot;%s&quot; --export-png=&quot;%s&quot; --export-dpi=&quot;%s&quot; --export-background=&quot;%s&quot; --export-background-opacity=&quot;%s&quot; &gt; &quot;%s&quot;"/>
   <delegate decode="txt" encode="ps" mode="bi" command="&quot;enscript&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
   <delegate decode="miff" encode="win" stealth="True" spawn="True" command="&quot;/usr/local/bin/display&quot; -immutable -delay 0 -window-group %[group] -title &quot;%l &quot; &quot;ephemeral:%i&quot;"/>
   <delegate decode="wmf" command="&quot;wmf2eps&quot; -o &quot;%o&quot; &quot;%i&quot;"/>

@@ -1945,7 +1945,7 @@ Optional Packages:
   --without-openexr       disable OpenEXR support
   --without-pango         disable PANGO support
   --without-png           disable PNG support
-  --without-rsvg          disable RSVG support
+  --without-rsvg          enable RSVG support
   --without-tiff          disable TIFF support
   --without-webp          disable WEBP support
   --with-windows-font-dir=DIR
@@ -3667,7 +3667,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=8934:8947M
+MAGICK_SVN_REVISION=8934:8953M
 
 
 
@@ -31546,7 +31546,7 @@ fi
 if test "${with_rsvg+set}" = set; then :
   withval=$with_rsvg; with_rsvg=$withval
 else
-  with_rsvg='yes'
+  with_rsvg='no'
 fi
 
 
