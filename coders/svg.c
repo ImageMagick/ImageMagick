@@ -185,6 +185,12 @@ typedef struct _SVGInfo
 } SVGInfo;
 
 /*
+  Static declarations.
+*/
+static char
+  SVGDensityGeometry[] = "90.0x90.0";
+
+/*
   Forward declarations.
 */
 static MagickBooleanType
@@ -2785,6 +2791,20 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  if ((image->x_resolution < MagickEpsilon) || (image->y_resolution < MagickEpsilon))
+    {
+      GeometryInfo
+        geometry_info;
+
+      int
+        flags;
+
+      flags=ParseGeometry(SVGDensityGeometry,&geometry_info);
+      image->x_resolution=geometry_info.rho;
+      image->y_resolution=geometry_info.sigma;
+      if ((flags & SigmaValue) == 0)
+        image->y_resolution=image->x_resolution;
+    }
   if (LocaleCompare(image_info->magick,"MSVG") != 0)
     {
       const DelegateInfo
@@ -2992,7 +3012,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                   double
                     gamma;
-      
+
                   gamma=1.0-QuantumScale*fill_color.opacity;
                   gamma=MagickEpsilonReciprocal(gamma);
                   fill_color.blue*=gamma;
