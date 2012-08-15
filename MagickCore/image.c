@@ -200,9 +200,6 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
     exception);
   (void) QueryColorCompliance(TransparentColor,AllCompliance,
     &image->transparent_color,exception);
-  image->resolution.x=DefaultResolution;
-  image->resolution.y=DefaultResolution;
-  image->units=PixelsPerInchResolution;
   GetTimerInfo(&image->timer);
   image->cache=AcquirePixelCache(0);
   image->channel_mask=DefaultChannels;

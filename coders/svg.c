@@ -185,6 +185,12 @@ typedef struct _SVGInfo
 } SVGInfo;
 
 /*
+  Static declarations.
+*/
+static char
+  SVGDensityGeometry[] = "90.0x90.0";
+
+/*
   Forward declarations.
 */
 static MagickBooleanType
@@ -2787,6 +2793,20 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  if ((image->resolution.x == 0.0) || (image->resolution.y == 0.0))
+    {
+      GeometryInfo
+        geometry_info;
+
+      int
+        flags;
+
+      flags=ParseGeometry(SVGDensityGeometry,&geometry_info);
+      image->resolution.x=geometry_info.rho;
+      image->resolution.y=geometry_info.sigma;
+      if ((flags & SigmaValue) == 0)
+        image->resolution.y=image->resolution.x;
+    }
   if (LocaleCompare(image_info->magick,"MSVG") != 0)
     {
       const DelegateInfo
@@ -2891,9 +2911,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (svg_handle == (RsvgHandle *) NULL)
           ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
         rsvg_handle_set_base_uri(svg_handle,image_info->filename);
-        if ((image->resolution.x != 72.0) && (image->resolution.y != 72.0))
-          rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,
-            image->resolution.y);
+        rsvg_handle_set_dpi_x_y(svg_handle,image->resolution.x,
+          image->resolution.y);
         while ((n=ReadBlob(image,MaxTextExtent,message)) != 0)
         {
           error=(GError *) NULL;
