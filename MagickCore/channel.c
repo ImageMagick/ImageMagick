@@ -651,6 +651,7 @@ MagickExport Image *SeparateImage(const Image *image,
       return((Image *) NULL);
     }
   separate_image->matte=MagickFalse;
+  (void) SetImageColorspace(separate_image,GRAYColorspace,exception);
   /*
     Separate image.
   */
@@ -697,6 +698,9 @@ MagickExport Image *SeparateImage(const Image *image,
       SetPixelChannel(separate_image,GrayPixelChannel,0,q);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
+        double
+          pixel;
+
         PixelChannel
           channel;
 
@@ -708,7 +712,11 @@ MagickExport Image *SeparateImage(const Image *image,
         if ((traits == UndefinedPixelTrait) ||
             (GetChannelBit(channel_type,channel) == 0))
           continue;
-        SetPixelChannel(separate_image,GrayPixelChannel,p[i],q);
+        pixel=p[i];
+        if (IssRGBColorspace(image->colorspace) != MagickFalse)
+          pixel=InversesRGBCompandor(pixel);
+        SetPixelChannel(separate_image,GrayPixelChannel,ClampToQuantum(pixel),
+          q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(separate_image);
@@ -730,10 +738,6 @@ MagickExport Image *SeparateImage(const Image *image,
   }
   separate_view=DestroyCacheView(separate_view);
   image_view=DestroyCacheView(image_view);
-  if (IssRGBColorspace(image->colorspace) == MagickFalse)
-    (void) SetImageColorspace(separate_image,GRAYColorspace,exception);
-  else
-    (void) TransformImageColorspace(separate_image,GRAYColorspace,exception);
   return(separate_image);
 }
 
