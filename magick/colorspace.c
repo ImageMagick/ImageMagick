@@ -167,8 +167,8 @@ static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
     *L=(double) (116.0*pow(Y/D50Y,1/3.0)-16.0);
   else
     *L=CIEK*(Y/D50Y);
-  *u=13.0**L*((4.0*X/(X+15.0*Y+3.0*Z))-(4.0*D50X/(D50X+15.0*D50Y+3.0*D50Z)));
-  *v=13.0**L*((9.0*Y/(X+15.0*Y+3.0*Z))-(9.0*D50Y/(D50X+15.0*D50Y+3.0*D50Z)));
+  *u=13.0*(*L)*((4.0*X/(X+15.0*Y+3.0*Z))-(4.0*D50X/(D50X+15.0*D50Y+3.0*D50Z)));
+  *v=13.0*(*L)*((9.0*Y/(X+15.0*Y+3.0*Z))-(9.0*D50Y/(D50X+15.0*D50Y+3.0*D50Z)));
   *L/=100.0;
   *u=(*u+134.0)/354.0;
   *v=(*v+140.0)/256.0;
