@@ -1,9 +1,14 @@
+2012-08-15  6.7.9-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.8-9, SVN revision 8970.
+
 2012-08-14  6.7.9-0 Cristy  <quetzlzacatenango@image...>
   * RGB -> HCL, return correct hue when g < b < r (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21646).
   * Prefer inkscape for best SVG compliance.
   * HCL -> RGB conversion enhancement (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21663).
+  * Utilize inkscape if its in your execution path otherwise RSVG.  If neither
+	  are available, revert to the internal SVG renderer.
 
 2012-08-12  6.7.8-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.8-10, SVN revision 8915.
