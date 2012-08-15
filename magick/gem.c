@@ -92,7 +92,8 @@ MagickExport void ConvertHCLToRGB(const double hue,const double chroma,
     h,
     m,
     r,
-    x;
+    x,
+    z;
 
   /*
     Convert HCL to RGB colorspace.
@@ -142,9 +143,25 @@ MagickExport void ConvertHCLToRGB(const double hue,const double chroma,
                 b=x;      
               }
   m=luma-(0.298839*r+0.586811*g+0.114350*b);
-  *red=ClampToQuantum(QuantumRange*(r+m));
-  *green=ClampToQuantum(QuantumRange*(g+m));
-  *blue=ClampToQuantum(QuantumRange*(b+m));
+  /*
+    Choose saturation strategy to clip it into the RGB cube; hue and luma are
+    preserved and chroma may be changed.
+  */
+  z=1.0;
+  if (m < 0.0)
+    {
+      z=luma/(luma-m);
+      m=0.0;
+    }
+  else
+    if (m+c > 1.0)
+      {
+        z=(1.0-luma)/(m+c-luma);
+        m=1.0-z*c;
+      }
+  *red=ClampToQuantum(QuantumRange*(z*r+m));
+  *green=ClampToQuantum(QuantumRange*(z*g+m));
+  *blue=ClampToQuantum(QuantumRange*(z*b+m));
 }
 
 /*

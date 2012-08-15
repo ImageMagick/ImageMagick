@@ -2,6 +2,8 @@
   * RGB -> HCL, return correct hue when g < b < r (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21646).
   * Prefer inkscape for best SVG compliance.
+  * HCL -> RGB conversion enhancement (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21663).
 
 2012-08-12  6.7.8-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.8-10, SVN revision 8915.
