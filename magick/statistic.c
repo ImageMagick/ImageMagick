@@ -1509,8 +1509,8 @@ MagickExport MagickBooleanType GetImageChannelRange(const Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  *maxima=(-1.0E-37);
-  *minima=1.0E+37;
+  *maxima=(-MagickHuge);
+  *minima=MagickHuge;
   GetMagickPixelPacket(image,&pixel);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1646,8 +1646,8 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
   for (i=0; i <= (ssize_t) CompositeChannels; i++)
   {
     channel_statistics[i].depth=1;
-    channel_statistics[i].maxima=(-1.0E-37);
-    channel_statistics[i].minima=1.0E+37;
+    channel_statistics[i].maxima=(-MagickHuge);
+    channel_statistics[i].minima=MagickHuge;
   }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
