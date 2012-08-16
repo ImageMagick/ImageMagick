@@ -1575,7 +1575,6 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     *channel_statistics;
 
   MagickStatusType
-    initialize,
     status;
 
   QuantumAny
@@ -1602,8 +1601,11 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   (void) ResetMagickMemory(channel_statistics,0,(MaxPixelChannels+1)*
     sizeof(*channel_statistics));
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
+  {
     channel_statistics[i].depth=1;
-  initialize=MagickTrue;
+    channel_statistics[i].maxima=(-MagickHuge);
+    channel_statistics[i].minima=MagickHuge;
+  }
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -1650,19 +1652,10 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
                 continue;
               }
           }
-        if (initialize != MagickFalse)
-          {
-            channel_statistics[channel].minima=(double) p[i];
-            channel_statistics[channel].maxima=(double) p[i];
-            initialize=MagickFalse;
-          }
-        else
-          {
-            if ((double) p[i] < channel_statistics[channel].minima)
-              channel_statistics[channel].minima=(double) p[i];
-            if ((double) p[i] > channel_statistics[channel].maxima)
-              channel_statistics[channel].maxima=(double) p[i];
-          }
+        if ((double) p[i] < channel_statistics[channel].minima)
+          channel_statistics[channel].minima=(double) p[i];
+        if ((double) p[i] > channel_statistics[channel].maxima)
+          channel_statistics[channel].maxima=(double) p[i];
         channel_statistics[channel].sum+=p[i];
         channel_statistics[channel].sum_squared+=(double) p[i]*p[i];
         channel_statistics[channel].sum_cubed+=(double) p[i]*p[i]*p[i];
