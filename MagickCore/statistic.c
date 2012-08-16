@@ -1668,11 +1668,14 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   }
   for (i=0; i < (ssize_t) MaxPixelChannels; i++)
   {
-    if (channel_statistics[i].area != 0.0)
-      channel_statistics[i].sum/=channel_statistics[i].area;
-    channel_statistics[i].sum_squared/=channel_statistics[i].area;
-    channel_statistics[i].sum_cubed/=channel_statistics[i].area;
-    channel_statistics[i].sum_fourth_power/=channel_statistics[i].area;
+    double
+      area;
+
+    area=MagickEpsilonReciprocal(channel_statistics[i].area);
+    channel_statistics[i].sum*=area;
+    channel_statistics[i].sum_squared*=area;
+    channel_statistics[i].sum_cubed*=area;
+    channel_statistics[i].sum_fourth_power*=area;
     channel_statistics[i].mean=channel_statistics[i].sum;
     channel_statistics[i].variance=channel_statistics[i].sum_squared;
     channel_statistics[i].standard_deviation=sqrt(
@@ -1718,23 +1721,23 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
   channel_statistics[CompositePixelChannel].skewness/=channels;
   for (i=0; i <= (ssize_t) MaxPixelChannels; i++)
   {
-    if (channel_statistics[i].standard_deviation == 0.0)
-      continue;
+    double
+      standard_deviation;
+
+    standard_deviation=MagickEpsilonReciprocal(
+      channel_statistics[i].standard_deviation);
     channel_statistics[i].skewness=(channel_statistics[i].sum_cubed-3.0*
       channel_statistics[i].mean*channel_statistics[i].sum_squared+2.0*
       channel_statistics[i].mean*channel_statistics[i].mean*
-      channel_statistics[i].mean)/(channel_statistics[i].standard_deviation*
-      channel_statistics[i].standard_deviation*
-      channel_statistics[i].standard_deviation);
+      channel_statistics[i].mean)*(standard_deviation*standard_deviation*
+      standard_deviation);
     channel_statistics[i].kurtosis=(channel_statistics[i].sum_fourth_power-4.0*
       channel_statistics[i].mean*channel_statistics[i].sum_cubed+6.0*
       channel_statistics[i].mean*channel_statistics[i].mean*
       channel_statistics[i].sum_squared-3.0*channel_statistics[i].mean*
       channel_statistics[i].mean*1.0*channel_statistics[i].mean*
-      channel_statistics[i].mean)/(channel_statistics[i].standard_deviation*
-      channel_statistics[i].standard_deviation*
-      channel_statistics[i].standard_deviation*
-      channel_statistics[i].standard_deviation)-3.0;
+      channel_statistics[i].mean)*(standard_deviation*standard_deviation*
+      standard_deviation*standard_deviation)-3.0;
   }
   return(channel_statistics);
 }
