@@ -315,13 +315,13 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,int type,
       if (type > 0)
         {
           if (svg_info->view_box.width == 0.0)
-            return(1000.0);
+            return(0.0);
           return(svg_info->view_box.width*value/100.0);
         }
       if (type < 0)
         {
           if (svg_info->view_box.height == 0.0)
-            return(1000.0);
+            return(0.0);
           return(svg_info->view_box.height*value/100.0);
         }
       alpha=value-svg_info->view_box.width;
