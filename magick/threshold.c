@@ -717,6 +717,9 @@ MagickExport MagickBooleanType ClampImage(Image *image)
 MagickExport MagickBooleanType ClampImageChannel(Image *image,
   const ChannelType channel)
 {
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+  return(MagickTrue);
+#else
 #define ClampImageTag  "Clamp/Image"
 
   CacheView
@@ -734,9 +737,6 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
   ssize_t
     y;
 
-#if defined(MAGICKCORE_HDRI_SUPPORT)
-  return(MagickTrue);
-#else
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
