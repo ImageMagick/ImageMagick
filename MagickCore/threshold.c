@@ -666,6 +666,9 @@ static inline Quantum ClampToUnsignedQuantum(const Quantum quantum)
 
 MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
 {
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return(MagickTrue);
+#else
 #define ClampImageTag  "Clamp/Image"
 
   CacheView
@@ -680,9 +683,6 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
   ssize_t
     y;
 
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
-  return(MagickTrue);
-#else
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
