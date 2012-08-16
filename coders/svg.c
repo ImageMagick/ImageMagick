@@ -315,13 +315,13 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,int type,
       if (type > 0)
         {
           if (svg_info->view_box.width == 0.0)
-            return(1000.0);
+            return(0.0);
           return(svg_info->view_box.width*value/100.0);
         }
       if (type < 0)
         {
           if (svg_info->view_box.height == 0.0)
-            return(1000.0);
+            return(0.0);
           return(svg_info->view_box.height*value/100.0);
         }
       alpha=value-svg_info->view_box.width;
@@ -3014,7 +3014,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                   double
                     gamma;
-      
+
                   gamma=QuantumScale*fill_color.alpha;
                   gamma=MagickEpsilonReciprocal(gamma);
                   fill_color.blue*=gamma;
@@ -3022,8 +3022,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   fill_color.red*=gamma;
                 }
 #endif
-                CompositePixelOver(image,&fill_color,fill_color.alpha,q,
-                  (double) GetPixelAlpha(image,q),q);
+                CompositePixelOver(image,&fill_color,fill_color.alpha,q,(double)
+                  GetPixelAlpha(image,q),q);
                 q+=GetPixelChannels(image);
               }
               if (SyncAuthenticPixels(image,exception) == MagickFalse)
