@@ -1776,12 +1776,11 @@ static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
     *Y=(double) pow(((100.0*L)+16.0)/116.0,3.0);
   else
     *Y=(100.0*L)/CIEK;
-  *X=((*Y*((39.0*(100.0*L)/((256.0*v-140.0)+13.0*(100.0*L)*(9.0*D50Y/
-     (D50X+15.0*D50Y+3.0*D50Z))))-5.0))+5.0*(*Y))/((((52.0*(100.0*L)/
-     ((354.0*u-134.0)+13.0*(100.0*L)*(4.0*D50X/(D50X+15.0*D50Y+3.0*D50Z))))-
-     1.0)/3.0)-(-1.0/3.0));
-  *Z=(*X*(((52.0*(100.0*L)/((354.0*u-134.0)+13.0*(100.0*L)*(4.0*D50X/
-     (D50X+15.0*D50Y+3.0*D50Z))))-1.0)/3.0))-5.0*(*Y);
+  *X=((*Y*((39.0*(100.0*L)/((256.0*v-140.0)+13.0*(100.0*L)*(9.0*D50Y/(D50X+
+    15.0*D50Y+3.0*D50Z))))-5.0))+5.0*(*Y))/((((52.0*(100.0*L)/((354.0*u-134.0)+
+    13.0*(100.0*L)*(4.0*D50X/(D50X+15.0*D50Y+3.0*D50Z))))-1.0)/3.0)-(-1.0/3.0));
+  *Z=(*X*(((52.0*(100.0*L)/((354.0*u-134.0)+13.0*(100.0*L)*(4.0*D50X/(D50X+
+    15.0*D50Y+3.0*D50Z))))-1.0)/3.0))-5.0*(*Y);
 }
 
 static inline ssize_t RoundToYCC(const MagickRealType value)
@@ -2738,11 +2737,11 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(sRGBCompandor((MagickRealType) 
+          red=ClampToQuantum(sRGBCompandor((MagickRealType)
             logmap[ScaleQuantumToMap(GetPixelRed(q))]));
-          green=ClampToQuantum(sRGBCompandor((MagickRealType) 
+          green=ClampToQuantum(sRGBCompandor((MagickRealType)
             logmap[ScaleQuantumToMap(GetPixelGreen(q))]));
-          blue=ClampToQuantum(sRGBCompandor((MagickRealType) 
+          blue=ClampToQuantum(sRGBCompandor((MagickRealType)
             logmap[ScaleQuantumToMap(GetPixelBlue(q))]));
           SetPixelRed(q,red);
           SetPixelGreen(q,green);
@@ -3320,11 +3319,11 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
                 pixel.blue)];
 #endif
             }
-          SetPixelRed(q,ClampToQuantum(sRGBCompandor((MagickRealType) 
+          SetPixelRed(q,ClampToQuantum(sRGBCompandor((MagickRealType)
             ScaleMapToQuantum(pixel.red))));
-          SetPixelGreen(q,ClampToQuantum(sRGBCompandor((MagickRealType) 
+          SetPixelGreen(q,ClampToQuantum(sRGBCompandor((MagickRealType)
             ScaleMapToQuantum(pixel.green))));
-          SetPixelBlue(q,ClampToQuantum(sRGBCompandor((MagickRealType) 
+          SetPixelBlue(q,ClampToQuantum(sRGBCompandor((MagickRealType)
             ScaleMapToQuantum(pixel.blue))));
           q++;
         }
