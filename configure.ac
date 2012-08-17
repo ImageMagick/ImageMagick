@@ -31,6 +31,7 @@ m4_define([magick_svn_revision], esyscmd([sh -c "(svnversion .) | awk '{ print \
 AC_INIT([ImageMagick],[magick_version],[http://www.imagemagick.org],[ImageMagick])
 AC_CONFIG_SRCDIR([MagickCore/MagickCore.h])
 AC_CONFIG_AUX_DIR([config])
+AC_REQUIRE_AUX_FILE([tap-driver.sh])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_LIBOBJ_DIR([ltdl])
 AC_CONFIG_HEADERS([config/config.h])
@@ -268,6 +269,7 @@ AX_COMPILER_VENDOR
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
+AC_PROG_AWK
 AM_WITH_DMALLOC
 AX_C___ATTRIBUTE__
 AX_GCC_ARCHFLAG([no])
