@@ -3148,8 +3148,8 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
 %  ModulateImage() lets you control the brightness, saturation, and hue
 %  of an image.  Modulate represents the brightness, saturation, and hue
 %  as one parameter (e.g. 90,150,100).  If the image colorspace is HSL, the
-%  modulation is lightness, saturation, and hue.  And if the colorspace is
-%  HWB, use blackness, whiteness, and hue.
+%  modulation is lightness, saturation, and hue.  For HWB, use blackness,
+%  whiteness, and hue. And for HCL, use chrome, luma, and hue.
 %
 %  The format of the ModulateImage method is:
 %
@@ -3164,7 +3164,30 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
 %
 */
 
-static void ModulateHSB(const double percent_hue,
+static inline void ModulateHCL(const double percent_hue,
+  const double percent_chroma,const double percent_luma,Quantum *red,
+  Quantum *green,Quantum *blue)
+{
+  double
+    hue,
+    luma,
+    chroma;
+
+  /*
+    Increase or decrease color luma, chroma, or hue.
+  */
+  ConvertRGBToHCL(*red,*green,*blue,&hue,&chroma,&luma);
+  hue+=0.5*(0.01*percent_hue-1.0);
+  while (hue < 0.0)
+    hue+=1.0;
+  while (hue > 1.0)
+    hue-=1.0;
+  chroma*=0.01*percent_chroma;
+  luma*=0.01*percent_luma;
+  ConvertHCLToRGB(hue,chroma,luma,red,green,blue);
+}
+
+static inline void ModulateHSB(const double percent_hue,
   const double percent_saturation,const double percent_brightness,
   Quantum *red,Quantum *green,Quantum *blue)
 {
@@ -3176,9 +3199,6 @@ static void ModulateHSB(const double percent_hue,
   /*
     Increase or decrease color brightness, saturation, or hue.
   */
-  assert(red != (Quantum *) NULL);
-  assert(green != (Quantum *) NULL);
-  assert(blue != (Quantum *) NULL);
   ConvertRGBToHSB(*red,*green,*blue,&hue,&saturation,&brightness);
   hue+=0.5*(0.01*percent_hue-1.0);
   while (hue < 0.0)
@@ -3190,7 +3210,7 @@ static void ModulateHSB(const double percent_hue,
   ConvertHSBToRGB(hue,saturation,brightness,red,green,blue);
 }
 
-static void ModulateHSL(const double percent_hue,
+static inline void ModulateHSL(const double percent_hue,
   const double percent_saturation,const double percent_lightness,
   Quantum *red,Quantum *green,Quantum *blue)
 {
@@ -3202,9 +3222,6 @@ static void ModulateHSL(const double percent_hue,
   /*
     Increase or decrease color lightness, saturation, or hue.
   */
-  assert(red != (Quantum *) NULL);
-  assert(green != (Quantum *) NULL);
-  assert(blue != (Quantum *) NULL);
   ConvertRGBToHSL(*red,*green,*blue,&hue,&saturation,&lightness);
   hue+=0.5*(0.01*percent_hue-1.0);
   while (hue < 0.0)
@@ -3216,7 +3233,9 @@ static void ModulateHSL(const double percent_hue,
   ConvertHSLToRGB(hue,saturation,lightness,red,green,blue);
 }
 
-static void ModulateHWB(const double percent_hue,const double percent_whiteness,  const double percent_blackness,Quantum *red,Quantum *green,Quantum *blue)
+static inline void ModulateHWB(const double percent_hue,
+  const double percent_whiteness,const double percent_blackness,Quantum *red,
+  Quantum *green,Quantum *blue)
 {
   double
     blackness,
@@ -3226,9 +3245,6 @@ static void ModulateHWB(const double percent_hue,const double percent_whiteness,
   /*
     Increase or decrease color blackness, whiteness, or hue.
   */
-  assert(red != (Quantum *) NULL);
-  assert(green != (Quantum *) NULL);
-  assert(blue != (Quantum *) NULL);
   ConvertRGBToHWB(*red,*green,*blue,&hue,&whiteness,&blackness);
   hue+=0.5*(0.01*percent_hue-1.0);
   while (hue < 0.0)
@@ -3324,6 +3340,12 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
         blue=image->colormap[i].blue;
         switch (colorspace)
         {
+          case HCLColorspace:
+          {
+            ModulateHCL(percent_hue,percent_saturation,percent_brightness,
+              &red,&green,&blue);
+            break;
+          }
           case HSBColorspace:
           {
             ModulateHSB(percent_hue,percent_saturation,percent_brightness,
