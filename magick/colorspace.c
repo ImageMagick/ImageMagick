@@ -160,6 +160,9 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
 static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
   double *L,double *u,double *v)
 {
+  double
+    alpha;
+
   assert(L != (double *) NULL);
   assert(u != (double *) NULL);
   assert(v != (double *) NULL);
@@ -167,8 +170,9 @@ static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
     *L=(double) (116.0*pow(Y/D50Y,1/3.0)-16.0);
   else
     *L=CIEK*(Y/D50Y);
-  *u=13.0*(*L)*((4.0*X/(X+15.0*Y+3.0*Z))-(4.0*D50X/(D50X+15.0*D50Y+3.0*D50Z)));
-  *v=13.0*(*L)*((9.0*Y/(X+15.0*Y+3.0*Z))-(9.0*D50Y/(D50X+15.0*D50Y+3.0*D50Z)));
+  alpha=MagickEpsilonReciprocal(X+15.0*Y+3.0*Z);
+  *u=13.0*(*L)*((4.0*alpha*X)-(4.0*D50X/(D50X+15.0*D50Y+3.0*D50Z)));
+  *v=13.0*(*L)*((9.0*alpha*Y)-(9.0*D50Y/(D50X+15.0*D50Y+3.0*D50Z)));
   *L/=100.0;
   *u=(*u+134.0)/354.0;
   *v=(*v+140.0)/256.0;
@@ -1776,10 +1780,10 @@ static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
     *Y=(double) pow(((100.0*L)+16.0)/116.0,3.0);
   else
     *Y=(100.0*L)/CIEK;
-  *X=((*Y*((39.0*(100.0*L)/((256.0*v-140.0)+13.0*(100.0*L)*(9.0*D50Y/(D50X+
+  *X=(((*Y)*((39.0*(100.0*L)/((256.0*v-140.0)+13.0*(100.0*L)*(9.0*D50Y/(D50X+
     15.0*D50Y+3.0*D50Z))))-5.0))+5.0*(*Y))/((((52.0*(100.0*L)/((354.0*u-134.0)+
     13.0*(100.0*L)*(4.0*D50X/(D50X+15.0*D50Y+3.0*D50Z))))-1.0)/3.0)-(-1.0/3.0));
-  *Z=(*X*(((52.0*(100.0*L)/((354.0*u-134.0)+13.0*(100.0*L)*(4.0*D50X/(D50X+
+  *Z=((*X)*(((52.0*(100.0*L)/((354.0*u-134.0)+13.0*(100.0*L)*(4.0*D50X/(D50X+
     15.0*D50Y+3.0*D50Z))))-1.0)/3.0))-5.0*(*Y);
 }
 
