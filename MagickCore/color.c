@@ -1089,8 +1089,10 @@ MagickExport void ConcatenateColorComponent(const PixelInfo *pixel,
       (void) ConcatenateMagickString(tuple,text,MaxTextExtent);
       return;
     }
-  if ((pixel->colorspace == HSLColorspace) ||
-      (pixel->colorspace == HSBColorspace))
+  if ((pixel->colorspace == HCLColorspace) ||
+      (pixel->colorspace == HSBColorspace) ||
+      (pixel->colorspace == HSLColorspace) ||
+      (pixel->colorspace == HWBColorspace))
     {
       (void) FormatLocaleString(text,MaxTextExtent,"%g%%",(double)
         (100.0*QuantumScale*color));
@@ -2370,19 +2372,25 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
                 color->alpha=(double) ClampToQuantum(QuantumRange*
                   geometry_info.sigma);
             }
-          if ((LocaleCompare(colorspace,"HSB") == 0) ||
+          if ((LocaleCompare(colorspace,"HCL") == 0) ||
+              (LocaleCompare(colorspace,"HSB") == 0) ||
               (LocaleCompare(colorspace,"HSL") == 0) ||
               (LocaleCompare(colorspace,"HWB") == 0))
             {
               PixelInfo
                 pixel;
 
-              if (LocaleCompare(colorspace,"HSB") == 0)
-                color->colorspace=HSBColorspace;
-              if (LocaleCompare(colorspace,"HSL") == 0)
-                color->colorspace=HSLColorspace;
-              if (LocaleCompare(colorspace,"HWB") == 0)
-                color->colorspace=HWBColorspace;
+              if (LocaleCompare(colorspace,"HCL") == 0)
+                color->colorspace=HCLColorspace;
+              else
+                if (LocaleCompare(colorspace,"HSB") == 0)
+                  color->colorspace=HSBColorspace;
+                else
+                  if (LocaleCompare(colorspace,"HSL") == 0)
+                    color->colorspace=HSLColorspace;
+                  else
+                    if (LocaleCompare(colorspace,"HWB") == 0)
+                      color->colorspace=HWBColorspace;
               scale=1.0/360.0;
               if ((flags & PercentValue) != 0)
                 scale=1.0/100.0;
@@ -2392,19 +2400,24 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
                 scale=1.0/100.0;
               geometry_info.sigma*=scale;
               geometry_info.xi*=scale;
-              if (LocaleCompare(colorspace,"HSB") == 0)
-                ConvertHSBToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,360.0)/
-                  360.0,geometry_info.sigma,geometry_info.xi,&pixel.red,
+              if (LocaleCompare(colorspace,"HCL") == 0)
+                ConvertHCLToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
+                  360.0)/360.0,geometry_info.sigma,geometry_info.xi,&pixel.red,
                   &pixel.green,&pixel.blue);
               else
-                if (LocaleCompare(colorspace,"HSL") == 0)
-                  ConvertHSLToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
+                if (LocaleCompare(colorspace,"HSB") == 0)
+                  ConvertHSBToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
                     360.0)/360.0,geometry_info.sigma,geometry_info.xi,
                     &pixel.red,&pixel.green,&pixel.blue);
                 else
-                  ConvertHWBToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
-                    360.0)/360.0,geometry_info.sigma,geometry_info.xi,
-                    &pixel.red,&pixel.green,&pixel.blue);
+                  if (LocaleCompare(colorspace,"HSL") == 0)
+                    ConvertHSLToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
+                      360.0)/360.0,geometry_info.sigma,geometry_info.xi,
+                      &pixel.red,&pixel.green,&pixel.blue);
+                  else
+                    ConvertHWBToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
+                      360.0)/360.0,geometry_info.sigma,geometry_info.xi,
+                      &pixel.red,&pixel.green,&pixel.blue);
               color->colorspace=sRGBColorspace;
               color->red=(double) pixel.red;
               color->green=(double) pixel.green;
