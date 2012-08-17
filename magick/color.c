@@ -1085,8 +1085,10 @@ MagickExport void ConcatenateColorComponent(const MagickPixelPacket *pixel,
       (void) ConcatenateMagickString(tuple,component,MaxTextExtent);
       return;
     }
-  if ((pixel->colorspace == HSLColorspace) ||
-      (pixel->colorspace == HSBColorspace))
+  if ((pixel->colorspace == HCLColorspace) ||
+      (pixel->colorspace == HSBColorspace) ||
+      (pixel->colorspace == HSLColorspace) ||
+      (pixel->colorspace == HWBColorspace))
     {
       (void) FormatLocaleString(component,MaxTextExtent,"%g%%",
         (double) (100.0*QuantumScale*color));
@@ -1586,8 +1588,9 @@ MagickExport MagickBooleanType IsColorSimilar(const Image *image,
   distance*=3.0;  /* rescale appropriately */
   fuzz*=3.0;
   pixel=(MagickRealType) GetPixelRed(p)-GetPixelRed(q);
-  if ((image->colorspace == HSLColorspace) ||
+  if ((image->colorspace == HCLColorspace) ||
       (image->colorspace == HSBColorspace) ||
+      (image->colorspace == HSLColorspace) ||
       (image->colorspace == HWBColorspace))
     {
       /* This calculates a arc distance for hue.  Really if should be a vector
@@ -1845,8 +1848,8 @@ MagickExport MagickBooleanType IsMagickColorSimilar(const MagickPixelPacket *p,
   distance*=3.0;  /* rescale appropriately */
   fuzz*=3.0;
   pixel=p->red-q->red;
-  if ((p->colorspace == HSLColorspace) || (p->colorspace == HSBColorspace) ||
-      (p->colorspace == HWBColorspace))
+  if ((p->colorspace == HCLColorspace) || (p->colorspace == HSBColorspace) ||
+      (p->colorspace == HSLColorspace) || (p->colorspace == HWBColorspace))
     {
       /* This calculates a arc distance for hue
          Really if should be a vector angle of 'S'/'W' length
@@ -2745,7 +2748,8 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
                 color->opacity=(MagickRealType) ClampToQuantum((MagickRealType)
                   (QuantumRange-QuantumRange*geometry_info.sigma));
             }
-          if ((LocaleCompare(colorspace,"HSB") == 0) ||
+          if ((LocaleCompare(colorspace,"HCL") == 0) ||
+              (LocaleCompare(colorspace,"HSB") == 0) ||
               (LocaleCompare(colorspace,"HSL") == 0) ||
               (LocaleCompare(colorspace,"HWB") == 0))
             {
@@ -2761,19 +2765,24 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
                 scale=1.0/100.0;
               geometry_info.sigma*=scale;
               geometry_info.xi*=scale;
-              if (LocaleCompare(colorspace,"HSB") == 0)
-                ConvertHSBToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,360.0)/
+              if (LocaleCompare(colorspace,"HCL") == 0)
+                ConvertHCLToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,360.0)/
                   360.0,geometry_info.sigma,geometry_info.xi,&pixel.red,
                   &pixel.green,&pixel.blue);
               else
-                if (LocaleCompare(colorspace,"HSL") == 0)
-                  ConvertHSLToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
+                if (LocaleCompare(colorspace,"HSB") == 0)
+                  ConvertHSBToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
                     360.0)/360.0,geometry_info.sigma,geometry_info.xi,
                     &pixel.red,&pixel.green,&pixel.blue);
                 else
-                  ConvertHWBToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
-                    360.0)/360.0,geometry_info.sigma,geometry_info.xi,
-                    &pixel.red,&pixel.green,&pixel.blue);
+                  if (LocaleCompare(colorspace,"HSL") == 0)
+                    ConvertHSLToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
+                      360.0)/360.0,geometry_info.sigma,geometry_info.xi,
+                      &pixel.red,&pixel.green,&pixel.blue);
+                  else
+                    ConvertHWBToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
+                      360.0)/360.0,geometry_info.sigma,geometry_info.xi,
+                      &pixel.red,&pixel.green,&pixel.blue);
               color->colorspace=sRGBColorspace;
               color->red=(MagickRealType) pixel.red;
               color->green=(MagickRealType) pixel.green;

@@ -1708,7 +1708,7 @@ static MagickRealType FxGetSymbol(FxInfo *fx_info,const ChannelType channel,
           double
             luminence;
 
-          luminence=0.2126*pixel.red+0.7152*pixel.green+0.0722*pixel.blue;
+          luminence=0.21267*pixel.red+0.71516*pixel.green+0.07217*pixel.blue;
           return(QuantumScale*luminence);
         }
       break;
