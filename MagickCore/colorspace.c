@@ -1435,11 +1435,11 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          red=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor((double) 
+          red=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor((double)
             GetPixelRed(image,q))));
-          green=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor((double) 
+          green=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor((double)
             GetPixelGreen(image,q))));
-          blue=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor((double) 
+          blue=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor((double)
             GetPixelBlue(image,q))));
           pixel.red=(x_map[red].x+y_map[green].x+z_map[blue].x)+
             primary_info.x;
@@ -3204,11 +3204,11 @@ static MagickBooleanType TransformsRGBImage(Image *image,
                 pixel.blue)];
 #endif
             }
-          SetPixelRed(image,ClampToQuantum(sRGBCompandor((double) 
+          SetPixelRed(image,ClampToQuantum(sRGBCompandor((double)
             ScaleMapToQuantum(pixel.red))),q);
-          SetPixelGreen(image,ClampToQuantum(sRGBCompandor((double) 
+          SetPixelGreen(image,ClampToQuantum(sRGBCompandor((double)
             ScaleMapToQuantum(pixel.green))),q);
-          SetPixelBlue(image,ClampToQuantum(sRGBCompandor((double) 
+          SetPixelBlue(image,ClampToQuantum(sRGBCompandor((double)
             ScaleMapToQuantum(pixel.blue))),q);
           q+=GetPixelChannels(image);
         }
