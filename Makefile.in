@@ -263,6 +263,7 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(top_srcdir)/config/depcomp $(top_srcdir)/config/install-sh \
 	$(top_srcdir)/config/ltmain.sh $(top_srcdir)/config/missing \
 	$(top_srcdir)/config/mkinstalldirs \
+	$(top_srcdir)/config/tap-driver.sh \
 	$(top_srcdir)/config/test-driver \
 	$(top_srcdir)/config/type-dejavu.xml.in \
 	$(top_srcdir)/config/type-ghostscript.xml.in \
@@ -2423,7 +2424,7 @@ am__EXEEXT_7 =
 TEST_SUITE_LOG = test-suite.log
 am__test_logs1 = $(TESTS:=.log)
 am__test_logs2 = $(am__test_logs1:@EXEEXT@.log=.log)
-TEST_LOGS = $(am__test_logs2:.sh.log=.log)
+am__test_logs3 = $(am__test_logs2:.sh.log=.log)
 SH_LOG_DRIVER = $(SHELL) $(top_srcdir)/config/test-driver
 SH_LOG_COMPILE = $(SH_LOG_COMPILER) $(AM_SH_LOG_FLAGS) $(SH_LOG_FLAGS)
 am__set_b = \
@@ -2436,6 +2437,9 @@ am__set_b = \
     *) \
       b='$*';; \
   esac
+TEST_LOGS = $(am__test_logs3:.tap.log=.log)
+TAP_LOG_COMPILE = $(TAP_LOG_COMPILER) $(AM_TAP_LOG_FLAGS) \
+	$(TAP_LOG_FLAGS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -2866,6 +2870,11 @@ noinst_HEADERS = \
 @WIN32_NATIVE_BUILD_FALSE@SRCDIR = "$(srcdir)/"
 @WIN32_NATIVE_BUILD_TRUE@SRCDIR = '$(shell @WinPathScript@ $(srcdir)/)'
 
+# Tests with .tap extensions use the TAP protocol and TAP driver
+TAP_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
+	$(top_srcdir)/config/tap-driver.sh
+
+
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
 	COMPARE="$(MEMCHECK) @abs_top_builddir@/utilities/compare" \
@@ -2888,7 +2897,7 @@ TESTS_ENVIRONMENT = \
 
 
 # Test extensions
-TEST_EXTENSIONS = .sh
+TEST_EXTENSIONS = .sh .tap
 TOP_EXTRA_DIST = \
   AUTHORS.txt \
 	ChangeLog \
@@ -5015,7 +5024,7 @@ all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .cpp .lo .log .o .obj .sh .sh$(EXEEXT) .trs
+.SUFFIXES: .c .cpp .lo .log .o .obj .sh .sh$(EXEEXT) .tap .tap$(EXEEXT) .trs
 am--refresh: Makefile
 	@:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/m4/Makefile.am $(srcdir)/config/Makefile.am $(srcdir)/ltdl/Makefile.inc $(srcdir)/coders/Makefile.am $(srcdir)/magick/Makefile.am $(srcdir)/filters/Makefile.am $(srcdir)/wand/Makefile.am $(srcdir)/Magick++/Makefile.am $(srcdir)/utilities/Makefile.am $(srcdir)/tests/Makefile.am $(srcdir)/PerlMagick/Makefile.am $(am__configure_deps)
@@ -10220,6 +10229,20 @@ recheck: all $(check_PROGRAMS)
 @am__EXEEXT_TRUE@	$(am__check_pre) $(SH_LOG_DRIVER) --test-name "$$f" \
 @am__EXEEXT_TRUE@	--log-file $$b.log --trs-file $$b.trs \
 @am__EXEEXT_TRUE@	$(am__common_driver_flags) $(AM_SH_LOG_DRIVER_FLAGS) $(SH_LOG_DRIVER_FLAGS) -- $(SH_LOG_COMPILE) \
+@am__EXEEXT_TRUE@	"$$tst" $(AM_TESTS_FD_REDIRECT)
+.tap.log:
+	@p='$<'; \
+	$(am__set_b); \
+	$(am__check_pre) $(TAP_LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_TAP_LOG_DRIVER_FLAGS) $(TAP_LOG_DRIVER_FLAGS) -- $(TAP_LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+@am__EXEEXT_TRUE@.tap$(EXEEXT).log:
+@am__EXEEXT_TRUE@	@p='$<'; \
+@am__EXEEXT_TRUE@	$(am__set_b); \
+@am__EXEEXT_TRUE@	$(am__check_pre) $(TAP_LOG_DRIVER) --test-name "$$f" \
+@am__EXEEXT_TRUE@	--log-file $$b.log --trs-file $$b.trs \
+@am__EXEEXT_TRUE@	$(am__common_driver_flags) $(AM_TAP_LOG_DRIVER_FLAGS) $(TAP_LOG_DRIVER_FLAGS) -- $(TAP_LOG_COMPILE) \
 @am__EXEEXT_TRUE@	"$$tst" $(AM_TESTS_FD_REDIRECT)
 
 distdir: $(DISTFILES)
