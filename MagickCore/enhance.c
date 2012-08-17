@@ -2980,6 +2980,12 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
       blue=(double) GetPixelBlue(image,q);
       switch (colorspace)
       {
+        case HCLColorspace:
+        {
+          ModulateHCL(percent_hue,percent_saturation,percent_brightness,
+            &red,&green,&blue);
+          break;
+        }
         case HSBColorspace:
         {
           ModulateHSB(percent_hue,percent_saturation,percent_brightness,
