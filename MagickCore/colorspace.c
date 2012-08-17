@@ -178,7 +178,7 @@ static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
   assert(u != (double *) NULL);
   assert(v != (double *) NULL);
   if ((Y/D50Y) > CIEEpsilon)
-    *L=(double) (116.0*pow(Y/D50Y,1/3.0)-16.0);
+    *L=(double) (116.0*pow(Y/D50Y,1.0/3.0)-16.0);
   else
     *L=CIEK*(Y/D50Y);
   alpha=MagickEpsilonReciprocal(X+15.0*Y+3.0*Z);
