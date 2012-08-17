@@ -62,6 +62,10 @@ else
 SRCDIR="$(srcdir)/"
 endif
 
+# Tests with .tap extensions use the TAP protocol and TAP driver
+TAP_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
+	$(top_srcdir)/config/tap-driver.sh
+
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
 	COMPARE="$(MEMCHECK) @abs_top_builddir@/utilities/compare" \
@@ -84,7 +88,7 @@ TESTS_ENVIRONMENT = \
 	SRCDIR=$(SRCDIR)
 
 # Test extensions
-TEST_EXTENSIONS = .sh
+TEST_EXTENSIONS = .sh .tap
 
 # Tests to run
 TESTS = \
