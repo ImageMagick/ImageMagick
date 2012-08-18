@@ -156,7 +156,7 @@ MagickExport StreamInfo *AcquireStreamInfo(const ImageInfo *image_info)
   if (stream_info == (StreamInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(stream_info,0,sizeof(*stream_info));
-  stream_info->pixels=(unsigned char *) AcquireMagickMemory(
+  stream_info->pixels=(unsigned char *) AcquireAlignedMemory(1,
     sizeof(*stream_info->pixels));
   if (stream_info->pixels == (unsigned char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -194,7 +194,7 @@ static inline void RelinquishStreamPixels(CacheInfo *cache_info)
 {
   assert(cache_info != (CacheInfo *) NULL);
   if (cache_info->mapped == MagickFalse)
-    (void) RelinquishMagickMemory(cache_info->pixels);
+    (void) RelinquishAlignedMemory(cache_info->pixels);
   else
     (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
   cache_info->pixels=(PixelPacket *) NULL;
@@ -267,7 +267,7 @@ MagickExport StreamInfo *DestroyStreamInfo(StreamInfo *stream_info)
   if (stream_info->map != (char *) NULL)
     stream_info->map=DestroyString(stream_info->map);
   if (stream_info->pixels != (unsigned char *) NULL)
-    stream_info->pixels=(unsigned char *) RelinquishMagickMemory(
+    stream_info->pixels=(unsigned char *) RelinquishAlignedMemory(
       stream_info->pixels);
   if (stream_info->stream != (Image *) NULL)
     {
@@ -647,7 +647,7 @@ static inline MagickBooleanType AcquireStreamPixels(CacheInfo *cache_info,
   if (cache_info->length != (MagickSizeType) ((size_t) cache_info->length))
     return(MagickFalse);
   cache_info->mapped=MagickFalse;
-  cache_info->pixels=(PixelPacket *) AcquireMagickMemory((size_t)
+  cache_info->pixels=(PixelPacket *) AcquireAlignedMemory(1,(size_t)
     cache_info->length);
   if (cache_info->pixels == (PixelPacket *) NULL)
     {
@@ -871,14 +871,14 @@ static PixelPacket *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
     length+=number_pixels*sizeof(IndexPacket);
   if (cache_info->pixels == (PixelPacket *) NULL)
     {
-      cache_info->pixels=(PixelPacket *) AcquireMagickMemory(length);
+      cache_info->pixels=(PixelPacket *) AcquireAlignedMemory(1,length);
       cache_info->length=(MagickSizeType) length;
     }
   else
     if (cache_info->length < (MagickSizeType) length)
       {
-        cache_info->pixels=(PixelPacket *) ResizeMagickMemory(
-          cache_info->pixels,length);
+        (void) RelinquishAlignedMemory(cache_info->pixels);
+        cache_info->pixels=(PixelPacket *) AcquireAlignedMemory(1,length);
         cache_info->length=(MagickSizeType) length;
       }
   if (cache_info->pixels == (void *) NULL)
@@ -1136,10 +1136,11 @@ static size_t WriteStreamImage(const Image *image,const void *pixels,
       /*
         Prepare stream for writing.
       */
-      stream_info->pixels=(unsigned char *) ResizeQuantumMemory(
-        stream_info->pixels,length,sizeof(*stream_info->pixels));
+      (void) RelinquishAlignedMemory(stream_info->pixels);
+      stream_info->pixels=(unsigned char *) AcquireAlignedMemory(1,length);
       if (stream_info->pixels == (unsigned char *) NULL)
         return(0);
+      (void) ResetMagickMemory(stream_info->pixels,0,length);
       stream_info->image=image;
       write_info=CloneImageInfo(stream_info->image_info);
       (void) SetImageInfo(write_info,1,stream_info->exception);
