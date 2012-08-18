@@ -129,17 +129,17 @@ static inline void ConvertRGBToXYZ(const double red,const double green,
   r=QuantumScale*red;
   g=QuantumScale*green;
   b=QuantumScale*blue;
-  *X=0.4360747*r+0.3850649*g+0.1430804*b;
-  *Y=0.2225045*r+0.7168786*g+0.0606169*b;
-  *Z=0.0139322*r+0.0971045*g+0.7141733*b;
+  *X=0.4124564*r+0.3575761*g+0.1804375*b;
+  *Y=0.2126729*r+0.7151522*g+0.0721750*b;
+  *Z=0.0193339*r+0.1191920*g+0.9503041*b;
 }
 
 static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   double *L,double *a,double *b)
 {
-#define D50X  (0.964221)
-#define D50Y  (1.0)
-#define D50Z  (0.825211)
+#define D65X  (0.950470)
+#define D65Y  (1.0)
+#define D65Z  (1.088830)
 #define CIEEpsilon  (216.0/24389.0)
 #define CIEK  (24389.0/27.0)
 
@@ -151,18 +151,18 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   assert(L != (double *) NULL);
   assert(a != (double *) NULL);
   assert(b != (double *) NULL);
-  if ((X/D50X) > CIEEpsilon)
-    x=pow(X/D50X,1.0/3.0);
+  if ((X/D65X) > CIEEpsilon)
+    x=pow(X/D65X,1.0/3.0);
   else
-    x=(CIEK*X/D50X+16.0)/116.0;
-  if ((Y/D50Y) > CIEEpsilon)
-    y=pow(Y/D50Y,1.0/3.0);
+    x=(CIEK*X/D65X+16.0)/116.0;
+  if ((Y/D65Y) > CIEEpsilon)
+    y=pow(Y/D65Y,1.0/3.0);
   else
-    y=(CIEK*Y/D50Y+16.0)/116.0;
-  if ((Z/D50Z) > CIEEpsilon)
-    z=pow(Z/D50Z,1.0/3.0);
+    y=(CIEK*Y/D65Y+16.0)/116.0;
+  if ((Z/D65Z) > CIEEpsilon)
+    z=pow(Z/D65Z,1.0/3.0);
   else
-    z=(CIEK*Z/D50Z+16.0)/116.0;
+    z=(CIEK*Z/D65Z+16.0)/116.0;
   *L=((116.0*y)-16.0)/100.0;
   *a=(500.0*(x-y))/255.0+0.5;
   *b=(200.0*(y-z))/255.0+0.5;
@@ -177,16 +177,16 @@ static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
   assert(L != (double *) NULL);
   assert(u != (double *) NULL);
   assert(v != (double *) NULL);
-  if ((Y/D50Y) > CIEEpsilon)
-    *L=(double) (116.0*pow(Y/D50Y,1.0/3.0)-16.0);
+  if ((Y/D65Y) > CIEEpsilon)
+    *L=(double) (116.0*pow(Y/D65Y,1.0/3.0)-16.0);
   else
-    *L=CIEK*(Y/D50Y);
+    *L=CIEK*(Y/D65Y);
   alpha=MagickEpsilonReciprocal(X+15.0*Y+3.0*Z);
-  *u=13.0*(*L)*((4.0*alpha*X)-(4.0*D50X/(D50X+15.0*D50Y+3.0*D50Z)));
-  *v=13.0*(*L)*((9.0*alpha*Y)-(9.0*D50Y/(D50X+15.0*D50Y+3.0*D50Z)));
+  *u=13.0*(*L)*((4.0*alpha*X)-(4.0*D65X/(D65X+15.0*D65Y+3.0*D65Z)));
+  *v=13.0*(*L)*((9.0*alpha*Y)-(9.0*D65Y/(D65X+15.0*D65Y+3.0*D65Z)));
   *L/=100.0;
   *u=(*u+134.0)/354.0;
-  *v=(*v+140.0)/256.0;
+  *v=(*v+140.0)/262.0;
 }
 
 static MagickBooleanType sRGBTransformImage(Image *image,
@@ -1696,9 +1696,9 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
     z=pow(z,3.0);
   else
     z=(116*z-16.0)/CIEK;
-  *X=D50X*x;
-  *Y=D50Y*y;
-  *Z=D50Z*z;
+  *X=D65X*x;
+  *Y=D65Y*y;
+  *Z=D65Z*z;
 }
 
 static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
@@ -1711,11 +1711,11 @@ static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
     *Y=(double) pow(((100.0*L)+16.0)/116.0,3.0);
   else
     *Y=(100.0*L)/CIEK;
-  *X=(((*Y)*((39.0*(100.0*L)/((256.0*v-140.0)+13.0*(100.0*L)*(9.0*D50Y/(D50X+
-    15.0*D50Y+3.0*D50Z))))-5.0))+5.0*(*Y))/((((52.0*(100.0*L)/((354.0*u-134.0)+
-    13.0*(100.0*L)*(4.0*D50X/(D50X+15.0*D50Y+3.0*D50Z))))-1.0)/3.0)-(-1.0/3.0));
-  *Z=((*X)*(((52.0*(100.0*L)/((354.0*u-134.0)+13.0*(100.0*L)*(4.0*D50X/(D50X+
-    15.0*D50Y+3.0*D50Z))))-1.0)/3.0))-5.0*(*Y);
+  *X=((*Y*((39.0*(100.0*L)/((262.0*v-140.0)+13.0*(100.0*L)*(9.0*D65Y/(D65X+
+    15.0*D65Y+3.0*D65Z))))-5.0))+5.0*(*Y))/((((52.0*(100.0*L)/((354.0*u-134.0)+
+    13.0*(100.0*L)*(4.0*D65X/(D65X+15.0*D65Y+3.0*D65Z))))-1.0)/3.0)-(-1.0/3.0));
+  *Z=(*X*(((52.0*(100.0*L)/((354.0*u-134.0)+13.0*(100.0*L)*(4.0*D65X/(D65X+
+    15.0*D65Y+3.0*D65Z))))-1.0)/3.0))-5.0*(*Y);
 }
 
 static inline ssize_t RoundToYCC(const double value)
@@ -1741,9 +1741,9 @@ static inline void ConvertXYZToRGB(const double x,const double y,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  r=3.1338561*x-1.6168667*y-0.4906146*z;
-  g=(-0.9787684*x+1.9161415*y+0.0334540*z);
-  b=0.0719453*x-0.2289914*y+1.4052427*z;
+  r=3.2404542*x-1.5371385*y-0.4985314*z;
+  g=(-0.9692660*x+1.8760108*y+0.0415560*z);
+  b=0.0556434*x-0.2040259*y+1.0572252*z;
   *red=QuantumRange*r;
   *green=QuantumRange*g;
   *blue=QuantumRange*b;
