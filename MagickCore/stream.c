@@ -161,7 +161,7 @@ MagickExport StreamInfo *AcquireStreamInfo(const ImageInfo *image_info,
   if (stream_info == (StreamInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(stream_info,0,sizeof(*stream_info));
-  stream_info->pixels=(unsigned char *) AcquireMagickMemory(
+  stream_info->pixels=(unsigned char *) AcquireAlignedMemory(1,
     sizeof(*stream_info->pixels));
   if (stream_info->pixels == (unsigned char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -199,7 +199,7 @@ static inline void RelinquishStreamPixels(CacheInfo *cache_info)
 {
   assert(cache_info != (CacheInfo *) NULL);
   if (cache_info->mapped == MagickFalse)
-    (void) RelinquishMagickMemory(cache_info->pixels);
+    (void) RelinquishAlignedMemory(cache_info->pixels);
   else
     (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
   cache_info->pixels=(Quantum *) NULL;
@@ -272,7 +272,7 @@ MagickExport StreamInfo *DestroyStreamInfo(StreamInfo *stream_info)
   if (stream_info->map != (char *) NULL)
     stream_info->map=DestroyString(stream_info->map);
   if (stream_info->pixels != (unsigned char *) NULL)
-    stream_info->pixels=(unsigned char *) RelinquishMagickMemory(
+    stream_info->pixels=(unsigned char *) RelinquishAlignedMemory(
       stream_info->pixels);
   if (stream_info->stream != (Image *) NULL)
     {
@@ -689,7 +689,7 @@ static inline MagickBooleanType AcquireStreamPixels(CacheInfo *cache_info,
   if (cache_info->length != (MagickSizeType) ((size_t) cache_info->length))
     return(MagickFalse);
   cache_info->mapped=MagickFalse;
-  cache_info->pixels=(Quantum *) AcquireMagickMemory((size_t)
+  cache_info->pixels=(Quantum *) AcquireAlignedMemory(1,(size_t)
     cache_info->length);
   if (cache_info->pixels == (Quantum *) NULL)
     {
@@ -700,7 +700,7 @@ static inline MagickBooleanType AcquireStreamPixels(CacheInfo *cache_info,
   if (cache_info->pixels == (Quantum *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","'%s'",
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
         cache_info->filename);
       return(MagickFalse);
     }
@@ -737,7 +737,7 @@ static const Quantum *GetVirtualPixelStream(const Image *image,
       (columns == 0) || (rows == 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),StreamError,
-        "ImageDoesNotContainTheStreamGeometry","'%s'",image->filename);
+        "ImageDoesNotContainTheStreamGeometry","`%s'",image->filename);
       return((Quantum *) NULL);
     }
   cache_info=(CacheInfo *) image->cache;
@@ -875,14 +875,14 @@ static Quantum *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
       (columns == 0) || (rows == 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),StreamError,
-        "ImageDoesNotContainTheStreamGeometry","'%s'",image->filename);
+        "ImageDoesNotContainTheStreamGeometry","`%s'",image->filename);
       return((Quantum *) NULL);
     }
   stream_handler=GetBlobStreamHandler(image);
   if (stream_handler == (StreamHandler) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),StreamError,
-        "NoStreamHandlerIsDefined","'%s'",image->filename);
+        "NoStreamHandlerIsDefined","`%s'",image->filename);
       return((Quantum *) NULL);
     }
   cache_info=(CacheInfo *) image->cache;
@@ -910,14 +910,14 @@ static Quantum *QueueAuthenticPixelsStream(Image *image,const ssize_t x,
     length+=number_pixels*cache_info->metacontent_extent;
   if (cache_info->pixels == (Quantum *) NULL)
     {
-      cache_info->pixels=(Quantum *) AcquireMagickMemory(length);
+      cache_info->pixels=(Quantum *) AcquireAlignedMemory(1,length);
       cache_info->length=(MagickSizeType) length;
     }
   else
     if (cache_info->length < (MagickSizeType) length)
       {
-        cache_info->pixels=(Quantum *) ResizeMagickMemory(
-          cache_info->pixels,length);
+        (void) RelinquishAlignedMemory(cache_info->pixels);
+        cache_info->pixels=(Quantum *) AcquireAlignedMemory(1,length);
         cache_info->length=(MagickSizeType) length;
       }
   if (cache_info->pixels == (void *) NULL)
@@ -1177,10 +1177,12 @@ static size_t WriteStreamImage(const Image *image,const void *pixels,
       /*
         Prepare stream for writing.
       */
-      stream_info->pixels=(unsigned char *) ResizeQuantumMemory(
-        stream_info->pixels,length,sizeof(*stream_info->pixels));
+      (void) RelinquishAlignedMemory(stream_info->pixels);
+      stream_info->pixels=(unsigned char *) AcquireAlignedMemory(length,
+        sizeof(*stream_info->pixels));
       if (stream_info->pixels == (unsigned char *) NULL)
         return(0);
+      (void) ResetMagickMemory(stream_info->pixels,0,length);
       stream_info->image=image;
       write_info=CloneImageInfo(stream_info->image_info);
       (void) SetImageInfo(write_info,1,stream_info->exception);
@@ -1310,7 +1312,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
   if (quantum_map == (QuantumType *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
   for (i=0; i < (ssize_t) length; i++)
@@ -1337,7 +1339,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           break;
         quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
         (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-          "ColorSeparatedImageRequired","'%s'",stream_info->map);
+          "ColorSeparatedImageRequired","`%s'",stream_info->map);
         return(MagickFalse);
       }
       case 'g':
@@ -1360,7 +1362,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           break;
         quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
         (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-          "ColorSeparatedImageRequired","'%s'",stream_info->map);
+          "ColorSeparatedImageRequired","`%s'",stream_info->map);
         return(MagickFalse);
       }
       case 'M':
@@ -1371,7 +1373,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           break;
         quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
         (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-          "ColorSeparatedImageRequired","'%s'",stream_info->map);
+          "ColorSeparatedImageRequired","`%s'",stream_info->map);
         return(MagickFalse);
       }
       case 'o':
@@ -1400,14 +1402,14 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           break;
         quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
         (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-          "ColorSeparatedImageRequired","'%s'",stream_info->map);
+          "ColorSeparatedImageRequired","`%s'",stream_info->map);
         return(MagickFalse);
       }
       default:
       {
         quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "UnrecognizedPixelMap","'%s'",stream_info->map);
+          "UnrecognizedPixelMap","`%s'",stream_info->map);
         return(MagickFalse);
       }
     }
@@ -2627,7 +2629,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
     {
       quantum_map=(QuantumType *) RelinquishMagickMemory(quantum_map);
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "UnrecognizedPixelMap","'%s'",stream_info->map);
+        "UnrecognizedPixelMap","`%s'",stream_info->map);
       break;
     }
   }
@@ -2683,7 +2685,7 @@ static MagickBooleanType SyncAuthenticPixelsStream(Image *image,
   if (stream_handler == (StreamHandler) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),StreamError,
-        "NoStreamHandlerIsDefined","'%s'",image->filename);
+        "NoStreamHandlerIsDefined","`%s'",image->filename);
       return(MagickFalse);
     }
   length=stream_handler(image,cache_info->pixels,(size_t) cache_info->columns);
