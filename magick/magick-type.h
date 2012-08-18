@@ -100,7 +100,7 @@ typedef double Quantum;
 #endif
 #endif
 #define MagickEpsilon  ((MagickRealType) 1.0e-16)
-#define MagickHuge  3.40282347e+38F
+#define MagickHuge  3.4e+38F
 
 /*
   Typedef declarations.
