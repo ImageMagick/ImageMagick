@@ -718,8 +718,6 @@ MPEGEncodeDelegate
 MPEGDecodeDelegate
 MANDelegate
 LaunchDelegate
-LZWEncodeDelegate
-LZWDecodeDelegate
 LPRDelegate
 LPDelegate
 ILBMEncodeDelegate
@@ -3668,7 +3666,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=8980:8995M
+MAGICK_SVN_REVISION=9013:9019M
 
 
 
@@ -32865,8 +32863,6 @@ ILBMDecodeDelegateDefault='ilbmtoppm'
 ILBMEncodeDelegateDefault='ppmtoilbm'
 LPDelegateDefault='lp'
 LPRDelegateDefault='lpr'
-LZWDecodeDelegateDefault='uncompress'
-LZWEncodeDelegateDefault='compress'
 LaunchDelegateDefault='gimp'
 MANDelegateDefault='groff'
 MPEGDecodeDelegateDefault='ffmpeg'
@@ -33792,88 +33788,6 @@ LPRDelegate=$ac_cv_path_LPRDelegate
 if test -n "$LPRDelegate"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LPRDelegate" >&5
 $as_echo "$LPRDelegate" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-# Extract the first word of ""$LZWDecodeDelegateDefault"", so it can be a program name with args.
-set dummy "$LZWDecodeDelegateDefault"; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_LZWDecodeDelegate+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $LZWDecodeDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_LZWDecodeDelegate="$LZWDecodeDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_LZWDecodeDelegate="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_LZWDecodeDelegate" && ac_cv_path_LZWDecodeDelegate=""$LZWDecodeDelegateDefault""
-  ;;
-esac
-fi
-LZWDecodeDelegate=$ac_cv_path_LZWDecodeDelegate
-if test -n "$LZWDecodeDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LZWDecodeDelegate" >&5
-$as_echo "$LZWDecodeDelegate" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-# Extract the first word of ""$LZWEncodeDelegateDefault"", so it can be a program name with args.
-set dummy "$LZWEncodeDelegateDefault"; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_LZWEncodeDelegate+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $LZWEncodeDelegate in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_LZWEncodeDelegate="$LZWEncodeDelegate" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_LZWEncodeDelegate="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_LZWEncodeDelegate" && ac_cv_path_LZWEncodeDelegate=""$LZWEncodeDelegateDefault""
-  ;;
-esac
-fi
-LZWEncodeDelegate=$ac_cv_path_LZWEncodeDelegate
-if test -n "$LZWEncodeDelegate"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LZWEncodeDelegate" >&5
-$as_echo "$LZWEncodeDelegate" >&6; }
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
@@ -34895,8 +34809,6 @@ if test "$with_frozenpaths" != 'yes'; then
   ILBMDecodeDelegate="$ILBMDecodeDelegateDefault"
   ILBMEncodeDelegate="$ILBMEncodeDelegateDefault"
   LPDelegate="$LPDelegateDefault"
-  LZWDecodeDelegate="$LZWDecodeDelegateDefault"
-  LZWEncodeDelegate="$LZWEncodeDelegateDefault"
   LaunchDelegate="$LaunchDelegateDefault"
   MANDelegate="$MANDelegateDefault"
   MPEGDecodeDelegate="$MPEGDecodeDelegateDefault"
@@ -34923,8 +34835,6 @@ if test "$with_frozenpaths" != 'yes'; then
 fi
 
 # Delegate substitutions
-
-
 
 
 
