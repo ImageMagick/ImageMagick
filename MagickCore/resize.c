@@ -267,7 +267,7 @@ static double Gaussian(const double x,
   return(exp((double)(-resize_filter->coefficient[1]*x*x)));
 }
 
-static double Hanning(const double x,
+static double Hann(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
@@ -493,11 +493,11 @@ static double Triangle(const double x,
   return(0.0);
 }
 
-static double Welsh(const double x,
+static double Welch(const double x,
   const ResizeFilter *magick_unused(resize_filter))
 {
   /*
-    Welsh parabolic windowing filter.
+    Welch parabolic windowing filter.
   */
   if (x < 1.0)
     return(1.0-x*x);
@@ -527,8 +527,8 @@ static double Welsh(const double x,
 %      Gaussian     Sinc        Jinc (Bessel)
 %
 %  Windowed Sinc/Jinc Filters
-%      Blackman     Hanning     Hamming
-%      Kaiser       Lanczos
+%      Blackman     Hann     Hamming
+%      Kaiser       Lanczos  Welch
 %
 %  Special Purpose Filters
 %      Cubic  SincFast  LanczosSharp  Lanczos2  Lanczos2Sharp
@@ -732,8 +732,8 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { BoxFilter,           BoxFilter      },  /* Box averaging filter         */
     { TriangleFilter,      BoxFilter      },  /* Linear interpolation filter  */
     { HermiteFilter,       BoxFilter      },  /* Hermite interpolation filter */
-    { SincFastFilter,      HanningFilter  },  /* Hanning -- cosine-sinc       */
-    { SincFastFilter,      HammingFilter  },  /* Hamming --      '' variation */
+    { SincFastFilter,      HannFilter     },  /* Hann -- cosine-sinc          */
+    { SincFastFilter,      HammingFilter  },  /* Hamming --   '' variation    */
     { SincFastFilter,      BlackmanFilter },  /* Blackman -- 2*cosine-sinc    */
     { GaussianFilter,      BoxFilter      },  /* Gaussian blur filter         */
     { QuadraticFilter,     BoxFilter      },  /* Quadratic Gaussian approx    */
@@ -744,7 +744,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFilter,          BoxFilter      },  /* Raw 4-lobed Sinc function    */
     { SincFastFilter,      BoxFilter      },  /* Raw fast sinc ("Pade"-type)  */
     { SincFastFilter,      KaiserFilter   },  /* Kaiser -- square root-sinc   */
-    { SincFastFilter,      WelshFilter    },  /* Welsh -- parabolic-sinc      */
+    { SincFastFilter,      WelchFilter    },  /* Welch -- parabolic-sinc      */
     { SincFastFilter,      CubicFilter    },  /* Parzen -- cubic-sinc         */
     { SincFastFilter,      BohmanFilter   },  /* Bohman -- 2*cosine-sinc      */
     { SincFastFilter,      TriangleFilter },  /* Bartlett -- triangle-sinc    */
@@ -789,7 +789,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { Box,       0.5, 0.5, 0.0, 0.0 }, /* Box                         */
     { Triangle,  1.0, 1.0, 0.0, 0.0 }, /* Triangle                    */
     { CubicBC,   1.0, 1.0, 0.0, 0.0 }, /* Hermite (cubic  B=C=0)      */
-    { Hanning,   1.0, 1.0, 0.0, 0.0 }, /* Hanning, cosine window      */
+    { Hann,      1.0, 1.0, 0.0, 0.0 }, /* Hann, cosine window         */
     { Hamming,   1.0, 1.0, 0.0, 0.0 }, /* Hamming, '' variation       */
     { Blackman,  1.0, 1.0, 0.0, 0.0 }, /* Blackman, 2*cosine window   */
     { Gaussian,  2.0, 1.5, 0.0, 0.0 }, /* Gaussian                    */
@@ -801,7 +801,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { Sinc,      4.0, 1.0, 0.0, 0.0 }, /* Raw 4-lobed Sinc            */
     { SincFast,  4.0, 1.0, 0.0, 0.0 }, /* Raw fast sinc ("Pade"-type) */
     { Kaiser,    1.0, 1.0, 0.0, 0.0 }, /* Kaiser (square root window) */
-    { Welsh,     1.0, 1.0, 0.0, 0.0 }, /* Welsh (parabolic window)    */
+    { Welch,     1.0, 1.0, 0.0, 0.0 }, /* Welch (parabolic window)    */
     { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Parzen (B-Spline window)    */
     { Bohman,    1.0, 1.0, 0.0, 0.0 }, /* Bohman, 2*Cosine window     */
     { Triangle,  1.0, 1.0, 0.0, 0.0 }, /* Bartlett (triangle window)  */
