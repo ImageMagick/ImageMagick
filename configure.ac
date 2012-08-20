@@ -18,7 +18,7 @@
 #  are permitted in any medium without royalty provided the copyright
 #  notice and this notice are preserved.
 
-AC_PREREQ(2.67)
+AC_PREREQ(2.69)
 
 m4_define([magick_major_version], [7])
 m4_define([magick_minor_version], [0])
