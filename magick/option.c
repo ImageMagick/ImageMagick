@@ -1007,7 +1007,8 @@ static const OptionInfo
     { "Cubic", CubicFilter, UndefinedOptionFlag, MagickFalse },
     { "Gaussian", GaussianFilter, UndefinedOptionFlag, MagickFalse },
     { "Hamming", HammingFilter, UndefinedOptionFlag, MagickFalse },
-    { "Hanning", HanningFilter, UndefinedOptionFlag, MagickFalse },
+    { "Hann", HanningFilter, UndefinedOptionFlag, MagickFalse },
+    { "Hanning", HanningFilter, UndefinedOptionFlag, MagickTrue }, /*misspell*/
     { "Hermite", HermiteFilter, UndefinedOptionFlag, MagickFalse },
     { "Jinc", JincFilter, UndefinedOptionFlag, MagickFalse },
     { "Kaiser", KaiserFilter, UndefinedOptionFlag, MagickFalse },
@@ -1026,7 +1027,8 @@ static const OptionInfo
     { "SincFast", SincFastFilter, UndefinedOptionFlag, MagickFalse },
     { "Spline", SplineFilter, UndefinedOptionFlag, MagickFalse },
     { "Triangle", TriangleFilter, UndefinedOptionFlag, MagickFalse },
-    { "Welsh", WelshFilter, UndefinedOptionFlag, MagickFalse },
+    { "Welch", WelshFilter, UndefinedOptionFlag, MagickFalse },
+    { "Welsh", WelshFilter, UndefinedOptionFlag, MagickTrue }, /*misspell*/
     /* For backward compatibility - must be after "Jinc" */
     { "Bessel", JincFilter, UndefinedOptionFlag, MagickTrue },
     { (char *) NULL, UndefinedFilter, UndefinedOptionFlag, MagickFalse }
