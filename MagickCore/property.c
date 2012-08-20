@@ -95,7 +95,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloneImageProperties() clones one or more image properties.
+%  CloneImageProperties() clones all the image properties to another image.
 %
 %  The format of the CloneImageProperties method is:
 %
@@ -187,7 +187,9 @@ MagickExport MagickBooleanType CloneImageProperties(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DefineImageProperty() associates a key/value pair with an image property.
+%  DefineImageProperty() associates an assignment string of the form
+%  "key=value" with per-image artifact. It is equivelent to
+%  SetImageProperity().
 %
 %  The format of the DefineImageProperty method is:
 %
@@ -274,8 +276,8 @@ MagickExport MagickBooleanType DeleteImageProperty(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyImageProperties() releases memory associated with image property
-%  values.
+%  DestroyImageProperties() destroys all properities and associated memory
+%  attached to the given image.
 %
 %  The format of the DestroyDefines method is:
 %
@@ -367,6 +369,9 @@ MagickExport MagickBooleanType FormatImageProperty(Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetImageProperty() gets a value associated with an image property.
+%
+%  The returned string is a constant string in the tree and should NOT be
+%  freed by the caller.
 %
 %  The format of the GetImageProperty method is:
 %
@@ -2004,7 +2009,7 @@ MagickExport const char *GetImageProperty(const Image *image,
             image->properties);
           return(p);
         }
-      if (LocaleNCompare("fx:",property,3) != 0) /* NOT fx: !!!! */
+      if (LocaleNCompare("fx:",property,3) != 0) /* NOT %[fx:..] !!!! */
         {
           p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
             image->properties,property);
@@ -2903,22 +2908,23 @@ MagickExport char *GetNextImageProperty(const Image *image)
 %     &lt; &gt; &amp;   replaced by '<', '>', '&' resp.
 %     %%                replaced by percent
 %
-%     %x            where 'x' is a single letter, case sensitive).
-%     %[type:name]  where 'type' is specifically known prefix.
+%     %x %[x]       where 'x' is a single letter properity, case sensitive).
+%     %[type:name]  where 'type' a is special and known prefix.
 %     %[name]       where 'name' is a specifically known attribute, calculated
 %                   value, or a per-image property string name, or a per-image
-%                   'artifact' (as generated from a global option)
+%                   'artifact' (as generated from a global option).
+%                   It may contain ':' as long as the prefix is not special.
 %
-%  Single letter % substitutions will only happen if the preceeding character
-%  is NOT a number. But braced substitutions will always be performed. This
-%  prevents typical usage of percent in 'geometry arguments' from being
-%  substituted unexpectedly.
+%  Single letter % substitutions will only happen if the character before the
+%  percent is NOT a number. But braced substitutions will always be performed.
+%  This prevents the typical usage of percent in a interpreted geometry
+%  argument from being substituted when the percent is a geometry flag.
 %
 %  If 'glob-expresions' ('*' or '?' characters) is used for 'name' it may be
 %  used as a search pattern to print multiple lines of "name=value\n" pairs of
 %  the associacted set of properities.
 %
-%  The returned string must be freed using DestoryString().
+%  The returned string must be freed using DestoryString() by the caller.
 %
 %  The format of the InterpretImageProperties method is:
 %
@@ -2998,7 +3004,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         q=interpret_text+strlen(interpret_text);
       }
     /*
-      Look for percent escapes, (and handle other specials)
+      Look for the various escapes, (and handle other specials)
     */
     switch (*p) {
       case '\\':
@@ -3056,7 +3062,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       }
 
     /*
-      Single letter escapes
+      Single letter escapes  %c
     */
     if ( *p != '[' ) {
       const char
@@ -3090,7 +3096,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
     }
 
     /*
-      Braced Percent Escape
+      Braced Percent Escape  %[...]
     */
     {
       char
@@ -3297,6 +3303,9 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
 %  RemoveImageProperty() removes a property from the image and returns its
 %  value.
 %
+%  In this case the ConstantString() value returned should be freed by the
+%  caller when finished.
+%
 %  The format of the RemoveImageProperty method is:
 %
 %      char *RemoveImageProperty(Image *image,const char *property)
@@ -3427,10 +3436,10 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
       return(MagickFalse);
     }
 
-  /* FUTURE: These should produce 'illegal settings'
-     + binary chars in p[roperty key
+  /* FUTURE: These should produce a 'illegal settings' error
+     + binary chars in property key
      + single letter property keys (read only)
-     + known special prefix (read only, they don't get saved!)
+     + known special prefixes (read only, they don't get saved!)
   */
 
   switch (*property)
