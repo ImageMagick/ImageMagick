@@ -157,7 +157,7 @@ MagickPrivate void ConvertHCLToRGB(const double hue,const double chroma,
       m=0.0;
     }
   else
-    if (m+c > 1.0)
+    if ((m+c) > 1.0)
       {
         z=(1.0-luma)/(m+c-luma);
         m=1.0-z*c;
@@ -491,11 +491,11 @@ MagickPrivate void ConvertRGBToHCL(const double red,const double green,
   max=MagickMax(r,MagickMax(g,b));
   c=max-(double) MagickMin(r,MagickMin(g,b));
   h=0.0;
-  if (c == 0)
+  if (c == 0.0)
     h=0.0;
   else
     if (red == max)
-      h=fmod(6.0+(g-b)/c,6.0);
+      h=fmod((g-b)/c+6.0,6.0);
     else
       if (green == max)
         h=((b-r)/c)+2.0;
