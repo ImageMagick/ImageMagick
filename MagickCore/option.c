@@ -1022,7 +1022,8 @@ static const OptionInfo
     { "Cubic", CubicFilter, UndefinedOptionFlag, MagickFalse },
     { "Gaussian", GaussianFilter, UndefinedOptionFlag, MagickFalse },
     { "Hamming", HammingFilter, UndefinedOptionFlag, MagickFalse },
-    { "Hanning", HanningFilter, UndefinedOptionFlag, MagickFalse },
+    { "Hann", HannFilter, UndefinedOptionFlag, MagickFalse },
+    { "Hanning", HannFilter, UndefinedOptionFlag, MagickTrue }, /*misspell*/
     { "Hermite", HermiteFilter, UndefinedOptionFlag, MagickFalse },
     { "Jinc", JincFilter, UndefinedOptionFlag, MagickFalse },
     { "Kaiser", KaiserFilter, UndefinedOptionFlag, MagickFalse },
@@ -1041,7 +1042,8 @@ static const OptionInfo
     { "SincFast", SincFastFilter, UndefinedOptionFlag, MagickFalse },
     { "Spline", SplineFilter, UndefinedOptionFlag, MagickFalse },
     { "Triangle", TriangleFilter, UndefinedOptionFlag, MagickFalse },
-    { "Welsh", WelshFilter, UndefinedOptionFlag, MagickFalse },
+    { "Welch", WelchFilter, UndefinedOptionFlag, MagickFalse },
+    { "Welsh", WelchFilter, UndefinedOptionFlag, MagickTrue }, /*misspell*/
     { (char *) NULL, UndefinedFilter, UndefinedOptionFlag, MagickFalse }
   },
   FunctionOptions[] =

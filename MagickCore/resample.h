@@ -36,7 +36,7 @@ typedef enum
   BoxFilter,
   TriangleFilter,
   HermiteFilter,
-  HanningFilter,
+  HannFilter,
   HammingFilter,
   BlackmanFilter,
   GaussianFilter,
@@ -48,7 +48,7 @@ typedef enum
   SincFilter,
   SincFastFilter,
   KaiserFilter,
-  WelshFilter,
+  WelchFilter,
   ParzenFilter,
   BohmanFilter,
   BartlettFilter,
@@ -68,8 +68,12 @@ typedef enum
   Backward compatibility for the more correctly named Jinc Filter.  Original
   source of this filter is from "zoom" but it refers to a reference by Pratt,
   who does not actualy name the filter.
+
+  also miss-spellings of common filters
 */
-#define BesselFilter JincFilter
+#define BesselFilter  JincFilter
+#define WelshFilter   WelchFilter
+#define HanningFilter HannFilter
 
 typedef struct _ResampleFilter
   ResampleFilter;
