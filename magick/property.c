@@ -2892,17 +2892,23 @@ MagickExport char *GetNextImageProperty(const Image *image)
 %     &lt; &gt; &amp;   replaced by '<', '>', '&' resp.
 %     %%                replaced by percent
 %
-%     %x            where 'x' is a single letter, case sensitive).
-%     %[type:name]  where 'type' is specifically known prefix.
+%     %x %[x]       where 'x' is a single letter properity, case sensitive).
+%     %[type:name]  where 'type' a is special and known prefix.
 %     %[name]       where 'name' is a specifically known attribute, calculated
 %                   value, or a per-image property string name, or a per-image
-%                   'artifact' (as generated from a global option)
+%                   'artifact' (as generated from a global option).
+%                   It may contain ':' as long as the prefix is not special.
+%
+%  Single letter % substitutions will only happen if the character before the
+%  percent is NOT a number. But braced substitutions will always be performed.
+%  This prevents the typical usage of percent in a interpreted geometry
+%  argument from being substituted when the percent is a geometry flag.
 %
 %  If 'glob-expresions' ('*' or '?' characters) is used for 'name' it may be
 %  used as a search pattern to print multiple lines of "name=value\n" pairs of
 %  the associacted set of properities.
 %
-%  The returned string must be freed using DestoryString().
+%  The returned string must be freed using DestoryString() by the caller.
 %
 %  The format of the InterpretImageProperties method is:
 %
@@ -2935,14 +2941,20 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
     extent,
     length;
 
+  MagickBooleanType
+    number;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
-  if ((embed_text == (const char *) NULL) || (*embed_text == '\0'))
+  if ((embed_text == (const char *) NULL))
     return((char *) NULL);
   p=embed_text;
+
+  if (*p == '\0')
+    return(ConstantString(""));
 
   /* handle a '@' replace string from file */
   if (*p == '@') {
@@ -2960,7 +2972,9 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
   */
   interpret_text=AcquireString(embed_text); /* new string with extra space */
   extent=MaxTextExtent;                     /* how many extra space */
-  for (q=interpret_text; *p!='\0'; p++)
+  number=MagickFalse;                       /* is last char a number? */
+  for (q=interpret_text; *p!='\0';
+          number=(isdigit(*p))?MagickTrue:MagickFalse,p++)
   {
     *q='\0';
     if ((size_t) (q-interpret_text+MaxTextExtent) >= extent)
@@ -2973,7 +2987,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         q=interpret_text+strlen(interpret_text);
       }
     /*
-      Look for percent escapes, (and handle other specials)
+      Look for the various escapes, (and handle other specials)
     */
     switch (*p) {
       case '\\':
@@ -3031,12 +3045,18 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       }
 
     /*
-      Single letter escapes
+      Do Single letter escapes  %c
     */
     if ( *p != '[' ) {
       const char
         *value;
 
+      /* But only if not preceeded by a number! */
+      if ( number != MagickFalse ) {
+        *q++='%'; /* do NOT substitute the percent */
+        p--;      /* back up one */
+        continue;
+      }
       value=GetMagickPropertyLetter(image_info,image,*p);
       if (value != (char *) NULL) {
         length=strlen(value);
@@ -3059,7 +3079,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
     }
 
     /*
-      Braced Percent Escape
+      Braced Percent Escape  %[...]
     */
     {
       char
@@ -3115,7 +3135,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
       }
 
       /*
-        Special Properity Prefixes
+        Special Property Prefixes
         such as: %[exif:...] %[fx:...] %[pixel:...]
         Otherwise a free-form property string
       */
