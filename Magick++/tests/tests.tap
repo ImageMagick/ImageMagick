@@ -12,11 +12,8 @@ echo "1..12"
 
 cd Magick++/tests || exit 1
 
-tests='appendImages attributes averageImages coalesceImages coderInfo color
-  colorHistogram exceptions montageImages morphImages readWriteBlob readWriteImages'
-
-for mytest in $tests
+for mytest in appendImages attributes averageImages coalesceImages coderInfo color colorHistogram exceptions montageImages morphImages readWriteBlob readWriteImages
 do
-  ./mytest && echo "ok" || echo "not ok"
+  ${mytest} && echo "ok" || echo "not ok"
 done
 :
