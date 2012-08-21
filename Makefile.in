@@ -231,9 +231,9 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = $(am__EXEEXT_1)
-TESTS = $(TESTS_TESTS) $(am__EXEEXT_6) $(MAGICKWAND_TESTS)
-XFAIL_TESTS = $(am__EXEEXT_7) $(am__EXEEXT_7)
-check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4) $(am__EXEEXT_5)
+TESTS = $(TESTS_TESTS) $(am__EXEEXT_5)
+XFAIL_TESTS = $(am__EXEEXT_6) $(am__EXEEXT_6)
+check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4)
 DIST_COMMON = $(MagickCoreinc_HEADERS) $(MagickWandinc_HEADERS) \
 	$(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(am__ltdlinclude_HEADERS_DIST) \
@@ -1819,7 +1819,8 @@ am__EXEEXT_1 = utilities/animate$(EXEEXT) utilities/compare$(EXEEXT) \
 	utilities/import$(EXEEXT) utilities/magick$(EXEEXT) \
 	utilities/mogrify$(EXEEXT) utilities/montage$(EXEEXT) \
 	utilities/stream$(EXEEXT)
-am__EXEEXT_2 = tests/validate$(EXEEXT)
+am__EXEEXT_2 = tests/validate$(EXEEXT) tests/drawtest$(EXEEXT) \
+	tests/wandtest$(EXEEXT)
 am__EXEEXT_3 = Magick++/demo/analyze$(EXEEXT) \
 	Magick++/demo/button$(EXEEXT) Magick++/demo/demo$(EXEEXT) \
 	Magick++/demo/detrans$(EXEEXT) Magick++/demo/flip$(EXEEXT) \
@@ -1838,8 +1839,6 @@ am__EXEEXT_3 = Magick++/demo/analyze$(EXEEXT) \
 	Magick++/tests/readWriteBlob$(EXEEXT) \
 	Magick++/tests/readWriteImages$(EXEEXT)
 @WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_4 = $(am__EXEEXT_3)
-am__EXEEXT_5 = MagickWand/drawtest$(EXEEXT) \
-	MagickWand/wandtest$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am_Magick___demo_analyze_OBJECTS = Magick++/demo/analyze.$(OBJEXT)
 Magick___demo_analyze_OBJECTS = $(am_Magick___demo_analyze_OBJECTS)
@@ -1928,23 +1927,23 @@ am_Magick___tests_readWriteImages_OBJECTS =  \
 Magick___tests_readWriteImages_OBJECTS =  \
 	$(am_Magick___tests_readWriteImages_OBJECTS)
 Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
-am_MagickWand_drawtest_OBJECTS = MagickWand/drawtest.$(OBJEXT)
-MagickWand_drawtest_OBJECTS = $(am_MagickWand_drawtest_OBJECTS)
-MagickWand_drawtest_DEPENDENCIES = $(MAGICKWAND_LIBS)
-MagickWand_drawtest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+am_tests_drawtest_OBJECTS = tests/drawtest.$(OBJEXT)
+tests_drawtest_OBJECTS = $(am_tests_drawtest_OBJECTS)
+tests_drawtest_DEPENDENCIES = $(MAGICKWAND_LIBS)
+tests_drawtest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(MagickWand_drawtest_LDFLAGS) \
-	$(LDFLAGS) -o $@
-am_MagickWand_wandtest_OBJECTS = MagickWand/wandtest.$(OBJEXT)
-MagickWand_wandtest_OBJECTS = $(am_MagickWand_wandtest_OBJECTS)
-MagickWand_wandtest_DEPENDENCIES = $(MAGICKWAND_LIBS)
-MagickWand_wandtest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(MagickWand_wandtest_LDFLAGS) \
-	$(LDFLAGS) -o $@
+	$(AM_CFLAGS) $(CFLAGS) $(tests_drawtest_LDFLAGS) $(LDFLAGS) -o \
+	$@
 am_tests_validate_OBJECTS = tests/tests_validate-validate.$(OBJEXT)
 tests_validate_OBJECTS = $(am_tests_validate_OBJECTS)
 tests_validate_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+am_tests_wandtest_OBJECTS = tests/wandtest.$(OBJEXT)
+tests_wandtest_OBJECTS = $(am_tests_wandtest_OBJECTS)
+tests_wandtest_DEPENDENCIES = $(MAGICKWAND_LIBS)
+tests_wandtest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(tests_wandtest_LDFLAGS) $(LDFLAGS) -o \
+	$@
 am_utilities_animate_OBJECTS = utilities/animate.$(OBJEXT)
 utilities_animate_OBJECTS = $(am_utilities_animate_OBJECTS)
 utilities_animate_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
@@ -2162,8 +2161,8 @@ SOURCES = $(Magick___lib_libMagick___la_SOURCES) \
 	$(Magick___tests_morphImages_SOURCES) \
 	$(Magick___tests_readWriteBlob_SOURCES) \
 	$(Magick___tests_readWriteImages_SOURCES) \
-	$(MagickWand_drawtest_SOURCES) $(MagickWand_wandtest_SOURCES) \
-	$(tests_validate_SOURCES) $(utilities_animate_SOURCES) \
+	$(tests_drawtest_SOURCES) $(tests_validate_SOURCES) \
+	$(tests_wandtest_SOURCES) $(utilities_animate_SOURCES) \
 	$(utilities_compare_SOURCES) $(utilities_composite_SOURCES) \
 	$(utilities_conjure_SOURCES) $(utilities_display_SOURCES) \
 	$(utilities_identify_SOURCES) $(utilities_import_SOURCES) \
@@ -2254,8 +2253,8 @@ DIST_SOURCES = $(Magick___lib_libMagick___la_SOURCES) \
 	$(Magick___tests_morphImages_SOURCES) \
 	$(Magick___tests_readWriteBlob_SOURCES) \
 	$(Magick___tests_readWriteImages_SOURCES) \
-	$(MagickWand_drawtest_SOURCES) $(MagickWand_wandtest_SOURCES) \
-	$(tests_validate_SOURCES) $(utilities_animate_SOURCES) \
+	$(tests_drawtest_SOURCES) $(tests_validate_SOURCES) \
+	$(tests_wandtest_SOURCES) $(utilities_animate_SOURCES) \
 	$(utilities_compare_SOURCES) $(utilities_composite_SOURCES) \
 	$(utilities_conjure_SOURCES) $(utilities_display_SOURCES) \
 	$(utilities_identify_SOURCES) $(utilities_import_SOURCES) \
@@ -2447,9 +2446,9 @@ am__set_TESTS_bases = \
   bases=`for i in $$bases; do echo $$i; done | sed 's/\.log$$//'`; \
   bases=`echo $$bases`
 RECHECK_LOGS = $(TEST_LOGS)
-@WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_6 =  \
+@WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_5 =  \
 @WITH_MAGICK_PLUS_PLUS_TRUE@	$(MAGICKPP_TEST_SCRIPTS_OPT)
-am__EXEEXT_7 =
+am__EXEEXT_6 =
 TEST_SUITE_LOG = test-suite.log
 am__test_logs1 = $(TESTS:=.log)
 am__test_logs2 = $(am__test_logs1:@EXEEXT@.log=.log)
@@ -4642,33 +4641,10 @@ MagickWand_libMagickWand_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
 MagickWand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
 MAGICKWAND_EXTRA_DIST = \
 	MagickWand/ChangeLog \
-	MagickWand/input_256c.miff \
-	MagickWand/input_bilevel.miff \
-	MagickWand/input_gray.miff \
-	MagickWand/input_truecolor.miff \
 	MagickWand/MagickWand-config.1 \
-	MagickWand/MagickWand.pc.in \
-	MagickWand/sequence.miff \
-	MagickWand/common.shi \
-	$(MAGICKWAND_TESTS)
+	MagickWand/MagickWand.pc.in
 
-MagickWand_drawtest_SOURCES = MagickWand/drawtest.c
-MagickWand_drawtest_LDFLAGS = $(LDFLAGS)
-MagickWand_drawtest_LDADD = $(MAGICKWAND_LIBS)
-MagickWand_wandtest_SOURCES = MagickWand/wandtest.c
-MagickWand_wandtest_LDFLAGS = $(LDFLAGS)
-MagickWand_wandtest_LDADD = $(MAGICKWAND_LIBS)
-MAGICKWAND_CHECK_PGRMS = \
-	MagickWand/drawtest \
-	MagickWand/wandtest
-
-MAGICKWAND_TESTS = \
-	MagickWand/drawtest.tap \
-	MagickWand/wandtest.tap
-
-MAGICKWAND_CLEANFILES = \
-	MagickWand/*_out.*
-
+MAGICKWAND_CLEANFILES = 
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_LIBS = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_LIBS = Magick++/lib/libMagick++.la
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_CHECK_PGRMS = 
@@ -4959,11 +4935,19 @@ MAGICK_UTILITIES = convert magick-script
 UTILITIES_INSTALL_EXEC_LOCAL_TARGETS = install-exec-local-utilities
 UTILITIES_UNINSTALL_LOCAL_TARGETS = uninstall-local-utilities
 TESTS_CHECK_PGRMS = \
-	tests/validate
+	tests/validate \
+	tests/drawtest \
+	tests/wandtest
 
 tests_validate_SOURCES = tests/validate.c tests/validate.h
 tests_validate_CPPFLAGS = $(AM_CPPFLAGS)
 tests_validate_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+tests_drawtest_SOURCES = tests/drawtest.c
+tests_drawtest_LDFLAGS = $(LDFLAGS)
+tests_drawtest_LDADD = $(MAGICKWAND_LIBS)
+tests_wandtest_SOURCES = tests/wandtest.c
+tests_wandtest_LDFLAGS = $(LDFLAGS)
+tests_wandtest_LDADD = $(MAGICKWAND_LIBS)
 TESTS_XFAIL_TESTS = 
 TESTS_TESTS = \
 	tests/validate-compare.tap \
@@ -4976,10 +4960,17 @@ TESTS_TESTS = \
 	tests/validate-colorspace.tap \
 	tests/validate-stream.tap \
 	tests/validate-formats-in-memory.tap \
-	tests/validate-formats-on-disk.tap
+	tests/validate-formats-on-disk.tap \
+	tests/drawtest.tap \
+	tests/wandtest.tap
 
 TESTS_EXTRA_DIST = \
 	tests/common.shi \
+  tests/input_256c.miff \
+  tests/input_bilevel.miff \
+  tests/input_gray.miff \
+  tests/input_truecolor.miff \
+  tests/sequence.miff \
 	$(TESTS_TESTS)
 
 TESTS_CLEANFILES = 
@@ -6683,27 +6674,27 @@ Magick++/tests/readWriteImages.$(OBJEXT):  \
 Magick++/tests/readWriteImages$(EXEEXT): $(Magick___tests_readWriteImages_OBJECTS) $(Magick___tests_readWriteImages_DEPENDENCIES) $(EXTRA_Magick___tests_readWriteImages_DEPENDENCIES) Magick++/tests/$(am__dirstamp)
 	@rm -f Magick++/tests/readWriteImages$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(Magick___tests_readWriteImages_OBJECTS) $(Magick___tests_readWriteImages_LDADD) $(LIBS)
-MagickWand/drawtest.$(OBJEXT): MagickWand/$(am__dirstamp) \
-	MagickWand/$(DEPDIR)/$(am__dirstamp)
-MagickWand/drawtest$(EXEEXT): $(MagickWand_drawtest_OBJECTS) $(MagickWand_drawtest_DEPENDENCIES) $(EXTRA_MagickWand_drawtest_DEPENDENCIES) MagickWand/$(am__dirstamp)
-	@rm -f MagickWand/drawtest$(EXEEXT)
-	$(AM_V_CCLD)$(MagickWand_drawtest_LINK) $(MagickWand_drawtest_OBJECTS) $(MagickWand_drawtest_LDADD) $(LIBS)
-MagickWand/wandtest.$(OBJEXT): MagickWand/$(am__dirstamp) \
-	MagickWand/$(DEPDIR)/$(am__dirstamp)
-MagickWand/wandtest$(EXEEXT): $(MagickWand_wandtest_OBJECTS) $(MagickWand_wandtest_DEPENDENCIES) $(EXTRA_MagickWand_wandtest_DEPENDENCIES) MagickWand/$(am__dirstamp)
-	@rm -f MagickWand/wandtest$(EXEEXT)
-	$(AM_V_CCLD)$(MagickWand_wandtest_LINK) $(MagickWand_wandtest_OBJECTS) $(MagickWand_wandtest_LDADD) $(LIBS)
 tests/$(am__dirstamp):
 	@$(MKDIR_P) tests
 	@: > tests/$(am__dirstamp)
 tests/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) tests/$(DEPDIR)
 	@: > tests/$(DEPDIR)/$(am__dirstamp)
+tests/drawtest.$(OBJEXT): tests/$(am__dirstamp) \
+	tests/$(DEPDIR)/$(am__dirstamp)
+tests/drawtest$(EXEEXT): $(tests_drawtest_OBJECTS) $(tests_drawtest_DEPENDENCIES) $(EXTRA_tests_drawtest_DEPENDENCIES) tests/$(am__dirstamp)
+	@rm -f tests/drawtest$(EXEEXT)
+	$(AM_V_CCLD)$(tests_drawtest_LINK) $(tests_drawtest_OBJECTS) $(tests_drawtest_LDADD) $(LIBS)
 tests/tests_validate-validate.$(OBJEXT): tests/$(am__dirstamp) \
 	tests/$(DEPDIR)/$(am__dirstamp)
 tests/validate$(EXEEXT): $(tests_validate_OBJECTS) $(tests_validate_DEPENDENCIES) $(EXTRA_tests_validate_DEPENDENCIES) tests/$(am__dirstamp)
 	@rm -f tests/validate$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(tests_validate_OBJECTS) $(tests_validate_LDADD) $(LIBS)
+tests/wandtest.$(OBJEXT): tests/$(am__dirstamp) \
+	tests/$(DEPDIR)/$(am__dirstamp)
+tests/wandtest$(EXEEXT): $(tests_wandtest_OBJECTS) $(tests_wandtest_DEPENDENCIES) $(EXTRA_tests_wandtest_DEPENDENCIES) tests/$(am__dirstamp)
+	@rm -f tests/wandtest$(EXEEXT)
+	$(AM_V_CCLD)$(tests_wandtest_LINK) $(tests_wandtest_OBJECTS) $(tests_wandtest_LDADD) $(LIBS)
 utilities/$(am__dirstamp):
 	@$(MKDIR_P) utilities
 	@: > utilities/$(am__dirstamp)
@@ -6977,8 +6968,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-wand-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-wand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/MagickWand_libMagickWand_la-wandcli.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/drawtest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@MagickWand/$(DEPDIR)/wandtest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_la-aai.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_la-art.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/MagickCore_libMagickCore_la-avs.Plo@am__quote@
@@ -7239,7 +7228,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/ltdl_libltdl_la-preopen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/ltdl_libltdlc_la-preopen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/shl_load.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/drawtest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_validate-validate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/wandtest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/animate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/compare.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@utilities/$(DEPDIR)/composite.Po@am__quote@
@@ -10824,6 +10815,7 @@ MagickCore-install-data-local:
 	$(INSTALL_HEADER) MagickCore/magick-config.h $(DESTDIR)$(MagickCoreincdir)/magick-config.h
 MagickCore-uninstall-local:
 	rm -f $(DESTDIR)$(MagickCoreincdir)/magick-config.h
+	$(MAGICKWAND_TESTS)
 install-exec-local-utilities:
 	$(mkdir_p) $(DESTDIR)$(bindir)
 	cd $(DESTDIR)$(bindir) ; \
@@ -10841,6 +10833,7 @@ uninstall-local-utilities:
 	  target=`echo "$$name" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
 	  rm -f $$target ; \
 	done
+	tests/*_out.*
 
 # If source files missing, see if they can be obtained via VPATH
 perl-sources:
