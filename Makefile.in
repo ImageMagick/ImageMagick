@@ -4596,7 +4596,7 @@ WAND_EXTRA_DIST = \
 	wand/sequence.miff \
 	wand/Wand-config.1 \
 	wand/Wand.pc.in  \
-	wand/common.sh \
+	wand/common.shi \
 	$(WAND_TESTS)
 
 wand_drawtest_SOURCES = wand/drawtest.c
@@ -4610,8 +4610,8 @@ WAND_CHECK_PGRMS = \
 	wand/wandtest
 
 WAND_TESTS = \
-	wand/drawtest.sh \
-	wand/wandtest.sh
+	wand/drawtest.tap \
+	wand/wandtest.tap
 
 WAND_CLEANFILES = \
 	wand/*_out.*
@@ -4924,20 +4924,20 @@ tests_validate_CPPFLAGS = $(AM_CPPFLAGS)
 tests_validate_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 TESTS_XFAIL_TESTS = 
 TESTS_TESTS = \
-	tests/validate-compare.sh \
-	tests/validate-composite.sh \
-	tests/validate-convert.sh \
-	tests/validate-identify.sh \
-	tests/validate-import.sh \
-	tests/validate-montage.sh \
-	tests/validate-pipe.sh \
-	tests/validate-colorspace.sh \
-	tests/validate-stream.sh \
-	tests/validate-formats-in-memory.sh \
-	tests/validate-formats-on-disk.sh
+	tests/validate-compare.tap \
+	tests/validate-composite.tap \
+	tests/validate-convert.tap \
+	tests/validate-identify.tap \
+	tests/validate-import.tap \
+	tests/validate-montage.tap \
+	tests/validate-pipe.tap \
+	tests/validate-colorspace.tap \
+	tests/validate-stream.tap \
+	tests/validate-formats-in-memory.tap \
+	tests/validate-formats-on-disk.tap
 
 TESTS_EXTRA_DIST = \
-	tests/common.sh \
+	tests/common.shi \
 	$(TESTS_TESTS)
 
 TESTS_CLEANFILES = 

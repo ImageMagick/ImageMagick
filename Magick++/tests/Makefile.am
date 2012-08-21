@@ -55,17 +55,7 @@ TESTS_ENVIRONMENT = \
 
 # Tests to run
 TESTS = \
-	test_exceptions.sh \
-	test_appendImages.sh \
-	test_attributes.sh \
-	test_averageImages.sh \
-	test_coalesceImages.sh \
-	test_colorHistogram.sh \
-	test_color.sh \
-	test_montageImages.sh \
-	test_morphImages.sh \
-	test_readWriteBlob.sh \
-	test_readWriteImages.sh
+	tests.tap
 
 # Tests which are expected to fail
 XFAIL_TESTS =

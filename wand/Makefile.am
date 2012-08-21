@@ -134,7 +134,7 @@ WAND_EXTRA_DIST = \
 	wand/sequence.miff \
 	wand/Wand-config.1 \
 	wand/Wand.pc.in  \
-	wand/common.sh \
+	wand/common.shi \
 	$(WAND_TESTS)
 
 wand_drawtest_SOURCES      = wand/drawtest.c
@@ -150,8 +150,8 @@ WAND_CHECK_PGRMS = \
 	wand/wandtest
 
 WAND_TESTS = \
-	wand/drawtest.sh \
-	wand/wandtest.sh
+	wand/drawtest.tap \
+	wand/wandtest.tap
 
 WAND_CLEANFILES = \
 	wand/*_out.*
