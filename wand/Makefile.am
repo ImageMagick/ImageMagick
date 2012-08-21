@@ -125,33 +125,9 @@ wand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MAT
 
 WAND_EXTRA_DIST = \
 	wand/ChangeLog \
-	wand/input_256c.miff \
-	wand/input_bilevel.miff \
-	wand/input_gray.miff \
-	wand/input_truecolor.miff \
 	wand/MagickWand-config.1 \
 	wand/MagickWand.pc.in \
-	wand/sequence.miff \
 	wand/Wand-config.1 \
-	wand/Wand.pc.in  \
-	wand/common.shi \
-	$(WAND_TESTS)
+	wand/Wand.pc.in
 
-wand_drawtest_SOURCES      = wand/drawtest.c
-wand_drawtest_LDFLAGS      = $(LDFLAGS)
-wand_drawtest_LDADD        = $(MAGICKWAND_LIBS)
-
-wand_wandtest_SOURCES      = wand/wandtest.c
-wand_wandtest_LDFLAGS      = $(LDFLAGS)
-wand_wandtest_LDADD        = $(MAGICKWAND_LIBS)
-
-WAND_CHECK_PGRMS = \
-	wand/drawtest \
-	wand/wandtest
-
-WAND_TESTS = \
-	wand/drawtest.tap \
-	wand/wandtest.tap
-
-WAND_CLEANFILES = \
-	wand/*_out.*
+WAND_CLEANFILES =
