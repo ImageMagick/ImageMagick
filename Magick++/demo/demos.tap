@@ -16,7 +16,7 @@ cd Magick++/demo || exit 1
 
 for demo in button demo flip gravity piddle shapes
 do
-  ${demo} && echo "ok" || echo "not ok"
+  ./${demo} && echo "ok" || echo "not ok"
 done
 
 for filter in bessel blackman box catrom cubic gaussian hamming hanning hermite lanczos mitchell point quadratic sample scale sinc triangle
