@@ -7,8 +7,8 @@
 #
 
 set -e # Exit on any error
-. ${srcdir}/MagickWand/common.shi
+. ${srcdir}/wand/common.shi
 echo "1..1"
 
-${MEMCHECK} ./drawtest drawtest_out.miff && echo "ok" || echo "not ok"
+./drawtest drawtest_out.miff && echo "ok" || echo "not ok"
 :

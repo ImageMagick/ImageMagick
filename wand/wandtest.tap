@@ -9,8 +9,8 @@
 #
 
 set -e # Exit on any error
-. ${srcdir}/MagickWand/common.sh
+. ${srcdir}/wand/common.shi
 echo "1..1"
 
-${MEMCHECK} ./wandtest wandtest_out.miff -validate compare && echo "ok" || echo "not ok"
+./wandtest wandtest_out.miff && echo "ok" || echo "not ok"
 :
