@@ -10,5 +10,7 @@
 
 set -e # Exit on any error
 . ${srcdir}/MagickWand/common.sh
+echo "1..1"
 
-${MEMCHECK} ./wandtest wandtest_out.miff
+${MEMCHECK} ./wandtest wandtest_out.miff -validate compare && echo "ok" || echo "not ok"
+:
