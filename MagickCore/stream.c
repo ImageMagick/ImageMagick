@@ -746,6 +746,8 @@ static const Quantum *GetVirtualPixelStream(const Image *image,
   */
   number_pixels=(MagickSizeType) columns*rows;
   length=(size_t) number_pixels*cache_info->number_channels*sizeof(Quantum);
+  if (cache_info->number_channels == 0)
+    length=number_pixels*sizeof(Quantum);
   if (cache_info->metacontent_extent != 0)
     length+=number_pixels*cache_info->metacontent_extent;
   if (cache_info->pixels == (Quantum *) NULL)
