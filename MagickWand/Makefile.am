@@ -140,7 +140,7 @@ MAGICKWAND_EXTRA_DIST = \
 	MagickWand/MagickWand-config.1 \
 	MagickWand/MagickWand.pc.in \
 	MagickWand/sequence.miff \
-	MagickWand/common.sh \
+	MagickWand/common.shi \
 	$(MAGICKWAND_TESTS)
 
 MagickWand_drawtest_SOURCES      = MagickWand/drawtest.c
@@ -156,8 +156,8 @@ MAGICKWAND_CHECK_PGRMS = \
 	MagickWand/wandtest
 
 MAGICKWAND_TESTS = \
-	MagickWand/drawtest.sh \
-	MagickWand/wandtest.sh
+	MagickWand/drawtest.tap \
+	MagickWand/wandtest.tap
 
 MAGICKWAND_CLEANFILES = \
 	MagickWand/*_out.*
