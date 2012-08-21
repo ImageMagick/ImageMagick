@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# Copyright 2004 Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
+#
+# This file is part of Magick++, the C++ API for ImageMagick and
+# ImageMagick.  Please see the file "COPYING" included with Magick++
+# for usage and copying restrictions.
+#
+SRCDIR=`dirname $0`
+SRCDIR=`cd $SRCDIR && pwd`/
+echo "1..24"
+
+cd Magick++/demo || exit 1
+
+./analyze "$SRCDIR/model.miff" && echo "ok" || echo "not ok"
+
+for demo in button demo flip gravity piddle shapes
+do
+  ${demo} && echo "ok" || echo "not ok"
+done
+
+for filter in bessel blackman box catrom cubic gaussian hamming hanning hermite lanczos mitchell point quadratic sample scale sinc triangle
+do
+  ./zoom -filter $filter -geometry 600x600 ${SRCDIR}/model.miff  ${executable}_${filter}_out.miff && echo "ok" || echo "not ok"
+done
+:

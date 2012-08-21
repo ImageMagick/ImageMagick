@@ -19,37 +19,37 @@
 set -e # Exit on any error
 [ "X$srcdir" = "X" ] && srcdir=`pwd`
 . ${srcdir}/tests/common.shi
-echo "1..1"
+echo "1..17"
 
-${MAGICK} pnm:- null:   < ${REFERENCE_IMAGE}
-${MAGICK} pnm:- info:   < ${REFERENCE_IMAGE}
-${MAGICK} pnm:- miff:-  < ${REFERENCE_IMAGE} | ${IDENTIFY} -
-${MAGICK} pnm:- -       < ${REFERENCE_IMAGE} | ${IDENTIFY} -
-${MAGICK} ${REFERENCE_IMAGE} -write null:  null:
-${MAGICK} ${REFERENCE_IMAGE} -write info:  null:
-${MAGICK} ${REFERENCE_IMAGE} -write miff:- null: | ${IDENTIFY} -
-${MAGICK} ${REFERENCE_IMAGE} -write -      null: | ${IDENTIFY} -
+${MAGICK} pnm:- null:   < ${REFERENCE_IMAGE} && echo "ok" || echo "not ok"
+${MAGICK} pnm:- info:   < ${REFERENCE_IMAGE} && echo "ok" || echo "not ok"
+${MAGICK} pnm:- miff:-  < ${REFERENCE_IMAGE} | ${IDENTIFY} - && echo "ok" || echo "not ok"
+${MAGICK} pnm:- -       < ${REFERENCE_IMAGE} | ${IDENTIFY} - && echo "ok" || echo "not ok"
+${MAGICK} ${REFERENCE_IMAGE} -write null:  null: && echo "ok" || echo "not ok"
+${MAGICK} ${REFERENCE_IMAGE} -write info:  null: && echo "ok" || echo "not ok"
+${MAGICK} ${REFERENCE_IMAGE} -write miff:- null: | ${IDENTIFY} - && echo "ok" || echo "not ok"
+${MAGICK} ${REFERENCE_IMAGE} -write -      null: | ${IDENTIFY} - && echo "ok" || echo "not ok"
 
 # IMv7 "magick" testing
 # -read option
-${MAGICK} -read ${REFERENCE_IMAGE} info:
+${MAGICK} -read ${REFERENCE_IMAGE} info: && echo "ok" || echo "not ok"
 # -exit can be used insted of implicit write
-${MAGICK} ${REFERENCE_IMAGE} -write info: -exit
+${MAGICK} ${REFERENCE_IMAGE} -write info: -exit && echo "ok" || echo "not ok"
 # null: does not require an image during write
-${MAGICK} -write null: -exit
+${MAGICK} -write null: -exit && echo "ok" || echo "not ok"
 # implied write null: without image
-${MAGICK} ${REFERENCE_IMAGE} -write info: +delete null:
+${MAGICK} ${REFERENCE_IMAGE} -write info: +delete null: && echo "ok" || echo "not ok"
 # Write to file decriptor
-${MAGICK} ${REFERENCE_IMAGE} fd:6  6>&1 | ${IDENTIFY} -
+${MAGICK} ${REFERENCE_IMAGE} fd:6  6>&1 | ${IDENTIFY} - && echo "ok" || echo "not ok"
 # Read from file decriptor
 exec 5<${REFERENCE_IMAGE}
-${MAGICK} fd:5 info:
+${MAGICK} fd:5 info: && echo "ok" || echo "not ok"
 exec 5<&-
 # pipelined magick script
-echo "-read ${REFERENCE_IMAGE} -write info:" | ${MAGICK} -script -
+echo "-read ${REFERENCE_IMAGE} -write info:" | ${MAGICK} -script - && echo "ok" || echo "not ok"
 # pipelined magick script, input image pre-read
-echo "-write info:" | ${MAGICK} ${REFERENCE_IMAGE} -script -
+echo "-write info:" | ${MAGICK} ${REFERENCE_IMAGE} -script - && echo "ok" || echo "not ok"
 # pipelined script from file descriptor, read image from stdin
 echo "-read pnm:- -write info:" |\
-   ${MAGICK} -script fd:5 5<&0 <${REFERENCE_IMAGE}
+   ${MAGICK} -script fd:5 5<&0 <${REFERENCE_IMAGE} && echo "ok" || echo "not ok"
 :

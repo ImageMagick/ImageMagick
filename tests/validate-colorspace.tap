@@ -15,7 +15,7 @@
 #  limitations under the License.
 #
 . ${srcdir}/tests/common.shi
-echo "1..1"
+echo "1..19"
 
 depth=`eval ${MAGICK} xc:none -format '%[fx:QuantumRange]' info:-`
 if [ "X$depth" == "X255" ]; then
@@ -77,47 +77,41 @@ test_color() {
   color=`eval ${MAGICK} "$in" $cs "$out"`
 
   if [ "X$color" = "X$average" ]; then
-    printf "$format" "$test" "good"
-    return
+    return 0
   fi
   # Its failed the round-trip test, now report how it failed!
   error=true
   if [ "X$color" = "X$too_light" ]; then
-    printf "$format" "$test" "TOO_LIGHT"
-    return
+    return 1
   fi
   if [ "X$color" = "X$too_dark" ]; then
-    printf "$format" "$test" "TOO_DARK"
-    return
+    return 1
   fi
-  printf "$format" "$test" "UNKNOWN COLOR (expect $average, got $color)"
+  return 1
 }
 
 # ----------------
 
-test_color RGB     sRGB  # round trip (parts tested above)
+test_color RGB     sRGB && echo "ok" || echo "not ok"
 
-test_color XYZ     sRGB
-test_color XYZ RGB sRGB
-test_color RGB XYZ sRGB
+test_color XYZ     sRGB && echo "ok" || echo "not ok"
+test_color XYZ RGB sRGB && echo "ok" || echo "not ok"
+test_color RGB XYZ sRGB && echo "ok" || echo "not ok"
 
-test_color LAB     sRGB
-test_color XYZ LAB sRGB
-test_color LAB XYZ sRGB
-test_color RGB LAB sRGB
-test_color LAB RGB sRGB
+test_color LAB     sRGB && echo "ok" || echo "not ok"
+test_color XYZ LAB sRGB && echo "ok" || echo "not ok"
+test_color LAB XYZ sRGB && echo "ok" || echo "not ok"
+test_color RGB LAB sRGB && echo "ok" || echo "not ok"
+test_color LAB RGB sRGB && echo "ok" || echo "not ok"
 
-test_color CMY   sRGB
-test_color CMYK  sRGB
-test_color HSL   sRGB
-test_color HSB   sRGB
-test_color HWB   sRGB
-test_color Log   sRGB
-test_color YIQ   sRGB
-test_color YUV   sRGB
-test_color YCbCr sRGB
-test_color OHTA  sRGB
-
-$error && exit 1 # return the overall error result
-exit 0
+test_color CMY   sRGB && echo "ok" || echo "not ok"
+test_color CMYK  sRGB && echo "ok" || echo "not ok"
+test_color HSL   sRGB && echo "ok" || echo "not ok"
+test_color HSB   sRGB && echo "ok" || echo "not ok"
+test_color HWB   sRGB && echo "ok" || echo "not ok"
+test_color Log   sRGB && echo "ok" || echo "not ok"
+test_color YIQ   sRGB && echo "ok" || echo "not ok"
+test_color YUV   sRGB && echo "ok" || echo "not ok"
+test_color YCbCr sRGB && echo "ok" || echo "not ok"
+test_color OHTA  sRGB && echo "ok" || echo "not ok"
 :
