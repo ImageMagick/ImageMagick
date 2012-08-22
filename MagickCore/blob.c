@@ -1543,13 +1543,17 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
           image->blob->exempt=MagickTrue;
           *image->filename='\0';
           status=WriteImage(blob_info,image,exception);
-          if ((status != MagickFalse) && (image->blob->length != 0))
+          if (status != MagickFalse)
             {
-              *length=image->blob->length;
-              blob=DetachBlob(image->blob);
-              blob=(unsigned char *) ResizeQuantumMemory(blob,*length,
-                sizeof(*blob));
+              blob_info->blob=(unsigned char *)
+                RelinquishMagickMemory(blob_info->blob);
+              blob_info=DestroyImageInfo(blob_info);
+              return((unsigned char *) NULL);
             }
+          *length=image->blob->length;
+          blob=DetachBlob(image->blob);
+          blob=(unsigned char *) ResizeQuantumMemory(blob,*length+1,
+            sizeof(*blob));
         }
     }
   else
