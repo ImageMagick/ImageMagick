@@ -59,5 +59,5 @@ testRead( 'input_truecolor.png',
 ++$test;
 print( "MNG with 24-bit Truecolor PNGs...\n" );
 testRead( 'input.mng',
-  '030111e35491010550814468283f13a8d3d621efb0031bae005bd86e9d0038c5' );
+  '40805ef3db6e3a94c85e30e591e5881dc660ff863591d6f56605dba64d03d83d' );
 
