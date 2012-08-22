@@ -277,10 +277,10 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     exception);
   if (coalesce_image == (Image *) NULL)
     return((Image *) NULL);
+  (void) SetImageBackgroundColor(coalesce_image);
+  coalesce_image->matte=next->matte;
   coalesce_image->page=bounds;
   coalesce_image->dispose=NoneDispose;
-  coalesce_image->background_color.opacity=(Quantum) TransparentOpacity;
-  (void) SetImageBackgroundColor(coalesce_image);
   /*
     Coalesce rest of the images.
   */
@@ -336,7 +336,6 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     coalesce_image->next->previous=coalesce_image;
     previous=coalesce_image;
     coalesce_image=GetNextImageInList(coalesce_image);
-    coalesce_image->matte=MagickTrue;
     (void) CompositeImage(coalesce_image,next->matte != MagickFalse ?
       OverCompositeOp : CopyCompositeOp,next,next->page.x,next->page.y);
     (void) CloneImageProfiles(coalesce_image,next);
