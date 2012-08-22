@@ -326,9 +326,11 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
       if (image->type != UndefinedType)
         (void) FormatLocaleFile(file,"%s ",CommandOptionToMnemonic(
           MagickTypeOptions,(ssize_t) image->type));
+     if (image->colorspace != UndefinedColorspace)
+        (void) FormatLocaleFile(file,"%s ",CommandOptionToMnemonic(
+          MagickColorspaceOptions,(ssize_t) image->colorspace));
       if (image->storage_class == DirectClass)
         {
-          (void) FormatLocaleFile(file,"DirectClass ");
           if (image->total_colors != 0)
             {
               (void) FormatMagickSize(image->total_colors,MagickFalse,format);
@@ -337,10 +339,10 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         }
       else
         if (image->total_colors <= image->colors)
-          (void) FormatLocaleFile(file,"PseudoClass %.20gc ",(double)
+          (void) FormatLocaleFile(file,"%.20gc ",(double)
             image->colors);
         else
-          (void) FormatLocaleFile(file,"PseudoClass %.20g=>%.20gc ",(double)
+          (void) FormatLocaleFile(file,"%.20g=>%.20gc ",(double)
             image->total_colors,(double) image->colors);
       if (image->error.mean_error_per_pixel != 0.0)
         (void) FormatLocaleFile(file,"%.20g/%f/%fdb ",(double)
