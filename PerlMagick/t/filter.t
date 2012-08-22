@@ -93,7 +93,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Flip.miff', 'Flip', q//,
 testFilterCompare('input.miff',  q//, 'reference/filter/Flop.miff', 'Flop', q//, 0.0, 0.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Frame.miff', 'Frame', q/'15x15+3+3'/, 0.0, 0.0);
+testFilterCompare('input.miff',  q//, 'reference/filter/Frame.miff', 'Frame', q/'15x15+3+3'/, 0.02, 0.5);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Gamma.miff', 'Gamma', q/1.6/, 0.0, 0.0);
