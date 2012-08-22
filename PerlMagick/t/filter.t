@@ -132,7 +132,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/MotionBlur.miff', 'Motio
 testFilterCompare('input.miff',  q//, 'reference/filter/Negate.miff', 'Negate', q//, 0.0, 0.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Normalize.miff', 'Normalize', q//, 0.0, 0.0);
+testFilterCompare('input.miff',  q//, 'reference/filter/Normalize.miff', 'Normalize', q//, 0.00004, 0.004);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/OilPaint.miff', 'OilPaint', q//, 0.03, 1.0);
