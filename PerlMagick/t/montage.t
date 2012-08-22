@@ -30,7 +30,7 @@ chdir 't' || die 'Cd failed';
 testMontage( q//,
   q/background=>'#696e7e', label=>''/,
   '977b812cb06e16d0ee7da6c80a9470cb85c2d33ba33f5919f26b05058f0eb177',
-  'fea8915dc67163d86e93a6e611c900185f82bdc5fc67c7a3e53a4b76639aaa56',
+  '93afa0ad47528ea284a170f6564e9cbb0b824959daf49ada35c43d9e8ca40f79',
   '8de04216e6f60ad3bf63d5a2c54386cb824579e1c4a677af726e0306e0c7fb09');
 
 #
@@ -41,7 +41,7 @@ testMontage( q//,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'Center'/,
   '9a3f16a11fa4173f43642e7759070b32ce66a21c72312a7c99ed5dab711dc377',
-  '633267a42b30c1a5709d8929ef9ad24e6612f28e10299315a0ff386ccba7ec9a',
+  '28537343abbee6a9e29c9ee4e11ead61351085b8a9281794db5fbbaaf3d141a9',
   '2a381bc2cc7dc751c95df0f6a88c5f04232e82d06094b65b3909f488e4347f93');
 
 #
@@ -52,7 +52,7 @@ testMontage( q//,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'NorthWest'/,
   '1ace55dbec2814d4d12e911f6ab21e0eac769cf12fbdcf516376f356222b74e1',
-  '9d4854b04b3072c4f371a55289ed0583c5fab1a52758e514008462bfb890be41',
+  'bf94b426dcb94c2c60470bc26be6d14442eea770e2ba32578145f230f40cae91',
   'f3be8f6f4ecabc14d6da8a3d8b6a2e369ad005d045f381df6f24ca2410406380');
 
 #
@@ -63,7 +63,7 @@ testMontage( q//,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'North'/,
   '02840dc5ac270f2e26422b8c90c5e5c3af81fd6e6739e9554977115e152a6872',
-  '67ee49456bfc3500aac4a2425b7b45c9cd32d8948232a97fabe62713ddd7f859',
+  '50e2dedd7bd218ca18da007f602f60024a6c944b9e5dffbc619b50a4533df1ab',
   'abd7f530c44e953ac799a04846a3eef613d0ab7b08aa92bb6cabe8abf275d5b6');
 
 #
@@ -74,7 +74,7 @@ testMontage( q//,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'NorthEast'/,
   'c5a10e80cb4f3b1c866d03e8cad4154f1139758ec86ffeef4fe2a802ac118ae2',
-  '66b8ac0676dbf6c48703cb16422e75174ee676003cacfd58de546a697075b469',
+  'b96307ebfc16f394da5e56c20c327de04945651931496a16633f604ba495c97c',
   'bb35ddfaab468d869f2a3bafb16b3751015f2bb94e87438c48c7b294831d2bb8');
 
 #
@@ -85,7 +85,7 @@ testMontage( q//,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'West'/,
   '60f394bc620fba50b97dfe55c6026eed616a26ceee7a97fa66485b1853182ff8',
-  '46eed993d02f46dc553478fcdda6c0632b4d1161d478d5a9409b2925a8624c09',
+  '725374b2776657c3fcac22dbc6ae5d6b77027f6675067217c15f90f2aebb3879',
   '09bb863d97be728ee75411ff87f1d09a5ef272b03fd23edca07b692239ce9346');
 
 #
@@ -96,7 +96,7 @@ testMontage( q//,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'East'/,
   '48e3b6f793ef83ff702a4a164a6d91f1e3711ff9d7eee9f2eb7f8ce704783355',
-  '2285ea36a814317b190c43012f509a70a779cac61afc0dcd0a54f089cbd6b284',
+  '378382a287282b4800bbcf63bebed1f8ed8ad591aac70871cc558f4d50c67924',
   '932cf84bf09b180ed7e01976dabf6ba7088fc374c539991ea42600ae40cedcbd');
 
 #
@@ -107,7 +107,7 @@ testMontage( q//,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'SouthWest'/,
   'a7bdd145d3a98e1ba42ccff175ef3ff91c04ccff47cab1b0c8ae8ad21315f680',
-  '6e4b779635b9dbd54490aa6a71aa45c4414c51554e449ccd88570ced42975b1b',
+  '7aa1f23b23771917e9b0e40da79ef98ad74ff57f692d9a3070af830c2a43b456',
   'ef5b118bfa9dfbed332c1cf349b8cc792280f535a1dcba053e878657cb060198');
 
 #
@@ -118,7 +118,7 @@ testMontage( q//,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'South'/,
   '35c31352e889dc7912ddb0ae23af45c3776f36bc77a874b751d2594415cee1e6',
-  'b72b1f24b49d9a3bb0507f3e5d5588b0c11cde499fab27d02df41d36dd87f099',
+  '393142e3e319751408a85d4ee677e744ca0bb8fab5024243d84ef23694a4d99f',
   '3fd57e40caef146868326f177db65265e8970c88ce20ba099152a1c5e8027e1f');
 
 #
@@ -129,7 +129,7 @@ testMontage( q//,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', geometry=>'90x80+5+5>', gravity=>'SouthEast'/,
   'd46836aea9de6ca6441a856b103edbe1bee6ceeeab189ac8bdf61bac35556774',
-  '192a8ee4da1c5d62d14ab7837378d06fec13c37cb097d7ee00f97534f86d8304',
+  '030228bcfccbfd8536fdab88500312c4cf1ec218ac647f32d2d5498bef9c15ae',
   'c94a37024d7f8ff664c5aae0977ed6ff5d3aa92f46425b09b179c2ab32494e0c');
 
 #
@@ -143,7 +143,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+3+3>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
   '5110ae8eb21ded2d8e6b6d3f5cc80317a6c58304f84731810a318bd76473427a',
-  'ed4b38de6a8bc7408585a5b38efb677d6877244a80cff9ca2d95dbacdaf8df3f',
+  '337e0666b183cadeb861cba8681228e8644f522aeb337dd872c14c122bff4946',
   '7e6adf7d0f1dd962c66e1be4069d0b808fc5ba81d00cb473080e6b742e209cc3');
 
 #
@@ -154,7 +154,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True',background=>'gray'/,
   '61645a8c80a7220a4260133a2b1ae720bf2755f2ed880a3fef0e9453641f5b79',
-  '9ec1ec229079b7526bb89876a0009994dfdb96186c9e1892100c7ca52b21c090',
+  '1af94b1faa3a4a4533add7d02cb4af13a67aa844d8f11773d7737f0d9b69120c',
   '105eede4ff37f8067fed104dd42feea9eff899caf872e7f11316d33ca02ecbf6');
 
 #
@@ -165,7 +165,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
   borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
   '4655b59218afbd58d24a9ecf162a42868b3de40ecc8e9f9671dccf8b17e1aa33',
-  'a995c2de45028cf28077e281ca5dd5114a98df62fc578a142c8dcd9be5be3bdd',
+  '29c23db0f64c55f4f21f1e117edd8ce785f3ee2f7024e81c39ac2be0946e0fe4',
   'd2413f59b630f2fd5ad4416f441cdb3b839765c4da8f2fe4210ceecefc0c8716');
 
 #
@@ -176,7 +176,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', mode=>'Unframe',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
   '5b5b6e7667055dee87a282cac637bceeec605644d8063972f79a01b2c07f9872',
-  'd313d29183c31fb1aa91b0fb44ef04c8cd7ad6f7648a553fe0ec3c6ba7872fb4',
+  '80e14d97aa951296605f82117fbe3bbf16cd20b1f1ebfc13134bba8a2457f47d',
   '438478e6380519b065e4e24e33bab0e6dd6c4ab5a8c6449e22537fd55269babb');
 
 #
@@ -187,7 +187,7 @@ testMontage( q/bordercolor=>'red'/,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', mode=>'Unframe',
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
   'fadebb098990a6230d30c55f45c4f1a31effc70055d4eb66c8f46c913257e1fb',
-  '9468d6ff4312772656e980874be56ae69cf97946e78461de1f67e96c6c76675c',
+  '6a34f5ad3aa966259b9254653187e57e3ee884d5ecb96957e7969304336940fc',
   '535b6d2dd565ee5d01c3500569e60112812f5cd4d88525d528d35a5d02bbe681');
 
 #
@@ -198,7 +198,7 @@ testMontage( q/bordercolor=>'red'/,
   q/label=>'', tile=>'4x4', geometry=>'90x80+6+6>', mode=>'UnFrame',
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
   'fadebb098990a6230d30c55f45c4f1a31effc70055d4eb66c8f46c913257e1fb',
-  '9468d6ff4312772656e980874be56ae69cf97946e78461de1f67e96c6c76675c',
+  '6a34f5ad3aa966259b9254653187e57e3ee884d5ecb96957e7969304336940fc',
   '535b6d2dd565ee5d01c3500569e60112812f5cd4d88525d528d35a5d02bbe681');
 
 #
@@ -209,7 +209,7 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'16x1', geometry=>'90x80+0+0>', mode=>'Unframe',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
   'bead47d8f45327614e1a91f3537443317f59eebb960839f613365a1231b163ff',
-  'ecc4b83e0b76129f1635c2e866bc641cce6a5d65a6c89bc497b5b81e4bb0f3b6',
+  '47cee9e742e71b695e72d874d4dbdc3d03f9ceed37862e3d365a0718b3edbc18',
   'ad05ecff14b56693e2785eb4b6f06215c215eb1309eb19591d9380027aacfe21');
 
 #
@@ -220,7 +220,7 @@ testMontage( q//,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80>', mode=>'Concatenate'/,
   '73dba1cf6a2077fca9c3d6a4f82ee5aa4481d64481423cffbb676b92e3f3c7dd',
-  '108b50e6f8d5155f6c6f60dfe939e83ec465a917b3d8ec6fa1419d27ffa3cdb3',
+  'a5548990f7ade3ddc3ac8979c613739017fe30311331bc4c80f6c0e20ca3b195',
   '1fdca151dfe00fdc106832696815eff00b7e32a5fb0af64b41cb08610661880e');
 #
 # 19) Test concatenated thumbnail Montage (concatentated by setting params to zero)
@@ -231,5 +231,5 @@ testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'+0+0', mode=>'Unframe', shadow=>'False',
   borderwidth=>'0', background=>'gray'/,
   '73dba1cf6a2077fca9c3d6a4f82ee5aa4481d64481423cffbb676b92e3f3c7dd',
-  '108b50e6f8d5155f6c6f60dfe939e83ec465a917b3d8ec6fa1419d27ffa3cdb3',
+  'c0893819eb2e2104b11a3ddd886c89c334e29b3a341c4d9880364ac32cc7b857',
   '1fdca151dfe00fdc106832696815eff00b7e32a5fb0af64b41cb08610661880e');
