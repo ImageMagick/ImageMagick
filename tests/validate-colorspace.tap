@@ -15,12 +15,14 @@
 #  limitations under the License.
 #
 . ${srcdir}/tests/common.shi
-echo "1..19"
 
 depth=`eval ${CONVERT} xc:none -format '%[fx:QuantumRange]' info:-`
 if [ "X$depth" == "X255" ]; then
+  echo "1..1"
+  echo "ok"
   exit 0
 fi
+echo "1..19"
 
 # how to generate a one pixel (average rose) color and output its values
 in="rose: -scale 1x1"    # a one pixel image of the average color.
