@@ -2112,6 +2112,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
     (void)LogMagickEvent(CoderEvent,GetMagickModule(),
       "  image->rendering_intent=%d",(int) image->rendering_intent);
+
+    (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+      "  image->colorspace=%d",(int) image->colorspace);
   }
   intent=Magick_RenderingIntent_to_PNG_RenderingIntent(image->rendering_intent);
 
@@ -3414,16 +3417,20 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if ((ping_color_type == PNG_COLOR_TYPE_GRAY) ||
       (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
     {
-      if (!png_get_valid(ping,ping_info,PNG_INFO_gAMA) &&
+      if ((!png_get_valid(ping,ping_info,PNG_INFO_gAMA) ||
+          image->gamma == 1.0) &&
           !png_get_valid(ping,ping_info,PNG_INFO_cHRM) &&
           !png_get_valid(ping,ping_info,PNG_INFO_sRGB))
         {
           /* Set image->gamma to 1.0, image->rendering_intent to Undefined,
-           * and reset image->chromaticity.
+           * image->colorspace to GRAY, and reset image->chromaticity.
            */
           SetImageColorspace(image,GRAYColorspace);
         }
     }
+
+  (void)LogMagickEvent(CoderEvent,GetMagickModule(),
+      "  image->colorspace=%d",(int) image->colorspace);
 
   for (j = 0; j < 2; j++)
   {

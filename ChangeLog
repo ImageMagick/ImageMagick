@@ -1,3 +1,7 @@
+2012-08-22  6.7.9-1 Glenn Randers-Pehrson <glennrp@image...>
+  * The gAMA chunk with gamma==1.0 was ignored while deciding whether to set
+    the image colorspace to GRAY when reading grayscale PNG images.
+
 2012-08-16  6.7.9-1 Cristy  <quetzlzacatenango@image...>
   * Adjust scaling for Luv colorspace conversion (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21664).
