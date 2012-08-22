@@ -4,6 +4,7 @@
   * Copy alpha channel of the -median option (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21694).
   * Don't add matte channel for -coalesce if input images don't have one.
+  * Prevent memory leak in ImageToBlob() if image write fails.
 
 2012-08-15  6.7.9-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-0, SVN revision 8970.
