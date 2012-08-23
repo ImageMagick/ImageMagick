@@ -63,6 +63,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/log.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/monitor.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/montage.h"
@@ -244,8 +245,8 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
     Create a set of kernels from maximum (radius,sigma) to minimum.
   */
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(MagickRealType **) AcquireAlignedMemory((size_t) width,
-    sizeof(*kernel));
+  kernel=(MagickRealType **) MagickAssumeAligned(AcquireAlignedMemory((size_t)
+    width,sizeof(*kernel)));
   if (kernel == (MagickRealType  **) NULL)
     {
       edge_image=DestroyImage(edge_image);
@@ -255,8 +256,8 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
   (void) ResetMagickMemory(kernel,0,(size_t) width*sizeof(*kernel));
   for (i=0; i < (ssize_t) width; i+=2)
   {
-    kernel[i]=(MagickRealType *) AcquireAlignedMemory((size_t) (width-i),
-      (width-i)*sizeof(**kernel));
+    kernel[i]=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory(
+      (size_t) (width-i),(width-i)*sizeof(**kernel)));
     if (kernel[i] == (MagickRealType *) NULL)
       break;
     normalize=0.0;
@@ -567,8 +568,8 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
     Create a set of kernels from maximum (radius,sigma) to minimum.
   */
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(MagickRealType **) AcquireAlignedMemory((size_t) width,
-    sizeof(*kernel));
+  kernel=(MagickRealType **) MagickAssumeAligned(AcquireAlignedMemory((size_t)
+    width,sizeof(*kernel)));
   if (kernel == (MagickRealType **) NULL)
     {
       edge_image=DestroyImage(edge_image);
@@ -578,8 +579,8 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   (void) ResetMagickMemory(kernel,0,(size_t) width*sizeof(*kernel));
   for (i=0; i < (ssize_t) width; i+=2)
   {
-    kernel[i]=(MagickRealType *) AcquireAlignedMemory((size_t) (width-i),
-      (width-i)*sizeof(**kernel));
+    kernel[i]=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory(
+      (size_t) (width-i),(width-i)*sizeof(**kernel)));
     if (kernel[i] == (double *) NULL)
       break;
     normalize=0.0;
@@ -835,8 +836,8 @@ static MagickRealType *GetBlurKernel(const size_t width,const double sigma)
     Generate a 1-D convolution kernel.
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  kernel=(MagickRealType *) AcquireAlignedMemory((size_t) width,
-    sizeof(*kernel));
+  kernel=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory((size_t)
+    width,sizeof(*kernel)));
   if (kernel == (MagickRealType *) NULL)
     return(0);
   normalize=0.0;
@@ -1583,8 +1584,9 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->values=(MagickRealType *) AcquireAlignedMemory(
-    kernel_info->width,kernel_info->width*sizeof(*kernel_info->values));
+  kernel_info->values=(MagickRealType *) MagickAssumeAligned(
+    AcquireAlignedMemory(kernel_info->width,kernel_info->width*
+    sizeof(*kernel_info->values)));
   if (kernel_info->values == (MagickRealType *) NULL)
     {
       kernel_info=DestroyKernelInfo(kernel_info);
@@ -1674,8 +1676,9 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   kernel_info->width=width;
   kernel_info->height=width;
-  kernel_info->values=(MagickRealType *) AcquireAlignedMemory(
-    kernel_info->width,kernel_info->width*sizeof(*kernel_info->values));
+  kernel_info->values=(MagickRealType *) MagickAssumeAligned(
+    AcquireAlignedMemory(kernel_info->width,kernel_info->width*
+    sizeof(*kernel_info->values)));
   if (kernel_info->values == (MagickRealType *) NULL)
     {
       kernel_info=DestroyKernelInfo(kernel_info);
@@ -1771,8 +1774,9 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   kernel_info->width=width;
   kernel_info->height=width;
   kernel_info->signature=MagickSignature;
-  kernel_info->values=(MagickRealType *) AcquireAlignedMemory(
-    kernel_info->width,kernel_info->width*sizeof(*kernel_info->values));
+  kernel_info->values=(MagickRealType *) MagickAssumeAligned(
+    AcquireAlignedMemory(kernel_info->width,kernel_info->width*
+    sizeof(*kernel_info->values)));
   if (kernel_info->values == (MagickRealType *) NULL)
     {
       kernel_info=DestroyKernelInfo(kernel_info);
@@ -1847,8 +1851,8 @@ static MagickRealType *GetMotionBlurKernel(const size_t width,
    Generate a 1-D convolution kernel.
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  kernel=(MagickRealType *) AcquireAlignedMemory((size_t) width,
-    sizeof(*kernel));
+  kernel=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory((size_t)
+    width,sizeof(*kernel)));
   if (kernel == (MagickRealType *) NULL)
     return(kernel);
   normalize=0.0;
@@ -2950,8 +2954,8 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth1D(radius,sigma);
-  kernel=(MagickRealType *) AcquireAlignedMemory((size_t) width,width*
-    sizeof(*kernel));
+  kernel=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory((size_t)
+    width,width*sizeof(*kernel)));
   if (kernel == (MagickRealType *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   j=(ssize_t) width/2;
@@ -3500,8 +3504,9 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   kernel_info->width=width;
   kernel_info->height=width;
   kernel_info->signature=MagickSignature;
-  kernel_info->values=(MagickRealType *) AcquireAlignedMemory(
-    kernel_info->width,kernel_info->width*sizeof(*kernel_info->values));
+  kernel_info->values=(MagickRealType *) MagickAssumeAligned(
+    AcquireAlignedMemory(kernel_info->width,kernel_info->width*
+    sizeof(*kernel_info->values)));
   if (kernel_info->values == (MagickRealType *) NULL)
     {
       kernel_info=DestroyKernelInfo(kernel_info);

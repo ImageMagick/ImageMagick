@@ -52,6 +52,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/memory-private.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum.h"
@@ -161,8 +162,8 @@ MagickExport StreamInfo *AcquireStreamInfo(const ImageInfo *image_info,
   if (stream_info == (StreamInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(stream_info,0,sizeof(*stream_info));
-  stream_info->pixels=(unsigned char *) AcquireAlignedMemory(1,
-    sizeof(*stream_info->pixels));
+  stream_info->pixels=(unsigned char *) MagickAssumeAligned(
+    AcquireAlignedMemory(1,sizeof(*stream_info->pixels)));
   if (stream_info->pixels == (unsigned char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   stream_info->map=ConstantString("RGB");

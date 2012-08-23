@@ -22,12 +22,21 @@
 extern "C" {
 #endif
 
+
 #if defined(MAGICK_TARGET_CPU) && (MAGICK_TARGET_CPU == powerpc)
-#  define CACHE_LINE_SIZE (16*sizeof(void *))
+#  define CACHE_LINE_SIZE  128
 #else
-#  define CACHE_LINE_SIZE (8*sizeof(void *))
+#  define CACHE_LINE_SIZE  64
 #endif
+
 #define CacheAlign(size)  ((size) < CACHE_LINE_SIZE ? CACHE_LINE_SIZE : (size))
+
+#if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR > 6))
+#define MagickAssumeAligned(address) \
+  __builtin_assume_aligned((address),CACHE_LINE_SIZE)
+#else
+#define MagickAssumeAligned(address)  (address)
+#endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

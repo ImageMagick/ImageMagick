@@ -247,8 +247,8 @@ MagickPrivate NexusInfo **AcquirePixelCacheNexus(const size_t number_threads)
   register ssize_t
     i;
 
-  nexus_info=(NexusInfo **) AcquireAlignedMemory(number_threads,
-    sizeof(*nexus_info));
+  nexus_info=(NexusInfo **) MagickAssumeAligned(AcquireAlignedMemory(
+    number_threads,sizeof(*nexus_info)));
   if (nexus_info == (NexusInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   nexus_info[0]=(NexusInfo *) AcquireQuantumMemory(number_threads,
@@ -3677,8 +3677,8 @@ MagickPrivate const Quantum *GetVirtualPixelsNexus(const Cache cache,
 static inline void AllocatePixelCachePixels(CacheInfo *cache_info)
 {
   cache_info->mapped=MagickFalse;
-  cache_info->pixels=(Quantum *) AcquireAlignedMemory(1,(size_t)
-    cache_info->length);
+  cache_info->pixels=(Quantum *) MagickAssumeAligned(AcquireAlignedMemory(1,
+    (size_t) cache_info->length));
   if (cache_info->pixels == (Quantum *) NULL)
     {
       cache_info->mapped=MagickTrue;
@@ -4742,8 +4742,8 @@ static inline MagickBooleanType AcquireCacheNexusPixels(
   if (nexus_info->length != (MagickSizeType) ((size_t) nexus_info->length))
     return(MagickFalse);
   nexus_info->mapped=MagickFalse;
-  nexus_info->cache=(Quantum *) AcquireAlignedMemory(1,(size_t)
-    nexus_info->length);
+  nexus_info->cache=(Quantum *) MagickAssumeAligned(AcquireAlignedMemory(1,
+    (size_t) nexus_info->length));
   if (nexus_info->cache == (Quantum *) NULL)
     {
       nexus_info->mapped=MagickTrue;
