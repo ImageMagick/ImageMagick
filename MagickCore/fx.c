@@ -658,8 +658,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   const PixelInfo *colorize,ExceptionInfo *exception)
 {
 #define ColorizeImageTag  "Colorize/Image"
-#define Colorize(pixel,blend_percentage,colorize)  \
-  (pixel)=((pixel)*(100.0-(blend_percentage))+(colorize)*(blend_percentage))/100.0;
+#define Colorize(pixel,blend_percentage,colorize)  (pixel)= \
+  ((pixel)*(100.0-(blend_percentage))+(colorize)*(blend_percentage))/100.0
 
   CacheView
     *colorize_view,
