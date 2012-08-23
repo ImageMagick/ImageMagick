@@ -1,5 +1,5 @@
 2012-08-23  6.7.9-1 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.9-1, SVN revision 9089.
+  * New version 6.7.9-1, SVN revision 9095.
 
 2012-08-22  6.7.9-1 Glenn Randers-Pehrson <glennrp@image...>
   * The gAMA chunk with gamma==1.0 was ignored while deciding whether to set
@@ -17,6 +17,8 @@
   * Identify command now reports the image colorspace for non-verbose results.
   * Account for stroke width when rendering a caption (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=21721).
+  * Don't colorize alpha channel if it is not active (reference
+   http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21547
 
 2012-08-15  6.7.9-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-0, SVN revision 8970.
