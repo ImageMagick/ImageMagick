@@ -1407,7 +1407,8 @@ static inline void CompositeScreen(const MagickPixelPacket *p,
   if ( (channel & SyncChannels) != 0 ) {
     gamma=RoundToUnity(Sa+Da-Sa*Da); /* over blend, as per SVG doc */
     composite->opacity=(MagickRealType) QuantumRange*(1.0-gamma);
-    Sa*=QuantumScale; Da*=QuantumScale; /* optimization */
+    Sa*=(MagickRealType) QuantumScale;
+    Da*=(MagickRealType) QuantumScale; /* optimization */
     gamma=QuantumRange/(fabs(gamma) < MagickEpsilon ? MagickEpsilon : gamma);
     composite->red=gamma*Screen(p->red*Sa,q->red*Da);
     composite->green=gamma*Screen(p->green*Sa,q->green*Da);
