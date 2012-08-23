@@ -3535,7 +3535,7 @@ static inline Quantum PushColormapIndex(Image *image,const Quantum index,
   if ((size_t) index < image->colors)
     return(index);
   *range_exception=MagickTrue;
-  return(0);
+  return((Quantum) 0);
 }
 
 MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
