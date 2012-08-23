@@ -754,11 +754,11 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     register const Quantum
       *restrict p;
 
-    register ssize_t
-      x;
-
     register Quantum
       *restrict q;
+
+    register ssize_t
+      x;
 
     if (status == MagickFalse)
       continue;
