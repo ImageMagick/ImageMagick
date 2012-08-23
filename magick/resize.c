@@ -55,6 +55,7 @@
 #include "magick/image-private.h"
 #include "magick/list.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/magick.h"
 #include "magick/pixel-private.h"
 #include "magick/property.h"
@@ -2124,8 +2125,8 @@ static ContributionInfo **AcquireContributionThreadSet(const size_t count)
   (void) ResetMagickMemory(contribution,0,number_threads*sizeof(*contribution));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    contribution[i]=(ContributionInfo *) AcquireAlignedMemory(count,
-      sizeof(**contribution));
+    contribution[i]=(ContributionInfo *) MagickAssumeAligned(
+      AcquireAlignedMemory(count,sizeof(**contribution)));
     if (contribution[i] == (ContributionInfo *) NULL)
       return(DestroyContributionThreadSet(contribution));
   }

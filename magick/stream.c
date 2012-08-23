@@ -52,6 +52,7 @@
 #include "magick/exception-private.h"
 #include "magick/geometry.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/pixel.h"
 #include "magick/quantum.h"
 #include "magick/quantum-private.h"
@@ -156,8 +157,8 @@ MagickExport StreamInfo *AcquireStreamInfo(const ImageInfo *image_info)
   if (stream_info == (StreamInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(stream_info,0,sizeof(*stream_info));
-  stream_info->pixels=(unsigned char *) AcquireAlignedMemory(1,
-    sizeof(*stream_info->pixels));
+  stream_info->pixels=(unsigned char *) MagickAssumeAligned(
+    AcquireAlignedMemory(1,sizeof(*stream_info->pixels)));
   if (stream_info->pixels == (unsigned char *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   stream_info->map=ConstantString("RGB");
@@ -647,8 +648,8 @@ static inline MagickBooleanType AcquireStreamPixels(CacheInfo *cache_info,
   if (cache_info->length != (MagickSizeType) ((size_t) cache_info->length))
     return(MagickFalse);
   cache_info->mapped=MagickFalse;
-  cache_info->pixels=(PixelPacket *) AcquireAlignedMemory(1,(size_t)
-    cache_info->length);
+  cache_info->pixels=(PixelPacket *) MagickAssumeAligned(AcquireAlignedMemory(1,
+    (size_t) cache_info->length));
   if (cache_info->pixels == (PixelPacket *) NULL)
     {
       cache_info->mapped=MagickTrue;
@@ -1148,7 +1149,8 @@ static size_t WriteStreamImage(const Image *image,const void *pixels,
         Prepare stream for writing.
       */
       (void) RelinquishAlignedMemory(stream_info->pixels);
-      stream_info->pixels=(unsigned char *) AcquireAlignedMemory(1,length);
+      stream_info->pixels=(unsigned char *) MagickAssumeAligned(
+        AcquireAlignedMemory(1,length));
       if (stream_info->pixels == (unsigned char *) NULL)
         return(0);
       (void) ResetMagickMemory(stream_info->pixels,0,length);
