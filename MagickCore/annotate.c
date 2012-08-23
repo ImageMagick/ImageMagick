@@ -56,6 +56,7 @@
 #include "MagickCore/constitute.h"
 #include "MagickCore/draw.h"
 #include "MagickCore/draw-private.h"
+#include "MagickCore/enhance.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/gem.h"
