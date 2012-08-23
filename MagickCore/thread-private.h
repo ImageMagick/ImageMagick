@@ -37,7 +37,7 @@ extern "C" {
       (GetImagePixelCacheType(image) != DiskCache) && (expression)) \
     num_threads(GetMagickResourceLimit(ThreadResource))
 
-#if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR > 10))
+#if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ > 10))
 #define MagickCachePrefetch(address,mode,locality) \
   __builtin_prefetch(address,mode,locality)
 #else
