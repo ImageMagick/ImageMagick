@@ -581,7 +581,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   {
     kernel[i]=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory(
       (size_t) (width-i),(width-i)*sizeof(**kernel)));
-    if (kernel[i] == (double *) NULL)
+    if (kernel[i] == (MagickRealType *) NULL)
       break;
     normalize=0.0;
     j=(ssize_t) (width-i)/2;
