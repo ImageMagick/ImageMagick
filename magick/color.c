@@ -2524,11 +2524,11 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
   const ComplianceType compliance,MagickPixelPacket *color,
   ExceptionInfo *exception)
 {
+  double
+    scale;
+
   GeometryInfo
     geometry_info;
-
-  MagickRealType
-    scale;
 
   MagickStatusType
     flags;
