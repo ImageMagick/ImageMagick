@@ -4712,7 +4712,7 @@ WandExport char *MagickGetImageFilename(MagickWand *wand)
 %
 %  The format of the MagickGetImageFormat method is:
 %
-%      const char *MagickGetImageFormat(MagickWand *wand)
+%      char *MagickGetImageFormat(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
@@ -4723,9 +4723,8 @@ WandExport char *MagickGetImageFormat(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
