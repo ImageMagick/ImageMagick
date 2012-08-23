@@ -39,6 +39,8 @@ extern "C" {
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MaxColormapSize  256UL
 #define MaxMap  255UL
+typedef float MagickRealType;
+typedef ssize_t SignedQuantum;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef float Quantum;
@@ -52,6 +54,8 @@ typedef unsigned char Quantum;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 16)
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
+typedef float MagickRealType;
+typedef ssize_t SignedQuantum;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef float Quantum;
@@ -65,6 +69,8 @@ typedef unsigned short Quantum;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
+typedef double MagickRealType;
+typedef double SignedQuantum;
 
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef float Quantum;
@@ -78,6 +84,8 @@ typedef unsigned int Quantum;
 #elif (MAGICKCORE_QUANTUM_DEPTH == 64) && defined(MAGICKCORE_HAVE_LONG_DOUBLE_WIDER)
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
+typedef long double MagickRealType;
+typedef double SignedQuantum;
 
 typedef double Quantum;
 #define QuantumRange  18446744073709551615.0
@@ -119,14 +127,6 @@ typedef unsigned __int64 MagickSizeType;
 typedef MagickOffsetType QuantumAny;
 #else
 typedef MagickSizeType QuantumAny;
-#endif
-
-#if QuantumDepth > 16
-  typedef double MagickRealType;
-  typedef double SignedQuantum;
-#else
-  typedef float MagickRealType;
-  typedef ssize_t SignedQuantum;
 #endif
 
 #if defined(macintosh)
