@@ -1296,25 +1296,33 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             /*
               Initialize colormap.
             */
+            red_colormap=(uint16 *) NULL;
+            green_colormap=(uint16 *) NULL;
+            blue_colormap=(uint16 *) NULL;
             (void) TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,
               &green_colormap,&blue_colormap);
-            range=255;  /* might be old style 8-bit colormap */
-            for (i=0; i < (ssize_t) image->colors; i++)
-              if ((red_colormap[i] >= 256) || (green_colormap[i] >= 256) ||
-                  (blue_colormap[i] >= 256))
+            if ((red_colormap != (uint16 *) NULL) &&
+                (green_colormap != (uint16 *) NULL) &&
+                (blue_colormap != (uint16 *) NULL))
+              {
+                range=255;  /* might be old style 8-bit colormap */
+                for (i=0; i < (ssize_t) image->colors; i++)
+                  if ((red_colormap[i] >= 256) || (green_colormap[i] >= 256) ||
+                      (blue_colormap[i] >= 256))
+                    {
+                      range=65535;
+                      break;
+                    }
+                for (i=0; i < (ssize_t) image->colors; i++)
                 {
-                  range=65535;
-                  break;
+                  image->colormap[i].red=ClampToQuantum(((double)
+                    QuantumRange*red_colormap[i])/range);
+                  image->colormap[i].green=ClampToQuantum(((double)
+                    QuantumRange*green_colormap[i])/range);
+                  image->colormap[i].blue=ClampToQuantum(((double)
+                    QuantumRange*blue_colormap[i])/range);
                 }
-            for (i=0; i < (ssize_t) image->colors; i++)
-            {
-              image->colormap[i].red=ClampToQuantum(((double) QuantumRange*
-                red_colormap[i])/range);
-              image->colormap[i].green=ClampToQuantum(((double) QuantumRange*
-                green_colormap[i])/range);
-              image->colormap[i].blue=ClampToQuantum(((double) QuantumRange*
-                blue_colormap[i])/range);
-            }
+              }
           }
         quantum_type=IndexQuantum;
         pad=(size_t) MagickMax((size_t) samples_per_pixel-1,0);
