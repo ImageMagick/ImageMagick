@@ -712,11 +712,11 @@ MagickExport Image *EvaluateImages(const Image *images,
 
             for (j=0; j < (ssize_t) (number_images-1); j++)
             {
-              evaluate_pixel[x].red*=QuantumScale;
-              evaluate_pixel[x].green*=QuantumScale;
-              evaluate_pixel[x].blue*=QuantumScale;
-              evaluate_pixel[x].opacity*=QuantumScale;
-              evaluate_pixel[x].index*=QuantumScale;
+              evaluate_pixel[x].red*=(MagickRealType) QuantumScale;
+              evaluate_pixel[x].green*=(MagickRealType) QuantumScale;
+              evaluate_pixel[x].blue*=(MagickRealType) QuantumScale;
+              evaluate_pixel[x].opacity*=(MagickRealType) QuantumScale;
+              evaluate_pixel[x].index*=(MagickRealType) QuantumScale;
             }
           }
         for (x=0; x < (ssize_t) image->columns; x++)
