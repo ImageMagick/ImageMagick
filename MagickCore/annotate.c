@@ -1531,6 +1531,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       FT_Done_Glyph(glyph.image);
     }
   metrics->width-=metrics->bounds.x1/64.0;
+  metrics->width+=annotate_info->stroke_width;
   metrics->bounds.x1/=64.0;
   metrics->bounds.y1/=64.0;
   metrics->bounds.x2/=64.0;
@@ -1748,6 +1749,7 @@ static MagickBooleanType RenderPostscript(Image *image,
   (void) RelinquishUniqueFileResource(filename);
   if (annotate_image == (Image *) NULL)
     return(MagickFalse);
+  (void) NegateImage(annotate_image,MagickFalse,exception);
   resolution.x=DefaultResolution;
   resolution.y=DefaultResolution;
   if (draw_info->density != (char *) NULL)
@@ -1837,9 +1839,8 @@ static MagickBooleanType RenderPostscript(Image *image,
         for (x=0; x < (ssize_t) annotate_image->columns; x++)
         {
           (void) GetFillColor(draw_info,x,y,&fill_color,exception);
-          SetPixelAlpha(annotate_image,ClampToQuantum((((double)
-            GetPixelIntensity(annotate_image,q)*fill_color.alpha)/
-            QuantumRange)),q);
+          SetPixelAlpha(annotate_image,ClampToQuantum((((double) QuantumScale*
+            GetPixelIntensity(annotate_image,q)*fill_color.alpha))),q);
           SetPixelRed(annotate_image,fill_color.red,q);
           SetPixelGreen(annotate_image,fill_color.green,q);
           SetPixelBlue(annotate_image,fill_color.blue,q);
