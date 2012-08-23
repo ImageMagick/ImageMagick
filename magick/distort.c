@@ -2606,7 +2606,7 @@ if ( i == 0 && j == 0 ) {
 
             /* is pixel valid - horizon of a infinite Virtual-Pixel Plane
              * (see Anthony Thyssen's personal note) */
-            validity = (coeff[1]*MagickPI2 - fabs(d.x))/output_scaling + 0.5;
+            validity = (double) ((coeff[1]*MagickPI2 - fabs(d.x))/output_scaling + 0.5);
 
             if ( validity > 0.0 ) {
               double cx,tx;

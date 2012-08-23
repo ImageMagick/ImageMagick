@@ -192,7 +192,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   status=MagickTrue;
   progress=0;
   GetMagickPixelPacket(image,&zero);
-  number_pixels=(MagickRealType) width*height;
+  number_pixels=(MagickRealType) (width*height);
   image_view=AcquireVirtualCacheView(image,exception);
   threshold_view=AcquireAuthenticCacheView(threshold_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -574,11 +574,11 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
     threshold.index=threshold.red;
   if ((flags & PercentValue) != 0)
     {
-      threshold.red*=(QuantumRange/100.0);
-      threshold.green*=(QuantumRange/100.0);
-      threshold.blue*=(QuantumRange/100.0);
-      threshold.opacity*=(QuantumRange/100.0);
-      threshold.index*=(QuantumRange/100.0);
+      threshold.red*=(MagickRealType) (QuantumRange/100.0);
+      threshold.green*=(MagickRealType) (QuantumRange/100.0);
+      threshold.blue*=(MagickRealType) (QuantumRange/100.0);
+      threshold.opacity*=(MagickRealType) (QuantumRange/100.0);
+      threshold.index*=(MagickRealType) (QuantumRange/100.0);
     }
   intensity=MagickPixelIntensity(&threshold);
   if ((IsMagickGray(&threshold) == MagickFalse) &&
@@ -2042,11 +2042,11 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
     threshold.index=threshold.red;
   if ((flags & PercentValue) != 0)
     {
-      threshold.red*=(QuantumRange/100.0);
-      threshold.green*=(QuantumRange/100.0);
-      threshold.blue*=(QuantumRange/100.0);
-      threshold.opacity*=(QuantumRange/100.0);
-      threshold.index*=(QuantumRange/100.0);
+      threshold.red*=(MagickRealType) (QuantumRange/100.0);
+      threshold.green*=(MagickRealType) (QuantumRange/100.0);
+      threshold.blue*=(MagickRealType) (QuantumRange/100.0);
+      threshold.opacity*=(MagickRealType) (QuantumRange/100.0);
+      threshold.index*=(MagickRealType) (QuantumRange/100.0);
     }
   intensity=MagickPixelIntensity(&threshold);
   if ((IsMagickGray(&threshold) == MagickFalse) &&
