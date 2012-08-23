@@ -59,7 +59,7 @@ Examples of ImageMagick Usage shows how to use ImageMagick from the command-line
           <name>stable</name>
           <created>2012-08-23</created>
           <revision>6.7.9</revision>
-          <patch-level>-1</patch-level>
+          <patch-level>-2</patch-level>
       </Version>
     </release>
 
