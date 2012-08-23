@@ -1505,6 +1505,7 @@ static MagickBooleanType RenderFreetype(Image *image,const DrawInfo *draw_info,
       FT_Done_Glyph(glyph.image);
     }
   metrics->width-=metrics->bounds.x1/64.0;
+  metrics->width+=annotate_info->stroke_width;
   metrics->bounds.x1/=64.0;
   metrics->bounds.y1/=64.0;
   metrics->bounds.x2/=64.0;

@@ -12,6 +12,8 @@
   * In rare cases, label would not auto-size properly (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21716).
   * Identify command now reports the image colorspace for non-verbose results.
+  * Account for stroke width when rendering a caption (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=1&t=21721).
 
 2012-08-15  6.7.9-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-0, SVN revision 8970.
