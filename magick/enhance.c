@@ -2411,7 +2411,7 @@ MagickExport MagickBooleanType HaldClutImageChannel(Image *image,
       point.x=QuantumScale*(level-1.0)*GetPixelRed(q);
       point.y=QuantumScale*(level-1.0)*GetPixelGreen(q);
       point.z=QuantumScale*(level-1.0)*GetPixelBlue(q);
-      offset=point.x+level*floor(point.y)+cube_size*floor(point.z);
+      offset=(double) (point.x+level*floor(point.y)+cube_size*floor(point.z));
       point.x-=floor(point.x);
       point.y-=floor(point.y);
       point.z-=floor(point.z);

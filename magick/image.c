@@ -779,11 +779,11 @@ MagickExport MagickBooleanType ClipImagePath(Image *image,const char *pathname,
 MagickExport Image *CloneImage(const Image *image,const size_t columns,
   const size_t rows,const MagickBooleanType detach,ExceptionInfo *exception)
 {
+  double
+    scale;
+
   Image
     *clone_image;
-
-  MagickRealType
-    scale;
 
   size_t
     length;
@@ -879,11 +879,11 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
       if (image->mask != (Image *) NULL)
         clone_image->mask=CloneImage(image->mask,0,0,MagickTrue,exception);
     }
-  scale=(MagickRealType) columns/(MagickRealType) image->columns;
+  scale=(double) columns/(double) image->columns;
   clone_image->page.width=(size_t) floor(scale*image->page.width+0.5);
   clone_image->page.x=(ssize_t) ceil(scale*image->page.x-0.5);
   clone_image->tile_offset.x=(ssize_t) ceil(scale*image->tile_offset.x-0.5);
-  scale=(MagickRealType) rows/(MagickRealType) image->rows;
+  scale=(double) rows/(double) image->rows;
   clone_image->page.height=(size_t) floor(scale*image->page.height+0.5);
   clone_image->page.y=(ssize_t) ceil(scale*image->page.y-0.5);
   clone_image->tile_offset.y=(ssize_t) ceil(scale*image->tile_offset.y-0.5);
