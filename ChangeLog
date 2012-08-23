@@ -1,5 +1,5 @@
 2012-08-23  6.7.9-1 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.9-1, SVN revision 9079.
+  * New version 6.7.9-1, SVN revision 9089.
 
 2012-08-22  6.7.9-1 Glenn Randers-Pehrson <glennrp@image...>
   * The gAMA chunk with gamma==1.0 was ignored while deciding whether to set
