@@ -62,6 +62,7 @@
 #include "magick/list.h"
 #include "magick/log.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/montage.h"
@@ -218,7 +219,8 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
     Create a set of kernels from maximum (radius,sigma) to minimum.
   */
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double **) AcquireAlignedMemory((size_t) width,sizeof(*kernel));
+  kernel=(double **) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
+    sizeof(*kernel)));
   if (kernel == (double **) NULL)
     {
       edge_image=DestroyImage(edge_image);
@@ -228,8 +230,8 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
   (void) ResetMagickMemory(kernel,0,(size_t) width*sizeof(*kernel));
   for (i=0; i < (ssize_t) width; i+=2)
   {
-    kernel[i]=(double *) AcquireAlignedMemory((size_t) (width-i),(width-i)*
-      sizeof(**kernel));
+    kernel[i]=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t)
+      (width-i),(width-i)*sizeof(**kernel)));
     if (kernel[i] == (double *) NULL)
       break;
     normalize=0.0;
@@ -537,7 +539,8 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
     Create a set of kernels from maximum (radius,sigma) to minimum.
   */
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double **) AcquireAlignedMemory((size_t) width,sizeof(*kernel));
+  kernel=(double **) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
+    sizeof(*kernel)));
   if (kernel == (double **) NULL)
     {
       edge_image=DestroyImage(edge_image);
@@ -547,8 +550,8 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
   (void) ResetMagickMemory(kernel,0,(size_t) width*sizeof(*kernel));
   for (i=0; i < (ssize_t) width; i+=2)
   {
-    kernel[i]=(double *) AcquireAlignedMemory((size_t) (width-i),(width-i)*
-      sizeof(**kernel));
+    kernel[i]=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t)
+      (width-i),(width-i)*sizeof(**kernel)));
     if (kernel[i] == (double *) NULL)
       break;
     normalize=0.0;
@@ -793,7 +796,8 @@ static double *GetBlurKernel(const size_t width,const double sigma)
     Generate a 1-D convolution kernel.
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  kernel=(double *) AcquireAlignedMemory((size_t) width,sizeof(*kernel));
+  kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
+    sizeof(*kernel)));
   if (kernel == (double *) NULL)
     return(0);
   normalize=0.0;
@@ -1405,8 +1409,8 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
   /*
     Normalize kernel.
   */
-  normal_kernel=(double *) AcquireAlignedMemory(width*width,
-    sizeof(*normal_kernel));
+  normal_kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory(width*width,
+    sizeof(*normal_kernel)));
   if (normal_kernel == (double *) NULL)
     {
       convolve_image=DestroyImage(convolve_image);
@@ -1992,7 +1996,8 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth1D(radius,0.5);
-  kernel=(double *) AcquireAlignedMemory((size_t) width,width*sizeof(*kernel));
+  kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
+    width*sizeof(*kernel)));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   for (i=0; i < (ssize_t) (width*width); i++)
@@ -2066,7 +2071,8 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double *) AcquireAlignedMemory((size_t) width,width*sizeof(*kernel));
+  kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
+    width*sizeof(*kernel)));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   j=(ssize_t) width/2;
@@ -2507,7 +2513,8 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double *) AcquireAlignedMemory((size_t) width,width*sizeof(*kernel));
+  kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
+    width*sizeof(*kernel)));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   j=(ssize_t) width/2;
@@ -2581,7 +2588,8 @@ static double *GetMotionBlurKernel(const size_t width,const double sigma)
    Generate a 1-D convolution kernel.
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  kernel=(double *) AcquireAlignedMemory((size_t) width,sizeof(*kernel));
+  kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
+    sizeof(*kernel)));
   if (kernel == (double *) NULL)
     return(kernel);
   normalize=0.0;
@@ -3745,7 +3753,8 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth1D(radius,sigma);
-  kernel=(double *) AcquireAlignedMemory((size_t) width,width*sizeof(*kernel));
+  kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
+    width*sizeof(*kernel)));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   j=(ssize_t) width/2;
@@ -4362,7 +4371,8 @@ MagickExport Image *SharpenImageChannel(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,sigma);
-  kernel=(double *) AcquireAlignedMemory((size_t) width*width,sizeof(*kernel));
+  kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width*
+    width,sizeof(*kernel)));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   normalize=0.0;

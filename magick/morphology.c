@@ -64,6 +64,7 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/monitor-private.h"
 #include "magick/morphology.h"
 #include "magick/morphology-private.h"
@@ -331,8 +332,8 @@ static KernelInfo *ParseKernelArray(const char *kernel_string)
     }
 
   /* Read in the kernel values from rest of input string argument */
-  kernel->values=(double *) AcquireAlignedMemory(kernel->width,
-    kernel->height*sizeof(*kernel->values));
+  kernel->values=(double *) MagickAssumeAligned(AcquireAlignedMemory(
+    kernel->width,kernel->height*sizeof(*kernel->values)));
   if (kernel->values == (double *) NULL)
     return(DestroyKernelInfo(kernel));
   kernel->minimum = +MagickHuge;
@@ -1050,8 +1051,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
       {
         kernel->height = kernel->width = (size_t) 1;
         kernel->x = kernel->y = (ssize_t) 0;
-        kernel->values=(double *) AcquireAlignedMemory(1,
-          sizeof(*kernel->values));
+        kernel->values=(double *) MagickAssumeAligned(AcquireAlignedMemory(1,
+          sizeof(*kernel->values)));
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
         kernel->maximum = kernel->values[0] = args->rho;
@@ -1074,8 +1075,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
           kernel->width = GetOptimalKernelWidth2D(args->rho,sigma2);
         kernel->height = kernel->width;
         kernel->x = kernel->y = (ssize_t) (kernel->width-1)/2;
-        kernel->values=(double *) AcquireAlignedMemory(kernel->width,
-          kernel->height*sizeof(*kernel->values));
+        kernel->values=(double *) MagickAssumeAligned(AcquireAlignedMemory(
+          kernel->width,kernel->height*sizeof(*kernel->values)));
         if (kernel->values == (double *) NULL)
           return(DestroyKernelInfo(kernel));
 

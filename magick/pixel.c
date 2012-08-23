@@ -53,6 +53,7 @@
 #include "magick/list.h"
 #include "magick/magick.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/monitor.h"
 #include "magick/option.h"
 #include "magick/pixel.h"
@@ -94,8 +95,8 @@ MagickExport MagickPixelPacket *CloneMagickPixelPacket(
   MagickPixelPacket
     *clone_pixel;
 
-  clone_pixel=(MagickPixelPacket *) AcquireAlignedMemory(1,
-    sizeof(*clone_pixel));
+  clone_pixel=(MagickPixelPacket *) MagickAssumeAligned(AcquireAlignedMemory(1,
+    sizeof(*clone_pixel)));
   if (clone_pixel == (MagickPixelPacket *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   *clone_pixel=(*pixel);

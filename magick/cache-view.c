@@ -51,6 +51,7 @@
 #include "magick/cache-private.h"
 #include "magick/cache-view.h"
 #include "magick/memory_.h"
+#include "magick/memory-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/resource_.h"
@@ -165,7 +166,8 @@ MagickExport CacheView *AcquireVirtualCacheView(const Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   (void) exception;
-  cache_view=(CacheView *) AcquireAlignedMemory(1,sizeof(*cache_view));
+  cache_view=(CacheView *) MagickAssumeAligned(AcquireAlignedMemory(1,
+    sizeof(*cache_view)));
   if (cache_view == (CacheView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(cache_view,0,sizeof(*cache_view));
@@ -212,7 +214,8 @@ MagickExport CacheView *CloneCacheView(const CacheView *cache_view)
   if (cache_view->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       cache_view->image->filename);
-  clone_view=(CacheView *) AcquireAlignedMemory(1,sizeof(*clone_view));
+  clone_view=(CacheView *) MagickAssumeAligned(AcquireAlignedMemory(1,
+    sizeof(*clone_view)));
   if (clone_view == (CacheView *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(clone_view,0,sizeof(*clone_view));
