@@ -33,7 +33,7 @@ $fuzz=int(0.0*QuantumRange);
 testFilterCompare('input.miff',  q//, 'reference/filter/AdaptiveThreshold.miff', 'AdaptiveThreshold', q/'5x5+5%'/, 0.0, 0.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Annotate.miff', 'Annotate', q/text=>'Magick',geometry=>'+0+20',font=>'Generic.ttf',fill=>'gold',gravity=>'North',pointsize=>14/, 0.003, 0.70);
+testFilterCompare('input.miff',  q//, 'reference/filter/Annotate.miff', 'Annotate', q/text=>'Magick',geometry=>'+0+20',font=>'Generic.ttf',fill=>'gold',gravity=>'North',pointsize=>14/, 0.005, 0.70);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Blur.miff', 'Blur', q/'5x2'/, 0.00001, 0.004);
