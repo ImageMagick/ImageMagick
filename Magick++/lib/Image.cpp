@@ -1601,11 +1601,11 @@ void Magick::Image::read ( const std::string &imageSpec_ )
       DestroyImageList( next );
  
     }
-  replaceImage( image );
-  throwException( exceptionInfo );
   if ( image )
     throwException( image->exception );
+  throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
+  replaceImage( image );
 }
 
 // Read image of specified size into current object
