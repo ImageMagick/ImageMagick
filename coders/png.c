@@ -11034,8 +11034,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
-static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
-  Image *image)
+static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   MagickBooleanType
     excluding,

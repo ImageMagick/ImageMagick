@@ -1,3 +1,7 @@
+2012-08-23  6.7.9-2 Cristy  <quetzlzacatenango@image...>
+  * On rare occasions, PNG warnings triggered an assertion (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=23&t=21737).
+
 2012-05-12  6.7.6-10 Cristy  <quetzlzacatenango@image...>
   * GravityType argument no longer ignored in Magick::Image::extent (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21000).
