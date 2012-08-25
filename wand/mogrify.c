@@ -2823,8 +2823,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) SyncImageSettings(mogrify_info,*image);
             threshold=StringToDoubleInterval(argv[i+1],(double) QuantumRange+
               1.0);
-            (void) SolarizeImage(*image,threshold);
-            InheritException(exception,&(*image)->exception);
+            (void) SolarizeImageChannel(*image,channel,threshold,exception);
             break;
           }
         if (LocaleCompare("sparse-color",option+1) == 0)
