@@ -2759,7 +2759,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   image->columns=ping_width;
   image->rows=ping_height;
   if (((int) ping_color_type == PNG_COLOR_TYPE_PALETTE) ||
-      ((int) ping_color_type == PNG_COLOR_TYPE_GRAY))
+      ((int) ping_bit_depth < 16 &&
+      (int) ping_color_type == PNG_COLOR_TYPE_GRAY))
     {
       size_t
         one;
