@@ -658,8 +658,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   const PixelInfo *colorize,ExceptionInfo *exception)
 {
 #define ColorizeImageTag  "Colorize/Image"
-#define Colorize(pixel,blend_percentage,colorize)  (pixel)= \
-  ((pixel)*(100.0-(blend_percentage))+(colorize)*(blend_percentage))/100.0
+#define Colorize(pixel,blend_percentage,colorize)  \
+  (((pixel)*(100.0-(blend_percentage))+(colorize)*(blend_percentage))/100.0)
 
   CacheView
     *colorize_view,
@@ -748,9 +748,6 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
     MagickBooleanType
       sync;
 
-    PixelInfo
-      pixel;
-
     register const Quantum
       *restrict p;
 
@@ -770,22 +767,36 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
         status=MagickFalse;
         continue;
       }
-    GetPixelInfo(colorize_image,&pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if (GetPixelMask(colorize_image,q) != 0)
-        {
-          p+=GetPixelChannels(image);
-          q+=GetPixelChannels(colorize_image);
+      register ssize_t
+        i;
+
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          colorize_traits,
+          traits;
+
+        channel=GetPixelChannelMapChannel(image,i);
+        traits=GetPixelChannelMapTraits(image,channel);
+        colorize_traits=GetPixelChannelMapTraits(colorize_image,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (colorize_traits == UndefinedPixelTrait))
           continue;
-        }
-      GetPixelInfoPixel(image,p,&pixel);
-      Colorize(pixel.red,blend_percentage.red,colorize->red);
-      Colorize(pixel.green,blend_percentage.green,colorize->green);
-      Colorize(pixel.blue,blend_percentage.blue,colorize->blue);
-      Colorize(pixel.black,blend_percentage.black,colorize->black);
-      Colorize(pixel.alpha,blend_percentage.alpha,colorize->alpha);
-      SetPixelInfoPixel(colorize_image,&pixel,q);
+        if (((colorize_traits & CopyPixelTrait) != 0) ||
+            (GetPixelMask(image,p) != 0))
+          {
+            SetPixelChannel(colorize_image,channel,p[i],q);
+            continue;
+          }
+        channel=GetPixelChannelMapChannel(colorize_image,channel);
+        q[i]=ClampToQuantum(Colorize(p[i],GetPixelInfoChannel(&blend_percentage,
+          channel),GetPixelInfoChannel(colorize,channel)));
+      }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(colorize_image);
     }

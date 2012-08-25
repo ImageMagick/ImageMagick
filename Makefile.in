@@ -276,6 +276,7 @@ DIST_COMMON = $(MagickCoreinc_HEADERS) $(MagickWandinc_HEADERS) \
 	$(top_srcdir)/config/type-ghostscript.xml.in \
 	$(top_srcdir)/config/type-windows.xml.in \
 	$(top_srcdir)/config/type.xml.in $(top_srcdir)/configure \
+	$(top_srcdir)/tests/common.shi.in \
 	$(top_srcdir)/utilities/ImageMagick.1.in \
 	$(top_srcdir)/utilities/animate.1.in \
 	$(top_srcdir)/utilities/compare.1.in \
@@ -334,9 +335,9 @@ CONFIG_CLEAN_FILES = config/configure.xml config/delegates.xml \
 	Magick++/lib/Magick++.pc MagickCore/MagickCore-config \
 	MagickCore/MagickCore.pc MagickCore/version.h magick.sh \
 	PerlMagick/Magick.pm PerlMagick/Makefile.PL \
-	PerlMagick/check.sh utilities/animate.1 utilities/compare.1 \
-	utilities/composite.1 utilities/conjure.1 utilities/convert.1 \
-	utilities/display.1 utilities/identify.1 \
+	PerlMagick/check.sh tests/common.shi utilities/animate.1 \
+	utilities/compare.1 utilities/composite.1 utilities/conjure.1 \
+	utilities/convert.1 utilities/display.1 utilities/identify.1 \
 	utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 \
 	utilities/montage.1 utilities/stream.1 \
 	MagickWand/MagickWand-config MagickWand/MagickWand.pc
@@ -2909,24 +2910,9 @@ TAP_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
 
 # Environment parameters to be used during tests
 TESTS_ENVIRONMENT = \
-	COMPARE="$(MEMCHECK) @abs_top_builddir@/utilities/compare" \
-	COMPOSITE="$(MEMCHECK) @abs_top_builddir@/utilities/composite" \
-	CONJURE="$(MEMCHECK) @abs_top_builddir@/utilities/conjure" \
-	CONVERT="$(MEMCHECK) @abs_top_builddir@/utilities/convert" \
-	DISPLAY="$(MEMCHECK) @abs_top_builddir@/utilities/display" \
-	IDENTIFY="$(MEMCHECK) @abs_top_builddir@/utilities/identify" \
-	MAGICK="$(MEMCHECK) @abs_top_builddir@/utilities/magick" \
-	MONTAGE="$(MEMCHECK) @abs_top_builddir@/utilities/montage" \
-	VALIDATE="$(MEMCHECK) @abs_top_builddir@/tests/validate" \
-	LD_LIBRARY_PATH="@abs_top_builddir@/MagickCore/.libs:${LD_LIBRARY_PATH}" \
-	MAGICK_CODER_MODULE_PATH='@MAGICK_CODER_MODULE_PATH@' \
-	MAGICK_CONFIGURE_PATH='@MAGICK_CONFIGURE_BUILD_PATH@@DIRSEP@@MAGICK_CONFIGURE_SRC_PATH@' \
-	MAGICK_FILTER_MODULE_PATH='@MAGICK_FILTER_MODULE_PATH@' \
 	MAKE="$(MAKE)" \
 	MAKEFLAGS="$(MAKEFLAGS)" \
-	MEMCHECK="$(MEMCHECK)" \
-	PATH="@abs_top_builddir@/utilities:${PATH}" \
-	SRCDIR=$(SRCDIR)
+	MEMCHECK="$(MEMCHECK)"
 
 TOP_EXTRA_DIST = \
   AUTHORS.txt \
@@ -5150,6 +5136,8 @@ PerlMagick/Magick.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Mag
 PerlMagick/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Makefile.PL.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/check.sh: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/check.sh.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+tests/common.shi: $(top_builddir)/config.status $(top_srcdir)/tests/common.shi.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 utilities/animate.1: $(top_builddir)/config.status $(top_srcdir)/utilities/animate.1.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
