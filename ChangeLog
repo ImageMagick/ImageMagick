@@ -1,3 +1,6 @@
+2012-08-26  6.7.9-2 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.9-2, SVN revision 9117.
+
 2012-08-25  6.7.9-2 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed bug in Q32 builds that erroneously read grayscale 16-bit PNGs
     as PseudoColor.
