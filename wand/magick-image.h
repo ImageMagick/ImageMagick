@@ -340,6 +340,7 @@ extern WandExport MagickBooleanType
     const MagickBooleanType,const double,const double),
   MagickSketchImage(MagickWand *,const double,const double,const double),
   MagickSolarizeImage(MagickWand *,const double),
+  MagickSolarizeImageChannel(MagickWand *,const ChannelType,const double),
   MagickSparseColorImage(MagickWand *,const ChannelType,const SparseColorMethod,
     const size_t,const double *),
   MagickSpliceImage(MagickWand *,const size_t,const size_t,const ssize_t,

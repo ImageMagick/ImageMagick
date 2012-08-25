@@ -11708,10 +11708,14 @@ WandExport MagickWand *MagickSmushImages(MagickWand *wand,
 %
 %      MagickBooleanType MagickSolarizeImage(MagickWand *wand,
 %        const double threshold)
+%      MagickBooleanType MagickSolarizeImageChannel(MagickWand *wand,
+%        const ChannelType channel,const double threshold)
 %
 %  A description of each parameter follows:
 %
 %    o wand: the magick wand.
+%
+%    o channel: the image channel(s).
 %
 %    o threshold:  Define the extent of the solarization.
 %
@@ -11722,15 +11726,23 @@ WandExport MagickBooleanType MagickSolarizeImage(MagickWand *wand,
   MagickBooleanType
     status;
 
+  status=MagickSolarizeImageChannel(wand,DefaultChannels,threshold);
+  return(status);
+}
+
+WandExport MagickBooleanType MagickSolarizeImageChannel(MagickWand *wand,
+  const ChannelType channel,const double threshold)
+{
+  MagickBooleanType
+    status;
+
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  status=SolarizeImage(wand->images,threshold);
-  if (status == MagickFalse)
-    InheritException(wand->exception,&wand->images->exception);
+  status=SolarizeImageChannel(wand->images,channel,threshold,wand->exception);
   return(status);
 }
 

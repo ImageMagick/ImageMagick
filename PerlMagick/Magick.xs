@@ -357,7 +357,7 @@ static struct
       {"verbose", MagickBooleanOptions} } },
     { "Signature", },
     { "Solarize", { {"geometry", StringReference},
-      {"threshold", StringReference} } },
+      {"threshold", StringReference}, {"channel", MagickChannelOptions} } },
     { "Sync", },
     { "Texture", { {"texture", ImageReference} } },
     { "Evaluate", { {"value", RealReference},
@@ -8989,7 +8989,10 @@ Mogrify(ref,...)
           if (attribute_flag[1] != 0)
             geometry_info.rho=StringToDoubleInterval(
              argument_list[1].string_reference,(double) QuantumRange+1.0);
-          (void) SolarizeImage(image,geometry_info.rho);
+          if (attribute_flag[2] != 0)
+            channel=(ChannelType) argument_list[2].integer_reference;
+          (void) SolarizeImageChannel(image,channel,geometry_info.rho,
+            exception);
           break;
         }
         case 53:  /* Sync */

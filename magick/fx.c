@@ -4516,24 +4516,39 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
 %  The format of the SolarizeImage method is:
 %
 %      MagickBooleanType SolarizeImage(Image *image,const double threshold)
+%      MagickBooleanType SolarizeImageChannel(Image *image,
+%        const ChannelType channel,const double threshold,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: the image.
 %
+%    o channel: the channel type.
+%
 %    o threshold:  Define the extent of the solarization.
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
 MagickExport MagickBooleanType SolarizeImage(Image *image,
   const double threshold)
 {
+  MagickBooleanType
+    status;
+
+  status=SolarizeImageChannel(image,DefaultChannels,threshold,
+    &image->exception);
+  return(status);
+}
+
+MagickExport MagickBooleanType SolarizeImageChannel(Image *image,
+  const ChannelType channel,const double threshold,ExceptionInfo *exception)
+{
 #define SolarizeImageTag  "Solarize/Image"
 
   CacheView
     *image_view;
-
-  ExceptionInfo
-    *exception;
 
   MagickBooleanType
     status;
@@ -4561,8 +4576,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
         if ((MagickRealType) image->colormap[i].red > threshold)
           image->colormap[i].red=QuantumRange-image->colormap[i].red;
         if ((MagickRealType) image->colormap[i].green > threshold)
-          image->colormap[i].green=QuantumRange-
-            image->colormap[i].green;
+          image->colormap[i].green=QuantumRange-image->colormap[i].green;
         if ((MagickRealType) image->colormap[i].blue > threshold)
           image->colormap[i].blue=QuantumRange-
             image->colormap[i].blue;
@@ -4573,7 +4587,6 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
@@ -4598,12 +4611,15 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      if ((MagickRealType) GetPixelRed(q) > threshold)
-        SetPixelRed(q,QuantumRange-GetPixelRed(q));
-      if ((MagickRealType) GetPixelGreen(q) > threshold)
-        SetPixelGreen(q,QuantumRange-GetPixelGreen(q));
-      if ((MagickRealType) GetPixelBlue(q) > threshold)
-        SetPixelBlue(q,QuantumRange-GetPixelBlue(q));
+      if ((channel & RedChannel) != 0)
+        if ((MagickRealType) GetPixelRed(q) > threshold)
+          SetPixelRed(q,QuantumRange-GetPixelRed(q));
+      if ((channel & GreenChannel) != 0)
+        if ((MagickRealType) GetPixelGreen(q) > threshold)
+          SetPixelGreen(q,QuantumRange-GetPixelGreen(q));
+      if ((channel & GreenChannel) != 0)
+        if ((MagickRealType) GetPixelBlue(q) > threshold)
+          SetPixelBlue(q,QuantumRange-GetPixelBlue(q));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
