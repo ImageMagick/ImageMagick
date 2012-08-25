@@ -60,6 +60,7 @@ AC_CONFIG_FILES([\
     PerlMagick/Magick.pm \
     PerlMagick/Makefile.PL \
     PerlMagick/check.sh \
+    tests/common.shi \
     utilities/animate.1 \
     utilities/compare.1 \
     utilities/composite.1 \

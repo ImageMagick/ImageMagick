@@ -3670,8 +3670,7 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
         SetPixelOpacity(q,QuantumRange-GetPixelOpacity(q));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetPixelIndex(indexes+x,QuantumRange-
-          GetPixelIndex(indexes+x));
+        SetPixelIndex(indexes+x,QuantumRange-GetPixelIndex(indexes+x));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)

@@ -50,6 +50,7 @@ TESTS_TESTS = \
 
 TESTS_EXTRA_DIST = \
 	tests/common.shi \
+	tests/common.shi.in \
   tests/input_256c.miff \
   tests/input_bilevel.miff \
   tests/input_gray.miff \
