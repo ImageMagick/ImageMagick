@@ -5228,14 +5228,14 @@ int main(int argc,char **argv)
       path[MaxTextExtent];
 
     path[0]=0;
-    p=getenv("SRCDIR");
+    p=getenv("top_srcdir");
     if (p != (char *) NULL)
       {
         (void) strcpy(path,p);
         if (path[strlen(path)-1] != '/')
           (void) strcat(path,"/");
       }
-    (void) strcat(path,"sequence.miff");
+    (void) strcat(path,"tests/sequence.miff");
     status=MagickReadImage(magick_wand,path);
   }
   if (status == MagickFalse)
