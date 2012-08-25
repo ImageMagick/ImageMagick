@@ -3,18 +3,17 @@ top_srcdir='@abs_top_srcdir@'
 top_builddir='@abs_top_builddir@'
 
 set -a
-COMPARE="$(MEMCHECK) @abs_top_builddir@/utilities/compare"
-COMPOSITE="$(MEMCHECK) @abs_top_builddir@/utilities/composite"
-CONJURE="$(MEMCHECK) @abs_top_builddir@/utilities/conjure"
-CONVERT="$(MEMCHECK) @abs_top_builddir@/utilities/convert"
-DISPLAY="$(MEMCHECK) @abs_top_builddir@/utilities/display"
-IDENTIFY="$(MEMCHECK) @abs_top_builddir@/utilities/identify"
-MONTAGE="$(MEMCHECK) @abs_top_builddir@/utilities/montage" 
-VALIDATE="$(MEMCHECK) @abs_top_builddir@/tests/validate"
+COMPARE="@abs_top_builddir@/utilities/compare"
+COMPOSITE="@abs_top_builddir@/utilities/composite"
+CONJURE="@abs_top_builddir@/utilities/conjure"
+CONVERT="@abs_top_builddir@/utilities/convert"
+DISPLAY="@abs_top_builddir@/utilities/display"
+IDENTIFY="@abs_top_builddir@/utilities/identify"
+MONTAGE="@abs_top_builddir@/utilities/montage" 
+VALIDATE="@abs_top_builddir@/tests/validate"
 LD_LIBRARY_PATH="@abs_top_builddir@/magick/.libs:${LD_LIBRARY_PATH}"
 MAGICK_CODER_MODULE_PATH='@MAGICK_CODER_MODULE_PATH@'
 MAGICK_CONFIGURE_PATH='@MAGICK_CONFIGURE_BUILD_PATH@@DIRSEP@@MAGICK_CONFIGURE_SRC_PATH@'
 MAGICK_FILTER_MODULE_PATH='@MAGICK_FILTER_MODULE_PATH@'
 PATH="@abs_top_builddir@/utilities:${PATH}"
-SRCDIR=$(SRCDIR)
 set +a
