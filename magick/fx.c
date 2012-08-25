@@ -4573,13 +4573,14 @@ MagickExport MagickBooleanType SolarizeImageChannel(Image *image,
       */
       for (i=0; i < (ssize_t) image->colors; i++)
       {
-        if ((MagickRealType) image->colormap[i].red > threshold)
-          image->colormap[i].red=QuantumRange-image->colormap[i].red;
-        if ((MagickRealType) image->colormap[i].green > threshold)
-          image->colormap[i].green=QuantumRange-image->colormap[i].green;
-        if ((MagickRealType) image->colormap[i].blue > threshold)
-          image->colormap[i].blue=QuantumRange-
-            image->colormap[i].blue;
+        if ((channel & RedChannel) != 0)
+          if ((MagickRealType) image->colormap[i].red > threshold)
+            image->colormap[i].red=QuantumRange-image->colormap[i].red;
+        if ((channel & GreenChannel) != 0)
+          if ((MagickRealType) image->colormap[i].green > threshold)
+            image->colormap[i].green=QuantumRange-image->colormap[i].green;
+        if ((channel & BlueChannel) != 0)
+          image->colormap[i].blue=QuantumRange-image->colormap[i].blue;
       }
     }
   /*
@@ -4617,7 +4618,7 @@ MagickExport MagickBooleanType SolarizeImageChannel(Image *image,
       if ((channel & GreenChannel) != 0)
         if ((MagickRealType) GetPixelGreen(q) > threshold)
           SetPixelGreen(q,QuantumRange-GetPixelGreen(q));
-      if ((channel & GreenChannel) != 0)
+      if ((channel & BlueChannel) != 0)
         if ((MagickRealType) GetPixelBlue(q) > threshold)
           SetPixelBlue(q,QuantumRange-GetPixelBlue(q));
       q++;
