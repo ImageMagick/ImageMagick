@@ -12,5 +12,5 @@ set -e # Exit on any error
 . ${srcdir}/tests/common.shi
 echo "1..1"
 
-./wandtest wandtest_out.miff && echo "ok" || echo "not ok"
+${WANDTEST} wandtest_out.miff && echo "ok" || echo "not ok"
 :
