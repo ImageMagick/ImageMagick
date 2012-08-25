@@ -3,18 +3,18 @@ top_srcdir='/home/cristy/ImageMagick-6.7.9'
 top_builddir='/home/cristy/ImageMagick-6.7.9'
 
 set -a
-COMPARE="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/utilities/compare"
-COMPOSITE="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/utilities/composite"
-CONJURE="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/utilities/conjure"
-CONVERT="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/utilities/convert"
-DISPLAY="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/utilities/display"
-IDENTIFY="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/utilities/identify"
-MONTAGE="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/utilities/montage" 
-VALIDATE="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/tests/validate"
+COMPARE="/home/cristy/ImageMagick-6.7.9/utilities/compare"
+COMPOSITE="/home/cristy/ImageMagick-6.7.9/utilities/composite"
+CONJURE="/home/cristy/ImageMagick-6.7.9/utilities/conjure"
+CONVERT="/home/cristy/ImageMagick-6.7.9/utilities/convert"
+DISPLAY="/home/cristy/ImageMagick-6.7.9/utilities/display"
+IDENTIFY="/home/cristy/ImageMagick-6.7.9/utilities/identify"
+MONTAGE="/home/cristy/ImageMagick-6.7.9/utilities/montage" 
+VALIDATE="/home/cristy/ImageMagick-6.7.9/tests/validate"
+REFERENCE_IMAGE="/home/cristy/ImageMagick-6.7.9/images/rose.pnm"
 LD_LIBRARY_PATH="/home/cristy/ImageMagick-6.7.9/magick/.libs:${LD_LIBRARY_PATH}"
 MAGICK_CODER_MODULE_PATH='/home/cristy/ImageMagick-6.7.9/coders'
 MAGICK_CONFIGURE_PATH='/home/cristy/ImageMagick-6.7.9/config:/home/cristy/ImageMagick-6.7.9/config'
 MAGICK_FILTER_MODULE_PATH='/home/cristy/ImageMagick-6.7.9/filters'
 PATH="/home/cristy/ImageMagick-6.7.9/utilities:${PATH}"
-SRCDIR=$(SRCDIR)
 set +a
