@@ -1,9 +1,20 @@
-SRCDIR=`dirname $0`
-SRCDIR=`cd $SRCDIR && pwd`
-TOPSRCDIR=`cd $srcdir && pwd`
-REFERENCE_IMAGE="${TOPSRCDIR}/images/rose.pnm"
-[ "X$CONVERT" = "X" ] && CONVERT=convert
-[ "X$MAGICK" = "X" ] && MAGICK=magick
-[ "X$IDENTIFY" = "X" ] && IDENTIFY=identify
-export SRCDIR TOPSRCDIR
-cd tests || exit 1
+# Test environment
+top_srcdir='/home/cristy/ImageMagick-6.7.9'
+top_builddir='/home/cristy/ImageMagick-6.7.9'
+
+set -a
+COMPARE="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/utilities/compare"
+COMPOSITE="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/utilities/composite"
+CONJURE="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/utilities/conjure"
+CONVERT="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/utilities/convert"
+DISPLAY="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/utilities/display"
+IDENTIFY="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/utilities/identify"
+MONTAGE="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/utilities/montage" 
+VALIDATE="$(MEMCHECK) /home/cristy/ImageMagick-6.7.9/tests/validate"
+LD_LIBRARY_PATH="/home/cristy/ImageMagick-6.7.9/magick/.libs:${LD_LIBRARY_PATH}"
+MAGICK_CODER_MODULE_PATH='/home/cristy/ImageMagick-6.7.9/coders'
+MAGICK_CONFIGURE_PATH='/home/cristy/ImageMagick-6.7.9/config:/home/cristy/ImageMagick-6.7.9/config'
+MAGICK_FILTER_MODULE_PATH='/home/cristy/ImageMagick-6.7.9/filters'
+PATH="/home/cristy/ImageMagick-6.7.9/utilities:${PATH}"
+SRCDIR=$(SRCDIR)
+set +a
