@@ -81,7 +81,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Edge.miff', 'Edge', q//,
 testFilterCompare('input.miff',  q//, 'reference/filter/Emboss.miff', 'Emboss', q/'0x1'/, 0.2, 1.02);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Equalize.miff', 'Equalize', q//, 0.03, 1.03);
+testFilterCompare('input.miff',  q//, 'reference/filter/Equalize.miff', 'Equalize', q//, 0.2, 1.03);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Implode.miff', 'Implode', q/0.5/, 0.002, 0.2);
