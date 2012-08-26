@@ -55,6 +55,7 @@
 #include "magick/memory_.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/pixel-accessor.h"
 #include "magick/random_.h"
 #include "magick/random-private.h"
 #include "magick/signature-private.h"
