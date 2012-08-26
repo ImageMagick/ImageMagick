@@ -25,7 +25,7 @@ extern "C" {
 #include <magick/image.h>
 #include <magick/image-private.h>
 #include <magick/pixel.h>
-#include <magick/pixel-private.h>
+#include <magick/pixel-accessor.h>
 
 static inline void ConvertRGBToCMYK(MagickPixelPacket *pixel)
 {

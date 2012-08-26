@@ -63,6 +63,7 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/option.h"
+#include "magick/pixel-accessor.h"
 #include "magick/pixel-private.h"
 #include "magick/quantum.h"
 #include "magick/quantum-private.h"
@@ -125,7 +126,7 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
     status;
 
   logmean=log(0.5);
-  if ((channel & SyncChannels) != 0 )
+  if ((channel & SyncChannels) != 0)
     {
       /*
         Apply gamma correction equally accross all given channels
@@ -143,8 +144,8 @@ MagickExport MagickBooleanType AutoGammaImageChannel(Image *image,
       (void) GetImageChannelMean(image,RedChannel,&mean,&sans,
         &image->exception);
       gamma=log(mean*QuantumScale)/logmean;
-      status = status && LevelImageChannel(image, RedChannel,
-                               0.0, (double)QuantumRange, gamma);
+      status&=LevelImageChannel(image,RedChannel,0.0,(double) QuantumRange,
+        gamma);
     }
   if ((channel & GreenChannel) != 0)
     {
@@ -1847,6 +1848,13 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
     indexes=GetVirtualIndexQueue(image);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      if ((channel & SyncChannels) != 0)
+        {        
+          histogram[ScaleQuantumToMap(ClampToQuantum(
+            GetPixelIntensity(image,p)))].red++;
+          p++;
+          continue;
+        }        
       if ((channel & RedChannel) != 0)
         histogram[ScaleQuantumToMap(GetPixelRed(p))].red++;
       if ((channel & GreenChannel) != 0)
@@ -1867,6 +1875,12 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   (void) ResetMagickMemory(&intensity,0,sizeof(intensity));
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
+    if ((channel & SyncChannels) != 0)
+      {        
+        intensity.red+=histogram[i].red;
+        map[i]=intensity;
+        continue;
+      }
     if ((channel & RedChannel) != 0)
       intensity.red+=histogram[i].red;
     if ((channel & GreenChannel) != 0)
@@ -1889,6 +1903,14 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
 #endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
+    if ((channel & SyncChannels) != 0)
+      {        
+        if (white.red != black.red)
+          equalize_map[i].red=(MagickRealType) ScaleMapToQuantum(
+            (MagickRealType) ((MaxMap*(map[i].red-black.red))/(white.red-
+            black.red)));
+        continue;
+      }
     if (((channel & RedChannel) != 0) && (white.red != black.red))
       equalize_map[i].red=(MagickRealType) ScaleMapToQuantum((MagickRealType)
         ((MaxMap*(map[i].red-black.red))/(white.red-black.red)));
@@ -1921,6 +1943,21 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
 #endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
+        if ((channel & SyncChannels) != 0)
+          {        
+            if (white.red != black.red)
+              {
+                image->colormap[i].red=ClampToQuantum(equalize_map[
+                  ScaleQuantumToMap(image->colormap[i].red)].red);
+                image->colormap[i].green=ClampToQuantum(equalize_map[
+                  ScaleQuantumToMap(image->colormap[i].green)].red);
+                image->colormap[i].blue=ClampToQuantum(equalize_map[
+                  ScaleQuantumToMap(image->colormap[i].blue)].red);
+                image->colormap[i].opacity=ClampToQuantum(equalize_map[
+                  ScaleQuantumToMap(image->colormap[i].opacity)].red);
+              }
+            continue;
+          }
         if (((channel & RedChannel) != 0) && (white.red != black.red))
           image->colormap[i].red=ClampToQuantum(equalize_map[
             ScaleQuantumToMap(image->colormap[i].red)].red);
@@ -1969,6 +2006,25 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      if ((channel & SyncChannels) != 0)
+        {        
+          if (white.red != black.red)
+            {
+              SetPixelRed(q,ClampToQuantum(equalize_map[
+                ScaleQuantumToMap(GetPixelRed(q))].red));
+              SetPixelGreen(q,ClampToQuantum(equalize_map[
+                ScaleQuantumToMap(GetPixelGreen(q))].red));
+              SetPixelBlue(q,ClampToQuantum(equalize_map[
+                ScaleQuantumToMap(GetPixelBlue(q))].red));
+              SetPixelOpacity(q,ClampToQuantum(equalize_map[
+                ScaleQuantumToMap(GetPixelOpacity(q))].red));
+              if (image->colorspace == CMYKColorspace)
+                SetPixelIndex(indexes+x,ClampToQuantum(equalize_map[
+                  ScaleQuantumToMap(GetPixelIndex(indexes+x))].red));
+            }
+          q++;
+          continue;
+        }
       if (((channel & RedChannel) != 0) && (white.red != black.red))
         SetPixelRed(q,ClampToQuantum(equalize_map[
           ScaleQuantumToMap(GetPixelRed(q))].red));

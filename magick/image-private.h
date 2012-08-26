@@ -29,7 +29,6 @@ extern "C" {
 #define MagickSQ1_2  0.70710678118654752440084436210484903928483593768847L
 #define MagickSQ2    1.41421356237309504880168872420969807856967187537695L
 #define MagickSQ2PI  2.50662827463100024161235523934010416269302368164062L
-#define QuantumScale  ((double) 1.0/(double) QuantumRange)
 #define UndefinedTicksPerSecond  100L
 #define UndefinedCompressionQuality  0UL
 

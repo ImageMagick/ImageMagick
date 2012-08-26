@@ -54,6 +54,7 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/option.h"
+#include "magick/pixel-accessor.h"
 #include "magick/resource_.h"
 #include "magick/string-private.h"
 #include "magick/thread-private.h"

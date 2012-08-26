@@ -188,6 +188,7 @@ MAGICK_BASE_SRCS = \
 	magick/paint.h \
 	magick/pixel.c \
 	magick/pixel.h \
+	magick/pixel-accessor.h \
 	magick/pixel-private.h \
 	magick/policy.c \
 	magick/policy.h \
@@ -349,6 +350,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/option.h \
 	magick/paint.h \
 	magick/pixel.h \
+	magick/pixel-accessor.h \
 	magick/policy.h \
 	magick/prepress.h \
 	magick/profile.h \

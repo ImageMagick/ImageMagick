@@ -64,6 +64,7 @@
 #include "magick/log.h"
 #include "magick/quantum.h"
 #include "magick/quantum-private.h"
+#include "magick/pixel-accessor.h"
 #include "magick/property.h"
 #include "magick/resource_.h"
 #include "magick/semaphore.h"
