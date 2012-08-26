@@ -25,6 +25,83 @@ extern "C" {
 #include <math.h>
 #include <magick/pixel.h>
 
+#define ClampPixelRed(pixel) ClampToQuantum((pixel)->red)
+#define ClampPixelGreen(pixel) ClampToQuantum((pixel)->green)
+#define ClampPixelBlue(pixel) ClampToQuantum((pixel)->blue)
+#define ClampPixelIndex(indexes) ClampToQuantum(*(indexes))
+#define ClampPixelOpacity(pixel) ClampToQuantum((pixel)->opacity)
+#define GetPixela(pixel) ((pixel)->green)
+#define GetPixelb(pixel) ((pixel)->blue)
+#define GetPixelAlpha(pixel) (QuantumRange-(pixel)->opacity)
+#define GetPixelBlack(indexes) (*(indexes))
+#define GetPixelBlue(pixel) ((pixel)->blue)
+#define GetPixelCb(pixel) ((pixel)->green)
+#define GetPixelCr(pixel) ((pixel)->blue)
+#define GetPixelCyan(pixel) ((pixel)->red)
+#define GetPixelGray(pixel) ((pixel)->red)
+#define GetPixelGreen(pixel) ((pixel)->green)
+#define GetPixelIndex(indexes) (*(indexes))
+#define GetPixelL(pixel) ((pixel)->red)
+#define GetPixelMagenta(pixel) ((pixel)->green)
+#define GetPixelNext(pixel)  ((pixel)+1)
+#define GetPixelOpacity(pixel) ((pixel)->opacity)
+#define GetPixelRed(pixel) ((pixel)->red)
+#define GetPixelRGB(pixel,packet) \
+{ \
+  (packet)->red=GetPixelRed((pixel)); \
+  (packet)->green=GetPixelGreen((pixel)); \
+  (packet)->blue=GetPixelBlue((pixel)); \
+}
+#define GetPixelRGBO(pixel,packet) \
+{ \
+  (packet)->red=GetPixelRed((pixel)); \
+  (packet)->green=GetPixelGreen((pixel)); \
+  (packet)->blue=GetPixelBlue((pixel)); \
+  (packet)->opacity=GetPixelOpacity((pixel)); \
+}
+#define GetPixelY(pixel) ((pixel)->red)
+#define GetPixelYellow(pixel) ((pixel)->blue)
+#define SetPixela(pixel,value) ((pixel)->green=(Quantum) (value))
+#define SetPixelAlpha(pixel,value) \
+  ((pixel)->opacity=(Quantum) (QuantumRange-(value)))
+#define SetPixelb(pixel,value) ((pixel)->blue=(Quantum) (value))
+#define SetPixelBlack(indexes,value) (*(indexes)=(Quantum) (value))
+#define SetPixelBlue(pixel,value) ((pixel)->blue=(Quantum) (value))
+#define SetPixelCb(pixel,value) ((pixel)->green=(Quantum) (value))
+#define SetPixelCr(pixel,value) ((pixel)->blue=(Quantum) (value))
+#define SetPixelCyan(pixel,value) ((pixel)->red=(Quantum) (value))
+#define SetPixelGray(pixel,value) \
+  ((pixel)->red=(pixel)->green=(pixel)->blue=(Quantum) (value))
+#define SetPixelGreen(pixel,value) ((pixel)->green=(Quantum) (value))
+#define SetPixelIndex(indexes,value) (*(indexes)=(IndexPacket) (value))
+#define SetPixelL(pixel,value) ((pixel)->red=(Quantum) (value))
+#define SetPixelMagenta(pixel,value) ((pixel)->green=(Quantum) (value))
+#define SetPixelOpacity(pixel,value) \
+  ((pixel)->opacity=(Quantum) (value))
+#define SetPixelRed(pixel,value) ((pixel)->red=(Quantum) (value))
+#define SetPixelRgb(pixel,packet) \
+{ \
+  SetPixelRed(pixel,(packet)->red); \
+  SetPixelGreen(pixel,(packet)->green); \
+  SetPixelBlue(pixel,(packet)->blue); \
+}
+#define SetPixelRGBA(pixel,packet) \
+{ \
+  SetPixelRed(pixel,(packet)->red); \
+  SetPixelGreen(pixel,(packet)->green); \
+  SetPixelBlue(pixel,(packet)->blue); \
+  SetPixelAlpha(pixel,(QuantumRange-(packet)->opacity)); \
+}
+#define SetPixelRGBO(pixel,packet) \
+{ \
+  SetPixelRed(pixel,(packet)->red); \
+  SetPixelGreen(pixel,(packet)->green); \
+  SetPixelBlue(pixel,(packet)->blue); \
+  SetPixelOpacity(pixel,(packet)->opacity); \
+}
+#define SetPixelYellow(pixel,value) ((pixel)->blue=(Quantum) (value))
+#define SetPixelY(pixel,value) ((pixel)->red=(Quantum) (value))
+
 static inline MagickRealType InversesRGBCompandor(const MagickRealType pixel)
 {
   if (pixel <= (0.04045*QuantumRange))
