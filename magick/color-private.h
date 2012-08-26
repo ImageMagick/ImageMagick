@@ -25,25 +25,7 @@ extern "C" {
 #include <magick/image.h>
 #include <magick/color.h>
 #include <magick/exception-private.h>
-#include <magick/pixel-private.h>
-
-static inline MagickRealType GetPixelIntensity(const Image *image,
-  const PixelPacket *pixel)
-{
-  MagickRealType
-    blue,
-    green,
-    red;
-
-  if (image->colorspace == GRAYColorspace)
-    return((MagickRealType) pixel->red);
-  if (image->colorspace != sRGBColorspace)
-    return(0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue);
-  red=InversesRGBCompandor((MagickRealType) pixel->red);
-  green=InversesRGBCompandor((MagickRealType) pixel->green);
-  blue=InversesRGBCompandor((MagickRealType) pixel->blue);
-  return((MagickRealType) (0.298839*red+0.586811*green+0.114350*blue));
-}
+#include <magick/pixel-accessor.h>
 
 static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
   const PixelPacket *q)
@@ -102,21 +84,6 @@ static inline MagickBooleanType IsMagickGray(const MagickPixelPacket *pixel)
   return(MagickFalse);
 }
 
-static inline MagickBooleanType IsPixelGray(const PixelPacket *pixel)
-{
-  MagickRealType
-    blue,
-    green,
-    red;
-
-  red=(MagickRealType) pixel->red;
-  green=(MagickRealType) pixel->green;
-  blue=(MagickRealType) pixel->blue;
-  if ((fabs(red-green) < MagickEpsilon) && (fabs(green-blue) < MagickEpsilon))
-    return(MagickTrue);
-  return(MagickFalse);
-}
-
 static inline MagickRealType MagickPixelIntensity(
   const MagickPixelPacket *pixel)
 {
@@ -170,38 +137,6 @@ static inline MagickRealType MagickPixelLuminance(
   green=InversesRGBCompandor(pixel->green);
   blue=InversesRGBCompandor(pixel->blue);
   return(0.21267*red+0.71516*green+0.07217*blue);
-}
-
-static inline Quantum PixelPacketIntensity(const PixelPacket *pixel)
-{
-  MagickRealType
-    blue,
-    green,
-    red;
-
-  red=InversesRGBCompandor((MagickRealType) pixel->red);
-  green=InversesRGBCompandor((MagickRealType) pixel->green);
-  blue=InversesRGBCompandor((MagickRealType) pixel->blue);
-  return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
-}
-
-static inline Quantum PixelIntensityToQuantum(const Image *restrict image,
-  const PixelPacket *restrict pixel)
-{
-  MagickRealType
-    blue,
-    green,
-    red;
-
-  if (image->colorspace == GRAYColorspace)
-    return(GetPixelGray(pixel));
-  if (image->colorspace != sRGBColorspace)
-    return(ClampToQuantum(0.298839*pixel->red+0.586811*pixel->green+0.114350*
-      pixel->blue));
-  red=InversesRGBCompandor((MagickRealType) pixel->red);
-  green=InversesRGBCompandor((MagickRealType) pixel->green);
-  blue=InversesRGBCompandor((MagickRealType) pixel->blue);
-  return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

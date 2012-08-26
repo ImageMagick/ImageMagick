@@ -28,20 +28,6 @@ extern "C" {
 #include "magick/memory_.h"
 #include "magick/quantum-private.h"
 
-static inline MagickRealType InversesRGBCompandor(const MagickRealType pixel)
-{
-  if (pixel <= (0.04045*QuantumRange))
-    return(pixel/12.92);
-  return(QuantumRange*pow((QuantumScale*pixel+0.055)/1.055,2.4));
-}
-
-static inline MagickRealType sRGBCompandor(const MagickRealType pixel)
-{
-  if (pixel <= (0.0031308*QuantumRange))
-    return(12.92*pixel);
-  return(QuantumRange*(1.055*pow(QuantumScale*pixel,1.0/2.4)-0.055));
-}
-
 static inline MagickBooleanType IsGrayPixel(const PixelPacket *pixel)
 {
 #if !defined(MAGICKCORE_HDRI_SUPPORT)

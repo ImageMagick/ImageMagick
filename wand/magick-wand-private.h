@@ -25,7 +25,6 @@ extern "C" {
 #define DegreesToRadians(x)  (MagickPI*(x)/180.0)
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define MagickWandId  "MagickWand"
-#define QuantumScale  ((MagickRealType) 1.0/(MagickRealType) QuantumRange)
 #define QuantumTick(i,span) ((MagickBooleanType) ((((i) & ((i)-1)) == 0) || \
    (((i) & 0xfff) == 0) || \
    ((MagickOffsetType) (i) == ((MagickOffsetType) (span)-1))))

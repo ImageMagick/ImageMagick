@@ -116,6 +116,7 @@ extern "C" {
 #include "magick/option.h"
 #include "magick/paint.h"
 #include "magick/pixel.h"
+#include "magick/pixel-accessor.h"
 #include "magick/policy.h"
 #include "magick/prepress.h"
 #include "magick/profile.h"

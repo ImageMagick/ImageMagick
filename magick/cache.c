@@ -58,6 +58,7 @@
 #include "magick/memory_.h"
 #include "magick/memory-private.h"
 #include "magick/pixel.h"
+#include "magick/pixel-accessor.h"
 #include "magick/pixel-private.h"
 #include "magick/policy.h"
 #include "magick/quantum.h"
