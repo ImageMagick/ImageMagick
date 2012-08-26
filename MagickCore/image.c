@@ -1679,7 +1679,7 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
         double
           pixel;
 
-        traits=GetPixelChannelMapTraits(image,i);
+        traits=GetPixelChannelTraits(image,i);
         if (traits == UndefinedPixelTrait)
           continue;
         pixel=(double) p[i];
@@ -2093,8 +2093,8 @@ static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
     PixelTrait
       traits;
 
-    channel=GetPixelChannelMapChannel(image,i);
-    traits=GetPixelChannelMapTraits(image,channel);
+    channel=GetPixelChannelChannel(image,i);
+    traits=GetPixelChannelTraits(image,channel);
     if (traits == UndefinedPixelTrait)
       continue;
     switch (channel)
@@ -2383,6 +2383,44 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   }
   image_view=DestroyCacheView(image_view);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e C h a n n e l M a s k                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageChannelMask() sets the image channel mask from the specified channel
+%  mask.
+%
+%  The format of the SetImageChannelMask method is:
+%
+%      ChannelType SetImageChannelMask(Image *image,
+%        const ChannelType channel_mask)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o channel_mask: the channel mask.
+%
+*/
+MagickExport ChannelType SetImageChannelMask(Image *image,
+  const ChannelType channel_mask)
+{
+  ChannelType
+    mask;
+
+  mask=image->channel_mask;
+  image->channel_mask=channel_mask;
+  SetPixelChannelMask(image,channel_mask);
+  return(mask);
 }
 
 /*
@@ -3698,7 +3736,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       exception);
   option=GetImageOption(image_info,"channel");
   if (option != (const char *) NULL)
-    (void) SetPixelChannelMapMask(image,(ChannelType)
+    (void) SetPixelChannelMask(image,(ChannelType)
       ParseChannelOption(option));
   /* FUTURE: do not sync compose to per-image compose setting here */
   option=GetImageOption(image_info,"compose");

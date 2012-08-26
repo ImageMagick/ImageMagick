@@ -175,9 +175,6 @@ typedef enum
 typedef struct _CacheView
   CacheView_;
 
-extern MagickExport ChannelType
-  SetPixelChannelMask(Image *,const ChannelType);
-
 extern MagickExport MagickBooleanType
   ExportImagePixels(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,const char *,const StorageType,void *,ExceptionInfo *),
@@ -208,7 +205,7 @@ extern MagickExport PixelInfo
 extern MagickExport void
   InitializePixelChannelMap(Image *),
   GetPixelInfo(const Image *,PixelInfo *),
-  SetPixelChannelMapMask(Image *,const ChannelType);
+  SetPixelChannelMask(Image *,const ChannelType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

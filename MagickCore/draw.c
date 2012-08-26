@@ -4390,11 +4390,11 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
               target.green=(double) draw_info->border_color.green;
               target.blue=(double) draw_info->border_color.blue;
             }
-          channel_mask=SetPixelChannelMask(image,AlphaChannel);
+          channel_mask=SetImageChannelMask(image,AlphaChannel);
           (void) FloodfillPaintImage(image,draw_info,&target,x,y,
             primitive_info->method == FloodfillMethod ? MagickFalse :
             MagickTrue,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case ResetMethod:

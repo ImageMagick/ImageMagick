@@ -462,6 +462,9 @@ struct _ImageInfo
     signature;
 };
 
+extern MagickExport ChannelType
+  SetImageChannelMask(Image *,const ChannelType);
+
 extern MagickExport const char
   DefaultTileGeometry[],
   DefaultTileLabel[],

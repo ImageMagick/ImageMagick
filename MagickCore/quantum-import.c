@@ -3619,8 +3619,8 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
           PixelTrait
             traits;
 
-          channel=GetPixelChannelMapChannel(image,i);
-          traits=GetPixelChannelMapTraits(image,channel);
+          channel=GetPixelChannelChannel(image,i);
+          traits=GetPixelChannelTraits(image,channel);
           if ((traits & UpdatePixelTrait) == 0)
             continue;
           q[i]=ClampToQuantum(gamma*q[i]);
