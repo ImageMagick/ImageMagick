@@ -600,12 +600,6 @@ static inline void SetPixelChannelTraits(Image *image,
   image->channel_map[channel].traits=traits;
 }
 
-static inline void SetPixelChannelMapTraits(Image *image,
-  const PixelChannel channel,const PixelTrait traits)
-{
-  image->channel_map[channel].traits=traits;
-}
-
 static inline void SetPixelCr(const Image *restrict image,const Quantum cr,
   Quantum *restrict pixel)
 {
