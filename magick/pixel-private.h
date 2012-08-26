@@ -26,6 +26,7 @@ extern "C" {
 #include "magick/color.h"
 #include "magick/image-private.h"
 #include "magick/memory_.h"
+#include "magick/pixel-accessor.h"
 #include "magick/quantum-private.h"
 
 static inline MagickBooleanType IsGrayPixel(const PixelPacket *pixel)
