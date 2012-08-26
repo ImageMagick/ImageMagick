@@ -47,6 +47,7 @@
 #include "magick/image.h"
 #include "magick/list.h"
 #include "magick/memory_.h"
+#include "magick/pixel-accessor.h"
 #include "magick/prepress.h"
 #include "magick/registry.h"
 #include "magick/resource_.h"
