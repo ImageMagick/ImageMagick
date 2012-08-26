@@ -374,9 +374,9 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
         ssize_t
           v;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        blur_traits=GetPixelChannelMapTraits(blur_image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        blur_traits=GetPixelChannelTraits(blur_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (blur_traits == UndefinedPixelTrait))
           continue;
@@ -697,9 +697,9 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
         ssize_t
           v;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        sharp_traits=GetPixelChannelMapTraits(sharp_image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        sharp_traits=GetPixelChannelTraits(sharp_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (sharp_traits == UndefinedPixelTrait))
           continue;
@@ -999,9 +999,9 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
         register ssize_t
           u;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        blur_traits=GetPixelChannelMapTraits(blur_image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        blur_traits=GetPixelChannelTraits(blur_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (blur_traits == UndefinedPixelTrait))
           continue;
@@ -1123,9 +1123,9 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
         register ssize_t
           u;
 
-        channel=GetPixelChannelMapChannel(blur_image,i);
-        traits=GetPixelChannelMapTraits(blur_image,channel);
-        blur_traits=GetPixelChannelMapTraits(blur_image,channel);
+        channel=GetPixelChannelChannel(blur_image,i);
+        traits=GetPixelChannelTraits(blur_image,channel);
+        blur_traits=GetPixelChannelTraits(blur_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (blur_traits == UndefinedPixelTrait))
           continue;
@@ -1436,9 +1436,9 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
 
     if (status == MagickFalse)
       continue;
-    channel=GetPixelChannelMapChannel(image,i);
-    traits=GetPixelChannelMapTraits(image,channel);
-    despeckle_traits=GetPixelChannelMapTraits(despeckle_image,channel);
+    channel=GetPixelChannelChannel(image,i);
+    traits=GetPixelChannelTraits(image,channel);
+    despeckle_traits=GetPixelChannelTraits(despeckle_image,channel);
     if ((traits == UndefinedPixelTrait) ||
         (despeckle_traits == UndefinedPixelTrait))
       continue;
@@ -1999,9 +1999,9 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
         register ssize_t
           j;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        blur_traits=GetPixelChannelMapTraits(blur_image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        blur_traits=GetPixelChannelTraits(blur_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (blur_traits == UndefinedPixelTrait))
           continue;
@@ -2794,9 +2794,9 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
         register ssize_t
           j;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        blur_traits=GetPixelChannelMapTraits(blur_image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        blur_traits=GetPixelChannelTraits(blur_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (blur_traits == UndefinedPixelTrait))
           continue;
@@ -3103,9 +3103,9 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
         ssize_t
           v;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        blur_traits=GetPixelChannelMapTraits(blur_image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        blur_traits=GetPixelChannelTraits(blur_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (blur_traits == UndefinedPixelTrait))
           continue;
@@ -3382,9 +3382,9 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
           shade_traits,
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        shade_traits=GetPixelChannelMapTraits(shade_image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        shade_traits=GetPixelChannelTraits(shade_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (shade_traits == UndefinedPixelTrait))
           continue;
@@ -3803,9 +3803,9 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
           traits,
           unsharp_traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        unsharp_traits=GetPixelChannelMapTraits(unsharp_image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        unsharp_traits=GetPixelChannelTraits(unsharp_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (unsharp_traits == UndefinedPixelTrait))
           continue;

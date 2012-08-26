@@ -665,9 +665,9 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
           paint_traits,
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        paint_traits=GetPixelChannelMapTraits(paint_image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        paint_traits=GetPixelChannelTraits(paint_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (paint_traits == UndefinedPixelTrait))
           continue;

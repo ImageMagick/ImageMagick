@@ -426,8 +426,8 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
             PixelTrait
               traits;
 
-            channel=GetPixelChannelMapChannel(image,i);
-            traits=GetPixelChannelMapTraits(image,channel);
+            channel=GetPixelChannelChannel(image,i);
+            traits=GetPixelChannelTraits(image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (channel == IndexPixelChannel) || (channel == MaskPixelChannel))
               continue;
@@ -490,8 +490,8 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
         PixelTrait
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if ((traits == UndefinedPixelTrait) || (channel == IndexPixelChannel) ||
             (channel == MaskPixelChannel))
           continue;
@@ -1015,8 +1015,8 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
             PixelTrait
               traits;
 
-            channel=GetPixelChannelMapChannel(image,i);
-            traits=GetPixelChannelMapTraits(image,channel);
+            channel=GetPixelChannelChannel(image,i);
+            traits=GetPixelChannelTraits(image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (channel == IndexPixelChannel) || (channel == MaskPixelChannel))
               continue;
@@ -1078,8 +1078,8 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
         PixelTrait
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if ((traits == UndefinedPixelTrait) || (channel == IndexPixelChannel) ||
             (channel == MaskPixelChannel))
           continue;
@@ -1209,9 +1209,9 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
         status=TransformImageColorspace(image,sRGBColorspace,exception);
       if (image->matte == MagickFalse)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
-      channel_mask=SetPixelChannelMask(image,AlphaChannel);
+      channel_mask=SetImageChannelMask(image,AlphaChannel);
       (void) BilevelImage(image,(double) QuantumRange/2.0,exception);
-      (void) SetPixelChannelMask(image,channel_mask);
+      (void) SetImageChannelMask(image,channel_mask);
       quantize_info=AcquireQuantizeInfo(image_info);
       status=QuantizeImage(quantize_info,image,exception);
       quantize_info=DestroyQuantizeInfo(quantize_info);

@@ -144,15 +144,15 @@ MagickExport MagickBooleanType AutoGammaImage(Image *image,
     PixelTrait
       traits;
 
-    channel=GetPixelChannelMapChannel(image,i);
-    traits=GetPixelChannelMapTraits(image,channel);
+    channel=GetPixelChannelChannel(image,i);
+    traits=GetPixelChannelTraits(image,channel);
     if ((traits & UpdatePixelTrait) == 0)
       continue;
-    channel_mask=SetPixelChannelMask(image,(ChannelType) (1 << i));
+    channel_mask=SetImageChannelMask(image,(ChannelType) (1 << i));
     status=GetImageMean(image,&mean,&sans,exception);
     gamma=log(mean*QuantumScale)/log_mean;
     status&=LevelImage(image,0.0,(double) QuantumRange,gamma,exception);
-    (void) SetPixelChannelMask(image,channel_mask);
+    (void) SetImageChannelMask(image,channel_mask);
     if (status == MagickFalse)
       break;
   }
@@ -1172,28 +1172,28 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
       {
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
           {
-            i=GetPixelChannelMapChannel(image,RedPixelChannel);
+            i=GetPixelChannelChannel(image,RedPixelChannel);
             if (black[i] != white[i])
               image->colormap[j].red=stretch_map[GetPixelChannels(image)*
                 ScaleQuantumToMap(ClampToQuantum(image->colormap[j].red))]+i;
           }
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
           {
-            i=GetPixelChannelMapChannel(image,GreenPixelChannel);
+            i=GetPixelChannelChannel(image,GreenPixelChannel);
             if (black[i] != white[i])
               image->colormap[j].green=stretch_map[GetPixelChannels(image)*
                 ScaleQuantumToMap(ClampToQuantum(image->colormap[j].green))]+i;
           }
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           {
-            i=GetPixelChannelMapChannel(image,BluePixelChannel);
+            i=GetPixelChannelChannel(image,BluePixelChannel);
             if (black[i] != white[i])
               image->colormap[j].blue=stretch_map[GetPixelChannels(image)*
                 ScaleQuantumToMap(ClampToQuantum(image->colormap[j].blue))]+i;
           }
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
           {
-            i=GetPixelChannelMapChannel(image,AlphaPixelChannel);
+            i=GetPixelChannelChannel(image,AlphaPixelChannel);
             if (black[i] != white[i])
               image->colormap[j].alpha=stretch_map[GetPixelChannels(image)*
                 ScaleQuantumToMap(ClampToQuantum(image->colormap[j].alpha))]+i;
@@ -1244,8 +1244,8 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
         PixelTrait
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if (((traits & UpdatePixelTrait) == 0) || (black[i] == white[i]))
           continue;
         q[i]=ClampToQuantum(stretch_map[GetPixelChannels(image)*
@@ -1418,9 +1418,9 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
         register const Quantum
           *restrict r;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        enhance_traits=GetPixelChannelMapTraits(enhance_image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        enhance_traits=GetPixelChannelTraits(enhance_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (enhance_traits == UndefinedPixelTrait))
           continue;
@@ -1647,7 +1647,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
       {
         if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
           {
-            channel=GetPixelChannelMapChannel(image,RedPixelChannel);
+            channel=GetPixelChannelChannel(image,RedPixelChannel);
             if (black[channel] != white[channel])
               image->colormap[j].red=equalize_map[GetPixelChannels(image)*
                 ScaleQuantumToMap(ClampToQuantum(image->colormap[j].red))]+
@@ -1655,7 +1655,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
           }
         if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
           {
-            channel=GetPixelChannelMapChannel(image,GreenPixelChannel);
+            channel=GetPixelChannelChannel(image,GreenPixelChannel);
             if (black[channel] != white[channel])
               image->colormap[j].green=equalize_map[GetPixelChannels(image)*
                 ScaleQuantumToMap(ClampToQuantum(image->colormap[j].green))]+
@@ -1663,7 +1663,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
           }
         if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
           {
-            channel=GetPixelChannelMapChannel(image,BluePixelChannel);
+            channel=GetPixelChannelChannel(image,BluePixelChannel);
             if (black[channel] != white[channel])
               image->colormap[j].blue=equalize_map[GetPixelChannels(image)*
                 ScaleQuantumToMap(ClampToQuantum(image->colormap[j].blue))]+
@@ -1671,7 +1671,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
           }
         if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
           {
-            channel=GetPixelChannelMapChannel(image,AlphaPixelChannel);
+            channel=GetPixelChannelChannel(image,AlphaPixelChannel);
             if (black[channel] != white[channel])
               image->colormap[j].alpha=equalize_map[GetPixelChannels(image)*
                 ScaleQuantumToMap(ClampToQuantum(image->colormap[j].alpha))]+
@@ -1722,8 +1722,8 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
         PixelTrait
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if (((traits & UpdatePixelTrait) == 0) || (black[i] == white[i]))
           continue;
         q[i]=ClampToQuantum(equalize_map[GetPixelChannels(image)*
@@ -1893,8 +1893,8 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
         PixelTrait
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         q[i]=gamma_map[ScaleQuantumToMap(q[i])];
@@ -2268,8 +2268,8 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
         PixelTrait
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         q[i]=ClampToQuantum(LevelPixel(black_point,white_point,gamma,
@@ -2435,8 +2435,8 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
         PixelTrait
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         q[i]=LevelizeValue(q[i]);
@@ -2525,80 +2525,80 @@ MagickExport MagickBooleanType LevelImageColors(Image *image,
     {
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         {
-          channel_mask=SetPixelChannelMask(image,RedChannel);
+          channel_mask=SetImageChannelMask(image,RedChannel);
           status|=LevelImage(image,black_color->red,white_color->red,1.0,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
         }
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         {
-          channel_mask=SetPixelChannelMask(image,GreenChannel);
+          channel_mask=SetImageChannelMask(image,GreenChannel);
           status|=LevelImage(image,black_color->green,white_color->green,1.0,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
         }
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         {
-          channel_mask=SetPixelChannelMask(image,BlueChannel);
+          channel_mask=SetImageChannelMask(image,BlueChannel);
           status|=LevelImage(image,black_color->blue,white_color->blue,1.0,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
         }
       if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
-          channel_mask=SetPixelChannelMask(image,BlackChannel);
+          channel_mask=SetImageChannelMask(image,BlackChannel);
           status|=LevelImage(image,black_color->black,white_color->black,1.0,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
         }
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
           (image->matte == MagickTrue))
         {
-          channel_mask=SetPixelChannelMask(image,AlphaChannel);
+          channel_mask=SetImageChannelMask(image,AlphaChannel);
           status|=LevelImage(image,black_color->alpha,white_color->alpha,1.0,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
         }
     }
   else
     {
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
         {
-          channel_mask=SetPixelChannelMask(image,RedChannel);
+          channel_mask=SetImageChannelMask(image,RedChannel);
           status|=LevelizeImage(image,black_color->red,white_color->red,1.0,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
         }
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         {
-          channel_mask=SetPixelChannelMask(image,GreenChannel);
+          channel_mask=SetImageChannelMask(image,GreenChannel);
           status|=LevelizeImage(image,black_color->green,white_color->green,1.0,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
         }
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
         {
-          channel_mask=SetPixelChannelMask(image,BlueChannel);
+          channel_mask=SetImageChannelMask(image,BlueChannel);
           status|=LevelizeImage(image,black_color->blue,white_color->blue,1.0,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
         }
       if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
-          channel_mask=SetPixelChannelMask(image,BlackChannel);
+          channel_mask=SetImageChannelMask(image,BlackChannel);
           status|=LevelizeImage(image,black_color->black,white_color->black,1.0,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
         }
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
           (image->matte == MagickTrue))
         {
-          channel_mask=SetPixelChannelMask(image,AlphaChannel);
+          channel_mask=SetImageChannelMask(image,AlphaChannel);
           status|=LevelizeImage(image,black_color->alpha,white_color->alpha,1.0,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
         }
     }
   return(status == 0 ? MagickFalse : MagickTrue);
@@ -3150,8 +3150,8 @@ MagickExport MagickBooleanType NegateImage(Image *image,
             PixelTrait
               traits;
 
-            channel=GetPixelChannelMapChannel(image,i);
-            traits=GetPixelChannelMapTraits(image,channel);
+            channel=GetPixelChannelChannel(image,i);
+            traits=GetPixelChannelTraits(image,channel);
             if ((traits & UpdatePixelTrait) == 0)
               continue;
             q[i]=QuantumRange-q[i];
@@ -3219,8 +3219,8 @@ MagickExport MagickBooleanType NegateImage(Image *image,
         PixelTrait
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         q[i]=QuantumRange-q[i];
@@ -3461,8 +3461,8 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
         PixelTrait
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
         q[i]=ClampToQuantum((double) sigmoidal_map[ScaleQuantumToMap(q[i])]);

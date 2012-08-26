@@ -1107,9 +1107,9 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
                   rotate_traits,
                   traits;
 
-                channel=GetPixelChannelMapChannel(image,i);
-                traits=GetPixelChannelMapTraits(image,channel);
-                rotate_traits=GetPixelChannelMapTraits(rotate_image,channel);
+                channel=GetPixelChannelChannel(image,i);
+                traits=GetPixelChannelTraits(image,channel);
+                rotate_traits=GetPixelChannelTraits(rotate_image,channel);
                 if ((traits == UndefinedPixelTrait) ||
                     (rotate_traits == UndefinedPixelTrait))
                   continue;
@@ -1199,9 +1199,9 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
               rotate_traits,
               traits;
 
-            channel=GetPixelChannelMapChannel(image,i);
-            traits=GetPixelChannelMapTraits(image,channel);
-            rotate_traits=GetPixelChannelMapTraits(rotate_image,channel);
+            channel=GetPixelChannelChannel(image,i);
+            traits=GetPixelChannelTraits(image,channel);
+            rotate_traits=GetPixelChannelTraits(rotate_image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (rotate_traits == UndefinedPixelTrait))
               continue;
@@ -1328,9 +1328,9 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
                   rotate_traits,
                   traits;
 
-                channel=GetPixelChannelMapChannel(image,i);
-                traits=GetPixelChannelMapTraits(image,channel);
-                rotate_traits=GetPixelChannelMapTraits(rotate_image,channel);
+                channel=GetPixelChannelChannel(image,i);
+                traits=GetPixelChannelTraits(image,channel);
+                rotate_traits=GetPixelChannelTraits(rotate_image,channel);
                 if ((traits == UndefinedPixelTrait) ||
                     (rotate_traits == UndefinedPixelTrait))
                   continue;

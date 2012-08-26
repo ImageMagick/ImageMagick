@@ -10172,11 +10172,11 @@ static MagickBooleanType XMatteEditImage(Display *display,
               (DrawInfo *) NULL);
             draw_info->fill.alpha=(double) ClampToQuantum(
               StringToDouble(matte,(char **) NULL));
-            channel_mask=SetPixelChannelMask(*image,AlphaChannel); 
+            channel_mask=SetImageChannelMask(*image,AlphaChannel); 
             (void) FloodfillPaintImage(*image,draw_info,&target,(ssize_t)
               x_offset,(ssize_t) y_offset,method == FloodfillMethod ?
               MagickFalse : MagickTrue,exception);
-            (void) SetPixelChannelMapMask(*image,channel_mask);
+            (void) SetPixelChannelMask(*image,channel_mask);
             draw_info=DestroyDrawInfo(draw_info);
             break;
           }

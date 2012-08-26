@@ -895,8 +895,8 @@ namespace Magick
   using MagickCore::SetMagickInfo;
   using MagickCore::SetMagickResourceLimit;
   using MagickCore::SetImageVirtualPixelMethod;
-  using MagickCore::SetPixelChannelMap;
-  using MagickCore::SetPixelChannelMask;
+  using MagickCore::SetPixelChannel;
+  using MagickCore::SetImageChannelMask;
   using MagickCore::SetStringInfoDatum;
   using MagickCore::ShadeImage;
   using MagickCore::ShadowImage;

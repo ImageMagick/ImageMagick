@@ -742,7 +742,7 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
     PixelChannel
       channel;
 
-    channel=GetPixelChannelMapChannel(cache_view->image,i);
+    channel=GetPixelChannelChannel(cache_view->image,i);
     pixel[channel]=p[i];
   }
   return(MagickTrue);
@@ -818,7 +818,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
     PixelChannel
       channel;
 
-    channel=GetPixelChannelMapChannel(cache_view->image,i);
+    channel=GetPixelChannelChannel(cache_view->image,i);
     pixel[channel]=p[i];
   }
   return(MagickTrue);
@@ -952,7 +952,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
     PixelChannel
       channel;
 
-    channel=GetPixelChannelMapChannel(cache_view->image,i);
+    channel=GetPixelChannelChannel(cache_view->image,i);
     pixel[channel]=p[i];
   }
   return(MagickTrue);

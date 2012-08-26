@@ -1017,17 +1017,17 @@ MagickExport MagickBooleanType MinMaxStretchImage(Image *image,
     PixelTrait
       traits;
 
-    channel=GetPixelChannelMapChannel(image,i);
-    traits=GetPixelChannelMapTraits(image,channel);
+    channel=GetPixelChannelChannel(image,i);
+    traits=GetPixelChannelTraits(image,channel);
     if ((traits & UpdatePixelTrait) == 0)
       continue;
-    channel_mask=SetPixelChannelMask(image,(ChannelType) (1 << i));
+    channel_mask=SetImageChannelMask(image,(ChannelType) (1 << i));
     status&=GetImageRange(image,&min,&max,exception);
     min+=black;
     max-=white;
     if (fabs(min-max) >= MagickEpsilon)
       status&=LevelImage(image,min,max,gamma,exception);
-    (void) SetPixelChannelMask(image,channel_mask);
+    (void) SetImageChannelMask(image,channel_mask);
   }
   return(status != 0 ? MagickTrue : MagickFalse);
 }

@@ -359,9 +359,9 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
           noise_traits,
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        noise_traits=GetPixelChannelMapTraits(noise_image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        noise_traits=GetPixelChannelTraits(noise_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (noise_traits == UndefinedPixelTrait))
           continue;
@@ -781,9 +781,9 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
           colorize_traits,
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        colorize_traits=GetPixelChannelMapTraits(colorize_image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        colorize_traits=GetPixelChannelTraits(colorize_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (colorize_traits == UndefinedPixelTrait))
           continue;
@@ -793,9 +793,9 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
             SetPixelChannel(colorize_image,channel,p[i],q);
             continue;
           }
-        channel=GetPixelChannelMapChannel(colorize_image,channel);
-        q[i]=ClampToQuantum(Colorize(p[i],GetPixelInfoChannel(&blend_percentage,
-          channel),GetPixelInfoChannel(colorize,channel)));
+        SetPixelChannel(colorize_image,channel,
+          ClampToQuantum(Colorize(p[i],GetPixelInfoChannel(&blend_percentage,
+          channel),GetPixelInfoChannel(colorize,channel))),q);
       }
       p+=GetPixelChannels(image);
       q+=GetPixelChannels(colorize_image);
@@ -1162,7 +1162,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         {
           channel=(PixelChannel) option;
           channel_mask=(ChannelType) (channel_mask | (1 << channel));
-          SetPixelChannelMapMask(image,channel_mask);
+          SetPixelChannelMask(image,channel_mask);
         }
     }
   (void) FormatLocaleString(key,MaxTextExtent,"%p.%.20g.%s",(void *) image,
@@ -1171,7 +1171,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
   if (value != (const char *) NULL)
     {
       if (channel_mask != UndefinedChannel)
-        SetPixelChannelMapMask(image,channel_mask);
+        SetPixelChannelMask(image,channel_mask);
       return(QuantumScale*StringToDouble(value,(char **) NULL));
     }
   (void) DeleteNodeFromSplayTree(fx_info->symbols,key);
@@ -1239,7 +1239,7 @@ static double FxChannelStatistics(FxInfo *fx_info,Image *image,
         standard_deviation);
     }
   if (channel_mask != UndefinedChannel)
-    SetPixelChannelMapMask(image,channel_mask);
+    SetPixelChannelMask(image,channel_mask);
   (void) AddValueToSplayTree(fx_info->symbols,ConstantString(key),
     ConstantString(statistic));
   return(QuantumScale*StringToDouble(statistic,(char **) NULL));
@@ -3112,9 +3112,9 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
           fx_traits,
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        fx_traits=GetPixelChannelMapTraits(fx_image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        fx_traits=GetPixelChannelTraits(fx_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (fx_traits == UndefinedPixelTrait))
           continue;
@@ -3320,9 +3320,9 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
             implode_traits,
             traits;
 
-          channel=GetPixelChannelMapChannel(image,i);
-          traits=GetPixelChannelMapTraits(image,channel);
-          implode_traits=GetPixelChannelMapTraits(implode_image,channel);
+          channel=GetPixelChannelChannel(image,i);
+          traits=GetPixelChannelTraits(image,channel);
+          implode_traits=GetPixelChannelTraits(implode_image,channel);
           if ((traits == UndefinedPixelTrait) ||
               (implode_traits == UndefinedPixelTrait))
             continue;
@@ -3550,9 +3550,9 @@ MagickExport Image *MorphImages(const Image *image,
               morph_traits,
               traits;
 
-            channel=GetPixelChannelMapChannel(image,i);
-            traits=GetPixelChannelMapTraits(image,channel);
-            morph_traits=GetPixelChannelMapTraits(morph_image,channel);
+            channel=GetPixelChannelChannel(image,i);
+            traits=GetPixelChannelTraits(image,channel);
+            morph_traits=GetPixelChannelTraits(morph_image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (morph_traits == UndefinedPixelTrait))
               continue;
@@ -3747,8 +3747,8 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
         return(MagickTrue);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
         q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
@@ -3770,8 +3770,8 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
             return(MagickTrue);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            channel=GetPixelChannelMapChannel(image,i);
-            traits=GetPixelChannelMapTraits(image,channel);
+            channel=GetPixelChannelChannel(image,i);
+            traits=GetPixelChannelTraits(image,channel);
             if (traits == UndefinedPixelTrait)
               continue;
             q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
@@ -3797,8 +3797,8 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
             return(MagickTrue);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            channel=GetPixelChannelMapChannel(image,i);
-            traits=GetPixelChannelMapTraits(image,channel);
+            channel=GetPixelChannelChannel(image,i);
+            traits=GetPixelChannelTraits(image,channel);
             if (traits == UndefinedPixelTrait)
               continue;
             q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
@@ -3821,8 +3821,8 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
             return(MagickTrue);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            channel=GetPixelChannelMapChannel(image,i);
-            traits=GetPixelChannelMapTraits(image,channel);
+            channel=GetPixelChannelChannel(image,i);
+            traits=GetPixelChannelTraits(image,channel);
             if (traits == UndefinedPixelTrait)
               continue;
             q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
@@ -3847,8 +3847,8 @@ static MagickBooleanType PlasmaImageProxy(Image *image,CacheView *image_view,
         return(MagickTrue);
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
         q[i]=PlasmaPixel(random_info,(u[channel]+v[channel])/2.0,plasma);
@@ -4360,12 +4360,12 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
       border_image=DestroyImage(border_image);
       return((Image *) NULL);
     }
-  channel_mask=SetPixelChannelMask(border_image,AlphaChannel);
+  channel_mask=SetImageChannelMask(border_image,AlphaChannel);
   shadow_image=BlurImage(border_image,0.0,sigma,exception);
   border_image=DestroyImage(border_image);
   if (shadow_image == (Image *) NULL)
     return((Image *) NULL);
-  (void) SetPixelChannelMapMask(shadow_image,channel_mask);
+  (void) SetPixelChannelMask(shadow_image,channel_mask);
   if (shadow_image->page.width == 0)
     shadow_image->page.width=shadow_image->columns;
   if (shadow_image->page.height == 0)
@@ -4495,8 +4495,8 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
         PixelTrait
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
         q[i]=ClampToQuantum(QuantumRange*value);
@@ -4661,8 +4661,8 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
         PixelTrait
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if ((traits == UndefinedPixelTrait) ||
             ((traits & CopyPixelTrait) != 0))
           continue;
@@ -5168,9 +5168,9 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
               swirl_traits,
               traits;
 
-            channel=GetPixelChannelMapChannel(image,i);
-            traits=GetPixelChannelMapTraits(image,channel);
-            swirl_traits=GetPixelChannelMapTraits(swirl_image,channel);
+            channel=GetPixelChannelChannel(image,i);
+            traits=GetPixelChannelTraits(image,channel);
+            swirl_traits=GetPixelChannelTraits(swirl_image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (swirl_traits == UndefinedPixelTrait))
               continue;
@@ -5391,9 +5391,9 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
           tint_traits,
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
-        tint_traits=GetPixelChannelMapTraits(tint_image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        tint_traits=GetPixelChannelTraits(tint_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (tint_traits == UndefinedPixelTrait))
           continue;

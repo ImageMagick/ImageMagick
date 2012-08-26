@@ -169,9 +169,9 @@ static MagickBooleanType ChannelImage(Image *destination_image,
         status=MagickFalse;
         continue;
       }
-    destination_traits=GetPixelChannelMapTraits(destination_image,
+    destination_traits=GetPixelChannelTraits(destination_image,
       destination_channel);
-    source_traits=GetPixelChannelMapTraits(source_image,source_channel);
+    source_traits=GetPixelChannelTraits(source_image,source_channel);
     if ((destination_traits == UndefinedPixelTrait) ||
         (source_traits == UndefinedPixelTrait))
       continue;
@@ -275,7 +275,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         Image
           *canvas;
 
-        SetPixelChannelMapMask(destination_image,channel_mask);
+        SetPixelChannelMask(destination_image,channel_mask);
         if ((channel_op == ExtractChannelOp) && (destination_channel == 1))
           (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
         status=SetImageStorageClass(destination_image,DirectClass,exception);
@@ -409,7 +409,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     if (status == MagickFalse)
       break;
   }
-  SetPixelChannelMapMask(destination_image,channel_mask);
+  SetPixelChannelMask(destination_image,channel_mask);
   if ((channel_op == ExtractChannelOp) && (destination_channel == 1))
     (void) SetImageColorspace(destination_image,GRAYColorspace,exception);
   status=SetImageStorageClass(destination_image,DirectClass,exception);
@@ -541,8 +541,8 @@ MagickExport Image *CombineImages(const Image *image,
 
       if (next == (Image *) NULL)
         continue;
-      channel=GetPixelChannelMapChannel(combine_image,i);
-      traits=GetPixelChannelMapTraits(combine_image,channel);
+      channel=GetPixelChannelChannel(combine_image,i);
+      traits=GetPixelChannelTraits(combine_image,channel);
       if (traits == UndefinedPixelTrait)
         continue;
       image_view=AcquireVirtualCacheView(next,exception);
@@ -707,8 +707,8 @@ MagickExport Image *SeparateImage(const Image *image,
         PixelTrait
           traits;
 
-        channel=GetPixelChannelMapChannel(image,i);
-        traits=GetPixelChannelMapTraits(image,channel);
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (GetChannelBit(channel_type,channel) == 0))
           continue;
@@ -788,8 +788,8 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
     PixelTrait
       traits;
 
-    channel=GetPixelChannelMapChannel(image,i);
-    traits=GetPixelChannelMapTraits(image,channel);
+    channel=GetPixelChannelChannel(image,i);
+    traits=GetPixelChannelTraits(image,channel);
     if ((traits == UndefinedPixelTrait) ||
         ((traits & UpdatePixelTrait) == 0))
       continue;

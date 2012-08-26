@@ -113,19 +113,19 @@ static inline Quantum GetPixelChannel(const Image *restrict image,
   return(pixel[image->channel_map[channel].offset]);
 }
 
-static inline PixelChannel GetPixelChannelMapChannel(
+static inline PixelChannel GetPixelChannelChannel(
   const Image *restrict image,const ssize_t offset)
 {
   return(image->channel_map[offset].channel);
 }
 
-static inline ssize_t GetPixelChannelMapOffset(const Image *restrict image,
+static inline ssize_t GetPixelChannelOffset(const Image *restrict image,
   const PixelChannel channel)
 {
   return(image->channel_map[channel].offset);
 }
 
-static inline PixelTrait GetPixelChannelMapTraits(const Image *restrict image,
+static inline PixelTrait GetPixelChannelTraits(const Image *restrict image,
   const PixelChannel channel)
 {
   return(image->channel_map[channel].traits);
@@ -574,14 +574,14 @@ static inline void SetPixelChannel(const Image *restrict image,
     pixel[image->channel_map[channel].offset]=quantum;
 }
 
-static inline void SetPixelChannelMapChannel(const Image *restrict image,
+static inline void SetPixelChannelChannel(const Image *restrict image,
   const PixelChannel channel,const ssize_t offset)
 {
   image->channel_map[offset].channel=channel;
   image->channel_map[channel].offset=offset;
 }
 
-static inline void SetPixelChannelMap(const Image *restrict image,
+static inline void SetPixelChannel(const Image *restrict image,
   const PixelChannel channel,const PixelTrait traits,const ssize_t offset)
 {
   image->channel_map[offset].channel=channel;

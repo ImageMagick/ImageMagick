@@ -467,7 +467,7 @@ static MagickBooleanType GetOneAuthenticPixelFromStream(Image *image,
     PixelChannel
       channel;
 
-    channel=GetPixelChannelMapChannel(image,i);
+    channel=GetPixelChannelChannel(image,i);
     pixel[channel]=q[i];
   }
   return(MagickTrue);
@@ -534,7 +534,7 @@ static MagickBooleanType GetOneVirtualPixelFromStream(const Image *image,
     PixelChannel
       channel;
 
-    channel=GetPixelChannelMapChannel(image,i);
+    channel=GetPixelChannelChannel(image,i);
     pixel[channel]=p[i];
   }
   return(MagickTrue);

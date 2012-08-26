@@ -2967,10 +2967,10 @@ ChannelFx(ref,...)
           }
         }
       }
-    channel_mask=SetPixelChannelMask(image,channel);
+    channel_mask=SetImageChannelMask(image,channel);
     image=ChannelFxImage(image,expression,exception);
     if (image != (Image *) NULL)
-      (void) SetPixelChannelMask(image,channel_mask);
+      (void) SetImageChannelMask(image,channel_mask);
     if (image == (Image *) NULL)
       goto PerlException;
     for ( ; image; image=image->next)
@@ -3324,7 +3324,7 @@ Compare(ref,...)
                     "UnrecognizedType",SvPV(ST(i),na));
                   return;
                 }
-              SetPixelChannelMapMask(image,(ChannelType) option);
+              SetPixelChannelMask(image,(ChannelType) option);
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -4313,10 +4313,10 @@ Fx(ref,...)
           }
         }
       }
-    channel_mask=SetPixelChannelMask(image,channel);
+    channel_mask=SetImageChannelMask(image,channel);
     image=FxImage(image,expression,exception);
     if (image != (Image *) NULL)
-      (void) SetPixelChannelMask(image,channel_mask);
+      (void) SetImageChannelMask(image,channel_mask);
     if (image == (Image *) NULL)
       goto PerlException;
     for ( ; image; image=image->next)
@@ -6288,7 +6288,7 @@ GetPixel(ref,...)
                     SvPV(ST(i),na));
                   return;
                 }
-              SetPixelChannelMapMask(image,(ChannelType) option);
+              SetPixelChannelMask(image,(ChannelType) option);
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -7658,11 +7658,11 @@ Mogrify(ref,...)
             attenuate=argument_list[1].real_reference;
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=AddNoiseImage(image,(NoiseType)
             argument_list[0].integer_reference,attenuate,exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 4:  /* Colorize */
@@ -7725,11 +7725,11 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=BlurImage(image,geometry_info.rho,geometry_info.sigma,
             exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 7:  /* Chop */
@@ -7891,11 +7891,11 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=StatisticImage(image,MedianStatistic,(size_t) geometry_info.rho,
             (size_t) geometry_info.sigma,exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 19:  /* Minify */
@@ -7928,11 +7928,11 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=StatisticImage(image,NonpeakStatistic,(size_t)
             geometry_info.rho,(size_t) geometry_info.sigma,exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 22:  /* Roll */
@@ -8019,11 +8019,11 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=SharpenImage(image,geometry_info.rho,geometry_info.sigma,
             exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 28:  /* Shear */
@@ -8559,7 +8559,7 @@ Mogrify(ref,...)
             geometry.y);
           flags=ParseGravityGeometry(image,composite_geometry,&geometry,
             exception);
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           if (attribute_flag[8] == 0) /* no rotate */
             CompositeImage(image,composite_image,compose,clip_to_self,
               geometry.x,geometry.y,exception);
@@ -8584,7 +8584,7 @@ Mogrify(ref,...)
               else
                 (void) SetImageMask(image,(Image *) NULL,exception);
             }
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 36:  /* Contrast */
@@ -8848,9 +8848,9 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           EqualizeImage(image,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 40:  /* Gamma */
@@ -8932,10 +8932,10 @@ Mogrify(ref,...)
           invert=MagickFalse;
           if (attribute_flag[6] != 0)
             invert=(MagickBooleanType) argument_list[6].integer_reference;
-          channel_mask=SetPixelChannelMask(image,AlphaChannel);
+          channel_mask=SetImageChannelMask(image,AlphaChannel);
           (void) FloodfillPaintImage(image,draw_info,&target,geometry.x,
             geometry.y,invert,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -8985,19 +8985,19 @@ Mogrify(ref,...)
             argument_list[0].integer_reference=0;
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) NegateImage(image,argument_list[0].integer_reference != 0 ?
             MagickTrue : MagickFalse,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 45:  /* Normalize */
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           NormalizeImage(image,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 46:  /* NumberColors */
@@ -9029,9 +9029,9 @@ Mogrify(ref,...)
           invert=MagickFalse;
           if (attribute_flag[4] != 0)
             invert=(MagickBooleanType) argument_list[4].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) OpaquePaintImage(image,&target,&fill_color,invert,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 48:  /* Quantize */
@@ -9169,10 +9169,10 @@ Mogrify(ref,...)
             op=(MagickEvaluateOperator) argument_list[1].integer_reference;
           if (attribute_flag[2] != MagickFalse)
             channel=(ChannelType) argument_list[2].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) EvaluateImage(image,op,argument_list[0].real_reference,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 56:  /* Transparent */
@@ -9218,9 +9218,9 @@ Mogrify(ref,...)
             channel=(ChannelType) argument_list[1].integer_reference;
           threshold=StringToDoubleInterval(argument_list[0].string_reference,
             (double) QuantumRange+1.0);
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) BilevelImage(image,threshold,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 58:  /* Charcoal */
@@ -9328,11 +9328,11 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=GaussianBlurImage(image,geometry_info.rho,geometry_info.sigma,
             exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 67:  /* Convolve */
@@ -9383,10 +9383,10 @@ Mogrify(ref,...)
               if (kernel == (KernelInfo *) NULL)
                 break;
             }
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=ConvolveImage(image,kernel,exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           kernel=DestroyKernelInfo(kernel);
           break;
         }
@@ -9483,11 +9483,11 @@ Mogrify(ref,...)
             geometry_info.psi=argument_list[4].real_reference;
           if (attribute_flag[5] != 0)
             channel=(ChannelType) argument_list[5].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=UnsharpMaskImage(image,geometry_info.rho,geometry_info.sigma,
             geometry_info.xi,geometry_info.psi,exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 70:  /* MotionBlur */
@@ -9509,11 +9509,11 @@ Mogrify(ref,...)
             geometry_info.xi=argument_list[3].real_reference;
           if (attribute_flag[4] != 0)
             channel=(ChannelType) argument_list[4].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=MotionBlurImage(image,geometry_info.rho,geometry_info.sigma,
             geometry_info.xi,exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 71:  /* OrderedDither */
@@ -9522,10 +9522,10 @@ Mogrify(ref,...)
             argument_list[0].string_reference="o8x8";
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) OrderedPosterizeImage(image,argument_list[0].string_reference,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 72:  /* Shave */
@@ -9580,9 +9580,9 @@ Mogrify(ref,...)
               argument_list[0].real_reference=argument_list[5].real_reference;
               attribute_flag[0]=attribute_flag[5];
             }
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) LevelImage(image,black_point,white_point,gamma,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 74:  /* Clip */
@@ -9801,10 +9801,10 @@ Mogrify(ref,...)
             argument_list[0].string_reference="50%";
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           BlackThresholdImage(image,argument_list[0].string_reference,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 81:  /* WhiteThreshold */
@@ -9813,10 +9813,10 @@ Mogrify(ref,...)
             argument_list[0].string_reference="50%";
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           WhiteThresholdImage(image,argument_list[0].string_reference,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 82:  /* RadialBlur */
@@ -9830,10 +9830,10 @@ Mogrify(ref,...)
             geometry_info.rho=argument_list[1].real_reference;
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=RadialBlurImage(image,geometry_info.rho,exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 83:  /* Thumbnail */
@@ -9982,10 +9982,10 @@ Mogrify(ref,...)
           if (attribute_flag[4] != 0)
             sharpen=argument_list[4].integer_reference != 0 ? MagickTrue :
               MagickFalse;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) SigmoidalContrastImage(image,sharpen,geometry_info.rho,
             geometry_info.sigma,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 93:  /* Extent */
@@ -10080,9 +10080,9 @@ Mogrify(ref,...)
             white_point=argument_list[2].real_reference;
           if (attribute_flag[4] != 0)
             channel=(ChannelType) argument_list[4].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) ContrastStretchImage(image,black_point,white_point,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 96:  /* Sans0 */
@@ -10112,11 +10112,11 @@ Mogrify(ref,...)
             geometry_info.xi=argument_list[3].real_reference;
           if (attribute_flag[4] != 0)
             channel=(ChannelType) argument_list[4].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=AdaptiveSharpenImage(image,geometry_info.rho,
             geometry_info.sigma,exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 99:  /* Transpose */
@@ -10190,11 +10190,11 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=AdaptiveBlurImage(image,geometry_info.rho,geometry_info.sigma,
             exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 103:  /* Sketch */
@@ -10440,10 +10440,10 @@ Mogrify(ref,...)
           invert=MagickFalse;
           if (attribute_flag[7] != 0)
             invert=(MagickBooleanType) argument_list[7].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) FloodfillPaintImage(image,draw_info,&target,geometry.x,
             geometry.y,invert,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           draw_info=DestroyDrawInfo(draw_info);
           break;
         }
@@ -10510,10 +10510,10 @@ Mogrify(ref,...)
             method=(PixelInterpolateMethod) argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
             channel=(ChannelType) argument_list[2].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) ClutImage(image,argument_list[0].image_reference,method,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 114:  /* LiquidRescale */
@@ -10618,11 +10618,11 @@ Mogrify(ref,...)
               argument_list[2].integer_reference,exception);
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=SparseColorImage(image,method,number_coordinates,coordinates,
             exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           if ((attribute_flag[2] != 0) && (image != (Image *) NULL))
             virtual_pixel=SetImageVirtualPixelMethod(image,virtual_pixel,
               exception);
@@ -10694,11 +10694,11 @@ Mogrify(ref,...)
             geometry_info.xi=argument_list[3].integer_reference;;
           if (attribute_flag[5] != 0)
             channel=(ChannelType) argument_list[5].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=SelectiveBlurImage(image,geometry_info.rho,geometry_info.sigma,
             geometry_info.xi,exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 122:  /* HaldClut */
@@ -10711,10 +10711,10 @@ Mogrify(ref,...)
             }
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) HaldClutImage(image,argument_list[0].image_reference,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 123:  /* BlueShift */
@@ -10751,18 +10751,18 @@ Mogrify(ref,...)
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) AutoGammaImage(image,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 128:  /* AutoLevel */
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) AutoLevelImage(image,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 129:  /* LevelColors */
@@ -10785,20 +10785,20 @@ Mogrify(ref,...)
                exception);
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) LevelImageColors(image,&black_point,&white_point,
             argument_list[0].integer_reference != 0 ? MagickTrue : MagickFalse,
             exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 130:  /* Clamp */
         {
           if (attribute_flag[0] != 0)
             channel=(ChannelType) argument_list[0].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) ClampImage(image,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 131:  /* BrightnessContrast */
@@ -10823,9 +10823,9 @@ Mogrify(ref,...)
             contrast=argument_list[2].real_reference;
           if (attribute_flag[4] != 0)
             channel=(ChannelType) argument_list[4].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           (void) BrightnessContrastImage(image,brightness,contrast,exception);
-          (void) SetPixelChannelMask(image,channel_mask);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 132:  /* Morphology */
@@ -10852,10 +10852,10 @@ Mogrify(ref,...)
           iterations=1;
           if (attribute_flag[3] != 0)
             iterations=argument_list[3].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=MorphologyImage(image,method,iterations,kernel,exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           kernel=DestroyKernelInfo(kernel);
           break;
         }
@@ -10874,11 +10874,11 @@ Mogrify(ref,...)
             geometry_info.sigma=argument_list[2].real_reference;
           if (attribute_flag[3] != 0)
             channel=(ChannelType) argument_list[3].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=StatisticImage(image,ModeStatistic,(size_t) geometry_info.rho,
             (size_t) geometry_info.sigma,exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
         case 134:  /* Statistic */
@@ -10902,11 +10902,11 @@ Mogrify(ref,...)
             channel=(ChannelType) argument_list[3].integer_reference;
           if (attribute_flag[4] != 0)
             statistic=(StatisticType) argument_list[4].integer_reference;
-          channel_mask=SetPixelChannelMask(image,channel);
+          channel_mask=SetImageChannelMask(image,channel);
           image=StatisticImage(image,statistic,(size_t) geometry_info.rho,
             (size_t) geometry_info.sigma,exception);
           if (image != (Image *) NULL)
-            (void) SetPixelChannelMask(image,channel_mask);
+            (void) SetImageChannelMask(image,channel_mask);
           break;
         }
       }
@@ -13631,7 +13631,7 @@ SetPixel(ref,...)
       }
     }
     (void) SetImageStorageClass(image,DirectClass,exception);
-    channel_mask=SetPixelChannelMask(image,channel);
+    channel_mask=SetImageChannelMask(image,channel);
     q=GetAuthenticPixels(image,region.x,region.y,1,1,exception);
     if ((q == (Quantum *) NULL) || (av == (AV *) NULL) ||
         (SvTYPE(av) != SVt_PVAV))
@@ -13685,7 +13685,7 @@ SetPixel(ref,...)
           }
         (void) SyncAuthenticPixels(image,exception);
       }
-    (void) SetPixelChannelMask(image,channel_mask);
+    (void) SetImageChannelMask(image,channel_mask);
 
   PerlException:
     InheritPerlException(exception,perl_exception);
