@@ -36,7 +36,7 @@ testRead( 'input_mono.png',
 print( "16-bit grayscale PNG ...\n" );
 testRead( 'input_16.png',
   'd4bed86abb1849f69f1a5afb7c5cf8798e8192ba228357f189c277198c14f5a0',
-  '30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58' );
+  '07854d2fef297a06ba81685e660c332de36d5d18d546927d30daad6d7fda1541' );
 #
 # 4) Test 256 color pseudocolor PNG
 # 
