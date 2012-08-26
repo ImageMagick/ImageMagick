@@ -51,6 +51,7 @@
 #include "magick/log.h"
 #include "magick/memory_.h"
 #include "magick/monitor.h"
+#include "magick/pixel-accessor.h"
 #include "magick/property.h"
 #include "magick/quantum-private.h"
 #include "magick/resource_.h"
