@@ -3662,7 +3662,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=9117:9122M
+MAGICK_SVN_REVISION=9117:9133M
 
 
 
@@ -32995,8 +32995,10 @@ $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of ""$BrowseDelegateDefault" mozilla firefox netscape", so it can be a program name with args.
-set dummy "$BrowseDelegateDefault" mozilla firefox netscape; ac_word=$2
+for ac_prog in "$BrowseDelegateDefault" google-chrome firefox konqueror mozilla lynx
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
 if ${ac_cv_path_BrowseDelegate+:} false; then :
@@ -33022,7 +33024,6 @@ done
   done
 IFS=$as_save_IFS
 
-  test -z "$ac_cv_path_BrowseDelegate" && ac_cv_path_BrowseDelegate=""$BrowseDelegateDefault""
   ;;
 esac
 fi
@@ -33035,6 +33036,10 @@ else
 $as_echo "no" >&6; }
 fi
 
+
+  test -n "$BrowseDelegate" && break
+done
+test -n "$BrowseDelegate" || BrowseDelegate=""$BrowseDelegateDefault""
 
 # Extract the first word of ""$CGMDecodeDelegateDefault"", so it can be a program name with args.
 set dummy "$CGMDecodeDelegateDefault"; ac_word=$2
