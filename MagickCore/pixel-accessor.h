@@ -574,19 +574,19 @@ static inline void SetPixelChannel(const Image *restrict image,
     pixel[image->channel_map[channel].offset]=quantum;
 }
 
-static inline void SetPixelChannelChannel(const Image *restrict image,
-  const PixelChannel channel,const ssize_t offset)
-{
-  image->channel_map[offset].channel=channel;
-  image->channel_map[channel].offset=offset;
-}
-
-static inline void SetPixelChannel(const Image *restrict image,
+static inline void SetPixelChannelAttributes(const Image *restrict image,
   const PixelChannel channel,const PixelTrait traits,const ssize_t offset)
 {
   image->channel_map[offset].channel=channel;
   image->channel_map[channel].offset=offset;
   image->channel_map[channel].traits=traits;
+}
+
+static inline void SetPixelChannelChannel(const Image *restrict image,
+  const PixelChannel channel,const ssize_t offset)
+{
+  image->channel_map[offset].channel=channel;
+  image->channel_map[channel].offset=offset;
 }
 
 static inline void SetPixelChannels(Image *image,const size_t number_channels)
