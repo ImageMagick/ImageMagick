@@ -4882,7 +4882,6 @@ TESTS_TESTS = \
 	tests/wandtest.tap
 
 TESTS_EXTRA_DIST = \
-	tests/common.shi \
 	tests/common.shi.in \
   tests/input_256c.miff \
   tests/input_bilevel.miff \
