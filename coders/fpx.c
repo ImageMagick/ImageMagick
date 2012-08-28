@@ -366,7 +366,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=width;
   image->rows=height;
   if ((colorspace.numberOfComponents % 2) == 0)
-    image->matte=MagickTrue;
+    image->alpha_trait=BlendPixelTrait;
   if (colorspace.numberOfComponents == 1)
     {
       /*
@@ -473,7 +473,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           SetPixelBlue(image,index,q);
         }
       SetPixelAlpha(image,OpaqueAlpha,q);
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         SetPixelAlpha(image,ScaleCharToQuantum(*a),q);
       q+=GetPixelChannels(image);
       r+=red_component->columnStride;
@@ -867,7 +867,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
   tile_width=64;
   tile_height=64;
   colorspace.numberOfComponents=3;
-  if (image->matte != MagickFalse)
+  if (image->alpha_trait == BlendPixelTrait)
     colorspace.numberOfComponents=4;
   if ((image_info->type != TrueColorType) &&
       (IsImageGray(image,exception) != MagickFalse))
@@ -987,7 +987,7 @@ static MagickBooleanType WriteFPXImage(const ImageInfo *image_info,Image *image,
     Write image pixelss.
   */
   quantum_type=RGBQuantum;
-  if (image->matte != MagickFalse)
+  if (image->alpha_trait == BlendPixelTrait)
     quantum_type=RGBAQuantum;
   if (fpx_info.numberOfComponents == 1)
     quantum_type=GrayQuantum;

@@ -476,7 +476,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           break;
         }
       }
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         (void) FormatLocaleFile(file,"    alpha: %.20g-bit\n",(double)
           channel_statistics[AlphaPixelChannel].depth);
       scale=1;
@@ -519,7 +519,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           break;
         }
       }
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         (void) PrintChannelStatistics(file,AlphaPixelChannel,"Alpha",1.0/
           scale,channel_statistics);
       if (colorspace != GRAYColorspace)
@@ -567,7 +567,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           break;
         }
       }
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         (void) PrintChannelFeatures(file,AlphaPixelChannel,"Alpha",
           channel_features);
       channel_features=(ChannelFeatures *) RelinquishMagickMemory(
@@ -579,7 +579,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
         (void) FormatLocaleFile(file,"  Total ink density: %.0f%%\n",100.0*
           GetImageTotalInkDensity(image,exception)/(double) QuantumRange);
       x=0;
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         {
           register const Quantum
             *p;
@@ -667,7 +667,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
                 ConcatenateColorComponent(&pixel,BlackPixelChannel,
                   X11Compliance,tuple);
               }
-            if (pixel.matte != MagickFalse)
+            if (pixel.alpha_trait == BlendPixelTrait)
               {
                 (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
                 ConcatenateColorComponent(&pixel,AlphaPixelChannel,

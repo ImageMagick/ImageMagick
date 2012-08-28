@@ -560,7 +560,7 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
   (void) GetOneVirtualPixelInfo(image,UndefinedVirtualPixelMethod,(ssize_t) x,
     (ssize_t) y,&annotate_image->background_color,exception);
   if (annotate_info->stencil == ForegroundStencil)
-    annotate_image->matte=MagickTrue;
+    annotate_image->alpha_trait=BlendPixelTrait;
   annotate_view=AcquireAuthenticCacheView(annotate_image,exception);
   for (y=0; y < (int) annotate_image->rows; y++)
   {
@@ -695,11 +695,11 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
     Composite text onto the image.
   */
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
-  matte=image->matte;
+  matte=image->alpha_trait;
   (void) CompositeImage(image,annotate_image,
-    annotate_image->matte != MagickFalse ? OverCompositeOp : CopyCompositeOp,
+    annotate_image->alpha_trait == BlendPixelTrait ? OverCompositeOp : CopyCompositeOp,
     MagickTrue,(ssize_t) x,(ssize_t) y,exception);
-  image->matte=matte;
+  image->alpha_trait=matte;
   annotate_image=DestroyImage(annotate_image);
   return(MagickTrue);
 }
@@ -2483,7 +2483,7 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
     (ssize_t) y,&draw_image->background_color,exception);
   if (SetImageStorageClass(draw_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  draw_image->matte=MagickTrue;
+  draw_image->alpha_trait=BlendPixelTrait;
   draw_view=AcquireAuthenticCacheView(draw_image,exception);
   for (y=0; y < (int) draw_image->rows; y++)
   {
@@ -2639,10 +2639,10 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
       (ssize_t) x,(ssize_t) y,exception);
   else
     {
-      matte=image->matte;
+      matte=image->alpha_trait;
       (void) CompositeImage(image,draw_image,OverCompositeOp,MagickTrue,
         (ssize_t) x,(ssize_t) y,exception);
-      image->matte=matte;
+      image->alpha_trait=matte;
     }
   draw_image=DestroyImage(draw_image);
   return(MagickTrue);
@@ -5732,7 +5732,7 @@ MagickPrivate MagickBooleanType XMakeImage(Display *display,
   window->ximage=ximage;
   matte_image=(XImage *) NULL;
   if ((window->shape != MagickFalse) && (window->image != (Image *) NULL))
-    if ((window->image->matte != MagickFalse) &&
+    if ((window->image->alpha_trait == BlendPixelTrait) &&
         ((int) width <= XDisplayWidth(display,window->screen)) &&
         ((int) height <= XDisplayHeight(display,window->screen)))
       {
@@ -5918,7 +5918,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   canvas=image;
   if ((window->immutable == MagickFalse) &&
-      (image->storage_class == DirectClass) && (image->matte != MagickFalse))
+      (image->storage_class == DirectClass) && (image->alpha_trait == BlendPixelTrait))
     {
       char
         size[MaxTextExtent];
@@ -6544,7 +6544,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   canvas=image;
   if ((window->immutable != MagickFalse) &&
-      (image->storage_class == DirectClass) && (image->matte != MagickFalse))
+      (image->storage_class == DirectClass) && (image->alpha_trait == BlendPixelTrait))
     {
       char
         size[MaxTextExtent];
@@ -7526,7 +7526,7 @@ MagickPrivate void XMakeMagnifyImage(Display *display,XWindows *windows,
       (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
       ConcatenateColorComponent(&pixel,BlackPixelChannel,X11Compliance,tuple);
     }
-  if (pixel.matte != MagickFalse)
+  if (pixel.alpha_trait == BlendPixelTrait)
     {
       (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
       ConcatenateColorComponent(&pixel,AlphaPixelChannel,X11Compliance,tuple);
@@ -7783,7 +7783,7 @@ MagickPrivate void XMakeStandardColormap(Display *display,
       number_colors=(unsigned int) (map_info->base_pixel+
         (map_info->red_max+1)*(map_info->green_max+1)*(map_info->blue_max+1));
       if ((map_info->red_max*map_info->green_max*map_info->blue_max) != 0)
-        if ((image->matte == MagickFalse) &&
+        if ((image->alpha_trait != BlendPixelTrait) &&
             (resource_info->color_recovery == MagickFalse) &&
             (resource_info->quantize_info->dither_method != NoDitherMethod) &&
             (number_colors < MaxColormapSize))

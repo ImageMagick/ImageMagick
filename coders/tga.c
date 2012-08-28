@@ -227,7 +227,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=tga_info.width;
   image->rows=tga_info.height;
   alpha_bits=(tga_info.attributes & 0x0FU);
-  image->matte=(alpha_bits > 0) || (tga_info.bits_per_pixel == 32) ?
+  image->alpha_trait=(alpha_bits > 0) || (tga_info.bits_per_pixel == 32) ?
     MagickTrue : MagickFalse;
   if ((tga_info.image_type != TGAColormap) &&
       (tga_info.image_type != TGARLEColormap))
@@ -423,7 +423,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             pixel.green=ScaleAnyToQuantum((1UL*(k & 0x03) << 3)+
               (1UL*(j & 0xe0) >> 5),range);
             pixel.blue=ScaleAnyToQuantum(1UL*(j & 0x1f),range);
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               pixel.alpha=(k & 0x80) == 0 ? (Quantum) OpaqueAlpha : (Quantum)
                 TransparentAlpha; 
             if (image->storage_class == PseudoClass)
@@ -463,7 +463,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SetPixelRed(image,pixel.red,q);
       SetPixelGreen(image,pixel.green,q);
       SetPixelBlue(image,pixel.blue,q);
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         SetPixelAlpha(image,pixel.alpha,q);
       q+=GetPixelChannels(image);
     }
@@ -717,7 +717,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
   if ((image_info->type != TrueColorType) &&
       (image_info->type != TrueColorMatteType) &&
       (image_info->type != PaletteType) &&
-      (image->matte == MagickFalse) &&
+      (image->alpha_trait != BlendPixelTrait) &&
       (IsImageGray(image,exception) != MagickFalse))
     targa_info.image_type=TargaMonochrome;
   else
@@ -728,7 +728,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
         */
         targa_info.image_type=TargaRGB;
         targa_info.bits_per_pixel=24;
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           {
             targa_info.bits_per_pixel=32;
             targa_info.attributes=8;  /* # of alpha bits */
@@ -811,7 +811,7 @@ static MagickBooleanType WriteTGAImage(const ImageInfo *image_info,Image *image,
             *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
             *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
             *q++=ScaleQuantumToChar(GetPixelRed(image,p));
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               *q++=(unsigned char) ScaleQuantumToChar(GetPixelAlpha(image,p));
           }
       p+=GetPixelChannels(image);

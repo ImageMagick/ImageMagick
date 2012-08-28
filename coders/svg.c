@@ -2935,7 +2935,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->columns=gdk_pixbuf_get_width(pixel_info);
         image->rows=gdk_pixbuf_get_height(pixel_info);
 #endif
-        image->matte=MagickTrue;
+        image->alpha_trait=BlendPixelTrait;
         SetImageProperty(image,"svg:base-uri",
           rsvg_handle_get_base_uri(svg_handle),exception);
         if ((image->columns == 0) || (image->rows == 0))

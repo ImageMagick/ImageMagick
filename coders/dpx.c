@@ -1033,7 +1033,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case ABGRComponentType:
     case RGBAComponentType:
     {
-      image->matte=MagickTrue;
+      image->alpha_trait=BlendPixelTrait;
       samples_per_pixel=4;
       quantum_type=RGBAQuantum;
       break;
@@ -1468,17 +1468,17 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
         case YCbCrColorspace:
         {
           dpx.image.image_element[i].descriptor=CbYCr444ComponentType;
-          if (image->matte != MagickFalse)
+          if (image->alpha_trait == BlendPixelTrait)
             dpx.image.image_element[i].descriptor=CbYCrA4444ComponentType;
           break;
         }
         default:
         {
           dpx.image.image_element[i].descriptor=RGBComponentType;
-          if (image->matte != MagickFalse)
+          if (image->alpha_trait == BlendPixelTrait)
             dpx.image.image_element[i].descriptor=RGBAComponentType;
           if ((image_info->type != TrueColorType) &&
-              (image->matte == MagickFalse) &&
+              (image->alpha_trait != BlendPixelTrait) &&
               (IsImageGray(image,exception) != MagickFalse))
             dpx.image.image_element[i].descriptor=LumaComponentType;
           break;
@@ -1799,19 +1799,19 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   SetQuantumPack(quantum_info,dpx.image.image_element[0].packing == 0 ?
     MagickTrue : MagickFalse);
   quantum_type=RGBQuantum;
-  if (image->matte != MagickFalse)
+  if (image->alpha_trait == BlendPixelTrait)
     quantum_type=RGBAQuantum;
   if (image->colorspace == YCbCrColorspace)
     {
       quantum_type=CbYCrQuantum;
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         quantum_type=CbYCrAQuantum;
       if ((horizontal_factor == 2) || (vertical_factor == 2))
         quantum_type=CbYCrYQuantum;
     }
-  extent=GetBytesPerRow(image->columns,image->matte != MagickFalse ? 4UL : 3UL,
+  extent=GetBytesPerRow(image->columns,image->alpha_trait == BlendPixelTrait ? 4UL : 3UL,
     image->depth,MagickTrue);
-  if ((image_info->type != TrueColorType) && (image->matte == MagickFalse) &&
+  if ((image_info->type != TrueColorType) && (image->alpha_trait != BlendPixelTrait) &&
       (IsImageGray(image,exception) != MagickFalse))
     {
       quantum_type=GrayQuantum;

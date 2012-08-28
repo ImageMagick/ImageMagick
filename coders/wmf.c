@@ -2863,7 +2863,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     image->background_color = image_info->background_color;
     if (image->background_color.alpha != OpaqueAlpha)
-      image->matte = MagickTrue;
+      image->alpha_trait = MagickTrue;
     (void) SetImageBackgroundColor(image,exception);
   }
   /*

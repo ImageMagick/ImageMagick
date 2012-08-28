@@ -2314,7 +2314,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
       (void) FormatLocaleString(value,MaxTextExtent,"%s %s %s",
         CommandOptionToMnemonic(MagickClassOptions,(ssize_t) image->storage_class),
         CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t) colorspace),
-        IfMagickTrue(image->matte) ? "Matte" : "");
+        image->alpha_trait == BlendPixelTrait ? "Matte" : "");
       break;
     }
     case 's': /* Image scene number */
@@ -2366,7 +2366,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     case 'A': /* Image alpha channel  */
     {
       (void) FormatLocaleString(value,MaxTextExtent,"%s",
-        CommandOptionToMnemonic(MagickBooleanOptions,(ssize_t) image->matte));
+        CommandOptionToMnemonic(MagickBooleanOptions,(ssize_t) image->alpha_trait));
       break;
     }
     case 'C': /* Image compression method.  */
@@ -2525,7 +2525,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             CommandOptionToMnemonic(MagickColorspaceOptions,(ssize_t)
             image->colorspace));
           LocaleLower(value);
-          if( IfMagickTrue(image->matte) )
+          if( image->alpha_trait == BlendPixelTrait )
             (void) ConcatenateMagickString(value,"a",MaxTextExtent);
           break;
         }

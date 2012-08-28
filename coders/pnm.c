@@ -379,7 +379,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (LocaleCompare(value,"BLACKANDWHITE_ALPHA") == 0)
                 {
                   SetImageColorspace(image,GRAYColorspace,exception);
-                  image->matte=MagickTrue;
+                  image->alpha_trait=BlendPixelTrait;
                   quantum_type=GrayAlphaQuantum;
                 }
               if (LocaleCompare(value,"GRAYSCALE") == 0)
@@ -390,12 +390,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (LocaleCompare(value,"GRAYSCALE_ALPHA") == 0)
                 {
                   SetImageColorspace(image,GRAYColorspace,exception);
-                  image->matte=MagickTrue;
+                  image->alpha_trait=BlendPixelTrait;
                   quantum_type=GrayAlphaQuantum;
                 }
               if (LocaleCompare(value,"RGB_ALPHA") == 0)
                 {
-                  image->matte=MagickTrue;
+                  image->alpha_trait=BlendPixelTrait;
                   quantum_type=RGBAQuantum;
                 }
               if (LocaleCompare(value,"CMYK") == 0)
@@ -406,7 +406,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (LocaleCompare(value,"CMYK_ALPHA") == 0)
                 {
                   SetImageColorspace(image,CMYKColorspace,exception);
-                  image->matte=MagickTrue;
+                  image->alpha_trait=BlendPixelTrait;
                   quantum_type=CMYKAQuantum;
                 }
             }
@@ -926,7 +926,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
         }
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           channels++;
         extent=channels*(image->depth <= 8 ? 1 : 2)*image->columns;
         quantum_info=AcquireQuantumInfo(image_info,image);
@@ -999,7 +999,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       p=PushCharPixel(p,&pixel);
                       SetPixelGray(image,ScaleAnyToQuantum(pixel,range),q);
                       SetPixelAlpha(image,OpaqueAlpha,q);
-                      if (image->matte != MagickFalse)
+                      if (image->alpha_trait == BlendPixelTrait)
                         {
                           p=PushCharPixel(p,&pixel);
                           SetPixelAlpha(image,ScaleAnyToQuantum(pixel,range),q);
@@ -1017,7 +1017,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       p=PushShortPixel(MSBEndian,p,&pixel);
                       SetPixelGray(image,ScaleAnyToQuantum(pixel,range),q);
                       SetPixelAlpha(image,OpaqueAlpha,q);
-                      if (image->matte != MagickFalse)
+                      if (image->alpha_trait == BlendPixelTrait)
                         {
                           p=PushShortPixel(MSBEndian,p,&pixel);
                           SetPixelAlpha(image,ScaleAnyToQuantum(pixel,range),q);
@@ -1046,7 +1046,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       p=PushCharPixel(p,&pixel);
                       SetPixelBlack(image,ScaleAnyToQuantum(pixel,range),q);
                       SetPixelAlpha(image,OpaqueAlpha,q);
-                      if (image->matte != MagickFalse)
+                      if (image->alpha_trait == BlendPixelTrait)
                         {
                           p=PushCharPixel(p,&pixel);
                           SetPixelAlpha(image,ScaleAnyToQuantum(pixel,range),q);
@@ -1070,7 +1070,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       p=PushShortPixel(MSBEndian,p,&pixel);
                       SetPixelBlack(image,ScaleAnyToQuantum(pixel,range),q);
                       SetPixelAlpha(image,OpaqueAlpha,q);
-                      if (image->matte != MagickFalse)
+                      if (image->alpha_trait == BlendPixelTrait)
                         {
                           p=PushShortPixel(MSBEndian,p,&pixel);
                           SetPixelAlpha(image,ScaleAnyToQuantum(pixel,range),q);
@@ -1096,7 +1096,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       p=PushCharPixel(p,&pixel);
                       SetPixelBlue(image,ScaleAnyToQuantum(pixel,range),q);
                       SetPixelAlpha(image,OpaqueAlpha,q);
-                      if (image->matte != MagickFalse)
+                      if (image->alpha_trait == BlendPixelTrait)
                         {
                           p=PushCharPixel(p,&pixel);
                           SetPixelAlpha(image,ScaleAnyToQuantum(pixel,range),q);
@@ -1118,7 +1118,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       p=PushShortPixel(MSBEndian,p,&pixel);
                       SetPixelBlue(image,ScaleAnyToQuantum(pixel,range),q);
                       SetPixelAlpha(image,OpaqueAlpha,q);
-                      if (image->matte != MagickFalse)
+                      if (image->alpha_trait == BlendPixelTrait)
                         {
                           p=PushShortPixel(MSBEndian,p,&pixel);
                           SetPixelAlpha(image,ScaleAnyToQuantum(pixel,range),q);
@@ -1577,14 +1577,14 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
           default:
           {
             quantum_type=RGBQuantum;
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               quantum_type=RGBAQuantum;
             packet_size=3;
             (void) CopyMagickString(type,"RGB",MaxTextExtent);
             break;
           }
         }
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           {
             packet_size++;
             (void) ConcatenateMagickString(type,"_ALPHA",MaxTextExtent);
@@ -2018,7 +2018,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                     {
                       pixel=ScaleQuantumToAny(GetPixelIntensity(image,p),range);
                       q=PopCharPixel((unsigned char) pixel,q);
-                      if (image->matte != MagickFalse)
+                      if (image->alpha_trait == BlendPixelTrait)
                         {
                           pixel=(unsigned char) ScaleQuantumToAny(
                             GetPixelAlpha(image,p),range);
@@ -2031,7 +2031,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                     {
                       pixel=ScaleQuantumToAny(GetPixelIntensity(image,p),range);
                       q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                      if (image->matte != MagickFalse)
+                      if (image->alpha_trait == BlendPixelTrait)
                         {
                           pixel=(unsigned char) ScaleQuantumToAny(
                             GetPixelAlpha(image,p),range);
@@ -2055,7 +2055,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                       q=PopCharPixel((unsigned char) pixel,q);
                       pixel=ScaleQuantumToAny(GetPixelBlack(image,p),range);
                       q=PopCharPixel((unsigned char) pixel,q);
-                      if (image->matte != MagickFalse)
+                      if (image->alpha_trait == BlendPixelTrait)
                         {
                           pixel=ScaleQuantumToAny(GetPixelAlpha(image,p),range);
                           q=PopCharPixel((unsigned char) pixel,q);
@@ -2073,7 +2073,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                       q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
                       pixel=ScaleQuantumToAny(GetPixelBlack(image,p),range);
                       q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                      if (image->matte != MagickFalse)
+                      if (image->alpha_trait == BlendPixelTrait)
                         {
                           pixel=ScaleQuantumToAny(GetPixelAlpha(image,p),range);
                           q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
@@ -2093,7 +2093,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                       q=PopCharPixel((unsigned char) pixel,q);
                       pixel=ScaleQuantumToAny(GetPixelBlue(image,p),range);
                       q=PopCharPixel((unsigned char) pixel,q);
-                      if (image->matte != MagickFalse)
+                      if (image->alpha_trait == BlendPixelTrait)
                         {
                           pixel=ScaleQuantumToAny(GetPixelAlpha(image,p),range);
                           q=PopCharPixel((unsigned char) pixel,q);
@@ -2109,7 +2109,7 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
                       q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
                       pixel=ScaleQuantumToAny(GetPixelBlue(image,p),range);
                       q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);
-                      if (image->matte != MagickFalse)
+                      if (image->alpha_trait == BlendPixelTrait)
                         {
                           pixel=ScaleQuantumToAny(GetPixelAlpha(image,p),range);
                           q=PopShortPixel(MSBEndian,(unsigned short) pixel,q);

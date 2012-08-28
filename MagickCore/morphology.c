@@ -2731,7 +2731,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
         k = &kernel->values[ kernel->height-1 ];
         k_pixels = p;
         if ( (image->channel_mask != DefaultChannels) ||
-             (image->matte == MagickFalse) )
+             (image->alpha_trait != BlendPixelTrait) )
           { /* No 'Sync' involved.
             ** Convolution is just a simple greyscale channel operation
             */
@@ -2756,7 +2756,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                 (image->colorspace == CMYKColorspace))
               SetPixelBlack(morphology_image,ClampToQuantum(result.black),q);
             if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-                (image->matte == MagickTrue))
+                (image->alpha_trait == BlendPixelTrait))
               SetPixelAlpha(morphology_image,ClampToQuantum(result.alpha),q);
           }
         else
@@ -2957,7 +2957,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
             k = &kernel->values[ kernel->width*kernel->height-1 ];
             k_pixels = p;
             if ( (image->channel_mask != DefaultChannels) ||
-                 (image->matte == MagickFalse) )
+                 (image->alpha_trait != BlendPixelTrait) )
               { /* No 'Sync' involved.
                 ** Convolution is simple greyscale channel operation
                 */
@@ -2992,7 +2992,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
                   SetPixelBlack(morphology_image,ClampToQuantum(result.black),
                     q);
                 if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-                    (image->matte == MagickTrue))
+                    (image->alpha_trait == BlendPixelTrait))
                   SetPixelAlpha(morphology_image,ClampToQuantum(result.alpha),
                     q);
               }
@@ -3337,7 +3337,7 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(morphology_image,ClampToQuantum(result.black),q);
           if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-              (image->matte == MagickTrue))
+              (image->alpha_trait == BlendPixelTrait))
             SetPixelAlpha(morphology_image,ClampToQuantum(result.alpha),q);
           break;
       }
@@ -3599,7 +3599,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(image,ClampToQuantum(result.black),q);
           if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0 &&
-              (image->matte == MagickTrue))
+              (image->alpha_trait == BlendPixelTrait))
             SetPixelAlpha(image,ClampToQuantum(result.alpha),q);
           break;
       }
@@ -3783,7 +3783,7 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
               (image->colorspace == CMYKColorspace))
             SetPixelBlack(image,ClampToQuantum(result.black),q);
           if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0 &&
-              (image->matte == MagickTrue))
+              (image->alpha_trait == BlendPixelTrait))
             SetPixelAlpha(image,ClampToQuantum(result.alpha),q);
           break;
       }

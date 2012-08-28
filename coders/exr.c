@@ -199,7 +199,7 @@ static Image *ReadEXRImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ImfHeaderDisplayWindow(hdr_info,&min_x,&min_y,&max_x,&max_y);
   image->columns=max_x-min_x+1UL;
   image->rows=max_y-min_y+1UL;
-  image->matte=MagickTrue;
+  image->alpha_trait=BlendPixelTrait;
   SetImageColorspace(image,RGBColorspace,exception);
   image->gamma=1.0;
   if (image_info->ping != MagickFalse)
@@ -447,7 +447,7 @@ static MagickBooleanType WriteEXRImage(const ImageInfo *image_info,Image *image,
       scanline[x].g=half_quantum;
       ImfFloatToHalf(QuantumScale*GetPixelBlue(image,p),&half_quantum);
       scanline[x].b=half_quantum;
-      if (image->matte == MagickFalse)
+      if (image->alpha_trait != BlendPixelTrait)
         ImfFloatToHalf(1.0,&half_quantum);
       else
         ImfFloatToHalf(QuantumScale*GetPixelAlpha(image,p),&half_quantum);

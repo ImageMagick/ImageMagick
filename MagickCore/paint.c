@@ -174,7 +174,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     return(MagickFalse);
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) TransformImageColorspace(image,RGBColorspace,exception);
-  if ((image->matte == MagickFalse) && (draw_info->fill.matte != MagickFalse))
+  if ((image->alpha_trait != BlendPixelTrait) && (draw_info->fill.alpha_trait == BlendPixelTrait))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
   /*
     Set floodfill state.
@@ -183,7 +183,7 @@ MagickExport MagickBooleanType FloodfillPaintImage(Image *image,
     exception);
   if (floodplane_image == (Image *) NULL)
     return(MagickFalse);
-  floodplane_image->matte=MagickFalse;
+  floodplane_image->alpha_trait=UndefinedPixelTrait;
   floodplane_image->colorspace=GRAYColorspace;
   (void) QueryColorCompliance("#000",AllCompliance,
     &floodplane_image->background_color,exception);
@@ -776,7 +776,7 @@ MagickExport MagickBooleanType OpaquePaintImage(Image *image,
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsPixelInfoGray(fill) == MagickFalse))
     (void) TransformImageColorspace(image,RGBColorspace,exception);
-  if ((fill->matte != MagickFalse) && (image->matte == MagickFalse))
+  if ((fill->alpha_trait == BlendPixelTrait) && (image->alpha_trait != BlendPixelTrait))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
   /*
     Make image color opaque.
@@ -903,7 +903,7 @@ MagickExport MagickBooleanType TransparentPaintImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if (image->matte == MagickFalse)
+  if (image->alpha_trait != BlendPixelTrait)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   /*
     Make image color transparent.
@@ -1031,7 +1031,7 @@ MagickExport MagickBooleanType TransparentPaintImageChroma(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  if (image->matte == MagickFalse)
+  if (image->alpha_trait != BlendPixelTrait)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   /*
     Make image color transparent.

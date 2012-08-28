@@ -1850,7 +1850,7 @@ static inline MagickBooleanType ValidatePixelCacheMorphology(
   q=cache_info->channel_map;
   if ((image->storage_class != cache_info->storage_class) ||
       (image->colorspace != cache_info->colorspace) ||
-      (image->matte != cache_info->matte) ||
+      (image->alpha_trait != cache_info->alpha_trait) ||
       (image->mask != cache_info->mask) ||
       (image->columns != cache_info->columns) ||
       (image->rows != cache_info->rows) ||
@@ -3759,7 +3759,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     image->filename,(double) GetImageIndexInList(image));
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
-  cache_info->matte=image->matte;
+  cache_info->alpha_trait=image->alpha_trait;
   cache_info->mask=image->mask;
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
@@ -4912,7 +4912,7 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  image->matte=MagickTrue;
+  image->alpha_trait=BlendPixelTrait;
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);  /* must be virtual */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -4969,8 +4969,8 @@ MagickPrivate VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
     {
       case BackgroundVirtualPixelMethod:
       {
-        if ((image->background_color.matte != MagickFalse) &&
-            (image->matte == MagickFalse))
+        if ((image->background_color.alpha_trait == BlendPixelTrait) &&
+            (image->alpha_trait != BlendPixelTrait))
           (void) SetCacheAlphaChannel(image,OpaqueAlpha,exception);
         if ((IsPixelInfoGray(&image->background_color) == MagickFalse) &&
             (IsGrayColorspace(image->colorspace) != MagickFalse))
@@ -4979,7 +4979,7 @@ MagickPrivate VirtualPixelMethod SetPixelCacheVirtualMethod(Image *image,
       }
       case TransparentVirtualPixelMethod:
       {
-        if (image->matte == MagickFalse)
+        if (image->alpha_trait != BlendPixelTrait)
           (void) SetCacheAlphaChannel(image,OpaqueAlpha,exception);
         break;
       }

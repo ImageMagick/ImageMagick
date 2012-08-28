@@ -141,7 +141,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read AVS X image.
   */
-  image->matte=MagickTrue;
+  image->alpha_trait=BlendPixelTrait;
   width=ReadBlobMSBLong(image);
   height=ReadBlobMSBLong(image);
   if (EOFBlob(image) != MagickFalse)
@@ -382,7 +382,7 @@ static MagickBooleanType WriteAVSImage(const ImageInfo *image_info,Image *image,
       q=pixels;
       for (x=0; x < (ssize_t) image->columns; x++)
       {
-        *q++=ScaleQuantumToChar((Quantum) (image->matte != MagickFalse ?
+        *q++=ScaleQuantumToChar((Quantum) (image->alpha_trait == BlendPixelTrait ?
           GetPixelAlpha(image,p) : OpaqueAlpha));
         *q++=ScaleQuantumToChar(GetPixelRed(image,p));
         *q++=ScaleQuantumToChar(GetPixelGreen(image,p));

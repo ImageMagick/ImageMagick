@@ -144,7 +144,7 @@ MagickExport MagickBooleanType AcquireImageColormap(Image *image,
 
     pixel=(double) (i*(QuantumRange/MagickMax(colors-1,1)));
     GetPixelInfo(image,image->colormap+i);
-    image->colormap[i].matte=MagickTrue;
+    image->colormap[i].alpha_trait=BlendPixelTrait;
     image->colormap[i].red=pixel;
     image->colormap[i].green=pixel;
     image->colormap[i].blue=pixel;

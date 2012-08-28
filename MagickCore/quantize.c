@@ -751,7 +751,7 @@ static inline void SetAssociatedAlpha(const Image *image,CubeInfo *cube_info)
   MagickBooleanType
     associate_alpha;
 
-  associate_alpha=image->matte;
+  associate_alpha=image->alpha_trait;
   if (cube_info->quantize_info->colorspace == TransparentColorspace)
     associate_alpha=MagickFalse;
   if ((cube_info->quantize_info->number_colors == 2) &&
@@ -2233,7 +2233,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       index=1UL*GetPixelIndex(image,p);
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         {
           alpha=(double) (QuantumScale*GetPixelAlpha(image,p));
           beta=(double) (QuantumScale*image->colormap[index].alpha);
@@ -2434,7 +2434,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
           (image->colorspace == CMYKColorspace))
         SetPixelBlack(image,PosterizePixel(GetPixelBlack(image,q)),q);
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          (image->matte == MagickTrue))
+          (image->alpha_trait == BlendPixelTrait))
         SetPixelAlpha(image,PosterizePixel(GetPixelAlpha(image,q)),q);
       q+=GetPixelChannels(image);
     }
@@ -2737,7 +2737,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
     maximum_colors=MaxColormapSize;
   if (maximum_colors > MaxColormapSize)
     maximum_colors=MaxColormapSize;
-  if (image->matte == MagickFalse)
+  if (image->alpha_trait != BlendPixelTrait)
     {
       if ((image->columns*image->rows) <= maximum_colors)
         (void) DirectToColormapImage(image,exception);
@@ -2761,7 +2761,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
         colors>>=2;
       if ((quantize_info->dither_method != NoDitherMethod) && (depth > 2))
         depth--;
-      if ((image->matte != MagickFalse) && (depth > 5))
+      if ((image->alpha_trait == BlendPixelTrait) && (depth > 5))
         depth--;
     }
   /*

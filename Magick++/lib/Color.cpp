@@ -237,7 +237,8 @@ Magick::Color::operator std::string() const
     pixel;
 
   pixel.colorspace=RGBColorspace;
-  pixel.matte=_pixelType == RGBAPixel ? MagickTrue : MagickFalse;
+  pixel.alpha_trait=_pixelType == RGBAPixel ? BlendPixelTrait :
+    UndefinedPixelTrait;
   pixel.depth=MAGICKCORE_QUANTUM_DEPTH;
   pixel.red=_pixel->red;
   pixel.green=_pixel->green;

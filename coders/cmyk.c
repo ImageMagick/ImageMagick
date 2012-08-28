@@ -168,7 +168,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
   if (LocaleCompare(image_info->magick,"CMYKA") == 0)
     {
       quantum_type=CMYKAQuantum;
-      image->matte=MagickTrue;
+      image->alpha_trait=BlendPixelTrait;
     }
   if (image_info->number_scenes != 0)
     while (image->scene < image_info->scene)
@@ -252,7 +252,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
                 SetPixelBlack(image,GetPixelBlack(canvas_image,p),q);
                 SetPixelAlpha(image,OpaqueAlpha,q);
-                if (image->matte != MagickFalse)
+                if (image->alpha_trait == BlendPixelTrait)
                   SetPixelAlpha(image,GetPixelAlpha(canvas_image,p),q);
                 p+=GetPixelChannels(canvas_image);
                 q+=GetPixelChannels(image);
@@ -308,7 +308,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
                 "UnexpectedEndOfFile",image->filename);
               break;
             }
-          for (i=0; i < (image->matte != MagickFalse ? 5 : 4); i++)
+          for (i=0; i < (image->alpha_trait == BlendPixelTrait ? 5 : 4); i++)
           {
             quantum_type=quantum_types[i];
             q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
@@ -597,7 +597,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             if (status == MagickFalse)
               break;
           }
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           {
             for (y=0; y < (ssize_t) image->extract_info.height; y++)
             {
@@ -952,7 +952,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             if (status == MagickFalse)
               break;
           }
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           {
             (void) CloseBlob(image);
             AppendImageFormat("A",image->filename);
@@ -1224,7 +1224,7 @@ static MagickBooleanType WriteCMYKImage(const ImageInfo *image_info,
     if (LocaleCompare(image_info->magick,"CMYKA") == 0)
       {
         quantum_type=CMYKAQuantum;
-        if (image->matte == MagickFalse)
+        if (image->alpha_trait != BlendPixelTrait)
           (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       }
     quantum_info=AcquireQuantumInfo(image_info,image);

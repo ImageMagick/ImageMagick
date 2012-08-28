@@ -314,7 +314,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,
         icon_info.y_pixels=ReadBlobLSBLong(image);
         icon_info.number_colors=ReadBlobLSBLong(image);
         icon_info.colors_important=ReadBlobLSBLong(image);
-        image->matte=MagickTrue;
+        image->alpha_trait=BlendPixelTrait;
         image->columns=(size_t) icon_file.directory[i].width;
         if ((ssize_t) image->columns > icon_info.width)
           image->columns=(size_t) icon_info.width;
@@ -1134,7 +1134,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
                 *q++=ScaleQuantumToChar(GetPixelBlue(next,p));
                 *q++=ScaleQuantumToChar(GetPixelGreen(next,p));
                 *q++=ScaleQuantumToChar(GetPixelRed(next,p));
-                if (next->matte == MagickFalse)
+                if (next->alpha_trait != BlendPixelTrait)
                   *q++=ScaleQuantumToChar(QuantumRange);
                 else
                   *q++=ScaleQuantumToChar(GetPixelAlpha(next,p));
@@ -1224,7 +1224,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
           for (x=0; x < (ssize_t) next->columns; x++)
           {
             byte<<=1;
-            if ((next->matte == MagickTrue) &&
+            if ((next->alpha_trait == BlendPixelTrait) &&
                 (GetPixelAlpha(next,p) == (Quantum) TransparentAlpha))
               byte|=0x01;
             bit++;

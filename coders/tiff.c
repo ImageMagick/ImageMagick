@@ -1204,12 +1204,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (extra_samples == 0)
       {
         if ((samples_per_pixel == 4) && (photometric == PHOTOMETRIC_RGB))
-          image->matte=MagickTrue;
+          image->alpha_trait=BlendPixelTrait;
       }
     else
       for (i=0; i < extra_samples; i++)
       {
-        image->matte=MagickTrue;
+        image->alpha_trait=BlendPixelTrait;
         if (sample_info[i] == EXTRASAMPLE_ASSOCALPHA)
           SetQuantumAlphaType(quantum_info,DisassociatedQuantumAlpha);
       }
@@ -1217,7 +1217,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (option != (const char *) NULL)
       associated_alpha=LocaleCompare(option,"associated") == 0 ? MagickTrue :
         MagickFalse;
-    if (image->matte != MagickFalse)
+    if (image->alpha_trait == BlendPixelTrait)
       (void) SetImageProperty(image,"tiff:alpha",
         associated_alpha != MagickFalse ? "associated" : "unassociated",
         exception);
@@ -1331,7 +1331,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           }
         quantum_type=IndexQuantum;
         pad=(size_t) MagickMax((size_t) samples_per_pixel-1,0);
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           {
             if (image->storage_class != PseudoClass)
               {
@@ -1394,7 +1394,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         */
         pad=(size_t) MagickMax((size_t) samples_per_pixel-3,0);
         quantum_type=RGBQuantum;
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           {
             quantum_type=RGBAQuantum;
             pad=(size_t) MagickMax((size_t) samples_per_pixel-4,0);
@@ -1403,7 +1403,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             pad=(size_t) MagickMax((size_t) samples_per_pixel-4,0);
             quantum_type=CMYKQuantum;
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               {
                 quantum_type=CMYKAQuantum;
                 pad=(size_t) MagickMax((size_t) samples_per_pixel-5,0);
@@ -1538,7 +1538,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               (TIFFGetG(*p))),q);
             SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
               (TIFFGetB(*p))),q);
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
                 (TIFFGetA(*p))),q);
             p++;
@@ -1623,7 +1623,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               x);
             for (row=rows_remaining; row > 0; row--)
             {
-              if (image->matte != MagickFalse)
+              if (image->alpha_trait == BlendPixelTrait)
                 for (column=columns_remaining; column > 0; column--)
                 {
                   SetPixelRed(image,ScaleCharToQuantum((unsigned char)
@@ -1718,7 +1718,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               TIFFGetG(*p)),q);
             SetPixelBlue(image,ScaleCharToQuantum((unsigned char)
               TIFFGetB(*p)),q);
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               SetPixelAlpha(image,ScaleCharToQuantum((unsigned char)
                 TIFFGetA(*p)),q);
             p--;
@@ -2932,7 +2932,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                   MagickFalse ? PHOTOMETRIC_MINISWHITE :
                   PHOTOMETRIC_MINISBLACK);
                 (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
-                if ((image_info->depth == 0) && (image->matte == MagickFalse) &&
+                if ((image_info->depth == 0) && (image->alpha_trait != BlendPixelTrait) &&
                     (IsImageMonochrome(image,exception) != MagickFalse))
                   {
                     status=SetQuantumDepth(image,quantum_info,1);
@@ -3008,7 +3008,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
     (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
     (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,endian);
     (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,quantum_info->depth);
-    if (image->matte != MagickFalse)
+    if (image->alpha_trait == BlendPixelTrait)
       {
         uint16
           extra_samples,
@@ -3272,7 +3272,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           default:
           {
             quantum_type=RGBQuantum;
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               quantum_type=RGBAQuantum;
             for (y=0; y < (ssize_t) image->rows; y++)
             {
@@ -3360,7 +3360,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                 if (status == MagickFalse)
                   break;
               }
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               for (y=0; y < (ssize_t) image->rows; y++)
               {
                 register const Quantum
@@ -3391,7 +3391,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           CMYK TIFF image.
         */
         quantum_type=CMYKQuantum;
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           quantum_type=CMYKAQuantum;
         if (image->colorspace != CMYKColorspace)
           (void) TransformImageColorspace(image,CMYKColorspace,exception);
@@ -3456,7 +3456,7 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
           Convert PseudoClass packets to contiguous grayscale scanlines.
         */
         quantum_type=IndexQuantum;
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           {
             if (photometric != PHOTOMETRIC_PALETTE)
               quantum_type=GrayAlphaQuantum;

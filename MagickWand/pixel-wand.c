@@ -754,7 +754,7 @@ WandExport char *PixelGetColorAsNormalizedString(const PixelWand *wand)
   if (wand->pixel.colorspace == CMYKColorspace)
     (void) FormatLocaleString(color+strlen(color),MaxTextExtent,",%g",
       (double) (QuantumScale*wand->pixel.black));
-  if (wand->pixel.matte != MagickFalse)
+  if (wand->pixel.alpha_trait == BlendPixelTrait)
     (void) FormatLocaleString(color+strlen(color),MaxTextExtent,",%g",
       (double) (QuantumScale*wand->pixel.alpha));
   return(ConstantString(color));
@@ -2150,7 +2150,7 @@ WandExport void PixelSetQuantumPixel(const Image *image,const Quantum *pixel,
   wand->pixel.blue=(double) GetPixelBlue(image,pixel);
   wand->pixel.black=(double) GetPixelBlack(image,pixel);
   wand->pixel.alpha=(double) GetPixelAlpha(image,pixel);
-  wand->pixel.matte=GetPixelAlpha(image,pixel) != OpaqueAlpha ? MagickTrue :
+  wand->pixel.alpha_trait=GetPixelAlpha(image,pixel) != OpaqueAlpha ? MagickTrue :
     MagickFalse;
 }
 

@@ -841,7 +841,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->rows=(size_t) MagickAbsoluteValue(bmp_info.height);
     image->depth=bmp_info.bits_per_pixel <= 8 ? bmp_info.bits_per_pixel : 8;
     if ((bmp_info.bits_per_pixel == 16) || (bmp_info.bits_per_pixel == 32))
-      image->matte=bmp_info.alpha_mask != 0 ? MagickTrue : MagickFalse;
+      image->alpha_trait=bmp_info.alpha_mask != 0 ? MagickTrue : MagickFalse;
     if ((bmp_info.number_colors != 0) || (bmp_info.bits_per_pixel < 16))
       {
         size_t
@@ -1171,7 +1171,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelGreen(image,ScaleShortToQuantum((unsigned short) green),q);
             SetPixelBlue(image,ScaleShortToQuantum((unsigned short) blue),q);
             SetPixelAlpha(image,OpaqueAlpha,q);
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               SetPixelAlpha(image,
                 ScaleShortToQuantum((unsigned short) opacity),q);
             q+=GetPixelChannels(image);
@@ -1266,7 +1266,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelGreen(image,ScaleShortToQuantum((unsigned short) green),q);
             SetPixelBlue(image,ScaleShortToQuantum((unsigned short) blue),q);
             SetPixelAlpha(image,OpaqueAlpha,q);
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               SetPixelAlpha(image,
                 ScaleShortToQuantum((unsigned short) opacity),q);
             q+=GetPixelChannels(image);
@@ -1550,7 +1550,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         if (image_info->compression == RLECompression)
           bmp_info.bits_per_pixel=8;
         bmp_info.number_colors=1U << bmp_info.bits_per_pixel;
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           (void) SetImageStorageClass(image,DirectClass,exception);
         else
           if ((size_t) bmp_info.number_colors < image->colors)
@@ -1573,9 +1573,9 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         */
         bmp_info.number_colors=0;
         bmp_info.bits_per_pixel=(unsigned short)
-          ((type > 3) && (image->matte != MagickFalse) ? 32 : 24);
+          ((type > 3) && (image->alpha_trait == BlendPixelTrait) ? 32 : 24);
         bmp_info.compression=(unsigned int) ((type > 3) &&
-          (image->matte != MagickFalse) ?  BI_BITFIELDS : BI_RGB);
+          (image->alpha_trait == BlendPixelTrait) ?  BI_BITFIELDS : BI_RGB);
       }
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     bmp_info.ba_offset=0;
@@ -1586,7 +1586,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
     if (type == 2)
       bmp_info.size=12;
     else
-      if ((type == 3) || ((image->matte == MagickFalse) &&
+      if ((type == 3) || ((image->alpha_trait != BlendPixelTrait) &&
           (have_color_info == MagickFalse)))
         {
           type=3;
@@ -1872,7 +1872,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
             "   Storage class=PseudoClass");
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "   Image depth=%.20g",(double) image->depth);
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "   Matte=True");
         else
@@ -1946,7 +1946,7 @@ static MagickBooleanType WriteBMPImage(const ImageInfo *image_info,Image *image,
         (void) WriteBlobLSBLong(image,bmp_info.number_colors);
         (void) WriteBlobLSBLong(image,bmp_info.colors_important);
       }
-    if ((type > 3) && ((image->matte != MagickFalse) ||
+    if ((type > 3) && ((image->alpha_trait == BlendPixelTrait) ||
         (have_color_info != MagickFalse)))
       {
         /*

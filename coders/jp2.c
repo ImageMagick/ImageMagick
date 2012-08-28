@@ -423,7 +423,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       components[3]=jas_image_getcmptbytype(jp2_image,3);
       if (components[3] > 0)
         {
-          image->matte=MagickTrue;
+          image->alpha_trait=BlendPixelTrait;
           number_components++;
         }
       break;
@@ -457,7 +457,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       components[3]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_UNKNOWN);
       if (components[3] > 0)
         {
-          image->matte=MagickTrue;
+          image->alpha_trait=BlendPixelTrait;
           number_components++;
         }
       break;
@@ -478,7 +478,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       components[3]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_UNKNOWN);
       if (components[3] > 0)
         {
-          image->matte=MagickTrue;
+          image->alpha_trait=BlendPixelTrait;
           number_components++;
         }
       break;
@@ -499,7 +499,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       components[3]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_UNKNOWN);
       if (components[3] > 0)
         {
-          image->matte=MagickTrue;
+          image->alpha_trait=BlendPixelTrait;
           number_components++;
         }
       break;
@@ -536,7 +536,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert JPEG 2000 pixels.
   */
-  image->matte=number_components > 3 ? MagickTrue : MagickFalse;
+  image->alpha_trait=number_components > 3 ? MagickTrue : MagickFalse;
   maximum_component_depth=0;
   for (i=0; i < (ssize_t) number_components; i++)
   {
@@ -916,7 +916,7 @@ static MagickBooleanType WriteJP2Image(const ImageInfo *image_info,Image *image,
   jp2_stream=JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)
     ThrowWriterException(DelegateError,"UnableToManageJP2Stream");
-  number_components=image->matte ? 4UL : 3UL;
+  number_components=image->alpha_trait ? 4UL : 3UL;
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     number_components=1;
   if ((image->columns != (unsigned int) image->columns) ||

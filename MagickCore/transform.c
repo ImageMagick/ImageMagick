@@ -1084,7 +1084,7 @@ MagickExport Image *ExtentImage(const Image *image,
       return((Image *) NULL);
     }
   if (extent_image->background_color.alpha != OpaqueAlpha)
-    extent_image->matte=MagickTrue;
+    extent_image->alpha_trait=BlendPixelTrait;
   (void) SetImageBackgroundColor(extent_image,exception);
   (void) CompositeImage(extent_image,image,image->compose,MagickTrue,
     -geometry->x,-geometry->y,exception);

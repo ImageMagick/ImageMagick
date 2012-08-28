@@ -331,6 +331,24 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             switch (*keyword)
             {
+              case 'a':
+              case 'A':
+              {
+                if (LocaleCompare(keyword,"alpha-trait") == 0)
+                  {
+                    ssize_t
+                      alpha_trait;
+
+                    alpha_trait=ParseCommandOption(MagickPixelTraitOptions,
+                      MagickFalse,options);
+                    if (alpha_trait < 0)
+                      break;
+                    image->alpha_trait=(PixelTrait) alpha_trait;
+                    break;
+                  }
+                (void) SetImageProperty(image,keyword,options,exception);
+                break;
+              }
               case 'b':
               case 'B':
               {
@@ -503,18 +521,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               case 'm':
               case 'M':
               {
-                if (LocaleCompare(keyword,"matte") == 0)
-                  {
-                    ssize_t
-                      matte;
-
-                    matte=ParseCommandOption(MagickBooleanOptions,MagickFalse,
-                      options);
-                    if (matte < 0)
-                      break;
-                    image->matte=(MagickBooleanType) matte;
-                    break;
-                  }
                 if (LocaleCompare(keyword,"matte-color") == 0)
                   {
                     (void) QueryColorCompliance(options,AllCompliance,
@@ -544,18 +550,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               case 'o':
               case 'O':
               {
-                if (LocaleCompare(keyword,"opaque") == 0)
-                  {
-                    ssize_t
-                      matte;
-
-                    matte=ParseCommandOption(MagickBooleanOptions,MagickFalse,
-                      options);
-                    if (matte < 0)
-                      break;
-                    image->matte=(MagickBooleanType) matte;
-                    break;
-                  }
                 if (LocaleCompare(keyword,"orientation") == 0)
                   {
                     ssize_t
@@ -1101,9 +1095,10 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
       MAGICKCORE_QUANTUM_DEPTH);
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MaxTextExtent,
-      "class=%s  colors=%.20g  matte=%s\n",CommandOptionToMnemonic(
+      "class=%s  colors=%.20g  alpha-trait=%s\n",CommandOptionToMnemonic(
       MagickClassOptions,image->storage_class),(double) image->colors,
-      CommandOptionToMnemonic(MagickBooleanOptions,(ssize_t) image->matte));
+      CommandOptionToMnemonic(MagickPixelTraitOptions,(ssize_t)
+      image->alpha_trait));
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MaxTextExtent,
       "columns=%.20g  rows=%.20g depth=%.20g\n",(double) image->columns,

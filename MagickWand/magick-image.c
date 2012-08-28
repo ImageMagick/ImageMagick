@@ -10016,9 +10016,9 @@ WandExport MagickBooleanType MagickSetImageMatte(MagickWand *wand,
 
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  if( IfMagickFalse(wand->images->matte) && IsMagickTrue(matte))
+  if( IfMagickFalse(wand->images->alpha_trait) && IsMagickTrue(matte))
     (void) SetImageAlpha(wand->images,OpaqueAlpha,wand->exception);
-  wand->images->matte=matte;
+  wand->images->alpha_trait=matte;
   return(MagickTrue);
 }
 

@@ -473,14 +473,14 @@ MagickExport Image *AppendImages(const Image *images,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  matte=images->matte;
+  matte=images->alpha_trait;
   number_images=1;
   width=images->columns;
   height=images->rows;
   next=GetNextImageInList(images);
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    if (next->matte != MagickFalse)
+    if (next->alpha_trait == BlendPixelTrait)
       matte=MagickTrue;
     number_images++;
     if (stack != MagickFalse)
@@ -505,7 +505,7 @@ MagickExport Image *AppendImages(const Image *images,
       append_image=DestroyImage(append_image);
       return((Image *) NULL);
     }
-  append_image->matte=matte;
+  append_image->alpha_trait=matte;
   (void) SetImageBackgroundColor(append_image,exception);
   status=MagickTrue;
   x_offset=0;
@@ -810,7 +810,7 @@ MagickExport Image *CloneImage(const Image *image,const size_t columns,
   clone_image->metacontent_extent=image->metacontent_extent;
   clone_image->colorspace=image->colorspace;
   clone_image->mask=image->mask;
-  clone_image->matte=image->matte;
+  clone_image->alpha_trait=image->alpha_trait;
   clone_image->columns=image->columns;
   clone_image->rows=image->rows;
   clone_image->dither=image->dither;
@@ -1167,7 +1167,7 @@ MagickExport MagickBooleanType GetImageAlphaChannel(const Image *image)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  return(image->matte);
+  return(image->alpha_trait);
 }
 
 /*
@@ -1891,7 +1891,7 @@ MagickExport Image *NewMagickImage(const ImageInfo *image_info,
   image->columns=width;
   image->rows=height;
   image->colorspace=background->colorspace;
-  image->matte=background->matte;
+  image->alpha_trait=background->alpha_trait;
   image->fuzz=background->fuzz;
   image->depth=background->depth;
   status=MagickTrue;
@@ -2149,7 +2149,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
   {
     case ActivateAlphaChannel:
     {
-      image->matte=MagickTrue;
+      image->alpha_trait=BlendPixelTrait;
       break;
     }
     case BackgroundAlphaChannel:
@@ -2163,7 +2163,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       /*
         Set transparent pixels to background color.
       */
-      if (image->matte == MagickFalse)
+      if (image->alpha_trait != BlendPixelTrait)
         break;
       if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         break;
@@ -2216,14 +2216,14 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     }
     case DeactivateAlphaChannel:
     {
-      image->matte=MagickFalse;
+      image->alpha_trait=CopyPixelTrait;
       break;
     }
     case ExtractAlphaChannel:
     {
       status=CompositeImage(image,image,AlphaCompositeOp,MagickTrue,0,0,
         exception);
-      image->matte=MagickFalse;
+      image->alpha_trait=UndefinedPixelTrait;
       break;
     }
     case OpaqueAlphaChannel:
@@ -2242,7 +2242,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
       /*
         Remove transparency.
       */
-      if (image->matte == MagickFalse)
+      if (image->alpha_trait != BlendPixelTrait)
         break;
       if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         break;
@@ -2279,12 +2279,12 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           status=MagickFalse;
       }
       image_view=DestroyCacheView(image_view);
-      image->matte=image->background_color.matte;
+      image->alpha_trait=image->background_color.alpha_trait;
       return(status);
     }
     case SetAlphaChannel:
     {
-      if (image->matte == MagickFalse)
+      if (image->alpha_trait != BlendPixelTrait)
         status=SetImageAlpha(image,OpaqueAlpha,exception);
       break;
     }
@@ -2349,8 +2349,8 @@ MagickExport MagickBooleanType SetImageBackgroundColor(Image *image,
   if ((IsPixelInfoGray(&image->background_color) == MagickFalse) &&
       (IsGrayColorspace(image->colorspace) != MagickFalse))
     (void) TransformImageColorspace(image,RGBColorspace,exception);
-  if ((image->background_color.matte != MagickFalse) &&
-      (image->matte == MagickFalse))
+  if ((image->background_color.alpha_trait == BlendPixelTrait) &&
+      (image->alpha_trait != BlendPixelTrait))
     (void) SetImageAlpha(image,OpaqueAlpha,exception);
   /*
     Set image background color.
@@ -2468,7 +2468,7 @@ MagickExport MagickBooleanType SetImageColor(Image *image,
   assert(image->signature == MagickSignature);
   assert(color != (const PixelInfo *) NULL);
   image->colorspace=color->colorspace;
-  image->matte=color->matte;
+  image->alpha_trait=color->alpha_trait;
   image->fuzz=color->fuzz;
   image->depth=color->depth;
   status=MagickTrue;
@@ -3124,7 +3124,7 @@ MagickExport MagickBooleanType SetImageAlpha(Image *image,const Quantum alpha,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  image->matte=MagickTrue;
+  image->alpha_trait=BlendPixelTrait;
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3419,14 +3419,14 @@ MagickExport Image *SmushImages(const Image *images,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=images;
-  matte=image->matte;
+  matte=image->alpha_trait;
   number_images=1;
   width=image->columns;
   height=image->rows;
   next=GetNextImageInList(image);
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
   {
-    if (next->matte != MagickFalse)
+    if (next->alpha_trait == BlendPixelTrait)
       matte=MagickTrue;
     number_images++;
     if (stack != MagickFalse)
@@ -3455,7 +3455,7 @@ MagickExport Image *SmushImages(const Image *images,
       smush_image=DestroyImage(smush_image);
       return((Image *) NULL);
     }
-  smush_image->matte=matte;
+  smush_image->alpha_trait=matte;
   (void) SetImageBackgroundColor(smush_image,exception);
   status=MagickTrue;
   x_offset=0;

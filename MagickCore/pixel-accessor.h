@@ -437,13 +437,13 @@ static inline MagickBooleanType IsPixelGray(const Image *restrict image,
 static inline MagickBooleanType IsPixelInfoEquivalent(
   const PixelInfo *restrict p,const PixelInfo *restrict q)
 {
-  if ((p->matte != MagickFalse) && (q->matte == MagickFalse) &&
+  if ((p->alpha_trait == BlendPixelTrait) && (q->alpha_trait != BlendPixelTrait) &&
       (fabs(p->alpha-OpaqueAlpha) >= MagickEpsilon))
     return(MagickFalse);
-  if ((q->matte != MagickFalse) && (p->matte == MagickFalse) &&
+  if ((q->alpha_trait == BlendPixelTrait) && (p->alpha_trait != BlendPixelTrait) &&
       (fabs(q->alpha-OpaqueAlpha)) >= MagickEpsilon)
     return(MagickFalse);
-  if ((p->matte != MagickFalse) && (q->matte != MagickFalse))
+  if ((p->alpha_trait == BlendPixelTrait) && (q->alpha_trait == BlendPixelTrait))
     {
       if (fabs(p->alpha-q->alpha) >= MagickEpsilon)
         return(MagickFalse);
@@ -664,8 +664,9 @@ static inline void SetPixelInfoPixel(const Image *restrict image,
     pixel[image->channel_map[BlackPixelChannel].offset]=
       ClampToQuantum(pixel_info->black);
   if (image->channel_map[AlphaPixelChannel].traits != UndefinedPixelTrait)
-    pixel[image->channel_map[AlphaPixelChannel].offset]=pixel_info->matte ==
-      MagickFalse ? OpaqueAlpha : ClampToQuantum(pixel_info->alpha);
+    pixel[image->channel_map[AlphaPixelChannel].offset]=
+      pixel_info->alpha_trait != BlendPixelTrait ? OpaqueAlpha :
+      ClampToQuantum(pixel_info->alpha);
 }
 
 static inline void SetPixelL(const Image *restrict image,const Quantum L,

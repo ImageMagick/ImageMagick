@@ -432,11 +432,11 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->depth=depth;
     LocaleLower(colorspace);
     i=(ssize_t) strlen(colorspace)-1;
-    image->matte=MagickFalse;
+    image->alpha_trait=UndefinedPixelTrait;
     if ((i > 0) && (colorspace[i] == 'a'))
       {
         colorspace[i]='\0';
-        image->matte=MagickTrue;
+        image->alpha_trait=BlendPixelTrait;
       }
     type=ParseCommandOption(MagickColorspaceOptions,MagickFalse,colorspace);
     if (type < 0)
@@ -455,7 +455,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           case GRAYColorspace:
           {
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               {
                 count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf",&x_offset,
                   &y_offset,&pixel.red,&pixel.alpha);
@@ -471,7 +471,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           case CMYKColorspace:
           {
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               {
                 count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf,%lf",
                   &x_offset,&y_offset,&pixel.red,&pixel.green,&pixel.blue,
@@ -484,7 +484,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           default:
           {
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               {
                 count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf",
                   &x_offset,&y_offset,&pixel.red,&pixel.green,&pixel.blue,
@@ -675,7 +675,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
       MagickColorspaceOptions,(ssize_t) image->colorspace),MaxTextExtent);
     LocaleLower(colorspace);
     image->depth=GetImageQuantumDepth(image,MagickTrue);
-    if (image->matte != MagickFalse)
+    if (image->alpha_trait == BlendPixelTrait)
       (void) ConcatenateMagickString(colorspace,"a",MaxTextExtent);
     (void) FormatLocaleString(buffer,MaxTextExtent,
       "# ImageMagick pixel enumeration: %.20g,%.20g,%.20g,%s\n",(double)
@@ -715,7 +715,7 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
             ConcatenateColorComponent(&pixel,BlackPixelChannel,X11Compliance,
               tuple);
           }
-        if (pixel.matte != MagickFalse)
+        if (pixel.alpha_trait == BlendPixelTrait)
           {
             (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
             ConcatenateColorComponent(&pixel,AlphaPixelChannel,X11Compliance,

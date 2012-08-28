@@ -126,7 +126,7 @@ static Image *ReadNULLImage(const ImageInfo *image_info,
     image->columns=1;
   if (image->rows == 0)
     image->rows=1;
-  image->matte=MagickTrue;
+  image->alpha_trait=BlendPixelTrait;
   GetPixelInfo(image,&background);
   background.alpha=(double) TransparentAlpha;
   if (image->colorspace == CMYKColorspace)

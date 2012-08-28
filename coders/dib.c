@@ -535,7 +535,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       dib_info.green_mask=ReadBlobLSBLong(image);
       dib_info.blue_mask=ReadBlobLSBLong(image);
     }
-  image->matte=dib_info.bits_per_pixel == 32 ? MagickTrue : MagickFalse;
+  image->alpha_trait=dib_info.bits_per_pixel == 32 ? MagickTrue : MagickFalse;
   image->columns=(size_t) MagickAbsoluteValue(dib_info.width);
   image->rows=(size_t) MagickAbsoluteValue(dib_info.height);
   image->depth=8;
@@ -828,7 +828,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
           SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
           SetPixelRed(image,ScaleCharToQuantum(*p++),q);
-          if (image->matte != MagickFalse)
+          if (image->alpha_trait == BlendPixelTrait)
             SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
           q+=GetPixelChannels(image);
         }
@@ -1018,7 +1018,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
         Full color DIB raster.
       */
       dib_info.number_colors=0;
-      dib_info.bits_per_pixel=(unsigned short) (image->matte ? 32 : 24);
+      dib_info.bits_per_pixel=(unsigned short) (image->alpha_trait ? 32 : 24);
     }
   else
     {
@@ -1189,7 +1189,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image,
           *q++=ScaleQuantumToChar(GetPixelBlue(image,p));
           *q++=ScaleQuantumToChar(GetPixelGreen(image,p));
           *q++=ScaleQuantumToChar(GetPixelRed(image,p));
-          if (image->matte != MagickFalse)
+          if (image->alpha_trait == BlendPixelTrait)
             *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
           p+=GetPixelChannels(image);
         }

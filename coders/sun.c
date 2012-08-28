@@ -383,7 +383,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       default:
         ThrowReaderException(CoderError,"ColormapTypeNotSupported");
     }
-    image->matte=sun_info.depth == 32 ? MagickTrue : MagickFalse;
+    image->alpha_trait=sun_info.depth == 32 ? MagickTrue : MagickFalse;
     image->columns=sun_info.width;
     image->rows=sun_info.height;
     if (image_info->ping != MagickFalse)
@@ -510,7 +510,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             bytes_per_pixel;
 
           bytes_per_pixel=3;
-          if (image->matte != MagickFalse)
+          if (image->alpha_trait == BlendPixelTrait)
             bytes_per_pixel++;
           length=image->rows*((bytes_per_line*image->columns)+
             image->columns % 2);
@@ -525,7 +525,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              if (image->matte != MagickFalse)
+              if (image->alpha_trait == BlendPixelTrait)
                 SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
               if (sun_info.type == RT_STANDARD)
                 {
@@ -781,8 +781,8 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
         /*
           Full color SUN raster.
         */
-        sun_info.depth=(unsigned int) image->matte ? 32U : 24U;
-        sun_info.length=(unsigned int) ((image->matte ? 4 : 3)*number_pixels);
+        sun_info.depth=(unsigned int) image->alpha_trait ? 32U : 24U;
+        sun_info.length=(unsigned int) ((image->alpha_trait ? 4 : 3)*number_pixels);
         sun_info.length+=sun_info.length & 0x01 ? (unsigned int) image->rows :
           0;
       }
@@ -842,7 +842,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
           Allocate memory for pixels.
         */
         bytes_per_pixel=3;
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           bytes_per_pixel++;
         length=image->columns;
         pixels=(unsigned char *) AcquireQuantumMemory(length,4*sizeof(*pixels));
@@ -859,7 +859,7 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
           q=pixels;
           for (x=0; x < (ssize_t) image->columns; x++)
           {
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               *q++=ScaleQuantumToChar(GetPixelAlpha(image,p));
             *q++=ScaleQuantumToChar(GetPixelRed(image,p));
             *q++=ScaleQuantumToChar(GetPixelGreen(image,p));

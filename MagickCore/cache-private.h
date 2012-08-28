@@ -24,6 +24,7 @@ extern "C" {
 
 #include <time.h>
 #include "MagickCore/cache.h"
+#include "MagickCore/pixel.h"
 #include "MagickCore/random_.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/semaphore.h"
@@ -110,8 +111,10 @@ typedef struct _CacheInfo
   ColorspaceType
     colorspace;
 
+  PixelTrait
+    alpha_trait;
+
   MagickBooleanType
-    matte,
     mask;
 
   size_t
