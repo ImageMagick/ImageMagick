@@ -481,7 +481,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
               ThrowAnimateException(OptionError,"MissingArgument",option);
             type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,argv[i]);
             if (type < 0)
-              ThrowAnimateException(OptionError,"UnrecognizedAlphaChannelType",
+              ThrowAnimateException(OptionError,"UnrecognizedAlphaChannelOption",
                 argv[i]);
             break;
           }

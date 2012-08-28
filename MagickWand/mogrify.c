@@ -792,11 +792,11 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
           }
         if (LocaleCompare("alpha",option+1) == 0)
           {
-            AlphaChannelType
+            AlphaChannelOption
               alpha_type;
 
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            alpha_type=(AlphaChannelType) ParseCommandOption(MagickAlphaChannelOptions,
+            alpha_type=(AlphaChannelOption) ParseCommandOption(MagickAlphaChannelOptions,
               MagickFalse,argv[i+1]);
             (void) SetImageAlphaChannel(*image,alpha_type,exception);
             break;
@@ -3826,7 +3826,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,argv[i]);
             if (type < 0)
-              ThrowMogrifyException(OptionError,"UnrecognizedAlphaChannelType",
+              ThrowMogrifyException(OptionError,"UnrecognizedAlphaChannelOption",
                 argv[i]);
             break;
           }

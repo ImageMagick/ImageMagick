@@ -2051,7 +2051,7 @@ MagickExport MagickBooleanType ResetImagePage(Image *image,const char *page)
 %  The format of the SetImageAlphaChannel method is:
 %
 %      MagickBooleanType SetImageAlphaChannel(Image *image,
-%        const AlphaChannelType alpha_type,ExceptionInfo *exception)
+%        const AlphaChannelOption alpha_type,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2135,7 +2135,7 @@ static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
 }
 
 MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
-  const AlphaChannelType alpha_type,ExceptionInfo *exception)
+  const AlphaChannelOption alpha_type,ExceptionInfo *exception)
 {
   MagickBooleanType
     status;

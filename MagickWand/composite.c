@@ -557,7 +557,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
             type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,argv[i]);
             if (type < 0)
               ThrowCompositeException(OptionError,
-                "UnrecognizedAlphaChannelType",argv[i]);
+                "UnrecognizedAlphaChannelOption",argv[i]);
             break;
           }
         if (LocaleCompare("authenticate",option+1) == 0)

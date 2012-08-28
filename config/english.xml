@@ -312,8 +312,8 @@
           <message name="UnknownPatternType">
             unknown pattern type
           </message>
-          <message name="UnrecognizedAlphaChannelType">
-            unrecognized alpha channel tpe
+          <message name="UnrecognizedAlphaChannelOption">
+            unrecognized alpha channel option
           </message>
           <message name="UnrecognizedBitsPerPixel">
             unrecognized bits per pixel

@@ -312,6 +312,9 @@
           <message name="UnknownPatternType">
             type de motif inconnu
           </message>
+          <message name="UnrecognizedAlphaChannelOption">
+            alpha de canal l'option non reconnus
+          </message>
           <message name="UnrecognizedBitsPerPixel">
             bits par pixel non reconnus
           </message>

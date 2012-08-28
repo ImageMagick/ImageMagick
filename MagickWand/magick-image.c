@@ -8979,7 +8979,7 @@ WandExport MagickBooleanType MagickSetImage(MagickWand *wand,
 %  The format of the MagickSetImageAlphaChannel method is:
 %
 %      MagickBooleanType MagickSetImageAlphaChannel(MagickWand *wand,
-%        const AlphaChannelType alpha_type)
+%        const AlphaChannelOption alpha_type)
 %
 %  A description of each parameter follows:
 %
@@ -8990,7 +8990,7 @@ WandExport MagickBooleanType MagickSetImage(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickSetImageAlphaChannel(MagickWand *wand,
-  const AlphaChannelType alpha_type)
+  const AlphaChannelOption alpha_type)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
