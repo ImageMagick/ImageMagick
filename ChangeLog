@@ -1,6 +1,7 @@
 2012-08-24  6.7.9-2 Cristy  <quetzlzacatenango@image...>
   * Support -channel sync option for -equalize (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21746).
+  * Recognize ICO format in URL (e.g. http://www.google.com/favicon.ico).
 
 2012-08-26  6.7.9-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-2, SVN revision 9120.
