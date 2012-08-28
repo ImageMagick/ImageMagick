@@ -1574,8 +1574,6 @@ MagickExport MagickBooleanType SetImageColorspace(Image *image,
     }
   if (IsGrayColorspace(colorspace) != MagickFalse)
     image->type=GrayscaleType;
-  (void) DeleteImageProfile(image,"icc");  /* remove color profile */
-  (void) DeleteImageProfile(image,"icm");
   return(SyncImagePixelCache(image,exception));
 }
 
