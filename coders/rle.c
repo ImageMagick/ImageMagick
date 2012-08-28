@@ -212,7 +212,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=ReadBlobLSBShort(image);
     image->rows=ReadBlobLSBShort(image);
     flags=(MagickStatusType) ReadBlobByte(image);
-    image->matte=flags & 0x04 ? MagickTrue : MagickFalse;
+    image->alpha_trait=flags & 0x04 ? MagickTrue : MagickFalse;
     number_planes=1UL*ReadBlobByte(image);
     bits_per_pixel=1UL*ReadBlobByte(image);
     number_colormaps=1UL*ReadBlobByte(image);
@@ -287,7 +287,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Allocate RLE pixels.
     */
-    if (image->matte != MagickFalse)
+    if (image->alpha_trait == BlendPixelTrait)
       number_planes++;
     number_pixels=(MagickSizeType) image->columns*image->rows;
     if ((number_pixels*number_planes) != (size_t) (number_pixels*number_planes))
@@ -307,7 +307,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=rle_pixels;
         for (i=0; i < (ssize_t) number_pixels; i++)
         {
-          if (image->matte == MagickFalse)
+          if (image->alpha_trait != BlendPixelTrait)
             for (j=0; j < (ssize_t) number_planes; j++)
               *p++=background_color[j];
           else
@@ -445,7 +445,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelRed(image,ScaleCharToQuantum(*p++),q);
             SetPixelGreen(image,ScaleCharToQuantum(*p++),q);
             SetPixelBlue(image,ScaleCharToQuantum(*p++),q);
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               SetPixelAlpha(image,ScaleCharToQuantum(*p++),q);
             q+=GetPixelChannels(image);
           }
@@ -490,7 +490,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
               p++;
             }
         p=rle_pixels;
-        if (image->matte == MagickFalse)
+        if (image->alpha_trait != BlendPixelTrait)
           {
             /*
               Convert raster image to PseudoClass pixel packets.

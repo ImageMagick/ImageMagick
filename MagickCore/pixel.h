@@ -129,8 +129,8 @@ typedef struct _PixelInfo
   ColorspaceType
     colorspace;
 
-  MagickBooleanType
-    matte;
+  PixelTrait
+    alpha_trait;
 
   double
     fuzz;

@@ -1700,7 +1700,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               break;
             }
           for ( ; image; image=image->next)
-            image->matte=sp != 0 ? MagickTrue : MagickFalse;
+            image->alpha_trait=sp != 0 ? BlendPixelTrait : UndefinedPixelTrait;
           break;
         }
       if (LocaleCompare(attribute,"memory-limit") == 0)
@@ -4027,7 +4027,7 @@ Features(ref,...)
         ChannelFeatures(BlueChannel,i);
         if (image->colorspace == CMYKColorspace)
           ChannelFeatures(BlackChannel,i);
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           ChannelFeatures(AlphaChannel,i);
       }
       channel_features=(ChannelFeatures *)
@@ -5145,7 +5145,8 @@ Get(ref,...)
           if (LocaleCompare(attribute,"matte") == 0)
             {
               if (image != (Image *) NULL)
-                s=newSViv((ssize_t) image->matte);
+                s=newSViv((ssize_t) image->alpha_trait == BlendPixelTrait ?
+                  1 : 0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -6460,12 +6461,12 @@ GetPixels(ref,...)
         goto PerlException;
       }
     map="RGB";
-    if (image->matte != MagickFalse)
+    if (image->alpha_trait == BlendPixelTrait)
       map="RGBA";
     if (image->colorspace == CMYKColorspace)
       {
         map="CMYK";
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           map="CMYKA";
       }
     normalize=MagickFalse;
@@ -7955,8 +7956,8 @@ Mogrify(ref,...)
             {
               QueryColorCompliance(argument_list[1].string_reference,
                 AllCompliance,&image->background_color,exception);
-              if ((image->background_color.matte != MagickFalse) &&
-                  (image->matte == MagickFalse))
+              if ((image->background_color.alpha_trait == BlendPixelTrait) &&
+                  (image->alpha_trait != BlendPixelTrait))
                 (void) SetImageAlpha(image,OpaqueAlpha,exception);
             }
           image=RotateImage(image,argument_list[0].real_reference,exception);
@@ -8420,7 +8421,7 @@ Mogrify(ref,...)
                   opacity=(Quantum) StringToDoubleInterval(
                     argument_list[6].string_reference,(double) QuantumRange+
                     1.0);
-                  if (composite_image->matte != MagickTrue)
+                  if (composite_image->alpha_trait == BlendPixelTrait)
                     (void) SetImageAlpha(composite_image,OpaqueAlpha,exception);
                   composite_view=AcquireAuthenticCacheView(composite_image,
                     exception);
@@ -8915,7 +8916,7 @@ Mogrify(ref,...)
             geometry.x=argument_list[1].integer_reference;
           if (attribute_flag[2] != 0)
             geometry.y=argument_list[2].integer_reference;
-          if (image->matte == MagickFalse)
+          if (image->alpha_trait != BlendPixelTrait)
             (void) SetImageAlpha(image,OpaqueAlpha,exception);
           (void) GetOneVirtualPixelInfo(image,UndefinedVirtualPixelMethod,
             geometry.x,geometry.y,&target,exception);
@@ -11964,7 +11965,7 @@ QueryColor(ref,...)
       PUSHs(sv_2mortal(newSViv((size_t) floor(color.blue+0.5))));
       if (color.colorspace == CMYKColorspace)
         PUSHs(sv_2mortal(newSViv((size_t) floor(color.black+0.5))));
-      if (color.matte != MagickFalse)
+      if (color.alpha_trait == BlendPixelTrait)
         PUSHs(sv_2mortal(newSViv((size_t) floor(color.alpha+0.5))));
     }
 
@@ -13956,7 +13957,7 @@ Statistics(ref,...)
       ChannelStatistics(BlueChannel);
       if (image->colorspace == CMYKColorspace)
         ChannelStatistics(BlackChannel);
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         ChannelStatistics(AlphaChannel);
       channel_statistics=(ChannelStatistics *)
         RelinquishMagickMemory(channel_statistics);

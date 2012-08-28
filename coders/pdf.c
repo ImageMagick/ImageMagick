@@ -1089,7 +1089,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
   if (image_info->compression == JPEG2000Compression)
     version=(size_t) MagickMax(version,5);
   for (next=image; next != (Image *) NULL; next=GetNextImageInList(next))
-    if (next->matte != MagickFalse)
+    if (next->alpha_trait == BlendPixelTrait)
       version=(size_t) MagickMax(version,4);
   if (LocaleCompare(image_info->magick,"PDFA") == 0)
     version=(size_t) MagickMax(version,6);
@@ -1218,7 +1218,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       case Group4Compression:
       {
         if ((IsImageMonochrome(image,exception) == MagickFalse) ||
-            (image->matte != MagickFalse))
+            (image->alpha_trait == BlendPixelTrait))
           compression=RLECompression;
         break;
       }
@@ -1554,7 +1554,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       (compression == FaxCompression) || (compression == Group4Compression) ?
       1 : 8);
     (void) WriteBlobString(image,buffer);
-    if (image->matte != MagickFalse)
+    if (image->alpha_trait == BlendPixelTrait)
       {
         (void) FormatLocaleString(buffer,MaxTextExtent,"/SMask %.20g 0 R\n",
           (double) object+7);
@@ -2393,7 +2393,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
-    if (image->matte == MagickFalse)
+    if (image->alpha_trait != BlendPixelTrait)
       (void) WriteBlobString(image,">>\n");
     else
       {

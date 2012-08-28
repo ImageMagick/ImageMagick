@@ -164,8 +164,7 @@ struct _Image
     orientation;        /* photo orientation of image */
 
   MagickBooleanType
-    taint,              /* has image been modified since reading */
-    matte;              /* is transparency channel defined and active */
+    taint;              /* has image been modified since reading */
 
   size_t
     columns,            /* physical size of image */
@@ -275,7 +274,7 @@ struct _Image
     mask;
 
   PixelTrait
-    alpha_trait;
+    alpha_trait;       /* is transparency channel defined and active */
 
   size_t
     number_channels,

@@ -1068,7 +1068,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                   (void) FormatLocaleFile(stderr,"    blue: %g (%g)\n",
                     QuantumRange*channel_distortion[BluePixelChannel],
                     channel_distortion[BluePixelChannel]);
-                  if (image->matte != MagickFalse)
+                  if (image->alpha_trait == BlendPixelTrait)
                     (void) FormatLocaleFile(stderr,"    alpha: %g (%g)\n",
                       QuantumRange*channel_distortion[AlphaPixelChannel],
                       channel_distortion[AlphaPixelChannel]);
@@ -1088,7 +1088,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                   (void) FormatLocaleFile(stderr,"    black: %g (%g)\n",
                     QuantumRange*channel_distortion[BlackPixelChannel],
                     channel_distortion[BlackPixelChannel]);
-                  if (image->matte != MagickFalse)
+                  if (image->alpha_trait == BlendPixelTrait)
                     (void) FormatLocaleFile(stderr,"    alpha: %g (%g)\n",
                       QuantumRange*channel_distortion[AlphaPixelChannel],
                       channel_distortion[AlphaPixelChannel]);
@@ -1099,7 +1099,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                   (void) FormatLocaleFile(stderr,"    gray: %g (%g)\n",
                     QuantumRange*channel_distortion[GrayPixelChannel],
                     channel_distortion[GrayPixelChannel]);
-                  if (image->matte != MagickFalse)
+                  if (image->alpha_trait == BlendPixelTrait)
                     (void) FormatLocaleFile(stderr,"    alpha: %g (%g)\n",
                       QuantumRange*channel_distortion[AlphaPixelChannel],
                       channel_distortion[AlphaPixelChannel]);
@@ -1126,7 +1126,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                     channel_distortion[GreenPixelChannel]);
                   (void) FormatLocaleFile(stderr,"    blue: %g\n",
                     channel_distortion[BluePixelChannel]);
-                  if (image->matte != MagickFalse)
+                  if (image->alpha_trait == BlendPixelTrait)
                     (void) FormatLocaleFile(stderr,"    alpha: %g\n",
                       channel_distortion[AlphaPixelChannel]);
                   break;
@@ -1141,7 +1141,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                     channel_distortion[YellowPixelChannel]);
                   (void) FormatLocaleFile(stderr,"    black: %g\n",
                     channel_distortion[BlackPixelChannel]);
-                  if (image->matte != MagickFalse)
+                  if (image->alpha_trait == BlendPixelTrait)
                     (void) FormatLocaleFile(stderr,"    alpha: %g\n",
                       channel_distortion[AlphaPixelChannel]);
                   break;
@@ -1150,7 +1150,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
                 {
                   (void) FormatLocaleFile(stderr,"    gray: %g\n",
                     channel_distortion[GrayPixelChannel]);
-                  if (image->matte != MagickFalse)
+                  if (image->alpha_trait == BlendPixelTrait)
                     (void) FormatLocaleFile(stderr,"    alpha: %g\n",
                       channel_distortion[AlphaPixelChannel]);
                   break;

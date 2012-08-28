@@ -242,7 +242,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
           unsigned char
             quantum;
 
-          if (image->matte != MagickFalse)
+          if (image->alpha_trait == BlendPixelTrait)
             {
               p=PushCharPixel(p,&quantum);
               pixel->alpha=ScaleCharToQuantum(quantum);
@@ -254,7 +254,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
           unsigned short
             quantum;
 
-          if (image->matte != MagickFalse)
+          if (image->alpha_trait == BlendPixelTrait)
             {
               p=PushShortPixel(MSBEndian,p,&quantum);
               pixel->alpha=(Quantum) (quantum >> (image->depth-
@@ -267,7 +267,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
           unsigned int
             quantum;
 
-          if (image->matte != MagickFalse)
+          if (image->alpha_trait == BlendPixelTrait)
             {
               p=PushLongPixel(MSBEndian,p,&quantum);
               pixel->alpha=(Quantum) (quantum >> (image->depth-
@@ -305,7 +305,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
           p=PushCharPixel(p,&quantum);
           pixel->black=ScaleCharToQuantum(quantum);
         }
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         {
           p=PushCharPixel(p,&quantum);
           pixel->alpha=ScaleCharToQuantum(quantum);
@@ -333,7 +333,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
           p=PushShortPixel(MSBEndian,p,&quantum);
           pixel->black=quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH);
         }
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         {
           p=PushShortPixel(MSBEndian,p,&quantum);
           pixel->alpha=quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH);
@@ -361,7 +361,7 @@ static void PushRunlengthPacket(Image *image,const unsigned char *pixels,
           p=PushLongPixel(MSBEndian,p,&quantum);
           pixel->black=quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH);
         }
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         {
           p=PushLongPixel(MSBEndian,p,&quantum);
           pixel->alpha=quantum >> (image->depth-MAGICKCORE_QUANTUM_DEPTH);
@@ -621,8 +621,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   if (*options != '{')
                     if (isspace((int) ((unsigned char) c)) != 0)
                       break;
-                }
-              }
+                } }
             *p='\0';
             if (*options == '{')
               (void) strcpy(options,options+1);
@@ -631,6 +630,24 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             */
             switch (*keyword)
             {
+              case 'a':
+              case 'A':
+              {
+                if (LocaleCompare(keyword,"alpha-trait") == 0)
+                  {
+                    ssize_t
+                      alpha_trait;
+
+                    alpha_trait=ParseCommandOption(MagickPixelTraitOptions,
+                      MagickFalse,options);
+                    if (alpha_trait < 0)
+                      break;
+                    image->alpha_trait=(PixelTrait) alpha_trait;
+                    break;
+                  }
+                (void) SetImageProperty(image,keyword,options,exception);
+                break;
+              }
               case 'b':
               case 'B':
               {
@@ -818,7 +835,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       options);
                     if (matte < 0)
                       break;
-                    image->matte=(MagickBooleanType) matte;
+                    image->alpha_trait=matte == 0 ? UndefinedPixelTrait :
+                      BlendPixelTrait;
                     break;
                   }
                 if (LocaleCompare(keyword,"matte-color") == 0)
@@ -838,18 +856,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               case 'o':
               case 'O':
               {
-                if (LocaleCompare(keyword,"opaque") == 0)
-                  {
-                    ssize_t
-                      matte;
-
-                    matte=ParseCommandOption(MagickBooleanOptions,MagickFalse,
-                      options);
-                    if (matte < 0)
-                      break;
-                    image->matte=(MagickBooleanType) matte;
-                    break;
-                  }
                 if (LocaleCompare(keyword,"orientation") == 0)
                   {
                     ssize_t
@@ -1239,7 +1245,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       packet_size=(size_t) (3*quantum_info->depth/8);
     if (IsGrayColorspace(image->colorspace) != MagickFalse)
       packet_size=quantum_info->depth/8;
-    if (image->matte != MagickFalse)
+    if (image->alpha_trait == BlendPixelTrait)
       packet_size+=quantum_info->depth/8;
     if (image->colorspace == CMYKColorspace)
       packet_size+=quantum_info->depth/8;
@@ -1257,24 +1263,24 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       Read image pixels.
     */
     quantum_type=RGBQuantum;
-    if (image->matte != MagickFalse)
+    if (image->alpha_trait == BlendPixelTrait)
       quantum_type=RGBAQuantum;
     if (image->colorspace == CMYKColorspace)
       {
         quantum_type=CMYKQuantum;
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           quantum_type=CMYKAQuantum;
       }
     if (IsGrayColorspace(image->colorspace) != MagickFalse)
       {
         quantum_type=GrayQuantum;
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           quantum_type=GrayAlphaQuantum;
       }
     if (image->storage_class == PseudoClass)
       {
         quantum_type=IndexQuantum;
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           quantum_type=IndexAlphaQuantum;
       }
     status=MagickTrue;
@@ -1456,7 +1462,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                 if (image->colorspace == CMYKColorspace)
                   SetPixelBlack(image,ClampToQuantum(pixel.black),q);
               }
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               SetPixelAlpha(image,ClampToQuantum(pixel.alpha),q);
             q+=GetPixelChannels(image);
           }
@@ -1722,7 +1728,7 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
           unsigned int
             value;
 
-          if (image->matte != MagickFalse)
+          if (image->alpha_trait == BlendPixelTrait)
             {
               value=ScaleQuantumToLong(ClampToQuantum(pixel->alpha));
               pixels=PopLongPixel(MSBEndian,value,pixels);
@@ -1734,7 +1740,7 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
           unsigned short
             value;
 
-          if (image->matte != MagickFalse)
+          if (image->alpha_trait == BlendPixelTrait)
             {
               value=ScaleQuantumToShort(ClampToQuantum(pixel->alpha));
               pixels=PopShortPixel(MSBEndian,value,pixels);
@@ -1746,7 +1752,7 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
           unsigned char
             value;
 
-          if (image->matte != MagickFalse)
+          if (image->alpha_trait == BlendPixelTrait)
             {
               value=(unsigned char) ScaleQuantumToChar(ClampToQuantum(
                 pixel->alpha));
@@ -1782,7 +1788,7 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
           value=ScaleQuantumToLong(ClampToQuantum(pixel->black));
           pixels=PopLongPixel(MSBEndian,value,pixels);
         }
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         {
           value=ScaleQuantumToLong(ClampToQuantum(pixel->alpha));
           pixels=PopLongPixel(MSBEndian,value,pixels);
@@ -1808,7 +1814,7 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
           value=ScaleQuantumToShort(ClampToQuantum(pixel->black));
           pixels=PopShortPixel(MSBEndian,value,pixels);
         }
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         {
           value=ScaleQuantumToShort(ClampToQuantum(pixel->alpha));
           pixels=PopShortPixel(MSBEndian,value,pixels);
@@ -1836,7 +1842,7 @@ static unsigned char *PopRunlengthPacket(Image *image,unsigned char *pixels,
             pixel->black));
           pixels=PopCharPixel(value,pixels);
         }
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         {
           value=(unsigned char) ScaleQuantumToChar(ClampToQuantum(
             pixel->alpha));
@@ -1983,7 +1989,7 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
       packet_size=(size_t) (3*quantum_info->depth/8);
     if (IsGrayColorspace(image->colorspace) != MagickFalse)
       packet_size=(size_t) (quantum_info->depth/8);
-    if (image->matte != MagickFalse)
+    if (image->alpha_trait == BlendPixelTrait)
       packet_size+=quantum_info->depth/8;
     if (image->colorspace == CMYKColorspace)
       packet_size+=quantum_info->depth/8;
@@ -2004,9 +2010,10 @@ static MagickBooleanType WriteMIFFImage(const ImageInfo *image_info,
     */
     (void) WriteBlobString(image,"id=ImageMagick  version=1.0\n");
     (void) FormatLocaleString(buffer,MaxTextExtent,
-      "class=%s  colors=%.20g  matte=%s\n",CommandOptionToMnemonic(
+      "class=%s  colors=%.20g  alpha-trait=%s\n",CommandOptionToMnemonic(
       MagickClassOptions,image->storage_class),(double) image->colors,
-      CommandOptionToMnemonic(MagickBooleanOptions,(ssize_t) image->matte));
+      CommandOptionToMnemonic(MagickPixelTraitOptions,(ssize_t)
+      image->alpha_trait));
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MaxTextExtent,"columns=%.20g  rows=%.20g  "
       "depth=%.20g\n",(double) image->columns,(double) image->rows,(double)

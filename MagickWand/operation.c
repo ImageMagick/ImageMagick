@@ -217,7 +217,7 @@ static Image *SparseColorOption(const Image *image,
       (image->colorspace == CMYKColorspace))
     number_colors++;
   if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-      IfMagickTrue(image->matte))
+      image->alpha_trait == BlendPixelTrait)
     number_colors++;
 
   /*
@@ -296,7 +296,7 @@ static Image *SparseColorOption(const Image *image,
           (image->colorspace == CMYKColorspace))
         sparse_arguments[x++] = QuantumScale*color.black;
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          IfMagickTrue(image->matte))
+          image->alpha_trait == BlendPixelTrait)
         sparse_arguments[x++] = QuantumScale*color.alpha;
     }
     else {
@@ -336,7 +336,7 @@ static Image *SparseColorOption(const Image *image,
         token[0] = ','; /* used this token - get another */
       }
       if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-          IfMagickTrue(image->matte))
+          image->alpha_trait == BlendPixelTrait)
         {
         while ( token[0] == ',' ) GetMagickToken(p,&p,token);
         if ( token[0] == '\0' || isalpha((int)token[0]) || token[0] == '#' )
@@ -2014,7 +2014,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
               break;
             for (x=0; x < (ssize_t) mask_image->columns; x++)
             {
-              if (IfMagickFalse(mask_image->matte))
+              if (IfMagickFalse(mask_image->alpha_trait))
                 SetPixelAlpha(mask_image,GetPixelIntensity(mask_image,q),q);
               SetPixelRed(mask_image,GetPixelAlpha(mask_image,q),q);
               SetPixelGreen(mask_image,GetPixelAlpha(mask_image,q),q);
@@ -2026,7 +2026,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           }
           /* clean up and set the write mask */
           mask_view=DestroyCacheView(mask_view);
-          mask_image->matte=MagickTrue;
+          mask_image->alpha_trait=BlendPixelTrait;
           (void) SetImageMask(_image,mask_image,_exception);
           mask_image=DestroyImage(mask_image);
           break;

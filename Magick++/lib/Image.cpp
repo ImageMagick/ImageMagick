@@ -1631,7 +1631,7 @@ void Magick::Image::quantumOperator ( const ssize_t x_,const ssize_t y_,
   ChannelType channel_mask = SetImageChannelMask( image(), channel_);
   EvaluateImage( crop_image, operator_, rvalue_, &exceptionInfo );
   (void) SetPixelChannelMask( image(), channel_mask );
-  (void) CompositeImage( image(), crop_image, image()->matte != MagickFalse ?
+  (void) CompositeImage( image(), crop_image, image()->alpha_trait == BlendPixelTrait ?
     OverCompositeOp : CopyCompositeOp, MagickFalse, geometry.x, geometry.y,
     &exceptionInfo );
   crop_image = DestroyImageList(crop_image);
@@ -3374,17 +3374,17 @@ void Magick::Image::matte ( const bool matteFlag_ )
   // desired, then set the matte channel to opaque.
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  if ((matteFlag_ && !constImage()->matte) ||
-      (constImage()->matte && !matteFlag_))
+  if ((matteFlag_ && !constImage()->alpha_trait) ||
+      (constImage()->alpha_trait && !matteFlag_))
     SetImageAlpha(image(),OpaqueAlpha,&exceptionInfo);
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
 
-  image()->matte = (MagickBooleanType) matteFlag_;
+  image()->alpha_trait = matteFlag_ ? BlendPixelTrait : UndefinedPixelTrait;
 }
 bool Magick::Image::matte ( void ) const
 {
-  if ( constImage()->matte )
+  if ( constImage()->alpha_trait == BlendPixelTrait )
     return true;
   else
     return false;

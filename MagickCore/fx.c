@@ -707,8 +707,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   if ((IsGrayColorspace(image->colorspace) != MagickFalse) &&
       (IsPixelInfoGray(colorize) != MagickFalse))
     (void) SetImageColorspace(colorize_image,RGBColorspace,exception);
-  if ((colorize_image->matte == MagickFalse) &&
-      (colorize->matte != MagickFalse))
+  if ((colorize_image->alpha_trait != BlendPixelTrait) &&
+      (colorize->alpha_trait == BlendPixelTrait))
     (void) SetImageAlpha(colorize_image,OpaqueAlpha,exception);
   if (blend == (const char *) NULL)
     return(colorize_image);
@@ -1005,7 +1005,7 @@ MagickExport Image *ColorMatrixImage(const Image *image,
           GetPixelGreen(image,p)+ColorMatrix[v][2]*GetPixelBlue(image,p);
         if (image->colorspace == CMYKColorspace)
           sum+=ColorMatrix[v][3]*GetPixelBlack(image,p);
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           sum+=ColorMatrix[v][4]*GetPixelAlpha(image,p);
         sum+=QuantumRange*ColorMatrix[v][5];
         switch (v)
@@ -1505,7 +1505,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           double
             alpha;
 
-          if (pixel.matte == MagickFalse)
+          if (pixel.alpha_trait != BlendPixelTrait)
             return(1.0);
           alpha=(double) (QuantumScale*pixel.alpha);
           return(alpha);
@@ -3238,7 +3238,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
       return((Image *) NULL);
     }
   if (implode_image->background_color.alpha != OpaqueAlpha)
-    implode_image->matte=MagickTrue;
+    implode_image->alpha_trait=BlendPixelTrait;
   /*
     Compute scaling factor.
   */
@@ -4310,12 +4310,12 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
   border_info.y=0;
   (void) QueryColorCompliance("none",AllCompliance,&clone_image->border_color,
     exception);
-  clone_image->matte=MagickTrue;
+  clone_image->alpha_trait=BlendPixelTrait;
   border_image=BorderImage(clone_image,&border_info,OverCompositeOp,exception);
   clone_image=DestroyImage(clone_image);
   if (border_image == (Image *) NULL)
     return((Image *) NULL);
-  if (border_image->matte == MagickFalse)
+  if (border_image->alpha_trait != BlendPixelTrait)
     (void) SetImageAlphaChannel(border_image,OpaqueAlphaChannel,exception);
   /*
     Shadow image.
@@ -4343,10 +4343,10 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
         continue;
       }
     background_color=border_image->background_color;
-    background_color.matte=MagickTrue;
+    background_color.alpha_trait=BlendPixelTrait;
     for (x=0; x < (ssize_t) border_image->columns; x++)
     {
-      if (border_image->matte != MagickFalse)
+      if (border_image->alpha_trait == BlendPixelTrait)
         background_color.alpha=GetPixelAlpha(border_image,q)*alpha/100.0;
       SetPixelInfoPixel(border_image,&background_color,q);
       q+=GetPixelChannels(border_image);
@@ -5087,7 +5087,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
       return((Image *) NULL);
     }
   if (swirl_image->background_color.alpha != OpaqueAlpha)
-    swirl_image->matte=MagickTrue;
+    swirl_image->alpha_trait=BlendPixelTrait;
   /*
     Compute scaling factor.
   */
@@ -5504,7 +5504,7 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
       canvas_image=DestroyImage(canvas_image);
       return((Image *) NULL);
     }
-  canvas_image->matte=MagickTrue;
+  canvas_image->alpha_trait=BlendPixelTrait;
   oval_image=CloneImage(canvas_image,canvas_image->columns,canvas_image->rows,
     MagickTrue,exception);
   if (oval_image == (Image *) NULL)
@@ -5533,7 +5533,7 @@ MagickExport Image *VignetteImage(const Image *image,const double radius,
       canvas_image=DestroyImage(canvas_image);
       return((Image *) NULL);
     }
-  blur_image->matte=MagickFalse;
+  blur_image->alpha_trait=UndefinedPixelTrait;
   (void) CompositeImage(canvas_image,blur_image,IntensityCompositeOp,MagickTrue,
     0,0,exception);
   blur_image=DestroyImage(blur_image);
@@ -5624,7 +5624,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       return((Image *) NULL);
     }
   if (wave_image->background_color.alpha != OpaqueAlpha)
-    wave_image->matte=MagickTrue;
+    wave_image->alpha_trait=BlendPixelTrait;
   /*
     Allocate sine map.
   */

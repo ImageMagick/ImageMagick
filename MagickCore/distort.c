@@ -1503,7 +1503,7 @@ MagickExport Image *DistortResizeImage(const Image *image,
   (void) SetImageVirtualPixelMethod(tmp_image,TransparentVirtualPixelMethod,
     exception);
 
-  if (image->matte == MagickFalse)
+  if (image->alpha_trait != BlendPixelTrait)
     {
       /*
         Image has not transparency channel, so we free to use it
@@ -2283,8 +2283,8 @@ MagickExport Image *DistortImage(const Image *image,DistortImageMethod method,
   if ((IsPixelInfoGray(&distort_image->background_color) == MagickFalse) &&
       (IsGrayColorspace(distort_image->colorspace) != MagickFalse))
     (void) TransformImageColorspace(distort_image,RGBColorspace,exception);
-  if (distort_image->background_color.matte != MagickFalse)
-    distort_image->matte=MagickTrue;
+  if (distort_image->background_color.alpha_trait == BlendPixelTrait)
+    distort_image->alpha_trait=BlendPixelTrait;
   distort_image->page.x=geometry.x;
   distort_image->page.y=geometry.y;
 
@@ -2919,7 +2919,7 @@ MagickExport Image *SparseColorImage(const Image *image,
       (image->colorspace == CMYKColorspace))
     number_colors++;
   if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-      (image->matte != MagickFalse))
+      (image->alpha_trait == BlendPixelTrait))
     number_colors++;
 
   /*
@@ -2969,7 +2969,7 @@ MagickExport Image *SparseColorImage(const Image *image,
           (void) FormatLocaleFile(stderr, "  -channel K -fx '%+lf*i %+lf*j %+lf' \\\n",
               coeff[x], coeff[x+1], coeff[x+2]),x+=3;
         if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-            (image->matte != MagickFalse))
+            (image->alpha_trait == BlendPixelTrait))
           (void) FormatLocaleFile(stderr, "  -channel A -fx '%+lf*i %+lf*j %+lf' \\\n",
               coeff[x], coeff[x+1], coeff[x+2]),x+=3;
         break;
@@ -2996,7 +2996,7 @@ MagickExport Image *SparseColorImage(const Image *image,
               coeff[ x ], coeff[x+1],
               coeff[x+2], coeff[x+3]),x+=4;
         if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-            (image->matte != MagickFalse))
+            (image->alpha_trait == BlendPixelTrait))
           (void) FormatLocaleFile(stderr, "   -channel A -fx '%+lf*i %+lf*j %+lf*i*j %+lf;\n",
               coeff[ x ], coeff[x+1],
               coeff[x+2], coeff[x+3]),x+=4;
@@ -3086,7 +3086,7 @@ MagickExport Image *SparseColorImage(const Image *image,
               pixel.black   = coeff[x]*i +coeff[x+1]*j
                               +coeff[x+2], x+=3;
             if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-                (image->matte != MagickFalse))
+                (image->alpha_trait == BlendPixelTrait))
               pixel.alpha = coeff[x]*i +coeff[x+1]*j
                               +coeff[x+2], x+=3;
             break;
@@ -3108,7 +3108,7 @@ MagickExport Image *SparseColorImage(const Image *image,
               pixel.black   = coeff[x]*i     + coeff[x+1]*j +
                               coeff[x+2]*i*j + coeff[x+3], x+=4;
             if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-                (image->matte != MagickFalse))
+                (image->alpha_trait == BlendPixelTrait))
               pixel.alpha = coeff[x]*i     + coeff[x+1]*j +
                               coeff[x+2]*i*j + coeff[x+3], x+=4;
             break;
@@ -3131,7 +3131,7 @@ MagickExport Image *SparseColorImage(const Image *image,
                 (image->colorspace == CMYKColorspace))
               pixel.black=0.0;
             if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-                (image->matte != MagickFalse))
+                (image->alpha_trait == BlendPixelTrait))
               pixel.alpha=0.0;
             denominator = 0.0;
             for(k=0; k<number_arguments; k+=2+number_colors) {
@@ -3152,7 +3152,7 @@ MagickExport Image *SparseColorImage(const Image *image,
                   (image->colorspace == CMYKColorspace))
                 pixel.black   += arguments[x++]*weight;
               if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-                  (image->matte != MagickFalse))
+                  (image->alpha_trait == BlendPixelTrait))
                 pixel.alpha += arguments[x++]*weight;
               denominator += weight;
             }
@@ -3166,7 +3166,7 @@ MagickExport Image *SparseColorImage(const Image *image,
                 (image->colorspace == CMYKColorspace))
               pixel.black/=denominator;
             if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-                (image->matte != MagickFalse))
+                (image->alpha_trait == BlendPixelTrait))
               pixel.alpha/=denominator;
             break;
           }
@@ -3194,7 +3194,7 @@ MagickExport Image *SparseColorImage(const Image *image,
                     (image->colorspace == CMYKColorspace))
                   pixel.black=arguments[x++];
                 if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-                    (image->matte != MagickFalse))
+                    (image->alpha_trait == BlendPixelTrait))
                   pixel.alpha=arguments[x++];
                 minimum = distance;
               }
@@ -3213,7 +3213,7 @@ MagickExport Image *SparseColorImage(const Image *image,
             (image->colorspace == CMYKColorspace))
           pixel.black*=QuantumRange;
         if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) &&
-            (image->matte != MagickFalse))
+            (image->alpha_trait == BlendPixelTrait))
           pixel.alpha*=QuantumRange;
         SetPixelInfoPixel(sparse_image,&pixel,q);
         q+=GetPixelChannels(sparse_image);

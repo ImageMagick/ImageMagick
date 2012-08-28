@@ -721,7 +721,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         Modify destination outside the overlaid region and require an alpha
         channel to exist, to add transparency.
       */
-      if (image->matte == MagickFalse)
+      if (image->alpha_trait != BlendPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
     }
@@ -1614,7 +1614,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
               case CopyAlphaCompositeOp:
               {
                 pixel=QuantumRange*Sa;
-                if (composite_image->matte == MagickFalse)
+                if (composite_image->alpha_trait != BlendPixelTrait)
                   pixel=GetPixelIntensity(composite_image,p);
                 break;
               }
@@ -2401,8 +2401,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
     exception);
   status=MagickTrue;
   if ((image->compose != CopyCompositeOp) &&
-      ((image->compose != OverCompositeOp) || (image->matte != MagickFalse) ||
-       (texture_image->matte != MagickFalse)))
+      ((image->compose != OverCompositeOp) || (image->alpha_trait == BlendPixelTrait) ||
+       (texture_image->alpha_trait == BlendPixelTrait)))
     {
       /*
         Tile texture onto the image background.

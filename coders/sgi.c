@@ -530,7 +530,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Initialize image structure.
     */
-    image->matte=iris_info.depth == 4 ? MagickTrue : MagickFalse;
+    image->alpha_trait=iris_info.depth == 4 ? MagickTrue : MagickFalse;
     image->columns=iris_info.columns;
     image->rows=iris_info.rows;
     /*
@@ -558,7 +558,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 SetPixelBlue(image,ScaleShortToQuantum((unsigned short)
                   ((*(p+4) << 8) | (*(p+5)))),q);
                 SetPixelAlpha(image,OpaqueAlpha,q);
-                if (image->matte != MagickFalse)
+                if (image->alpha_trait == BlendPixelTrait)
                   SetPixelAlpha(image,ScaleShortToQuantum((unsigned short)
                     ((*(p+6) << 8) | (*(p+7)))),q);
                 p+=8;
@@ -588,7 +588,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               SetPixelGreen(image,ScaleCharToQuantum(*(p+1)),q);
               SetPixelBlue(image,ScaleCharToQuantum(*(p+2)),q);
               SetPixelAlpha(image,OpaqueAlpha,q);
-              if (image->matte != MagickFalse)
+              if (image->alpha_trait == BlendPixelTrait)
                 SetPixelAlpha(image,ScaleCharToQuantum(*(p+3)),q);
               p+=4;
               q+=GetPixelChannels(image);
@@ -924,7 +924,7 @@ static MagickBooleanType WriteSGIImage(const ImageInfo *image_info,Image *image,
     iris_info.dimension=3;
     iris_info.columns=(unsigned short) image->columns;
     iris_info.rows=(unsigned short) image->rows;
-    if (image->matte != MagickFalse)
+    if (image->alpha_trait == BlendPixelTrait)
       iris_info.depth=4;
     else
       {

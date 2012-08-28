@@ -410,6 +410,10 @@ namespace Magick
   using MagickCore::FillToBorderMethod;
   using MagickCore::ResetMethod;
 
+  // Pixel traits
+  using MagickCore::UndefinedPixelTrait;
+  using MagickCore::BlendPixelTrait;
+
   // Preview types.  Not currently used by Magick++
   using MagickCore::PreviewType;
   using MagickCore::UndefinedPreview;

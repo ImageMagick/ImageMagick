@@ -233,8 +233,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   if ((IsPixelInfoGray(&frame_image->matte_color) == MagickFalse) &&
       (IsGrayColorspace(frame_image->colorspace) != MagickFalse))
     (void) SetImageColorspace(frame_image,RGBColorspace,exception);
-  if ((frame_image->matte_color.matte != MagickFalse) &&
-      (frame_image->matte == MagickFalse))
+  if ((frame_image->matte_color.alpha_trait == BlendPixelTrait) &&
+      (frame_image->alpha_trait != BlendPixelTrait))
     (void) SetImageAlpha(frame_image,OpaqueAlpha,exception);
   frame_image->page=image->page;
   if ((image->page.width != 0) && (image->page.height != 0))
@@ -429,7 +429,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
       Set frame interior to interior color.
     */
     if ((compose != CopyCompositeOp) && ((compose != OverCompositeOp) ||
-        (image->matte != MagickFalse)))
+        (image->alpha_trait == BlendPixelTrait)))
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         SetPixelInfoPixel(frame_image,&interior,q);
@@ -592,7 +592,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   frame_view=DestroyCacheView(frame_view);
   image_view=DestroyCacheView(image_view);
   if ((compose != CopyCompositeOp) && ((compose != OverCompositeOp) ||
-      (image->matte != MagickFalse)))
+      (image->alpha_trait == BlendPixelTrait)))
     {
       x=(ssize_t) (frame_info->outer_bevel+(frame_info->x-bevel_width)+
         frame_info->inner_bevel);

@@ -379,7 +379,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=SyncNextImageInList(image);
       }
     
-    image->matte = matte;
+    image->alpha_trait = matte;
     image->compression = compression;
     image->columns = dds_info.width;
     image->rows = dds_info.height;
@@ -549,8 +549,8 @@ static MagickBooleanType ReadDXT1(Image *image, DDSInfo *dds_info,
               SetPixelGreen(image,ScaleCharToQuantum(colors.g[code]),q);
               SetPixelBlue(image,ScaleCharToQuantum(colors.b[code]),q);
               SetPixelAlpha(image,ScaleCharToQuantum(colors.a[code]),q);
-              if (colors.a[code] && (image->matte == MagickFalse))
-                image->matte=MagickTrue;  /* Correct matte */
+              if (colors.a[code] && (image->alpha_trait != BlendPixelTrait))
+                image->alpha_trait=BlendPixelTrait;  /* Correct matte */
               q+=GetPixelChannels(image);
             }
         }

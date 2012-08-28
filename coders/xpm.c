@@ -376,7 +376,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (LocaleCompare(target,"none") == 0)
       {
         image->storage_class=DirectClass;
-        image->matte=MagickTrue;
+        image->alpha_trait=BlendPixelTrait;
       }
     status=QueryColorCompliance(target,AllCompliance,&image->colormap[j],
       exception);
@@ -657,7 +657,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
   if (picon->storage_class == PseudoClass)
     {
       (void) CompressImageColormap(picon,exception);
-      if (picon->matte != MagickFalse)
+      if (picon->alpha_trait == BlendPixelTrait)
         transparent=MagickTrue;
     }
   else
@@ -665,7 +665,7 @@ static MagickBooleanType WritePICONImage(const ImageInfo *image_info,
       /*
         Convert DirectClass to PseudoClass picon.
       */
-      if (picon->matte != MagickFalse)
+      if (picon->alpha_trait == BlendPixelTrait)
         {
           /*
             Map all the transparent pixels.
@@ -881,7 +881,7 @@ static MagickBooleanType WriteXPMImage(const ImageInfo *image_info,Image *image,
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace,exception);
   opacity=(-1);
-  if (image->matte == MagickFalse)
+  if (image->alpha_trait != BlendPixelTrait)
     {
       if ((image->storage_class == DirectClass) || (image->colors > 256))
         (void) SetImageType(image,PaletteType,exception);

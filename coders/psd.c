@@ -697,7 +697,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
           if (image->colorspace == CMYKColorspace)
             SetPixelBlack(image,pixel,q);
           else
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               SetPixelAlpha(image,pixel,q);
           break;
         }
@@ -706,7 +706,7 @@ static MagickBooleanType ReadPSDLayer(Image *image,const size_t channels,
           if ((IssRGBCompatibleColorspace(image->colorspace) != MagickFalse) &&
               (channels > 3))
             break;
-          if (image->matte != MagickFalse)
+          if (image->alpha_trait == BlendPixelTrait)
             SetPixelAlpha(image,pixel,q);
           break;
         }
@@ -832,7 +832,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  image->matte=psd_info.channels >= 4 ? MagickTrue : MagickFalse;
+  image->alpha_trait=psd_info.channels >= 4 ? MagickTrue : MagickFalse;
   if (psd_info.mode == LabMode)
     SetImageColorspace(image,LabColorspace,exception);
   psd_info.color_channels=3;
@@ -840,7 +840,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       psd_info.color_channels=4;
       SetImageColorspace(image,CMYKColorspace,exception);
-      image->matte=psd_info.channels >= 5 ? MagickTrue : MagickFalse;
+      image->alpha_trait=psd_info.channels >= 5 ? MagickTrue : MagickFalse;
     }
   if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
       (psd_info.mode == DuotoneMode))
@@ -848,13 +848,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       psd_info.color_channels=1;
       if (AcquireImageColormap(image,256,exception) == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      image->matte=psd_info.channels >= 2 ? MagickTrue : MagickFalse;
+      image->alpha_trait=psd_info.channels >= 2 ? MagickTrue : MagickFalse;
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Image colormap allocated");
       SetImageColorspace(image,GRAYColorspace,exception);
     }
-  image->matte=MagickFalse;
+  image->alpha_trait=UndefinedPixelTrait;
   /*
     Read PSD raster colormap only present for indexed and duotone images.
   */
@@ -892,7 +892,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (i=0; i < (ssize_t) image->colors; i++)
             image->colormap[i].blue=ScaleCharToQuantum((unsigned char)
               ReadBlobByte(image));
-          image->matte=MagickFalse;
+          image->alpha_trait=UndefinedPixelTrait;
         }
     }
   length=ReadBlobMSBLong(image);
@@ -989,11 +989,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickOffsetType
             layer_offset;
 
-          image->matte=psd_info.channels > psd_info.color_channels ?  MagickTrue : MagickFalse;
+          image->alpha_trait=psd_info.channels > psd_info.color_channels ?  MagickTrue : MagickFalse;
 
           if (image->debug != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              image->matte ? "  image has matte" : "  image has no matte");
+              image->alpha_trait ? "  image has matte" : "  image has no matte");
 
           layer_offset=offset+length;
           number_layers=(short) ReadBlobMSBShort(image);
@@ -1045,7 +1045,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   quantum;
 
                 if (layer_info[i].channels == psd_info.color_channels)
-                  image->matte=MagickFalse;
+                  image->alpha_trait=UndefinedPixelTrait;
                 quantum=psd_info.version == 1 ? 4UL : 8UL;
                 if (DiscardBlobBytes(image,length-20-quantum) == MagickFalse)
                   ThrowFileException(exception,CorruptImageError,
@@ -1242,7 +1242,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               SetImageColorspace(layer_info[i].image,GRAYColorspace,exception);
             for (j=0; j < (ssize_t) layer_info[i].channels; j++)
               if (layer_info[i].channel_info[j].type == -1)
-                layer_info[i].image->matte=MagickTrue;
+                layer_info[i].image->alpha_trait=BlendPixelTrait;
             /*
               Set up some hidden attributes for folks that need them.
             */
@@ -1831,14 +1831,14 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
           (void) WriteBlobMSBShort(image,1);
           WritePackbitsLength(psd_info,image_info,image,next_image,
             compact_pixels,GrayQuantum,exception);
-          if (next_image->matte != MagickFalse)
+          if (next_image->alpha_trait == BlendPixelTrait)
             WritePackbitsLength(psd_info,image_info,image,next_image,
               compact_pixels,AlphaQuantum,exception);
         }
       WriteOneChannel(psd_info,image_info,image,next_image,compact_pixels,
         GrayQuantum,(i++ == 0) || (separate != MagickFalse) ? MagickTrue :
         MagickFalse,exception);
-      if (next_image->matte != MagickFalse)
+      if (next_image->alpha_trait == BlendPixelTrait)
         WriteOneChannel(psd_info,image_info,image,next_image,compact_pixels,
           AlphaQuantum,(i++ == 0) || (separate != MagickFalse) ? MagickTrue :
           MagickFalse,exception);
@@ -1855,14 +1855,14 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
             (void) WriteBlobMSBShort(image,1);
             WritePackbitsLength(psd_info,image_info,image,next_image,
               compact_pixels,IndexQuantum,exception);
-            if (next_image->matte != MagickFalse)
+            if (next_image->alpha_trait == BlendPixelTrait)
               WritePackbitsLength(psd_info,image_info,image,next_image,
                 compact_pixels,AlphaQuantum,exception);
           }
         WriteOneChannel(psd_info,image_info,image,next_image,compact_pixels,
           IndexQuantum,(i++ == 0) || (separate != MagickFalse) ? MagickTrue :
           MagickFalse,exception);
-        if (next_image->matte != MagickFalse)
+        if (next_image->alpha_trait == BlendPixelTrait)
           WriteOneChannel(psd_info,image_info,image,next_image,compact_pixels,
             AlphaQuantum,(i++ == 0) || (separate != MagickFalse) ? MagickTrue :
             MagickFalse,exception);
@@ -1887,7 +1887,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
             if (next_image->colorspace == CMYKColorspace)
               WritePackbitsLength(psd_info,image_info,image,next_image,
                 compact_pixels,BlackQuantum,exception);
-            if (next_image->matte != MagickFalse)
+            if (next_image->alpha_trait == BlendPixelTrait)
               WritePackbitsLength(psd_info,image_info,image,next_image,
                 compact_pixels,AlphaQuantum,exception);
           }
@@ -1909,7 +1909,7 @@ static MagickBooleanType WriteImageChannels(const PSDInfo *psd_info,
             BlackQuantum,(i++ == 0) || (separate != MagickFalse) ? MagickTrue :
             MagickFalse,exception);
         (void) SetImageProgress(image,SaveImagesTag,4,6);
-        if (next_image->matte != MagickFalse)
+        if (next_image->alpha_trait == BlendPixelTrait)
           WriteOneChannel(psd_info,image_info,image,next_image,compact_pixels,
             AlphaQuantum,(i++ == 0) || (separate != MagickFalse) ? MagickTrue :
             MagickFalse,exception);
@@ -2127,7 +2127,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
   if (status == MagickFalse)
     return(status);
   packet_size=(size_t) (image->depth > 8 ? 6 : 3);
-  if (image->matte != MagickFalse)
+  if (image->alpha_trait == BlendPixelTrait)
     packet_size+=image->depth > 8 ? 2 : 1;
   psd_info.version=1;
   if ((LocaleCompare(image_info->magick,"PSB") == 0) ||
@@ -2138,16 +2138,16 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
   for (i=1; i <= 6; i++)
     (void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
   if (IsImageGray(image,exception) != MagickFalse)
-    num_channels=(image->matte != MagickFalse ? 2UL : 1UL);
+    num_channels=(image->alpha_trait == BlendPixelTrait ? 2UL : 1UL);
   else
     if (image->storage_class == PseudoClass)
-      num_channels=(image->matte != MagickFalse ? 2UL : 1UL);
+      num_channels=(image->alpha_trait == BlendPixelTrait ? 2UL : 1UL);
     else
       {
         if (image->colorspace != CMYKColorspace)
-          num_channels=(image->matte != MagickFalse ? 4UL : 3UL);
+          num_channels=(image->alpha_trait == BlendPixelTrait ? 4UL : 3UL);
         else
-          num_channels=(image->matte != MagickFalse ? 5UL : 4UL);
+          num_channels=(image->alpha_trait == BlendPixelTrait ? 5UL : 4UL);
       }
   (void) WriteBlobMSBShort(image,(unsigned short) num_channels);
   (void) WriteBlobMSBLong(image,(unsigned int) image->rows);
@@ -2250,22 +2250,22 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
   layer_count=0;
   layer_info_size=2;
   base_image=GetNextImageInList(image);
-  if ((image->matte != MagickFalse) && (base_image == (Image *) NULL))
+  if ((image->alpha_trait == BlendPixelTrait) && (base_image == (Image *) NULL))
     base_image=image;
   next_image=base_image;
   while ( next_image != NULL )
   {
     packet_size=next_image->depth > 8 ? 2UL : 1UL;
     if (IsImageGray(next_image,exception) != MagickFalse)
-      num_channels=next_image->matte != MagickFalse ? 2UL : 1UL;
+      num_channels=next_image->alpha_trait == BlendPixelTrait ? 2UL : 1UL;
     else
       if (next_image->storage_class == PseudoClass)
-        num_channels=next_image->matte != MagickFalse ? 2UL : 1UL;
+        num_channels=next_image->alpha_trait == BlendPixelTrait ? 2UL : 1UL;
       else
         if (next_image->colorspace != CMYKColorspace)
-          num_channels=next_image->matte != MagickFalse ? 4UL : 3UL;
+          num_channels=next_image->alpha_trait == BlendPixelTrait ? 4UL : 3UL;
         else
-          num_channels=next_image->matte != MagickFalse ? 5UL : 4UL;
+          num_channels=next_image->alpha_trait == BlendPixelTrait ? 5UL : 4UL;
     channelLength=(size_t) (next_image->columns*next_image->rows*packet_size+2);
     layer_info_size+=(size_t) (4*4+2+num_channels*6+(psd_info.version == 1 ? 8 :
       16)+4*1+4+num_channels*channelLength);
@@ -2317,10 +2317,10 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
             (next_image->storage_class == PseudoClass))
           {
              (void) WriteBlobMSBShort(image,(unsigned short)
-               (next_image->matte != MagickFalse ? 2 : 1));
+               (next_image->alpha_trait == BlendPixelTrait ? 2 : 1));
              (void) WriteBlobMSBShort(image,0);
              (void) SetPSDSize(&psd_info,image,channel_size);
-             if (next_image->matte != MagickFalse)
+             if (next_image->alpha_trait == BlendPixelTrait)
                {
                  (void) WriteBlobMSBShort(image,(unsigned short) -1);
                  (void) SetPSDSize(&psd_info,image,channel_size);
@@ -2330,14 +2330,14 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
             if (next_image->colorspace != CMYKColorspace)
               {
                 (void) WriteBlobMSBShort(image,(unsigned short)
-                  (next_image->matte != MagickFalse ? 4 : 3));
+                  (next_image->alpha_trait == BlendPixelTrait ? 4 : 3));
                (void) WriteBlobMSBShort(image,0);
                (void) SetPSDSize(&psd_info,image,channel_size);
                (void) WriteBlobMSBShort(image,1);
                (void) SetPSDSize(&psd_info,image,channel_size);
                (void) WriteBlobMSBShort(image,2);
                (void) SetPSDSize(&psd_info,image,channel_size);
-               if (next_image->matte!= MagickFalse )
+               if (next_image->alpha_trait == BlendPixelTrait)
                  {
                    (void) WriteBlobMSBShort(image,(unsigned short) -1);
                    (void) SetPSDSize(&psd_info,image,channel_size);
@@ -2346,7 +2346,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
            else
              {
                (void) WriteBlobMSBShort(image,(unsigned short)
-                 (next_image->matte ? 5 : 4));
+                 (next_image->alpha_trait ? 5 : 4));
                (void) WriteBlobMSBShort(image,0);
                (void) SetPSDSize(&psd_info,image,channel_size);
                (void) WriteBlobMSBShort(image,1);
@@ -2355,7 +2355,7 @@ static MagickBooleanType WritePSDImage(const ImageInfo *image_info,Image *image,
                (void) SetPSDSize(&psd_info,image,channel_size);
                (void) WriteBlobMSBShort(image,3);
                (void) SetPSDSize(&psd_info,image,channel_size);
-               if (next_image->matte)
+               if (next_image->alpha_trait)
                  {
                    (void) WriteBlobMSBShort(image,(unsigned short) -1);
                    (void) SetPSDSize(&psd_info,image,channel_size);

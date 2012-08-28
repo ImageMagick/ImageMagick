@@ -1063,7 +1063,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image_type == GIMP_INDEXED)
         ThrowReaderException(CoderError,"ColormapTypeNotSupported");
   (void) SetImageBackgroundColor(image,exception);
-  image->matte=MagickTrue;
+  image->alpha_trait=BlendPixelTrait;
   /*
     Read properties.
   */

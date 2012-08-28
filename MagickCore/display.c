@@ -4335,7 +4335,7 @@ static MagickBooleanType XCompositeImage(Display *display,
         ((ssize_t) ScaleQuantumToChar(QuantumRange)*blend)/100);
       if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
         return(MagickFalse);
-      image->matte=MagickTrue;
+      image->alpha_trait=BlendPixelTrait;
       image_view=AcquireAuthenticCacheView(image,exception);
       for (y=0; y < (int) image->rows; y++)
       {
@@ -5356,7 +5356,7 @@ static MagickBooleanType XCropImage(Display *display,
   */
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  image->matte=MagickTrue;
+  image->alpha_trait=BlendPixelTrait;
   image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (int) crop_info.height; y++)
   {
@@ -8003,7 +8003,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,MagickTrue);
       XCheckRefreshWindows(display,windows);
-      (void) SetImageType(*image,(*image)->matte == MagickFalse ?
+      (void) SetImageType(*image,(*image)->alpha_trait != BlendPixelTrait ?
         GrayscaleType : GrayscaleMatteType,exception);
       XSetCursorState(display,windows,MagickFalse);
       if (windows->image.orphan != MagickFalse)
@@ -9160,7 +9160,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       Image
         *matte_image;
 
-      if ((*image)->matte == MagickFalse)
+      if ((*image)->alpha_trait != BlendPixelTrait)
         {
           XNoticeWidget(display,windows,
             "Image does not have any matte information",(*image)->filename);
@@ -10093,7 +10093,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
           continue;
         if (SetImageStorageClass(*image,DirectClass,exception) == MagickFalse)
           return(MagickFalse);
-        if ((*image)->matte == MagickFalse)
+        if ((*image)->alpha_trait != BlendPixelTrait)
           (void) SetImageAlphaChannel(*image,OpaqueAlphaChannel,exception);
         image_view=AcquireAuthenticCacheView(*image,exception);
         switch (method)
@@ -10202,7 +10202,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
                 break;
             }
             if (StringToLong(matte) == (long) OpaqueAlpha)
-              (*image)->matte=MagickFalse;
+              (*image)->alpha_trait=UndefinedPixelTrait;
             break;
           }
         }

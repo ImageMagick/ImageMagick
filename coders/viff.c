@@ -485,7 +485,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     /*
       Initialize image structure.
     */
-    image->matte=viff_info.number_data_bands == 4 ? MagickTrue : MagickFalse;
+    image->alpha_trait=viff_info.number_data_bands == 4 ? MagickTrue : MagickFalse;
     image->storage_class=
       (viff_info.number_data_bands < 3 ? PseudoClass : DirectClass);
     image->columns=viff_info.rows;
@@ -706,7 +706,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                   SetPixelBlue(image,image->colormap[(ssize_t)
                     GetPixelBlue(image,q)].blue,q);
                 }
-              SetPixelAlpha(image,image->matte != MagickFalse ?
+              SetPixelAlpha(image,image->alpha_trait == BlendPixelTrait ?
                 ScaleCharToQuantum(*(p+number_pixels*3)) : OpaqueAlpha,q);
               p++;
               q+=GetPixelChannels(image);
@@ -1010,7 +1010,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
         /*
           Full color VIFF raster.
         */
-        viff_info.number_data_bands=image->matte ? 4UL : 3UL;
+        viff_info.number_data_bands=image->alpha_trait ? 4UL : 3UL;
         viff_info.color_space_model=VFF_CM_genericRGB;
         viff_info.data_storage_type=VFF_TYP_1_BYTE;
         packets=viff_info.number_data_bands*number_pixels;
@@ -1103,7 +1103,7 @@ static MagickBooleanType WriteVIFFImage(const ImageInfo *image_info,
             *q=ScaleQuantumToChar(GetPixelRed(image,p));
             *(q+number_pixels)=ScaleQuantumToChar(GetPixelGreen(image,p));
             *(q+number_pixels*2)=ScaleQuantumToChar(GetPixelBlue(image,p));
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               *(q+number_pixels*3)=ScaleQuantumToChar((Quantum)
                 (GetPixelAlpha(image,p)));
             p+=GetPixelChannels(image);

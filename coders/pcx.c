@@ -431,7 +431,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       }
     if (image->storage_class == DirectClass)
-      image->matte=pcx_info.planes > 3 ? MagickTrue : MagickFalse;
+      image->alpha_trait=pcx_info.planes > 3 ? MagickTrue : MagickFalse;
     else
       if ((pcx_info.version == 5) ||
           ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
@@ -607,7 +607,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelRed(image,ScaleCharToQuantum(*r++),q);
             SetPixelGreen(image,ScaleCharToQuantum(*r++),q);
             SetPixelBlue(image,ScaleCharToQuantum(*r++),q);
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               SetPixelAlpha(image,ScaleCharToQuantum(*r++),q);
           }
         q+=GetPixelChannels(image);
@@ -940,7 +940,7 @@ static MagickBooleanType WritePCXImage(const ImageInfo *image_info,Image *image,
     if ((image->storage_class == DirectClass) || (image->colors > 256))
       {
         pcx_info.planes=3;
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           pcx_info.planes++;
       }
     pcx_info.bytes_per_line=(unsigned short) (((size_t) image->columns*

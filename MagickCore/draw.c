@@ -3931,7 +3931,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   /*
     Draw polygon or line.
   */
-  if (image->matte == MagickFalse)
+  if (image->alpha_trait != BlendPixelTrait)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   start=(ssize_t) ceil(bounds.y1-0.5);
   stop=(ssize_t) floor(bounds.y2+0.5);
@@ -4311,7 +4311,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
     }
     case MattePrimitive:
     {
-      if (image->matte == MagickFalse)
+      if (image->alpha_trait != BlendPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       switch (primitive_info->method)
       {
@@ -4506,7 +4506,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
           (void) TransformImage(&composite_image,(char *) NULL,geometry,
             exception);
         }
-      if (composite_image->matte == MagickFalse)
+      if (composite_image->alpha_trait != BlendPixelTrait)
         (void) SetImageAlphaChannel(composite_image,OpaqueAlphaChannel,
           exception);
       if (draw_info->alpha != OpaqueAlpha)

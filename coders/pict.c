@@ -470,7 +470,7 @@ static unsigned char *DecodeImage(Image *blob,Image *image,
     }
   else
     if (bits_per_pixel == 32)
-      width*=image->matte ? 4 : 3;
+      width*=image->alpha_trait ? 4 : 3;
   if (bytes_per_line == 0)
     bytes_per_line=width;
   row_bytes=(size_t) (image->columns | 0x8000);
@@ -1075,13 +1075,13 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               {
                 ReadPixmap(pixmap);
                 tile_image->depth=1UL*pixmap.component_size;
-                tile_image->matte=pixmap.component_count == 4 ?
+                tile_image->alpha_trait=pixmap.component_count == 4 ?
                   MagickTrue : MagickFalse;
                 tile_image->resolution.x=(double) pixmap.horizontal_resolution;
                 tile_image->resolution.y=(double) pixmap.vertical_resolution;
                 tile_image->units=PixelsPerInchResolution;
-                if (tile_image->matte != MagickFalse)
-                  image->matte=tile_image->matte;
+                if (tile_image->alpha_trait == BlendPixelTrait)
+                  image->alpha_trait=tile_image->alpha_trait;
               }
             if ((code != 0x9a) && (code != 0x9b))
               {
@@ -1196,7 +1196,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                           (unsigned char) ((j & 0x1f) << 3)),q);
                       }
                     else
-                      if (tile_image->matte == MagickFalse)
+                      if (tile_image->alpha_trait != BlendPixelTrait)
                         {
                           if (p > (pixels+extent+2*image->columns))
                             ThrowReaderException(CorruptImageError,
@@ -1640,9 +1640,9 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
   storage_class=image->storage_class;
   if (image_info->compression == JPEGCompression)
     storage_class=DirectClass;
-  if ((storage_class == DirectClass) || (image->matte != MagickFalse))
+  if ((storage_class == DirectClass) || (image->alpha_trait == BlendPixelTrait))
     {
-      pixmap.component_count=image->matte ? 4 : 3;
+      pixmap.component_count=image->alpha_trait ? 4 : 3;
       pixmap.pixel_type=16;
       pixmap.bits_per_pixel=32;
       pixmap.pack_type=0x04;
@@ -1653,8 +1653,8 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     Allocate memory.
   */
   bytes_per_line=image->columns;
-  if ((storage_class == DirectClass) || (image->matte != MagickFalse))
-    bytes_per_line*=image->matte ? 4 : 3;
+  if ((storage_class == DirectClass) || (image->alpha_trait == BlendPixelTrait))
+    bytes_per_line*=image->alpha_trait ? 4 : 3;
   buffer=(unsigned char *) AcquireQuantumMemory(PictInfoSize,sizeof(*buffer));
   packed_scanline=(unsigned char *) AcquireQuantumMemory((size_t)
    (row_bytes+MaxCount),sizeof(*packed_scanline));
@@ -1877,7 +1877,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
     Write picture data.
   */
   count=0;
-  if ((storage_class == PseudoClass) && (image->matte == MagickFalse))
+  if ((storage_class == PseudoClass) && (image->alpha_trait != BlendPixelTrait))
     for (y=0; y < (ssize_t) image->rows; y++)
     {
       p=GetVirtualPixels(image,0,y,image->columns,1,exception);
@@ -1926,7 +1926,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
           red=scanline;
           green=scanline+image->columns;
           blue=scanline+2*image->columns;
-          if (image->matte != MagickFalse)
+          if (image->alpha_trait == BlendPixelTrait)
             {
               opacity=scanline;
               red=scanline+image->columns;
@@ -1938,7 +1938,7 @@ static MagickBooleanType WritePICTImage(const ImageInfo *image_info,
             *red++=ScaleQuantumToChar(GetPixelRed(image,p));
             *green++=ScaleQuantumToChar(GetPixelGreen(image,p));
             *blue++=ScaleQuantumToChar(GetPixelBlue(image,p));
-            if (image->matte != MagickFalse)
+            if (image->alpha_trait == BlendPixelTrait)
               *opacity++=ScaleQuantumToChar((Quantum) (GetPixelAlpha(image,p)));
             p+=GetPixelChannels(image);
           }

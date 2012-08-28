@@ -104,7 +104,7 @@ static void ClearBounds(Image *image,RectangleInfo *bounds,
 
   if (bounds->x < 0)
     return;
-  if (image->matte == MagickFalse)
+  if (image->alpha_trait != BlendPixelTrait)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   for (y=0; y < (ssize_t) bounds->height; y++)
   {
@@ -270,7 +270,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
   if (coalesce_image == (Image *) NULL)
     return((Image *) NULL);
   (void) SetImageBackgroundColor(coalesce_image,exception);
-  coalesce_image->matte=next->matte;
+  coalesce_image->alpha_trait=next->alpha_trait;
   coalesce_image->page=bounds;
   coalesce_image->dispose=NoneDispose;
   /*
@@ -328,7 +328,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     coalesce_image->next->previous=coalesce_image;
     previous=coalesce_image;
     coalesce_image=GetNextImageInList(coalesce_image);
-    (void) CompositeImage(coalesce_image,next,next->matte != MagickFalse ?
+    (void) CompositeImage(coalesce_image,next,next->alpha_trait == BlendPixelTrait ?
       OverCompositeOp : CopyCompositeOp,MagickTrue,next->page.x,next->page.y,
       exception);
     (void) CloneImageProfiles(coalesce_image,next);
@@ -423,7 +423,7 @@ MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
         dispose_image=DestroyImage(dispose_image);
         return((Image *) NULL);
       }
-    (void) CompositeImage(current_image,next,next->matte != MagickFalse ?
+    (void) CompositeImage(current_image,next,next->alpha_trait == BlendPixelTrait ?
       OverCompositeOp : CopyCompositeOp,MagickTrue,next->page.x,next->page.y,
       exception);
     /*
@@ -532,8 +532,8 @@ static MagickBooleanType ComparePixels(const ImageLayerMethod method,
   if (method == CompareAnyLayer)
     return((MagickBooleanType)(IsFuzzyEquivalencePixelInfo(p,q) == MagickFalse));
 
-  o1 = (p->matte != MagickFalse) ? p->alpha : OpaqueAlpha;
-  o2 = (q->matte != MagickFalse) ? q->alpha : OpaqueAlpha;
+  o1 = (p->alpha_trait == BlendPixelTrait) ? p->alpha : OpaqueAlpha;
+  o2 = (q->alpha_trait == BlendPixelTrait) ? q->alpha : OpaqueAlpha;
 
   /*
     Pixel goes from opaque to transprency
@@ -1499,7 +1499,7 @@ MagickExport void OptimizeImageTransparency(const Image *image,
         dispose_image=DestroyImage(dispose_image);
         return;
       }
-    (void) CompositeImage(current_image,next,next->matte != MagickFalse ?
+    (void) CompositeImage(current_image,next,next->alpha_trait == BlendPixelTrait ?
       OverCompositeOp : CopyCompositeOp,MagickTrue,next->page.x,next->page.y,
       exception);
     /*

@@ -167,13 +167,13 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (LocaleCompare(image_info->magick,"RGBA") == 0)
     {
       quantum_type=RGBAQuantum;
-      image->matte=MagickTrue;
-      canvas_image->matte=MagickTrue;
+      image->alpha_trait=BlendPixelTrait;
+      canvas_image->alpha_trait=BlendPixelTrait;
     }
   if (LocaleCompare(image_info->magick,"RGBO") == 0)
     {
       quantum_type=RGBOQuantum;
-      canvas_image->matte=MagickTrue;
+      canvas_image->alpha_trait=BlendPixelTrait;
     }
   if (image_info->number_scenes != 0)
     while (image->scene < image_info->scene)
@@ -254,7 +254,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 SetPixelGreen(image,GetPixelGreen(canvas_image,p),q);
                 SetPixelBlue(image,GetPixelBlue(canvas_image,p),q);
                 SetPixelAlpha(image,OpaqueAlpha,q);
-                if (image->matte != MagickFalse)
+                if (image->alpha_trait == BlendPixelTrait)
                   SetPixelAlpha(image,GetPixelAlpha(canvas_image,p),q);
                 p+=GetPixelChannels(canvas_image);
                 q+=GetPixelChannels(image);
@@ -311,7 +311,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 "UnexpectedEndOfFile",image->filename);
               break;
             }
-          for (i=0; i < (ssize_t) (image->matte != MagickFalse ? 4 : 3); i++)
+          for (i=0; i < (ssize_t) (image->alpha_trait == BlendPixelTrait ? 4 : 3); i++)
           {
             quantum_type=quantum_types[i];
             q=GetAuthenticPixels(canvas_image,0,0,canvas_image->columns,1,
@@ -550,7 +550,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (status == MagickFalse)
               break;
           }
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           {
             for (y=0; y < (ssize_t) image->extract_info.height; y++)
             {
@@ -830,7 +830,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (status == MagickFalse)
               break;
           }
-        if (image->matte != MagickFalse)
+        if (image->alpha_trait == BlendPixelTrait)
           {
             (void) CloseBlob(image);
             AppendImageFormat("A",image->filename);
@@ -1111,7 +1111,7 @@ static MagickBooleanType WriteRGBImage(const ImageInfo *image_info,
     if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
       (void) TransformImageColorspace(image,sRGBColorspace,exception);
     if ((LocaleCompare(image_info->magick,"RGBA") == 0) &&
-        (image->matte == MagickFalse))
+        (image->alpha_trait != BlendPixelTrait))
       (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
     quantum_info=AcquireQuantumInfo(image_info,image);
     if (quantum_info == (QuantumInfo *) NULL)

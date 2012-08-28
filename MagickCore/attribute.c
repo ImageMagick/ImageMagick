@@ -301,7 +301,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
   status=MagickTrue;
   for (id=0; id < (ssize_t) number_threads; id++)
     current_depth[id]=1;
-  if ((image->storage_class == PseudoClass) && (image->matte == MagickFalse))
+  if ((image->storage_class == PseudoClass) && (image->alpha_trait != BlendPixelTrait))
     {
       register ssize_t
         i;
@@ -618,7 +618,7 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->colorspace == CMYKColorspace)
     {
-      if (image->matte == MagickFalse)
+      if (image->alpha_trait != BlendPixelTrait)
         return(ColorSeparationType);
       return(ColorSeparationMatteType);
     }
@@ -626,17 +626,17 @@ MagickExport ImageType GetImageType(const Image *image,ExceptionInfo *exception)
     return(BilevelType);
   if (IsImageGray(image,exception) != MagickFalse)
     {
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         return(GrayscaleMatteType);
       return(GrayscaleType);
     }
   if (IsPaletteImage(image,exception) != MagickFalse)
     {
-      if (image->matte != MagickFalse)
+      if (image->alpha_trait == BlendPixelTrait)
         return(PaletteMatteType);
       return(PaletteType);
     }
-  if (image->matte != MagickFalse)
+  if (image->alpha_trait == BlendPixelTrait)
     return(TrueColorMatteType);
   return(TrueColorType);
 }
@@ -721,7 +721,7 @@ MagickExport MagickBooleanType IsImageGray(const Image *image,
   if (type == UndefinedType)
     return(MagickFalse);
   ((Image *) image)->type=type;
-  if ((type == GrayscaleType) && (image->matte != MagickFalse))
+  if ((type == GrayscaleType) && (image->alpha_trait == BlendPixelTrait))
     ((Image *) image)->type=GrayscaleMatteType;
   return(MagickTrue);
 }
@@ -856,7 +856,7 @@ MagickExport MagickBooleanType IsImageOpaque(const Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  if (image->matte == MagickFalse)
+  if (image->alpha_trait != BlendPixelTrait)
     return(MagickTrue);
   image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -1168,21 +1168,21 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
           status=QuantizeImage(quantize_info,image,exception);
           quantize_info=DestroyQuantizeInfo(quantize_info);
         }
-      image->matte=MagickFalse;
+      image->alpha_trait=UndefinedPixelTrait;
       break;
     }
     case GrayscaleType:
     {
       if (IsImageGray(image,exception) == MagickFalse)
         status=TransformImageColorspace(image,GRAYColorspace,exception);
-      image->matte=MagickFalse;
+      image->alpha_trait=UndefinedPixelTrait;
       break;
     }
     case GrayscaleMatteType:
     {
       if (IsImageGray(image,exception) == MagickFalse)
         status=TransformImageColorspace(image,GRAYColorspace,exception);
-      if (image->matte == MagickFalse)
+      if (image->alpha_trait != BlendPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
     }
@@ -1197,7 +1197,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
           status=QuantizeImage(quantize_info,image,exception);
           quantize_info=DestroyQuantizeInfo(quantize_info);
         }
-      image->matte=MagickFalse;
+      image->alpha_trait=UndefinedPixelTrait;
       break;
     }
     case PaletteBilevelMatteType:
@@ -1207,7 +1207,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
 
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,sRGBColorspace,exception);
-      if (image->matte == MagickFalse)
+      if (image->alpha_trait != BlendPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       channel_mask=SetImageChannelMask(image,AlphaChannel);
       (void) BilevelImage(image,(double) QuantumRange/2.0,exception);
@@ -1221,7 +1221,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
     {
       if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
         status=TransformImageColorspace(image,sRGBColorspace,exception);
-      if (image->matte == MagickFalse)
+      if (image->alpha_trait != BlendPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       quantize_info=AcquireQuantizeInfo(image_info);
       quantize_info->colorspace=TransparentColorspace;
@@ -1235,7 +1235,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
         status=TransformImageColorspace(image,sRGBColorspace,exception);
       if (image->storage_class != DirectClass)
         status=SetImageStorageClass(image,DirectClass,exception);
-      image->matte=MagickFalse;
+      image->alpha_trait=UndefinedPixelTrait;
       break;
     }
     case TrueColorMatteType:
@@ -1244,7 +1244,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
         status=TransformImageColorspace(image,sRGBColorspace,exception);
       if (image->storage_class != DirectClass)
         status=SetImageStorageClass(image,DirectClass,exception);
-      if (image->matte == MagickFalse)
+      if (image->alpha_trait != BlendPixelTrait)
         (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
     }
@@ -1258,7 +1258,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
         }
       if (image->storage_class != DirectClass)
         status=SetImageStorageClass(image,DirectClass,exception);
-      image->matte=MagickFalse;
+      image->alpha_trait=UndefinedPixelTrait;
       break;
     }
     case ColorSeparationMatteType:
@@ -1271,7 +1271,7 @@ MagickExport MagickBooleanType SetImageType(Image *image,const ImageType type,
         }
       if (image->storage_class != DirectClass)
         status=SetImageStorageClass(image,DirectClass,exception);
-      if (image->matte == MagickFalse)
+      if (image->alpha_trait != BlendPixelTrait)
         status=SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
       break;
     }

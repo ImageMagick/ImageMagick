@@ -1897,7 +1897,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
       integral_image=DestroyImage(integral_image);
       return(integral_image);
     }
-  if (integral_image->matte == MagickFalse)
+  if (integral_image->alpha_trait != BlendPixelTrait)
     (void) SetImageAlphaChannel(integral_image,OpaqueAlphaChannel,exception);
   /*
     Compute image size.
@@ -1921,7 +1921,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   /*
     Shear the image.
   */
-  if (shear_image->matte == MagickFalse)
+  if (shear_image->alpha_trait != BlendPixelTrait)
     (void) SetImageAlphaChannel(shear_image,OpaqueAlphaChannel,exception);
   status=XShearImage(shear_image,shear.x,image->columns,image->rows,x_offset,
     (ssize_t) (shear_image->rows-image->rows)/2,exception);
@@ -2048,7 +2048,7 @@ MagickExport Image *ShearRotateImage(const Image *image,const double degrees,
       integral_image=DestroyImage(integral_image);
       return(integral_image);
     }
-  if (integral_image->matte == MagickFalse)
+  if (integral_image->alpha_trait != BlendPixelTrait)
     (void) SetImageAlphaChannel(integral_image,OpaqueAlphaChannel,exception);
   /*
     Compute image size.
