@@ -2974,7 +2974,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
   extent=MaxTextExtent;                     /* how many extra space */
   number=MagickFalse;                       /* is last char a number? */
   for (q=interpret_text; *p!='\0';
-          number=(isdigit(*p))?MagickTrue:MagickFalse,p++)
+          number=(isdigit((int) ((unsigned char) *p))) ? MagickTrue : MagickFalse,p++)
   {
     *q='\0';
     if ((size_t) (q-interpret_text+MaxTextExtent) >= extent)

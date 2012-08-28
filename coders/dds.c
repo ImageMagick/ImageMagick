@@ -74,6 +74,7 @@
 #include "magick/memory_.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/pixel-accessor.h"
 #include "magick/quantum.h"
 #include "magick/static.h"
 #include "magick/string_.h"

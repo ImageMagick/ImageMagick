@@ -53,6 +53,7 @@
 #include "magick/magick.h"
 #include "magick/memory_.h"
 #include "magick/pixel.h"
+#include "magick/pixel-accessor.h"
 #include "magick/quantize.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"
