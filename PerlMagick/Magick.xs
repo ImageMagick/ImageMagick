@@ -1103,7 +1103,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"alpha") == 0)
         {
-          sp=SvPOK(sval) ? ParseCommandOption(MagickAlphaOptions,MagickFalse,
+          sp=SvPOK(sval) ? ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,
             SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {

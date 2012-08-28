@@ -348,7 +348,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowCompareException(OptionError,"MissingArgument",option);
-            type=ParseCommandOption(MagickAlphaOptions,MagickFalse,argv[i]);
+            type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,argv[i]);
             if (type < 0)
               ThrowCompareException(OptionError,"UnrecognizedAlphaChannelType",
                 argv[i]);
