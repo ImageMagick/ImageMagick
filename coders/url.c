@@ -220,7 +220,23 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 #endif
   (void) fclose(file);
-  *read_info->magick='\0';
+  {
+    ExceptionInfo
+      *sans;
+
+    ImageInfo
+      *clone_info;
+
+    /*
+      Guess image format from URL.
+    */
+    clone_info=CloneImageInfo(image_info);
+    sans=AcquireExceptionInfo();
+    (void) SetImageInfo(clone_info,0,sans);
+    (void) CopyMagickString(read_info->magick,clone_info->magick,MaxTextExtent);
+    clone_info=DestroyImageInfo(clone_info);
+    sans=DestroyExceptionInfo(sans);
+  }
   image=ReadImage(read_info,exception);
   if (unique_file != -1)
     (void) RelinquishUniqueFileResource(read_info->filename);
