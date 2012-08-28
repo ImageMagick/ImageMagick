@@ -27,7 +27,6 @@ typedef enum
   MagickUndefinedOptions = -1,
   MagickAlignOptions = 0,
   MagickAlphaChannelOptions,
-  MagickAlphaStateOptions,
   MagickBooleanOptions,
   MagickChannelOptions,
   MagickClassOptions,
