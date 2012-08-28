@@ -2101,26 +2101,26 @@ static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
     {
       case RedPixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((double) q[i],
-          beta,(double) p->red,alpha));
+        composite[i]=ClampToQuantum(gamma*MagickOver_((double) q[i],beta,
+          (double) p->red,alpha));
         break;
       }
       case GreenPixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((double) q[i],
-          beta,(double) p->green,alpha));
+        composite[i]=ClampToQuantum(gamma*MagickOver_((double) q[i],beta,
+          (double) p->green,alpha));
         break;
       }
       case BluePixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((double) q[i],
-          beta,(double) p->blue,alpha));
+        composite[i]=ClampToQuantum(gamma*MagickOver_((double) q[i],beta,
+          (double) p->blue,alpha));
         break;
       }
       case BlackPixelChannel:
       {
-        composite[i]=ClampToQuantum(gamma*MagickOver_((double) q[i],
-          beta,(double) p->black,alpha));
+        composite[i]=ClampToQuantum(gamma*MagickOver_((double) q[i],beta,
+          (double) p->black,alpha));
         break;
       }
       case AlphaPixelChannel:

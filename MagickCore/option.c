@@ -90,7 +90,7 @@ static const OptionInfo
     { "Start", LeftAlign, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedAlign, UndefinedOptionFlag, MagickFalse }
   },
-  AlphaOptions[] =
+  AlphaChannelOptions[] =
   {
     { "Undefined", UndefinedAlphaChannel, UndefinedOptionFlag, MagickTrue },
     { "Activate", ActivateAlphaChannel, UndefinedOptionFlag, MagickFalse },
@@ -107,6 +107,13 @@ static const OptionInfo
     { "Reset", SetAlphaChannel, DeprecateOptionFlag, MagickTrue },
     { "Transparent", TransparentAlphaChannel, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, UndefinedAlphaChannel, UndefinedOptionFlag, MagickFalse }
+  },
+  AlphaStateOptions[] =
+  {
+    { "Undefined", UndefinedAlpha, UndefinedOptionFlag, MagickTrue },
+    { "Active", ActiveAlpha, UndefinedOptionFlag, MagickFalse },
+    { "Inactive", InactiveAlpha, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, MagickFalse, UndefinedOptionFlag, MagickFalse }
   },
   BooleanOptions[] =
   {
@@ -1193,7 +1200,7 @@ static const OptionInfo
   ListOptions[] =
   {
     { "Align", MagickAlignOptions, UndefinedOptionFlag, MagickFalse },
-    { "Alpha", MagickAlphaOptions, UndefinedOptionFlag, MagickFalse },
+    { "Alpha", MagickAlphaChannelOptions, UndefinedOptionFlag, MagickFalse },
     { "Boolean", MagickBooleanOptions, UndefinedOptionFlag, MagickFalse },
     { "Channel", MagickChannelOptions, UndefinedOptionFlag, MagickFalse },
     { "Class", MagickClassOptions, UndefinedOptionFlag, MagickFalse },
@@ -1642,7 +1649,8 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
   switch (option)
   {
     case MagickAlignOptions: return(AlignOptions);
-    case MagickAlphaOptions: return(AlphaOptions);
+    case MagickAlphaChannelOptions: return(AlphaChannelOptions);
+    case MagickAlphaStateOptions: return(AlphaStateOptions);
     case MagickBooleanOptions: return(BooleanOptions);
     case MagickChannelOptions: return(ChannelOptions);
     case MagickClassOptions: return(ClassOptions);

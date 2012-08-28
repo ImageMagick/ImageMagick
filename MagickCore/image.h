@@ -24,8 +24,8 @@ extern "C" {
 
 #include <MagickCore/color.h>
 
-#define OpaqueAlpha  (QuantumRange)
-#define TransparentAlpha  ((Quantum) 0UL)
+#define OpaqueAlpha  ((Quantum) QuantumRange)
+#define TransparentAlpha  ((Quantum) 0)
 
 typedef enum
 {
@@ -41,6 +41,13 @@ typedef enum
   ShapeAlphaChannel,
   TransparentAlphaChannel
 } AlphaChannelType;
+
+typedef enum
+{
+  UndefinedAlpha,
+  InactiveAlpha,
+  ActiveAlpha
+} AlphaChannelState;
 
 typedef enum
 {
@@ -272,6 +279,9 @@ struct _Image
 
   MagickBooleanType
     mask;
+
+  AlphaChannelState
+    alpha;
 
   size_t
     number_channels,

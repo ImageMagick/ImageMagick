@@ -1754,7 +1754,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("alpha",option+1) == 0)
         {
-          parse=ParseCommandOption(MagickAlphaOptions,MagickFalse,arg1);
+          parse=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,arg1);
           if (parse < 0)
             CLIWandExceptArgBreak(OptionError,"UnrecognizedAlphaChannelType",
                  option,arg1);

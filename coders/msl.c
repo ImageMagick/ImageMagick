@@ -7949,7 +7949,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
           ssize_t
             alpha;
 
-          alpha=ParseCommandOption(MagickAlphaOptions,MagickFalse,value);
+          alpha=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,value);
           if (alpha < 0)
             ThrowMSLException(OptionError,"UnrecognizedType",value);
           if (image != (Image *) NULL)
