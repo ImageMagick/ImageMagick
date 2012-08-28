@@ -41,7 +41,7 @@ typedef enum
   SetAlphaChannel,
   ShapeAlphaChannel,
   TransparentAlphaChannel
-} AlphaChannelType;
+} AlphaChannelOption;
 
 typedef enum
 {
@@ -518,7 +518,7 @@ extern MagickExport MagickBooleanType
   ModifyImage(Image **,ExceptionInfo *),
   ResetImagePage(Image *,const char *),
   SetImageAlpha(Image *,const Quantum,ExceptionInfo *),
-  SetImageAlphaChannel(Image *,const AlphaChannelType,ExceptionInfo *),
+  SetImageAlphaChannel(Image *,const AlphaChannelOption,ExceptionInfo *),
   SetImageBackgroundColor(Image *,ExceptionInfo *),
   SetImageColor(Image *,const PixelInfo *,ExceptionInfo *),
   SetImageExtent(Image *,const size_t,const size_t,ExceptionInfo *),

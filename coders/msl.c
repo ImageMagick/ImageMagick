@@ -7953,7 +7953,7 @@ static MagickBooleanType SetMSLAttributes(MSLInfo *msl_info,const char *keyword,
           if (alpha < 0)
             ThrowMSLException(OptionError,"UnrecognizedType",value);
           if (image != (Image *) NULL)
-            (void) SetImageAlphaChannel(image,(AlphaChannelType) alpha,
+            (void) SetImageAlphaChannel(image,(AlphaChannelOption) alpha,
               exception);
           break;
         }

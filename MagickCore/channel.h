@@ -30,7 +30,7 @@ extern MagickExport Image
 
 extern MagickExport MagickBooleanType
   GetImageAlphaChannel(const Image *),
-  SetImageAlphaChannel(Image *,const AlphaChannelType,ExceptionInfo *);
+  SetImageAlphaChannel(Image *,const AlphaChannelOption,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

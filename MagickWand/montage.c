@@ -472,7 +472,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
               ThrowMontageException(OptionError,"MissingArgument",option);
             type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,argv[i]);
             if (type < 0)
-              ThrowMontageException(OptionError,"UnrecognizedAlphaChannelType",
+              ThrowMontageException(OptionError,"UnrecognizedAlphaChannelOption",
                 argv[i]);
             break;
           }

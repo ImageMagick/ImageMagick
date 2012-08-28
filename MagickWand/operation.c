@@ -1756,9 +1756,9 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         {
           parse=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,arg1);
           if (parse < 0)
-            CLIWandExceptArgBreak(OptionError,"UnrecognizedAlphaChannelType",
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedAlphaChannelOption",
                  option,arg1);
-          (void) SetImageAlphaChannel(_image,(AlphaChannelType)parse,
+          (void) SetImageAlphaChannel(_image,(AlphaChannelOption)parse,
                _exception);
           break;
         }

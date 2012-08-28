@@ -234,7 +234,7 @@ extern WandExport MagickBooleanType
   MagickSeparateImage(MagickWand *,const ChannelType),
   MagickSepiaToneImage(MagickWand *,const double),
   MagickSetImage(MagickWand *,const MagickWand *),
-  MagickSetImageAlphaChannel(MagickWand *,const AlphaChannelType),
+  MagickSetImageAlphaChannel(MagickWand *,const AlphaChannelOption),
   MagickSetImageBackgroundColor(MagickWand *,const PixelWand *),
   MagickSetImageBluePrimary(MagickWand *,const double,const double),
   MagickSetImageBorderColor(MagickWand *,const PixelWand *),
