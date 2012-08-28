@@ -275,7 +275,7 @@ struct _Image
     mask;
 
   PixelTrait
-    alpha_traits;
+    alpha_trait;
 
   size_t
     number_channels,
