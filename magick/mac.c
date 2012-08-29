@@ -72,6 +72,7 @@
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
+#include "magick/pixel-accessor.h"
 #include "magick/quantum.h"
 #include "magick/string_.h"
 #include "magick/utility.h"
