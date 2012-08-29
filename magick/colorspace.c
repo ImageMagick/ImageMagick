@@ -785,6 +785,86 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         return(MagickFalse);
       return(status);
     }
+    case LCHColorspace:
+    {
+      /*
+        Transform image from sRGB to LCH.
+      */
+      if (image->storage_class == PseudoClass)
+        {
+          if (SyncImage(image) == MagickFalse)
+            return(MagickFalse);
+          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+            return(MagickFalse);
+        }
+      image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        dynamic_number_threads(image,image->columns,image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        MagickBooleanType
+          sync;
+
+        register ssize_t
+          x;
+
+        register PixelPacket
+          *restrict q;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (PixelPacket *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          double
+            a,
+            b,
+            C,
+            H,
+            L,
+            X,
+            Y,
+            Z;
+
+          Quantum
+            blue,
+            green,
+            red;
+
+          red=ClampToQuantum(InversesRGBCompandor((MagickRealType)
+            GetPixelRed(q)));
+          green=ClampToQuantum(InversesRGBCompandor((MagickRealType)
+            GetPixelGreen(q)));
+          blue=ClampToQuantum(InversesRGBCompandor((MagickRealType)
+            GetPixelBlue(q)));
+          ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
+          ConvertXYZToLab(X,Y,Z,&L,&a,&b);
+          C=sqrt(a*a+b*b);
+          H=atan2(b,a)*180.0/MagickPI;
+          if (H < 0.0)
+            H+=1.0;
+          SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*L));
+          SetPixelGreen(q,ClampToQuantum((MagickRealType) QuantumRange*C));
+          SetPixelBlue(q,ClampToQuantum((MagickRealType) QuantumRange*H));
+          q++;
+        }
+        sync=SyncCacheViewAuthenticPixels(image_view,exception);
+        if (sync == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
+      if (SetImageColorspace(image,colorspace) == MagickFalse)
+        return(MagickFalse);
+      return(status);
+    }
     case LogColorspace:
     {
 #define DisplayGamma  (1.0/1.7)
@@ -2632,6 +2712,84 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           L=QuantumScale*GetPixelRed(q);
           a=QuantumScale*GetPixelGreen(q);
           b=QuantumScale*GetPixelBlue(q);
+          ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
+          ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
+          red=ClampToQuantum(sRGBCompandor((MagickRealType) red));
+          green=ClampToQuantum(sRGBCompandor((MagickRealType) green));
+          blue=ClampToQuantum(sRGBCompandor((MagickRealType) blue));
+          SetPixelRed(q,red);
+          SetPixelGreen(q,green);
+          SetPixelBlue(q,blue);
+          q++;
+        }
+        sync=SyncCacheViewAuthenticPixels(image_view,exception);
+        if (sync == MagickFalse)
+          status=MagickFalse;
+      }
+      image_view=DestroyCacheView(image_view);
+      if (SetImageColorspace(image,sRGBColorspace) == MagickFalse)
+        return(MagickFalse);
+      return(status);
+    }
+    case LCHColorspace:
+    {
+      /*
+        Transform image from LCH to sRGB.
+      */
+      if (image->storage_class == PseudoClass)
+        {
+          if (SyncImage(image) == MagickFalse)
+            return(MagickFalse);
+          if (SetImageStorageClass(image,DirectClass) == MagickFalse)
+            return(MagickFalse);
+        }
+      image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        dynamic_number_threads(image,image->columns,image->rows,1)
+#endif
+      for (y=0; y < (ssize_t) image->rows; y++)
+      {
+        MagickBooleanType
+          sync;
+
+        register ssize_t
+          x;
+
+        register PixelPacket
+          *restrict q;
+
+        if (status == MagickFalse)
+          continue;
+        q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,
+          exception);
+        if (q == (PixelPacket *) NULL)
+          {
+            status=MagickFalse;
+            continue;
+          }
+        for (x=0; x < (ssize_t) image->columns; x++)
+        {
+          double
+            a,
+            b,
+            C,
+            H,
+            L,
+            X,
+            Y,
+            Z;
+
+          Quantum
+            blue,
+            green,
+            red;
+
+          L=QuantumScale*GetPixelRed(q);
+          C=QuantumScale*GetPixelGreen(q);
+          H=QuantumScale*GetPixelBlue(q);
+          a=C*cos(H*(MagickPI/180.0));
+          b=C*sin(H*(MagickPI/180.0));
           ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
           red=ClampToQuantum(sRGBCompandor((MagickRealType) red));
