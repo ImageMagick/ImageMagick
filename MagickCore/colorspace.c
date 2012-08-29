@@ -1343,8 +1343,8 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         Initialize YUV tables:
 
           Y =  0.298839*R+0.586811*G+0.114350*B
-          U = -0.168736*R-0.331264*G+0.500000*B
-          V =  0.500000*R-0.418688*G-0.081312*B
+          U = -0.147130*R-0.288860*G+0.436000*B
+          V =  0.615000*R-0.514990*G-0.100010*B
 
         U and V, normally -0.5 through 0.5, are normalized to the range 0
         through QuantumRange.  Note that U = 0.493*(B-Y), V = 0.877*(R-Y).
@@ -1360,12 +1360,12 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         x_map[i].x=0.298839*(double) i;
         y_map[i].x=0.586811*(double) i;
         z_map[i].x=0.114350*(double) i;
-        x_map[i].y=(-0.168736)*(double) i;
-        y_map[i].y=(-0.331264)*(double) i;
-        z_map[i].y=0.500000*(double) i;
-        x_map[i].z=0.500000*(double) i;
-        y_map[i].z=(-0.418688)*(double) i;
-        z_map[i].z=(-0.081312)*(double) i;
+        x_map[i].y=(-0.147130)*(double) i;
+        y_map[i].y=(-0.288860)*(double) i;
+        z_map[i].y=0.436000*(double) i;
+        x_map[i].z=0.615000*(double) i;
+        y_map[i].z=(-0.514990)*(double) i;
+        z_map[i].z=(-0.100001)*(double) i;
       }
       break;
     }
@@ -3094,9 +3094,9 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       /*
         Initialize YUV tables:
 
-          R = Y          +1.4075*V
-          G = Y-0.3455*U-0.7169*V
-          B = Y+1.7790*U
+          R = Y         +1.13983*V
+          G = Y-0.39464*U-0.58060*V
+          B = Y+2.03211*U
 
         U and V, normally -0.5 through 0.5, must be normalized to the range 0
         through QuantumRange.
@@ -3108,16 +3108,18 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
         x_map[i].x=(double) i;
-        y_map[i].x=0.00000;
-        z_map[i].x=0.70375*(2.0000*(double) i-(double) MaxMap);
-        x_map[i].y=(double) i;
-        y_map[i].y=(-0.17275)*(2.00000*(double) i-(double)
+        y_map[i].x=(-3.945707070708279e-05);
+        z_map[i].x=0.5*1.1398279671717170825*(2.0000*(double) i-(double)
           MaxMap);
-        z_map[i].y=(-0.35845)*(2.00000*(double) i-(double)
+        x_map[i].y=(double) i;
+        y_map[i].y=0.5*(-0.3946101641414141437)*(2.00000*(double) i-(double)
+          MaxMap);
+        z_map[i].y=0.5*(-0.5805003156565656797)*(2.00000*(double) i-(double)
           MaxMap);
         x_map[i].z=(double) i;
-        y_map[i].z=0.8895*(2.00000*(double) i-(double) MaxMap);
-        z_map[i].z=0.00000;
+        y_map[i].z=0.5*2.0319996843434342537*(2.00000*(double) i-(double)
+          MaxMap);
+        z_map[i].z=(-4.813762626262513e-04);
       }
       break;
     }
