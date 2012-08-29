@@ -839,7 +839,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
         logmap[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*(reference_white+
-          log10(black+((MagickRealType) i/MaxMap)*(1.0-black))/((gamma/density)*
+          log10(black+(1.0*i/MaxMap)*(1.0-black))/((gamma/density)*
           0.002/film_gamma))/1024.0));
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1209,15 +1209,15 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.33333*(MagickRealType) i;
-        y_map[i].x=0.33334*(MagickRealType) i;
-        z_map[i].x=0.33333*(MagickRealType) i;
-        x_map[i].y=0.50000*(MagickRealType) i;
-        y_map[i].y=0.00000*(MagickRealType) i;
-        z_map[i].y=(-0.50000)*(MagickRealType) i;
-        x_map[i].z=(-0.25000)*(MagickRealType) i;
-        y_map[i].z=0.50000*(MagickRealType) i;
-        z_map[i].z=(-0.25000)*(MagickRealType) i;
+        x_map[i].x=0.33333*i;
+        y_map[i].x=0.33334*i;
+        z_map[i].x=0.33333*i;
+        x_map[i].y=0.50000*i;
+        y_map[i].y=0.00000*i;
+        z_map[i].y=(-0.50000)*i;
+        x_map[i].z=(-0.25000)*i;
+        y_map[i].z=0.50000*i;
+        z_map[i].z=(-0.25000)*i;
       }
       break;
     }
@@ -1242,15 +1242,15 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.2988390*(MagickRealType) i;
-        y_map[i].x=0.5868110*(MagickRealType) i;
-        z_map[i].x=0.1143500*(MagickRealType) i;
-        x_map[i].y=(-0.1687367)*(MagickRealType) i;
-        y_map[i].y=(-0.331264)*(MagickRealType) i;
-        z_map[i].y=0.500000*(MagickRealType) i;
-        x_map[i].z=0.500000*(MagickRealType) i;
-        y_map[i].z=(-0.418688)*(MagickRealType) i;
-        z_map[i].z=(-0.081312)*(MagickRealType) i;
+        x_map[i].x=0.2988390*i;
+        y_map[i].x=0.5868110*i;
+        z_map[i].x=0.1143500*i;
+        x_map[i].y=(-0.1687367)*i;
+        y_map[i].y=(-0.331264)*i;
+        z_map[i].y=0.500000*i;
+        x_map[i].z=0.500000*i;
+        y_map[i].z=(-0.418688)*i;
+        z_map[i].z=(-0.081312)*i;
       }
       break;
     }
@@ -1266,15 +1266,15 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.21260*(MagickRealType) i;
-        y_map[i].x=0.71520*(MagickRealType) i;
-        z_map[i].x=0.07220*(MagickRealType) i;
-        x_map[i].y=0.21260*(MagickRealType) i;
-        y_map[i].y=0.71520*(MagickRealType) i;
-        z_map[i].y=0.07220*(MagickRealType) i;
-        x_map[i].z=0.21260*(MagickRealType) i;
-        y_map[i].z=0.71520*(MagickRealType) i;
-        z_map[i].z=0.07220*(MagickRealType) i;
+        x_map[i].x=0.21260*i;
+        y_map[i].x=0.71520*i;
+        z_map[i].x=0.07220*i;
+        x_map[i].y=0.21260*i;
+        y_map[i].y=0.71520*i;
+        z_map[i].y=0.07220*i;
+        x_map[i].z=0.21260*i;
+        y_map[i].z=0.71520*i;
+        z_map[i].z=0.07220*i;
       }
       break;
     }
@@ -1298,15 +1298,15 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.212600*(MagickRealType) i;
-        y_map[i].x=0.715200*(MagickRealType) i;
-        z_map[i].x=0.072200*(MagickRealType) i;
-        x_map[i].y=(-0.114572)*(MagickRealType) i;
-        y_map[i].y=(-0.385428)*(MagickRealType) i;
-        z_map[i].y=0.500000*(MagickRealType) i;
-        x_map[i].z=0.500000*(MagickRealType) i;
-        y_map[i].z=(-0.454153)*(MagickRealType) i;
-        z_map[i].z=(-0.045847)*(MagickRealType) i;
+        x_map[i].x=0.212600*i;
+        y_map[i].x=0.715200*i;
+        z_map[i].x=0.072200*i;
+        x_map[i].y=(-0.114572)*i;
+        y_map[i].y=(-0.385428)*i;
+        z_map[i].y=0.500000*i;
+        x_map[i].z=0.500000*i;
+        y_map[i].z=(-0.454153)*i;
+        z_map[i].z=(-0.045847)*i;
       }
       break;
     }
@@ -1325,27 +1325,27 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       primary_info.z=(double) ScaleQuantumToMap(ScaleCharToQuantum(137));
       for (i=0; i <= (ssize_t) (0.018*MaxMap); i++)
       {
-        x_map[i].x=0.003962014134275617*(MagickRealType) i;
-        y_map[i].x=0.007778268551236748*(MagickRealType) i;
-        z_map[i].x=0.001510600706713781*(MagickRealType) i;
-        x_map[i].y=(-0.002426619775463276)*(MagickRealType) i;
-        y_map[i].y=(-0.004763965913702149)*(MagickRealType) i;
-        z_map[i].y=0.007190585689165425*(MagickRealType) i;
-        x_map[i].z=0.006927257754597858*(MagickRealType) i;
-        y_map[i].z=(-0.005800713697502058)*(MagickRealType) i;
-        z_map[i].z=(-0.0011265440570958)*(MagickRealType) i;
+        x_map[i].x=0.003962014134275617*i;
+        y_map[i].x=0.007778268551236748*i;
+        z_map[i].x=0.001510600706713781*i;
+        x_map[i].y=(-0.002426619775463276)*i;
+        y_map[i].y=(-0.004763965913702149)*i;
+        z_map[i].y=0.007190585689165425*i;
+        x_map[i].z=0.006927257754597858*i;
+        y_map[i].z=(-0.005800713697502058)*i;
+        z_map[i].z=(-0.0011265440570958)*i;
       }
       for ( ; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.2201118963486454*(1.099*(MagickRealType) i-0.099);
-        y_map[i].x=0.4321260306242638*(1.099*(MagickRealType) i-0.099);
-        z_map[i].x=0.08392226148409894*(1.099*(MagickRealType) i-0.099);
-        x_map[i].y=(-0.1348122097479598)*(1.099*(MagickRealType) i-0.099);
-        y_map[i].y=(-0.2646647729834528)*(1.099*(MagickRealType) i-0.099);
-        z_map[i].y=0.3994769827314126*(1.099*(MagickRealType) i-0.099);
-        x_map[i].z=0.3848476530332144*(1.099*(MagickRealType) i-0.099);
-        y_map[i].z=(-0.3222618720834477)*(1.099*(MagickRealType) i-0.099);
-        z_map[i].z=(-0.06258578094976668)*(1.099*(MagickRealType) i-0.099);
+        x_map[i].x=0.2201118963486454*(1.099*i-0.099);
+        y_map[i].x=0.4321260306242638*(1.099*i-0.099);
+        z_map[i].x=0.08392226148409894*(1.099*i-0.099);
+        x_map[i].y=(-0.1348122097479598)*(1.099*i-0.099);
+        y_map[i].y=(-0.2646647729834528)*(1.099*i-0.099);
+        z_map[i].y=0.3994769827314126*(1.099*i-0.099);
+        x_map[i].z=0.3848476530332144*(1.099*i-0.099);
+        y_map[i].z=(-0.3222618720834477)*(1.099*i-0.099);
+        z_map[i].z=(-0.06258578094976668)*(1.099*i-0.099);
       }
       break;
     }
@@ -1355,8 +1355,8 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         Initialize YIQ tables:
 
           Y = 0.298839*R+0.586811*G+0.114350*B
-          I = 0.59600*R-0.27400*G-0.32200*B
-          Q = 0.21100*R-0.52300*G+0.31200*B
+          I = 0.595716*R-0.274453*G-0.321263*B
+          Q = 0.211456*R-0.522591*G+0.311135*B
 
         I and Q, normally -0.5 through 0.5, are normalized to the range 0
         through QuantumRange.
@@ -1369,15 +1369,15 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.298839*(MagickRealType) i;
-        y_map[i].x=0.586811*(MagickRealType) i;
-        z_map[i].x=0.114350*(MagickRealType) i;
-        x_map[i].y=0.59600*(MagickRealType) i;
-        y_map[i].y=(-0.27400)*(MagickRealType) i;
-        z_map[i].y=(-0.32200)*(MagickRealType) i;
-        x_map[i].z=0.21100*(MagickRealType) i;
-        y_map[i].z=(-0.52300)*(MagickRealType) i;
-        z_map[i].z=0.31200*(MagickRealType) i;
+        x_map[i].x=0.298839*i;
+        y_map[i].x=0.586811*i;
+        z_map[i].x=0.114350*i;
+        x_map[i].y=0.595716*i;
+        y_map[i].y=(-0.274453)*i;
+        z_map[i].y=(-0.321263)*i;
+        x_map[i].z=0.211456*i;
+        y_map[i].z=(-0.522591)*i;
+        z_map[i].z=0.311135*i;
       }
       break;
     }
@@ -1387,8 +1387,8 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         Initialize YPbPr tables (ITU-R BT.601):
 
           Y =  0.2988390*R+0.5868110*G+0.1143500*B
-          Pb= -0.168736*R-0.331264*G+0.500000*B
-          Pr=  0.500000*R-0.418688*G-0.081312*B
+          Pb= -0.1687367*R-0.3312640*G+0.5000000*B
+          Pr=  0.5000000*R-0.4186880*G-0.0813120*B
 
         Pb and Pr, normally -0.5 through 0.5, are normalized to the range 0
         through QuantumRange.
@@ -1401,15 +1401,15 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.2988390*(MagickRealType) i;
-        y_map[i].x=0.5868110*(MagickRealType) i;
-        z_map[i].x=0.1143500*(MagickRealType) i;
-        x_map[i].y=(-0.168736)*(MagickRealType) i;
-        y_map[i].y=(-0.331264)*(MagickRealType) i;
-        z_map[i].y=0.500000*(MagickRealType) i;
-        x_map[i].z=0.500000*(MagickRealType) i;
-        y_map[i].z=(-0.418688)*(MagickRealType) i;
-        z_map[i].z=(-0.081312)*(MagickRealType) i;
+        x_map[i].x=0.2988390*i;
+        y_map[i].x=0.5868110*i;
+        z_map[i].x=0.1143500*i;
+        x_map[i].y=(-0.1687367)*i;
+        y_map[i].y=(-0.331264)*i;
+        z_map[i].y=0.500000*i;
+        x_map[i].z=0.500000*i;
+        y_map[i].z=(-0.418688)*i;
+        z_map[i].z=(-0.081312)*i;
       }
       break;
     }
@@ -1433,15 +1433,15 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.298839*(MagickRealType) i;
-        y_map[i].x=0.586811*(MagickRealType) i;
-        z_map[i].x=0.114350*(MagickRealType) i;
-        x_map[i].y=(-0.147130)*(double) i;
-        y_map[i].y=(-0.288860)*(double) i;
-        z_map[i].y=0.436000*(double) i;
-        x_map[i].z=0.615000*(double) i;
-        y_map[i].z=(-0.514990)*(double) i;
-        z_map[i].z=(-0.100001)*(double) i;
+        x_map[i].x=0.298839*i;
+        y_map[i].x=0.586811*i;
+        z_map[i].x=0.114350*i;
+        x_map[i].y=(-0.147130)*i;
+        y_map[i].y=(-0.288860)*i;
+        z_map[i].y=0.436000*i;
+        x_map[i].z=0.615000*i;
+        y_map[i].z=(-0.514990)*i;
+        z_map[i].z=(-0.100001)*i;
       }
       break;
     }
@@ -1456,15 +1456,15 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) i;
+        x_map[i].x=1.0*i;
         y_map[i].x=0.0f;
         z_map[i].x=0.0f;
         x_map[i].y=0.0f;
-        y_map[i].y=(MagickRealType) i;
+        y_map[i].y=1.0*i;
         z_map[i].y=0.0f;
         x_map[i].z=0.0f;
         y_map[i].z=0.0f;
-        z_map[i].z=(MagickRealType) i;
+        z_map[i].z=1.0*i;
       }
       break;
     }
@@ -1568,11 +1568,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           pixel;
 
         red=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor(
-          (MagickRealType) image->colormap[i].red)));
+          1.0*image->colormap[i].red)));
         green=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor(
-          (MagickRealType) image->colormap[i].green)));
+          1.0*image->colormap[i].green)));
         blue=ScaleQuantumToMap(ClampToQuantum(InversesRGBCompandor(
-          (MagickRealType) image->colormap[i].blue)));
+          1.0*image->colormap[i].blue)));
         pixel.red=x_map[red].x+y_map[green].x+z_map[blue].x+primary_info.x;
         pixel.green=x_map[red].y+y_map[green].y+z_map[blue].y+primary_info.y;
         pixel.blue=x_map[red].z+y_map[green].z+z_map[blue].z+primary_info.z;
@@ -3015,20 +3015,15 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) i;
-        y_map[i].x=0.500000*(2.000000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
-        z_map[i].x=(-0.333340)*(2.000000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
-        x_map[i].y=(MagickRealType) i;
+        x_map[i].x=1.0*i;
+        y_map[i].x=0.500000*(2.0*i-MaxMap);
+        z_map[i].x=(-0.333340)*(2.0*i-MaxMap);
+        x_map[i].y=1.0*i;
         y_map[i].y=0.000000;
-        z_map[i].y=0.666665*(2.000000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
-        x_map[i].z=(MagickRealType) i;
-        y_map[i].z=(-0.500000)*(2.000000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
-        z_map[i].z=(-0.333340)*(2.000000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
+        z_map[i].y=0.666665*(2.0*i-MaxMap);
+        x_map[i].z=1.0*i;
+        y_map[i].z=(-0.500000)*(2.0*i-MaxMap);
+        z_map[i].z=(-0.333340)*(2.0*i-MaxMap);
       }
       break;
     }
@@ -3053,12 +3048,12 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       {
         x_map[i].x=0.99999999999914679361*i;
         y_map[i].x=(1.2188941887145875e-06)*i;
-        z_map[i].x=0.5*1.4019995886561440468*(2.000000*i-MaxMap);
+        z_map[i].x=0.5*1.4019995886561440468*(2.00*i-MaxMap);
         x_map[i].y=0.99999975910502514331*i;
-        y_map[i].y=0.5*(-0.34413567816504303521)*(2.000000*i-MaxMap);
-        z_map[i].y=0.5*(-0.71413649331646789076)*(2.000000*i-MaxMap);
+        y_map[i].y=0.5*(-0.34413567816504303521)*(2.00*i-MaxMap);
+        z_map[i].y=0.5*(-0.71413649331646789076)*(2.00*i-MaxMap);
         x_map[i].z=1.00000124040004623180*i;
-        y_map[i].z=0.5*1.77200006607230409200*(2.000000*i-MaxMap);
+        y_map[i].z=0.5*1.77200006607230409200*(2.00*i-MaxMap);
         z_map[i].z=2.1453384174593273e-06*i;
       }
       break;
@@ -3081,19 +3076,15 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) i;
-        y_map[i].x=0.000000;
-        z_map[i].x=(1.574800*0.50000)*(2.00000*(MagickRealType) i-
-          (MagickRealType) MaxMap);
-        x_map[i].y=(MagickRealType) i;
-        y_map[i].y=(-0.187324*0.50000)*(2.00000*(MagickRealType) i-
-          (MagickRealType) MaxMap);
-        z_map[i].y=(-0.468124*0.50000)*(2.00000*(MagickRealType) i-
-          (MagickRealType) MaxMap);
-        x_map[i].z=(MagickRealType) i;
-        y_map[i].z=(1.855600*0.50000)*(2.00000*(MagickRealType) i-
-          (MagickRealType) MaxMap);
-        z_map[i].z=0.00000f;
+        x_map[i].x=1.0*i;
+        y_map[i].x=0.000000*(2.0*i-MaxMap);
+        z_map[i].x=0.5*1.574800(2.0*i-MaxMap);
+        x_map[i].y=1.0*i;
+        y_map[i].y=0.5*(-0.187324)*(2.0*i-MaxMap);
+        z_map[i].y=0.5*(-0.468124)*(2.0*i-MaxMap);
+        x_map[i].z=1.0*i;
+        y_map[i].z=0.5*1.855600*(2.0*i-MaxMap);
+        z_map[i].z=0.000000*(2.0*i-MaxMap);
       }
       break;
     }
@@ -3114,17 +3105,17 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=1.3584000*(MagickRealType) i;
+        x_map[i].x=1.3584000*i;
         y_map[i].x=0.0000000;
-        z_map[i].x=1.8215000*((MagickRealType) i-(MagickRealType)
+        z_map[i].x=1.8215000*(i-(MagickRealType)
           ScaleQuantumToMap(ScaleCharToQuantum(137)));
-        x_map[i].y=1.3584000*(MagickRealType) i;
-        y_map[i].y=(-0.4302726)*((MagickRealType) i-(MagickRealType)
+        x_map[i].y=1.3584000*i;
+        y_map[i].y=(-0.4302726)*(i-(MagickRealType)
           ScaleQuantumToMap(ScaleCharToQuantum(156)));
-        z_map[i].y=(-0.9271435)*((MagickRealType) i-(MagickRealType)
+        z_map[i].y=(-0.9271435)*(i-(MagickRealType)
           ScaleQuantumToMap(ScaleCharToQuantum(137)));
-        x_map[i].z=1.3584000*(MagickRealType) i;
-        y_map[i].z=2.2179000*((MagickRealType) i-(MagickRealType)
+        x_map[i].z=1.3584000*i;
+        y_map[i].z=2.2179000*(i-(MagickRealType)
           ScaleQuantumToMap(ScaleCharToQuantum(156)));
         z_map[i].z=0.0000000;
       }
@@ -3148,21 +3139,15 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) i;
-        y_map[i].x=0.47810*(2.00000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
-        z_map[i].x=0.31070*(2.00000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
-        x_map[i].y=(MagickRealType) i;
-        y_map[i].y=(-0.13635)*(2.00000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
-        z_map[i].y=(-0.32340)*(2.00000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
-        x_map[i].z=(MagickRealType) i;
-        y_map[i].z=(-0.55185)*(2.00000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
-        z_map[i].z=0.85030*(2.00000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
+        x_map[i].x=1.0*i;
+        y_map[i].x=0.5*0.9562957197589482261*(2.00000*i-MaxMap);
+        z_map[i].x=0.5*0.6210244164652610754*(2.00000*i-MaxMap);
+        x_map[i].y=1.0*i;
+        y_map[i].y=0.5*(-0.2721220993185104464)*(2.00000*i-MaxMap);
+        z_map[i].y=0.5*(-0.6473805968256950427)*(2.00000*i-MaxMap);
+        x_map[i].z=1.0*i;
+        y_map[i].z=0.5*(-1.1069890167364901945)*(2.00000*i-MaxMap);
+        z_map[i].z=0.5*1.7046149983646481374*(2.00000*i-MaxMap);
       }
       break;
     }
@@ -3184,19 +3169,15 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) i;
-        y_map[i].x=0.000000;
-        z_map[i].x=0.701000*(2.00000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
-        x_map[i].y=(MagickRealType) i;
-        y_map[i].y=(-0.172068)*(2.00000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
-        z_map[i].y=0.357068*(2.00000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
-        x_map[i].z=(MagickRealType) i;
-        y_map[i].z=0.88600*(2.00000*(MagickRealType) i-(MagickRealType)
-          MaxMap);
-        z_map[i].z=0.00000f;
+        x_map[i].x=0.99999999999914679361*i;
+        y_map[i].x=(-1.2188941887145875e-06)*(2.0*i-MaxMap);
+        z_map[i].x=0.5*1.4019995886561440468*(2.0*i-MaxMap);
+        x_map[i].y=0.99999975910502514331*i;
+        y_map[i].y=0.5*(-0.34413567816504303521)*(2.0*i-MaxMap);
+        z_map[i].y=0.5*(-0.71413649331646789076)*(2.0*i-MaxMap);
+        x_map[i].z=1.00000124040004623180*i;
+        y_map[i].z=0.5*1.77200006607230409200*(2.0*i-MaxMap);
+        z_map[i].z=2.1453384174593273e-06*(2.0*i-MaxMap);
       }
       break;
     }
@@ -3218,19 +3199,15 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(double) i;
-        y_map[i].x=(-3.945707070708279e-05)*i;
-        z_map[i].x=0.5*1.1398279671717170825*(2.0000*(double) i-(double)
-          MaxMap);
-        x_map[i].y=(double) i;
-        y_map[i].y=0.5*(-0.3946101641414141437)*(2.00000*(double) i-(double)
-          MaxMap);
-        z_map[i].y=0.5*(-0.5805003156565656797)*(2.00000*(double) i-(double)
-          MaxMap);
-        x_map[i].z=(double) i;
-        y_map[i].z=0.5*2.0319996843434342537*(2.00000*(double) i-(double)
-          MaxMap);
-        z_map[i].z=(-4.813762626262513e-04)*i;
+        x_map[i].x=1.0*i;
+        y_map[i].x=(-3.945707070708279e-05)*(2.0*i-MaxMap);
+        z_map[i].x=0.5*1.1398279671717170825*(2.0*i-MaxMap);
+        x_map[i].y=1.0*i;
+        y_map[i].y=0.5*(-0.3946101641414141437)*(2.0*i-MaxMap);
+        z_map[i].y=0.5*(-0.5805003156565656797)*(2.0*i-MaxMap);
+        x_map[i].z=1.0*i;
+        y_map[i].z=0.5*2.0319996843434342537*(2.0*i-MaxMap);
+        z_map[i].z=(-4.813762626262513e-04)*(2.0*i-MaxMap);
       }
       break;
     }
@@ -3245,15 +3222,15 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=(MagickRealType) i;
+        x_map[i].x=1.0*i;
         y_map[i].x=0.0f;
         z_map[i].x=0.0f;
         x_map[i].y=0.0f;
-        y_map[i].y=(MagickRealType) i;
+        y_map[i].y=1.0*i;
         z_map[i].y=0.0f;
         x_map[i].z=0.0f;
         y_map[i].z=0.0f;
-        z_map[i].z=(MagickRealType) i;
+        z_map[i].z=1.0*i;
       }
       break;
     }
