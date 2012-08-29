@@ -228,7 +228,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->rows=tga_info.height;
   alpha_bits=(tga_info.attributes & 0x0FU);
   image->alpha_trait=(alpha_bits > 0) || (tga_info.bits_per_pixel == 32) ?
-    MagickTrue : MagickFalse;
+    BlendPixelTrait : UndefinedPixelTrait;
   if ((tga_info.image_type != TGAColormap) &&
       (tga_info.image_type != TGARLEColormap))
     image->depth=(size_t) ((tga_info.bits_per_pixel <= 8) ? 8 :

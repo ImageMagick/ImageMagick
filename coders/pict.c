@@ -1076,7 +1076,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 ReadPixmap(pixmap);
                 tile_image->depth=1UL*pixmap.component_size;
                 tile_image->alpha_trait=pixmap.component_count == 4 ?
-                  MagickTrue : MagickFalse;
+                  BlendPixelTrait : UndefinedPixelTrait;
                 tile_image->resolution.x=(double) pixmap.horizontal_resolution;
                 tile_image->resolution.y=(double) pixmap.vertical_resolution;
                 tile_image->units=PixelsPerInchResolution;

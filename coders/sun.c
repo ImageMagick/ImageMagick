@@ -383,7 +383,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       default:
         ThrowReaderException(CoderError,"ColormapTypeNotSupported");
     }
-    image->alpha_trait=sun_info.depth == 32 ? MagickTrue : MagickFalse;
+    image->alpha_trait=sun_info.depth == 32 ? BlendPixelTrait : 
+      UndefinedPixelTrait;
     image->columns=sun_info.width;
     image->rows=sun_info.height;
     if (image_info->ping != MagickFalse)

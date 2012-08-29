@@ -241,9 +241,8 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickBooleanType
     status,
     cubemap = MagickFalse,
-    volume = MagickFalse,
-    matte;
-  
+    volume = MagickFalse;
+
   CompressionType
     compression;
 
@@ -252,6 +251,9 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   
   DDSDecoder
     *decoder;
+  
+  PixelTrait
+    alpha_trait;
   
   size_t
     n, num_images;
@@ -297,12 +299,12 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       compression = NoCompression;
       if (dds_info.pixelformat.flags & DDPF_ALPHAPIXELS)
         {
-          matte = MagickTrue;
+          alpha_trait = BlendPixelTrait;
           decoder = ReadUncompressedRGBA;
         }
       else
         {
-          matte = MagickTrue;
+          alpha_trait = UndefinedPixelTrait;
           decoder = ReadUncompressedRGB;
         }
     }
@@ -312,7 +314,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         case FOURCC_DXT1:
         {
-          matte = MagickFalse;
+          alpha_trait = UndefinedPixelTrait;
           compression = DXT1Compression;
           decoder = ReadDXT1;
           break;
@@ -320,7 +322,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         
         case FOURCC_DXT3:
         {
-          matte = MagickTrue;
+          alpha_trait = BlendPixelTrait;
           compression = DXT3Compression;
           decoder = ReadDXT3;
           break;
@@ -328,7 +330,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         
         case FOURCC_DXT5:
         {
-          matte = MagickTrue;
+          alpha_trait = BlendPixelTrait;
           compression = DXT5Compression;
           decoder = ReadDXT5;
           break;
@@ -379,7 +381,7 @@ static Image *ReadDDSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=SyncNextImageInList(image);
       }
     
-    image->alpha_trait = matte;
+    image->alpha_trait=alpha_trait;
     image->compression = compression;
     image->columns = dds_info.width;
     image->rows = dds_info.height;

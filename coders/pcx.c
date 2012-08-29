@@ -431,7 +431,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       }
     if (image->storage_class == DirectClass)
-      image->alpha_trait=pcx_info.planes > 3 ? MagickTrue : MagickFalse;
+      image->alpha_trait=pcx_info.planes > 3 ? BlendPixelTrait :
+        UndefinedPixelTrait;
     else
       if ((pcx_info.version == 5) ||
           ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))

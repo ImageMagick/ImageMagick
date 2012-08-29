@@ -479,8 +479,8 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
     x,
     y;
 
-  MagickBooleanType
-    matte;
+  PixelTrait
+    alpha_trait;
 
   Pixmap
     annotate_pixmap;
@@ -695,11 +695,11 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
     Composite text onto the image.
   */
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
-  matte=image->alpha_trait;
+  alpha_trait=image->alpha_trait;
   (void) CompositeImage(image,annotate_image,
-    annotate_image->alpha_trait == BlendPixelTrait ? OverCompositeOp : CopyCompositeOp,
-    MagickTrue,(ssize_t) x,(ssize_t) y,exception);
-  image->alpha_trait=matte;
+    annotate_image->alpha_trait == BlendPixelTrait ? OverCompositeOp :
+    CopyCompositeOp,MagickTrue,(ssize_t) x,(ssize_t) y,exception);
+  image->alpha_trait=alpha_trait;
   annotate_image=DestroyImage(annotate_image);
   return(MagickTrue);
 }
@@ -2318,8 +2318,8 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
     x,
     y;
 
-  MagickBooleanType
-    matte;
+  PixelTrait
+    alpha_trait;
 
   Pixmap
     draw_pixmap;
@@ -2639,10 +2639,10 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
       (ssize_t) x,(ssize_t) y,exception);
   else
     {
-      matte=image->alpha_trait;
+      alpha_trait=image->alpha_trait;
       (void) CompositeImage(image,draw_image,OverCompositeOp,MagickTrue,
         (ssize_t) x,(ssize_t) y,exception);
-      image->alpha_trait=matte;
+      image->alpha_trait=alpha_trait;
     }
   draw_image=DestroyImage(draw_image);
   return(MagickTrue);

@@ -751,7 +751,8 @@ static inline void SetAssociatedAlpha(const Image *image,CubeInfo *cube_info)
   MagickBooleanType
     associate_alpha;
 
-  associate_alpha=image->alpha_trait;
+  associate_alpha=image->alpha_trait == BlendPixelTrait ? MagickTrue :
+    MagickFalse;
   if (cube_info->quantize_info->colorspace == TransparentColorspace)
     associate_alpha=MagickFalse;
   if ((cube_info->quantize_info->number_colors == 2) &&

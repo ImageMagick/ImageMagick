@@ -252,7 +252,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image structure.
   */
-  image->alpha_trait=rla_info.number_matte_channels != 0 ? MagickTrue : MagickFalse;
+  image->alpha_trait=rla_info.number_matte_channels != 0 ? BlendPixelTrait : 
+    UndefinedPixelTrait;
   image->columns=1UL*rla_info.active_window.right-rla_info.active_window.left+1;
   image->rows=1UL*rla_info.active_window.top-rla_info.active_window.bottom+1;
   if (image_info->ping != MagickFalse)

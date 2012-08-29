@@ -3992,7 +3992,7 @@ static inline double MagickMax(const double x,const double y)
   return(y);
 }
 
-static inline void CatromWeights(const double x,double **weights)
+static inline void CatromWeights(const double x,double (*weights)[4])
 {
   double
     alpha,
@@ -4019,7 +4019,7 @@ static inline void CatromWeights(const double x,double **weights)
   (*weights)[2]=x-(*weights)[3]-gamma;
 }
 
-static inline void SplineWeights(const double x,double **weights)
+static inline void SplineWeights(const double x,double (*weights)[4])
 {
   double
     alpha,

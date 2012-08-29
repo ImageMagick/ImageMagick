@@ -10013,12 +10013,12 @@ WandExport MagickBooleanType MagickSetImageMatte(MagickWand *wand,
   assert(wand->signature == WandSignature);
   if( IfMagickTrue(wand->debug) )
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  if( IfMagickFalse(wand->images->alpha_trait) && IsMagickTrue(matte))
+  if ((wand->images->alpha_trait != BlendPixelTrait) && IsMagickTrue(matte))
     (void) SetImageAlpha(wand->images,OpaqueAlpha,wand->exception);
-  wand->images->alpha_trait=matte;
+  wand->images->alpha_trait=matte != MagickFalse ? BlendPixelTrait :
+    UndefinedPixelTrait;
   return(MagickTrue);
 }
 

@@ -1253,7 +1253,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->ticks_per_second=100;
     image->dispose=(DisposeType) dispose;
     image->iterations=iterations;
-    image->alpha_trait=opacity >= 0 ? MagickTrue : MagickFalse;
+    image->alpha_trait=opacity >= 0 ? BlendPixelTrait : UndefinedPixelTrait;
     delay=0;
     dispose=0;
     iterations=1;

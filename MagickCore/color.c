@@ -2434,7 +2434,8 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
   if (p == (const ColorInfo *) NULL)
     return(MagickFalse);
   color->colorspace=sRGBColorspace;
-  color->alpha_trait=p->color.alpha != OpaqueAlpha ? MagickTrue : MagickFalse;
+  color->alpha_trait=p->color.alpha != OpaqueAlpha ? BlendPixelTrait :
+    UndefinedPixelTrait;
   color->red=(double) p->color.red;
   color->green=(double) p->color.green;
   color->blue=(double) p->color.blue;

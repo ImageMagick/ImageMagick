@@ -832,7 +832,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  image->alpha_trait=psd_info.channels >= 4 ? MagickTrue : MagickFalse;
+  image->alpha_trait=psd_info.channels >= 4 ? BlendPixelTrait :
+    UndefinedPixelTrait;
   if (psd_info.mode == LabMode)
     SetImageColorspace(image,LabColorspace,exception);
   psd_info.color_channels=3;
@@ -840,7 +841,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       psd_info.color_channels=4;
       SetImageColorspace(image,CMYKColorspace,exception);
-      image->alpha_trait=psd_info.channels >= 5 ? MagickTrue : MagickFalse;
+      image->alpha_trait=psd_info.channels >= 5 ? BlendPixelTrait : 
+        UndefinedPixelTrait;
     }
   if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
       (psd_info.mode == DuotoneMode))
@@ -848,7 +850,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       psd_info.color_channels=1;
       if (AcquireImageColormap(image,256,exception) == MagickFalse)
         ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-      image->alpha_trait=psd_info.channels >= 2 ? MagickTrue : MagickFalse;
+      image->alpha_trait=psd_info.channels >= 2 ? BlendPixelTrait : 
+        UndefinedPixelTrait;
       if (image->debug != MagickFalse)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "  Image colormap allocated");
@@ -989,8 +992,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickOffsetType
             layer_offset;
 
-          image->alpha_trait=psd_info.channels > psd_info.color_channels ?  MagickTrue : MagickFalse;
-
+          image->alpha_trait=psd_info.channels > psd_info.color_channels ?
+            BlendPixelTrait : UndefinedPixelTrait;
+ 
           if (image->debug != MagickFalse)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               image->alpha_trait ? "  image has matte" : "  image has no matte");
