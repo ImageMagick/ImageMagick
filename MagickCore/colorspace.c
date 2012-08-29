@@ -129,9 +129,9 @@ static inline void ConvertRGBToXYZ(const double red,const double green,
   r=QuantumScale*red;
   g=QuantumScale*green;
   b=QuantumScale*blue;
-  *X=0.4124564*r+0.3575761*g+0.1804375*b;
-  *Y=0.2126729*r+0.7151522*g+0.0721750*b;
-  *Z=0.0193339*r+0.1191920*g+0.9503041*b;
+  *X=0.41239558896741421610*r+0.35758343076371481710*g+0.18049264738170157350*b;
+  *Y=0.21258623078559555160*r+0.71517030370341084990*g+0.07220049864333622685*b;
+  *Z=0.01929721549174694484*r+0.11918386458084853180*g+0.95049712513157976600*b;
 }
 
 static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
@@ -1741,9 +1741,9 @@ static inline void ConvertXYZToRGB(const double x,const double y,
   assert(red != (double *) NULL);
   assert(green != (double *) NULL);
   assert(blue != (double *) NULL);
-  r=3.2404542*x-1.5371385*y-0.4985314*z;
-  g=(-0.9692660*x+1.8760108*y+0.0415560*z);
-  b=0.0556434*x-0.2040259*y+1.0572252*z;
+  r=3.2406*x-1.5372*y-0.4986*z;
+  g=(-0.9689*x+1.8758*y+0.0415*z);
+  b=0.0557*x-0.2040*y+1.0570*z;
   *red=QuantumRange*r;
   *green=QuantumRange*g;
   *blue=QuantumRange*b;
