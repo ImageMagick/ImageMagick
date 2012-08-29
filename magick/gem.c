@@ -1018,7 +1018,7 @@ MagickExport size_t  GetOptimalKernelWidth(const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InversesRGBCompandor() removes the gamma function from an sRGB pixel.
+%  InversesRGBCompandor() removes the gamma function from a sRGB pixel.
 %
 %  The format of the InversesRGBCompandor method is:
 %
@@ -1047,7 +1047,7 @@ MagickExport MagickRealType InversesRGBCompandor(const MagickRealType pixel)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  sRGBCompandor() adds the gamma function to an sRGB pixel.
+%  sRGBCompandor() adds the gamma function to a sRGB pixel.
 %
 %  The format of the sRGBCompandor method is:
 %
