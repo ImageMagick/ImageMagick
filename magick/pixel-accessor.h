@@ -104,14 +104,14 @@ extern "C" {
 
 static inline MagickRealType InversesRGBCompandor(const MagickRealType pixel)
 {
-  if (pixel <= (0.04045*QuantumRange))
+  if (pixel <= (0.0404482362771076*QuantumRange))
     return(pixel/12.92);
   return(QuantumRange*pow((QuantumScale*pixel+0.055)/1.055,2.4));
 }
 
 static inline MagickRealType sRGBCompandor(const MagickRealType pixel)
 {
-  if (pixel <= (0.0031308*QuantumRange))
+  if (pixel <= (0.0031306684425005883*QuantumRange))
     return(12.92*pixel);
   return(QuantumRange*(1.055*pow(QuantumScale*pixel,1.0/2.4)-0.055));
 }
