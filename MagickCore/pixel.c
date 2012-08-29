@@ -3992,38 +3992,39 @@ static inline double MagickMax(const double x,const double y)
   return(y);
 }
 
-static inline void CatromWeights(const double x,
-  double (*weights)[4])
+static inline void CatromWeights(const double x,double **weights)
 {
-  /*
-    Nicolas Robidoux' 10 flops (4* + 5- + 1+) refactoring of the
-    computation of the standard four 1D Catmull-Rom weights. The
-    sampling location is assumed between the second and third input
-    pixel locations, and x is the position relative to the second
-    input pixel location. Formulas originally derived for the VIPS
-    (Virtual Image Processing System) library.
-  */
   double
     alpha,
     beta,
     gamma;
 
+  /*
+    Nicolas Robidoux' 10 flops (4* + 5- + 1+) refactoring of the computation
+    of the standard four 1D Catmull-Rom weights. The sampling location is
+    assumed between the second and third input pixel locations, and x is the
+    position relative to the second input pixel location. Formulas originally
+    derived for the VIPS (Virtual Image Processing System) library.
+  */
   alpha=(double) 1.0-x;
   beta=(double) (-0.5)*x*alpha;
   (*weights)[0]=alpha*beta;
   (*weights)[3]=x*beta;
   /*
-    The following computation of the inner weights from the outer ones
-    works for all Keys cubics.
+    The following computation of the inner weights from the outer ones work
+    for all Keys cubics.
   */
   gamma=(*weights)[3]-(*weights)[0];
   (*weights)[1]=alpha-(*weights)[0]+gamma;
   (*weights)[2]=x-(*weights)[3]-gamma;
 }
 
-static inline void SplineWeights(const double x,
-  double (*weights)[4])
+static inline void SplineWeights(const double x,double **weights)
 {
+  double
+    alpha,
+    beta;
+
   /*
     Nicolas Robidoux' 12 flops (6* + 5- + 1+) refactoring of the
     computation of the standard four 1D cubic B-spline smoothing
@@ -4031,10 +4032,6 @@ static inline void SplineWeights(const double x,
     third input pixel locations, and x is the position relative to the
     second input pixel location.
   */
-  double
-    alpha,
-    beta;
-
   alpha=(double) 1.0-x;
   (*weights)[3]=(double) (1.0/6.0)*x*x*x;
   (*weights)[0]=(double) (1.0/6.0)*alpha*alpha*alpha;
