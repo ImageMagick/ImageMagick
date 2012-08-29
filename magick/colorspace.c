@@ -1228,8 +1228,8 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         Initialize YCbCr tables (ITU-R BT.601):
 
           Y =  0.2988390*R+0.5868110*G+0.1143500*B
-          Cb= -0.168736*R-0.331264*G+0.500000*B
-          Cr=  0.500000*R-0.418688*G-0.081312*B
+          Cb= -0.1687367*R-0.3312640*G+0.5000000*B
+          Cr=  0.5000000*R-0.4186880*G-0.0813120*B
 
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through QuantumRange.
@@ -1245,7 +1245,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         x_map[i].x=0.2988390*(MagickRealType) i;
         y_map[i].x=0.5868110*(MagickRealType) i;
         z_map[i].x=0.1143500*(MagickRealType) i;
-        x_map[i].y=(-0.168730)*(MagickRealType) i;
+        x_map[i].y=(-0.1687367)*(MagickRealType) i;
         y_map[i].y=(-0.331264)*(MagickRealType) i;
         z_map[i].y=0.500000*(MagickRealType) i;
         x_map[i].z=0.500000*(MagickRealType) i;
