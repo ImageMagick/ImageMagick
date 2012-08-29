@@ -383,9 +383,10 @@ static MagickBooleanType BindConvolveParameters(ConvolveInfo *convolve_info,
     &convolve_info->height);
   if (status != CL_SUCCESS)
     return(MagickFalse);
-  convolve_info->alpha_trait=(cl_uint) image->alpha_trait;
+  convolve_info->matte=(cl_uint) image->alpha_trait == BlendPixelTrait ?
+    MagickTrue : MagickFalse;
   status=clSetKernelArg(convolve_info->kernel,i++,sizeof(cl_uint),(void *)
-    &convolve_info->alpha_trait);
+    &convolve_info->matte);
   if (status != CL_SUCCESS)
     return(MagickFalse);
   status=clSetKernelArg(convolve_info->kernel,i++,sizeof(cl_mem),(void *)
