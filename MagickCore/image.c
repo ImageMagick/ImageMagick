@@ -441,12 +441,14 @@ MagickExport Image *AppendImages(const Image *images,
     *append_image;
 
   MagickBooleanType
-    matte,
     proceed,
     status;
 
   MagickOffsetType
     n;
+
+  PixelTrait
+    alpha_trait;
 
   RectangleInfo
     geometry;
@@ -473,7 +475,7 @@ MagickExport Image *AppendImages(const Image *images,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",images->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  matte=images->alpha_trait;
+  alpha_trait=images->alpha_trait;
   number_images=1;
   width=images->columns;
   height=images->rows;
@@ -481,7 +483,7 @@ MagickExport Image *AppendImages(const Image *images,
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     if (next->alpha_trait == BlendPixelTrait)
-      matte=MagickTrue;
+      alpha_trait=BlendPixelTrait;
     number_images++;
     if (stack != MagickFalse)
       {
@@ -505,7 +507,7 @@ MagickExport Image *AppendImages(const Image *images,
       append_image=DestroyImage(append_image);
       return((Image *) NULL);
     }
-  append_image->alpha_trait=matte;
+  append_image->alpha_trait=alpha_trait;
   (void) SetImageBackgroundColor(append_image,exception);
   status=MagickTrue;
   x_offset=0;
@@ -1167,7 +1169,7 @@ MagickExport MagickBooleanType GetImageAlphaChannel(const Image *image)
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  return(image->alpha_trait);
+  return(image->alpha_trait == BlendPixelTrait ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -3387,12 +3389,14 @@ MagickExport Image *SmushImages(const Image *images,
     *smush_image;
 
   MagickBooleanType
-    matte,
     proceed,
     status;
 
   MagickOffsetType
     n;
+
+  PixelTrait
+    alpha_trait;
 
   RectangleInfo
     geometry;
@@ -3419,7 +3423,7 @@ MagickExport Image *SmushImages(const Image *images,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=images;
-  matte=image->alpha_trait;
+  alpha_trait=image->alpha_trait;
   number_images=1;
   width=image->columns;
   height=image->rows;
@@ -3427,7 +3431,7 @@ MagickExport Image *SmushImages(const Image *images,
   for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
   {
     if (next->alpha_trait == BlendPixelTrait)
-      matte=MagickTrue;
+      alpha_trait=BlendPixelTrait;
     number_images++;
     if (stack != MagickFalse)
       {
@@ -3455,7 +3459,7 @@ MagickExport Image *SmushImages(const Image *images,
       smush_image=DestroyImage(smush_image);
       return((Image *) NULL);
     }
-  smush_image->alpha_trait=matte;
+  smush_image->alpha_trait=alpha_trait;
   (void) SetImageBackgroundColor(smush_image,exception);
   status=MagickTrue;
   x_offset=0;
