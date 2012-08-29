@@ -5321,9 +5321,6 @@ int main(int argc,char **argv)
   status=MagickDrawImage(magick_wand,drawing_wand);
   if (status == MagickFalse)
     ThrowAPIException(magick_wand);
-  status=MagickAnnotateImage(magick_wand,drawing_wand,70,5,90,"Image");
-  if (status == MagickFalse)
-    ThrowAPIException(magick_wand);
   drawing_wand=DestroyDrawingWand(drawing_wand);
   {
     unsigned char
