@@ -485,9 +485,10 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     /*
       Initialize image structure.
     */
-    image->alpha_trait=viff_info.number_data_bands == 4 ? MagickTrue : MagickFalse;
-    image->storage_class=
-      (viff_info.number_data_bands < 3 ? PseudoClass : DirectClass);
+    image->alpha_trait=viff_info.number_data_bands == 4 ? BlendPixelTrait : 
+      UndefinedPixelTrait;
+    image->storage_class=(viff_info.number_data_bands < 3 ? PseudoClass :
+      DirectClass);
     image->columns=viff_info.rows;
     image->rows=viff_info.columns;
     if ((image_info->ping != MagickFalse) && (image_info->number_scenes != 0))

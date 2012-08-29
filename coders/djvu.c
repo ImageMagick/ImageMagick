@@ -662,7 +662,7 @@ static Image *ReadOneDJVUImage(LoadContext* lc,const int pagenum,
                 /* fixme:  MAGICKCORE_QUANTUM_DEPTH ?*/
                 image->depth =  8UL;    /* i only support that? */
 
-                image->alpha_trait = MagickTrue;
+                image->alpha_trait = BlendPixelTrait;
                 /* is this useful? */
         }
 #if DEBUG

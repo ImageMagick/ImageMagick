@@ -535,7 +535,8 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       dib_info.green_mask=ReadBlobLSBLong(image);
       dib_info.blue_mask=ReadBlobLSBLong(image);
     }
-  image->alpha_trait=dib_info.bits_per_pixel == 32 ? MagickTrue : MagickFalse;
+  image->alpha_trait=dib_info.bits_per_pixel == 32 ? BlendPixelTrait :
+    UndefinedPixelTrait;
   image->columns=(size_t) MagickAbsoluteValue(dib_info.width);
   image->rows=(size_t) MagickAbsoluteValue(dib_info.height);
   image->depth=8;

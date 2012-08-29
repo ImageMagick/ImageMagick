@@ -12,9 +12,7 @@
 /* #undef AUTOTRACE_DELEGATE */
 
 /* Define if coders and filters are to be built as modules. */
-#ifndef MAGICKCORE_BUILD_MODULES
-#define MAGICKCORE_BUILD_MODULES 1
-#endif
+/* #undef BUILD_MODULES */
 
 /* Define if you have the bzip2 library */
 #ifndef MAGICKCORE_BZLIB_DELEGATE
@@ -1191,9 +1189,7 @@
 #endif
 
 /* Define if you have JBIG library */
-#ifndef MAGICKCORE_JBIG_DELEGATE
-#define MAGICKCORE_JBIG_DELEGATE 1
-#endif
+/* #undef JBIG_DELEGATE */
 
 /* Define if you have JPEG version 2 "Jasper" library */
 #ifndef MAGICKCORE_JP2_DELEGATE
@@ -1222,9 +1218,7 @@
 #endif
 
 /* Define if you have LQR library */
-#ifndef MAGICKCORE_LQR_DELEGATE
-#define MAGICKCORE_LQR_DELEGATE 1
-#endif
+/* #undef LQR_DELEGATE */
 
 /* Define if using libltdl to support dynamically loadable modules */
 #ifndef MAGICKCORE_LTDL_DELEGATE
@@ -1236,7 +1230,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/freetype-freeworld:/usr/lib64/llvm:/usr/local/lib:/usr/lib64/mysql:/usr/lib64/nvidia:/usr/lib64/qt-3.3/lib:/usr/lib64/tracker-0.14:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-2"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/freetype-freeworld:/usr/lib/llvm:/usr/lib64/llvm:/usr/local/lib:/usr/lib64/mysql:/usr/lib64/nvidia:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.5/tclx8.4:/usr/lib64/tcl8.5:/usr/lib64/tracker-0.14:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-2"
 #endif
 
 /* The archive extension */
@@ -1535,9 +1529,7 @@
 #endif
 
 /* Define if you have WEBP library */
-#ifndef MAGICKCORE_WEBP_DELEGATE
-#define MAGICKCORE_WEBP_DELEGATE 1
-#endif
+/* #undef WEBP_DELEGATE */
 
 /* Define to use the Windows GDI32 library */
 /* #undef WINGDI32_DELEGATE */
@@ -1546,9 +1538,7 @@
 /* #undef WITH_DMALLOC */
 
 /* Define if you have wmflite library */
-#ifndef MAGICKCORE_WMFLITE_DELEGATE
-#define MAGICKCORE_WMFLITE_DELEGATE 1
-#endif
+/* #undef WMFLITE_DELEGATE */
 
 /* Define if you have wmf library */
 /* #undef WMF_DELEGATE */

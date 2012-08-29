@@ -530,7 +530,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Initialize image structure.
     */
-    image->alpha_trait=iris_info.depth == 4 ? MagickTrue : MagickFalse;
+    image->alpha_trait=iris_info.depth == 4 ? BlendPixelTrait : 
+      UndefinedPixelTrait;
     image->columns=iris_info.columns;
     image->rows=iris_info.rows;
     /*

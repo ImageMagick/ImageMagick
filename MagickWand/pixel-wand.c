@@ -2150,8 +2150,8 @@ WandExport void PixelSetQuantumPixel(const Image *image,const Quantum *pixel,
   wand->pixel.blue=(double) GetPixelBlue(image,pixel);
   wand->pixel.black=(double) GetPixelBlack(image,pixel);
   wand->pixel.alpha=(double) GetPixelAlpha(image,pixel);
-  wand->pixel.alpha_trait=GetPixelAlpha(image,pixel) != OpaqueAlpha ? MagickTrue :
-    MagickFalse;
+  wand->pixel.alpha_trait=GetPixelAlpha(image,pixel) != OpaqueAlpha ?
+    BlendPixelTrait : UndefinedPixelTrait;
 }
 
 /*

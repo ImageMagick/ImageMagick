@@ -401,7 +401,8 @@ static void MvgAppendColor(DrawingWand *wand,const PixelInfo *packet)
 
       GetPixelInfo(wand->image,&pixel);
       pixel.colorspace=sRGBColorspace;
-      pixel.alpha_trait=packet->alpha != OpaqueAlpha ? MagickTrue : MagickFalse;
+      pixel.alpha_trait=packet->alpha != OpaqueAlpha ? BlendPixelTrait :
+        UndefinedPixelTrait;
       pixel.red=(double) packet->red;
       pixel.green=(double) packet->green;
       pixel.blue=(double) packet->blue;
@@ -2465,7 +2466,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
     {
       if (CurrentContext->fill.alpha != OpaqueAlpha)
         pixel.alpha_trait=CurrentContext->fill.alpha != OpaqueAlpha ?
-          MagickTrue : MagickFalse;
+          BlendPixelTrait : UndefinedPixelTrait;
       pixel=CurrentContext->fill;
       GetColorTuple(&pixel,MagickTrue,value);
       (void) SetXMLTreeContent(child,value);
@@ -2531,7 +2532,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
     {
       if (CurrentContext->stroke.alpha != OpaqueAlpha)
         pixel.alpha_trait=CurrentContext->stroke.alpha != OpaqueAlpha ?
-          MagickTrue : MagickFalse;
+          BlendPixelTrait : UndefinedPixelTrait;
       pixel=CurrentContext->stroke;
       GetColorTuple(&pixel,MagickTrue,value);
       (void) SetXMLTreeContent(child,value);
@@ -2624,7 +2625,7 @@ WandExport char *DrawGetVectorGraphics(DrawingWand *wand)
     {
       if (CurrentContext->undercolor.alpha != OpaqueAlpha)
         pixel.alpha_trait=CurrentContext->undercolor.alpha != OpaqueAlpha ?
-          MagickTrue : MagickFalse;
+          BlendPixelTrait : UndefinedPixelTrait;
       pixel=CurrentContext->undercolor;
       GetColorTuple(&pixel,MagickTrue,value);
       (void) SetXMLTreeContent(child,value);

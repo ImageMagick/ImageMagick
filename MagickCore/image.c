@@ -1665,9 +1665,6 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      PixelTrait
-        traits;
-
       register ssize_t
         i;
 
@@ -1681,7 +1678,10 @@ MagickExport MagickBooleanType IsHighDynamicRangeImage(const Image *image,
         double
           pixel;
 
-        traits=GetPixelChannelTraits(image,i);
+        PixelTrait
+          traits;
+
+        traits=GetPixelChannelTraits(image,(PixelChannel) i);
         if (traits == UndefinedPixelTrait)
           continue;
         pixel=(double) p[i];

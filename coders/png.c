@@ -3015,7 +3015,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         image->alpha_trait=(((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
             ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
             (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
-            MagickTrue : MagickFalse;
+            BlendPixelTrait : UndefinedPixelTrait;
 
         for (y=0; y < (ssize_t) image->rows; y++)
         {
@@ -3129,10 +3129,11 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           "    Converting grayscale pixels to pixel packets");
 
       image->alpha_trait=ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA ?
-        MagickTrue : MagickFalse;
+        BlendPixelTrait : UndefinedPixelTrait;
 
       quantum_scanline=(Quantum *) AcquireQuantumMemory(image->columns,
-        (image->alpha_trait ?  2 : 1)*sizeof(*quantum_scanline));
+        (image->alpha_trait  == BlendPixelTrait?  2 : 1)*
+        sizeof(*quantum_scanline));
 
       if (quantum_scanline == (Quantum *) NULL)
         png_error(ping,"Memory allocation failed");
@@ -3322,7 +3323,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       quantum_scanline=(Quantum *) RelinquishMagickMemory(quantum_scanline);
     }
 
-    image->alpha_trait=found_transparent_pixel;
+    image->alpha_trait=found_transparent_pixel ? BlendPixelTrait :
+      UndefinedPixelTrait;
 
     if (logging != MagickFalse)
       {
@@ -3344,13 +3346,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   if (image->storage_class == PseudoClass)
     {
-      MagickBooleanType
-        matte;
+      PixelTrait
+        alpha_trait;
 
-      matte=image->alpha_trait;
+      alpha_trait=image->alpha_trait;
       image->alpha_trait=UndefinedPixelTrait;
       (void) SyncImage(image,exception);
-      image->alpha_trait=matte;
+      image->alpha_trait=alpha_trait;
     }
 
   png_read_end(ping,end_info);
@@ -3611,7 +3613,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     image->alpha_trait=(((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
         ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
         (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
-        MagickTrue : MagickFalse;
+        BlendPixelTrait : UndefinedPixelTrait;
 
    /* Set more properties for identify to retrieve */
    {
@@ -8991,7 +8993,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   quantum_info = (QuantumInfo *) NULL;
   number_colors=0;
   image_colors=(int) image->colors;
-  image_matte=image->alpha_trait;
+  image_matte=image->alpha_trait == BlendPixelTrait ? MagickTrue : MagickFalse;
 
   mng_info->IsPalette=image->storage_class == PseudoClass &&
     image_colors <= 256 && image->colormap != NULL;
@@ -10233,7 +10235,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (image_matte != MagickFalse && image->alpha_trait != BlendPixelTrait)
     {
       /* Add an opaque matte channel */
-      image->alpha_trait = MagickTrue;
+      image->alpha_trait = BlendPixelTrait;
       (void) SetImageAlpha(image,OpaqueAlpha,exception);
 
       if (logging != MagickFalse)

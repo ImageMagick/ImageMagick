@@ -536,7 +536,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert JPEG 2000 pixels.
   */
-  image->alpha_trait=number_components > 3 ? MagickTrue : MagickFalse;
+  image->alpha_trait=number_components > 3 ? BlendPixelTrait :
+    UndefinedPixelTrait;
   maximum_component_depth=0;
   for (i=0; i < (ssize_t) number_components; i++)
   {
