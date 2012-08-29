@@ -1751,16 +1751,16 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   y=(100.0*L+16.0)/116.0;
   x=y+255.0*(a-0.5)/500.0;
   z=y-255.0*(b-0.5)/200.0;
-  if (pow(x,3.0) > CIEEpsilon)
-    x=pow(x,3.0);
+  if ((x*x*x) > CIEEpsilon)
+    x=(x*x*x);
   else
     x=(116.0*x-16.0)/CIEK;
-  if (pow(y,3.0) > CIEEpsilon)
-    y=pow(y,3.0);
+  if ((y*y*y) > CIEEpsilon)
+    y=(y*y*y);
   else
     y=(100.0*L)/CIEK;
-  if (pow(z,3.0) > CIEEpsilon)
-    z=pow(z,3.0);
+  if ((z*z*z) > CIEEpsilon)
+    z=(z*z*z);
   else
     z=(116*z-16.0)/CIEK;
   *X=D65X*x;
