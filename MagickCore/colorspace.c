@@ -1622,8 +1622,8 @@ MagickExport MagickBooleanType TransformImageColorspace(Image *image,
   /*
     Convert the reference image from an alternate colorspace to sRGB.
   */
-  (void) DeleteImageProfile(thumbnail_image,"icc");
-  (void) DeleteImageProfile(thumbnail_image,"icm");
+  (void) DeleteImageProfile(image,"icc");
+  (void) DeleteImageProfile(image,"icm");
   if (IssRGBColorspace(colorspace) != MagickFalse)
     return(TransformsRGBImage(image,colorspace,exception));
   status=MagickTrue;
