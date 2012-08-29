@@ -30,6 +30,10 @@ extern MagickExport double
   GenerateDifferentialNoise(RandomInfo *,const Quantum,const NoiseType,
     const MagickRealType);
 
+extern MagickExport MagickRealType
+  InversesRGBCompandor(const MagickRealType),
+  sRGBCompandor(const MagickRealType);
+
 extern MagickExport size_t
   GetOptimalKernelWidth(const double,const double),
   GetOptimalKernelWidth1D(const double,const double),
