@@ -33,7 +33,7 @@ extern "C" {
 
 static inline double InversesRGBCompandor(const double pixel)
 {
-  if (pixel <= (0.0.0404482362771076*QuantumRange))
+  if (pixel <= (0.0404482362771076*QuantumRange))
     return(pixel/12.92);
   return(QuantumRange*pow((QuantumScale*pixel+0.055)/1.055,2.4));
 }
