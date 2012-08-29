@@ -35,6 +35,7 @@ typedef enum
   LabColorspace,
   LCHColorspace,
   LogColorspace,
+  LMSColorspace,
   LuvColorspace,
   OHTAColorspace,
   Rec601LumaColorspace,
