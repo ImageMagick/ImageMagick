@@ -120,7 +120,7 @@ static inline MagickRealType GetPixelIntensity(const Image *image,
   return((MagickRealType) (0.298839*red+0.586811*green+0.114350*blue));
 }
 
-static inline double AbsolutePixelValue(double x)
+static inline MagickRealType AbsolutePixelValue(const MagickRealType x)
 {
   return(x < 0.0 ? -x : x);
 }
