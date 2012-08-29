@@ -909,13 +909,9 @@ MagickExport double GenerateDifferentialNoise(RandomInfo *random_info,
 %
 %  The format of the GetOptimalKernelWidth method is:
 %
-%      size_t GetOptimalKernelWidth(const double radius,
-%        const double sigma)
+%      size_t GetOptimalKernelWidth(const double radius,const double sigma)
 %
 %  A description of each parameter follows:
-%
-%    o width: Method GetOptimalKernelWidth returns the optimal width of
-%      a convolution kernel.
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
 %      pixel.
@@ -1009,4 +1005,62 @@ MagickExport size_t  GetOptimalKernelWidth(const double radius,
   const double sigma)
 {
   return(GetOptimalKernelWidth1D(radius,sigma));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I n v e r s e s R G B C o m p a n d o r                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InversesRGBCompandor() removes the gamma function from an sRGB pixel.
+%
+%  The format of the InversesRGBCompandor method is:
+%
+%      MagickRealType InversesRGBCompandor(const MagickRealType pixel)
+%
+%  A description of each parameter follows:
+%
+%    o pixel: the pixel.
+%
+*/
+MagickExport MagickRealType InversesRGBCompandor(const MagickRealType pixel)
+{
+  if (pixel <= (0.0404482362771076*QuantumRange))
+    return(pixel/12.92);
+  return(QuantumRange*pow((QuantumScale*pixel+0.055)/1.055,2.4));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   s R G B C o m p a n d o r                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  sRGBCompandor() adds the gamma function to an sRGB pixel.
+%
+%  The format of the sRGBCompandor method is:
+%
+%      MagickRealType sRGBCompandor(const MagickRealType pixel)
+%
+%  A description of each parameter follows:
+%
+%    o pixel: the pixel.
+%
+*/
+MagickExport MagickRealType sRGBCompandor(const MagickRealType pixel)
+{
+  if (pixel <= (0.0031306684425005883*QuantumRange))
+    return(12.92*pixel);
+  return(QuantumRange*(1.055*pow(QuantumScale*pixel,1.0/2.4)-0.055));
 }

@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include <math.h>
+#include <magick/gem.h>
 #include <magick/pixel.h>
 
 #define ClampPixelRed(pixel) ClampToQuantum((pixel)->red)
@@ -102,20 +102,6 @@ extern "C" {
 #define SetPixelYellow(pixel,value) ((pixel)->blue=(Quantum) (value))
 #define SetPixelY(pixel,value) ((pixel)->red=(Quantum) (value))
 
-static inline MagickRealType InversesRGBCompandor(const MagickRealType pixel)
-{
-  if (pixel <= (0.0404482362771076*QuantumRange))
-    return(pixel/12.92);
-  return(QuantumRange*pow((QuantumScale*pixel+0.055)/1.055,2.4));
-}
-
-static inline MagickRealType sRGBCompandor(const MagickRealType pixel)
-{
-  if (pixel <= (0.0031306684425005883*QuantumRange))
-    return(12.92*pixel);
-  return(QuantumRange*(1.055*pow(QuantumScale*pixel,1.0/2.4)-0.055));
-}
-
 static inline MagickRealType GetPixelIntensity(const Image *image,
   const PixelPacket *pixel)
 {
@@ -134,6 +120,11 @@ static inline MagickRealType GetPixelIntensity(const Image *image,
   return((MagickRealType) (0.298839*red+0.586811*green+0.114350*blue));
 }
 
+static inline double AbsolutePixelValue(double x)
+{
+  return(x < 0.0 ? -x : x);
+}
+
 static inline MagickBooleanType IsPixelGray(const PixelPacket *pixel)
 {
   MagickRealType
@@ -144,7 +135,8 @@ static inline MagickBooleanType IsPixelGray(const PixelPacket *pixel)
   red=(MagickRealType) pixel->red;
   green=(MagickRealType) pixel->green;
   blue=(MagickRealType) pixel->blue;
-  if ((fabs(red-green) < MagickEpsilon) && (fabs(green-blue) < MagickEpsilon))
+  if ((AbsolutePixelValue(red-green) < MagickEpsilon) &&
+      (AbsolutePixelValue(green-blue) < MagickEpsilon))
     return(MagickTrue);
   return(MagickFalse);
 }
