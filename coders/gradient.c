@@ -55,6 +55,7 @@
 #include "magick/magick.h"
 #include "magick/memory_.h"
 #include "magick/paint.h"
+#include "magick/pixel-accessor.h"
 #include "magick/pixel-private.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"

@@ -74,6 +74,7 @@
 #include "magick/module.h"
 #include "magick/option.h"
 #include "magick/paint.h"
+#include "magick/pixel-accessor.h"
 #include "magick/profile.h"
 #include "magick/property.h"
 #include "magick/quantize.h"
