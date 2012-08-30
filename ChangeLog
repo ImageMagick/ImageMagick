@@ -4,6 +4,8 @@
   * Don't remove color profile when setting the image colorspace (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21747).
   * Recognize ICO format in URL (e.g. http://www.google.com/favicon.ico).
+  * Don't define HAVE_BOOLEAN for JPEG under MinGW (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?t=14071).
 
 2012-08-26  6.7.9-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-2, SVN revision 9120.
