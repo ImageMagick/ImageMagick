@@ -58,6 +58,7 @@
 #include "magick/monitor.h"
 #include "magick/monitor-private.h"
 #include "magick/nt-feature.h"
+#include "magick/pixel-accessor.h"
 #include "magick/quantize.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"

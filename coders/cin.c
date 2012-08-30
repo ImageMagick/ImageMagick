@@ -63,7 +63,7 @@
 #include "magick/option.h"
 #include "magick/profile.h"
 #include "magick/property.h"
-#include "magick/quantum-private.h"
+#include "magick/pixel-accessor.h"
 #include "magick/quantum-private.h"
 #include "magick/static.h"
 #include "magick/string_.h"
