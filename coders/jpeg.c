@@ -83,8 +83,6 @@
 #define JPEG_INTERNAL_OPTIONS
 #if defined(__MINGW32__)
 # define XMD_H 1  /* Avoid conflicting typedef for INT32 */
-typedef unsigned char boolean;
-#define HAVE_BOOLEAN
 #endif
 #undef HAVE_STDLIB_H
 #include "jpeglib.h"
