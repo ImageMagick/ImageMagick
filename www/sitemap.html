@@ -52,7 +52,7 @@
   	});
   </script>
   <!-- ImageMagick style -->
-  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+  <link rel="stylesheet" href="http://www.localhost/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
@@ -222,10 +222,10 @@
     };
 
     (function() {
-      var po = document.createElement('script');
+      var po = document.createElement('offline-script');
       po.type = 'text/javascript'; po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
-      var script = document.getElementsByTagName('script')[0];
+      po.src = 'https://apis.localhost/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
       script.parentNode.insertBefore(po, script);
     })();
     var gplusone = document.getElementById("gplusone");
@@ -327,7 +327,7 @@
     <dd><a href="magick-core.html">MagickCore</a>: C API, recommended for wizard-level developers.</dd>
     <dd><a href="magick-wand.html">MagickWand</a>: convert, compose, and edit images from the C language.</dd>
     <dd><a href="http://www.magickwand.org/">MagickWand for PHP</a>: a native PHP-extension to the ImageMagick MagickWand API.</dd>
-    <dd><a href="http://code.google.com/p/nmagick">nMagick</a>: is a port of the ImageMagick library to the haXe and Neko platforms.</dd>
+    <dd><a href="http://code.localhost/p/nmagick">nMagick</a>: is a port of the ImageMagick library to the haXe and Neko platforms.</dd>
     <dd><a href="http://wiki.freepascal.org/PascalMagick">PascalMagick</a>: a Pascal binding for the MagickWand API and also the low-level MagickCore library.</dd>
     <dd><a href="perl-magick.html">PerlMagick</a>: convert, compose, and edit images from the Perl language.</dd>
     <dd><a href="http://www.imagemagick.org/download/python/">PythonMagick</a>: an object-oriented Python interface to ImageMagick.</dd>
@@ -420,9 +420,9 @@
     _gaq.push(['_trackPageview']);
 
     (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      var ga = document.createElement('offline-script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.localhost/ga.js';
+      var s = document.getElementsByTagName('offline-script')[0]; s.parentNode.insertBefore(ga, s);
     })();
   </script>
 </body>

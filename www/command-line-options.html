@@ -56,7 +56,7 @@
   	});
   </script>
   <!-- ImageMagick style -->
-  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+  <link rel="stylesheet" href="http://www.localhost/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
@@ -226,10 +226,10 @@
     };
 
     (function() {
-      var po = document.createElement('script');
+      var po = document.createElement('offline-script');
       po.type = 'text/javascript'; po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
-      var script = document.getElementsByTagName('script')[0];
+      po.src = 'https://apis.localhost/js/plusone.js';
+      var script = document.getElementsByTagName('offline-script')[0];
       script.parentNode.insertBefore(po, script);
     })();
     var gplusone = document.getElementById("gplusone");
@@ -7246,9 +7246,9 @@ href="command-line-options.html#colors">-colors</a> to reduce the number of colo
     _gaq.push(['_trackPageview']);
 
     (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      var ga = document.createElement('offline-script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.localhost/ga.js';
+      var s = document.getElementsByTagName('offline-script')[0]; s.parentNode.insertBefore(ga, s);
     })();
   </script>
 </body>
