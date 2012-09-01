@@ -42,10 +42,10 @@ AC_REQUIRE([ACX_PTHREAD])dnl
 AC_ARG_ENABLE([opencl],
     [AC_HELP_STRING([--enable-opencl],
                     [enable OpenCL support])],
-    [disable_opencl=$enableval],
-    [disable_opencl='yes'])
+    [enable_opencl=$enableval],
+    [enable_opencl='yes'])
 
-if test "$disable_opencl" = 'yes'; then
+if test "$enable_opencl" = 'yes'; then
   AC_LANG_PUSH([$1])
   AX_LANG_COMPILER_MS
   AS_IF([test X$ax_compiler_ms = Xno],
