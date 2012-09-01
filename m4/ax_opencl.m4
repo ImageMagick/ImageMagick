@@ -40,8 +40,8 @@ AC_REQUIRE([AC_PROG_SED])dnl
 AC_REQUIRE([ACX_PTHREAD])dnl
 
 AC_ARG_ENABLE([opencl],
-    [AC_HELP_STRING([--disable-opencl],
-                    [do not use OpenCL])],
+    [AC_HELP_STRING([--enable-opencl],
+                    [enable OpenCL support])],
     [disable_opencl=$enableval],
     [disable_opencl='yes'])
 
