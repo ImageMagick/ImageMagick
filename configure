@@ -1851,7 +1851,7 @@ Optional Features:
   --enable-osx-universal-binary
                           build universal binary on OS X [[default=no]]
   --disable-openmp        do not use OpenMP
-  --disable-opencl        do not use OpenCL
+  --enable-opencl         enable OpenCL support
   --disable-largefile     omit support for large files
   --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
@@ -3662,7 +3662,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=9183:9203M
+MAGICK_SVN_REVISION=9183:9209
 
 
 
@@ -9780,13 +9780,13 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 # Check whether --enable-opencl was given.
 if test "${enable_opencl+set}" = set; then :
-  enableval=$enable_opencl; disable_opencl=$enableval
+  enableval=$enable_opencl; enable_opencl=$enableval
 else
-  disable_opencl='yes'
+  enable_opencl='yes'
 fi
 
 
-if test "$disable_opencl" = 'yes'; then
+if test "$enable_opencl" = 'yes'; then
   ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
