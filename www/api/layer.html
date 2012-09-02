@@ -282,7 +282,7 @@
 <h2><a href="http://www.imagemagick.org/api/MagickCore/layer_8c.html" id="CompareImageLayers">CompareImageLayers</a></h2>
 <div class="doc-section">
 
-<p>CompareImageLayers() compares each image with the next in a sequence and returns the minimum bounding region of all the pixel differences (of the ImageLayerMethod specified) it discovers.</p>
+<p>CompareImageLayers() compares each image with the next in a sequence and returns the minimum bounding region of all the pixel differences (of the LayerMethod specified) it discovers.</p>
 
 <p>Images do NOT have to be the same size, though it is best that all the images are 'coalesced' (images are all the same size, on a flattened canvas, so as to represent exactly how an specific frame should look).</p>
 
@@ -292,7 +292,7 @@
 
 <pre class="code">
   Image *CompareImageLayers(const Image *images,
-    const ImageLayerMethod method,ExceptionInfo *exception)
+    const LayerMethod method,ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -486,13 +486,13 @@
 
 <p>MergeImageLayers() composes all the image layers from the current given image onward to produce a single image of the merged layers.</p>
 
-<p>The inital canvas's size depends on the given ImageLayerMethod, and is initialized using the first images background color.  The images are then compositied onto that image in sequence using the given composition that has been assigned to each individual image.</p>
+<p>The inital canvas's size depends on the given LayerMethod, and is initialized using the first images background color.  The images are then compositied onto that image in sequence using the given composition that has been assigned to each individual image.</p>
 
 <p>The format of the MergeImageLayers is:</p>
 
 <pre class="text">
   Image *MergeImageLayers(const Image *image,
-    const ImageLayerMethod method, ExceptionInfo *exception)
+    const LayerMethod method, ExceptionInfo *exception)
 </pre>
 
 <p>A description of each parameter follows:</p>

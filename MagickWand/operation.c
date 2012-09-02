@@ -3906,7 +3906,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           if ( parse < 0 )
             CLIWandExceptArgBreak(OptionError,"UnrecognizedLayerMethod",
                  option,arg1);
-          switch ((ImageLayerMethod) parse)
+          switch ((LayerMethod) parse)
           {
             case CoalesceLayer:
             {
@@ -3918,7 +3918,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
             case CompareOverlayLayer:
             default:
             {
-              new_images=CompareImagesLayers(_images,(ImageLayerMethod) parse,
+              new_images=CompareImagesLayers(_images,(LayerMethod) parse,
                    _exception);
               break;
             }
@@ -3927,7 +3927,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
             case MosaicLayer:
             case TrimBoundsLayer:
             {
-              new_images=MergeImageLayers(_images,(ImageLayerMethod) parse,
+              new_images=MergeImageLayers(_images,(LayerMethod) parse,
                    _exception);
               break;
             }

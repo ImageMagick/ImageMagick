@@ -1398,6 +1398,20 @@ void Magick::Image::medianFilter ( const double radius_ )
   (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
+// Merge layers
+void Magick::Image::mergeLayers( const LayerMethod layerMethod_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  MagickCore::Image* newImage =
+    MergeImageLayers ( image(),
+        layerMethod_,
+        &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
+}
+
 // Reduce image by integral size
 void Magick::Image::minify ( void )
 {

@@ -3444,7 +3444,7 @@ CompareLayers(ref)
     Image
       *image;
 
-    ImageLayerMethod
+    LayerMethod
       method;
 
     register ssize_t
@@ -3505,7 +3505,7 @@ CompareLayers(ref)
                     SvPV(ST(i),na));
                   break;
                 }
-               method=(ImageLayerMethod) option;
+               method=(LayerMethod) option;
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
@@ -6786,7 +6786,7 @@ Layers(ref,...)
       *image,
       *layers;
 
-    ImageLayerMethod
+    LayerMethod
       method;
 
     register ssize_t
@@ -6869,7 +6869,7 @@ Layers(ref,...)
                     SvPV(ST(i),na));
                   break;
                 }
-              method=(ImageLayerMethod) option;
+              method=(LayerMethod) option;
               break;
             }
           ThrowPerlException(exception,OptionError,"UnrecognizedAttribute",
