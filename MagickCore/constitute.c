@@ -459,6 +459,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","'%s'",read_info->filename);
+      read_info=DestroyImageInfo(read_info);
       return((Image *) NULL);
     }
   /*
