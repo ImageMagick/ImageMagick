@@ -2251,6 +2251,7 @@ static int util_font_weight( const char* font )
  */
 static float lite_font_stringwidth( wmfAPI* API, wmfFont* font, char* str)
 {
+#if 0
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
 
@@ -2315,6 +2316,13 @@ static float lite_font_stringwidth( wmfAPI* API, wmfFont* font, char* str)
   image->units = orig_resolution_units;
 
   return stringwidth;
+#else
+  (void) API;
+  (void) font;
+  (void) str;
+
+  return 0;
+#endif
 }
 
 /* Map font (similar to wmf_ipa_font_map) */
