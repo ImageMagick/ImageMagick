@@ -1010,7 +1010,7 @@
 
 <pre class="code">
   MagickWand *MagickCompareImageLayers(MagickWand *wand,
-    const ImageLayerMethod method)
+    const LayerMethod method)
 </pre>
 
 <p>A description of each parameter follows:</p>
@@ -3399,13 +3399,13 @@
 
 <p>MagickMergeImageLayers() composes all the image layers from the current given image onward to produce a single image of the merged layers.</p>
 
-<p>The inital canvas's size depends on the given ImageLayerMethod, and is initialized using the first images background color.  The images are then compositied onto that image in sequence using the given composition that has been assigned to each individual image.</p>
+<p>The inital canvas's size depends on the given LayerMethod, and is initialized using the first images background color.  The images are then compositied onto that image in sequence using the given composition that has been assigned to each individual image.</p>
 
 <p>The format of the MagickMergeImageLayers method is:</p>
 
 <pre class="code">
   MagickWand *MagickMergeImageLayers(MagickWand *wand,
-    const ImageLayerMethod method)
+    const LayerMethod method)
 </pre>
 
 <p>A description of each parameter follows:</p>

@@ -7755,12 +7755,12 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             Image
               *layers;
 
-            ImageLayerMethod
+            LayerMethod
               method;
 
             (void) SyncImagesSettings(mogrify_info,*images,exception);
             layers=(Image *) NULL;
-            method=(ImageLayerMethod) ParseCommandOption(MagickLayerOptions,
+            method=(LayerMethod) ParseCommandOption(MagickLayerOptions,
               MagickFalse,argv[i+1]);
             switch (method)
             {

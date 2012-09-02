@@ -1032,6 +1032,9 @@ typedef struct _ImageStatistics
     // Transparent color
     void            matteColor ( const Color &matteColor_ );
     Color           matteColor ( void ) const;
+
+    // Merge image layers
+    void            mergeLayers ( const LayerMethod layerType_ );
     
     // The mean error per pixel computed when an image is color reduced
     double          meanErrorPerPixel ( void ) const;

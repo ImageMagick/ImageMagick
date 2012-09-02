@@ -725,6 +725,19 @@ namespace Magick
   private:
     double _radius;
   };
+  
+  // Merge image layers
+  class MagickPPExport mergeLayersImage : public
+    std::unary_function<Image&,void>
+  {
+  public:
+    mergeLayersImage ( LayerMethod layerMethod_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    LayerMethod _layerMethod;
+  };
 
   // Reduce image by integral size
   class MagickPPExport minifyImage : public std::unary_function<Image&,void>

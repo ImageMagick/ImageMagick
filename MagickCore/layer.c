@@ -507,7 +507,7 @@ MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
 %
 %  The format of the ComparePixels method is:
 %
-%      MagickBooleanType *ComparePixels(const ImageLayerMethod method,
+%      MagickBooleanType *ComparePixels(const LayerMethod method,
 %        const PixelInfo *p,const PixelInfo *q)
 %
 %  A description of each parameter follows:
@@ -519,7 +519,7 @@ MagickExport Image *DisposeImages(const Image *images,ExceptionInfo *exception)
 %
 */
 
-static MagickBooleanType ComparePixels(const ImageLayerMethod method,
+static MagickBooleanType ComparePixels(const LayerMethod method,
   const PixelInfo *p,const PixelInfo *q)
 {
   double
@@ -575,7 +575,7 @@ static MagickBooleanType ComparePixels(const ImageLayerMethod method,
 %
 %  The format of the CompareImagesBounds method is:
 %
-%      RectangleInfo *CompareImagesBounds(const ImageLayerMethod method,
+%      RectangleInfo *CompareImagesBounds(const LayerMethod method,
 %        const Image *image1, const Image *image2, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -590,7 +590,7 @@ static MagickBooleanType ComparePixels(const ImageLayerMethod method,
 */
 
 static RectangleInfo CompareImagesBounds(const Image *image1,const Image *image2,
-  const ImageLayerMethod method,ExceptionInfo *exception)
+  const LayerMethod method,ExceptionInfo *exception)
 {
   RectangleInfo
     bounds;
@@ -721,7 +721,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,const Image *image2
 %
 %  CompareImagesLayers() compares each image with the next in a sequence and
 %  returns the minimum bounding region of all the pixel differences (of the
-%  ImageLayerMethod specified) it discovers.
+%  LayerMethod specified) it discovers.
 %
 %  Images do NOT have to be the same size, though it is best that all the
 %  images are 'coalesced' (images are all the same size, on a flattened
@@ -733,7 +733,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,const Image *image2
 %  The format of the CompareImagesLayers method is:
 %
 %      Image *CompareImagesLayers(const Image *images,
-%        const ImageLayerMethod method,ExceptionInfo *exception)
+%        const LayerMethod method,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -747,7 +747,7 @@ static RectangleInfo CompareImagesBounds(const Image *image1,const Image *image2
 */
 
 MagickExport Image *CompareImagesLayers(const Image *image,
-  const ImageLayerMethod method, ExceptionInfo *exception)
+  const LayerMethod method, ExceptionInfo *exception)
 {
   Image
     *image_a,
@@ -878,7 +878,7 @@ MagickExport Image *CompareImagesLayers(const Image *image,
 %  The format of the OptimizeLayerFrames method is:
 %
 %      Image *OptimizeLayerFrames(const Image *image,
-%        const ImageLayerMethod method, ExceptionInfo *exception)
+%        const LayerMethod method, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -907,7 +907,7 @@ MagickExport Image *CompareImagesLayers(const Image *image,
 #define DEBUG_OPT_FRAME 0
 
 static Image *OptimizeLayerFrames(const Image *image,
-  const ImageLayerMethod method, ExceptionInfo *exception)
+  const LayerMethod method, ExceptionInfo *exception)
 {
   ExceptionInfo
     *sans_exception;
@@ -1852,7 +1852,7 @@ MagickExport void CompositeLayers(Image *destination,
 %  MergeImageLayers() composes all the image layers from the current given
 %  image onward to produce a single image of the merged layers.
 %
-%  The inital canvas's size depends on the given ImageLayerMethod, and is
+%  The inital canvas's size depends on the given LayerMethod, and is
 %  initialized using the first images background color.  The images
 %  are then compositied onto that image in sequence using the given
 %  composition that has been assigned to each individual image.
@@ -1860,7 +1860,7 @@ MagickExport void CompositeLayers(Image *destination,
 %  The format of the MergeImageLayers is:
 %
 %      Image *MergeImageLayers(const Image *image,
-%        const ImageLayerMethod method, ExceptionInfo *exception)
+%        const LayerMethod method, ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1891,7 +1891,7 @@ MagickExport void CompositeLayers(Image *destination,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *MergeImageLayers(Image *image,const ImageLayerMethod method,
+MagickExport Image *MergeImageLayers(Image *image,const LayerMethod method,
   ExceptionInfo *exception)
 {
 #define MergeLayersTag  "Merge/Layers"

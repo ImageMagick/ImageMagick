@@ -1731,7 +1731,7 @@ WandExport MagickBooleanType MagickCommentImage(MagickWand *wand,
 %  The format of the MagickCompareImagesLayers method is:
 %
 %      MagickWand *MagickCompareImagesLayers(MagickWand *wand,
-%        const ImageLayerMethod method)
+%        const LayerMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -1741,7 +1741,7 @@ WandExport MagickBooleanType MagickCommentImage(MagickWand *wand,
 %
 */
 WandExport MagickWand *MagickCompareImagesLayers(MagickWand *wand,
-  const ImageLayerMethod method)
+  const LayerMethod method)
 {
   Image
     *layers_image;
@@ -6562,7 +6562,7 @@ WandExport MagickBooleanType MagickMagnifyImage(MagickWand *wand)
 %  MagickMergeImageLayers() composes all the image layers from the current
 %  given image onward to produce a single image of the merged layers.
 %
-%  The inital canvas's size depends on the given ImageLayerMethod, and is
+%  The inital canvas's size depends on the given LayerMethod, and is
 %  initialized using the first images background color.  The images
 %  are then compositied onto that image in sequence using the given
 %  composition that has been assigned to each individual image.
@@ -6570,7 +6570,7 @@ WandExport MagickBooleanType MagickMagnifyImage(MagickWand *wand)
 %  The format of the MagickMergeImageLayers method is:
 %
 %      MagickWand *MagickMergeImageLayers(MagickWand *wand,
-%        const ImageLayerMethod method)
+%        const LayerMethod method)
 %
 %  A description of each parameter follows:
 %
@@ -6592,7 +6592,7 @@ WandExport MagickBooleanType MagickMagnifyImage(MagickWand *wand)
 %
 */
 WandExport MagickWand *MagickMergeImageLayers(MagickWand *wand,
-  const ImageLayerMethod method)
+  const LayerMethod method)
 {
   Image
     *mosaic_image;
