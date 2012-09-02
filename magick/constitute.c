@@ -453,6 +453,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
         "NotAuthorized","`%s'",read_info->filename);
+      read_info=DestroyImageInfo(read_info);
       return((Image *) NULL);
     }
   /*
@@ -1056,6 +1057,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
         {
           (void) ThrowMagickException(&image->exception,GetMagickModule(),
             OptionError,"NoClipPathDefined","`%s'",image->filename);
+          write_info=DestroyImageInfo(write_info);
           return(MagickFalse);
         }
       image=image->clip_mask;
@@ -1068,6 +1070,7 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
   if (IsRightsAuthorized(domain,rights,write_info->magick) == MagickFalse)
     {
       sans_exception=DestroyExceptionInfo(sans_exception);
+      write_info=DestroyImageInfo(write_info);
       errno=EPERM;
       ThrowBinaryException(PolicyError,"NotAuthorized",filename);
     }
