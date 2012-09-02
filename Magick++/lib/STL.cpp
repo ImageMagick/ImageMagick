@@ -704,6 +704,17 @@ void Magick::medianFilterImage::operator()( Magick::Image &image_ ) const
   image_.medianFilter( _radius );
 }
 
+// Merge image layers
+Magick::mergeLayersImage::mergeLayersImage( 
+  Magick::ImageLayerMethod layerMethod_ )
+  : _layerMethod( layerMethod_ )
+{
+}
+void Magick::mergeLayersImage::operator()( Magick::Image &image_ ) const
+{
+  image_.mergeLayers( _layerMethod );
+}
+
 // Reduce image by integral size
 Magick::minifyImage::minifyImage( void )
 {
