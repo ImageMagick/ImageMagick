@@ -1052,6 +1052,9 @@ typedef struct _ImageStatistics
     // The mean error per pixel computed when an image is color reduced
     double          meanErrorPerPixel ( void ) const;
 
+    // Merge image layers
+    void            mergeLayers ( const ImageLayerMethod layerType_ );
+
     // Image modulus depth (minimum number of bits required to support
     // red/green/blue components without loss of accuracy)
     void            modulusDepth ( const size_t modulusDepth_ );
