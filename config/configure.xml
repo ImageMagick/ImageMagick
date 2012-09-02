@@ -10,7 +10,7 @@
   <configure name="VERSION" value="7.0.0"/>
   <configure name="LIB_VERSION" value="0x700"/>
   <configure name="LIB_VERSION_NUMBER" value="7,0,0,0"/>
-  <configure name="SVN_REVISION" value="9117:9197M" />
+  <configure name="SVN_REVISION" value="9117:9208" />
   <configure name="RELEASE_DATE" value="2012-09-01"/>
   <configure name="CONFIGURE" value="./configure "/>
   <configure name="PREFIX" value="/usr/local"/>
