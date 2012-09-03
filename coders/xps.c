@@ -252,8 +252,8 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Set XPS render geometry.
     */
-    width=(size_t) floor(bounds.x2-bounds.x1+0.5);
-    height=(size_t) floor(bounds.y2-bounds.y1+0.5);
+    width=(size_t) (floor(bounds.x2-0.5)-ceil(bounds.x1-0.5));
+    height=(size_t) (floor(bounds.y2-0.5)-ceil(bounds.y1-0.5));
     if (width > page.width)
       page.width=width;
     if (height > page.height)
@@ -284,8 +284,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->page != (char *) NULL)
     (void) ParseAbsoluteGeometry(image_info->page,&page);
   page.width=(size_t) floor(page.width*image->resolution.y/delta.x+0.5);
-  page.height=(size_t) floor(page.height*image->resolution.y/delta.y+
-    0.5);
+  page.height=(size_t) floor(page.height*image->resolution.y/delta.y+0.5);
   (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
     page.width,(double) page.height);
   image=DestroyImage(image);
