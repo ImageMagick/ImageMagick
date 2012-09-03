@@ -1544,11 +1544,11 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
           {
             (void) FormatLocaleString(buffer,MaxTextExtent,
               "%%%%BoundingBox: %.20g %.20g %.20g %.20g\n",ceil(bounds.x1-0.5),
-              ceil(bounds.y1-0.5),floor(bounds.x2+0.5),floor(bounds.y2+0.5));
+              ceil(bounds.y1-0.5),floor(bounds.x2-0.5),floor(bounds.y2-0.5));
             (void) WriteBlobString(image,buffer);
             (void) FormatLocaleString(buffer,MaxTextExtent,
-              "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,
-              bounds.y1,bounds.x2,bounds.y2);
+              "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,bounds.y1,
+              bounds.x2,bounds.y2);
           }
         (void) WriteBlobString(image,buffer);
         profile=GetImageProfile(image,"8bim");
@@ -2166,7 +2166,7 @@ static MagickBooleanType WritePSImage(const ImageInfo *image_info,Image *image)
     {
       (void) FormatLocaleString(buffer,MaxTextExtent,
         "%%%%BoundingBox: %.20g %.20g %.20g %.20g\n",ceil(bounds.x1-0.5),
-        ceil(bounds.y1-0.5),floor(bounds.x2+0.5),floor(bounds.y2+0.5));
+        ceil(bounds.y1-0.5),floor(bounds.x2-0.5),floor(bounds.y2-0.5));
       (void) WriteBlobString(image,buffer);
       (void) FormatLocaleString(buffer,MaxTextExtent,
         "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,bounds.y1,

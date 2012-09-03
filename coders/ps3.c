@@ -1014,8 +1014,8 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
         else
           {
             (void) FormatLocaleString(buffer,MaxTextExtent,
-              "%%%%BoundingBox: %g %g %g %g\n",floor(bounds.x1+0.5),
-              floor(bounds.y1+0.5),ceil(bounds.x2-0.5),ceil(bounds.y2-0.5));
+              "%%%%BoundingBox: %g %g %g %g\n",ceil(bounds.x1-0.5),
+              ceil(bounds.y1-0.5),floor(bounds.x2-0.5),floor(bounds.y2-0.5));
             (void) WriteBlobString(image,buffer);
             (void) FormatLocaleString(buffer,MaxTextExtent,
               "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,
@@ -1587,12 +1587,12 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
   if (page > 1)
     {
       (void) FormatLocaleString(buffer,MaxTextExtent,
-        "%%%%BoundingBox: %g %g %g %g\n",floor(bounds.x1+0.5),
-        floor(bounds.y1+0.5),ceil(bounds.x2-0.5),ceil(bounds.y2-0.5));
+        "%%%%BoundingBox: %g %g %g %g\n",ceil(bounds.x1-0.5),
+        ceil(bounds.y1-0.5),floor(bounds.x2-0.5),floor(bounds.y2-0.5));
       (void) WriteBlobString(image,buffer);
       (void) FormatLocaleString(buffer,MaxTextExtent,
-        "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,bounds.y1,
-        bounds.x2,bounds.y2);
+        "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,bounds.y1,bounds.x2,
+        bounds.y2);
       (void) WriteBlobString(image,buffer);
     }
   (void) WriteBlobString(image,"%%EOF\n");
