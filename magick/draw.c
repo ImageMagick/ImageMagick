@@ -3726,7 +3726,7 @@ static MagickRealType GetOpacityPixel(PolygonInfo *polygon_info,
             }
           else
             {
-              alpha=1.0/alpha;
+              alpha=MagickEpsilonReciprocal(alpha);
               beta=delta.x*(y-q->y)-delta.y*(x-q->x);
               distance=alpha*beta*beta;
             }
@@ -3922,11 +3922,11 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         MagickBooleanType
           sync;
 
-        register ssize_t
-          x;
-
         register PixelPacket
           *restrict q;
+
+        register ssize_t
+          x;
 
         ssize_t
           start,
