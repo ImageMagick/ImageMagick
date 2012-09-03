@@ -3608,10 +3608,9 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
   return(polygon_info);
 }
 
-static double GetFillAlpha(PolygonInfo *polygon_info,
-  const double mid,const MagickBooleanType fill,
-  const FillRule fill_rule,const double x,const double y,
-  double *stroke_alpha)
+static double GetFillAlpha(PolygonInfo *polygon_info,const double mid,
+  const MagickBooleanType fill,const FillRule fill_rule,const double x,
+  const double y,double *stroke_alpha)
 {
   double
     alpha,
@@ -3622,11 +3621,11 @@ static double GetFillAlpha(PolygonInfo *polygon_info,
   PointInfo
     delta;
 
-  register EdgeInfo
-    *p;
-
   register const PointInfo
     *q;
+
+  register EdgeInfo
+    *p;
 
   register ssize_t
     i;
@@ -3688,7 +3687,7 @@ static double GetFillAlpha(PolygonInfo *polygon_info,
             }
           else
             {
-              alpha=1.0/alpha;
+              alpha=MagickEpsilonReciprocal(alpha);
               beta=delta.x*(y-q->y)-delta.y*(x-q->x);
               distance=alpha*beta*beta;
             }
