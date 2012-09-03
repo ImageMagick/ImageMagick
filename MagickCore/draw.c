@@ -220,8 +220,8 @@ MagickExport DrawInfo *AcquireDrawInfo(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  CloneDrawInfo() makes a copy of the given draw_info structure.  If NULL
-%  is specified, a new draw_info structure is created initialized to
-%  default values, according to the given image_info.
+%  is specified, a new DrawInfo structure is created initialized to default
+%  values.
 %
 %  The format of the CloneDrawInfo method is:
 %
@@ -1775,7 +1775,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
-  number_points=2047;
+  number_points=6553;
   primitive_info=(PrimitiveInfo *) AcquireQuantumMemory((size_t) number_points,
     sizeof(*primitive_info));
   if (primitive_info == (PrimitiveInfo *) NULL)
