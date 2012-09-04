@@ -3899,8 +3899,8 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         start=(ssize_t) ceil(bounds.x1-0.5);
         stop=(ssize_t) floor(bounds.x2-0.5);
         x=start;
-        q=GetCacheViewAuthenticPixels(image_view,x,y,(size_t) (stop-x+1),
-          1,exception);
+        q=GetCacheViewAuthenticPixels(image_view,x,y,(size_t) (stop-x+1),1,
+          exception);
         if (q == (Quantum *) NULL)
           {
             status=MagickFalse;
