@@ -213,6 +213,9 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 # if defined(MAGICKCORE_HAVE_SYS_RESOURCE_H)
 #  include <sys/resource.h>
 # endif
+# if defined(MAGICKCORE_HAVE_SYS_MMAN_H)
+#  include <sys/mman.h>
+# endif
 #endif
 #else
 # include <types.h>

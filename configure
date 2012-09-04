@@ -3662,7 +3662,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=9183:9209
+MAGICK_SVN_REVISION=9223:9235M
 
 
 
@@ -22472,7 +22472,7 @@ fi
 
 
 # Check additional headers
-for ac_header in arm/limits.h complex.h errno.h fcntl.h limits.h linux/unistd.h locale.h machine/param.h mach-o/dyld.h OS.h process.h stdarg.h sys/ipc.h sys/resource.h sys/syslimits.h sys/time.h sys/timeb.h sys/times.h sys/wait.h wchar.h xlocale.h
+for ac_header in arm/limits.h complex.h errno.h fcntl.h limits.h linux/unistd.h locale.h machine/param.h mach-o/dyld.h OS.h process.h sun_prefetch.h stdarg.h sys/ipc.h sys/mman.h sys/resource.h sys/syslimits.h sys/time.h sys/timeb.h sys/times.h sys/wait.h wchar.h xlocale.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
