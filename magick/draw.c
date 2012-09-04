@@ -2409,12 +2409,12 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
                 bounds.width=(size_t) floor(StringToDouble(token,
-                  (char **) NULL)_0.5);
+                  (char **) NULL)-0.5);
                 GetMagickToken(q,&q,token);
                 if (*token == ',')
                   GetMagickToken(q,&q,token);
                 bounds.height=(size_t) floor(StringToDouble(token,
-                  (char **) NULL)_0.5);
+                  (char **) NULL)-0.5);
                 for (p=q; *q != '\0'; )
                 {
                   GetMagickToken(q,&q,token);
