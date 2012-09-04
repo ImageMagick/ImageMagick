@@ -17,5 +17,5 @@
 <!ATTLIST include file CDATA #REQUIRED>
 ]>
 <typemap>
-   <include file="type-ghostscript.xml" />
+   <include file="type-dejavu.xml" /> <include file="type-ghostscript.xml" />
 </typemap>
