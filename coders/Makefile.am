@@ -436,7 +436,7 @@ coders_dib_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_djvu_la_SOURCES     = coders/djvu.c
 coders_djvu_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_djvu_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_djvu_la_LIBADD      = $(MAGICKCORE_LIBS) $(MATH_LIBS) $(DJVU_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS)
+coders_djvu_la_LIBADD      = $(MAGICKCORE_LIBS) $(DJVU_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # DNG coder module
 coders_dng_la_SOURCES      = coders/dng.c
@@ -478,7 +478,7 @@ coders_ept_la_LIBADD       = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 coders_exr_la_SOURCES      = coders/exr.c
 coders_exr_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS) $(OPENEXR_CFLAGS)
 coders_exr_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_exr_la_LIBADD       = $(MAGICKCORE_LIBS) $(MATH_LIBS) $(OPENEXR_LIBS)
+coders_exr_la_LIBADD       = $(MAGICKCORE_LIBS) $(OPENEXR_LIBS) $(MATH_LIBS)
 
 # FAX coder module
 coders_fax_la_SOURCES      = coders/fax.c
@@ -538,7 +538,7 @@ coders_hald_la_LIBADD      = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
 coders_hdr_la_SOURCES     = coders/hdr.c
 coders_hdr_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_hdr_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_hdr_la_LIBADD      = $(MAGICKCORE_LIBS) $(MATH_LIBS) $(GOMP_LIBS)
+coders_hdr_la_LIBADD      = $(MAGICKCORE_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
 
 # HRZ coder module
 coders_hrz_la_SOURCES      = coders/hrz.c
@@ -603,8 +603,8 @@ coders_jp2_la_LIBADD       = $(MAGICKCORE_LIBS) $(JP2_LIBS) $(JPEG_LIBS) $(MATH_
 # LABEL coder module
 coders_label_la_SOURCES    = coders/label.c
 coders_label_la_CPPFLAGS   = $(MODULE_EXTRA_CPPFLAGS)
-coders_label_la_LDFLAGS    = $(MODULECOMMONFLAGS) $(MATH_LIBS)
-coders_label_la_LIBADD     = $(MAGICKCORE_LIBS)
+coders_label_la_LDFLAGS    = $(MODULECOMMONFLAGS)
+coders_label_la_LIBADD     = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # MAC coder module
 coders_mac_la_SOURCES      = coders/mac.c
@@ -904,7 +904,7 @@ coders_thumbnail_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_tiff_la_SOURCES     = coders/tiff.c
 coders_tiff_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_tiff_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_tiff_la_LIBADD      = $(MAGICKCORE_LIBS) $(MATH_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS)
+coders_tiff_la_LIBADD      = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # TILE coder module
 coders_tile_la_SOURCES     = coders/tile.c
