@@ -21,15 +21,15 @@ TESTS_CHECK_PGRMS = \
 
 tests_validate_SOURCES = tests/validate.c tests/validate.h
 tests_validate_CPPFLAGS = $(AM_CPPFLAGS)
-tests_validate_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+tests_validate_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) $(MATH_LIBS)
 
 tests_drawtest_SOURCES = tests/drawtest.c
 tests_drawtest_LDFLAGS = $(LDFLAGS)
-tests_drawtest_LDADD = $(MAGICKWAND_LIBS)
+tests_drawtest_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 
 tests_wandtest_SOURCES = tests/wandtest.c
 tests_wandtest_LDFLAGS = $(LDFLAGS)
-tests_wandtest_LDADD = $(MAGICKWAND_LIBS)
+tests_wandtest_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 
 TESTS_XFAIL_TESTS = 
 
