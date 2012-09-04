@@ -63,9 +63,6 @@
 #include "magick/token.h"
 #include "magick/utility.h"
 #include "magick/utility-private.h"
-#if defined(MAGICKCORE_HAVE_MMAP_FILEIO) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
-# include <sys/mman.h>
-#endif
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
 #include "zlib.h"
 #endif
