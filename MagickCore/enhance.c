@@ -3379,8 +3379,8 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     The limit of ScaledSig as a->0 is the identity, but a=0 gives a
     division by zero. This is fixed below by hardwiring the identity when a
     is small. This would appear to be safe because the series expansion of
-    the sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that s(1)-s(0)
-    is about a/4.
+    the logistic sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that
+    s(1)-s(0) is about a/4. (With tanh, it's a/2.)
   */
 #define ScaledSig(a,b,x) ( \
   (Sig((a),(b),(x))-Sig((a),(b),0.0)) / (Sig((a),(b),1.0)-Sig((a),(b),0.0)) )
@@ -3410,7 +3410,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   (void) ResetMagickMemory(sigmoidal_map,0,(MaxMap+1)*sizeof(*sigmoidal_map));
-  if (contrast<4.0*MagickEpsilon)
+  if (contrast<MagickEpsilon)
     for (i=0; i <= (ssize_t) MaxMap; i++)
       sigmoidal_map[i]=ScaleMapToQuantum((double) i);
   else if (sharpen != MagickFalse)
