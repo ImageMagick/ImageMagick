@@ -364,13 +364,13 @@ coders_braille_la_LIBADD   = $(MAGICKCORE_LIBS)
 coders_cals_la_SOURCES    = coders/cals.c
 coders_cals_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_cals_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_cals_la_LIBADD      = $(MAGICKCORE_LIBS)
+coders_cals_la_LIBADD      = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # CAPTION coder module
 coders_caption_la_SOURCES  = coders/caption.c
 coders_caption_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_caption_la_LDFLAGS  = $(MODULECOMMONFLAGS)
-coders_caption_la_LIBADD   = $(MAGICKCORE_LIBS)
+coders_caption_la_LIBADD   = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # CINEON coder module
 coders_cin_la_SOURCES      = coders/cin.c
@@ -412,7 +412,7 @@ coders_cut_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_dcm_la_SOURCES      = coders/dcm.c
 coders_dcm_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_dcm_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_dcm_la_LIBADD       = $(MAGICKCORE_LIBS)
+coders_dcm_la_LIBADD       = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # DDS coder module
 coders_dds_la_SOURCES      = coders/dds.c
@@ -436,7 +436,7 @@ coders_dib_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_djvu_la_SOURCES     = coders/djvu.c
 coders_djvu_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_djvu_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_djvu_la_LIBADD      = $(MAGICKCORE_LIBS) $(DJVU_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS)
+coders_djvu_la_LIBADD      = $(MAGICKCORE_LIBS) $(DJVU_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # DNG coder module
 coders_dng_la_SOURCES      = coders/dng.c
@@ -478,7 +478,7 @@ coders_ept_la_LIBADD       = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 coders_exr_la_SOURCES      = coders/exr.c
 coders_exr_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS) $(OPENEXR_CFLAGS)
 coders_exr_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_exr_la_LIBADD       = $(MAGICKCORE_LIBS) $(MATH_LIBS) $(OPENEXR_LIBS)
+coders_exr_la_LIBADD       = $(MAGICKCORE_LIBS) $(OPENEXR_LIBS) $(MATH_LIBS)
 
 # FAX coder module
 coders_fax_la_SOURCES      = coders/fax.c
@@ -526,7 +526,7 @@ coders_gradient_la_LIBADD  = $(MAGICKCORE_LIBS)
 coders_histogram_la_SOURCES = coders/histogram.c
 coders_histogram_la_CPPFLAGS= $(MODULE_EXTRA_CPPFLAGS)
 coders_histogram_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_histogram_la_LIBADD  = $(MAGICKCORE_LIBS)
+coders_histogram_la_LIBADD  = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # HALD coder module
 coders_hald_la_SOURCES     = coders/hald.c
@@ -538,7 +538,7 @@ coders_hald_la_LIBADD      = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
 coders_hdr_la_SOURCES     = coders/hdr.c
 coders_hdr_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_hdr_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_hdr_la_LIBADD      = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
+coders_hdr_la_LIBADD      = $(MAGICKCORE_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
 
 # HRZ coder module
 coders_hrz_la_SOURCES      = coders/hrz.c
@@ -592,8 +592,8 @@ coders_jbig_la_LIBADD      = $(MAGICKCORE_LIBS) $(JBIG_LIBS)
 coders_jpeg_la_SOURCES     = coders/jpeg.c
 coders_jpeg_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_jpeg_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_jpeg_la_LIBADD      = $(MAGICKCORE_LIBS) $(JPEG_LIBS)
-
+coders_jpeg_la_LIBADD      = $(MAGICKCORE_LIBS) $(JPEG_LIBS) $(MATH_LIBS)
+ 
 # JPEG 2000 coder module
 coders_jp2_la_SOURCES      = coders/jp2.c
 coders_jp2_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
@@ -603,8 +603,8 @@ coders_jp2_la_LIBADD       = $(MAGICKCORE_LIBS) $(JP2_LIBS) $(JPEG_LIBS) $(MATH_
 # LABEL coder module
 coders_label_la_SOURCES    = coders/label.c
 coders_label_la_CPPFLAGS   = $(MODULE_EXTRA_CPPFLAGS)
-coders_label_la_LDFLAGS    = $(MODULECOMMONFLAGS) $(MATH_LIBS)
-coders_label_la_LIBADD     = $(MAGICKCORE_LIBS)
+coders_label_la_LDFLAGS    = $(MODULECOMMONFLAGS)
+coders_label_la_LIBADD     = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # MAC coder module
 coders_mac_la_SOURCES      = coders/mac.c
@@ -688,7 +688,7 @@ coders_mtv_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_mvg_la_SOURCES      = coders/mvg.c
 coders_mvg_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_mvg_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_mvg_la_LIBADD       = $(MAGICKCORE_LIBS)
+coders_mvg_la_LIBADD       = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # NULL coder module
 coders_null_la_SOURCES     = coders/null.c
@@ -730,7 +730,7 @@ coders_pcd_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_pcl_la_SOURCES      = coders/pcl.c
 coders_pcl_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_pcl_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_pcl_la_LIBADD       = $(MAGICKCORE_LIBS)
+coders_pcl_la_LIBADD       = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # PCX coder module
 coders_pcx_la_SOURCES      = coders/pcx.c
@@ -904,7 +904,7 @@ coders_thumbnail_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_tiff_la_SOURCES     = coders/tiff.c
 coders_tiff_la_CPPFLAGS    = $(MODULE_EXTRA_CPPFLAGS)
 coders_tiff_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-coders_tiff_la_LIBADD      = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS)
+coders_tiff_la_LIBADD      = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # TILE coder module
 coders_tile_la_SOURCES     = coders/tile.c
@@ -1024,7 +1024,7 @@ coders_xpm_la_LIBADD       = $(MAGICKCORE_LIBS)
 coders_xps_la_SOURCES      = coders/xps.c
 coders_xps_la_CPPFLAGS     = $(MODULE_EXTRA_CPPFLAGS)
 coders_xps_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-coders_xps_la_LIBADD       = $(MAGICKCORE_LIBS)
+coders_xps_la_LIBADD       = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # XWD coder module
 coders_xwd_la_SOURCES      = coders/xwd.c
