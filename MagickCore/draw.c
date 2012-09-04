@@ -3978,7 +3978,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         Fill and/or stroke.
       */
       fill_alpha=GetFillAlpha(polygon_info[id],mid,fill,draw_info->fill_rule,
-        x+0.5,y+0.5,&stroke_alpha);
+        (double) x,(double) y,&stroke_alpha);
       if (draw_info->stroke_antialias == MagickFalse)
         {
           fill_alpha=fill_alpha > 0.25 ? 1.0 : 0.0;
