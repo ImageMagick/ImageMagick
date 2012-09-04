@@ -849,7 +849,7 @@ coders_braille_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_braille_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_braille_la_rpath = -rpath $(codersdir)
-coders_cals_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_cals_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
 am_coders_cals_la_OBJECTS = coders/coders_cals_la-cals.lo
 coders_cals_la_OBJECTS = $(am_coders_cals_la_OBJECTS)
 coders_cals_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -857,7 +857,8 @@ coders_cals_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_cals_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_cals_la_rpath = -rpath $(codersdir)
-coders_caption_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_caption_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+	$(am__DEPENDENCIES_1)
 am_coders_caption_la_OBJECTS = coders/coders_caption_la-caption.lo
 coders_caption_la_OBJECTS = $(am_coders_caption_la_OBJECTS)
 coders_caption_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -913,7 +914,7 @@ coders_cut_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_cut_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_cut_la_rpath = -rpath $(codersdir)
-coders_dcm_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_dcm_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
 am_coders_dcm_la_OBJECTS = coders/coders_dcm_la-dcm.lo
 coders_dcm_la_OBJECTS = $(am_coders_dcm_la_OBJECTS)
 coders_dcm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -944,7 +945,7 @@ coders_dib_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 @WITH_MODULES_TRUE@am_coders_dib_la_rpath = -rpath $(codersdir)
 coders_djvu_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_djvu_la_OBJECTS = coders/coders_djvu_la-djvu.lo
 coders_djvu_la_OBJECTS = $(am_coders_djvu_la_OBJECTS)
 coders_djvu_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1069,14 +1070,16 @@ coders_hald_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_hald_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_hald_la_rpath = -rpath $(codersdir)
-coders_hdr_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_hdr_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_hdr_la_OBJECTS = coders/coders_hdr_la-hdr.lo
 coders_hdr_la_OBJECTS = $(am_coders_hdr_la_OBJECTS)
 coders_hdr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_hdr_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_hdr_la_rpath = -rpath $(codersdir)
-coders_histogram_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_histogram_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+	$(am__DEPENDENCIES_1)
 am_coders_histogram_la_OBJECTS =  \
 	coders/coders_histogram_la-histogram.lo
 coders_histogram_la_OBJECTS = $(am_coders_histogram_la_OBJECTS)
@@ -1156,7 +1159,8 @@ coders_jp2_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_jp2_la_LDFLAGS) $(LDFLAGS) -o $@
 @JP2_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_jp2_la_rpath = -rpath \
 @JP2_DELEGATE_TRUE@@WITH_MODULES_TRUE@	$(codersdir)
-coders_jpeg_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_jpeg_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_jpeg_la_OBJECTS = coders/coders_jpeg_la-jpeg.lo
 coders_jpeg_la_OBJECTS = $(am_coders_jpeg_la_OBJECTS)
 coders_jpeg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1165,7 +1169,8 @@ coders_jpeg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$@
 @JPEG_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_jpeg_la_rpath =  \
 @JPEG_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
-coders_label_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_label_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+	$(am__DEPENDENCIES_1)
 am_coders_label_la_OBJECTS = coders/coders_label_la-label.lo
 coders_label_la_OBJECTS = $(am_coders_label_la_OBJECTS)
 coders_label_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1274,7 +1279,7 @@ coders_mtv_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_mtv_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_mtv_la_rpath = -rpath $(codersdir)
-coders_mvg_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_mvg_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
 am_coders_mvg_la_OBJECTS = coders/coders_mvg_la-mvg.lo
 coders_mvg_la_OBJECTS = $(am_coders_mvg_la_OBJECTS)
 coders_mvg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -1328,7 +1333,7 @@ coders_pcd_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_pcd_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_pcd_la_rpath = -rpath $(codersdir)
-coders_pcl_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_pcl_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
 am_coders_pcl_la_OBJECTS = coders/coders_pcl_la-pcl.lo
 coders_pcl_la_OBJECTS = $(am_coders_pcl_la_OBJECTS)
 coders_pcl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -1554,7 +1559,8 @@ coders_thumbnail_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @WITH_MODULES_TRUE@am_coders_thumbnail_la_rpath = -rpath $(codersdir)
 coders_tiff_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_tiff_la_OBJECTS = coders/coders_tiff_la-tiff.lo
 coders_tiff_la_OBJECTS = $(am_coders_tiff_la_OBJECTS)
 coders_tiff_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1710,7 +1716,7 @@ coders_xpm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_xpm_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_xpm_la_rpath = -rpath $(codersdir)
-coders_xps_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_xps_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
 am_coders_xps_la_OBJECTS = coders/coders_xps_la-xps.lo
 coders_xps_la_OBJECTS = $(am_coders_xps_la_OBJECTS)
 coders_xps_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -1845,102 +1851,106 @@ am_Magick___demo_analyze_OBJECTS = Magick++/demo/analyze.$(OBJEXT)
 Magick___demo_analyze_OBJECTS = $(am_Magick___demo_analyze_OBJECTS)
 @WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_3 =  \
 @WITH_MAGICK_PLUS_PLUS_TRUE@	Magick++/lib/libMagick++.la
-Magick___demo_analyze_DEPENDENCIES = $(am__DEPENDENCIES_3)
+@WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_4 =  \
+@WITH_MAGICK_PLUS_PLUS_TRUE@	$(am__DEPENDENCIES_3) \
+@WITH_MAGICK_PLUS_PLUS_TRUE@	$(top_builddir)/magick/libMagickCore.la
+Magick___demo_analyze_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_button_OBJECTS = Magick++/demo/button.$(OBJEXT)
 Magick___demo_button_OBJECTS = $(am_Magick___demo_button_OBJECTS)
-Magick___demo_button_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_button_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_demo_OBJECTS = Magick++/demo/demo.$(OBJEXT)
 Magick___demo_demo_OBJECTS = $(am_Magick___demo_demo_OBJECTS)
-Magick___demo_demo_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_demo_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_detrans_OBJECTS = Magick++/demo/detrans.$(OBJEXT)
 Magick___demo_detrans_OBJECTS = $(am_Magick___demo_detrans_OBJECTS)
-Magick___demo_detrans_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_detrans_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_flip_OBJECTS = Magick++/demo/flip.$(OBJEXT)
 Magick___demo_flip_OBJECTS = $(am_Magick___demo_flip_OBJECTS)
-Magick___demo_flip_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_flip_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_gravity_OBJECTS = Magick++/demo/gravity.$(OBJEXT)
 Magick___demo_gravity_OBJECTS = $(am_Magick___demo_gravity_OBJECTS)
-Magick___demo_gravity_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_gravity_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_piddle_OBJECTS = Magick++/demo/piddle.$(OBJEXT)
 Magick___demo_piddle_OBJECTS = $(am_Magick___demo_piddle_OBJECTS)
-Magick___demo_piddle_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_piddle_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_shapes_OBJECTS = Magick++/demo/shapes.$(OBJEXT)
 Magick___demo_shapes_OBJECTS = $(am_Magick___demo_shapes_OBJECTS)
-Magick___demo_shapes_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_shapes_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_zoom_OBJECTS = Magick++/demo/zoom.$(OBJEXT)
 Magick___demo_zoom_OBJECTS = $(am_Magick___demo_zoom_OBJECTS)
-Magick___demo_zoom_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_zoom_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_appendImages_OBJECTS =  \
 	Magick++/tests/appendImages.$(OBJEXT)
 Magick___tests_appendImages_OBJECTS =  \
 	$(am_Magick___tests_appendImages_OBJECTS)
-Magick___tests_appendImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_appendImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_attributes_OBJECTS =  \
 	Magick++/tests/attributes.$(OBJEXT)
 Magick___tests_attributes_OBJECTS =  \
 	$(am_Magick___tests_attributes_OBJECTS)
-Magick___tests_attributes_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_attributes_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_averageImages_OBJECTS =  \
 	Magick++/tests/averageImages.$(OBJEXT)
 Magick___tests_averageImages_OBJECTS =  \
 	$(am_Magick___tests_averageImages_OBJECTS)
-Magick___tests_averageImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_averageImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_coalesceImages_OBJECTS =  \
 	Magick++/tests/coalesceImages.$(OBJEXT)
 Magick___tests_coalesceImages_OBJECTS =  \
 	$(am_Magick___tests_coalesceImages_OBJECTS)
-Magick___tests_coalesceImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_coalesceImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_coderInfo_OBJECTS =  \
 	Magick++/tests/coderInfo.$(OBJEXT)
 Magick___tests_coderInfo_OBJECTS =  \
 	$(am_Magick___tests_coderInfo_OBJECTS)
-Magick___tests_coderInfo_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_coderInfo_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_color_OBJECTS = Magick++/tests/color.$(OBJEXT)
 Magick___tests_color_OBJECTS = $(am_Magick___tests_color_OBJECTS)
-Magick___tests_color_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_color_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_colorHistogram_OBJECTS =  \
 	Magick++/tests/colorHistogram.$(OBJEXT)
 Magick___tests_colorHistogram_OBJECTS =  \
 	$(am_Magick___tests_colorHistogram_OBJECTS)
-Magick___tests_colorHistogram_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_colorHistogram_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_exceptions_OBJECTS =  \
 	Magick++/tests/exceptions.$(OBJEXT)
 Magick___tests_exceptions_OBJECTS =  \
 	$(am_Magick___tests_exceptions_OBJECTS)
-Magick___tests_exceptions_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_exceptions_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_montageImages_OBJECTS =  \
 	Magick++/tests/montageImages.$(OBJEXT)
 Magick___tests_montageImages_OBJECTS =  \
 	$(am_Magick___tests_montageImages_OBJECTS)
-Magick___tests_montageImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_montageImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_morphImages_OBJECTS =  \
 	Magick++/tests/morphImages.$(OBJEXT)
 Magick___tests_morphImages_OBJECTS =  \
 	$(am_Magick___tests_morphImages_OBJECTS)
-Magick___tests_morphImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_morphImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_readWriteBlob_OBJECTS =  \
 	Magick++/tests/readWriteBlob.$(OBJEXT)
 Magick___tests_readWriteBlob_OBJECTS =  \
 	$(am_Magick___tests_readWriteBlob_OBJECTS)
-Magick___tests_readWriteBlob_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_readWriteBlob_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_readWriteImages_OBJECTS =  \
 	Magick++/tests/readWriteImages.$(OBJEXT)
 Magick___tests_readWriteImages_OBJECTS =  \
 	$(am_Magick___tests_readWriteImages_OBJECTS)
-Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_tests_drawtest_OBJECTS = tests/drawtest.$(OBJEXT)
 tests_drawtest_OBJECTS = $(am_tests_drawtest_OBJECTS)
-tests_drawtest_DEPENDENCIES = $(MAGICKWAND_LIBS)
+tests_drawtest_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 tests_drawtest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(tests_drawtest_LDFLAGS) $(LDFLAGS) -o \
 	$@
 am_tests_validate_OBJECTS = tests/tests_validate-validate.$(OBJEXT)
 tests_validate_OBJECTS = $(am_tests_validate_OBJECTS)
-tests_validate_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+tests_validate_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) \
+	$(am__DEPENDENCIES_1)
 am_tests_wandtest_OBJECTS = tests/wandtest.$(OBJEXT)
 tests_wandtest_OBJECTS = $(am_tests_wandtest_OBJECTS)
-tests_wandtest_DEPENDENCIES = $(MAGICKWAND_LIBS)
+tests_wandtest_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 tests_wandtest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(tests_wandtest_LDFLAGS) $(LDFLAGS) -o \
@@ -3388,13 +3398,13 @@ coders_braille_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_cals_la_SOURCES = coders/cals.c
 coders_cals_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_cals_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_cals_la_LIBADD = $(MAGICKCORE_LIBS)
+coders_cals_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # CAPTION coder module
 coders_caption_la_SOURCES = coders/caption.c
 coders_caption_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_caption_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_caption_la_LIBADD = $(MAGICKCORE_LIBS)
+coders_caption_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # CINEON coder module
 coders_cin_la_SOURCES = coders/cin.c
@@ -3436,7 +3446,7 @@ coders_cut_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_dcm_la_SOURCES = coders/dcm.c
 coders_dcm_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_dcm_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_dcm_la_LIBADD = $(MAGICKCORE_LIBS)
+coders_dcm_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # DDS coder module
 coders_dds_la_SOURCES = coders/dds.c
@@ -3460,7 +3470,7 @@ coders_dib_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_djvu_la_SOURCES = coders/djvu.c
 coders_djvu_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_djvu_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_djvu_la_LIBADD = $(MAGICKCORE_LIBS) $(DJVU_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS)
+coders_djvu_la_LIBADD = $(MAGICKCORE_LIBS) $(DJVU_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # DNG coder module
 coders_dng_la_SOURCES = coders/dng.c
@@ -3502,7 +3512,7 @@ coders_ept_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 coders_exr_la_SOURCES = coders/exr.c
 coders_exr_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS) $(OPENEXR_CFLAGS)
 coders_exr_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_exr_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS) $(OPENEXR_LIBS)
+coders_exr_la_LIBADD = $(MAGICKCORE_LIBS) $(OPENEXR_LIBS) $(MATH_LIBS)
 
 # FAX coder module
 coders_fax_la_SOURCES = coders/fax.c
@@ -3550,7 +3560,7 @@ coders_gradient_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_histogram_la_SOURCES = coders/histogram.c
 coders_histogram_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_histogram_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_histogram_la_LIBADD = $(MAGICKCORE_LIBS)
+coders_histogram_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # HALD coder module
 coders_hald_la_SOURCES = coders/hald.c
@@ -3562,7 +3572,7 @@ coders_hald_la_LIBADD = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
 coders_hdr_la_SOURCES = coders/hdr.c
 coders_hdr_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_hdr_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_hdr_la_LIBADD = $(MAGICKCORE_LIBS) $(GOMP_LIBS)
+coders_hdr_la_LIBADD = $(MAGICKCORE_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
 
 # HRZ coder module
 coders_hrz_la_SOURCES = coders/hrz.c
@@ -3616,7 +3626,7 @@ coders_jbig_la_LIBADD = $(MAGICKCORE_LIBS) $(JBIG_LIBS)
 coders_jpeg_la_SOURCES = coders/jpeg.c
 coders_jpeg_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_jpeg_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_jpeg_la_LIBADD = $(MAGICKCORE_LIBS) $(JPEG_LIBS)
+coders_jpeg_la_LIBADD = $(MAGICKCORE_LIBS) $(JPEG_LIBS) $(MATH_LIBS)
 
 # JPEG 2000 coder module
 coders_jp2_la_SOURCES = coders/jp2.c
@@ -3627,8 +3637,8 @@ coders_jp2_la_LIBADD = $(MAGICKCORE_LIBS) $(JP2_LIBS) $(JPEG_LIBS) $(MATH_LIBS)
 # LABEL coder module
 coders_label_la_SOURCES = coders/label.c
 coders_label_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
-coders_label_la_LDFLAGS = $(MODULECOMMONFLAGS) $(MATH_LIBS)
-coders_label_la_LIBADD = $(MAGICKCORE_LIBS)
+coders_label_la_LDFLAGS = $(MODULECOMMONFLAGS)
+coders_label_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # MAC coder module
 coders_mac_la_SOURCES = coders/mac.c
@@ -3712,7 +3722,7 @@ coders_mtv_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_mvg_la_SOURCES = coders/mvg.c
 coders_mvg_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_mvg_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_mvg_la_LIBADD = $(MAGICKCORE_LIBS)
+coders_mvg_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # NULL coder module
 coders_null_la_SOURCES = coders/null.c
@@ -3754,7 +3764,7 @@ coders_pcd_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_pcl_la_SOURCES = coders/pcl.c
 coders_pcl_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_pcl_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_pcl_la_LIBADD = $(MAGICKCORE_LIBS)
+coders_pcl_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # PCX coder module
 coders_pcx_la_SOURCES = coders/pcx.c
@@ -3928,7 +3938,7 @@ coders_thumbnail_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_tiff_la_SOURCES = coders/tiff.c
 coders_tiff_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_tiff_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_tiff_la_LIBADD = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS)
+coders_tiff_la_LIBADD = $(MAGICKCORE_LIBS) $(TIFF_LIBS) $(JBIG_LIBS) $(JPEG_LIBS) $(LZMA_LIBS) $(ZLIB_LIBS) $(MATH_LIBS)
 
 # TILE coder module
 coders_tile_la_SOURCES = coders/tile.c
@@ -4048,7 +4058,7 @@ coders_xpm_la_LIBADD = $(MAGICKCORE_LIBS)
 coders_xps_la_SOURCES = coders/xps.c
 coders_xps_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_xps_la_LDFLAGS = $(MODULECOMMONFLAGS)
-coders_xps_la_LIBADD = $(MAGICKCORE_LIBS)
+coders_xps_la_LIBADD = $(MAGICKCORE_LIBS) $(MATH_LIBS)
 
 # XWD coder module
 coders_xwd_la_SOURCES = coders/xwd.c
@@ -4633,6 +4643,8 @@ MAGICKWAND_EXTRA_DIST = \
 MAGICKWAND_CLEANFILES = 
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_LIBS = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_LIBS = Magick++/lib/libMagick++.la
+@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_LDADD = 
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_LDADD = $(MAGICKPP_LIBS) $(top_builddir)/magick/libMagickCore.la
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_CHECK_PGRMS = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_CHECK_PGRMS = $(MAGICKPP_CHECK_PGRMS_OPT)
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_MANS = 
@@ -4772,47 +4784,47 @@ MAGICKPP_CHECK_PGRMS_OPT = \
 	Magick++/tests/readWriteImages
 
 Magick___demo_analyze_SOURCES = Magick++/demo/analyze.cpp
-Magick___demo_analyze_LDADD = $(MAGICKPP_LIBS)
+Magick___demo_analyze_LDADD = $(MAGICKPP_LDADD)
 Magick___demo_button_SOURCES = Magick++/demo/button.cpp
-Magick___demo_button_LDADD = $(MAGICKPP_LIBS)
+Magick___demo_button_LDADD = $(MAGICKPP_LDADD)
 Magick___demo_demo_SOURCES = Magick++/demo/demo.cpp
-Magick___demo_demo_LDADD = $(MAGICKPP_LIBS)
+Magick___demo_demo_LDADD = $(MAGICKPP_LDADD)
 Magick___demo_detrans_SOURCES = Magick++/demo/detrans.cpp
-Magick___demo_detrans_LDADD = $(MAGICKPP_LIBS)
+Magick___demo_detrans_LDADD = $(MAGICKPP_LDADD)
 Magick___demo_flip_SOURCES = Magick++/demo/flip.cpp
-Magick___demo_flip_LDADD = $(MAGICKPP_LIBS)
+Magick___demo_flip_LDADD = $(MAGICKPP_LDADD)
 Magick___demo_gravity_SOURCES = Magick++/demo/gravity.cpp
-Magick___demo_gravity_LDADD = $(MAGICKPP_LIBS)
+Magick___demo_gravity_LDADD = $(MAGICKPP_LDADD)
 Magick___demo_piddle_SOURCES = Magick++/demo/piddle.cpp
-Magick___demo_piddle_LDADD = $(MAGICKPP_LIBS)
+Magick___demo_piddle_LDADD = $(MAGICKPP_LDADD)
 Magick___demo_shapes_SOURCES = Magick++/demo/shapes.cpp
-Magick___demo_shapes_LDADD = $(MAGICKPP_LIBS)
+Magick___demo_shapes_LDADD = $(MAGICKPP_LDADD)
 Magick___demo_zoom_SOURCES = Magick++/demo/zoom.cpp
-Magick___demo_zoom_LDADD = $(MAGICKPP_LIBS)
+Magick___demo_zoom_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_appendImages_SOURCES = Magick++/tests/appendImages.cpp
-Magick___tests_appendImages_LDADD = $(MAGICKPP_LIBS)
+Magick___tests_appendImages_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_attributes_SOURCES = Magick++/tests/attributes.cpp
-Magick___tests_attributes_LDADD = $(MAGICKPP_LIBS)
+Magick___tests_attributes_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_averageImages_SOURCES = Magick++/tests/averageImages.cpp
-Magick___tests_averageImages_LDADD = $(MAGICKPP_LIBS)
+Magick___tests_averageImages_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_coalesceImages_SOURCES = Magick++/tests/coalesceImages.cpp
-Magick___tests_coalesceImages_LDADD = $(MAGICKPP_LIBS)
+Magick___tests_coalesceImages_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_coderInfo_SOURCES = Magick++/tests/coderInfo.cpp
-Magick___tests_coderInfo_LDADD = $(MAGICKPP_LIBS)
+Magick___tests_coderInfo_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_color_SOURCES = Magick++/tests/color.cpp
-Magick___tests_color_LDADD = $(MAGICKPP_LIBS)
+Magick___tests_color_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_colorHistogram_SOURCES = Magick++/tests/colorHistogram.cpp
-Magick___tests_colorHistogram_LDADD = $(MAGICKPP_LIBS)
+Magick___tests_colorHistogram_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_exceptions_SOURCES = Magick++/tests/exceptions.cpp
-Magick___tests_exceptions_LDADD = $(MAGICKPP_LIBS)
+Magick___tests_exceptions_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_montageImages_SOURCES = Magick++/tests/montageImages.cpp
-Magick___tests_montageImages_LDADD = $(MAGICKPP_LIBS)
+Magick___tests_montageImages_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_morphImages_SOURCES = Magick++/tests/morphImages.cpp
-Magick___tests_morphImages_LDADD = $(MAGICKPP_LIBS)
+Magick___tests_morphImages_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_readWriteBlob_SOURCES = Magick++/tests/readWriteBlob.cpp
-Magick___tests_readWriteBlob_LDADD = $(MAGICKPP_LIBS)
+Magick___tests_readWriteBlob_LDADD = $(MAGICKPP_LDADD)
 Magick___tests_readWriteImages_SOURCES = Magick++/tests/readWriteImages.cpp
-Magick___tests_readWriteImages_LDADD = $(MAGICKPP_LIBS)
+Magick___tests_readWriteImages_LDADD = $(MAGICKPP_LDADD)
 MAGICKPP_LOCAL_TARGETS = www/Magick++/NEWS.html www/Magick++/ChangeLog.html
 
 # Where filter modules get installed
@@ -4927,13 +4939,13 @@ TESTS_CHECK_PGRMS = \
 
 tests_validate_SOURCES = tests/validate.c tests/validate.h
 tests_validate_CPPFLAGS = $(AM_CPPFLAGS)
-tests_validate_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+tests_validate_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) $(MATH_LIBS)
 tests_drawtest_SOURCES = tests/drawtest.c
 tests_drawtest_LDFLAGS = $(LDFLAGS)
-tests_drawtest_LDADD = $(MAGICKWAND_LIBS)
+tests_drawtest_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 tests_wandtest_SOURCES = tests/wandtest.c
 tests_wandtest_LDFLAGS = $(LDFLAGS)
-tests_wandtest_LDADD = $(MAGICKWAND_LIBS)
+tests_wandtest_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 TESTS_XFAIL_TESTS = 
 TESTS_TESTS = \
 	tests/validate-compare.tap \
