@@ -3349,29 +3349,52 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     y;
 
   /*
-    Sigmoidal with inflexion point moved to b and "slope constant" set to a.
+    Sigmoidal function Sig with inflexion point moved to b and "slope
+    constant" set to a.
+    The first version, based on the hyperbolic tangent tanh, when
+    combined with the scaling step, is an exact arithmetic clone of the
+    the sigmoid function based on the logistic curve. The equivalence is
+    based on the identity
+    1/(1+exp(-t)) = (1+tanh(t/2))/2
+    (http://de.wikipedia.org/wiki/Sigmoidfunktion) and the fact that the
+    scaled sigmoidal derivation is invariant under affine transformations
+    of the ordinate.
+    The tanh version is almost certainly more accurate and cheaper.
+    The 0.5 factor in the argument is to clone the legacy ImageMagick
+    behavior.
+    The reason for making the define depend on whether atanh has to do
+    with the construction of the inverse of the scaled sigmoidal.
   */
-#define Sigmoidal(a,b,x) ( 1.0/(1.0+exp((a)*((b)-(x)))) )
+#if defined(MAGICKCORE_HAVE_ATANH)
+#define Sig(a,b,x) ( tanh((0.5*(a))*((x)-(b))) )
+#else
+#define Sig(a,b,x) ( 1.0/(1.0+exp((a)*((b)-(x)))) )
+#endif
   /*
-    Scaled sigmoidal formula: (1/(1+exp(a*(b-x))) - 1/(1+exp(a*b)))
-                              /
-                              (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b))).
-    See http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html and
-    http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.
+    Scaled sigmoidal formula:
+    ( Sig(a,b,x)-Sig(a,b,0) ) / ( Sig(a,b,1) - Sig(a,b,0) )
+    See http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html
+    and http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.
+    The limit of ScaledSig as a->0 is the identity, but a=0 gives a
+    division by zero. This is fixed below by hardwiring the identity when a
+    is small. This would appear to be safe because the series expansion of
+    the sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that s(1)-s(0)
+    is about a/4.
   */
-#define ScaledSigmoidal(a,b,x) (                    \
-  (Sigmoidal((a),(b),(x))-Sigmoidal((a),(b),0.0)) / \
-  (Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0)) )
-#define InverseScaledSigmoidal(a,b,x) (                                     \
-  (b) - log( -1.0+1.0/((Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0))*(x)+ \
-  Sigmoidal((a),(b),0.0)) ) / (a) )
-  /* 
-    The limit of ScaledSigmoidal as a->0 is the identity, but a=0 gives a
-    division by zero. This is fixed below by hardwiring the identity when a is
-    small. This would appear to be safe because the series expansion of the
-    sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that s(1)-s(0) is
-    about a/4.
+#define ScaledSig(a,b,x) ( \
+  (Sig((a),(b),(x))-Sig((a),(b),0.0)) / (Sig((a),(b),1.0)-Sig((a),(b),0.0)) )
+  /*
+    Inverse of ScaledSig, used for +sigmoidal-contrast:
   */
+#if defined(MAGICKCORE_HAVE_ATANH)
+#define InverseScaledSig(a,b,x) ( (b) +                             \
+  atanh( (Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0) ) \
+  / (0.5*(a)) )
+#else
+#define InverseScaledSig(a,b,x) ( (b) -                                     \
+  log( 1.0/((Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0))-1.0 ) \
+  / (a) )
+#endif
 
   /*
     Allocate and initialize sigmoidal maps.
@@ -3392,12 +3415,11 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   else if (sharpen != MagickFalse)
     for (i=0; i <= (ssize_t) MaxMap; i++)
       sigmoidal_map[i]=ScaleMapToQuantum( (double) (MaxMap*
-        ScaledSigmoidal(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
+        ScaledSig(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
   else
     for (i=0; i <= (ssize_t) MaxMap; i++)
       sigmoidal_map[i]=ScaleMapToQuantum((double) (MaxMap*
-        InverseScaledSigmoidal(contrast,QuantumScale*midpoint,
-	(double) i/MaxMap)));
+        InverseScaledSig(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
     {

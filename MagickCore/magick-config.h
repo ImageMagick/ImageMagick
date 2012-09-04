@@ -1218,7 +1218,9 @@
 #endif
 
 /* Define if you have LQR library */
-/* #undef LQR_DELEGATE */
+#ifndef MAGICKCORE_LQR_DELEGATE
+#define MAGICKCORE_LQR_DELEGATE 1
+#endif
 
 /* Define if using libltdl to support dynamically loadable modules */
 #ifndef MAGICKCORE_LTDL_DELEGATE
@@ -1230,7 +1232,7 @@
 
 /* Define to the system default library search path. */
 #ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/freetype-freeworld:/usr/lib/llvm:/usr/lib64/llvm:/usr/local/lib:/usr/lib64/mysql:/usr/lib64/nvidia:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.5/tclx8.4:/usr/lib64/tcl8.5:/usr/lib64/tracker-0.14:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner-2"
+#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/lib32:/usr/lib32:/usr/lib/i386-linux-gnu/mesa:/lib/i386-linux-gnu:/usr/lib/i386-linux-gnu:/lib/i686-linux-gnu:/usr/lib/i686-linux-gnu:/usr/local/lib:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu/mesa"
 #endif
 
 /* The archive extension */
@@ -1264,9 +1266,7 @@
 /* #undef LT_SHARED_EXT */
 
 /* Define if you have LZMA library */
-#ifndef MAGICKCORE_LZMA_DELEGATE
-#define MAGICKCORE_LZMA_DELEGATE 1
-#endif
+/* #undef LZMA_DELEGATE */
 
 /* Define to prepend to default font search path. */
 /* #undef MAGICK_FONT_PATH */
