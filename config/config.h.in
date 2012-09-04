@@ -574,6 +574,9 @@
 /* Define to 1 if `tm_zone' is a member of `struct tm'. */
 #undef HAVE_STRUCT_TM_TM_ZONE
 
+/* Define to 1 if you have the <sun_prefetch.h> header file. */
+#undef HAVE_SUN_PREFETCH_H
+
 /* Define to 1 if you have the `symlink' function. */
 #undef HAVE_SYMLINK
 
@@ -589,6 +592,9 @@
 
 /* Define to 1 if you have the <sys/ipc.h> header file. */
 #undef HAVE_SYS_IPC_H
+
+/* Define to 1 if you have the <sys/mman.h> header file. */
+#undef HAVE_SYS_MMAN_H
 
 /* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
    */
