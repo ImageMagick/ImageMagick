@@ -3362,8 +3362,9 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     The tanh version is almost certainly more accurate and cheaper.
     The 0.5 factor in the argument is to clone the legacy ImageMagick
     behavior.
-    The reason for making the define depend on whether atanh has to do
-    with the construction of the inverse of the scaled sigmoidal.
+    The reason for making the define depend on atanh even though it only
+    uses tanh has to do with the construction of the inverse of the scaled
+    sigmoidal.
   */
 #if defined(MAGICKCORE_HAVE_ATANH)
 #define Sig(a,b,x) ( tanh((0.5*(a))*((x)-(b))) )
