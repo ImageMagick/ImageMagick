@@ -3609,8 +3609,8 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
 }
 
 static double GetFillAlpha(PolygonInfo *polygon_info,const double mid,
-  const MagickBooleanType fill,const FillRule fill_rule,const double x,
-  const double y,double *stroke_alpha)
+  const MagickBooleanType fill,const FillRule fill_rule,const ssize_t x,
+  const ssize_t y,double *stroke_alpha)
 {
   double
     alpha,
@@ -3642,25 +3642,26 @@ static double GetFillAlpha(PolygonInfo *polygon_info,const double mid,
   p=polygon_info->edges;
   for (j=0; j < (ssize_t) polygon_info->number_edges; j++, p++)
   {
-    if (y <= (p->bounds.y1-mid-0.5))
+    if ((double) y <= (p->bounds.y1-mid-0.5))
       break;
-    if (y > (p->bounds.y2+mid+0.5))
+    if ((double) y > (p->bounds.y2+mid+0.5))
       {
         (void) DestroyEdge(polygon_info,(size_t) j);
         continue;
       }
-    if ((x <= (p->bounds.x1-mid-0.5)) || (x > (p->bounds.x2+mid+0.5)))
+    if (((double) x <= (p->bounds.x1-mid-0.5)) ||
+        ((double) x > (p->bounds.x2+mid+0.5)))
       continue;
     i=(ssize_t) MagickMax((double) p->highwater,1.0);
     for ( ; i < (ssize_t) p->number_points; i++)
     {
-      if (y <= (p->points[i-1].y-mid-0.5))
+      if ((double) y <= (p->points[i-1].y-mid-0.5))
         break;
-      if (y > (p->points[i].y+mid+0.5))
+      if ((double) y > (p->points[i].y+mid+0.5))
         continue;
-      if (p->scanline != y)
+      if (p->scanline != (double) y)
         {
-          p->scanline=y;
+          p->scanline=(double) y;
           p->highwater=(size_t) i;
         }
       /*
@@ -3672,8 +3673,8 @@ static double GetFillAlpha(PolygonInfo *polygon_info,const double mid,
       beta=delta.x*(x-q->x)+delta.y*(y-q->y);
       if (beta < 0.0)
         {
-          delta.x=x-q->x;
-          delta.y=y-q->y;
+          delta.x=(double) x-q->x;
+          delta.y=(double) y-q->y;
           distance=delta.x*delta.x+delta.y*delta.y;
         }
       else
@@ -3681,8 +3682,8 @@ static double GetFillAlpha(PolygonInfo *polygon_info,const double mid,
           alpha=delta.x*delta.x+delta.y*delta.y;
           if (beta > alpha)
             {
-              delta.x=x-(q+1)->x;
-              delta.y=y-(q+1)->y;
+              delta.x=(double) x-(q+1)->x;
+              delta.y=(double) y-(q+1)->y;
               distance=delta.x*delta.x+delta.y*delta.y;
             }
           else
@@ -3750,18 +3751,18 @@ static double GetFillAlpha(PolygonInfo *polygon_info,const double mid,
   p=polygon_info->edges;
   for (j=0; j < (ssize_t) polygon_info->number_edges; j++, p++)
   {
-    if (y <= p->bounds.y1)
+    if ((double) y <= p->bounds.y1)
       break;
-    if ((y > p->bounds.y2) || (x <= p->bounds.x1))
+    if (((double) y > p->bounds.y2) || ((double) x <= p->bounds.x1))
       continue;
-    if (x > p->bounds.x2)
+    if ((double) x > p->bounds.x2)
       {
         winding_number+=p->direction ? 1 : -1;
         continue;
       }
     i=(ssize_t) MagickMax((double) p->highwater,1.0);
     for ( ; i < (ssize_t) p->number_points; i++)
-      if (y <= p->points[i].y)
+      if ((double) y <= p->points[i].y)
         break;
     q=p->points+i-1;
     if ((((q+1)->x-q->x)*(y-q->y)) <= (((q+1)->y-q->y)*(x-q->x)))
@@ -3978,7 +3979,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         Fill and/or stroke.
       */
       fill_alpha=GetFillAlpha(polygon_info[id],mid,fill,draw_info->fill_rule,
-        (double) x,(double) y,&stroke_alpha);
+        x,y,&stroke_alpha);
       if (draw_info->stroke_antialias == MagickFalse)
         {
           fill_alpha=fill_alpha > 0.25 ? 1.0 : 0.0;
