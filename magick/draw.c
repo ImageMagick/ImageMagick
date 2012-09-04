@@ -4013,7 +4013,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         Fill and/or stroke.
       */
       fill_opacity=GetOpacityPixel(polygon_info[id],mid,fill,
-        draw_info->fill_rule,x-0.5,y-0.5,&stroke_opacity);
+        draw_info->fill_rule,x+0.5,y+0.5,&stroke_opacity);
       if (draw_info->stroke_antialias == MagickFalse)
         {
           fill_opacity=fill_opacity > 0.25 ? 1.0 : 0.0;
