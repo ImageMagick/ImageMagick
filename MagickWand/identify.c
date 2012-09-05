@@ -367,10 +367,11 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) argc)
               ThrowIdentifyException(OptionError,"MissingArgument",option);
-            type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,argv[i]);
+            type=ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,
+              argv[i]);
             if (type < 0)
-              ThrowIdentifyException(OptionError,"UnrecognizedAlphaChannelOption",
-                argv[i]);
+              ThrowIdentifyException(OptionError,
+                "UnrecognizedAlphaChannelOption",argv[i]);
             break;
           }
         if (LocaleCompare("antialias",option+1) == 0)
