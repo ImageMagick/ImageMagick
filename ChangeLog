@@ -1,7 +1,11 @@
+2012-08-05  6.7.9-4 Cristy  <quetzlzacatenango@image...>
+  * Identify image files with embedded '%d' (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21798).
+
 2012-09-01  6.7.9-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-3, SVN revision 9202.
 
-2012-08-28  6.7.9-2 Cristy  <quetzlzacatenango@image...>
+2012-08-28  6.7.9-3 Cristy  <quetzlzacatenango@image...>
   * Support -channel sync option for -equalize (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21746).
   * Don't remove color profile when setting the image colorspace (reference
