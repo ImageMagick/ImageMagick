@@ -1217,8 +1217,8 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     if (inverse_edge.x2 < inverse_edge.x1)
       continue;
     q=GetCacheViewAuthenticPixels(image_view,(ssize_t) ceil(inverse_edge.x1-
-      0.5),y,(size_t) ((ssize_t) floor(inverse_edge.x2-0.5)-(ssize_t) ceil(
-      inverse_edge.x1-0.5)),1,exception);
+      0.5),y,(size_t) (floor(inverse_edge.x2-0.5)-ceil(inverse_edge.x1-0.5)),1,
+      exception);
     if (q == (PixelPacket *) NULL)
       continue;
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
@@ -1342,16 +1342,16 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       }
       bounds.x1-=mid;
       bounds.x1=bounds.x1 < 0.0 ? 0.0 : bounds.x1 >= (double)
-        image->columns ? (double) image->columns-1 : bounds.x1;
+        image->columns ? (double) image->columns : bounds.x1;
       bounds.y1-=mid;
       bounds.y1=bounds.y1 < 0.0 ? 0.0 : bounds.y1 >= (double)
-        image->rows ? (double) image->rows-1 : bounds.y1;
+        image->rows ? (double) image->rows : bounds.y1;
       bounds.x2+=mid;
       bounds.x2=bounds.x2 < 0.0 ? 0.0 : bounds.x2 >= (double)
-        image->columns ? (double) image->columns-1 : bounds.x2;
+        image->columns ? (double) image->columns : bounds.x2;
       bounds.y2+=mid;
       bounds.y2=bounds.y2 < 0.0 ? 0.0 : bounds.y2 >= (double)
-        image->rows ? (double) image->rows-1 : bounds.y2;
+        image->rows ? (double) image->rows : bounds.y2;
       for (i=0; i < (ssize_t) polygon_info->number_edges; i++)
       {
         if (polygon_info->edges[i].direction != 0)
@@ -3892,16 +3892,16 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   }
   bounds.x1-=(mid+1.0);
   bounds.x1=bounds.x1 < 0.0 ? 0.0 : (size_t) ceil(bounds.x1-0.5) >=
-    image->columns ? (double) image->columns-1.0 : bounds.x1;
+    image->columns ? (double) image->columns : bounds.x1;
   bounds.y1-=(mid+1.0);
   bounds.y1=bounds.y1 < 0.0 ? 0.0 : (size_t) ceil(bounds.y1-0.5) >=
-    image->rows ? (double) image->rows-1.0 : bounds.y1;
+    image->rows ? (double) image->rows : bounds.y1;
   bounds.x2+=(mid+1.0);
   bounds.x2=bounds.x2 < 0.0 ? 0.0 : (size_t) floor(bounds.x2-0.5) >=
-    image->columns ? (double) image->columns-1.0 : bounds.x2;
+    image->columns ? (double) image->columns : bounds.x2;
   bounds.y2+=(mid+1.0);
   bounds.y2=bounds.y2 < 0.0 ? 0.0 : (size_t) floor(bounds.y2-0.5) >=
-    image->rows ? (double) image->rows-1.0 : bounds.y2;
+    image->rows ? (double) image->rows : bounds.y2;
   status=MagickTrue;
   exception=(&image->exception);
   height=(size_t) (floor(bounds.y2-0.5)-ceil(bounds.y1-0.5));
