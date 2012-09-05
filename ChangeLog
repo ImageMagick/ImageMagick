@@ -1,6 +1,8 @@
 2012-09-05  6.7.9-4 Cristy  <quetzlzacatenango@image...>
   * Identify image files with embedded '%d' (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21798).
+  * Don't include TIFF header for compress.c source module
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21800).
 
 2012-09-01  6.7.9-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-3, SVN revision 9202.
