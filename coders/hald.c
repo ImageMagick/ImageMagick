@@ -125,10 +125,6 @@ static Image *ReadHALDImage(const ImageInfo *image_info,
   cube_size=level*level;
   image->columns=(size_t) (level*cube_size);
   image->rows=(size_t) (level*cube_size);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(status) \
-    dynamic_number_threads(image,image->columns,image->rows,1)
-#endif
   for (y=0; y < (ssize_t) image->rows; y+=(ssize_t) level)
   {
     ssize_t
