@@ -44,7 +44,7 @@ MagickCore_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS) $(MAGICK_LIBLTDL)
 endif # WITH_MODULES
 MagickCore_libMagickCore_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $(LIBRARY_EXTRA_CPPFLAGS)
 MagickCore_libMagickCore_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
-  $(OSX_GCOV_LDFLAG) -version-info \
+  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 MagickCore_libMagickCore_la_DEPENDENCIES = $(MAGICKCORE_LTDLDEPS)
 

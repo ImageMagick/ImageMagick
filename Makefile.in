@@ -2671,6 +2671,7 @@ MAGICK_LIB_VERSION = @MAGICK_LIB_VERSION@
 MAGICK_LIB_VERSION_NUMBER = @MAGICK_LIB_VERSION_NUMBER@
 MAGICK_LIB_VERSION_TEXT = @MAGICK_LIB_VERSION_TEXT@
 MAGICK_LTDLDEPS = @MAGICK_LTDLDEPS@
+MAGICK_LT_RELEASE_OPTS = @MAGICK_LT_RELEASE_OPTS@
 MAGICK_PCFLAGS = @MAGICK_PCFLAGS@
 MAGICK_SVN_REVISION = @MAGICK_SVN_REVISION@
 MAGICK_TARGET_CPU = @MAGICK_TARGET_CPU@
@@ -4100,7 +4101,7 @@ MAGICKCORE_LIBS = MagickCore/libMagickCore.la
 @WITH_MODULES_TRUE@MagickCore_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS) $(MAGICK_LIBLTDL)
 MagickCore_libMagickCore_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $(LIBRARY_EXTRA_CPPFLAGS)
 MagickCore_libMagickCore_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
-  $(OSX_GCOV_LDFLAG) -version-info \
+  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 MagickCore_libMagickCore_la_DEPENDENCIES = $(MAGICKCORE_LTDLDEPS)
@@ -4631,7 +4632,7 @@ MAGICKWAND_LIBS = MagickWand/libMagickWand.la
 MagickWand_libMagickWand_la_SOURCES = $(MAGICKWAND_SOURCES)
 MagickWand_libMagickWand_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
 MagickWand_libMagickWand_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
-	-version-info \
+	$(MAGICK_LT_RELEASE_OPTS) -version-info \
 	$(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 MagickWand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
@@ -4756,7 +4757,7 @@ MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/STL.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
-Magick___lib_libMagick___la_LDFLAGS = -no-undefined \
+Magick___lib_libMagick___la_LDFLAGS = -no-undefined $(MAGICK_LT_RELEASE_OPTS) \
 	-version-info $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 Magick___lib_libMagick___la_LIBADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
