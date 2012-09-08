@@ -345,6 +345,10 @@ Configure
       optimization and debug flags (default -g -O2). Antique C++ compilers
       will normally be rejected by configure tests so specifying this option
       should only be necessary if Magick++ fails to compile.
+
+    --with-package-release-name
+      encode this name into the shared library name (see libtools -release
+      option).
   
     --without-perl
       disable build/install of PerlMagick, or
