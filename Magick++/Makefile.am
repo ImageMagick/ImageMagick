@@ -8,7 +8,7 @@ AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
 
 if WITH_MAGICK_PLUS_PLUS
 MAGICKPP_LIBS = Magick++/lib/libMagick++.la
-MAGICKPP_LDADD = $(MAGICKPP_LIBS) $(top_builddir)/magick/libMagickCore.la
+MAGICKPP_LDADD = $(MAGICKPP_LIBS) $(top_builddir)/MagickCore/libMagickCore.la
 MAGICKPP_CHECK_PGRMS = $(MAGICKPP_CHECK_PGRMS_OPT)
 MAGICKPP_MANS = $(MAGICKPP_MANS_OPT)
 MAGICKPP_PKGCONFIG = $(MAGICKPP_PKGCONFIG_OPT)
