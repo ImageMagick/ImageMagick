@@ -569,7 +569,7 @@ AC_ARG_ENABLE([delegate-build],
 
 AC_ARG_ENABLE([deprecated],
     [AC_HELP_STRING([--disable-deprecated],
-                    [exclude deprecated methods in MagickCore and MagickWand API's])],
+                    [exclude deprecated methods in MagickCore and MagickWand APIs])],
     [enable_deprecated=$enableval],
     [enable_deprecated='no'])
 
@@ -754,6 +754,13 @@ AC_ARG_WITH([magick-plus-plus],
                     [disable build/install of Magick++])],
     [with_magick_plus_plus=$withval],
     [with_magick_plus_plus='yes'])
+
+# Encode the this name into the shared library.
+AC_ARG_WITH([package-release-name],
+    [AC_HELP_STRING([--with-package-release-name=NAME],
+                    [encode this name into the shared library])],
+[MAGICK_LT_RELEASE_OPTS="-release $withval"])
+AC_SUBST(MAGICK_LT_RELEASE_OPTS)
 
 # Disable build/install of PerlMagick.
 AC_ARG_WITH([perl],
@@ -3716,9 +3723,9 @@ AC_SUBST(MAGICK_LIBLTDL)
 AC_SUBST(MAGICK_LTDLDEPS)
 
 if test "$with_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$LCMS_LIBS $FREETYPE_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $CCMALLOC_LIBS $EFENCE_LIBS $UMEM_LIBS $GOMP_LIBS $CL_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$LCMS_LIBS $FREETYPE_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
 else
-    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $CCMALLOC_LIBS $EFENCE_LIBS $UMEM_LIBS $GOMP_LIBS $CL_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
