@@ -204,20 +204,29 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     MagickBooleanType
       sync;
 
+    MagickPixelPacket
+      channel_bias,
+      channel_sum;
+
     register const IndexPacket
       *restrict indexes;
 
     register const PixelPacket
-      *restrict p;
+      *restrict p,
+      *restrict r;
 
     register IndexPacket
       *restrict threshold_indexes;
 
+    register PixelPacket
+      *restrict q;
+
     register ssize_t
       x;
 
-    register PixelPacket
-      *restrict q;
+    ssize_t
+      u,
+      v;
 
     if (status == MagickFalse)
       continue;
@@ -232,43 +241,68 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     threshold_indexes=GetCacheViewAuthenticIndexQueue(threshold_view);
+    channel_bias=zero;
+    channel_sum=zero;
+    r=p;
+    for (v=0; v < (ssize_t) height; v++)
+    {
+      for (u=0; u < (ssize_t) width; u++)
+      {
+        if (u == (ssize_t) (width-1))
+          {
+            channel_bias.red+=r[u].red;
+            channel_bias.green+=r[u].green;
+            channel_bias.blue+=r[u].blue;
+            channel_bias.opacity+=r[u].opacity;
+            if (image->colorspace == CMYKColorspace)
+              channel_bias.index=(MagickRealType)
+                GetPixelIndex(indexes+(r-p)+u);
+          }
+        channel_sum.red+=r[u].red;
+        channel_sum.green+=r[u].green;
+        channel_sum.blue+=r[u].blue;
+        channel_sum.opacity+=r[u].opacity;
+        if (image->colorspace == CMYKColorspace)
+          channel_sum.index=(MagickRealType) GetPixelIndex(indexes+(r-p)+u);
+      }
+      r+=image->columns+width;
+    }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       MagickPixelPacket
-        mean,
-        pixel;
+        mean;
 
-      register const PixelPacket
-        *r;
-
-      register ssize_t
-        u;
-
-      ssize_t
-        v;
-
-      pixel=zero;
       mean=zero;
       r=p;
+      channel_sum.red-=channel_bias.red;
+      channel_sum.green-=channel_bias.green;
+      channel_sum.blue-=channel_bias.blue;
+      channel_sum.opacity-=channel_bias.opacity;
+      channel_sum.index-=channel_bias.index;
+      channel_bias=zero;
       for (v=0; v < (ssize_t) height; v++)
       {
-        for (u=0; u < (ssize_t) width; u++)
-        {
-          pixel.red+=r[u].red;
-          pixel.green+=r[u].green;
-          pixel.blue+=r[u].blue;
-          pixel.opacity+=r[u].opacity;
-          if (image->colorspace == CMYKColorspace)
-            pixel.index=(MagickRealType) GetPixelIndex(indexes+x+(r-p)+u);
-        }
+        channel_bias.red+=r[0].red;
+        channel_bias.green+=r[0].green;
+        channel_bias.blue+=r[0].blue;
+        channel_bias.opacity+=r[0].opacity;
+        if (image->colorspace == CMYKColorspace)
+          channel_bias.index=(MagickRealType) GetPixelIndex(indexes+x+(r-p)+0);
+        channel_sum.red+=r[width-1].red;
+        channel_sum.green+=r[width-1].green;
+        channel_sum.blue+=r[width-1].blue;
+        channel_sum.opacity+=r[width-1].opacity;
+        if (image->colorspace == CMYKColorspace)
+          channel_sum.index=(MagickRealType) GetPixelIndex(indexes+x+(r-p)+
+            width-1);
         r+=image->columns+width;
       }
-      mean.red=(MagickRealType) (pixel.red/number_pixels+offset);
-      mean.green=(MagickRealType) (pixel.green/number_pixels+offset);
-      mean.blue=(MagickRealType) (pixel.blue/number_pixels+offset);
-      mean.opacity=(MagickRealType) (pixel.opacity/number_pixels+offset);
+      mean.red=(MagickRealType) (channel_sum.red/number_pixels+offset);
+      mean.green=(MagickRealType) (channel_sum.green/number_pixels+offset);
+      mean.blue=(MagickRealType) (channel_sum.blue/number_pixels+offset);
+      mean.opacity=(MagickRealType) (channel_sum.opacity/number_pixels+offset);
       if (image->colorspace == CMYKColorspace)
-        mean.index=(MagickRealType) (pixel.index/number_pixels+offset);
+        mean.index=(MagickRealType) (channel_sum.index/number_pixels+offset);
       SetPixelRed(q,((MagickRealType) GetPixelRed(q) <= mean.red) ?
         0 : QuantumRange);
       SetPixelGreen(q,((MagickRealType) GetPixelGreen(q) <= mean.green) ?
@@ -278,9 +312,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       SetPixelOpacity(q,((MagickRealType) GetPixelOpacity(q) <= mean.opacity) ?
          0 : QuantumRange);
       if (image->colorspace == CMYKColorspace)
-        SetPixelIndex(threshold_indexes+x,(((MagickRealType)
-          GetPixelIndex(threshold_indexes+x) <= mean.index) ?
-          0 : QuantumRange));
+        SetPixelIndex(threshold_indexes+x,(((MagickRealType) GetPixelIndex(
+          threshold_indexes+x) <= mean.index) ? 0 : QuantumRange));
       p++;
       q++;
     }
