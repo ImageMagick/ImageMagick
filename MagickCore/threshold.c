@@ -210,17 +210,32 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    double
+      channel_bias[MaxPixelChannels],
+      channel_sum[MaxPixelChannels];
+
+    PixelChannel
+      channel;
+
+    PixelTrait
+      threshold_traits,
+      traits;
+
     register const Quantum
-      *restrict p;
+      *restrict p,
+      *restrict pixels;
 
     register Quantum
       *restrict q;
 
     register ssize_t
+      i,
       x;
 
     ssize_t
-      center;
+      center,
+      u,
+      v;
 
     if (status == MagickFalse)
       continue;
@@ -235,32 +250,41 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       }
     center=(ssize_t) GetPixelChannels(image)*(image->columns+width)*(height/2L)+
       GetPixelChannels(image)*(width/2);
+    for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+    {
+      channel=GetPixelChannelChannel(image,i);
+      traits=GetPixelChannelTraits(image,channel);
+      threshold_traits=GetPixelChannelTraits(threshold_image,channel);
+      if ((traits == UndefinedPixelTrait) ||
+          (threshold_traits == UndefinedPixelTrait))
+        continue;
+      if (((threshold_traits & CopyPixelTrait) != 0) ||
+          (GetPixelMask(image,p) != 0))
+        {
+          SetPixelChannel(threshold_image,channel,p[center+i],q);
+          continue;
+        }
+      pixels=p;
+      channel_bias[channel]=0.0;
+      channel_sum[channel]=0.0;
+      for (v=0; v < (ssize_t) height; v++)
+      {
+        for (u=0; u < (ssize_t) width; u++)
+        {
+          if (u == (ssize_t) (width-1))
+            channel_bias[channel]+=pixels[i];
+          channel_sum[channel]+=pixels[i];
+          pixels+=GetPixelChannels(image);
+        }
+        pixels+=image->columns*GetPixelChannels(image);
+      }
+    }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      register ssize_t
-        i;
-
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
         double
-          mean,
-          pixel;
-
-        PixelChannel
-          channel;
-
-        PixelTrait
-          threshold_traits,
-          traits;
-
-        register const Quantum
-          *restrict pixels;
-
-        register ssize_t
-          u;
-
-        ssize_t
-          v;
+          mean;
 
         channel=GetPixelChannelChannel(image,i);
         traits=GetPixelChannelTraits(image,channel);
@@ -274,18 +298,17 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
             SetPixelChannel(threshold_image,channel,p[center+i],q);
             continue;
           }
+        channel_sum[channel]-=channel_bias[channel];
+        channel_bias[channel]=0.0;
         pixels=p;
-        pixel=0.0;
         for (v=0; v < (ssize_t) height; v++)
         {
-          for (u=0; u < (ssize_t) width; u++)
-          {
-            pixel+=pixels[i];
-            pixels+=GetPixelChannels(image);
-          }
-          pixels+=image->columns*GetPixelChannels(image);
+          channel_bias[channel]+=pixels[i];
+          pixels+=(width-1)*GetPixelChannels(image);
+          channel_sum[channel]+=pixels[i];
+          pixels+=(image->columns+1)*GetPixelChannels(image);
         }
-        mean=(double) (pixel/number_pixels+bias);
+        mean=(double) (channel_sum[channel]/number_pixels+bias);
         SetPixelChannel(threshold_image,channel,(Quantum) ((double)
           p[center+i] <= mean ? 0 : QuantumRange),q);
       }
@@ -606,7 +629,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
         if (image->channel_mask != DefaultChannels)
           pixel=(double) q[i];
         if (pixel <= GetPixelInfoChannel(&threshold,channel))
-          q[i]=0;
+          q[i]=(Quantum) 0;
       }
       q+=GetPixelChannels(image);
     }
@@ -658,7 +681,7 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
 static inline Quantum ClampToUnsignedQuantum(const Quantum quantum)
 {
   if (quantum <= 0)
-    return(0);
+    return((Quantum) 0);
   if (quantum >= QuantumRange)
     return(QuantumRange);
   return(quantum);
