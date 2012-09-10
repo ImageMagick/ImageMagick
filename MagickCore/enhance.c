@@ -3355,7 +3355,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   (Sigmoidal((a),(b),(x))-Sigmoidal((a),(b),0.0)) / \
   (Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0)) )
   /*
-    Inverse of ScaledSigmoidal, used for +sigmoidal-contrast:
+    Inverse of ScaledSigmoidal, used for +sigmoidal-contrast.
   */
 #if defined(MAGICKCORE_HAVE_ATANH)
 #define InverseScaledSigmoidal(a,b,x) ( (b) + (2.0/(a)) * atanh( \
@@ -3378,7 +3378,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   /*
-    Sigmoidal-contrast enhance colormap:
+    Sigmoidal-contrast enhance colormap.
   */
   if (image->storage_class == PseudoClass)
     {
@@ -3419,7 +3419,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
 	}
     }
   /*
-    Sigmoidal-contrast enhance image:
+    Sigmoidal-contrast enhance image.
   */
   status=MagickTrue;
   progress=0;
