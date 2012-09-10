@@ -590,10 +590,6 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
   if (cdl_map == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) \
-    dynamic_number_threads(image,image->columns,1,1)
-#endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     cdl_map[i].red=ClampToQuantum((MagickRealType) ScaleMapToQuantum((
@@ -611,10 +607,6 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
       /*
         Apply transfer function to colormap.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(progress,status) \
-        dynamic_number_threads(image,image->columns,1,1)
-#endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         double
@@ -795,10 +787,6 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   adjust=(ssize_t) (clut_image->interpolate == IntegerInterpolatePixel ? 0 : 1);
   exception=(&image->exception);
   clut_view=AcquireAuthenticCacheView(clut_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) \
-    dynamic_number_threads(image,image->columns,1,1)
-#endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     GetMagickPixelPacket(clut_image,clut_map+i);
@@ -809,7 +797,8 @@ MagickExport MagickBooleanType ClutImageChannel(Image *image,
   clut_view=DestroyCacheView(clut_view);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1342,10 +1331,6 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
     Stretch the histogram to create the stretched image mapping.
   */
   (void) ResetMagickMemory(stretch_map,0,(MaxMap+1)*sizeof(*stretch_map));
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image,image->columns,1,1)
-#endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     if ((channel & RedChannel) != 0)
@@ -1425,10 +1410,6 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
       /*
         Stretch colormap.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(progress,status) \
-        dynamic_number_threads(image,image->columns,1,1)
-#endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if ((channel & RedChannel) != 0)
@@ -1897,10 +1878,6 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   black=map[0];
   white=map[(int) MaxMap];
   (void) ResetMagickMemory(equalize_map,0,(MaxMap+1)*sizeof(*equalize_map));
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image,image->columns,1,1)
-#endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     if ((channel & SyncChannels) != 0)
@@ -1937,10 +1914,6 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
       /*
         Equalize colormap.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(progress,status) \
-        dynamic_number_threads(image,image->columns,1,1)
-#endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if ((channel & SyncChannels) != 0)
@@ -2182,10 +2155,6 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
       image->filename);
   (void) ResetMagickMemory(gamma_map,0,(MaxMap+1)*sizeof(*gamma_map));
   if (gamma != 0.0)
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(static,4) \
-      dynamic_number_threads(image,image->columns,1,1)
-#endif
     for (i=0; i <= (ssize_t) MaxMap; i++)
       gamma_map[i]=ClampToQuantum((MagickRealType) ScaleMapToQuantum((
         MagickRealType) (MaxMap*pow((double) i/MaxMap,1.0/gamma))));
@@ -2194,10 +2163,6 @@ MagickExport MagickBooleanType GammaImageChannel(Image *image,
       /*
         Gamma-correct colormap.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(progress,status) \
-        dynamic_number_threads(image,image->columns,1,1)
-#endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if ((channel & RedChannel) != 0)
@@ -2696,10 +2661,6 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->storage_class == PseudoClass)
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(static,4) shared(progress,status) \
-      dynamic_number_threads(image,image->columns,1,1)
-#endif
     for (i=0; i < (ssize_t) image->colors; i++)
     {
       /*
@@ -2886,10 +2847,6 @@ MagickExport MagickBooleanType LevelizeImageChannel(Image *image,
   if (IsGrayColorspace(image->colorspace) != MagickFalse)
     (void) SetImageColorspace(image,RGBColorspace);
   if (image->storage_class == PseudoClass)
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(static,4) shared(progress,status) \
-      dynamic_number_threads(image,image->columns,1,1)
-#endif
     for (i=0; i < (ssize_t) image->colors; i++)
     {
       /*
@@ -3380,10 +3337,6 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate)
       /*
         Modulate colormap.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(progress,status) \
-        dynamic_number_threads(image,image->columns,1,1)
-#endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         Quantum
@@ -3586,10 +3539,6 @@ MagickExport MagickBooleanType NegateImageChannel(Image *image,
       /*
         Negate colormap.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(progress,status) \
-        dynamic_number_threads(image,image->columns,1,1)
-#endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if (grayscale != MagickFalse)
@@ -3891,6 +3840,55 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
     y;
 
   /*
+    Sigmoidal function Sig with inflexion point moved to b and "slope
+    constant" set to a.
+    The first version, based on the hyperbolic tangent tanh, when
+    combined with the scaling step, is an exact arithmetic clone of the
+    the sigmoid function based on the logistic curve. The equivalence is
+    based on the identity
+    1/(1+exp(-t)) = (1+tanh(t/2))/2
+    (http://de.wikipedia.org/wiki/Sigmoidfunktion) and the fact that the
+    scaled sigmoidal derivation is invariant under affine transformations
+    of the ordinate.
+    The tanh version is almost certainly more accurate and cheaper.
+    The 0.5 factor in the argument is to clone the legacy ImageMagick
+    behavior.
+    The reason for making the define depend on atanh even though it only
+    uses tanh has to do with the construction of the inverse of the scaled
+    sigmoidal.
+  */
+#if defined(MAGICKCORE_HAVE_ATANH)
+#define Sig(a,b,x) ( tanh((0.5*(a))*((x)-(b))) )
+#else
+#define Sig(a,b,x) ( 1.0/(1.0+exp((a)*((b)-(x)))) )
+#endif
+  /*
+    Scaled sigmoidal formula:
+    ( Sig(a,b,x)-Sig(a,b,0) ) / ( Sig(a,b,1) - Sig(a,b,0) )
+    See http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html
+    and http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.
+    The limit of ScaledSig as a->0 is the identity, but a=0 gives a
+    division by zero. This is fixed below by hardwiring the identity when a
+    is small. This would appear to be safe because the series expansion of
+    the logistic sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that
+    s(1)-s(0) is about a/4. (With tanh, it's a/2.)
+  */
+#define ScaledSig(a,b,x) ( \
+  (Sig((a),(b),(x))-Sig((a),(b),0.0)) / (Sig((a),(b),1.0)-Sig((a),(b),0.0)) )
+  /*
+    Inverse of ScaledSig, used for +sigmoidal-contrast:
+  */
+#if defined(MAGICKCORE_HAVE_ATANH)
+#define InverseScaledSig(a,b,x) ( (b) +                             \
+  atanh( (Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0) ) \
+  / (0.5*(a)) )
+#else
+#define InverseScaledSig(a,b,x) ( (b) -                                     \
+  log( 1.0/((Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0))-1.0 ) \
+  / (a) )
+#endif
+
+  /*
     Allocate and initialize sigmoidal maps.
   */
   assert(image != (Image *) NULL);
@@ -3903,83 +3901,22 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   (void) ResetMagickMemory(sigmoidal_map,0,(MaxMap+1)*sizeof(*sigmoidal_map));
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) \
-    dynamic_number_threads(image,image->columns,1,1)
-#endif
-  for (i=0; i <= (ssize_t) MaxMap; i++)
-  {
-    if (sharpen != MagickFalse)
-      {
-#define sigmoidal(a,b,x)  (1/(1+exp((a)*((b)-(x)))))
-        double
-          u0 = sigmoidal(contrast,QuantumScale*midpoint,0.0),
-          u1 = sigmoidal(contrast,QuantumScale*midpoint,1.0),
- 	  uu = sigmoidal(contrast,QuantumScale*midpoint,(double) i/MaxMap);
-#if 0
-        /* Scaled sigmoidal formula with better 'contrast=0' or
-	 * 'flatline' handling (greyscale):
-         *
-	 * 0.5 +
-         * ( 1/(1+exp(a*(b-u))) - (1/(1+exp(a*b)) + 1/(1+exp(a*(b-1))))/2 )
-         * / ( 1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)) + epsilon )
-         *
-	 * "0.5 +" is to center things around the middle of the Quantum
-	 * range.
-	 *
-	 * "+epsilon" is to allow a=0 without division by zero.
-         */
-        sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-          (MaxMap*(0.5+(uu-(u0+u1)/2.0)/(u1-u0+MagickEpsilon))));
-#else
-        /* Scaled sigmoidal formula: (1/(1+exp(a*(b-u))) - 1/(1+exp(a*b)))
-         *                           /
-         *                           (1/(1+exp(a*(b-1))) - 1/(1+exp(a*b)))
-         *
-     	 * Nicolas is still trying to figure out what the "+0.5" is for.
-         */
-        sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-          (MaxMap*((uu-u0)/(u1-u0))+0.5));
-#endif
-        continue;
-      }
-#if 0
-    {
-      /* Broken: not the inverse of any of the above variants */
-      double
-        min = sigmoidal(contrast,1.0,0.0),
-        max = sigmoidal(contrast,QuantumScale*midpoint,1.0),
-        xi  = min+(double)i/MaxMap*(max-min);
-      sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum(
-         (MagickRealType)(MaxMap*(
-             QuantumScale*midpoint-log((1-xi)/xi)/contrast) ));
-    }
-#else
-    /* Inverse of the second -sigmoidal-contrast function above
-     * and pretty close to being an inverse of the second version
-     * (with MagickEpsilon). See
-     * http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html.
-     */
-    sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-      (MaxMap*(QuantumScale*midpoint-log((1.0-(1.0/(1.0+exp(midpoint/
-      (double) QuantumRange*contrast))+((double) i/MaxMap)*((1.0/
-      (1.0+exp(contrast*(midpoint/(double) QuantumRange-1.0))))-(1.0/
-      (1.0+exp(midpoint/(double) QuantumRange*contrast))))))/
-      (1.0/(1.0+exp(midpoint/(double) QuantumRange*contrast))+
-      ((double) i/MaxMap)*((1.0/(1.0+exp(contrast*(midpoint/
-      (double) QuantumRange-1.0))))-(1.0/(1.0+exp(midpoint/
-      (double) QuantumRange*contrast))))))/contrast)));
-#endif
-  }
+  if (contrast<MagickEpsilon)
+    for (i=0; i <= (ssize_t) MaxMap; i++)
+      sigmoidal_map[i]=ScaleMapToQuantum((MagickRealType) i);
+  else if (sharpen != MagickFalse)
+    for (i=0; i <= (ssize_t) MaxMap; i++)
+      sigmoidal_map[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*
+        ScaledSig(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
+  else
+    for (i=0; i <= (ssize_t) MaxMap; i++)
+      sigmoidal_map[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*
+        InverseScaledSig(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
   if (image->storage_class == PseudoClass)
     {
       /*
         Sigmoidal-contrast enhance colormap.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(progress,status) \
-        dynamic_number_threads(image,image->columns,1,1)
-#endif
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if ((channel & RedChannel) != 0)
