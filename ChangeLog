@@ -1,5 +1,5 @@
 2012-09-04  7.0.0-0 Nicolas Robidoux <nicolas.robidoux@gmail...>
-  * Add tanh/atanh clone of legacy sigmoidal map (faster & more accurate)
+  * Add tanh/atanh clone of legacy sigmoidal map (faster & more accurate).
 
 2012-08-08  7.0.0-0 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Add final ClampToQuantum in sigmoidal colormap loop.
