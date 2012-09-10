@@ -1,3 +1,7 @@
+2012-09-10  7.0.0-0 Nicolas Robidoux <nicolas.robidoux@gmail...>
+  * Direct computation, without LUT, of sigmoidal-contrast.
+  * Fix re-declaration of i (at the top, and inside a conditional).
+
 2012-09-04  7.0.0-0 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Add tanh/atanh clone of legacy sigmoidal map (faster & more accurate).
 
