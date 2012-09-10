@@ -3878,7 +3878,7 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
     contrast is small, leaving the image (or colormap) unmodified. This
     appears to be safe because the series expansion of the logistic
     sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that the key
-    denominator s(1)-s(0) is about a/4 (with tanh, it's a/2).
+    denominator s(1)-s(0) is about a/4 (a/2 with tanh).
   */
 #define ScaledSig(a,b,x) ( \
   (Sig((a),(b),(x))-Sig((a),(b),0.0)) / (Sig((a),(b),1.0)-Sig((a),(b),0.0)) )
