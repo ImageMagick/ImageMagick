@@ -1,3 +1,9 @@
+2012-09-10  6.7.9-4 Nicolas Robidoux <nicolas.robidoux@gmail...>
+  * enhance.c improvements:
+  * Add tanh/atanh clone of legacy sigmoidal map (faster & more accurate);
+  * Add final ClampToQuantum in sigmoidal colormap loop;
+  * Remove OpenMP for threads that do not loop over rows.
+
 2012-09-08  6.7.9-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-4, SVN revision 9282.
 
