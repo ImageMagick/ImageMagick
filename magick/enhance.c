@@ -3875,9 +3875,10 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
     and http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.
     The limit of ScaledSig as a->0 is the identity, but a=0 gives a
     division by zero. This is fixed above by exiting immediately when
-    contrast is small. This would appear to be safe because the series
-    expansion of the logistic sigmoidal function around x=b is
-    1/2-a*(b-x)/4+... so that s(1)-s(0) is about a/4. (With tanh, it's a/2.)
+    contrast is small, leaving the image (or colormap) unmodified. This
+    appears to be safe because the series expansion of the logistic
+    sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that denominator
+    s(1)-s(0) is about a/4 (with tanh, it's a/2).
   */
 #define ScaledSig(a,b,x) ( \
   (Sig((a),(b),(x))-Sig((a),(b),0.0)) / (Sig((a),(b),1.0)-Sig((a),(b),0.0)) )
