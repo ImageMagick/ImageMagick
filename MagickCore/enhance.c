@@ -3352,8 +3352,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     1/2-a*(b-x)/4+... so that s(1)-s(0) is about a/4. (With tanh, it's a/2.)
   */
 #define ScaledSigmoidal(a,b,x) (                    \
-  (Sigmoidal((a),(b),(x))-Sigmoidal((a),(b),0.0))   \
-  /                                                 \
+  (Sigmoidal((a),(b),(x))-Sigmoidal((a),(b),0.0)) / \
   (Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0)) )
   /*
     Inverse of ScaledSigmoidal, used for +sigmoidal-contrast:
