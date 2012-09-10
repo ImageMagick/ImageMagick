@@ -3284,7 +3284,7 @@ MagickExport MagickBooleanType NormalizeImage(Image *image,
 %
 %    o sharpen: Increase or decrease image contrast.
 %
-%    o alpha: strength of the contrast, the larger the number the more
+%    o contrast: strength of the contrast, the larger the number the more
 %      'threshold-like' it becomes.
 %
 %    o beta: midpoint of the function as a color value 0 to QuantumRange.
@@ -3307,17 +3307,15 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   MagickOffsetType
     progress;
 
-  Quantum
-    *sigmoidal_map;
-
-  register ssize_t
-    i;
-
   ssize_t
     y;
 
   /*
-    Sigmoidal function Sig with inflexion point moved to b and "slope
+    Side effect: clamps values unless contrast<MagickEpsilon, in which
+    case values are left alone.
+  */
+  /*
+    Sigmoidal function Sigmoidal with inflexion point moved to b and "slope
     constant" set to a.
     The first version, based on the hyperbolic tangent tanh, when
     combined with the scaling step, is an exact arithmetic clone of the
@@ -3335,79 +3333,96 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     sigmoidal.
   */
 #if defined(MAGICKCORE_HAVE_ATANH)
-#define Sig(a,b,x) ( tanh((0.5*(a))*((x)-(b))) )
+#define Sigmoidal(a,b,x) ( tanh((0.5*(a))*((x)-(b))) )
 #else
-#define Sig(a,b,x) ( 1.0/(1.0+exp((a)*((b)-(x)))) )
+#define Sigmoidal(a,b,x) ( 1.0/(1.0+exp((a)*((b)-(x)))) )
 #endif
   /*
     Scaled sigmoidal formula:
-    ( Sig(a,b,x)-Sig(a,b,0) ) / ( Sig(a,b,1) - Sig(a,b,0) )
+    ( Sigmoidal(a,b,x) - Sigmoidal(a,b,0) ) /
+    ( Sigmoidal(a,b,1) - Sigmoidal(a,b,0) )
     See http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html
     and http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.
-    The limit of ScaledSig as a->0 is the identity, but a=0 gives a
+    The limit of ScaledSigmoidal as a->0 is the identity, but a=0 gives a
     division by zero. This is fixed below by hardwiring the identity when a
     is small. This would appear to be safe because the series expansion of
     the logistic sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that
     s(1)-s(0) is about a/4. (With tanh, it's a/2.)
   */
-#define ScaledSig(a,b,x) ( \
-  (Sig((a),(b),(x))-Sig((a),(b),0.0)) / (Sig((a),(b),1.0)-Sig((a),(b),0.0)) )
+#define ScaledSigmoidal(a,b,x) (                    \
+  (Sigmoidal((a),(b),(x))-Sigmoidal((a),(b),0.0))   \
+  /                                                 \
+  (Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0)) )
   /*
-    Inverse of ScaledSig, used for +sigmoidal-contrast:
+    Inverse of ScaledSigmoidal, used for +sigmoidal-contrast:
   */
 #if defined(MAGICKCORE_HAVE_ATANH)
-#define InverseScaledSig(a,b,x) ( (b) + (2.0/(a)) * \
-  atanh( (Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0) ) )
+#define InverseScaledSigmoidal(a,b,x) ( (b) + (2.0/(a)) * atanh( \
+  (Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0))*(x)+Sigmoidal((a),(b),0.0) ) )
 #else
-#define InverseScaledSig(a,b,x) ( (b) + (-1.0/(a)) * \
-  log( 1.0/((Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0))-1.0 ) )
+#define InverseScaledSigmoidal(a,b,x) ( (b) + (-1.0/(a)) * log( 1.0 /          \
+  ((Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0))*(x)+Sigmoidal((a),(b),0.0)) \
+  -1.0 ) )
 #endif
-
   /*
-    Allocate and initialize sigmoidal maps.
+    Convenience macros. No clamping needed at the end because of monotonicity.
   */
+#define ScaledSig(x) ( (Quantum) (QuantumRange*ScaledSigmoidal(contrast, \
+  QuantumScale*midpoint,QuantumScale*ClampToQuantum((x)))) )  
+#define InverseScaledSig(x) ( (Quantum) (QuantumRange*InverseScaledSigmoidal( \
+  contrast,QuantumScale*midpoint,QuantumScale*ClampToQuantum((x)))) )  
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  sigmoidal_map=(Quantum *) AcquireQuantumMemory(MaxMap+1UL,
-    sizeof(*sigmoidal_map));
-  if (sigmoidal_map == (Quantum *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      image->filename);
-  (void) ResetMagickMemory(sigmoidal_map,0,(MaxMap+1)*sizeof(*sigmoidal_map));
-  if (contrast<MagickEpsilon)
-    for (i=0; i <= (ssize_t) MaxMap; i++)
-      sigmoidal_map[i]=ScaleMapToQuantum((double) i);
-  else if (sharpen != MagickFalse)
-    for (i=0; i <= (ssize_t) MaxMap; i++)
-      sigmoidal_map[i]=ScaleMapToQuantum(MaxMap*
-        ScaledSig(contrast,QuantumScale*midpoint,(double) i/MaxMap));
-  else
-    for (i=0; i <= (ssize_t) MaxMap; i++)
-      sigmoidal_map[i]=ScaleMapToQuantum(MaxMap*
-        InverseScaledSig(contrast,QuantumScale*midpoint,(double) i/MaxMap));
+
+  /*
+    Sigmoidal-contrast enhance colormap:
+  */
   if (image->storage_class == PseudoClass)
-    for (i=0; i < (ssize_t) image->colors; i++)
     {
-      /*
-	Sigmoidal-contrast enhance colormap.
-      */
-      if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-	image->colormap[i].red=(double) ClampToQuantum((double) sigmoidal_map[
-          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))]);
-      if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-	image->colormap[i].green=(double) ClampToQuantum((double) sigmoidal_map[
-          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))]);
-      if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-	image->colormap[i].blue=(double) ClampToQuantum((double) sigmoidal_map[
-          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].blue))]);
-      if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-	image->colormap[i].alpha=(double) ClampToQuantum((double) sigmoidal_map[
-          ScaleQuantumToMap(ClampToQuantum(image->colormap[i].alpha))]);
+      if (contrast>=MagickEpsilon)
+	{
+	  register ssize_t
+	    i;
+
+	  if (sharpen != MagickFalse)
+	    {
+	      for (i=0; i < (ssize_t) image->colors; i++)
+	      {
+                if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+                  image->colormap[i].red=ScaledSig(image->colormap[i].red);
+                if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+                  image->colormap[i].green=ScaledSig(image->colormap[i].green);
+                if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+                  image->colormap[i].blue=ScaledSig(image->colormap[i].blue);
+                if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+                  image->colormap[i].alpha=ScaledSig(image->colormap[i].alpha);
+	      }
+            }
+	  else
+	    {
+	      for (i=0; i < (ssize_t) image->colors; i++)
+	      {
+                if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+                  image->colormap[i].red=
+                    InverseScaledSig(image->colormap[i].red);
+                if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+                  image->colormap[i].green=
+                    InverseScaledSig(image->colormap[i].green);
+                if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+                  image->colormap[i].blue=
+                    InverseScaledSig(image->colormap[i].blue);
+                if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+                  image->colormap[i].alpha=
+                    InverseScaledSig(image->colormap[i].alpha);
+	      }
+	    }
+	}
     }
   /*
-    Sigmoidal-contrast enhance image.
+    Sigmoidal-contrast enhance image:
   */
   status=MagickTrue;
   progress=0;
@@ -3435,7 +3450,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
-        i;
+	i;
 
       if (GetPixelMask(image,q) != 0)
         {
@@ -3454,7 +3469,13 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
         traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum((double) sigmoidal_map[ScaleQuantumToMap(q[i])]);
+	if (contrast>=MagickEpsilon)
+	  {
+	    if (sharpen != MagickFalse)
+	      q[i]=ScaledSig(q[i]);
+	    else
+	      q[i]=InverseScaledSig(q[i]);
+	  }
       }
       q+=GetPixelChannels(image);
     }
@@ -3475,6 +3496,5 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  sigmoidal_map=(Quantum *) RelinquishMagickMemory(sigmoidal_map);
   return(status);
 }
