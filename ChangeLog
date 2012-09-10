@@ -2,7 +2,8 @@
   * enhance.c improvements:
   * Add tanh/atanh clone of legacy sigmoidal map (faster & more accurate);
   * Add final ClampToQuantum in sigmoidal colormap loop;
-  * Remove OpenMP for threads that do not loop over rows.
+  * Remove OpenMP for threads that do not loop over rows;
+  * Immediate no-op exit from sigmoidal-contrast if contrast<MagickEpsilon.
 
 2012-09-08  6.7.9-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-4, SVN revision 9282.
