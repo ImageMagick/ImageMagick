@@ -3375,7 +3375,6 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-
   /*
     Sigmoidal-contrast enhance colormap:
   */
