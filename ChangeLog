@@ -1,3 +1,6 @@
+2012-09-10  7.0.0-0 Nicolas Robidoux <nicolas.robidoux@gmail...>
+  * InverseScaledSig: replace division by reciprocal multiplication.
+
 2012-09-04  7.0.0-0 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Add tanh/atanh clone of legacy sigmoidal map (faster & more accurate).
 
