@@ -3356,13 +3356,11 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     Inverse of ScaledSig, used for +sigmoidal-contrast:
   */
 #if defined(MAGICKCORE_HAVE_ATANH)
-#define InverseScaledSig(a,b,x) ( (b) +                             \
-  atanh( (Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0) ) \
-  / (0.5*(a)) )
+#define InverseScaledSig(a,b,x) ( (b) + (2.0/(a)) * \
+  atanh( (Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0) ) )
 #else
-#define InverseScaledSig(a,b,x) ( (b) -                                     \
-  log( 1.0/((Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0))-1.0 ) \
-  / (a) )
+#define InverseScaledSig(a,b,x) ( (b) + (-1.0/(a)) * \
+  log( 1.0/((Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0))-1.0 ) )
 #endif
 
   /*
