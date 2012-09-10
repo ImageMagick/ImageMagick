@@ -3316,6 +3316,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   */
   if (contrast<MagickEpsilon)
     return(MagickTrue);
+
   /*
     Sigmoidal function with inflexion point moved to b and "slope
     constant" set to a.
