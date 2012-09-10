@@ -3345,10 +3345,10 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     See http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html
     and http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.
     The limit of ScaledSigmoidal as a->0 is the identity, but a=0 gives a
-    division by zero. This is fixed below by hardwiring the identity when a
-    is small. This would appear to be safe because the series expansion of
-    the logistic sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that
-    s(1)-s(0) is about a/4. (With tanh, it's a/2.)
+    division by zero. This is fixed above by exiting immediately when
+    contrast is small. This would appear to be safe because the series
+    expansion of the logistic sigmoidal function around x=b is
+    1/2-a*(b-x)/4+... so that s(1)-s(0) is about a/4. (With tanh, it's a/2.)
   */
 #define ScaledSigmoidal(a,b,x) (                    \
   (Sigmoidal((a),(b),(x))-Sigmoidal((a),(b),0.0))   \
@@ -3363,7 +3363,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
 #else
 #define InverseScaledSigmoidal(a,b,x) ( (b) + (-1.0/(a)) * log( 1.0 /          \
   ((Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0))*(x)+Sigmoidal((a),(b),0.0)) \
-  -1.0 ) )
+  + -1.0 ) )
 #endif
   /*
     Convenience macros. No clamping needed at the end because of monotonicity.
