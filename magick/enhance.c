@@ -3889,7 +3889,7 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
   atanh( (Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0) ) )
 #else
 #define InverseScaledSig(a,b,x) ( (b) + (-1.0/(a)) * \
-  log( 1.0/((Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0))+ -1.0 ) )
+  log( 1.0/((Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0))+-1.0 ) )
 #endif
 
   /*
