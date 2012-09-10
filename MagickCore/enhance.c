@@ -3287,7 +3287,7 @@ MagickExport MagickBooleanType NormalizeImage(Image *image,
 %    o contrast: strength of the contrast, the larger the number the more
 %      'threshold-like' it becomes.
 %
-%    o beta: midpoint of the function as a color value 0 to QuantumRange.
+%    o midpoint: midpoint of the function as a color value 0 to QuantumRange.
 %
 %    o exception: return any errors or warnings in this structure.
 %
