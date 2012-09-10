@@ -3882,7 +3882,7 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
 #define ScaledSig(a,b,x) ( \
   (Sig((a),(b),(x))-Sig((a),(b),0.0)) / (Sig((a),(b),1.0)-Sig((a),(b),0.0)) )
   /*
-    Inverse of ScaledSig, used for +sigmoidal-contrast:
+    Inverse of ScaledSig, used for +sigmoidal-contrast.
   */
 #if defined(MAGICKCORE_HAVE_ATANH)
 #define InverseScaledSig(a,b,x) ( (b) + (2.0/(a)) * \
