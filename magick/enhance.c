@@ -3840,6 +3840,12 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
     y;
 
   /*
+    Side effect: clamps values unless contrast<MagickEpsilon, in which
+    case nothing is done.
+  */
+  if (contrast<MagickEpsilon)
+    return(MagickTrue);
+  /*
     Sigmoidal function Sig with inflexion point moved to b and "slope
     constant" set to a.
     The first version, based on the hyperbolic tangent tanh, when
@@ -3868,10 +3874,10 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
     See http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html
     and http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.
     The limit of ScaledSig as a->0 is the identity, but a=0 gives a
-    division by zero. This is fixed below by hardwiring the identity when a
-    is small. This would appear to be safe because the series expansion of
-    the logistic sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that
-    s(1)-s(0) is about a/4. (With tanh, it's a/2.)
+    division by zero. This is fixed above by exiting immediately when
+    contrast is small. This would appear to be safe because the series
+    expansion of the logistic sigmoidal function around x=b is
+    1/2-a*(b-x)/4+... so that s(1)-s(0) is about a/4. (With tanh, it's a/2.)
   */
 #define ScaledSig(a,b,x) ( \
   (Sig((a),(b),(x))-Sig((a),(b),0.0)) / (Sig((a),(b),1.0)-Sig((a),(b),0.0)) )
@@ -3883,7 +3889,7 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
   atanh( (Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0) ) )
 #else
 #define InverseScaledSig(a,b,x) ( (b) + (-1.0/(a)) * \
-  log( 1.0/((Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0))-1.0 ) )
+  log( 1.0/((Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0))+ -1.0 ) )
 #endif
 
   /*
@@ -3899,10 +3905,7 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   (void) ResetMagickMemory(sigmoidal_map,0,(MaxMap+1)*sizeof(*sigmoidal_map));
-  if (contrast<MagickEpsilon)
-    for (i=0; i <= (ssize_t) MaxMap; i++)
-      sigmoidal_map[i]=ScaleMapToQuantum((MagickRealType) i);
-  else if (sharpen != MagickFalse)
+  if (sharpen != MagickFalse)
     for (i=0; i <= (ssize_t) MaxMap; i++)
       sigmoidal_map[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*
         ScaledSig(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
