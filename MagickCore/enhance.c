@@ -343,10 +343,6 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
   progress=0;
   adjust=(ssize_t) (clut_image->interpolate == IntegerInterpolatePixel ? 0 : 1);
   clut_view=AcquireVirtualCacheView(clut_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) \
-    dynamic_number_threads(image,image->columns,1,1)
-#endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     GetPixelInfo(clut_image,clut_map+i);
@@ -706,10 +702,6 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
   if (cdl_map == (PixelInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) \
-    dynamic_number_threads(image,image->columns,1,1)
-#endif
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     cdl_map[i].red=(double) ScaleMapToQuantum((double)
@@ -1098,10 +1090,6 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
     Find the histogram boundaries by locating the black/white levels.
   */
   number_channels=GetPixelChannels(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image,image->columns,1,1)
-#endif
   for (i=0; i < (ssize_t) number_channels; i++)
   {
     double
@@ -1136,10 +1124,6 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   (void) ResetMagickMemory(stretch_map,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*stretch_map));
   number_channels=GetPixelChannels(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image,image->columns,1,1)
-#endif
   for (i=0; i < (ssize_t) number_channels; i++)
   {
     register ssize_t
@@ -1591,10 +1575,6 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
     Integrate the histogram to get the equalization map.
   */
   number_channels=GetPixelChannels(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image,image->columns,1,1)
-#endif
   for (i=0; i < (ssize_t) number_channels; i++)
   {
     double
@@ -1613,10 +1593,6 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   (void) ResetMagickMemory(equalize_map,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*equalize_map));
   number_channels=GetPixelChannels(image);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image,image->columns,1,1)
-#endif
   for (i=0; i < (ssize_t) number_channels; i++)
   {
     register ssize_t
@@ -1823,10 +1799,6 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
       image->filename);
   (void) ResetMagickMemory(gamma_map,0,(MaxMap+1)*sizeof(*gamma_map));
   if (gamma != 0.0)
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && (MaxMap > 256)
-    #pragma omp parallel for \
-      dynamic_number_threads(image,image->columns,1,1)
-#endif
     for (i=0; i <= (ssize_t) MaxMap; i++)
       gamma_map[i]=ScaleMapToQuantum((double) (MaxMap*pow((double) i/
         MaxMap,1.0/gamma)));
@@ -3107,10 +3079,6 @@ MagickExport MagickBooleanType NegateImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
   if (grayscale != MagickFalse)
     {
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(progress,status) \
-        dynamic_number_threads(image,image->columns,image->rows,1)
-#endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         MagickBooleanType
@@ -3415,12 +3383,12 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
       sigmoidal_map[i]=ScaleMapToQuantum((double) i);
   else if (sharpen != MagickFalse)
     for (i=0; i <= (ssize_t) MaxMap; i++)
-      sigmoidal_map[i]=ScaleMapToQuantum( (double) (MaxMap*
-        ScaledSig(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
+      sigmoidal_map[i]=ScaleMapToQuantum(MaxMap*
+        ScaledSig(contrast,QuantumScale*midpoint,(double) i/MaxMap));
   else
     for (i=0; i <= (ssize_t) MaxMap; i++)
-      sigmoidal_map[i]=ScaleMapToQuantum((double) (MaxMap*
-        InverseScaledSig(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
+      sigmoidal_map[i]=ScaleMapToQuantum(MaxMap*
+        InverseScaledSig(contrast,QuantumScale*midpoint,(double) i/MaxMap));
   if (image->storage_class == PseudoClass)
     for (i=0; i < (ssize_t) image->colors; i++)
     {
