@@ -3783,10 +3783,10 @@ MagickExport MagickBooleanType NormalizeImageChannel(Image *image,
 %
 %    o sharpen: Increase or decrease image contrast.
 %
-%    o alpha: strength of the contrast, the larger the number the more
+%    o contrast: strength of the contrast, the larger the number the more
 %      'threshold-like' it becomes.
 %
-%    o beta: midpoint of the function as a color value 0 to QuantumRange.
+%    o midpoint: midpoint of the function as a color value 0 to QuantumRange.
 %
 */
 
