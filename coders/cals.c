@@ -537,7 +537,7 @@ static MagickBooleanType WriteCALSImage(const ImageInfo *image_info,
   count=WriteCALSRecord(image,header);
   (void) FormatLocaleString(header,MaxTextExtent,"rpelcnt: %06lu,%06lu",
     (unsigned long) image->columns,(unsigned long) image->rows);
-  count=WriteCALSRecord(image,header);  
+  count=WriteCALSRecord(image,header);
   density=200;
   if (image_info->density != (char *) NULL)
     {

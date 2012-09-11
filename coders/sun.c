@@ -764,8 +764,8 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(ImageError,"WidthOrHeightExceedsLimit");
     sun_info.width=(unsigned int) image->columns;
     sun_info.height=(unsigned int) image->rows;
-    sun_info.type=(unsigned int) 
-      (image->storage_class == DirectClass ? RT_FORMAT_RGB : RT_STANDARD);
+    sun_info.type=(unsigned int) (image->storage_class == DirectClass ?
+      RT_FORMAT_RGB : RT_STANDARD);
     sun_info.maptype=RMT_NONE;
     sun_info.maplength=0;
     number_pixels=(MagickSizeType) image->columns*image->rows;

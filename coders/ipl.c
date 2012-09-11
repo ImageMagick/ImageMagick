@@ -64,9 +64,9 @@
 #include "magick/string_.h"
 #include "magick/module.h"
 
-/* 
-Tyedef declarations
- */
+/*
+  Typedef declarations.
+*/
 
 typedef struct _IPLInfo
 {
@@ -92,7 +92,7 @@ void increase (void *pixel, int byteType){
     case 2:(*((unsigned int *) pixel))++; break;
     case 3:(*((signed long *) pixel))++; break;
     default:(*((unsigned int *) pixel))++; break;
-  }  
+  }
 }
 
 /*
@@ -140,13 +140,13 @@ static MagickBooleanType IsIPL(const unsigned char *magick,const size_t length)
  %                                                                             %
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  %
- %  ReadIPLImage() reads a Scanalytics IPLab image file and returns it.  It 
- %  allocates the memory necessary for the new Image structure and returns a 
+ %  ReadIPLImage() reads a Scanalytics IPLab image file and returns it.  It
+ %  allocates the memory necessary for the new Image structure and returns a
  %  pointer to the new image.
  %
  %  According to the IPLab spec, the data is blocked out in five dimensions:
  %  { t, z, c, y, x }.  When we return the image, the latter three are folded
- %  into the standard "Image" structure.  The "scenes" (image_info->scene) 
+ %  into the standard "Image" structure.  The "scenes" (image_info->scene)
  %  correspond to the order: { {t0,z0}, {t0, z1}, ..., {t1,z0}, {t1,z1}... }
  %  The number of scenes is t*z.
  %
@@ -158,7 +158,7 @@ static MagickBooleanType IsIPL(const unsigned char *magick,const size_t length)
  %
  %    o image_info: The image info.
  %
- %    o exception: return any errors or warnings in this structure. 
+ %    o exception: return any errors or warnings in this structure.
  %
  */
 
@@ -173,10 +173,10 @@ void SetHeaderFromIPL(Image *image, IPLInfo *ipl){
 
 static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  
-  /* 
-  Declare variables 
-   */
+
+  /*
+    Declare variables.
+  */
   Image *image;
 
   MagickBooleanType status;
@@ -213,83 +213,83 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image=DestroyImageList(image);
     return((Image *) NULL);
   }
-  
-  /*
-   Read IPL image
-   */
 
-  /* 
-    Determine endianness 
-   If we get back "iiii", we have LSB,"mmmm", MSB
-   */
-  count=ReadBlob(image,4,magick); 
+  /*
+    Read IPL image
+  */
+
+  /*
+    Determine endianness
+    If we get back "iiii", we have LSB,"mmmm", MSB
+  */
+  count=ReadBlob(image,4,magick);
   (void) count;
-  if((LocaleNCompare((char *) magick,"iiii",4) == 0))  
+  if((LocaleNCompare((char *) magick,"iiii",4) == 0))
     image->endian=LSBEndian;
   else{
-    if((LocaleNCompare((char *) magick,"mmmm",4) == 0)) 
+    if((LocaleNCompare((char *) magick,"mmmm",4) == 0))
       image->endian=MSBEndian;
     else{
       ThrowReaderException(CorruptImageError, "ImproperImageHeader");
     }
   }
   /* Skip o'er the next 8 bytes (garbage) */
-  count=ReadBlob(image, 8, magick); 
+  count=ReadBlob(image, 8, magick);
   /*
    Excellent, now we read the header unimpeded.
    */
-  count=ReadBlob(image,4,magick); 
-  if((LocaleNCompare((char *) magick,"data",4) != 0))  
+  count=ReadBlob(image,4,magick);
+  if((LocaleNCompare((char *) magick,"data",4) != 0))
     ThrowReaderException(CorruptImageError, "ImproperImageHeader");
-  ipl_info.size=ReadBlobLong(image); 
-  ipl_info.width=ReadBlobLong(image); 
-  ipl_info.height=ReadBlobLong(image); 
+  ipl_info.size=ReadBlobLong(image);
+  ipl_info.width=ReadBlobLong(image);
+  ipl_info.height=ReadBlobLong(image);
   if((ipl_info.width == 0UL) || (ipl_info.height == 0UL))
     ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-  ipl_info.colors=ReadBlobLong(image); 
+  ipl_info.colors=ReadBlobLong(image);
   if(ipl_info.colors == 3){ SetImageColorspace(image,sRGBColorspace);}
   else { image->colorspace = GRAYColorspace; }
-  ipl_info.z=ReadBlobLong(image); 
-  ipl_info.time=ReadBlobLong(image); 
+  ipl_info.z=ReadBlobLong(image);
+  ipl_info.time=ReadBlobLong(image);
 
-  ipl_info.byteType=ReadBlobLong(image); 
+  ipl_info.byteType=ReadBlobLong(image);
 
 
   /* Initialize Quantum Info */
 
   switch (ipl_info.byteType) {
-    case 0: 
+    case 0:
       ipl_info.depth=8;
       quantum_format = UnsignedQuantumFormat;
       break;
-    case 1: 
+    case 1:
       ipl_info.depth=16;
       quantum_format = SignedQuantumFormat;
       break;
-    case 2: 
+    case 2:
       ipl_info.depth=16;
       quantum_format = UnsignedQuantumFormat;
       break;
-    case 3: 
+    case 3:
       ipl_info.depth=32;
       quantum_format = SignedQuantumFormat;
       break;
     case 4: ipl_info.depth=32;
       quantum_format = FloatingPointQuantumFormat;
       break;
-    case 5: 
+    case 5:
       ipl_info.depth=8;
       quantum_format = UnsignedQuantumFormat;
       break;
-    case 6: 
+    case 6:
       ipl_info.depth=16;
       quantum_format = UnsignedQuantumFormat;
       break;
-    case 10:  
+    case 10:
       ipl_info.depth=64;
       quantum_format = FloatingPointQuantumFormat;
-      break; 
-    default: 
+      break;
+    default:
       ipl_info.depth=16;
       quantum_format = UnsignedQuantumFormat;
       break;
@@ -326,7 +326,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
      status=SetQuantumFormat(image,quantum_info,quantum_format);
      if (status == MagickFalse)
        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-     pixels=GetQuantumPixels(quantum_info); 
+     pixels=GetQuantumPixels(quantum_info);
      if(image->columns != ipl_info.width){
 /*
      printf("Columns not set correctly!  Wanted: %.20g, got: %.20g\n",
@@ -334,10 +334,10 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
      }
 
-    /* 
-    Covert IPL binary to pixel packets
-     */
-    
+    /*
+      Covert IPL binary to pixel packets
+    */
+
   if(ipl_info.colors == 1){
       for(y = 0; y < (ssize_t) image->rows; y++){
         (void) ReadBlob(image, length*image->depth/8, pixels);
@@ -357,7 +357,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (q == (PixelPacket *) NULL)
                 break;
         (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
-          RedQuantum,pixels,exception);  
+          RedQuantum,pixels,exception);
         if (SyncAuthenticPixels(image,exception) == MagickFalse)
           break;
       }
@@ -383,7 +383,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
    }
    SetQuantumImageType(image,quantum_type);
- 
+
     t_count++;
   quantum_info = DestroyQuantumInfo(quantum_info);
 
@@ -403,7 +403,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=DestroyImageList(image);
         return((Image *) NULL);
       }
-      image=SyncNextImageInList(image); 
+      image=SyncNextImageInList(image);
       status=SetImageProgress(image,LoadImagesTag,TellBlob(image),
         GetBlobSize(image));
       if (status == MagickFalse)
@@ -426,7 +426,7 @@ static Image *ReadIPLImage(const ImageInfo *image_info,ExceptionInfo *exception)
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  %
  % RegisterIPLImage() add attributes for the Scanalytics IPL image format to the
- % list of supported formats.  
+ % list of supported formats.
  %
  %
  */
@@ -434,7 +434,7 @@ ModuleExport size_t RegisterIPLImage(void)
 {
   MagickInfo
     *entry;
-  
+
   entry=SetMagickInfo("IPL");
   entry->decoder=(DecodeImageHandler *) ReadIPLImage;
   entry->encoder=(EncodeImageHandler *) WriteIPLImage;
@@ -506,10 +506,10 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
 
   MagickBooleanType
     status;
-  
+
   MagickOffsetType
     scene;
-  
+
   register const PixelPacket
     *p;
 
@@ -518,10 +518,10 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
 
   ssize_t
     y;
-  
+
   unsigned char
     *pixels;
- 
+
    /*
     Open output image file.
   */
@@ -535,14 +535,13 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   if (status == MagickFalse)
     return(status);
   scene=0;
-  
 
   quantum_info=AcquireQuantumInfo(image_info, image);
   if ((quantum_info->format == UndefinedQuantumFormat) &&
       (IsHighDynamicRangeImage(image,&image->exception) != MagickFalse))
     SetQuantumFormat(image,quantum_info,FloatingPointQuantumFormat);
   switch(quantum_info->depth){
-  case 8: 
+  case 8:
     ipl_info.byteType = 0;
     break;
   case 16:
@@ -564,28 +563,28 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   case 64:
     ipl_info.byteType = 10;
     break;
-  default: 
-    ipl_info.byteType = 2; 
+  default:
+    ipl_info.byteType = 2;
     break;
-    
+
   }
   ipl_info.z = (unsigned int) GetImageListLength(image);
   /* There is no current method for detecting whether we have T or Z stacks */
   ipl_info.time = 1;
   ipl_info.width = (unsigned int) image->columns;
   ipl_info.height = (unsigned int) image->rows;
-  
+
   if (IssRGBCompatibleColorspace(image->colorspace) == MagickFalse)
     (void) TransformImageColorspace(image,sRGBColorspace);
-  
+
   if(IssRGBCompatibleColorspace(image->colorspace) == MagickTrue) { ipl_info.colors = 3; }
   else{ ipl_info.colors = 1; }
-  
-  ipl_info.size = (unsigned int) (28 + 
+
+  ipl_info.size = (unsigned int) (28 +
     ((image->depth)/8)*ipl_info.height*ipl_info.width*ipl_info.colors*ipl_info.z);
-  
+
   /* Ok!  Calculations are done.  Lets write this puppy down! */
-  
+
   /*
     Write IPL header.
   */
@@ -603,7 +602,7 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image, 4, (const unsigned char *) "100f");
   (void) WriteBlob(image, 4, (const unsigned char *) "data");
   (void) WriteBlobLong(image, ipl_info.size);
-  (void) WriteBlobLong(image, ipl_info.width); 
+  (void) WriteBlobLong(image, ipl_info.width);
   (void) WriteBlobLong(image, ipl_info.height);
   (void) WriteBlobLong(image, ipl_info.colors);
   if(image_info->adjoin == MagickFalse)
@@ -612,7 +611,7 @@ static MagickBooleanType WriteIPLImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobLong(image, ipl_info.z);
   (void) WriteBlobLong(image, ipl_info.time);
   (void) WriteBlobLong(image, ipl_info.byteType);
-  
+
   exception=(&image->exception);
   do
     {

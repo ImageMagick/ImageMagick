@@ -259,7 +259,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
             SetPixelBlue(q,pixel);
             break;
           }
-          case 3: 
+          case 3:
           {
             if (image->colorspace == CMYKColorspace)
               SetPixelBlack(indexes+x,pixel);

@@ -373,7 +373,7 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
           break;
         break;
       }
- 
+
     case 4:  /* Convert PseudoColor scanline. */
       {
         q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -381,7 +381,7 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
           break;
         indexes=GetAuthenticIndexQueue(image);
         for (x=0; x < ((ssize_t) image->columns-1); x+=2)
-          { 
+          {
             index=ConstrainColormapIndex(image,(*p >> 4) & 0x0f);
             SetPixelIndex(indexes+x,index);
             SetPixelRGBO(q,image->colormap+(ssize_t) index);
@@ -422,7 +422,7 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
           break;
       }
       break;
-     
+
     case 24:     /*  Convert DirectColor scanline.  */
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
       if (q == (PixelPacket *) NULL)
@@ -436,7 +436,7 @@ static void InsertRow(unsigned char *p,ssize_t y,Image *image, int bpp)
         }
       if (!SyncAuthenticPixels(image,exception))
         break;
-      break;     
+      break;
     }
 }
 
@@ -606,7 +606,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           RunCount=ReadBlobByte(image);   /* EXT */
           for(i=0; i<= RunCount;i++)
             for(bbuf=0; bbuf < SampleSize; bbuf++)
-              InsertByte6(SampleBuffer[bbuf]);          
+              InsertByte6(SampleBuffer[bbuf]);
           break;
         case 0xFE:
           RunCount=ReadBlobByte(image);  /* RST */
@@ -620,11 +620,11 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           {
             /* duplicate the previous row RunCount x */
             for(i=0;i<=RunCount;i++)
-              {      
+              {
                 InsertRow(BImgBuff,(ssize_t) (image->rows >= y ? y : image->rows-1),
                           image,bpp);
                 y++;
-              }    
+              }
           }
           break;
         case 0xFF:
@@ -638,7 +638,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           RunCount=bbuf & 0x7F;
 
           if(bbuf & 0x80)     /* REP */
-            {  
+            {
               for(i=0; i < SampleSize; i++)
                 SampleBuffer[i]=ReadBlobByte(image);
               for(i=0;i<=RunCount;i++)
@@ -729,20 +729,20 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
     postscript_file[MaxTextExtent];
 
   const MagicInfo
-    *magic_info;    
+    *magic_info;
 
   FILE
     *ps_file;
 
   ImageInfo
     *clone_info;
-    
+
   Image
     *image2;
-    
+
   unsigned char
-    magick[2*MaxTextExtent];    
-    
+    magick[2*MaxTextExtent];
+
 
   if ((clone_info=CloneImageInfo(image_info)) == NULL)
     return(image);
@@ -758,23 +758,23 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   /* Copy postscript to temporary file */
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
   (void) ReadBlob(image, 2*MaxTextExtent, magick);
-  
+
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
   while(PS_Size-- > 0)
     {
       (void) fputc(ReadBlobByte(image),ps_file);
     }
   (void) fclose(ps_file);
-  
+
     /* Detect file format - Check magic.mgk configuration file. */
   magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
   if(magic_info == (const MagicInfo *) NULL) goto FINISH_UNL;
   /*     printf("Detected:%s  \n",magic_info->name); */
-  if(exception->severity != UndefinedException) goto FINISH_UNL;     
+  if(exception->severity != UndefinedException) goto FINISH_UNL;
   if(magic_info->name == (char *) NULL) goto FINISH_UNL;
-    
+
   (void) CopyMagickMemory(clone_info->magick,magic_info->name,MaxTextExtent);
-  
+
     /* Read nested image */
   /*FormatString(clone_info->filename,"%s:%s",magic_info->name,postscript_file);*/
   FormatLocaleString(clone_info->filename,MaxTextExtent,"%s",postscript_file);
@@ -799,7 +799,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 
   AppendImageToList(&image,image2);
 
- FINISH_UNL:    
+ FINISH_UNL:
   (void) RelinquishUniqueFileResource(postscript_file);
  FINISH:
   DestroyImageInfo(clone_info);
@@ -913,7 +913,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
     size_t PS_unknown1;
     unsigned int PS_unknown2;
     unsigned int PS_unknown3;
-  } WPGPSl1Record;  
+  } WPGPSl1Record;
 
   Image
     *image,
@@ -1057,13 +1057,13 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     ReadBlobByte(image));
                 }
               break;
-     
+
             case 0x11:  /* Start PS l1 */
               if(Rec.RecordLength > 8)
                 image=ExtractPostscript(image,image_info,
                   TellBlob(image)+8,   /* skip PS header in the wpg */
                   (ssize_t) Rec.RecordLength-8,exception);
-              break;     
+              break;
 
             case 0x14:  /* bitmap type 2 */
               BitmapHeader2.RotAngle=ReadBlobLSBShort(image);
@@ -1093,7 +1093,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               image->rows=BitmapHeader2.Heigth;
               bpp=BitmapHeader2.Depth;
 
-            UnpackRaster:      
+            UnpackRaster:
               if ((image->colors == 0) && (bpp != 24))
                 {
                   image->colors=one << bpp;
@@ -1105,7 +1105,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     }
                   /* printf("Load default colormap \n"); */
                   for (i=0; (i < (int) image->colors) && (i < 256); i++)
-                    {               
+                    {
                       image->colormap[i].red=ScaleCharToQuantum(WPG1_Palette[i].Red);
                       image->colormap[i].green=ScaleCharToQuantum(WPG1_Palette[i].Green);
                       image->colormap[i].blue=ScaleCharToQuantum(WPG1_Palette[i].Blue);
@@ -1119,7 +1119,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                         image->colormap,(size_t) (one << bpp),
                         sizeof(*image->colormap));
                 }
-          
+
               if (bpp == 1)
                 {
                   if(image->colormap[0].red==0 &&
@@ -1133,7 +1133,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                         image->colormap[1].green =
                         image->colormap[1].blue = QuantumRange;
                     }
-                }      
+                }
 
               if(UnpackWPGRaster(image,bpp) < 0)
                 /* The raster cannot be unpacked */
@@ -1143,7 +1143,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     }
 
               if(Rec.RecType==0x14 && BitmapHeader2.RotAngle!=0 && !image_info->ping)
-                {  
+                {
                   /* flop command */
                   if(BitmapHeader2.RotAngle & 0x8000)
                     {
@@ -1160,9 +1160,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       rotated_image->blob = image->blob;
                       DuplicateBlob(rotated_image,image);
                       (void) RemoveLastImageFromList(&image);
-                      AppendImageToList(&image,rotated_image);    
+                      AppendImageToList(&image,rotated_image);
                     }
-    
+
       /* rotate command */
                   if(BitmapHeader2.RotAngle & 0x0FFF)
                     {
@@ -1170,8 +1170,8 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                       rotated_image->blob = image->blob;
                       DuplicateBlob(rotated_image,image);
                       (void) RemoveLastImageFromList(&image);
-                      AppendImageToList(&image,rotated_image);    
-                    }                
+                      AppendImageToList(&image,rotated_image);
+                    }
                 }
 
               /* Allocate next image structure. */
@@ -1272,7 +1272,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                   continue;  /*Ignore raster with unknown depth*/
                 }
               image->columns=Bitmap2Header1.Width;
-              image->rows=Bitmap2Header1.Heigth;  
+              image->rows=Bitmap2Header1.Heigth;
 
               if ((image->colors == 0) && (bpp != 24))
                 {
@@ -1319,7 +1319,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     if( UnpackWPG2Raster(image,bpp) < 0)
                       goto DecompressionFailed;
                     break;
-                  }   
+                  }
                 }
 
               if(CTM[0][0]<0 && !image_info->ping)
@@ -1329,11 +1329,11 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
       DuplicateBlob(rotated_image,image);
       (void) RemoveLastImageFromList(&image);
       AppendImageToList(&image,rotated_image);
-                  /* Try to change CTM according to Flip - I am not sure, must be checked.      
+                  /* Try to change CTM according to Flip - I am not sure, must be checked.
                      Tx(0,0)=-1;      Tx(1,0)=0;   Tx(2,0)=0;
                      Tx(0,1)= 0;      Tx(1,1)=1;   Tx(2,1)=0;
                      Tx(0,2)=(WPG._2Rect.X_ur+WPG._2Rect.X_ll);
-                     Tx(1,2)=0;   Tx(2,2)=1; */                  
+                     Tx(1,2)=0;   Tx(2,2)=1; */
                 }
               if(CTM[1][1]<0 && !image_info->ping)
     {    /*?? RotAngle=360-RotAngle;*/
@@ -1347,9 +1347,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                      Tx(0,0)= 1;   Tx(1,0)= 0;   Tx(2,0)=0;
                      Tx(0,1)= 0;   Tx(1,1)=-1;   Tx(2,1)=0;
                      Tx(0,2)= 0;   Tx(1,2)=(WPG._2Rect.Y_ur+WPG._2Rect.Y_ll);
-                     Tx(2,2)=1; */      
-    }    
-    
+                     Tx(2,2)=1; */
+    }
+
 
               /* Allocate next image structure. */
               AcquireNextImage(image_info,image);
