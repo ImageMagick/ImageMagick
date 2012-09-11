@@ -3929,26 +3929,24 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
     for (i=0; i <= (ssize_t) MaxMap; i++)
       sigmoidal_map[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*
         InverseScaledSig(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
+  /*
+    Sigmoidal-contrast enhance colormap.
+  */
   if (image->storage_class == PseudoClass)
+    for (i=0; i < (ssize_t) image->colors; i++)
     {
-      /*
-        Sigmoidal-contrast enhance colormap.
-      */
-      for (i=0; i < (ssize_t) image->colors; i++)
-      {
-        if ((channel & RedChannel) != 0)
-          image->colormap[i].red=ClampToQuantum(sigmoidal_map[
-            ScaleQuantumToMap(image->colormap[i].red)]);
-        if ((channel & GreenChannel) != 0)
-          image->colormap[i].green=ClampToQuantum(sigmoidal_map[
-            ScaleQuantumToMap(image->colormap[i].green)]);
-        if ((channel & BlueChannel) != 0)
-          image->colormap[i].blue=ClampToQuantum(sigmoidal_map[
-            ScaleQuantumToMap(image->colormap[i].blue)]);
-        if ((channel & OpacityChannel) != 0)
-          image->colormap[i].opacity=ClampToQuantum(sigmoidal_map[
-            ScaleQuantumToMap(image->colormap[i].opacity)]);
-      }
+      if ((channel & RedChannel) != 0)
+        image->colormap[i].red=ClampToQuantum(sigmoidal_map[
+          ScaleQuantumToMap(image->colormap[i].red)]);
+      if ((channel & GreenChannel) != 0)
+        image->colormap[i].green=ClampToQuantum(sigmoidal_map[
+          ScaleQuantumToMap(image->colormap[i].green)]);
+      if ((channel & BlueChannel) != 0)
+        image->colormap[i].blue=ClampToQuantum(sigmoidal_map[
+          ScaleQuantumToMap(image->colormap[i].blue)]);
+      if ((channel & OpacityChannel) != 0)
+        image->colormap[i].opacity=ClampToQuantum(sigmoidal_map[
+          ScaleQuantumToMap(image->colormap[i].opacity)]);
     }
   /*
     Sigmoidal-contrast enhance image.
