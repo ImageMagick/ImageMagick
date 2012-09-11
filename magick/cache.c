@@ -121,8 +121,8 @@ struct _NexusInfo
 extern "C" {
 #endif
 
-static Cache 
-  GetImagePixelCache(Image *,const MagickBooleanType,ExceptionInfo *) 
+static Cache
+  GetImagePixelCache(Image *,const MagickBooleanType,ExceptionInfo *)
     magick_hot_spot;
 
 static const IndexPacket

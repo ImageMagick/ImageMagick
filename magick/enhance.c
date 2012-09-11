@@ -1830,12 +1830,12 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & SyncChannels) != 0)
-        {        
+        {
           histogram[ScaleQuantumToMap(ClampToQuantum(
             GetPixelIntensity(image,p)))].red++;
           p++;
           continue;
-        }        
+        }
       if ((channel & RedChannel) != 0)
         histogram[ScaleQuantumToMap(GetPixelRed(p))].red++;
       if ((channel & GreenChannel) != 0)
@@ -1857,7 +1857,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     if ((channel & SyncChannels) != 0)
-      {        
+      {
         intensity.red+=histogram[i].red;
         map[i]=intensity;
         continue;
@@ -1881,7 +1881,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     if ((channel & SyncChannels) != 0)
-      {        
+      {
         if (white.red != black.red)
           equalize_map[i].red=(MagickRealType) ScaleMapToQuantum(
             (MagickRealType) ((MaxMap*(map[i].red-black.red))/(white.red-
@@ -1917,7 +1917,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
       for (i=0; i < (ssize_t) image->colors; i++)
       {
         if ((channel & SyncChannels) != 0)
-          {        
+          {
             if (white.red != black.red)
               {
                 image->colormap[i].red=ClampToQuantum(equalize_map[
@@ -1980,7 +1980,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & SyncChannels) != 0)
-        {        
+        {
           if (white.red != black.red)
             {
               SetPixelRed(q,ClampToQuantum(equalize_map[
