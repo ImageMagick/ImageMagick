@@ -1,8 +1,10 @@
 2012-09-11  7.0.0-0 Nicolas Robidoux <nicolas.robidoux@gmail...>
+  * sigmoidal-contrast:
   * Remove unnecessary initial ClampToQuantum.
 
 2012-09-10  7.0.0-0 Nicolas Robidoux <nicolas.robidoux@gmail...>
-  * Direct computation, without LUT, of sigmoidal-contrast.
+  * sigmoidal-contrast:
+  * Direct computation, without LUT;
   * Fix re-declaration of i (at the top, and inside a conditional).
 
 2012-09-04  7.0.0-0 Nicolas Robidoux <nicolas.robidoux@gmail...>
