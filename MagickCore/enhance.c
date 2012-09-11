@@ -3356,23 +3356,38 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   (Sigmoidal((a),(b),(x))-Sigmoidal((a),(b),0.0)) / \
   (Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0)) )
   /*
-    Inverse of ScaledSigmoidal, used for +sigmoidal-contrast.
+    Inverse of ScaledSigmoidal, used for +sigmoidal-contrast. In HDRI,
+    the argument of the hyperbolic tangent or the logistic sigmoidal
+    may be outside of the interval (-1,1), hence the branching.
+    InverseScaledSigmoidal is not a two-side inverse of
+    ScaledSigmoidal: It is only a right inverse. This is unavoidable.
   */
 #if defined(MAGICKCORE_HAVE_ATANH)
-#define InverseScaledSigmoidal(a,b,x) ( (b) + (2.0/(a)) * atanh( \
-  (Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0))*(x)+Sigmoidal((a),(b),0.0) ) )
+#define InverseScaledSigmoidal(a,b,x) ({                             \
+  const double _argument =                                           \
+    (Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0)) * (x) +          \
+    Sigmoidal((a),(b),0.0);                                          \
+  const double _clamped_argument =                                   \
+    ( _argument < -1+MagickEpsilon ? -1+MagickEpsilon :              \
+    ( _argument > 1-MagickEpsilon ? 1-MagickEpsilon : _argument ) ); \
+  (b) + (2.0/(a)) * atanh(_clamped_argument); })
 #else
-#define InverseScaledSigmoidal(a,b,x) ( (b) + (-1.0/(a)) * log( 1.0 /          \
-  ((Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0))*(x)+Sigmoidal((a),(b),0.0)) \
-  + -1.0 ) )
+#define InverseScaledSigmoidal(a,b,x) ({                             \
+  const double _argument =                                           \
+    (Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0)) * (x) +          \
+    Sigmoidal((a),(b),0.0);                                          \
+  const double _clamped_argument =                                   \
+    ( _argument < MagickEpsilon ? MagickEpsilon :                    \
+    ( _argument > 1-MagickEpsilon ? 1-MagickEpsilon : _argument ) ); \
+  (b) + (-1.0/(a)) * log(1.0/_clamped_argument+-1.0); })
 #endif
   /*
-    Convenience macros. No clamping needed at the end because of monotonicity.
+    Convenience macros.
   */
-#define ScaledSig(x) ( (Quantum) (QuantumRange*ScaledSigmoidal(contrast, \
-  QuantumScale*midpoint,QuantumScale*ClampToQuantum((x)))) )  
-#define InverseScaledSig(x) ( (Quantum) (QuantumRange*InverseScaledSigmoidal( \
-  contrast,QuantumScale*midpoint,QuantumScale*ClampToQuantum((x)))) )  
+#define ScaledSig(x) ( ClampToQuantum(QuantumRange* \
+  ScaledSigmoidal(contrast,QuantumScale*midpoint,QuantumScale*(x))) )  
+#define InverseScaledSig(x) ( ClampToQuantum(QuantumRange* \
+  InverseScaledSigmoidal(contrast,QuantumScale*midpoint,QuantumScale*(x))) )  
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
