@@ -3883,14 +3883,28 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
 #define ScaledSig(a,b,x) ( \
   (Sig((a),(b),(x))-Sig((a),(b),0.0)) / (Sig((a),(b),1.0)-Sig((a),(b),0.0)) )
   /*
-    Inverse of ScaledSig, used for +sigmoidal-contrast.
+    Inverse of ScaledSig, used for +sigmoidal-contrast. In HDRI, the
+    argument of the hyperbolic tangent or the logistic sigmoidal may be
+    outside of the interval (-1,1), hence the branching.
+    InverseScaledSig is not a two-side inverse of ScaledSig: It is only
+    a right inverse. This is unavoidable.
   */
 #if defined(MAGICKCORE_HAVE_ATANH)
-#define InverseScaledSig(a,b,x) ( (b) + (2.0/(a)) * \
-  atanh( (Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0) ) )
+#define InverseScaledSig(a,b,x) ({                                   \
+  const double _argument =                                           \
+    (Sig((a),(b),1.0)-Sig((a),(b),0.0)) * (x) + Sig((a),(b),0.0);    \
+  const double _clamped_argument =                                   \
+    ( _argument < -1+MagickEpsilon ? -1+MagickEpsilon :              \
+    ( _argument > 1-MagickEpsilon ? 1-MagickEpsilon : _argument ) ); \
+  (b) + (2.0/(a)) * atanh(_clamped_argument); })
 #else
-#define InverseScaledSig(a,b,x) ( (b) + (-1.0/(a)) * \
-  log( 1.0/((Sig((a),(b),1.0)-Sig((a),(b),0.0))*(x)+Sig((a),(b),0.0))+-1.0 ) )
+#define InverseScaledSig(a,b,x) ({                                   \
+  const double _argument =                                           \
+    (Sig((a),(b),1.0)-Sig((a),(b),0.0)) * (x) + Sig((a),(b),0.0);    \
+  const double _clamped_argument =                                   \
+    ( _argument < MagickEpsilon ? MagickEpsilon :                    \
+    ( _argument > 1-MagickEpsilon ? 1-MagickEpsilon : _argument ) ); \
+  (b) + (-1.0/(a)) * log(1.0/_clamped_argument+-1.0); })
 #endif
 
   /*
