@@ -3991,12 +3991,12 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
         SetPixelBlue(q,ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(
           GetPixelBlue(q))]));
       if ((channel & OpacityChannel) != 0)
-        SetPixelOpacity(q,ClampToQuantum(sigmoidal_map[
-          ScaleQuantumToMap(GetPixelOpacity(q))]));
+        SetPixelOpacity(q,ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(
+          GetPixelOpacity(q))]));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetPixelIndex(indexes+x,ClampToQuantum(sigmoidal_map[
-          ScaleQuantumToMap(GetPixelIndex(indexes+x))]));
+        SetPixelIndex(indexes+x,ClampToQuantum(sigmoidal_map[ScaleQuantumToMap(
+          GetPixelIndex(indexes+x))]));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
