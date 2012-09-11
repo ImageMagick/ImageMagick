@@ -130,8 +130,8 @@
 %  DOS script launcher...
 %
 %  Similarly any '@' at the start of the line (outside of quotes) will also be
-%  treated as comment. This allow you to create a DOS script launcher, to turn
-%  ".bat" DOS scripts into "magick" scripts.
+%  treated as comment. This allow you to create a DOS script launcher, to
+%  allow a ".bat" DOS scripts to run as "magick" scripts instead.
 %
 %    @echo This line is DOS executed but ignored by Magick
 %    @magick -script %~dpnx0 %*
