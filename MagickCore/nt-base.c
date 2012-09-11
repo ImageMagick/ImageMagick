@@ -1087,7 +1087,7 @@ static int NTGhostscriptGetString(const char *name,BOOL *is_64_bit,char *value,
 #endif
         (void) NTLocateGhostscript(flags,&product_family,&major_version,
           &minor_version);
-  	  }
+      }
     }
     else
       is_64_bit_version=NTIs64BitPlatform();

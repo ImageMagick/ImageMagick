@@ -2742,7 +2742,7 @@ MagickExport MagickBooleanType QuantizeImage(const QuantizeInfo *quantize_info,
     {
       if ((image->columns*image->rows) <= maximum_colors)
         (void) DirectToColormapImage(image,exception);
-      if (IsImageGray(image,exception) != MagickFalse) 
+      if (IsImageGray(image,exception) != MagickFalse)
         (void) SetGrayscaleImage(image,exception);
     }
   if ((image->storage_class == PseudoClass) &&
@@ -3346,8 +3346,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
                   image->colors++;
                }
             }
-          SetPixelIndex(image,(Quantum) 
-            colormap_index[intensity],q);
+          SetPixelIndex(image,(Quantum) colormap_index[intensity],q);
           q+=GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
