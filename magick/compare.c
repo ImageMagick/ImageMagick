@@ -1218,7 +1218,7 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
       q++;
     }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp critical (MagickCore_GetPeakAbsoluteError) 
+    #pragma omp critical (MagickCore_GetPeakAbsoluteError)
 #endif
     for (i=0; i <= (ssize_t) CompositeChannels; i++)
       if (channel_distortion[i] > distortion[i])

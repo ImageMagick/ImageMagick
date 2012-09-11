@@ -409,7 +409,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   /*
     Draw sides of ornamental border.
   */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -517,7 +517,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_FrameImage)
 #endif
         proceed=SetImageProgress(image,FrameImageTag,progress++,image->rows);
@@ -734,7 +734,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -782,7 +782,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     }
     for ( ; x < (ssize_t) image->columns; x++)
     {
-      SetPixelRed(q,ClampToQuantum(QuantumScale*((MagickRealType) 
+      SetPixelRed(q,ClampToQuantum(QuantumScale*((MagickRealType)
         GetPixelRed(q)*ShadowFactor+(MagickRealType) background*
         (QuantumRange-ShadowFactor))));
       SetPixelGreen(q,ClampToQuantum(QuantumScale*((MagickRealType)
@@ -865,7 +865,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
           status=MagickFalse;
       }
   }
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif

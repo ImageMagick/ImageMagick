@@ -1664,7 +1664,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_InterpolativeResizeImage)
 #endif
         proceed=SetImageProgress(image,InterpolativeResizeImageTag,progress++,
@@ -2726,7 +2726,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
   */
   filter_image=DestroyImage(filter_image);
   resize_filter=DestroyResizeFilter(resize_filter);
-  if (status == MagickFalse) 
+  if (status == MagickFalse)
     {
       resize_image=DestroyImage(resize_image);
       return((Image *) NULL);

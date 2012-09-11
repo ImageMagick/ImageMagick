@@ -3107,7 +3107,7 @@ MagickExport Image *GetNextImage(const Image *images)
 %
 %    const char *property;
 %    property=GetNextImageProperty(image);
-%    if (property != (const char *) NULL) 
+%    if (property != (const char *) NULL)
 %      GetImageAttribute(image,property);
 %
 %  The format of the GetNextImageAttribute method is:
