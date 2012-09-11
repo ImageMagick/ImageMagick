@@ -160,7 +160,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     pixels=(unsigned char *) AcquireQuantumMemory(image->columns,
       4*sizeof(*pixels));
-    if (pixels == (unsigned char *) NULL) 
+    if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
     length=(size_t) 4*image->columns;
     for (y=0; y < (ssize_t) image->rows; y++)

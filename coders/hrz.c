@@ -144,7 +144,7 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->depth=8;
   pixels=(unsigned char *) AcquireQuantumMemory(image->columns,3*
     sizeof(*pixels));
-  if (pixels == (unsigned char *) NULL) 
+  if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   length=(size_t) (3*image->columns);
   for (y=0; y < (ssize_t) image->rows; y++)

@@ -1141,7 +1141,7 @@ static MagickBooleanType WriteDIBImage(const ImageInfo *image_info,Image *image)
       unsigned short
         word;
       /*
-        Convert PseudoClass packet to DIB pixel. 
+        Convert PseudoClass packet to DIB pixel.
       */
       for (y=0; y < (ssize_t) image->rows; y++)
       {

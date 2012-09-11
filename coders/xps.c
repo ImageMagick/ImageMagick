@@ -352,7 +352,7 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RegisterXPSImage() adds attributes for the Microsoft XML Paper Specification 
+%  RegisterXPSImage() adds attributes for the Microsoft XML Paper Specification
 %  format to the list of supported formats.  The attributes include the image
 %  format tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,

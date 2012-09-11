@@ -498,7 +498,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             MagickOffsetType
               position;
-           
+
             position=TellBlob(image);
             p=iris_pixels;
             for (y=0; y < (ssize_t) iris_info.rows; y++)

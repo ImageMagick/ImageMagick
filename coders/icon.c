@@ -774,7 +774,7 @@ static MagickBooleanType WriteICONImage(const ImageInfo *image_info,
 
   Image
     *next;
-  
+
   MagickBooleanType
     status;
 

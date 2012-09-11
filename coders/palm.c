@@ -429,7 +429,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       else
         {
           if (compressionType == PALM_COMPRESSION_RLE)
-            { 
+            {
               /* TODO move out of loop! */
               image->compression=RLECompression;
               for (i=0; i < (ssize_t) bytes_per_row; )
@@ -536,9 +536,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       if (image->scene >= (image_info->scene+image_info->number_scenes-1))
         break;
     if (nextDepthOffset != 0)
-      { 
+      {
         /*
-          Skip to next image. 
+          Skip to next image.
         */
         totalOffset+=(MagickOffsetType) (nextDepthOffset*4);
         if (totalOffset >= (MagickOffsetType) GetBlobSize(image))
@@ -922,7 +922,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
             char
               tmpbuf[8],
               *tptr;
-  
+
             for (x = 0;  x < (ssize_t) bytes_per_row;  x += 8)
             {
               tptr = tmpbuf;
@@ -963,9 +963,9 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
         (void) WriteBlobMSBShort(image,(unsigned short) (GetBlobSize(image)-
           currentOffset-offset));
       }
-    if (one_row != (unsigned char *) NULL) 
+    if (one_row != (unsigned char *) NULL)
       one_row=(unsigned char *) RelinquishMagickMemory(one_row);
-    if (lastrow != (unsigned char *) NULL) 
+    if (lastrow != (unsigned char *) NULL)
       lastrow=(unsigned char *) RelinquishMagickMemory(lastrow);
     if (GetNextImageInList(image) == (Image *) NULL)
       break;
@@ -973,7 +973,7 @@ static MagickBooleanType WritePALMImage(const ImageInfo *image_info,
     for (cc = (GetBlobSize(image))%4; cc > 0; cc--)
     {
       (void) WriteBlobByte(image,0);
-    } 
+    }
     /* write nextDepthOffset and return to end of image */
     offset=SeekBlob(image,currentOffset+10,SEEK_SET);
     nextDepthOffset=(size_t) ((GetBlobSize(image)-currentOffset)/4);

@@ -880,7 +880,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image)
   {
     case FaxCompression:
     case Group4Compression:
-    { 
+    {
       if ((IsMonochromeImage(image,&image->exception) == MagickFalse) ||
           (image->matte != MagickFalse))
         compression=RLECompression;
