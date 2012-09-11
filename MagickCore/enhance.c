@@ -3356,9 +3356,10 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   (Sigmoidal((a),(b),(x))-Sigmoidal((a),(b),0.0)) / \
   (Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0)) )
   /*
-    Inverse of ScaledSigmoidal, used for +sigmoidal-contrast. In HDRI,
-    the argument of the hyperbolic tangent or the logistic sigmoidal
-    may be outside of the interval (-1,1), hence the branching.
+    Inverse of ScaledSigmoidal, used for +sigmoidal-contrast. In
+    HDRI, the argument of the hyperbolic tangent (resp. logistic
+    sigmoidal) may be outside of the interval (-1,1) (resp.
+    (0,1)), hence the branching.
     InverseScaledSigmoidal is not a two-side inverse of
     ScaledSigmoidal: It is only a right inverse. This is unavoidable.
   */
