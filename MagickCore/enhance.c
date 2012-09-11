@@ -3404,36 +3404,28 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
 	i;
 
       if (sharpen != MagickFalse)
-	{
-	  for (i=0; i < (ssize_t) image->colors; i++)
-	  {
-	    if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-	      image->colormap[i].red=ScaledSig(image->colormap[i].red);
-	    if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-	      image->colormap[i].green=ScaledSig(image->colormap[i].green);
-	    if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-	      image->colormap[i].blue=ScaledSig(image->colormap[i].blue);
-	    if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-	      image->colormap[i].alpha=ScaledSig(image->colormap[i].alpha);
-	  }
+        for (i=0; i < (ssize_t) image->colors; i++)
+        {
+          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+	    image->colormap[i].red=ScaledSig(image->colormap[i].red);
+	  if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+	    image->colormap[i].green=ScaledSig(image->colormap[i].green);
+	  if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+	    image->colormap[i].blue=ScaledSig(image->colormap[i].blue);
+	  if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+	    image->colormap[i].alpha=ScaledSig(image->colormap[i].alpha);
 	}
       else
+        for (i=0; i < (ssize_t) image->colors; i++)
 	{
-	  for (i=0; i < (ssize_t) image->colors; i++)
-	  {
-	    if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-	      image->colormap[i].red=
-		InverseScaledSig(image->colormap[i].red);
-	    if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-	      image->colormap[i].green=
-		InverseScaledSig(image->colormap[i].green);
-	    if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-	      image->colormap[i].blue=
-		InverseScaledSig(image->colormap[i].blue);
-	    if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-	      image->colormap[i].alpha=
-		InverseScaledSig(image->colormap[i].alpha);
-	  }
+	  if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+	    image->colormap[i].red=InverseScaledSig(image->colormap[i].red);
+	  if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+            image->colormap[i].green=InverseScaledSig(image->colormap[i].green);
+	  if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+	    image->colormap[i].blue=InverseScaledSig(image->colormap[i].blue);
+          if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+	    image->colormap[i].alpha=InverseScaledSig(image->colormap[i].alpha);
 	}
     }
   /*
