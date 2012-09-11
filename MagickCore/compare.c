@@ -80,7 +80,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CompareImages() compares one or more pixel channels of an image to a 
+%  CompareImages() compares one or more pixel channels of an image to a
 %  reconstructed image and returns the difference image.
 %
 %  The format of the CompareImages method is:
@@ -283,7 +283,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageDistortion() compares one or more pixel channels of an image to a 
+%  GetImageDistortion() compares one or more pixel channels of an image to a
 %  reconstructed image and returns the specified distortion metric.
 %
 %  The format of the CompareImages method is:

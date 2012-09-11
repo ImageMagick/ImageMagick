@@ -703,16 +703,10 @@ MagickExport MagickBooleanType ResamplePixelColor(
 %
 % Reference: http://en.wikipedia.org/wiki/Ellipse#Canonical_form
 */
-static inline void ClampUpAxes(const double dux,
-			       const double dvx,
-			       const double duy,
-			       const double dvy,
-			       double *major_mag,
-			       double *minor_mag,
-			       double *major_unit_x,
-			       double *major_unit_y,
-			       double *minor_unit_x,
-			       double *minor_unit_y)
+static inline void ClampUpAxes(const double dux,const double dvx,
+  const double duy,const double dvy,double *major_mag,double *minor_mag,
+  double *major_unit_x,double *major_unit_y,double *minor_unit_x,
+  double *minor_unit_y)
 {
   /*
    * ClampUpAxes takes an input 2x2 matrix

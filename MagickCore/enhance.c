@@ -718,15 +718,15 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
     for (i=0; i < (ssize_t) image->colors; i++)
     {
       /*
-	Apply transfer function to colormap.
+        Apply transfer function to colormap.
       */
       double
-	luma;
+        luma;
 
       luma=0.21267*image->colormap[i].red+0.71526*image->colormap[i].green+
-	0.07217*image->colormap[i].blue;
+        0.07217*image->colormap[i].blue;
       image->colormap[i].red=luma+color_correction.saturation*cdl_map[
-	ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))].red-luma;
+        ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))].red-luma;
       image->colormap[i].green=luma+color_correction.saturation*cdl_map[
         ScaleQuantumToMap(ClampToQuantum(image->colormap[i].green))].green-luma;
       image->colormap[i].blue=luma+color_correction.saturation*cdl_map[
@@ -1806,10 +1806,10 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
     for (i=0; i < (ssize_t) image->colors; i++)
     {
       /*
-	Gamma-correct colormap.
+        Gamma-correct colormap.
       */
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-	image->colormap[i].red=(double) gamma_map[
+        image->colormap[i].red=(double) gamma_map[
           ScaleQuantumToMap(ClampToQuantum(image->colormap[i].red))];
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
         image->colormap[i].green=(double) gamma_map[
@@ -3058,18 +3058,18 @@ MagickExport MagickBooleanType NegateImage(Image *image,
     for (i=0; i < (ssize_t) image->colors; i++)
     {
       /*
-	Negate colormap.
+        Negate colormap.
       */
       if (grayscale != MagickFalse)
-	if ((image->colormap[i].red != image->colormap[i].green) ||
-	  (image->colormap[i].green != image->colormap[i].blue))
-	  continue;
+        if ((image->colormap[i].red != image->colormap[i].green) ||
+            (image->colormap[i].green != image->colormap[i].blue))
+          continue;
       if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-	image->colormap[i].red=QuantumRange-image->colormap[i].red;
+        image->colormap[i].red=QuantumRange-image->colormap[i].red;
       if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-	image->colormap[i].green=QuantumRange-image->colormap[i].green;
+        image->colormap[i].green=QuantumRange-image->colormap[i].green;
       if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-	image->colormap[i].blue=QuantumRange-image->colormap[i].blue;
+        image->colormap[i].blue=QuantumRange-image->colormap[i].blue;
     }
   /*
     Negate image.
@@ -3387,9 +3387,9 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     Convenience macros.
   */
 #define ScaledSig(x) ( ClampToQuantum(QuantumRange* \
-  ScaledSigmoidal(contrast,QuantumScale*midpoint,QuantumScale*(x))) )  
+  ScaledSigmoidal(contrast,QuantumScale*midpoint,QuantumScale*(x))) )
 #define InverseScaledSig(x) ( ClampToQuantum(QuantumRange* \
-  InverseScaledSigmoidal(contrast,QuantumScale*midpoint,QuantumScale*(x))) )  
+  InverseScaledSigmoidal(contrast,QuantumScale*midpoint,QuantumScale*(x))) )
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3401,32 +3401,32 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   if (image->storage_class == PseudoClass)
     {
       register ssize_t
-	i;
+        i;
 
       if (sharpen != MagickFalse)
         for (i=0; i < (ssize_t) image->colors; i++)
         {
           if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-	    image->colormap[i].red=ScaledSig(image->colormap[i].red);
-	  if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-	    image->colormap[i].green=ScaledSig(image->colormap[i].green);
-	  if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-	    image->colormap[i].blue=ScaledSig(image->colormap[i].blue);
-	  if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-	    image->colormap[i].alpha=ScaledSig(image->colormap[i].alpha);
-	}
+            image->colormap[i].red=ScaledSig(image->colormap[i].red);
+          if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+            image->colormap[i].green=ScaledSig(image->colormap[i].green);
+          if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+            image->colormap[i].blue=ScaledSig(image->colormap[i].blue);
+          if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+            image->colormap[i].alpha=ScaledSig(image->colormap[i].alpha);
+        }
       else
         for (i=0; i < (ssize_t) image->colors; i++)
-	{
-	  if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-	    image->colormap[i].red=InverseScaledSig(image->colormap[i].red);
-	  if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
+        {
+          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
+            image->colormap[i].red=InverseScaledSig(image->colormap[i].red);
+          if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
             image->colormap[i].green=InverseScaledSig(image->colormap[i].green);
-	  if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-	    image->colormap[i].blue=InverseScaledSig(image->colormap[i].blue);
+          if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
+            image->colormap[i].blue=InverseScaledSig(image->colormap[i].blue);
           if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-	    image->colormap[i].alpha=InverseScaledSig(image->colormap[i].alpha);
-	}
+            image->colormap[i].alpha=InverseScaledSig(image->colormap[i].alpha);
+        }
     }
   /*
     Sigmoidal-contrast enhance image.
@@ -3457,7 +3457,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       register ssize_t
-	i;
+        i;
 
       if (GetPixelMask(image,q) != 0)
         {
@@ -3476,10 +3476,10 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
         traits=GetPixelChannelTraits(image,channel);
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-	if (sharpen != MagickFalse)
-	  q[i]=ScaledSig(q[i]);
-	else
-	  q[i]=InverseScaledSig(q[i]);
+        if (sharpen != MagickFalse)
+          q[i]=ScaledSig(q[i]);
+        else
+          q[i]=InverseScaledSig(q[i]);
       }
       q+=GetPixelChannels(image);
     }
