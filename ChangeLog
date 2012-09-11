@@ -1,5 +1,5 @@
 2012-09-11  6.7.9-5 Nicolas Robidoux <nicolas.robidoux@gmail...>
-  * sigmoidal-contrast: prevent out of range argument in HDRI.
+  * sigmoidal-contrast: prevent out of range argument.
 
 2012-09-09  6.7.9-5 Cristy  <quetzlzacatenango@image...>
   * The number of default OpenMP threads is 1 (reference

@@ -3883,12 +3883,12 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
 #define ScaledSig(a,b,x) ( \
   (Sig((a),(b),(x))-Sig((a),(b),0.0)) / (Sig((a),(b),1.0)-Sig((a),(b),0.0)) )
   /*
-    Inverse of ScaledSig, used for +sigmoidal-contrast. In HDRI, the
-    argument of the hyperbolic tangent (resp. logistic sigmoidal) may
-    be outside of the interval (-1,1) (resp. (0,1)), hence the
-    branching.
-    InverseScaledSig is not a two-side inverse of ScaledSig: It is only
-    a right inverse. This is unavoidable.
+    Inverse of ScaledSig, used for +sigmoidal-contrast. Because b may
+    be 0 or 1, the argument of the hyperbolic tangent (resp. logistic
+    sigmoidal) may be outside of the interval (-1,1) (resp. (0,1)),
+    even when creating a LUT, hence the branching.
+    InverseScaledSig is not a two-side inverse of ScaledSig: It is
+    only a right inverse. This is unavoidable.
   */
 #if defined(MAGICKCORE_HAVE_ATANH)
 #define InverseScaledSig(a,b,x) ({                                   \
