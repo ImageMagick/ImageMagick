@@ -3341,7 +3341,7 @@ MagickExport MagickBooleanType NormalizeImage(Image *image,
   sigmoidal) may be outside of the interval (-1,1) (resp. (0,1)), even
   when creating a LUT from in gamut values, hence the branching.  In
   addition, HDRI may have out of gamut values.
-  InverseScaledSigmoidal is not a two-side inverse of ScaledSigmoidal:
+  InverseScaledSigmoidal is not a two-sided inverse of ScaledSigmoidal:
   It is only a right inverse. This is unavoidable.
 */
 static inline double InverseScaledSigmoidal(const double a,const double b,
