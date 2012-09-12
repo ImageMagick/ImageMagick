@@ -3344,7 +3344,6 @@ MagickExport MagickBooleanType NormalizeImage(Image *image,
   InverseScaledSigmoidal is not a two-side inverse of ScaledSigmoidal:
   It is only a right inverse. This is unavoidable.
 */
-#if defined(MAGICKCORE_HAVE_ATANH)
 static inline double InverseScaledSigmoidal(const double a,const double b,
   const double x)
 {
@@ -3352,6 +3351,7 @@ static inline double InverseScaledSigmoidal(const double a,const double b,
   const double argument=(Sigmoidal(a,b,1.0)-sig0)*x+sig0;
   const double clamped=
     (
+#if defined(MAGICKCORE_HAVE_ATANH)
       argument < -1+MagickEpsilon
       ?
       -1+MagickEpsilon
@@ -3359,15 +3359,7 @@ static inline double InverseScaledSigmoidal(const double a,const double b,
       ( argument > 1-MagickEpsilon ? 1-MagickEpsilon : argument )
     );
   return(b+(2.0/a)*atanh(clamped));
-}
 #else
-static inline double InverseScaledSigmoidal(const double a,const double b,
-  const double x)
-{
-  const double sig0=Sigmoidal(a,b,0.0);
-  const double argument=(Sigmoidal(a,b,1.0)-sig0)*x+sig0;
-  const double clamped=
-    (
       argument < MagickEpsilon
       ?
       MagickEpsilon
@@ -3375,8 +3367,8 @@ static inline double InverseScaledSigmoidal(const double a,const double b,
       ( argument > 1-MagickEpsilon ? 1-MagickEpsilon : argument )
     );
   return(b+(-1.0/a)*log(1.0/clamped+-1.0));
-}
 #endif
+}
 
 MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   const MagickBooleanType sharpen,const double contrast,const double midpoint,
