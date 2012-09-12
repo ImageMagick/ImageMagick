@@ -3823,7 +3823,7 @@ MagickExport MagickBooleanType NormalizeImageChannel(Image *image,
   See http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html and
   http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.  The limit
   of ScaledSigmoidal as a->0 is the identity, but a=0 gives a division by
-  zero. This is fixed above by exiting immediately when contrast is small,
+  zero. This is fixed below by exiting immediately when contrast is small,
   leaving the image (or colormap) unmodified. This appears to be safe because
   the series expansion of the logistic sigmoidal function around x=b is
 
