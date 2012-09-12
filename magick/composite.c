@@ -1669,6 +1669,8 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
   composite_image=CloneImage(composite,0,0,MagickTrue,exception);
   if (composite_image == (const Image *) NULL)
     return(MagickFalse);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) SetImageColorspace(image,RGBColorspace);
   (void) SetImageColorspace(composite_image,image->colorspace);
   GetMagickPixelPacket(image,&zero);
   destination_image=(Image *) NULL;
