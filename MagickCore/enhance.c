@@ -3366,7 +3366,7 @@ static inline double InverseScaledSigmoidal(const double a,const double b,
       :
       ( argument > 1-MagickEpsilon ? 1-MagickEpsilon : argument )
     );
-  return(b+(-1.0/a)*log(1.0/clamped+-1.0));
+  return(b-(1.0/a)*log(1.0/clamped-1.0));
 #endif
 }
 
