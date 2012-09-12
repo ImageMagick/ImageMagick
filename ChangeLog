@@ -8,6 +8,8 @@
 2012-09-09  6.7.9-5 Cristy  <quetzlzacatenango@image...>
   * The number of default OpenMP threads is 1 (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=23&t=21838).
+  * Only first image of raw grayscale image was set to GRAY (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21428).
 
 2012-09-10  6.7.9-5 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * enhance.c improvements:
