@@ -3791,8 +3791,8 @@ MagickExport MagickBooleanType NormalizeImageChannel(Image *image,
 */
 
 /*
-  Sigmoidal function Sig with inflexion point moved to b and "slope constant"
-  set to a.
+  Sigmoidal function Sigmoidal with inflexion point moved to b and "slope
+  constant" set to a.
 
   The first version, based on the hyperbolic tangent tanh, when combined with
   the scaling step, is an exact arithmetic clone of the the sigmoid function
@@ -3810,62 +3810,64 @@ MagickExport MagickBooleanType NormalizeImageChannel(Image *image,
   has to do with the construction of the inverse of the scaled sigmoidal.
 */
 #if defined(MAGICKCORE_HAVE_ATANH)
-#define Sig(a,b,x) ( tanh((0.5*(a))*((x)-(b))) )
+#define Sigmoidal(a,b,x) ( tanh((0.5*(a))*((x)-(b))) )
 #else
-#define Sig(a,b,x) ( 1.0/(1.0+exp((a)*((b)-(x)))) )
+#define Sigmoidal(a,b,x) ( 1.0/(1.0+exp((a)*((b)-(x)))) )
 #endif
 /*
-  Scaled sigmoidal formula:
+  Scaled sigmoidal function:
 
-    ( Sig(a,b,x)-Sig(a,b,0) ) / ( Sig(a,b,1) - Sig(a,b,0) )
+    ( Sigmoidal(a,b,x) - Sigmoidal(a,b,0) ) /
+    ( Sigmoidal(a,b,1) - Sigmoidal(a,b,0) )
 
-  See http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html
-  and http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.
-  The limit of ScaledSig as a->0 is the identity, but a=0 gives a division
-  by zero. This is fixed above by exiting immediately when contrast is small,
+  See http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html and
+  http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.  The limit
+  of ScaledSigmoidal as a->0 is the identity, but a=0 gives a division by
+  zero. This is fixed above by exiting immediately when contrast is small,
   leaving the image (or colormap) unmodified. This appears to be safe because
   the series expansion of the logistic sigmoidal function around x=b is
-  1/2-a*(b-x)/4+... so that the key denominator s(1)-s(0) is about a/4
-  (a/2 with tanh).
+
+  1/2-a*(b-x)/4+...
+
+  so that the key denominator s(1)-s(0) is about a/4 (a/2 with tanh).
 */
-#define ScaledSig(a,b,x) ( \
-  (Sig((a),(b),(x))-Sig((a),(b),0.0)) / (Sig((a),(b),1.0)-Sig((a),(b),0.0)) )
+#define ScaledSigmoidal(a,b,x) (                    \
+  (Sigmoidal((a),(b),(x))-Sigmoidal((a),(b),0.0)) / \
+  (Sigmoidal((a),(b),1.0)-Sigmoidal((a),(b),0.0)) )
 /*
-  Inverse of ScaledSig, used for +sigmoidal-contrast. Because b may be 0
-  or 1, the argument of the hyperbolic tangent (resp. logistic sigmoidal)
-  may be outside of the interval (-1,1) (resp. (0,1)), even when creating
-  a LUT, hence the branching.
-
-  InverseScaledSig is not a two-side inverse of ScaledSig: It is only a
-  right inverse. This is unavoidable.
+  Inverse of ScaledSigmoidal, used for +sigmoidal-contrast.  Because b
+  may be 0 or 1, the argument of the hyperbolic tangent (resp. logistic
+  sigmoidal) may be outside of the interval (-1,1) (resp. (0,1)), even
+  when creating a LUT from in gamut values, hence the branching.  In
+  addition, HDRI may have out of gamut values.
+  InverseScaledSigmoidal is not a two-sided inverse of ScaledSigmoidal:
+  It is only a right inverse. This is unavoidable.
 */
+static inline double InverseScaledSigmoidal(const double a,const double b,
+  const double x)
+{
+  const double sig0=Sigmoidal(a,b,0.0);
+  const double argument=(Sigmoidal(a,b,1.0)-sig0)*x+sig0;
+  const double clamped=
+    (
 #if defined(MAGICKCORE_HAVE_ATANH)
-static inline double InverseScaledSig(const double a,const double b,
-  const double x)
-{
-  const double _argument =
-    (Sig((a),(b),1.0)-Sig((a),(b),0.0)) * (x) + Sig((a),(b),0.0);
-
-  const double _clamped_argument =
-    ( _argument < -1+MagickEpsilon ? -1+MagickEpsilon :
-    ( _argument > 1-MagickEpsilon ? 1-MagickEpsilon : _argument ) );
-
-  return((b) + (2.0/(a)) * atanh(_clamped_argument));
-}
+      argument < -1+MagickEpsilon
+      ?
+      -1+MagickEpsilon
+      :
+      ( argument > 1-MagickEpsilon ? 1-MagickEpsilon : argument )
+    );
+  return(b+(2.0/a)*atanh(clamped));
 #else
-static inline double InverseScaledSig(const double a,const double b,
-  const double x)
-{
-  const double _argument =
-    (Sig((a),(b),1.0)-Sig((a),(b),0.0)) * (x) + Sig((a),(b),0.0);
-
-  const double _clamped_argument =
-    ( _argument < MagickEpsilon ? MagickEpsilon :
-    ( _argument > 1-MagickEpsilon ? 1-MagickEpsilon : _argument ) );
-
-  return((b) + (-1.0/(a)) * log(1.0/_clamped_argument+-1.0));
-}
+      argument < MagickEpsilon
+      ?
+      MagickEpsilon
+      :
+      ( argument > 1-MagickEpsilon ? 1-MagickEpsilon : argument )
+    );
+  return(b-(1.0/a)*log(1.0/clamped-1.0));
 #endif
+}
 
 MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   const MagickBooleanType sharpen,const char *levels)
@@ -3938,11 +3940,12 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
   if (sharpen != MagickFalse)
     for (i=0; i <= (ssize_t) MaxMap; i++)
       sigmoidal_map[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*
-        ScaledSig(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
+        ScaledSigmoidal(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
   else
     for (i=0; i <= (ssize_t) MaxMap; i++)
       sigmoidal_map[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*
-        InverseScaledSig(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
+        InverseScaledSigmoidal(contrast,QuantumScale*midpoint,
+        (double) i/MaxMap)));
   /*
     Sigmoidal-contrast enhance colormap.
   */
