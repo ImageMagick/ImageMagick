@@ -3790,6 +3790,83 @@ MagickExport MagickBooleanType NormalizeImageChannel(Image *image,
 %
 */
 
+/*
+  Sigmoidal function Sig with inflexion point moved to b and "slope constant"
+  set to a.
+
+  The first version, based on the hyperbolic tangent tanh, when combined with
+  the scaling step, is an exact arithmetic clone of the the sigmoid function
+  based on the logistic curve. The equivalence is based on the identity
+
+    1/(1+exp(-t)) = (1+tanh(t/2))/2
+
+  (http://de.wikipedia.org/wiki/Sigmoidfunktion) and the fact that the
+  scaled sigmoidal derivation is invariant under affine transformations of
+  the ordinate.
+
+  The tanh version is almost certainly more accurate and cheaper.  The 0.5
+  factor in the argument is to clone the legacy ImageMagick behavior. The
+  reason for making the define depend on atanh even though it only uses tanh
+  has to do with the construction of the inverse of the scaled sigmoidal.
+*/
+#if defined(MAGICKCORE_HAVE_ATANH)
+#define Sig(a,b,x) ( tanh((0.5*(a))*((x)-(b))) )
+#else
+#define Sig(a,b,x) ( 1.0/(1.0+exp((a)*((b)-(x)))) )
+#endif
+/*
+  Scaled sigmoidal formula:
+
+    ( Sig(a,b,x)-Sig(a,b,0) ) / ( Sig(a,b,1) - Sig(a,b,0) )
+
+  See http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html
+  and http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.
+  The limit of ScaledSig as a->0 is the identity, but a=0 gives a division
+  by zero. This is fixed above by exiting immediately when contrast is small,
+  leaving the image (or colormap) unmodified. This appears to be safe because
+  the series expansion of the logistic sigmoidal function around x=b is
+  1/2-a*(b-x)/4+... so that the key denominator s(1)-s(0) is about a/4
+  (a/2 with tanh).
+*/
+#define ScaledSig(a,b,x) ( \
+  (Sig((a),(b),(x))-Sig((a),(b),0.0)) / (Sig((a),(b),1.0)-Sig((a),(b),0.0)) )
+/*
+  Inverse of ScaledSig, used for +sigmoidal-contrast. Because b may be 0
+  or 1, the argument of the hyperbolic tangent (resp. logistic sigmoidal)
+  may be outside of the interval (-1,1) (resp. (0,1)), even when creating
+  a LUT, hence the branching.
+
+  InverseScaledSig is not a two-side inverse of ScaledSig: It is only a
+  right inverse. This is unavoidable.
+*/
+#if defined(MAGICKCORE_HAVE_ATANH)
+static inline double InverseScaledSig(const double a,const double b,
+  const double x)
+{
+  const double _argument =
+    (Sig((a),(b),1.0)-Sig((a),(b),0.0)) * (x) + Sig((a),(b),0.0);
+
+  const double _clamped_argument =
+    ( _argument < -1+MagickEpsilon ? -1+MagickEpsilon :
+    ( _argument > 1-MagickEpsilon ? 1-MagickEpsilon : _argument ) );
+
+  return((b) + (2.0/(a)) * atanh(_clamped_argument));
+}
+#else
+static inline double InverseScaledSig(const double a,const double b,
+  const double x)
+{
+  const double _argument =
+    (Sig((a),(b),1.0)-Sig((a),(b),0.0)) * (x) + Sig((a),(b),0.0);
+
+  const double _clamped_argument =
+    ( _argument < MagickEpsilon ? MagickEpsilon :
+    ( _argument > 1-MagickEpsilon ? 1-MagickEpsilon : _argument ) );
+
+  return((b) + (-1.0/(a)) * log(1.0/_clamped_argument+-1.0));
+}
+#endif
+
 MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   const MagickBooleanType sharpen,const char *levels)
 {
@@ -3843,71 +3920,8 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
     Side effect: clamps values unless contrast<MagickEpsilon, in which
     case nothing is done.
   */
-  if (contrast<MagickEpsilon)
+  if (contrast < MagickEpsilon)
     return(MagickTrue);
-
-  /*
-    Sigmoidal function Sig with inflexion point moved to b and "slope
-    constant" set to a.
-    The first version, based on the hyperbolic tangent tanh, when
-    combined with the scaling step, is an exact arithmetic clone of the
-    the sigmoid function based on the logistic curve. The equivalence is
-    based on the identity
-    1/(1+exp(-t)) = (1+tanh(t/2))/2
-    (http://de.wikipedia.org/wiki/Sigmoidfunktion) and the fact that the
-    scaled sigmoidal derivation is invariant under affine transformations
-    of the ordinate.
-    The tanh version is almost certainly more accurate and cheaper.
-    The 0.5 factor in the argument is to clone the legacy ImageMagick
-    behavior. The reason for making the define depend on atanh even
-    though it only uses tanh has to do with the construction of the
-    inverse of the scaled sigmoidal.
-  */
-#if defined(MAGICKCORE_HAVE_ATANH)
-#define Sig(a,b,x) ( tanh((0.5*(a))*((x)-(b))) )
-#else
-#define Sig(a,b,x) ( 1.0/(1.0+exp((a)*((b)-(x)))) )
-#endif
-  /*
-    Scaled sigmoidal formula:
-    ( Sig(a,b,x)-Sig(a,b,0) ) / ( Sig(a,b,1) - Sig(a,b,0) )
-    See http://osdir.com/ml/video.image-magick.devel/2005-04/msg00006.html
-    and http://www.cs.dartmouth.edu/farid/downloads/tutorials/fip.pdf.
-    The limit of ScaledSig as a->0 is the identity, but a=0 gives a
-    division by zero. This is fixed above by exiting immediately when
-    contrast is small, leaving the image (or colormap) unmodified. This
-    appears to be safe because the series expansion of the logistic
-    sigmoidal function around x=b is 1/2-a*(b-x)/4+... so that the key
-    denominator s(1)-s(0) is about a/4 (a/2 with tanh).
-  */
-#define ScaledSig(a,b,x) ( \
-  (Sig((a),(b),(x))-Sig((a),(b),0.0)) / (Sig((a),(b),1.0)-Sig((a),(b),0.0)) )
-  /*
-    Inverse of ScaledSig, used for +sigmoidal-contrast. Because b may
-    be 0 or 1, the argument of the hyperbolic tangent (resp. logistic
-    sigmoidal) may be outside of the interval (-1,1) (resp. (0,1)),
-    even when creating a LUT, hence the branching.
-    InverseScaledSig is not a two-side inverse of ScaledSig: It is
-    only a right inverse. This is unavoidable.
-  */
-#if defined(MAGICKCORE_HAVE_ATANH)
-#define InverseScaledSig(a,b,x) ({                                   \
-  const double _argument =                                           \
-    (Sig((a),(b),1.0)-Sig((a),(b),0.0)) * (x) + Sig((a),(b),0.0);    \
-  const double _clamped_argument =                                   \
-    ( _argument < -1+MagickEpsilon ? -1+MagickEpsilon :              \
-    ( _argument > 1-MagickEpsilon ? 1-MagickEpsilon : _argument ) ); \
-  (b) + (2.0/(a)) * atanh(_clamped_argument); })
-#else
-#define InverseScaledSig(a,b,x) ({                                   \
-  const double _argument =                                           \
-    (Sig((a),(b),1.0)-Sig((a),(b),0.0)) * (x) + Sig((a),(b),0.0);    \
-  const double _clamped_argument =                                   \
-    ( _argument < MagickEpsilon ? MagickEpsilon :                    \
-    ( _argument > 1-MagickEpsilon ? 1-MagickEpsilon : _argument ) ); \
-  (b) + (-1.0/(a)) * log(1.0/_clamped_argument+-1.0); })
-#endif
-
   /*
     Allocate and initialize sigmoidal maps.
   */
