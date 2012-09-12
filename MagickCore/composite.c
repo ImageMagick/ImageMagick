@@ -603,6 +603,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   composite_image=CloneImage(composite,0,0,MagickTrue,exception);
   if (composite_image == (const Image *) NULL)
     return(MagickFalse);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) SetImageColorspace(image,RGBColorspace,exception);
   (void) SetImageColorspace(composite_image,image->colorspace,exception);
   if ((compose == OverCompositeOp) || (compose == SrcOverCompositeOp))
     {
