@@ -1,3 +1,7 @@
+2012-09-12  6.7.8-5 Anthony Thyssen <A.Thyssen@griffith...>
+  * All untappered windowing filters Welch and Cosine changed to use a 3 lobe
+    support (like Lanczos). These were not part of the original 'zoom' program.
+
 2012-09-11  6.7.9-5 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * sigmoidal-contrast: prevent out of range argument.
 
