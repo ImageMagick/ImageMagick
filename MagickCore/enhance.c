@@ -3294,21 +3294,23 @@ MagickExport MagickBooleanType NormalizeImage(Image *image,
 */
 
 /*
-  Sigmoidal function with inflexion point moved to b and "slope constant" set
-  to a.
+  Sigmoidal function Sigmoidal with inflexion point moved to b and "slope
+  constant" set to a.
+
   The first version, based on the hyperbolic tangent tanh, when combined with
   the scaling step, is an exact arithmetic clone of the the sigmoid function
   based on the logistic curve. The equivalence is based on the identity
 
-  1/(1+exp(-t)) = (1+tanh(t/2))/2
+    1/(1+exp(-t)) = (1+tanh(t/2))/2
 
-  (http://de.wikipedia.org/wiki/Sigmoidfunktion) and the fact that the scaled
-  sigmoidal derivation is invariant under affine transformations of the
-  ordinate.
-  The tanh version is almost certainly more accurate and cheaper.
-  The 0.5 factor in its argument is to clone the legacy ImageMagick behavior.
-  The reason for making the define depend on atanh even though it only uses
-  tanh has to do with the construction of the inverse of the scaled sigmoidal.
+  (http://de.wikipedia.org/wiki/Sigmoidfunktion) and the fact that the
+  scaled sigmoidal derivation is invariant under affine transformations of
+  the ordinate.
+
+  The tanh version is almost certainly more accurate and cheaper.  The 0.5
+  factor in the argument is to clone the legacy ImageMagick behavior. The
+  reason for making the define depend on atanh even though it only uses tanh
+  has to do with the construction of the inverse of the scaled sigmoidal.
 */
 #if defined(MAGICKCORE_HAVE_ATANH)
 #define Sigmoidal(a,b,x) ( tanh((0.5*(a))*((x)-(b))) )
