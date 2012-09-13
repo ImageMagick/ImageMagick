@@ -3499,7 +3499,7 @@ ac_config_headers="$ac_config_headers config/config.h"
 
 ac_config_commands="$ac_config_commands magick/magick-config.h"
 
-ac_config_files="$ac_config_files config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config magick/ImageMagick.pc Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc magick/Magick-config magick/MagickCore-config magick/MagickCore.pc magick/version.h Makefile magick.sh PerlMagick/Magick.pm PerlMagick/Makefile.PL PerlMagick/check.sh tests/common.shi utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 wand/MagickWand-config wand/MagickWand.pc wand/Wand-config wand/Wand.pc"
+ac_config_files="$ac_config_files common.shi config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config magick/ImageMagick.pc Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc magick/Magick-config magick/MagickCore-config magick/MagickCore.pc magick/version.h Makefile magick.sh PerlMagick/Magick.pm PerlMagick/Makefile.PL PerlMagick/check.sh utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 wand/MagickWand-config wand/MagickWand.pc wand/Wand-config wand/Wand.pc"
 
 
 #
@@ -3666,7 +3666,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=9282:9283M
+MAGICK_SVN_REVISION=9348M
 
 
 
@@ -37133,6 +37133,7 @@ do
   case $ac_config_target in
     "config/config.h") CONFIG_HEADERS="$CONFIG_HEADERS config/config.h" ;;
     "magick/magick-config.h") CONFIG_COMMANDS="$CONFIG_COMMANDS magick/magick-config.h" ;;
+    "common.shi") CONFIG_FILES="$CONFIG_FILES common.shi" ;;
     "config/configure.xml") CONFIG_FILES="$CONFIG_FILES config/configure.xml" ;;
     "config/delegates.xml") CONFIG_FILES="$CONFIG_FILES config/delegates.xml" ;;
     "config/ImageMagick.rdf") CONFIG_FILES="$CONFIG_FILES config/ImageMagick.rdf" ;;
@@ -37156,7 +37157,6 @@ do
     "PerlMagick/Magick.pm") CONFIG_FILES="$CONFIG_FILES PerlMagick/Magick.pm" ;;
     "PerlMagick/Makefile.PL") CONFIG_FILES="$CONFIG_FILES PerlMagick/Makefile.PL" ;;
     "PerlMagick/check.sh") CONFIG_FILES="$CONFIG_FILES PerlMagick/check.sh" ;;
-    "tests/common.shi") CONFIG_FILES="$CONFIG_FILES tests/common.shi" ;;
     "utilities/animate.1") CONFIG_FILES="$CONFIG_FILES utilities/animate.1" ;;
     "utilities/compare.1") CONFIG_FILES="$CONFIG_FILES utilities/compare.1" ;;
     "utilities/composite.1") CONFIG_FILES="$CONFIG_FILES utilities/composite.1" ;;

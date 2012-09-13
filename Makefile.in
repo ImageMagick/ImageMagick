@@ -241,11 +241,12 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(noinst_HEADERS) $(srcdir)/ImageMagick.spec.in \
 	$(srcdir)/Magick++/Makefile.am $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/PerlMagick/Makefile.am \
-	$(srcdir)/coders/Makefile.am $(srcdir)/config/Makefile.am \
-	$(srcdir)/filters/Makefile.am $(srcdir)/ltdl/Makefile.inc \
-	$(srcdir)/m4/Makefile.am $(srcdir)/magick.sh.in \
-	$(srcdir)/magick/Makefile.am $(srcdir)/tests/Makefile.am \
-	$(srcdir)/utilities/Makefile.am $(srcdir)/wand/Makefile.am \
+	$(srcdir)/coders/Makefile.am $(srcdir)/common.shi.in \
+	$(srcdir)/config/Makefile.am $(srcdir)/filters/Makefile.am \
+	$(srcdir)/ltdl/Makefile.inc $(srcdir)/m4/Makefile.am \
+	$(srcdir)/magick.sh.in $(srcdir)/magick/Makefile.am \
+	$(srcdir)/tests/Makefile.am $(srcdir)/utilities/Makefile.am \
+	$(srcdir)/wand/Makefile.am \
 	$(top_srcdir)/Magick++/bin/Magick++-config.in \
 	$(top_srcdir)/Magick++/lib/ImageMagick++.pc.in \
 	$(top_srcdir)/Magick++/lib/Magick++.pc.in \
@@ -274,7 +275,6 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(top_srcdir)/magick/MagickCore-config.in \
 	$(top_srcdir)/magick/MagickCore.pc.in \
 	$(top_srcdir)/magick/version.h.in \
-	$(top_srcdir)/tests/common.shi.in \
 	$(top_srcdir)/utilities/ImageMagick.1.in \
 	$(top_srcdir)/utilities/animate.1.in \
 	$(top_srcdir)/utilities/compare.1.in \
@@ -328,18 +328,19 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config/config.h
-CONFIG_CLEAN_FILES = config/configure.xml config/delegates.xml \
-	config/ImageMagick.rdf config/MagickCore.dox \
-	config/MagickWand.dox config/type-dejavu.xml \
-	config/type-ghostscript.xml config/type-windows.xml \
-	config/type.xml ImageMagick.spec Magick++/bin/Magick++-config \
-	magick/ImageMagick.pc Magick++/lib/ImageMagick++.pc \
-	Magick++/lib/Magick++.pc magick/Magick-config \
-	magick/MagickCore-config magick/MagickCore.pc magick/version.h \
-	magick.sh PerlMagick/Magick.pm PerlMagick/Makefile.PL \
-	PerlMagick/check.sh tests/common.shi utilities/animate.1 \
-	utilities/compare.1 utilities/composite.1 utilities/conjure.1 \
-	utilities/convert.1 utilities/display.1 utilities/identify.1 \
+CONFIG_CLEAN_FILES = common.shi config/configure.xml \
+	config/delegates.xml config/ImageMagick.rdf \
+	config/MagickCore.dox config/MagickWand.dox \
+	config/type-dejavu.xml config/type-ghostscript.xml \
+	config/type-windows.xml config/type.xml ImageMagick.spec \
+	Magick++/bin/Magick++-config magick/ImageMagick.pc \
+	Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc \
+	magick/Magick-config magick/MagickCore-config \
+	magick/MagickCore.pc magick/version.h magick.sh \
+	PerlMagick/Magick.pm PerlMagick/Makefile.PL \
+	PerlMagick/check.sh utilities/animate.1 utilities/compare.1 \
+	utilities/composite.1 utilities/conjure.1 utilities/convert.1 \
+	utilities/display.1 utilities/identify.1 \
 	utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 \
 	utilities/montage.1 utilities/stream.1 wand/MagickWand-config \
 	wand/MagickWand.pc wand/Wand-config wand/Wand.pc
@@ -4895,7 +4896,7 @@ TESTS_TESTS = \
 	tests/wandtest.tap
 
 TESTS_EXTRA_DIST = \
-	tests/common.shi.in \
+	tests/common.shi \
   tests/input_256c.miff \
   tests/input_bilevel.miff \
   tests/input_gray.miff \
@@ -5039,6 +5040,8 @@ $(top_srcdir)/config/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config/config.h config/stamp-h1
+common.shi: $(top_builddir)/config.status $(srcdir)/common.shi.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 config/configure.xml: $(top_builddir)/config.status $(top_srcdir)/config/configure.xml.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 config/delegates.xml: $(top_builddir)/config.status $(top_srcdir)/config/delegates.xml.in
@@ -5082,8 +5085,6 @@ PerlMagick/Magick.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Mag
 PerlMagick/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Makefile.PL.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/check.sh: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/check.sh.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-tests/common.shi: $(top_builddir)/config.status $(top_srcdir)/tests/common.shi.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 utilities/animate.1: $(top_builddir)/config.status $(top_srcdir)/utilities/animate.1.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
