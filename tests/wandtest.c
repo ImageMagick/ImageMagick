@@ -5235,7 +5235,7 @@ int main(int argc,char **argv)
         if (path[strlen(path)-1] != '/')
           (void) strcat(path,"/");
       }
-    (void) strcat(path,"tests/sequence.miff");
+    (void) strcat(path,"sequence.miff");
     status=MagickReadImage(magick_wand,path);
   }
   if (status == MagickFalse)
