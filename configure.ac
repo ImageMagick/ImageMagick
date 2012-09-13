@@ -37,6 +37,7 @@ AC_CONFIG_LIBOBJ_DIR([ltdl])
 AC_CONFIG_HEADERS([config/config.h])
 AX_PREFIX_CONFIG_H([MagickCore/magick-config.h],[MagickCore])
 AC_CONFIG_FILES([\
+    common.shi \
     config/configure.xml \
     config/delegates.xml \
     config/ImageMagick.rdf \
@@ -59,7 +60,6 @@ AC_CONFIG_FILES([\
     PerlMagick/Magick.pm \
     PerlMagick/Makefile.PL \
     PerlMagick/check.sh \
-    tests/common.shi \
     utilities/animate.1 \
     utilities/compare.1 \
     utilities/composite.1 \
