@@ -46,7 +46,7 @@ MagickCore_libMagickCore_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/lt
 MagickCore_libMagickCore_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
   $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
-MagickCore_libMagickCore_la_DEPENDENCIES = $(MAGICKCORE_LTDLDEPS)
+MagickCore_libMagickCore_la_DEPENDENCIES = $(MAGICK_LTDLDEPS)
 
 # Library base sources
 MAGICKCORE_BASE_SRCS = \
