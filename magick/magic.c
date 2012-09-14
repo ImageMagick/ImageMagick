@@ -181,6 +181,7 @@ static const MagicMapInfo
     { "TIFF", 0, MagickString("\111\111\052\000") },
     { "TIFF64", 0, MagickString("\115\115\000\053\000\010\000\000") },
     { "TIFF64", 0, MagickString("\111\111\053\000\010\000\000\000") },
+    { "TTF", 0, MagickString("\000\001\000\000\000") },
     { "TXT", 0, MagickString("# ImageMagick pixel enumeration:") },
     { "VICAR", 0, MagickString("LBLSIZE") },
     { "VICAR", 0, MagickString("NJPL1I") },
