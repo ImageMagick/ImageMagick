@@ -3512,9 +3512,12 @@ static MagickBooleanType TransformsRGBImage(Image *image,
               pixel.green=sRGBCompandor(pixel.green);
               pixel.blue=sRGBCompandor(pixel.blue);
             }
-          SetPixelRed(image,ClampToQuantum(ScaleMapToQuantum(pixel.red)),q);
-          SetPixelGreen(image,ClampToQuantum(ScaleMapToQuantum(pixel.green)),q);
-          SetPixelBlue(image,ClampToQuantum(ScaleMapToQuantum(pixel.blue)),q);
+          SetPixelRed(image,ClampToQuantum((double)
+            ScaleMapToQuantum(pixel.red)),q);
+          SetPixelGreen(image,ClampToQuantum((double)
+            ScaleMapToQuantum(pixel.green)),q);
+          SetPixelBlue(image,ClampToQuantum((double)
+            ScaleMapToQuantum(pixel.blue)),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -3577,11 +3580,11 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             pixel.green=sRGBCompandor(pixel.green);
             pixel.blue=sRGBCompandor(pixel.blue);
           }
-        image->colormap[i].red=(double) ClampToQuantum(
+        image->colormap[i].red=(double) ClampToQuantum((double)
           ScaleMapToQuantum(pixel.red));
-        image->colormap[i].green=(double) ClampToQuantum(
+        image->colormap[i].green=(double) ClampToQuantum((double)
           ScaleMapToQuantum(pixel.green));
-        image->colormap[i].blue=(double) ClampToQuantum(
+        image->colormap[i].blue=(double) ClampToQuantum((double)
           ScaleMapToQuantum(pixel.blue));
       }
       (void) SyncImage(image,exception);
