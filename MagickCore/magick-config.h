@@ -251,7 +251,7 @@
 /* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
    don't. */
 #ifndef MAGICKCORE_HAVE_DECL_STRERROR_R
-#define MAGICKCORE_HAVE_DECL_STRERROR_R 1
+#define MAGICKCORE_HAVE_DECL_STRERROR_R 0
 #endif
 
 /* Define to 1 if you have the declaration of `strlcpy', and to 0 if you
@@ -340,9 +340,7 @@
 #endif
 
 /* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
-#ifndef MAGICKCORE_HAVE_FSEEKO
-#define MAGICKCORE_HAVE_FSEEKO 1
-#endif
+/* #undef HAVE_FSEEKO */
 
 /* Define to 1 if you have the <ft2build.h> header file. */
 #ifndef MAGICKCORE_HAVE_FT2BUILD_H
@@ -408,9 +406,7 @@
 #endif
 
 /* Define to 1 if the system has the type `intmax_t'. */
-#ifndef MAGICKCORE_HAVE_INTMAX_T
-#define MAGICKCORE_HAVE_INTMAX_T 1
-#endif
+/* #undef HAVE_INTMAX_T */
 
 /* Define to 1 if the system has the type `intptr_t'. */
 #ifndef MAGICKCORE_HAVE_INTPTR_T
@@ -418,9 +414,7 @@
 #endif
 
 /* Define to 1 if you have the <inttypes.h> header file. */
-#ifndef MAGICKCORE_HAVE_INTTYPES_H
-#define MAGICKCORE_HAVE_INTTYPES_H 1
-#endif
+/* #undef HAVE_INTTYPES_H */
 
 /* Define to 1 if you have the `isnan' function. */
 #ifndef MAGICKCORE_HAVE_ISNAN
@@ -530,9 +524,7 @@
 #endif
 
 /* Define to 1 if you have the <memory.h> header file. */
-#ifndef MAGICKCORE_HAVE_MEMORY_H
-#define MAGICKCORE_HAVE_MEMORY_H 1
-#endif
+/* #undef HAVE_MEMORY_H */
 
 /* Define to 1 if you have the `memset' function. */
 #ifndef MAGICKCORE_HAVE_MEMSET
@@ -652,14 +644,10 @@
 /* #undef HAVE_PROCESS_H */
 
 /* Define if you have POSIX threads libraries and header files. */
-#ifndef MAGICKCORE_HAVE_PTHREAD
-#define MAGICKCORE_HAVE_PTHREAD 1
-#endif
+/* #undef HAVE_PTHREAD */
 
 /* Have PTHREAD_PRIO_INHERIT. */
-#ifndef MAGICKCORE_HAVE_PTHREAD_PRIO_INHERIT
-#define MAGICKCORE_HAVE_PTHREAD_PRIO_INHERIT 1
-#endif
+/* #undef HAVE_PTHREAD_PRIO_INHERIT */
 
 /* Define to 1 if you have the `pwrite' function. */
 #ifndef MAGICKCORE_HAVE_PWRITE
@@ -768,9 +756,7 @@
 #endif
 
 /* Define to 1 if you have the <stdint.h> header file. */
-#ifndef MAGICKCORE_HAVE_STDINT_H
-#define MAGICKCORE_HAVE_STDINT_H 1
-#endif
+/* #undef HAVE_STDINT_H */
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #ifndef MAGICKCORE_HAVE_STDLIB_H
@@ -818,14 +804,10 @@
 #endif
 
 /* Define to 1 if you have the <strings.h> header file. */
-#ifndef MAGICKCORE_HAVE_STRINGS_H
-#define MAGICKCORE_HAVE_STRINGS_H 1
-#endif
+/* #undef HAVE_STRINGS_H */
 
 /* Define to 1 if you have the <string.h> header file. */
-#ifndef MAGICKCORE_HAVE_STRING_H
-#define MAGICKCORE_HAVE_STRING_H 1
-#endif
+/* #undef HAVE_STRING_H */
 
 /* Define to 1 if you have the `strlcat' function. */
 /* #undef HAVE_STRLCAT */
@@ -938,9 +920,7 @@
 #endif
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
-#ifndef MAGICKCORE_HAVE_SYS_STAT_H
-#define MAGICKCORE_HAVE_SYS_STAT_H 1
-#endif
+/* #undef HAVE_SYS_STAT_H */
 
 /* Define to 1 if you have the <sys/syslimits.h> header file. */
 /* #undef HAVE_SYS_SYSLIMITS_H */
@@ -961,9 +941,7 @@
 #endif
 
 /* Define to 1 if you have the <sys/types.h> header file. */
-#ifndef MAGICKCORE_HAVE_SYS_TYPES_H
-#define MAGICKCORE_HAVE_SYS_TYPES_H 1
-#endif
+/* #undef HAVE_SYS_TYPES_H */
 
 /* Define to 1 if you have the <sys/wait.h> header file. */
 #ifndef MAGICKCORE_HAVE_SYS_WAIT_H
@@ -1041,14 +1019,10 @@
 /* #undef HAVE_TZNAME */
 
 /* Define to 1 if the system has the type `uintmax_t'. */
-#ifndef MAGICKCORE_HAVE_UINTMAX_T
-#define MAGICKCORE_HAVE_UINTMAX_T 1
-#endif
+/* #undef HAVE_UINTMAX_T */
 
 /* Define to 1 if the system has the type `uintptr_t'. */
-#ifndef MAGICKCORE_HAVE_UINTPTR_T
-#define MAGICKCORE_HAVE_UINTPTR_T 1
-#endif
+/* #undef HAVE_UINTPTR_T */
 
 /* Define to 1 if you have the `ulltostr' function. */
 /* #undef HAVE_ULLTOSTR */
@@ -1174,9 +1148,7 @@
 /* #undef HAVE__WSTAT */
 
 /* define if your compiler has __attribute__ */
-#ifndef MAGICKCORE_HAVE___ATTRIBUTE__
-#define MAGICKCORE_HAVE___ATTRIBUTE__ 1
-#endif
+/* #undef HAVE___ATTRIBUTE__ */
 
 /* accurately represent the wide range of intensity levels in real scenes */
 #ifndef MAGICKCORE_HDRI_SUPPORT
@@ -1200,9 +1172,7 @@
 /* #undef JBIG_DELEGATE */
 
 /* Define if you have JPEG version 2 "Jasper" library */
-#ifndef MAGICKCORE_JP2_DELEGATE
-#define MAGICKCORE_JP2_DELEGATE 1
-#endif
+/* #undef JP2_DELEGATE */
 
 /* Define if you have JPEG library */
 #ifndef MAGICKCORE_JPEG_DELEGATE
@@ -1280,19 +1250,13 @@
 /* #undef MAGICK_FONT_PATH */
 
 /* Target Host CPU */
-#ifndef MAGICKCORE_MAGICK_TARGET_CPU
-#define MAGICKCORE_MAGICK_TARGET_CPU x86_64
-#endif
+/* #undef MAGICK_TARGET_CPU */
 
 /* Target Host OS */
-#ifndef MAGICKCORE_MAGICK_TARGET_OS
-#define MAGICKCORE_MAGICK_TARGET_OS linux-gnu
-#endif
+/* #undef MAGICK_TARGET_OS */
 
 /* Target Host Vendor */
-#ifndef MAGICKCORE_MAGICK_TARGET_VENDOR
-#define MAGICKCORE_MAGICK_TARGET_VENDOR unknown
-#endif
+/* #undef MAGICK_TARGET_VENDOR */
 
 /* Magick API method prefix */
 /* #undef NAMESPACE_PREFIX */
@@ -1312,39 +1276,25 @@
 #endif
 
 /* Name of package */
-#ifndef MAGICKCORE_PACKAGE
-#define MAGICKCORE_PACKAGE "ImageMagick"
-#endif
+/* #undef PACKAGE */
 
 /* Define to the address where bug reports for this package should be sent. */
-#ifndef MAGICKCORE_PACKAGE_BUGREPORT
-#define MAGICKCORE_PACKAGE_BUGREPORT "http://www.imagemagick.org"
-#endif
+/* #undef PACKAGE_BUGREPORT */
 
 /* Define to the full name of this package. */
-#ifndef MAGICKCORE_PACKAGE_NAME
-#define MAGICKCORE_PACKAGE_NAME "ImageMagick"
-#endif
+/* #undef PACKAGE_NAME */
 
 /* Define to the full name and version of this package. */
-#ifndef MAGICKCORE_PACKAGE_STRING
-#define MAGICKCORE_PACKAGE_STRING "ImageMagick 7.0.0-0"
-#endif
+/* #undef PACKAGE_STRING */
 
 /* Define to the one symbol short name of this package. */
-#ifndef MAGICKCORE_PACKAGE_TARNAME
-#define MAGICKCORE_PACKAGE_TARNAME "ImageMagick"
-#endif
+/* #undef PACKAGE_TARNAME */
 
 /* Define to the home page for this package. */
-#ifndef MAGICKCORE_PACKAGE_URL
-#define MAGICKCORE_PACKAGE_URL ""
-#endif
+/* #undef PACKAGE_URL */
 
 /* Define to the version of this package. */
-#ifndef MAGICKCORE_PACKAGE_VERSION
-#define MAGICKCORE_PACKAGE_VERSION "7.0.0-0"
-#endif
+/* #undef PACKAGE_VERSION */
 
 /* Define if you have PANGOCAIRO library */
 #ifndef MAGICKCORE_PANGOCAIRO_DELEGATE
@@ -1492,9 +1442,7 @@
 #endif
 
 /* Define if you have POSIX threads libraries and header files. */
-#ifndef MAGICKCORE_THREAD_SUPPORT
-#define MAGICKCORE_THREAD_SUPPORT 1
-#endif
+/* #undef THREAD_SUPPORT */
 
 /* Define if you have TIFF library */
 #ifndef MAGICKCORE_TIFF_DELEGATE
@@ -1511,30 +1459,28 @@
 
 /* Enable extensions on AIX 3, Interix.  */
 #ifndef _ALL_SOURCE
-# define _ALL_SOURCE 1
+/* # undef _ALL_SOURCE */
 #endif
 /* Enable GNU extensions on systems that have them.  */
 #ifndef _GNU_SOURCE
-# define _GNU_SOURCE 1
+/* # undef _GNU_SOURCE */
 #endif
 /* Enable threading extensions on Solaris.  */
 #ifndef _POSIX_PTHREAD_SEMANTICS
-# define _POSIX_PTHREAD_SEMANTICS 1
+/* # undef _POSIX_PTHREAD_SEMANTICS */
 #endif
 /* Enable extensions on HP NonStop.  */
 #ifndef _TANDEM_SOURCE
-# define _TANDEM_SOURCE 1
+/* # undef _TANDEM_SOURCE */
 #endif
 /* Enable general extensions on Solaris.  */
 #ifndef __EXTENSIONS__
-# define __EXTENSIONS__ 1
+/* # undef __EXTENSIONS__ */
 #endif
 
 
 /* Version number of package */
-#ifndef MAGICKCORE_VERSION
-#define MAGICKCORE_VERSION "7.0.0-0"
-#endif
+/* #undef VERSION */
 
 /* Define if you have WEBP library */
 /* #undef WEBP_DELEGATE */
@@ -1622,17 +1568,23 @@
 /* Define for Solaris 2.5.1 so the uint32_t typedef from <sys/synch.h>,
    <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
-/* #undef _UINT32_T */
+#ifndef MAGICKCORE__UINT32_T
+#define MAGICKCORE__UINT32_T 1
+#endif
 
 /* Define for Solaris 2.5.1 so the uint64_t typedef from <sys/synch.h>,
    <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
-/* #undef _UINT64_T */
+#ifndef MAGICKCORE__UINT64_T
+#define MAGICKCORE__UINT64_T 1
+#endif
 
 /* Define for Solaris 2.5.1 so the uint8_t typedef from <sys/synch.h>,
    <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
-/* #undef _UINT8_T */
+#ifndef MAGICKCORE__UINT8_T
+#define MAGICKCORE__UINT8_T 1
+#endif
 
 /* Define to 1 if type `char' is unsigned and you are not using gcc.  */
 #ifndef __CHAR_UNSIGNED__
@@ -1675,7 +1627,9 @@
 
 /* Define to the widest signed integer type if <stdint.h> and <inttypes.h> do
    not define. */
-/* #undef intmax_t */
+#ifndef _magickcore_intmax_t
+#define _magickcore_intmax_t long long int
+#endif
 
 /* Define to the type of a signed integer type wide enough to hold a pointer,
    if such a type exists, and if the system does not define it. */
@@ -1720,27 +1674,39 @@
 
 /* Define to the type of an unsigned integer type of width exactly 16 bits if
    such a type exists and the standard includes do not define it. */
-/* #undef uint16_t */
+#ifndef _magickcore_uint16_t
+#define _magickcore_uint16_t unsigned short int
+#endif
 
 /* Define to the type of an unsigned integer type of width exactly 32 bits if
    such a type exists and the standard includes do not define it. */
-/* #undef uint32_t */
+#ifndef _magickcore_uint32_t
+#define _magickcore_uint32_t unsigned int
+#endif
 
 /* Define to the type of an unsigned integer type of width exactly 64 bits if
    such a type exists and the standard includes do not define it. */
-/* #undef uint64_t */
+#ifndef _magickcore_uint64_t
+#define _magickcore_uint64_t unsigned long int
+#endif
 
 /* Define to the type of an unsigned integer type of width exactly 8 bits if
    such a type exists and the standard includes do not define it. */
-/* #undef uint8_t */
+#ifndef _magickcore_uint8_t
+#define _magickcore_uint8_t unsigned char
+#endif
 
 /* Define to the widest unsigned integer type if <stdint.h> and <inttypes.h>
    do not define. */
-/* #undef uintmax_t */
+#ifndef _magickcore_uintmax_t
+#define _magickcore_uintmax_t unsigned long long int
+#endif
 
 /* Define to the type of an unsigned integer type wide enough to hold a
    pointer, if such a type exists, and if the system does not define it. */
-/* #undef uintptr_t */
+#ifndef _magickcore_uintptr_t
+#define _magickcore_uintptr_t unsigned long int
+#endif
 
 /* Define as `fork' if `vfork' does not work. */
 /* #undef vfork */
