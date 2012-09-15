@@ -2028,7 +2028,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
 {
 #define TransformRGBImageTag  "Transform/Image"
 
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
   static const float
     YCCMap[1389] =
     {
@@ -2265,7 +2264,6 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
       0.994236f, 0.994957f, 0.995677f, 0.996398f, 0.997118f, 0.997839f,
       0.998559f, 0.999280f, 1.000000
     };
-#endif
 
   CacheView
     *image_view;
@@ -3634,23 +3632,27 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           pixel.red=x_map[red].x+y_map[green].x+z_map[blue].x;
           pixel.green=x_map[red].y+y_map[green].y+z_map[blue].y;
           pixel.blue=x_map[red].z+y_map[green].z+z_map[blue].z;
-          if (colorspace == YCCColorspace)
+          if (image->colorspace == YCCColorspace)
             {
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
               pixel.red=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
                 pixel.red)];
               pixel.green=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
                 pixel.green)];
               pixel.blue=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
                 pixel.blue)];
-#endif
             }
-          SetPixelRed(q,ClampToQuantum(sRGBCompandor((MagickRealType)
-            ScaleMapToQuantum(pixel.red))));
-          SetPixelGreen(q,ClampToQuantum(sRGBCompandor((MagickRealType)
-            ScaleMapToQuantum(pixel.green))));
-          SetPixelBlue(q,ClampToQuantum(sRGBCompandor((MagickRealType)
-            ScaleMapToQuantum(pixel.blue))));
+          else
+            {
+              pixel.red=sRGBCompandor(pixel.red);
+              pixel.green=sRGBCompandor(pixel.green);
+              pixel.blue=sRGBCompandor(pixel.blue);
+            }
+          SetPixelRed(q,ClampToQuantum((MagickRealType)
+            ScaleMapToQuantum(pixel.red)));
+          SetPixelGreen(q,ClampToQuantum((MagickRealType)
+            ScaleMapToQuantum(pixel.green)));
+          SetPixelBlue(q,ClampToQuantum((MagickRealType)
+            ScaleMapToQuantum(pixel.blue)));
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
@@ -3700,21 +3702,25 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         pixel.blue=x_map[red].z+y_map[green].z+z_map[blue].z;
         if (colorspace == YCCColorspace)
           {
-#if !defined(MAGICKCORE_HDRI_SUPPORT)
             pixel.red=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
               pixel.red)];
             pixel.green=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
               pixel.green)];
             pixel.blue=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
               pixel.blue)];
-#endif
           }
-        image->colormap[i].red=ClampToQuantum(sRGBCompandor((MagickRealType)
-          ScaleMapToQuantum(pixel.red)));
-        image->colormap[i].green=ClampToQuantum(sRGBCompandor((MagickRealType)
-          ScaleMapToQuantum(pixel.green)));
-        image->colormap[i].blue=ClampToQuantum(sRGBCompandor((MagickRealType)
-          ScaleMapToQuantum(pixel.blue)));
+        else
+          {
+            pixel.red=sRGBCompandor(pixel.red);
+            pixel.green=sRGBCompandor(pixel.green);
+            pixel.blue=sRGBCompandor(pixel.blue);
+          }
+        image->colormap[i].red=ClampToQuantum((MagickRealType)
+          ScaleMapToQuantum(pixel.red));
+        image->colormap[i].green=ClampToQuantum((MagickRealType)
+          ScaleMapToQuantum(pixel.green));
+        image->colormap[i].blue=ClampToQuantum((MagickRealType)
+          ScaleMapToQuantum(pixel.blue));
       }
       (void) SyncImage(image);
       break;
