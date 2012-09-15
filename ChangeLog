@@ -1,3 +1,9 @@
+2012-09-14  6.7.9-6 Cristy  <quetzlzacatenango@image...>
+  * Don't compand the YCC colorspace, its already companded.
+
+2012-09-12  6.7.9-5 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.9-5, SVN revision 9358.
+
 2012-09-12  6.7.9-5 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * Merge static inline Sigmoidal functions from IM7 to IM6.
 
