@@ -1,3 +1,6 @@
+2012-09-15  6.7.9-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.9-6, SVN revision 9367.
+
 2012-09-14  6.7.9-6 Cristy  <quetzlzacatenango@image...>
   * Don't compand the YCC colorspace, its already companded.
 
