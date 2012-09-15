@@ -3666,7 +3666,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=9357M
+MAGICK_SVN_REVISION=9367:9368M
 
 
 
@@ -9797,7 +9797,36 @@ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-  AX_LANG_COMPILER_MS
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether we are using the Microsoft C compiler" >&5
+$as_echo_n "checking whether we are using the Microsoft C compiler... " >&6; }
+if ${ax_cv_c_compiler_ms+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+#ifndef _MSC_VER
+       choke me
+#endif
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_compiler_ms=yes
+else
+  ax_compiler_ms=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+ax_cv_c_compiler_ms=$ax_compiler_ms
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_c_compiler_ms" >&5
+$as_echo "$ax_cv_c_compiler_ms" >&6; }
   if test X$ax_compiler_ms = Xno; then :
   CL_CFLAGS="${PTHREAD_CFLAGS}"; CL_LIBS="${PTHREAD_LIBS} -lm"
 fi
