@@ -1,3 +1,6 @@
+2012-09-16  6.7.9-7 Cristy  <quetzlzacatenango@image...>
+  * jpeg:sampling-factor might be an image property or an option.
+
 2012-09-15  6.7.9-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-6, SVN revision 9375.
 
