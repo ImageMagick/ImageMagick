@@ -277,6 +277,7 @@ libtool: $(LIBTOOL_DEPS)
 html:
 	doxygen config/MagickCore.dox
 	doxygen config/MagickWand.dox
+	doxygen config/Magick++.dox
 
 #
 # Build Windows source Zip and 7Zip balls
