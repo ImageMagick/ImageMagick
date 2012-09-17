@@ -43,6 +43,7 @@ AC_CONFIG_FILES([\
     config/ImageMagick.rdf \
     config/MagickCore.dox \
     config/MagickWand.dox \
+    config/Magick++.dox \
     config/type-dejavu.xml \
     config/type-ghostscript.xml \
     config/type-windows.xml \
