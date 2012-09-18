@@ -3791,6 +3791,10 @@ MagickExport MagickBooleanType NormalizeImageChannel(Image *image,
 */
 
 /*
+  ImageMagick 7 has a version of this function which does not use LUTs.
+*/
+
+/*
   Sigmoidal function Sigmoidal with inflexion point moved to b and "slope
   constant" set to a.
 
