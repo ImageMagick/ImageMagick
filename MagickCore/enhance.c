@@ -3294,6 +3294,10 @@ MagickExport MagickBooleanType NormalizeImage(Image *image,
 */
 
 /*
+  ImageMagick 6 has a version of this function which uses LUTs.
+*/
+
+/*
   Sigmoidal function Sigmoidal with inflexion point moved to b and "slope
   constant" set to a.
 
