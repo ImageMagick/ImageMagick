@@ -1105,21 +1105,17 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   image->compression=JPEGCompression;
   image->interlace=JPEGInterlace;
 #endif
-  if ((image_info->colors > 8) && (image_info->colors <= 256))
+  option=GetImageOption(image_info,"jpeg:colors");
+  if (option != (const char *) NULL)
     {
       /*
         Let the JPEG library quantize for us.
       */
       jpeg_info.quantize_colors=MagickTrue;
-      jpeg_info.desired_number_of_colors=(int) image_info->colors;
+      jpeg_info.desired_number_of_colors=(int) StringToUnsignedLong(option);
     }
   option=GetImageOption(image_info,"jpeg:block-smoothing");
-  if (option != (const char *) NULL)
-    {
-      jpeg_info.do_block_smoothing=MagickFalse;
-      if (IsMagickTrue(option) != MagickFalse)
-        jpeg_info.do_block_smoothing=MagickTrue;
-    }
+  jpeg_info.do_block_smoothing=IsStringTrue(option);
   jpeg_info.dct_method=JDCT_FLOAT;
   option=GetImageOption(image_info,"jpeg:dct-method");
   if (option != (const char *) NULL)
@@ -1152,12 +1148,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       }
     }
   option=GetImageOption(image_info,"jpeg:fancy-upsampling");
-  if (option != (const char *) NULL)
-    {
-      jpeg_info.do_fancy_upsampling=MagickFalse;
-      if (IsMagickTrue(option) != MagickFalse)
-        jpeg_info.do_fancy_upsampling=MagickTrue;
-    }
+  jpeg_info.do_fancy_upsampling=IsStringTrue(option);
   (void) jpeg_start_decompress(&jpeg_info);
   image->columns=jpeg_info.output_width;
   image->rows=jpeg_info.output_height;
@@ -1191,8 +1182,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       SetImageColorspace(image,LabColorspace);
       jpeg_info.out_color_space=JCS_YCbCr;
     }
-  if ((image_info->colors != 0) && (image_info->colors <= 256))
-    if (AcquireImageColormap(image,image_info->colors) == MagickFalse)
+  if (option != (const char *) NULL)
+    if (AcquireImageColormap(image,StringToUnsignedLong(option)) == MagickFalse)
       ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
   if ((jpeg_info.output_components == 1) &&
       (jpeg_info.quantize_colors == MagickFalse))
@@ -2146,11 +2137,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     }
   option=GetImageOption(image_info,"jpeg:optimize-coding");
   if (option != (const char *) NULL)
-    {
-      jpeg_info.optimize_coding=MagickFalse;
-      if (IsMagickTrue(option) != MagickFalse)
-        jpeg_info.optimize_coding=MagickTrue;
-    }
+    jpeg_info.optimize_coding=IsStringTrue(option);
   else
     {
       MagickSizeType
@@ -2164,9 +2151,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             Perform optimization only if available memory resources permit it.
           */
           status=AcquireMagickResource(MemoryResource,length);
-          if (status != MagickFalse)
-            jpeg_info.optimize_coding=MagickTrue;
           RelinquishMagickResource(MemoryResource,length);
+          jpeg_info.optimize_coding=status;
         }
     }
 #if (JPEG_LIB_VERSION >= 61) && defined(C_PROGRESSIVE_SUPPORTED)
