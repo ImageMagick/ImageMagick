@@ -254,6 +254,7 @@ DIST_COMMON = $(am__configure_deps) $(am__include_HEADERS_DIST) \
 	$(top_srcdir)/PerlMagick/Makefile.PL.in \
 	$(top_srcdir)/PerlMagick/check.sh.in \
 	$(top_srcdir)/config/ImageMagick.rdf.in \
+	$(top_srcdir)/config/Magick++.dox.in \
 	$(top_srcdir)/config/MagickCore.dox.in \
 	$(top_srcdir)/config/MagickWand.dox.in \
 	$(top_srcdir)/config/compile $(top_srcdir)/config/config.guess \
@@ -332,13 +333,13 @@ CONFIG_HEADER = $(top_builddir)/config/config.h
 CONFIG_CLEAN_FILES = common.shi config/configure.xml \
 	config/delegates.xml config/ImageMagick.rdf \
 	config/MagickCore.dox config/MagickWand.dox \
-	config/type-dejavu.xml config/type-ghostscript.xml \
-	config/type-windows.xml config/type.xml ImageMagick.spec \
-	Magick++/bin/Magick++-config magick/ImageMagick.pc \
-	Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc \
-	magick/Magick-config magick/MagickCore-config \
-	magick/MagickCore.pc magick/version.h magick.sh \
-	PerlMagick/Magick.pm PerlMagick/Makefile.PL \
+	config/Magick++.dox config/type-dejavu.xml \
+	config/type-ghostscript.xml config/type-windows.xml \
+	config/type.xml ImageMagick.spec Magick++/bin/Magick++-config \
+	magick/ImageMagick.pc Magick++/lib/ImageMagick++.pc \
+	Magick++/lib/Magick++.pc magick/Magick-config \
+	magick/MagickCore-config magick/MagickCore.pc magick/version.h \
+	magick.sh PerlMagick/Magick.pm PerlMagick/Makefile.PL \
 	PerlMagick/check.sh utilities/animate.1 utilities/compare.1 \
 	utilities/composite.1 utilities/conjure.1 utilities/convert.1 \
 	utilities/display.1 utilities/identify.1 \
@@ -5052,6 +5053,8 @@ config/ImageMagick.rdf: $(top_builddir)/config.status $(top_srcdir)/config/Image
 config/MagickCore.dox: $(top_builddir)/config.status $(top_srcdir)/config/MagickCore.dox.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 config/MagickWand.dox: $(top_builddir)/config.status $(top_srcdir)/config/MagickWand.dox.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+config/Magick++.dox: $(top_builddir)/config.status $(top_srcdir)/config/Magick++.dox.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 config/type-dejavu.xml: $(top_builddir)/config.status $(top_srcdir)/config/type-dejavu.xml.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
@@ -10761,6 +10764,7 @@ libtool: $(LIBTOOL_DEPS)
 html:
 	doxygen config/MagickCore.dox
 	doxygen config/MagickWand.dox
+	doxygen config/Magick++.dox
 $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 	if test -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; then \
 	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
