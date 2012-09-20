@@ -2320,7 +2320,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
 #endif
   sampling_factor=(const char *) NULL;
   value=GetImageProperty(image,"jpeg:sampling-factor",exception);
-  if (value != (char *) NULL)
+  if (value == (char *) NULL)
     value=GetImageOption(image_info,"jpeg:sampling-factor");
   if (value != (char *) NULL)
     {
