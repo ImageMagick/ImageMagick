@@ -67,6 +67,7 @@
 #include "magick/monitor-private.h"
 #include "magick/option.h"
 #include "magick/pixel-accessor.h"
+#include "magick/pixel-private.h"
 #include "magick/profile.h"
 #include "magick/property.h"
 #include "magick/quantum.h"
@@ -1074,8 +1075,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_YRESOLUTION,&y_resolution);
     image->x_resolution=x_resolution;
     image->y_resolution=y_resolution;
-    x_position=(float) image->page.x/x_resolution;
-    y_position=(float) image->page.y/y_resolution;
+    x_position=(float) MagickEpsilonReciprocal(x_resolution)*image->page.x;
+    y_position=(float) MagickEpsilonReciprocal(y_resolution)*image->page.y;
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_XPOSITION,&x_position);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_YPOSITION,&y_position);
     image->page.x=(ssize_t) ceil(x_position*x_resolution-0.5);
