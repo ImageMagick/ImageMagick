@@ -1444,8 +1444,8 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
   status=NegateImage(clip_mask,MagickFalse,exception);
   (void) SetImageMask(image,clip_mask,exception);
   clip_mask=DestroyImage(clip_mask);
-  clone_info=DestroyDrawInfo(clone_info);
   status=DrawImage(image,clone_info,exception);
+  clone_info=DestroyDrawInfo(clone_info);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(DrawEvent,GetMagickModule(),"end clip-path");
   return(status != 0 ? MagickTrue : MagickFalse);
