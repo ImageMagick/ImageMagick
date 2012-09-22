@@ -3006,12 +3006,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         /*
           Convert image to DirectClass pixel packets.
         */
-#if  (MAGICKCORE_QUANTUM_DEPTH == 8)
-        int
-          depth;
-
-        depth=(ssize_t) ping_bit_depth;
-#endif
         image->alpha_trait=(((int) ping_color_type == PNG_COLOR_TYPE_RGB_ALPHA) ||
             ((int) ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
             (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
