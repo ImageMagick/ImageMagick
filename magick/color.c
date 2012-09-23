@@ -2665,6 +2665,12 @@ MagickExport MagickBooleanType QueryMagickColorCompliance(const char *name,
       colorspace[i--]='\0';
       scale=(MagickRealType) ScaleCharToQuantum(1);
       icc_color=MagickFalse;
+      if (LocaleNCompare(colorspace,"device-",7) == 0)
+        {
+          (void) CopyMagickString(colorspace,colorspace+7,MaxTextExtent);
+          scale=(double) QuantumRange;
+          icc_color=MagickTrue;
+        }
       if (LocaleCompare(colorspace,"icc-color") == 0)
         {
           register ssize_t
