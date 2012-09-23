@@ -2291,6 +2291,12 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
       colorspace[i--]='\0';
       scale=(double) ScaleCharToQuantum(1);
       icc_color=MagickFalse;
+      if (LocaleNCompare(colorspace,"device-",7) == 0)
+        {
+          (void) CopyMagickString(colorspace,colorspace+7,MaxTextExtent);
+          scale=(double) QuantumRange;
+          icc_color=MagickTrue;
+        }
       if (LocaleCompare(colorspace,"icc-color") == 0)
         {
           register ssize_t
@@ -2361,7 +2367,8 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
                   color->alpha=(double) ClampToQuantum(QuantumRange*
                     geometry_info.psi);
             }
-          if (((flags & ChiValue) != 0) && (color->alpha_trait == BlendPixelTrait))
+          if (((flags & ChiValue) != 0) &&
+              (color->alpha_trait == BlendPixelTrait))
             color->alpha=(double) ClampToQuantum(QuantumRange*
               geometry_info.chi);
           if (LocaleCompare(colorspace,"gray") == 0)
@@ -2369,7 +2376,8 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
               color->colorspace=GRAYColorspace;
               color->green=color->red;
               color->blue=color->red;
-              if (((flags & SigmaValue) != 0) && (color->alpha_trait == BlendPixelTrait))
+              if (((flags & SigmaValue) != 0) &&
+                  (color->alpha_trait == BlendPixelTrait))
                 color->alpha=(double) ClampToQuantum(QuantumRange*
                   geometry_info.sigma);
             }
