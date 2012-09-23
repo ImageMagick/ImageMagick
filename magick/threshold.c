@@ -310,7 +310,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       SetPixelBlue(q,((MagickRealType) GetPixelBlue(q) <= mean.blue) ?
         0 : QuantumRange);
       SetPixelOpacity(q,((MagickRealType) GetPixelOpacity(q) <= mean.opacity) ?
-         0 : QuantumRange);
+        0 : QuantumRange);
       if (image->colorspace == CMYKColorspace)
         SetPixelIndex(threshold_indexes+x,(((MagickRealType) GetPixelIndex(
           threshold_indexes+x) <= mean.index) ? 0 : QuantumRange));
