@@ -221,9 +221,11 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
   MagickOffsetType
     progress;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   size_t
     height,
     width;
+#endif
 
   ssize_t
     y;
@@ -240,9 +242,9 @@ MagickExport MagickBooleanType DuplexTransferImageViewIterator(
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=source->extent.height-source->extent.y;
   width=source->extent.width-source->extent.x;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
     dynamic_number_threads(source_image,width,height,1)
 #endif
@@ -538,9 +540,11 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
   MagickOffsetType
     progress;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   size_t
     height,
     width;
+#endif
 
   ssize_t
     y;
@@ -882,9 +886,11 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
   MagickOffsetType
     progress;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   size_t
     height,
     width;
+#endif
 
   ssize_t
     y;
@@ -900,9 +906,9 @@ MagickExport MagickBooleanType SetImageViewIterator(ImageView *destination,
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=destination->extent.height-destination->extent.y;
   width=destination->extent.width-destination->extent.x;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
     dynamic_number_threads(destination_image,width,height,1)
 #endif
@@ -1009,9 +1015,11 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
   MagickOffsetType
     progress;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   size_t
     height,
     width;
+#endif
 
   ssize_t
     y;
@@ -1028,9 +1036,9 @@ MagickExport MagickBooleanType TransferImageViewIterator(ImageView *source,
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=source->extent.height-source->extent.y;
   width=source->extent.width-source->extent.x;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
     dynamic_number_threads(source_image,width,height,1)
 #endif
@@ -1142,9 +1150,11 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
   MagickOffsetType
     progress;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   size_t
     height,
     width;
+#endif
 
   ssize_t
     y;
@@ -1159,9 +1169,9 @@ MagickExport MagickBooleanType UpdateImageViewIterator(ImageView *source,
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=source->extent.height-source->extent.y;
   width=source->extent.width-source->extent.x;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
     dynamic_number_threads(source_image,width,height,1)
 #endif
