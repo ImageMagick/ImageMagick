@@ -453,8 +453,10 @@ MagickExport Image *EvaluateImages(const Image *images,
   ssize_t
     y;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   unsigned long
     key;
+#endif
 
   /*
     Ensure the image are the same size.
@@ -500,7 +502,9 @@ MagickExport Image *EvaluateImages(const Image *images,
   progress=0;
   GetMagickPixelPacket(images,&zero);
   random_info=AcquireRandomInfoThreadSet();
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
+#endif
   evaluate_view=AcquireAuthenticCacheView(image,exception);
   if (op == MedianEvaluateOperator)
     {
@@ -777,8 +781,10 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
   ssize_t
     y;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   unsigned long
     key;
+#endif
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -794,7 +800,9 @@ MagickExport MagickBooleanType EvaluateImageChannel(Image *image,
   status=MagickTrue;
   progress=0;
   random_info=AcquireRandomInfoThreadSet();
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
+#endif
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \

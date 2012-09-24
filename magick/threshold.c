@@ -1724,8 +1724,10 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
   ssize_t
     y;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   unsigned long
     key;
+#endif
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1769,7 +1771,9 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
       random_info=AcquireRandomInfoThreadSet();
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
       key=GetRandomSecretKey(random_info[0]);
+#endif
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,8) shared(progress,status) \
@@ -1850,7 +1854,9 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
       return(MagickFalse);
     }
   random_info=AcquireRandomInfoThreadSet();
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
+#endif
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,8) shared(progress,status) \
