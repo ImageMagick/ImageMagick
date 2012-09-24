@@ -249,8 +249,8 @@ static Image *ReadXPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Set XPS render geometry.
     */
-    width=(size_t) (floor(bounds.x2-0.5)-ceil(bounds.x1-0.5));
-    height=(size_t) (floor(bounds.y2-0.5)-ceil(bounds.y1-0.5));
+    width=(size_t) (floor(bounds.x2+0.5)-ceil(bounds.x1-0.5));
+    height=(size_t) (floor(bounds.y2+0.5)-ceil(bounds.y1-0.5));
     if (width > page.width)
       page.width=width;
     if (height > page.height)
