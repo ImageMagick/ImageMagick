@@ -1105,9 +1105,11 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   SegmentInfo
     edge;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   size_t
     height,
     width;
+#endif
 
   ssize_t
     start,
@@ -1165,8 +1167,10 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   GetPixelInfo(image,&zero);
   start=(ssize_t) ceil(edge.y1-0.5);
   stop=(ssize_t) floor(edge.y2+0.5);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=(size_t) (floor(edge.y2+0.5)-ceil(edge.y1-0.5));
   width=(size_t) (floor(edge.x2+0.5)-ceil(edge.x1-0.5));
+#endif
   source_view=AcquireVirtualCacheView(source,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -3233,9 +3237,11 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   RectangleInfo
     bounding_box;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   size_t
     height,
     width;
+#endif
 
   ssize_t
     y;
@@ -3256,8 +3262,10 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   bounding_box=gradient->bounding_box;
   status=MagickTrue;
   GetPixelInfo(image,&zero);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=bounding_box.height-bounding_box.y;
   width=bounding_box.width-bounding_box.x;
+#endif
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
@@ -3805,9 +3813,11 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   SegmentInfo
     bounds;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   size_t
     height,
     width;
+#endif
 
   ssize_t
     start,
@@ -3863,8 +3873,10 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     image->rows ? (double) image->rows-1 : bounds.y2;
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=(size_t) (floor(bounds.y2+0.5)-ceil(bounds.y1-0.5));
   width=(size_t) (floor(bounds.x2+0.5)-ceil(bounds.x1-0.5));
+#endif
   if (primitive_info->coordinates == 1)
     {
       /*
