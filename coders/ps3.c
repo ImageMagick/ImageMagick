@@ -1013,7 +1013,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
           {
             (void) FormatLocaleString(buffer,MaxTextExtent,
               "%%%%BoundingBox: %g %g %g %g\n",ceil(bounds.x1-0.5),
-              ceil(bounds.y1-0.5),floor(bounds.x2-0.5),floor(bounds.y2-0.5));
+              ceil(bounds.y1-0.5),floor(bounds.x2+0.5),floor(bounds.y2+0.5));
             (void) WriteBlobString(image,buffer);
             (void) FormatLocaleString(buffer,MaxTextExtent,
               "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,
@@ -1585,7 +1585,7 @@ static MagickBooleanType WritePS3Image(const ImageInfo *image_info,Image *image,
     {
       (void) FormatLocaleString(buffer,MaxTextExtent,
         "%%%%BoundingBox: %g %g %g %g\n",ceil(bounds.x1-0.5),
-        ceil(bounds.y1-0.5),floor(bounds.x2-0.5),floor(bounds.y2-0.5));
+        ceil(bounds.y1-0.5),floor(bounds.x2+0.5),floor(bounds.y2+0.5));
       (void) WriteBlobString(image,buffer);
       (void) FormatLocaleString(buffer,MaxTextExtent,
         "%%%%HiResBoundingBox: %g %g %g %g\n",bounds.x1,bounds.y1,bounds.x2,
