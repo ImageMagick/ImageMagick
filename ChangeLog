@@ -1,10 +1,12 @@
+2012-09-24  6.7.9-8 Cristy  <quetzlzacatenango@image...>
+  * Off-by-one error in DrawPolygonPrimitive().
+
 2012-09-22  6.7.9-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-7, SVN revision 9410.
 
 2012-09-20  6.7.9-7 Cristy  <quetzlzacatenango@image...>
   * jpeg:sampling-factor might be an image property or an option (reference
 http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
-  * Off-by-one error in DrawPolygonPrimitive().
 
 2012-09-15  6.7.9-6 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-6, SVN revision 9375.
