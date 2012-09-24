@@ -1164,9 +1164,9 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   inverse_affine=InverseAffineMatrix(affine);
   GetPixelInfo(image,&zero);
   start=(ssize_t) ceil(edge.y1-0.5);
-  stop=(ssize_t) ceil(edge.y2-0.5);
-  height=(size_t) (floor(edge.y2-0.5)-ceil(edge.y1-0.5));
-  width=(size_t) (floor(edge.x2-0.5)-ceil(edge.x1-0.5));
+  stop=(ssize_t) floor(edge.y2+0.5);
+  height=(size_t) (floor(edge.y2+0.5)-ceil(edge.y1-0.5));
+  width=(size_t) (floor(edge.x2+0.5)-ceil(edge.x1-0.5));
   source_view=AcquireVirtualCacheView(source,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -1198,14 +1198,14 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     if (inverse_edge.x2 < inverse_edge.x1)
       continue;
     q=GetCacheViewAuthenticPixels(image_view,(ssize_t) ceil(inverse_edge.x1-
-      0.5),y,(size_t) ((ssize_t) floor(inverse_edge.x2-0.5)-(ssize_t) ceil(
+      0.5),y,(size_t) ((ssize_t) floor(inverse_edge.x2+0.5)-(ssize_t) ceil(
       inverse_edge.x1-0.5)),1,exception);
     if (q == (Quantum *) NULL)
       continue;
     pixel=zero;
     composite=zero;
     x_offset=0;
-    for (x=(ssize_t) ceil(inverse_edge.x1-0.5); x <= (ssize_t) floor(inverse_edge.x2-0.5); x++)
+    for (x=(ssize_t) ceil(inverse_edge.x1-0.5); x <= (ssize_t) floor(inverse_edge.x2+0.5); x++)
     {
       point.x=(double) x*inverse_affine.sx+y*inverse_affine.ry+
         inverse_affine.tx;
@@ -3856,22 +3856,22 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   bounds.y1=bounds.y1 < 0.0 ? 0.0 : (size_t) ceil(bounds.y1-0.5) >=
     image->rows ? (double) image->rows-1 : bounds.y1;
   bounds.x2+=(mid+1.0);
-  bounds.x2=bounds.x2 < 0.0 ? 0.0 : (size_t) floor(bounds.x2-0.5) >=
+  bounds.x2=bounds.x2 < 0.0 ? 0.0 : (size_t) floor(bounds.x2+0.5) >=
     image->columns ? (double) image->columns-1 : bounds.x2;
   bounds.y2+=(mid+1.0);
-  bounds.y2=bounds.y2 < 0.0 ? 0.0 : (size_t) floor(bounds.y2-0.5) >=
+  bounds.y2=bounds.y2 < 0.0 ? 0.0 : (size_t) floor(bounds.y2+0.5) >=
     image->rows ? (double) image->rows-1 : bounds.y2;
   status=MagickTrue;
   image_view=AcquireAuthenticCacheView(image,exception);
-  height=(size_t) (floor(bounds.y2-0.5)-ceil(bounds.y1-0.5));
-  width=(size_t) (floor(bounds.x2-0.5)-ceil(bounds.x1-0.5));
+  height=(size_t) (floor(bounds.y2+0.5)-ceil(bounds.y1-0.5));
+  width=(size_t) (floor(bounds.x2+0.5)-ceil(bounds.x1-0.5));
   if (primitive_info->coordinates == 1)
     {
       /*
         Draw point.
       */
       start=(ssize_t) ceil(bounds.y1-0.5);
-      stop=(ssize_t) floor(bounds.y2-0.5);
+      stop=(ssize_t) floor(bounds.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static) shared(status) \
         dynamic_number_threads(image,width,height,1)
@@ -3897,7 +3897,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
         if (status == MagickFalse)
           continue;
         start=(ssize_t) ceil(bounds.x1-0.5);
-        stop=(ssize_t) floor(bounds.x2-0.5);
+        stop=(ssize_t) floor(bounds.x2+0.5);
         x=start;
         q=GetCacheViewAuthenticPixels(image_view,x,y,(size_t) (stop-x+1),1,
           exception);
@@ -3934,7 +3934,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   if (image->alpha_trait != BlendPixelTrait)
     (void) SetImageAlphaChannel(image,OpaqueAlphaChannel,exception);
   start=(ssize_t) ceil(bounds.y1-0.5);
-  stop=(ssize_t) floor(bounds.y2-0.5);
+  stop=(ssize_t) floor(bounds.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(status) \
     dynamic_number_threads(image,width,height,1)
@@ -3965,7 +3965,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     if (status == MagickFalse)
       continue;
     start=(ssize_t) ceil(bounds.x1-0.5);
-    stop=(ssize_t) floor(bounds.x2-0.5);
+    stop=(ssize_t) floor(bounds.x2+0.5);
     q=GetCacheViewAuthenticPixels(image_view,start,y,(size_t) (stop-start+1),1,
       exception);
     if (q == (Quantum *) NULL)
