@@ -556,9 +556,9 @@ MagickExport MagickBooleanType GetImageViewIterator(ImageView *source,
   source_image=source->image;
   status=MagickTrue;
   progress=0;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=source->extent.height-source->extent.y;
   width=source->extent.width-source->extent.x;
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static) shared(progress,status) \
     dynamic_number_threads(source_image,width,height,1)
 #endif
