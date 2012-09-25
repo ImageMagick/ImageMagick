@@ -186,12 +186,6 @@ typedef struct _SVGInfo
 } SVGInfo;
 
 /*
-  Static declarations.
-*/
-static char
-  SVGDensityGeometry[] = "90.0x90.0";
-
-/*
   Forward declarations.
 */
 static MagickBooleanType
@@ -2744,6 +2738,13 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
+
+/*
+  Static declarations.
+*/
+static char
+  SVGDensityGeometry[] = "90.0x90.0";
+
 
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
