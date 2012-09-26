@@ -2744,7 +2744,6 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
 */
 static char
   SVGDensityGeometry[] = "90.0x90.0";
-
 
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
@@ -2793,7 +2792,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
-  if ((image->x_resolution < MagickEpsilon) || (image->y_resolution < MagickEpsilon))
+  if ((image->x_resolution < MagickEpsilon) ||
+      (image->y_resolution < MagickEpsilon))
     {
       GeometryInfo
         geometry_info;
