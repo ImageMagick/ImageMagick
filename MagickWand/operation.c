@@ -1310,8 +1310,8 @@ interpret Percent Escapes in Arguments, At least not yet */
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           SetRandomSecretKey(
-               IfSetOption ? (size_t) StringToUnsignedLong(arg1)
-                           : (size_t) time((time_t *) NULL) );
+               IfSetOption ? (const unsigned long) StringToUnsignedLong(arg1)
+                           : (const unsigned long) time((time_t *) NULL) );
           break;
         }
       if (LocaleCompare("size",option+1) == 0)
