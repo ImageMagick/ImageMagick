@@ -1,3 +1,6 @@
+2012-09-26  6.7.9-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.9-8, SVN revision 9437.
+
 2012-09-24  6.7.9-8 Cristy  <quetzlzacatenango@image...>
   * Off-by-one error in DrawPolygonPrimitive().
   * Fix memory leak in WebP decoder (reference
