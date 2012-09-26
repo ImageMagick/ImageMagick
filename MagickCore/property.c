@@ -2674,8 +2674,8 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             opaque;
 
           opaque=IsImageOpaque(image,exception);
-          (void) CopyMagickString(value,IfMagickTrue(opaque)?"true":"false",
-               MaxTextExtent);
+          (void) CopyMagickString(value,IfMagickTrue(opaque) ? "true" : "false",
+            MaxTextExtent);
           break;
         }
       if (LocaleCompare("orientation",property) == 0)
@@ -2765,8 +2765,7 @@ MagickExport const char *GetMagickProperty(const ImageInfo *image_info,
             mean,
             standard_deviation;
 
-          (void) GetImageMean(image,&mean,&standard_deviation,
-            exception);
+          (void) GetImageMean(image,&mean,&standard_deviation,exception);
           (void) FormatLocaleString(value,MaxTextExtent,"%.*g",
             GetMagickPrecision(),standard_deviation);
           break;
