@@ -2,6 +2,8 @@
   * Off-by-one error in DrawPolygonPrimitive().
   * Fix memory leak in WebP decoder (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21943).
+  * Certain caption phrases were cut off (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21550).
 
 2012-09-22  6.7.9-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-7, SVN revision 9410.
