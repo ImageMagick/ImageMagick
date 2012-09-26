@@ -392,6 +392,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
     webp_status=WebPPictureImportRGBA(&picture,pixels,4*picture.width);
   pixels=(unsigned char *) RelinquishMagickMemory(pixels);
   webp_status=WebPEncode(&configure,&picture);
+  WebPPictureFree(&picture);
   (void) CloseBlob(image);
   return(webp_status == 0 ? MagickFalse : MagickTrue);
 }
