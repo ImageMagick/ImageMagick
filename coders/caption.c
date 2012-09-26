@@ -171,7 +171,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       for ( ; ; )
       {
         text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text);
+        i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&text);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
         (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
@@ -192,7 +192,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       {
         draw_info->pointsize=(low+high)/2.0;
         text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text);
+        i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&text);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
         (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
@@ -210,7 +210,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       for (draw_info->pointsize=(low+high)/2.0; ; )
       {
         text=AcquireString(caption);
-        i=FormatMagickCaption(image,draw_info,MagickFalse,&metrics,&text);
+        i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&text);
         (void) CloneString(&draw_info->text,text);
         text=DestroyString(text);
         (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
