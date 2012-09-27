@@ -128,6 +128,9 @@ typedef struct _ErrorManager
   MagickBooleanType
     finished;
 
+  StringInfo
+    *profile;
+
   jmp_buf
     error_recovery;
 } ErrorManager;
@@ -373,9 +376,6 @@ static MagickBooleanType JPEGWarningHandler(j_common_ptr jpeg_info,int level)
 
 static boolean ReadComment(j_decompress_ptr jpeg_info)
 {
-  char
-    *comment;
-
   ErrorManager
     *error_manager;
 
@@ -385,7 +385,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   Image
     *image;
 
-  register char
+  register unsigned char
     *p;
 
   register ssize_t
@@ -393,6 +393,9 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
 
   size_t
     length;
+
+  StringInfo
+    *comment;
 
   /*
     Determine length of comment.
@@ -405,22 +408,22 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   length-=2;
   if (length <= 0)
     return(MagickTrue);
-  comment=(char *) NULL;
-  if (~length >= (MaxTextExtent-1))
-    comment=(char *) AcquireQuantumMemory(length+MaxTextExtent,
-      sizeof(*comment));
-  if (comment == (char *) NULL)
+  comment=BlobToStringInfo((const void *) NULL,length);
+  if (comment == (StringInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   /*
     Read comment.
   */
-  i=(ssize_t) length-1;
-  for (p=comment; i-- >= 0; p++)
-    *p=(char) GetCharacter(jpeg_info);
+  error_manager->profile=comment;
+  p=GetStringInfoDatum(comment);
+  for (i=0; i < (ssize_t) GetStringInfoLength(comment); i++)
+    *p++=(unsigned char) GetCharacter(jpeg_info);
   *p='\0';
-  (void) SetImageProperty(image,"comment",comment,exception);
-  comment=DestroyString(comment);
+  error_manager->profile=NULL;
+  p=GetStringInfoDatum(comment);
+  (void) SetImageProperty(image,"comment",(const char *) p,exception);
+  comment=DestroyStringInfo(comment);
   return(MagickTrue);
 }
 
@@ -487,9 +490,11 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   if (profile == (StringInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
+  error_manager->profile=profile;
   p=GetStringInfoDatum(profile);
   for (i=(ssize_t) GetStringInfoLength(profile)-1; i >= 0; i--)
     *p++=(unsigned char) GetCharacter(jpeg_info);
+  error_manager->profile=NULL;
   icc_profile=(StringInfo *) GetImageProfile(image,"icc");
   if (icc_profile != (StringInfo *) NULL)
     {
@@ -587,9 +592,11 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   if (profile == (StringInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
+  error_manager->profile=profile;
   p=GetStringInfoDatum(profile);
   for (i=0;  i < (ssize_t) GetStringInfoLength(profile); i++)
     *p++=(unsigned char) GetCharacter(jpeg_info);
+  error_manager->profile=NULL;
   iptc_profile=(StringInfo *) GetImageProfile(image,"8bim");
   if (iptc_profile != (StringInfo *) NULL)
     {
@@ -662,9 +669,11 @@ static boolean ReadProfile(j_decompress_ptr jpeg_info)
   if (profile == (StringInfo *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
+  error_manager->profile=profile;
   p=GetStringInfoDatum(profile);
   for (i=0; i < (ssize_t) GetStringInfoLength(profile); i++)
     *p++=(unsigned char) GetCharacter(jpeg_info);
+  error_manager->profile=NULL;
   if (marker == 1)
     {
       p=GetStringInfoDatum(profile);
@@ -1043,6 +1052,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (setjmp(error_manager.error_recovery) != 0)
     {
       jpeg_destroy_decompress(&jpeg_info);
+      if (error_manager.profile != (StringInfo *) NULL)
+        error_manager.profile=DestroyStringInfo(error_manager.profile);
       (void) CloseBlob(image);
       number_pixels=(MagickSizeType) image->columns*image->rows;
       if (number_pixels != 0)
@@ -1188,28 +1199,28 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     case JCS_RGB:
     default:
     {
-      SetImageColorspace(image,sRGBColorspace,exception);
+      (void) SetImageColorspace(image,sRGBColorspace,exception);
       break;
     }
     case JCS_GRAYSCALE:
     {
-      SetImageColorspace(image,GRAYColorspace,exception);
+      (void) SetImageColorspace(image,GRAYColorspace,exception);
       break;
     }
     case JCS_YCbCr:
     {
-      SetImageColorspace(image,YCbCrColorspace,exception);
+      (void) SetImageColorspace(image,YCbCrColorspace,exception);
       break;
     }
     case JCS_CMYK:
     {
-      SetImageColorspace(image,CMYKColorspace,exception);
+      (void) SetImageColorspace(image,CMYKColorspace,exception);
       break;
     }
   }
   if (IsITUFaxImage(image) != MagickFalse)
     {
-      SetImageColorspace(image,LabColorspace,exception);
+      (void) SetImageColorspace(image,LabColorspace,exception);
       jpeg_info.out_color_space=JCS_YCbCr;
     }
   option=GetImageOption(image_info,"jpeg:colors");
