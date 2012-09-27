@@ -1613,7 +1613,10 @@ void Magick::Image::read ( const std::string &imageSpec_ )
  
     }
   if ( image )
-    throwException( image->exception );
+    {
+      (void) DestroyExceptionInfo( &exceptionInfo );
+      throwException( image->exception );
+    }
   throwException( exceptionInfo );
   (void) DestroyExceptionInfo( &exceptionInfo );
   replaceImage( image );
@@ -1638,9 +1641,9 @@ void Magick::Image::read ( const Blob &blob_ )
 		 blob_.length(), &exceptionInfo );
   replaceImage( image );
   throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
   if ( image )
     throwException( image->exception );
-  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Read image of specified size from in-memory BLOB
@@ -1713,9 +1716,9 @@ void Magick::Image::read ( const size_t width_,
                      &exceptionInfo );
   replaceImage( image );
   throwException( exceptionInfo );
+  (void) DestroyExceptionInfo( &exceptionInfo );
   if ( image )
     throwException( image->exception );
-  (void) DestroyExceptionInfo( &exceptionInfo );
 }
 
 // Reduce noise in image
