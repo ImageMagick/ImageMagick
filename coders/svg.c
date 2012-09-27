@@ -2838,8 +2838,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             100.0*QuantumScale*image->background_color.red,
             100.0*QuantumScale*image->background_color.green,
             100.0*QuantumScale*image->background_color.blue);
-          (void) FormatLocaleString(opacity,MaxTextExtent,"%.20g",
-            QuantumScale*(QuantumRange-image->background_color.opacity));
+          (void) FormatLocaleString(opacity,MaxTextExtent,"%.20g",QuantumScale*
+            (QuantumRange-image->background_color.opacity));
           (void) FormatLocaleString(command,MaxTextExtent,
             GetDelegateCommands(delegate_info),image->filename,filename,density,
               background,opacity,unique);
