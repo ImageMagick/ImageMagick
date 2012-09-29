@@ -22,6 +22,7 @@
 extern "C" {
 #endif
 
+#include "MagickCore/exception.h"
 #include "MagickCore/geometry.h"
 
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
