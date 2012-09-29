@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include "MagickCore/delegate.h"
+#include "MagickCore/delegate-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/geometry.h"
 
