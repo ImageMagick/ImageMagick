@@ -1,6 +1,8 @@
 2012-09-27  6.7.9-9 Cristy  <quetzlzacatenango@image...>
   * Fix memory leak in JPEG decoder when reading a corrupt image (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21948).
+  * Don't inherit EXIF orientation from thumbnail (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21938).
 
 2012-09-26  6.7.9-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-8, SVN revision 9437.
