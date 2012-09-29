@@ -27,6 +27,7 @@ extern "C" {
 #include "magick/delegate.h"
 #include "magick/delegate-private.h"
 #include "magick/exception.h"
+#include "magick/geometry.h"
 
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
