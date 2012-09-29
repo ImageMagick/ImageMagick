@@ -1332,8 +1332,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
             continue;
           p=(unsigned char *) (exif+offset);
         }
-      if ((level == 0) &&
-          ((all != 0) || (tag == (size_t) tag_value)))
+      if ((all != 0) || (tag == (size_t) tag_value))
         {
           char
             buffer[MaxTextExtent],
