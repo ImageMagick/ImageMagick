@@ -1070,7 +1070,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
       { 0x1001c, "exif:GPSAreaInformation" },
       { 0x1001d, "exif:GPSDateStamp" },
       { 0x1001e, "exif:GPSDifferential" },
-      {  0x0000, NULL}
+      { 0x00000, NULL}
     };
 
   const StringInfo
@@ -1400,12 +1400,14 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
           if (value != (char *) NULL)
             {
               char
-                key[MaxTextExtent];
+                *key;
 
               register const char
                 *p;
 
-              (void) CopyMagickString(key,property,MaxTextExtent);
+              key=AcquireString(property);
+              if (level == 2)
+                (void) SubstituteString(&key,"exif:","exif:thumbnail:");
               switch (all)
               {
                 case 1:
@@ -1451,6 +1453,7 @@ static MagickBooleanType GetEXIFProperty(const Image *image,
               if (p == (const char *) NULL)
                 (void) SetImageProperty((Image *) image,key,value);
               value=DestroyString(value);
+              key=DestroyString(key);
               status=MagickTrue;
             }
         }
