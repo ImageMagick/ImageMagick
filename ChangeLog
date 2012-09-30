@@ -1,3 +1,6 @@
+2012-10-01  6.7.9-9 Cristy  <quetzlzacatenango@image...>
+  * New version 6.7.9-9, SVN revision 9473.
+
 2012-09-27  6.7.9-9 Cristy  <quetzlzacatenango@image...>
   * Fix memory leak in JPEG decoder when reading a corrupt image (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21948).
