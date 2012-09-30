@@ -336,7 +336,7 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,int type,
   if (LocaleNCompare(token,"pc",2) == 0)
     return(DefaultResolution*svg_info->scale[0]/6.0*value);
   if (LocaleNCompare(token,"pt",2) == 0)
-    return(svg_info->scale[0]*value);
+    return(1.25*svg_info->scale[0]*value);
   if (LocaleNCompare(token,"px",2) == 0)
     return(value);
   return(value);
