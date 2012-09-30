@@ -3,6 +3,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21948).
   * Add exif:thumbnail namespace to distiguish orientation tag (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21938).
+  * Respect DPX data offsets (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21960).
 
 2012-09-26  6.7.9-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-8, SVN revision 9437.
