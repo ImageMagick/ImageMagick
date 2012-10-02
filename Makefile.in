@@ -1829,92 +1829,89 @@ am_Magick___demo_analyze_OBJECTS = Magick++/demo/analyze.$(OBJEXT)
 Magick___demo_analyze_OBJECTS = $(am_Magick___demo_analyze_OBJECTS)
 @WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_3 =  \
 @WITH_MAGICK_PLUS_PLUS_TRUE@	Magick++/lib/libMagick++.la
-@WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_4 =  \
-@WITH_MAGICK_PLUS_PLUS_TRUE@	$(am__DEPENDENCIES_3) \
-@WITH_MAGICK_PLUS_PLUS_TRUE@	$(top_builddir)/magick/libMagickCore.la
-Magick___demo_analyze_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_analyze_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_button_OBJECTS = Magick++/demo/button.$(OBJEXT)
 Magick___demo_button_OBJECTS = $(am_Magick___demo_button_OBJECTS)
-Magick___demo_button_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_button_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_demo_OBJECTS = Magick++/demo/demo.$(OBJEXT)
 Magick___demo_demo_OBJECTS = $(am_Magick___demo_demo_OBJECTS)
-Magick___demo_demo_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_demo_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_detrans_OBJECTS = Magick++/demo/detrans.$(OBJEXT)
 Magick___demo_detrans_OBJECTS = $(am_Magick___demo_detrans_OBJECTS)
-Magick___demo_detrans_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_detrans_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_flip_OBJECTS = Magick++/demo/flip.$(OBJEXT)
 Magick___demo_flip_OBJECTS = $(am_Magick___demo_flip_OBJECTS)
-Magick___demo_flip_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_flip_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_gravity_OBJECTS = Magick++/demo/gravity.$(OBJEXT)
 Magick___demo_gravity_OBJECTS = $(am_Magick___demo_gravity_OBJECTS)
-Magick___demo_gravity_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_gravity_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_piddle_OBJECTS = Magick++/demo/piddle.$(OBJEXT)
 Magick___demo_piddle_OBJECTS = $(am_Magick___demo_piddle_OBJECTS)
-Magick___demo_piddle_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_piddle_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_shapes_OBJECTS = Magick++/demo/shapes.$(OBJEXT)
 Magick___demo_shapes_OBJECTS = $(am_Magick___demo_shapes_OBJECTS)
-Magick___demo_shapes_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_shapes_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_zoom_OBJECTS = Magick++/demo/zoom.$(OBJEXT)
 Magick___demo_zoom_OBJECTS = $(am_Magick___demo_zoom_OBJECTS)
-Magick___demo_zoom_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_zoom_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_appendImages_OBJECTS =  \
 	Magick++/tests/appendImages.$(OBJEXT)
 Magick___tests_appendImages_OBJECTS =  \
 	$(am_Magick___tests_appendImages_OBJECTS)
-Magick___tests_appendImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_appendImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_attributes_OBJECTS =  \
 	Magick++/tests/attributes.$(OBJEXT)
 Magick___tests_attributes_OBJECTS =  \
 	$(am_Magick___tests_attributes_OBJECTS)
-Magick___tests_attributes_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_attributes_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_averageImages_OBJECTS =  \
 	Magick++/tests/averageImages.$(OBJEXT)
 Magick___tests_averageImages_OBJECTS =  \
 	$(am_Magick___tests_averageImages_OBJECTS)
-Magick___tests_averageImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_averageImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_coalesceImages_OBJECTS =  \
 	Magick++/tests/coalesceImages.$(OBJEXT)
 Magick___tests_coalesceImages_OBJECTS =  \
 	$(am_Magick___tests_coalesceImages_OBJECTS)
-Magick___tests_coalesceImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_coalesceImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_coderInfo_OBJECTS =  \
 	Magick++/tests/coderInfo.$(OBJEXT)
 Magick___tests_coderInfo_OBJECTS =  \
 	$(am_Magick___tests_coderInfo_OBJECTS)
-Magick___tests_coderInfo_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_coderInfo_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_color_OBJECTS = Magick++/tests/color.$(OBJEXT)
 Magick___tests_color_OBJECTS = $(am_Magick___tests_color_OBJECTS)
-Magick___tests_color_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_color_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_colorHistogram_OBJECTS =  \
 	Magick++/tests/colorHistogram.$(OBJEXT)
 Magick___tests_colorHistogram_OBJECTS =  \
 	$(am_Magick___tests_colorHistogram_OBJECTS)
-Magick___tests_colorHistogram_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_colorHistogram_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_exceptions_OBJECTS =  \
 	Magick++/tests/exceptions.$(OBJEXT)
 Magick___tests_exceptions_OBJECTS =  \
 	$(am_Magick___tests_exceptions_OBJECTS)
-Magick___tests_exceptions_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_exceptions_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_montageImages_OBJECTS =  \
 	Magick++/tests/montageImages.$(OBJEXT)
 Magick___tests_montageImages_OBJECTS =  \
 	$(am_Magick___tests_montageImages_OBJECTS)
-Magick___tests_montageImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_montageImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_morphImages_OBJECTS =  \
 	Magick++/tests/morphImages.$(OBJEXT)
 Magick___tests_morphImages_OBJECTS =  \
 	$(am_Magick___tests_morphImages_OBJECTS)
-Magick___tests_morphImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_morphImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_readWriteBlob_OBJECTS =  \
 	Magick++/tests/readWriteBlob.$(OBJEXT)
 Magick___tests_readWriteBlob_OBJECTS =  \
 	$(am_Magick___tests_readWriteBlob_OBJECTS)
-Magick___tests_readWriteBlob_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_readWriteBlob_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_readWriteImages_OBJECTS =  \
 	Magick++/tests/readWriteImages.$(OBJEXT)
 Magick___tests_readWriteImages_OBJECTS =  \
 	$(am_Magick___tests_readWriteImages_OBJECTS)
-Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_tests_drawtest_OBJECTS = tests/drawtest.$(OBJEXT)
 tests_drawtest_OBJECTS = $(am_tests_drawtest_OBJECTS)
 tests_drawtest_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
@@ -4601,8 +4598,6 @@ WAND_EXTRA_DIST = \
 WAND_CLEANFILES = 
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_LIBS = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_LIBS = Magick++/lib/libMagick++.la
-@WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_LDADD = 
-@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_LDADD = $(MAGICKPP_LIBS) $(top_builddir)/magick/libMagickCore.la
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_CHECK_PGRMS = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_CHECK_PGRMS = $(MAGICKPP_CHECK_PGRMS_OPT)
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_MANS = 
@@ -4742,47 +4737,47 @@ MAGICKPP_CHECK_PGRMS_OPT = \
 	Magick++/tests/readWriteImages
 
 Magick___demo_analyze_SOURCES = Magick++/demo/analyze.cpp
-Magick___demo_analyze_LDADD = $(MAGICKPP_LDADD)
+Magick___demo_analyze_LDADD = $(MAGICKPP_LIBS)
 Magick___demo_button_SOURCES = Magick++/demo/button.cpp
-Magick___demo_button_LDADD = $(MAGICKPP_LDADD)
+Magick___demo_button_LDADD = $(MAGICKPP_LIBS)
 Magick___demo_demo_SOURCES = Magick++/demo/demo.cpp
-Magick___demo_demo_LDADD = $(MAGICKPP_LDADD)
+Magick___demo_demo_LDADD = $(MAGICKPP_LIBS)
 Magick___demo_detrans_SOURCES = Magick++/demo/detrans.cpp
-Magick___demo_detrans_LDADD = $(MAGICKPP_LDADD)
+Magick___demo_detrans_LDADD = $(MAGICKPP_LIBS)
 Magick___demo_flip_SOURCES = Magick++/demo/flip.cpp
-Magick___demo_flip_LDADD = $(MAGICKPP_LDADD)
+Magick___demo_flip_LDADD = $(MAGICKPP_LIBS)
 Magick___demo_gravity_SOURCES = Magick++/demo/gravity.cpp
-Magick___demo_gravity_LDADD = $(MAGICKPP_LDADD)
+Magick___demo_gravity_LDADD = $(MAGICKPP_LIBS)
 Magick___demo_piddle_SOURCES = Magick++/demo/piddle.cpp
-Magick___demo_piddle_LDADD = $(MAGICKPP_LDADD)
+Magick___demo_piddle_LDADD = $(MAGICKPP_LIBS)
 Magick___demo_shapes_SOURCES = Magick++/demo/shapes.cpp
-Magick___demo_shapes_LDADD = $(MAGICKPP_LDADD)
+Magick___demo_shapes_LDADD = $(MAGICKPP_LIBS)
 Magick___demo_zoom_SOURCES = Magick++/demo/zoom.cpp
-Magick___demo_zoom_LDADD = $(MAGICKPP_LDADD)
+Magick___demo_zoom_LDADD = $(MAGICKPP_LIBS)
 Magick___tests_appendImages_SOURCES = Magick++/tests/appendImages.cpp
-Magick___tests_appendImages_LDADD = $(MAGICKPP_LDADD)
+Magick___tests_appendImages_LDADD = $(MAGICKPP_LIBS)
 Magick___tests_attributes_SOURCES = Magick++/tests/attributes.cpp
-Magick___tests_attributes_LDADD = $(MAGICKPP_LDADD)
+Magick___tests_attributes_LDADD = $(MAGICKPP_LIBS)
 Magick___tests_averageImages_SOURCES = Magick++/tests/averageImages.cpp
-Magick___tests_averageImages_LDADD = $(MAGICKPP_LDADD)
+Magick___tests_averageImages_LDADD = $(MAGICKPP_LIBS)
 Magick___tests_coalesceImages_SOURCES = Magick++/tests/coalesceImages.cpp
-Magick___tests_coalesceImages_LDADD = $(MAGICKPP_LDADD)
+Magick___tests_coalesceImages_LDADD = $(MAGICKPP_LIBS)
 Magick___tests_coderInfo_SOURCES = Magick++/tests/coderInfo.cpp
-Magick___tests_coderInfo_LDADD = $(MAGICKPP_LDADD)
+Magick___tests_coderInfo_LDADD = $(MAGICKPP_LIBS)
 Magick___tests_color_SOURCES = Magick++/tests/color.cpp
-Magick___tests_color_LDADD = $(MAGICKPP_LDADD)
+Magick___tests_color_LDADD = $(MAGICKPP_LIBS)
 Magick___tests_colorHistogram_SOURCES = Magick++/tests/colorHistogram.cpp
-Magick___tests_colorHistogram_LDADD = $(MAGICKPP_LDADD)
+Magick___tests_colorHistogram_LDADD = $(MAGICKPP_LIBS)
 Magick___tests_exceptions_SOURCES = Magick++/tests/exceptions.cpp
-Magick___tests_exceptions_LDADD = $(MAGICKPP_LDADD)
+Magick___tests_exceptions_LDADD = $(MAGICKPP_LIBS)
 Magick___tests_montageImages_SOURCES = Magick++/tests/montageImages.cpp
-Magick___tests_montageImages_LDADD = $(MAGICKPP_LDADD)
+Magick___tests_montageImages_LDADD = $(MAGICKPP_LIBS)
 Magick___tests_morphImages_SOURCES = Magick++/tests/morphImages.cpp
-Magick___tests_morphImages_LDADD = $(MAGICKPP_LDADD)
+Magick___tests_morphImages_LDADD = $(MAGICKPP_LIBS)
 Magick___tests_readWriteBlob_SOURCES = Magick++/tests/readWriteBlob.cpp
-Magick___tests_readWriteBlob_LDADD = $(MAGICKPP_LDADD)
+Magick___tests_readWriteBlob_LDADD = $(MAGICKPP_LIBS)
 Magick___tests_readWriteImages_SOURCES = Magick++/tests/readWriteImages.cpp
-Magick___tests_readWriteImages_LDADD = $(MAGICKPP_LDADD)
+Magick___tests_readWriteImages_LDADD = $(MAGICKPP_LIBS)
 MAGICKPP_LOCAL_TARGETS = www/Magick++/NEWS.html www/Magick++/ChangeLog.html
 UTILITIES_PGMS = \
 	utilities/animate \
