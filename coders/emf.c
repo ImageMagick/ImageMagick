@@ -45,6 +45,7 @@
 #  if defined(__CYGWIN__)
 #    include <windows.h>
 #  else
+#    include "MagickCore/nt-base-private.h"
 #    include <wingdi.h>
 #  endif
 #endif

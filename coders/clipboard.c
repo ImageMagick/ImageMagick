@@ -45,6 +45,7 @@
 #    include <windows.h>
 #  else
      /* All MinGW needs ... */
+#    include "MagickCore/nt-base-private.h"
 #    include <wingdi.h>
 #  endif
 #endif
@@ -58,7 +59,6 @@
 #include "MagickCore/list.h"
 #include "MagickCore/magick.h"
 #include "MagickCore/memory_.h"
-#include "MagickCore/nt-base-private.h"
 #include "MagickCore/nt-feature.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/quantum-private.h"
