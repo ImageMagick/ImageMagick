@@ -1140,7 +1140,7 @@ Magick_RenderingIntentString_from_PNG_RenderingIntent(const int ping_intent)
 }
 
 
-static char *
+static const char *
 Magick_ColorType_from_PNG_ColorType(const int ping_colortype)
 {
   switch (ping_colortype)
