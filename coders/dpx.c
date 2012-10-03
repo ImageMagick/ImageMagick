@@ -737,12 +737,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (unsigned char *) dpx.image.image_element[i].description);
   }
   SetImageColorspace(image,RGBColorspace);
-  SetPrimaryChromaticity((DPXColorimetric)
-    dpx.image.image_element[0].colorimetric,&image->chromaticity);
   offset+=ReadBlob(image,sizeof(dpx.image.reserve),(unsigned char *)
     dpx.image.reserve);
-  component_type=dpx.image.image_element[0].descriptor;
-  image->depth=dpx.image.image_element[0].bit_size;
   if (dpx.file.image_offset >= 1664U)
     {
       /*
@@ -1031,8 +1027,12 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (offset != data_offset)
             ThrowReaderException(CorruptImageError,"UnableToReadImageData");
        }
+    SetPrimaryChromaticity((DPXColorimetric)
+      dpx.image.image_element[n].colorimetric,&image->chromaticity);
+    image->depth=dpx.image.image_element[n].bit_size;
     samples_per_pixel=1;
     quantum_type=GrayQuantum;
+    component_type=dpx.image.image_element[n].descriptor;
     switch (component_type)
     {
       case CbYCrY422ComponentType:
@@ -1076,7 +1076,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       case LumaComponentType:
       {
-        SetImageColorspace(image,RGBColorspace);
+        SetImageColorspace(image,GRAYColorspace);
         break;
       }
       default:
