@@ -602,6 +602,8 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image,ExceptionInfo *exception)
   length=0;
   if (TIFFGetField(tiff,37724,&length,&profile) == 1)
     (void) ReadProfile(image,"tiff:37724",profile,(ssize_t) length,exception);
+  if (TIFFGetField(tiff,34118,&length,&profile) == 1)
+    (void) ReadProfile(image,"tiff:34118",profile,(ssize_t) length,exception);
 }
 
 static void TIFFGetProperties(TIFF *tiff,Image *image,ExceptionInfo *exception)
@@ -1829,7 +1831,9 @@ static void TIFFTagExtender(TIFF *tiff)
     {
       {
         37724, -3, -3, TIFF_UNDEFINED, FIELD_CUSTOM, 1, 1,
-          (char *) "PhotoshopLayerData"
+          (char *) "PhotoshopLayerData",
+        34118, -3, -3, TIFF_UNDEFINED, FIELD_CUSTOM, 1, 1,
+          (char *) "Microscope"
       }
     };
 
@@ -2521,6 +2525,9 @@ static void TIFFSetProfiles(TIFF *tiff,Image *image)
     if (LocaleCompare(name,"tiff:37724") == 0)
       (void) TIFFSetField(tiff,37724,(uint32) GetStringInfoLength(profile),
         GetStringInfoDatum(profile));
+    if (LocaleCompare(name,"tiff:34118") == 0)
+      (void) TIFFSetField(tiff,34118,(uint32) GetStringInfoLength(profile),
+        GetStringInfoDatum(profile));
     name=GetNextImageProfile(image);
   }
 }
@@ -2933,7 +2940,8 @@ static MagickBooleanType WriteTIFFImage(const ImageInfo *image_info,
                   MagickFalse ? PHOTOMETRIC_MINISWHITE :
                   PHOTOMETRIC_MINISBLACK);
                 (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
-                if ((image_info->depth == 0) && (image->alpha_trait != BlendPixelTrait) &&
+                if ((image_info->depth == 0) &&
+                    (image->alpha_trait != BlendPixelTrait) &&
                     (IsImageMonochrome(image,exception) != MagickFalse))
                   {
                     status=SetQuantumDepth(image,quantum_info,1);
