@@ -603,6 +603,8 @@ static void TIFFGetProfiles(TIFF *tiff,Image *image)
   length=0;
   if (TIFFGetField(tiff,37724,&length,&profile) == 1)
     (void) ReadProfile(image,"tiff:37724",profile,(ssize_t) length);
+  if (TIFFGetField(tiff,34118,&length,&profile) == 1)
+    (void) ReadProfile(image,"tiff:34118",profile,(ssize_t) length);
 }
 
 static void TIFFGetProperties(TIFF *tiff,Image *image)
@@ -1826,7 +1828,9 @@ static void TIFFTagExtender(TIFF *tiff)
     {
       {
         37724, -3, -3, TIFF_UNDEFINED, FIELD_CUSTOM, 1, 1,
-          (char *) "PhotoshopLayerData"
+          (char *) "PhotoshopLayerData",
+        34118, -3, -3, TIFF_UNDEFINED, FIELD_CUSTOM, 1, 1,
+          (char *) "Microscope"
       }
     };
 
@@ -2511,6 +2515,9 @@ static void TIFFSetProfiles(TIFF *tiff,Image *image)
 #endif
     if (LocaleCompare(name,"tiff:37724") == 0)
       (void) TIFFSetField(tiff,37724,(uint32) GetStringInfoLength(profile),
+        GetStringInfoDatum(profile));
+    if (LocaleCompare(name,"tiff:34118") == 0)
+      (void) TIFFSetField(tiff,34118,(uint32) GetStringInfoLength(profile),
         GetStringInfoDatum(profile));
     name=GetNextImageProfile(image);
   }
