@@ -896,6 +896,7 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
   tile_image=DestroyImage(tile_image);
   if (texture != (Image *) NULL)
     texture=DestroyImage(texture);
+  title=DestroyString(title);
   master_list=(Image **) RelinquishMagickMemory(master_list);
   draw_info=DestroyDrawInfo(draw_info);
   clone_info=DestroyImageInfo(clone_info);
