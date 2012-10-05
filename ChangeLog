@@ -2,6 +2,8 @@
   * SVG specs says "1pt" equals "1.25px" (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=21967).
   * Support TIFF proprietary tag 34118.
+  * The define option is no longer "lazy" interpretation (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22007).
 
 2012-10-01  6.7.9-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.7.9-9, SVN revision 9473.
