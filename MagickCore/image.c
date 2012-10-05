@@ -280,7 +280,11 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->client_data=image_info->client_data;
   if (image_info->cache != (void *) NULL)
     ClonePixelCacheMethods(image->cache,image_info->cache);
+
+  /* Set all global options that map to per-image settings */
   (void) SyncImageSettings(image_info,image,exception);
+
+  /* global options that are only set for new images */
   option=GetImageOption(image_info,"delay");
   if (option != (const char *) NULL)
     {
@@ -3651,7 +3655,13 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SyncImageSettings() syncs the image_info options into per-image attributes.
+%  SyncImageSettings() syncs any image_info global options into per-image
+%  attributes.
+%
+%  Note: in IMv6 free form 'options' were always maped into 'artifacts', so
+%  that operations and coders can find such settings.  In IMv7 if a desired
+%  per-image artifact is not set, then it will directly look for a global
+%  option as a fallback.
 %
 %  The format of the SyncImageSettings method is:
 %
@@ -3917,6 +3927,12 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
         image->chromaticity.white_point.y=image->chromaticity.white_point.x;
     }
   ResetImageOptionIterator(image_info);
+#if 0
+  /* IMv6: Copy freeform global options into per-image artifacts, so
+   * various operations and coders can access them.
+   * This has a problem, as artifacts may be set in parenthesis, but may
+   * not be unset when parenthesis ends.
+   */
   for (option=GetNextImageOption(image_info); option != (const char *) NULL; )
   {
     value=GetImageOption(image_info,option);
@@ -3927,5 +3943,16 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
       }
     option=GetNextImageOption(image_info);
   }
+#else
+  /* IMv7: pointer for lookup of artifact fallback, back to global option.
+     This saves a lot of duplication of global options into per-image
+     artifacts, while ensuring only specificly set per-image artifacts
+     are preverved when parenthesis ends.
+
+     WARNING: When a global option is set, any associated per-image artifact
+     should also be unset, as no longer valid.
+   */
+  image->image_info = image_info;
+#endif
   return(MagickTrue);
 }

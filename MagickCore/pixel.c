@@ -4183,6 +4183,55 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
         (epsilon.x*pixels[2]+delta.x*pixels[3]));
       break;
     }
+    case BlendInterpolatePixel:
+    {
+      p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,2,2,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      if ((traits & BlendPixelTrait) == 0)
+        for (i=0; i < 4; i++)
+        {
+          alpha[i]=1.0;
+          pixels[i]=(MagickRealType) p[i*GetPixelChannels(image)+channel];
+        }
+      else
+        for (i=0; i < 4; i++)
+        {
+          alpha[i]=QuantumScale*GetPixelAlpha(image,p+i*
+            GetPixelChannels(image));
+          pixels[i]=alpha[i]*p[i*GetPixelChannels(image)+channel];
+        }
+      gamma=1.0;    /* number of pixels blended together (its variable) */
+      for (i=0; i <= 1L; i++) {
+        if ( y-y_offset >= 0.75 ) { /* take right pixels */
+          alpha[i]  = alpha[i+2];
+          pixels[i] = pixels[i+2];
+        }
+        else if ( y-y_offset > 0.25 ) {
+          gamma = 2.0;              /* blend both pixels in row */
+          alpha[i]  += alpha[i+2];  /* add up alpha weights */
+          pixels[i] += pixels[i+2];
+        }
+      }
+      if ( x-x_offset >= 0.75 ) {   /* take bottom row blend */
+        alpha[0]  = alpha[1];
+        pixels[0] = pixels[1];
+      }
+      else if ( x-x_offset > 0.25 ) {
+        gamma *= 2.0;               /* blend both rows */
+        alpha[0]  += alpha[1];      /* add up alpha weights */
+        pixels[0] += pixels[1];
+      }
+      if (channel != AlphaPixelChannel)
+        gamma=MagickEpsilonReciprocal(alpha[0]); /* (color) 1/alpha_weights */
+      else
+        gamma=MagickEpsilonReciprocal(gamma); /* (alpha) 1/number_of_pixels */
+      *pixel=gamma*pixels[0];
+      break;
+    }
     case CatromInterpolatePixel:
     {
       double
@@ -4627,6 +4676,68 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         SetPixelChannel(destination,channel,ClampToQuantum(gamma*(epsilon.y*
           (epsilon.x*pixels[0]+delta.x*pixels[1])+delta.y*(epsilon.x*pixels[2]+
           delta.x*pixels[3]))),pixel);
+      }
+      break;
+    }
+    case BlendInterpolatePixel:
+    {
+      p=GetCacheViewVirtualPixels(source_view,x_offset,y_offset,2,2,exception);
+      if (p == (const Quantum *) NULL)
+        {
+          status=MagickFalse;
+          break;
+        }
+      for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
+      {
+        register ssize_t
+          j;
+
+        channel=GetPixelChannelChannel(source,i);
+        traits=GetPixelChannelTraits(source,channel);
+        destination_traits=GetPixelChannelTraits(destination,channel);
+        if ((traits == UndefinedPixelTrait) ||
+            (destination_traits == UndefinedPixelTrait))
+          continue;
+        if ((traits & BlendPixelTrait) == 0)
+          for (j=0; j < 4; j++)
+          {
+            alpha[j]=1.0;
+            pixels[j]=(MagickRealType) p[j*GetPixelChannels(source)+channel];
+          }
+        else
+          for (j=0; j < 4; j++)
+          {
+            alpha[j]=QuantumScale*GetPixelAlpha(source,p+j*
+              GetPixelChannels(source));
+            pixels[j]=alpha[j]*p[j*GetPixelChannels(source)+channel];
+          }
+        gamma=1.0;    /* number of pixels blended together (its variable) */
+        for (j=0; j <= 1L; j++) {
+          if ( y-y_offset >= 0.75 ) { /* take right pixels */
+            alpha[j]  = alpha[j+2];
+            pixels[j] = pixels[j+2];
+          }
+          else if ( y-y_offset > 0.25 ) {
+            gamma = 2.0;              /* blend both pixels in row */
+            alpha[j]  += alpha[j+2];  /* add up alpha weights */
+            pixels[j] += pixels[j+2];
+          }
+        }
+        if ( x-x_offset >= 0.75 ) {   /* take bottom row blend */
+          alpha[0]  = alpha[1];
+          pixels[0] = pixels[1];
+        }
+        else if ( x-x_offset > 0.25 ) {
+          gamma *= 2.0;               /* blend both rows */
+          alpha[0]  += alpha[1];      /* add up alpha weights */
+          pixels[0] += pixels[1];
+        }
+        if ((traits & BlendPixelTrait) == 0)
+          gamma=MagickEpsilonReciprocal(alpha[0]); /* (color) 1/alpha_weights */
+        else
+          gamma=MagickEpsilonReciprocal(gamma); /* (alpha) 1/number_of_pixels */
+        SetPixelChannel(destination,channel,ClampToQuantum(gamma*pixels[0]),
+             pixel);
       }
       break;
     }
@@ -5152,14 +5263,14 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         }
       for (i=0; i < 4L; i++)
         AlphaBlendPixelInfo(image,p+i*GetPixelChannels(image),pixels+i,alpha+i);
-      gamma=1.0;       /* number of pixels blended together */
+      gamma=1.0;    /* number of pixels blended together (its variable) */
       for (i=0; i <= 1L; i++) {
-        if ( y-y_offset >= 0.75 ) {
+        if ( y-y_offset >= 0.75 ) {       /* take right pixels */
           alpha[i]  = alpha[i+2];
           pixels[i] = pixels[i+2];
         }
         else if ( y-y_offset > 0.25 ) {
-          gamma = 2.0;             /* each y pixels have been blended */
+          gamma = 2.0;                    /* blend both pixels in row */
           alpha[i]        += alpha[i+2];  /* add up alpha weights */
           pixels[i].red   += pixels[i+2].red;
           pixels[i].green += pixels[i+2].green;
@@ -5173,8 +5284,8 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         pixels[0] = pixels[1];
       }
       else if ( x-x_offset > 0.25 ) {
-        gamma *= 2.0;          /* double number of pixels blended */
-        alpha[0]        += alpha[1];  /* add up alpha weights */
+        gamma *= 2.0;                     /* blend both rows */
+        alpha[0]        += alpha[1];      /* add up alpha weights */
         pixels[0].red   += pixels[1].red;
         pixels[0].green += pixels[1].green;
         pixels[0].blue  += pixels[1].blue;

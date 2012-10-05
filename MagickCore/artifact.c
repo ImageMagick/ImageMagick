@@ -83,7 +83,9 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CloneImageArtifacts() clones one or more image artifacts.
+%  CloneImageArtifacts() clones all image artifacts to another image.
+%
+%  This will not delete any existing artifacts that may be present!
 %
 %  The format of the CloneImageArtifacts method is:
 %
@@ -92,9 +94,9 @@
 %
 %  A description of each parameter follows:
 %
-%    o image: the image.
+%    o image: the image, to recieve the cloned artifacts.
 %
-%    o clone_image: the clone image.
+%    o clone_image: the source image for artifacts to clone.
 %
 */
 MagickExport MagickBooleanType CloneImageArtifacts(Image *image,
@@ -126,7 +128,9 @@ MagickExport MagickBooleanType CloneImageArtifacts(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DefineImageArtifact() associates a key/value pair with an image artifact.
+%  DefineImageArtifact() associates an assignment string of the form
+%  "key=value" with per-image artifact. It is equivelent to
+%  SetImageArtifact().
 %
 %  The format of the DefineImageArtifact method is:
 %
@@ -211,10 +215,10 @@ MagickExport MagickBooleanType DeleteImageArtifact(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyImageArtifacts() releases memory associated with image artifact
-%  values.
+%  DestroyImageArtifacts() destroys all artifacts and associated memory
+%  attached to the given image.
 %
-%  The format of the DestroyDefines method is:
+%  The format of the DestroyImageArtifacts method is:
 %
 %      void DestroyImageArtifacts(Image *image)
 %
@@ -247,9 +251,11 @@ MagickExport void DestroyImageArtifacts(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetImageArtifact() gets a value associated with an image artifact.
-%  If the requested artifact is NULL return the first artifact.
+%  If the requested artifact is NULL return the first artifact, to
+%  prepare to iterate over all artifacts.
 %
-%  Note, returned string is a constant in the tree and should NOT be freed.
+%  The returned string is a constant string in the tree and should NOT be
+%  freed by the caller.
 %
 %  The format of the GetImageArtifact method is:
 %
@@ -287,6 +293,11 @@ MagickExport const char *GetImageArtifact(const Image *image,
       if (p != (const char *) NULL)
         return(p);
     }
+  /* if no per-image artifact - look for a global option instead */
+  if ( (image->image_info != (ImageInfo *)NULL) &&
+       (image->image_info->options != (void *) NULL) )
+    p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
+        image->image_info->options,artifact);
   return(p);
 }
 
@@ -338,6 +349,9 @@ MagickExport char *GetNextImageArtifact(const Image *image)
 %  RemoveImageArtifact() removes an artifact from the image and returns its
 %  value.
 %
+%  In this case the ConstantString() value returned should be freed by the
+%  caller when finished.
+%
 %  The format of the RemoveImageArtifact method is:
 %
 %      char *RemoveImageArtifact(Image *image,const char *artifact)
@@ -381,6 +395,9 @@ MagickExport char *RemoveImageArtifact(Image *image,const char *artifact)
 %  in conjunction with GetNextImageArtifact() to iterate over all the values
 %  associated with an image artifact.
 %
+%  Alternatively you can use GetImageArtifact() with a NULL artifact field to
+%  reset the iterator and return the first artifact.
+%
 %  The format of the ResetImageArtifactIterator method is:
 %
 %      ResetImageArtifactIterator(Image *image)
@@ -413,7 +430,8 @@ MagickExport void ResetImageArtifactIterator(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageArtifact() associates a value with an image artifact.
+%  SetImageArtifact() associates makes a copy of the given string value
+%  and inserts it into the artifact tree of the given image.
 %
 %  The format of the SetImageArtifact method is:
 %
@@ -441,7 +459,7 @@ MagickExport MagickBooleanType SetImageArtifact(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image->filename);
 
-  /* Create tree if needed */
+  /* Create tree if needed - specify how key,values are to be freed */
   if (image->artifacts == (void *) NULL)
     image->artifacts=NewSplayTree(CompareSplayTreeString,
       RelinquishMagickMemory,RelinquishMagickMemory);
