@@ -60,6 +60,7 @@
 
 /* verbose debugging,
       3 - option type details
+      5 - include image counts
       9 - output options/artifacts/propertys
 */
 #define MagickCommandDebug 0
@@ -303,6 +304,10 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
 
     } while (0); /* break block to next option */
 
+#if MagickCommandDebug >= 5
+    fprintf(stderr, "Script Image Count = %ld\n",
+         GetImageListLength(cli_wand->wand.images) );
+#endif
 #if MagickCommandDebug >= 9
     OutputOptions(cli_wand->wand.image_info);
     if ( cli_wand->wand.images != (Image *)NULL ) {
@@ -521,6 +526,10 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
 
     } while (0); /* break block to next option */
 
+#if MagickCommandDebug >= 5
+    fprintf(stderr, "CLI Image Count = %ld\n",
+         GetImageListLength(cli_wand->wand.images) );
+#endif
 #if MagickCommandDebug >= 9
     OutputOptions(cli_wand->wand.image_info);
     if ( cli_wand->wand.images != (Image *)NULL ) {
