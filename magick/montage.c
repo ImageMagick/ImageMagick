@@ -787,8 +787,8 @@ MagickExport Image *MontageImageList(const ImageInfo *image_info,
           extract_info.height=height+2*frame_info.height;
           value=GetImageProperty(image,"label");
           if (value != (const char *) NULL)
-            extract_info.height+=(size_t) ((metrics.ascent-
-              metrics.descent+4)*MultilineCensus(value));
+            extract_info.height+=(size_t) ((metrics.ascent-metrics.descent+4)*
+              MultilineCensus(value));
           frame_image=FrameImage(image,&extract_info,exception);
           if (frame_image != (Image *) NULL)
             {
