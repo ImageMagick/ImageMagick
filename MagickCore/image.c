@@ -3702,12 +3702,8 @@ MagickExport MagickBooleanType SyncImagesSettings(ImageInfo *image_info,
 MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   Image *image,ExceptionInfo *exception)
 {
-  char
-    property[MaxTextExtent];
-
   const char
-    *option,
-    *value;
+    *option;
 
   GeometryInfo
     geometry_info;
@@ -3928,20 +3924,28 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     }
   ResetImageOptionIterator(image_info);
 #if 0
-  /* IMv6: Copy freeform global options into per-image artifacts, so
-   * various operations and coders can access them.
-   * This has a problem, as artifacts may be set in parenthesis, but may
-   * not be unset when parenthesis ends.
-   */
-  for (option=GetNextImageOption(image_info); option != (const char *) NULL; )
   {
-    value=GetImageOption(image_info,option);
-    if (value != (const char *) NULL)
-      {
-        (void) FormatLocaleString(property,MaxTextExtent,"%s",option);
-        (void) SetImageArtifact(image,property,value);
-      }
-    option=GetNextImageOption(image_info);
+    char
+      property[MaxTextExtent];
+
+    const char
+      *value;
+
+    /* IMv6: Copy freeform global options into per-image artifacts, so
+     * various operations and coders can access them.
+     * This has a problem, as artifacts may be set in parenthesis, but may
+     * not be unset when parenthesis ends.
+     */
+    for (option=GetNextImageOption(image_info); option != (const char *) NULL; )
+    {
+      value=GetImageOption(image_info,option);
+      if (value != (const char *) NULL)
+        {
+          (void) FormatLocaleString(property,MaxTextExtent,"%s",option);
+          (void) SetImageArtifact(image,property,value);
+        }
+      option=GetNextImageOption(image_info);
+    }
   }
 #else
   /* IMv7: pointer for lookup of artifact fallback, back to global option.
@@ -3952,7 +3956,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
      WARNING: When a global option is set, any associated per-image artifact
      should also be unset, as no longer valid.
    */
-  image->image_info = image_info;
+  image->image_info = CloneImageInfo(image_info);
 #endif
   return(MagickTrue);
 }
