@@ -1,3 +1,8 @@
+2012-10-05  7.0.0-0 Anthony thyssen <A.Thyssen@griffith...>
+  * Rather than replicate 'options' into 'artifacts' make a link
+    from image to image_info and lookup a global option if no artifact
+    is defined.
+
 2012-09-11  7.0.0-0 Nicolas Robidoux <nicolas.robidoux@gmail...>
   * sigmoidal-contrast:
   * Remove unnecessary initial ClampToQuantum.

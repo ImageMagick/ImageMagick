@@ -239,7 +239,7 @@ struct _Image
     ticks_per_second;  /* units for delay time, default 100 for GIF */
 
   size_t
-    iterations,        /* ??? */
+    iterations,        /* number of interations for GIF animations */
     total_colors;
 
   ssize_t
@@ -253,10 +253,6 @@ struct _Image
 
   RectangleInfo
     tile_offset;
-
-  void
-    *properties,       /* per image properities */
-    *artifacts;        /* per image sequence image artifacts */
 
   ImageType
     type;
@@ -329,6 +325,16 @@ struct _Image
   SemaphoreInfo
     *semaphore;
 
+  void
+    *properties,       /* general settings, to save with iamge */
+    *artifacts;        /* general operational/coder settings, not saved */
+
+  struct _ImageInfo
+    *image_info;       /* (Optional) Image belongs to this ImageInfo 'list'
+                        * For access to 'global options' when no per-image
+                        * attribute, properity, or artifact has been set.
+                        * It may be set or unset as needed, but never freed.
+                        */
 
   struct _Image
     *list,             /* Undo/Redo image processing list (for display) */
@@ -339,6 +345,12 @@ struct _Image
     signature;
 };
 
+/* ImageInfo structure
+ * Stores an image list, as well as all global settings used by
+ * all images held, -- unless overridden for that specific image.
+ * See SyncImagesettings() which maps any global setting that always
+ * overrides specific image settings.
+ */
 struct _ImageInfo
 {
   CompressionType
@@ -425,7 +437,7 @@ struct _ImageInfo
     channel;
 
   void
-    *options;                /* splay tree of use options */
+    *options;                /* splay tree of global options */
 
   void
     *profile;
