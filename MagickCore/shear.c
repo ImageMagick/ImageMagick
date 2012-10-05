@@ -1025,10 +1025,6 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 90 degrees.
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(progress,status) \
-        dynamic_number_threads(image,image->columns,image->rows,1)
-#endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
         register ssize_t
@@ -1128,9 +1124,6 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_IntegralRotateImage)
-#endif
             proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
               image->rows);
             if (proceed == MagickFalse)
@@ -1150,10 +1143,6 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       /*
         Rotate 180 degrees.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(progress,status) \
-        dynamic_number_threads(image,image->columns,image->rows,1)
-#endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         MagickBooleanType
@@ -1217,9 +1206,6 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_IntegralRotateImage)
-#endif
             proceed=SetImageProgress(image,RotateImageTag,progress++,
               image->rows);
             if (proceed == MagickFalse)
@@ -1247,10 +1233,6 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 270 degrees.
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,4) shared(progress,status) \
-        dynamic_number_threads(image,image->columns,image->rows,1)
-#endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
         register ssize_t
@@ -1349,9 +1331,6 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-            #pragma omp critical (MagickCore_IntegralRotateImage)
-#endif
             proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
               image->rows);
             if (proceed == MagickFalse)
