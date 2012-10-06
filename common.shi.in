@@ -13,7 +13,6 @@ MONTAGE="@abs_top_builddir@/utilities/montage"
 VALIDATE="@abs_top_builddir@/tests/validate"
 DRAWTEST="@abs_top_builddir@/tests/drawtest"
 WANDTEST="@abs_top_builddir@/tests/wandtest"
-REFERENCE_IMAGE="@abs_top_builddir@/tests/rose.pnm"
 LD_LIBRARY_PATH="@abs_top_builddir@/magick/.libs:${LD_LIBRARY_PATH}"
 MAGICK_CODER_MODULE_PATH='@MAGICK_CODER_MODULE_PATH@'
 MAGICK_CONFIGURE_PATH='@MAGICK_CONFIGURE_BUILD_PATH@@DIRSEP@@MAGICK_CONFIGURE_SRC_PATH@'

@@ -21,12 +21,12 @@ set -e # Exit on any error
 . ${srcdir}/tests/common.shi
 echo "1..8"
 
-${CONVERT} pnm:- 'null:' < ${REFERENCE_IMAGE} && echo "ok" || echo "not ok"
-${CONVERT} pnm:- miff:-  < ${REFERENCE_IMAGE} | ${IDENTIFY} - && echo "ok" || echo "not ok"
-${CONVERT} pnm:- -  < ${REFERENCE_IMAGE} | ${IDENTIFY} - && echo "ok" || echo "not ok"
-${CONVERT} - 'null:' < ${REFERENCE_IMAGE} && echo "ok" || echo "not ok"
-${CONVERT} - miff:-  < ${REFERENCE_IMAGE} | ${IDENTIFY} - && echo "ok" || echo "not ok"
-${CONVERT} - -  < ${REFERENCE_IMAGE} | ${IDENTIFY} - && echo "ok" || echo "not ok"
-${CONVERT} ${REFERENCE_IMAGE} - | ${IDENTIFY} - && echo "ok" || echo "not ok"
-${CONVERT} ${REFERENCE_IMAGE} miff:- | ${IDENTIFY} - && echo "ok" || echo "not ok"
+${CONVERT} pnm:- 'null:' < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
+${CONVERT} pnm:- miff:-  < ${SRCDIR}/rose.pnm | ${IDENTIFY} - && echo "ok" || echo "not ok"
+${CONVERT} pnm:- -  < ${SRCDIR}/rose.pnm | ${IDENTIFY} - && echo "ok" || echo "not ok"
+${CONVERT} - 'null:' < ${SRCDIR}/rose.pnm && echo "ok" || echo "not ok"
+${CONVERT} - miff:-  < ${SRCDIR}/rose.pnm | ${IDENTIFY} - && echo "ok" || echo "not ok"
+${CONVERT} - -  < ${SRCDIR}/rose.pnm | ${IDENTIFY} - && echo "ok" || echo "not ok"
+${CONVERT} ${SRCDIR}/rose.pnm - | ${IDENTIFY} - && echo "ok" || echo "not ok"
+${CONVERT} ${SRCDIR}/rose.pnm miff:- | ${IDENTIFY} - && echo "ok" || echo "not ok"
 
