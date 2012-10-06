@@ -8,6 +8,8 @@
 #
 SRCDIR=`dirname $0`
 SRCDIR=`cd $SRCDIR && pwd`/
+export SRCDIR
+. ./common.shi
 echo "1..12"
 
 cd Magick++/tests || exit 1
