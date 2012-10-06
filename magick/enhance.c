@@ -1554,20 +1554,18 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   mean=((MagickRealType) GetPixelRed(r)+pixel.red)/2; \
   distance=(MagickRealType) GetPixelRed(r)-(MagickRealType) pixel.red; \
   distance_squared=QuantumScale*(2.0*((MagickRealType) QuantumRange+1.0)+ \
-     mean)*distance*distance; \
+    mean)*distance*distance; \
   mean=((MagickRealType) GetPixelGreen(r)+pixel.green)/2; \
-  distance=(MagickRealType) GetPixelGreen(r)-(MagickRealType) \
-    pixel.green; \
+  distance=(MagickRealType) GetPixelGreen(r)-(MagickRealType) pixel.green; \
   distance_squared+=4.0*distance*distance; \
   mean=((MagickRealType) GetPixelBlue(r)+pixel.blue)/2; \
-  distance=(MagickRealType) GetPixelBlue(r)-(MagickRealType) \
-    pixel.blue; \
-  distance_squared+=QuantumScale*(3.0*((MagickRealType) \
-    QuantumRange+1.0)-1.0-mean)*distance*distance; \
+  distance=(MagickRealType) GetPixelBlue(r)-(MagickRealType) pixel.blue; \
+  distance_squared+=QuantumScale*(3.0*((MagickRealType) QuantumRange+1.0)-1.0- \
+    mean)*distance*distance; \
   mean=((MagickRealType) r->opacity+pixel.opacity)/2; \
   distance=(MagickRealType) r->opacity-(MagickRealType) pixel.opacity; \
-  distance_squared+=QuantumScale*(3.0*((MagickRealType) \
-    QuantumRange+1.0)-1.0-mean)*distance*distance; \
+  distance_squared+=QuantumScale*(3.0*((MagickRealType) QuantumRange+1.0)-1.0- \
+    mean)*distance*distance; \
   if (distance_squared < ((MagickRealType) QuantumRange*(MagickRealType) \
       QuantumRange/25.0f)) \
     { \
