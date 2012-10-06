@@ -1289,12 +1289,10 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 {
 #define EnhancePixel(weight) \
   mean=((double) r[i]+GetPixelChannel(enhance_image,channel,q))/2.0; \
-  distance=(double) r[i]-(double) GetPixelChannel( \
-    enhance_image,channel,q); \
-  distance_squared=QuantumScale*(2.0*((double) QuantumRange+1.0)+ \
-    mean)*distance*distance; \
-  if (distance_squared < ((double) QuantumRange*(double) \
-      QuantumRange/25.0f)) \
+  distance=(double) r[i]-(double) GetPixelChannel(enhance_image,channel,q); \
+  distance_squared=QuantumScale*(2.0*((double) QuantumRange+1.0)+mean)* \
+    distance*distance; \
+  if (distance_squared < ((double) QuantumRange*(double) QuantumRange/25.0f)) \
     { \
       aggregate+=(weight)*r[i]; \
       total_weight+=(weight); \
