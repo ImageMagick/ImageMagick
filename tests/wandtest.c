@@ -5228,7 +5228,7 @@ int main(int argc,char **argv)
       path[MaxTextExtent];
 
     path[0]=0;
-    p=getenv("top_srcdir");
+    p=getenv("SRCDIR");
     if (p != (char *) NULL)
       {
         (void) strcpy(path,p);

@@ -8,6 +8,9 @@
 #
 SRCDIR=`dirname $0`
 SRCDIR=`cd $SRCDIR && pwd`/
+TOPSRCDIR=`cd $srcdir && pwd`
+export SRCDIR
+. ./common.shi
 echo "1..24"
 
 cd Magick++/demo || exit 1
