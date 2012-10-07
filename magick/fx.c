@@ -2991,7 +2991,11 @@ static FxInfo **AcquireFxThreadSet(const Image *image,const char *expression,
   number_threads=(size_t) GetMagickResourceLimit(ThreadResource);
   fx_info=(FxInfo **) AcquireQuantumMemory(number_threads,sizeof(*fx_info));
   if (fx_info == (FxInfo **) NULL)
-    return((FxInfo **) NULL);
+    {
+      (void) ThrowMagickException(exception,GetMagickModule(),
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
+      return((FxInfo **) NULL);
+    }
   (void) ResetMagickMemory(fx_info,0,number_threads*sizeof(*fx_info));
   if (*expression != '@')
     fx_expression=ConstantString(expression);
@@ -2999,12 +3003,19 @@ static FxInfo **AcquireFxThreadSet(const Image *image,const char *expression,
     fx_expression=FileToString(expression+1,~0,exception);
   for (i=0; i < (ssize_t) number_threads; i++)
   {
+    MagickBooleanType
+      status;
+
     fx_info[i]=AcquireFxInfo(image,fx_expression);
     if (fx_info[i] == (FxInfo *) NULL)
-      return(DestroyFxThreadSet(fx_info));
-    (void) FxPreprocessExpression(fx_info[i],&alpha,fx_info[i]->exception);
+      break;
+    status=FxPreprocessExpression(fx_info[i],&alpha,exception);
+    if (status == MagickFalse)
+      break;
   }
   fx_expression=DestroyString(fx_expression);
+  if (i < (ssize_t) number_threads)
+    fx_info=DestroyFxThreadSet(fx_info);
   return(fx_info);
 }
 
@@ -3038,9 +3049,6 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
   MagickOffsetType
     progress;
 
-  MagickRealType
-    alpha;
-
   ssize_t
     y;
 
@@ -3048,26 +3056,20 @@ MagickExport Image *FxImageChannel(const Image *image,const ChannelType channel,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  fx_info=AcquireFxThreadSet(image,expression,exception);
+  if (fx_info == (FxInfo **) NULL)
+    return((Image *) NULL);
   fx_image=CloneImage(image,0,0,MagickTrue,exception);
   if (fx_image == (Image *) NULL)
-    return((Image *) NULL);
+    {
+      fx_info=DestroyFxThreadSet(fx_info);
+      return((Image *) NULL);
+    }
   if (SetImageStorageClass(fx_image,DirectClass) == MagickFalse)
     {
       InheritException(exception,&fx_image->exception);
-      fx_image=DestroyImage(fx_image);
-      return((Image *) NULL);
-    }
-  fx_info=AcquireFxThreadSet(image,expression,exception);
-  if (fx_info == (FxInfo **) NULL)
-    {
-      fx_image=DestroyImage(fx_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
-    }
-  status=FxPreprocessExpression(fx_info[0],&alpha,exception);
-  if (status == MagickFalse)
-    {
-      fx_image=DestroyImage(fx_image);
       fx_info=DestroyFxThreadSet(fx_info);
+      fx_image=DestroyImage(fx_image);
       return((Image *) NULL);
     }
   /*
