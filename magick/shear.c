@@ -1026,7 +1026,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 90 degrees.
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
-      tile_width=(ssize_t) image->columns;
+      tile_width=image->columns;
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
         register ssize_t
@@ -1213,7 +1213,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 270 degrees.
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
-      tile_width=(ssize_t) image->columns;
+      tile_width=image->columns;
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
         register ssize_t
