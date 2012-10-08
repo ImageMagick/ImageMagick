@@ -2062,7 +2062,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   ssize_t
     j;
 
-  volatile unsigned char
+  unsigned char volatile
     *ping_pixels;
 
 #ifdef PNG_UNKNOWN_CHUNKS_SUPPORTED
