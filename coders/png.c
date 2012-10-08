@@ -2074,9 +2074,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   QuantumInfo
     *quantum_info;
 
-  unsigned char
-    *ping_pixels;
-
   ssize_t
     ping_rowbytes,
     y;
@@ -2097,6 +2094,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   ssize_t
     j;
+
+  volatile unsigned char
+    *ping_pixels;
 
 #ifdef PNG_UNKNOWN_CHUNKS_SUPPORTED
   png_byte unused_chunks[]=
