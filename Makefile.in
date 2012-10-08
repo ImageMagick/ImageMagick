@@ -3006,6 +3006,7 @@ CONFIG_EXTRA_DIST = \
 	config/delegates.xml.in \
 	config/english.xml \
 	config/francais.xml \
+	config/ImageMagick.rc \
 	config/ImageMagick.rdf.in \
 	config/lndir.sh \
 	config/locale.xml \
