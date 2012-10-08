@@ -141,7 +141,7 @@ typedef struct _PixelInfo
   MagickSizeType
     count;
 
-  double
+  MagickRealType
     red,
     green,
     blue,
