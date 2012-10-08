@@ -2095,8 +2095,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   ssize_t
     j;
 
-  volatile unsigned char
-    *ping_pixels;
+  unsigned char
+    *volatile ping_pixels;
 
 #ifdef PNG_UNKNOWN_CHUNKS_SUPPORTED
   png_byte unused_chunks[]=
@@ -7669,7 +7669,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     x;
 
   unsigned char
-    *ping_pixels;
+    *volatile ping_pixels;
 
   volatile int
     image_colors,
