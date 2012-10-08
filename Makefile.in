@@ -3032,6 +3032,7 @@ CONFIG_EXTRA_DIST = \
 	config/delegates.xml.in \
 	config/english.xml \
 	config/francais.xml \
+	config/ImageMagick.rc \
 	config/ImageMagick.rdf.in \
 	config/lndir.sh \
 	config/locale.xml \
@@ -4968,6 +4969,7 @@ TESTS_TESTS = \
 
 TESTS_EXTRA_DIST = \
 	tests/common.shi \
+  tests/rose.pnm \
   tests/input_256c.miff \
   tests/input_bilevel.miff \
   tests/input_gray.miff \
