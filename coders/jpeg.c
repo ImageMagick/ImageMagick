@@ -957,7 +957,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     index;
 
   JSAMPLE
-    *jpeg_pixels;
+    *volatile jpeg_pixels;
 
   JSAMPROW
     scanline[1];
@@ -1991,7 +1991,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     quality;
 
   JSAMPLE
-    *jpeg_pixels;
+    *volatile jpeg_pixels;
 
   JSAMPROW
     scanline[1];
