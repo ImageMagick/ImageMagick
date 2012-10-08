@@ -3942,13 +3942,14 @@ MagickExport MagickBooleanType SigmoidalContrastImageChannel(Image *image,
   (void) ResetMagickMemory(sigmoidal_map,0,(MaxMap+1)*sizeof(*sigmoidal_map));
   if (sharpen != MagickFalse)
     for (i=0; i <= (ssize_t) MaxMap; i++)
-      sigmoidal_map[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*
-        ScaledSigmoidal(contrast,QuantumScale*midpoint,(double) i/MaxMap)));
+      sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType)
+        (MaxMap*ScaledSigmoidal(contrast,QuantumScale*midpoint,(double) i/
+        MaxMap)));
   else
     for (i=0; i <= (ssize_t) MaxMap; i++)
-      sigmoidal_map[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*
-        InverseScaledSigmoidal(contrast,QuantumScale*midpoint,
-        (double) i/MaxMap)));
+      sigmoidal_map[i]=(MagickRealType) ScaleMapToQuantum((MagickRealType) (
+        MaxMap*InverseScaledSigmoidal(contrast,QuantumScale*midpoint,(double) i/
+        MaxMap)));
   /*
     Sigmoidal-contrast enhance colormap.
   */
