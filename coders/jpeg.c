@@ -1239,8 +1239,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   */
   if (setjmp(error_manager.error_recovery) != 0)
     {
-      if (jpeg_pixels != (unsigned char *) NULL)
-        jpeg_pixels=(unsigned char *) RelinquishMagickMemory(jpeg_pixels);
+      if (jpeg_pixels != (JSAMPLE *) NULL)
+        jpeg_pixels=(JSAMPLE *) RelinquishMagickMemory(jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
       (void) CloseBlob(image);
       number_pixels=(MagickSizeType) image->columns*image->rows;
@@ -1394,7 +1394,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     Free jpeg resources.
   */
   jpeg_destroy_decompress(&jpeg_info);
-  jpeg_pixels=(unsigned char *) RelinquishMagickMemory(jpeg_pixels);
+  jpeg_pixels=(JSAMPLE *) RelinquishMagickMemory(jpeg_pixels);
   (void) CloseBlob(image);
   return(GetFirstImageInList(image));
 }
@@ -2533,8 +2533,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
   if (setjmp(error_manager.error_recovery) != 0)
     {
       jpeg_destroy_compress(&jpeg_info);
-      if (jpeg_pixels != (unsigned char *) NULL)
-        jpeg_pixels=(unsigned char *) RelinquishMagickMemory(jpeg_pixels);
+      if (jpeg_pixels != (JSAMPLE *) NULL)
+        jpeg_pixels=(JSAMPLE *) RelinquishMagickMemory(jpeg_pixels);
       (void) CloseBlob(image);
       return(MagickFalse);
     }
@@ -2730,7 +2730,7 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
     Relinquish resources.
   */
   jpeg_destroy_compress(&jpeg_info);
-  jpeg_pixels=(unsigned char *) RelinquishMagickMemory(jpeg_pixels);
+  jpeg_pixels=(JSAMPLE *) RelinquishMagickMemory(jpeg_pixels);
   (void) CloseBlob(image);
   return(MagickTrue);
 }
