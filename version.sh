@@ -35,6 +35,6 @@ PACKAGE_VERSION_ADDENDUM="-${PACKAGE_RELEASE}"
 # source and binary compatibility with older minor versions, and changes
 # in the PATCH level are perfectly compatible, forwards and backwards.
 # See http://apr.apache.org/versioning.html.
-MAGICK_LIBRARY_CURRENT=5
+MAGICK_LIBRARY_CURRENT=6
 MAGICK_LIBRARY_REVISION=0
 MAGICK_LIBRARY_AGE=0

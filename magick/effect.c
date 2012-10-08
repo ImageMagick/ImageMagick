@@ -1327,10 +1327,6 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
     *convolve_view,
     *image_view;
 
-  double
-    gamma,
-    *normal_kernel;
-
   Image
     *convolve_image;
 
@@ -1342,6 +1338,10 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
 
   MagickPixelPacket
     bias;
+
+  MagickRealType
+    gamma,
+    *normal_kernel;
 
   register ssize_t
     i;
@@ -1408,9 +1408,9 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
   /*
     Normalize kernel.
   */
-  normal_kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory(width*width,
-    sizeof(*normal_kernel)));
-  if (normal_kernel == (double *) NULL)
+  normal_kernel=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory(
+    width*width,sizeof(*normal_kernel)));
+  if (normal_kernel == (MagickRealType *) NULL)
     {
       convolve_image=DestroyImage(convolve_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -1472,7 +1472,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
       MagickPixelPacket
         pixel;
 
-      register const double
+      register const MagickRealType
         *restrict k;
 
       register const PixelPacket
@@ -1633,7 +1633,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
   convolve_image->type=image->type;
   convolve_view=DestroyCacheView(convolve_view);
   image_view=DestroyCacheView(image_view);
-  normal_kernel=(double *) RelinquishAlignedMemory(normal_kernel);
+  normal_kernel=(MagickRealType *) RelinquishAlignedMemory(normal_kernel);
   if (status == MagickFalse)
     convolve_image=DestroyImage(convolve_image);
   return(convolve_image);
