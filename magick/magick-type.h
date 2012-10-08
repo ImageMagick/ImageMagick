@@ -40,7 +40,7 @@ extern "C" {
 #define MaxColormapSize  256UL
 #define MaxMap  255UL
 
-typedef double MagickRealType;
+typedef float MagickRealType;
 typedef ssize_t SignedQuantum;
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef float Quantum;
@@ -55,7 +55,7 @@ typedef unsigned char Quantum;
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
 
-typedef double MagickRealType;
+typedef float MagickRealType;
 typedef ssize_t SignedQuantum;
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 typedef float Quantum;
