@@ -2386,8 +2386,10 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
               (LocaleCompare(colorspace,"HSL") == 0) ||
               (LocaleCompare(colorspace,"HWB") == 0))
             {
-              PixelInfo
-                pixel;
+              double
+                blue,
+                green,
+                red;
 
               if (LocaleCompare(colorspace,"HCL") == 0)
                 color->colorspace=HCLColorspace;
@@ -2411,26 +2413,26 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
               geometry_info.xi*=scale;
               if (LocaleCompare(colorspace,"HCL") == 0)
                 ConvertHCLToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
-                  360.0)/360.0,geometry_info.sigma,geometry_info.xi,&pixel.red,
-                  &pixel.green,&pixel.blue);
+                  360.0)/360.0,geometry_info.sigma,geometry_info.xi,&red,
+                  &green,&blue);
               else
                 if (LocaleCompare(colorspace,"HSB") == 0)
                   ConvertHSBToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
-                    360.0)/360.0,geometry_info.sigma,geometry_info.xi,
-                    &pixel.red,&pixel.green,&pixel.blue);
+                    360.0)/360.0,geometry_info.sigma,geometry_info.xi,&red,
+                    &green,&blue);
                 else
                   if (LocaleCompare(colorspace,"HSL") == 0)
                     ConvertHSLToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
-                      360.0)/360.0,geometry_info.sigma,geometry_info.xi,
-                      &pixel.red,&pixel.green,&pixel.blue);
+                      360.0)/360.0,geometry_info.sigma,geometry_info.xi,&red,
+                      &green,&blue);
                   else
                     ConvertHWBToRGB(fmod(fmod(geometry_info.rho,360.0)+360.0,
-                      360.0)/360.0,geometry_info.sigma,geometry_info.xi,
-                      &pixel.red,&pixel.green,&pixel.blue);
+                      360.0)/360.0,geometry_info.sigma,geometry_info.xi,&red,
+                      &green,&blue);
               color->colorspace=sRGBColorspace;
-              color->red=(double) pixel.red;
-              color->green=(double) pixel.green;
-              color->blue=(double) pixel.blue;
+              color->red=(MagickRealType) red;
+              color->green=(MagickRealType) green;
+              color->blue=(MagickRealType) blue;
             }
         }
       return(MagickTrue);
