@@ -1189,8 +1189,8 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
 #endif
   source_view=AcquireVirtualCacheView(source,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+  #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,width,height,1)
 #endif
   for (y=start; y <= stop; y++)
@@ -3306,8 +3306,8 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   width=(size_t) (bounding_box.width-bounding_box.x);
 #endif
   image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+  #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,width,height,1)
 #endif
   for (y=bounding_box.y; y < (ssize_t) bounding_box.height; y++)
@@ -3926,8 +3926,8 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
       */
       start=(ssize_t) ceil(bounds.y1-0.5);
       stop=(ssize_t) floor(bounds.y2+0.5);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(status) \
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+      #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,width,height,0)
 #endif
       for (y=start; y <= stop; y++)
@@ -3983,7 +3983,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   start=(ssize_t) ceil(bounds.y1-0.5);
   stop=(ssize_t) floor(bounds.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
+  #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,width,height,1)
 #endif
   for (y=start; y <= stop; y++)
