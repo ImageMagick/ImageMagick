@@ -1027,7 +1027,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
       tile_width=image->columns;
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) shared(progress,status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -1124,7 +1124,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
             #pragma omp critical (MagickCore_IntegralRotateImage)
 #endif
             proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
@@ -1221,7 +1221,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
       tile_width=image->columns;
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) shared(progress,status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -1317,7 +1317,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
             #pragma omp critical (MagickCore_IntegralRotateImage)
 #endif
             proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,

@@ -159,7 +159,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   progress=0;
   image_view=AcquireVirtualCacheView(image,exception);
   chop_view=AcquireAuthenticCacheView(chop_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -211,7 +211,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
         #pragma omp critical (MagickCore_ChopImage)
 #endif
         proceed=SetImageProgress(image,ChopImageTag,progress++,image->rows);
@@ -222,7 +222,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   /*
     Extract chop image.
   */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -275,7 +275,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
         #pragma omp critical (MagickCore_ChopImage)
 #endif
         proceed=SetImageProgress(image,ChopImageTag,progress++,image->rows);
@@ -648,7 +648,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   progress=0;
   image_view=AcquireVirtualCacheView(image,exception);
   crop_view=AcquireAuthenticCacheView(crop_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -691,7 +691,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
         #pragma omp critical (MagickCore_CropImage)
 #endif
         proceed=SetImageProgress(image,CropImageTag,progress++,image->rows);
