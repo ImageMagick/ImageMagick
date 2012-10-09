@@ -409,7 +409,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   /*
     Draw sides of ornamental border.
   */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
   #pragma omp parallel for schedule(static,8) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -517,7 +517,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
         #pragma omp critical (MagickCore_FrameImage)
 #endif
         proceed=SetImageProgress(image,FrameImageTag,progress++,image->rows);
@@ -734,7 +734,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   progress=0;
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -800,7 +800,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
         #pragma omp critical (MagickCore_RaiseImage)
 #endif
         proceed=SetImageProgress(image,RaiseImageTag,progress++,image->rows);
@@ -808,7 +808,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
           status=MagickFalse;
       }
   }
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -863,7 +863,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
         #pragma omp critical (MagickCore_RaiseImage)
 #endif
         proceed=SetImageProgress(image,RaiseImageTag,progress++,image->rows);
@@ -871,7 +871,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
           status=MagickFalse;
       }
   }
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -937,7 +937,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
         #pragma omp critical (MagickCore_RaiseImage)
 #endif
         proceed=SetImageProgress(image,RaiseImageTag,progress++,image->rows);
