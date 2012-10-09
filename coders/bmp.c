@@ -843,8 +843,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->columns=(size_t) MagickAbsoluteValue(bmp_info.width);
     image->rows=(size_t) MagickAbsoluteValue(bmp_info.height);
     image->depth=bmp_info.bits_per_pixel <= 8 ? bmp_info.bits_per_pixel : 8;
-    if ((bmp_info.bits_per_pixel == 16) || (bmp_info.bits_per_pixel == 32))
-      image->matte=bmp_info.alpha_mask != 0 ? MagickTrue : MagickFalse;
+    image->matte=(bmp_info.alpha_mask != 0) ||
+      ((bmp_info.compression == BI_RGB) && (bmp_info.bits_per_pixel == 32)) ?
+      MagickTrue : MagickFalse;
     if ((bmp_info.number_colors != 0) || (bmp_info.bits_per_pixel < 16))
       {
         size_t
@@ -949,7 +950,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (bmp_info.compression == BI_RGB)
       {
-        bmp_info.alpha_mask=0;
+        bmp_info.alpha_mask=image->matte ? 0xff000000L : 0L;
         bmp_info.red_mask=0x00ff0000U;
         bmp_info.green_mask=0x0000ff00U;
         bmp_info.blue_mask=0x000000ffU;
