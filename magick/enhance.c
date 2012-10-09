@@ -1810,6 +1810,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   */
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
   exception=(&image->exception);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const IndexPacket
@@ -1821,10 +1822,10 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
     register ssize_t
       x;
 
-    p=GetVirtualPixels(image,0,y,image->columns,1,exception);
+    p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    indexes=GetVirtualIndexQueue(image);
+    indexes=GetCacheViewVirtualIndexQueue(image_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & SyncChannels) != 0)
@@ -1949,8 +1950,6 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  exception=(&image->exception);
-  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
