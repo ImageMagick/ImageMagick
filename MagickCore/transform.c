@@ -587,7 +587,7 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   image_view=AcquireVirtualCacheView(image,exception);
   crop_view=AcquireAuthenticCacheView(crop_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) \
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) crop_image->rows; y++)
