@@ -950,7 +950,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (bmp_info.compression == BI_RGB)
       {
-        bmp_info.alpha_mask=image->matte ? 0xff000000L : 0L;
+        bmp_info.alpha_mask=image->matte != MagickFalse ? 0xff000000L : 0L;
         bmp_info.red_mask=0x00ff0000U;
         bmp_info.green_mask=0x0000ff00U;
         bmp_info.blue_mask=0x000000ffU;
