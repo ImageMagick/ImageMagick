@@ -965,7 +965,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           image->filename);
       black=pow(10.0,(reference_black-reference_white)*(gamma/density)*
         0.002/film_gamma);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -1317,7 +1317,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       */
       primary_info.y=(double) (MaxMap+1.0)/2.0;
       primary_info.z=(double) (MaxMap+1.0)/2.0;
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -1350,7 +1350,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       */
       primary_info.y=(double) (MaxMap+1.0)/2.0;
       primary_info.z=(double) (MaxMap+1.0)/2.0;
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -1382,7 +1382,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       */
       primary_info.y=(double) (MaxMap+1.0)/2.0;
       primary_info.z=(double) (MaxMap+1.0)/2.0;
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -1453,7 +1453,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       */
       primary_info.y=(double) (MaxMap+1.0)/2.0;
       primary_info.z=(double) (MaxMap+1.0)/2.0;
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -1485,7 +1485,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       */
       primary_info.y=(double) (MaxMap+1.0)/2.0;
       primary_info.z=(double) (MaxMap+1.0)/2.0;
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -1517,7 +1517,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       */
       primary_info.y=(double) (MaxMap+1.0)/2.0;
       primary_info.z=(double) (MaxMap+1.0)/2.0;
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -1540,7 +1540,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       /*
         Linear conversion tables.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -3219,7 +3219,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         I and Q, normally -0.5 through 0.5, must be normalized to the range 0
         through QuantumRange.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -3250,7 +3250,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
         through QuantumRange.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -3280,7 +3280,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
         through QuantumRange.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -3309,7 +3309,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
 
         YCC is scaled by 1.3584.  C1 zero is 156 and C2 is at 137.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -3343,7 +3343,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         I and Q, normally -0.5 through 0.5, must be normalized to the range 0
         through QuantumRange.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -3373,7 +3373,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         Pb and Pr, normally -0.5 through 0.5, must be normalized to the range 0
         through QuantumRange.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -3403,7 +3403,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         U and V, normally -0.5 through 0.5, must be normalized to the range 0
         through QuantumRange.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif
@@ -3426,7 +3426,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       /*
         Linear conversion tables.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
 #endif

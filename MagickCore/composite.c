@@ -2409,7 +2409,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
       /*
         Tile texture onto the image background.
       */
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -2439,7 +2439,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
            #pragma omp critical (MagickCore_TextureImage)
 #endif
             proceed=SetImageProgress(image,TextureImageTag,(MagickOffsetType)
@@ -2459,7 +2459,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
   status=MagickTrue;
   texture_view=AcquireVirtualCacheView(texture_image,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
   #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
@@ -2541,7 +2541,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
         MagickBooleanType
           proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && !defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
         #pragma omp critical (MagickCore_TextureImage)
 #endif
         proceed=SetImageProgress(image,TextureImageTag,(MagickOffsetType) y,
