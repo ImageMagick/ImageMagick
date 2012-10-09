@@ -510,7 +510,7 @@ MagickExport Image *EvaluateImages(const Image *images,
   if (op == MedianEvaluateOperator)
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(progress,status) \
+      #pragma omp parallel for schedule(static,4) shared(progress,status) \
         dynamic_number_threads(image,image->columns,image->rows,key == ~0UL)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
@@ -618,7 +618,7 @@ MagickExport Image *EvaluateImages(const Image *images,
   else
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static) shared(progress,status) \
+      #pragma omp parallel for schedule(static,4) shared(progress,status) \
         dynamic_number_threads(image,image->columns,image->rows,key == ~0UL)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
@@ -1321,7 +1321,7 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
   sum_fourth_power=0.0;
   image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
+  #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -1448,7 +1448,7 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   *minima=0.0;
   image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status,initialize) \
+  #pragma omp parallel for schedule(static,4) shared(status,initialize) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)

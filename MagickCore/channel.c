@@ -140,7 +140,7 @@ static MagickBooleanType ChannelImage(Image *destination_image,
   height=MagickMin(source_image->rows,destination_image->rows);
   width=MagickMin(source_image->columns,destination_image->columns);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(status) \
+  #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(source_image,width,height,1)
 #endif
   for (y=0; y < (ssize_t) height; y++)
@@ -660,7 +660,7 @@ MagickExport Image *SeparateImage(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
   separate_view=AcquireAuthenticCacheView(separate_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static) shared(progress,status) \
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
