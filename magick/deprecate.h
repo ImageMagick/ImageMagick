@@ -256,6 +256,10 @@ extern MagickExport PixelPacket
   *SetImagePixels(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t) magick_attribute((deprecated));
 
+extern MagickExport MagickRealType
+  InversesRGBCompandor(const MagickRealType) magick_attribute((deprecated)),
+  sRGBCompandor(const MagickRealType) magick_attribute((deprecated));
+
 extern MagickExport size_t
   GetImageListSize(const Image *) magick_attribute((deprecated)),
   PopImagePixels(Image *,const QuantumType,unsigned char *)
