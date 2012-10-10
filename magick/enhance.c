@@ -1997,7 +1997,6 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
           q++;
           continue;
         }
-puts("a");
       if (((channel & RedChannel) != 0) && (white.red != black.red))
         SetPixelRed(q,ClampToQuantum(equalize_map[
           ScaleQuantumToMap(GetPixelRed(q))].red));
