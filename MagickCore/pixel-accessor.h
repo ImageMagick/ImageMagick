@@ -22,6 +22,7 @@
 extern "C" {
 #endif
 
+#include <math.h>
 #include <MagickCore/cache.h>
 #include <MagickCore/cache-view.h>
 #include <MagickCore/color.h>

@@ -885,8 +885,17 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
         Contrast enhance colormap.
       */
       for (i=0; i < (ssize_t) image->colors; i++)
-        Contrast(sign,&image->colormap[i].red,&image->colormap[i].green,
-          &image->colormap[i].blue);
+      {
+        double
+          blue,
+          green,
+          red;
+
+        Contrast(sign,&red,&green,&blue);
+        image->colormap[i].red=(MagickRealType) red;
+        image->colormap[i].red=(MagickRealType) red;
+        image->colormap[i].red=(MagickRealType) red;
+      }
     }
   /*
     Contrast enhance image.
