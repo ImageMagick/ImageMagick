@@ -102,6 +102,20 @@ extern "C" {
 #define SetPixelYellow(pixel,value) ((pixel)->blue=(Quantum) (value))
 #define SetPixelY(pixel,value) ((pixel)->red=(Quantum) (value))
 
+static inline double DecodesRGBGamma(const double pixel)
+{
+  if (pixel <= (0.0404482362771076*QuantumRange))
+    return(pixel/12.92);
+  return(QuantumRange*pow((QuantumScale*pixel+0.055)/1.055,2.4));
+}
+
+static inline double EncodesRGBGamma(const double pixel)
+{
+  if (pixel <= (0.0031306684425005883*QuantumRange))
+    return(12.92*pixel);
+  return(QuantumRange*(1.055*pow(QuantumScale*pixel,1.0/2.4)-0.055));
+}
+
 static inline MagickRealType GetPixelIntensity(const Image *image,
   const PixelPacket *pixel)
 {
@@ -114,9 +128,9 @@ static inline MagickRealType GetPixelIntensity(const Image *image,
     return((MagickRealType) pixel->red);
   if (image->colorspace != sRGBColorspace)
     return(0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue);
-  red=InversesRGBCompandor((MagickRealType) pixel->red);
-  green=InversesRGBCompandor((MagickRealType) pixel->green);
-  blue=InversesRGBCompandor((MagickRealType) pixel->blue);
+  red=DecodesRGBGamma((double) pixel->red);
+  green=DecodesRGBGamma((double) pixel->green);
+  blue=DecodesRGBGamma((double) pixel->blue);
   return((MagickRealType) (0.298839*red+0.586811*green+0.114350*blue));
 }
 
@@ -148,9 +162,9 @@ static inline Quantum PixelPacketIntensity(const PixelPacket *pixel)
     green,
     red;
 
-  red=InversesRGBCompandor((MagickRealType) pixel->red);
-  green=InversesRGBCompandor((MagickRealType) pixel->green);
-  blue=InversesRGBCompandor((MagickRealType) pixel->blue);
+  red=DecodesRGBGamma((double) pixel->red);
+  green=DecodesRGBGamma((double) pixel->green);
+  blue=DecodesRGBGamma((double) pixel->blue);
   return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
 }
 
@@ -167,9 +181,9 @@ static inline Quantum PixelIntensityToQuantum(const Image *restrict image,
   if (image->colorspace != sRGBColorspace)
     return(ClampToQuantum(0.298839*pixel->red+0.586811*pixel->green+0.114350*
       pixel->blue));
-  red=InversesRGBCompandor((MagickRealType) pixel->red);
-  green=InversesRGBCompandor((MagickRealType) pixel->green);
-  blue=InversesRGBCompandor((MagickRealType) pixel->blue);
+  red=DecodesRGBGamma((double) pixel->red);
+  green=DecodesRGBGamma((double) pixel->green);
+  blue=DecodesRGBGamma((double) pixel->blue);
   return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
 }
 
