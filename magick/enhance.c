@@ -1768,11 +1768,13 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
 
   MagickPixelPacket
     black,
-    *equalize_map,
     *histogram,
     intensity,
     *map,
     white;
+
+  QuantumPixelPacket
+    *equalize_map;
 
   register ssize_t
     i;
@@ -1787,12 +1789,12 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  equalize_map=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
+  equalize_map=(QuantumPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*equalize_map));
   histogram=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*histogram));
   map=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*map));
-  if ((equalize_map == (MagickPixelPacket *) NULL) ||
+  if ((equalize_map == (QuantumPixelPacket *) NULL) ||
       (histogram == (MagickPixelPacket *) NULL) ||
       (map == (MagickPixelPacket *) NULL))
     {
@@ -1800,8 +1802,9 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
         map=(MagickPixelPacket *) RelinquishMagickMemory(map);
       if (histogram != (MagickPixelPacket *) NULL)
         histogram=(MagickPixelPacket *) RelinquishMagickMemory(histogram);
-      if (equalize_map != (MagickPixelPacket *) NULL)
-        equalize_map=(MagickPixelPacket *) RelinquishMagickMemory(equalize_map);
+      if (equalize_map != (QuantumPixelPacket *) NULL)
+        equalize_map=(QuantumPixelPacket *) RelinquishMagickMemory(
+          equalize_map);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
         image->filename);
     }
@@ -1883,29 +1886,27 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
     if ((channel & SyncChannels) != 0)
       {
         if (white.red != black.red)
-          equalize_map[i].red=(MagickRealType) ScaleMapToQuantum(
-            (MagickRealType) ((MaxMap*(map[i].red-black.red))/(white.red-
-            black.red)));
+          equalize_map[i].red=ScaleMapToQuantum((MagickRealType) ((MaxMap*
+            (map[i].red-black.red))/(white.red-black.red)));
         continue;
       }
     if (((channel & RedChannel) != 0) && (white.red != black.red))
-      equalize_map[i].red=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-        ((MaxMap*(map[i].red-black.red))/(white.red-black.red)));
+      equalize_map[i].red=ScaleMapToQuantum((MagickRealType) ((MaxMap*
+        (map[i].red-black.red))/(white.red-black.red)));
     if (((channel & GreenChannel) != 0) && (white.green != black.green))
-      equalize_map[i].green=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-        ((MaxMap*(map[i].green-black.green))/(white.green-black.green)));
+      equalize_map[i].green=ScaleMapToQuantum((MagickRealType) ((MaxMap*
+        (map[i].green-black.green))/(white.green-black.green)));
     if (((channel & BlueChannel) != 0) && (white.blue != black.blue))
-      equalize_map[i].blue=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-        ((MaxMap*(map[i].blue-black.blue))/(white.blue-black.blue)));
+      equalize_map[i].blue=ScaleMapToQuantum((MagickRealType) ((MaxMap*
+        (map[i].blue-black.blue))/(white.blue-black.blue)));
     if (((channel & OpacityChannel) != 0) && (white.opacity != black.opacity))
-      equalize_map[i].opacity=(MagickRealType) ScaleMapToQuantum(
-        (MagickRealType) ((MaxMap*(map[i].opacity-black.opacity))/
-        (white.opacity-black.opacity)));
+      equalize_map[i].opacity=ScaleMapToQuantum((MagickRealType) ((MaxMap*
+        (map[i].opacity-black.opacity))/(white.opacity-black.opacity)));
     if ((((channel & IndexChannel) != 0) &&
         (image->colorspace == CMYKColorspace)) &&
         (white.index != black.index))
-      equalize_map[i].index=(MagickRealType) ScaleMapToQuantum((MagickRealType)
-        ((MaxMap*(map[i].index-black.index))/(white.index-black.index)));
+      equalize_map[i].index=ScaleMapToQuantum((MagickRealType) ((MaxMap*
+        (map[i].index-black.index))/(white.index-black.index)));
   }
   histogram=(MagickPixelPacket *) RelinquishMagickMemory(histogram);
   map=(MagickPixelPacket *) RelinquishMagickMemory(map);
@@ -1920,30 +1921,30 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
           {
             if (white.red != black.red)
               {
-                image->colormap[i].red=ClampToQuantum(equalize_map[
-                  ScaleQuantumToMap(image->colormap[i].red)].red);
-                image->colormap[i].green=ClampToQuantum(equalize_map[
-                  ScaleQuantumToMap(image->colormap[i].green)].red);
-                image->colormap[i].blue=ClampToQuantum(equalize_map[
-                  ScaleQuantumToMap(image->colormap[i].blue)].red);
-                image->colormap[i].opacity=ClampToQuantum(equalize_map[
-                  ScaleQuantumToMap(image->colormap[i].opacity)].red);
+                image->colormap[i].red=equalize_map[
+                  ScaleQuantumToMap(image->colormap[i].red)].red;
+                image->colormap[i].green=equalize_map[
+                  ScaleQuantumToMap(image->colormap[i].green)].red;
+                image->colormap[i].blue=equalize_map[
+                  ScaleQuantumToMap(image->colormap[i].blue)].red;
+                image->colormap[i].opacity=equalize_map[
+                  ScaleQuantumToMap(image->colormap[i].opacity)].red;
               }
             continue;
           }
         if (((channel & RedChannel) != 0) && (white.red != black.red))
-          image->colormap[i].red=ClampToQuantum(equalize_map[
-            ScaleQuantumToMap(image->colormap[i].red)].red);
+          image->colormap[i].red=equalize_map[
+            ScaleQuantumToMap(image->colormap[i].red)].red;
         if (((channel & GreenChannel) != 0) && (white.green != black.green))
-          image->colormap[i].green=ClampToQuantum(equalize_map[
-            ScaleQuantumToMap(image->colormap[i].green)].green);
+          image->colormap[i].green=equalize_map[
+            ScaleQuantumToMap(image->colormap[i].green)].green;
         if (((channel & BlueChannel) != 0) && (white.blue != black.blue))
-          image->colormap[i].blue=ClampToQuantum(equalize_map[
-            ScaleQuantumToMap(image->colormap[i].blue)].blue);
+          image->colormap[i].blue=equalize_map[
+            ScaleQuantumToMap(image->colormap[i].blue)].blue;
         if (((channel & OpacityChannel) != 0) &&
             (white.opacity != black.opacity))
-          image->colormap[i].opacity=ClampToQuantum(equalize_map[
-            ScaleQuantumToMap(image->colormap[i].opacity)].opacity);
+          image->colormap[i].opacity=equalize_map[
+            ScaleQuantumToMap(image->colormap[i].opacity)].opacity;
       }
     }
   /*
@@ -1982,38 +1983,38 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
         {
           if (white.red != black.red)
             {
-              SetPixelRed(q,ClampToQuantum(equalize_map[
-                ScaleQuantumToMap(GetPixelRed(q))].red));
-              SetPixelGreen(q,ClampToQuantum(equalize_map[
-                ScaleQuantumToMap(GetPixelGreen(q))].red));
-              SetPixelBlue(q,ClampToQuantum(equalize_map[
-                ScaleQuantumToMap(GetPixelBlue(q))].red));
-              SetPixelOpacity(q,ClampToQuantum(equalize_map[
-                ScaleQuantumToMap(GetPixelOpacity(q))].red));
+              SetPixelRed(q,equalize_map[
+                ScaleQuantumToMap(GetPixelRed(q))].red);
+              SetPixelGreen(q,equalize_map[
+                ScaleQuantumToMap(GetPixelGreen(q))].red);
+              SetPixelBlue(q,equalize_map[
+                ScaleQuantumToMap(GetPixelBlue(q))].red);
+              SetPixelOpacity(q,equalize_map[
+                ScaleQuantumToMap(GetPixelOpacity(q))].red);
               if (image->colorspace == CMYKColorspace)
-                SetPixelIndex(indexes+x,ClampToQuantum(equalize_map[
-                  ScaleQuantumToMap(GetPixelIndex(indexes+x))].red));
+                SetPixelIndex(indexes+x,equalize_map[
+                  ScaleQuantumToMap(GetPixelIndex(indexes+x))].red);
             }
           q++;
           continue;
         }
       if (((channel & RedChannel) != 0) && (white.red != black.red))
-        SetPixelRed(q,ClampToQuantum(equalize_map[
-          ScaleQuantumToMap(GetPixelRed(q))].red));
+        SetPixelRed(q,equalize_map[
+          ScaleQuantumToMap(GetPixelRed(q))].red);
       if (((channel & GreenChannel) != 0) && (white.green != black.green))
-        SetPixelGreen(q,ClampToQuantum(equalize_map[
-          ScaleQuantumToMap(GetPixelGreen(q))].green));
+        SetPixelGreen(q,equalize_map[
+          ScaleQuantumToMap(GetPixelGreen(q))].green);
       if (((channel & BlueChannel) != 0) && (white.blue != black.blue))
-        SetPixelBlue(q,ClampToQuantum(equalize_map[
-          ScaleQuantumToMap(GetPixelBlue(q))].blue));
+        SetPixelBlue(q,equalize_map[
+          ScaleQuantumToMap(GetPixelBlue(q))].blue);
       if (((channel & OpacityChannel) != 0) && (white.opacity != black.opacity))
-        SetPixelOpacity(q,ClampToQuantum(equalize_map[
-          ScaleQuantumToMap(GetPixelOpacity(q))].opacity));
+        SetPixelOpacity(q,equalize_map[
+          ScaleQuantumToMap(GetPixelOpacity(q))].opacity);
       if ((((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace)) &&
           (white.index != black.index))
-        SetPixelIndex(indexes+x,ClampToQuantum(equalize_map[
-          ScaleQuantumToMap(GetPixelIndex(indexes+x))].index));
+        SetPixelIndex(indexes+x,equalize_map[
+          ScaleQuantumToMap(GetPixelIndex(indexes+x))].index);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2032,7 +2033,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  equalize_map=(MagickPixelPacket *) RelinquishMagickMemory(equalize_map);
+  equalize_map=(QuantumPixelPacket *) RelinquishMagickMemory(equalize_map);
   return(status);
 }
 

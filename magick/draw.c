@@ -1120,7 +1120,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   SegmentInfo
     edge;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
   size_t
     height,
     width;
@@ -1183,7 +1183,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   exception=(&image->exception);
   start=(ssize_t) ceil(edge.y1+0.5);
   stop=(ssize_t) floor(edge.y2+0.5);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
   height=(size_t) (floor(edge.y2+0.5)-ceil(edge.y1-0.5));
   width=(size_t) (floor(edge.x2+0.5)-ceil(edge.x1-0.5));
 #endif
@@ -3275,7 +3275,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   RectangleInfo
     bounding_box;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
   size_t
     height,
     width;
@@ -3301,7 +3301,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   status=MagickTrue;
   exception=(&image->exception);
   GetMagickPixelPacket(image,&zero);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
+#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
   height=(size_t) (bounding_box.height-bounding_box.y);
   width=(size_t) (bounding_box.width-bounding_box.x);
 #endif
