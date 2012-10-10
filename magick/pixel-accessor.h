@@ -22,6 +22,7 @@
 extern "C" {
 #endif
 
+#include <math.h>
 #include <magick/gem.h>
 #include <magick/pixel.h>
 
