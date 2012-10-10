@@ -447,6 +447,13 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     range=GetQuantumRange(image->depth);
     for (y=0; y < (ssize_t) image->rows; y++)
     {
+      double
+        alpha,
+        black,
+        blue,
+        green,
+        red;
+
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         if (ReadBlobString(image,text) == (char *) NULL)
@@ -458,15 +465,15 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->alpha_trait == BlendPixelTrait)
               {
                 count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf",&x_offset,
-                  &y_offset,&pixel.red,&pixel.alpha);
-                pixel.green=pixel.red;
-                pixel.blue=pixel.red;
+                  &y_offset,&red,&alpha);
+                green=red;
+                blue=red;
                 break;
               }
             count=(ssize_t) sscanf(text,"%ld,%ld: (%lf",&x_offset,&y_offset,
-              &pixel.red);
-            pixel.green=pixel.red;
-            pixel.blue=pixel.red;
+              &red);
+            green=red;
+            blue=red;
             break;       
           }
           case CMYKColorspace:
@@ -474,12 +481,11 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->alpha_trait == BlendPixelTrait)
               {
                 count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf,%lf",
-                  &x_offset,&y_offset,&pixel.red,&pixel.green,&pixel.blue,
-                  &pixel.black,&pixel.alpha);
+                  &x_offset,&y_offset,&red,&green,&blue,&black,&alpha);
                 break;
               }
             count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf",&x_offset,
-              &y_offset,&pixel.red,&pixel.green,&pixel.blue,&pixel.black);
+              &y_offset,&red,&green,&blue,&black);
             break;
           }
           default:
@@ -487,20 +493,19 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->alpha_trait == BlendPixelTrait)
               {
                 count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf,%lf",
-                  &x_offset,&y_offset,&pixel.red,&pixel.green,&pixel.blue,
-                  &pixel.alpha);
+                  &x_offset,&y_offset,&red,&green,&blue,&alpha);
                 break;
               }
             count=(ssize_t) sscanf(text,"%ld,%ld: (%lf,%lf,%lf",&x_offset,
-              &y_offset,&pixel.red,&pixel.green,&pixel.blue);
+              &y_offset,&red,&green,&blue);
             break;       
           }
         }
-        pixel.red=ScaleAnyToQuantum(pixel.red,range);
-        pixel.green=ScaleAnyToQuantum(pixel.green,range);
-        pixel.blue=ScaleAnyToQuantum(pixel.blue,range);
-        pixel.black=ScaleAnyToQuantum(pixel.black,range);
-        pixel.alpha=ScaleAnyToQuantum(pixel.alpha,range);
+        pixel.red=ScaleAnyToQuantum((QuantumAny) (red+0.5),range);
+        pixel.green=ScaleAnyToQuantum((QuantumAny) (green+0.5),range);
+        pixel.blue=ScaleAnyToQuantum((QuantumAny) (blue+0.5),range);
+        pixel.black=ScaleAnyToQuantum((QuantumAny) (black+0.5),range);
+        pixel.alpha=ScaleAnyToQuantum((QuantumAny) (alpha+0.5),range);
         q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);
         if (q == (Quantum *) NULL)
           continue;
