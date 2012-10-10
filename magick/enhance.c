@@ -1849,6 +1849,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
       p++;
     }
   }
+  image_view=DestroyCacheView(image_view);
   /*
     Integrate the histogram to get the equalization map.
   */
@@ -1950,6 +1951,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   */
   status=MagickTrue;
   progress=0;
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1995,6 +1997,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
           q++;
           continue;
         }
+puts("a");
       if (((channel & RedChannel) != 0) && (white.red != black.red))
         SetPixelRed(q,ClampToQuantum(equalize_map[
           ScaleQuantumToMap(GetPixelRed(q))].red));
