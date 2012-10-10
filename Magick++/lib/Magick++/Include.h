@@ -23,6 +23,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 #if defined(MAGICKCORE_HAVE_SYS_TYPES_H)
 # include <sys/types.h>

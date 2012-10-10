@@ -31,6 +31,20 @@ extern "C" {
 
 #undef index
 
+static inline double DecodesRGBGamma(const double pixel)
+{
+  if (pixel <= (0.0404482362771076*QuantumRange))
+    return(pixel/12.92);
+  return(QuantumRange*pow((QuantumScale*pixel+0.055)/1.055,2.4));
+}
+
+static inline double EncodesRGBGamma(const double pixel)
+{
+  if (pixel <= (0.0031306684425005883*QuantumRange))
+    return(12.92*pixel);
+  return(QuantumRange*(1.055*pow(QuantumScale*pixel,1.0/2.4)-0.055));
+}
+
 static inline Quantum GetPixela(const Image *restrict image,
   const Quantum *restrict pixel)
 {
@@ -206,9 +220,9 @@ static inline double GetPixelInfoIntensity(const PixelInfo *restrict pixel_info)
   if (pixel_info->colorspace != sRGBColorspace)
     return(0.298839*pixel_info->red+0.586811*pixel_info->green+
       0.114350*pixel_info->blue);
-  red=InversesRGBCompandor(pixel_info->red);
-  green=InversesRGBCompandor(pixel_info->green);
-  blue=InversesRGBCompandor(pixel_info->blue);
+  red=DecodesRGBGamma(pixel_info->red);
+  green=DecodesRGBGamma(pixel_info->green);
+  blue=DecodesRGBGamma(pixel_info->blue);
   return(0.298839*red+0.586811*green+0.114350*blue);
 }
 
@@ -224,9 +238,9 @@ static inline double GetPixelInfoLuminance(const PixelInfo *restrict pixel_info)
   if (pixel_info->colorspace != sRGBColorspace)
     return(0.21267*pixel_info->red+0.71516*pixel_info->green+
       0.07217*pixel_info->blue);
-  red=InversesRGBCompandor(pixel_info->red);
-  green=InversesRGBCompandor(pixel_info->green);
-  blue=InversesRGBCompandor(pixel_info->blue);
+  red=DecodesRGBGamma(pixel_info->red);
+  green=DecodesRGBGamma(pixel_info->green);
+  blue=DecodesRGBGamma(pixel_info->blue);
   return(0.21267*red+0.71516*green+0.07217*blue);
 }
 
@@ -244,11 +258,11 @@ static inline double GetPixelIntensity(const Image *restrict image,
     return(0.298839*pixel[image->channel_map[RedPixelChannel].offset]+
       0.586811*pixel[image->channel_map[GreenPixelChannel].offset]+
       0.114350*pixel[image->channel_map[BluePixelChannel].offset]);
-  red=InversesRGBCompandor((double)
+  red=DecodesRGBGamma((double)
     pixel[image->channel_map[RedPixelChannel].offset]);
-  green=InversesRGBCompandor((double)
+  green=DecodesRGBGamma((double)
     pixel[image->channel_map[GreenPixelChannel].offset]);
-  blue=InversesRGBCompandor((double)
+  blue=DecodesRGBGamma((double)
     pixel[image->channel_map[BluePixelChannel].offset]);
   return(0.298839*red+0.586811*green+0.114350*blue);
 }
@@ -273,11 +287,11 @@ static inline double GetPixelLuminance(const Image *restrict image,
     return(0.298839*pixel[image->channel_map[RedPixelChannel].offset]+
       0.586811*pixel[image->channel_map[GreenPixelChannel].offset]+
       0.114350*pixel[image->channel_map[BluePixelChannel].offset]);
-  red=InversesRGBCompandor((double)
+  red=DecodesRGBGamma((double)
     pixel[image->channel_map[RedPixelChannel].offset]);
-  green=InversesRGBCompandor((double)
+  green=DecodesRGBGamma((double)
     pixel[image->channel_map[GreenPixelChannel].offset]);
-  blue=InversesRGBCompandor((double)
+  blue=DecodesRGBGamma((double)
     pixel[image->channel_map[BluePixelChannel].offset]);
   return(0.21267*red+0.71516*green+0.07217*blue);
 }
