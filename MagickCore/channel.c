@@ -714,7 +714,7 @@ MagickExport Image *SeparateImage(const Image *image,
           continue;
         pixel=p[i];
         if (IssRGBColorspace(image->colorspace) != MagickFalse)
-          pixel=InversesRGBCompandor(pixel);
+          pixel=DecodesRGBGamma(pixel);
         SetPixelChannel(separate_image,GrayPixelChannel,ClampToQuantum(pixel),
           q);
       }

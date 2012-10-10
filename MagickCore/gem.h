@@ -26,9 +26,7 @@ extern "C" {
 #include <MagickCore/random_.h>
 
 extern MagickExport double
-  ExpandAffine(const AffineMatrix *),
-  InversesRGBCompandor(const double),
-  sRGBCompandor(const double);
+  ExpandAffine(const AffineMatrix *);
 
 extern MagickExport void
   ConvertHSLToRGB(const double,const double,const double,double *,double *,
