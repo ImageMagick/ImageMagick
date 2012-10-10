@@ -127,6 +127,16 @@ typedef struct _PixelPacket
 #endif
 } PixelPacket;
 
+typedef struct _QuantumPixelPacket
+{
+  Quantum
+    red,
+    green,
+    blue,
+    opacity,
+    index;
+} QuantumPixelPacket;
+
 typedef struct _CacheView
   CacheView_;
 
