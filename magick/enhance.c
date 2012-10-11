@@ -1137,8 +1137,10 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
   MagickPixelPacket
     black,
     *histogram,
-    *stretch_map,
     white;
+
+  QuantumPixelPacket
+    *stretch_map;
 
   register ssize_t
     i;
@@ -1155,10 +1157,10 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   histogram=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*histogram));
-  stretch_map=(MagickPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
+  stretch_map=(QuantumPixelPacket *) AcquireQuantumMemory(MaxMap+1UL,
     sizeof(*stretch_map));
   if ((histogram == (MagickPixelPacket *) NULL) ||
-      (stretch_map == (MagickPixelPacket *) NULL))
+      (stretch_map == (QuantumPixelPacket *) NULL))
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);
   /*
@@ -1339,64 +1341,60 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
           stretch_map[i].red=0.0;
         else
           if (i > (ssize_t) white.red)
-            stretch_map[i].red=(MagickRealType) QuantumRange;
+            stretch_map[i].red=QuantumRange;
           else
             if (black.red != white.red)
-              stretch_map[i].red=(MagickRealType) ScaleMapToQuantum(
-                (MagickRealType) (MaxMap*(i-black.red)/(white.red-black.red)));
+              stretch_map[i].red=ScaleMapToQuantum((MagickRealType) (MaxMap*
+                (i-black.red)/(white.red-black.red)));
       }
     if ((channel & GreenChannel) != 0)
       {
         if (i < (ssize_t) black.green)
-          stretch_map[i].green=0.0;
+          stretch_map[i].green=0;
         else
           if (i > (ssize_t) white.green)
-            stretch_map[i].green=(MagickRealType) QuantumRange;
+            stretch_map[i].green=QuantumRange;
           else
             if (black.green != white.green)
-              stretch_map[i].green=(MagickRealType) ScaleMapToQuantum(
-                (MagickRealType) (MaxMap*(i-black.green)/(white.green-
-                black.green)));
+              stretch_map[i].green=ScaleMapToQuantum((MagickRealType) (MaxMap*
+                (i-black.green)/(white.green-black.green)));
       }
     if ((channel & BlueChannel) != 0)
       {
         if (i < (ssize_t) black.blue)
-          stretch_map[i].blue=0.0;
+          stretch_map[i].blue=0;
         else
           if (i > (ssize_t) white.blue)
-            stretch_map[i].blue=(MagickRealType) QuantumRange;
+            stretch_map[i].blue= QuantumRange;
           else
             if (black.blue != white.blue)
-              stretch_map[i].blue=(MagickRealType) ScaleMapToQuantum(
-                (MagickRealType) (MaxMap*(i-black.blue)/(white.blue-
-                black.blue)));
+              stretch_map[i].blue=ScaleMapToQuantum((MagickRealType) (MaxMap*
+                (i-black.blue)/(white.blue-black.blue)));
       }
     if ((channel & OpacityChannel) != 0)
       {
         if (i < (ssize_t) black.opacity)
-          stretch_map[i].opacity=0.0;
+          stretch_map[i].opacity=0;
         else
           if (i > (ssize_t) white.opacity)
-            stretch_map[i].opacity=(MagickRealType) QuantumRange;
+            stretch_map[i].opacity=QuantumRange;
           else
             if (black.opacity != white.opacity)
-              stretch_map[i].opacity=(MagickRealType) ScaleMapToQuantum(
-                (MagickRealType) (MaxMap*(i-black.opacity)/(white.opacity-
-                black.opacity)));
+              stretch_map[i].opacity=ScaleMapToQuantum((MagickRealType) (MaxMap*
+                (i-black.opacity)/(white.opacity-black.opacity)));
       }
     if (((channel & IndexChannel) != 0) &&
         (image->colorspace == CMYKColorspace))
       {
         if (i < (ssize_t) black.index)
-          stretch_map[i].index=0.0;
+          stretch_map[i].index=0;
         else
           if (i > (ssize_t) white.index)
-            stretch_map[i].index=(MagickRealType) QuantumRange;
+            stretch_map[i].index=QuantumRange;
           else
             if (black.index != white.index)
-              stretch_map[i].index=(MagickRealType) ScaleMapToQuantum(
-                (MagickRealType) (MaxMap*(i-black.index)/(white.index-
-                black.index)));
+              stretch_map[i].index=ScaleMapToQuantum((MagickRealType) (MaxMap*
+                (i-black.index)/(white.index-black.index)));
       }
   }
   /*
@@ -1415,26 +1413,26 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
         if ((channel & RedChannel) != 0)
           {
             if (black.red != white.red)
-              image->colormap[i].red=ClampToQuantum(stretch_map[
-                ScaleQuantumToMap(image->colormap[i].red)].red);
+              image->colormap[i].red=stretch_map[
+                ScaleQuantumToMap(image->colormap[i].red)].red;
           }
         if ((channel & GreenChannel) != 0)
           {
             if (black.green != white.green)
-              image->colormap[i].green=ClampToQuantum(stretch_map[
-                ScaleQuantumToMap(image->colormap[i].green)].green);
+              image->colormap[i].green=stretch_map[
+                ScaleQuantumToMap(image->colormap[i].green)].green;
           }
         if ((channel & BlueChannel) != 0)
           {
             if (black.blue != white.blue)
-              image->colormap[i].blue=ClampToQuantum(stretch_map[
-                ScaleQuantumToMap(image->colormap[i].blue)].blue);
+              image->colormap[i].blue=stretch_map[
+                ScaleQuantumToMap(image->colormap[i].blue)].blue;
           }
         if ((channel & OpacityChannel) != 0)
           {
             if (black.opacity != white.opacity)
-              image->colormap[i].opacity=ClampToQuantum(stretch_map[
-                ScaleQuantumToMap(image->colormap[i].opacity)].opacity);
+              image->colormap[i].opacity=stretch_map[
+                ScaleQuantumToMap(image->colormap[i].opacity)].opacity;
           }
       }
     }
@@ -1472,33 +1470,33 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
       if ((channel & RedChannel) != 0)
         {
           if (black.red != white.red)
-            SetPixelRed(q,ClampToQuantum(stretch_map[
-              ScaleQuantumToMap(GetPixelRed(q))].red));
+            SetPixelRed(q,stretch_map[
+              ScaleQuantumToMap(GetPixelRed(q))].red);
         }
       if ((channel & GreenChannel) != 0)
         {
           if (black.green != white.green)
-            SetPixelGreen(q,ClampToQuantum(stretch_map[
-              ScaleQuantumToMap(GetPixelGreen(q))].green));
+            SetPixelGreen(q,stretch_map[
+              ScaleQuantumToMap(GetPixelGreen(q))].green);
         }
       if ((channel & BlueChannel) != 0)
         {
           if (black.blue != white.blue)
-            SetPixelBlue(q,ClampToQuantum(stretch_map[
-              ScaleQuantumToMap(GetPixelBlue(q))].blue));
+            SetPixelBlue(q,stretch_map[
+              ScaleQuantumToMap(GetPixelBlue(q))].blue);
         }
       if ((channel & OpacityChannel) != 0)
         {
           if (black.opacity != white.opacity)
-            SetPixelOpacity(q,ClampToQuantum(stretch_map[
-              ScaleQuantumToMap(GetPixelOpacity(q))].opacity));
+            SetPixelOpacity(q,stretch_map[
+              ScaleQuantumToMap(GetPixelOpacity(q))].opacity);
         }
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
         {
           if (black.index != white.index)
-            SetPixelIndex(indexes+x,ClampToQuantum(stretch_map[
-              ScaleQuantumToMap(GetPixelIndex(indexes+x))].index));
+            SetPixelIndex(indexes+x,stretch_map[
+              ScaleQuantumToMap(GetPixelIndex(indexes+x))].index);
         }
       q++;
     }
@@ -1519,7 +1517,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  stretch_map=(MagickPixelPacket *) RelinquishMagickMemory(stretch_map);
+  stretch_map=(QuantumPixelPacket *) RelinquishMagickMemory(stretch_map);
   return(status);
 }
 
