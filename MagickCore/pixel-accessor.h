@@ -114,8 +114,8 @@ static inline Quantum GetPixelChannel(const Image *restrict image,
   return(pixel[image->channel_map[channel].offset]);
 }
 
-static inline PixelChannel GetPixelChannelChannel(
-  const Image *restrict image,const ssize_t offset)
+static inline PixelChannel GetPixelChannelChannel(const Image *restrict image,
+  const ssize_t offset)
 {
   return(image->channel_map[offset].channel);
 }
