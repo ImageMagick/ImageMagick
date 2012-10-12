@@ -1,9 +1,5 @@
-2012-10-12  6.7.0-0 Cristy  <quetzlzacatenango@image...>
-  * New version 6.7.0-0, SVN revision 9594.
-
-2012-10-11  6.8.0-0 Glenn Randers-Pehrson <glennrp@image...>
-  * Sometimes the PNG encoder would write indexed PNG even if grayscale was
-    requested.
+2012-10-12  6.8.0-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.0-0, SVN revision 9594.
 
 2012-10-07  6.8.0-0 Cristy  <quetzlzacatenango@image...>
   * Check -fx expression early to prevent fault.
