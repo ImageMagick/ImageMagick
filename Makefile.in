@@ -2719,7 +2719,6 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PACKAGE_VERSION_ADDENDUM = @PACKAGE_VERSION_ADDENDUM@
-PACKAGE_VAQ_STRING = @PACKAGE_STRING@@PACKAGE_VERSION_ADDENDUM@
 PANGO_CFLAGS = @PANGO_CFLAGS@
 PANGO_LIBS = @PANGO_LIBS@
 PATH_SEPARATOR = @PATH_SEPARATOR@
@@ -2747,7 +2746,6 @@ PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
 PTHREAD_LIBS = @PTHREAD_LIBS@
 PrintDelegate = @PrintDelegate@
 QUANTUM_DEPTH = @QUANTUM_DEPTH@
-PACKAGE_Q_STRING = @PACKAGE_STRING@@PACKAGE_VERSION_ADDENDUM@ (Q@QUANTUM_DEPTH@)
 RANLIB = @RANLIB@
 RLEEncodeDelegate = @RLEEncodeDelegate@
 RMDelegate = @RMDelegate@
@@ -10358,7 +10356,7 @@ $(TEST_SUITE_LOG): $(TEST_LOGS)
 	  result_count $$1 "ERROR:" $$error "$$mgn"; \
 	}; \
 	{								\
-	  echo "$(PACKAGE_Q_STRING): $(subdir)/$(TEST_SUITE_LOG)" |	\
+	  echo "$(PACKAGE_STRING): $(subdir)/$(TEST_SUITE_LOG)" |	\
 	    $(am__rst_title);						\
 	  create_testsuite_report --no-color;				\
 	  echo;								\
@@ -10375,7 +10373,7 @@ $(TEST_SUITE_LOG): $(TEST_LOGS)
 	  test x"$$VERBOSE" = x || cat $(TEST_SUITE_LOG);		\
 	fi;								\
 	echo "$${col}$$br$${std}"; 					\
-	echo "$${col}Testsuite summary for $(PACKAGE_Q_STRING)$${std}";	\
+	echo "$${col}Testsuite summary for $(PACKAGE_STRING)$${std}";	\
 	echo "$${col}$$br$${std}"; 					\
 	create_testsuite_report --maybe-color;				\
 	echo "$$col$$br$$std";						\
