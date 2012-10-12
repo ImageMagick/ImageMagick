@@ -4574,6 +4574,8 @@ MagickExport MagickBooleanType SolarizeImageChannel(Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (IsGrayColorspace(image->colorspace) != MagickFalse)
+    (void) TransformImageColorspace(image,RGBColorspace);
   if (image->storage_class == PseudoClass)
     {
       register ssize_t
