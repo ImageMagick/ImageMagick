@@ -1,3 +1,7 @@
+2012-10-12  6.8.0-1 Cristy  <quetzlzacatenango@image...>
+  * Fix color management for the -solarize option (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22059).
+
 2012-10-12  6.8.0-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.0-0, SVN revision 9594.
 
