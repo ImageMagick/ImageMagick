@@ -3499,25 +3499,22 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           pixel.blue=x_map[red].z+y_map[green].z+z_map[blue].z;
           if (image->colorspace == YCCColorspace)
             {
-              pixel.red=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
-                pixel.red)];
-              pixel.green=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
-                pixel.green)];
-              pixel.blue=QuantumRange*YCCMap[RoundToYCC(1024.0*QuantumScale*
-                pixel.blue)];
+              pixel.red=QuantumRange*YCCMap[RoundToYCC(1024.0*pixel.red/
+                (double) MaxMap)];
+              pixel.green=QuantumRange*YCCMap[RoundToYCC(1024.0*pixel.green/
+                (double) MaxMap)];
+              pixel.blue=QuantumRange*YCCMap[RoundToYCC(1024.0*pixel.blue/
+                (double) MaxMap)];
             }
           else
             {
-              pixel.red=EncodesRGBGamma(pixel.red);
-              pixel.green=EncodesRGBGamma(pixel.green);
-              pixel.blue=EncodesRGBGamma(pixel.blue);
+              pixel.red=EncodesRGBGamma(ScaleMapToQuantum(pixel.red));
+              pixel.green=EncodesRGBGamma(ScaleMapToQuantum(pixel.green));
+              pixel.blue=EncodesRGBGamma(ScaleMapToQuantum(pixel.blue));
             }
-          SetPixelRed(image,ClampToQuantum((double)
-            ScaleMapToQuantum(pixel.red)),q);
-          SetPixelGreen(image,ClampToQuantum((double)
-            ScaleMapToQuantum(pixel.green)),q);
-          SetPixelBlue(image,ClampToQuantum((double)
-            ScaleMapToQuantum(pixel.blue)),q);
+          SetPixelRed(image,ClampToQuantum(pixel.red),q);
+          SetPixelGreen(image,ClampToQuantum(pixel.green),q);
+          SetPixelBlue(image,ClampToQuantum(pixel.blue),q);
           q+=GetPixelChannels(image);
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
