@@ -38,7 +38,7 @@ testReadWrite( 'BMP:input.bmp',
   q//,
   '4db1c9f8cf10c1a9a7e80397b4cf060d2d31caae13ba712712e6341fb96bd6b0',
   'ae2007d0e05933a72294a6f8c7b59fc54d5fa3039f0f13bf8d65d05044ef2f39',
-  'ae2007d0e05933a72294a6f8c7b59fc54d5fa3039f0f13bf8d65d05044ef2f39');
+  '5365605c69ea58eb07b9b043e3561f2aca5532e2f9054da1b7a80dc2aa515892');
 
 print("Microsoft Windows 24-bit bitmap image file ...\n");
 ++$test;
