@@ -37,6 +37,7 @@ testReadWrite( 'BMP:input.bmp',
   'BMP:output.bmp',
   q//,
   '4db1c9f8cf10c1a9a7e80397b4cf060d2d31caae13ba712712e6341fb96bd6b0',
+  'ae2007d0e05933a72294a6f8c7b59fc54d5fa3039f0f13bf8d65d05044ef2f39',
   'ae2007d0e05933a72294a6f8c7b59fc54d5fa3039f0f13bf8d65d05044ef2f39');
 
 print("Microsoft Windows 24-bit bitmap image file ...\n");
@@ -44,7 +45,9 @@ print("Microsoft Windows 24-bit bitmap image file ...\n");
 testReadWrite( 'BMP:input.bmp24',
   'BMP:output.bmp24',
   q//,
-  '6a4a257921582768b774aeeac549b7c0c0b51f665395eddf921cce53a0ad2a33');
+  '6a4a257921582768b774aeeac549b7c0c0b51f665395eddf921cce53a0ad2a33',
+  '6a4a257921582768b774aeeac549b7c0c0b51f665395eddf921cce53a0ad2a33',
+  'e7d406ec41fe69ba2bd88dd59e5eb17a83f17c0a99519def02c020041144f5b3');
 
 print("ZSoft IBM PC multi-page Paintbrush file ...\n");
 ++$test;
