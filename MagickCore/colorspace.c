@@ -72,7 +72,7 @@
 */
 typedef struct _TransformPacket
 {
-  double
+  MagickRealType
     x,
     y,
     z;
