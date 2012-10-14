@@ -27,10 +27,10 @@ static inline double MagickEpsilonReciprocal(const double x)
   double
     sign;
 
-  sign=x < (double) 0.0 ? (double) -1.0 : (double) 1.0;
+  sign=x < 0.0 ? -1.0 : 1.0;
   if ((sign*x) >= MagickEpsilon)
     return(1.0/x);
-  return(sign*((double) 1.0/MagickEpsilon));
+  return(sign/MagickEpsilon);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
