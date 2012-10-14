@@ -77,10 +77,13 @@ static inline MagickBooleanType IsMonochromePixel(const PixelPacket *pixel)
 
 static inline MagickRealType MagickEpsilonReciprocal(const MagickRealType x)
 {
-  MagickRealType sign = x < (MagickRealType) 0.0 ? (MagickRealType) -1.0 : 
-    (MagickRealType) 1.0;
-  return((sign*x) >= MagickEpsilon ? (MagickRealType) 1.0/x : sign*(
-    (MagickRealType) 1.0/MagickEpsilon));
+  MagickRealType
+    sign;
+
+  sign=x < 0.0f ? -1.0f : 1.0f;
+  if ((sign*x) >= MagickEpsilon)
+    return(1.0f/x);
+  return(sign/MagickEpsilon);
 }
 
 static inline void SetMagickPixelPacket(const Image *image,
