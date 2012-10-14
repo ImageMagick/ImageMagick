@@ -29,7 +29,7 @@ extern "C" {
 
 static inline void ConvertRGBToCMYK(PixelInfo *pixel)
 {
-  double
+  MagickRealType
     black,
     blue,
     cyan,
@@ -53,20 +53,20 @@ static inline void ConvertRGBToCMYK(PixelInfo *pixel)
   if ((fabs(red) < MagickEpsilon) && (fabs(green) < MagickEpsilon) &&
       (fabs(blue) < MagickEpsilon))
     {
-      pixel->black=(double) QuantumRange;
+      pixel->black=(MagickRealType) QuantumRange;
       return;
     }
-  cyan=(double) (1.0-red);
-  magenta=(double) (1.0-green);
-  yellow=(double) (1.0-blue);
+  cyan=(MagickRealType) (1.0-red);
+  magenta=(MagickRealType) (1.0-green);
+  yellow=(MagickRealType) (1.0-blue);
   black=cyan;
   if (magenta < black)
     black=magenta;
   if (yellow < black)
     black=yellow;
-  cyan=(double) ((cyan-black)/(1.0-black));
-  magenta=(double) ((magenta-black)/(1.0-black));
-  yellow=(double) ((yellow-black)/(1.0-black));
+  cyan=(MagickRealType) ((cyan-black)/(1.0-black));
+  magenta=(MagickRealType) ((magenta-black)/(1.0-black));
+  yellow=(MagickRealType) ((yellow-black)/(1.0-black));
   pixel->colorspace=CMYKColorspace;
   pixel->red=QuantumRange*cyan;
   pixel->green=QuantumRange*magenta;
