@@ -128,16 +128,16 @@ static inline MagickRealType GetPixelIntensity(const Image *image,
   if (image->colorspace == GRAYColorspace)
     return((MagickRealType) pixel->red);
   if (image->colorspace != sRGBColorspace)
-    return(0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue);
+    return(0.298839f*pixel->red+0.586811f*pixel->green+0.114350f*pixel->blue);
   red=DecodesRGBGamma((double) pixel->red);
   green=DecodesRGBGamma((double) pixel->green);
   blue=DecodesRGBGamma((double) pixel->blue);
-  return((MagickRealType) (0.298839*red+0.586811*green+0.114350*blue));
+  return((MagickRealType) (0.298839f*red+0.586811f*green+0.114350f*blue));
 }
 
 static inline MagickRealType AbsolutePixelValue(const MagickRealType x)
 {
-  return(x < 0.0 ? -x : x);
+  return(x < 0.0f ? -x : x);
 }
 
 static inline MagickBooleanType IsPixelGray(const PixelPacket *pixel)
@@ -166,7 +166,7 @@ static inline Quantum PixelPacketIntensity(const PixelPacket *pixel)
   red=DecodesRGBGamma((double) pixel->red);
   green=DecodesRGBGamma((double) pixel->green);
   blue=DecodesRGBGamma((double) pixel->blue);
-  return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
+  return(ClampToQuantum(0.298839f*red+0.586811f*green+0.114350f*blue));
 }
 
 static inline Quantum PixelIntensityToQuantum(const Image *restrict image,
@@ -180,12 +180,12 @@ static inline Quantum PixelIntensityToQuantum(const Image *restrict image,
   if (image->colorspace == GRAYColorspace)
     return(GetPixelGray(pixel));
   if (image->colorspace != sRGBColorspace)
-    return(ClampToQuantum(0.298839*pixel->red+0.586811*pixel->green+0.114350*
+    return(ClampToQuantum(0.298839f*pixel->red+0.586811f*pixel->green+0.114350f*
       pixel->blue));
   red=DecodesRGBGamma((double) pixel->red);
   green=DecodesRGBGamma((double) pixel->green);
   blue=DecodesRGBGamma((double) pixel->blue);
-  return(ClampToQuantum(0.298839*red+0.586811*green+0.114350*blue));
+  return(ClampToQuantum(0.298839f*red+0.586811f*green+0.114350f*blue));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
