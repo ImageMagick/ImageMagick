@@ -612,8 +612,8 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
         double
           luma;
 
-        luma=0.21267*image->colormap[i].red+0.71516*image->colormap[i].green+
-          0.07217*image->colormap[i].blue;
+        luma=0.21267f*image->colormap[i].red+0.71516f*image->colormap[i].green+
+          0.07217f*image->colormap[i].blue;
         image->colormap[i].red=ClampToQuantum(luma+color_correction.saturation*
           cdl_map[ScaleQuantumToMap(image->colormap[i].red)].red-luma);
         image->colormap[i].green=ClampToQuantum(luma+
@@ -655,8 +655,8 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      luma=0.21267*GetPixelRed(q)+0.71516*GetPixelGreen(q)+
-        0.07217*GetPixelBlue(q);
+      luma=0.21267f*GetPixelRed(q)+0.71516f*GetPixelGreen(q)+
+        0.07217f*GetPixelBlue(q);
       SetPixelRed(q,ClampToQuantum(luma+color_correction.saturation*
         (cdl_map[ScaleQuantumToMap(GetPixelRed(q))].red-luma)));
       SetPixelGreen(q,ClampToQuantum(luma+color_correction.saturation*

@@ -7631,7 +7631,7 @@ static inline MagickRealType DiversityPixelIntensity(
   MagickRealType
     intensity;
 
-  intensity=0.298839*pixel->red+0.586811*pixel->green+0.114350*pixel->blue;
+  intensity=0.298839f*pixel->red+0.586811f*pixel->green+0.114350f*pixel->blue;
   return(intensity);
 }
 
