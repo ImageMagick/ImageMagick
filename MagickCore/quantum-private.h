@@ -311,7 +311,7 @@ static inline Quantum ScaleLongLongToQuantum(const MagickSizeType value)
 #endif
 }
 
-static inline Quantum ScaleMapToQuantum(const double value)
+static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 {
   if (value <= 0.0)
     return((Quantum) 0);
@@ -414,7 +414,7 @@ static inline Quantum ScaleLongLongToQuantum(const MagickSizeType value)
 #endif
 }
 
-static inline Quantum ScaleMapToQuantum(const double value)
+static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 {
   if (value <= 0.0)
     return((Quantum) 0);
@@ -503,7 +503,7 @@ static inline Quantum ScaleLongLongToQuantum(const MagickSizeType value)
   return((Quantum) value);
 }
 
-static inline Quantum ScaleMapToQuantum(const double value)
+static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 {
   if (value <= 0.0)
     return((Quantum) 0);
@@ -586,7 +586,7 @@ static inline Quantum ScaleLongLongToQuantum(const MagickSizeType value)
   return((Quantum) (18446744073709551615.0*value));
 }
 
-static inline Quantum ScaleMapToQuantum(const double value)
+static inline Quantum ScaleMapToQuantum(const MagickRealType value)
 {
   if (value <= 0.0)
     return((Quantum) 0);

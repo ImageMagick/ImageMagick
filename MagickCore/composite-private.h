@@ -45,8 +45,7 @@ static inline double MagickOver_(const double p,
 }
 
 static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
-  const double alpha,const Quantum *q,const double beta,
-  Quantum *composite)
+  const double alpha,const Quantum *q,const double beta,Quantum *composite)
 {
   double
     Da,
@@ -113,8 +112,7 @@ static inline void CompositePixelOver(const Image *image,const PixelInfo *p,
 }
 
 static inline void CompositePixelInfoOver(const PixelInfo *p,
-  const double alpha,const PixelInfo *q,const double beta,
-  PixelInfo *composite)
+  const double alpha,const PixelInfo *q,const double beta,PixelInfo *composite)
 {
   double
     Da,
@@ -147,8 +145,7 @@ static inline double RoundToUnity(const double value)
 }
 
 static inline void CompositePixelInfoPlus(const PixelInfo *p,
-  const double alpha,const PixelInfo *q,const double beta,
-  PixelInfo *composite)
+  const double alpha,const PixelInfo *q,const double beta,PixelInfo *composite)
 {
   double
     Da,
@@ -171,25 +168,24 @@ static inline void CompositePixelInfoPlus(const PixelInfo *p,
 }
 
 static inline void CompositePixelInfoAreaBlend(const PixelInfo *p,
-  const double alpha,const PixelInfo *q,const double beta,
-  const double area,PixelInfo *composite)
+  const double alpha,const PixelInfo *q,const double beta,const double area,
+  PixelInfo *composite)
 {
   /*
     Blend pixel colors p and q by the amount given and area.
   */
-  CompositePixelInfoPlus(p,(double) (1.0-area)*alpha,q,(double)
-    (area*beta),composite);
+  CompositePixelInfoPlus(p,(double) (1.0-area)*alpha,q,(double) (area*beta),
+    composite);
 }
 
 static inline void CompositePixelInfoBlend(const PixelInfo *p,
-  const double alpha,const PixelInfo *q,const double beta,
-  PixelInfo *composite)
+  const double alpha,const PixelInfo *q,const double beta,PixelInfo *composite)
 {
   /*
     Blend pixel colors p and q by the amount given.
   */
-  CompositePixelInfoPlus(p,(double) (alpha*p->alpha),q,(double)
-    (beta*q->alpha),composite);
+  CompositePixelInfoPlus(p,(double) (alpha*p->alpha),q,(double) (beta*q->alpha),
+    composite);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

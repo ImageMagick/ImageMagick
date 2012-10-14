@@ -191,8 +191,7 @@ static inline double MagickMax(const double x,const double y)
   return(y);
 }
 
-static inline double ConvertHueToRGB(double m1,
-  double m2,double hue)
+static inline double ConvertHueToRGB(double m1,double m2,double hue)
 {
   if (hue < 0.0)
     hue+=1.0;
@@ -736,14 +735,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       const char
         *value;
 
-      PixelInfo
-        pixel;
-
       double
         angle_range,
         angle_start,
         height,
         width;
+
+      PixelInfo
+        pixel;
 
       ResampleFilter
         *resample_filter;
@@ -1050,21 +1049,19 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             Displace the offset.
           */
           offset.x=(horizontal_scale*(GetPixelRed(composite_image,p)-
-            (((double) QuantumRange+1.0)/2.0)))/(((double)
-            QuantumRange+1.0)/2.0)+center.x+((compose == DisplaceCompositeOp) ?
-            x : 0);
-          offset.y=(vertical_scale*(GetPixelGreen(composite_image,p)-
-            (((double) QuantumRange+1.0)/2.0)))/(((double)
-            QuantumRange+1.0)/2.0)+center.y+((compose == DisplaceCompositeOp) ?
-            y : 0);
+            (((double) QuantumRange+1.0)/2.0)))/(((double) QuantumRange+1.0)/
+            2.0)+center.x+((compose == DisplaceCompositeOp) ? x : 0);
+          offset.y=(vertical_scale*(GetPixelGreen(composite_image,p)-(((double)
+            QuantumRange+1.0)/2.0)))/(((double) QuantumRange+1.0)/2.0)+center.y+
+            ((compose == DisplaceCompositeOp) ? y : 0);
           (void) InterpolatePixelInfo(image,image_view,
             UndefinedInterpolatePixel,(double) offset.x,(double) offset.y,
             &pixel,exception);
           /*
             Mask with the 'invalid pixel mask' in alpha channel.
           */
-          pixel.alpha=(double) QuantumRange*(1.0-(1.0-QuantumScale*
-            pixel.alpha)*(1.0-QuantumScale*GetPixelAlpha(composite_image,p)));
+          pixel.alpha=(double) QuantumRange*(1.0-(1.0-QuantumScale*pixel.alpha)*
+            (1.0-QuantumScale*GetPixelAlpha(composite_image,p)));
           SetPixelInfoPixel(destination_image,&pixel,q);
           p+=GetPixelChannels(composite_image);
           q+=GetPixelChannels(destination_image);
