@@ -24,10 +24,13 @@ extern "C" {
 
 static inline double MagickEpsilonReciprocal(const double x)
 {
-  double sign = x < (double) 0.0 ? (double) -1.0 : 
-    (double) 1.0;
-  return((sign*x) >= MagickEpsilon ? (double) 1.0/x : sign*(
-    (double) 1.0/MagickEpsilon));
+  double
+    sign;
+
+  sign=x < (double) 0.0 ? (double) -1.0 : (double) 1.0;
+  if ((sign*x) >= MagickEpsilon)
+    return(1.0/x);
+  return(sign*((double) 1.0/MagickEpsilon));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
