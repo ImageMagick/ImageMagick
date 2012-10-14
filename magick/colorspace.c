@@ -1418,9 +1418,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.298839f0*i;
-        y_map[i].x=0.586811f0*i;
-        z_map[i].x=0.114350f0*i;
+        x_map[i].x=0.298839f*i;
+        y_map[i].x=0.586811f*i;
+        z_map[i].x=0.114350f*i;
         x_map[i].y=(-0.1687367)*i;
         y_map[i].y=(-0.331264)*i;
         z_map[i].y=0.500000*i;
@@ -1577,9 +1577,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.298839f0*i;
-        y_map[i].x=0.586811f0*i;
-        z_map[i].x=0.114350f0*i;
+        x_map[i].x=0.298839f*i;
+        y_map[i].x=0.586811f*i;
+        z_map[i].x=0.114350f*i;
         x_map[i].y=(-0.1687367)*i;
         y_map[i].y=(-0.331264)*i;
         z_map[i].y=0.500000*i;
