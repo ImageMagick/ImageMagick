@@ -1338,7 +1338,7 @@ MagickExport MagickBooleanType ContrastStretchImageChannel(Image *image,
     if ((channel & RedChannel) != 0)
       {
         if (i < (ssize_t) black.red)
-          stretch_map[i].red=0.0;
+          stretch_map[i].red=(Quantum) 0;
         else
           if (i > (ssize_t) white.red)
             stretch_map[i].red=QuantumRange;
