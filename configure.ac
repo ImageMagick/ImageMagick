@@ -534,30 +534,25 @@ AC_ARG_WITH([modules],
 if test "$with_modules" != 'no' ; then
     if test "$libtool_build_shared_libs" = 'no'; then
         AC_MSG_WARN([Modules may only be built if building shared libraries is enabled.])
-        with_modules='no'
-    fi
+    build_modules='no'
+  else
+    build_modules='yes'
+  fi
 fi
-if test "$with_modules" != 'no'; then
+if test "$build_modules" != 'no' ; then
     AC_DEFINE(BUILD_MODULES,1,Define if coders and filters are to be built as modules.)
 fi
-AM_CONDITIONAL(WITH_MODULES, test "$with_modules" != 'no')
+AM_CONDITIONAL(WITH_MODULES, test "$build_modules" != 'no')
 
-# Enable building/use of libltdl if we are building shared libraries regardless
-# of whether modules are built or not.
+# Only use/depend on libtdl if we are building modules.
 with_ltdl='no'
-if test "$libtool_build_shared_libs" != 'no'; then
+if test "$build_modules" != 'no' ; then
     with_ltdl='yes'
 fi
 
 AM_CONDITIONAL(WITH_LTDL, test "$with_ltdl" != 'no')
 if test "$with_ltdl" != 'no'; then
     AC_DEFINE(LTDL_DELEGATE,1,Define if using libltdl to support dynamically loadable modules)
-
-    # Set DLLDFLAGS
-    if test X"$enable_shared" = Xyes; then
-        DLLDFLAGS=-export-dynamic
-        AC_SUBST(DLLDFLAGS)
-    fi
 fi
 
 # Enable build using delegate libraries built in subdirectories rather than installed
@@ -822,7 +817,7 @@ if test "${native_win32_build}" = 'yes'; then
         MAGICK_CPPFLAGS="$MAGICK_CPPFLAGS -D_DLL"
         MAGICK_PCFLAGS="$MAGICK_PCFLAGS -D_DLL"
         LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKLIB_"
-        if test "$with_modules" = 'yes'; then
+        if test "$build_modules" = 'yes'; then
             LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKMOD_"
         else
             MODULE_EXTRA_CPPFLAGS="$MODULE_EXTRA_CPPFLAGS -D_MAGICKLIB_"
@@ -1606,7 +1601,7 @@ fi
 if test "$have_autotrace" = 'yes'; then
     failed=0
     AC_DEFINE(AUTOTRACE_DELEGATE,1,Define if you have AUTOTRACE library)
-    if test "$with_modules" = 'no'; then
+    if test "$build_modules" = 'no'; then
     CPPFLAGS="$AUTOTRACE_CFLAGS $CPPFLAGS"
     fi
 fi
@@ -1860,7 +1855,7 @@ fi
 
 if test "$have_fontconfig" = 'yes'; then
   AC_DEFINE(FONTCONFIG_DELEGATE,1,Define if you have FONTCONFIG library)
-  if test "$with_modules" = 'no'; then
+  if test "$build_modules" = 'no'; then
     CPPFLAGS="$FONTCONFIG_CFLAGS $CPPFLAGS"
   fi
 fi
@@ -2067,7 +2062,7 @@ fi
 
 if test "$have_gvc" = 'yes'; then
     AC_DEFINE(GVC_DELEGATE,1,Define if you have GVC library)
-    if test "$with_modules" = 'no'; then
+    if test "$build_modules" = 'no'; then
         CPPFLAGS="$GVC_CFLAGS $CPPFLAGS"
     fi
 fi
@@ -2416,7 +2411,7 @@ fi
 
 if test "$have_lzma" = 'yes'; then
     AC_DEFINE(LZMA_DELEGATE,1,Define if you have LZMA library)
-    if test "$with_modules" = 'no'; then
+    if test "$build_modules" = 'no'; then
         CPPFLAGS="$LZMA_CFLAGS $CPPFLAGS"
     fi
 fi
@@ -2452,7 +2447,7 @@ fi
 
 if test "$have_openexr" = 'yes'; then
     AC_DEFINE(OPENEXR_DELEGATE,1,Define if you have OPENEXR library)
-    if test "$with_modules" = 'no'; then
+    if test "$build_modules" = 'no'; then
         CFLAGS="$OPENEXR_CFLAGS $CFLAGS"
     fi
 fi
@@ -2491,14 +2486,14 @@ fi
 
 if test "$have_pango" = 'yes'; then
     AC_DEFINE(PANGO_DELEGATE,1,Define if you have PANGO library)
-    if test "$with_modules" = 'no'; then
+    if test "$build_modules" = 'no'; then
         CPPFLAGS="$PANGO_CFLAGS $CPPFLAGS"
     fi
 fi
 
 if test "$have_pangocairo" = 'yes'; then
     AC_DEFINE(PANGOCAIRO_DELEGATE,1,Define if you have PANGOCAIRO library)
-    if test "$with_modules" = 'no'; then
+    if test "$build_modules" = 'no'; then
         CPPFLAGS="$PANGOCAIRO_CFLAGS $CPPFLAGS"
     fi
 fi
@@ -2655,14 +2650,14 @@ fi
 
 if test "$have_rsvg" = 'yes'; then
     AC_DEFINE(RSVG_DELEGATE,1,Define if you have RSVG library)
-    if test "$with_modules" = 'no'; then
+    if test "$build_modules" = 'no'; then
         CPPFLAGS="$RSVG_CFLAGS $CPPFLAGS"
     fi
 fi
 
 if test "$have_cairo" = 'yes'; then
     AC_DEFINE(CAIRO_DELEGATE,1,Define if you have CAIRO library)
-    if test "$with_modules" = 'no'; then
+    if test "$build_modules" = 'no'; then
         CPPFLAGS="$CAIRO_SVG_CFLAGS $CPPFLAGS"
     fi
 fi
@@ -3712,18 +3707,15 @@ fi
 MAGICK_LIBLTDL='' # Libltdl for build
 MAGICK_API_LIBLTDL=''   # libltdl for dependent application (API) build
 MAGICK_LTDLDEPS=''      # extra libltdl dependencies
-if test "$with_ltdl" != 'no'
-then
-  if test \( "$with_included_ltdl" = 'no' -o "$enable_ltdl_convenience" = 'no' \) -o "$enable_ltdl_install" = 'yes'; then
-    MAGICK_API_LIBLTDL='-lltdl'
-  fi
+if test "$with_ltdl" != 'no' ; then
+  MAGICK_API_LIBLTDL='-lltdl'
   MAGICK_LIBLTDL=${LIBLTDL}
   MAGICK_LTDLDEPS=${LTDLDEPS}
 fi
 AC_SUBST(MAGICK_LIBLTDL)
 AC_SUBST(MAGICK_LTDLDEPS)
 
-if test "$with_modules" != 'no'; then
+if test "$build_modules" != 'no'; then
     MAGICK_DEP_LIBS="$LCMS_LIBS $FREETYPE_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
 else
     MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
@@ -3764,7 +3756,7 @@ MAGICK_CXXFLAGS="$CXXFLAGS"
 MAGICK_CPPFLAGS=`echo $MAGICK_CPPFLAGS | sed -e 's/  */ /g'`
 MAGICK_PCFLAGS=`echo $MAGICK_PCFLAGS | sed -e 's/  */ /g'`
 MAGICK_LDFLAGS="-L$LIB_DIR $LDFLAGS"
-MAGICK_LIBS="-lMagickCore $MAGICK_DEP_LIBS $MAGICK_API_LIBLTDL"
+MAGICK_LIBS="-lMagickCore $MAGICK_DEP_LIBS"
 
 AC_SUBST(MAGICK_CFLAGS)
 AC_SUBST(MAGICK_CXXFLAGS)
@@ -3814,7 +3806,7 @@ Build system type: $build
 -------------------------------------------------------------------------------
 Shared libraries  --enable-shared=$enable_shared		$libtool_build_shared_libs
 Static libraries  --enable-static=$enable_static		$libtool_build_static_libs
-Module support    --with-modules=$with_modules		$with_modules
+Module support    --with-modules=$build_modules		$build_modules
 GNU ld            --with-gnu-ld=$with_gnu_ld		$lt_cv_prog_gnu_ld
 Quantum depth     --with-quantum-depth=$with_quantum_depth	$with_quantum_depth
 High Dynamic Range Imagery
