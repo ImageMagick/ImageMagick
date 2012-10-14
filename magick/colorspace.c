@@ -118,9 +118,9 @@ static inline void ConvertXYZToLMS(const double x,const double y,
   assert(L != (double *) NULL);
   assert(M != (double *) NULL);
   assert(S != (double *) NULL);
-  l=0.7328*x+0.4296*y-0.1624*z;
-  m=(-0.7036*x+1.6975*y+0.0415*z);
-  s=0.0030*x+0.0136*y+0.9834*z;
+  l=0.7328f*x+0.4296f*y-0.1624f*z;
+  m=(-0.7036f*x+1.6975f*y+0.0415f*z);
+  s=0.0030f*x+0.0136f*y+0.9834f*z;
   *L=QuantumRange*l;
   *M=QuantumRange*m;
   *S=QuantumRange*s;
@@ -165,18 +165,18 @@ static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   if ((X/D65X) > CIEEpsilon)
     x=pow(X/D65X,1.0/3.0);
   else
-    x=(CIEK*X/D65X+16.0)/116.0;
+    x=(CIEK*X/D65X+16.0f)/116.0f;
   if ((Y/D65Y) > CIEEpsilon)
     y=pow(Y/D65Y,1.0/3.0);
   else
-    y=(CIEK*Y/D65Y+16.0)/116.0;
+    y=(CIEK*Y/D65Y+16.0f)/116.0f;
   if ((Z/D65Z) > CIEEpsilon)
     z=pow(Z/D65Z,1.0/3.0);
   else
-    z=(CIEK*Z/D65Z+16.0)/116.0;
-  *L=((116.0*y)-16.0)/100.0;
-  *a=(500.0*(x-y))/255.0+0.5;
-  *b=(200.0*(y-z))/255.0+0.5;
+    z=(CIEK*Z/D65Z+16.0f)/116.0f;
+  *L=((116.0f*y)-16.0f)/100.0f;
+  *a=(500.0f*(x-y))/255.0f+0.5f;
+  *b=(200.0f*(y-z))/255.0f+0.5f;
 }
 
 static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
@@ -189,15 +189,15 @@ static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
   assert(u != (double *) NULL);
   assert(v != (double *) NULL);
   if ((Y/D65Y) > CIEEpsilon)
-    *L=(double) (116.0*pow(Y/D65Y,1.0/3.0)-16.0);
+    *L=(double) (116.0f*pow(Y/D65Y,1.0/3.0)-16.0f);
   else
     *L=CIEK*(Y/D65Y);
-  alpha=MagickEpsilonReciprocal(X+15.0*Y+3.0*Z);
-  *u=13.0*(*L)*((4.0*alpha*X)-(4.0*D65X/(D65X+15.0*D65Y+3.0*D65Z)));
-  *v=13.0*(*L)*((9.0*alpha*Y)-(9.0*D65Y/(D65X+15.0*D65Y+3.0*D65Z)));
-  *L/=100.0;
-  *u=(*u+134.0)/354.0;
-  *v=(*v+140.0)/262.0;
+  alpha=MagickEpsilonReciprocal(X+15.0f*Y+3.0f*Z);
+  *u=13.0f*(*L)*((4.0f*alpha*X)-(4.0f*D65X/(D65X+15.0f*D65Y+3.0f*D65Z)));
+  *v=13.0f*(*L)*((9.0f*alpha*Y)-(9.0f*D65Y/(D65X+15.0f*D65Y+3.0f*D65Z)));
+  *L/=100.0f;
+  *u=(*u+134.0f)/354.0f;
+  *v=(*v+140.0f)/262.0f;
 }
 
 MagickExport MagickBooleanType RGBTransformImage(Image *image,
@@ -963,10 +963,10 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
     }
     case LogColorspace:
     {
-#define DisplayGamma  (1.0/1.7)
-#define FilmGamma  0.6
-#define ReferenceBlack  95.0
-#define ReferenceWhite  685.0
+#define DisplayGamma  (1.0f/1.7f)
+#define FilmGamma  0.6f
+#define ReferenceBlack  95.0f
+#define ReferenceWhite  685.0f
 
       const char
         *value;
@@ -1008,7 +1008,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
       black=pow(10.0,(reference_black-reference_white)*(gamma/density)*
-        0.002/film_gamma);
+        0.002f/film_gamma);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
       #pragma omp parallel for schedule(static,4) \
         dynamic_number_threads(image,image->columns,1,1)
@@ -1016,7 +1016,7 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
       for (i=0; i <= (ssize_t) MaxMap; i++)
         logmap[i]=ScaleMapToQuantum((MagickRealType) (MaxMap*(reference_white+
           log10(black+(1.0*i/MaxMap)*(1.0-black))/((gamma/density)*
-          0.002/film_gamma))/1024.0));
+          0.002f/film_gamma))/1024.0));
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
@@ -1385,15 +1385,15 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.33333*i;
-        y_map[i].x=0.33334*i;
-        z_map[i].x=0.33333*i;
-        x_map[i].y=0.50000*i;
-        y_map[i].y=0.00000*i;
-        z_map[i].y=(-0.50000)*i;
-        x_map[i].z=(-0.25000)*i;
-        y_map[i].z=0.50000*i;
-        z_map[i].z=(-0.25000)*i;
+        x_map[i].x=(MagickRealType) (0.33333f*(float) i);
+        y_map[i].x=(MagickRealType) (0.33334f*(float) i);
+        z_map[i].x=(MagickRealType) (0.33333f*(float) i);
+        x_map[i].y=(MagickRealType) (0.50000f*(float) i);
+        y_map[i].y=(MagickRealType) (0.00000f*(float) i);
+        z_map[i].y=(MagickRealType) (-0.50000f*(float) i);
+        x_map[i].z=(MagickRealType) (-0.25000f*(float) i);
+        y_map[i].z=(MagickRealType) (0.50000f*(float) i);
+        z_map[i].z=(MagickRealType) (-0.25000f*(float) i);
       }
       break;
     }
@@ -1474,15 +1474,15 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=0.212600*i;
-        y_map[i].x=0.715200*i;
-        z_map[i].x=0.072200*i;
-        x_map[i].y=(-0.114572)*i;
-        y_map[i].y=(-0.385428)*i;
-        z_map[i].y=0.500000*i;
-        x_map[i].z=0.500000*i;
-        y_map[i].z=(-0.454153)*i;
-        z_map[i].z=(-0.045847)*i;
+        x_map[i].x=(MagickRealType) (0.212600f*(float) i);
+        y_map[i].x=(MagickRealType) (0.715200f*(float) i);
+        z_map[i].x=(MagickRealType) (0.072200f*(float) i);
+        x_map[i].y=(MagickRealType) (-0.114572f*(float) i);
+        y_map[i].y=(MagickRealType) (-0.385428f*(float) i);
+        z_map[i].y=(MagickRealType) (0.500000f*(float) i);
+        x_map[i].z=(MagickRealType) (0.500000f*(float) i);
+        y_map[i].z=(MagickRealType) (-0.454153f*(float) i);
+        z_map[i].z=(MagickRealType) (-0.045847f*(float) i);
       }
       break;
     }
@@ -1632,15 +1632,15 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
 #endif
       for (i=0; i <= (ssize_t) MaxMap; i++)
       {
-        x_map[i].x=1.0*i;
+        x_map[i].x=1.0*(float) i;
         y_map[i].x=0.0f;
         z_map[i].x=0.0f;
         x_map[i].y=0.0f;
-        y_map[i].y=1.0*i;
+        y_map[i].y=1.0*(float) i;
         z_map[i].y=0.0f;
         x_map[i].z=0.0f;
         y_map[i].z=0.0f;
-        z_map[i].z=1.0*i;
+        z_map[i].z=1.0*(float) i;
       }
       break;
     }
@@ -1945,21 +1945,21 @@ static inline void ConvertLabToXYZ(const double L,const double a,const double b,
   assert(X != (double *) NULL);
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
-  y=(100.0*L+16.0)/116.0;
-  x=y+255.0*(a-0.5)/500.0;
-  z=y-255.0*(b-0.5)/200.0;
+  y=(100.0f*L+16.0f)/116.0f;
+  x=y+255.0f*(a-0.5f)/500.0f;
+  z=y-255.0f*(b-0.5f)/200.0f;
   if ((x*x*x) > CIEEpsilon)
     x=(x*x*x);
   else
-    x=(116.0*x-16.0)/CIEK;
+    x=(116.0f*x-16.0f)/CIEK;
   if ((y*y*y) > CIEEpsilon)
     y=(y*y*y);
   else
-    y=(100.0*L)/CIEK;
+    y=(100.0f*L)/CIEK;
   if ((z*z*z) > CIEEpsilon)
     z=(z*z*z);
   else
-    z=(116*z-16.0)/CIEK;
+    z=(116.0f*z-16.0f)/CIEK;
   *X=D65X*x;
   *Y=D65Y*y;
   *Z=D65Z*z;
@@ -1971,24 +1971,25 @@ static inline void ConvertLuvToXYZ(const double L,const double u,const double v,
   assert(X != (double *) NULL);
   assert(Y != (double *) NULL);
   assert(Z != (double *) NULL);
-  if ((100.0*L) > (CIEK*CIEEpsilon))
+  if ((100.0f*L) > (CIEK*CIEEpsilon))
     *Y=(double) pow(((100.0*L)+16.0)/116.0,3.0);
   else
-    *Y=(100.0*L)/CIEK;
-  *X=(((*Y)*((39.0*(100.0*L)/((262.0*v-140.0)+13.0*(100.0*L)*(9.0*D65Y/(D65X+
-    15.0*D65Y+3.0*D65Z))))-5.0))+5.0*(*Y))/((((52.0*(100.0*L)/((354.0*u-134.0)+
-    13.0*(100.0*L)*(4.0*D65X/(D65X+15.0*D65Y+3.0*D65Z))))-1.0)/3.0)-(-1.0/3.0));
-  *Z=((*X)*(((52.0*(100.0*L)/((354.0*u-134.0)+13.0*(100.0*L)*(4.0*D65X/(D65X+
-    15.0*D65Y+3.0*D65Z))))-1.0)/3.0))-5.0*(*Y);
+    *Y=(100.0f*L)/CIEK;
+  *X=((*Y*((39.0f*(100.0f*L)/((262.0f*v-140.0f)+13.0f*(100.0f*L)*(9.0f*D65Y/
+    (D65X+15.0f*D65Y+3.0f*D65Z))))-5.0f))+5.0f*(*Y))/((((52.0f*(100.0f*L)/
+    ((354.0f*u-134.0f)+13.0f*(100.0f*L)*(4.0f*D65X/(D65X+15.0f*D65Y+3.0f*
+    D65Z))))-1.0f)/3.0f)-(-1.0f/3.0f));
+  *Z=(*X*(((52.0f*(100.0f*L)/((354.0f*u-134.0f)+13.0f*(100.0f*L)*(4.0f*D65X/
+    (D65X+15.0f*D65Y+3.0f*D65Z))))-1.0f)/3.0f))-5.0f*(*Y);
 }
 
 static inline ssize_t RoundToYCC(const MagickRealType value)
 {
-  if (value <= 0.0)
+  if (value <= 0.0f)
     return(0);
-  if (value >= 1388.0)
+  if (value >= 1388.0f)
     return(1388);
-  return((ssize_t) (value+0.5));
+  return((ssize_t) (value+0.5f));
 }
 
 static inline void ConvertXYZToRGB(const double x,const double y,const double z,
@@ -2005,9 +2006,9 @@ static inline void ConvertXYZToRGB(const double x,const double y,const double z,
   assert(red != (Quantum *) NULL);
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
-  r=3.2406*x-1.5372*y-0.4986*z;
-  g=(-0.9689*x+1.8758*y+0.0415*z);
-  b=0.0557*x-0.2040*y+1.0570*z;
+  r=3.2406f*x-1.5372f*y-0.4986f*z;
+  g=(-0.9689f*x+1.8758f*y+0.0415f*z);
+  b=0.0557f*x-0.2040f*y+1.0570f*z;
   *red=ClampToQuantum((MagickRealType) QuantumRange*r);
   *green=ClampToQuantum((MagickRealType) QuantumRange*g);
   *blue=ClampToQuantum((MagickRealType) QuantumRange*b);
@@ -3038,13 +3039,13 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
           image->filename);
       black=pow(10.0,(reference_black-reference_white)*(gamma/density)*
-        0.002/film_gamma);
+        0.002f/film_gamma);
       for (i=0; i <= (ssize_t) (reference_black*MaxMap/1024.0); i++)
         logmap[i]=(Quantum) 0;
       for ( ; i < (ssize_t) (reference_white*MaxMap/1024.0); i++)
         logmap[i]=ClampToQuantum((MagickRealType) QuantumRange/(1.0-black)*
           (pow(10.0,(1024.0*i/MaxMap-reference_white)*
-          (gamma/density)*0.002/film_gamma)-black));
+          (gamma/density)*0.002f/film_gamma)-black));
       for ( ; i <= (ssize_t) MaxMap; i++)
         logmap[i]=QuantumRange;
       if (image->storage_class == PseudoClass)
