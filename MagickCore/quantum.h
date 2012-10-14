@@ -80,16 +80,16 @@ typedef enum
 typedef struct _QuantumInfo
   QuantumInfo;
 
-static inline Quantum ClampToQuantum(const double value)
+static inline Quantum ClampToQuantum(const MagickRealType value)
 {
 #if defined(MAGICKCORE_HDRI_SUPPORT)
   return((Quantum) value);
 #else
-  if (value <= 0.0)
+  if (value <= 0.0f)
     return((Quantum) 0);
-  if (value >= (double) QuantumRange)
+  if (value >= (MagickRealType) QuantumRange)
     return(QuantumRange);
-  return((Quantum) (value+0.5));
+  return((Quantum) (value+0.5f));
 #endif
 }
 
