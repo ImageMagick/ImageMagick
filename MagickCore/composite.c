@@ -267,7 +267,7 @@ static void HCLComposite(const double hue,const double chroma,const double luma,
                 r=c;
                 b=x;
               }
-  m=luma-(0.298839*r+0.586811*g+0.114350*b);
+  m=luma-(0.298839f*r+0.586811f*g+0.114350f*b);
   /*
     Choose saturation strategy to clip it into the RGB cube; hue and luma are
     preserved and chroma may be changed.
@@ -325,7 +325,7 @@ static void CompositeHCL(const double red,const double green,const double blue,
           h=((r-g)/c)+4.0;
   *hue=(h/6.0);
   *chroma=QuantumScale*c;
-  *luma=QuantumScale*(0.298839*r+0.586811*g+0.114350*b);
+  *luma=QuantumScale*(0.298839f*r+0.586811f*g+0.114350f*b);
 }
 
 static MagickBooleanType CompositeOverImage(Image *image,

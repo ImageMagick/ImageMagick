@@ -606,7 +606,7 @@ static inline double XPixelIntensity(const XColor *pixel)
   red=DecodesRGBGamma((double) pixel->red);
   green=DecodesRGBGamma((double) pixel->green);
   blue=DecodesRGBGamma((double) pixel->blue);
-  return(0.298839*red+0.586811*green+0.114350*blue);
+  return(0.298839f*red+0.586811f*green+0.114350f*blue);
 }
 
 #endif

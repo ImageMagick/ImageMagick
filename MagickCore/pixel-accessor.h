@@ -32,18 +32,18 @@ extern "C" {
 
 #undef index
 
-static inline double DecodesRGBGamma(const double pixel)
+static inline MagickRealType DecodesRGBGamma(const MagickRealType pixel)
 {
   if (pixel <= (0.0404482362771076*QuantumRange))
-    return(pixel/12.92);
-  return(QuantumRange*pow((QuantumScale*pixel+0.055)/1.055,2.4));
+    return(pixel/12.92f);
+  return(QuantumRange*pow((double) (QuantumScale*pixel+0.055)/1.055,2.4));
 }
 
-static inline double EncodesRGBGamma(const double pixel)
+static inline MagickRealType EncodesRGBGamma(const MagickRealType pixel)
 {
   if (pixel <= (0.0031306684425005883*QuantumRange))
-    return(12.92*pixel);
-  return(QuantumRange*(1.055*pow(QuantumScale*pixel,1.0/2.4)-0.055));
+    return(12.92f*pixel);
+  return(QuantumRange*(1.055*pow((double) QuantumScale*pixel,1.0/2.4)-0.055));
 }
 
 static inline Quantum GetPixela(const Image *restrict image,
@@ -194,8 +194,8 @@ static inline PixelTrait GetPixelIndexTraits(const Image *restrict image)
   return(image->channel_map[IndexPixelChannel].traits);
 }
 
-static inline double GetPixelInfoChannel(const PixelInfo *restrict pixel_info,
-  const PixelChannel channel)
+static inline MagickRealType GetPixelInfoChannel(
+  const PixelInfo *restrict pixel_info,const PixelChannel channel)
 {
   switch (channel)
   {
@@ -205,13 +205,14 @@ static inline double GetPixelInfoChannel(const PixelInfo *restrict pixel_info,
     case BlackPixelChannel: return(pixel_info->black);
     case AlphaPixelChannel: return(pixel_info->alpha);
     case IndexPixelChannel: return(pixel_info->index);
-    default: return(0.0);
+    default: return((MagickRealType) 0.0);
   }
 }
 
-static inline double GetPixelInfoIntensity(const PixelInfo *restrict pixel_info)
+static inline MagickRealType GetPixelInfoIntensity(
+  const PixelInfo *restrict pixel_info)
 {
-  double
+  MagickRealType
     blue,
     green,
     red;
@@ -219,17 +220,18 @@ static inline double GetPixelInfoIntensity(const PixelInfo *restrict pixel_info)
   if (pixel_info->colorspace == GRAYColorspace)
     return(pixel_info->red);
   if (pixel_info->colorspace != sRGBColorspace)
-    return(0.298839*pixel_info->red+0.586811*pixel_info->green+
-      0.114350*pixel_info->blue);
+    return(0.298839f*pixel_info->red+0.586811f*pixel_info->green+
+      0.114350f*pixel_info->blue);
   red=DecodesRGBGamma(pixel_info->red);
   green=DecodesRGBGamma(pixel_info->green);
   blue=DecodesRGBGamma(pixel_info->blue);
-  return(0.298839*red+0.586811*green+0.114350*blue);
+  return(0.298839f*red+0.586811f*green+0.114350f*blue);
 }
 
-static inline double GetPixelInfoLuminance(const PixelInfo *restrict pixel_info)
+static inline MagickRealType GetPixelInfoLuminance(
+  const PixelInfo *restrict pixel_info)
 {
-  double
+  MagickRealType
     blue,
     green,
     red;
@@ -237,35 +239,35 @@ static inline double GetPixelInfoLuminance(const PixelInfo *restrict pixel_info)
   if (pixel_info->colorspace == GRAYColorspace)
     return(pixel_info->red);
   if (pixel_info->colorspace != sRGBColorspace)
-    return(0.21267*pixel_info->red+0.71516*pixel_info->green+
-      0.07217*pixel_info->blue);
+    return(0.21267f*pixel_info->red+0.71516f*pixel_info->green+
+      0.07217f*pixel_info->blue);
   red=DecodesRGBGamma(pixel_info->red);
   green=DecodesRGBGamma(pixel_info->green);
   blue=DecodesRGBGamma(pixel_info->blue);
-  return(0.21267*red+0.71516*green+0.07217*blue);
+  return(0.21267f*red+0.71516f*green+0.07217f*blue);
 }
 
-static inline double GetPixelIntensity(const Image *restrict image,
+static inline MagickRealType GetPixelIntensity(const Image *restrict image,
   const Quantum *restrict pixel)
 {
-  double
+  MagickRealType
     blue,
     green,
     red;
 
   if (image->colorspace == GRAYColorspace)
-    return((double) pixel[image->channel_map[GrayPixelChannel].offset]);
+    return((MagickRealType) pixel[image->channel_map[GrayPixelChannel].offset]);
   if (image->colorspace != sRGBColorspace)
-    return(0.298839*pixel[image->channel_map[RedPixelChannel].offset]+
-      0.586811*pixel[image->channel_map[GreenPixelChannel].offset]+
-      0.114350*pixel[image->channel_map[BluePixelChannel].offset]);
-  red=DecodesRGBGamma((double)
+    return(0.298839f*pixel[image->channel_map[RedPixelChannel].offset]+
+      0.586811f*pixel[image->channel_map[GreenPixelChannel].offset]+
+      0.114350f*pixel[image->channel_map[BluePixelChannel].offset]);
+  red=DecodesRGBGamma((MagickRealType)
     pixel[image->channel_map[RedPixelChannel].offset]);
-  green=DecodesRGBGamma((double)
+  green=DecodesRGBGamma((MagickRealType)
     pixel[image->channel_map[GreenPixelChannel].offset]);
-  blue=DecodesRGBGamma((double)
+  blue=DecodesRGBGamma((MagickRealType)
     pixel[image->channel_map[BluePixelChannel].offset]);
-  return(0.298839*red+0.586811*green+0.114350*blue);
+  return(0.298839f*red+0.586811f*green+0.114350f*blue);
 }
 
 static inline Quantum GetPixelL(const Image *restrict image,
@@ -274,27 +276,27 @@ static inline Quantum GetPixelL(const Image *restrict image,
   return(pixel[image->channel_map[LPixelChannel].offset]);
 }
 
-static inline double GetPixelLuminance(const Image *restrict image,
+static inline MagickRealType GetPixelLuminance(const Image *restrict image,
   const Quantum *restrict pixel)
 {
-  double
+  MagickRealType
     blue,
     green,
     red;
 
   if (image->colorspace == GRAYColorspace)
-    return((double) pixel[image->channel_map[GrayPixelChannel].offset]);
+    return((MagickRealType) pixel[image->channel_map[GrayPixelChannel].offset]);
   if (image->colorspace != sRGBColorspace)
-    return(0.298839*pixel[image->channel_map[RedPixelChannel].offset]+
-      0.586811*pixel[image->channel_map[GreenPixelChannel].offset]+
-      0.114350*pixel[image->channel_map[BluePixelChannel].offset]);
-  red=DecodesRGBGamma((double)
+    return(0.298839f*pixel[image->channel_map[RedPixelChannel].offset]+
+      0.586811f*pixel[image->channel_map[GreenPixelChannel].offset]+
+      0.114350f*pixel[image->channel_map[BluePixelChannel].offset]);
+  red=DecodesRGBGamma((MagickRealType)
     pixel[image->channel_map[RedPixelChannel].offset]);
-  green=DecodesRGBGamma((double)
+  green=DecodesRGBGamma((MagickRealType)
     pixel[image->channel_map[GreenPixelChannel].offset]);
-  blue=DecodesRGBGamma((double)
+  blue=DecodesRGBGamma((MagickRealType)
     pixel[image->channel_map[BluePixelChannel].offset]);
-  return(0.21267*red+0.71516*green+0.07217*blue);
+  return(0.21267f*red+0.71516f*green+0.07217f*blue);
 }
 
 static inline Quantum GetPixelMagenta(const Image *restrict image,
@@ -353,23 +355,23 @@ static inline PixelTrait GetPixelRedTraits(const Image *restrict image)
 static inline void GetPixelInfoPixel(const Image *restrict image,
   const Quantum *restrict pixel,PixelInfo *restrict pixel_info)
 {
-  pixel_info->red=(double)
+  pixel_info->red=(MagickRealType)
     pixel[image->channel_map[RedPixelChannel].offset];
-  pixel_info->green=(double)
+  pixel_info->green=(MagickRealType)
     pixel[image->channel_map[GreenPixelChannel].offset];
-  pixel_info->blue=(double)
+  pixel_info->blue=(MagickRealType)
     pixel[image->channel_map[BluePixelChannel].offset];
-  pixel_info->black=0.0;
+  pixel_info->black=0.0f;
   if (image->channel_map[BlackPixelChannel].traits != UndefinedPixelTrait)
-    pixel_info->black=(double)
+    pixel_info->black=(MagickRealType)
       pixel[image->channel_map[BlackPixelChannel].offset];
-  pixel_info->alpha=OpaqueAlpha;
+  pixel_info->alpha=(MagickRealType) OpaqueAlpha;
   if (image->channel_map[AlphaPixelChannel].traits != UndefinedPixelTrait)
-    pixel_info->alpha=(double)
+    pixel_info->alpha=(MagickRealType)
       pixel[image->channel_map[AlphaPixelChannel].offset];
-  pixel_info->index=0.0;
+  pixel_info->index=0.0f;
   if (image->channel_map[IndexPixelChannel].traits != UndefinedPixelTrait)
-    pixel_info->index=(double)
+    pixel_info->index=(MagickRealType)
       pixel[image->channel_map[IndexPixelChannel].offset];
 }
 
@@ -401,22 +403,22 @@ static inline PixelTrait GetPixelYellowTraits(const Image *restrict image)
   return(image->channel_map[YellowPixelChannel].traits);
 }
 
-static inline double AbsolutePixelValue(const double x)
+static inline MagickRealType AbsolutePixelValue(const MagickRealType x)
 {
-  return(x < 0.0 ? -x : x);
+  return(x < 0.0f ? -x : x);
 }
 
 static inline MagickBooleanType IsPixelEquivalent(const Image *restrict image,
   const Quantum *restrict p,const PixelInfo *restrict q)
 {
-  double
+  MagickRealType
     blue,
     green,
     red;
 
-  red=(double) p[image->channel_map[RedPixelChannel].offset];
-  green=(double) p[image->channel_map[GreenPixelChannel].offset];
-  blue=(double) p[image->channel_map[BluePixelChannel].offset];
+  red=(MagickRealType) p[image->channel_map[RedPixelChannel].offset];
+  green=(MagickRealType) p[image->channel_map[GreenPixelChannel].offset];
+  blue=(MagickRealType) p[image->channel_map[BluePixelChannel].offset];
   if ((AbsolutePixelValue(red-q->red) < MagickEpsilon) &&
       (AbsolutePixelValue(green-q->green) < MagickEpsilon) &&
       (AbsolutePixelValue(blue-q->blue) < MagickEpsilon))
@@ -427,14 +429,14 @@ static inline MagickBooleanType IsPixelEquivalent(const Image *restrict image,
 static inline MagickBooleanType IsPixelGray(const Image *restrict image,
   const Quantum *restrict pixel)
 {
-  double
+  MagickRealType
     blue,
     green,
     red;
 
-  red=(double) pixel[image->channel_map[RedPixelChannel].offset];
-  green=(double) pixel[image->channel_map[GreenPixelChannel].offset];
-  blue=(double) pixel[image->channel_map[BluePixelChannel].offset];
+  red=(MagickRealType) pixel[image->channel_map[RedPixelChannel].offset];
+  green=(MagickRealType) pixel[image->channel_map[GreenPixelChannel].offset];
+  blue=(MagickRealType) pixel[image->channel_map[BluePixelChannel].offset];
   if ((AbsolutePixelValue(red-green) < MagickEpsilon) &&
       (AbsolutePixelValue(green-blue) < MagickEpsilon))
     return(MagickTrue);
@@ -475,17 +477,17 @@ static inline MagickBooleanType IsPixelInfoEquivalent(
 static inline MagickBooleanType IsPixelMonochrome(const Image *restrict image,
   const Quantum *restrict pixel)
 {
-  double
+  MagickRealType
     blue,
     green,
     red;
 
-  red=(double) pixel[image->channel_map[RedPixelChannel].offset];
+  red=(MagickRealType) pixel[image->channel_map[RedPixelChannel].offset];
   if ((AbsolutePixelValue(red) >= MagickEpsilon) ||
       (AbsolutePixelValue(red-QuantumRange) >= MagickEpsilon))
     return(MagickFalse);
-  green=(double) pixel[image->channel_map[GreenPixelChannel].offset];
-  blue=(double) pixel[image->channel_map[BluePixelChannel].offset];
+  green=(MagickRealType) pixel[image->channel_map[GreenPixelChannel].offset];
+  blue=(MagickRealType) pixel[image->channel_map[BluePixelChannel].offset];
   if ((AbsolutePixelValue(red-green) < MagickEpsilon) &&
       (AbsolutePixelValue(green-blue) < MagickEpsilon))
     return(MagickTrue);
