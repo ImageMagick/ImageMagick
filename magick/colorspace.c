@@ -3647,9 +3647,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
               pixel.green=EncodesRGBGamma(ScaleMapToQuantum(pixel.green));
               pixel.blue=EncodesRGBGamma(ScaleMapToQuantum(pixel.blue));
             }
-          SetPixelRed(image,ClampToQuantum(pixel.red),q);
-          SetPixelGreen(image,ClampToQuantum(pixel.green),q);
-          SetPixelBlue(image,ClampToQuantum(pixel.blue),q);
+          SetPixelRed(q,ClampToQuantum(pixel.red));
+          SetPixelGreen(q,ClampToQuantum(pixel.green));
+          SetPixelBlue(q,ClampToQuantum(pixel.blue));
           q++;
         }
         sync=SyncCacheViewAuthenticPixels(image_view,exception);
