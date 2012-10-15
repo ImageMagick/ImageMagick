@@ -524,6 +524,7 @@ AM_CONDITIONAL(WITH_SHARED_LIBS, test "${libtool_build_shared_libs}" = 'yes')
 #
 # Enable support for building loadable modules
 #
+build_modules='no'
 AC_ARG_WITH([modules],
     [AC_HELP_STRING([--with-modules],
                     [enable building dynamically loadable modules])],
