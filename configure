@@ -3665,7 +3665,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=9630:9631M
+MAGICK_SVN_REVISION=9630:9633M
 
 
 
@@ -21737,6 +21737,7 @@ fi
 #
 # Enable support for building loadable modules
 #
+build_modules='no'
 
 # Check whether --with-modules was given.
 if test "${with_modules+set}" = set; then :
