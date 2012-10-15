@@ -1181,7 +1181,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   inverse_affine=InverseAffineMatrix(affine);
   GetMagickPixelPacket(image,&zero);
   exception=(&image->exception);
-  start=(ssize_t) ceil(edge.y1+0.5);
+  start=(ssize_t) ceil(edge.y1-0.5);
   stop=(ssize_t) floor(edge.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
   height=(size_t) (floor(edge.y2+0.5)-ceil(edge.y1-0.5));
