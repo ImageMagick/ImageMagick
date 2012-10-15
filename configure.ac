@@ -507,7 +507,7 @@ AC_SUBST(LIBTOOL_DEPS)
 
 # Configure libltdl
 LT_CONFIG_LTDL_DIR([ltdl])
-LTDL_INIT([nonrecursive installable])
+LTDL_INIT([nonrecursive convenience])
 
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'
