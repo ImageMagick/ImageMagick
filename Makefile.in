@@ -65,8 +65,6 @@
 #
 #  Makefile for Magick ImageMagick configuration files.
 
-#####
-
 #  Copyright 1999-2012 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
@@ -235,19 +233,17 @@ TESTS = $(TESTS_TESTS) $(am__EXEEXT_5)
 XFAIL_TESTS = $(am__EXEEXT_6) $(am__EXEEXT_6)
 check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4)
 DIST_COMMON = $(MagickCoreinc_HEADERS) $(MagickWandinc_HEADERS) \
-	$(am__configure_deps) $(am__include_HEADERS_DIST) \
-	$(am__ltdlinclude_HEADERS_DIST) \
-	$(am__magickppinc_HEADERS_DIST) \
-	$(am__magickpptopinc_HEADERS_DIST) $(noinst_HEADERS) \
-	$(srcdir)/ImageMagick.spec.in $(srcdir)/Magick++/Makefile.am \
+	$(am__configure_deps) $(am__magickppinc_HEADERS_DIST) \
+	$(am__magickpptopinc_HEADERS_DIST) $(include_HEADERS) \
+	$(noinst_HEADERS) $(srcdir)/ImageMagick.spec.in \
+	$(srcdir)/Magick++/Makefile.am \
 	$(srcdir)/MagickCore/Makefile.am \
 	$(srcdir)/MagickWand/Makefile.am $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/PerlMagick/Makefile.am \
 	$(srcdir)/coders/Makefile.am $(srcdir)/common.shi.in \
 	$(srcdir)/config/Makefile.am $(srcdir)/filters/Makefile.am \
-	$(srcdir)/ltdl/Makefile.inc $(srcdir)/m4/Makefile.am \
-	$(srcdir)/magick.sh.in $(srcdir)/tests/Makefile.am \
-	$(srcdir)/utilities/Makefile.am \
+	$(srcdir)/m4/Makefile.am $(srcdir)/magick.sh.in \
+	$(srcdir)/tests/Makefile.am $(srcdir)/utilities/Makefile.am \
 	$(top_srcdir)/Magick++/bin/Magick++-config.in \
 	$(top_srcdir)/Magick++/lib/ImageMagick++.pc.in \
 	$(top_srcdir)/Magick++/lib/Magick++.pc.in \
@@ -293,13 +289,9 @@ DIST_COMMON = $(MagickCoreinc_HEADERS) $(MagickWandinc_HEADERS) \
 	config/config.guess config/config.sub config/depcomp \
 	config/install-sh config/ltmain.sh config/missing \
 	config/mkinstalldirs
-@INSTALL_LTDL_TRUE@am__append_1 = ltdl/ltdl.h
-@INSTALL_LTDL_TRUE@am__append_2 = ltdl/libltdl.la
-@CONVENIENCE_LTDL_TRUE@am__append_3 = ltdl/libltdlc.la
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
-	$(top_srcdir)/m4/argz.m4 \
 	$(top_srcdir)/m4/ax_c___attribute__.m4 \
 	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
 	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
@@ -316,9 +308,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
 	$(top_srcdir)/m4/ax_pthread.m4 \
 	$(top_srcdir)/m4/cxx_have_std_libs.m4 \
 	$(top_srcdir)/m4/framework.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltdl.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
 	$(top_srcdir)/m4/magick_check_pthread_lib.m4 \
 	$(top_srcdir)/m4/magick_func_mmap_fileio.m4 \
 	$(top_srcdir)/m4/pkg.m4 $(top_srcdir)/configure.ac
@@ -379,8 +370,7 @@ am__installdirs = "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" \
 	"$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" \
 	"$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(MagickCoreincdir)" \
 	"$(DESTDIR)$(MagickWandincdir)" "$(DESTDIR)$(includedir)" \
-	"$(DESTDIR)$(ltdlincludedir)" "$(DESTDIR)$(magickppincdir)" \
-	"$(DESTDIR)$(magickpptopincdir)"
+	"$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)"
 LTLIBRARIES = $(coders_LTLIBRARIES) $(filters_LTLIBRARIES) \
 	$(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
 Magick___lib_libMagick___la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
@@ -1758,71 +1748,6 @@ filters_analyze_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(filters_analyze_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_filters_analyze_la_rpath = -rpath $(filtersdir)
-ltdl_dld_link_la_DEPENDENCIES =
-am_ltdl_dld_link_la_OBJECTS = ltdl/loaders/dld_link.lo
-ltdl_dld_link_la_OBJECTS = $(am_ltdl_dld_link_la_OBJECTS)
-ltdl_dld_link_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(ltdl_dld_link_la_LDFLAGS) $(LDFLAGS) \
-	-o $@
-ltdl_dlopen_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_ltdl_dlopen_la_OBJECTS = ltdl/loaders/dlopen.lo
-ltdl_dlopen_la_OBJECTS = $(am_ltdl_dlopen_la_OBJECTS)
-ltdl_dlopen_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(ltdl_dlopen_la_LDFLAGS) $(LDFLAGS) -o \
-	$@
-ltdl_dyld_la_LIBADD =
-am_ltdl_dyld_la_OBJECTS = ltdl/loaders/dyld.lo
-ltdl_dyld_la_OBJECTS = $(am_ltdl_dyld_la_OBJECTS)
-ltdl_dyld_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(ltdl_dyld_la_LDFLAGS) $(LDFLAGS) -o $@
-am_ltdl_libltdl_la_OBJECTS = ltdl/loaders/ltdl_libltdl_la-preopen.lo \
-	ltdl/ltdl_libltdl_la-lt__alloc.lo \
-	ltdl/ltdl_libltdl_la-lt_dlloader.lo \
-	ltdl/ltdl_libltdl_la-lt_error.lo ltdl/ltdl_libltdl_la-ltdl.lo \
-	ltdl/ltdl_libltdl_la-slist.lo
-ltdl_libltdl_la_OBJECTS = $(am_ltdl_libltdl_la_OBJECTS)
-ltdl_libltdl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(ltdl_libltdl_la_LDFLAGS) $(LDFLAGS) \
-	-o $@
-@INSTALL_LTDL_TRUE@am_ltdl_libltdl_la_rpath = -rpath $(libdir)
-am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
-am__objects_19 = ltdl/loaders/ltdl_libltdlc_la-preopen.lo \
-	ltdl/ltdl_libltdlc_la-lt__alloc.lo \
-	ltdl/ltdl_libltdlc_la-lt_dlloader.lo \
-	ltdl/ltdl_libltdlc_la-lt_error.lo \
-	ltdl/ltdl_libltdlc_la-ltdl.lo ltdl/ltdl_libltdlc_la-slist.lo
-am_ltdl_libltdlc_la_OBJECTS = $(am__objects_19)
-ltdl_libltdlc_la_OBJECTS = $(am_ltdl_libltdlc_la_OBJECTS)
-ltdl_libltdlc_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(ltdl_libltdlc_la_LDFLAGS) $(LDFLAGS) \
-	-o $@
-@CONVENIENCE_LTDL_TRUE@am_ltdl_libltdlc_la_rpath =
-ltdl_load_add_on_la_LIBADD =
-am_ltdl_load_add_on_la_OBJECTS = ltdl/loaders/load_add_on.lo
-ltdl_load_add_on_la_OBJECTS = $(am_ltdl_load_add_on_la_OBJECTS)
-ltdl_load_add_on_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(ltdl_load_add_on_la_LDFLAGS) \
-	$(LDFLAGS) -o $@
-ltdl_loadlibrary_la_LIBADD =
-am_ltdl_loadlibrary_la_OBJECTS = ltdl/loaders/loadlibrary.lo
-ltdl_loadlibrary_la_OBJECTS = $(am_ltdl_loadlibrary_la_OBJECTS)
-ltdl_loadlibrary_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(ltdl_loadlibrary_la_LDFLAGS) \
-	$(LDFLAGS) -o $@
-ltdl_shl_load_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_ltdl_shl_load_la_OBJECTS = ltdl/loaders/shl_load.lo
-ltdl_shl_load_la_OBJECTS = $(am_ltdl_shl_load_la_OBJECTS)
-ltdl_shl_load_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(ltdl_shl_load_la_LDFLAGS) $(LDFLAGS) \
-	-o $@
 am__EXEEXT_1 = utilities/animate$(EXEEXT) utilities/compare$(EXEEXT) \
 	utilities/composite$(EXEEXT) utilities/conjure$(EXEEXT) \
 	utilities/display$(EXEEXT) utilities/identify$(EXEEXT) \
@@ -1852,94 +1777,94 @@ am__EXEEXT_3 = Magick++/demo/analyze$(EXEEXT) \
 PROGRAMS = $(bin_PROGRAMS)
 am_Magick___demo_analyze_OBJECTS = Magick++/demo/analyze.$(OBJEXT)
 Magick___demo_analyze_OBJECTS = $(am_Magick___demo_analyze_OBJECTS)
-@WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_3 =  \
+@WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_2 =  \
 @WITH_MAGICK_PLUS_PLUS_TRUE@	Magick++/lib/libMagick++.la
-@WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_4 =  \
-@WITH_MAGICK_PLUS_PLUS_TRUE@	$(am__DEPENDENCIES_3) \
+@WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_3 =  \
+@WITH_MAGICK_PLUS_PLUS_TRUE@	$(am__DEPENDENCIES_2) \
 @WITH_MAGICK_PLUS_PLUS_TRUE@	$(top_builddir)/MagickCore/libMagickCore.la
-Magick___demo_analyze_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_analyze_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_button_OBJECTS = Magick++/demo/button.$(OBJEXT)
 Magick___demo_button_OBJECTS = $(am_Magick___demo_button_OBJECTS)
-Magick___demo_button_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_button_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_demo_OBJECTS = Magick++/demo/demo.$(OBJEXT)
 Magick___demo_demo_OBJECTS = $(am_Magick___demo_demo_OBJECTS)
-Magick___demo_demo_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_demo_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_detrans_OBJECTS = Magick++/demo/detrans.$(OBJEXT)
 Magick___demo_detrans_OBJECTS = $(am_Magick___demo_detrans_OBJECTS)
-Magick___demo_detrans_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_detrans_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_flip_OBJECTS = Magick++/demo/flip.$(OBJEXT)
 Magick___demo_flip_OBJECTS = $(am_Magick___demo_flip_OBJECTS)
-Magick___demo_flip_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_flip_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_gravity_OBJECTS = Magick++/demo/gravity.$(OBJEXT)
 Magick___demo_gravity_OBJECTS = $(am_Magick___demo_gravity_OBJECTS)
-Magick___demo_gravity_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_gravity_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_piddle_OBJECTS = Magick++/demo/piddle.$(OBJEXT)
 Magick___demo_piddle_OBJECTS = $(am_Magick___demo_piddle_OBJECTS)
-Magick___demo_piddle_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_piddle_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_shapes_OBJECTS = Magick++/demo/shapes.$(OBJEXT)
 Magick___demo_shapes_OBJECTS = $(am_Magick___demo_shapes_OBJECTS)
-Magick___demo_shapes_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_shapes_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___demo_zoom_OBJECTS = Magick++/demo/zoom.$(OBJEXT)
 Magick___demo_zoom_OBJECTS = $(am_Magick___demo_zoom_OBJECTS)
-Magick___demo_zoom_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___demo_zoom_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_appendImages_OBJECTS =  \
 	Magick++/tests/appendImages.$(OBJEXT)
 Magick___tests_appendImages_OBJECTS =  \
 	$(am_Magick___tests_appendImages_OBJECTS)
-Magick___tests_appendImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_appendImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_attributes_OBJECTS =  \
 	Magick++/tests/attributes.$(OBJEXT)
 Magick___tests_attributes_OBJECTS =  \
 	$(am_Magick___tests_attributes_OBJECTS)
-Magick___tests_attributes_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_attributes_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_averageImages_OBJECTS =  \
 	Magick++/tests/averageImages.$(OBJEXT)
 Magick___tests_averageImages_OBJECTS =  \
 	$(am_Magick___tests_averageImages_OBJECTS)
-Magick___tests_averageImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_averageImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_coalesceImages_OBJECTS =  \
 	Magick++/tests/coalesceImages.$(OBJEXT)
 Magick___tests_coalesceImages_OBJECTS =  \
 	$(am_Magick___tests_coalesceImages_OBJECTS)
-Magick___tests_coalesceImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_coalesceImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_coderInfo_OBJECTS =  \
 	Magick++/tests/coderInfo.$(OBJEXT)
 Magick___tests_coderInfo_OBJECTS =  \
 	$(am_Magick___tests_coderInfo_OBJECTS)
-Magick___tests_coderInfo_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_coderInfo_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_color_OBJECTS = Magick++/tests/color.$(OBJEXT)
 Magick___tests_color_OBJECTS = $(am_Magick___tests_color_OBJECTS)
-Magick___tests_color_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_color_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_colorHistogram_OBJECTS =  \
 	Magick++/tests/colorHistogram.$(OBJEXT)
 Magick___tests_colorHistogram_OBJECTS =  \
 	$(am_Magick___tests_colorHistogram_OBJECTS)
-Magick___tests_colorHistogram_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_colorHistogram_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_exceptions_OBJECTS =  \
 	Magick++/tests/exceptions.$(OBJEXT)
 Magick___tests_exceptions_OBJECTS =  \
 	$(am_Magick___tests_exceptions_OBJECTS)
-Magick___tests_exceptions_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_exceptions_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_montageImages_OBJECTS =  \
 	Magick++/tests/montageImages.$(OBJEXT)
 Magick___tests_montageImages_OBJECTS =  \
 	$(am_Magick___tests_montageImages_OBJECTS)
-Magick___tests_montageImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_montageImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_morphImages_OBJECTS =  \
 	Magick++/tests/morphImages.$(OBJEXT)
 Magick___tests_morphImages_OBJECTS =  \
 	$(am_Magick___tests_morphImages_OBJECTS)
-Magick___tests_morphImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_morphImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_readWriteBlob_OBJECTS =  \
 	Magick++/tests/readWriteBlob.$(OBJEXT)
 Magick___tests_readWriteBlob_OBJECTS =  \
 	$(am_Magick___tests_readWriteBlob_OBJECTS)
-Magick___tests_readWriteBlob_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_readWriteBlob_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_Magick___tests_readWriteImages_OBJECTS =  \
 	Magick++/tests/readWriteImages.$(OBJEXT)
 Magick___tests_readWriteImages_OBJECTS =  \
 	$(am_Magick___tests_readWriteImages_OBJECTS)
-Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
+Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_tests_drawtest_OBJECTS = tests/drawtest.$(OBJEXT)
 tests_drawtest_OBJECTS = $(am_tests_drawtest_OBJECTS)
 tests_drawtest_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
@@ -2153,11 +2078,7 @@ SOURCES = $(Magick___lib_libMagick___la_SOURCES) \
 	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
 	$(coders_xps_la_SOURCES) $(coders_xwd_la_SOURCES) \
 	$(coders_ycbcr_la_SOURCES) $(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) $(ltdl_dld_link_la_SOURCES) \
-	$(ltdl_dlopen_la_SOURCES) $(ltdl_dyld_la_SOURCES) \
-	$(ltdl_libltdl_la_SOURCES) $(ltdl_libltdlc_la_SOURCES) \
-	$(ltdl_load_add_on_la_SOURCES) $(ltdl_loadlibrary_la_SOURCES) \
-	$(ltdl_shl_load_la_SOURCES) $(Magick___demo_analyze_SOURCES) \
+	$(filters_analyze_la_SOURCES) $(Magick___demo_analyze_SOURCES) \
 	$(Magick___demo_button_SOURCES) $(Magick___demo_demo_SOURCES) \
 	$(Magick___demo_detrans_SOURCES) $(Magick___demo_flip_SOURCES) \
 	$(Magick___demo_gravity_SOURCES) \
@@ -2245,11 +2166,7 @@ DIST_SOURCES = $(Magick___lib_libMagick___la_SOURCES) \
 	$(coders_xcf_la_SOURCES) $(coders_xpm_la_SOURCES) \
 	$(coders_xps_la_SOURCES) $(coders_xwd_la_SOURCES) \
 	$(coders_ycbcr_la_SOURCES) $(coders_yuv_la_SOURCES) \
-	$(filters_analyze_la_SOURCES) $(ltdl_dld_link_la_SOURCES) \
-	$(ltdl_dlopen_la_SOURCES) $(ltdl_dyld_la_SOURCES) \
-	$(ltdl_libltdl_la_SOURCES) $(ltdl_libltdlc_la_SOURCES) \
-	$(ltdl_load_add_on_la_SOURCES) $(ltdl_loadlibrary_la_SOURCES) \
-	$(ltdl_shl_load_la_SOURCES) $(Magick___demo_analyze_SOURCES) \
+	$(filters_analyze_la_SOURCES) $(Magick___demo_analyze_SOURCES) \
 	$(Magick___demo_button_SOURCES) $(Magick___demo_demo_SOURCES) \
 	$(Magick___demo_detrans_SOURCES) $(Magick___demo_flip_SOURCES) \
 	$(Magick___demo_gravity_SOURCES) \
@@ -2284,9 +2201,6 @@ NROFF = nroff
 MANS = $(man_MANS)
 DATA = $(configlib_DATA) $(configshare_DATA) $(configsharearch_DATA) \
 	$(doc_DATA) $(pkgconfig_DATA)
-am__include_HEADERS_DIST = ltdl/ltdl.h
-am__ltdlinclude_HEADERS_DIST = ltdl/libltdl/lt_system.h \
-	ltdl/libltdl/lt_error.h ltdl/libltdl/lt_dlloader.h
 am__magickppinc_HEADERS_DIST = Magick++/lib/Magick++/Blob.h \
 	Magick++/lib/Magick++/CoderInfo.h \
 	Magick++/lib/Magick++/Color.h Magick++/lib/Magick++/Drawable.h \
@@ -2297,9 +2211,8 @@ am__magickppinc_HEADERS_DIST = Magick++/lib/Magick++/Blob.h \
 	Magick++/lib/Magick++/STL.h Magick++/lib/Magick++/TypeMetric.h
 am__magickpptopinc_HEADERS_DIST = Magick++/lib/Magick++.h
 HEADERS = $(MagickCoreinc_HEADERS) $(MagickWandinc_HEADERS) \
-	$(include_HEADERS) $(ltdlinclude_HEADERS) \
-	$(magickppinc_HEADERS) $(magickpptopinc_HEADERS) \
-	$(noinst_HEADERS)
+	$(include_HEADERS) $(magickppinc_HEADERS) \
+	$(magickpptopinc_HEADERS) $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
@@ -2504,7 +2417,6 @@ ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
-ARGZ_H = @ARGZ_H@
 AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -2593,7 +2505,6 @@ HPGLDecodeDelegate = @HPGLDecodeDelegate@
 HTMLDecodeDelegate = @HTMLDecodeDelegate@
 ILBMDecodeDelegate = @ILBMDecodeDelegate@
 ILBMEncodeDelegate = @ILBMEncodeDelegate@
-INCLTDL = @INCLTDL@
 INCLUDEARCH_DIR = @INCLUDEARCH_DIR@
 INCLUDE_DIR = @INCLUDE_DIR@
 INCLUDE_PATH = @INCLUDE_PATH@
@@ -2616,12 +2527,7 @@ LCMS_LIBS = @LCMS_LIBS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LFS_CPPFLAGS = @LFS_CPPFLAGS@
-LIBADD_DL = @LIBADD_DL@
-LIBADD_DLD_LINK = @LIBADD_DLD_LINK@
-LIBADD_DLOPEN = @LIBADD_DLOPEN@
-LIBADD_SHL_LOAD = @LIBADD_SHL_LOAD@
 LIBEXEC_DIR = @LIBEXEC_DIR@
-LIBLTDL = @LIBLTDL@
 LIBOBJS = @LIBOBJS@
 LIBRARY_EXTRA_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 LIBRARY_PATH = @LIBRARY_PATH@
@@ -2640,13 +2546,7 @@ LPDelegate = @LPDelegate@
 LPRDelegate = @LPRDelegate@
 LQR_CFLAGS = @LQR_CFLAGS@
 LQR_LIBS = @LQR_LIBS@
-LTDLDEPS = @LTDLDEPS@
-LTDLINCL = @LTDLINCL@
-LTDLOPEN = @LTDLOPEN@
 LTLIBOBJS = @LTLIBOBJS@
-LT_CONFIG_H = @LT_CONFIG_H@
-LT_DLLOADERS = @LT_DLLOADERS@
-LT_DLPREOPEN = @LT_DLPREOPEN@
 LZMA_CFLAGS = @LZMA_CFLAGS@
 LZMA_LIBS = @LZMA_LIBS@
 LaunchDelegate = @LaunchDelegate@
@@ -2662,7 +2562,6 @@ MAGICK_FEATURES = @MAGICK_FEATURES@
 MAGICK_FILTER_MODULE_PATH = @MAGICK_FILTER_MODULE_PATH@
 MAGICK_HDRI = @MAGICK_HDRI@
 MAGICK_LDFLAGS = @MAGICK_LDFLAGS@
-MAGICK_LIBLTDL = @MAGICK_LIBLTDL@
 MAGICK_LIBRARY_AGE = @MAGICK_LIBRARY_AGE@
 MAGICK_LIBRARY_CURRENT = @MAGICK_LIBRARY_CURRENT@
 MAGICK_LIBRARY_CURRENT_MIN = @MAGICK_LIBRARY_CURRENT_MIN@
@@ -2672,7 +2571,6 @@ MAGICK_LIBS = @MAGICK_LIBS@
 MAGICK_LIB_VERSION = @MAGICK_LIB_VERSION@
 MAGICK_LIB_VERSION_NUMBER = @MAGICK_LIB_VERSION_NUMBER@
 MAGICK_LIB_VERSION_TEXT = @MAGICK_LIB_VERSION_TEXT@
-MAGICK_LTDLDEPS = @MAGICK_LTDLDEPS@
 MAGICK_LT_RELEASE_OPTS = @MAGICK_LT_RELEASE_OPTS@
 MAGICK_PCFLAGS = @MAGICK_PCFLAGS@
 MAGICK_SVN_REVISION = @MAGICK_SVN_REVISION@
@@ -2848,8 +2746,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-ltdl_LIBOBJS = @ltdl_LIBOBJS@
-ltdl_LTLIBOBJS = @ltdl_LTLIBOBJS@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -2860,7 +2756,6 @@ psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
-sys_symbol_underscore = @sys_symbol_underscore@
 sysconfdir = @sysconfdir@
 target = @target@
 target_alias = @target_alias@
@@ -2873,12 +2768,7 @@ top_srcdir = @top_srcdir@
 type_include_files = @type_include_files@
 windows_font_dir = @windows_font_dir@
 xml2_config = @xml2_config@
-
-# -I$(srcdir) is needed for user that built libltdl with a sub-Automake
-# (not as a sub-package!) using 'nostdinc':
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
-	-DLT_CONFIG_H='<$(LT_CONFIG_H)>' -DLTDL -I. -I$(srcdir) -Iltdl \
-	-I$(srcdir)/ltdl -I$(srcdir)/ltdl/libltdl \
 	-I$(top_srcdir)/Magick++/lib
 ACLOCAL_AMFLAGS = -I m4
 MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -avoid-version
@@ -2889,10 +2779,12 @@ MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -shared -module -av
 # compiler, headers, and libraries are used as for a normal build.
 DISTCHECK_CONFIGURE_FLAGS = $(DISTCHECK_CONFIG_FLAGS)
 DISTCLEANFILES = _configs.sed MagickCore/magick-config.h
-CLEANFILES = $(LTDL_CLEANFILES) $(MAGICKWAND_CLEANFILES) \
-	$(MAGICKPP_CLEANFILES) $(UTILITIES_CLEANFILES) \
-	$(TESTS_CLEANFILES) ltdl/libltdl.la ltdl/libltdlc.la \
-	ltdl/libdlloader.la $(ltdl_LIBOBJS) $(ltdl_LTLIBOBJS)
+CLEANFILES = \
+	$(MAGICKWAND_CLEANFILES) \
+	$(MAGICKPP_CLEANFILES) \
+	$(UTILITIES_CLEANFILES) \
+	$(TESTS_CLEANFILES)
+
 
 # Binary scripts
 bin_SCRIPTS = \
@@ -2900,11 +2792,10 @@ bin_SCRIPTS = \
 	$(MAGICKWAND_BIN_SCRPTS) \
 	$(MAGICKPP_SCRPTS)
 
-include_HEADERS = $(LTDL_INSTALLHEADERS) $(am__append_1)
+include_HEADERS = 
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = \
-	$(LIBLTDL_NOINST_HDRS) \
 	$(MAGICKCORE_NOINST_HDRS)
 
 @WIN32_NATIVE_BUILD_FALSE@SRCDIR = "$(srcdir)/"
@@ -2949,19 +2840,21 @@ TOP_EXTRA_DIST = \
 
 
 # Additional files to distribute
-EXTRA_DIST = $(TOP_EXTRA_DIST) $(CONFIG_EXTRA_DIST) \
-	$(MAGICKCORE_EXTRA_DIST) $(MAGICKWAND_EXTRA_DIST) \
-	$(MAGICKPP_EXTRA_DIST) $(UTILITIES_EXTRA_DIST) \
-	$(TESTS_EXTRA_DIST) ltdl/lt__dirent.c ltdl/lt__strl.c \
-	ltdl/README ltdl/README ltdl/argz_.h ltdl/argz.c
-lib_LTLIBRARIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) \
-	$(MAGICKPP_LIBS) $(am__append_2)
-AM_LDFLAGS = -no-undefined
-noinst_LTLIBRARIES = $(LT_DLLOADERS) $(am__append_3)
-EXTRA_LTLIBRARIES = ltdl/dlopen.la ltdl/dld_link.la ltdl/dyld.la \
-	ltdl/load_add_on.la ltdl/loadlibrary.la ltdl/shl_load.la
-BUILT_SOURCES = ltdl/$(ARGZ_H)
-MOSTLYCLEANFILES = ltdl/argz.h ltdl/argz.h-t
+EXTRA_DIST = \
+	$(TOP_EXTRA_DIST) \
+	$(CONFIG_EXTRA_DIST) \
+	$(MAGICKCORE_EXTRA_DIST) \
+	$(MAGICKWAND_EXTRA_DIST) \
+	$(MAGICKPP_EXTRA_DIST) \
+	$(UTILITIES_EXTRA_DIST) \
+	$(TESTS_EXTRA_DIST)
+
+lib_LTLIBRARIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) $(MAGICKPP_LIBS)
+AM_LDFLAGS = 
+noinst_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
+BUILT_SOURCES = 
+MOSTLYCLEANFILES = 
 M4_EXTRA_DIST = \
 	ac_func_fseeko.m4  \
 	argz.m4  \
@@ -3046,53 +2939,6 @@ CONFIG_EXTRA_DIST = \
 	config/type-windows.xml.in \
 	config/type.xml.in
 
-LTDL_VERSION_INFO = -version-info 10:0:3
-@INSTALL_LTDL_TRUE@ltdlincludedir = $(includedir)/libltdl
-@INSTALL_LTDL_TRUE@ltdlinclude_HEADERS = ltdl/libltdl/lt_system.h \
-@INSTALL_LTDL_TRUE@			  ltdl/libltdl/lt_error.h \
-@INSTALL_LTDL_TRUE@			  ltdl/libltdl/lt_dlloader.h
-
-ltdl_libltdl_la_SOURCES = ltdl/libltdl/lt__alloc.h \
-			  ltdl/libltdl/lt__dirent.h \
-			  ltdl/libltdl/lt__glibc.h \
-			  ltdl/libltdl/lt__private.h \
-			  ltdl/libltdl/lt__strl.h \
-			  ltdl/libltdl/lt_dlloader.h \
-			  ltdl/libltdl/lt_error.h \
-	                  ltdl/libltdl/lt_system.h \
-			  ltdl/libltdl/slist.h \
-			  ltdl/loaders/preopen.c \
-			  ltdl/lt__alloc.c \
-			  ltdl/lt_dlloader.c \
-			  ltdl/lt_error.c \
-			  ltdl/ltdl.c \
-			  ltdl/ltdl.h \
-			  ltdl/slist.c
-
-ltdl_libltdl_la_CPPFLAGS = -DLTDLOPEN=$(LTDLOPEN) $(AM_CPPFLAGS)
-ltdl_libltdl_la_LDFLAGS = $(AM_LDFLAGS) $(LTDL_VERSION_INFO) $(LT_DLPREOPEN)
-ltdl_libltdl_la_LIBADD = $(ltdl_LTLIBOBJS)
-ltdl_libltdl_la_DEPENDENCIES = $(LT_DLLOADERS) $(ltdl_LTLIBOBJS)
-ltdl_libltdlc_la_SOURCES = $(ltdl_libltdl_la_SOURCES)
-ltdl_libltdlc_la_CPPFLAGS = -DLTDLOPEN=$(LTDLOPEN)c $(AM_CPPFLAGS)
-ltdl_libltdlc_la_LDFLAGS = $(AM_LDFLAGS) $(LT_DLPREOPEN)
-ltdl_libltdlc_la_LIBADD = $(ltdl_libltdl_la_LIBADD)
-ltdl_libltdlc_la_DEPENDENCIES = $(ltdl_libltdl_la_DEPENDENCIES)
-ltdl_dlopen_la_SOURCES = ltdl/loaders/dlopen.c
-ltdl_dlopen_la_LDFLAGS = -module -avoid-version
-ltdl_dlopen_la_LIBADD = $(LIBADD_DLOPEN)
-ltdl_dld_link_la_SOURCES = ltdl/loaders/dld_link.c
-ltdl_dld_link_la_LDFLAGS = -module -avoid-version
-ltdl_dld_link_la_LIBADD = -ldld
-ltdl_dyld_la_SOURCES = ltdl/loaders/dyld.c
-ltdl_dyld_la_LDFLAGS = -module -avoid-version
-ltdl_load_add_on_la_SOURCES = ltdl/loaders/load_add_on.c
-ltdl_load_add_on_la_LDFLAGS = -module -avoid-version
-ltdl_loadlibrary_la_SOURCES = ltdl/loaders/loadlibrary.c
-ltdl_loadlibrary_la_LDFLAGS = -module -avoid-version
-ltdl_shl_load_la_SOURCES = ltdl/loaders/shl_load.c
-ltdl_shl_load_la_LDFLAGS = -module -avoid-version
-ltdl_shl_load_la_LIBADD = $(LIBADD_SHL_LOAD)
 
 # Where coder modules get installed
 codersdir = $(CODER_PATH)
@@ -4100,14 +3946,14 @@ MAGICKCORE_MANS = \
 MAGICKCORE_LIBS = MagickCore/libMagickCore.la
 @WITH_MODULES_FALSE@MagickCore_libMagickCore_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS) $(MAGICKCORE_CODER_SRCS) $(MAGICKCORE_FILTER_SRCS)
 @WITH_MODULES_TRUE@MagickCore_libMagickCore_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS)
-@WITH_MODULES_FALSE@MagickCore_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS) $(MAGICK_LIBLTDL)
-@WITH_MODULES_TRUE@MagickCore_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS) $(MAGICK_LIBLTDL)
+@WITH_MODULES_FALSE@MagickCore_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS)
+@WITH_MODULES_TRUE@MagickCore_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS)
 MagickCore_libMagickCore_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $(LIBRARY_EXTRA_CPPFLAGS)
 MagickCore_libMagickCore_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
   $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
-MagickCore_libMagickCore_la_DEPENDENCIES = $(MAGICK_LTDLDEPS)
+MagickCore_libMagickCore_la_DEPENDENCIES = 
 
 # Library base sources
 MAGICKCORE_BASE_SRCS = \
@@ -5064,7 +4910,7 @@ all: $(BUILT_SOURCES)
 .SUFFIXES: .c .cpp .lo .log .o .obj .sh .sh$(EXEEXT) .tap .tap$(EXEEXT) .trs
 am--refresh: Makefile
 	@:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/m4/Makefile.am $(srcdir)/config/Makefile.am $(srcdir)/ltdl/Makefile.inc $(srcdir)/coders/Makefile.am $(srcdir)/MagickCore/Makefile.am $(srcdir)/MagickWand/Makefile.am $(srcdir)/Magick++/Makefile.am $(srcdir)/filters/Makefile.am $(srcdir)/utilities/Makefile.am $(srcdir)/tests/Makefile.am $(srcdir)/PerlMagick/Makefile.am $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/m4/Makefile.am $(srcdir)/config/Makefile.am $(srcdir)/coders/Makefile.am $(srcdir)/MagickCore/Makefile.am $(srcdir)/MagickWand/Makefile.am $(srcdir)/Magick++/Makefile.am $(srcdir)/filters/Makefile.am $(srcdir)/utilities/Makefile.am $(srcdir)/tests/Makefile.am $(srcdir)/PerlMagick/Makefile.am $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -5087,7 +4933,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $@ $(am__depfiles_maybe);; \
 	esac;
-$(srcdir)/m4/Makefile.am $(srcdir)/config/Makefile.am $(srcdir)/ltdl/Makefile.inc $(srcdir)/coders/Makefile.am $(srcdir)/MagickCore/Makefile.am $(srcdir)/MagickWand/Makefile.am $(srcdir)/Magick++/Makefile.am $(srcdir)/filters/Makefile.am $(srcdir)/utilities/Makefile.am $(srcdir)/tests/Makefile.am $(srcdir)/PerlMagick/Makefile.am:
+$(srcdir)/m4/Makefile.am $(srcdir)/config/Makefile.am $(srcdir)/coders/Makefile.am $(srcdir)/MagickCore/Makefile.am $(srcdir)/MagickWand/Makefile.am $(srcdir)/Magick++/Makefile.am $(srcdir)/filters/Makefile.am $(srcdir)/utilities/Makefile.am $(srcdir)/tests/Makefile.am $(srcdir)/PerlMagick/Makefile.am:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
@@ -6438,71 +6284,6 @@ filters/filters_analyze_la-analyze.lo: filters/$(am__dirstamp) \
 	filters/$(DEPDIR)/$(am__dirstamp)
 filters/analyze.la: $(filters_analyze_la_OBJECTS) $(filters_analyze_la_DEPENDENCIES) $(EXTRA_filters_analyze_la_DEPENDENCIES) filters/$(am__dirstamp)
 	$(AM_V_CCLD)$(filters_analyze_la_LINK) $(am_filters_analyze_la_rpath) $(filters_analyze_la_OBJECTS) $(filters_analyze_la_LIBADD) $(LIBS)
-ltdl/loaders/$(am__dirstamp):
-	@$(MKDIR_P) ltdl/loaders
-	@: > ltdl/loaders/$(am__dirstamp)
-ltdl/loaders/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) ltdl/loaders/$(DEPDIR)
-	@: > ltdl/loaders/$(DEPDIR)/$(am__dirstamp)
-ltdl/loaders/dld_link.lo: ltdl/loaders/$(am__dirstamp) \
-	ltdl/loaders/$(DEPDIR)/$(am__dirstamp)
-ltdl/$(am__dirstamp):
-	@$(MKDIR_P) ltdl
-	@: > ltdl/$(am__dirstamp)
-ltdl/dld_link.la: $(ltdl_dld_link_la_OBJECTS) $(ltdl_dld_link_la_DEPENDENCIES) $(EXTRA_ltdl_dld_link_la_DEPENDENCIES) ltdl/$(am__dirstamp)
-	$(AM_V_CCLD)$(ltdl_dld_link_la_LINK)  $(ltdl_dld_link_la_OBJECTS) $(ltdl_dld_link_la_LIBADD) $(LIBS)
-ltdl/loaders/dlopen.lo: ltdl/loaders/$(am__dirstamp) \
-	ltdl/loaders/$(DEPDIR)/$(am__dirstamp)
-ltdl/dlopen.la: $(ltdl_dlopen_la_OBJECTS) $(ltdl_dlopen_la_DEPENDENCIES) $(EXTRA_ltdl_dlopen_la_DEPENDENCIES) ltdl/$(am__dirstamp)
-	$(AM_V_CCLD)$(ltdl_dlopen_la_LINK)  $(ltdl_dlopen_la_OBJECTS) $(ltdl_dlopen_la_LIBADD) $(LIBS)
-ltdl/loaders/dyld.lo: ltdl/loaders/$(am__dirstamp) \
-	ltdl/loaders/$(DEPDIR)/$(am__dirstamp)
-ltdl/dyld.la: $(ltdl_dyld_la_OBJECTS) $(ltdl_dyld_la_DEPENDENCIES) $(EXTRA_ltdl_dyld_la_DEPENDENCIES) ltdl/$(am__dirstamp)
-	$(AM_V_CCLD)$(ltdl_dyld_la_LINK)  $(ltdl_dyld_la_OBJECTS) $(ltdl_dyld_la_LIBADD) $(LIBS)
-ltdl/loaders/ltdl_libltdl_la-preopen.lo: ltdl/loaders/$(am__dirstamp) \
-	ltdl/loaders/$(DEPDIR)/$(am__dirstamp)
-ltdl/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) ltdl/$(DEPDIR)
-	@: > ltdl/$(DEPDIR)/$(am__dirstamp)
-ltdl/ltdl_libltdl_la-lt__alloc.lo: ltdl/$(am__dirstamp) \
-	ltdl/$(DEPDIR)/$(am__dirstamp)
-ltdl/ltdl_libltdl_la-lt_dlloader.lo: ltdl/$(am__dirstamp) \
-	ltdl/$(DEPDIR)/$(am__dirstamp)
-ltdl/ltdl_libltdl_la-lt_error.lo: ltdl/$(am__dirstamp) \
-	ltdl/$(DEPDIR)/$(am__dirstamp)
-ltdl/ltdl_libltdl_la-ltdl.lo: ltdl/$(am__dirstamp) \
-	ltdl/$(DEPDIR)/$(am__dirstamp)
-ltdl/ltdl_libltdl_la-slist.lo: ltdl/$(am__dirstamp) \
-	ltdl/$(DEPDIR)/$(am__dirstamp)
-ltdl/libltdl.la: $(ltdl_libltdl_la_OBJECTS) $(ltdl_libltdl_la_DEPENDENCIES) $(EXTRA_ltdl_libltdl_la_DEPENDENCIES) ltdl/$(am__dirstamp)
-	$(AM_V_CCLD)$(ltdl_libltdl_la_LINK) $(am_ltdl_libltdl_la_rpath) $(ltdl_libltdl_la_OBJECTS) $(ltdl_libltdl_la_LIBADD) $(LIBS)
-ltdl/loaders/ltdl_libltdlc_la-preopen.lo:  \
-	ltdl/loaders/$(am__dirstamp) \
-	ltdl/loaders/$(DEPDIR)/$(am__dirstamp)
-ltdl/ltdl_libltdlc_la-lt__alloc.lo: ltdl/$(am__dirstamp) \
-	ltdl/$(DEPDIR)/$(am__dirstamp)
-ltdl/ltdl_libltdlc_la-lt_dlloader.lo: ltdl/$(am__dirstamp) \
-	ltdl/$(DEPDIR)/$(am__dirstamp)
-ltdl/ltdl_libltdlc_la-lt_error.lo: ltdl/$(am__dirstamp) \
-	ltdl/$(DEPDIR)/$(am__dirstamp)
-ltdl/ltdl_libltdlc_la-ltdl.lo: ltdl/$(am__dirstamp) \
-	ltdl/$(DEPDIR)/$(am__dirstamp)
-ltdl/ltdl_libltdlc_la-slist.lo: ltdl/$(am__dirstamp) \
-	ltdl/$(DEPDIR)/$(am__dirstamp)
-ltdl/libltdlc.la: $(ltdl_libltdlc_la_OBJECTS) $(ltdl_libltdlc_la_DEPENDENCIES) $(EXTRA_ltdl_libltdlc_la_DEPENDENCIES) ltdl/$(am__dirstamp)
-	$(AM_V_CCLD)$(ltdl_libltdlc_la_LINK) $(am_ltdl_libltdlc_la_rpath) $(ltdl_libltdlc_la_OBJECTS) $(ltdl_libltdlc_la_LIBADD) $(LIBS)
-ltdl/loaders/load_add_on.lo: ltdl/loaders/$(am__dirstamp) \
-	ltdl/loaders/$(DEPDIR)/$(am__dirstamp)
-ltdl/load_add_on.la: $(ltdl_load_add_on_la_OBJECTS) $(ltdl_load_add_on_la_DEPENDENCIES) $(EXTRA_ltdl_load_add_on_la_DEPENDENCIES) ltdl/$(am__dirstamp)
-	$(AM_V_CCLD)$(ltdl_load_add_on_la_LINK)  $(ltdl_load_add_on_la_OBJECTS) $(ltdl_load_add_on_la_LIBADD) $(LIBS)
-ltdl/loaders/loadlibrary.lo: ltdl/loaders/$(am__dirstamp) \
-	ltdl/loaders/$(DEPDIR)/$(am__dirstamp)
-ltdl/loadlibrary.la: $(ltdl_loadlibrary_la_OBJECTS) $(ltdl_loadlibrary_la_DEPENDENCIES) $(EXTRA_ltdl_loadlibrary_la_DEPENDENCIES) ltdl/$(am__dirstamp)
-	$(AM_V_CCLD)$(ltdl_loadlibrary_la_LINK)  $(ltdl_loadlibrary_la_OBJECTS) $(ltdl_loadlibrary_la_LIBADD) $(LIBS)
-ltdl/loaders/shl_load.lo: ltdl/loaders/$(am__dirstamp) \
-	ltdl/loaders/$(DEPDIR)/$(am__dirstamp)
-ltdl/shl_load.la: $(ltdl_shl_load_la_OBJECTS) $(ltdl_shl_load_la_DEPENDENCIES) $(EXTRA_ltdl_shl_load_la_DEPENDENCIES) ltdl/$(am__dirstamp)
-	$(AM_V_CCLD)$(ltdl_shl_load_la_LINK)  $(ltdl_shl_load_la_OBJECTS) $(ltdl_shl_load_la_LIBADD) $(LIBS)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
@@ -6813,10 +6594,6 @@ mostlyclean-compile:
 	-rm -f coders/*.lo
 	-rm -f filters/*.$(OBJEXT)
 	-rm -f filters/*.lo
-	-rm -f ltdl/*.$(OBJEXT)
-	-rm -f ltdl/*.lo
-	-rm -f ltdl/loaders/*.$(OBJEXT)
-	-rm -f ltdl/loaders/*.lo
 	-rm -f tests/*.$(OBJEXT)
 	-rm -f utilities/*.$(OBJEXT)
 
@@ -7217,24 +6994,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@coders/$(DEPDIR)/coders_yuv_la-yuv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/MagickCore_libMagickCore_la-analyze.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@filters/$(DEPDIR)/filters_analyze_la-analyze.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-lt__alloc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_dlloader.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_error.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-ltdl.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdl_la-slist.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt__alloc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt_dlloader.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt_error.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdlc_la-ltdl.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/$(DEPDIR)/ltdl_libltdlc_la-slist.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/dld_link.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/dlopen.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/dyld.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/load_add_on.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/loadlibrary.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/ltdl_libltdl_la-preopen.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/ltdl_libltdlc_la-preopen.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@ltdl/loaders/$(DEPDIR)/shl_load.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/drawtest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/tests_validate-validate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/wandtest.Po@am__quote@
@@ -9773,90 +9532,6 @@ filters/filters_analyze_la-analyze.lo: filters/analyze.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(filters_analyze_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o filters/filters_analyze_la-analyze.lo `test -f 'filters/analyze.c' || echo '$(srcdir)/'`filters/analyze.c
 
-ltdl/loaders/ltdl_libltdl_la-preopen.lo: ltdl/loaders/preopen.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/loaders/ltdl_libltdl_la-preopen.lo -MD -MP -MF ltdl/loaders/$(DEPDIR)/ltdl_libltdl_la-preopen.Tpo -c -o ltdl/loaders/ltdl_libltdl_la-preopen.lo `test -f 'ltdl/loaders/preopen.c' || echo '$(srcdir)/'`ltdl/loaders/preopen.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/loaders/$(DEPDIR)/ltdl_libltdl_la-preopen.Tpo ltdl/loaders/$(DEPDIR)/ltdl_libltdl_la-preopen.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ltdl/loaders/preopen.c' object='ltdl/loaders/ltdl_libltdl_la-preopen.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/loaders/ltdl_libltdl_la-preopen.lo `test -f 'ltdl/loaders/preopen.c' || echo '$(srcdir)/'`ltdl/loaders/preopen.c
-
-ltdl/ltdl_libltdl_la-lt__alloc.lo: ltdl/lt__alloc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdl_la-lt__alloc.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdl_la-lt__alloc.Tpo -c -o ltdl/ltdl_libltdl_la-lt__alloc.lo `test -f 'ltdl/lt__alloc.c' || echo '$(srcdir)/'`ltdl/lt__alloc.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdl_la-lt__alloc.Tpo ltdl/$(DEPDIR)/ltdl_libltdl_la-lt__alloc.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ltdl/lt__alloc.c' object='ltdl/ltdl_libltdl_la-lt__alloc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdl_la-lt__alloc.lo `test -f 'ltdl/lt__alloc.c' || echo '$(srcdir)/'`ltdl/lt__alloc.c
-
-ltdl/ltdl_libltdl_la-lt_dlloader.lo: ltdl/lt_dlloader.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdl_la-lt_dlloader.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_dlloader.Tpo -c -o ltdl/ltdl_libltdl_la-lt_dlloader.lo `test -f 'ltdl/lt_dlloader.c' || echo '$(srcdir)/'`ltdl/lt_dlloader.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_dlloader.Tpo ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_dlloader.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ltdl/lt_dlloader.c' object='ltdl/ltdl_libltdl_la-lt_dlloader.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdl_la-lt_dlloader.lo `test -f 'ltdl/lt_dlloader.c' || echo '$(srcdir)/'`ltdl/lt_dlloader.c
-
-ltdl/ltdl_libltdl_la-lt_error.lo: ltdl/lt_error.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdl_la-lt_error.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_error.Tpo -c -o ltdl/ltdl_libltdl_la-lt_error.lo `test -f 'ltdl/lt_error.c' || echo '$(srcdir)/'`ltdl/lt_error.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_error.Tpo ltdl/$(DEPDIR)/ltdl_libltdl_la-lt_error.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ltdl/lt_error.c' object='ltdl/ltdl_libltdl_la-lt_error.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdl_la-lt_error.lo `test -f 'ltdl/lt_error.c' || echo '$(srcdir)/'`ltdl/lt_error.c
-
-ltdl/ltdl_libltdl_la-ltdl.lo: ltdl/ltdl.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdl_la-ltdl.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdl_la-ltdl.Tpo -c -o ltdl/ltdl_libltdl_la-ltdl.lo `test -f 'ltdl/ltdl.c' || echo '$(srcdir)/'`ltdl/ltdl.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdl_la-ltdl.Tpo ltdl/$(DEPDIR)/ltdl_libltdl_la-ltdl.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ltdl/ltdl.c' object='ltdl/ltdl_libltdl_la-ltdl.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdl_la-ltdl.lo `test -f 'ltdl/ltdl.c' || echo '$(srcdir)/'`ltdl/ltdl.c
-
-ltdl/ltdl_libltdl_la-slist.lo: ltdl/slist.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdl_la-slist.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdl_la-slist.Tpo -c -o ltdl/ltdl_libltdl_la-slist.lo `test -f 'ltdl/slist.c' || echo '$(srcdir)/'`ltdl/slist.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdl_la-slist.Tpo ltdl/$(DEPDIR)/ltdl_libltdl_la-slist.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ltdl/slist.c' object='ltdl/ltdl_libltdl_la-slist.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdl_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdl_la-slist.lo `test -f 'ltdl/slist.c' || echo '$(srcdir)/'`ltdl/slist.c
-
-ltdl/loaders/ltdl_libltdlc_la-preopen.lo: ltdl/loaders/preopen.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/loaders/ltdl_libltdlc_la-preopen.lo -MD -MP -MF ltdl/loaders/$(DEPDIR)/ltdl_libltdlc_la-preopen.Tpo -c -o ltdl/loaders/ltdl_libltdlc_la-preopen.lo `test -f 'ltdl/loaders/preopen.c' || echo '$(srcdir)/'`ltdl/loaders/preopen.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/loaders/$(DEPDIR)/ltdl_libltdlc_la-preopen.Tpo ltdl/loaders/$(DEPDIR)/ltdl_libltdlc_la-preopen.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ltdl/loaders/preopen.c' object='ltdl/loaders/ltdl_libltdlc_la-preopen.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/loaders/ltdl_libltdlc_la-preopen.lo `test -f 'ltdl/loaders/preopen.c' || echo '$(srcdir)/'`ltdl/loaders/preopen.c
-
-ltdl/ltdl_libltdlc_la-lt__alloc.lo: ltdl/lt__alloc.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdlc_la-lt__alloc.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt__alloc.Tpo -c -o ltdl/ltdl_libltdlc_la-lt__alloc.lo `test -f 'ltdl/lt__alloc.c' || echo '$(srcdir)/'`ltdl/lt__alloc.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt__alloc.Tpo ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt__alloc.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ltdl/lt__alloc.c' object='ltdl/ltdl_libltdlc_la-lt__alloc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdlc_la-lt__alloc.lo `test -f 'ltdl/lt__alloc.c' || echo '$(srcdir)/'`ltdl/lt__alloc.c
-
-ltdl/ltdl_libltdlc_la-lt_dlloader.lo: ltdl/lt_dlloader.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdlc_la-lt_dlloader.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt_dlloader.Tpo -c -o ltdl/ltdl_libltdlc_la-lt_dlloader.lo `test -f 'ltdl/lt_dlloader.c' || echo '$(srcdir)/'`ltdl/lt_dlloader.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt_dlloader.Tpo ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt_dlloader.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ltdl/lt_dlloader.c' object='ltdl/ltdl_libltdlc_la-lt_dlloader.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdlc_la-lt_dlloader.lo `test -f 'ltdl/lt_dlloader.c' || echo '$(srcdir)/'`ltdl/lt_dlloader.c
-
-ltdl/ltdl_libltdlc_la-lt_error.lo: ltdl/lt_error.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdlc_la-lt_error.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt_error.Tpo -c -o ltdl/ltdl_libltdlc_la-lt_error.lo `test -f 'ltdl/lt_error.c' || echo '$(srcdir)/'`ltdl/lt_error.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt_error.Tpo ltdl/$(DEPDIR)/ltdl_libltdlc_la-lt_error.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ltdl/lt_error.c' object='ltdl/ltdl_libltdlc_la-lt_error.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdlc_la-lt_error.lo `test -f 'ltdl/lt_error.c' || echo '$(srcdir)/'`ltdl/lt_error.c
-
-ltdl/ltdl_libltdlc_la-ltdl.lo: ltdl/ltdl.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdlc_la-ltdl.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdlc_la-ltdl.Tpo -c -o ltdl/ltdl_libltdlc_la-ltdl.lo `test -f 'ltdl/ltdl.c' || echo '$(srcdir)/'`ltdl/ltdl.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdlc_la-ltdl.Tpo ltdl/$(DEPDIR)/ltdl_libltdlc_la-ltdl.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ltdl/ltdl.c' object='ltdl/ltdl_libltdlc_la-ltdl.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdlc_la-ltdl.lo `test -f 'ltdl/ltdl.c' || echo '$(srcdir)/'`ltdl/ltdl.c
-
-ltdl/ltdl_libltdlc_la-slist.lo: ltdl/slist.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ltdl/ltdl_libltdlc_la-slist.lo -MD -MP -MF ltdl/$(DEPDIR)/ltdl_libltdlc_la-slist.Tpo -c -o ltdl/ltdl_libltdlc_la-slist.lo `test -f 'ltdl/slist.c' || echo '$(srcdir)/'`ltdl/slist.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ltdl/$(DEPDIR)/ltdl_libltdlc_la-slist.Tpo ltdl/$(DEPDIR)/ltdl_libltdlc_la-slist.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ltdl/slist.c' object='ltdl/ltdl_libltdlc_la-slist.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ltdl_libltdlc_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ltdl/ltdl_libltdlc_la-slist.lo `test -f 'ltdl/slist.c' || echo '$(srcdir)/'`ltdl/slist.c
-
 tests/tests_validate-validate.o: tests/validate.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_validate_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tests/tests_validate-validate.o -MD -MP -MF tests/$(DEPDIR)/tests_validate-validate.Tpo -c -o tests/tests_validate-validate.o `test -f 'tests/validate.c' || echo '$(srcdir)/'`tests/validate.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) tests/$(DEPDIR)/tests_validate-validate.Tpo tests/$(DEPDIR)/tests_validate-validate.Po
@@ -9907,8 +9582,6 @@ clean-libtool:
 	-rm -rf MagickWand/.libs MagickWand/_libs
 	-rm -rf coders/.libs coders/_libs
 	-rm -rf filters/.libs filters/_libs
-	-rm -rf ltdl/.libs ltdl/_libs
-	-rm -rf ltdl/loaders/.libs ltdl/loaders/_libs
 	-rm -rf tests/.libs tests/_libs
 	-rm -rf utilities/.libs utilities/_libs
 
@@ -10125,27 +9798,6 @@ uninstall-includeHEADERS:
 	@list='$(include_HEADERS)'; test -n "$(includedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(includedir)'; $(am__uninstall_files_from_dir)
-install-ltdlincludeHEADERS: $(ltdlinclude_HEADERS)
-	@$(NORMAL_INSTALL)
-	@list='$(ltdlinclude_HEADERS)'; test -n "$(ltdlincludedir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(ltdlincludedir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(ltdlincludedir)" || exit 1; \
-	fi; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(ltdlincludedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(ltdlincludedir)" || exit $$?; \
-	done
-
-uninstall-ltdlincludeHEADERS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(ltdlinclude_HEADERS)'; test -n "$(ltdlincludedir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(ltdlincludedir)'; $(am__uninstall_files_from_dir)
 install-magickppincHEADERS: $(magickppinc_HEADERS)
 	@$(NORMAL_INSTALL)
 	@list='$(magickppinc_HEADERS)'; test -n "$(magickppincdir)" || list=; \
@@ -10613,7 +10265,7 @@ all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA) \
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs:
-	for dir in "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" "$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(MagickCoreincdir)" "$(DESTDIR)$(MagickWandincdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(ltdlincludedir)" "$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)"; do \
+	for dir in "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" "$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(MagickCoreincdir)" "$(DESTDIR)$(MagickWandincdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -10662,10 +10314,6 @@ distclean-generic:
 	-rm -f coders/$(am__dirstamp)
 	-rm -f filters/$(DEPDIR)/$(am__dirstamp)
 	-rm -f filters/$(am__dirstamp)
-	-rm -f ltdl/$(DEPDIR)/$(am__dirstamp)
-	-rm -f ltdl/$(am__dirstamp)
-	-rm -f ltdl/loaders/$(DEPDIR)/$(am__dirstamp)
-	-rm -f ltdl/loaders/$(am__dirstamp)
 	-rm -f tests/$(DEPDIR)/$(am__dirstamp)
 	-rm -f tests/$(am__dirstamp)
 	-rm -f utilities/$(DEPDIR)/$(am__dirstamp)
@@ -10685,7 +10333,7 @@ clean-am: clean-binPROGRAMS clean-checkPROGRAMS \
 
 distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-	-rm -rf Magick++/demo/$(DEPDIR) Magick++/lib/$(DEPDIR) Magick++/tests/$(DEPDIR) MagickCore/$(DEPDIR) MagickWand/$(DEPDIR) coders/$(DEPDIR) filters/$(DEPDIR) ltdl/$(DEPDIR) ltdl/loaders/$(DEPDIR) tests/$(DEPDIR) utilities/$(DEPDIR)
+	-rm -rf Magick++/demo/$(DEPDIR) Magick++/lib/$(DEPDIR) Magick++/tests/$(DEPDIR) MagickCore/$(DEPDIR) MagickWand/$(DEPDIR) coders/$(DEPDIR) filters/$(DEPDIR) tests/$(DEPDIR) utilities/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-libtool distclean-local distclean-tags
@@ -10705,9 +10353,8 @@ install-data-am: install-MagickCoreincHEADERS \
 	install-configlibDATA install-configshareDATA \
 	install-configsharearchDATA install-data-local install-docDATA \
 	install-filtersLTLIBRARIES install-includeHEADERS \
-	install-ltdlincludeHEADERS install-magickppincHEADERS \
-	install-magickpptopincHEADERS install-man \
-	install-pkgconfigDATA
+	install-magickppincHEADERS install-magickpptopincHEADERS \
+	install-man install-pkgconfigDATA
 
 install-dvi: install-dvi-am
 
@@ -10739,7 +10386,7 @@ installcheck-am:
 maintainer-clean: maintainer-clean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-	-rm -rf Magick++/demo/$(DEPDIR) Magick++/lib/$(DEPDIR) Magick++/tests/$(DEPDIR) MagickCore/$(DEPDIR) MagickWand/$(DEPDIR) coders/$(DEPDIR) filters/$(DEPDIR) ltdl/$(DEPDIR) ltdl/loaders/$(DEPDIR) tests/$(DEPDIR) utilities/$(DEPDIR)
+	-rm -rf Magick++/demo/$(DEPDIR) Magick++/lib/$(DEPDIR) Magick++/tests/$(DEPDIR) MagickCore/$(DEPDIR) MagickWand/$(DEPDIR) coders/$(DEPDIR) filters/$(DEPDIR) tests/$(DEPDIR) utilities/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic \
 	maintainer-clean-local
@@ -10764,9 +10411,8 @@ uninstall-am: uninstall-MagickCoreincHEADERS \
 	uninstall-configsharearchDATA uninstall-docDATA \
 	uninstall-filtersLTLIBRARIES uninstall-includeHEADERS \
 	uninstall-libLTLIBRARIES uninstall-local \
-	uninstall-ltdlincludeHEADERS uninstall-magickppincHEADERS \
-	uninstall-magickpptopincHEADERS uninstall-man \
-	uninstall-pkgconfigDATA
+	uninstall-magickppincHEADERS uninstall-magickpptopincHEADERS \
+	uninstall-man uninstall-pkgconfigDATA
 
 uninstall-man: uninstall-man1
 
@@ -10791,32 +10437,24 @@ uninstall-man: uninstall-man1
 	install-exec install-exec-am install-exec-local \
 	install-filtersLTLIBRARIES install-html install-html-am \
 	install-includeHEADERS install-info install-info-am \
-	install-libLTLIBRARIES install-ltdlincludeHEADERS \
-	install-magickppincHEADERS install-magickpptopincHEADERS \
-	install-man install-man1 install-pdf install-pdf-am \
-	install-pkgconfigDATA install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic maintainer-clean-local mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am recheck tags uninstall \
-	uninstall-MagickCoreincHEADERS uninstall-MagickWandincHEADERS \
-	uninstall-am uninstall-binPROGRAMS uninstall-binSCRIPTS \
+	install-libLTLIBRARIES install-magickppincHEADERS \
+	install-magickpptopincHEADERS install-man install-man1 \
+	install-pdf install-pdf-am install-pkgconfigDATA install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	maintainer-clean-local mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	recheck tags uninstall uninstall-MagickCoreincHEADERS \
+	uninstall-MagickWandincHEADERS uninstall-am \
+	uninstall-binPROGRAMS uninstall-binSCRIPTS \
 	uninstall-codersLTLIBRARIES uninstall-configlibDATA \
 	uninstall-configshareDATA uninstall-configsharearchDATA \
 	uninstall-docDATA uninstall-filtersLTLIBRARIES \
 	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
-	uninstall-local uninstall-ltdlincludeHEADERS \
-	uninstall-magickppincHEADERS uninstall-magickpptopincHEADERS \
-	uninstall-man uninstall-man1 uninstall-pkgconfigDATA
+	uninstall-local uninstall-magickppincHEADERS \
+	uninstall-magickpptopincHEADERS uninstall-man uninstall-man1 \
+	uninstall-pkgconfigDATA
 
-
-# We need the following in order to create an <argz.h> when the system
-# doesn't have one that works with the given compiler.
-all-local $(lib_OBJECTS): ltdl/$(ARGZ_H)
-ltdl/argz.h: ltdl/argz_.h
-	$(mkinstalldirs) . ltdl/
-	cp $(srcdir)/ltdl/argz_.h $@-t
-	mv $@-t $@
 MagickCore-install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(MagickCoreincdir)
 	$(INSTALL_HEADER) MagickCore/magick-config.h $(DESTDIR)$(MagickCoreincdir)/magick-config.h
