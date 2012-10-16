@@ -33,7 +33,6 @@ DISTCLEANFILES = _configs.sed magick/magick-config.h
 
 ## Make sure these will be cleaned even when they're not built by default.
 CLEANFILES = \
-	$(LTDL_CLEANFILES) \
 	$(WAND_CLEANFILES) \
 	$(MAGICKPP_CLEANFILES) \
 	$(UTILITIES_CLEANFILES) \
@@ -48,12 +47,10 @@ bin_SCRIPTS = \
 	$(WAND_BIN_SCRPTS) \
 	$(MAGICKPP_SCRPTS)
 
-include_HEADERS = \
-	$(LTDL_INSTALLHEADERS)
+include_HEADERS =
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = \
-	$(LIBLTDL_NOINST_HDRS) \
 	$(MAGICK_NOINST_HDRS)
 
 if WIN32_NATIVE_BUILD
@@ -135,7 +132,6 @@ check_PROGRAMS = \
 
 include m4/Makefile.am
 include config/Makefile.am
-include ltdl/Makefile.inc
 include coders/Makefile.am
 include magick/Makefile.am
 include filters/Makefile.am
