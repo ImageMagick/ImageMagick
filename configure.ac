@@ -33,7 +33,6 @@ AC_CONFIG_SRCDIR([magick/MagickCore.h])
 AC_CONFIG_AUX_DIR([config])
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_LIBOBJ_DIR([ltdl])
 AC_CONFIG_HEADERS([config/config.h])
 AX_PREFIX_CONFIG_H([magick/magick-config.h],[MagickCore])
 AC_CONFIG_FILES([\
@@ -505,10 +504,6 @@ LT_INIT([win32-dll])
 LT_LANG([C++])
 AC_SUBST(LIBTOOL_DEPS)
 
-# Configure libltdl
-LT_CONFIG_LTDL_DIR([ltdl])
-LTDL_INIT([nonrecursive convenience])
-
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'
 if test "$enable_shared" = 'yes'; then
@@ -525,7 +520,7 @@ AM_CONDITIONAL(WITH_SHARED_LIBS, test "${libtool_build_shared_libs}" = 'yes')
 #
 # Enable support for building loadable modules
 #
-build_modules='no'
+build_modules='yes'
 AC_ARG_WITH([modules],
     [AC_HELP_STRING([--with-modules],
                     [enable building dynamically loadable modules])],
@@ -545,17 +540,6 @@ if test "$build_modules" != 'no' ; then
     AC_DEFINE(BUILD_MODULES,1,Define if coders and filters are to be built as modules.)
 fi
 AM_CONDITIONAL(WITH_MODULES, test "$build_modules" != 'no')
-
-# Only use/depend on libtdl if we are building modules.
-with_ltdl='no'
-if test "$build_modules" != 'no' ; then
-    with_ltdl='yes'
-fi
-
-AM_CONDITIONAL(WITH_LTDL, test "$with_ltdl" != 'no')
-if test "$with_ltdl" != 'no'; then
-    AC_DEFINE(LTDL_DELEGATE,1,Define if using libltdl to support dynamically loadable modules)
-fi
 
 # Enable build using delegate libraries built in subdirectories rather than installed
 # delegate libraries (bzlib fftw fpx gslib jp2 jbig jpeg lcms lzma png tiff ttf wmf xml zlib)
@@ -1560,6 +1544,36 @@ if test "$with_zlib" != 'no' || test "$with_png" != 'no'; then
 fi
 AM_CONDITIONAL(ZLIB_DELEGATE, test "$have_zlib" = 'yes')
 AC_SUBST(ZLIB_LIBS)
+
+dnl ImageMagick requires LTDL to support modules.
+with_ltdl='yes'
+have_ltdl='no'
+LTDL_LIBS=''
+if test "$build_modules" != 'no' ; then
+  AC_MSG_RESULT([-------------------------------------------------------------])
+  AC_MSG_CHECKING([for libltdl])
+  AC_MSG_RESULT([])
+  failed=0
+  passed=0
+  AC_CHECK_HEADER(ltdl.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+  AC_CHECK_LIB([ltdl],[lt_dlinit],passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_MSG_CHECKING(if libltdl package is complete)
+  if test $passed -gt 0 ; then
+    if test $failed -gt 0 ; then
+      AC_MSG_RESULT(no -- some components failed test)
+      have_ltdl='no (failed tests)'
+    else
+      LTDL_LIBS='-lltdl'
+      LIBS="$LTDL_LIBS $LIBS"
+      AC_DEFINE(LTDL_DELEGATE,1,Define if using libltdl to support dynamically loadable modules)
+      AC_MSG_RESULT(yes)
+      have_ltdl='yes'
+    fi
+  else
+    AC_MSG_RESULT(no)
+  fi
+fi
+AM_CONDITIONAL(WITH_LTDL, test "$have_ltdl" != 'no')
 
 #
 # If profiling, then check for -ldl and dlopen (required for Solaris & gcc)
@@ -3702,19 +3716,8 @@ fi
 # Build library dependency list for libMagickCore
 #
 
-MAGICK_LIBLTDL='' # Libltdl for build
-MAGICK_API_LIBLTDL=''   # libltdl for dependent application (API) build
-MAGICK_LTDLDEPS=''      # extra libltdl dependencies
-if test "$with_ltdl" != 'no' ; then
-  MAGICK_API_LIBLTDL='-lltdl'
-  MAGICK_LIBLTDL=${LIBLTDL}
-  MAGICK_LTDLDEPS=${LTDLDEPS}
-fi
-AC_SUBST(MAGICK_LIBLTDL)
-AC_SUBST(MAGICK_LTDLDEPS)
-
 if test "$build_modules" != 'no'; then
-    MAGICK_DEP_LIBS="$LCMS_LIBS $FREETYPE_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
+    MAGICK_DEP_LIBS="$LCMS_LIBS $FREETYPE_LIBS $LQR_LIBS $FFTW_LIBS $FONTCONFIG_LIBS $XEXT_LIBS $IPC_LIBS $X11_LIBS $XT_LIBS $LZMA_LIBS $BZLIB_LIBS $ZLIB_LIBS $LTDL_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
 else
     MAGICK_DEP_LIBS="$JBIG_LIBS $LCMS_LIBS $TIFF_LIBS $FREETYPE_LIBS $JP2_LIBS $JPEG_LIBS $GS_LIBS $LQR_LIBS $PNG_LIBS $AUTOTRACE_LIBS $DJVU_LIBS $FFTW_LIBS $FPX_LIBS $FONTCONFIG_LIBS $WEBP_LIBS $WMF_LIBS $DPS_LIBS $XEXT_LIBS $XT_LIBS $IPC_LIBS $X11_LIBS $LZMA_LIBS $BZLIB_LIBS $OPENEXR_LIBS $PANGO_LIBS $RSVG_LIBS $XML_LIBS $GVC_LIBS $ZLIB_LIBS $GDI32_LIBS $MATH_LIBS $GOMP_LIBS $CL_LIBS $UMEM_LIBS $THREAD_LIBS"
 fi
@@ -3834,6 +3837,7 @@ JPEG-2000         --with-jp2=$with_jp2		$have_jp2
 LCMS v1           --with-lcms=$with_lcms		$have_lcms
 LCMS v2           --with-lcms2=$with_lcms2		$have_lcms2
 LQR               --with-lqr=$with_lqr		$have_lqr
+LTDL              --with-ltdl=$with_ltdl		$have_ltdl
 LZMA              --with-lzma=$with_lzma		$have_lzma
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
@@ -3844,7 +3848,7 @@ RSVG              --with-rsvg=$with_rsvg		$have_rsvg
 TIFF              --with-tiff=$with_tiff		$have_tiff
 WEBP              --with-webp=$with_webp		$have_webp
 Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
-WMF               --with-wmf=$with_wmf		$have_wmf
+WMF               --with-wmf=$with_wmf			$have_wmf
 X11               --with-x=$with_x			$have_x
 XML               --with-xml=$with_xml		$have_xml
 ZLIB              --with-zlib=$with_zlib		$have_zlib

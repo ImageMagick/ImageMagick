@@ -12,7 +12,9 @@
 /* #undef AUTOTRACE_DELEGATE */
 
 /* Define if coders and filters are to be built as modules. */
-/* #undef BUILD_MODULES */
+#ifndef MAGICKCORE_BUILD_MODULES
+#define MAGICKCORE_BUILD_MODULES 1
+#endif
 
 /* Define if you have the bzip2 library */
 #ifndef MAGICKCORE_BZLIB_DELEGATE
@@ -111,46 +113,6 @@
 #define MAGICKCORE_HAVE_ACOSH 1
 #endif
 
-/* Define to 1 if you have the `argz_add' function. */
-#ifndef MAGICKCORE_HAVE_ARGZ_ADD
-#define MAGICKCORE_HAVE_ARGZ_ADD 1
-#endif
-
-/* Define to 1 if you have the `argz_append' function. */
-#ifndef MAGICKCORE_HAVE_ARGZ_APPEND
-#define MAGICKCORE_HAVE_ARGZ_APPEND 1
-#endif
-
-/* Define to 1 if you have the `argz_count' function. */
-#ifndef MAGICKCORE_HAVE_ARGZ_COUNT
-#define MAGICKCORE_HAVE_ARGZ_COUNT 1
-#endif
-
-/* Define to 1 if you have the `argz_create_sep' function. */
-#ifndef MAGICKCORE_HAVE_ARGZ_CREATE_SEP
-#define MAGICKCORE_HAVE_ARGZ_CREATE_SEP 1
-#endif
-
-/* Define to 1 if you have the <argz.h> header file. */
-#ifndef MAGICKCORE_HAVE_ARGZ_H
-#define MAGICKCORE_HAVE_ARGZ_H 1
-#endif
-
-/* Define to 1 if you have the `argz_insert' function. */
-#ifndef MAGICKCORE_HAVE_ARGZ_INSERT
-#define MAGICKCORE_HAVE_ARGZ_INSERT 1
-#endif
-
-/* Define to 1 if you have the `argz_next' function. */
-#ifndef MAGICKCORE_HAVE_ARGZ_NEXT
-#define MAGICKCORE_HAVE_ARGZ_NEXT 1
-#endif
-
-/* Define to 1 if you have the `argz_stringify' function. */
-#ifndef MAGICKCORE_HAVE_ARGZ_STRINGIFY
-#define MAGICKCORE_HAVE_ARGZ_STRINGIFY 1
-#endif
-
 /* Define to 1 if you have the <arm/limits.h> header file. */
 /* #undef HAVE_ARM_LIMITS_H */
 
@@ -209,11 +171,6 @@
 #define MAGICKCORE_HAVE_CLOCK_REALTIME 1
 #endif
 
-/* Define to 1 if you have the `closedir' function. */
-#ifndef MAGICKCORE_HAVE_CLOSEDIR
-#define MAGICKCORE_HAVE_CLOSEDIR 1
-#endif
-
 /* Define to 1 if you have the <CL/cl.h> header file. */
 /* #undef HAVE_CL_CL_H */
 
@@ -231,10 +188,6 @@
 #ifndef MAGICKCORE_HAVE_CTIME_R
 #define MAGICKCORE_HAVE_CTIME_R 1
 #endif
-
-/* Define to 1 if you have the declaration of `cygwin_conv_path', and to 0 if
-   you don't. */
-/* #undef HAVE_DECL_CYGWIN_CONV_PATH */
 
 /* Define to 1 if you have the declaration of `pread', and to 0 if you don't.
    */
@@ -279,39 +232,17 @@
 #define MAGICKCORE_HAVE_DIRENT_H 1
 #endif
 
-/* Define if you have the GNU dld library. */
-/* #undef HAVE_DLD */
-
-/* Define to 1 if you have the <dld.h> header file. */
-/* #undef HAVE_DLD_H */
-
-/* Define to 1 if you have the `dlerror' function. */
-#ifndef MAGICKCORE_HAVE_DLERROR
-#define MAGICKCORE_HAVE_DLERROR 1
-#endif
-
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #ifndef MAGICKCORE_HAVE_DLFCN_H
 #define MAGICKCORE_HAVE_DLFCN_H 1
 #endif
 
-/* Define to 1 if you have the <dl.h> header file. */
-/* #undef HAVE_DL_H */
-
 /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
 /* #undef HAVE_DOPRNT */
-
-/* Define if you have the _dyld_func_lookup function. */
-/* #undef HAVE_DYLD */
 
 /* Define to 1 if you have the <errno.h> header file. */
 #ifndef MAGICKCORE_HAVE_ERRNO_H
 #define MAGICKCORE_HAVE_ERRNO_H 1
-#endif
-
-/* Define to 1 if the system has the type `error_t'. */
-#ifndef MAGICKCORE_HAVE_ERROR_T
-#define MAGICKCORE_HAVE_ERROR_T 1
 #endif
 
 /* Define to 1 if you have the `execvp' function. */
@@ -451,16 +382,6 @@
 /* Define if you have the <lcms/lcms.h> header file. */
 /* #undef HAVE_LCMS_LCMS_H */
 
-/* Define if you have the libdl library or equivalent. */
-#ifndef MAGICKCORE_HAVE_LIBDL
-#define MAGICKCORE_HAVE_LIBDL 1
-#endif
-
-/* Define if libdlloader will be built on this platform */
-#ifndef MAGICKCORE_HAVE_LIBDLLOADER
-#define MAGICKCORE_HAVE_LIBDLLOADER 1
-#endif
-
 /* Define to 1 if you have the `gcov' library (-lgcov). */
 /* #undef HAVE_LIBGCOV */
 
@@ -506,11 +427,6 @@
 /* Define to 1 if you have the `lstat' function. */
 #ifndef MAGICKCORE_HAVE_LSTAT
 #define MAGICKCORE_HAVE_LSTAT 1
-#endif
-
-/* Define this if a modern libltdl is already installed */
-#ifndef MAGICKCORE_HAVE_LTDL
-#define MAGICKCORE_HAVE_LTDL 1
 #endif
 
 /* Define to 1 if you have the <machine/param.h> header file. */
@@ -585,11 +501,6 @@
 /* Define to 1 if you have the <OpenCL/cl.h> header file. */
 /* #undef HAVE_OPENCL_CL_H */
 
-/* Define to 1 if you have the `opendir' function. */
-#ifndef MAGICKCORE_HAVE_OPENDIR
-#define MAGICKCORE_HAVE_OPENDIR 1
-#endif
-
 /* Define to 1 if you have the <OS.h> header file. */
 /* #undef HAVE_OS_H */
 
@@ -643,11 +554,6 @@
 #define MAGICKCORE_HAVE_PREAD 1
 #endif
 
-/* Define if libtool can extract symbol lists from object files. */
-#ifndef MAGICKCORE_HAVE_PRELOADED_SYMBOLS
-#define MAGICKCORE_HAVE_PRELOADED_SYMBOLS 1
-#endif
-
 /* Define to 1 if you have the <process.h> header file. */
 /* #undef HAVE_PROCESS_H */
 
@@ -679,11 +585,6 @@
 /* Define to 1 if you have the `rand_r' function. */
 #ifndef MAGICKCORE_HAVE_RAND_R
 #define MAGICKCORE_HAVE_RAND_R 1
-#endif
-
-/* Define to 1 if you have the `readdir' function. */
-#ifndef MAGICKCORE_HAVE_READDIR
-#define MAGICKCORE_HAVE_READDIR 1
 #endif
 
 /* Define to 1 if you have the `readdir_r' function. */
@@ -730,9 +631,6 @@
 #ifndef MAGICKCORE_HAVE_SHARED_MEMORY
 #define MAGICKCORE_HAVE_SHARED_MEMORY 1
 #endif
-
-/* Define if you have the shl_load function. */
-/* #undef HAVE_SHL_LOAD */
 
 /* Define to 1 if you have the `sigaction' function. */
 #ifndef MAGICKCORE_HAVE_SIGACTION
@@ -899,9 +797,6 @@
 /* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
    */
 /* #undef HAVE_SYS_DIR_H */
-
-/* Define to 1 if you have the <sys/dl.h> header file. */
-/* #undef HAVE_SYS_DL_H */
 
 /* Define to 1 if you have the <sys/ipc.h> header file. */
 #ifndef MAGICKCORE_HAVE_SYS_IPC_H
@@ -1125,11 +1020,6 @@
 /* Define to 1 if you have the <windows.h> header file. */
 /* #undef HAVE_WINDOWS_H */
 
-/* This value is set to 1 to indicate that the system argz facility works */
-#ifndef MAGICKCORE_HAVE_WORKING_ARGZ
-#define MAGICKCORE_HAVE_WORKING_ARGZ 1
-#endif
-
 /* Define to 1 if `fork' works. */
 #ifndef MAGICKCORE_HAVE_WORKING_FORK
 #define MAGICKCORE_HAVE_WORKING_FORK 1
@@ -1227,35 +1117,8 @@
 /* #undef LQR_DELEGATE */
 
 /* Define if using libltdl to support dynamically loadable modules */
-/* #undef LTDL_DELEGATE */
-
-/* Define if the OS needs help to load dependent libraries for dlopen(). */
-/* #undef LTDL_DLOPEN_DEPLIBS */
-
-/* Define to the system default library search path. */
-#ifndef MAGICKCORE_LT_DLSEARCH_PATH
-#define MAGICKCORE_LT_DLSEARCH_PATH "/lib64:/usr/lib64:/lib:/usr/lib:/usr/lib64/atlas:/usr/lib64/freetype-freeworld:/usr/lib/llvm:/usr/lib64/llvm:/usr/local/lib:/usr/lib64/mysql:/usr/lib64/nvidia:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.5/tclx8.4:/usr/lib64/tcl8.5:/usr/lib64/tracker-0.14:/usr/lib/wine/:/usr/lib64/wine/:/usr/lib64/xulrunner"
-#endif
-
-/* The archive extension */
-#ifndef MAGICKCORE_LT_LIBEXT
-#define MAGICKCORE_LT_LIBEXT "a"
-#endif
-
-/* The archive prefix */
-#ifndef MAGICKCORE_LT_LIBPREFIX
-#define MAGICKCORE_LT_LIBPREFIX "lib"
-#endif
-
-/* Define to the extension used for runtime loadable modules, say, ".so". */
-#ifndef MAGICKCORE_LT_MODULE_EXT
-#define MAGICKCORE_LT_MODULE_EXT ".so"
-#endif
-
-/* Define to the name of the environment variable that determines the run-time
-   module search path. */
-#ifndef MAGICKCORE_LT_MODULE_PATH_VAR
-#define MAGICKCORE_LT_MODULE_PATH_VAR "LD_LIBRARY_PATH"
+#ifndef MAGICKCORE_LTDL_DELEGATE
+#define MAGICKCORE_LTDL_DELEGATE 1
 #endif
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
@@ -1263,9 +1126,6 @@
 #ifndef MAGICKCORE_LT_OBJDIR
 #define MAGICKCORE_LT_OBJDIR ".libs/"
 #endif
-
-/* Define to the shared library suffix, say, ".dylib". */
-/* #undef LT_SHARED_EXT */
 
 /* Define if you have LZMA library */
 #ifndef MAGICKCORE_LZMA_DELEGATE
@@ -1295,9 +1155,6 @@
 
 /* Define to 1 if assertions should be disabled. */
 /* #undef NDEBUG */
-
-/* Define if dlsym() requires a leading underscore in symbol names. */
-/* #undef NEED_USCORE */
 
 /* Define to 1 if your C compiler doesn't accept -c and -o together. */
 /* #undef NO_MINUS_C_MINUS_O */
@@ -1635,14 +1492,8 @@
 /* # undef __CHAR_UNSIGNED__ */
 #endif
 
-/* Define so that glibc/gnulib argp.h does not typedef error_t. */
-/* #undef __error_t_defined */
-
 /* Define to appropriate substitue if compiler does not have __func__ */
 /* #undef __func__ */
-
-/* Define to a type to use for `error_t' if it is not otherwise available. */
-/* #undef error_t */
 
 /* Define to `int' if <sys/types.h> doesn't define. */
 /* #undef gid_t */
