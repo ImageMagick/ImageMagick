@@ -37,16 +37,16 @@ MAGICKCORE_LIBS = MagickCore/libMagickCore.la
 
 if WITH_MODULES
 MagickCore_libMagickCore_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS)
-MagickCore_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS) $(MAGICK_LIBLTDL)
+MagickCore_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS)
 else
 MagickCore_libMagickCore_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS) $(MAGICKCORE_CODER_SRCS) $(MAGICKCORE_FILTER_SRCS)
-MagickCore_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS) $(MAGICK_LIBLTDL)
+MagickCore_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS)
 endif # WITH_MODULES
 MagickCore_libMagickCore_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $(LIBRARY_EXTRA_CPPFLAGS)
 MagickCore_libMagickCore_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
   $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
-MagickCore_libMagickCore_la_DEPENDENCIES = $(MAGICK_LTDLDEPS)
+MagickCore_libMagickCore_la_DEPENDENCIES =
 
 # Library base sources
 MAGICKCORE_BASE_SRCS = \
