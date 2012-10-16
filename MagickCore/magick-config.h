@@ -12,9 +12,7 @@
 /* #undef AUTOTRACE_DELEGATE */
 
 /* Define if coders and filters are to be built as modules. */
-#ifndef MAGICKCORE_BUILD_MODULES
-#define MAGICKCORE_BUILD_MODULES 1
-#endif
+/* #undef BUILD_MODULES */
 
 /* Define if you have the bzip2 library */
 #ifndef MAGICKCORE_BZLIB_DELEGATE
@@ -1119,9 +1117,7 @@
 /* #undef LQR_DELEGATE */
 
 /* Define if using libltdl to support dynamically loadable modules */
-#ifndef MAGICKCORE_LTDL_DELEGATE
-#define MAGICKCORE_LTDL_DELEGATE 1
-#endif
+/* #undef LTDL_DELEGATE */
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */

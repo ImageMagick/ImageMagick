@@ -3633,7 +3633,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=9640M
+MAGICK_SVN_REVISION=9640:9642M
 
 
 
@@ -20628,7 +20628,7 @@ fi
 #
 # Enable support for building loadable modules
 #
-build_modules='yes'
+build_modules='no'
 
 # Check whether --with-modules was given.
 if test "${with_modules+set}" = set; then :
@@ -27594,6 +27594,12 @@ $as_echo "yes" >&6; }
   else
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
+  fi
+  if test "$have_ltdl" != 'yes' ; then
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error 1 "libltdl is required for modules build
+See \`config.log' for more details" "$LINENO" 5; }
   fi
 fi
  if test "$have_ltdl" != 'no'; then
