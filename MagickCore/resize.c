@@ -782,7 +782,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
       B,C;     /* BC-spline coefficients, ignored if not a CubicBC filter. */
   } const filters[SentinelFilter] =
   {
-    /*            .---  support window (if used as Weighting Function)
+    /*            .---  support window (if used as a Weighting Function)
                   |    .--- first crossing (if used as a Windowing Function)
                   |    |    .--- B value for Cubic Function
                   |    |    |    .---- C value for Cubic Function
@@ -821,6 +821,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
                             0.2620145123990142,  0.3689927438004929  },
     { Cosine,    1.0, 1.0, 0.0, 0.0 }, /* Low level cosine window     */
     { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
+    { SincFast,  3.0, 1.0, 0.0, 0.0 }, /* Lanczos, Interger Radius    */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
@@ -1024,6 +1025,13 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
         resize_filter->support=jinc_zeros[15];  /* largest entry in table */
       else
         resize_filter->support=jinc_zeros[((long)resize_filter->support)-1];
+
+      /* blur this filter so support is a integer value (lobes dependant) */
+      if (filter_type == LanczosRadiusFilter)
+      {
+        resize_filter->blur *= floor(resize_filter->support)/
+                                       resize_filter->support;
+      }
     }
   /* expert override of the support setting */
   artifact=GetImageArtifact(image,"filter:support");
@@ -1123,7 +1131,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
           Report Filter Details.
         */
         support=GetResizeFilterSupport(resize_filter);  /* practical_support */
-        (void) FormatLocaleFile(stdout,"# Resize Filter (for graphing)\n#\n");
+        (void) FormatLocaleFile(stdout,"# Resampling Filter (for graphing)\n#\n");
         (void) FormatLocaleFile(stdout,"# filter = %s\n",
              CommandOptionToMnemonic(MagickFilterOptions,filter_type));
         (void) FormatLocaleFile(stdout,"# window = %s\n",
