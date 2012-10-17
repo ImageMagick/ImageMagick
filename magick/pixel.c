@@ -3960,21 +3960,23 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
     case Average9InterpolatePixel:       /* nearest 9 neighbours */
     case Average16InterpolatePixel:      /* nearest 16 neighbours */
     {
-      size_t
-        count=2; /* size of the area to average - default nearest 4 */
+      ssize_t
+        count;
+
+      count=2;  /* size of the area to average - default nearest 4 */
       if (interpolate == Average9InterpolatePixel)
         {
           count=3;
           x_offset=(ssize_t) (floor(x+0.5)-1);
           y_offset=(ssize_t) (floor(y+0.5)-1);
         }
-      else if (interpolate == Average16InterpolatePixel)
-        {
-          count=4;
-          x_offset--;
-          y_offset--;
-        }
-
+      else
+        if (interpolate == Average16InterpolatePixel)
+          {
+            count=4;
+            x_offset--;
+            y_offset--;
+          }
       p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,(size_t) count,
         (size_t) count,exception);
       if (p == (const PixelPacket *) NULL)
@@ -3988,31 +3990,31 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       pixel->blue=0.0;
       pixel->opacity=0.0;
       pixel->index=0.0;
-      count*=count;            /* number of pixels - square of size */
+      count*=count;  /* number of pixels - square of size */
       for (i=0; i < (ssize_t) count; i++)
       {
         AlphaBlendMagickPixelPacket(image,p+i,indexes+i,pixels,alpha);
         gamma=MagickEpsilonReciprocal(alpha[0]);
-        pixel->red     += gamma*pixels[0].red;
-        pixel->green   += gamma*pixels[0].green;
-        pixel->blue    += gamma*pixels[0].blue;
-        pixel->index   += gamma*pixels[0].index;
-        pixel->opacity +=       pixels[0].opacity;
+        pixel->red+=gamma*pixels[0].red;
+        pixel->green+=gamma*pixels[0].green;
+        pixel->blue+=gamma*pixels[0].blue;
+        pixel->index+=gamma*pixels[0].index;
+        pixel->opacity+=pixels[0].opacity;
       }
       gamma=1.0/count;  /* average weighting of each pixel in area */
-      pixel->red     *= gamma;
-      pixel->green   *= gamma;
-      pixel->blue    *= gamma;
-      pixel->index   *= gamma;
-      pixel->opacity *= gamma;
+      pixel->red*=gamma;
+      pixel->green*=gamma;
+      pixel->blue*=gamma;
+      pixel->index*=gamma;
+      pixel->opacity*=gamma;
       break;
     }
     case BackgroundInterpolatePixel:
     {
-      /* Use the background color -- for resampling error checking */
       IndexPacket
-        index=0;  /* CMYK index -- What should we do?  -- This is a HACK */
+        index;
 
+      index=0;  /* CMYK index -- What should we do?  -- This is a HACK */
       SetMagickPixelPacket(image,&image->background_color,&index,pixel);
       break;
     }
@@ -4069,42 +4071,49 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       indexes=GetCacheViewVirtualIndexQueue(image_view);
       for (i=0; i < 4L; i++)
         AlphaBlendMagickPixelPacket(image,p+i,indexes+i,pixels+i,alpha+i);
-      gamma=1.0;       /* number of pixels blended together */
-      for (i=0; i <= 1L; i++) {
-        if ( y-y_offset >= 0.75 ) {
-          alpha[i]  = alpha[i+2];
-          pixels[i] = pixels[i+2];
+      gamma=1.0;  /* number of pixels blended together */
+      for (i=0; i <= 1L; i++)
+      {
+        if ((y-y_offset) >= 0.75)
+          {
+            alpha[i]=alpha[i+2];
+            pixels[i]=pixels[i+2];
+          }
+        else
+          if ((y-y_offset) > 0.25)
+            {
+              gamma=2.0;  /* each y pixels have been blended */
+              alpha[i]+=alpha[i+2];  /* add up alpha weights */
+              pixels[i].red+=pixels[i+2].red;
+              pixels[i].green+=pixels[i+2].green;
+              pixels[i].blue+=pixels[i+2].blue;
+              pixels[i].opacity+=pixels[i+2].opacity;
+              pixels[i].index+=pixels[i+2].index;
+            }
+      }
+      if ((x-x_offset) >= 0.75 )
+        {
+          alpha[0]=alpha[1];
+          pixels[0]=pixels[1];
         }
-        else if ( y-y_offset > 0.25 ) {
-          gamma = 2.0;             /* each y pixels have been blended */
-          alpha[i] += alpha[i+2];  /* add up alpha weights */
-          pixels[i].red     += pixels[i+2].red;
-          pixels[i].green   += pixels[i+2].green;
-          pixels[i].blue    += pixels[i+2].blue;
-          pixels[i].opacity += pixels[i+2].opacity;
-          pixels[i].index   += pixels[i+2].index;
-        }
-      }
-      if ( x-x_offset >= 0.75 ) {
-        alpha[0] = alpha[1];
-        pixels[0] = pixels[1];
-      }
-      else if ( x-x_offset > 0.25 ) {
-        gamma *= 2.0;          /* double number of pixels blended */
-        alpha[0] += alpha[1];  /* add up alpha weights */
-        pixels[0].red     += pixels[1].red;
-        pixels[0].green   += pixels[1].green;
-        pixels[0].blue    += pixels[1].blue;
-        pixels[0].opacity += pixels[1].opacity;
-        pixels[0].index   += pixels[1].index;
-      }
-      gamma = 1.0/gamma;                          /* 1/sum(pixels) */
-      alpha[0]=MagickEpsilonReciprocal(alpha[0]); /* 1/sum(alpha) */
-      pixel->red   = alpha[0]*pixels[0].red;
-      pixel->green = alpha[0]*pixels[0].green;  /* divide by sum of alpha */
-      pixel->blue  = alpha[0]*pixels[0].blue;
-      pixel->index = alpha[0]*pixels[0].index;
-      pixel->opacity =  gamma*pixels[0].opacity; /* divide by number pixels */
+      else
+        if ((x-x_offset) > 0.25 )
+          {
+            gamma*=2.0;  /* double number of pixels blended */
+            alpha[0]+=alpha[1];  /* add up alpha weights */
+            pixels[0].red+=pixels[1].red;
+            pixels[0].green+=pixels[1].green;
+            pixels[0].blue+=pixels[1].blue;
+            pixels[0].opacity+=pixels[1].opacity;
+            pixels[0].index+=pixels[1].index;
+          }
+      gamma=1.0/gamma;  /* 1/sum(pixels) */
+      alpha[0]=MagickEpsilonReciprocal(alpha[0]);  /* 1/sum(alpha) */
+      pixel->red=alpha[0]*pixels[0].red;
+      pixel->green=alpha[0]*pixels[0].green;  /* divide by sum of alpha */
+      pixel->blue=alpha[0]*pixels[0].blue;
+      pixel->index=alpha[0]*pixels[0].index;
+      pixel->opacity=gamma*pixels[0].opacity; /* divide by number pixels */
       break;
     }
     case CatromInterpolatePixel:
@@ -4126,45 +4135,35 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
         AlphaBlendMagickPixelPacket(image,p+i,indexes+i,pixels+i,alpha+i);
       CatromWeights((MagickRealType) (x-x_offset),&cx);
       CatromWeights((MagickRealType) (y-y_offset),&cy);
-      pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*
-        pixels[1].red+cx[2]*pixels[2].red+cx[3]*
-        pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
-        pixels[5].red+cx[2]*pixels[6].red+cx[3]*
-        pixels[7].red)+cy[2]*(cx[0]*pixels[8].red+cx[1]*
-        pixels[9].red+cx[2]*pixels[10].red+cx[3]*
-        pixels[11].red)+cy[3]*(cx[0]*pixels[12].red+cx[1]*
-        pixels[13].red+cx[2]*pixels[14].red+cx[3]*pixels[15].red));
-      pixel->green=(cy[0]*(cx[0]*pixels[0].green+cx[1]*
-        pixels[1].green+cx[2]*pixels[2].green+cx[3]*
-        pixels[3].green)+cy[1]*(cx[0]*pixels[4].green+cx[1]*
-        pixels[5].green+cx[2]*pixels[6].green+cx[3]*
-        pixels[7].green)+cy[2]*(cx[0]*pixels[8].green+cx[1]*
-        pixels[9].green+cx[2]*pixels[10].green+cx[3]*
-        pixels[11].green)+cy[3]*(cx[0]*pixels[12].green+cx[1]*
-        pixels[13].green+cx[2]*pixels[14].green+cx[3]*pixels[15].green));
-      pixel->blue=(cy[0]*(cx[0]*pixels[0].blue+cx[1]*
-        pixels[1].blue+cx[2]*pixels[2].blue+cx[3]*
-        pixels[3].blue)+cy[1]*(cx[0]*pixels[4].blue+cx[1]*
-        pixels[5].blue+cx[2]*pixels[6].blue+cx[3]*
-        pixels[7].blue)+cy[2]*(cx[0]*pixels[8].blue+cx[1]*
-        pixels[9].blue+cx[2]*pixels[10].blue+cx[3]*
-        pixels[11].blue)+cy[3]*(cx[0]*pixels[12].blue+cx[1]*
-        pixels[13].blue+cx[2]*pixels[14].blue+cx[3]*pixels[15].blue));
-      pixel->opacity=(cy[0]*(cx[0]*pixels[0].opacity+cx[1]*
-        pixels[1].opacity+cx[2]*pixels[2].opacity+cx[3]*
-        pixels[3].opacity)+cy[1]*(cx[0]*pixels[4].opacity+cx[1]*
-        pixels[5].opacity+cx[2]*pixels[6].opacity+cx[3]*
-        pixels[7].opacity)+cy[2]*(cx[0]*pixels[8].opacity+cx[1]*
-        pixels[9].opacity+cx[2]*pixels[10].opacity+cx[3]*
-        pixels[11].opacity)+cy[3]*(cx[0]*pixels[12].opacity+cx[1]*
-        pixels[13].opacity+cx[2]*pixels[14].opacity+cx[3]*pixels[15].opacity));
+      pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*pixels[1].red+cx[2]*
+        pixels[2].red+cx[3]*pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
+        pixels[5].red+cx[2]*pixels[6].red+cx[3]*pixels[7].red)+cy[2]*(cx[0]*
+        pixels[8].red+cx[1]*pixels[9].red+cx[2]*pixels[10].red+cx[3]*
+        pixels[11].red)+cy[3]*(cx[0]*pixels[12].red+cx[1]*pixels[13].red+cx[2]*
+        pixels[14].red+cx[3]*pixels[15].red));
+      pixel->green=(cy[0]*(cx[0]*pixels[0].green+cx[1]*pixels[1].green+cx[2]*
+        pixels[2].green+cx[3]*pixels[3].green)+cy[1]*(cx[0]*pixels[4].green+
+        cx[1]*pixels[5].green+cx[2]*pixels[6].green+cx[3]*pixels[7].green)+
+        cy[2]*(cx[0]*pixels[8].green+cx[1]*pixels[9].green+cx[2]*
+        pixels[10].green+cx[3]*pixels[11].green)+cy[3]*(cx[0]*pixels[12].green+
+        cx[1]*pixels[13].green+cx[2]*pixels[14].green+cx[3]*pixels[15].green));
+      pixel->blue=(cy[0]*(cx[0]*pixels[0].blue+cx[1]*pixels[1].blue+cx[2]*
+        pixels[2].blue+cx[3]*pixels[3].blue)+cy[1]*(cx[0]*pixels[4].blue+cx[1]*
+        pixels[5].blue+cx[2]*pixels[6].blue+cx[3]*pixels[7].blue)+cy[2]*(cx[0]*
+        pixels[8].blue+cx[1]*pixels[9].blue+cx[2]*pixels[10].blue+cx[3]*
+        pixels[11].blue)+cy[3]*(cx[0]*pixels[12].blue+cx[1]*pixels[13].blue+
+        cx[2]*pixels[14].blue+cx[3]*pixels[15].blue));
+      pixel->opacity=(cy[0]*(cx[0]*pixels[0].opacity+cx[1]*pixels[1].opacity+
+        cx[2]*pixels[2].opacity+cx[3]*pixels[3].opacity)+cy[1]*(cx[0]*
+        pixels[4].opacity+cx[1]*pixels[5].opacity+cx[2]*pixels[6].opacity+
+        cx[3]*pixels[7].opacity)+cy[2]*(cx[0]*pixels[8].opacity+cx[1]*
+        pixels[9].opacity+cx[2]*pixels[10].opacity+cx[3]*pixels[11].opacity)+
+        cy[3]*(cx[0]*pixels[12].opacity+cx[1]*pixels[13].opacity+cx[2]*
+        pixels[14].opacity+cx[3]*pixels[15].opacity));
       break;
     }
     case FilterInterpolatePixel:
-    { /* Use a normal resize filter.
-         warning this is slow due to setup time a cache should be
-         initialised on first call, and replaced if 'filter' changes
-      */
+    {
       CacheView
         *filter_view;
 
@@ -4175,6 +4174,11 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
       RectangleInfo
         geometry;
 
+      /*
+        Use a normal resize filter: warning this is slow due to setup time a
+        cache should be initialised on first call, and replaced if 'filter'
+        changes.
+      */
       geometry.width=4L;
       geometry.height=4L;
       geometry.x=x_offset-1;
@@ -4231,10 +4235,10 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
         AlphaBlendMagickPixelPacket(image,p+i,indexes+i,pixels+i,alpha+i);
       delta.x=x-x_offset;
       delta.y=y-y_offset;
-      luminance.x=fabs(MagickPixelLuminance(pixels+0)
-                       -MagickPixelLuminance(pixels+3));
-      luminance.y=fabs(MagickPixelLuminance(pixels+1)
-                       -MagickPixelLuminance(pixels+2));
+      luminance.x=fabs(MagickPixelLuminance(pixels+0)-
+        MagickPixelLuminance(pixels+3));
+      luminance.y=fabs(MagickPixelLuminance(pixels+1)-
+        MagickPixelLuminance(pixels+2));
       if (luminance.x < luminance.y)
         {
           /*
@@ -4364,38 +4368,31 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
         AlphaBlendMagickPixelPacket(image,p+i,indexes+i,pixels+i,alpha+i);
       SplineWeights((MagickRealType) (x-x_offset),&cx);
       SplineWeights((MagickRealType) (y-y_offset),&cy);
-      pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*
-        pixels[1].red+cx[2]*pixels[2].red+cx[3]*
-        pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
-        pixels[5].red+cx[2]*pixels[6].red+cx[3]*
-        pixels[7].red)+cy[2]*(cx[0]*pixels[8].red+cx[1]*
-        pixels[9].red+cx[2]*pixels[10].red+cx[3]*
-        pixels[11].red)+cy[3]*(cx[0]*pixels[12].red+cx[1]*
-        pixels[13].red+cx[2]*pixels[14].red+cx[3]*pixels[15].red));
-      pixel->green=(cy[0]*(cx[0]*pixels[0].green+cx[1]*
-        pixels[1].green+cx[2]*pixels[2].green+cx[3]*
-        pixels[3].green)+cy[1]*(cx[0]*pixels[4].green+cx[1]*
-        pixels[5].green+cx[2]*pixels[6].green+cx[3]*
-        pixels[7].green)+cy[2]*(cx[0]*pixels[8].green+cx[1]*
-        pixels[9].green+cx[2]*pixels[10].green+cx[3]*
-        pixels[11].green)+cy[3]*(cx[0]*pixels[12].green+cx[1]*
-        pixels[13].green+cx[2]*pixels[14].green+cx[3]*pixels[15].green));
-      pixel->blue=(cy[0]*(cx[0]*pixels[0].blue+cx[1]*
-        pixels[1].blue+cx[2]*pixels[2].blue+cx[3]*
-        pixels[3].blue)+cy[1]*(cx[0]*pixels[4].blue+cx[1]*
-        pixels[5].blue+cx[2]*pixels[6].blue+cx[3]*
-        pixels[7].blue)+cy[2]*(cx[0]*pixels[8].blue+cx[1]*
-        pixels[9].blue+cx[2]*pixels[10].blue+cx[3]*
-        pixels[11].blue)+cy[3]*(cx[0]*pixels[12].blue+cx[1]*
-        pixels[13].blue+cx[2]*pixels[14].blue+cx[3]*pixels[15].blue));
-      pixel->opacity=(cy[0]*(cx[0]*pixels[0].opacity+cx[1]*
-        pixels[1].opacity+cx[2]*pixels[2].opacity+cx[3]*
-        pixels[3].opacity)+cy[1]*(cx[0]*pixels[4].opacity+cx[1]*
-        pixels[5].opacity+cx[2]*pixels[6].opacity+cx[3]*
+      pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*pixels[1].red+cx[2]*
+        pixels[2].red+cx[3]*pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
+        pixels[5].red+cx[2]*pixels[6].red+cx[3]*pixels[7].red)+cy[2]*(cx[0]*
+        pixels[8].red+cx[1]*pixels[9].red+cx[2]*pixels[10].red+cx[3]*
+        pixels[11].red)+cy[3]*(cx[0]*pixels[12].red+cx[1]*pixels[13].red+cx[2]*
+        pixels[14].red+cx[3]*pixels[15].red));
+      pixel->green=(cy[0]*(cx[0]*pixels[0].green+cx[1]*pixels[1].green+cx[2]*
+        pixels[2].green+cx[3]*pixels[3].green)+cy[1]*(cx[0]*pixels[4].green+
+        cx[1]*pixels[5].green+cx[2]*pixels[6].green+cx[3]*pixels[7].green)+
+        cy[2]*(cx[0]*pixels[8].green+cx[1]*pixels[9].green+cx[2]*
+        pixels[10].green+cx[3]*pixels[11].green)+cy[3]*(cx[0]*pixels[12].green+
+        cx[1]*pixels[13].green+cx[2]*pixels[14].green+cx[3]*pixels[15].green));
+      pixel->blue=(cy[0]*(cx[0]*pixels[0].blue+cx[1]*pixels[1].blue+cx[2]*
+        pixels[2].blue+cx[3]*pixels[3].blue)+cy[1]*(cx[0]*pixels[4].blue+cx[1]*
+        pixels[5].blue+cx[2]*pixels[6].blue+cx[3]*pixels[7].blue)+cy[2]*(cx[0]*
+        pixels[8].blue+cx[1]*pixels[9].blue+cx[2]*pixels[10].blue+cx[3]*
+        pixels[11].blue)+cy[3]*(cx[0]*pixels[12].blue+cx[1]*pixels[13].blue+
+        cx[2]*pixels[14].blue+cx[3]*pixels[15].blue));
+      pixel->opacity=(cy[0]*(cx[0]*pixels[0].opacity+cx[1]*pixels[1].opacity+
+        cx[2]*pixels[2].opacity+cx[3]*pixels[3].opacity)+cy[1]*(cx[0]*
+        pixels[4].opacity+cx[1]*pixels[5].opacity+cx[2]*pixels[6].opacity+cx[3]*
         pixels[7].opacity)+cy[2]*(cx[0]*pixels[8].opacity+cx[1]*
-        pixels[9].opacity+cx[2]*pixels[10].opacity+cx[3]*
-        pixels[11].opacity)+cy[3]*(cx[0]*pixels[12].opacity+cx[1]*
-        pixels[13].opacity+cx[2]*pixels[14].opacity+cx[3]*pixels[15].opacity));
+        pixels[9].opacity+cx[2]*pixels[10].opacity+cx[3]*pixels[11].opacity)+
+        cy[3]*(cx[0]*pixels[12].opacity+cx[1]*pixels[13].opacity+cx[2]*
+        pixels[14].opacity+cx[3]*pixels[15].opacity));
       break;
     }
   }
