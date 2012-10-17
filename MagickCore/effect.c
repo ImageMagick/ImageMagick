@@ -180,6 +180,9 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
     *edge_view,
     *image_view;
 
+  double
+    normalize;
+
   Image
     *blur_image,
     *edge_image,
@@ -192,8 +195,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
     progress;
 
   MagickRealType
-    **kernel,
-    normalize;
+    **kernel;
 
   register ssize_t
     i;
@@ -503,6 +505,9 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
     *edge_view,
     *image_view;
 
+  double
+    normalize;
+
   Image
     *sharp_image,
     *edge_image,
@@ -515,8 +520,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
     progress;
 
   MagickRealType
-    **kernel,
-    normalize;
+    **kernel;
 
   register ssize_t
     i;
