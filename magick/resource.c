@@ -353,7 +353,7 @@ static MagickBooleanType GetPathTemplate(char *path)
   struct stat
     attributes;
 
-  (void) FormatLocaleString(path,MaxTextExtent,"magick-%.20g.XXXXXXXX",
+  (void) FormatLocaleString(path,MaxTextExtent,"magick-%.20g-XXXXXXXX",
     (double) getpid());
   exception=AcquireExceptionInfo();
   directory=(char *) GetImageRegistry(StringRegistryType,"temporary-path",
@@ -395,10 +395,10 @@ static MagickBooleanType GetPathTemplate(char *path)
       return(MagickTrue);
     }
   if (directory[strlen(directory)-1] == *DirectorySeparator)
-    (void) FormatLocaleString(path,MaxTextExtent,"%smagick-%.20g.XXXXXXXX",
+    (void) FormatLocaleString(path,MaxTextExtent,"%smagick-%.20g-XXXXXXXX",
       directory,(double) getpid());
   else
-    (void) FormatLocaleString(path,MaxTextExtent,"%s%smagick-%.20g.XXXXXXXX",
+    (void) FormatLocaleString(path,MaxTextExtent,"%s%smagick-%.20g-XXXXXXXX",
       directory,DirectorySeparator,(double) getpid());
   directory=DestroyString(directory);
   if (*DirectorySeparator != '/')
