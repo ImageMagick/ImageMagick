@@ -568,11 +568,11 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
     }
   if ((flags & PercentValue) != 0)
     {
-      threshold.red*=(QuantumRange/100.0);
-      threshold.green*=(QuantumRange/100.0);
-      threshold.blue*=(QuantumRange/100.0);
-      threshold.black*=(QuantumRange/100.0);
-      threshold.alpha*=(QuantumRange/100.0);
+      threshold.red*=(MagickRealType) (QuantumRange/100.0);
+      threshold.green*=(MagickRealType) (QuantumRange/100.0);
+      threshold.blue*=(MagickRealType) (QuantumRange/100.0);
+      threshold.black*=(MagickRealType) (QuantumRange/100.0);
+      threshold.alpha*=(MagickRealType) (QuantumRange/100.0);
     }
   /*
     White threshold image.
@@ -1711,11 +1711,11 @@ MagickExport MagickBooleanType WhiteThresholdImage(Image *image,
     }
   if ((flags & PercentValue) != 0)
     {
-      threshold.red*=(QuantumRange/100.0);
-      threshold.green*=(QuantumRange/100.0);
-      threshold.blue*=(QuantumRange/100.0);
-      threshold.black*=(QuantumRange/100.0);
-      threshold.alpha*=(QuantumRange/100.0);
+      threshold.red*=(MagickRealType) (QuantumRange/100.0);
+      threshold.green*=(MagickRealType) (QuantumRange/100.0);
+      threshold.blue*=(MagickRealType) (QuantumRange/100.0);
+      threshold.black*=(MagickRealType) (QuantumRange/100.0);
+      threshold.alpha*=(MagickRealType) (QuantumRange/100.0);
     }
   /*
     White threshold image.
