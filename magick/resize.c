@@ -746,7 +746,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { SincFilter,          BoxFilter      },  /* Raw 4-lobed Sinc function    */
     { SincFastFilter,      BoxFilter      },  /* Raw fast sinc ("Pade"-type)  */
     { SincFastFilter,      KaiserFilter   },  /* Kaiser -- square root-sinc   */
-    { LanczosFilter,       WelshFilter    },  /* Welsh -- parabolic (3 lobe)  */
+    { LanczosFilter,       WelshFilter    },  /* Welch -- parabolic (3 lobe)  */
     { SincFastFilter,      CubicFilter    },  /* Parzen -- cubic-sinc         */
     { SincFastFilter,      BohmanFilter   },  /* Bohman -- 2*cosine-sinc      */
     { SincFastFilter,      TriangleFilter },  /* Bartlett -- triangle-sinc    */
@@ -757,8 +757,9 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     { Lanczos2SharpFilter, Lanczos2SharpFilter },
     { RobidouxFilter,      BoxFilter      },  /* Cubic Keys tuned for EWA     */
     { RobidouxSharpFilter, BoxFilter      },  /* Sharper Cubic Keys for EWA   */
-    { LanczosFilter,       CosineFilter   },  /* cosine window (3 lobes)      */
+    { LanczosFilter,       CosineFilter   },  /* Cosine window (3 lobes)      */
     { SplineFilter,        BoxFilter      },  /* Spline Cubic Filter          */
+    { LanczosRadiusFilter, LanczosFilter  },  /* Lanczos with integer radius  */
   };
   /*
     Table mapping the filter/window from the above table to an actual function.
@@ -822,6 +823,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
                             0.2620145123990142,  0.3689927438004929  },
     { Cosine,    1.0, 1.0, 0.0, 0.0 }, /* Low level cosine window     */
     { CubicBC,   2.0, 2.0, 1.0, 0.0 }, /* Cubic B-Spline (B=1,C=0)    */
+    { SincFast,  3.0, 1.0, 0.0, 0.0 }, /* Lanczos, Interger Radius    */
   };
   /*
     The known zero crossings of the Jinc() or more accurately the Jinc(x*PI)
@@ -874,7 +876,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
   */
   filter_type=mapping[filter].filter;
   window_type=mapping[filter].window;
-  resize_filter->blur = blur;   /* function argument blur factor */
+  resize_filter->blur = blur;     /* function argument blur factor (1.0) */
   /* Promote 1D Windowed Sinc Filters to a 2D Windowed Jinc filters */
   if (cylindrical != MagickFalse && filter_type == SincFastFilter
        && filter != SincFastFilter )
@@ -940,6 +942,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       case LanczosSharpFilter:
       case Lanczos2Filter:
       case Lanczos2SharpFilter:
+      case LanczosRadiusFilter:
         resize_filter->filter=filters[JincFilter].function;
         resize_filter->window=filters[JincFilter].function;
         resize_filter->scale=filters[JincFilter].scale;
@@ -1025,6 +1028,13 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
         resize_filter->support=jinc_zeros[15];  /* largest entry in table */
       else
         resize_filter->support=jinc_zeros[((long)resize_filter->support)-1];
+
+      /* blur this filter so support is a integer value (lobes dependant) */
+      if (filter_type == LanczosRadiusFilter)
+      {
+        resize_filter->blur *= floor(resize_filter->support)/
+                                       resize_filter->support;
+      }
     }
   /* expert override of the support setting */
   artifact=GetImageArtifact(image,"filter:support");

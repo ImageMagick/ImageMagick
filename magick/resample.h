@@ -61,6 +61,7 @@ typedef enum
   RobidouxSharpFilter,
   CosineFilter,
   SplineFilter,
+  LanczosRadiusFilter,
   SentinelFilter  /* a count of all the filters, not a real filter */
 } FilterTypes;
 
