@@ -940,6 +940,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
       case LanczosSharpFilter:
       case Lanczos2Filter:
       case Lanczos2SharpFilter:
+      case LanczosRadiusFilter:
         resize_filter->filter=filters[JincFilter].function;
         resize_filter->window=filters[JincFilter].function;
         resize_filter->scale=filters[JincFilter].scale;
@@ -978,7 +979,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     resize_filter->coefficient[2]=MagickEpsilonReciprocal(Magick2PI*value*value);
        /* normalization - not actually needed or used! */
     if ( value > 0.5 )
-      resize_filter->support *= value/0.5;  /* increase support */
+      resize_filter->support *= 2*value;  /* increase support linearly */
   }
 
   /* User Kaiser Alpha Override - no support change */
@@ -998,13 +999,6 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     resize_filter->coefficient[0]=value;         /* alpha */
     resize_filter->coefficient[1]=MagickEpsilonReciprocal(I0(value)); /* normalization */
   }
-
-  /* Blur Override */
-  artifact=GetImageArtifact(image,"filter:blur");
-  if (artifact != (const char *) NULL)
-    resize_filter->blur*=StringToDouble(artifact,(char **) NULL);
-  if (resize_filter->blur < MagickEpsilon)
-    resize_filter->blur=(double) MagickEpsilon;
 
   /* Support Overrides */
   artifact=GetImageArtifact(image,"filter:lobes");
@@ -1033,7 +1027,14 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
                                        resize_filter->support;
       }
     }
-  /* expert override of the support setting */
+  /* Expert Blur Override */
+  artifact=GetImageArtifact(image,"filter:blur");
+  if (artifact != (const char *) NULL)
+    resize_filter->blur*=StringToDouble(artifact,(char **) NULL);
+  if (resize_filter->blur < MagickEpsilon)
+    resize_filter->blur=(double) MagickEpsilon;
+
+  /* Expert override of the support setting */
   artifact=GetImageArtifact(image,"filter:support");
   if (artifact != (const char *) NULL)
     resize_filter->support=fabs(StringToDouble(artifact,(char **) NULL));
