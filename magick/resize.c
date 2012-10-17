@@ -960,6 +960,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     case Lanczos2SharpFilter:
       resize_filter->blur *= (MagickRealType) 0.9549963639785485;
       break;
+    /* case LanczosRadius:  blur adjust is done after lobes */
     default:
       break;
   }
@@ -1002,13 +1003,6 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     resize_filter->coefficient[1]=MagickEpsilonReciprocal(I0(value)); /* normalization */
   }
 
-  /* Blur Override */
-  artifact=GetImageArtifact(image,"filter:blur");
-  if (artifact != (const char *) NULL)
-    resize_filter->blur*=StringToDouble(artifact,(char **) NULL);
-  if (resize_filter->blur < MagickEpsilon)
-    resize_filter->blur=(MagickRealType) MagickEpsilon;
-
   /* Support Overrides */
   artifact=GetImageArtifact(image,"filter:lobes");
   if (artifact != (const char *) NULL)
@@ -1036,7 +1030,14 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
                                        resize_filter->support;
       }
     }
-  /* expert override of the support setting */
+  /* Blur Override */
+  artifact=GetImageArtifact(image,"filter:blur");
+  if (artifact != (const char *) NULL)
+    resize_filter->blur*=StringToDouble(artifact,(char **) NULL);
+  if (resize_filter->blur < MagickEpsilon)
+    resize_filter->blur=(MagickRealType) MagickEpsilon;
+
+  /* Expert override of the support setting */
   artifact=GetImageArtifact(image,"filter:support");
   if (artifact != (const char *) NULL)
     resize_filter->support=fabs(StringToDouble(artifact,(char **) NULL));
