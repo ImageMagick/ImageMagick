@@ -4102,21 +4102,23 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
     case Average9InterpolatePixel:       /* nearest 9 neighbours */
     case Average16InterpolatePixel:      /* nearest 16 neighbours */
     {
-      size_t
-        count=2; /* size of the area to average - default nearest 4 */
+      ssize_t
+        count;
 
+      count=2;  /* size of the area to average - default nearest 4 */
       if (interpolate == Average9InterpolatePixel)
         {
           count=3;
           x_offset=(ssize_t) (floor(x+0.5)-1);
           y_offset=(ssize_t) (floor(y+0.5)-1);
         }
-      else if (interpolate == Average16InterpolatePixel)
-        {
-          count=4;
-          x_offset--;
-          y_offset--;
-        }
+      else
+        if (interpolate == Average16InterpolatePixel)
+          {
+            count=4;
+            x_offset--;
+            y_offset--;
+          }
       p=GetCacheViewVirtualPixels(image_view,x_offset,y_offset,count,count,
         exception);
       if (p == (const Quantum *) NULL)
@@ -4124,7 +4126,6 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
           status=MagickFalse;
           break;
         }
-
       count*=count;   /* Number of pixels to Average */
       if ((traits & BlendPixelTrait) == 0)
         for (i=0; i < (ssize_t) count; i++)
@@ -4206,25 +4207,31 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
         }
       gamma=1.0;    /* number of pixels blended together (its variable) */
       for (i=0; i <= 1L; i++) {
-        if ( y-y_offset >= 0.75 ) { /* take right pixels */
-          alpha[i]  = alpha[i+2];
-          pixels[i] = pixels[i+2];
+        if ((y-y_offset) >= 0.75)
+          {
+            alpha[i]=alpha[i+2];  /* take right pixels */
+            pixels[i]=pixels[i+2];
+          }
+        else
+          if ((y-y_offset) > 0.25)
+            {
+              gamma=2.0;  /* blend both pixels in row */
+              alpha[i]+=alpha[i+2];  /* add up alpha weights */
+              pixels[i]+=pixels[i+2];
+            }
+      }
+      if ((x-x_offset) >= 0.75)
+        {
+          alpha[0]=alpha[1];  /* take bottom row blend */
+          pixels[0]=pixels[1];
         }
-        else if ( y-y_offset > 0.25 ) {
-          gamma = 2.0;              /* blend both pixels in row */
-          alpha[i]  += alpha[i+2];  /* add up alpha weights */
-          pixels[i] += pixels[i+2];
-        }
-      }
-      if ( x-x_offset >= 0.75 ) {   /* take bottom row blend */
-        alpha[0]  = alpha[1];
-        pixels[0] = pixels[1];
-      }
-      else if ( x-x_offset > 0.25 ) {
-        gamma *= 2.0;               /* blend both rows */
-        alpha[0]  += alpha[1];      /* add up alpha weights */
-        pixels[0] += pixels[1];
-      }
+      else
+        if ((x-x_offset) > 0.25)
+          {
+            gamma*=2.0;  /* blend both rows */
+            alpha[0]+=alpha[1];  /* add up alpha weights */
+            pixels[0]+=pixels[1];
+          }
       if (channel != AlphaPixelChannel)
         gamma=MagickEpsilonReciprocal(alpha[0]); /* (color) 1/alpha_weights */
       else
@@ -4561,21 +4568,23 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
     case Average9InterpolatePixel:       /* nearest 9 neighbours */
     case Average16InterpolatePixel:      /* nearest 16 neighbours */
     {
-      size_t
-        count=2; /* size of the area to average - default nearest 4 */
+      ssize_t
+        count;
 
+      count=2;  /* size of the area to average - default nearest 4 */
       if (interpolate == Average9InterpolatePixel)
         {
           count=3;
           x_offset=(ssize_t) (floor(x+0.5)-1);
           y_offset=(ssize_t) (floor(y+0.5)-1);
         }
-      else if (interpolate == Average16InterpolatePixel)
-        {
-          count=4;
-          x_offset--;
-          y_offset--;
-        }
+      else
+        if (interpolate == Average16InterpolatePixel)
+          {
+            count=4;
+            x_offset--;
+            y_offset--;
+          }
       p=GetCacheViewVirtualPixels(source_view,x_offset,y_offset,count,count,
         exception);
       if (p == (const Quantum *) NULL)
@@ -4583,7 +4592,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           status=MagickFalse;
           break;
         }
-      count*=count;   /* Number of pixels to Average */
+      count*=count;  /* Number of pixels to Average */
       for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
         double
@@ -4711,33 +4720,40 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
               GetPixelChannels(source));
             pixels[j]=alpha[j]*p[j*GetPixelChannels(source)+channel];
           }
-        gamma=1.0;    /* number of pixels blended together (its variable) */
-        for (j=0; j <= 1L; j++) {
-          if ( y-y_offset >= 0.75 ) { /* take right pixels */
-            alpha[j]  = alpha[j+2];
-            pixels[j] = pixels[j+2];
+        gamma=1.0;  /* number of pixels blended together (its variable) */
+        for (j=0; j <= 1L; j++)
+        {
+          if ((y-y_offset) >= 0.75)
+            {
+              alpha[j]=alpha[j+2];  /* take right pixels */
+              pixels[j]=pixels[j+2];
+            }
+          else
+            if ((y-y_offset) > 0.25)
+              {
+                gamma=2.0;              /* blend both pixels in row */
+                alpha[j]+=alpha[j+2];  /* add up alpha weights */
+                pixels[j]+=pixels[j+2];
+              }
+        }
+        if ((x-x_offset) >= 0.75)
+          {
+            alpha[0]=alpha[1];  /* take bottom row blend */
+            pixels[0]=pixels[1];
           }
-          else if ( y-y_offset > 0.25 ) {
-            gamma = 2.0;              /* blend both pixels in row */
-            alpha[j]  += alpha[j+2];  /* add up alpha weights */
-            pixels[j] += pixels[j+2];
-          }
-        }
-        if ( x-x_offset >= 0.75 ) {   /* take bottom row blend */
-          alpha[0]  = alpha[1];
-          pixels[0] = pixels[1];
-        }
-        else if ( x-x_offset > 0.25 ) {
-          gamma *= 2.0;               /* blend both rows */
-          alpha[0]  += alpha[1];      /* add up alpha weights */
-          pixels[0] += pixels[1];
-        }
+        else
+           if ((x-x_offset) > 0.25)
+             {
+               gamma*=2.0;  /* blend both rows */
+               alpha[0]+=alpha[1];  /* add up alpha weights */
+               pixels[0]+=pixels[1];
+             }
         if ((traits & BlendPixelTrait) == 0)
           gamma=MagickEpsilonReciprocal(alpha[0]); /* (color) 1/alpha_weights */
         else
           gamma=MagickEpsilonReciprocal(gamma); /* (alpha) 1/number_of_pixels */
         SetPixelChannel(destination,channel,ClampToQuantum(gamma*pixels[0]),
-             pixel);
+          pixel);
       }
       break;
     }
@@ -4930,12 +4946,11 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           }
         delta.x=x-x_offset;
         delta.y=y-y_offset;
-        luminance.x=fabs((double)(
-              GetPixelLuminance(source,p)
-               -GetPixelLuminance(source,p+3*GetPixelChannels(source))));
-        luminance.y=fabs((double)(
-              GetPixelLuminance(source,p+GetPixelChannels(source))
-               -GetPixelLuminance(source,p+2*GetPixelChannels(source))));
+        luminance.x=fabs((double) (GetPixelLuminance(source,p)-
+          GetPixelLuminance(source,p+3*GetPixelChannels(source))));
+        luminance.y=fabs((double) (GetPixelLuminance(source,p+
+          GetPixelChannels(source))-GetPixelLuminance(source,p+2*
+          GetPixelChannels(source))));
         if (luminance.x < luminance.y)
           {
             /*
@@ -5160,9 +5175,10 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
     case Average9InterpolatePixel:       /* nearest 9 neighbours */
     case Average16InterpolatePixel:      /* nearest 16 neighbours */
     {
-      size_t
-        count=2; /* size of the area to average - default nearest 4 */
+      ssize_t
+        count;
 
+      count=2;  /* size of the area to average - default nearest 4 */
       if (interpolate == Average9InterpolatePixel)
         {
           count=3;
@@ -5192,24 +5208,24 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       {
         AlphaBlendPixelInfo(image,p,pixels,alpha);
         gamma=MagickEpsilonReciprocal(alpha[0]);
-        pixel->red   += gamma*pixels[0].red;
-        pixel->green += gamma*pixels[0].green;
-        pixel->blue  += gamma*pixels[0].blue;
-        pixel->black += gamma*pixels[0].black;
-        pixel->alpha +=       pixels[0].alpha;
+        pixel->red+=gamma*pixels[0].red;
+        pixel->green+=gamma*pixels[0].green;
+        pixel->blue+=gamma*pixels[0].blue;
+        pixel->black+=gamma*pixels[0].black;
+        pixel->alpha+=pixels[0].alpha;
         p += GetPixelChannels(image);
       }
       gamma=1.0/count;   /* average weighting of each pixel in area */
-      pixel->red   *= gamma;
-      pixel->green *= gamma;
-      pixel->blue  *= gamma;
-      pixel->black *= gamma;
-      pixel->alpha *= gamma;
+      pixel->red*=gamma;
+      pixel->green*=gamma;
+      pixel->blue*=gamma;
+      pixel->black*=gamma;
+      pixel->alpha*=gamma;
       break;
     }
     case BackgroundInterpolatePixel:
     {
-      *pixel = image->background_color;  /* Copy PixelInfo Structure  */
+      *pixel=image->background_color;  /* Copy PixelInfo Structure  */
       break;
     }
     case BilinearInterpolatePixel:
@@ -5263,42 +5279,49 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         }
       for (i=0; i < 4L; i++)
         AlphaBlendPixelInfo(image,p+i*GetPixelChannels(image),pixels+i,alpha+i);
-      gamma=1.0;    /* number of pixels blended together (its variable) */
-      for (i=0; i <= 1L; i++) {
-        if ( y-y_offset >= 0.75 ) {       /* take right pixels */
-          alpha[i]  = alpha[i+2];
-          pixels[i] = pixels[i+2];
+      gamma=1.0;  /* number of pixels blended together (its variable) */
+      for (i=0; i <= 1L; i++)
+      {
+        if ((y-y_offset) >= 0.75)
+          {
+            alpha[i]=alpha[i+2];  /* take right pixels */
+            pixels[i]=pixels[i+2];
+          }
+        else
+          if ((y-y_offset) > 0.25)
+            {
+              gamma=2.0;  /* blend both pixels in row */
+              alpha[i]+=alpha[i+2];  /* add up alpha weights */
+              pixels[i].red+=pixels[i+2].red;
+              pixels[i].green+=pixels[i+2].green;
+              pixels[i].blue+=pixels[i+2].blue;
+              pixels[i].black+=pixels[i+2].black;
+              pixels[i].alpha+=pixels[i+2].alpha;
+            }
+      }
+      if ((x-x_offset) >= 0.75)
+        {
+          alpha[0]=alpha[1];
+          pixels[0]=pixels[1];
         }
-        else if ( y-y_offset > 0.25 ) {
-          gamma = 2.0;                    /* blend both pixels in row */
-          alpha[i]        += alpha[i+2];  /* add up alpha weights */
-          pixels[i].red   += pixels[i+2].red;
-          pixels[i].green += pixels[i+2].green;
-          pixels[i].blue  += pixels[i+2].blue;
-          pixels[i].black += pixels[i+2].black;
-          pixels[i].alpha += pixels[i+2].alpha;
-        }
-      }
-      if ( x-x_offset >= 0.75 ) {
-        alpha[0]  = alpha[1];
-        pixels[0] = pixels[1];
-      }
-      else if ( x-x_offset > 0.25 ) {
-        gamma *= 2.0;                     /* blend both rows */
-        alpha[0]        += alpha[1];      /* add up alpha weights */
-        pixels[0].red   += pixels[1].red;
-        pixels[0].green += pixels[1].green;
-        pixels[0].blue  += pixels[1].blue;
-        pixels[0].black += pixels[1].black;
-        pixels[0].alpha += pixels[1].alpha;
-      }
-      gamma = 1.0/gamma;
+      else
+        if ((x-x_offset) > 0.25)
+          {
+            gamma*=2.0;  /* blend both rows */
+            alpha[0]+= alpha[1];      /* add up alpha weights */
+            pixels[0].red+=pixels[1].red;
+            pixels[0].green+=pixels[1].green;
+            pixels[0].blue+=pixels[1].blue;
+            pixels[0].black+=pixels[1].black;
+            pixels[0].alpha+=pixels[1].alpha;
+          }
+      gamma=1.0/gamma;
       alpha[0]=MagickEpsilonReciprocal(alpha[0]);
-      pixel->red   = alpha[0]*pixels[0].red;
-      pixel->green = alpha[0]*pixels[0].green; /* divide by sum of alpha */
-      pixel->blue  = alpha[0]*pixels[0].blue;
-      pixel->black = alpha[0]*pixels[0].black;
-      pixel->alpha =    gamma*pixels[0].alpha; /* divide by number of pixels */
+      pixel->red=alpha[0]*pixels[0].red;
+      pixel->green=alpha[0]*pixels[0].green;  /* divide by sum of alpha */
+      pixel->blue=alpha[0]*pixels[0].blue;
+      pixel->black=alpha[0]*pixels[0].black;
+      pixel->alpha=gamma*pixels[0].alpha;   /* divide by number of pixels */
       break;
     }
     case CatromInterpolatePixel:
@@ -5318,47 +5341,39 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         AlphaBlendPixelInfo(image,p+i*GetPixelChannels(image),pixels+i,alpha+i);
       CatromWeights((double) (x-x_offset),&cx);
       CatromWeights((double) (y-y_offset),&cy);
-      pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*
-        pixels[1].red+cx[2]*pixels[2].red+cx[3]*
-        pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
-        pixels[5].red+cx[2]*pixels[6].red+cx[3]*
-        pixels[7].red)+cy[2]*(cx[0]*pixels[8].red+cx[1]*
-        pixels[9].red+cx[2]*pixels[10].red+cx[3]*
-        pixels[11].red)+cy[3]*(cx[0]*pixels[12].red+cx[1]*
-        pixels[13].red+cx[2]*pixels[14].red+cx[3]*pixels[15].red));
-      pixel->green=(cy[0]*(cx[0]*pixels[0].green+cx[1]*
-        pixels[1].green+cx[2]*pixels[2].green+cx[3]*
-        pixels[3].green)+cy[1]*(cx[0]*pixels[4].green+cx[1]*
-        pixels[5].green+cx[2]*pixels[6].green+cx[3]*
-        pixels[7].green)+cy[2]*(cx[0]*pixels[8].green+cx[1]*
-        pixels[9].green+cx[2]*pixels[10].green+cx[3]*
-        pixels[11].green)+cy[3]*(cx[0]*pixels[12].green+cx[1]*
-        pixels[13].green+cx[2]*pixels[14].green+cx[3]*pixels[15].green));
-      pixel->blue=(cy[0]*(cx[0]*pixels[0].blue+cx[1]*
-        pixels[1].blue+cx[2]*pixels[2].blue+cx[3]*
-        pixels[3].blue)+cy[1]*(cx[0]*pixels[4].blue+cx[1]*
-        pixels[5].blue+cx[2]*pixels[6].blue+cx[3]*
-        pixels[7].blue)+cy[2]*(cx[0]*pixels[8].blue+cx[1]*
-        pixels[9].blue+cx[2]*pixels[10].blue+cx[3]*
-        pixels[11].blue)+cy[3]*(cx[0]*pixels[12].blue+cx[1]*
-        pixels[13].blue+cx[2]*pixels[14].blue+cx[3]*pixels[15].blue));
+      pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*pixels[1].red+cx[2]*
+        pixels[2].red+cx[3]*pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
+        pixels[5].red+cx[2]*pixels[6].red+cx[3]*pixels[7].red)+cy[2]*(cx[0]*
+        pixels[8].red+cx[1]*pixels[9].red+cx[2]*pixels[10].red+cx[3]*
+        pixels[11].red)+cy[3]*(cx[0]*pixels[12].red+cx[1]*pixels[13].red+cx[2]*
+        pixels[14].red+cx[3]*pixels[15].red));
+      pixel->green=(cy[0]*(cx[0]*pixels[0].green+cx[1]*pixels[1].green+cx[2]*
+        pixels[2].green+cx[3]*pixels[3].green)+cy[1]*(cx[0]*pixels[4].green+
+        cx[1]*pixels[5].green+cx[2]*pixels[6].green+cx[3]*pixels[7].green)+
+        cy[2]*(cx[0]*pixels[8].green+cx[1]*pixels[9].green+cx[2]*
+        pixels[10].green+cx[3]*pixels[11].green)+cy[3]*(cx[0]*
+        pixels[12].green+cx[1]*pixels[13].green+cx[2]*pixels[14].green+cx[3]*
+        pixels[15].green));
+      pixel->blue=(cy[0]*(cx[0]*pixels[0].blue+cx[1]*pixels[1].blue+cx[2]*
+        pixels[2].blue+cx[3]*pixels[3].blue)+cy[1]*(cx[0]*pixels[4].blue+cx[1]*
+        pixels[5].blue+cx[2]*pixels[6].blue+cx[3]*pixels[7].blue)+cy[2]*(cx[0]*
+        pixels[8].blue+cx[1]*pixels[9].blue+cx[2]*pixels[10].blue+cx[3]*
+        pixels[11].blue)+cy[3]*(cx[0]*pixels[12].blue+cx[1]*pixels[13].blue+
+        cx[2]*pixels[14].blue+cx[3]*pixels[15].blue));
       if (image->colorspace == CMYKColorspace)
-        pixel->black=(cy[0]*(cx[0]*pixels[0].black+cx[1]*
-          pixels[1].black+cx[2]*pixels[2].black+cx[3]*
-          pixels[3].black)+cy[1]*(cx[0]*pixels[4].black+cx[1]*
-          pixels[5].black+cx[2]*pixels[6].black+cx[3]*
-          pixels[7].black)+cy[2]*(cx[0]*pixels[8].black+cx[1]*
-          pixels[9].black+cx[2]*pixels[10].black+cx[3]*
-          pixels[11].black)+cy[3]*(cx[0]*pixels[12].black+cx[1]*
-          pixels[13].black+cx[2]*pixels[14].black+cx[3]*pixels[15].black));
-      pixel->alpha=(cy[0]*(cx[0]*pixels[0].alpha+cx[1]*
-        pixels[1].alpha+cx[2]*pixels[2].alpha+cx[3]*
-        pixels[3].alpha)+cy[1]*(cx[0]*pixels[4].alpha+cx[1]*
-        pixels[5].alpha+cx[2]*pixels[6].alpha+cx[3]*
-        pixels[7].alpha)+cy[2]*(cx[0]*pixels[8].alpha+cx[1]*
-        pixels[9].alpha+cx[2]*pixels[10].alpha+cx[3]*
-        pixels[11].alpha)+cy[3]*(cx[0]*pixels[12].alpha+cx[1]*
-        pixels[13].alpha+cx[2]*pixels[14].alpha+cx[3]*pixels[15].alpha));
+        pixel->black=(cy[0]*(cx[0]*pixels[0].black+cx[1]*pixels[1].black+cx[2]*
+          pixels[2].black+cx[3]*pixels[3].black)+cy[1]*(cx[0]*pixels[4].black+
+          cx[1]*pixels[5].black+cx[2]*pixels[6].black+cx[3]*pixels[7].black)+
+          cy[2]*(cx[0]*pixels[8].black+cx[1]*pixels[9].black+cx[2]*
+          pixels[10].black+cx[3]*pixels[11].black)+cy[3]*(cx[0]*
+          pixels[12].black+cx[1]*pixels[13].black+cx[2]*pixels[14].black+cx[3]*
+          pixels[15].black));
+      pixel->alpha=(cy[0]*(cx[0]*pixels[0].alpha+cx[1]*pixels[1].alpha+cx[2]*
+        pixels[2].alpha+cx[3]*pixels[3].alpha)+cy[1]*(cx[0]*pixels[4].alpha+
+        cx[1]*pixels[5].alpha+cx[2]*pixels[6].alpha+cx[3]*pixels[7].alpha)+
+        cy[2]*(cx[0]*pixels[8].alpha+cx[1]*pixels[9].alpha+cx[2]*
+        pixels[10].alpha+cx[3]*pixels[11].alpha)+cy[3]*(cx[0]*pixels[12].alpha+
+        cx[1]*pixels[13].alpha+cx[2]*pixels[14].alpha+cx[3]*pixels[15].alpha));
       break;
     }
 #if 0
@@ -5559,47 +5574,38 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
         AlphaBlendPixelInfo(image,p+i*GetPixelChannels(image),pixels+i,alpha+i);
       SplineWeights((double) (x-x_offset),&cx);
       SplineWeights((double) (y-y_offset),&cy);
-      pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*
-        pixels[1].red+cx[2]*pixels[2].red+cx[3]*
-        pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
-        pixels[5].red+cx[2]*pixels[6].red+cx[3]*
-        pixels[7].red)+cy[2]*(cx[0]*pixels[8].red+cx[1]*
-        pixels[9].red+cx[2]*pixels[10].red+cx[3]*
-        pixels[11].red)+cy[3]*(cx[0]*pixels[12].red+cx[1]*
-        pixels[13].red+cx[2]*pixels[14].red+cx[3]*pixels[15].red));
-      pixel->green=(cy[0]*(cx[0]*pixels[0].green+cx[1]*
-        pixels[1].green+cx[2]*pixels[2].green+cx[3]*
-        pixels[3].green)+cy[1]*(cx[0]*pixels[4].green+cx[1]*
-        pixels[5].green+cx[2]*pixels[6].green+cx[3]*
-        pixels[7].green)+cy[2]*(cx[0]*pixels[8].green+cx[1]*
-        pixels[9].green+cx[2]*pixels[10].green+cx[3]*
-        pixels[11].green)+cy[3]*(cx[0]*pixels[12].green+cx[1]*
-        pixels[13].green+cx[2]*pixels[14].green+cx[3]*pixels[15].green));
-      pixel->blue=(cy[0]*(cx[0]*pixels[0].blue+cx[1]*
-        pixels[1].blue+cx[2]*pixels[2].blue+cx[3]*
-        pixels[3].blue)+cy[1]*(cx[0]*pixels[4].blue+cx[1]*
-        pixels[5].blue+cx[2]*pixels[6].blue+cx[3]*
-        pixels[7].blue)+cy[2]*(cx[0]*pixels[8].blue+cx[1]*
-        pixels[9].blue+cx[2]*pixels[10].blue+cx[3]*
-        pixels[11].blue)+cy[3]*(cx[0]*pixels[12].blue+cx[1]*
-        pixels[13].blue+cx[2]*pixels[14].blue+cx[3]*pixels[15].blue));
+      pixel->red=(cy[0]*(cx[0]*pixels[0].red+cx[1]*pixels[1].red+cx[2]*
+        pixels[2].red+cx[3]*pixels[3].red)+cy[1]*(cx[0]*pixels[4].red+cx[1]*
+        pixels[5].red+cx[2]*pixels[6].red+cx[3]*pixels[7].red)+cy[2]*(cx[0]*
+        pixels[8].red+cx[1]*pixels[9].red+cx[2]*pixels[10].red+cx[3]*
+        pixels[11].red)+cy[3]*(cx[0]*pixels[12].red+cx[1]*pixels[13].red+cx[2]*
+        pixels[14].red+cx[3]*pixels[15].red));
+      pixel->green=(cy[0]*(cx[0]*pixels[0].green+cx[1]*pixels[1].green+cx[2]*
+        pixels[2].green+cx[3]*pixels[3].green)+cy[1]*(cx[0]*pixels[4].green+
+        cx[1]*pixels[5].green+cx[2]*pixels[6].green+cx[3]*pixels[7].green)+
+        cy[2]*(cx[0]*pixels[8].green+cx[1]*pixels[9].green+cx[2]*
+        pixels[10].green+cx[3]*pixels[11].green)+cy[3]*(cx[0]*pixels[12].green+
+        cx[1]*pixels[13].green+cx[2]*pixels[14].green+cx[3]*pixels[15].green));
+      pixel->blue=(cy[0]*(cx[0]*pixels[0].blue+cx[1]*pixels[1].blue+cx[2]*
+        pixels[2].blue+cx[3]*pixels[3].blue)+cy[1]*(cx[0]*pixels[4].blue+cx[1]*
+        pixels[5].blue+cx[2]*pixels[6].blue+cx[3]*pixels[7].blue)+cy[2]*(cx[0]*
+        pixels[8].blue+cx[1]*pixels[9].blue+cx[2]*pixels[10].blue+cx[3]*
+        pixels[11].blue)+cy[3]*(cx[0]*pixels[12].blue+cx[1]*pixels[13].blue+
+        cx[2]*pixels[14].blue+cx[3]*pixels[15].blue));
       if (image->colorspace == CMYKColorspace)
-        pixel->black=(cy[0]*(cx[0]*pixels[0].black+cx[1]*
-          pixels[1].black+cx[2]*pixels[2].black+cx[3]*
-          pixels[3].black)+cy[1]*(cx[0]*pixels[4].black+cx[1]*
-          pixels[5].black+cx[2]*pixels[6].black+cx[3]*
-          pixels[7].black)+cy[2]*(cx[0]*pixels[8].black+cx[1]*
-          pixels[9].black+cx[2]*pixels[10].black+cx[3]*
-          pixels[11].black)+cy[3]*(cx[0]*pixels[12].black+cx[1]*
-          pixels[13].black+cx[2]*pixels[14].black+cx[3]*pixels[15].black));
-      pixel->alpha=(cy[0]*(cx[0]*pixels[0].alpha+cx[1]*
-        pixels[1].alpha+cx[2]*pixels[2].alpha+cx[3]*
-        pixels[3].alpha)+cy[1]*(cx[0]*pixels[4].alpha+cx[1]*
-        pixels[5].alpha+cx[2]*pixels[6].alpha+cx[3]*
-        pixels[7].alpha)+cy[2]*(cx[0]*pixels[8].alpha+cx[1]*
-        pixels[9].alpha+cx[2]*pixels[10].alpha+cx[3]*
-        pixels[11].alpha)+cy[3]*(cx[0]*pixels[12].alpha+cx[1]*
-        pixels[13].alpha+cx[2]*pixels[14].alpha+cx[3]*pixels[15].alpha));
+        pixel->black=(cy[0]*(cx[0]*pixels[0].black+cx[1]*pixels[1].black+cx[2]*
+          pixels[2].black+cx[3]*pixels[3].black)+cy[1]*(cx[0]*pixels[4].black+
+          cx[1]*pixels[5].black+cx[2]*pixels[6].black+cx[3]*pixels[7].black)+
+          cy[2]*(cx[0]*pixels[8].black+cx[1]*pixels[9].black+cx[2]*
+          pixels[10].black+cx[3]*pixels[11].black)+cy[3]*(cx[0]*
+          pixels[12].black+cx[1]*pixels[13].black+cx[2]*pixels[14].black+cx[3]*
+          pixels[15].black));
+      pixel->alpha=(cy[0]*(cx[0]*pixels[0].alpha+cx[1]*pixels[1].alpha+cx[2]*
+        pixels[2].alpha+cx[3]*pixels[3].alpha)+cy[1]*(cx[0]*pixels[4].alpha+
+        cx[1]*pixels[5].alpha+cx[2]*pixels[6].alpha+cx[3]*pixels[7].alpha)+
+        cy[2]*(cx[0]*pixels[8].alpha+cx[1]*pixels[9].alpha+cx[2]*
+        pixels[10].alpha+cx[3]*pixels[11].alpha)+cy[3]*(cx[0]*pixels[12].alpha+
+        cx[1]*pixels[13].alpha+cx[2]*pixels[14].alpha+cx[3]*pixels[15].alpha));
       break;
     }
   }
