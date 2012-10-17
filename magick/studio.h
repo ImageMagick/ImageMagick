@@ -98,6 +98,7 @@ extern "C" {
 #endif
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
 # include <direct.h>
+# include <io.h>
 # if !defined(MAGICKCORE_HAVE_STRERROR)
 #  define HAVE_STRERROR
 # endif
