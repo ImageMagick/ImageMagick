@@ -1478,8 +1478,8 @@ MagickExport KernelInfo *AcquireKernelBuiltIn(const KernelInfoType type,
             if (kernel == (KernelInfo *) NULL)
               return(kernel);
             kernel->type = type;
-            kernel->values[1] = +(double) MagickSQ2;
-            kernel->values[7] = +(double) MagickSQ2;
+            kernel->values[1] = +(MagickRealType) MagickSQ2;
+            kernel->values[7] = +(MagickRealType) MagickSQ2;
             CalcKernelMetaData(kernel);
             ScaleKernelInfo(kernel, (double) (1.0/2.0*MagickSQ2), NoValue);
             break;
