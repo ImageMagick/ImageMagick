@@ -1135,7 +1135,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
           Report Filter Details.
         */
         support=GetResizeFilterSupport(resize_filter);  /* practical_support */
-        (void) FormatLocaleFile(stdout,"# Resize Filter (for graphing)\n#\n");
+        (void) FormatLocaleFile(stdout,"# Resampling Filter (for graphing)\n#\n");
         (void) FormatLocaleFile(stdout,"# filter = %s\n",
              CommandOptionToMnemonic(MagickFilterOptions,filter_type));
         (void) FormatLocaleFile(stdout,"# window = %s\n",
