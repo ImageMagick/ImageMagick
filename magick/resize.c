@@ -542,7 +542,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %
 %  FIR filters are used as is, and are limited to that filters support window
 %  (unless over-ridden).  'Gaussian' while classed as an IIR filter, is also
-%  simply clipped by its support size (currently 1.5 or approximatally 3*sigma
+%  simply clipped by its support size (currently 1.5 or approximately 3*sigma
 %  as recommended by many references)
 %
 %  The special a 'cylindrical' filter flag will promote the default 4-lobed
@@ -601,7 +601,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %
 %  These artifact "defines" are not recommended for production use without
 %  expert knowledge of resampling, filtering, and the effects they have on the
-%  resulting resampled (resize ro distorted) image.
+%  resulting resampled (resized or distorted) image.
 %
 %  They can be used to override any and all filter default, and it is
 %  recommended you make good use of "filter:verbose" to make sure that the
@@ -623,7 +623,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %    "filter:window"  Select this windowing function for the filter. While any
 %       filter could be used as a windowing function, using the 'first lobe' of
 %       that filter over the whole support window, using a non-windowing
-%       function is not advisible. If no weighting filter function is specifed
+%       function is not advisible. If no weighting filter function is specified
 %       a 'SincFast' filter is used.
 %
 %    "filter:lobes"  Number of lobes to use for the Sinc/Jinc filter.  This a
@@ -639,11 +639,11 @@ static MagickRealType Welsh(const MagickRealType x,
 %       causes the windowing (or self-windowing Lagrange filter) to act is if
 %       the support window it much much larger than what is actually supplied
 %       to the calling operator.  The filter however is still clipped to the
-%       real support size given, by the support range suppiled to the caller.
+%       real support size given, by the support range supplied to the caller.
 %       If unset this will equal the normal filter support size.
 %
 %    "filter:blur" Scale the filter and support window by this amount.  A value
-%       > 1 will generally result in a more burred image with more ringing
+%       > 1 will generally result in a more blurred image with more ringing
 %       effects, while a value <1 will sharpen the resulting image with more
 %       aliasing effects.
 %
