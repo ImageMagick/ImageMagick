@@ -1,6 +1,6 @@
-2012-10-17  6.7.8-5 Anthony Thyssen <A.Thyssen@griffith...>
+2012-10-17  6.8.0-1 Anthony Thyssen <A.Thyssen@griffith...>
   * Added LanczosRadius filter, that blurs an EWA Lanczos to a integer
-    support size. Equivelent to Lanczos in tensor resize case.
+    support size. Equivalent to Lanczos in tensor resize case.
 
 2012-10-16  6.8.0-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.0-1, SVN revision 9632.
