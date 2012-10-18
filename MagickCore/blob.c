@@ -3729,7 +3729,7 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
           offset;
 
         offset=TellBlob(image);
-        status=posix_fallocate(fileno(image->blob->file_info.file),offset+1,
+        status=posix_fallocate(fileno(image->blob->file_info.file),offset,
           extent-offset);
         if (status != 0)
           return(MagickFalse);
@@ -3762,7 +3762,7 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
               offset;
 
             offset=TellBlob(image);
-            status=posix_fallocate(fileno(image->blob->file_info.file),offset+1,
+            status=posix_fallocate(fileno(image->blob->file_info.file),offset,
               extent-offset);
             if (status != 0)
               return(MagickFalse);
