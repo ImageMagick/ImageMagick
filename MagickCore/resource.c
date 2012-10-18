@@ -354,7 +354,7 @@ static MagickBooleanType GetPathTemplate(char *path)
   struct stat
     attributes;
 
-  (void) FormatLocaleString(path,MaxTextExtent,"magick-%.20g-XXXXXXXX",
+  (void) FormatLocaleString(path,MaxTextExtent,"magick-%.20g-XXXXXXXXXXXX",
     (double) getpid());
   exception=AcquireExceptionInfo();
   directory=(char *) GetImageRegistry(StringRegistryType,"temporary-path",
@@ -384,7 +384,7 @@ static MagickBooleanType GetPathTemplate(char *path)
 #endif
   if (directory == (char *) NULL)
     return(MagickTrue);
-  if (strlen(directory) > (MaxTextExtent-15))
+  if (strlen(directory) > (MaxTextExtent-25))
     {
       directory=DestroyString(directory);
       return(MagickTrue);
@@ -396,11 +396,12 @@ static MagickBooleanType GetPathTemplate(char *path)
       return(MagickTrue);
     }
   if (directory[strlen(directory)-1] == *DirectorySeparator)
-    (void) FormatLocaleString(path,MaxTextExtent,"%smagick-%.20g-XXXXXXXX",
+    (void) FormatLocaleString(path,MaxTextExtent,"%smagick-%.20g-XXXXXXXXXXXX",
       directory,(double) getpid());
   else
-    (void) FormatLocaleString(path,MaxTextExtent,"%s%smagick-%.20g-XXXXXXXX",
-      directory,DirectorySeparator,(double) getpid());
+    (void) FormatLocaleString(path,MaxTextExtent,
+      "%s%smagick-%.20g-XXXXXXXXXXXX",directory,DirectorySeparator,(double)
+      getpid());
   directory=DestroyString(directory);
   if (*DirectorySeparator != '/')
     for (p=path; *p != '\0'; p++)
@@ -450,7 +451,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
     */
     (void) GetPathTemplate(path);
     key=GetRandomKey(random_info,2);
-    p=path+strlen(path)-8;
+    p=path+strlen(path)-12;
     datum=GetStringInfoDatum(key);
     for (i=0; i < (ssize_t) GetStringInfoLength(key); i++)
     {
@@ -466,8 +467,8 @@ MagickExport int AcquireUniqueFileResource(char *path)
     if (file != -1)
       break;
 #endif
-    key=GetRandomKey(random_info,6);
-    p=path+strlen(path)-6;
+    key=GetRandomKey(random_info,12);
+    p=path+strlen(path)-12;
     datum=GetStringInfoDatum(key);
     for (i=0; i < (ssize_t) GetStringInfoLength(key); i++)
     {
@@ -475,7 +476,8 @@ MagickExport int AcquireUniqueFileResource(char *path)
       *p++=portable_filename[c];
     }
     key=DestroyStringInfo(key);
-    file=open_utf8(path,O_RDWR | O_CREAT | O_EXCL | O_BINARY | O_NOFOLLOW,S_MODE);
+    file=open_utf8(path,O_RDWR | O_CREAT | O_EXCL | O_BINARY | O_NOFOLLOW,
+      S_MODE);
     if ((file >= 0) || (errno != EEXIST))
       break;
   }
