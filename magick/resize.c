@@ -643,7 +643,7 @@ static MagickRealType Welsh(const MagickRealType x,
 %       If unset this will equal the normal filter support size.
 %
 %    "filter:blur" Scale the filter and support window by this amount.  A value
-%       > 1 will generally result in a more blurred image with more ringing
+%       of > 1 will generally result in a more blurred image with more ringing
 %       effects, while a value <1 will sharpen the resulting image with more
 %       aliasing effects.
 %
