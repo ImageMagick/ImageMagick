@@ -3727,7 +3727,7 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
       if (extent != (MagickSizeType) ((off_t) extent))
         return(MagickFalse);
 #if !defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
-        return(MagickFalse);
+      return(MagickFalse);
 #else
       {
         int
@@ -3737,8 +3737,8 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
           offset;
 
         offset=TellBlob(image);
-        status=posix_fallocate(fileno(image->blob->file_info.file),
-          (off_t) offset,(off_t) (extent-offset));
+        status=posix_fallocate(fileno(image->blob->file_info.file),offset,
+           extent-offset);
         if (status != 0)
           return(MagickFalse);
       }
@@ -3770,8 +3770,8 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
               offset;
 
             offset=TellBlob(image);
-            status=posix_fallocate(fileno(image->blob->file_info.file),
-              (off_t) offset,(off_t) (extent-offset));
+            status=posix_fallocate(fileno(image->blob->file_info.file),offset,
+              (extent-offset));
             if (status != 0)
               return(MagickFalse);
           }
