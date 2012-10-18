@@ -979,8 +979,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
     /* Define coefficents for Gaussian */
     resize_filter->coefficient[0]=value;                 /* note sigma too */
     resize_filter->coefficient[1]=MagickEpsilonReciprocal(2.0*value*value); /* sigma scaling */
-    resize_filter->coefficient[2]=MagickEpsilonReciprocal(Magick2PI*value*
-      value); /* normalization - not actually needed or used! */
+    resize_filter->coefficient[2]=MagickEpsilonReciprocal(Magick2PI*value*value);
+       /* normalization - not actually needed or used! */
     if ( value > 0.5 )
       resize_filter->support *= value/0.5;  /* increase support */
   }
@@ -1030,7 +1030,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
                                        resize_filter->support;
       }
     }
-  /* Blur Override */
+  /* Expert Blur Override */
   artifact=GetImageArtifact(image,"filter:blur");
   if (artifact != (const char *) NULL)
     resize_filter->blur*=StringToDouble(artifact,(char **) NULL);
