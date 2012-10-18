@@ -644,7 +644,7 @@ static double Welch(const double x,
 %       If unset this will equal the normal filter support size.
 %
 %    "filter:blur" Scale the filter and support window by this amount.  A value
-%       > 1 will generally result in a more blurred image with more ringing
+%       of > 1 will generally result in a more blurred image with more ringing
 %       effects, while a value <1 will sharpen the resulting image with more
 %       aliasing effects.
 %
@@ -760,6 +760,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     { RobidouxSharpFilter, BoxFilter      },  /* Sharper Cubic Keys for EWA   */
     { LanczosFilter,       CosineFilter   },  /* Cosine window (3 lobes)      */
     { SplineFilter,        BoxFilter      },  /* Spline Cubic Filter          */
+    { LanczosRadiusFilter, LanczosFilter  },  /* Lanczos with integer radius  */
   };
   /*
     Table mapping the filter/window from the above table to an actual function.
@@ -958,6 +959,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
     case Lanczos2SharpFilter:
       resize_filter->blur *= 0.9549963639785485;
       break;
+    /* case LanczosRadius:  blur adjust is done after lobes */
     default:
       break;
   }
