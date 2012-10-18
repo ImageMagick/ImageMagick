@@ -3726,7 +3726,7 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
     {
       if (extent != (MagickSizeType) ((off_t) extent))
         return(MagickFalse);
-#if !defined(MAGICKCORE_POSIX_FALLOCATE)
+#if !defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
         return(MagickFalse);
 #else
       {
@@ -3759,7 +3759,7 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
           if (image->blob->file_info.file == (FILE *) NULL)
             return(MagickFalse);
           (void) UnmapBlob(image->blob->data,image->blob->length);
-#if !defined(MAGICKCORE_POSIX_FALLOCATE)
+#if !defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
           return(MagickFalse);
 #else
           {
