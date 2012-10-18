@@ -3711,18 +3711,18 @@ static MagickBooleanType ExtendCache(Image *image,MagickSizeType length)
     }
   if (length != (MagickSizeType) ((MagickOffsetType) length))
     return(MagickFalse);
-  extent=(MagickOffsetType) lseek(cache_info->file,0,SEEK_END);
-  if (extent < 0)
+  offset=(MagickOffsetType) lseek(cache_info->file,0,SEEK_END);
+  if (offset < 0)
     return(MagickFalse);
-  if ((MagickSizeType) extent >= length)
+  if ((MagickSizeType) offset >= length)
     return(MagickTrue);
-  offset=(MagickOffsetType) length-1;
+  extent=(MagickOffsetType) length-1;
 #if !defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
   {
     MagickOffsetType
       count;
 
-    count=WritePixelCacheRegion(cache_info,offset,1,(const unsigned char *) "");
+    count=WritePixelCacheRegion(cache_info,extent,1,(const unsigned char *) "");
     if (count != (MagickOffsetType) 1)
       return(MagickFalse);
   }
@@ -3731,7 +3731,7 @@ static MagickBooleanType ExtendCache(Image *image,MagickSizeType length)
     int
       status;
 
-    status=posix_fallocate(cache_info->file,extent+1,offset-extent);
+    status=posix_fallocate(cache_info->file,offset+1,extent-offset);
     if (status != 0)
       return(MagickFalse);
   }
