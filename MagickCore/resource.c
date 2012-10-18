@@ -449,7 +449,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
       Get temporary pathname.
     */
     (void) GetPathTemplate(path);
-    key=GetRandomKey(random_info,2);
+    key=GetRandomKey(random_info,6);
     p=path+strlen(path)-12;
     datum=GetStringInfoDatum(key);
     for (i=0; i < (ssize_t) GetStringInfoLength(key); i++)
