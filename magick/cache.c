@@ -3974,7 +3974,7 @@ static MagickBooleanType ExtendCache(Image *image,MagickSizeType length)
     int
       status;
 
-    status=posix_fallocate(cache_info->file,extent+1,(offset-extent));
+    status=posix_fallocate(cache_info->file,extent+1,offset-extent);
     if (status != 0)
       return(MagickFalse);
   }
