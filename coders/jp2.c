@@ -356,12 +356,12 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     pixel,
     range[4];
 
+  register PixelPacket
+    *q;
+
   register ssize_t
     i,
     x;
-
-  register PixelPacket
-    *q;
 
   size_t
     maximum_component_depth,
