@@ -645,12 +645,12 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           (jas_iccprof_save(icc_profile,icc_stream) == 0) &&
           (jas_stream_flush(icc_stream) == 0))
         {
+          jas_stream_memobj_t
+            *blob;
+
           StringInfo
             *icc_profile,
             *profile;
-
-          jas_stream_memobj_t
-            *blob;
 
           /*
             Extract the icc profile, handle errors without much noise.
