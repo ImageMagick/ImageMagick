@@ -614,8 +614,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           pixel=(QuantumAny) jas_matrix_getv(pixels[0],x/x_step[0]);
-          SetPixelRed(q,ScaleAnyToQuantum((QuantumAny) pixel,
-            range[0]));
+          SetPixelRed(q,ScaleAnyToQuantum((QuantumAny) pixel,range[0]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[1],x/x_step[1]);
           SetPixelGreen(q,ScaleAnyToQuantum((QuantumAny) pixel,range[1]));
           pixel=(QuantumAny) jas_matrix_getv(pixels[2],x/x_step[2]);
@@ -648,12 +647,12 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
           (jas_iccprof_save(icc_profile,icc_stream) == 0) &&
           (jas_stream_flush(icc_stream) == 0))
         {
+          jas_stream_memobj_t
+            *blob;
+
           StringInfo
             *icc_profile,
             *profile;
-
-          jas_stream_memobj_t
-            *blob;
 
           /*
             Extract the icc profile, handle errors without much noise.
