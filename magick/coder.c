@@ -195,6 +195,7 @@ static const CoderMapInfo
     { "RGBO", "RGB" },
     { "R", "RAW" },
     { "ROSE", "MAGICK" },
+    { "RW2", "DNG" },
     { "SHTML", "HTML" },
     { "SR2", "DNG" },
     { "SRF", "DNG" },
