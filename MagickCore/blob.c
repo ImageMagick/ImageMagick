@@ -2788,7 +2788,7 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
         count=0;
         if (errno != EINTR)
           {
-            i=(-1);
+            i=0;
             break;
           }
       }
@@ -4058,7 +4058,7 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
         count=0;
         if (errno != EINTR)
           {
-            i=(-1);
+            i=0;
             break;
           }
       }
