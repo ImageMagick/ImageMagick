@@ -2781,8 +2781,8 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
       count=0;
       for (i=0; i < (ssize_t) length; i+=count)
       {
-        count=read(fileno(image->blob->file_info.file),q+i,(size_t)
-          MagickMin(length-i,(MagickSizeType) SSIZE_MAX));
+        count=read(fileno(image->blob->file_info.file),q+i,(size_t) MagickMin(
+          length-i,SSIZE_MAX));
         if (count > 0)
           continue;
         count=0;
@@ -4052,7 +4052,7 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
       for (i=0; i < (MagickOffsetType) length; i+=count)
       {
         count=write(fileno(image->blob->file_info.file),data+i,(size_t)
-          MagickMin(length-i,(MagickSizeType) SSIZE_MAX));
+          MagickMin(length-i,SSIZE_MAX));
         if (count > 0)
           continue;
         count=0;
