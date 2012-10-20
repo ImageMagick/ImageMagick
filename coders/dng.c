@@ -368,6 +368,14 @@ ModuleExport size_t RegisterDNGImage(void)
   entry->description=ConstantString("Fuji CCD-RAW Graphic File");
   entry->module=ConstantString("DNG");
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("RW2");
+  entry->decoder=(DecodeImageHandler *) ReadDNGImage;
+  entry->blob_support=MagickFalse;
+  entry->seekable_stream=MagickTrue;
+  entry->format_type=ExplicitFormatType;
+  entry->description=ConstantString("Panasonic Lumix Raw Image");
+  entry->module=ConstantString("DNG");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("SRF");
   entry->decoder=(DecodeImageHandler *) ReadDNGImage;
   entry->blob_support=MagickFalse;
@@ -419,6 +427,7 @@ ModuleExport void UnregisterDNGImage(void)
   (void) UnregisterMagickInfo("X3F");
   (void) UnregisterMagickInfo("SR2");
   (void) UnregisterMagickInfo("SRF");
+  (void) UnregisterMagickInfo("RW2");
   (void) UnregisterMagickInfo("RAF");
   (void) UnregisterMagickInfo("PEF");
   (void) UnregisterMagickInfo("ORF");
