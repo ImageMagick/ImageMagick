@@ -1,5 +1,5 @@
 2012-10-20  6.8.0-2 Cristy  <quetzlzacatenango@image...>
-  * Wait for more bytes if the number of returned byes is less than
+  * Wait for more bytes if the number of returned bytes is less than
     requested in ReadBlob().
 
 2012-10-17  6.8.0-2 Anthony Thyssen <A.Thyssen@griffith...>
@@ -20,7 +20,7 @@
 
 2012-10-07  6.8.0-0 Cristy  <quetzlzacatenango@image...>
   * Check -fx expression early to prevent fault.
-  * Performance boast for iOS / Android requires a SO major version increment.
+  * Performance boost for iOS / Android requires a SO major version increment.
   * Corrupt PNG image could cause a memory leak (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22024).
 
@@ -75,7 +75,7 @@ http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=21884).
   * Merge static inline Sigmoidal functions from IM7 to IM6.
 
 2012-09-12  6.7.8-5 Anthony Thyssen <A.Thyssen@griffith...>
-  * All untappered windowing filters Welch and Cosine changed to use a 3 lobe
+  * All untapered windowing filters Welch and Cosine changed to use a 3 lobe
     support (like Lanczos). These were not part of the original 'zoom' program.
 
 2012-09-11  6.7.9-5 Nicolas Robidoux <nicolas.robidoux@gmail...>
