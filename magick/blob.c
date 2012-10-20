@@ -2783,7 +2783,24 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
       break;
     case StandardStream:
     {
-      count=(ssize_t) read(fileno(image->blob->file_info.file),q,length);
+      register ssize_t
+        i;
+
+      count=0;
+      for (i=0; i < (ssize_t) length; i+=count)
+      {
+        count=read(fileno(image->blob->file_info.file),q+i,(size_t)
+          MagickMin(length-i,(MagickSizeType) SSIZE_MAX));
+        if (count > 0)
+          continue;
+        count=0;
+        if (errno != EINTR)
+          {
+            i=(-1);
+            break;
+          }
+      }
+      count=i;
       break;
     }
     case FileStream:
@@ -4037,7 +4054,24 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
       break;
     case StandardStream:
     {
-      count=(ssize_t) write(fileno(image->blob->file_info.file),data,length);
+      register ssize_t
+        i;
+
+      count=0;
+      for (i=0; i < (MagickOffsetType) length; i+=count)
+      {
+        count=write(fileno(image->blob->file_info.file),data+i,(size_t)
+          MagickMin(length-i,(MagickSizeType) SSIZE_MAX));
+        if (count > 0)
+          continue;
+        count=0;
+        if (errno != EINTR)
+          {
+            i=(-1);
+            break;
+          }
+      }
+      count=i;
       break;
     }
     case FileStream:
