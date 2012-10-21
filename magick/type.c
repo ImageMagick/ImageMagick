@@ -630,6 +630,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_list,
   FcChar8
     *family,
     *file,
+    *fullname,
     *style;
 
   FcConfig
@@ -706,6 +707,9 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_list,
     status=FcPatternGetString(font_set->fonts[i],FC_STYLE,0,&style);
     if (status == FcResultMatch)
       (void) ConcatenateMagickString(name,(const char *) style,MaxTextExtent);
+    status=FcPatternGetString(font_set->fonts[i],FC_FULLNAME,0,&fullname);
+    if (status == FcResultMatch)
+      (void) CopyMagickString(name,(const char *) fullname,MaxTextExtent);
     type_info->name=ConstantString(name);
     (void) SubstituteString(&type_info->name," ","-");
     (void) SubstituteString(&type_info->name,"-L-","-");
