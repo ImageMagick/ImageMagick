@@ -2791,13 +2791,11 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
       {
         count=read(fileno(image->blob->file_info.file),q+i,(size_t) MagickMin(
           length-i,SSIZE_MAX));
-        if (count > 0)
-          continue;
-        count=0;
-        if (errno != EINTR)
+        if (count <= 0)
           {
-            i=0;
-            break;
+            count=0;
+            if (errno != EINTR)
+              break;
           }
       }
       count=i;
@@ -4062,13 +4060,11 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
       {
         count=write(fileno(image->blob->file_info.file),data+i,(size_t)
           MagickMin(length-i,SSIZE_MAX));
-        if (count > 0)
-          continue;
-        count=0;
-        if (errno != EINTR)
+        if (count <= 0)
           {
-            i=0;
-            break;
+            count=0;
+            if (errno != EINTR)
+              break;
           }
       }
       count=i;
