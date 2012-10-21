@@ -623,7 +623,7 @@ MagickExport char **GetTypeList(const char *pattern,size_t *number_fonts,
 MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_list,
   ExceptionInfo *exception)
 {
-#ifndef FC_FULLNAME
+#if !defined(FC_FULLNAME)
 #define FC_FULLNAME "fullname"
 #endif
 
