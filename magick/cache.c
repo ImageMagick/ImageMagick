@@ -657,13 +657,11 @@ static inline MagickOffsetType ReadPixelCacheRegion(
     count=pread(cache_info->file,buffer+i,(size_t) MagickMin(length-i,
       (MagickSizeType) SSIZE_MAX),(off_t) (offset+i));
 #endif
-    if (count > 0)
-      continue;
-    count=0;
-    if (errno != EINTR)
+    if (count <= 0)
       {
-        i=(-1);
-        break;
+        count=0;
+        if (errno != EINTR)
+          break;
       }
   }
 #if !defined(MAGICKCORE_HAVE_PREAD)
@@ -700,13 +698,11 @@ static inline MagickOffsetType WritePixelCacheRegion(
     count=pwrite(cache_info->file,buffer+i,(size_t) MagickMin(length-i,
       (MagickSizeType) SSIZE_MAX),(off_t) (offset+i));
 #endif
-    if (count > 0)
-      continue;
-    count=0;
-    if (errno != EINTR)
+    if (count <= 0)
       {
-        i=(-1);
-        break;
+        count=0;
+        if (errno != EINTR)
+          break;
       }
   }
 #if !defined(MAGICKCORE_HAVE_PWRITE)
