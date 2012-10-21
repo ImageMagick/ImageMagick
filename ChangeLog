@@ -1,3 +1,10 @@
+2012-10-21  6.8.0-3 Cristy  <quetzlzacatenango@image...>
+  * TIFF positional information must be positive (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22106).
+
+2012-10-21  6.8.0-2 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.0-2, SVN revision 9738.
+
 2012-10-20  6.8.0-2 Cristy  <quetzlzacatenango@image...>
   * Wait for more bytes if the number of returned bytes is less than
     requested in ReadBlob().
