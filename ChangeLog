@@ -1,6 +1,7 @@
 2012-10-20  6.8.0-2 Cristy  <quetzlzacatenango@image...>
   * Wait for more bytes if the number of returned bytes is less than
     requested in ReadBlob().
+  * Prefer fullname property for font, if it exists, otherwise famly + style.
 
 2012-10-17  6.8.0-2 Anthony Thyssen <A.Thyssen@griffith...>
   * Added LanczosRadius filter, that blurs an EWA Lanczos to a integer
