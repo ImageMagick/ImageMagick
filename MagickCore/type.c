@@ -724,10 +724,7 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_list,
       }
     type_info->name=ConstantString(name);
     (void) SubstituteString(&type_info->name," ","-");
-    (void) SubstituteString(&type_info->name,"-L-","-");
-    (void) SubstituteString(&type_info->name,"semicondensed","SemiCondensed");
     type_info->family=ConstantString((const char *) family);
-    (void) SubstituteString(&type_info->family," L","");
     status=FcPatternGetInteger(font_set->fonts[i],FC_SLANT,0,&slant);
     type_info->style=NormalStyle;
     if (slant == FC_SLANT_ITALIC)
