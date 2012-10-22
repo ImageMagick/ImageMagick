@@ -666,8 +666,8 @@ MagickExport MagickBooleanType LoadFontConfigFonts(SplayTreeInfo *type_list,
   if (font_config == (FcConfig *) NULL)
     return(MagickFalse);
   font_set=(FcFontSet *) NULL;
-  object_set=FcObjectSetBuild(FC_FAMILY,FC_STYLE,FC_SLANT,FC_WIDTH,FC_WEIGHT,
-    FC_FILE,(char *) NULL);
+  object_set=FcObjectSetBuild(FC_FULLNAME,FC_FAMILY,FC_STYLE,FC_SLANT,
+    FC_WIDTH,FC_WEIGHT,FC_FILE,(char *) NULL);
   if (object_set != (FcObjectSet *) NULL)
     {
       pattern=FcPatternCreate();
