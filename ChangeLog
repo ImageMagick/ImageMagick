@@ -1,6 +1,7 @@
 2012-10-21  6.8.0-3 Cristy  <quetzlzacatenango@image...>
   * TIFF positional information must be positive (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22106).
+  * Set the compression quality for the Webp image format.
 
 2012-10-21  6.8.0-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.0-2, SVN revision 9738.
