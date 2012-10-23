@@ -346,13 +346,10 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   picture.stats=(&statistics);
   picture.width=(int) image->columns;
   picture.height=(int) image->rows;
-  if (image->quality != UndefinedCompressionQuality)
-    configure.quality=(float) image->quality;
   if (WebPConfigInit(&configure) == 0)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
-  /*
-    Future: set custom configuration parameters here.
-  */
+  if (image->quality != UndefinedCompressionQuality)
+    configure.quality=(float) image->quality;
   if (WebPValidateConfig(&configure) == 0)
     ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
   /*
