@@ -2879,8 +2879,7 @@ MagickExport void SetImageInfoFile(ImageInfo *image_info,FILE *file)
 %    o mask: the image mask.
 %
 */
-MagickExport MagickBooleanType SetImageMask(Image *image,
-  const Image *mask)
+MagickExport MagickBooleanType SetImageMask(Image *image,const Image *mask)
 {
   assert(image != (Image *) NULL);
   if (image->debug != MagickFalse)
