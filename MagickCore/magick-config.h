@@ -238,6 +238,11 @@
 /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
 /* #undef HAVE_DOPRNT */
 
+/* Define to 1 if the system has the type `double_t'. */
+#ifndef MAGICKCORE_HAVE_DOUBLE_T
+#define MAGICKCORE_HAVE_DOUBLE_T 1
+#endif
+
 /* Define to 1 if you have the <errno.h> header file. */
 #ifndef MAGICKCORE_HAVE_ERRNO_H
 #define MAGICKCORE_HAVE_ERRNO_H 1
@@ -256,6 +261,11 @@
 /* Define to 1 if you have the <fcntl.h> header file. */
 #ifndef MAGICKCORE_HAVE_FCNTL_H
 #define MAGICKCORE_HAVE_FCNTL_H 1
+#endif
+
+/* Define to 1 if the system has the type `float_t'. */
+#ifndef MAGICKCORE_HAVE_FLOAT_T
+#define MAGICKCORE_HAVE_FLOAT_T 1
 #endif
 
 /* Define to 1 if you have the `floor' function. */
