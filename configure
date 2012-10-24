@@ -3633,7 +3633,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=9640:9642M
+MAGICK_SVN_REVISION=9739:9757M
 
 
 
@@ -22840,6 +22840,30 @@ fi
 $as_echo "$ac_cv_c_char_unsigned" >&6; }
 if test $ac_cv_c_char_unsigned = yes && test "$GCC" != yes; then
   $as_echo "#define __CHAR_UNSIGNED__ 1" >>confdefs.h
+
+fi
+
+
+# float_t and double_t are intended to be the the most efficient type
+ac_fn_c_check_type "$LINENO" "float_t" "ac_cv_type_float_t" "#include <math.h>
+"
+if test "x$ac_cv_type_float_t" = xyes; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_FLOAT_T 1
+_ACEOF
+
+
+fi
+
+ac_fn_c_check_type "$LINENO" "double_t" "ac_cv_type_double_t" "#include <math.h>
+"
+if test "x$ac_cv_type_double_t" = xyes; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_DOUBLE_T 1
+_ACEOF
+
 
 fi
 
