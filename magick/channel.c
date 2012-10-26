@@ -621,7 +621,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   assert(image->signature == MagickSignature);
-  status=MagickFalse;
+  status=MagickTrue;
   switch (alpha_type)
   {
     case ActivateAlphaChannel:
