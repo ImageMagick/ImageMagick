@@ -511,7 +511,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp critical (MagickCore_ForwardFourierTransform)
 #endif
-  fftw_r2c_plan=fftw_plan_dft_r2c_2d(fourier_info->width,fourier_info->width,
+  fftw_r2c_plan=fftw_plan_dft_r2c_2d(fourier_info->width,fourier_info->height,
     source,fourier,FFTW_ESTIMATE);
   fftw_execute(fftw_r2c_plan);
   fftw_destroy_plan(fftw_r2c_plan);
