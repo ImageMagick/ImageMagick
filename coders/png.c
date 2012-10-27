@@ -3835,7 +3835,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
   if ((IssRGBColorspace(image->colorspace) != MagickFalse) &&
-      (image->gamma == 1.0))
+      (image->gamma < .45 || image->gamma > .46))
     SetImageColorspace(image,RGBColorspace,exception);
 
   if (LocaleCompare(image_info->magick,"PNG24") == 0)
