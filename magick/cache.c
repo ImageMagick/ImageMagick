@@ -2069,8 +2069,6 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
                 status=ClonePixelCachePixels(clone_info,cache_info,exception);
               if (status != MagickFalse)
                 {
-                  if (cache_info->mode == ReadMode)
-                    cache_info->nexus_info=(NexusInfo **) NULL;
                   destroy=MagickTrue;
                   image->cache=clone_image.cache;
                 }
