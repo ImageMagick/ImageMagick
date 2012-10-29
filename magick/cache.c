@@ -2032,7 +2032,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
   if (time_limit == 0)
     {
       /*
-        Set the exire time in seconds.
+        Set the expire time in seconds.
       */
       time_limit=GetMagickResourceLimit(TimeResource);
       cache_genesis=time((time_t *) NULL);
