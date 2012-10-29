@@ -2069,14 +2069,6 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
                 status=ClonePixelCachePixels(clone_info,cache_info,exception);
               if (status != MagickFalse)
                 {
-                  if (cache_info->mode == ReadMode)
-                    {
-                      cache_info->nexus_info=AcquirePixelCacheNexus(
-                        cache_info->number_threads);
-                      if (cache_info->nexus_info == (NexusInfo **) NULL)
-                        ThrowFatalException(ResourceLimitFatalError,
-                          "MemoryAllocationFailed");
-                    }
                   destroy=MagickTrue;
                   image->cache=clone_image.cache;
                 }
