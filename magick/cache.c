@@ -2048,11 +2048,11 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
       LockSemaphoreInfo(cache_info->semaphore);
       if ((cache_info->reference_count > 1) || (cache_info->mode == ReadMode))
         {
-          Image
-            clone_image;
-
           CacheInfo
             *clone_info;
+
+          Image
+            clone_image;
 
           /*
             Clone pixel cache.
