@@ -97,9 +97,8 @@ static MagickWand *CloneMagickWandFromImages(const MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   clone_wand=(MagickWand *) AcquireMagickMemory(sizeof(*clone_wand));
   if (clone_wand == (MagickWand *) NULL)
     ThrowWandFatalException(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -114,8 +113,7 @@ static MagickWand *CloneMagickWandFromImages(const MagickWand *wand,
   clone_wand->images=images;
   clone_wand->debug=IsEventLogging();
   clone_wand->signature=WandSignature;
-
-  if( IfMagickTrue(clone_wand->debug) )
+  if (IfMagickTrue(clone_wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",clone_wand->name);
   return(clone_wand);
 }
@@ -146,7 +144,7 @@ WandExport Image *GetImageFromMagickWand(const MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     {
@@ -198,9 +196,8 @@ WandExport MagickBooleanType MagickAdaptiveBlurImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   sharp_image=AdaptiveBlurImage(wand->images,radius,sigma,wand->exception);
@@ -244,9 +241,8 @@ WandExport MagickBooleanType MagickAdaptiveResizeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   resize_image=AdaptiveResizeImage(wand->images,columns,rows,wand->exception);
@@ -297,9 +293,8 @@ WandExport MagickBooleanType MagickAdaptiveSharpenImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   sharp_image=AdaptiveSharpenImage(wand->images,radius,sigma,wand->exception);
@@ -349,9 +344,8 @@ WandExport MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   threshold_image=AdaptiveThresholdImage(wand->images,width,height,bias,
@@ -404,36 +398,42 @@ WandExport MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
 static inline MagickBooleanType InsertImageInWand(MagickWand *wand,
   Image *images)
 {
-  /* if no images in wand, just add them, set current as appropriate */
   if (wand->images == (Image *) NULL)
     {
-      if( IfMagickTrue(wand->insert_before) )
+      /*
+        No images in wand, just add them, set current as appropriate.
+      */
+      if (IfMagickTrue(wand->insert_before))
         wand->images=GetFirstImageInList(images);
       else
         wand->images=GetLastImageInList(images);
       return(MagickTrue);
     }
-
   /* user jumped to first image, so prepend new images - remain active */
-  if( IfMagickTrue((wand->insert_before) ) &&
-       (wand->images->previous == (Image *) NULL) )
+  if (IfMagickTrue((wand->insert_before)) &&
+       (wand->images->previous == (Image *) NULL))
     {
       PrependImageToList(&wand->images,images);
       wand->images=GetFirstImageInList(images);
       return(MagickTrue);
     }
-  /* Note you should never have 'insert_before' true when current image
-     is not the first image in the wand!  That is no insert before
-     current image, only after current image */
-
-  /* if at last image append new images */
+  /*
+    Note you should never have 'insert_before' true when current image is not
+    the first image in the wand!  That is no insert before current image, only
+    after current image
+  */
   if (wand->images->next == (Image *) NULL)
     {
+      /*
+        At last image, append new images.
+      */
       InsertImageInList(&wand->images,images);
       wand->images=GetLastImageInList(images);
       return(MagickTrue);
     }
-  /* otherwise insert new images, just after the current image */
+  /*
+    Insert new images, just after the current image.
+  */
   InsertImageInList(&wand->images,images);
   return(MagickTrue);
 }
@@ -446,15 +446,15 @@ WandExport MagickBooleanType MagickAddImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   assert(add_wand != (MagickWand *) NULL);
   assert(add_wand->signature == WandSignature);
   if (add_wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",add_wand->name);
-
-  /* clone images in second wand, and insert into first */
+  /*
+    Clone images in second wand, and insert into first.
+  */
   images=CloneImageList(add_wand->images,wand->exception);
   if (images == (Image *) NULL)
     return(MagickFalse);
@@ -497,9 +497,8 @@ WandExport MagickBooleanType MagickAddNoiseImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   noise_image=AddNoiseImage(wand->images,noise_type,attenuate,wand->exception);
@@ -546,9 +545,8 @@ WandExport MagickBooleanType MagickAffineTransformImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   draw_info=PeekDrawingWand(drawing_wand);
@@ -612,9 +610,8 @@ WandExport MagickBooleanType MagickAnnotateImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   draw_info=PeekDrawingWand(drawing_wand);
@@ -665,9 +662,8 @@ WandExport MagickBooleanType MagickAnimateImages(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   (void) CloneString(&wand->image_info->server_name,server_name);
   status=AnimateImages(wand->image_info,wand->images,wand->exception);
   return(status);
@@ -713,9 +709,8 @@ WandExport MagickWand *MagickAppendImages(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   append_image=AppendImages(wand->images,stack,wand->exception);
@@ -754,9 +749,8 @@ WandExport MagickBooleanType MagickAutoGammaImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=AutoGammaImage(wand->images,wand->exception);
@@ -793,9 +787,8 @@ WandExport MagickBooleanType MagickAutoLevelImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=AutoLevelImage(wand->images,wand->exception);
@@ -840,9 +833,8 @@ WandExport MagickBooleanType MagickBlackThresholdImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   (void) FormatLocaleString(thresholds,MaxTextExtent,
@@ -887,9 +879,8 @@ WandExport MagickBooleanType MagickBlueShiftImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   shift_image=BlueShiftImage(wand->images,factor,wand->exception);
@@ -938,9 +929,8 @@ WandExport MagickBooleanType MagickBlurImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   blur_image=BlurImage(wand->images,radius,sigma,wand->exception);
@@ -995,9 +985,8 @@ WandExport MagickBooleanType MagickBorderImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   border_info.width=width;
@@ -1050,9 +1039,8 @@ WandExport MagickBooleanType MagickBrightnessContrastImage(
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=BrightnessContrastImage(wand->images,brightness,contrast,
@@ -1105,9 +1093,8 @@ WandExport MagickWand *MagickChannelFxImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   fx_image=ChannelFxImage(wand->images,expression,wand->exception);
@@ -1152,9 +1139,8 @@ WandExport MagickBooleanType MagickCharcoalImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   charcoal_image=CharcoalImage(wand->images,radius,sigma,wand->exception);
@@ -1210,9 +1196,8 @@ WandExport MagickBooleanType MagickChopImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   chop.width=width;
@@ -1254,9 +1239,8 @@ WandExport MagickBooleanType MagickClampImage(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(ClampImage(wand->images,wand->exception));
@@ -1292,9 +1276,8 @@ WandExport MagickBooleanType MagickClipImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ClipImage(wand->images,wand->exception);
@@ -1341,9 +1324,8 @@ WandExport MagickBooleanType MagickClipImagePath(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ClipImagePath(wand->images,pathname,inside,wand->exception);
@@ -1385,9 +1367,8 @@ WandExport MagickBooleanType MagickClutImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if ((wand->images == (Image *) NULL) || (clut_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ClutImage(wand->images,clut_wand->images,method,wand->exception);
@@ -1428,9 +1409,8 @@ WandExport MagickWand *MagickCoalesceImages(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   coalesce_image=CoalesceImages(wand->images,wand->exception);
@@ -1490,9 +1470,8 @@ WandExport MagickBooleanType MagickColorDecisionListImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ColorDecisionListImage(wand->images,color_correction_collection,
@@ -1541,9 +1520,8 @@ WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   GetPixelInfo(wand->images,&target);
@@ -1610,9 +1588,8 @@ WandExport MagickBooleanType MagickColorMatrixImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (color_matrix == (const KernelInfo *) NULL)
     return(MagickFalse);
   if (wand->images == (Image *) NULL)
@@ -1660,9 +1637,8 @@ WandExport MagickWand *MagickCombineImages(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   combine_image=CombineImages(wand->images,colorspace,wand->exception);
@@ -1704,9 +1680,8 @@ WandExport MagickBooleanType MagickCommentImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SetImageProperty(wand->images,"comment",comment,wand->exception);
@@ -1748,9 +1723,8 @@ WandExport MagickWand *MagickCompareImagesLayers(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   layers_image=CompareImagesLayers(wand->images,method,wand->exception);
@@ -1799,9 +1773,8 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -1867,9 +1840,8 @@ WandExport MagickBooleanType MagickCompositeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if ((wand->images == (Image *) NULL) ||
       (source_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
@@ -1940,14 +1912,12 @@ WandExport MagickBooleanType MagickCompositeLayers(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if ((wand->images == (Image *) NULL) ||
       (source_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  CompositeLayers(wand->images,compose,source_wand->images,x,y,
-        wand->exception);
+  CompositeLayers(wand->images,compose,source_wand->images,x,y,wand->exception);
   status=MagickTrue;  /* FUTURE: determine status from exceptions */
   return(status);
 }
@@ -1988,9 +1958,8 @@ WandExport MagickBooleanType MagickContrastImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ContrastImage(wand->images,sharpen,wand->exception);
@@ -2035,9 +2004,8 @@ WandExport MagickBooleanType MagickContrastStretchImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ContrastStretchImage(wand->images,black_point,white_point,
@@ -2078,9 +2046,8 @@ WandExport MagickBooleanType MagickConvolveImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (kernel == (const KernelInfo *) NULL)
     return(MagickFalse);
   if (wand->images == (Image *) NULL)
@@ -2134,9 +2101,8 @@ WandExport MagickBooleanType MagickCropImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   crop.width=width;
@@ -2185,9 +2151,8 @@ WandExport MagickBooleanType MagickCycleColormapImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=CycleColormapImage(wand->images,displace,wand->exception);
@@ -2255,9 +2220,8 @@ WandExport MagickBooleanType MagickConstituteImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   images=ConstituteImage(columns,rows,map,storage,pixels,wand->exception);
   if (images == (Image *) NULL)
     return(MagickFalse);
@@ -2294,9 +2258,8 @@ WandExport MagickBooleanType MagickDecipherImage(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(DecipherImage(wand->images,passphrase,wand->exception));
@@ -2333,9 +2296,8 @@ WandExport MagickWand *MagickDeconstructImages(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   deconstruct_image=CompareImagesLayers(wand->images,CompareAnyLayer,
@@ -2381,9 +2343,8 @@ WandExport MagickBooleanType MagickDeskewImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   sepia_image=DeskewImage(wand->images,threshold,wand->exception);
@@ -2423,9 +2384,8 @@ WandExport MagickBooleanType MagickDespeckleImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   despeckle_image=DespeckleImage(wand->images,wand->exception);
@@ -2499,9 +2459,8 @@ WandExport MagickBooleanType MagickDisplayImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   image=CloneImage(wand->images,0,0,MagickTrue,wand->exception);
@@ -2546,9 +2505,8 @@ WandExport MagickBooleanType MagickDisplayImages(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   (void) CloneString(&wand->image_info->server_name,server_name);
   status=DisplayImages(wand->image_info,wand->images,wand->exception);
   return(status);
@@ -2623,9 +2581,8 @@ WandExport MagickBooleanType MagickDistortImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   distort_image=DistortImage(wand->images,method,number_arguments,arguments,
@@ -2675,9 +2632,8 @@ WandExport MagickBooleanType MagickDrawImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   draw_info=PeekDrawingWand(drawing_wand);
@@ -2730,9 +2686,8 @@ WandExport MagickBooleanType MagickEdgeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   edge_image=EdgeImage(wand->images,radius,sigma,wand->exception);
@@ -2782,9 +2737,8 @@ WandExport MagickBooleanType MagickEmbossImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   emboss_image=EmbossImage(wand->images,radius,sigma,wand->exception);
@@ -2824,9 +2778,8 @@ WandExport MagickBooleanType MagickEncipherImage(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(EncipherImage(wand->images,passphrase,wand->exception));
@@ -2862,9 +2815,8 @@ WandExport MagickBooleanType MagickEnhanceImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   enhance_image=EnhanceImage(wand->images,wand->exception);
@@ -2905,9 +2857,8 @@ WandExport MagickBooleanType MagickEqualizeImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=EqualizeImage(wand->images,wand->exception);
@@ -2955,9 +2906,8 @@ WandExport MagickWand *MagickEvaluateImages(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   evaluate_image=EvaluateImages(wand->images,op,wand->exception);
@@ -2974,9 +2924,8 @@ WandExport MagickBooleanType MagickEvaluateImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=EvaluateImage(wand->images,op,value,wand->exception);
@@ -3044,9 +2993,8 @@ WandExport MagickBooleanType MagickExportImagePixels(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ExportImagePixels(wand->images,x,y,columns,rows,map,
@@ -3098,9 +3046,8 @@ WandExport MagickBooleanType MagickExtentImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   extent.width=width;
@@ -3144,9 +3091,8 @@ WandExport MagickBooleanType MagickFlipImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   flip_image=FlipImage(wand->images,wand->exception);
@@ -3213,9 +3159,8 @@ WandExport MagickBooleanType MagickFloodfillPaintImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   draw_info=CloneDrawInfo(wand->image_info,(DrawInfo *) NULL);
@@ -3261,9 +3206,8 @@ WandExport MagickBooleanType MagickFlopImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   flop_image=FlopImage(wand->images,wand->exception);
@@ -3309,9 +3253,8 @@ WandExport MagickBooleanType MagickForwardFourierTransformImage(
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   forward_image=ForwardFourierTransformImage(wand->images,magnitude,
@@ -3375,9 +3318,8 @@ WandExport MagickBooleanType MagickFrameImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   (void) ResetMagickMemory(&frame_info,0,sizeof(frame_info));
@@ -3437,9 +3379,8 @@ WandExport MagickBooleanType MagickFunctionImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=FunctionImage(wand->images,function,number_arguments,arguments,
@@ -3478,9 +3419,8 @@ WandExport MagickWand *MagickFxImage(MagickWand *wand,const char *expression)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   fx_image=FxImage(wand->images,expression,wand->exception);
@@ -3528,9 +3468,8 @@ WandExport MagickBooleanType MagickGammaImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GammaImage(wand->images,gamma,wand->exception);
@@ -3576,9 +3515,8 @@ WandExport MagickBooleanType MagickGaussianBlurImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   blur_image=GaussianBlurImage(wand->images,radius,sigma,wand->exception);
@@ -3617,9 +3555,8 @@ WandExport MagickWand *MagickGetImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -3660,9 +3597,8 @@ WandExport MagickBooleanType MagickGetImageAlphaChannel(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(GetImageAlphaChannel(wand->images));
@@ -3697,9 +3633,8 @@ WandExport MagickWand *MagickGetImageMask(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -3742,9 +3677,8 @@ WandExport MagickBooleanType MagickGetImageBackgroundColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   PixelSetPixelColor(background_color,&wand->images->background_color);
@@ -3787,9 +3721,8 @@ WandExport unsigned char *MagickGetImageBlob(MagickWand *wand,size_t *length)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -3837,9 +3770,8 @@ WandExport unsigned char *MagickGetImagesBlob(MagickWand *wand,size_t *length)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -3884,9 +3816,8 @@ WandExport MagickBooleanType MagickGetImageBluePrimary(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   *x=wand->images->chromaticity.blue_primary.x;
@@ -3924,9 +3855,8 @@ WandExport MagickBooleanType MagickGetImageBorderColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   PixelSetPixelColor(border_color,&wand->images->border_color);
@@ -3976,9 +3906,8 @@ WandExport ChannelFeatures *MagickGetImageFeatures(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -4024,9 +3953,8 @@ WandExport MagickBooleanType MagickGetImageKurtosis(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageKurtosis(wand->images,kurtosis,skewness,wand->exception);
@@ -4071,9 +3999,8 @@ WandExport MagickBooleanType MagickGetImageMean(MagickWand *wand,double *mean,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageMean(wand->images,mean,standard_deviation,wand->exception);
@@ -4115,9 +4042,8 @@ WandExport MagickBooleanType MagickGetImageRange(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageRange(wand->images,minima,maxima,wand->exception);
@@ -4158,9 +4084,8 @@ WandExport ChannelStatistics *MagickGetImageStatistics(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -4203,9 +4128,8 @@ WandExport MagickBooleanType MagickGetImageColormapColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   if ((wand->images->colormap == (PixelInfo *) NULL) ||
@@ -4245,9 +4169,8 @@ WandExport size_t MagickGetImageColors(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -4283,9 +4206,8 @@ WandExport ColorspaceType MagickGetImageColorspace(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -4322,9 +4244,8 @@ WandExport CompositeOperator MagickGetImageCompose(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -4360,9 +4281,8 @@ WandExport CompressionType MagickGetImageCompression(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -4398,9 +4318,8 @@ WandExport size_t MagickGetImageCompressionQuality(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -4436,9 +4355,8 @@ WandExport size_t MagickGetImageDelay(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(wand->images->delay);
@@ -4470,9 +4388,8 @@ WandExport size_t MagickGetImageDepth(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(wand->images->depth);
@@ -4504,9 +4421,8 @@ WandExport DisposeType MagickGetImageDispose(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -4555,9 +4471,8 @@ WandExport MagickBooleanType MagickGetImageDistortion(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=GetImageDistortion(wand->images,reference->images,metric,distortion,
@@ -4603,9 +4518,8 @@ WandExport double *MagickGetImageDistortions(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   assert(reference != (MagickWand *) NULL);
   assert(reference->signature == WandSignature);
   if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
@@ -4645,9 +4559,8 @@ WandExport EndianType MagickGetImageEndian(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -4684,9 +4597,8 @@ WandExport char *MagickGetImageFilename(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -4760,9 +4672,8 @@ WandExport double MagickGetImageFuzz(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -4798,9 +4709,8 @@ WandExport double MagickGetImageGamma(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -4836,9 +4746,8 @@ WandExport GravityType MagickGetImageGravity(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -4880,9 +4789,8 @@ WandExport MagickBooleanType MagickGetImageGreenPrimary(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   *x=wand->images->chromaticity.green_primary.x;
@@ -4916,9 +4824,8 @@ WandExport size_t MagickGetImageHeight(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(wand->images->rows);
@@ -4965,9 +4872,8 @@ WandExport PixelWand **MagickGetImageHistogram(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -5013,9 +4919,8 @@ WandExport InterlaceType MagickGetImageInterlaceScheme(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -5054,9 +4959,8 @@ WandExport PixelInterpolateMethod MagickGetImageInterpolateMethod(
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -5092,9 +4996,8 @@ WandExport size_t MagickGetImageIterations(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(wand->images->iterations);
@@ -5130,9 +5033,8 @@ WandExport MagickBooleanType MagickGetImageLength(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   *length=GetBlobSize(wand->images);
@@ -5169,9 +5071,8 @@ WandExport MagickBooleanType MagickGetImageMatteColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   PixelSetPixelColor(matte_color,&wand->images->matte_color);
@@ -5204,9 +5105,8 @@ WandExport OrientationType MagickGetImageOrientation(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -5252,9 +5152,8 @@ WandExport MagickBooleanType MagickGetImagePage(MagickWand *wand,
 {
   assert(wand != (const MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   *width=wand->images->page.width;
@@ -5302,9 +5201,8 @@ WandExport MagickBooleanType MagickGetImagePixelColor(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   image_view=AcquireVirtualCacheView(wand->images,wand->exception);
@@ -5351,9 +5249,8 @@ WandExport MagickBooleanType MagickGetImageRedPrimary(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   *x=wand->images->chromaticity.red_primary.x;
@@ -5406,9 +5303,8 @@ WandExport MagickWand *MagickGetImageRegion(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   region.width=width;
@@ -5447,9 +5343,8 @@ WandExport RenderingIntent MagickGetImageRenderingIntent(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -5491,9 +5386,8 @@ WandExport MagickBooleanType MagickGetImageResolution(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   *x=wand->images->resolution.x;
@@ -5527,9 +5421,8 @@ WandExport size_t MagickGetImageScene(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(wand->images->scene);
@@ -5568,9 +5461,8 @@ WandExport char *MagickGetImageSignature(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -5578,7 +5470,7 @@ WandExport char *MagickGetImageSignature(MagickWand *wand)
       return((char *) NULL);
     }
   status=SignatureImage(wand->images,wand->exception);
-  if( IfMagickFalse(status) )
+  if (IfMagickFalse(status))
     return((char *) NULL);
   value=GetImageProperty(wand->images,"signature",wand->exception);
   if (value == (const char *) NULL)
@@ -5612,9 +5504,8 @@ WandExport size_t MagickGetImageTicksPerSecond(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return((size_t) wand->images->ticks_per_second);
@@ -5654,9 +5545,8 @@ WandExport ImageType MagickGetImageType(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -5692,9 +5582,8 @@ WandExport ResolutionType MagickGetImageUnits(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -5731,9 +5620,8 @@ WandExport VirtualPixelMethod MagickGetImageVirtualPixelMethod(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -5775,9 +5663,8 @@ WandExport MagickBooleanType MagickGetImageWhitePoint(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   *x=wand->images->chromaticity.white_point.x;
@@ -5811,9 +5698,8 @@ WandExport size_t MagickGetImageWidth(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(wand->images->columns);
@@ -5846,9 +5732,8 @@ WandExport size_t MagickGetNumberImages(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   return(GetImageListLength(wand->images));
 }
 
@@ -5878,9 +5763,8 @@ WandExport double MagickGetImageTotalInkDensity(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -5927,9 +5811,8 @@ WandExport MagickBooleanType MagickHaldClutImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if ((wand->images == (Image *) NULL) || (hald_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=HaldClutImage(wand->images,hald_wand->images,wand->exception);
@@ -5963,9 +5846,8 @@ WandExport MagickBooleanType MagickHasNextImage(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   if (GetNextImageInList(wand->images) == (Image *) NULL)
@@ -6000,9 +5882,8 @@ WandExport MagickBooleanType MagickHasPreviousImage(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   if (GetPreviousImageInList(wand->images) == (Image *) NULL)
@@ -6047,9 +5928,8 @@ WandExport char *MagickIdentifyImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -6112,9 +5992,8 @@ WandExport MagickBooleanType MagickImplodeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   implode_image=ImplodeImage(wand->images,amount,method,wand->exception);
@@ -6184,9 +6063,8 @@ WandExport MagickBooleanType MagickImportImagePixels(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=ImportImagePixels(wand->images,x,y,columns,rows,map,storage,pixels,
@@ -6231,9 +6109,8 @@ WandExport MagickBooleanType MagickInterpolativeResizeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   resize_image=InterpolativeResizeImage(wand->images,columns,rows,method,
@@ -6287,9 +6164,8 @@ WandExport MagickBooleanType MagickInverseFourierTransformImage(
 
   assert(magnitude_wand != (MagickWand *) NULL);
   assert(magnitude_wand->signature == WandSignature);
-  if( IfMagickTrue(magnitude_wand->debug) )
+  if (IfMagickTrue(magnitude_wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",
-
       magnitude_wand->name);
   wand=magnitude_wand;
   if (magnitude_wand->images == (Image *) NULL)
@@ -6337,9 +6213,8 @@ WandExport MagickBooleanType MagickLabelImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SetImageProperty(wand->images,"label",label,wand->exception);
@@ -6396,9 +6271,8 @@ WandExport MagickBooleanType MagickLevelImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=LevelImage(wand->images,black_point,white_point,gamma,
@@ -6444,9 +6318,8 @@ WandExport MagickBooleanType MagickLinearStretchImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=LinearStretchImage(wand->images,black_point,white_point,
@@ -6493,9 +6366,8 @@ WandExport MagickBooleanType MagickLiquidRescaleImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   rescale_image=LiquidRescaleImage(wand->images,columns,rows,delta_x,
@@ -6536,9 +6408,8 @@ WandExport MagickBooleanType MagickMagnifyImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   magnify_image=MagnifyImage(wand->images,wand->exception);
@@ -6599,9 +6470,8 @@ WandExport MagickWand *MagickMergeImageLayers(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   mosaic_image=MergeImageLayers(wand->images,method,wand->exception);
@@ -6640,9 +6510,8 @@ WandExport MagickBooleanType MagickMinifyImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   minify_image=MinifyImage(wand->images,wand->exception);
@@ -6699,9 +6568,8 @@ WandExport MagickBooleanType MagickModulateImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   (void) FormatLocaleString(modulate,MaxTextExtent,"%g,%g,%g",
@@ -6768,9 +6636,8 @@ WandExport MagickWand *MagickMontageImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   montage_info=CloneMontageInfo(wand->image_info,(MontageInfo *) NULL);
@@ -6859,9 +6726,8 @@ WandExport MagickWand *MagickMorphImages(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   morph_image=MorphImages(wand->images,number_frames,wand->exception);
@@ -6910,9 +6776,8 @@ WandExport MagickBooleanType MagickMorphologyImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (kernel == (const KernelInfo *) NULL)
     return(MagickFalse);
   if (wand->images == (Image *) NULL)
@@ -6967,9 +6832,8 @@ WandExport MagickBooleanType MagickMotionBlurImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   blur_image=MotionBlurImage(wand->images,radius,sigma,angle,wand->exception);
@@ -7017,9 +6881,8 @@ WandExport MagickBooleanType MagickNegateImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=NegateImage(wand->images,gray,wand->exception);
@@ -7068,9 +6931,8 @@ WandExport MagickBooleanType MagickNewImage(MagickWand *wand,const size_t width,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   PixelGetMagickColor(background,&pixel);
   images=NewMagickImage(wand->image_info,width,height,&pixel,wand->exception);
   if (images == (Image *) NULL)
@@ -7117,13 +6979,12 @@ WandExport MagickBooleanType MagickNextImage(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->insert_before=MagickFalse; /* Inserts is now appended */
-  if( IfMagickTrue(wand->image_pending) )
+  if (IfMagickTrue(wand->image_pending))
     {
       wand->image_pending=MagickFalse;
       return(MagickTrue);
@@ -7170,9 +7031,8 @@ WandExport MagickBooleanType MagickNormalizeImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=NormalizeImage(wand->images,wand->exception);
@@ -7216,9 +7076,8 @@ WandExport MagickBooleanType MagickOilPaintImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   paint_image=OilPaintImage(wand->images,radius,sigma,wand->exception);
@@ -7279,9 +7138,8 @@ WandExport MagickBooleanType MagickOpaquePaintImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   PixelGetMagickColor(target,&target_pixel);
@@ -7324,9 +7182,8 @@ WandExport MagickWand *MagickOptimizeImageLayers(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   optimize_image=OptimizeImageLayers(wand->images,wand->exception);
@@ -7367,7 +7224,7 @@ WandExport MagickBooleanType MagickOptimizeImageTransparency(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     return(MagickFalse);
@@ -7428,9 +7285,8 @@ WandExport MagickBooleanType MagickOrderedPosterizeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=OrderedPosterizeImage(wand->images,threshold_map,wand->exception);
@@ -7475,9 +7331,8 @@ WandExport MagickBooleanType MagickPingImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   ping_info=CloneImageInfo(wand->image_info);
   if (filename != (const char *) NULL)
     (void) CopyMagickString(ping_info->filename,filename,MaxTextExtent);
@@ -7526,9 +7381,8 @@ WandExport MagickBooleanType MagickPingImageBlob(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   read_info=CloneImageInfo(wand->image_info);
   SetImageInfoBlob(read_info,blob,length);
   images=PingImage(read_info,wand->exception);
@@ -7574,9 +7428,8 @@ WandExport MagickBooleanType MagickPingImageFile(MagickWand *wand,FILE *file)
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   assert(file != (FILE *) NULL);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   read_info=CloneImageInfo(wand->image_info);
   SetImageInfoFile(read_info,file);
   images=PingImage(read_info,wand->exception);
@@ -7630,9 +7483,8 @@ WandExport MagickBooleanType MagickPolaroidImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   draw_info=PeekDrawingWand(drawing_wand);
@@ -7683,9 +7535,8 @@ WandExport MagickBooleanType MagickPosterizeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=PosterizeImage(wand->images,levels,dither,wand->exception);
@@ -7728,9 +7579,8 @@ WandExport MagickWand *MagickPreviewImages(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   preview_image=PreviewImage(wand->images,preview,wand->exception);
@@ -7779,13 +7629,11 @@ WandExport MagickBooleanType MagickPreviousImage(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-
-  if( IfMagickTrue(wand->image_pending) )
+  if (IfMagickTrue(wand->image_pending))
     {
       wand->image_pending=MagickFalse;  /* image returned no longer pending */
       return(MagickTrue);
@@ -7863,9 +7711,8 @@ WandExport MagickBooleanType MagickQuantizeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
@@ -7942,9 +7789,8 @@ WandExport MagickBooleanType MagickQuantizeImages(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
@@ -7991,9 +7837,8 @@ WandExport MagickBooleanType MagickRadialBlurImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   blur_image=RadialBlurImage(wand->images,angle,wand->exception);
@@ -8047,9 +7892,8 @@ WandExport MagickBooleanType MagickRaiseImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   raise_info.width=width;
@@ -8096,9 +7940,8 @@ WandExport MagickBooleanType MagickRandomThresholdImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   (void) FormatLocaleString(threshold,MaxTextExtent,"%gx%g",low,high);
@@ -8145,9 +7988,8 @@ WandExport MagickBooleanType MagickReadImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   read_info=CloneImageInfo(wand->image_info);
   if (filename != (const char *) NULL)
     (void) CopyMagickString(read_info->filename,filename,MaxTextExtent);
@@ -8194,9 +8036,8 @@ WandExport MagickBooleanType MagickReadImageBlob(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   images=BlobToImage(wand->image_info,blob,length,wand->exception);
   if (images == (Image *) NULL)
     return(MagickFalse);
@@ -8239,9 +8080,8 @@ WandExport MagickBooleanType MagickReadImageFile(MagickWand *wand,FILE *file)
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   assert(file != (FILE *) NULL);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   read_info=CloneImageInfo(wand->image_info);
   SetImageInfoFile(read_info,file);
   images=ReadImage(read_info,wand->exception);
@@ -8291,9 +8131,8 @@ WandExport MagickBooleanType MagickRemapImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if ((wand->images == (Image *) NULL) ||
       (remap_wand->images == (Image *) NULL))
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
@@ -8333,9 +8172,8 @@ WandExport MagickBooleanType MagickRemoveImage(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   DeleteImageFromList(&wand->images);
@@ -8390,9 +8228,8 @@ WandExport MagickBooleanType MagickResampleImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   resample_image=ResampleImage(wand->images,x_resolution,y_resolution,filter,
@@ -8433,9 +8270,8 @@ WandExport MagickBooleanType MagickResetImagePage(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   if ((page == (char *) NULL) || (*page == '\0'))
@@ -8494,9 +8330,8 @@ WandExport MagickBooleanType MagickResizeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   resize_image=ResizeImage(wand->images,columns,rows,filter,wand->exception);
@@ -8542,9 +8377,8 @@ WandExport MagickBooleanType MagickRollImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   roll_image=RollImage(wand->images,x,y,wand->exception);
@@ -8592,9 +8426,8 @@ WandExport MagickBooleanType MagickRotateImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   PixelGetQuantumPacket(background,&wand->images->background_color);
@@ -8643,9 +8476,8 @@ WandExport MagickBooleanType MagickSampleImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   sample_image=SampleImage(wand->images,columns,rows,wand->exception);
@@ -8691,9 +8523,8 @@ WandExport MagickBooleanType MagickScaleImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   scale_image=ScaleImage(wand->images,columns,rows,wand->exception);
@@ -8751,9 +8582,8 @@ MagickExport MagickBooleanType MagickSegmentImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SegmentImage(wand->images,colorspace,verbose,cluster_threshold,
@@ -8802,9 +8632,8 @@ WandExport MagickBooleanType MagickSelectiveBlurImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   blur_image=SelectiveBlurImage(wand->images,radius,sigma,threshold,
@@ -8850,9 +8679,8 @@ WandExport MagickBooleanType MagickSeparateImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   separate_image=SeparateImage(wand->images,channel,wand->exception);
@@ -8898,9 +8726,8 @@ WandExport MagickBooleanType MagickSepiaToneImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   sepia_image=SepiaToneImage(wand->images,threshold,wand->exception);
@@ -8945,14 +8772,12 @@ WandExport MagickBooleanType MagickSetImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   assert(set_wand != (MagickWand *) NULL);
   assert(set_wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",set_wand->name);
-
   if (set_wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   images=CloneImageList(set_wand->images,wand->exception);
@@ -8994,9 +8819,8 @@ WandExport MagickBooleanType MagickSetImageAlphaChannel(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(SetImageAlphaChannel(wand->images,alpha_type,wand->exception));
@@ -9032,9 +8856,8 @@ WandExport MagickBooleanType MagickSetImageBackgroundColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   PixelGetQuantumPacket(background,&wand->images->background_color);
@@ -9073,9 +8896,8 @@ WandExport MagickBooleanType MagickSetImageBluePrimary(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->chromaticity.blue_primary.x=x;
@@ -9113,9 +8935,8 @@ WandExport MagickBooleanType MagickSetImageBorderColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   PixelGetQuantumPacket(border,&wand->images->border_color);
@@ -9152,14 +8973,12 @@ WandExport MagickBooleanType MagickSetImageMask(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   assert(clip_mask != (MagickWand *) NULL);
   assert(clip_mask->signature == WandSignature);
-  if( IfMagickTrue(clip_mask->debug) )
+  if (IfMagickTrue(clip_mask->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",clip_mask->name);
-
   if (clip_mask->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",clip_mask->name);
   return(SetImageMask(wand->images,clip_mask->images,wand->exception));
@@ -9198,9 +9017,8 @@ WandExport MagickBooleanType MagickSetImageColor(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   PixelGetMagickColor(color,&pixel);
   return(SetImageColor(wand->images,&pixel,wand->exception));
 }
@@ -9238,9 +9056,8 @@ WandExport MagickBooleanType MagickSetImageColormapColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   if ((wand->images->colormap == (PixelInfo *) NULL) ||
@@ -9285,9 +9102,8 @@ WandExport MagickBooleanType MagickSetImageColorspace(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(SetImageColorspace(wand->images,colorspace,wand->exception));
@@ -9325,9 +9141,8 @@ WandExport MagickBooleanType MagickSetImageCompose(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->compose=compose;
@@ -9364,9 +9179,8 @@ WandExport MagickBooleanType MagickSetImageCompression(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->compression=compression;
@@ -9403,9 +9217,8 @@ WandExport MagickBooleanType MagickSetImageCompressionQuality(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->quality=quality;
@@ -9442,9 +9255,8 @@ WandExport MagickBooleanType MagickSetImageDelay(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->delay=delay;
@@ -9481,9 +9293,8 @@ WandExport MagickBooleanType MagickSetImageDepth(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(SetImageDepth(wand->images,depth,wand->exception));
@@ -9519,9 +9330,8 @@ WandExport MagickBooleanType MagickSetImageDispose(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->dispose=dispose;
@@ -9598,9 +9408,8 @@ WandExport MagickBooleanType MagickSetImageExtent(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(SetImageExtent(wand->images,columns,rows,wand->exception));
@@ -9637,9 +9446,8 @@ WandExport MagickBooleanType MagickSetImageFilename(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   if (filename != (const char *) NULL)
@@ -9681,9 +9489,8 @@ WandExport MagickBooleanType MagickSetImageFormat(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   if ((format == (char *) NULL) || (*format == '\0'))
@@ -9729,9 +9536,8 @@ WandExport MagickBooleanType MagickSetImageFuzz(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->fuzz=fuzz;
@@ -9768,9 +9574,8 @@ WandExport MagickBooleanType MagickSetImageGamma(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->gamma=gamma;
@@ -9808,9 +9613,8 @@ WandExport MagickBooleanType MagickSetImageGravity(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->gravity=gravity;
@@ -9851,9 +9655,8 @@ WandExport MagickBooleanType MagickSetImageGreenPrimary(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->chromaticity.green_primary.x=x;
@@ -9892,9 +9695,8 @@ WandExport MagickBooleanType MagickSetImageInterlaceScheme(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->interlace=interlace;
@@ -9912,7 +9714,8 @@ WandExport MagickBooleanType MagickSetImageInterlaceScheme(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickSetImagePixelInterpolateMethod() sets the image interpolate pixel method.
+%  MagickSetImagePixelInterpolateMethod() sets the image interpolate pixel
+%  method.
 %
 %  The format of the MagickSetImagePixelInterpolateMethod method is:
 %
@@ -9927,14 +9730,13 @@ WandExport MagickBooleanType MagickSetImageInterlaceScheme(MagickWand *wand,
 %      Average, Bicubic, Bilinear, Filter, Integer, Mesh, NearestNeighbor.
 %
 */
-WandExport MagickBooleanType MagickSetImagePixelInterpolateMethod(MagickWand *wand,
-  const PixelInterpolateMethod method)
+WandExport MagickBooleanType MagickSetImagePixelInterpolateMethod(
+  MagickWand *wand,const PixelInterpolateMethod method)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->interpolate=method;
@@ -9971,9 +9773,8 @@ WandExport MagickBooleanType MagickSetImageIterations(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->iterations=iterations;
@@ -10011,7 +9812,7 @@ WandExport MagickBooleanType MagickSetImageMatte(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
@@ -10052,9 +9853,8 @@ WandExport MagickBooleanType MagickSetImageMatteColor(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   PixelGetQuantumPacket(matte,&wand->images->matte_color);
@@ -10095,9 +9895,8 @@ WandExport MagickBooleanType MagickSetImageAlpha(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SetImageAlpha(wand->images,ClampToQuantum(QuantumRange*alpha),
@@ -10135,9 +9934,8 @@ WandExport MagickBooleanType MagickSetImageOrientation(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->orientation=orientation;
@@ -10159,9 +9957,7 @@ WandExport MagickBooleanType MagickSetImageOrientation(MagickWand *wand,
 %
 %  The format of the MagickSetImagePage method is:
 %
-%      MagickBooleanType MagickSetImagePage(MagickWand *wand,
-%        const size_t width,const size_t height,const ssize_t x,
-%        const ssize_t y)
+%      MagickBooleanType MagickSetImagePage(MagickWand *wand,const size_t width,%        const size_t height,const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -10182,9 +9978,8 @@ WandExport MagickBooleanType MagickSetImagePage(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->page.width=width;
@@ -10239,9 +10034,8 @@ WandExport MagickProgressMonitor MagickSetImageProgressMonitor(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -10285,9 +10079,8 @@ WandExport MagickBooleanType MagickSetImageRedPrimary(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->chromaticity.red_primary.x=x;
@@ -10326,9 +10119,8 @@ WandExport MagickBooleanType MagickSetImageRenderingIntent(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->rendering_intent=rendering_intent;
@@ -10367,9 +10159,8 @@ WandExport MagickBooleanType MagickSetImageResolution(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->resolution.x=x_resolution;
@@ -10407,9 +10198,8 @@ WandExport MagickBooleanType MagickSetImageScene(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->scene=scene;
@@ -10446,9 +10236,8 @@ WandExport MagickBooleanType MagickSetImageTicksPerSecond(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->ticks_per_second=ticks_per_second;
@@ -10488,9 +10277,8 @@ WandExport MagickBooleanType MagickSetImageType(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(SetImageType(wand->images,image_type,wand->exception));
@@ -10527,9 +10315,8 @@ WandExport MagickBooleanType MagickSetImageUnits(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->units=units;
@@ -10568,9 +10355,8 @@ WandExport VirtualPixelMethod MagickSetImageVirtualPixelMethod(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return(UndefinedVirtualPixelMethod);
   return(SetImageVirtualPixelMethod(wand->images,method,wand->exception));
@@ -10608,9 +10394,8 @@ WandExport MagickBooleanType MagickSetImageWhitePoint(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->chromaticity.white_point.x=x;
@@ -10657,9 +10442,8 @@ WandExport MagickBooleanType MagickShadeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   shade_image=ShadeImage(wand->images,gray,asimuth,elevation,wand->exception);
@@ -10708,9 +10492,8 @@ WandExport MagickBooleanType MagickShadowImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   shadow_image=ShadowImage(wand->images,alpha,sigma,x,y,wand->exception);
@@ -10759,9 +10542,8 @@ WandExport MagickBooleanType MagickSharpenImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   sharp_image=SharpenImage(wand->images,radius,sigma,wand->exception);
@@ -10812,9 +10594,8 @@ WandExport MagickBooleanType MagickShaveImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   shave_info.width=columns;
@@ -10871,9 +10652,8 @@ WandExport MagickBooleanType MagickShearImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   PixelGetQuantumPacket(background,&wand->images->background_color);
@@ -10930,9 +10710,8 @@ WandExport MagickBooleanType MagickSigmoidalContrastImage(
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SigmoidalContrastImage(wand->images,sharpen,alpha,beta,
@@ -10984,9 +10763,8 @@ WandExport MagickWand *MagickSimilarityImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
@@ -11042,9 +10820,8 @@ WandExport MagickBooleanType MagickSketchImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   sketch_image=SketchImage(wand->images,radius,sigma,angle,wand->exception);
@@ -11092,9 +10869,8 @@ WandExport MagickWand *MagickSmushImages(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   smush_image=SmushImages(wand->images,stack,offset,wand->exception);
@@ -11139,9 +10915,8 @@ WandExport MagickBooleanType MagickSolarizeImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=SolarizeImage(wand->images,threshold,wand->exception);
@@ -11208,9 +10983,8 @@ WandExport MagickBooleanType MagickSparseColorImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   sparse_image=SparseColorImage(wand->images,method,number_arguments,arguments,
@@ -11265,9 +11039,8 @@ WandExport MagickBooleanType MagickSpliceImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   splice.width=width;
@@ -11317,9 +11090,8 @@ WandExport MagickBooleanType MagickSpreadImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   spread_image=SpreadImage(wand->images,radius,method,wand->exception);
@@ -11367,9 +11139,8 @@ WandExport MagickBooleanType MagickStatisticImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   statistic_image=StatisticImage(wand->images,type,width,height,
@@ -11418,9 +11189,8 @@ WandExport MagickWand *MagickSteganoImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if ((wand->images == (Image *) NULL) ||
       (watermark_wand->images == (Image *) NULL))
     {
@@ -11470,9 +11240,8 @@ WandExport MagickWand *MagickStereoImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if ((wand->images == (Image *) NULL) ||
       (offset_wand->images == (Image *) NULL))
     {
@@ -11512,9 +11281,8 @@ WandExport MagickBooleanType MagickStripImage(MagickWand *wand)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(StripImage(wand->images,wand->exception));
@@ -11557,9 +11325,8 @@ WandExport MagickBooleanType MagickSwirlImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   swirl_image=SwirlImage(wand->images,degrees,method,wand->exception);
@@ -11606,9 +11373,8 @@ WandExport MagickWand *MagickTextureImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if ((wand->images == (Image *) NULL) ||
       (texture_wand->images == (Image *) NULL))
     {
@@ -11620,7 +11386,7 @@ WandExport MagickWand *MagickTextureImage(MagickWand *wand,
   if (texture_image == (Image *) NULL)
     return((MagickWand *) NULL);
   status=TextureImage(texture_image,texture_wand->images,wand->exception);
-  if( IfMagickFalse(status) )
+  if (IfMagickFalse(status))
     {
       texture_image=DestroyImage(texture_image);
       return((MagickWand *) NULL);
@@ -11677,9 +11443,8 @@ WandExport MagickBooleanType MagickThresholdImageChannel(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   status=BilevelImage(wand->images,threshold,wand->exception);
@@ -11723,9 +11488,8 @@ WandExport MagickBooleanType MagickThumbnailImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   thumbnail_image=ThumbnailImage(wand->images,columns,rows,wand->exception);
@@ -11779,9 +11543,8 @@ WandExport MagickBooleanType MagickTintImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   if (wand->images->colorspace != CMYKColorspace)
@@ -11850,17 +11613,15 @@ WandExport MagickWand *MagickTransformImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
-
   if (wand->images == (Image *) NULL)
     return((MagickWand *) NULL);
   transform_image=CloneImage(wand->images,0,0,MagickTrue,wand->exception);
   if (transform_image == (Image *) NULL)
     return((MagickWand *) NULL);
   status=TransformImage(&transform_image,crop,geometry,wand->exception);
-  if( IfMagickFalse(status) )
+  if (IfMagickFalse(status))
     {
       transform_image=DestroyImage(transform_image);
       return((MagickWand *) NULL);
@@ -11905,10 +11666,8 @@ WandExport MagickBooleanType MagickTransformImageColorspace(MagickWand *wand,
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   return(TransformImageColorspace(wand->images,colorspace,wand->exception));
@@ -11966,10 +11725,8 @@ WandExport MagickBooleanType MagickTransparentPaintImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   PixelGetMagickColor(target,&target_pixel);
@@ -12009,9 +11766,8 @@ WandExport MagickBooleanType MagickTransposeImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   transpose_image=TransposeImage(wand->images,wand->exception);
@@ -12051,9 +11807,8 @@ WandExport MagickBooleanType MagickTransverseImage(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   transverse_image=TransverseImage(wand->images,wand->exception);
@@ -12099,9 +11854,8 @@ WandExport MagickBooleanType MagickTrimImage(MagickWand *wand,const double fuzz)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wand->images->fuzz=fuzz;
@@ -12141,9 +11895,8 @@ WandExport MagickBooleanType MagickUniqueImageColors(MagickWand *wand)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   unique_image=UniqueImageColors(wand->images,wand->exception);
@@ -12199,9 +11952,8 @@ WandExport MagickBooleanType MagickUnsharpMaskImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   unsharp_image=UnsharpMaskImage(wand->images,radius,sigma,amount,threshold,
@@ -12250,9 +12002,8 @@ WandExport MagickBooleanType MagickVignetteImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   vignette_image=VignetteImage(wand->images,radius,sigma,x,y,wand->exception);
@@ -12302,9 +12053,8 @@ WandExport MagickBooleanType MagickWaveImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   wave_image=WaveImage(wand->images,amplitude,wave_length,method,
@@ -12350,9 +12100,8 @@ WandExport MagickBooleanType MagickWhiteThresholdImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   (void) FormatLocaleString(thresholds,MaxTextExtent,
@@ -12404,9 +12153,8 @@ WandExport MagickBooleanType MagickWriteImage(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   if (filename != (const char *) NULL)
@@ -12460,9 +12208,8 @@ WandExport MagickBooleanType MagickWriteImageFile(MagickWand *wand,FILE *file)
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   assert(file != (FILE *) NULL);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   image=CloneImage(wand->images,0,0,MagickTrue,wand->exception);
@@ -12515,9 +12262,8 @@ WandExport MagickBooleanType MagickWriteImages(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   write_info=CloneImageInfo(wand->image_info);
@@ -12561,9 +12307,8 @@ WandExport MagickBooleanType MagickWriteImagesFile(MagickWand *wand,FILE *file)
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
-  if( IfMagickTrue(wand->debug) )
+  if (IfMagickTrue(wand->debug))
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
-
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
   write_info=CloneImageInfo(wand->image_info);
