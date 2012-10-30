@@ -431,36 +431,44 @@ WandExport MagickBooleanType MagickAdaptiveThresholdImage(MagickWand *wand,
 static inline MagickBooleanType InsertImageInWand(MagickWand *wand,
   Image *images)
 {
-  /* if no images in wand, just add them, set current as appropriate */
   if (wand->images == (Image *) NULL)
     {
+      /*
+        No images in wand, just add them, set current as appropriate.
+      */
       if (wand->insert_before != MagickFalse)
         wand->images=GetFirstImageInList(images);
       else
         wand->images=GetLastImageInList(images);
       return(MagickTrue);
     }
-
-  /* user jumped to first image, so prepend new images - remain active */
   if ((wand->insert_before != MagickFalse) &&
-       (wand->images->previous == (Image *) NULL) )
+      (wand->images->previous == (Image *) NULL) )
     {
+      /*
+        Jumped to first image, so prepend new images - remain active.
+      */
       PrependImageToList(&wand->images,images);
       wand->images=GetFirstImageInList(images);
       return(MagickTrue);
     }
-  /* Note you should never have 'insert_before' true when current image
-     is not the first image in the wand!  That is no insert before
-     current image, only after current image */
-
-  /* if at last image append new images */
+  /*
+    Note you should never have 'insert_before' true when current image is not
+    the first image in the wand!  That is no insert before current image, only
+    after current image.
+  */
   if (wand->images->next == (Image *) NULL)
     {
+      /*
+        At last image, append new images.
+      */
       InsertImageInList(&wand->images,images);
       wand->images=GetLastImageInList(images);
       return(MagickTrue);
     }
-  /* otherwise insert new images, just after the current image */
+  /*
+    Insert new images, just after the current image.
+  */
   InsertImageInList(&wand->images,images);
   return(MagickTrue);
 }
@@ -479,8 +487,9 @@ WandExport MagickBooleanType MagickAddImage(MagickWand *wand,
   assert(add_wand->signature == WandSignature);
   if (add_wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",add_wand->name);
-
-  /* clone images in second wand, and insert into first */
+  /*
+    Clone images in second wand, and insert into first.
+  */
   images=CloneImageList(add_wand->images,wand->exception);
   if (images == (Image *) NULL)
     return(MagickFalse);
@@ -913,10 +922,10 @@ WandExport MagickBooleanType MagickBlackThresholdImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatLocaleString(thresholds,MaxTextExtent,
-    QuantumFormat "," QuantumFormat "," QuantumFormat "," QuantumFormat,
-    PixelGetRedQuantum(threshold),PixelGetGreenQuantum(threshold),
-    PixelGetBlueQuantum(threshold),PixelGetOpacityQuantum(threshold));
+  (void) FormatLocaleString(thresholds,MaxTextExtent,QuantumFormat ","
+    QuantumFormat "," QuantumFormat "," QuantumFormat,PixelGetRedQuantum(
+    threshold),PixelGetGreenQuantum(threshold),PixelGetBlueQuantum(threshold),
+    PixelGetOpacityQuantum(threshold));
   status=BlackThresholdImage(wand->images,thresholds);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
@@ -979,10 +988,10 @@ WandExport MagickBooleanType MagickBlueShiftImage(MagickWand *wand,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MagickBlurImage() blurs an image.  We convolve the image with a
-%  gaussian operator of the given radius and standard deviation (sigma).
-%  For reasonable results, the radius should be larger than sigma.  Use a
-%  radius of 0 and BlurImage() selects a suitable radius for you.
+%  MagickBlurImage() blurs an image.  We convolve the image with a gaussian
+%  operator of the given radius and standard deviation (sigma).  For reasonable
+%  results, the radius should be larger than sigma.  Use a radius of 0 and
+%  BlurImage() selects a suitable radius for you.
 %
 %  The format of the MagickBlurImage method is:
 %
@@ -1066,8 +1075,7 @@ WandExport MagickBooleanType MagickBlurImageChannel(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickBorderImage(MagickWand *wand,
-  const PixelWand *bordercolor,const size_t width,
-  const size_t height)
+  const PixelWand *bordercolor,const size_t width,const size_t height)
 {
   Image
     *border_image;
@@ -1107,7 +1115,6 @@ WandExport MagickBooleanType MagickBorderImage(MagickWand *wand,
 %  Use MagickBrightnessContrastImage() to change the brightness and/or contrast
 %  of an image.  It converts the brightness and contrast parameters into slope
 %  and intercept and calls a polynomical function to apply to the image.
-
 %
 %  The format of the MagickBrightnessContrastImage method is:
 %
@@ -1223,9 +1230,8 @@ WandExport MagickBooleanType MagickCharcoalImage(MagickWand *wand,
 %
 %  The format of the MagickChopImage method is:
 %
-%      MagickBooleanType MagickChopImage(MagickWand *wand,
-%        const size_t width,const size_t height,const ssize_t x,
-%        const ssize_t y)
+%      MagickBooleanType MagickChopImage(MagickWand *wand,const size_t width,
+%        const size_t height,const ssize_t x,const ssize_t y)
 %
 %  A description of each parameter follows:
 %
@@ -1239,11 +1245,9 @@ WandExport MagickBooleanType MagickCharcoalImage(MagickWand *wand,
 %
 %    o y: the region y offset.
 %
-%
 */
 WandExport MagickBooleanType MagickChopImage(MagickWand *wand,
-  const size_t width,const size_t height,const ssize_t x,
-  const ssize_t y)
+  const size_t width,const size_t height,const ssize_t x,const ssize_t y)
 {
   Image
     *chop_image;
@@ -1618,10 +1622,9 @@ WandExport MagickBooleanType MagickColorizeImage(MagickWand *wand,
     (void) LogMagickEvent(WandEvent,GetMagickModule(),"%s",wand->name);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,"ContainsNoImages",wand->name);
-  (void) FormatLocaleString(percent_opaque,MaxTextExtent,
-    "%g,%g,%g,%g",(double) (100.0*QuantumScale*
-    PixelGetRedQuantum(opacity)),(double) (100.0*QuantumScale*
-    PixelGetGreenQuantum(opacity)),(double) (100.0*QuantumScale*
+  (void) FormatLocaleString(percent_opaque,MaxTextExtent,"%g,%g,%g,%g",(double)
+    (100.0*QuantumScale*PixelGetRedQuantum(opacity)),(double) (100.0*
+    QuantumScale*PixelGetGreenQuantum(opacity)),(double) (100.0*QuantumScale*
     PixelGetBlueQuantum(opacity)),(double) (100.0*QuantumScale*
     PixelGetOpacityQuantum(opacity)));
   PixelGetQuantumColor(colorize,&target);
@@ -1893,8 +1896,7 @@ WandExport MagickWand *MagickCompareImageLayers(MagickWand *wand,
 %  The format of the MagickCompareImages method is:
 %
 %      MagickWand *MagickCompareImages(MagickWand *wand,
-%        const MagickWand *reference,const MetricType metric,
-%        double *distortion)
+%        const MagickWand *reference,const MetricType metric,double *distortion)
 %
 %  A description of each parameter follows:
 %
@@ -1976,8 +1978,8 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickCompositeImage(MagickWand *wand,
-  const MagickWand *source_wand,const CompositeOperator compose,
-  const ssize_t x,const ssize_t y)
+  const MagickWand *source_wand,const CompositeOperator compose,const ssize_t x,
+  const ssize_t y)
 {
   MagickBooleanType
     status;
@@ -2062,8 +2064,8 @@ WandExport MagickBooleanType MagickCompositeImageChannel(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickCompositeLayers(MagickWand *wand,
-  const MagickWand *source_wand,const CompositeOperator compose,
-  const ssize_t x,const ssize_t y)
+  const MagickWand *source_wand,const CompositeOperator compose,const ssize_t x,
+  const ssize_t y)
 {
   MagickBooleanType
     status;
@@ -2409,7 +2411,6 @@ WandExport MagickBooleanType MagickCycleColormapImage(MagickWand *wand,
 %    o pixels: This array of values contain the pixel components as defined by
 %      map and type.  You must preallocate this array where the expected
 %      length varies depending on the values of width, height, map, and type.
-%
 %
 */
 WandExport MagickBooleanType MagickConstituteImage(MagickWand *wand,
@@ -3226,9 +3227,8 @@ WandExport MagickBooleanType MagickEvaluateImageChannel(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickExportImagePixels(MagickWand *wand,
-  const ssize_t x,const ssize_t y,const size_t columns,
-  const size_t rows,const char *map,const StorageType storage,
-  void *pixels)
+  const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
+  const char *map,const StorageType storage,void *pixels)
 {
   MagickBooleanType
     status;
@@ -3479,8 +3479,7 @@ WandExport MagickBooleanType MagickFloodfillPaintImage(MagickWand *wand,
   if (bordercolor != (PixelWand *) NULL)
     PixelGetMagickColor(bordercolor,&target);
   wand->images->fuzz=fuzz;
-  status=FloodfillPaintImage(wand->images,channel,draw_info,&target,x,y,
-    invert);
+  status=FloodfillPaintImage(wand->images,channel,draw_info,&target,x,y,invert);
   if (status == MagickFalse)
     InheritException(wand->exception,&wand->images->exception);
   draw_info=DestroyDrawInfo(draw_info);
@@ -3615,8 +3614,8 @@ WandExport MagickBooleanType MagickForwardFourierTransformImage(
 %
 */
 WandExport MagickBooleanType MagickFrameImage(MagickWand *wand,
-  const PixelWand *matte_color,const size_t width,
-  const size_t height,const ssize_t inner_bevel,const ssize_t outer_bevel)
+  const PixelWand *matte_color,const size_t width,const size_t height,
+  const ssize_t inner_bevel,const ssize_t outer_bevel)
 {
   Image
     *frame_image;
@@ -4964,7 +4963,6 @@ WandExport MagickBooleanType MagickGetImageDistortion(MagickWand *wand,
   MagickBooleanType
     status;
 
-
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
   if (wand->debug != MagickFalse)
@@ -5823,9 +5821,8 @@ WandExport MagickBooleanType MagickGetImageRedPrimary(MagickWand *wand,
 %    o y: the region y offset.
 %
 */
-WandExport MagickWand *MagickGetImageRegion(MagickWand *wand,
-  const size_t width,const size_t height,const ssize_t x,
-  const ssize_t y)
+WandExport MagickWand *MagickGetImageRegion(MagickWand *wand,const size_t width,
+  const size_t height,const ssize_t x,const ssize_t y)
 {
   Image
     *region_image;
@@ -6601,9 +6598,8 @@ WandExport MagickBooleanType MagickImplodeImage(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickImportImagePixels(MagickWand *wand,
-  const ssize_t x,const ssize_t y,const size_t columns,
-  const size_t rows,const char *map,const StorageType storage,
-  const void *pixels)
+  const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
+  const char *map,const StorageType storage,const void *pixels)
 {
   MagickBooleanType
     status;
@@ -6856,8 +6852,8 @@ WandExport MagickBooleanType MagickLinearStretchImage(MagickWand *wand,
 %  MagickLiquidRescaleImage() rescales image with seam carving.
 %
 %      MagickBooleanType MagickLiquidRescaleImage(MagickWand *wand,
-%        const size_t columns,const size_t rows,
-%        const double delta_x,const double rigidity)
+%        const size_t columns,const size_t rows,const double delta_x,
+%        const double rigidity)
 %
 %  A description of each parameter follows:
 %
@@ -7490,9 +7486,8 @@ WandExport MagickBooleanType MagickNegateImageChannel(MagickWand *wand,
 %    o background: the image color.
 %
 */
-WandExport MagickBooleanType MagickNewImage(MagickWand *wand,
-  const size_t width,const size_t height,
-  const PixelWand *background)
+WandExport MagickBooleanType MagickNewImage(MagickWand *wand,const size_t width,
+  const size_t height,const PixelWand *background)
 {
   Image
     *images;
@@ -8521,8 +8516,8 @@ WandExport MagickBooleanType MagickRadialBlurImageChannel(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickRaiseImage(MagickWand *wand,
-  const size_t width,const size_t height,const ssize_t x,
-  const ssize_t y,const MagickBooleanType raise)
+  const size_t width,const size_t height,const ssize_t x,const ssize_t y,
+  const MagickBooleanType raise)
 {
   MagickBooleanType
     status;
@@ -8589,9 +8584,8 @@ WandExport MagickBooleanType MagickRandomThresholdImage(MagickWand *wand,
   return(status);
 }
 
-WandExport MagickBooleanType MagickRandomThresholdImageChannel(
-  MagickWand *wand,const ChannelType channel,const double low,
-  const double high)
+WandExport MagickBooleanType MagickRandomThresholdImageChannel(MagickWand *wand,
+  const ChannelType channel,const double low,const double high)
 {
   char
     threshold[MaxTextExtent];
@@ -9041,10 +9035,9 @@ WandExport MagickBooleanType MagickResizeImage(MagickWand *wand,
 %
 %    o y: the y offset.
 %
-%
 */
-WandExport MagickBooleanType MagickRollImage(MagickWand *wand,
-  const ssize_t x,const ssize_t y)
+WandExport MagickBooleanType MagickRollImage(MagickWand *wand,const ssize_t x,
+  const ssize_t y)
 {
   Image
     *roll_image;
@@ -9140,7 +9133,6 @@ WandExport MagickBooleanType MagickRotateImage(MagickWand *wand,
 %
 %    o rows: the number of rows in the scaled image.
 %
-%
 */
 WandExport MagickBooleanType MagickSampleImage(MagickWand *wand,
   const size_t columns,const size_t rows)
@@ -9186,7 +9178,6 @@ WandExport MagickBooleanType MagickSampleImage(MagickWand *wand,
 %    o columns: the number of columns in the scaled image.
 %
 %    o rows: the number of rows in the scaled image.
-%
 %
 */
 WandExport MagickBooleanType MagickScaleImage(MagickWand *wand,
@@ -10752,8 +10743,7 @@ WandExport MagickBooleanType MagickSetImageOrientation(MagickWand *wand,
 %
 */
 WandExport MagickBooleanType MagickSetImagePage(MagickWand *wand,
-  const size_t width,const size_t height,const ssize_t x,
-  const ssize_t y)
+  const size_t width,const size_t height,const ssize_t x,const ssize_t y)
 {
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == WandSignature);
@@ -10821,8 +10811,8 @@ WandExport MagickProgressMonitor MagickSetImageProgressMonitor(MagickWand *wand,
         "ContainsNoImages","`%s'",wand->name);
       return((MagickProgressMonitor) NULL);
     }
-  previous_monitor=SetImageProgressMonitor(wand->images,
-    progress_monitor,client_data);
+  previous_monitor=SetImageProgressMonitor(wand->images,progress_monitor,
+    client_data);
   return(previous_monitor);
 }
 
