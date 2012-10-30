@@ -35,7 +35,8 @@ extern "C" {
       ((rows) > WorkloadThreshold()))) && ((MagickSizeType) \
       ((columns)*(rows)) > (WorkloadThreshold()*WorkloadThreshold())) && \
       (expression)) \
-    num_threads(GetMagickResourceLimit(ThreadResource))
+    num_threads(GetMagickResourceLimit(ThreadResource)/ \
+      (GetImagePixelCacheType(image) == DiskCache ? 2 : 1))
 
 #if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ > 10))
 #define MagickCachePrefetch(address,mode,locality) \
