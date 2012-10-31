@@ -1286,19 +1286,19 @@ static void Hull(const Image *image,const ssize_t x_offset,
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
+    MagickRealType
+      v;
+
     register ssize_t
       i,
       x;
-
-    SignedQuantum
-      v;
 
     i=(2*y+1)+y*columns;
     if (polarity > 0)
       for (x=0; x < (ssize_t) columns; x++)
       {
-        v=(SignedQuantum) p[i];
-        if ((SignedQuantum) r[i] >= (v+ScaleCharToQuantum(2)))
+        v=(MagickRealType) p[i];
+        if ((MagickRealType) r[i] >= (v+ScaleCharToQuantum(2)))
           v+=ScaleCharToQuantum(1);
         q[i]=(Quantum) v;
         i++;
@@ -1306,8 +1306,8 @@ static void Hull(const Image *image,const ssize_t x_offset,
     else
       for (x=0; x < (ssize_t) columns; x++)
       {
-        v=(SignedQuantum) p[i];
-        if ((SignedQuantum) r[i] <= (v-ScaleCharToQuantum(2)))
+        v=(MagickRealType) p[i];
+        if ((MagickRealType) r[i] <= (v-ScaleCharToQuantum(2)))
           v-=ScaleCharToQuantum(1);
         q[i]=(Quantum) v;
         i++;
@@ -1327,16 +1327,16 @@ static void Hull(const Image *image,const ssize_t x_offset,
       i,
       x;
 
-    SignedQuantum
+    MagickRealType
       v;
 
     i=(2*y+1)+y*columns;
     if (polarity > 0)
       for (x=0; x < (ssize_t) columns; x++)
       {
-        v=(SignedQuantum) q[i];
-        if (((SignedQuantum) s[i] >= (v+ScaleCharToQuantum(2))) &&
-            ((SignedQuantum) r[i] > v))
+        v=(MagickRealType) q[i];
+        if (((MagickRealType) s[i] >= (v+ScaleCharToQuantum(2))) &&
+            ((MagickRealType) r[i] > v))
           v+=ScaleCharToQuantum(1);
         p[i]=(Quantum) v;
         i++;
@@ -1344,9 +1344,9 @@ static void Hull(const Image *image,const ssize_t x_offset,
     else
       for (x=0; x < (ssize_t) columns; x++)
       {
-        v=(SignedQuantum) q[i];
-        if (((SignedQuantum) s[i] <= (v-ScaleCharToQuantum(2))) &&
-            ((SignedQuantum) r[i] < v))
+        v=(MagickRealType) q[i];
+        if (((MagickRealType) s[i] <= (v-ScaleCharToQuantum(2))) &&
+            ((MagickRealType) r[i] < v))
           v-=ScaleCharToQuantum(1);
         p[i]=(Quantum) v;
         i++;
