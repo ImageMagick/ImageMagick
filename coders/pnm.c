@@ -1167,6 +1167,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PFM raster image to pixel packets.
         */
+        if (format == 'f')
+          SetImageColorspace(image,GRAYColorspace);
         quantum_type=format == 'f' ? GrayQuantum : RGBQuantum;
         image->endian=quantum_scale < 0.0 ? LSBEndian : MSBEndian;
         image->depth=32;
