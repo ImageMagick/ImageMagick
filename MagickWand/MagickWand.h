@@ -47,6 +47,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <math.h>
 #include <sys/types.h>
 
 #if defined(WIN32) || defined(WIN64)
