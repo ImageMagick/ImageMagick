@@ -757,9 +757,9 @@ ModuleExport void UnregisterICONImage(void)
 %  image format, version 3 for Windows or (if the image has a matte channel)
 %  version 4.
 %
-%  It encodes any subimage as a compressed PNG image (complete with the
-%  8-byte PNG signature), only when its dimensions are 256x256 and
-%  image->compression is undefined or is defined as ZipCompression.
+%  It encodes any subimage as a compressed PNG image ("BI_PNG)", only when its
+%  dimensions are 256x256 and image->compression is undefined or is defined as
+%  ZipCompression.
 %
 %  The format of the WriteICONImage method is:
 %
