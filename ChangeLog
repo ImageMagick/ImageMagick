@@ -1,3 +1,6 @@
+2012-11-01  6.8.0-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.0-4, SVN revision 9832.
+
 2012-10-31  6.8.0-4 Cristy  <quetzlzacatenango@image...>
   * PFM images are grayscale, not sRGB (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22178).
