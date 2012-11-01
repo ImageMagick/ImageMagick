@@ -1135,12 +1135,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
              sampling_factor);
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "Sampling Factors: %s",sampling_factor);
-           if ((samples_per_pixel > 1) && (photometric == PHOTOMETRIC_YCBCR))
-             {
-               (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,
-                 JPEGCOLORMODE_RGB);
-               photometric=PHOTOMETRIC_RGB;
-             }
          }
 #endif
         break;
@@ -1753,14 +1747,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
     if (image->storage_class == PseudoClass)
       image->depth=GetImageDepth(image,exception);
-    if ((photometric == PHOTOMETRIC_LOGL) ||
-        (photometric == PHOTOMETRIC_MINISBLACK) ||
-        (photometric == PHOTOMETRIC_MINISWHITE))
-      {
-         image->type=GrayscaleType;
-         if (bits_per_sample == 1)
-           image->type=BilevelType;
-      }
     /*
       Proceed to next image.
     */
