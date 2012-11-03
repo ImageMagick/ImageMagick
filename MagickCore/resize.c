@@ -977,8 +977,8 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
       value=StringToDouble(artifact,(char **) NULL);
     /* Define coefficents for Gaussian */
     resize_filter->coefficient[0]=value;                 /* note sigma too */
-    resize_filter->coefficient[1]=MagickEpsilonReciprocal(2.0*value*value); /* sigma scaling */
-    resize_filter->coefficient[2]=MagickEpsilonReciprocal(Magick2PI*value*value);
+    resize_filter->coefficient[1]=PerceptibleReciprocal(2.0*value*value); /* sigma scaling */
+    resize_filter->coefficient[2]=PerceptibleReciprocal(Magick2PI*value*value);
        /* normalization - not actually needed or used! */
     if ( value > 0.5 )
       resize_filter->support *= 2*value;  /* increase support linearly */
@@ -999,7 +999,7 @@ MagickPrivate ResizeFilter *AcquireResizeFilter(const Image *image,
       value=StringToDouble(artifact,(char **) NULL)*MagickPI;
     /* Define coefficents for Kaiser Windowing Function */
     resize_filter->coefficient[0]=value;         /* alpha */
-    resize_filter->coefficient[1]=MagickEpsilonReciprocal(I0(value)); /* normalization */
+    resize_filter->coefficient[1]=PerceptibleReciprocal(I0(value)); /* normalization */
   }
 
   /* Support Overrides */
@@ -2235,7 +2235,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       return(MagickFalse);
     }
   status=MagickTrue;
-  scale=MagickEpsilonReciprocal(scale);
+  scale=PerceptibleReciprocal(scale);
   image_view=AcquireVirtualCacheView(image,exception);
   resize_view=AcquireAuthenticCacheView(resize_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -2287,7 +2287,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
         /*
           Normalize.
         */
-        density=MagickEpsilonReciprocal(density);
+        density=PerceptibleReciprocal(density);
         for (i=0; i < n; i++)
           contribution[i].weight*=density;
       }
@@ -2371,7 +2371,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
           pixel+=alpha*p[k*GetPixelChannels(image)+i];
           gamma+=alpha;
         }
-        gamma=MagickEpsilonReciprocal(gamma);
+        gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(resize_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       q+=GetPixelChannels(resize_image);
@@ -2448,7 +2448,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       return(MagickFalse);
     }
   status=MagickTrue;
-  scale=MagickEpsilonReciprocal(scale);
+  scale=PerceptibleReciprocal(scale);
   (void) ResetMagickMemory(&zero,0,sizeof(zero));
   image_view=AcquireVirtualCacheView(image,exception);
   resize_view=AcquireAuthenticCacheView(resize_image,exception);
@@ -2501,7 +2501,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
         /*
           Normalize.
         */
-        density=MagickEpsilonReciprocal(density);
+        density=PerceptibleReciprocal(density);
         for (i=0; i < n; i++)
           contribution[i].weight*=density;
       }
@@ -2583,7 +2583,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
           pixel+=alpha*p[k*GetPixelChannels(image)+i];
           gamma+=alpha;
         }
-        gamma=MagickEpsilonReciprocal(gamma);
+        gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(resize_image,channel,ClampToQuantum(gamma*pixel),q);
       }
       q+=GetPixelChannels(resize_image);
@@ -3213,7 +3213,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
               }
             alpha=QuantumScale*scanline[x*GetPixelChannels(image)+
               GetPixelChannelChannel(image,AlphaPixelChannel)];
-            gamma=MagickEpsilonReciprocal(alpha);
+            gamma=PerceptibleReciprocal(alpha);
             SetPixelChannel(scale_image,channel,ClampToQuantum(gamma*scanline[
               x*GetPixelChannels(image)+offset]),q);
           }

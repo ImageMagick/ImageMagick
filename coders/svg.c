@@ -3017,7 +3017,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     gamma;
 
                   gamma=QuantumScale*fill_color.alpha;
-                  gamma=MagickEpsilonReciprocal(gamma);
+                  gamma=PerceptibleReciprocal(gamma);
                   fill_color.blue*=gamma;
                   fill_color.green*=gamma;
                   fill_color.red*=gamma;

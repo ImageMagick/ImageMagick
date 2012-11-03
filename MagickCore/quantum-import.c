@@ -3610,7 +3610,7 @@ MagickExport size_t ImportQuantumPixels(const Image *image,
             continue;
           }
         Sa=QuantumScale*GetPixelAlpha(image,q);
-        gamma=MagickEpsilonReciprocal(Sa);
+        gamma=PerceptibleReciprocal(Sa);
         for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
         {
           PixelChannel

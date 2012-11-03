@@ -1679,7 +1679,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     double
       area;
 
-    area=MagickEpsilonReciprocal(channel_statistics[i].area);
+    area=PerceptibleReciprocal(channel_statistics[i].area);
     channel_statistics[i].sum*=area;
     channel_statistics[i].sum_squared*=area;
     channel_statistics[i].sum_cubed*=area;
@@ -1732,7 +1732,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
     double
       standard_deviation;
 
-    standard_deviation=MagickEpsilonReciprocal(
+    standard_deviation=PerceptibleReciprocal(
       channel_statistics[i].standard_deviation);
     channel_statistics[i].skewness=(channel_statistics[i].sum_cubed-3.0*
       channel_statistics[i].mean*channel_statistics[i].sum_squared+2.0*
