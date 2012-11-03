@@ -780,11 +780,13 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   return(blur_image);
 }
 
-static double *GetBlurKernel(const size_t width,const double sigma)
+static MagickRealType *GetBlurKernel(const size_t width,const double sigma)
 {
   double
-    *kernel,
     normalize;
+
+  MagickRealType
+    *kernel;
 
   register ssize_t
     i;
@@ -797,17 +799,17 @@ static double *GetBlurKernel(const size_t width,const double sigma)
     Generate a 1-D convolution kernel.
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
-    sizeof(*kernel)));
-  if (kernel == (double *) NULL)
+  kernel=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory((size_t)
+    width,sizeof(*kernel)));
+  if (kernel == (MagickRealType *) NULL)
     return(0);
   normalize=0.0;
   j=(ssize_t) width/2;
   i=0;
   for (k=(-j); k <= j; k++)
   {
-    kernel[i]=(double) (exp(-((double) k*k)/(2.0*MagickSigma*MagickSigma))/
-      (MagickSQ2PI*MagickSigma));
+    kernel[i]=(MagickRealType) (exp(-((double) k*k)/(2.0*MagickSigma*
+      MagickSigma))/(MagickSQ2PI*MagickSigma));
     normalize+=kernel[i];
     i++;
   }
@@ -826,9 +828,6 @@ MagickExport Image *BlurImageChannel(const Image *image,
     *blur_view,
     *image_view;
 
-  double
-    *kernel;
-
   Image
     *blur_image;
 
@@ -837,6 +836,9 @@ MagickExport Image *BlurImageChannel(const Image *image,
 
   MagickOffsetType
     progress;
+
+  MagickRealType
+    *kernel;
 
   MagickPixelPacket
     bias;
@@ -873,7 +875,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
     }
   width=GetOptimalKernelWidth1D(radius,sigma);
   kernel=GetBlurKernel(width,sigma);
-  if (kernel == (double *) NULL)
+  if (kernel == (MagickRealType *) NULL)
     {
       blur_image=DestroyImage(blur_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
@@ -884,7 +886,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
         format[MaxTextExtent],
         *message;
 
-      register const double
+      register const MagickRealType
         *k;
 
       (void) LogMagickEvent(TransformEvent,GetMagickModule(),
@@ -896,7 +898,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
         *message='\0';
         (void) FormatLocaleString(format,MaxTextExtent,"%.20g: ",(double) i);
         (void) ConcatenateString(&message,format);
-        (void) FormatLocaleString(format,MaxTextExtent,"%g ",*k++);
+        (void) FormatLocaleString(format,MaxTextExtent,"%g ",(double) *k++);
         (void) ConcatenateString(&message,format);
         (void) LogMagickEvent(TransformEvent,GetMagickModule(),"%s",message);
       }
@@ -950,7 +952,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
       MagickPixelPacket
         pixel;
 
-      register const double
+      register const MagickRealType
         *restrict k;
 
       register const PixelPacket
@@ -1129,7 +1131,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
       MagickPixelPacket
         pixel;
 
-      register const double
+      register const MagickRealType
         *restrict k;
 
       register const PixelPacket
@@ -1265,7 +1267,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
   }
   blur_view=DestroyCacheView(blur_view);
   image_view=DestroyCacheView(image_view);
-  kernel=(double *) RelinquishAlignedMemory(kernel);
+  kernel=(MagickRealType *) RelinquishAlignedMemory(kernel);
   if (status == MagickFalse)
     blur_image=DestroyImage(blur_image);
   blur_image->type=image->type;
