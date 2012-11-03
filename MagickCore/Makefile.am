@@ -455,7 +455,6 @@ MAGICKCORE_EXTRA_DIST = \
 	$(MAGICKCORE_MANS) \
 	MagickCore/ImageMagick.pc.in \
 	MagickCore/MagickCore.pc.in \
-	MagickCore/Make.com \
 	MagickCore/config.h_vms \
 	MagickCore/mac.c \
 	MagickCore/nt-base.c \
