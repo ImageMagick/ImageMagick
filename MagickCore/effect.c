@@ -825,9 +825,11 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
 
 static MagickRealType *GetBlurKernel(const size_t width,const double sigma)
 {
-  MagickRealType
-    *kernel,
+  double
     normalize;
+
+  MagickRealType
+    *kernel;
 
   register ssize_t
     i;
