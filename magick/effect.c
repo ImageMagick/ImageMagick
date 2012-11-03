@@ -2602,7 +2602,7 @@ static double *GetMotionBlurKernel(const size_t width,const double sigma)
     i;
 
   /*
-   Generate a 1-D convolution kernel.
+    Generate a 1-D convolution kernel.
   */
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   kernel=(double *) MagickAssumeAligned(AcquireAlignedMemory((size_t) width,
