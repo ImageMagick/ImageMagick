@@ -2632,8 +2632,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             exception);
           if (alpha == 0.0)
             return(1.0);
-          gamma=(double) (2.0*j1((double) (MagickPI*alpha))/(MagickPI*
-            alpha));
+          gamma=(double) (2.0*j1((double) (MagickPI*alpha))/(MagickPI*alpha));
           return(gamma);
         }
 #endif
