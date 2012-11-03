@@ -1731,8 +1731,8 @@ static void ScaleSpace(const ssize_t *histogram,const double tau,
   if (gamma == (double *) NULL)
     ThrowFatalException(ResourceLimitFatalError,
       "UnableToAllocateGammaMap");
-  alpha=MagickEpsilonReciprocal(tau*sqrt(2.0*MagickPI));
-  beta=(-1.0*MagickEpsilonReciprocal(2.0*tau*tau));
+  alpha=PerceptibleReciprocal(tau*sqrt(2.0*MagickPI));
+  beta=(-1.0*PerceptibleReciprocal(2.0*tau*tau));
   for (x=0; x <= 255; x++)
     gamma[x]=0.0;
   for (x=0; x <= 255; x++)

@@ -424,7 +424,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
         Disassociate alpha.
       */
       gamma=1.0-QuantumScale*fill_color.alpha;
-      gamma=MagickEpsilonReciprocal(gamma);
+      gamma=PerceptibleReciprocal(gamma);
       fill_color.blue*=gamma;
       fill_color.green*=gamma;
       fill_color.red*=gamma;

@@ -572,7 +572,7 @@ MagickExport ChannelFeatures *GetImageFeatures(const Image *image,
         break;
       }
     }
-    normalize=MagickEpsilonReciprocal(normalize);
+    normalize=PerceptibleReciprocal(normalize);
     for (y=0; y < (ssize_t) number_grays; y++)
     {
       register ssize_t

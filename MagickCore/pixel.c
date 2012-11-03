@@ -4142,7 +4142,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
         }
       for (i=0; i < (ssize_t) count; i++)
       {
-        gamma=MagickEpsilonReciprocal(alpha[i])/count;
+        gamma=PerceptibleReciprocal(alpha[i])/count;
         *pixel+=gamma*pixels[i];
       }
       break;
@@ -4179,7 +4179,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
       epsilon.y=1.0-delta.y;
       gamma=((epsilon.y*(epsilon.x*alpha[0]+delta.x*alpha[1])+delta.y*
         (epsilon.x*alpha[2]+delta.x*alpha[3])));
-      gamma=MagickEpsilonReciprocal(gamma);
+      gamma=PerceptibleReciprocal(gamma);
       *pixel=gamma*(epsilon.y*(epsilon.x*pixels[0]+delta.x*pixels[1])+delta.y*
         (epsilon.x*pixels[2]+delta.x*pixels[3]));
       break;
@@ -4233,9 +4233,9 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
             pixels[0]+=pixels[1];
           }
       if (channel != AlphaPixelChannel)
-        gamma=MagickEpsilonReciprocal(alpha[0]); /* (color) 1/alpha_weights */
+        gamma=PerceptibleReciprocal(alpha[0]); /* (color) 1/alpha_weights */
       else
-        gamma=MagickEpsilonReciprocal(gamma); /* (alpha) 1/number_of_pixels */
+        gamma=PerceptibleReciprocal(gamma); /* (alpha) 1/number_of_pixels */
       *pixel=gamma*pixels[0];
       break;
     }
@@ -4268,7 +4268,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
       CatromWeights((double) (x-x_offset),&cx);
       CatromWeights((double) (y-y_offset),&cy);
       gamma=(channel == AlphaPixelChannel ? (double) 1.0 :
-        MagickEpsilonReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
+        PerceptibleReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
         alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+cx[2]*
         alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+cx[1]*alpha[9]+cx[2]*
         alpha[10]+cx[3]*alpha[11])+cy[3]*(cx[0]*alpha[12]+cx[1]*alpha[13]+
@@ -4386,7 +4386,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
               */
               delta.y=1.0-delta.y;
               gamma=MeshInterpolate(&delta,alpha[2],alpha[3],alpha[0]);
-              gamma=MagickEpsilonReciprocal(gamma);
+              gamma=PerceptibleReciprocal(gamma);
               *pixel=gamma*MeshInterpolate(&delta,pixels[2],pixels[3],
                 pixels[0]);
             }
@@ -4397,7 +4397,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
               */
               delta.x=1.0-delta.x;
               gamma=MeshInterpolate(&delta,alpha[1],alpha[0],alpha[3]);
-              gamma=MagickEpsilonReciprocal(gamma);
+              gamma=PerceptibleReciprocal(gamma);
               *pixel=gamma*MeshInterpolate(&delta,pixels[1],pixels[0],
                 pixels[3]);
             }
@@ -4413,7 +4413,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
                 Top-left triangle (pixel: 0, diagonal: 1-2).
               */
               gamma=MeshInterpolate(&delta,alpha[0],alpha[1],alpha[2]);
-              gamma=MagickEpsilonReciprocal(gamma);
+              gamma=PerceptibleReciprocal(gamma);
               *pixel=gamma*MeshInterpolate(&delta,pixels[0],pixels[1],
                 pixels[2]);
             }
@@ -4425,7 +4425,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
               delta.x=1.0-delta.x;
               delta.y=1.0-delta.y;
               gamma=MeshInterpolate(&delta,alpha[3],alpha[2],alpha[1]);
-              gamma=MagickEpsilonReciprocal(gamma);
+              gamma=PerceptibleReciprocal(gamma);
               *pixel=gamma*MeshInterpolate(&delta,pixels[3],pixels[2],
                 pixels[1]);
             }
@@ -4461,7 +4461,7 @@ MagickExport MagickBooleanType InterpolatePixelChannel(const Image *image,
       SplineWeights((double) (x-x_offset),&cx);
       SplineWeights((double) (y-y_offset),&cy);
       gamma=(channel == AlphaPixelChannel ? (double) 1.0 :
-        MagickEpsilonReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
+        PerceptibleReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
         alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+cx[2]*
         alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+cx[1]*alpha[9]+cx[2]*
         alpha[10]+cx[3]*alpha[11])+cy[3]*(cx[0]*alpha[12]+cx[1]*alpha[13]+
@@ -4623,7 +4623,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
           alpha[j]=QuantumScale*GetPixelAlpha(source,p+j*
             GetPixelChannels(source));
           pixels[j]*=alpha[j];
-          gamma=MagickEpsilonReciprocal(alpha[j]);
+          gamma=PerceptibleReciprocal(alpha[j]);
           sum+=gamma*pixels[j];
         }
         sum/=count;
@@ -4663,7 +4663,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         if ((traits & BlendPixelTrait) == 0)
           {
             gamma=((epsilon.y*(epsilon.x+delta.x)+delta.y*(epsilon.x+delta.x)));
-            gamma=MagickEpsilonReciprocal(gamma);
+            gamma=PerceptibleReciprocal(gamma);
             SetPixelChannel(destination,channel,ClampToQuantum(gamma*(epsilon.y*
               (epsilon.x*pixels[0]+delta.x*pixels[1])+delta.y*(epsilon.x*
               pixels[2]+delta.x*pixels[3]))),pixel);
@@ -4681,7 +4681,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         pixels[3]*=alpha[3];
         gamma=((epsilon.y*(epsilon.x*alpha[0]+delta.x*alpha[1])+delta.y*
           (epsilon.x*alpha[2]+delta.x*alpha[3])));
-        gamma=MagickEpsilonReciprocal(gamma);
+        gamma=PerceptibleReciprocal(gamma);
         SetPixelChannel(destination,channel,ClampToQuantum(gamma*(epsilon.y*
           (epsilon.x*pixels[0]+delta.x*pixels[1])+delta.y*(epsilon.x*pixels[2]+
           delta.x*pixels[3]))),pixel);
@@ -4749,9 +4749,9 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                pixels[0]+=pixels[1];
              }
         if ((traits & BlendPixelTrait) == 0)
-          gamma=MagickEpsilonReciprocal(alpha[0]); /* (color) 1/alpha_weights */
+          gamma=PerceptibleReciprocal(alpha[0]); /* (color) 1/alpha_weights */
         else
-          gamma=MagickEpsilonReciprocal(gamma); /* (alpha) 1/number_of_pixels */
+          gamma=PerceptibleReciprocal(gamma); /* (alpha) 1/number_of_pixels */
         SetPixelChannel(destination,channel,ClampToQuantum(gamma*pixels[0]),
           pixel);
       }
@@ -4797,7 +4797,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         CatromWeights((double) (x-x_offset),&cx);
         CatromWeights((double) (y-y_offset),&cy);
         gamma=((traits & BlendPixelTrait) ? (double) (1.0) :
-          MagickEpsilonReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
+          PerceptibleReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
           alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+cx[2]*
           alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+cx[1]*alpha[9]+cx[2]*
           alpha[10]+cx[3]*alpha[11])+cy[3]*(cx[0]*alpha[12]+cx[1]*alpha[13]+
@@ -4963,7 +4963,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                 */
                 delta.y=1.0-delta.y;
                 gamma=MeshInterpolate(&delta,alpha[2],alpha[3],alpha[0]);
-                gamma=MagickEpsilonReciprocal(gamma);
+                gamma=PerceptibleReciprocal(gamma);
                 SetPixelChannel(destination,channel,ClampToQuantum(gamma*
                   MeshInterpolate(&delta,pixels[2],pixels[3],pixels[0])),pixel);
               }
@@ -4974,7 +4974,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                 */
                 delta.x=1.0-delta.x;
                 gamma=MeshInterpolate(&delta,alpha[1],alpha[0],alpha[3]);
-                gamma=MagickEpsilonReciprocal(gamma);
+                gamma=PerceptibleReciprocal(gamma);
                 SetPixelChannel(destination,channel,ClampToQuantum(gamma*
                   MeshInterpolate(&delta,pixels[1],pixels[0],pixels[3])),pixel);
               }
@@ -4990,7 +4990,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                   Top-left triangle (pixel: 0, diagonal: 1-2).
                 */
                 gamma=MeshInterpolate(&delta,alpha[0],alpha[1],alpha[2]);
-                gamma=MagickEpsilonReciprocal(gamma);
+                gamma=PerceptibleReciprocal(gamma);
                 SetPixelChannel(destination,channel,ClampToQuantum(gamma*
                   MeshInterpolate(&delta,pixels[0],pixels[1],pixels[2])),pixel);
               }
@@ -5002,7 +5002,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
                 delta.x=1.0-delta.x;
                 delta.y=1.0-delta.y;
                 gamma=MeshInterpolate(&delta,alpha[3],alpha[2],alpha[1]);
-                gamma=MagickEpsilonReciprocal(gamma);
+                gamma=PerceptibleReciprocal(gamma);
                 SetPixelChannel(destination,channel,ClampToQuantum(gamma*
                   MeshInterpolate(&delta,pixels[3],pixels[2],pixels[1])),pixel);
               }
@@ -5050,7 +5050,7 @@ MagickExport MagickBooleanType InterpolatePixelChannels(const Image *source,
         SplineWeights((double) (x-x_offset),&cx);
         SplineWeights((double) (y-y_offset),&cy);
         gamma=((traits & BlendPixelTrait) ? (double) (1.0) :
-          MagickEpsilonReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
+          PerceptibleReciprocal(cy[0]*(cx[0]*alpha[0]+cx[1]*alpha[1]+cx[2]*
           alpha[2]+cx[3]*alpha[3])+cy[1]*(cx[0]*alpha[4]+cx[1]*alpha[5]+cx[2]*
           alpha[6]+cx[3]*alpha[7])+cy[2]*(cx[0]*alpha[8]+cx[1]*alpha[9]+cx[2]*
           alpha[10]+cx[3]*alpha[11])+cy[3]*(cx[0]*alpha[12]+cx[1]*alpha[13]+
@@ -5207,7 +5207,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       for (i=0; i < (ssize_t) count; i++)
       {
         AlphaBlendPixelInfo(image,p,pixels,alpha);
-        gamma=MagickEpsilonReciprocal(alpha[0]);
+        gamma=PerceptibleReciprocal(alpha[0]);
         pixel->red+=gamma*pixels[0].red;
         pixel->green+=gamma*pixels[0].green;
         pixel->blue+=gamma*pixels[0].blue;
@@ -5249,7 +5249,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
       epsilon.y=1.0-delta.y;
       gamma=((epsilon.y*(epsilon.x*alpha[0]+delta.x*alpha[1])+delta.y*
         (epsilon.x*alpha[2]+delta.x*alpha[3])));
-      gamma=MagickEpsilonReciprocal(gamma);
+      gamma=PerceptibleReciprocal(gamma);
       pixel->red=gamma*(epsilon.y*(epsilon.x*pixels[0].red+delta.x*
         pixels[1].red)+delta.y*(epsilon.x*pixels[2].red+delta.x*pixels[3].red));
       pixel->green=gamma*(epsilon.y*(epsilon.x*pixels[0].green+delta.x*
@@ -5263,7 +5263,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
           pixels[1].black)+delta.y*(epsilon.x*pixels[2].black+delta.x*
           pixels[3].black));
       gamma=((epsilon.y*(epsilon.x+delta.x)+delta.y*(epsilon.x+delta.x)));
-      gamma=MagickEpsilonReciprocal(gamma);
+      gamma=PerceptibleReciprocal(gamma);
       pixel->alpha=(epsilon.y*(epsilon.x*pixels[0].alpha+delta.x*
         pixels[1].alpha)+delta.y*(epsilon.x*pixels[2].alpha+delta.x*
         pixels[3].alpha));
@@ -5316,7 +5316,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
             pixels[0].alpha+=pixels[1].alpha;
           }
       gamma=1.0/gamma;
-      alpha[0]=MagickEpsilonReciprocal(alpha[0]);
+      alpha[0]=PerceptibleReciprocal(alpha[0]);
       pixel->red=alpha[0]*pixels[0].red;
       pixel->green=alpha[0]*pixels[0].green;  /* divide by sum of alpha */
       pixel->blue=alpha[0]*pixels[0].blue;
@@ -5458,7 +5458,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
               */
               delta.y=1.0-delta.y;
               gamma=MeshInterpolate(&delta,alpha[2],alpha[3],alpha[0]);
-              gamma=MagickEpsilonReciprocal(gamma);
+              gamma=PerceptibleReciprocal(gamma);
               pixel->red=gamma*MeshInterpolate(&delta,pixels[2].red,
                 pixels[3].red,pixels[0].red);
               pixel->green=gamma*MeshInterpolate(&delta,pixels[2].green,
@@ -5479,7 +5479,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
               */
               delta.x=1.0-delta.x;
               gamma=MeshInterpolate(&delta,alpha[1],alpha[0],alpha[3]);
-              gamma=MagickEpsilonReciprocal(gamma);
+              gamma=PerceptibleReciprocal(gamma);
               pixel->red=gamma*MeshInterpolate(&delta,pixels[1].red,
                 pixels[0].red,pixels[3].red);
               pixel->green=gamma*MeshInterpolate(&delta,pixels[1].green,
@@ -5505,7 +5505,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
                 Top-left triangle (pixel: 0, diagonal: 1-2).
               */
               gamma=MeshInterpolate(&delta,alpha[0],alpha[1],alpha[2]);
-              gamma=MagickEpsilonReciprocal(gamma);
+              gamma=PerceptibleReciprocal(gamma);
               pixel->red=gamma*MeshInterpolate(&delta,pixels[0].red,
                 pixels[1].red,pixels[2].red);
               pixel->green=gamma*MeshInterpolate(&delta,pixels[0].green,
@@ -5527,7 +5527,7 @@ MagickExport MagickBooleanType InterpolatePixelInfo(const Image *image,
               delta.x=1.0-delta.x;
               delta.y=1.0-delta.y;
               gamma=MeshInterpolate(&delta,alpha[3],alpha[2],alpha[1]);
-              gamma=MagickEpsilonReciprocal(gamma);
+              gamma=PerceptibleReciprocal(gamma);
               pixel->red=gamma*MeshInterpolate(&delta,pixels[3].red,
                 pixels[2].red,pixels[1].red);
               pixel->green=gamma*MeshInterpolate(&delta,pixels[3].green,

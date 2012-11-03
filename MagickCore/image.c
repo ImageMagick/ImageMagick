@@ -2090,7 +2090,7 @@ static inline void FlattenPixelInfo(const Image *image,const PixelInfo *p,
   Sa=QuantumScale*alpha;
   Da=QuantumScale*beta,
   gamma=Sa*(-Da)+Sa+Da;
-  gamma=MagickEpsilonReciprocal(gamma);
+  gamma=PerceptibleReciprocal(gamma);
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     PixelChannel

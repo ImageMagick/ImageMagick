@@ -2429,12 +2429,12 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
 #if 0
           /* Using Gamma, via a cache */
           if (IfPlusOp)
-            constant=MagickEpsilonReciprocal(constant);
+            constant=PerceptibleReciprocal(constant);
           (void) GammaImage(_image,constant,_exception);
 #else
           /* Using Evaluate POW, direct update of values - more accurite */
           if (IfNormalOp)
-            constant=MagickEpsilonReciprocal(constant);
+            constant=PerceptibleReciprocal(constant);
           (void) EvaluateImage(_image,PowEvaluateOperator,constant,_exception);
 #endif
           /* Set gamma setting -- Old meaning of "+gamma"

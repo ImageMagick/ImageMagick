@@ -203,7 +203,7 @@ static inline void ConvertXYZToLuv(const double X,const double Y,const double Z,
     *L=(double) (116.0f*pow(Y/D65Y,1.0/3.0)-16.0f);
   else
     *L=CIEK*(Y/D65Y);
-  alpha=MagickEpsilonReciprocal(X+15.0f*Y+3.0f*Z);
+  alpha=PerceptibleReciprocal(X+15.0f*Y+3.0f*Z);
   *u=13.0f*(*L)*((4.0f*alpha*X)-(4.0f*D65X/(D65X+15.0f*D65Y+3.0f*D65Z)));
   *v=13.0f*(*L)*((9.0f*alpha*Y)-(9.0f*D65Y/(D65X+15.0f*D65Y+3.0f*D65Z)));
   *L/=100.0f;
@@ -945,7 +945,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       gamma=DisplayGamma;
       value=GetImageProperty(image,"gamma",exception);
       if (value != (const char *) NULL)
-        gamma=MagickEpsilonReciprocal(StringToDouble(value,(char **) NULL));
+        gamma=PerceptibleReciprocal(StringToDouble(value,(char **) NULL));
       film_gamma=FilmGamma;
       value=GetImageProperty(image,"film-gamma",exception);
       if (value != (const char *) NULL)
@@ -2898,7 +2898,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       gamma=DisplayGamma;
       value=GetImageProperty(image,"gamma",exception);
       if (value != (const char *) NULL)
-        gamma=MagickEpsilonReciprocal(StringToDouble(value,(char **) NULL));
+        gamma=PerceptibleReciprocal(StringToDouble(value,(char **) NULL));
       film_gamma=FilmGamma;
       value=GetImageProperty(image,"film-gamma",exception);
       if (value != (const char *) NULL)
