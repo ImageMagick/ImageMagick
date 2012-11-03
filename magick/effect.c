@@ -2582,8 +2582,7 @@ MagickExport Image *GaussianBlurImageChannel(const Image *image,
 %    o channel: the channel type.
 %
 %    o radius: the radius of the Gaussian, in pixels, not counting the center
-%    o radius: the radius of the Gaussian, in pixels, not counting
-%      the center pixel.
+%      pixel.
 %
 %    o sigma: the standard deviation of the Gaussian, in pixels.
 %
