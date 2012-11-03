@@ -1409,7 +1409,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
     Normalize kernel.
   */
   normal_kernel=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory(
-    width*width,sizeof(*normal_kernel)));
+    width,width*sizeof(*normal_kernel)));
   if (normal_kernel == (MagickRealType *) NULL)
     {
       convolve_image=DestroyImage(convolve_image);
@@ -2160,6 +2160,12 @@ MagickExport Image *FilterImageChannel(const Image *image,
   MagickPixelPacket
     bias;
 
+  MagickRealType
+    *filter_kernel;
+
+  register ssize_t
+    i;
+
   ssize_t
     y;
 
@@ -2219,6 +2225,18 @@ MagickExport Image *FilterImageChannel(const Image *image,
   if (status == MagickTrue)
     return(filter_image);
   /*
+    Normalize kernel.
+  */
+  filter_kernel=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory(
+    kernel->width,kernel->width*sizeof(*filter_kernel)));
+  if (filter_kernel == (MagickRealType *) NULL)
+    {
+      filter_image=DestroyImage(filter_image);
+      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  for (i=0; i < (ssize_t) (kernel->width*kernel->width); i++)
+    filter_kernel[i]=(MagickRealType) kernel->values[i];
+  /*
     Filter image.
   */
   status=MagickTrue;
@@ -2253,9 +2271,9 @@ MagickExport Image *FilterImageChannel(const Image *image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) kernel->width/2L),
-      y-(ssize_t) (kernel->height/2L),image->columns+kernel->width,
-      kernel->height,exception);
+    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) kernel->width/2L),y-
+      (ssize_t) (kernel->height/2L),image->columns+kernel->width,kernel->height,
+      exception);
     q=GetCacheViewAuthenticPixels(filter_view,0,y,filter_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -2270,7 +2288,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
       MagickPixelPacket
         pixel;
 
-      register const double
+      register const MagickRealType
         *restrict k;
 
       register const PixelPacket
@@ -2283,7 +2301,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
         v;
 
       pixel=bias;
-      k=kernel->values;
+      k=filter_kernel;
       kernel_pixels=p;
       if (((channel & OpacityChannel) == 0) || (image->matte == MagickFalse))
         {
@@ -2306,7 +2324,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
             SetPixelBlue(q,ClampToQuantum(pixel.blue));
           if ((channel & OpacityChannel) != 0)
             {
-              k=kernel->values;
+              k=filter_kernel;
               kernel_pixels=p;
               for (v=0; v < (ssize_t) kernel->width; v++)
               {
@@ -2325,7 +2343,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
               register const IndexPacket
                 *restrict kernel_indexes;
 
-              k=kernel->values;
+              k=filter_kernel;
               kernel_indexes=indexes;
               for (v=0; v < (ssize_t) kernel->width; v++)
               {
@@ -2369,7 +2387,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
             SetPixelBlue(q,ClampToQuantum(gamma*pixel.blue));
           if ((channel & OpacityChannel) != 0)
             {
-              k=kernel->values;
+              k=filter_kernel;
               kernel_pixels=p;
               for (v=0; v < (ssize_t) kernel->width; v++)
               {
@@ -2388,7 +2406,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
               register const IndexPacket
                 *restrict kernel_indexes;
 
-              k=kernel->values;
+              k=filter_kernel;
               kernel_pixels=p;
               kernel_indexes=indexes;
               for (v=0; v < (ssize_t) kernel->width; v++)
@@ -2429,6 +2447,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
   filter_image->type=image->type;
   filter_view=DestroyCacheView(filter_view);
   image_view=DestroyCacheView(image_view);
+  filter_kernel=(MagickRealType *) RelinquishAlignedMemory(filter_kernel);
   if (status == MagickFalse)
     filter_image=DestroyImage(filter_image);
   return(filter_image);
