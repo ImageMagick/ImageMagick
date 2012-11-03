@@ -178,9 +178,11 @@ extern MagickExport MagickBooleanType
   DescribeImage(Image *,FILE *,const MagickBooleanType)
     magick_attribute((deprecated)),
   FormatImageAttribute(Image *,const char *,const char *,...)
-    magick_attribute((__format__ (__printf__,3,4))) magick_attribute((deprecated)),
+    magick_attribute((__format__ (__printf__,3,4)))
+    magick_attribute((deprecated)),
   FormatImageAttributeList(Image *,const char *,const char *,va_list)
-    magick_attribute((__format__ (__printf__,3,0))) magick_attribute((deprecated)),
+    magick_attribute((__format__ (__printf__,3,0)))
+    magick_attribute((deprecated)),
   FormatImagePropertyList(Image *,const char *,const char *,va_list)
     magick_attribute((__format__ (__printf__,3,0))),
   FuzzyColorCompare(const Image *,const PixelPacket *,const PixelPacket *)
@@ -269,7 +271,8 @@ extern MagickExport size_t
 
 extern MagickExport ssize_t
   FormatMagickString(char *,const size_t,const char *,...)
-    magick_attribute((__format__ (__printf__,3,4))) magick_attribute((deprecated)),
+    magick_attribute((__format__ (__printf__,3,4)))
+    magick_attribute((deprecated)),
   FormatMagickStringList(char *,const size_t,const char *,va_list)
     magick_attribute((__format__ (__printf__,3,0))),
   GetImageListIndex(const Image *) magick_attribute((deprecated)),
@@ -318,10 +321,12 @@ extern MagickExport void
   IdentityAffine(AffineMatrix *) magick_attribute((deprecated)),
   LiberateMemory(void **) magick_attribute((deprecated)),
   LiberateSemaphoreInfo(SemaphoreInfo **) magick_attribute((deprecated)),
-  FormatString(char *,const char *,...) magick_attribute((__format__ (__printf__,2,3)))
+  FormatString(char *,const char *,...)
+    magick_attribute((__format__ (__printf__,2,3)))
     magick_attribute((deprecated)),
   FormatStringList(char *,const char *,va_list)
-    magick_attribute((__format__ (__printf__,2,0))) magick_attribute((deprecated)),
+    magick_attribute((__format__ (__printf__,2,0)))
+    magick_attribute((deprecated)),
   HSLTransform(const double,const double,const double,Quantum *,Quantum *,
     Quantum *) magick_attribute((deprecated)),
   InitializeMagick(const char *) magick_attribute((deprecated)),
@@ -334,6 +339,21 @@ extern MagickExport void
   TemporaryFilename(char *) magick_attribute((deprecated)),
   TransformHSL(const Quantum,const Quantum,const Quantum,double *,double *,
     double *) magick_attribute((deprecated));
+
+/*
+  Inline methods.
+*/
+static inline double MagickEpsilonReciprocal(const double x)
+{
+  double
+    sign;
+
+  sign=x < 0.0 ? -1.0 : 1.0;
+  if ((sign*x) >= MagickEpsilon)
+    return(1.0/x);
+  return(sign/MagickEpsilon);
+}
+
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

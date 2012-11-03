@@ -1077,8 +1077,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_YRESOLUTION,&y_resolution);
     image->x_resolution=x_resolution;
     image->y_resolution=y_resolution;
-    x_position=(float) MagickEpsilonReciprocal(x_resolution)*image->page.x;
-    y_position=(float) MagickEpsilonReciprocal(y_resolution)*image->page.y;
+    x_position=(float) PerceptibleReciprocal(x_resolution)*image->page.x;
+    y_position=(float) PerceptibleReciprocal(y_resolution)*image->page.y;
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_XPOSITION,&x_position);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_YPOSITION,&y_position);
     image->page.x=(ssize_t) ceil(x_position*x_resolution-0.5);

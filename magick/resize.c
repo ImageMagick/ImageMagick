@@ -978,8 +978,8 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       value=StringToDouble(artifact,(char **) NULL);
     /* Define coefficents for Gaussian */
     resize_filter->coefficient[0]=value;                 /* note sigma too */
-    resize_filter->coefficient[1]=MagickEpsilonReciprocal(2.0*value*value); /* sigma scaling */
-    resize_filter->coefficient[2]=MagickEpsilonReciprocal(Magick2PI*value*value);
+    resize_filter->coefficient[1]=PerceptibleReciprocal(2.0*value*value); /* sigma scaling */
+    resize_filter->coefficient[2]=PerceptibleReciprocal(Magick2PI*value*value);
        /* normalization - not actually needed or used! */
     if ( value > 0.5 )
       resize_filter->support *= value/0.5;  /* increase support */
@@ -1000,7 +1000,7 @@ MagickExport ResizeFilter *AcquireResizeFilter(const Image *image,
       value=(MagickRealType) (StringToDouble(artifact,(char **) NULL)*MagickPI);
     /* Define coefficents for Kaiser Windowing Function */
     resize_filter->coefficient[0]=value;         /* alpha */
-    resize_filter->coefficient[1]=MagickEpsilonReciprocal(I0(value)); /* normalization */
+    resize_filter->coefficient[1]=PerceptibleReciprocal(I0(value)); /* normalization */
   }
 
   /* Support Overrides */
@@ -2219,7 +2219,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       return(MagickFalse);
     }
   status=MagickTrue;
-  scale=MagickEpsilonReciprocal(scale);
+  scale=PerceptibleReciprocal(scale);
   (void) ResetMagickMemory(&zero,0,sizeof(zero));
   image_view=AcquireVirtualCacheView(image,exception);
   resize_view=AcquireAuthenticCacheView(resize_image,exception);
@@ -2278,7 +2278,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
         /*
           Normalize.
         */
-        density=MagickEpsilonReciprocal(density);
+        density=PerceptibleReciprocal(density);
         for (i=0; i < n; i++)
           contribution[i].weight*=density;
       }
@@ -2354,7 +2354,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
             pixel.opacity+=contribution[i].weight*GetPixelOpacity(p+j);
             gamma+=alpha;
           }
-          gamma=MagickEpsilonReciprocal(gamma);
+          gamma=PerceptibleReciprocal(gamma);
           SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
           SetPixelGreen(q,ClampToQuantum(gamma*pixel.green));
           SetPixelBlue(q,ClampToQuantum(gamma*pixel.blue));
@@ -2459,7 +2459,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       return(MagickFalse);
     }
   status=MagickTrue;
-  scale=MagickEpsilonReciprocal(scale);
+  scale=PerceptibleReciprocal(scale);
   (void) ResetMagickMemory(&zero,0,sizeof(zero));
   image_view=AcquireVirtualCacheView(image,exception);
   resize_view=AcquireAuthenticCacheView(resize_image,exception);
@@ -2518,7 +2518,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
         /*
           Normalize.
         */
-        density=MagickEpsilonReciprocal(density);
+        density=PerceptibleReciprocal(density);
         for (i=0; i < n; i++)
           contribution[i].weight*=density;
       }
@@ -2595,7 +2595,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
             pixel.opacity+=contribution[i].weight*GetPixelOpacity(p+j);
             gamma+=alpha;
           }
-          gamma=MagickEpsilonReciprocal(gamma);
+          gamma=PerceptibleReciprocal(gamma);
           SetPixelRed(q,ClampToQuantum(gamma*pixel.red));
           SetPixelGreen(q,ClampToQuantum(gamma*pixel.green));
           SetPixelBlue(q,ClampToQuantum(gamma*pixel.blue));
@@ -3200,7 +3200,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
         {
           if (scale_image->matte != MagickFalse)
             alpha=QuantumScale*(QuantumRange-s->opacity);
-          alpha=MagickEpsilonReciprocal(alpha);
+          alpha=PerceptibleReciprocal(alpha);
           SetPixelRed(q,ClampToQuantum(alpha*s->red));
           SetPixelGreen(q,ClampToQuantum(alpha*s->green));
           SetPixelBlue(q,ClampToQuantum(alpha*s->blue));
@@ -3299,7 +3299,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
       {
         if (scale_image->matte != MagickFalse)
           alpha=QuantumScale*(QuantumRange-t->opacity);
-        alpha=MagickEpsilonReciprocal(alpha);
+        alpha=PerceptibleReciprocal(alpha);
         SetPixelRed(q,ClampToQuantum(alpha*t->red));
         SetPixelGreen(q,ClampToQuantum(alpha*t->green));
         SetPixelBlue(q,ClampToQuantum(alpha*t->blue));
