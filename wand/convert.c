@@ -241,6 +241,8 @@ static MagickBooleanType ConvertUsage(void)
       "                     add a noise pattern to the image with specific",
       "                     amplitudes",
       "-paint radius        simulate an oil painting",
+      "-perceptible epsilon",
+      "                     pixel value less than |epsilon| become epsilon or -epsilon",
       "-polaroid angle      simulate a Polaroid picture",
       "-posterize levels    reduce the image to a limited number of color levels",
       "-profile filename    add, delete, or apply an image profile",
