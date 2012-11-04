@@ -535,8 +535,8 @@ MagickExport Image *EvaluateImages(const Image *images,
 
         if (status == MagickFalse)
           continue;
-        q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,
-          image->columns,1,exception);
+        q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,image->columns,1,
+          exception);
         if (q == (Quantum *) NULL)
           {
             status=MagickFalse;
