@@ -69,6 +69,8 @@ Image Settings:
   \-origin geometry     image origin
   \-page geometry       size and location of an image canvas (setting)
   \-path path           write images to this path on disk
+  \-perceptible epsilon
+                       pixel value less than |epsilon| become epsilon or -epsilon
   \-ping                efficiently determine image attributes
   \-pointsize value     font point size
   \-preview type        image preview type
