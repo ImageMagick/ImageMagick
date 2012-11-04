@@ -47,6 +47,8 @@ extern MagickExport MagickBooleanType
   OrderedPosterizeImage(Image *,const char *,ExceptionInfo *),
   OrderedPosterizeImageChannel(Image *,const ChannelType,const char *,
     ExceptionInfo *),
+  PerceptibleImage(Image *,const double),
+  PerceptibleImageChannel(Image *,const ChannelType,const double),
   RandomThresholdImage(Image *,const char *,ExceptionInfo *),
   RandomThresholdImageChannel(Image *,const ChannelType,const char *,
     ExceptionInfo *),
