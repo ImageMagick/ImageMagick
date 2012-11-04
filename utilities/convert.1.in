@@ -173,6 +173,8 @@ Image Operators:
   \-ordered-dither NxN
                        add a noise pattern to the image with specific amplitudes
   \-paint radius        simulate an oil painting
+  \-perceptible epsilon
+                       pixel value less than |epsilon| become epsilon or -epsilon
   \-polaroid angle      simulate a Polaroid picture
   \-posterize levels    reduce the image to a limited number of color levels
   \-print string        interpret string and print to console
