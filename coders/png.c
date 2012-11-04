@@ -3792,7 +3792,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
 
   if ((IssRGBColorspace(image->colorspace) != MagickFalse) &&
-      (image->gamma < .45 || image->gamma > .46))
+      ((image->gamma < .45) || (image->gamma > .46)))
     SetImageColorspace(image,RGBColorspace);
 
   if (LocaleCompare(image_info->magick,"PNG24") == 0)
@@ -8017,7 +8017,40 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       image->depth = 8;
 #endif
 
-  /* Normally we run this just once, but in the case of writing PNG8
+  if (image->storage_class != PseudoClass && mng_info->write_png_colortype &&
+     (mng_info->write_png_colortype > 4 || (mng_info->write_png_depth >= 8 &&
+     mng_info->write_png_colortype < 4 && image->matte == MagickFalse)))
+  {
+     /* Avoid the expensive BUILD_PALETTE operation if we're sure that we
+      * are not going to need the result.
+      */
+     image_colors=image->colors;
+     number_opaque = image->colors;
+     if (mng_info->write_png_colortype == 1 ||
+        mng_info->write_png_colortype == 5)
+       ping_have_color=MagickFalse;
+     else
+       ping_have_color=MagickTrue;
+     ping_have_non_bw=MagickFalse;
+
+     if (image->matte != MagickFalse)
+       {
+         number_transparent = 2;
+         number_semitransparent = 1;
+       }
+
+     else
+       {
+         number_transparent = 0;
+         number_semitransparent = 0;
+       }
+  }
+
+  else
+  {
+  /* BUILD_PALETTE
+   *
+   * Normally we run this just once, but in the case of writing PNG8
    * we reduce the transparency to binary and run again, then if there
    * are still too many colors we reduce to a simple 4-4-4-1, then 3-3-3-1
    * RGBA palette and run again, and then to a simple 3-3-2-1 RGBA
@@ -8032,8 +8065,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   for (j=0; j<6; j++)
   {
-    /* BUILD_PALETTE
-     *
+    /*
      * Sometimes we get DirectClass images that have 256 colors or fewer.
      * This code will build a colormap.
      *
@@ -8825,6 +8857,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
          }
       }
     }
+  }
   }
   /* END OF BUILD_PALETTE */
 
