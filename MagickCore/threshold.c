@@ -664,7 +664,9 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ClampImage() restricts the color range from 0 to the quantum depth.
+%  ClampImage() set each pixel whose value is below zero to zero and any the
+%  pixel whose value is above the quantum range to the quantum range (e.g.
+%  65535) otherwise the pixel value remains unchanged.
 %
 %  The format of the ClampImage method is:
 %
@@ -1435,6 +1437,163 @@ MagickExport MagickBooleanType OrderedPosterizeImage(Image *image,
   image_view=DestroyCacheView(image_view);
   map=DestroyThresholdMap(map);
   return(MagickTrue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%     P e r c e p t i b l e I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PerceptibleImage() set each pixel whose value is less than |epsilon| to 
+%  epsilon or -epsilon (whichever is closer) otherwise the pixel value remains 
+%  unchanged.
+%
+%  The format of the PerceptibleImage method is:
+%
+%      MagickBooleanType PerceptibleImage(Image *image,const double epsilon,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o epsilon: the epsilon threshold (e.g. 1.0e-9).
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+static inline Quantum PerceptibleThreshold(const Quantum quantum,
+  const double epsilon)
+{
+  double
+    sign;
+
+  sign=(double) quantum < 0.0 ? -1.0 : 1.0;
+  if ((sign*quantum) >= epsilon)
+    return(quantum);
+  return((Quantum) (sign*epsilon));
+}
+
+MagickExport MagickBooleanType PerceptibleImage(Image *image,
+  const double epsilon,ExceptionInfo *exception)
+{
+#define PerceptibleImageTag  "Perceptible/Image"
+
+  CacheView
+    *image_view;
+
+  MagickBooleanType
+    status;
+
+  MagickOffsetType
+    progress;
+
+  ssize_t
+    y;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  if (image->storage_class == PseudoClass)
+    {
+      register ssize_t
+        i;
+
+      register PixelInfo
+        *restrict q;
+
+      q=image->colormap;
+      for (i=0; i < (ssize_t) image->colors; i++)
+      {
+        q->red=(double) PerceptibleThreshold(ClampToQuantum(q->red),
+          epsilon);
+        q->green=(double) PerceptibleThreshold(ClampToQuantum(q->green),
+          epsilon);
+        q->blue=(double) PerceptibleThreshold(ClampToQuantum(q->blue),
+          epsilon);
+        q->alpha=(double) PerceptibleThreshold(ClampToQuantum(q->alpha),
+          epsilon);
+        q++;
+      }
+      return(SyncImage(image,exception));
+    }
+  /*
+    Perceptible image.
+  */
+  status=MagickTrue;
+  progress=0;
+  image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    dynamic_number_threads(image,image->columns,image->rows,1)
+#endif
+  for (y=0; y < (ssize_t) image->rows; y++)
+  {
+    register ssize_t
+      x;
+
+    register Quantum
+      *restrict q;
+
+    if (status == MagickFalse)
+      continue;
+    q=GetCacheViewAuthenticPixels(image_view,0,y,image->columns,1,exception);
+    if (q == (Quantum *) NULL)
+      {
+        status=MagickFalse;
+        continue;
+      }
+    for (x=0; x < (ssize_t) image->columns; x++)
+    {
+      register ssize_t
+        i;
+
+      if (GetPixelMask(image,q) != 0)
+        {
+          q+=GetPixelChannels(image);
+          continue;
+        }
+      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+      {
+        PixelChannel
+          channel;
+
+        PixelTrait
+          traits;
+
+        channel=GetPixelChannelChannel(image,i);
+        traits=GetPixelChannelTraits(image,channel);
+        if (traits == UndefinedPixelTrait)
+          continue;
+        q[i]=PerceptibleThreshold(q[i],epsilon);
+      }
+      q+=GetPixelChannels(image);
+    }
+    if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
+      status=MagickFalse;
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+      {
+        MagickBooleanType
+          proceed;
+
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_PerceptibleImage)
+#endif
+        proceed=SetImageProgress(image,PerceptibleImageTag,progress++,image->rows);
+        if (proceed == MagickFalse)
+          status=MagickFalse;
+      }
+  }
+  image_view=DestroyCacheView(image_view);
+  return(status);
 }
 
 /*

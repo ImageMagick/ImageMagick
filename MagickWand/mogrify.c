@@ -1056,13 +1056,14 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             mogrify_image=ChopImage(*image,&geometry,exception);
             break;
           }
-        if (LocaleCompare("clamp",option+1) == 0)
+        if (LocaleCompare("perceptible",option+1) == 0)
           {
             /*
-              Clamp image.
+              Perceptible image.
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            (void) ClampImage(*image,exception);
+            (void) PerceptibleImage(*image,StringToDouble(argv[i+1],
+              (char **) NULL),exception);
             break;
           }
         if (LocaleCompare("clip",option+1) == 0)
