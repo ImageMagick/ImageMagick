@@ -537,7 +537,9 @@ static struct
       {"channel", MagickChannelOptions} } },
     { "Statistic", { {"geometry", StringReference},
       {"width", IntegerReference},{"height", IntegerReference},
-      {"channel", MagickChannelOptions}, {"type", MagickStatisticOptions} } }
+      {"channel", MagickChannelOptions}, {"type", MagickStatisticOptions} } },
+    { "Perceptible", { {"epsilon", RealReference},
+      {"channel", MagickChannelOptions} } }
   };
 
 static SplayTreeInfo
@@ -7271,6 +7273,8 @@ Mogrify(ref,...)
     ModeImage          = 272
     Statistic          = 273
     StatisticImage     = 274
+    Perceptible        = 275 
+    PerceptibleImage   = 276 
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -10667,6 +10671,19 @@ Mogrify(ref,...)
             statistic=(StatisticType) argument_list[4].integer_reference;
           image=StatisticImageChannel(image,channel,statistic,
             (size_t) geometry_info.rho,(size_t) geometry_info.sigma,exception);
+          break;
+        }
+        case 138:  /* Perceptible */
+        {
+          double
+            epsilon;
+
+          epsilon=MagickEpsilon;
+          if (attribute_flag[0] != 0)
+            epsilon=argument_list[0].real_reference;
+          if (attribute_flag[1] != 0)
+            channel=(ChannelType) argument_list[1].integer_reference;
+          (void) PerceptibleImageChannel(image,channel,epsilon);
           break;
         }
       }

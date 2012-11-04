@@ -2285,6 +2285,17 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             (void) QueryColorDatabase(argv[i+1],&draw_info->fill,exception);
             break;
           }
+        if (LocaleCompare("perceptible",option+1) == 0)
+          {
+            /*
+              Perceptible image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image);
+            (void) PerceptibleImageChannel(*image,channel,StringToDouble(
+              argv[i+1],(char **) NULL));
+            InheritException(exception,&(*image)->exception);
+            break;
+          }
         if (LocaleCompare("pointsize",option+1) == 0)
           {
             if (*option == '+')
