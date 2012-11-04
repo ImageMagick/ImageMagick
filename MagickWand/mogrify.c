@@ -5260,6 +5260,17 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             (void) CloneString(&path,argv[i]);
             break;
           }
+        if (LocaleCompare("perceptible",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
         if (LocaleCompare("pointsize",option+1) == 0)
           {
             if (*option == '+')
