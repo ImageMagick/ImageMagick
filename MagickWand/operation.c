@@ -2842,6 +2842,12 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                _exception);
           break;
         }
+      if (LocaleCompare("perceptible",option+1) == 0)
+        {
+          (void) PerceptibleImage(_image,StringToDouble(arg1,(char **) NULL),
+            _exception);
+          break;
+        }
       if (LocaleCompare("polaroid",option+1) == 0)
         {
           const char
