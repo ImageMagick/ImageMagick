@@ -2075,7 +2075,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
                 ssize_t
                   noise;
 
-                noise=ParseCommandOption(MagickNoiseOptions,MagickFalse,argv[i]);
+                noise=ParseCommandOption(MagickNoiseOptions,MagickFalse,
+                  argv[i]);
                 if (noise < 0)
                   ThrowConvertException(OptionError,"UnrecognizedNoiseType",
                     argv[i]);
@@ -2140,6 +2141,17 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("paint",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("perceptible",option+1) == 0)
           {
             if (*option == '+')
               break;
