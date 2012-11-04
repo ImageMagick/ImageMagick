@@ -750,9 +750,6 @@ MagickExport MagickBooleanType ClampImage(Image *image)
 MagickExport MagickBooleanType ClampImageChannel(Image *image,
   const ChannelType channel)
 {
-#if defined(MAGICKCORE_HDRI_SUPPORT)
-  return(MagickTrue);
-#else
 #define ClampImageTag  "Clamp/Image"
 
   CacheView
@@ -857,7 +854,6 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
   }
   image_view=DestroyCacheView(image_view);
   return(status);
-#endif
 }
 
 /*
