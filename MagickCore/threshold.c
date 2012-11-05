@@ -680,15 +680,6 @@ MagickExport MagickBooleanType BlackThresholdImage(Image *image,
 %
 */
 
-static inline Quantum ClampToUnsignedQuantum(const Quantum quantum)
-{
-  if (quantum <= 0)
-    return((Quantum) 0);
-  if (quantum >= QuantumRange)
-    return(QuantumRange);
-  return(quantum);
-}
-
 MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
 {
 #define ClampImageTag  "Clamp/Image"
@@ -720,10 +711,10 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
       q=image->colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
       {
-        q->red=(double) ClampToUnsignedQuantum(ClampToQuantum(q->red));
-        q->green=(double) ClampToUnsignedQuantum(ClampToQuantum(q->green));
-        q->blue=(double) ClampToUnsignedQuantum(ClampToQuantum(q->blue));
-        q->alpha=(double) ClampToUnsignedQuantum(ClampToQuantum(q->alpha));
+        q->red=(double) ClampToQuantum(q->red);
+        q->green=(double) ClampToQuantum(q->green);
+        q->blue=(double) ClampToQuantum(q->blue);
+        q->alpha=(double) ClampToQuantum(q->alpha);
         q++;
       }
       return(SyncImage(image,exception));
@@ -776,7 +767,7 @@ MagickExport MagickBooleanType ClampImage(Image *image,ExceptionInfo *exception)
         traits=GetPixelChannelTraits(image,channel);
         if (traits == UndefinedPixelTrait)
           continue;
-        q[i]=ClampToUnsignedQuantum(q[i]);
+        q[i]=ClampToQuantum(q[i]);
       }
       q+=GetPixelChannels(image);
     }
