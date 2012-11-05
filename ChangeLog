@@ -1,5 +1,6 @@
 2012-11-03  6.8.0-5 Glenn Randers-Pehrson <glennrp@image...>
   * Skip PNG palette-building when it is not needed.
+  * Let libpng expand sub-8-bit pixels while reading a PNG file.
 
 2012-11-01  6.8.0-4 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.0-4, SVN revision 9832.
