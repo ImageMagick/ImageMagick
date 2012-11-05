@@ -372,9 +372,8 @@ static MagickBooleanType IsDPX(const unsigned char *magick,const size_t extent)
 %
 */
 
-static size_t GetBytesPerRow(size_t columns,
-  size_t samples_per_pixel,size_t bits_per_pixel,
-  MagickBooleanType pad)
+static size_t GetBytesPerRow(size_t columns,size_t samples_per_pixel,
+  size_t bits_per_pixel,MagickBooleanType pad)
 {
   size_t
     bytes_per_row;
@@ -1843,9 +1842,10 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
       if ((horizontal_factor == 2) || (vertical_factor == 2))
         quantum_type=CbYCrYQuantum;
     }
-  extent=GetBytesPerRow(image->columns,image->alpha_trait == BlendPixelTrait ? 4UL : 3UL,
-    image->depth,MagickTrue);
-  if ((image_info->type != TrueColorType) && (image->alpha_trait != BlendPixelTrait) &&
+  extent=GetBytesPerRow(image->columns,image->alpha_trait == BlendPixelTrait ?
+    4UL : 3UL,image->depth,MagickTrue);
+  if ((image_info->type != TrueColorType) &&
+      (image->alpha_trait != BlendPixelTrait) &&
       (IsImageGray(image,exception) != MagickFalse))
     {
       quantum_type=GrayQuantum;
