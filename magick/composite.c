@@ -2858,8 +2858,6 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
     destination_image=DestroyImage(destination_image);
   else
     composite_image=DestroyImage(composite_image);
-  if (status != MagickFalse)
-    (void) ClampImage(image);
   return(status);
 }
 

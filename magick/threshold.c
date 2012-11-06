@@ -730,6 +730,20 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
 %    o channel: the channel type.
 %
 */
+
+static inline Quantum ClampPixel(const MagickRealType value)
+{
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((Quantum) value);
+#else
+  if (value <= 0.0f)
+    return((Quantum) 0);
+  if (value >= (MagickRealType) QuantumRange)
+    return(QuantumRange);
+  return((Quantum) (value+0.5f));
+#endif
+}
+
 MagickExport MagickBooleanType ClampImage(Image *image)
 {
   MagickBooleanType
@@ -774,10 +788,10 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
       q=image->colormap;
       for (i=0; i < (ssize_t) image->colors; i++)
       {
-        SetPixelRed(q,ClampToQuantum(GetPixelRed(q)));
-        SetPixelGreen(q,ClampToQuantum(GetPixelGreen(q)));
-        SetPixelBlue(q,ClampToQuantum(GetPixelBlue(q)));
-        SetPixelOpacity(q,ClampToQuantum(GetPixelOpacity(q)));
+        SetPixelRed(q,ClampPixel(GetPixelRed(q)));
+        SetPixelGreen(q,ClampPixel(GetPixelGreen(q)));
+        SetPixelBlue(q,ClampPixel(GetPixelBlue(q)));
+        SetPixelOpacity(q,ClampPixel(GetPixelOpacity(q)));
         q++;
       }
       return(SyncImage(image));
@@ -816,16 +830,16 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
-        SetPixelRed(q,ClampToQuantum(GetPixelRed(q)));
+        SetPixelRed(q,ClampPixel(GetPixelRed(q)));
       if ((channel & GreenChannel) != 0)
-        SetPixelGreen(q,ClampToQuantum(GetPixelGreen(q)));
+        SetPixelGreen(q,ClampPixel(GetPixelGreen(q)));
       if ((channel & BlueChannel) != 0)
-        SetPixelBlue(q,ClampToQuantum(GetPixelBlue(q)));
+        SetPixelBlue(q,ClampPixel(GetPixelBlue(q)));
       if ((channel & OpacityChannel) != 0)
-        SetPixelOpacity(q,ClampToQuantum(GetPixelOpacity(q)));
+        SetPixelOpacity(q,ClampPixel(GetPixelOpacity(q)));
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetPixelIndex(indexes+x,ClampToQuantum(GetPixelIndex(indexes+x)));
+        SetPixelIndex(indexes+x,ClampPixel(GetPixelIndex(indexes+x)));
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
