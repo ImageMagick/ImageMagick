@@ -96,6 +96,7 @@ sub testCompositeCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
+  $background->Clamp();
   $background->set(depth=>8);
 #  if ("$filter" eq "Atop") {
 #    $background->write(filename=>"$refimage_name", compression=>'None');
@@ -330,6 +331,7 @@ sub testReadCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
+  $srcimage->Clamp();
   $srcimage->set(depth=>8);
 
   # FIXME: The following statement should not be needed.
@@ -639,6 +641,7 @@ sub testReadWriteCompare {
   # Compare output file with reference image
   #
 
+  $image->Clamp();
   $image->set(depth=>8);
 
   # FIXME: The following statement should not be needed.
@@ -1187,6 +1190,7 @@ sub testFilterCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
+  $srcimage->Clamp();
   $srcimage->set(depth=>8);
 #  if ("$filter" eq "Shear") {
 #    $srcimage->Display();
