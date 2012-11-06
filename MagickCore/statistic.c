@@ -232,8 +232,8 @@ static inline double MagickMin(const double x,const double y)
   return(y);
 }
 
-static double ApplyEvaluateOperator(RandomInfo *random_info,
-  Quantum pixel,const MagickEvaluateOperator op,const double value)
+static double ApplyEvaluateOperator(RandomInfo *random_info,const Quantum pixel,
+  const MagickEvaluateOperator op,const double value)
 {
   double
     result;
@@ -283,8 +283,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case ExponentialEvaluateOperator:
     {
-      result=(double) (QuantumRange*exp((double) (value*QuantumScale*
-        pixel)));
+      result=(double) (QuantumRange*exp((double) (value*QuantumScale*pixel)));
       break;
     }
     case GaussianNoiseEvaluateOperator:
@@ -295,8 +294,8 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case ImpulseNoiseEvaluateOperator:
     {
-      result=(double) GenerateDifferentialNoise(random_info,pixel,
-        ImpulseNoise,value);
+      result=(double) GenerateDifferentialNoise(random_info,pixel,ImpulseNoise,
+        value);
       break;
     }
     case LaplacianNoiseEvaluateOperator:
@@ -313,8 +312,8 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,
     case LogEvaluateOperator:
     {
       if ((QuantumScale*pixel) >= MagickEpsilon)
-        result=(double) (QuantumRange*log((double) (QuantumScale*value*
-          pixel+1.0))/log((double) (value+1.0)));
+        result=(double) (QuantumRange*log((double) (QuantumScale*value*pixel+
+          1.0))/log((double) (value+1.0)));
       break;
     }
     case MaxEvaluateOperator:
@@ -355,14 +354,14 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case PoissonNoiseEvaluateOperator:
     {
-      result=(double) GenerateDifferentialNoise(random_info,pixel,
-        PoissonNoise,value);
+      result=(double) GenerateDifferentialNoise(random_info,pixel,PoissonNoise,
+        value);
       break;
     }
     case PowEvaluateOperator:
     {
-      result=(double) (QuantumRange*pow((double) (QuantumScale*pixel),
-        (double) value));
+      result=(double) (QuantumRange*pow((double) (QuantumScale*pixel),(double)
+        value));
       break;
     }
     case RightShiftEvaluateOperator:
@@ -393,8 +392,7 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case ThresholdEvaluateOperator:
     {
-      result=(double) (((double) pixel <= value) ? 0 :
-        QuantumRange);
+      result=(double) (((double) pixel <= value) ? 0 : QuantumRange);
       break;
     }
     case ThresholdBlackEvaluateOperator:
@@ -404,14 +402,13 @@ static double ApplyEvaluateOperator(RandomInfo *random_info,
     }
     case ThresholdWhiteEvaluateOperator:
     {
-      result=(double) (((double) pixel > value) ? QuantumRange :
-        pixel);
+      result=(double) (((double) pixel > value) ? QuantumRange : pixel);
       break;
     }
     case UniformNoiseEvaluateOperator:
     {
-      result=(double) GenerateDifferentialNoise(random_info,pixel,
-        UniformNoise,value);
+      result=(double) GenerateDifferentialNoise(random_info,pixel,UniformNoise,
+        value);
       break;
     }
     case XorEvaluateOperator:
