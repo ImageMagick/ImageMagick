@@ -1610,8 +1610,6 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
   }
   kernel_info->values[i/2]=(MagickRealType) (width*width-1.0);
   edge_image=ConvolveImage(image,kernel_info,exception);
-  if (edge_image != (Image *) NULL)
-    (void) ClampImage(edge_image,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(edge_image);
 }
@@ -3533,8 +3531,6 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   }
   kernel_info->values[i/2]=(double) ((-2.0)*normalize);
   sharp_image=ConvolveImage(image,kernel_info,exception);
-  if (sharp_image != (Image *) NULL)
-    (void) ClampImage(sharp_image,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(sharp_image);
 }
@@ -3852,8 +3848,6 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   }
   unsharp_image->type=image->type;
   unsharp_view=DestroyCacheView(unsharp_view);
-  if (unsharp_image != (Image *) NULL)
-    (void) ClampImage(unsharp_image,exception);
   image_view=DestroyCacheView(image_view);
   if (status == MagickFalse)
     unsharp_image=DestroyImage(unsharp_image);
