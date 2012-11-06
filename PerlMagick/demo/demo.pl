@@ -163,6 +163,7 @@ print "Detect Edges...\n";
 $example=$model->Clone();
 $example->Label('Detect Edges');
 $example->Edge('2x0.5');
+$example->Clamp();
 push(@$images,$example);
 
 print "Emboss...\n";
@@ -395,6 +396,7 @@ print "Sharpen...\n";
 $example=$model->Clone();
 $example->Label('Sharpen');
 $example->Sharpen('0.0x1.0');
+$example->Clamp();
 push(@$images,$example);
 
 print "Shave...\n";
@@ -450,6 +452,7 @@ print "Unsharp Mask...\n";
 $example=$model->Clone();
 $example->Label('Unsharp Mask');
 $example->UnsharpMask('0.0x1.0');
+$example->Clamp();
 push(@$images,$example);
 
 print "Vignette...\n";
