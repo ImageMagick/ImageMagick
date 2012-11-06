@@ -113,6 +113,7 @@ print "Composite...\n";
 $example=$model->Clone();
 $example->Label('Composite');
 $example->Composite(image=>$smile,compose=>'over',geometry=>'+35+65');
+$example->Clamp();
 push(@$images,$example);
 
 print "Contrast...\n";
@@ -249,6 +250,7 @@ print "Level...\n";
 $example=$model->Clone();
 $example->Label('Level');
 $example->Level('20%x');
+$example->Clamp();
 push(@$images,$example);
 
 print "Median Filter...\n";
