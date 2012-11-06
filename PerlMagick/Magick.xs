@@ -10924,7 +10924,9 @@ Mogrify(ref,...)
             epsilon=argument_list[0].real_reference;
           if (attribute_flag[1] != 0)
             channel=(ChannelType) argument_list[1].integer_reference;
-          (void) PerceptibleImageChannel(image,channel,epsilon,exception);
+          channel_mask=SetImageChannelMask(image,channel);
+          (void) PerceptibleImage(image,epsilon,exception);
+          (void) SetImageChannelMask(image,channel_mask);
           break;
         }
       }
