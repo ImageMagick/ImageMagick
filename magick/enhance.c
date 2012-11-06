@@ -2749,8 +2749,6 @@ MagickExport MagickBooleanType LevelImageChannel(Image *image,
       }
   }
   image_view=DestroyCacheView(image_view);
-  if (status != MagickFalse)
-    (void) ClampImage(image);
   return(status);
 }
 

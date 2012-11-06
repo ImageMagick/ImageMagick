@@ -220,7 +220,8 @@ static inline double MagickMin(const double x,const double y)
 }
 
 static MagickRealType ApplyEvaluateOperator(RandomInfo *random_info,
-  Quantum pixel,const MagickEvaluateOperator op,const MagickRealType value)
+  const Quantum pixel,const MagickEvaluateOperator op,
+  const MagickRealType value)
 {
   MagickRealType
     result;
