@@ -3020,6 +3020,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             row_offset=0;
 
           png_read_row(ping,ping_pixels+row_offset,NULL);
+
+          if (pass < num_passes-1)
+            continue;
+
           q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
           if (q == (Quantum *) NULL)
@@ -3141,6 +3145,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
           row_offset=0;
 
         png_read_row(ping,ping_pixels+row_offset,NULL);
+
+        if (pass < num_passes-1)
+          continue;
+
         q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
 
         if (q == (Quantum *) NULL)
