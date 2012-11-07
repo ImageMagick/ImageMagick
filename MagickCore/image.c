@@ -3925,17 +3925,18 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
   ResetImageOptionIterator(image_info);
 #if 0
   {
+    /* IMv6: Copy freeform global options into per-image artifacts, so
+     * various operations and coders can access them.
+     *
+     * This has a problem, as per-image artefacts may have been set in
+     * parenthesis, but may not be unset when parenthesis ends.
+     */
     char
       property[MaxTextExtent];
 
     const char
       *value;
 
-    /* IMv6: Copy freeform global options into per-image artifacts, so
-     * various operations and coders can access them.
-     * This has a problem, as artifacts may be set in parenthesis, but may
-     * not be unset when parenthesis ends.
-     */
     for (option=GetNextImageOption(image_info); option != (const char *) NULL; )
     {
       value=GetImageOption(image_info,option);
@@ -3948,15 +3949,20 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
     }
   }
 #else
-  /* IMv7: pointer for lookup of artifact fallback, back to global option.
-     This saves a lot of duplication of global options into per-image
-     artifacts, while ensuring only specificly set per-image artifacts
-     are preverved when parenthesis ends.
+  /* IMv7: pointer to allow the lookup of pre-image artefact will fallback to
+     a global option setting/define.  This saves a lot of duplication of
+     global options into per-image artifacts, while ensuring only specifically
+     set per-image artifacts are preverved when parenthesis ends.
 
-     WARNING: When a global option is set, any associated per-image artifact
-     should also be unset, as no longer valid.
-   */
-  image->image_info = CloneImageInfo(image_info);
+     This pointer is never explictally freed, as it is only used as a back
+     reference, not as the main pointer to the image_info structure.  Images
+     being removed from a image_info image list, should have this pointer
+     reset to NULL.
+
+     WARNING: when a global option is set or unset, any equivelent per-image
+     artefact should also be unset.
+  */
+  image->image_info = image_info;
 #endif
   return(MagickTrue);
 }

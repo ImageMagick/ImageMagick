@@ -2044,7 +2044,7 @@ MagickExport ssize_t GetCommandOptionFlags(const CommandOption option,
 %  to speed up the lookup for that very large table, and returns both the
 %  type (arg count) and flags (arg type).
 %
-%  This search reduces linear search of over 500 options (250 tests of
+%  This search reduces linear search of over 500 options (250 tests on
 %  average) to about 10 lookups!
 %
 %  The format of the GetCommandOptionInfo method is:
@@ -2745,7 +2745,7 @@ MagickExport MagickBooleanType SetImageOption(ImageInfo *image_info,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
       image_info->filename);
 
-  /* FUTURE: This should not be here! - but others might */
+  /* Specific global option settings */
   if (LocaleCompare(option,"size") == 0)
     (void) CloneString(&image_info->size,value);
 
