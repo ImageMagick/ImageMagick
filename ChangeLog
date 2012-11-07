@@ -1,7 +1,7 @@
 2012-11-08  6.8.0-5 Glenn Randers-Pehrson <glennrp@image...>
   * Implemented faster decoding of interlaced PNG images.
 
-2012-11-08  6.8.0-5 Cristy  <quetzlzacatenango@image...>
+2012-11-08  6.8.0-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Added % escape prefixes %[artefact:..] and %[option:..]
     Including glob search,  EG:  -print "__Options__\n%[option:*]"
     (backport from IMv7 changes)
