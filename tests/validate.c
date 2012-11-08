@@ -1483,8 +1483,20 @@ int main(int argc,char **argv)
             tests+=ValidateImageFormatsInMemory(image_info,reference_filename,
               output_filename,&fail,exception);
           if ((type & FormatsOnDiskValidate) != 0)
-            tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
-              output_filename,&fail,exception);
+            {
+              /*
+                Validate image formats on disk with pixel cache in
+                memory, memory-mapped, and on disk.
+              */
+              tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
+                output_filename,&fail,exception);
+              (void) SetMagickResourceLimit(MemoryResource,0);
+              tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
+                output_filename,&fail,exception);
+              (void) SetMagickResourceLimit(MapResource,0);
+              tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
+                output_filename,&fail,exception);
+            }
           if ((type & IdentifyValidate) != 0)
             tests+=ValidateIdentifyCommand(image_info,reference_filename,
               output_filename,&fail,exception);
