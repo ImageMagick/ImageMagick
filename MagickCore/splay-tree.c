@@ -132,8 +132,8 @@ static void
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  AddValueToSplayTree() adds the given key and value to the splay-tree.
-%  Both key and value are used as is, without coping or cloning. Returning
-%  MagickTrue on success.
+%  Both key and value are used as is, without coping or cloning.  It returns
+%  MagickTrue on success, otherwise MagickFalse.
 %
 %  The format of the AddValueToSplayTree method is:
 %
