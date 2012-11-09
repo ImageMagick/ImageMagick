@@ -1484,15 +1484,14 @@ int main(int argc,char **argv)
               output_filename,&fail,exception);
           if ((type & FormatsOnDiskValidate) != 0)
             {
-              /*
-                Validate image formats on disk with pixel cache in
-                memory, memory-mapped, and on disk.
-              */
+              (void) FormatLocaleFile(stdout,"[pixel-cache: memory] ");
               tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
                 output_filename,&fail,exception);
+              (void) FormatLocaleFile(stdout,"[pixel-cache: memory-mapped] ");
               (void) SetMagickResourceLimit(MemoryResource,0);
               tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
                 output_filename,&fail,exception);
+              (void) FormatLocaleFile(stdout,"[pixel-cache: disk] ");
               (void) SetMagickResourceLimit(MapResource,0);
               tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
                 output_filename,&fail,exception);
