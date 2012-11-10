@@ -84,8 +84,8 @@
 %
 */
 static size_t ValidateCompareCommand(ImageInfo *image_info,
-  const char *reference_filename,const char *output_filename,
-  size_t *fail,ExceptionInfo *exception)
+  const char *reference_filename,const char *output_filename,size_t *fail,
+  ExceptionInfo *exception)
 {
   char
     **arguments,
@@ -175,8 +175,8 @@ static size_t ValidateCompareCommand(ImageInfo *image_info,
 %
 */
 static size_t ValidateCompositeCommand(ImageInfo *image_info,
-  const char *reference_filename,const char *output_filename,
-  size_t *fail,ExceptionInfo *exception)
+  const char *reference_filename,const char *output_filename,size_t *fail,
+  ExceptionInfo *exception)
 {
   char
     **arguments,
@@ -267,8 +267,8 @@ static size_t ValidateCompositeCommand(ImageInfo *image_info,
 %
 */
 static size_t ValidateConvertCommand(ImageInfo *image_info,
-  const char *reference_filename,const char *output_filename,
-  size_t *fail,ExceptionInfo *exception)
+  const char *reference_filename,const char *output_filename,size_t *fail,
+  ExceptionInfo *exception)
 {
   char
     **arguments,
@@ -358,8 +358,8 @@ static size_t ValidateConvertCommand(ImageInfo *image_info,
 %
 */
 static size_t ValidateIdentifyCommand(ImageInfo *image_info,
-  const char *reference_filename,const char *output_filename,
-  size_t *fail,ExceptionInfo *exception)
+  const char *reference_filename,const char *output_filename,size_t *fail,
+  ExceptionInfo *exception)
 {
   char
     **arguments,
@@ -450,8 +450,8 @@ static size_t ValidateIdentifyCommand(ImageInfo *image_info,
 %
 */
 static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
-  const char *reference_filename,const char *output_filename,
-  size_t *fail,ExceptionInfo *exception)
+  const char *reference_filename,const char *output_filename,size_t *fail,
+  ExceptionInfo *exception)
 {
   char
     size[MaxTextExtent];
@@ -696,8 +696,8 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
 %
 */
 static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
-  const char *reference_filename,const char *output_filename,
-  size_t *fail,ExceptionInfo *exception)
+  const char *reference_filename,const char *output_filename,size_t *fail,
+  ExceptionInfo *exception)
 {
   char
     size[MaxTextExtent];
@@ -908,8 +908,8 @@ static size_t ValidateImageFormatsOnDisk(ImageInfo *image_info,
 %
 */
 static size_t ValidateImportExportPixels(ImageInfo *image_info,
-  const char *reference_filename,const char *output_filename,
-  size_t *fail,ExceptionInfo *exception)
+  const char *reference_filename,const char *output_filename,size_t *fail,
+  ExceptionInfo *exception)
 {
   double
     distortion;
@@ -1085,8 +1085,8 @@ static size_t ValidateImportExportPixels(ImageInfo *image_info,
 %
 */
 static size_t ValidateMontageCommand(ImageInfo *image_info,
-  const char *reference_filename,const char *output_filename,
-  size_t *fail,ExceptionInfo *exception)
+  const char *reference_filename,const char *output_filename,size_t *fail,
+  ExceptionInfo *exception)
 {
   char
     **arguments,
@@ -1177,8 +1177,8 @@ static size_t ValidateMontageCommand(ImageInfo *image_info,
 %
 */
 static size_t ValidateStreamCommand(ImageInfo *image_info,
-  const char *reference_filename,const char *output_filename,
-  size_t *fail,ExceptionInfo *exception)
+  const char *reference_filename,const char *output_filename,size_t *fail,
+  ExceptionInfo *exception)
 {
   char
     **arguments,
