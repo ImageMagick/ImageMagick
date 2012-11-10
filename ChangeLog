@@ -1,3 +1,6 @@
+2012-11-10  6.8.0-5 Cristy  <quetzlzacatenango@image...>
+  * Revert HCL saturation strategy patch, it improperly clips white to black.
+
 2012-11-08  6.8.0-5 Glenn Randers-Pehrson <glennrp@image...>
   * Implemented faster decoding of interlaced PNG images.
 
