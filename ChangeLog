@@ -2,6 +2,8 @@
   * Revert HCL saturation strategy patch, it improperly clips white to black.
   * Default to -dEPSCrop for Ghostscript unless eps:use-crop=false (reference
     https://bugzilla.redhat.com/show_bug.cgi?id=832690#c2).
+  * Add support for -poly, build a polynomial from the image sequence and the
+    corresponding terms (coefficients and degree pairs + constant).
 
 2012-11-08  6.8.0-5 Glenn Randers-Pehrson <glennrp@image...>
   * Implemented faster decoding of interlaced PNG images.
