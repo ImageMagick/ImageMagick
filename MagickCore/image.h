@@ -329,7 +329,7 @@ struct _Image
     *properties,       /* general settings, to save with iamge */
     *artifacts;        /* general operational/coder settings, not saved */
 
-  struct _ImageInfo
+  const struct _ImageInfo
     *image_info;       /* (Optional) Image belongs to this ImageInfo 'list'
                         * For access to 'global options' when no per-image
                         * attribute, properity, or artifact has been set.
