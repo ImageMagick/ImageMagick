@@ -535,6 +535,8 @@ static const OptionInfo
     { "-pointsize", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "+polaroid", 0L, SimpleOperatorFlag, MagickFalse },
     { "-polaroid", 1L, SimpleOperatorFlag, MagickFalse },
+    { "+poly", 1L, DeprecateOptionFlag | FireOptionFlag, MagickTrue },
+    { "-poly", 1L, ListOperatorFlag | FireOptionFlag, MagickFalse },
     { "+posterize", 1L, DeprecateOptionFlag, MagickTrue },
     { "-posterize", 1L, SimpleOperatorFlag, MagickFalse },
     { "+precision", 0L, ImageInfoOptionFlag, MagickFalse },
