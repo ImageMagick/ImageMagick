@@ -520,6 +520,8 @@ static const OptionInfo
     { "-pen", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag | DeprecateOptionFlag, MagickFalse },
     { "+ping", 0L, ImageInfoOptionFlag, MagickFalse },
     { "-ping", 0L, ImageInfoOptionFlag, MagickFalse },
+    { "+poly", 1L, DeprecateOptionFlag | FireOptionFlag, MagickFalse },
+    { "-poly", 1L, ListOperatorOptionFlag | FireOptionFlag, MagickFalse },
     { "+pointsize", 0L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "-pointsize", 1L, ImageInfoOptionFlag | DrawInfoOptionFlag, MagickFalse },
     { "+polaroid", 0L, SimpleOperatorOptionFlag, MagickFalse },
