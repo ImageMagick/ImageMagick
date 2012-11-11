@@ -1752,6 +1752,69 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%     P o l y n o m i a l I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PolynomialImage() returns a new image where each pixel is the sum of the
+%  pixels in the image sequence after applying its corresponding terms
+%  (coefficients and degree pairs) and a constant.
+%
+%  The format of the PolynomialImage method is:
+%
+%      Image *PolynomialImage(const Image *image,const size_t number_terms,
+%        const double *terms,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o number_terms: the number of terms in the list.  The actual list length
+%      is 2 x number_terms + 1 (the constant).
+%
+%    o terms: the list of polynomial coefficients and degree pairs and a
+%      constant.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+*/
+
+MagickExport Image *PolynomialImage(const Image *image,
+  const size_t number_terms,const double *terms,ExceptionInfo *exception)
+{
+  Image
+    *polynomial_image;
+
+  MagickBooleanType
+    status;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(terms != (double *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  polynomial_image=CloneImage(image,image->columns,image->rows,MagickTrue,
+    exception);
+  if (polynomial_image == (Image *) NULL)
+    return((Image *) NULL);
+  status=SetImageStorageClass(polynomial_image,DirectClass,exception);
+  if (status == MagickFalse)
+    {
+      polynomial_image=DestroyImage(polynomial_image);
+      return((Image *) NULL);
+    }
+  return(polynomial_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %     S t a t i s t i c I m a g e                                             %
 %                                                                             %
 %                                                                             %

@@ -105,6 +105,7 @@ extern MagickExport ChannelStatistics
 
 extern MagickExport Image
   *EvaluateImages(const Image *,const MagickEvaluateOperator,ExceptionInfo *),
+  *PolynomialImage(const Image *,const size_t,const double *,ExceptionInfo *),
   *StatisticImage(const Image *,const StatisticType,const size_t,const size_t,
     ExceptionInfo *);
 
