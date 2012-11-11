@@ -2875,6 +2875,22 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             _image->interpolate,_exception);
           break;
         }
+      if (LocaleCompare("poly",option+1) == 0)
+        {
+          double
+            *args;
+
+          ssize_t
+            count;
+
+          /* convert argument string into an array of doubles */
+          args = StringToArrayOfDoubles(arg2,&count,_exception);
+          if (args == (double *)NULL )
+            CLIWandExceptArgBreak(OptionError,"InvalidNumberList",option,arg2);
+          new_image=PolynomialImage(_image,count >> 1,args,_exception);
+          args=(double *) RelinquishMagickMemory(args);
+          break;
+        }
       if (LocaleCompare("posterize",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);

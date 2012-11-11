@@ -539,6 +539,8 @@ static struct
       {"width", IntegerReference},{"height", IntegerReference},
       {"channel", MagickChannelOptions}, {"type", MagickStatisticOptions} } },
     { "Perceptible", { {"epsilon", RealReference},
+      {"channel", MagickChannelOptions} } },
+    { "Poly", { {"terms", ArrayReference},
       {"channel", MagickChannelOptions} } }
   };
 
@@ -7357,6 +7359,8 @@ Mogrify(ref,...)
     StatisticImage     = 270
     Perceptible        = 271
     PerceptibleImage   = 272
+    Poly               = 273
+    PolyImage          = 274
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -10927,6 +10931,36 @@ Mogrify(ref,...)
           channel_mask=SetImageChannelMask(image,channel);
           (void) PerceptibleImage(image,epsilon,exception);
           (void) SetImageChannelMask(image,channel_mask);
+          break;
+        }
+        case 136:  /* Poly */
+        {
+          AV
+            *av;
+
+          double
+            *terms;
+
+          size_t
+            number_terms;
+
+          if (attribute_flag[0] == 0)
+            break;
+          if (attribute_flag[1] != 0)
+            channel=(ChannelType) argument_list[1].integer_reference;
+          av=(AV *) argument_list[0].array_reference;
+          number_terms=(size_t) av_len(av);
+          terms=(double *) AcquireQuantumMemory(number_terms,sizeof(*terms));
+          if (terms == (double *) NULL)
+            {
+              ThrowPerlException(exception,ResourceLimitFatalError,
+                "MemoryAllocationFailed",PackageName);
+              goto PerlException;
+            }
+          for (j=0; j < av_len(av); j++)
+            terms[j]=(double) SvNV(*(av_fetch(av,j,0)));
+          image=PolynomialImage(image,number_terms >> 1,terms,exception);
+          terms=(double *) RelinquishMagickMemory(terms);
           break;
         }
       }

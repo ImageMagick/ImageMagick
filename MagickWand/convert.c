@@ -327,6 +327,8 @@ static MagickBooleanType ConvertUsage(void)
       "-hald-clut           apply a Hald color lookup table to the image",
       "-morph value         morph an image sequence",
       "-mosaic              create a mosaic from an image sequence",
+      "-poly terms          build a polynomial from the image sequence and the corresponding",
+      "                     terms (coefficients and degree pairs + constant).",
       "-print string        interpret string and print to console",
       "-process arguments   process the image with a custom image filter",
       "-smush geometry      smush an image sequence together",
@@ -660,6 +662,8 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             i++;
             if (i == (ssize_t) (argc-1))
               ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
             break;
           }
         if (LocaleCompare("alpha",option+1) == 0)
@@ -2182,6 +2186,17 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             break;
           }
         if (LocaleCompare("polaroid",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) (argc-1))
+              ThrowConvertException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowConvertInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("poly",option+1) == 0)
           {
             if (*option == '+')
               break;

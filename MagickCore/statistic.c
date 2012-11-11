@@ -1760,7 +1760,7 @@ MagickExport ChannelStatistics *GetImageStatistics(const Image *image,
 %
 %  PolynomialImage() returns a new image where each pixel is the sum of the
 %  pixels in the image sequence after applying its corresponding terms
-%  (coefficients and degree pairs) and a constant.
+%  (coefficient and degree pairs) and a constant.
 %
 %  The format of the PolynomialImage method is:
 %
