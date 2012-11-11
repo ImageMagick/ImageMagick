@@ -346,6 +346,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     options[MaxTextExtent],
     postscript_filename[MaxTextExtent];
 
+  const char
+    *option;
+
   const DelegateInfo
     *delegate_info;
 
@@ -772,8 +775,9 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (read_info->scenes != (char *) NULL)
         *read_info->scenes='\0';
     }
+  option=GetImageOption(image_info,"eps:use-cropbox");
   if ((*image_info->magick == 'E') && ((option == (const char *) NULL) || 
-      (IsMagickTrue(option) != MagickFalse)))
+      (IsStringTrue(option) != MagickFalse)))
     (void) ConcatenateMagickString(options,"-dEPSCrop ",MaxTextExtent);
   (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
   (void) AcquireUniqueFilename(filename);
