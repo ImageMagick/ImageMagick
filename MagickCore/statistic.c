@@ -696,8 +696,8 @@ MagickExport Image *EvaluateImages(const Image *images,
               if ((traits & UpdatePixelTrait) == 0)
                 continue;
               evaluate_pixel[x].channel[i]=ApplyEvaluateOperator(
-                random_info[id],GetPixelChannel(image,channel,p),j ==
-                0 ? AddEvaluateOperator : op,evaluate_pixel[x].channel[i]);
+                random_info[id],GetPixelChannel(image,channel,p),j == 0 ?
+                AddEvaluateOperator : op,evaluate_pixel[x].channel[i]);
             }
             p+=GetPixelChannels(next);
           }
