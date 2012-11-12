@@ -1909,7 +1909,7 @@ MagickExport Image *PolynomialImage(const Image *images,
           if ((traits & UpdatePixelTrait) == 0)
             continue;
           coefficient=(MagickRealType) terms[2*i];
-          degree=(MagickRealType) terms[2*i+1];
+          degree=(MagickRealType) terms[(i << 1)+1];
           polynomial_pixel[x].channel[i]+=coefficient*
             pow(GetPixelChannel(image,channel,p),degree);
         }
