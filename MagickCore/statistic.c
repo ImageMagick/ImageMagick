@@ -1898,7 +1898,7 @@ MagickExport Image *PolynomialImage(const Image *images,
             polynomial_traits,
             traits;
 
-          if ((i << 1) >= (ssize_t) number_terms)
+          if ((i >> 1) >= (ssize_t) number_terms)
             continue;
           channel=GetPixelChannelChannel(image,i);
           traits=GetPixelChannelTraits(next,channel);
