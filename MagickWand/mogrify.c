@@ -2316,7 +2316,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Polynomial image.
             */
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            args=InterpretImageProperties(mogrify_info,*image,argv[i+2],
+            args=InterpretImageProperties(mogrify_info,*image,argv[i+1],
               exception);
             if (args == (char *) NULL)
               break;
