@@ -2351,7 +2351,7 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               Polynomial image.
             */
             (void) SyncImageSettings(mogrify_info,*image);
-            args=InterpretImageProperties(mogrify_info,*image,argv[i+2]);
+            args=InterpretImageProperties(mogrify_info,*image,argv[i+1]);
             InheritException(exception,&(*image)->exception);
             if (args == (char *) NULL)
               break;
@@ -2407,8 +2407,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             if (*option == '+')
               preview_type=UndefinedPreview;
             else
-              preview_type=(PreviewType) ParseCommandOption(MagickPreviewOptions,
-                MagickFalse,argv[i+1]);
+              preview_type=(PreviewType) ParseCommandOption(
+                MagickPreviewOptions,MagickFalse,argv[i+1]);
             mogrify_image=PreviewImage(*image,preview_type,exception);
             break;
           }
