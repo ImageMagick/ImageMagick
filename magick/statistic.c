@@ -1888,7 +1888,7 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
 %
 %  PolynomialImage() returns a new image where each pixel is the sum of the
 %  pixels in the image sequence after applying its corresponding terms
-%  (coefficient and degree pairs) and a constant.
+%  (coefficient and degree pairs).
 %
 %  The format of the PolynomialImage method is:
 %
@@ -2064,19 +2064,6 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
       }
       image_view=DestroyCacheView(image_view);
       next=GetNextImageInList(next);
-    }
-    for (x=0; x < (ssize_t) next->columns; x++)
-    {
-      MagickRealType
-        constant;
-
-      constant=(MagickRealType) terms[number_terms << 1];
-      polynomial_pixel[x].red+=constant;
-      polynomial_pixel[x].green+=constant;
-      polynomial_pixel[x].blue+=constant;
-      polynomial_pixel[x].opacity+=constant;
-      if (image->colorspace == CMYKColorspace)
-        polynomial_pixel[x].index=constant;
     }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
