@@ -96,6 +96,7 @@ static const MagicMapInfo
     { "BMP", 0, MagickString("CI") },
     { "BMP", 0, MagickString("CP") },
     { "BMP", 0, MagickString("IC") },
+    { "PICT", 0, MagickString("PICT") },
     { "BMP", 0, MagickString("PI") },
     { "CALS", 21, MagickString("version: MIL-STD-1840") },
     { "CALS", 0, MagickString("srcdocid:") },

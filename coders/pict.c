@@ -745,6 +745,13 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
 */
 static MagickBooleanType IsPICT(const unsigned char *magick,const size_t length)
 {
+  if (length < 12)
+    return(MagickFalse);
+  /*
+    Embedded OLE2 macintosh have "PICT" instead of 512 platform header.
+  */
+  if (memcmp(magick,"PICT",4) == 0)
+    return(MagickTrue);
   if (length < 528)
     return(MagickFalse);
   if (memcmp(magick+522,"\000\021\002\377\014\000",6) == 0)
@@ -793,7 +800,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
-    geometry[MaxTextExtent];
+    geometry[MaxTextExtent],
+    header_ole[4];
 
   Image
     *image;
@@ -859,8 +867,17 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   */
   pixmap.bits_per_pixel=0;
   pixmap.component_count=0;
-  for (i=0; i < 512; i++)
-    (void) ReadBlobByte(image);  /* skip header */
+  /*
+    Skip header : 512 for standard PICT and 4, ie "PICT" for OLE2.
+  */
+  header_ole[0]=ReadBlobByte(image);
+  header_ole[1]=ReadBlobByte(image);
+  header_ole[2]=ReadBlobByte(image);
+  header_ole[3]=ReadBlobByte(image);
+  if (!((header_ole[0] == 0x50) && (header_ole[1] == 0x49) &&
+      (header_ole[2] == 0x43) && (header_ole[3] == 0x54 )))
+    for (i=0; i < 508; i++)
+      (void) ReadBlobByte(image);
   (void) ReadBlobMSBShort(image);  /* skip picture size */
   ReadRectangle(image,frame);
   while ((c=ReadBlobByte(image)) == 0) ;
