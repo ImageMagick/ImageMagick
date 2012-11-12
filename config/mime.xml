@@ -755,6 +755,7 @@
   <mime type="image/x-pict" description="Macintosh Quickdraw/PICT drawing" priority="100" pattern="*.pict" />
   <mime type="image/x-pict" description="Macintosh Quickdraw/PICT drawing" priority="100" pattern="*.pict1" />
   <mime type="image/x-pict" description="Macintosh Quickdraw/PICT drawing" priority="100" pattern="*.pict2" />
+  <mime type="image/x-pict" description="Macintosh Quickdraw/PICT drawing" data-type="string" offset="0" magic="PICT" priority="50" />
   <mime type="application/x-ufraw" acronym="UFRaw" description="Unidentified Flying Raw" priority="100" pattern="*.ufraw" />
   <mime type="image/x-adobe-dng" acronym="DNG" description="Digital Negative" priority="100" pattern="*.dng" />
   <mime type="image/x-canon-crw" description="Canon RaW" data-type="string" offset="0" magic="II\x1a\x00\x00\x00HEAPCCDR" priority="50" />
