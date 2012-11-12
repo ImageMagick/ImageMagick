@@ -2051,7 +2051,7 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
           degree;
 
         coefficient=terms[i << 1];
-        degree=terms[i << 1+1];
+        degree=terms[(i << 1)+1];
         polynomial_pixel[x].red+=coefficient*pow((double) p->red,degree);
         polynomial_pixel[x].green+=coefficient*pow((double) p->green,degree);
         polynomial_pixel[x].blue+=coefficient*pow((double) p->blue,degree);
