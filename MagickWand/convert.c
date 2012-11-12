@@ -328,7 +328,7 @@ static MagickBooleanType ConvertUsage(void)
       "-morph value         morph an image sequence",
       "-mosaic              create a mosaic from an image sequence",
       "-poly terms          build a polynomial from the image sequence and the corresponding",
-      "                     terms (coefficients and degree pairs + constant).",
+      "                     terms (coefficients and degree pairs).",
       "-print string        interpret string and print to console",
       "-process arguments   process the image with a custom image filter",
       "-smush geometry      smush an image sequence together",
