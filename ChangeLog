@@ -4,6 +4,8 @@
     https://bugzilla.redhat.com/show_bug.cgi?id=832690#c2).
   * Add support for -poly, build a polynomial from the image sequence and the
     corresponding terms (coefficients and degree pairs + constant).
+  * Support the OLE Macintosh image format (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=22257).
 
 2012-11-08  6.8.0-5 Glenn Randers-Pehrson <glennrp@image...>
   * Implemented faster decoding of interlaced PNG images.
