@@ -2294,60 +2294,6 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
               interpolate_method,exception);
             break;
           }
-        if (LocaleCompare("poly",option+1) == 0)
-          {
-            char
-              *args,
-              token[MaxTextExtent];
-
-            const char
-              *p;
-
-            double
-              *arguments;
-
-            register ssize_t
-              x;
-
-            size_t
-              number_arguments;
-
-            /*
-              Polynomial image.
-            */
-            (void) SyncImageSettings(mogrify_info,*image,exception);
-            args=InterpretImageProperties(mogrify_info,*image,argv[i+1],
-              exception);
-            if (args == (char *) NULL)
-              break;
-            p=(char *) args;
-            for (x=0; *p != '\0'; x++)
-            {
-              GetMagickToken(p,&p,token);
-              if (*token == ',')
-                GetMagickToken(p,&p,token);
-            }
-            number_arguments=(size_t) x;
-            arguments=(double *) AcquireQuantumMemory(number_arguments,
-              sizeof(*arguments));
-            if (arguments == (double *) NULL)
-              ThrowWandFatalException(ResourceLimitFatalError,
-                "MemoryAllocationFailed",(*image)->filename);
-            (void) ResetMagickMemory(arguments,0,number_arguments*
-              sizeof(*arguments));
-            p=(char *) args;
-            for (x=0; (x < (ssize_t) number_arguments) && (*p != '\0'); x++)
-            {
-              GetMagickToken(p,&p,token);
-              if (*token == ',')
-                GetMagickToken(p,&p,token);
-              arguments[x]=StringToDouble(token,(char **) NULL);
-            }
-            args=DestroyString(args);
-            mogrify_image=PolynomialImage(*image,number_arguments >> 1,
-              arguments,exception);
-            arguments=(double *) RelinquishMagickMemory(arguments);
-          }
         if (LocaleCompare("posterize",option+1) == 0)
           {
             /*
@@ -8090,6 +8036,70 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
       }
       case 'p':
       {
+        if (LocaleCompare("poly",option+1) == 0)
+          {
+            char
+              *args,
+              token[MaxTextExtent];
+
+            const char
+              *p;
+
+            double
+              *arguments;
+
+            Image
+              *polynomial_image;
+
+            register ssize_t
+              x;
+
+            size_t
+              number_arguments;
+
+            /*
+              Polynomial image.
+            */
+            (void) SyncImageSettings(mogrify_info,*images,exception);
+            args=InterpretImageProperties(mogrify_info,*images,argv[i+1],
+              exception);
+            if (args == (char *) NULL)
+              break;
+            p=(char *) args;
+            for (x=0; *p != '\0'; x++)
+            {
+              GetMagickToken(p,&p,token);
+              if (*token == ',')
+                GetMagickToken(p,&p,token);
+            }
+            number_arguments=(size_t) x;
+            arguments=(double *) AcquireQuantumMemory(number_arguments,
+              sizeof(*arguments));
+            if (arguments == (double *) NULL)
+              ThrowWandFatalException(ResourceLimitFatalError,
+                "MemoryAllocationFailed",(*images)->filename);
+            (void) ResetMagickMemory(arguments,0,number_arguments*
+              sizeof(*arguments));
+            p=(char *) args;
+            for (x=0; (x < (ssize_t) number_arguments) && (*p != '\0'); x++)
+            {
+              GetMagickToken(p,&p,token);
+              if (*token == ',')
+                GetMagickToken(p,&p,token);
+              arguments[x]=StringToDouble(token,(char **) NULL);
+            }
+            args=DestroyString(args);
+            polynomial_image=PolynomialImage(*images,number_arguments >> 1,
+              arguments,exception);
+            arguments=(double *) RelinquishMagickMemory(arguments);
+            if (polynomial_image == (Image *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            *images=DestroyImageList(*images);
+            *images=polynomial_image;
+          }
         if (LocaleCompare("print",option+1) == 0)
           {
             char

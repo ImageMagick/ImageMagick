@@ -1868,6 +1868,8 @@ MagickExport Image *PolynomialImage(const Image *images,
       register const Quantum
         *p;
 
+      if (j >= (ssize_t) number_terms)
+        continue;
       image_view=AcquireVirtualCacheView(next,exception);
       p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
       if (p == (const Quantum *) NULL)
@@ -1898,8 +1900,6 @@ MagickExport Image *PolynomialImage(const Image *images,
             polynomial_traits,
             traits;
 
-          if ((i >> 1) >= (ssize_t) number_terms)
-            continue;
           channel=GetPixelChannelChannel(image,i);
           traits=GetPixelChannelTraits(next,channel);
           polynomial_traits=GetPixelChannelTraits(image,channel);
