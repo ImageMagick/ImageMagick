@@ -2052,13 +2052,14 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
 
         coefficient=terms[i << 1];
         degree=terms[(i << 1)+1];
-        polynomial_pixel[x].red+=coefficient*pow((double) p->red,degree);
-        polynomial_pixel[x].green+=coefficient*pow((double) p->green,degree);
-        polynomial_pixel[x].blue+=coefficient*pow((double) p->blue,degree);
-        polynomial_pixel[x].opacity+=coefficient*pow((double) p->opacity,
+        polynomial_pixel[x].red+=coefficient*pow(QuantumScale*p->red,degree);
+        polynomial_pixel[x].green+=coefficient*pow(QuantumScale*p->green,
+          degree);
+        polynomial_pixel[x].blue+=coefficient*pow(QuantumScale*p->blue,degree);
+        polynomial_pixel[x].opacity+=coefficient*pow(QuantumScale*p->opacity,
           degree);
         if (image->colorspace == CMYKColorspace)
-          polynomial_pixel[x].index+=coefficient*pow((double) indexes[x],
+          polynomial_pixel[x].index+=coefficient*pow(QuantumScale*indexes[x],
             degree);
         p++;
       }
@@ -2067,15 +2068,17 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
     }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelRed(q,ClampToQuantum(polynomial_pixel[x].red));
-      SetPixelGreen(q,ClampToQuantum(polynomial_pixel[x].green));
-      SetPixelBlue(q,ClampToQuantum(polynomial_pixel[x].blue));
+      SetPixelRed(q,ClampToQuantum(QuantumRange*polynomial_pixel[x].red));
+      SetPixelGreen(q,ClampToQuantum(QuantumRange*polynomial_pixel[x].green));
+      SetPixelBlue(q,ClampToQuantum(QuantumRange*polynomial_pixel[x].blue));
       if (image->matte == MagickFalse)
-        SetPixelOpacity(q,ClampToQuantum(polynomial_pixel[x].opacity));
+        SetPixelOpacity(q,ClampToQuantum(QuantumRange*
+          polynomial_pixel[x].opacity));
       else
-        SetPixelAlpha(q,ClampToQuantum(polynomial_pixel[x].opacity));
+        SetPixelAlpha(q,ClampToQuantum(QuantumRange*
+          polynomial_pixel[x].opacity));
       if (image->colorspace == CMYKColorspace)
-        SetPixelIndex(polynomial_indexes+x,ClampToQuantum(
+        SetPixelIndex(polynomial_indexes+x,ClampToQuantum(QuantumRange*
           polynomial_pixel[x].index));
       q++;
     }
