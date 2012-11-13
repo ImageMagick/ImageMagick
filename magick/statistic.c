@@ -2034,8 +2034,8 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
       register const PixelPacket
         *p;
 
-      if ((i >> 1) >= (ssize_t) number_terms)
-        continue;
+      if (i >= (ssize_t) number_terms)
+        break;
       image_view=AcquireVirtualCacheView(next,exception);
       p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
       if (p == (const PixelPacket *) NULL)
