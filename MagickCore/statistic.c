@@ -1911,7 +1911,7 @@ MagickExport Image *PolynomialImage(const Image *images,
           coefficient=(MagickRealType) terms[2*i];
           degree=(MagickRealType) terms[(i << 1)+1];
           polynomial_pixel[x].channel[i]+=coefficient*
-            pow(GetPixelChannel(image,channel,p),degree);
+            pow(QuantumScale*GetPixelChannel(image,channel,p),degree);
         }
         p+=GetPixelChannels(next);
       }
@@ -1942,7 +1942,7 @@ MagickExport Image *PolynomialImage(const Image *images,
           continue;
         if ((traits & UpdatePixelTrait) == 0)
           continue;
-        q[i]=ClampToQuantum(polynomial_pixel[x].channel[i]);
+        q[i]=ClampToQuantum(QuantumRange*polynomial_pixel[x].channel[i]);
       }
       q+=GetPixelChannels(image);
     }
