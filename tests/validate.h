@@ -262,7 +262,6 @@ static const struct ReferenceFormats
     { "GIF87", UndefinedCompression, 0.0 },
     { "GRAY", UndefinedCompression, 0.003 },
     { "HTM", UndefinedCompression, 0.0 },
-    { "HRZ", UndefinedCompression, 0.0 },
     { "HTML", UndefinedCompression, 0.0 },
     { "ICB", UndefinedCompression, 0.0 },
     { "ICO", UndefinedCompression, 0.0 },
