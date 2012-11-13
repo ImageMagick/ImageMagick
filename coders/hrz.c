@@ -158,9 +158,9 @@ static Image *ReadHRZImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelRed(q,4*ScaleCharToQuantum(*p++));
-      SetPixelGreen(q,4*ScaleCharToQuantum(*p++));
-      SetPixelBlue(q,4*ScaleCharToQuantum(*p++));
+      SetPixelRed(q,ScaleCharToQuantum(4**p++));
+      SetPixelGreen(q,ScaleCharToQuantum(4**p++));
+      SetPixelBlue(q,ScaleCharToQuantum(4**p++));
       SetPixelOpacity(q,OpaqueOpacity);
       q++;
     }
@@ -325,9 +325,9 @@ static MagickBooleanType WriteHRZImage(const ImageInfo *image_info,Image *image)
     q=pixels;
     for (x=0; x < (ssize_t) hrz_image->columns; x++)
     {
-      *q++=ScaleQuantumToChar(GetPixelRed(p))/4;
-      *q++=ScaleQuantumToChar(GetPixelGreen(p))/4;
-      *q++=ScaleQuantumToChar(GetPixelBlue(p))/4;
+      *q++=ScaleQuantumToChar(GetPixelRed(p)/4);
+      *q++=ScaleQuantumToChar(GetPixelGreen(p)/4);
+      *q++=ScaleQuantumToChar(GetPixelBlue(p)/4);
       p++;
     }
     count=WriteBlob(image,(size_t) (q-pixels),pixels);
