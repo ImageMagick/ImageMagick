@@ -332,6 +332,35 @@ MagickExport size_t GetQuantumExtent(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t Q u a n t u m E n d i a n                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetQuantumEndian() returns the quantum endian of the image.
+%
+%  The endian of the GetQuantumEndian method is:
+%
+%      EndianType GetQuantumEndian(const QuantumInfo *quantum_info)
+%
+%  A description of each parameter follows:
+%
+%    o quantum_info: the quantum info.
+%
+*/
+MagickExport EndianType GetQuantumEndian(const QuantumInfo *quantum_info)
+{
+  assert(quantum_info != (QuantumInfo *) NULL);
+  assert(quantum_info->signature == MagickSignature);
+  return(quantum_info->endian);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t Q u a n t u m F o r m a t                                           %
 %                                                                             %
 %                                                                             %
@@ -652,6 +681,46 @@ MagickExport MagickBooleanType SetQuantumDepth(const Image *image,
   status=AcquireQuantumPixels(quantum_info,(6+quantum_info->pad)*image->columns*
     ((quantum_info->depth+7)/8));  /* allow for CMYKA + RLE byte + pad */
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t Q u a n t u m E n d i a n                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetQuantumEndian() sets the quantum endian.
+%
+%  The endian of the SetQuantumEndian method is:
+%
+%      MagickBooleanType SetQuantumEndian(const Image *image,
+%        QuantumInfo *quantum_info,const EndianType endian)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image.
+%
+%    o quantum_info: the quantum info.
+%
+%    o endian: the quantum endian.
+%
+*/
+MagickExport MagickBooleanType SetQuantumEndian(const Image *image,
+  QuantumInfo *quantum_info,const EndianType endian)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  assert(quantum_info != (QuantumInfo *) NULL);
+  assert(quantum_info->signature == MagickSignature);
+  quantum_info->endian=endian;
+  return(SetQuantumDepth(image,quantum_info,quantum_info->depth));
 }
 
 /*

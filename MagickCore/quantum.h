@@ -22,6 +22,7 @@
 extern "C" {
 #endif
 
+#include "MagickCore/image.h"
 #include "MagickCore/semaphore.h"
 
 typedef enum
@@ -148,8 +149,12 @@ static inline unsigned char ScaleQuantumToChar(const Quantum quantum)
 }
 #endif
 
+extern MagickExport EndianType
+  GetQuantumEndian(const QuantumInfo *);
+
 extern MagickExport MagickBooleanType
   SetQuantumDepth(const Image *,QuantumInfo *,const size_t),
+  SetQuantumEndian(const Image *,QuantumInfo *,const EndianType),
   SetQuantumFormat(const Image *,QuantumInfo *,const QuantumFormatType),
   SetQuantumPad(const Image *,QuantumInfo *,const size_t);
 
