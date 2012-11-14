@@ -186,7 +186,7 @@ static inline unsigned char *PopLongPixel(const EndianType endian,
     quantum;
 
   quantum=(unsigned int) pixel;
-  if (endian != LSBEndian)
+  if (endian == MSBEndian)
     {
       *pixels++=(unsigned char) (quantum >> 24);
       *pixels++=(unsigned char) (quantum >> 16);
@@ -208,7 +208,7 @@ static inline unsigned char *PopShortPixel(const EndianType endian,
     quantum;
 
   quantum=pixel;
-  if (endian != LSBEndian)
+  if (endian == MSBEndian)
     {
       *pixels++=(unsigned char) (quantum >> 8);
       *pixels++=(unsigned char) (quantum);
@@ -232,7 +232,7 @@ static inline const unsigned char *PushLongPixel(const EndianType endian,
   register unsigned int
     quantum;
 
-  if (endian != LSBEndian)
+  if (endian == MSBEndian)
     {
       quantum=(unsigned int) (*pixels++ << 24);
       quantum|=(unsigned int) (*pixels++ << 16);
@@ -256,7 +256,7 @@ static inline const unsigned char *PushShortPixel(const EndianType endian,
   register unsigned int
     quantum;
 
-  if (endian != LSBEndian)
+  if (endian == MSBEndian)
     {
       quantum=(unsigned int) (*pixels++ << 8);
       quantum|=(unsigned int) *pixels++;
