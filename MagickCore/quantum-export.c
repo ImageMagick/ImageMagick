@@ -121,7 +121,7 @@ static inline unsigned char *PopDoublePixel(QuantumInfo *quantum_info,
 
   p=(double *) quantum;
   *p=(double) (pixel*quantum_info->state.inverse_scale+quantum_info->minimum);
-  if (quantum_info->endian != LSBEndian)
+  if (quantum_info->endian == MSBEndian)
     {
       *pixels++=quantum[7];
       *pixels++=quantum[6];
@@ -156,7 +156,7 @@ static inline unsigned char *PopFloatPixel(QuantumInfo *quantum_info,
   p=(float *) quantum;
   *p=(float) ((double) pixel*quantum_info->state.inverse_scale+
     quantum_info->minimum);
-  if (quantum_info->endian != LSBEndian)
+  if (quantum_info->endian == MSBEndian)
     {
       *pixels++=quantum[3];
       *pixels++=quantum[2];

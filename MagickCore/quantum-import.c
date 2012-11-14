@@ -129,7 +129,7 @@ static inline const unsigned char *PushDoublePixel(QuantumInfo *quantum_info,
   unsigned char
     quantum[8];
 
-  if (quantum_info->endian != LSBEndian)
+  if (quantum_info->endian == MSBEndian)
     {
       quantum[7]=(*pixels++);
       quantum[6]=(*pixels++);
@@ -169,7 +169,7 @@ static inline const unsigned char *PushFloatPixel(QuantumInfo *quantum_info,
   unsigned char
     quantum[4];
 
-  if (quantum_info->endian != LSBEndian)
+  if (quantum_info->endian == MSBEndian)
     {
       quantum[3]=(*pixels++);
       quantum[2]=(*pixels++);
@@ -1685,7 +1685,7 @@ static void ImportGrayQuantum(const Image *image,QuantumInfo *quantum_info,
       range=GetQuantumRange(quantum_info->depth);
       if (quantum_info->pack == MagickFalse)
         {
-          if (image->endian != LSBEndian)
+          if (image->endian == MSBEndian)
             {
               for (x=0; x < (ssize_t) (number_pixels-2); x+=3)
               {
