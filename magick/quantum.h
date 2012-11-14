@@ -22,6 +22,7 @@
 extern "C" {
 #endif
 
+#include "magick/image.h"
 #include "magick/semaphore.h"
 
 #define RoundToQuantum(quantum)  ClampToQuantum(quantum)
@@ -151,8 +152,12 @@ static inline unsigned char ScaleQuantumToChar(const Quantum quantum)
 }
 #endif
 
+extern MagickExport EndianType
+  GetQuantumEndian(const QuantumInfo *);
+
 extern MagickExport MagickBooleanType
   SetQuantumDepth(const Image *,QuantumInfo *,const size_t),
+  SetQuantumEndian(const Image *,QuantumInfo *,const EndianType),
   SetQuantumFormat(const Image *,QuantumInfo *,const QuantumFormatType),
   SetQuantumPad(const Image *,QuantumInfo *,const size_t);
 
