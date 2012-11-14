@@ -4800,13 +4800,13 @@ TESTS_TESTS = \
 	tests/validate-identify.tap \
 	tests/validate-import.tap \
 	tests/validate-montage.tap \
-	tests/validate-pipe.tap \
-	tests/validate-colorspace.tap \
 	tests/validate-stream.tap \
 	tests/validate-formats-in-memory.tap \
 	tests/validate-formats-on-disk.tap \
 	tests/drawtest.tap \
-	tests/wandtest.tap
+	tests/wandtest.tap \
+	tests/cli-colorspace.tap \
+	tests/cli-pipe.tap
 
 TESTS_EXTRA_DIST = \
 	tests/common.shi \
