@@ -119,6 +119,9 @@ MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
   QuantumInfo
     *quantum_info;
 
+  unsigned int
+    lsb_first;
+
   quantum_info=(QuantumInfo *) AcquireMagickMemory(sizeof(*quantum_info));
   if (quantum_info == (QuantumInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -130,6 +133,9 @@ MagickExport QuantumInfo *AcquireQuantumInfo(const ImageInfo *image_info,
   if (status == MagickFalse)
     quantum_info=DestroyQuantumInfo(quantum_info);
   quantum_info->endian=image->endian;
+  lsb_first=1;
+  if ((quantum_info->endian == MSBEndian) && ((*(char *) &lsb_first) == 1))
+    quantum_info->endian=LSBEndian;
   return(quantum_info);
 }
 
@@ -414,6 +420,9 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
   const char
     *option;
 
+  unsigned int
+    lsb_first;
+
   assert(quantum_info != (QuantumInfo *) NULL);
   (void) ResetMagickMemory(quantum_info,0,sizeof(*quantum_info));
   quantum_info->quantum=8;
@@ -453,6 +462,9 @@ MagickExport void GetQuantumInfo(const ImageInfo *image_info,
     quantum_info->min_is_white=LocaleCompare(option,"min-is-white") == 0 ?
       MagickTrue : MagickFalse;
   quantum_info->endian=image_info->endian;
+  lsb_first=1;
+  if ((quantum_info->endian == MSBEndian) && ((*(char *) &lsb_first) == 1))
+    quantum_info->endian=LSBEndian;
   ResetQuantumState(quantum_info);
 }
 
