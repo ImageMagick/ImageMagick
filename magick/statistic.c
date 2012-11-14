@@ -2002,15 +2002,15 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
     register IndexPacket
       *restrict polynomial_indexes;
 
-    register ssize_t
-      i,
-      x;
-
     register MagickPixelPacket
       *polynomial_pixel;
 
     register PixelPacket
       *restrict q;
+
+    register ssize_t
+      i,
+      x;
 
     if (status == MagickFalse)
       continue;
@@ -2037,14 +2037,14 @@ MagickExport Image *PolynomialImageChannel(const Image *images,
       if (i >= (ssize_t) number_terms)
         break;
       image_view=AcquireVirtualCacheView(next,exception);
-      p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
+      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
       if (p == (const PixelPacket *) NULL)
         {
           image_view=DestroyCacheView(image_view);
           break;
         }
       indexes=GetCacheViewVirtualIndexQueue(image_view);
-      for (x=0; x < (ssize_t) next->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         double
           coefficient,
