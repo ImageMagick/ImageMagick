@@ -628,8 +628,8 @@ MagickExport Image *EvaluateImages(const Image *images,
 
         if (status == MagickFalse)
           continue;
-        q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,
-          image->columns,1,exception);
+        q=QueueCacheViewAuthenticPixels(evaluate_view,0,y,image->columns,1,
+          exception);
         if (q == (Quantum *) NULL)
           {
             status=MagickFalse;
@@ -1851,8 +1851,8 @@ MagickExport Image *PolynomialImage(const Image *images,
 
     if (status == MagickFalse)
       continue;
-    q=QueueCacheViewAuthenticPixels(polynomial_view,0,y,
-      image->columns,1,exception);
+    q=QueueCacheViewAuthenticPixels(polynomial_view,0,y,image->columns,1,
+      exception);
     if (q == (Quantum *) NULL)
       {
         status=MagickFalse;
@@ -1871,13 +1871,13 @@ MagickExport Image *PolynomialImage(const Image *images,
       if (j >= (ssize_t) number_terms)
         continue;
       image_view=AcquireVirtualCacheView(next,exception);
-      p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
+      p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         {
           image_view=DestroyCacheView(image_view);
           break;
         }
-      for (x=0; x < (ssize_t) next->columns; x++)
+      for (x=0; x < (ssize_t) image->columns; x++)
       {
         register ssize_t
           i;
