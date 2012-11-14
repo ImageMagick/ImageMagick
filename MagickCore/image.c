@@ -3962,7 +3962,13 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
      WARNING: when a global option is set or unset, any equivelent per-image
      artefact should also be unset.
   */
-  image->image_info = image_info;
+  /* Programming Note...
+     Don't do anything at this point, as image_info is only being used
+     to create the image, the image may not be added to this image_info,
+     or in some API's to any specific image_info structure.
+  */
+  /* image->image_info = image_info; */
+  image->image_info = (MagickInfo *) NULL;
 #endif
   return(MagickTrue);
 }

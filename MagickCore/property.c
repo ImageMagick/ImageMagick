@@ -3454,6 +3454,8 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
 
   switch (*property)
   {
+#if 0  /* the percent escape sets prefix:... propertys!
+          This causes it to fail */
     case '8':
     {
       if (LocaleNCompare("8bim:",property,5) == 0)
@@ -3464,6 +3466,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         }
       break;
     }
+#endif
     case 'B':
     case 'b':
     {
@@ -3611,6 +3614,8 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         }
       break; /* add to properties splay tree */
     }
+#if 0  /* the percent escape sets prefix:... propertys!
+          This causes it to fail */
     case 'E':
     case 'e':
     {
@@ -3633,6 +3638,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         }
       break; /* add to properties splay tree */
     }
+#endif
     case 'G':
     case 'g':
     {
@@ -3692,12 +3698,15 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           image->interpolate=(PixelInterpolateMethod) interpolate;
           return(MagickTrue);
         }
+#if 0  /* the percent escape sets prefix:... propertys!
+          This causes it to fail */
       if (LocaleNCompare("iptc:",property,5) == 0)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
                OptionError,"SetReadOnlyProperty","'%s'",property);
           return(MagickFalse);
         }
+#endif
       break; /* add to properties splay tree */
     }
     case 'K':
@@ -3754,12 +3763,15 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
           geometry=DestroyString(geometry);
           return(MagickTrue);
         }
+#if 0  /* the percent escape sets prefix:... propertys!
+          This causes it to fail */
       if (LocaleNCompare("pixel:",property,6) == 0)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
                OptionError,"SetReadOnlyProperty","'%s'",property);
           return(MagickFalse);
         }
+#endif
       if (LocaleCompare("profile",property) == 0)
         {
           ImageInfo
@@ -3861,6 +3873,8 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         }
       break; /* add to properties splay tree */
     }
+#if 0  /* the percent escape sets prefix:... propertys!
+          This causes it to fail */
     case 'X':
     case 'x':
     {
@@ -3872,8 +3886,9 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
         }
       break; /* add to properties splay tree */
     }
+#endif
   }
-  /* add to properties splay tree */
+  /* Default: add to properties splay tree */
   status=AddValueToSplayTree((SplayTreeInfo *) image->properties,
     ConstantString(property),ConstantString(value));
   /* FUTURE: error if status is bad? */
