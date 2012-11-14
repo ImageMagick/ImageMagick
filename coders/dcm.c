@@ -3311,7 +3311,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             p=data;
             for (i=0; i < (ssize_t) colors; i++)
             {
-              if (image->endian != LSBEndian)
+              if (image->endian == MSBEndian)
                 index=(unsigned short) ((*p << 8) | *(p+1));
               else
                 index=(unsigned short) (*p | (*(p+1) << 8));
@@ -3339,7 +3339,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             p=data;
             for (i=0; i < (ssize_t) colors; i++)
             {
-              if (image->endian != LSBEndian)
+              if (image->endian == MSBEndian)
                 index=(unsigned short) ((*p << 8) | *(p+1));
               else
                 index=(unsigned short) (*p | (*(p+1) << 8));
@@ -3367,7 +3367,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             p=data;
             for (i=0; i < (ssize_t) colors; i++)
             {
-              if (image->endian != LSBEndian)
+              if (image->endian == MSBEndian)
                 index=(unsigned short) ((*p << 8) | *(p+1));
               else
                 index=(unsigned short) (*p | (*(p+1) << 8));
