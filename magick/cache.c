@@ -555,9 +555,9 @@ static MagickBooleanType ClosePixelCacheOnDisk(CacheInfo *cache_info)
   if (cache_info->file != -1)
     {
       status=close(cache_info->file);
+      cache_info->file=(-1);
       RelinquishMagickResource(FileResource,1);
     }
-  cache_info->file=(-1);
   UnlockSemaphoreInfo(cache_info->file_semaphore);
   return(status == -1 ? MagickFalse : MagickTrue);
 }
