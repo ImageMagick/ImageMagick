@@ -86,9 +86,9 @@ typedef unsigned int Quantum;
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
 
-typedef float MagickRealType;
-typedef ssize_t SignedQuantum;
-typedef float Quantum;
+typedef double MagickRealType;
+typedef double SignedQuantum;
+typedef double Quantum;
 #define QuantumRange  65535.0
 #define QuantumFormat  "%g"
 #else
