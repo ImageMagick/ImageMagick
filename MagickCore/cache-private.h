@@ -185,7 +185,7 @@ typedef struct _CacheInfo
 
   SemaphoreInfo
     *semaphore,
-    *file_semaphore;
+    *disk_semaphore;
 
   time_t
     timestamp;
