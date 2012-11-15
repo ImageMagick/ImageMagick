@@ -1,12 +1,12 @@
 /*
   Copyright 1999-2012 ImageMagick Studio LLC, a non-profit organization
   dedicated to making software imaging solutions freely available.
-  
+
   You may not use this file except in compliance with the License.
   obtain a copy of the License at
-  
+
     http://www.imagemagick.org/script/license.php
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -81,14 +81,15 @@ typedef unsigned int Quantum;
 #define QuantumRange  ((Quantum) 4294967295)
 #define QuantumFormat  "%u"
 #endif
-#elif (MAGICKCORE_QUANTUM_DEPTH == 64) && defined(MAGICKCORE_HAVE_LONG_DOUBLE_WIDER)
+#elif (MAGICKCORE_QUANTUM_DEPTH == 64)
+#define MAGICKCORE_HDRI_SUPPORT 1
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
 
-typedef long double MagickRealType;
-typedef double SignedQuantum;
-typedef double Quantum;
-#define QuantumRange  18446744073709551615.0
+typedef float MagickRealType;
+typedef ssize_t SignedQuantum;
+typedef float Quantum;
+#define QuantumRange  65535.0
 #define QuantumFormat  "%g"
 #else
 #if !defined(_CH_)
