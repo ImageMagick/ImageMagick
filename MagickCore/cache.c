@@ -213,7 +213,7 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   cache_info->semaphore=AllocateSemaphoreInfo();
   cache_info->reference_count=1;
-  cache_info->disk_semaphore=AllocateSemaphoreInfo();
+  cache_info->file_semaphore=AllocateSemaphoreInfo();
   cache_info->debug=IsEventLogging();
   cache_info->signature=MagickSignature;
   return((Cache ) cache_info);
@@ -443,14 +443,14 @@ static MagickBooleanType ClosePixelCacheOnDisk(CacheInfo *cache_info)
     status;
 
   status=(-1);
-  LockSemaphoreInfo(cache_info->disk_semaphore);
+  LockSemaphoreInfo(cache_info->file_semaphore);
   if (cache_info->file != -1)
     {
       status=close(cache_info->file);
       cache_info->file=(-1);
       RelinquishMagickResource(FileResource,1);
     }
-  UnlockSemaphoreInfo(cache_info->disk_semaphore);
+  UnlockSemaphoreInfo(cache_info->file_semaphore);
   return(status == -1 ? MagickFalse : MagickTrue);
 }
 
@@ -479,10 +479,10 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
   /*
     Open pixel cache on disk.
   */
-  LockSemaphoreInfo(cache_info->disk_semaphore);
+  LockSemaphoreInfo(cache_info->file_semaphore);
   if (cache_info->file != -1)
     {
-      UnlockSemaphoreInfo(cache_info->disk_semaphore);
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
       return(MagickTrue);  /* cache already open */
     }
   if (*cache_info->cache_filename == '\0')
@@ -515,13 +515,13 @@ static MagickBooleanType OpenPixelCacheOnDisk(CacheInfo *cache_info,
     }
   if (file == -1)
     {
-      UnlockSemaphoreInfo(cache_info->disk_semaphore);
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
       return(MagickFalse);
     }
   (void) AcquireMagickResource(FileResource,1);
   cache_info->file=file;
   cache_info->mode=mode;
-  UnlockSemaphoreInfo(cache_info->disk_semaphore);
+  UnlockSemaphoreInfo(cache_info->file_semaphore);
   return(MagickTrue);
 }
 
@@ -536,10 +536,10 @@ static inline MagickOffsetType ReadPixelCacheRegion(
     count;
 
 #if !defined(MAGICKCORE_HAVE_PREAD)
-  LockSemaphoreInfo(cache_info->disk_semaphore);
+  LockSemaphoreInfo(cache_info->file_semaphore);
   if (lseek(cache_info->file,offset,SEEK_SET) < 0)
     {
-      UnlockSemaphoreInfo(cache_info->disk_semaphore);
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
       return((MagickOffsetType) -1);
     }
 #endif
@@ -561,7 +561,7 @@ static inline MagickOffsetType ReadPixelCacheRegion(
       }
   }
 #if !defined(MAGICKCORE_HAVE_PREAD)
-  UnlockSemaphoreInfo(cache_info->disk_semaphore);
+  UnlockSemaphoreInfo(cache_info->file_semaphore);
 #endif
   return(i);
 }
@@ -577,10 +577,10 @@ static inline MagickOffsetType WritePixelCacheRegion(
     count;
 
 #if !defined(MAGICKCORE_HAVE_PWRITE)
-  LockSemaphoreInfo(cache_info->disk_semaphore);
+  LockSemaphoreInfo(cache_info->file_semaphore);
   if (lseek(cache_info->file,offset,SEEK_SET) < 0)
     {
-      UnlockSemaphoreInfo(cache_info->disk_semaphore);
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
       return((MagickOffsetType) -1);
     }
 #endif
@@ -602,7 +602,7 @@ static inline MagickOffsetType WritePixelCacheRegion(
       }
   }
 #if !defined(MAGICKCORE_HAVE_PWRITE)
-  UnlockSemaphoreInfo(cache_info->disk_semaphore);
+  UnlockSemaphoreInfo(cache_info->file_semaphore);
 #endif
   return(i);
 }
@@ -1292,8 +1292,8 @@ MagickPrivate Cache DestroyPixelCache(Cache cache)
       cache_info->number_threads);
   if (cache_info->random_info != (RandomInfo *) NULL)
     cache_info->random_info=DestroyRandomInfo(cache_info->random_info);
-  if (cache_info->disk_semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&cache_info->disk_semaphore);
+  if (cache_info->file_semaphore != (SemaphoreInfo *) NULL)
+    DestroySemaphoreInfo(&cache_info->file_semaphore);
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&cache_info->semaphore);
   cache_info->signature=(~MagickSignature);
