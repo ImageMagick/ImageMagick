@@ -10472,8 +10472,6 @@ uninstall-local-utilities:
 	  target=`echo "$$name" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
 	  rm -f $$target ; \
 	done
-	tests/cli-colorspace.tap \
-	tests/cli-pipe.tap
 	tests/*_out.*
 
 # If source files missing, see if they can be obtained via VPATH

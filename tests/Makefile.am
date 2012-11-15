@@ -45,8 +45,6 @@ TESTS_TESTS = \
 	tests/validate-formats-on-disk.tap \
 	tests/drawtest.tap \
 	tests/wandtest.tap
-	tests/cli-colorspace.tap \
-	tests/cli-pipe.tap
 
 TESTS_EXTRA_DIST = \
 	tests/common.shi \
