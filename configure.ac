@@ -599,7 +599,7 @@ fi
 
 # Build a high dynamic range version of ImageMagick.
 AC_ARG_ENABLE([hdri],
-    [AC_HELP_STRING([--disable-hdri],
+    [AC_HELP_STRING([--enable-hdri],
                     [accurately represent the wide range of intensity levels found in real scenes])],
     [enable_hdri=$enableval],
     [enable_hdri='yes'])

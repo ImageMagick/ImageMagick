@@ -69,6 +69,8 @@ Image Settings:
   \-origin geometry     image origin
   \-page geometry       size and location of an image canvas (setting)
   \-path path           write images to this path on disk
+  \-perceptible epsilon
+                       pixel value less than |epsilon| become epsilon or -epsilon
   \-ping                efficiently determine image attributes
   \-pointsize value     font point size
   \-preview type        image preview type
@@ -119,6 +121,7 @@ Image Operators:
   \-border geometry     surround image with a border of color
   \-charcoal radius     simulate a charcoal drawing
   \-chop geometry       remove pixels from the image interior
+  \-clamp               keep pixel values in range (0-QuantumRange)
   \-clip                clip along the first path from the 8BIM profile
   \-clip-mask filename  associate a clip mask with the image
   \-clip-path id        clip along a named path from the 8BIM profile
@@ -252,6 +255,7 @@ Image Sequence Operators:
   \-hald-clut           apply a Hald color lookup table to the image
   \-morph value         morph an image sequence
   \-mosaic              create a mosaic from an image sequence
+  \-poly terms          build a polynomial from the image sequence and the corresponding terms (coefficients and degree pairs)
   \-process arguments   process the image with a custom image filter
   \-separate            separate an image channel into a grayscale image
   \-smush geometry      smush an image sequence together
