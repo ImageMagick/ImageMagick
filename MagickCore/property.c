@@ -3203,10 +3203,10 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         continue;
       }
       /* artifact - direct image artifact lookup (with glob) */
-      if (LocaleNCompare("artefact:",pattern,9) == 0)
+      if (LocaleNCompare("artifact:",pattern,9) == 0)
       {
         if (image == (Image *) NULL)
-          continue; /* else no image to retrieve artefact */
+          continue; /* else no image to retrieve artifact */
         if( IfMagickTrue(IsGlob(pattern+9)) )
         {
           ResetImageArtifactIterator(image);
@@ -3223,7 +3223,8 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         value=GetImageArtifact(image,pattern+9);
         if (value != (char *) NULL)
           AppendString2Text(value);
-        /* else - no artefact of this specifc name */
+        /* else - no artifact of this specifc name */
+        continue;
       }
       /* FUTURE: handle %[property:...] prefix - abort other lookups */
 
