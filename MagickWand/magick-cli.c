@@ -61,67 +61,8 @@
 /* verbose debugging,
       3 - option type details
       5 - include image counts
-      9 - output options/artifacts/propertys
 */
 #define MagickCommandDebug 0
-
-#if MagickCommandDebug >= 9
-/*
-  Temporary Debugging Information
-  FUTURE: these should be able to be printed out using 'percent escapes'
-  Actually 'Properities' can already be output with  "%[*]"
-*/
-static void OutputOptions(ImageInfo *image_info)
-{
-  const char
-    *option,
-    *value;
-
-  (void) FormatLocaleFile(stderr,"  Global Options:\n");
-  ResetImageOptionIterator(image_info);
-  while ((option=GetNextImageOption(image_info)) != (const char *) NULL ) {
-    (void) FormatLocaleFile(stderr,"    %s: ",option);
-    value=GetImageOption(image_info,option);
-    if (value != (const char *) NULL)
-      (void) FormatLocaleFile(stderr,"%s\n",value);
-  }
-  ResetImageOptionIterator(image_info);
-}
-
-static void OutputArtifacts(Image *image)
-{
-  const char
-    *artifact,
-    *value;
-
-  (void) FormatLocaleFile(stderr,"  Image Artifacts:\n");
-  ResetImageArtifactIterator(image);
-  while ((artifact=GetNextImageArtifact(image)) != (const char *) NULL ) {
-    (void) FormatLocaleFile(stderr,"    %s: ",artifact);
-    value=GetImageArtifact(image,artifact);
-    if (value != (const char *) NULL)
-      (void) FormatLocaleFile(stderr,"%s\n",value);
-  }
-  ResetImageArtifactIterator(image);
-}
-
-static void OutputProperties(Image *image,ExceptionInfo *exception)
-{
-  const char
-    *property,
-    *value;
-
-  (void) FormatLocaleFile(stderr,"  Image Properity:\n");
-  ResetImagePropertyIterator(image);
-  while ((property=GetNextImageProperty(image)) != (const char *) NULL ) {
-    (void) FormatLocaleFile(stderr,"    %s: ",property);
-    value=GetImageProperty(image,property,exception);
-    if (value != (const char *) NULL)
-      (void) FormatLocaleFile(stderr,"%s\n",value);
-  }
-  ResetImagePropertyIterator(image);
-}
-#endif
 
 
 /*
@@ -307,13 +248,6 @@ WandExport void ProcessScriptOptions(MagickCLI *cli_wand,int argc,char **argv,
 #if MagickCommandDebug >= 5
     fprintf(stderr, "Script Image Count = %ld\n",
          GetImageListLength(cli_wand->wand.images) );
-#endif
-#if MagickCommandDebug >= 9
-    OutputOptions(cli_wand->wand.image_info);
-    if ( cli_wand->wand.images != (Image *)NULL ) {
-      OutputArtifacts(cli_wand->wand.images);
-      OutputProperties(cli_wand->wand.images,cli_wand->wand.exception);
-    }
 #endif
     if ( IfMagickTrue(CLICatchException(cli_wand, MagickFalse)) )
       break;  /* exit loop */
@@ -529,13 +463,6 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
 #if MagickCommandDebug >= 5
     fprintf(stderr, "CLI Image Count = %ld\n",
          GetImageListLength(cli_wand->wand.images) );
-#endif
-#if MagickCommandDebug >= 9
-    OutputOptions(cli_wand->wand.image_info);
-    if ( cli_wand->wand.images != (Image *)NULL ) {
-      OutputArtifacts(cli_wand->wand.images);
-      OutputProperties(cli_wand->wand.images,cli_wand->wand.exception);
-    }
 #endif
     if ( CLICatchException(cli_wand, MagickFalse) != MagickFalse )
       return(i+count);

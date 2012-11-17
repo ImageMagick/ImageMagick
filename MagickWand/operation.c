@@ -62,7 +62,7 @@
 /*
   Define declarations.
 */
-#define USE_WAND_METHODS  0
+#define USE_WAND_METHODS  1
 #define MAX_STACK_DEPTH  32
 #define UNDEFINED_COMPRESSION_QUALITY  0UL
 
@@ -1603,12 +1603,11 @@ interpret Percent Escapes in Arguments, At least not yet */
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WandSimpleOperatorImages() andSimpleOperatorImagespplys one simple image operation given to all
-%  the images in the CLI wand,  with the settings that was previously saved in
-%  the CLI wand.
+%  CLISimpleOperatorImages() applys one simple image operation given to all
+%  the images in the CLI wand, using any per-image or global settings that was
+%  previously saved in the CLI wand.
 %
-%  It is assumed that any per-image settings are up-to-date with respect to
-%  extra settings that were already saved in the wand.
+%  It is assumed that any such settings are up-to-date.
 %
 %  The format of the WandSimpleOperatorImages method is:
 %
@@ -1626,8 +1625,8 @@ interpret Percent Escapes in Arguments, At least not yet */
 */
 
 /*
-  Internal subrountine to apply one simple image operation to the current
-  image pointed to by the CLI wand.
+  CLISimpleOperatorImage() is an Internal subrountine to apply one simple
+  image operation to the current image pointed to by the CLI wand.
 
   The image in the list may be modified in three different ways...
     * directly modified (EG: -negate, -gamma, -level, -annotate, -draw),
@@ -3120,42 +3119,6 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
                  (double) QuantumRange+1.0),_exception);
           break;
         }
-      if (LocaleCompare("set",option+1) == 0)
-        {
-          /* Note: arguments do not have percent escapes expanded */
-          char
-            *value;
-
-          if (IfPlusOp) {
-              if (LocaleNCompare(arg1,"registry:",9) == 0)
-                (void) DeleteImageRegistry(arg1+9);
-              else
-                if (LocaleNCompare(arg1,"option:",7) == 0)
-                  {
-                    (void) DeleteImageOption(_image_info,arg1+7);
-                    (void) DeleteImageArtifact(_image,arg1+7);
-                  }
-                else
-                  (void) DeleteImageProperty(_image,arg1);
-              break;
-            }
-          value=InterpretImageProperties(_image_info,_image,arg2,_exception);
-          if (value == (char *) NULL)
-            CLIWandExceptionBreak(OptionWarning,"InterpretPropertyFailure",
-                  option);
-          if (LocaleNCompare(arg1,"registry:",9) == 0)
-            (void) SetImageRegistry(StringRegistryType,arg1+9,value,_exception);
-          else
-            if (LocaleNCompare(arg1,"option:",7) == 0)
-              {
-                (void) SetImageOption(_image_info,arg1+7,value);
-                (void) SetImageArtifact(_image,arg1+7,value);
-              }
-            else
-              (void) SetImageProperty(_image,arg1,value,_exception);
-          value=DestroyString(value);
-          break;
-        }
       if (LocaleCompare("shade",option+1) == 0)
         {
           flags=ParseGeometry(arg1,&geometry_info);
@@ -3495,9 +3458,11 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
 WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
   const char *option, const char *arg1, const char *arg2)
 {
+#if !USE_WAND_METHODS
   size_t
     n,
     i;
+#endif
 
   assert(cli_wand != (MagickCLI *) NULL);
   assert(cli_wand->signature == WandSignature);
@@ -3542,7 +3507,8 @@ WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
 %
 %  CLIListOperatorImages() applies a single operation that is apply to the
 %  entire image list as a whole. The result is often a complete replacment
-%  of the image list with a completely new list, or just a single image.
+%  of the image list with a completely new list, or with just a single image
+%  result.
 %
 %  The format of the MogrifyImage method is:
 %
@@ -4360,7 +4326,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 %
 %  A description of each parameter follows:
 %
-%    o cli_wand: the main CLI Wand to use.
+%    o cli_wand: the main CLI Wand to use. (sometimes not required)
 %
 %    o option: The special option (with any switch char) to process
 %
@@ -4369,7 +4335,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 %
 */
 WandExport void CLINoImageOperator(MagickCLI *cli_wand,
-  const char *option, const char *arg1, const char *magick_unused(arg2))
+  const char *option, const char *arg1, const char *arg2)
 {
 #if 0
   const char    /* For percent escape interpretImageProperties() */
@@ -4426,11 +4392,13 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
     /*
       No-op options  (ignore these)
     */
-    if (LocaleCompare("noop",option+1) == 0)   /* no argument */
+    if (LocaleCompare("noop",option+1) == 0)   /* zero argument */
       break;
     if (LocaleCompare("sans",option+1) == 0)   /* one argument */
       break;
-    if (LocaleCompare("sans0",option+1) == 0)  /* no argument */
+    if (LocaleCompare("sans0",option+1) == 0)  /* zero argument */
+      break;
+    if (LocaleCompare("sans1",option+1) == 0)  /* one argument */
       break;
     if (LocaleCompare("sans2",option+1) == 0)  /* two arguments */
       break;
@@ -4634,6 +4602,80 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
 
       break;
     }
+    if (LocaleCompare("set",option+1) == 0)
+      {
+        /* Note: arguments are not percent escapes expanded yet */
+        /* Some settings are applied to each image in memory in turn.
+           While others only need to be applied once globally.
+        */
+        char
+          *value;
+
+        if (LocaleNCompare(arg1,"registry:",9) == 0)
+          {
+            if (IfPlusOp)
+              {
+                (void) DeleteImageRegistry(arg1+9);
+                break;
+              }
+            value=InterpretImageProperties(_image_info,_images,arg2,_exception);
+            if (value == (char *) NULL)
+              CLIWandExceptionBreak(OptionWarning,"InterpretPropertyFailure",
+                    option);
+            (void) SetImageRegistry(StringRegistryType,arg1+9,value,_exception);
+            value=DestroyString(value);
+            break;
+          }
+        if (LocaleNCompare(arg1,"option:",7) == 0)
+          {
+            /* delete equivelent artifact from all images (if any) */
+            MagickResetIterator(&cli_wand->wand);
+            while ( IfMagickTrue(MagickNextImage(&cli_wand->wand)) )
+              (void) DeleteImageArtifact(_images,arg1+7);
+            MagickResetIterator(&cli_wand->wand);
+            /* now set/delete the global option as needed */
+            if (IfPlusOp) {
+              (void) DeleteImageOption(_image_info,arg1+7);
+              break;
+            }
+            value=InterpretImageProperties(_image_info,_images,arg2,_exception);
+            if (value == (char *) NULL)
+              CLIWandExceptionBreak(OptionWarning,"InterpretPropertyFailure",
+                    option);
+            (void) SetImageOption(_image_info,arg1+7,value);
+            value=DestroyString(value);
+            break;
+          }
+        if ( cli_wand->wand.images == (Image *) NULL )
+          CLIWandExceptArgBreak(OptionError,"NoImagesFound",option,arg1);
+        MagickResetIterator(&cli_wand->wand);
+        while ( IfMagickTrue(MagickNextImage(&cli_wand->wand)) )
+          {
+            if (IfPlusOp) {
+              if (LocaleNCompare(arg1,"artifact:",9) == 0)
+                (void) DeleteImageArtifact(_images,arg1+9);
+              else if (LocaleNCompare(arg1,"property:",9) == 0)
+                (void) DeleteImageProperty(_images,arg1+9);
+              else
+                (void) DeleteImageProperty(_images,arg1);
+              break;
+            }
+            value=InterpretImageProperties(_image_info,_images,arg2,_exception);
+            if (value == (char *) NULL)
+              CLIWandExceptionBreak(OptionWarning,"InterpretPropertyFailure",
+                    option);
+            if (LocaleNCompare(arg1,"artifact:",9) == 0)
+              (void) SetImageArtifact(_images,arg1+9,value);
+            else if (LocaleNCompare(arg1,"property:",9) == 0)
+              (void) SetImageProperty(_images,arg1+9,value,_exception);
+            else
+              (void) SetImageProperty(_images,arg1,value,_exception);
+            value=DestroyString(value);
+            break;
+          }
+        MagickResetIterator(&cli_wand->wand);
+        break;
+     }
     if (LocaleCompare("clone",option+1) == 0) {
         Image
           *new_images;
@@ -4656,7 +4698,8 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
     /*
        Informational Operations
 
-       Note that these do not require either cli-wand or images!
+       Note that these do not require either a cli-wand or images!
+       Though currently a cli-wand much be provided regardless.
     */
     if (LocaleCompare("version",option+1) == 0) {
       (void) FormatLocaleFile(stdout,"Version: %s\n",
@@ -4669,7 +4712,7 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
     }
     if (LocaleCompare("list",option+1) == 0) {
       /*
-         FUTURE: This 'switch' should really be built into the MagickCore
+         FUTURE: This 'switch' should really be part of MagickCore
       */
       ssize_t
         list;

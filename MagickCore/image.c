@@ -283,6 +283,8 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
 
   /* Set all global options that map to per-image settings */
   (void) SyncImageSettings(image_info,image,exception);
+  /* At this point the image is not yet part of this image_info structure */
+  image->image_info = (MagickInfo *) NULL;
 
   /* global options that are only set for new images */
   option=GetImageOption(image_info,"delay");
@@ -3658,10 +3660,11 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
 %  SyncImageSettings() syncs any image_info global options into per-image
 %  attributes.
 %
-%  Note: in IMv6 free form 'options' were always maped into 'artifacts', so
+%  Note: in IMv6 free form 'options' were always mapped into 'artifacts', so
 %  that operations and coders can find such settings.  In IMv7 if a desired
 %  per-image artifact is not set, then it will directly look for a global
-%  option as a fallback.
+%  option as a fallback, as such this copy is no longer needed, only the
+%  link set up.
 %
 %  The format of the SyncImageSettings method is:
 %
@@ -3956,11 +3959,8 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
 
      This pointer is never explictally freed, as it is only used as a back
      reference, not as the main pointer to the image_info structure.  Images
-     being removed from a image_info image list, should have this pointer
-     reset to NULL.
-
-     WARNING: when a global option is set or unset, any equivelent per-image
-     artefact should also be unset.
+     being removed from a image_info image list (or yet to be added to such),
+     should have this pointer reset to NULL.
   */
   /* Programming Note...
      Don't do anything at this point, as image_info is only being used
