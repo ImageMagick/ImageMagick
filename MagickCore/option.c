@@ -598,6 +598,8 @@ static const OptionInfo
     { "-sans", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag, MagickTrue },
     { "+sans0", 0L, NoImageOperatorFlag | NeverInterpretArgsFlag, MagickTrue }, /* equivelent to 'noop' */
     { "-sans0", 0L, NoImageOperatorFlag | NeverInterpretArgsFlag, MagickTrue },
+    { "+sans1", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag, MagickTrue },
+    { "-sans1", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag, MagickTrue }, /* equivelent to 'sans' */
     { "+sans2", 2L, NoImageOperatorFlag | NeverInterpretArgsFlag, MagickTrue },
     { "-sans2", 2L, NoImageOperatorFlag | NeverInterpretArgsFlag, MagickTrue },
     { "+scale", 1L, DeprecateOptionFlag, MagickTrue },
@@ -619,8 +621,8 @@ static const OptionInfo
     { "-separate", 0L, SimpleOperatorFlag | FireOptionFlag, MagickFalse },
     { "+sepia-tone", 1L, DeprecateOptionFlag, MagickTrue },
     { "-sepia-tone", 1L, SimpleOperatorFlag, MagickFalse },
-    { "+set", 1L, SimpleOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
-    { "-set", 2L, SimpleOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
+    { "+set", 1L, NoImageOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
+    { "-set", 2L, NoImageOperatorFlag | NeverInterpretArgsFlag, MagickFalse },
     { "+shade", 0L, DeprecateOptionFlag, MagickTrue },
     { "-shade", 1L, SimpleOperatorFlag, MagickFalse },
     { "+shadow", 1L, DeprecateOptionFlag, MagickTrue },
