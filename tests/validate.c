@@ -1480,8 +1480,19 @@ int main(int argc,char **argv)
             tests+=ValidateConvertCommand(image_info,reference_filename,
               output_filename,&fail,exception);
           if ((type & FormatsInMemoryValidate) != 0)
-            tests+=ValidateImageFormatsInMemory(image_info,reference_filename,
-              output_filename,&fail,exception);
+            {
+              (void) FormatLocaleFile(stdout,"[pixel-cache: memory] ");
+              tests+=ValidateImageFormatsInMemory(image_info,reference_filename,
+                output_filename,&fail,exception);
+              (void) FormatLocaleFile(stdout,"[pixel-cache: memory-mapped] ");
+              (void) SetMagickResourceLimit(MemoryResource,0);
+              tests+=ValidateImageFormatsInMemory(image_info,reference_filename,
+                output_filename,&fail,exception);
+              (void) FormatLocaleFile(stdout,"[pixel-cache: disk] ");
+              (void) SetMagickResourceLimit(MapResource,0);
+              tests+=ValidateImageFormatsInMemory(image_info,reference_filename,
+                output_filename,&fail,exception);
+            }
           if ((type & FormatsOnDiskValidate) != 0)
             {
               (void) FormatLocaleFile(stdout,"[pixel-cache: memory] ");
