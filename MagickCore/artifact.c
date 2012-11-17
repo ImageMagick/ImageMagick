@@ -293,7 +293,13 @@ MagickExport const char *GetImageArtifact(const Image *image,
       if (p != (const char *) NULL)
         return(p);
     }
-  /* if no per-image artifact - look for a global option instead */
+  /* Programmer notes....
+     CLI IMv7: if no per-image artifact - look for a global option instead
+     CLI IMv6: global options are copied into per-image artifacts
+     In all other cases, if image is not part of a image_info, image list this
+     pointer should be NULL.
+   */
+
   if ( (image->image_info != (ImageInfo *)NULL) &&
        (image->image_info->options != (void *) NULL) )
     p=(const char *) GetValueFromSplayTree((SplayTreeInfo *)
