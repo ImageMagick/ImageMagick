@@ -1,4 +1,4 @@
-2012-11-15  6.8.0-5 Glenn Randers-Pehrson <glennrp@image...>
+2012-11-15  6.8.0-5 Anthony Thyssen <A.Thyssen@griffith...>
   * Added % escape prefixes %[artifact:..] and %[option:..]
     Including glob search,  EG:  -print "__Options__\n%[option:*]"
     (backport from IMv7 changes)
