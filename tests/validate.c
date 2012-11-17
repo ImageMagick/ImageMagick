@@ -1321,6 +1321,10 @@ int main(int argc,char **argv)
     regard_warnings,
     status;
 
+  MagickSizeType
+    memory_resource,
+    map_resource;
+
   register ssize_t
     i;
 
@@ -1485,13 +1489,15 @@ int main(int argc,char **argv)
               tests+=ValidateImageFormatsInMemory(image_info,reference_filename,
                 output_filename,&fail,exception);
               (void) FormatLocaleFile(stdout,"[pixel-cache: memory-mapped] ");
-              (void) SetMagickResourceLimit(MemoryResource,0);
+              memory_resource=SetMagickResourceLimit(MemoryResource,0);
               tests+=ValidateImageFormatsInMemory(image_info,reference_filename,
                 output_filename,&fail,exception);
               (void) FormatLocaleFile(stdout,"[pixel-cache: disk] ");
-              (void) SetMagickResourceLimit(MapResource,0);
+              map_resource=SetMagickResourceLimit(MapResource,0);
               tests+=ValidateImageFormatsInMemory(image_info,reference_filename,
                 output_filename,&fail,exception);
+              (void) SetMagickResourceLimit(MemoryResource,memory_resource);
+              (void) SetMagickResourceLimit(MapResource,map_resource);
             }
           if ((type & FormatsOnDiskValidate) != 0)
             {
@@ -1499,13 +1505,15 @@ int main(int argc,char **argv)
               tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
                 output_filename,&fail,exception);
               (void) FormatLocaleFile(stdout,"[pixel-cache: memory-mapped] ");
-              (void) SetMagickResourceLimit(MemoryResource,0);
+              memory_resource=SetMagickResourceLimit(MemoryResource,0);
               tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
                 output_filename,&fail,exception);
               (void) FormatLocaleFile(stdout,"[pixel-cache: disk] ");
-              (void) SetMagickResourceLimit(MapResource,0);
+              map_resource=SetMagickResourceLimit(MapResource,0);
               tests+=ValidateImageFormatsOnDisk(image_info,reference_filename,
                 output_filename,&fail,exception);
+              (void) SetMagickResourceLimit(MemoryResource,memory_resource);
+              (void) SetMagickResourceLimit(MapResource,map_resource);
             }
           if ((type & IdentifyValidate) != 0)
             tests+=ValidateIdentifyCommand(image_info,reference_filename,
