@@ -284,7 +284,7 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   /* Set all global options that map to per-image settings */
   (void) SyncImageSettings(image_info,image,exception);
   /* At this point the image is not yet part of this image_info structure */
-  image->image_info = (MagickInfo *) NULL;
+  image->image_info = (ImageInfo *) NULL;
 
   /* global options that are only set for new images */
   option=GetImageOption(image_info,"delay");
@@ -3968,7 +3968,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
      or in some API's to any specific image_info structure.
   */
   /* image->image_info = image_info; */
-  image->image_info = (MagickInfo *) NULL;
+  image->image_info = (ImageInfo *) NULL;
 #endif
   return(MagickTrue);
 }
