@@ -90,7 +90,7 @@ static const char
     "  <delegate decode=\"fig\" command=\"&quot;fig2dev&quot; -L ps &quot;%i&quot; &quot;%o&quot;\"/>"
     "  <delegate decode=\"gplt\" command=\"&quot;echo&quot; &quot;set size 1.25,0.62     set terminal postscript portrait color solid; set output &quot;%o&quot;; load &quot;%i&quot;&quot; &gt; &quot;%u&quot;;&quot;gnuplot&quot; &quot;%u&quot;\"/>"
     "  <delegate decode=\"hpg\" command=\"&quot;hp2xx&quot; -q -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;     mv -f `basename &quot;%o&quot;` &quot;%o&quot;\"/>"
-    "  <delegate decode=\"hpgl\" command=\"if [ -e hp2xx -o -e /usr/bin/hp2xx ]; then     hp2xx -q -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;     mv -f `basename &quot;%o&quot;` &quot;%o   else     echo &quot;You need to install hp2xx to use HPGL files with ImageMagick.&quot;     exit 1   fi\"/>"
+    "  <delegate decode=\"hpgl\" command=\"&quot;hp2xx&quot; -q -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;     mv -f `basename &quot;%o&quot;` &quot;%o&quot;\"/>"
     "  <delegate decode=\"htm\" command=\"&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;\"/>"
     "  <delegate decode=\"html\" command=\"&quot;html2ps&quot; -U -o &quot;%o&quot; &quot;%i&quot;\"/>"
     "  <delegate decode=\"https\" command=\"&quot;wget&quot; -q -O &quot;%o&quot; &quot;https:%M&quot;\"/>"
