@@ -3962,13 +3962,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
      being removed from a image_info image list (or yet to be added to such),
      should have this pointer reset to NULL.
   */
-  /* Programming Note...
-     Don't do anything at this point, as image_info is only being used
-     to create the image, the image may not be added to this image_info,
-     or in some API's to any specific image_info structure.
-  */
-  /* image->image_info = image_info; */
-  image->image_info = (ImageInfo *) NULL;
+  image->image_info = image_info;
 #endif
   return(MagickTrue);
 }
