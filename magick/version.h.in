@@ -70,7 +70,7 @@ extern "C" {
 #define MagickQuantumRange  "4294967295"
 #elif (MAGICKCORE_QUANTUM_DEPTH == 64)
 #define MagickQuantumDepth  "Q64"
-#define MagickQuantumRange  "18446744073709551615"
+#define MagickQuantumRange  "65535"
 #else
 #define MagickQuantumDepth  "Q?"
 #define MagickQuantumRange  "?"
