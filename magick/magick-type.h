@@ -82,14 +82,13 @@ typedef unsigned int Quantum;
 #define QuantumFormat  "%u"
 #endif
 #elif (MAGICKCORE_QUANTUM_DEPTH == 64)
-#define MAGICKCORE_HDRI_SUPPORT 1
 #define MaxColormapSize  65536UL
 #define MaxMap  65535UL
 
 typedef double MagickRealType;
 typedef double SignedQuantum;
 typedef double Quantum;
-#define QuantumRange  65535.0
+#define QuantumRange  18446744073709551615.0
 #define QuantumFormat  "%g"
 #else
 #if !defined(_CH_)
