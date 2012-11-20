@@ -692,7 +692,7 @@ MagickExport MagickBooleanType ListMagickResourceInfo(FILE *file,
   if (resource_info.time_limit != MagickResourceInfinity)
     (void) FormatLocaleString(time_limit,MaxTextExtent,"%.20g",(double)
       ((MagickOffsetType) resource_info.time_limit));
-  (void) FormatLocaleFile(file,"File         Area       Memory          Map"
+  (void) FormatLocaleFile(file,"  File        Area      Memory          Map"
     "         Disk    Thread         Time\n");
   (void) FormatLocaleFile(file,
     "--------------------------------------------------------"
