@@ -1693,7 +1693,7 @@ MagickExport MagickBooleanType PerceptibleImage(Image *image,
   MagickBooleanType
     status;
 
-  status=PerceptibleImageChannel(image,epsilon,DefaultChannels);
+  status=PerceptibleImageChannel(image,DefaultChannels,epsilon);
   return(status);
 }
 
