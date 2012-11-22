@@ -2139,8 +2139,8 @@ static MagickBooleanType WritePNMImage(const ImageInfo *image_info,Image *image,
       case 'F':
       case 'f':
       {
-        (void) WriteBlobString(image,image->endian == MSBEndian ? "1.0\n" :
-          "-1.0\n");
+        (void) WriteBlobString(image,image->endian == LSBEndian ? "-1.0\n" :
+          "1.0\n");
         image->depth=32;
         quantum_type=format == 'f' ? GrayQuantum : RGBQuantum;
         quantum_info=AcquireQuantumInfo((const ImageInfo *) NULL,image);

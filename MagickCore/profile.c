@@ -1330,13 +1330,13 @@ static inline unsigned short ReadProfileShort(const EndianType endian,
   unsigned short
     value;
 
-  if (endian == MSBEndian)
+  if (endian == LSBEndian)
     {
-      value=(unsigned short) ((((unsigned char *) buffer)[0] << 8) |
-        ((unsigned char *) buffer)[1]);
+      value=(unsigned short) ((buffer[1] << 8) | buffer[0]);
       return((unsigned short) (value & 0xffff));
     }
-  value=(unsigned short) ((buffer[1] << 8) | buffer[0]);
+  value=(unsigned short) ((((unsigned char *) buffer)[0] << 8) |
+    ((unsigned char *) buffer)[1]);
   return((unsigned short) (value & 0xffff));
 }
 
@@ -1346,14 +1346,14 @@ static inline size_t ReadProfileLong(const EndianType endian,
   size_t
     value;
 
-  if (endian == MSBEndian)
+  if (endian == LSBEndian)
     {
-      value=(size_t) ((buffer[0] << 24) | (buffer[1] << 16) |
-        (buffer[2] << 8) | buffer[3]);
+      value=(size_t) ((buffer[3] << 24) | (buffer[2] << 16) |
+        (buffer[1] << 8 ) | (buffer[0]));
       return((size_t) (value & 0xffffffff));
     }
-  value=(size_t) ((buffer[3] << 24) | (buffer[2] << 16) |
-    (buffer[1] << 8 ) | (buffer[0]));
+  value=(size_t) ((buffer[0] << 24) | (buffer[1] << 16) |
+    (buffer[2] << 8) | buffer[3]);
   return((size_t) (value & 0xffffffff));
 }
 
@@ -1363,19 +1363,19 @@ static inline void WriteProfileLong(const EndianType endian,
   unsigned char
     buffer[4];
 
-  if (endian == MSBEndian)
+  if (endian == LSBEndian)
     {
-      buffer[0]=(unsigned char) (value >> 24);
-      buffer[1]=(unsigned char) (value >> 16);
-      buffer[2]=(unsigned char) (value >> 8);
-      buffer[3]=(unsigned char) value;
+      buffer[0]=(unsigned char) value;
+      buffer[1]=(unsigned char) (value >> 8);
+      buffer[2]=(unsigned char) (value >> 16);
+      buffer[3]=(unsigned char) (value >> 24);
       (void) CopyMagickMemory(p,buffer,4);
       return;
     }
-  buffer[0]=(unsigned char) value;
-  buffer[1]=(unsigned char) (value >> 8);
-  buffer[2]=(unsigned char) (value >> 16);
-  buffer[3]=(unsigned char) (value >> 24);
+  buffer[0]=(unsigned char) (value >> 24);
+  buffer[1]=(unsigned char) (value >> 16);
+  buffer[2]=(unsigned char) (value >> 8);
+  buffer[3]=(unsigned char) value;
   (void) CopyMagickMemory(p,buffer,4);
 }
 
@@ -1385,15 +1385,15 @@ static void WriteProfileShort(const EndianType endian,
   unsigned char
     buffer[2];
 
-  if (endian == MSBEndian)
+  if (endian == LSBEndian)
     {
-      buffer[0]=(unsigned char) (value >> 8);
-      buffer[1]=(unsigned char) value;
+      buffer[0]=(unsigned char) value;
+      buffer[1]=(unsigned char) (value >> 8);
       (void) CopyMagickMemory(p,buffer,2);
       return;
     }
-  buffer[0]=(unsigned char) value;
-  buffer[1]=(unsigned char) (value >> 8);
+  buffer[0]=(unsigned char) (value >> 8);
+  buffer[1]=(unsigned char) value;
   (void) CopyMagickMemory(p,buffer,2);
 }
 

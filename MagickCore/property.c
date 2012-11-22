@@ -700,13 +700,13 @@ static inline unsigned short ReadPropertyShort(const EndianType endian,
   unsigned short
     value;
 
-  if (endian == MSBEndian)
+  if (endian == LSBEndian)
     {
-      value=(unsigned short) ((((unsigned char *) buffer)[0] << 8) |
-        ((unsigned char *) buffer)[1]);
+      value=(unsigned short) ((buffer[1] << 8) | buffer[0]);
       return((unsigned short) (value & 0xffff));
     }
-  value=(unsigned short) ((buffer[1] << 8) | buffer[0]);
+  value=(unsigned short) ((((unsigned char *) buffer)[0] << 8) |
+    ((unsigned char *) buffer)[1]);
   return((unsigned short) (value & 0xffff));
 }
 
@@ -716,14 +716,14 @@ static inline size_t ReadPropertyLong(const EndianType endian,
   size_t
     value;
 
-  if (endian == MSBEndian)
+  if (endian == LSBEndian)
     {
-      value=(size_t) ((buffer[0] << 24) | (buffer[1] << 16) |
-        (buffer[2] << 8) | buffer[3]);
+      value=(size_t) ((buffer[3] << 24) | (buffer[2] << 16) |
+        (buffer[1] << 8 ) | (buffer[0]));
       return((size_t) (value & 0xffffffff));
     }
-  value=(size_t) ((buffer[3] << 24) | (buffer[2] << 16) |
-    (buffer[1] << 8 ) | (buffer[0]));
+  value=(size_t) ((buffer[0] << 24) | (buffer[1] << 16) |
+    (buffer[2] << 8) | buffer[3]);
   return((size_t) (value & 0xffffffff));
 }
 
