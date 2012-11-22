@@ -2984,6 +2984,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
             if (quantum_info == (QuantumInfo *) NULL)
               png_error(ping,"Failed to allocate quantum_info");
 
+            (void) SetQuantumEndian(image,quantum_info,MSBEndian);
+
             if ((int) ping_color_type == PNG_COLOR_TYPE_GRAY)
               (void) ImportQuantumPixels(image,(CacheView *) NULL,quantum_info,
                 GrayQuantum,ping_pixels+row_offset,exception);
@@ -3821,6 +3823,9 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   MagickBooleanType
     logging;
 
+  int
+    unique_filenames;
+
   ssize_t
     y;
 
@@ -3871,6 +3876,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   color_image=(Image *) NULL;
   alpha_image_info=(ImageInfo *) NULL;
   color_image_info=(ImageInfo *) NULL;
+  unique_filenames=0;
 
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
     "  Enter ReadOneJNGImage()");
@@ -4057,6 +4063,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             "    Creating color_blob.");
 
         (void) AcquireUniqueFilename(color_image->filename);
+        unique_filenames++;
         status=OpenBlob(color_image_info,color_image,WriteBinaryBlobMode,
           exception);
 
@@ -4086,6 +4093,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
                 "    Creating alpha_blob.");
 
             (void) AcquireUniqueFilename(alpha_image->filename);
+            unique_filenames++;
             status=OpenBlob(alpha_image_info,alpha_image,WriteBinaryBlobMode,
               exception);
 
@@ -4344,7 +4352,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
        o destroy the secondary image.
   */
 
-  (void) CloseBlob(color_image);
+  (void) SeekBlob(color_image,0,SEEK_SET);
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -4360,6 +4368,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
     return((Image *) NULL);
 
   (void) RelinquishUniqueFileResource(color_image->filename);
+  unique_filenames--;
   color_image=DestroyImage(color_image);
   color_image_info=DestroyImageInfo(color_image_info);
 
@@ -4401,7 +4410,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
              (void) WriteBlobMSBULong(alpha_image,crc32(0,data,4));
            }
 
-         (void) CloseBlob(alpha_image);
+         (void) SeekBlob(alpha_image,0,SEEK_SET);
 
          if (logging != MagickFalse)
            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -4436,6 +4445,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
                break;
            }
          (void) RelinquishUniqueFileResource(alpha_image->filename);
+         unique_filenames--;
          alpha_image=DestroyImage(alpha_image);
          alpha_image_info=DestroyImageInfo(alpha_image_info);
          if (jng_image != (Image *) NULL)
@@ -4474,7 +4484,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  exit ReadOneJNGImage()");
+      "  exit ReadOneJNGImage(); unique_filenames=%d",unique_filenames);
 
   return(image);
 }
@@ -10413,6 +10423,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     png_error(ping,"Memory allocation for quantum_info failed");
   quantum_info->format=UndefinedQuantumFormat;
   quantum_info->depth=image_depth;
+  (void) SetQuantumEndian(image,quantum_info,MSBEndian);
   num_passes=png_set_interlace_handling(ping);
 
   if ((!mng_info->write_png8 && !mng_info->write_png24 &&
@@ -10851,7 +10862,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  exit WriteOnePNGImage()");
+        "  exit WriteOnePNGImage()");
 
 #ifdef PNG_SETJMP_NOT_THREAD_SAFE
   UnlockSemaphoreInfo(ping_semaphore);
@@ -11717,6 +11728,9 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   ImageInfo
     *jpeg_image_info;
 
+  int
+    unique_filenames;
+
   MagickBooleanType
     logging,
     status;
@@ -11745,6 +11759,8 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   blob=(unsigned char *) NULL;
   jpeg_image=(Image *) NULL;
   jpeg_image_info=(ImageInfo *) NULL;
+
+  unique_filenames=0;
 
   status=MagickTrue;
   transparent=image_info->type==GrayscaleMatteType ||
@@ -11792,6 +11808,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
       jpeg_image->quality=jng_alpha_quality;
       (void) SetImageType(jpeg_image,GrayscaleType);
       (void) AcquireUniqueFilename(jpeg_image->filename);
+      unique_filenames++;
       (void) FormatLocaleString(jpeg_image_info->filename,MaxTextExtent,
         "%s",jpeg_image->filename);
     }
@@ -11882,6 +11899,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
       /* Destroy JPEG image and image_info */
       jpeg_image=DestroyImage(jpeg_image);
       (void) RelinquishUniqueFileResource(jpeg_image_info->filename);
+      unique_filenames--;
       jpeg_image_info=DestroyImageInfo(jpeg_image_info);
     }
 
@@ -12191,6 +12209,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
   (void) CopyMagickString(jpeg_image->magick,"JPEG",MaxTextExtent);
 
   (void) AcquireUniqueFilename(jpeg_image->filename);
+  unique_filenames++;
   (void) FormatLocaleString(jpeg_image_info->filename,MaxTextExtent,"%s",
     jpeg_image->filename);
 
@@ -12237,6 +12256,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   jpeg_image=DestroyImage(jpeg_image);
   (void) RelinquishUniqueFileResource(jpeg_image_info->filename);
+  unique_filenames--;
   jpeg_image_info=DestroyImageInfo(jpeg_image_info);
   blob=(unsigned char *) RelinquishMagickMemory(blob);
 
@@ -12252,7 +12272,7 @@ static MagickBooleanType WriteOneJNGImage(MngInfo *mng_info,
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "  exit WriteOneJNGImage()");
+      "  exit WriteOneJNGImage(); unique_filenames=%d",unique_filenames);
 
   return(status);
 }
@@ -12330,7 +12350,8 @@ static MagickBooleanType WriteJNGImage(const ImageInfo *image_info,Image *image)
   (void) CatchImageException(image);
   MngInfoFreeStruct(mng_info,&have_mng_structure);
   if (logging != MagickFalse)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit WriteJNGImage()");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "  exit WriteJNGImage()");
   return(status);
 }
 #endif
