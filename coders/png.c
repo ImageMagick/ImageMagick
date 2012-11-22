@@ -2992,6 +2992,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (quantum_info == (QuantumInfo *) NULL)
      png_error(ping,"Failed to allocate quantum_info");
 
+  (void) SetQuantumEndian(image,quantum_info,MSBEndian);
+
   {
 
    MagickBooleanType
@@ -10456,6 +10458,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
     png_error(ping,"Memory allocation for quantum_info failed");
   quantum_info->format=UndefinedQuantumFormat;
   quantum_info->depth=image_depth;
+  (void) SetQuantumEndian(image,quantum_info,MSBEndian);
   num_passes=png_set_interlace_handling(ping);
 
   if ((!mng_info->write_png8 && !mng_info->write_png24 &&
