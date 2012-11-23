@@ -8,6 +8,11 @@
     properly (fix by J. Summers, reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22316).
 
+2012-11-21  6.8.0-6 Cristy  <quetzlzacatenango@image...>
+  * Fixed bug in coders/bmp.c that failed to read transparency
+    properly (fix by J. Summers, reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22312).
+
 2012-11-20  6.8.0-5 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.0-5, SVN revision 10001.
 
