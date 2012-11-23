@@ -1,3 +1,6 @@
+2012-11-20  6.8.0-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.0-6, SVN revision 10024.
+
 2012-11-21  6.8.0-6 Glenn Randers-Pehrson <glennrp@image...>
   * Fixed an old bug in chromaticity decoding in coders/bmp.c (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22294).
