@@ -824,11 +824,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (bmp_info.bits_per_pixel != 8) && (bmp_info.bits_per_pixel != 16) &&
         (bmp_info.bits_per_pixel != 24) && (bmp_info.bits_per_pixel != 32))
       ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");
-    if (bmp_info.number_colors > (1U << bmp_info.bits_per_pixel))
+    if (bmp_info.bits_per_pixel < 16 &&
+        bmp_info.number_colors > (1U << bmp_info.bits_per_pixel))
       {
-        if (bmp_info.bits_per_pixel < 24)
-          ThrowReaderException(CorruptImageError,"UnrecognizedNumberOfColors");
-        bmp_info.number_colors=0;
+        ThrowReaderException(CorruptImageError,
+            "UnrecognizedNumberOfColors");
       }
     if ((bmp_info.compression == 1) && (bmp_info.bits_per_pixel != 8))
       ThrowReaderException(CorruptImageError,"UnrecognizedBitsPerPixel");
@@ -856,7 +856,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->alpha_trait=(bmp_info.alpha_mask != 0) &&
       (bmp_info.compression == BI_BITFIELDS) ? BlendPixelTrait :
       UndefinedPixelTrait;
-    if ((bmp_info.number_colors != 0) || (bmp_info.bits_per_pixel < 16))
+    if (bmp_info.bits_per_pixel < 16)
       {
         size_t
           one;
