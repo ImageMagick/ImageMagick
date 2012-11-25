@@ -171,7 +171,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         else
           high=draw_info->pointsize-1.0;
       }
-      for (draw_info->pointsize=(low+high)/2.0; ; )
+      for (draw_info->pointsize=(low+high)/2.0; (high-low) > 1.0; )
       {
         (void) FormatLocaleString(geometry,MaxTextExtent,"%+g%+g",
           -metrics.bounds.x1,metrics.ascent);
