@@ -209,7 +209,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
         else
           high=draw_info->pointsize-1.0;
       }
-      for (draw_info->pointsize=(low+high)/2.0; ; )
+      for (draw_info->pointsize=(low+high)/2.0; (high-low) > 1.0; )
       {
         text=AcquireString(caption);
         i=FormatMagickCaption(image,draw_info,MagickTrue,&metrics,&text,
