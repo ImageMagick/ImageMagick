@@ -131,10 +131,6 @@ static inline const unsigned char *PushDoublePixel(QuantumInfo *quantum_info,
 
   if (quantum_info->endian == LSBEndian)
     {
-      p=(double *) quantum;
-      *pixel=(*p);
-      *pixel-=quantum_info->minimum;
-      *pixel*=quantum_info->scale;
       quantum[0]=(*pixels++);
       quantum[1]=(*pixels++);
       quantum[2]=(*pixels++);
