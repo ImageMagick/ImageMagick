@@ -235,11 +235,11 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   MagickBooleanType
     status;
 
-  register ssize_t
-    x;
-
   register Quantum
     *q;
+
+  register ssize_t
+    x;
 
   ssize_t
     i,
