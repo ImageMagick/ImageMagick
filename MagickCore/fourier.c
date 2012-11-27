@@ -271,6 +271,8 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
       magnitude_source=(double *) RelinquishMagickMemory(magnitude_source);
       return(MagickFalse);
     }
+  (void) ResetMagickMemory(phase_source,0,fourier_info->height*
+    fourier_info->width*sizeof(*phase_source));
   status=ForwardQuadrantSwap(fourier_info->height,fourier_info->height,
     magnitude,magnitude_source);
   if (status != MagickFalse)
