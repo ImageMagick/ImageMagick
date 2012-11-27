@@ -501,10 +501,10 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;       
           }
         }
-        if (pixel.colorspace == LabColorspace)
+        if (image->colorspace == LabColorspace)
           {
-            pixel.green+=(range+1)/2.0;
-            pixel.blue+=(range+1)/2.0;
+            green+=(range+1)/2.0;
+            blue+=(range+1)/2.0;
           }
         pixel.red=ScaleAnyToQuantum((QuantumAny) (red+0.5),range);
         pixel.green=ScaleAnyToQuantum((QuantumAny) (green+0.5),range);
