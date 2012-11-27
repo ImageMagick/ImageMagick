@@ -477,6 +477,11 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);
         if (q == (PixelPacket *) NULL)
           continue;
+        if (image->colorspace == LabColorspace)
+          {
+            pixel.green-=(QuantumRange+1)/2.0;
+            pixel.blue-=(QuantumRange+1)/2.0;
+          }
         SetPixelRed(q,ScaleAnyToQuantum(pixel.red,range));
         SetPixelGreen(q,ScaleAnyToQuantum(pixel.green,range));
         SetPixelBlue(q,ScaleAnyToQuantum(pixel.blue,range));
@@ -677,6 +682,11 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image)
           x,(double) y);
         (void) WriteBlobString(image,buffer);
         SetMagickPixelPacket(image,p,indexes+x,&pixel);
+        if (pixel.colorspace == LabColorspace)
+          {
+            pixel.green-=(QuantumRange+1)/2.0;
+            pixel.blue-=(QuantumRange+1)/2.0;
+          }
         (void) CopyMagickString(tuple,"(",MaxTextExtent);
         ConcatenateColorComponent(&pixel,RedChannel,X11Compliance,tuple);
         (void) ConcatenateMagickString(tuple,",",MaxTextExtent);
