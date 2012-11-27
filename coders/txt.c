@@ -479,8 +479,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           continue;
         if (image->colorspace == LabColorspace)
           {
-            pixel.green-=(QuantumRange+1)/2.0;
-            pixel.blue-=(QuantumRange+1)/2.0;
+            pixel.green+=(range+1)/2.0;
+            pixel.blue+=(range+1)/2.0;
           }
         SetPixelRed(q,ScaleAnyToQuantum(pixel.red,range));
         SetPixelGreen(q,ScaleAnyToQuantum(pixel.green,range));
