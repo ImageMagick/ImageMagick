@@ -501,6 +501,11 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;       
           }
         }
+        if (pixel.colorspace == LabColorspace)
+          {
+            pixel.green-=(range+1)/2.0;
+            pixel.blue-=(range+1)/2.0;
+          }
         pixel.red=ScaleAnyToQuantum((QuantumAny) (red+0.5),range);
         pixel.green=ScaleAnyToQuantum((QuantumAny) (green+0.5),range);
         pixel.blue=ScaleAnyToQuantum((QuantumAny) (blue+0.5),range);
@@ -699,6 +704,11 @@ static MagickBooleanType WriteTXTImage(const ImageInfo *image_info,Image *image,
           x,(double) y);
         (void) WriteBlobString(image,buffer);
         GetPixelInfoPixel(image,p,&pixel);
+        if (pixel.colorspace == LabColorspace)
+          {
+            pixel.green-=(QuantumRange+1)/2.0;
+            pixel.blue-=(QuantumRange+1)/2.0;
+          }
         (void) CopyMagickString(tuple,"(",MaxTextExtent);
         if (pixel.colorspace == GRAYColorspace)
           ConcatenateColorComponent(&pixel,GrayPixelChannel,X11Compliance,
