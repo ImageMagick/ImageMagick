@@ -472,24 +472,23 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           else
             count=(ssize_t) sscanf(text,"%ld,%ld: (%u,%u,%u",&x_offset,
               &y_offset,&pixel.red,&pixel.green,&pixel.blue);
-        if (count < 5)
-          continue;
-        q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);
-        if (q == (PixelPacket *) NULL)
-          continue;
         if (image->colorspace == LabColorspace)
           {
             pixel.green+=(range+1)/2.0;
             pixel.blue+=(range+1)/2.0;
           }
+        if (count < 5)
+          continue;
+        q=GetAuthenticPixels(image,x_offset,y_offset,1,1,exception);
+        if (q == (PixelPacket *) NULL)
+          continue;
         SetPixelRed(q,ScaleAnyToQuantum(pixel.red,range));
         SetPixelGreen(q,ScaleAnyToQuantum(pixel.green,range));
         SetPixelBlue(q,ScaleAnyToQuantum(pixel.blue,range));
         if (image->colorspace == CMYKColorspace)
           {
             indexes=GetAuthenticIndexQueue(image);
-            SetPixelIndex(indexes,ScaleAnyToQuantum(pixel.index,
-              range));
+            SetPixelIndex(indexes,ScaleAnyToQuantum(pixel.index,range));
           }
         if (image->matte != MagickFalse)
           SetPixelAlpha(q,ScaleAnyToQuantum(pixel.opacity,range));
