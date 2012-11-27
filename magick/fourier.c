@@ -237,11 +237,11 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   register IndexPacket
     *indexes;
 
-  register ssize_t
-    x;
-
   register PixelPacket
     *q;
+
+  register ssize_t
+    x;
 
   ssize_t
     i,
