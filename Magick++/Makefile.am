@@ -129,7 +129,14 @@ MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/STL.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
-Magick___lib_libMagick___la_LDFLAGS = -no-undefined $(MAGICK_LT_RELEASE_OPTS) \
+if HAVE_LD_VERSION_SCRIPT
+Magick___lib_libMagick___la_LDFLAGS_VERSION =  -Wl,--version-script=$(top_srcdir)/Magick++/lib/libMagick++.map
+else
+Magick___lib_libMagick___la_LDFLAGS_VERSION = -export-symbols-regex ".*"
+endif
+
+Magick___lib_libMagick___la_LDFLAGS = -no-undefined \
+  $(Magick___lib_libMagick___la_LDFLAGS_VERSION) $(MAGICK_LT_RELEASE_OPTS) \
 	-version-info $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 Magick___lib_libMagick___la_LIBADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 
