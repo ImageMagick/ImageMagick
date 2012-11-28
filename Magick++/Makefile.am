@@ -51,8 +51,9 @@ MAGICKPP_EXTRA_DIST = \
 	Magick++/README \
 	Magick++/bin/Magick++-config.1 \
 	Magick++/bin/Magick++-config.in \
-	Magick++/lib/Magick++.pc.in \
 	Magick++/lib/ImageMagick++.pc.in \
+	Magick++/lib/libMagick++.map \
+	Magick++/lib/Magick++.pc.in \
 	Magick++/demo/model.miff \
 	Magick++/demo/smile.miff \
 	Magick++/demo/smile_anim.miff \
