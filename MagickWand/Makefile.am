@@ -126,7 +126,9 @@ MAGICKWAND_LIBS = MagickWand/libMagickWand.la
 
 MagickWand_libMagickWand_la_SOURCES = $(MAGICKWAND_SOURCES)
 MagickWand_libMagickWand_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
-MagickWand_libMagickWand_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
+
+MagickWand_libMagickWand_la_LDFLAGS = -no-undefined \
+  $(magick_libMagickWand_la_LDFLAGS_VERSION) \
 	$(MAGICK_LT_RELEASE_OPTS) -version-info \
 	$(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 MagickWand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
