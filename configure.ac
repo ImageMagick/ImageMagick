@@ -276,6 +276,9 @@ AX_C___ATTRIBUTE__
 AX_GCC_ARCHFLAG([no])
 PKG_PROG_PKG_CONFIG
 
+# Check for linker script support 
+gl_LD_VERSION_SCRIPT
+
 #
 # Enable run-time checking.
 #
@@ -892,9 +895,16 @@ AC_TYPE_UNSIGNED_LONG_LONG_INT
 # C compiler predefines it.
 AC_C_CHAR_UNSIGNED
 
-# float_t and double_t are intended to be the the most efficient type
+# Float_t and double_t are intended to be the the most efficient type.
 AC_CHECK_TYPES([float_t], [], [], [[#include <math.h>]])
 AC_CHECK_TYPES([double_t], [], [], [[#include <math.h>]])
+AC_CHECK_SIZEOF([float_t], [], [[#include <math.h>]])
+AC_CHECK_SIZEOF([double_t], [], [[#include <math.h>]])
+
+# Get size of float, double and long double for comparaison.
+AC_CHECK_SIZEOF([float])
+AC_CHECK_SIZEOF([double])
+AC_CHECK_SIZEOF([long double])
 
 # Obtain size of an 'signed short' and define as SIZEOF_SIGNED_SHORT
 AC_CHECK_SIZEOF(signed short)
