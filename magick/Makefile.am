@@ -433,6 +433,7 @@ MAGICK_EXTRA_DIST = \
 	magick/MagickCore-config.in \
 	$(MAGICK_MANS) \
 	magick/ImageMagick.pc.in \
+	magick/libMagickCore.map \
 	magick/MagickCore.pc.in \
 	magick/config.h_vms \
 	magick/mac.c \

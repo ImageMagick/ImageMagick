@@ -131,6 +131,7 @@ wand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MAT
 
 WAND_EXTRA_DIST = \
 	wand/ChangeLog \
+	wand/libMagickWand.map \
 	wand/MagickWand-config.1 \
 	wand/MagickWand.pc.in \
 	wand/Wand-config.1 \
