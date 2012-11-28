@@ -927,6 +927,8 @@ WIN32_NATIVE_BUILD_TRUE
 WINGDI32_DELEGATE_FALSE
 WINGDI32_DELEGATE_TRUE
 GDI32_LIBS
+HAVE_LD_VERSION_SCRIPT_FALSE
+HAVE_LD_VERSION_SCRIPT_TRUE
 PKG_CONFIG
 PRTDIAG
 LN_S
@@ -1086,6 +1088,7 @@ enable_dependency_tracking
 with_gnu_ld
 with_dmalloc
 with_gcc_arch
+enable_ld_version_script
 enable_bounds_checking
 enable_osx_universal_binary
 with_includearch_dir
@@ -1819,6 +1822,9 @@ Optional Features:
                           do not reject slow dependency extractors
   --disable-dependency-tracking
                           speeds up one-time build
+  --enable-ld-version-script
+                          enable linker version script (default is enabled
+                          when possible)
   --enable-bounds-checking
                           enable run-time bounds-checking
   --enable-osx-universal-binary
@@ -3633,7 +3639,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=9995M
+MAGICK_SVN_REVISION=10044:10047M
 
 
 
@@ -8678,6 +8684,85 @@ $as_echo "no" >&6; }
 	fi
 
 fi
+
+# Check for linker script support
+
+  # Check whether --enable-ld-version-script was given.
+if test "${enable_ld_version_script+set}" = set; then :
+  enableval=$enable_ld_version_script; have_ld_version_script=$enableval
+fi
+
+  if test -z "$have_ld_version_script"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if LD -Wl,--version-script works" >&5
+$as_echo_n "checking if LD -Wl,--version-script works... " >&6; }
+    save_LDFLAGS="$LDFLAGS"
+    LDFLAGS="$LDFLAGS -Wl,--version-script=conftest.map"
+    cat > conftest.map <<EOF
+foo
+EOF
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  accepts_syntax_errors=yes
+else
+  accepts_syntax_errors=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+    if test "$accepts_syntax_errors" = no; then
+      cat > conftest.map <<EOF
+VERS_1 {
+        global: sym;
+};
+
+VERS_2 {
+        global: sym;
+} VERS_1;
+EOF
+      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  have_ld_version_script=yes
+else
+  have_ld_version_script=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+    else
+      have_ld_version_script=no
+    fi
+    rm -f conftest.map
+    LDFLAGS="$save_LDFLAGS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_ld_version_script" >&5
+$as_echo "$have_ld_version_script" >&6; }
+  fi
+   if test "$have_ld_version_script" = "yes"; then
+  HAVE_LD_VERSION_SCRIPT_TRUE=
+  HAVE_LD_VERSION_SCRIPT_FALSE='#'
+else
+  HAVE_LD_VERSION_SCRIPT_TRUE='#'
+  HAVE_LD_VERSION_SCRIPT_FALSE=
+fi
+
+
 
 #
 # Enable run-time checking.
@@ -22844,7 +22929,7 @@ if test $ac_cv_c_char_unsigned = yes && test "$GCC" != yes; then
 fi
 
 
-# float_t and double_t are intended to be the the most efficient type
+# Float_t and double_t are intended to be the the most efficient type.
 ac_fn_c_check_type "$LINENO" "float_t" "ac_cv_type_float_t" "#include <math.h>
 "
 if test "x$ac_cv_type_float_t" = xyes; then :
@@ -22866,6 +22951,175 @@ _ACEOF
 
 
 fi
+
+# The cast to long int works around a bug in the HP C Compiler
+# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
+# This bug is HP SR number 8606223364.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of float_t" >&5
+$as_echo_n "checking size of float_t... " >&6; }
+if ${ac_cv_sizeof_float_t+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (float_t))" "ac_cv_sizeof_float_t"        "#include <math.h>
+"; then :
+
+else
+  if test "$ac_cv_type_float_t" = yes; then
+     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error 77 "cannot compute sizeof (float_t)
+See \`config.log' for more details" "$LINENO" 5; }
+   else
+     ac_cv_sizeof_float_t=0
+   fi
+fi
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_float_t" >&5
+$as_echo "$ac_cv_sizeof_float_t" >&6; }
+
+
+
+cat >>confdefs.h <<_ACEOF
+#define SIZEOF_FLOAT_T $ac_cv_sizeof_float_t
+_ACEOF
+
+
+# The cast to long int works around a bug in the HP C Compiler
+# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
+# This bug is HP SR number 8606223364.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of double_t" >&5
+$as_echo_n "checking size of double_t... " >&6; }
+if ${ac_cv_sizeof_double_t+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (double_t))" "ac_cv_sizeof_double_t"        "#include <math.h>
+"; then :
+
+else
+  if test "$ac_cv_type_double_t" = yes; then
+     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error 77 "cannot compute sizeof (double_t)
+See \`config.log' for more details" "$LINENO" 5; }
+   else
+     ac_cv_sizeof_double_t=0
+   fi
+fi
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_double_t" >&5
+$as_echo "$ac_cv_sizeof_double_t" >&6; }
+
+
+
+cat >>confdefs.h <<_ACEOF
+#define SIZEOF_DOUBLE_T $ac_cv_sizeof_double_t
+_ACEOF
+
+
+
+# Get size of float, double and long double for comparaison.
+# The cast to long int works around a bug in the HP C Compiler
+# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
+# This bug is HP SR number 8606223364.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of float" >&5
+$as_echo_n "checking size of float... " >&6; }
+if ${ac_cv_sizeof_float+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (float))" "ac_cv_sizeof_float"        "$ac_includes_default"; then :
+
+else
+  if test "$ac_cv_type_float" = yes; then
+     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error 77 "cannot compute sizeof (float)
+See \`config.log' for more details" "$LINENO" 5; }
+   else
+     ac_cv_sizeof_float=0
+   fi
+fi
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_float" >&5
+$as_echo "$ac_cv_sizeof_float" >&6; }
+
+
+
+cat >>confdefs.h <<_ACEOF
+#define SIZEOF_FLOAT $ac_cv_sizeof_float
+_ACEOF
+
+
+# The cast to long int works around a bug in the HP C Compiler
+# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
+# This bug is HP SR number 8606223364.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of double" >&5
+$as_echo_n "checking size of double... " >&6; }
+if ${ac_cv_sizeof_double+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (double))" "ac_cv_sizeof_double"        "$ac_includes_default"; then :
+
+else
+  if test "$ac_cv_type_double" = yes; then
+     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error 77 "cannot compute sizeof (double)
+See \`config.log' for more details" "$LINENO" 5; }
+   else
+     ac_cv_sizeof_double=0
+   fi
+fi
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_double" >&5
+$as_echo "$ac_cv_sizeof_double" >&6; }
+
+
+
+cat >>confdefs.h <<_ACEOF
+#define SIZEOF_DOUBLE $ac_cv_sizeof_double
+_ACEOF
+
+
+# The cast to long int works around a bug in the HP C Compiler
+# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
+# This bug is HP SR number 8606223364.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of long double" >&5
+$as_echo_n "checking size of long double... " >&6; }
+if ${ac_cv_sizeof_long_double+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (long double))" "ac_cv_sizeof_long_double"        "$ac_includes_default"; then :
+
+else
+  if test "$ac_cv_type_long_double" = yes; then
+     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error 77 "cannot compute sizeof (long double)
+See \`config.log' for more details" "$LINENO" 5; }
+   else
+     ac_cv_sizeof_long_double=0
+   fi
+fi
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_long_double" >&5
+$as_echo "$ac_cv_sizeof_long_double" >&6; }
+
+
+
+cat >>confdefs.h <<_ACEOF
+#define SIZEOF_LONG_DOUBLE $ac_cv_sizeof_long_double
+_ACEOF
+
 
 
 # Obtain size of an 'signed short' and define as SIZEOF_SIGNED_SHORT
@@ -34968,6 +35222,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCXX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_LD_VERSION_SCRIPT_TRUE}" && test -z "${HAVE_LD_VERSION_SCRIPT_FALSE}"; then
+  as_fn_error $? "conditional \"HAVE_LD_VERSION_SCRIPT\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${WINGDI32_DELEGATE_TRUE}" && test -z "${WINGDI32_DELEGATE_FALSE}"; then

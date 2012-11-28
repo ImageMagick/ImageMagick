@@ -133,8 +133,8 @@ MagickWand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS)
 
 MAGICKWAND_EXTRA_DIST = \
 	MagickWand/ChangeLog \
+	MagickWand/libMagickWand.map \
 	MagickWand/MagickWand-config.1 \
 	MagickWand/MagickWand.pc.in
-	$(MAGICKWAND_TESTS)
 
 MAGICKWAND_CLEANFILES =

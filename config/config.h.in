@@ -840,6 +840,21 @@
    live. */
 #undef SHARE_RELATIVE_PATH
 
+/* The size of `double', as computed by sizeof. */
+#undef SIZEOF_DOUBLE
+
+/* The size of `double_t', as computed by sizeof. */
+#undef SIZEOF_DOUBLE_T
+
+/* The size of `float', as computed by sizeof. */
+#undef SIZEOF_FLOAT
+
+/* The size of `float_t', as computed by sizeof. */
+#undef SIZEOF_FLOAT_T
+
+/* The size of `long double', as computed by sizeof. */
+#undef SIZEOF_LONG_DOUBLE
+
 /* The size of `off_t', as computed by sizeof. */
 #undef SIZEOF_OFF_T
 

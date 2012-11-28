@@ -1279,6 +1279,31 @@
 #define MAGICKCORE_SHARE_RELATIVE_PATH "ImageMagick-7.0.0"
 #endif
 
+/* The size of `double', as computed by sizeof. */
+#ifndef MAGICKCORE_SIZEOF_DOUBLE
+#define MAGICKCORE_SIZEOF_DOUBLE 8
+#endif
+
+/* The size of `double_t', as computed by sizeof. */
+#ifndef MAGICKCORE_SIZEOF_DOUBLE_T
+#define MAGICKCORE_SIZEOF_DOUBLE_T 8
+#endif
+
+/* The size of `float', as computed by sizeof. */
+#ifndef MAGICKCORE_SIZEOF_FLOAT
+#define MAGICKCORE_SIZEOF_FLOAT 4
+#endif
+
+/* The size of `float_t', as computed by sizeof. */
+#ifndef MAGICKCORE_SIZEOF_FLOAT_T
+#define MAGICKCORE_SIZEOF_FLOAT_T 4
+#endif
+
+/* The size of `long double', as computed by sizeof. */
+#ifndef MAGICKCORE_SIZEOF_LONG_DOUBLE
+#define MAGICKCORE_SIZEOF_LONG_DOUBLE 16
+#endif
+
 /* The size of `off_t', as computed by sizeof. */
 #ifndef MAGICKCORE_SIZEOF_OFF_T
 #define MAGICKCORE_SIZEOF_OFF_T 8
