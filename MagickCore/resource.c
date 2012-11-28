@@ -340,7 +340,8 @@ static void *DestroyTemporaryResources(void *temporary_resource)
 static MagickBooleanType GetPathTemplate(char *path)
 {
   char
-    *directory;
+    *directory,
+    *value;
 
   ExceptionInfo
     *exception;
@@ -365,8 +366,6 @@ static MagickBooleanType GetPathTemplate(char *path)
   if (directory == (char *) NULL)
     directory=GetEnvironmentValue("MAGICK_TMPDIR");
   if (directory == (char *) NULL)
-    directory=GetPolicyValue("temporary-path");
-  if (directory == (char *) NULL)
     directory=GetEnvironmentValue("TMPDIR");
 #if defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__OS2__)
   if (directory == (char *) NULL)
@@ -384,16 +383,19 @@ static MagickBooleanType GetPathTemplate(char *path)
 #endif
   if (directory == (char *) NULL)
     return(MagickTrue);
+  value=GetPolicyValue("temporary-path");
+  if (value != (char *) NULL)
+    (void) CloneString(&directory,value);
   if (strlen(directory) > (MaxTextExtent-25))
     {
       directory=DestroyString(directory);
-      return(MagickTrue);
+      return(MagickFalse);
     }
   status=GetPathAttributes(directory,&attributes);
   if ((status == MagickFalse) || !S_ISDIR(attributes.st_mode))
     {
       directory=DestroyString(directory);
-      return(MagickTrue);
+      return(MagickFalse);
     }
   if (directory[strlen(directory)-1] == *DirectorySeparator)
     (void) FormatLocaleString(path,MaxTextExtent,"%smagick-%.20gXXXXXXXXXXXX",
