@@ -309,9 +309,11 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_func_fseeko.m4 \
 	$(top_srcdir)/m4/ax_prog_perl_version.m4 \
 	$(top_srcdir)/m4/ax_pthread.m4 \
 	$(top_srcdir)/m4/cxx_have_std_libs.m4 \
-	$(top_srcdir)/m4/framework.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/framework.m4 \
+	$(top_srcdir)/m4/ld-version-script.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 \
 	$(top_srcdir)/m4/magick_check_pthread_lib.m4 \
 	$(top_srcdir)/m4/magick_func_mmap_fileio.m4 \
 	$(top_srcdir)/m4/pkg.m4 $(top_srcdir)/configure.ac
@@ -3925,7 +3927,9 @@ MAGICKCORE_LIBS = magick/libMagickCore.la
 @WITH_MODULES_FALSE@magick_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS)
 @WITH_MODULES_TRUE@magick_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS)
 magick_libMagickCore_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $(LIBRARY_EXTRA_CPPFLAGS)
-magick_libMagickCore_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
+@HAVE_LD_VERSION_SCRIPT_FALSE@magick_libMagickCore_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
+@HAVE_LD_VERSION_SCRIPT_TRUE@magick_libMagickCore_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/magick/libMagickCore.map
+magick_libMagickCore_la_LDFLAGS = -no-undefined $(magick_libMagickCore_la_LDFLAGS_VERSION) \
   $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
@@ -4430,9 +4434,11 @@ WAND_MANS = \
 
 WAND_BUILT_SRCS = 
 MAGICKWAND_LIBS = wand/libMagickWand.la
+@HAVE_LD_VERSION_SCRIPT_FALSE@magick_libMagickWand_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
+@HAVE_LD_VERSION_SCRIPT_TRUE@magick_libMagickWand_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/wand/libMagickWand.map
 wand_libMagickWand_la_SOURCES = $(WAND_SOURCES)
 wand_libMagickWand_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
-wand_libMagickWand_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
+wand_libMagickWand_la_LDFLAGS = -no-undefined $(magick_libMagickWand_la_LDFLAGS_VERSION) \
 	$(MAGICK_LT_RELEASE_OPTS) -version-info \
 	$(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
@@ -4560,6 +4566,8 @@ MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/STL.h \
 	Magick++/lib/Magick++/TypeMetric.h
 
+@HAVE_LD_VERSION_SCRIPT_FALSE@Magick___lib_libMagick___la_LDFLAGS_VERSION = -export-symbols-regex ".*"
+@HAVE_LD_VERSION_SCRIPT_TRUE@Magick___lib_libMagick___la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/Magick++/lib/libMagick++.map
 Magick___lib_libMagick___la_LDFLAGS = -no-undefined $(MAGICK_LT_RELEASE_OPTS) \
 	-version-info $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 

@@ -45,9 +45,17 @@ magick_libMagickCore_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS) $(
 magick_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS)
 endif # WITH_MODULES
 magick_libMagickCore_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $(LIBRARY_EXTRA_CPPFLAGS)
-magick_libMagickCore_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
+
+if HAVE_LD_VERSION_SCRIPT
+magick_libMagickCore_la_LDFLAGS_VERSION =  -Wl,--version-script=$(top_srcdir)/magick/libMagickCore.map
+else
+magick_libMagickCore_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
+endif
+
+magick_libMagickCore_la_LDFLAGS = -no-undefined $(magick_libMagickCore_la_LDFLAGS_VERSION) \
   $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
+
 magick_libMagickCore_la_DEPENDENCIES =
 
 # Library base sources

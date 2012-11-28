@@ -116,9 +116,15 @@ WAND_BUILT_SRCS =
 
 MAGICKWAND_LIBS = wand/libMagickWand.la
 
+if HAVE_LD_VERSION_SCRIPT
+magick_libMagickWand_la_LDFLAGS_VERSION =  -Wl,--version-script=$(top_srcdir)/wand/libMagickWand.map
+else
+magick_libMagickWand_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
+endif
+
 wand_libMagickWand_la_SOURCES = $(WAND_SOURCES)
 wand_libMagickWand_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
-wand_libMagickWand_la_LDFLAGS = -no-undefined -export-symbols-regex ".*" \
+wand_libMagickWand_la_LDFLAGS = -no-undefined $(magick_libMagickWand_la_LDFLAGS_VERSION) \
 	$(MAGICK_LT_RELEASE_OPTS) -version-info \
 	$(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 wand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
