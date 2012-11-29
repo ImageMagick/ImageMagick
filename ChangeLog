@@ -1,3 +1,8 @@
+2012-11-28  6.8.0-8 Glenn Randers-Pehrson <glennrp@image...>
+  * Fixed problem with writing grayscale PNG, bug introduced in version
+    6.8.0-0 or 6.8.0-1 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22355).
+
 2012-11-28  6.8.0-8 Cristy  <quetzlzacatenango@image...>
   * Allow temporary-path policy to override temporary path environment
     variables (e.g. MAGICK_TMPDIR).
