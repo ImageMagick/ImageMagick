@@ -3986,10 +3986,10 @@ MAGICKCORE_LIBS = MagickCore/libMagickCore.la
 @WITH_MODULES_FALSE@MagickCore_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS)
 @WITH_MODULES_TRUE@MagickCore_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS)
 MagickCore_libMagickCore_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $(LIBRARY_EXTRA_CPPFLAGS)
-@HAVE_LD_VERSION_SCRIPT_FALSE@magick_libMagickCore_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
-@HAVE_LD_VERSION_SCRIPT_TRUE@magick_libMagickCore_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/magick/libMagickCore.map
+@HAVE_LD_VERSION_SCRIPT_FALSE@MagickCore_libMagickCore_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
+@HAVE_LD_VERSION_SCRIPT_TRUE@MagickCore_libMagickCore_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/MagickCore/libMagickCore.map
 MagickCore_libMagickCore_la_LDFLAGS = -no-undefined \
-  $(magick_libMagickCore_la_LDFLAGS_VERSION) \
+  $(MagickCore_libMagickCore_la_LDFLAGS_VERSION) \
   $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
@@ -4520,8 +4520,10 @@ MAGICKWAND_BUILT_SRCS =
 MAGICKWAND_LIBS = MagickWand/libMagickWand.la
 MagickWand_libMagickWand_la_SOURCES = $(MAGICKWAND_SOURCES)
 MagickWand_libMagickWand_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
+@HAVE_LD_VERSION_SCRIPT_FALSE@MagickWand_libMagickWand_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
+@HAVE_LD_VERSION_SCRIPT_TRUE@MagickWand_libMagickWand_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/wand/libMagickWand.map
 MagickWand_libMagickWand_la_LDFLAGS = -no-undefined \
-  $(magick_libMagickWand_la_LDFLAGS_VERSION) \
+  $(MagickWand_libMagickWand_la_LDFLAGS_VERSION) \
 	$(MAGICK_LT_RELEASE_OPTS) -version-info \
 	$(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 

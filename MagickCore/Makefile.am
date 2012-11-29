@@ -45,13 +45,13 @@ endif # WITH_MODULES
 MagickCore_libMagickCore_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $(LIBRARY_EXTRA_CPPFLAGS)
 
 if HAVE_LD_VERSION_SCRIPT
-magick_libMagickCore_la_LDFLAGS_VERSION =  -Wl,--version-script=$(top_srcdir)/magick/libMagickCore.map
+MagickCore_libMagickCore_la_LDFLAGS_VERSION =  -Wl,--version-script=$(top_srcdir)/MagickCore/libMagickCore.map
 else
-magick_libMagickCore_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
+MagickCore_libMagickCore_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
 endif
 
 MagickCore_libMagickCore_la_LDFLAGS = -no-undefined \
-  $(magick_libMagickCore_la_LDFLAGS_VERSION) \
+  $(MagickCore_libMagickCore_la_LDFLAGS_VERSION) \
   $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 MagickCore_libMagickCore_la_DEPENDENCIES =
