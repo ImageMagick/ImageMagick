@@ -4521,7 +4521,7 @@ MAGICKWAND_LIBS = MagickWand/libMagickWand.la
 MagickWand_libMagickWand_la_SOURCES = $(MAGICKWAND_SOURCES)
 MagickWand_libMagickWand_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
 @HAVE_LD_VERSION_SCRIPT_FALSE@MagickWand_libMagickWand_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
-@HAVE_LD_VERSION_SCRIPT_TRUE@MagickWand_libMagickWand_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/wand/libMagickWand.map
+@HAVE_LD_VERSION_SCRIPT_TRUE@MagickWand_libMagickWand_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/MagickWand/libMagickWand.map
 MagickWand_libMagickWand_la_LDFLAGS = -no-undefined \
   $(MagickWand_libMagickWand_la_LDFLAGS_VERSION) \
 	$(MAGICK_LT_RELEASE_OPTS) -version-info \

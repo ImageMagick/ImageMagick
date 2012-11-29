@@ -128,7 +128,7 @@ MagickWand_libMagickWand_la_SOURCES = $(MAGICKWAND_SOURCES)
 MagickWand_libMagickWand_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
 
 if HAVE_LD_VERSION_SCRIPT
-MagickWand_libMagickWand_la_LDFLAGS_VERSION =  -Wl,--version-script=$(top_srcdir)/wand/libMagickWand.map
+MagickWand_libMagickWand_la_LDFLAGS_VERSION =  -Wl,--version-script=$(top_srcdir)/MagickWand/libMagickWand.map
 else
 MagickWand_libMagickWand_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
 endif
