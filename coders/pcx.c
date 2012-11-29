@@ -124,7 +124,6 @@ static MagickBooleanType
 %
 %    o length: Specifies the length of the magick string.
 %
-%
 */
 static MagickBooleanType IsDCX(const unsigned char *magick,const size_t length)
 {
@@ -158,7 +157,6 @@ static MagickBooleanType IsDCX(const unsigned char *magick,const size_t length)
 %    o magick: compare image format pattern against these bytes.
 %
 %    o length: Specifies the length of the magick string.
-%
 %
 */
 static MagickBooleanType IsPCX(const unsigned char *magick,const size_t length)
@@ -404,7 +402,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         packet=(unsigned char) ReadBlobByte(image);
         if (EOFBlob(image) != MagickFalse)
-          break;
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
         *p++=packet;
         pcx_packets--;
       }
@@ -413,7 +411,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         packet=(unsigned char) ReadBlobByte(image);
         if (EOFBlob(image) != MagickFalse)
-          break;
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
         if ((packet & 0xc0) != 0xc0)
           {
             *p++=packet;
@@ -423,7 +421,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         count=(ssize_t) (packet & 0x3f);
         packet=(unsigned char) ReadBlobByte(image);
         if (EOFBlob(image) != MagickFalse)
-          break;
+          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile");
         for ( ; count != 0; count--)
         {
           *p++=packet;
