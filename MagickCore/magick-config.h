@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include "magick/magick-baseconfig.h"
+#include "MagickCore/magick-baseconfig.h"
 
 #if defined __CYGWIN32__ && !defined __CYGWIN__
    /* For backwards compatibility with Cygwin b19 and
