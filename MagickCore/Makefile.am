@@ -348,6 +348,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/magic-private.h \
 	MagickCore/magick.h \
 	MagickCore/magick-config.h \
+	MagickCore/magick-baseconfig.h \
 	MagickCore/magick-type.h \
 	MagickCore/matrix.h \
 	MagickCore/memory_.h \
@@ -480,5 +481,5 @@ MagickCore-install-data-local:
 # Uninstall magick-config.h
 MAGICKCORE_UNINSTALL_LOCAL_TARGETS = MagickCore-uninstall-local
 MagickCore-uninstall-local:
-	rm -f $(DESTDIR)$(MagickCoreincdir)/magick-config.h
+	rm -f $(DESTDIR)$(MagickCoreincdir)/magick-baseconfig.h
 

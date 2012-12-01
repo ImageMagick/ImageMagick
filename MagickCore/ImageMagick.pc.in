@@ -4,7 +4,7 @@ libdir=@libdir@
 includedir=@includedir@/ImageMagick
 
 Name: ImageMagick
-Description: ImageMagick - Convert, Edit, and Compose Images
+Description: ImageMagick - Convert, Edit, and Compose Images (ABI @MAGICK_ABISUFFIX@)
 Version: @PACKAGE_VERSION@
-Libs: -L${libdir} -lMagickCore
+Libs: -L${libdir} -lMagickCore-@MAGICK_ABISUFFIX@
 Cflags: -I${includedir} @MAGICK_PCFLAGS@

@@ -2478,6 +2478,7 @@ CFLAGS = @CFLAGS@
 CGMDecodeDelegate = @CGMDecodeDelegate@
 CL_CFLAGS = @CL_CFLAGS@
 CL_LIBS = @CL_LIBS@
+CODER_DIRNAME = @CODER_DIRNAME@
 CODER_PATH = @CODER_PATH@
 CONFIGURE_ARGS = @CONFIGURE_ARGS@
 CONFIGURE_PATH = @CONFIGURE_PATH@
@@ -2519,6 +2520,7 @@ EditorDelegate = @EditorDelegate@
 FFTW_LIBS = @FFTW_LIBS@
 FGREP = @FGREP@
 FIGDecodeDelegate = @FIGDecodeDelegate@
+FILTER_DIRNAME = @FILTER_DIRNAME@
 FILTER_PATH = @FILTER_PATH@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
 FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
@@ -2590,6 +2592,7 @@ LZMA_CFLAGS = @LZMA_CFLAGS@
 LZMA_LIBS = @LZMA_LIBS@
 LaunchDelegate = @LaunchDelegate@
 MAGICKCORE_PATH = @MAGICKCORE_PATH@
+MAGICK_ABISUFFIX = @MAGICK_ABISUFFIX@
 MAGICK_CFLAGS = @MAGICK_CFLAGS@
 MAGICK_CODER_MODULE_PATH = @MAGICK_CODER_MODULE_PATH@
 MAGICK_CONFIGURE_BUILD_PATH = @MAGICK_CONFIGURE_BUILD_PATH@
@@ -2623,6 +2626,10 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MAN_DIR = @MAN_DIR@
 MATH_LIBS = @MATH_LIBS@
 MKDIR_P = @MKDIR_P@
+MODULES_BASEDIRNAME = @MODULES_BASEDIRNAME@
+MODULES_DIRNAME = @MODULES_DIRNAME@
+MODULES_PATH = @MODULES_PATH@
+MODULES_RELATIVE_PATH = @MODULES_RELATIVE_PATH@
 MODULE_EXTRA_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
 MPEGDecodeDelegate = @MPEGDecodeDelegate@
 MPEGEncodeDelegate = @MPEGEncodeDelegate@
@@ -4282,6 +4289,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/magic-private.h \
 	MagickCore/magick.h \
 	MagickCore/magick-config.h \
+	MagickCore/magick-baseconfig.h \
 	MagickCore/magick-type.h \
 	MagickCore/matrix.h \
 	MagickCore/memory_.h \
@@ -4655,7 +4663,9 @@ MAGICKPP_INCHEADERS_OPT = \
 @HAVE_LD_VERSION_SCRIPT_TRUE@Magick___lib_libMagick___la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/Magick++/lib/libMagick++.map
 Magick___lib_libMagick___la_LDFLAGS = -no-undefined \
   $(Magick___lib_libMagick___la_LDFLAGS_VERSION) $(MAGICK_LT_RELEASE_OPTS) \
-	-version-info $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
+  -release $(MAGICK_ABISUFFIX) \
+  -version-info \
+  $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 Magick___lib_libMagick___la_LIBADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 MAGICKPP_CHECK_PGRMS_OPT = \
@@ -10594,7 +10604,7 @@ MagickCore-install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(MagickCoreincdir)
 	$(INSTALL_HEADER) MagickCore/magick-config.h $(DESTDIR)$(MagickCoreincdir)/magick-config.h
 MagickCore-uninstall-local:
-	rm -f $(DESTDIR)$(MagickCoreincdir)/magick-config.h
+	rm -f $(DESTDIR)$(MagickCoreincdir)/magick-baseconfig.h
 install-exec-local-utilities:
 	$(mkdir_p) $(DESTDIR)$(bindir)
 	cd $(DESTDIR)$(bindir) ; \

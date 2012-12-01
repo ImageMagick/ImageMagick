@@ -268,8 +268,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #  define IsBasenameSeparator(c) \
   (((c) == ']') || ((c) == ':') || ((c) == '/') ? MagickTrue : MagickFalse)
 #  define MAGICKCORE_LIBRARY_PATH  "sys$login:"
-#  define MAGICKCORE_CODER_PATH  "sys$login:"
-#  define MAGICKCORE_FILTER_PATH  "sys$login:"
 #  define MAGICKCORE_SHARE_PATH  "sys$login:"
 #  define X11_PREFERENCES_PATH  "decw$user_defaults:"
 #  define ProcessPendingEvents(text)
@@ -295,8 +293,6 @@ extern int vsnprintf(char *,size_t,const char *,va_list);
 #  define EditorOptions ""
 #  define IsBasenameSeparator(c)  ((c) == ':' ? MagickTrue : MagickFalse)
 #  define MAGICKCORE_LIBRARY_PATH  ""
-#  define MAGICKCORE_CODER_PATH  ""
-#  define MAGICKCORE_FILTER_PATH  ""
 #  define MAGICKCORE_SHARE_PATH  ""
 #  define X11_PREFERENCES_PATH  "~/."
 #  if defined(DISABLE_SIOUX)

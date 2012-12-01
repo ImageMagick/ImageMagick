@@ -5,7 +5,7 @@ includedir=@includedir@/ImageMagick
 
 Name: MagickWand
 Version: @PACKAGE_VERSION@
-Description:  MagickWand - C API for ImageMagick
+Description:  MagickWand - C API for ImageMagick (ABI @MAGICK_ABISUFFIX@)
 Requires: ImageMagick
-Libs: -L${libdir} -lMagickWand -lMagickCore
+Libs: -L${libdir} -lMagickWand-@MAGICK_ABISUFFIX@ -lMagickCore-@MAGICK_ABISUFFIX@
 Cflags: -I${includedir} @MAGICK_PCFLAGS@
