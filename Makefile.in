@@ -4266,6 +4266,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/magic.h \
 	magick/magick.h \
 	magick/magick-config.h \
+	magick/magick-baseconfig.h \
 	magick/magick-type.h \
 	magick/matrix.h \
 	magick/memory_.h \
@@ -10394,7 +10395,7 @@ magick-install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(magickincdir)
 	$(INSTALL_HEADER) magick/magick-config.h $(DESTDIR)$(magickincdir)/magick-config.h
 magick-uninstall-local:
-	rm -f $(DESTDIR)$(magickincdir)/magick-config.h
+	rm -f $(DESTDIR)$(magickincdir)/magick-baseconfig.h
 	tests/*_out.*
 
 # If source files missing, see if they can be obtained via VPATH
