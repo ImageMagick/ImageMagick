@@ -1399,7 +1399,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       q=(unsigned char *) stream_info->pixels;
       if (LocaleCompare(stream_info->map,"BGR") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1413,7 +1413,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"BGRA") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1428,7 +1428,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"BGRP") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1443,7 +1443,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"I") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1455,7 +1455,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGB") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1469,7 +1469,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGBA") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1484,7 +1484,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGBP") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1497,7 +1497,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           }
           break;
         }
-      p=GetVirtualPixelQueue(image);
+      p=GetAuthenticPixelQueue(image);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetVirtualIndexQueue(image);
@@ -1564,7 +1564,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       q=(double *) stream_info->pixels;
       if (LocaleCompare(stream_info->map,"BGR") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1581,7 +1581,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"BGRA") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1600,7 +1600,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"BGRP") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1618,7 +1618,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"I") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1631,7 +1631,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGB") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1648,7 +1648,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGBA") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1667,7 +1667,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGBP") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1683,7 +1683,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           }
           break;
         }
-      p=GetVirtualPixelQueue(image);
+      p=GetAuthenticPixelQueue(image);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetVirtualIndexQueue(image);
@@ -1757,7 +1757,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       q=(float *) stream_info->pixels;
       if (LocaleCompare(stream_info->map,"BGR") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1774,7 +1774,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"BGRA") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1793,7 +1793,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"BGRP") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1811,7 +1811,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"I") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1824,7 +1824,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGB") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1841,7 +1841,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGBA") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1860,7 +1860,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGBP") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1876,7 +1876,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           }
           break;
         }
-      p=GetVirtualPixelQueue(image);
+      p=GetAuthenticPixelQueue(image);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetVirtualIndexQueue(image);
@@ -1950,7 +1950,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       q=(unsigned int *) stream_info->pixels;
       if (LocaleCompare(stream_info->map,"BGR") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1964,7 +1964,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"BGRA") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1980,7 +1980,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"BGRP") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -1995,7 +1995,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"I") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2008,7 +2008,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGB") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2022,7 +2022,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGBA") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2038,7 +2038,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGBP") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2051,7 +2051,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           }
           break;
         }
-      p=GetVirtualPixelQueue(image);
+      p=GetAuthenticPixelQueue(image);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetVirtualIndexQueue(image);
@@ -2121,7 +2121,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       q=(size_t *) stream_info->pixels;
       if (LocaleCompare(stream_info->map,"BGR") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2135,7 +2135,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"BGRA") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2150,7 +2150,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"BGRP") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2165,7 +2165,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"I") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2177,7 +2177,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGB") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2191,7 +2191,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGBA") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2206,7 +2206,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGBP") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2219,7 +2219,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           }
           break;
         }
-      p=GetVirtualPixelQueue(image);
+      p=GetAuthenticPixelQueue(image);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetVirtualIndexQueue(image);
@@ -2286,7 +2286,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       q=(Quantum *) stream_info->pixels;
       if (LocaleCompare(stream_info->map,"BGR") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2300,7 +2300,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"BGRA") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2315,7 +2315,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"BGRP") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2330,7 +2330,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"I") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2342,7 +2342,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGB") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2356,7 +2356,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGBA") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2371,7 +2371,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGBP") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2384,7 +2384,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           }
           break;
         }
-      p=GetVirtualPixelQueue(image);
+      p=GetAuthenticPixelQueue(image);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetVirtualIndexQueue(image);
@@ -2451,7 +2451,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
       q=(unsigned short *) stream_info->pixels;
       if (LocaleCompare(stream_info->map,"BGR") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2465,7 +2465,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"BGRA") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2480,7 +2480,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"BGRP") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
             if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2495,7 +2495,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"I") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2507,7 +2507,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGB") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2521,7 +2521,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGBA") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2536,7 +2536,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
         }
       if (LocaleCompare(stream_info->map,"RGBP") == 0)
         {
-          p=GetVirtualPixelQueue(image);
+          p=GetAuthenticPixelQueue(image);
           if (p == (const PixelPacket *) NULL)
             break;
           for (x=0; x < (ssize_t) GetImageExtent(image); x++)
@@ -2549,7 +2549,7 @@ static MagickBooleanType StreamImagePixels(const StreamInfo *stream_info,
           }
           break;
         }
-      p=GetVirtualPixelQueue(image);
+      p=GetAuthenticPixelQueue(image);
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetVirtualIndexQueue(image);
