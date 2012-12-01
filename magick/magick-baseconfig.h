@@ -1151,7 +1151,7 @@
 #define MAGICKCORE_MODULES_BASEDIRNAME "modules"
 #endif
 
-/* Module directory dirname (if different of default)" */
+/* Module directory dirname (if different of default) */
 /* #undef MODULES_DIRNAME */
 
 /* Magick API method prefix */

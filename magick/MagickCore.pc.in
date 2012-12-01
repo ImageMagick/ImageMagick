@@ -4,7 +4,7 @@ libdir=@libdir@
 includedir=@includedir@/ImageMagick
 
 Name: MagickCore
-Description: MagickCore - C API for ImageMagick (ABI @MAGICK_ABISUFFIX@)
+Description: MagickCore - C API for ImageMagick (ABI @MAGICK_ABI_SUFFIX@)
 Version: @PACKAGE_VERSION@
-Libs: -L${libdir} -lMagickCore-@MAGICK_ABISUFFIX@
+Libs: -L${libdir} -lMagickCore-@MAGICK_ABI_SUFFIX@
 Cflags: -I${includedir} @MAGICK_PCFLAGS@
