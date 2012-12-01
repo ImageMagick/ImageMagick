@@ -34,7 +34,7 @@ AC_CONFIG_AUX_DIR([config])
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config/config.h])
-AX_PREFIX_CONFIG_H([MagickCore/magick-config.h],[MagickCore])
+AX_PREFIX_CONFIG_H([MagickCore/magick-baseconfig.h],[MagickCore])
 AC_CONFIG_FILES([\
     common.shi \
     config/configure.xml \
@@ -712,6 +712,11 @@ esac
 QUANTUM_DEPTH="$with_quantum_depth"
 AC_DEFINE_UNQUOTED(QUANTUM_DEPTH,$QUANTUM_DEPTH,[Number of bits in a pixel Quantum (8/16/32/64)])
 AC_SUBST(QUANTUM_DEPTH)dnl
+
+# define a lib suffix for abi purpose
+MAGICK_ABISUFFIX="Q${MAGICK_HDRI}${QUANTUM_DEPTH}"
+AC_SUBST(MAGICK_ABISUFFIX)
+
 
 # Set pixel cache threshold
 AC_ARG_WITH([cache],
@@ -2993,31 +2998,50 @@ AC_DEFINE_UNQUOTED(LIBRARY_PATH,"$DEFINE_LIBRARY_PATH",Directory where architect
 AC_SUBST(LIBRARY_PATH)
 
 #
-# Subdirectory under lib to place ImageMagick coder module files
-CODER_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}/modules-Q${QUANTUM_DEPTH}/coders"
-AC_DEFINE_UNQUOTED(CODER_RELATIVE_PATH,"$CODER_RELATIVE_PATH",Subdirectory of lib where coder modules are installed)
-CODER_PATH="${LIB_DIR}/${CODER_RELATIVE_PATH}"
-DEFINE_CODER_PATH="${LIB_DIR}/${CODER_RELATIVE_PATH}/"
-case "${build_os}" in
-  mingw* )
-    DEFINE_CODER_PATH=`$WinPathScript "$DEFINE_CODER_PATH" 1`
-    ;;
-esac
-AC_DEFINE_UNQUOTED(CODER_PATH,"$DEFINE_CODER_PATH",Location of coder modules)
+# path to modules lib
+if test "x$MODULES_BASEDIRNAME" = "x"; then
+   MODULES_BASEDIRNAME="modules"
+fi
+AC_DEFINE_UNQUOTED(MODULES_BASEDIRNAME,"$MODULES_BASEDIRNAME",Module directory name without ABI part.)
+AC_SUBST(MODULES_BASEDIRNAME)
+
+if test "x$MODULES_DIRNAME" = "x"; then
+   MODULES_DIRNAME=${MODULES_BASEDIRNAME}-${MAGICK_ABISUFFIX}
+else
+   # not defined by default 
+   AC_DEFINE_UNQUOTED(MODULES_DIRNAME,"$MODULES_DIRNAME",Module directory dirname (if different of default)")
+fi
+AC_SUBST(MODULES_DIRNAME)
+
+MODULES_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}/${MODULES_DIRNAME}"
+AC_SUBST(MODULES_RELATIVE_PATH)
+MODULES_PATH="${LIBRARY_PATH}/${MODULES_RELATIVE_PATH}"
+AC_SUBST(MODULES_PATH)
+
+#
+# path to coders lib
+if test "x$CODER_DIRNAME" = "x"; then
+   CODER_DIRNAME="coders"
+fi
+AC_DEFINE_UNQUOTED(CODER_DIRNAME,"$CODER_DIRNAME","coders subdirectory".)
+AC_SUBST(CODER_DIRNAME)
+
+CODER_RELATIVE_PATH="${MODULES_RELATIVE_PATH}/${CODER_DIRNAME}"
+CODER_PATH="${MODULES_PATH}/${CODER_DIRNAME}"
 AC_SUBST(CODER_PATH)
 
 #
 # Subdirectory under lib to place ImageMagick filter module files
-FILTER_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}/modules-Q${QUANTUM_DEPTH}/filters"
-AC_DEFINE_UNQUOTED(FILTER_RELATIVE_PATH,"$FILTER_RELATIVE_PATH",Subdirectory of lib where filter modules are installed)
-FILTER_PATH="${LIB_DIR}/${FILTER_RELATIVE_PATH}"
-DEFINE_FILTER_PATH="${LIB_DIR}/${FILTER_RELATIVE_PATH}/"
-case "${build_os}" in
-  mingw* )
-    DEFINE_FILTER_PATH=`$WinPathScript "$DEFINE_FILTER_PATH" 1`
-    ;;
-esac
-AC_DEFINE_UNQUOTED(FILTER_PATH,"$DEFINE_FILTER_PATH",Location of filter modules)
+#
+# path to coders lib
+if test "x$FILTER_DIRNAME" = "x"; then
+   FILTER_DIRNAME="filters"
+fi
+AC_DEFINE_UNQUOTED(FILTER_DIRNAME,"$FILTER_DIRNAME","filter subdirectory".)
+AC_SUBST(FILTER_DIRNAME)
+
+FILTER_RELATIVE_PATH="${MODULES_RELATIVE_PATH}/${FILTER_DIRNAME}"
+FILTER_PATH="${MODULES_PATH}/${FILTER_DIRNAME}"
 AC_SUBST(FILTER_PATH)
 
 #

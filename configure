@@ -736,7 +736,13 @@ SHARE_PATH
 CONFIGURE_PATH
 DOCUMENTATION_PATH
 FILTER_PATH
+FILTER_DIRNAME
 CODER_PATH
+CODER_DIRNAME
+MODULES_PATH
+MODULES_RELATIVE_PATH
+MODULES_DIRNAME
+MODULES_BASEDIRNAME
 LIBRARY_PATH
 EXECUTABLE_PATH
 INCLUDE_PATH
@@ -878,6 +884,7 @@ MODULE_EXTRA_CPPFLAGS
 LIBSTDCLDFLAGS
 PERL_MAKE_OPTIONS
 MAGICK_LT_RELEASE_OPTS
+MAGICK_ABISUFFIX
 QUANTUM_DEPTH
 LEGACY_SUPPORT_FALSE
 LEGACY_SUPPORT_TRUE
@@ -3470,7 +3477,7 @@ ac_configure="$SHELL $ac_aux_dir/configure"  # Please don't use this var.
 ac_config_headers="$ac_config_headers config/config.h"
 
 
-ac_config_commands="$ac_config_commands MagickCore/magick-config.h"
+ac_config_commands="$ac_config_commands MagickCore/magick-baseconfig.h"
 
 ac_config_files="$ac_config_files common.shi config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/Magick++.dox config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config MagickCore/ImageMagick.pc Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc MagickCore/MagickCore-config MagickCore/MagickCore.pc MagickCore/version.h Makefile magick.sh PerlMagick/Magick.pm PerlMagick/Makefile.PL PerlMagick/check.sh utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 MagickWand/MagickWand-config MagickWand/MagickWand.pc"
 
@@ -3639,7 +3646,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=10044:10059M
+MAGICK_SVN_REVISION=10062:10071M
 
 
 
@@ -20997,6 +21004,11 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
+# define a lib suffix for abi purpose
+MAGICK_ABISUFFIX="Q${MAGICK_HDRI}${QUANTUM_DEPTH}"
+
+
+
 # Set pixel cache threshold
 
 # Check whether --with-cache was given.
@@ -31986,47 +31998,66 @@ _ACEOF
 
 
 #
-# Subdirectory under lib to place ImageMagick coder module files
-CODER_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}/modules-Q${QUANTUM_DEPTH}/coders"
+# path to modules lib
+if test "x$MODULES_BASEDIRNAME" = "x"; then
+   MODULES_BASEDIRNAME="modules"
+fi
 
 cat >>confdefs.h <<_ACEOF
-#define CODER_RELATIVE_PATH "$CODER_RELATIVE_PATH"
+#define MODULES_BASEDIRNAME "$MODULES_BASEDIRNAME"
 _ACEOF
 
-CODER_PATH="${LIB_DIR}/${CODER_RELATIVE_PATH}"
-DEFINE_CODER_PATH="${LIB_DIR}/${CODER_RELATIVE_PATH}/"
-case "${build_os}" in
-  mingw* )
-    DEFINE_CODER_PATH=`$WinPathScript "$DEFINE_CODER_PATH" 1`
-    ;;
-esac
+
+
+if test "x$MODULES_DIRNAME" = "x"; then
+   MODULES_DIRNAME=${MODULES_BASEDIRNAME}-${MAGICK_ABISUFFIX}
+else
+   # not defined by default
 
 cat >>confdefs.h <<_ACEOF
-#define CODER_PATH "$DEFINE_CODER_PATH"
+#define MODULES_DIRNAME "$MODULES_DIRNAME"
 _ACEOF
 
+fi
+
+
+MODULES_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}/${MODULES_DIRNAME}"
+
+MODULES_PATH="${LIBRARY_PATH}/${MODULES_RELATIVE_PATH}"
+
+
+#
+# path to coders lib
+if test "x$CODER_DIRNAME" = "x"; then
+   CODER_DIRNAME="coders"
+fi
+
+cat >>confdefs.h <<_ACEOF
+#define CODER_DIRNAME "$CODER_DIRNAME"
+_ACEOF
+
+
+
+CODER_RELATIVE_PATH="${MODULES_RELATIVE_PATH}/${CODER_DIRNAME}"
+CODER_PATH="${MODULES_PATH}/${CODER_DIRNAME}"
 
 
 #
 # Subdirectory under lib to place ImageMagick filter module files
-FILTER_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}/modules-Q${QUANTUM_DEPTH}/filters"
+#
+# path to coders lib
+if test "x$FILTER_DIRNAME" = "x"; then
+   FILTER_DIRNAME="filters"
+fi
 
 cat >>confdefs.h <<_ACEOF
-#define FILTER_RELATIVE_PATH "$FILTER_RELATIVE_PATH"
+#define FILTER_DIRNAME "$FILTER_DIRNAME"
 _ACEOF
 
-FILTER_PATH="${LIB_DIR}/${FILTER_RELATIVE_PATH}"
-DEFINE_FILTER_PATH="${LIB_DIR}/${FILTER_RELATIVE_PATH}/"
-case "${build_os}" in
-  mingw* )
-    DEFINE_FILTER_PATH=`$WinPathScript "$DEFINE_FILTER_PATH" 1`
-    ;;
-esac
 
-cat >>confdefs.h <<_ACEOF
-#define FILTER_PATH "$DEFINE_FILTER_PATH"
-_ACEOF
 
+FILTER_RELATIVE_PATH="${MODULES_RELATIVE_PATH}/${FILTER_DIRNAME}"
+FILTER_PATH="${MODULES_PATH}/${FILTER_DIRNAME}"
 
 
 #
@@ -36384,7 +36415,7 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "config/config.h") CONFIG_HEADERS="$CONFIG_HEADERS config/config.h" ;;
-    "MagickCore/magick-config.h") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickCore/magick-config.h" ;;
+    "MagickCore/magick-baseconfig.h") CONFIG_COMMANDS="$CONFIG_COMMANDS MagickCore/magick-baseconfig.h" ;;
     "common.shi") CONFIG_FILES="$CONFIG_FILES common.shi" ;;
     "config/configure.xml") CONFIG_FILES="$CONFIG_FILES config/configure.xml" ;;
     "config/delegates.xml") CONFIG_FILES="$CONFIG_FILES config/delegates.xml" ;;
@@ -37026,7 +37057,7 @@ $as_echo "$as_me: executing $ac_file commands" >&6;}
 
 
   case $ac_file$ac_mode in
-    "MagickCore/magick-config.h":C) ac_prefix_conf_OUT=`echo MagickCore/magick-config.h`
+    "MagickCore/magick-baseconfig.h":C) ac_prefix_conf_OUT=`echo MagickCore/magick-baseconfig.h`
 ac_prefix_conf_DEF=`echo _$ac_prefix_conf_OUT | sed -e "y:abcdefghijklmnopqrstuvwxyz:ABCDEFGHIJKLMNOPQRSTUVWXYZ:" -e "s/[^abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ]/_/g"`
 ac_prefix_conf_PKG=`echo MagickCore`
 ac_prefix_conf_LOW=`echo _$ac_prefix_conf_PKG | sed -e "y:ABCDEFGHIJKLMNOPQRSTUVWXYZ-:abcdefghijklmnopqrstuvwxyz_:"`
@@ -38120,7 +38151,7 @@ RSVG              --with-rsvg=$with_rsvg		$have_rsvg
 TIFF              --with-tiff=$with_tiff		$have_tiff
 WEBP              --with-webp=$with_webp		$have_webp
 Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
-WMF               --with-wmf=$with_wmf			$have_wmf
+WMF               --with-wmf=$with_wmf		$have_wmf
 X11               --with-x=$with_x			$have_x
 XML               --with-xml=$with_xml		$have_xml
 ZLIB              --with-zlib=$with_zlib		$have_zlib
@@ -38197,7 +38228,7 @@ RSVG              --with-rsvg=$with_rsvg		$have_rsvg
 TIFF              --with-tiff=$with_tiff		$have_tiff
 WEBP              --with-webp=$with_webp		$have_webp
 Windows fonts     --with-windows-font-dir=$with_windows_font_dir	$result_windows_font_dir
-WMF               --with-wmf=$with_wmf			$have_wmf
+WMF               --with-wmf=$with_wmf		$have_wmf
 X11               --with-x=$with_x			$have_x
 XML               --with-xml=$with_xml		$have_xml
 ZLIB              --with-zlib=$with_zlib		$have_zlib
