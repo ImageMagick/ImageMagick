@@ -2592,7 +2592,7 @@ LZMA_CFLAGS = @LZMA_CFLAGS@
 LZMA_LIBS = @LZMA_LIBS@
 LaunchDelegate = @LaunchDelegate@
 MAGICKCORE_PATH = @MAGICKCORE_PATH@
-MAGICK_ABISUFFIX = @MAGICK_ABISUFFIX@
+MAGICK_ABI_SUFFIX = @MAGICK_ABI_SUFFIX@
 MAGICK_CFLAGS = @MAGICK_CFLAGS@
 MAGICK_CODER_MODULE_PATH = @MAGICK_CODER_MODULE_PATH@
 MAGICK_CONFIGURE_BUILD_PATH = @MAGICK_CONFIGURE_BUILD_PATH@
@@ -3997,7 +3997,8 @@ MagickCore_libMagickCore_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/lt
 @HAVE_LD_VERSION_SCRIPT_TRUE@MagickCore_libMagickCore_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/MagickCore/libMagickCore.map
 MagickCore_libMagickCore_la_LDFLAGS = -no-undefined \
   $(MagickCore_libMagickCore_la_LDFLAGS_VERSION) \
-  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
+  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) \
+  -release $(MAGICK_ABI_SUFFIX) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 MagickCore_libMagickCore_la_DEPENDENCIES = 
@@ -4414,7 +4415,7 @@ MAGICKCORE_EXTRA_DIST = \
 	MagickCore/xwdfile.h_vms 
 
 
-# Install magick-config.h
+# Install magick-baseconfig.h
 MAGICKCORE_INSTALL_DATA_LOCAL_TARGETS = MagickCore-install-data-local
 
 # Uninstall magick-config.h
@@ -4531,8 +4532,8 @@ MagickWand_libMagickWand_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
 @HAVE_LD_VERSION_SCRIPT_FALSE@MagickWand_libMagickWand_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
 @HAVE_LD_VERSION_SCRIPT_TRUE@MagickWand_libMagickWand_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/MagickWand/libMagickWand.map
 MagickWand_libMagickWand_la_LDFLAGS = -no-undefined \
-  $(MagickWand_libMagickWand_la_LDFLAGS_VERSION) \
-	$(MAGICK_LT_RELEASE_OPTS) -version-info \
+  $(MagickWand_libMagickWand_la_LDFLAGS_VERSION) $(MAGICK_LT_RELEASE_OPTS) \
+  -release $(MAGICK_ABI_SUFFIX) -version-info \
 	$(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 MagickWand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
@@ -4663,7 +4664,7 @@ MAGICKPP_INCHEADERS_OPT = \
 @HAVE_LD_VERSION_SCRIPT_TRUE@Magick___lib_libMagick___la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/Magick++/lib/libMagick++.map
 Magick___lib_libMagick___la_LDFLAGS = -no-undefined \
   $(Magick___lib_libMagick___la_LDFLAGS_VERSION) $(MAGICK_LT_RELEASE_OPTS) \
-  -release $(MAGICK_ABISUFFIX) \
+  -release $(MAGICK_ABI_SUFFIX) \
   -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
@@ -10602,7 +10603,7 @@ uninstall-man: uninstall-man1
 
 MagickCore-install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(MagickCoreincdir)
-	$(INSTALL_HEADER) MagickCore/magick-config.h $(DESTDIR)$(MagickCoreincdir)/magick-config.h
+	$(INSTALL_HEADER) MagickCore/magick-baseconfig.h $(DESTDIR)$(MagickCoreincdir)/magick-baseconfig.h
 MagickCore-uninstall-local:
 	rm -f $(DESTDIR)$(MagickCoreincdir)/magick-baseconfig.h
 install-exec-local-utilities:

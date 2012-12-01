@@ -52,7 +52,8 @@ endif
 
 MagickCore_libMagickCore_la_LDFLAGS = -no-undefined \
   $(MagickCore_libMagickCore_la_LDFLAGS_VERSION) \
-  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
+  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) \
+  -release $(MAGICK_ABI_SUFFIX) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 MagickCore_libMagickCore_la_DEPENDENCIES =
 
@@ -472,11 +473,11 @@ MAGICKCORE_EXTRA_DIST = \
 	MagickCore/vms.c \
 	MagickCore/xwdfile.h_vms 
 
-# Install magick-config.h
+# Install magick-baseconfig.h
 MAGICKCORE_INSTALL_DATA_LOCAL_TARGETS = MagickCore-install-data-local
 MagickCore-install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(MagickCoreincdir)
-	$(INSTALL_HEADER) MagickCore/magick-config.h $(DESTDIR)$(MagickCoreincdir)/magick-config.h
+	$(INSTALL_HEADER) MagickCore/magick-baseconfig.h $(DESTDIR)$(MagickCoreincdir)/magick-baseconfig.h
 
 # Uninstall magick-config.h
 MAGICKCORE_UNINSTALL_LOCAL_TARGETS = MagickCore-uninstall-local
