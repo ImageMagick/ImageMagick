@@ -35,6 +35,11 @@
 #define MAGICKCORE_CODER_DIRNAME "coders"
 #endif
 
+/* Location of coder modules */
+#ifndef MAGICKCORE_CODER_PATH
+#define MAGICKCORE_CODER_PATH "/usr/local/lib/ImageMagick-7.0.0/modules-Q16-HDRI/coders"
+#endif
+
 /* Directory where architecture-dependent configuration files live. */
 #ifndef MAGICKCORE_CONFIGURE_PATH
 #define MAGICKCORE_CONFIGURE_PATH "/usr/local/etc/ImageMagick/"
@@ -75,6 +80,11 @@
 /* "filter subdirectory". */
 #ifndef MAGICKCORE_FILTER_DIRNAME
 #define MAGICKCORE_FILTER_DIRNAME "filters"
+#endif
+
+/* Location of filter modules */
+#ifndef MAGICKCORE_FILTER_PATH
+#define MAGICKCORE_FILTER_PATH ""
 #endif
 
 /* Define if you have FONTCONFIG library */
@@ -1153,8 +1163,10 @@
 #define MAGICKCORE_MODULES_BASEDIRNAME "modules"
 #endif
 
-/* Module directory dirname (if different of default) */
-/* #undef MODULES_DIRNAME */
+/* Module directory dirname */
+#ifndef MAGICKCORE_MODULES_DIRNAME
+#define MAGICKCORE_MODULES_DIRNAME "modules-Q16-HDRI"
+#endif
 
 /* Magick API method prefix */
 /* #undef NAMESPACE_PREFIX */

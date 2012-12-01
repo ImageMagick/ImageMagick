@@ -24,6 +24,9 @@
 /* "coders subdirectory". */
 #undef CODER_DIRNAME
 
+/* Location of coder modules */
+#undef CODER_PATH
+
 /* Directory where architecture-dependent configuration files live. */
 #undef CONFIGURE_PATH
 
@@ -51,6 +54,9 @@
 
 /* "filter subdirectory". */
 #undef FILTER_DIRNAME
+
+/* Location of filter modules */
+#undef FILTER_PATH
 
 /* Define if you have FONTCONFIG library */
 #undef FONTCONFIG_DELEGATE
@@ -756,7 +762,7 @@
 /* Module directory name without ABI part. */
 #undef MODULES_BASEDIRNAME
 
-/* Module directory dirname (if different of default) */
+/* Module directory dirname */
 #undef MODULES_DIRNAME
 
 /* Magick API method prefix */
