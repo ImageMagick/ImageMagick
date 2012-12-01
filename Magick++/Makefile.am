@@ -137,7 +137,7 @@ endif
 
 Magick___lib_libMagick___la_LDFLAGS = -no-undefined \
   $(Magick___lib_libMagick___la_LDFLAGS_VERSION) $(MAGICK_LT_RELEASE_OPTS) \
-  -release $(MAGICK_ABISUFFIX) \
+  -release $(MAGICK_ABI_SUFFIX) \
   -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 Magick___lib_libMagick___la_LIBADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)

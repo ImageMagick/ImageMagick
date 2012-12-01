@@ -2569,7 +2569,7 @@ LZMA_CFLAGS = @LZMA_CFLAGS@
 LZMA_LIBS = @LZMA_LIBS@
 LaunchDelegate = @LaunchDelegate@
 MAGICKCORE_PATH = @MAGICKCORE_PATH@
-MAGICK_ABISUFFIX = @MAGICK_ABISUFFIX@
+MAGICK_ABI_SUFFIX = @MAGICK_ABI_SUFFIX@
 MAGICK_CFLAGS = @MAGICK_CFLAGS@
 MAGICK_CODER_MODULE_PATH = @MAGICK_CODER_MODULE_PATH@
 MAGICK_CONFIGURE_BUILD_PATH = @MAGICK_CONFIGURE_BUILD_PATH@
@@ -3977,8 +3977,7 @@ magick_libMagickCore_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $
 magick_libMagickCore_la_LDFLAGS = -no-undefined \
   $(magick_libMagickCore_la_LDFLAGS_VERSION) \
   $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) \
-  -release $(MAGICK_ABISUFFIX) \
-  -version-info \
+  -release $(MAGICK_ABI_SUFFIX) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 magick_libMagickCore_la_DEPENDENCIES = 
@@ -4365,7 +4364,7 @@ MAGICK_EXTRA_DIST = \
 	magick/xwdfile.h_vms 
 
 
-# Install magick-config.h
+# Install magick-baseconfig.h
 MAGICK_INSTALL_DATA_LOCAL_TARGETS = magick-install-data-local
 
 # Uninstall magick-config.h
@@ -4490,10 +4489,8 @@ wand_libMagickWand_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
 @HAVE_LD_VERSION_SCRIPT_FALSE@wand_libMagickWand_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
 @HAVE_LD_VERSION_SCRIPT_TRUE@wand_libMagickWand_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/wand/libMagickWand.map
 wand_libMagickWand_la_LDFLAGS = -no-undefined \
-  $(wand_libMagickWand_la_LDFLAGS_VERSION) \
-	$(MAGICK_LT_RELEASE_OPTS) \
-	-release $(MAGICK_ABISUFFIX) \
-	-version-info \
+  $(wand_libMagickWand_la_LDFLAGS_VERSION) $(MAGICK_LT_RELEASE_OPTS) \
+	-release $(MAGICK_ABI_SUFFIX) -version-info \
 	$(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 wand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
@@ -4626,7 +4623,7 @@ MAGICKPP_INCHEADERS_OPT = \
 @HAVE_LD_VERSION_SCRIPT_TRUE@Magick___lib_libMagick___la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/Magick++/lib/libMagick++.map
 Magick___lib_libMagick___la_LDFLAGS = -no-undefined \
   $(Magick___lib_libMagick___la_LDFLAGS_VERSION) $(MAGICK_LT_RELEASE_OPTS) \
-  -release $(MAGICK_ABISUFFIX) \
+  -release $(MAGICK_ABI_SUFFIX) \
   -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
@@ -10393,7 +10390,7 @@ uninstall-man: uninstall-man1
 
 magick-install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(magickincdir)
-	$(INSTALL_HEADER) magick/magick-config.h $(DESTDIR)$(magickincdir)/magick-config.h
+	$(INSTALL_HEADER) magick/magick-baseconfig.h $(DESTDIR)$(magickincdir)/magick-baseconfig.h
 magick-uninstall-local:
 	rm -f $(DESTDIR)$(magickincdir)/magick-baseconfig.h
 	tests/*_out.*

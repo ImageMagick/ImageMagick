@@ -126,10 +126,8 @@ wand_libMagickWand_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
 endif
 
 wand_libMagickWand_la_LDFLAGS = -no-undefined \
-  $(wand_libMagickWand_la_LDFLAGS_VERSION) \
-	$(MAGICK_LT_RELEASE_OPTS) \
-	-release $(MAGICK_ABISUFFIX) \
-	-version-info \
+  $(wand_libMagickWand_la_LDFLAGS_VERSION) $(MAGICK_LT_RELEASE_OPTS) \
+	-release $(MAGICK_ABI_SUFFIX) -version-info \
 	$(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 wand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
 
