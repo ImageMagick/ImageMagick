@@ -756,7 +756,7 @@
 /* Module directory name without ABI part. */
 #undef MODULES_BASEDIRNAME
 
-/* Module directory dirname (if different of default)" */
+/* Module directory dirname (if different of default) */
 #undef MODULES_DIRNAME
 
 /* Magick API method prefix */
