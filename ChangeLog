@@ -10,6 +10,8 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22352).
   * The stream utility no longer returns a black image (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22046).
+  * Do not subtract MagickEpsilon in TraceEllipse() (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22370).
 
 2012-11-26  6.8.0-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.0-7, SVN revision 10029.
