@@ -1387,11 +1387,11 @@ am__magick_libMagickCore_la_SOURCES_DIST = magick/ImageMagick.h \
 	magick/list.c magick/list.h magick/locale.c magick/locale_.h \
 	magick/log.c magick/log.h magick/mac.h magick/magic.c \
 	magick/magic.h magick/magick.c magick/magick-config.h \
-	magick/magick-type.h magick/magick.h magick/matrix.c \
-	magick/matrix.h magick/memory.c magick/memory_.h \
-	magick/memory-private.h magick/methods.h \
-	magick/method-attribute.h magick/mime.c magick/mime.h \
-	magick/module.c magick/module.h magick/monitor.c \
+	magick/magick-baseconfig.h magick/magick-type.h \
+	magick/magick.h magick/matrix.c magick/matrix.h \
+	magick/memory.c magick/memory_.h magick/memory-private.h \
+	magick/methods.h magick/method-attribute.h magick/mime.c \
+	magick/mime.h magick/module.c magick/module.h magick/monitor.c \
 	magick/monitor.h magick/monitor-private.h magick/montage.c \
 	magick/montage.h magick/morphology.c magick/morphology.h \
 	magick/morphology-private.h magick/nt-base.h \
@@ -2455,6 +2455,7 @@ CFLAGS = @CFLAGS@
 CGMDecodeDelegate = @CGMDecodeDelegate@
 CL_CFLAGS = @CL_CFLAGS@
 CL_LIBS = @CL_LIBS@
+CODER_DIRNAME = @CODER_DIRNAME@
 CODER_PATH = @CODER_PATH@
 CONFIGURE_ARGS = @CONFIGURE_ARGS@
 CONFIGURE_PATH = @CONFIGURE_PATH@
@@ -2496,6 +2497,7 @@ EditorDelegate = @EditorDelegate@
 FFTW_LIBS = @FFTW_LIBS@
 FGREP = @FGREP@
 FIGDecodeDelegate = @FIGDecodeDelegate@
+FILTER_DIRNAME = @FILTER_DIRNAME@
 FILTER_PATH = @FILTER_PATH@
 FONTCONFIG_CFLAGS = @FONTCONFIG_CFLAGS@
 FONTCONFIG_LIBS = @FONTCONFIG_LIBS@
@@ -2567,6 +2569,7 @@ LZMA_CFLAGS = @LZMA_CFLAGS@
 LZMA_LIBS = @LZMA_LIBS@
 LaunchDelegate = @LaunchDelegate@
 MAGICKCORE_PATH = @MAGICKCORE_PATH@
+MAGICK_ABISUFFIX = @MAGICK_ABISUFFIX@
 MAGICK_CFLAGS = @MAGICK_CFLAGS@
 MAGICK_CODER_MODULE_PATH = @MAGICK_CODER_MODULE_PATH@
 MAGICK_CONFIGURE_BUILD_PATH = @MAGICK_CONFIGURE_BUILD_PATH@
@@ -2600,6 +2603,10 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MAN_DIR = @MAN_DIR@
 MATH_LIBS = @MATH_LIBS@
 MKDIR_P = @MKDIR_P@
+MODULES_BASEDIRNAME = @MODULES_BASEDIRNAME@
+MODULES_DIRNAME = @MODULES_DIRNAME@
+MODULES_PATH = @MODULES_PATH@
+MODULES_RELATIVE_PATH = @MODULES_RELATIVE_PATH@
 MODULE_EXTRA_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
 MPEGDecodeDelegate = @MPEGDecodeDelegate@
 MPEGEncodeDelegate = @MPEGEncodeDelegate@
@@ -3969,7 +3976,9 @@ magick_libMagickCore_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $
 @HAVE_LD_VERSION_SCRIPT_TRUE@magick_libMagickCore_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/magick/libMagickCore.map
 magick_libMagickCore_la_LDFLAGS = -no-undefined \
   $(magick_libMagickCore_la_LDFLAGS_VERSION) \
-  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
+  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) \
+  -release $(MAGICK_ABISUFFIX) \
+  -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 magick_libMagickCore_la_DEPENDENCIES = 
@@ -4083,6 +4092,7 @@ MAGICK_BASE_SRCS = \
 	magick/magic.h \
 	magick/magick.c \
 	magick/magick-config.h \
+	magick/magick-baseconfig.h \
 	magick/magick-type.h \
 	magick/magick.h \
 	magick/matrix.c \
@@ -4480,7 +4490,9 @@ wand_libMagickWand_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
 @HAVE_LD_VERSION_SCRIPT_TRUE@wand_libMagickWand_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/wand/libMagickWand.map
 wand_libMagickWand_la_LDFLAGS = -no-undefined \
   $(wand_libMagickWand_la_LDFLAGS_VERSION) \
-	$(MAGICK_LT_RELEASE_OPTS) -version-info \
+	$(MAGICK_LT_RELEASE_OPTS) \
+	-release $(MAGICK_ABISUFFIX) \
+	-version-info \
 	$(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 wand_libMagickWand_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
@@ -4613,7 +4625,9 @@ MAGICKPP_INCHEADERS_OPT = \
 @HAVE_LD_VERSION_SCRIPT_TRUE@Magick___lib_libMagick___la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/Magick++/lib/libMagick++.map
 Magick___lib_libMagick___la_LDFLAGS = -no-undefined \
   $(Magick___lib_libMagick___la_LDFLAGS_VERSION) $(MAGICK_LT_RELEASE_OPTS) \
-	-version-info $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
+  -release $(MAGICK_ABISUFFIX) \
+  -version-info \
+  $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 Magick___lib_libMagick___la_LIBADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 MAGICKPP_CHECK_PGRMS_OPT = \

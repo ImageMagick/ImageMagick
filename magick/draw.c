@@ -5224,7 +5224,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   y=degrees.y;
   while (y < degrees.x)
     y+=360.0;
-  angle.y=(double) DegreesToRadians(y);
+  angle.y=(double) (DegreesToRadians(y)-MagickEpsilon);
   for (p=primitive_info; angle.x < angle.y; angle.x+=step)
   {
     point.x=cos(fmod(angle.x,DegreesToRadians(360.0)))*stop.x+start.x;

@@ -54,7 +54,9 @@ endif
 
 magick_libMagickCore_la_LDFLAGS = -no-undefined \
   $(magick_libMagickCore_la_LDFLAGS_VERSION) \
-  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
+  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) \
+  -release $(MAGICK_ABISUFFIX) \
+  -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 magick_libMagickCore_la_DEPENDENCIES =
@@ -168,6 +170,7 @@ MAGICK_BASE_SRCS = \
 	magick/magic.h \
 	magick/magick.c \
 	magick/magick-config.h \
+	magick/magick-baseconfig.h \
 	magick/magick-type.h \
 	magick/magick.h \
 	magick/matrix.c \
@@ -346,6 +349,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/magic.h \
 	magick/magick.h \
 	magick/magick-config.h \
+	magick/magick-baseconfig.h \
 	magick/magick-type.h \
 	magick/matrix.h \
 	magick/memory_.h \
@@ -452,5 +456,5 @@ magick-install-data-local:
 # Uninstall magick-config.h
 MAGICK_UNINSTALL_LOCAL_TARGETS = magick-uninstall-local
 magick-uninstall-local:
-	rm -f $(DESTDIR)$(magickincdir)/magick-config.h
+	rm -f $(DESTDIR)$(magickincdir)/magick-baseconfig.h
 

@@ -1,3 +1,4 @@
+#!/bin/sh
 #  Copyright 1999-2012 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
 #
