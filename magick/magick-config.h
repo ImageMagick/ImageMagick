@@ -63,6 +63,8 @@ extern "C" {
 #  define MAGICKCORE_PATH_SEPARATOR_CHAR	':'
 #  define MAGICKCORE_PATH_SEPARATOR		":"
 #endif /* !DIR_SEPARATOR_CHAR */
+
+# if defined(MAGICKCORE_POSIX_SUPPORT)
  
 /* module dir */
 #ifndef MAGICKCORE_MODULES_DIRNAME
@@ -101,6 +103,8 @@ extern "C" {
  
 #ifndef MAGICKCORE_FILTER_RELATIVE_PATH
 # define MAGICKCORE_FILTER_RELATIVE_PATH MAGICKCORE_MODULES_RELATIVE_PATH MAGICKCORE_DIR_SEPARATOR MAGICKCORE_FILTER_DIRNAME
+#endif
+
 #endif
  
 #if defined(__cplusplus) || defined(c_plusplus)
