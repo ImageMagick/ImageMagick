@@ -30,14 +30,9 @@
 /* Define to 1 if the `closedir' function returns void instead of `int'. */
 /* #undef CLOSEDIR_VOID */
 
-/* "coders subdirectory". */
+/* coders subdirectory. */
 #ifndef MAGICKCORE_CODER_DIRNAME
 #define MAGICKCORE_CODER_DIRNAME "coders"
-#endif
-
-/* Location of coder modules */
-#ifndef MAGICKCORE_CODER_PATH
-#define MAGICKCORE_CODER_PATH "/usr/local/lib/ImageMagick-6.8.0/modules-Q16/coders"
 #endif
 
 /* Directory where architecture-dependent configuration files live. */
@@ -77,14 +72,9 @@
 #define MAGICKCORE_FFTW_DELEGATE 1
 #endif
 
-/* "filter subdirectory". */
+/* filter subdirectory. */
 #ifndef MAGICKCORE_FILTER_DIRNAME
 #define MAGICKCORE_FILTER_DIRNAME "filters"
-#endif
-
-/* Location of filter modules */
-#ifndef MAGICKCORE_FILTER_PATH
-#define MAGICKCORE_FILTER_PATH "/usr/local/lib/ImageMagick-6.8.0/modules-Q16/filters"
 #endif
 
 /* Define if you have FONTCONFIG library */
@@ -1163,7 +1153,7 @@
 
 /* Module directory dirname */
 #ifndef MAGICKCORE_MODULES_DIRNAME
-#define MAGICKCORE_MODULES_DIRNAME "modules-Q16"
+#define MAGICKCORE_MODULES_DIRNAME ""
 #endif
 
 /* Magick API method prefix */
@@ -1265,7 +1255,7 @@
 #define MAGICKCORE_SELECT_TYPE_ARG5 (struct timeval *)
 #endif
 
-/* Directory where architecture-independent configuration files live. */
+/* Directory where architecture-independent configuration files live. */]]
 #ifndef MAGICKCORE_SHAREARCH_PATH
 #define MAGICKCORE_SHAREARCH_PATH "/usr/local/lib/ImageMagick-6.8.0/config/"
 #endif
