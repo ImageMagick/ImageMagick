@@ -1,6 +1,6 @@
 #include "winver.h"
 #define __WINDOWS__
-#include "..\\..\\magick\\magick-config.h"
+#include "..\\..\\magick\\magick-baseconfig.h"
 #include "..\\..\\magick\\version.h"
 
 /////////////////////////////////////////////////////////////////////////////
