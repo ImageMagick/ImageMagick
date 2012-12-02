@@ -3091,7 +3091,7 @@ case "${build_os}" in
     DEFINE_SHAREARCH_PATH=`$WinPathScript "$DEFINE_SHAREARCH_PATH" 1`
     ;;
 esac
-AC_DEFINE_UNQUOTED(SHAREARCH_PATH,"$DEFINE_SHAREARCH_PATH",]Directory where architecture-independent configuration files live.])
+AC_DEFINE_UNQUOTED(SHAREARCH_PATH,"$DEFINE_SHAREARCH_PATH",[Directory where architecture-independent configuration files live.])
 AC_SUBST(SHAREARCH_PATH)
 
 #
