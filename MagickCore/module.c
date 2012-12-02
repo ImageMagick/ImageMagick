@@ -766,9 +766,8 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
       }
       (void) CopyMagickString(prefix,GetClientPath(),MaxTextExtent);
       ChopPathComponents(prefix,1);
-      (void) FormatLocaleString(path,MaxTextExtent,
-        "%s/lib/%s/%s/%s/%s",prefix,MAGICKCORE_LIBRARY_RELATIVE_PATH,
-        MAGICKCORE_MODULES_DIRNAME,directory,filename);
+      (void) FormatLocaleString(path,MaxTextExtent,"%s/lib/%s/%s/%s",prefix,
+        MAGICKCORE_MODULES_RELATIVE_PATH,directory,filename);
 #endif
       if (IsPathAccessible(path) != MagickFalse)
         return(MagickTrue);
