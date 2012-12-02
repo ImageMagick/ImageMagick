@@ -21,11 +21,8 @@
 /* Define to 1 if the `closedir' function returns void instead of `int'. */
 #undef CLOSEDIR_VOID
 
-/* "coders subdirectory". */
+/* coders subdirectory. */
 #undef CODER_DIRNAME
-
-/* Location of coder modules */
-#undef CODER_PATH
 
 /* Directory where architecture-dependent configuration files live. */
 #undef CONFIGURE_PATH
@@ -52,11 +49,8 @@
 /* Define if you have FFTW library */
 #undef FFTW_DELEGATE
 
-/* "filter subdirectory". */
+/* filter subdirectory. */
 #undef FILTER_DIRNAME
-
-/* Location of filter modules */
-#undef FILTER_PATH
 
 /* Define if you have FONTCONFIG library */
 #undef FONTCONFIG_DELEGATE
@@ -731,7 +725,7 @@
 #undef LIBRARY_PATH
 
 /* Subdirectory of lib where ImageMagick architecture dependent files are
-   installed */
+   installed. */
 #undef LIBRARY_RELATIVE_PATH
 
 /* Define if you have LQR library */

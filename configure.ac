@@ -716,7 +716,7 @@ AC_SUBST(QUANTUM_DEPTH)dnl
 # define a lib suffix for abi purpose
 ABI_SUFFIX="Q${QUANTUM_DEPTH}"
 if test "$enable_hdri" = 'yes'; then
-  ABI_SUFFIX="Q${QUANTUM_DEPTH}-${MAGICK_HDRI}"
+  ABI_SUFFIX="Q${QUANTUM_DEPTH}${MAGICK_HDRI}"
 fi
 AC_SUBST(ABI_SUFFIX)
 
@@ -1289,7 +1289,7 @@ case "${build_os}" in
     X11ConfigurePath=`$WinPathScript "$X11ConfigurePath=" 1`
   ;;
 esac
-AC_DEFINE_UNQUOTED(X11_CONFIGURE_PATH,"$X11ConfigurePath",Location of X11 configure files)
+AC_DEFINE_UNQUOTED(X11_CONFIGURE_PATH,"$X11ConfigurePath",[Location of X11 configure files])
 
 #
 # Find OpenMP library
@@ -2060,7 +2060,7 @@ AC_ARG_WITH([fontpath],
 if test "$with_fontpath" != "yes" && test -z "$with_fontpath"; then
     with_fontpath=''
 else
-    AC_DEFINE_UNQUOTED(MAGICK_FONT_PATH,"$with_fontpath",Define to prepend to default font search path.)
+    AC_DEFINE_UNQUOTED(MAGICK_FONT_PATH,"$with_fontpath",[Define to prepend to default font search path.])
 fi
 if test "$with_fontpath=" != ''; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-fontpath=$with_fontpath "
@@ -2970,12 +2970,12 @@ case "${build_os}" in
     DEFINE_INCLUDE_PATH=`$WinPathScript "$DEFINE_INCLUDE_PATH" 1`
     ;;
 esac
-AC_DEFINE_UNQUOTED(INCLUDE_PATH,"$DEFINE_INCLUDE_PATH",Directory where ImageMagick headers live.)
+AC_DEFINE_UNQUOTED(INCLUDE_PATH,"$DEFINE_INCLUDE_PATH",[Directory where ImageMagick headers live.])
 AC_SUBST(INCLUDE_PATH)
 
 # Subdirectory under lib to place ImageMagick lib files
 LIBRARY_RELATIVE_PATH="${PACKAGE_NAME}-${PACKAGE_VERSION}"
-AC_DEFINE_UNQUOTED(LIBRARY_RELATIVE_PATH,"$LIBRARY_RELATIVE_PATH",Subdirectory of lib where ImageMagick architecture dependent files are installed)
+AC_DEFINE_UNQUOTED(LIBRARY_RELATIVE_PATH,"$LIBRARY_RELATIVE_PATH",[Subdirectory of lib where ImageMagick architecture dependent files are installed.])
 
 # Path to ImageMagick bin directory
 EXECUTABLE_PATH="${BIN_DIR}"
@@ -2985,7 +2985,7 @@ case "${build_os}" in
     DEFINE_EXECUTABLE_PATH=`$WinPathScript "$DEFINE_EXECUTABLE_PATH" 1`
     ;;
 esac
-AC_DEFINE_UNQUOTED(EXECUTABLE_PATH,"$DEFINE_EXECUTABLE_PATH",Directory where executables are installed.)
+AC_DEFINE_UNQUOTED(EXECUTABLE_PATH,"$DEFINE_EXECUTABLE_PATH",[Directory where executables are installed.])
 AC_SUBST(EXECUTABLE_PATH)
 
 # Path to ImageMagick lib
@@ -2996,7 +2996,7 @@ case "${build_os}" in
     DEFINE_LIBRARY_PATH=`$WinPathScript "$DEFINE_LIBRARY_PATH" 1`
     ;;
 esac
-AC_DEFINE_UNQUOTED(LIBRARY_PATH,"$DEFINE_LIBRARY_PATH",Directory where architecture-dependent files live.)
+AC_DEFINE_UNQUOTED(LIBRARY_PATH,"$DEFINE_LIBRARY_PATH",[Directory where architecture-dependent files live.])
 AC_SUBST(LIBRARY_PATH)
 
 #
@@ -3004,13 +3004,13 @@ AC_SUBST(LIBRARY_PATH)
 if test "x$MODULES_BASEDIRNAME" = "x"; then
    MODULES_BASEDIRNAME="modules"
 fi
-AC_DEFINE_UNQUOTED(MODULES_BASEDIRNAME,"$MODULES_BASEDIRNAME",Module directory name without ABI part.)
+AC_DEFINE_UNQUOTED(MODULES_BASEDIRNAME,"$MODULES_BASEDIRNAME",[Module directory name without ABI part.])
 AC_SUBST(MODULES_BASEDIRNAME)
 
 if test "x$MODULES_DIRNAME" = "x"; then
-   MODULES_DIRNAME=${MODULES_BASEDIRNAME}-${ABI_SUFFIX}
+  AC_DEFINE_UNQUOTED(MODULES_DIRNAME,"$MODULES_DIRNAME",[Module directory dirname])
 else
-  AC_DEFINE_UNQUOTED(MODULES_DIRNAME,"$MODULES_DIRNAME",Module directory dirname)
+  MODULES_DIRNAME=${MODULES_BASEDIRNAME}-${ABI_SUFFIX}
 fi
 AC_SUBST(MODULES_DIRNAME)
 
@@ -3024,7 +3024,7 @@ AC_SUBST(MODULES_PATH)
 if test "x$CODER_DIRNAME" = "x"; then
    CODER_DIRNAME="coders"
 fi
-AC_DEFINE_UNQUOTED(CODER_DIRNAME,"$CODER_DIRNAME","coders subdirectory".)
+AC_DEFINE_UNQUOTED(CODER_DIRNAME,"$CODER_DIRNAME",[coders subdirectory.])
 AC_SUBST(CODER_DIRNAME)
 
 CODER_RELATIVE_PATH="${CODER_DIRNAME}"
@@ -3038,7 +3038,7 @@ AC_SUBST(CODER_PATH)
 if test "x$FILTER_DIRNAME" = "x"; then
    FILTER_DIRNAME="filters"
 fi
-AC_DEFINE_UNQUOTED(FILTER_DIRNAME,"$FILTER_DIRNAME","filter subdirectory".)
+AC_DEFINE_UNQUOTED(FILTER_DIRNAME,"$FILTER_DIRNAME",[filter subdirectory.])
 AC_SUBST(FILTER_DIRNAME)
 
 FILTER_RELATIVE_PATH="${FILTER_DIRNAME}"
@@ -3055,12 +3055,12 @@ case "${build_os}" in
     DEFINE_DOCUMENTATION_PATH=`$WinPathScript "$DEFINE_DOCUMENTATION_PATH" 1`
     ;;
 esac
-AC_DEFINE_UNQUOTED(DOCUMENTATION_PATH,"$DEFINE_DOCUMENTATION_PATH",Directory where ImageMagick documents live.)
+AC_DEFINE_UNQUOTED(DOCUMENTATION_PATH,"$DEFINE_DOCUMENTATION_PATH",[Directory where ImageMagick documents live.])
 AC_SUBST(DOCUMENTATION_PATH)
 
 # Subdirectory to place architecture-dependent configuration files
 CONFIGURE_RELATIVE_PATH="${PACKAGE_NAME}"
-AC_DEFINE_UNQUOTED(CONFIGURE_RELATIVE_PATH,"$CONFIGURE_RELATIVE_PATH",Subdirectory of lib where architecture-dependent configuration files live.)
+AC_DEFINE_UNQUOTED(CONFIGURE_RELATIVE_PATH,"$CONFIGURE_RELATIVE_PATH",[Subdirectory of lib where architecture-dependent configuration files live.])
 CONFIGURE_PATH="${SYSCONF_DIR}/${CONFIGURE_RELATIVE_PATH}/"
 DEFINE_CONFIGURE_PATH="${SYSCONF_DIR}/${CONFIGURE_RELATIVE_PATH}/"
 case "${build_os}" in
@@ -3068,12 +3068,12 @@ case "${build_os}" in
     DEFINE_CONFIGURE_PATH=`$WinPathScript "$DEFINE_CONFIGURE_PATH" 1`
     ;;
 esac
-AC_DEFINE_UNQUOTED(CONFIGURE_PATH,"$DEFINE_CONFIGURE_PATH",Directory where architecture-dependent configuration files live.)
+AC_DEFINE_UNQUOTED(CONFIGURE_PATH,"$DEFINE_CONFIGURE_PATH",[Directory where architecture-dependent configuration files live.])
 AC_SUBST(CONFIGURE_PATH)
 
 # Subdirectory to place architecture-independent configuration files
 SHARE_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}"
-AC_DEFINE_UNQUOTED(SHARE_RELATIVE_PATH,"$SHARE_RELATIVE_PATH",Subdirectory of lib where architecture-independent configuration files live.)
+AC_DEFINE_UNQUOTED(SHARE_RELATIVE_PATH,"$SHARE_RELATIVE_PATH",[Subdirectory of lib where architecture-independent configuration files live.])
 SHARE_PATH="${DATA_DIR}/${SHARE_RELATIVE_PATH}"
 DEFINE_SHARE_PATH="${DATA_DIR}/${SHARE_RELATIVE_PATH}/"
 case "${build_os}" in
@@ -3081,12 +3081,12 @@ case "${build_os}" in
     DEFINE_SHARE_PATH=`$WinPathScript "$DEFINE_SHARE_PATH" 1`
     ;;
 esac
-AC_DEFINE_UNQUOTED(SHARE_PATH,"$DEFINE_SHARE_PATH",Directory where architecture-independent configuration files live.)
+AC_DEFINE_UNQUOTED(SHARE_PATH,"$DEFINE_SHARE_PATH",[Directory where architecture-independent configuration files live.])
 AC_SUBST(SHARE_PATH)
 
 # Subdirectory to place architecture-dependent configuration files
 SHAREARCH_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}/config"
-AC_DEFINE_UNQUOTED(SHAREARCH_RELATIVE_PATH,"$SHAREARCH_RELATIVE_PATH",Subdirectory of lib where architecture-independent configuration files live.)
+AC_DEFINE_UNQUOTED(SHAREARCH_RELATIVE_PATH,"$SHAREARCH_RELATIVE_PATH",[Subdirectory of lib where architecture-independent configuration files live.])
 SHAREARCH_PATH="${SHAREARCH_DIR}/${SHAREARCH_RELATIVE_PATH}"
 DEFINE_SHAREARCH_PATH="${SHAREARCH_DIR}/${SHAREARCH_RELATIVE_PATH}/"
 case "${build_os}" in
@@ -3094,7 +3094,7 @@ case "${build_os}" in
     DEFINE_SHAREARCH_PATH=`$WinPathScript "$DEFINE_SHAREARCH_PATH" 1`
     ;;
 esac
-AC_DEFINE_UNQUOTED(SHAREARCH_PATH,"$DEFINE_SHAREARCH_PATH",Directory where architecture-independent configuration files live.)
+AC_DEFINE_UNQUOTED(SHAREARCH_PATH,"$DEFINE_SHAREARCH_PATH",[Directory where architecture-independent configuration files live.])
 AC_SUBST(SHAREARCH_PATH)
 
 #
