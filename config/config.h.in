@@ -826,7 +826,7 @@
 /* Define to the type of arg 5 for `select'. */
 #undef SELECT_TYPE_ARG5
 
-/* Directory where architecture-independent configuration files live. */]]
+/* Directory where architecture-independent configuration files live. */
 #undef SHAREARCH_PATH
 
 /* Subdirectory of lib where architecture-independent configuration files
