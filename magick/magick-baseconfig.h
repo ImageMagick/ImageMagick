@@ -1152,9 +1152,7 @@
 #endif
 
 /* Module directory dirname */
-#ifndef MAGICKCORE_MODULES_DIRNAME
-#define MAGICKCORE_MODULES_DIRNAME ""
-#endif
+/* #undef MODULES_DIRNAME */
 
 /* Magick API method prefix */
 /* #undef NAMESPACE_PREFIX */
