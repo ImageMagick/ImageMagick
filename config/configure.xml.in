@@ -6,40 +6,41 @@
 <!ATTLIST configure value CDATA #REQUIRED>
 ]>
 <configuremap>
-  <configure name="NAME" value="@PACKAGE_NAME@"/>
-  <configure name="VERSION" value="@PACKAGE_VERSION@"/>
-  <configure name="LIB_VERSION" value="@PACKAGE_LIB_VERSION@"/>
-  <configure name="LIB_VERSION_NUMBER" value="@PACKAGE_LIB_VERSION_NUMBER@"/>
-  <configure name="SVN_REVISION" value="@MAGICK_SVN_REVISION@" />
-  <configure name="RELEASE_DATE" value="@PACKAGE_RELEASE_DATE@"/>
-  <configure name="CONFIGURE" value="@CONFIGURE_ARGS@"/>
-  <configure name="PREFIX" value="@PREFIX_DIR@"/>
-  <configure name="EXEC-PREFIX" value="@EXEC_PREFIX_DIR@"/>
-  <configure name="INCLUDE_PATH" value="@INCLUDE_PATH@"/>
-  <configure name="CONFIGURE_PATH" value="@CONFIGURE_PATH@"/>
-  <configure name="SHARE_PATH" value="@SHARE_PATH@"/>
-  <configure name="DOCUMENTATION_PATH" value="@DOCUMENTATION_PATH@"/>
-  <configure name="EXECUTABLE_PATH" value="@EXECUTABLE_PATH@"/>
-  <configure name="LIBRARY_PATH" value="@LIBRARY_PATH@"/>
-  <configure name="CODER_PATH" value="@CODER_PATH@"/>
-  <configure name="FILTER_PATH" value="@FILTER_PATH@"/>
   <configure name="CC" value="@CC@"/>
   <configure name="CFLAGS" value="@MAGICK_CFLAGS@"/>
-  <configure name="CPPFLAGS" value="@MAGICK_CPPFLAGS@"/>
-  <configure name="PCFLAGS" value="@MAGICK_PCFLAGS@"/>
-  <configure name="DEFS" value="@DEFS@"/>
-  <configure name="LDFLAGS" value="@MAGICK_LDFLAGS@"/>
-  <configure name="LIBS" value="@MAGICK_LIBS@"/>
-  <configure name="CXX" value="@CXX@"/>
-  <configure name="CXXFLAGS" value="@CXXFLAGS@"/>
-  <configure name="DISTCHECK_CONFIG_FLAGS" value="@DISTCHECK_CONFIG_FLAGS@"/>
-  <configure name="TARGET_CPU" value="@MAGICK_TARGET_CPU@"/>
-  <configure name="TARGET_VENDOR" value="@MAGICK_TARGET_VENDOR@"/>
-  <configure name="TARGET_OS" value="@MAGICK_TARGET_OS@"/>
-  <configure name="HOST" value="@host@"/>
-  <configure name="FEATURES" value="@MAGICK_FEATURES@"/>
-  <configure name="DELEGATES" value="@DELEGATES@"/>
+  <configure name="CODER_PATH" value="@CODER_PATH@"/>
+  <configure name="CONFIGURE_PATH" value="@CONFIGURE_PATH@"/>
+  <configure name="CONFIGURE" value="@CONFIGURE_ARGS@"/>
   <configure name="COPYRIGHT" value="Copyright (C) 1999-2012 ImageMagick Studio LLC"/>
-  <configure name="WEBSITE" value="http://www.imagemagick.org"/>
+  <configure name="CPPFLAGS" value="@MAGICK_CPPFLAGS@"/>
+  <configure name="CXXFLAGS" value="@CXXFLAGS@"/>
+  <configure name="CXX" value="@CXX@"/>
+  <configure name="DEFS" value="@DEFS@"/>
+  <configure name="DELEGATES" value="@DELEGATES@"/>
+  <configure name="DISTCHECK_CONFIG_FLAGS" value="@DISTCHECK_CONFIG_FLAGS@"/>
+  <configure name="DOCUMENTATION_PATH" value="@DOCUMENTATION_PATH@"/>
+  <configure name="EXEC-PREFIX" value="@EXEC_PREFIX_DIR@"/>
+  <configure name="EXECUTABLE_PATH" value="@EXECUTABLE_PATH@"/>
+  <configure name="FEATURES" value="@MAGICK_FEATURES@"/>
+  <configure name="FILTER_PATH" value="@FILTER_PATH@"/>
+  <configure name="HOST" value="@host@"/>
+  <configure name="INCLUDE_PATH" value="@INCLUDE_PATH@"/>
+  <configure name="LDFLAGS" value="@MAGICK_LDFLAGS@"/>
+  <configure name="LIBRARY_PATH" value="@LIBRARY_PATH@"/>
+  <configure name="LIBS" value="@MAGICK_LIBS@"/>
+  <configure name="LIB_VERSION_NUMBER" value="@PACKAGE_LIB_VERSION_NUMBER@"/>
+  <configure name="LIB_VERSION" value="@PACKAGE_LIB_VERSION@"/>
+  <configure name="NAME" value="@PACKAGE_NAME@"/>
+  <configure name="PCFLAGS" value="@MAGICK_PCFLAGS@"/>
+  <configure name="PREFIX" value="@PREFIX_DIR@"/>
   <configure name="QuantumDepth" value="@QUANTUM_DEPTH@"/>
+  <configure name="RELEASE_DATE" value="@PACKAGE_RELEASE_DATE@"/>
+  <configure name="SHAREARCH_PATH" value="@SHAREARCH_PATH@"/>
+  <configure name="SHARE_PATH" value="@SHARE_PATH@"/>
+  <configure name="SVN_REVISION" value="@MAGICK_SVN_REVISION@" />
+  <configure name="TARGET_CPU" value="@MAGICK_TARGET_CPU@"/>
+  <configure name="TARGET_OS" value="@MAGICK_TARGET_OS@"/>
+  <configure name="TARGET_VENDOR" value="@MAGICK_TARGET_VENDOR@"/>
+  <configure name="VERSION" value="@PACKAGE_VERSION@"/>
+  <configure name="WEBSITE" value="http://www.imagemagick.org"/>
 </configuremap>
