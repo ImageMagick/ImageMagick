@@ -826,12 +826,11 @@
 /* Define to the type of arg 5 for `select'. */
 #undef SELECT_TYPE_ARG5
 
-/* Directory where architecture-independent configuration files live. */
-#undef SHAREARCH_PATH
+/* Configure directory name without ABI part. */
+#undef SHAREARCH_BASEDIRNAME
 
-/* Subdirectory of lib where architecture-independent configuration files
-   live. */
-#undef SHAREARCH_RELATIVE_PATH
+/* Configure directory dirname */
+#undef SHAREARCH_DIRNAME
 
 /* Directory where architecture-independent configuration files live. */
 #undef SHARE_PATH
