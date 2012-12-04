@@ -3081,19 +3081,25 @@ esac
 AC_DEFINE_UNQUOTED(SHARE_PATH,"$DEFINE_SHARE_PATH",[Directory where architecture-independent configuration files live.])
 AC_SUBST(SHARE_PATH)
 
-# Subdirectory to place architecture-independent configuration files
-SHAREARCH_RELATIVE_PATH="${LIBRARY_RELATIVE_PATH}/config"
-AC_DEFINE_UNQUOTED(SHAREARCH_RELATIVE_PATH,"$SHAREARCH_RELATIVE_PATH",[Subdirectory of lib where architecture-independent configuration files live.])
-SHAREARCH_PATH="${SHAREARCH_DIR}/${SHAREARCH_RELATIVE_PATH}"
-DEFINE_SHAREARCH_PATH="${SHAREARCH_DIR}/${SHAREARCH_RELATIVE_PATH}/"
-case "${build_os}" in
-  mingw* )
-    DEFINE_SHAREARCH_PATH=`$WinPathScript "$DEFINE_SHAREARCH_PATH" 1`
-    ;;
-esac
-AC_DEFINE_UNQUOTED(SHAREARCH_PATH,"$DEFINE_SHAREARCH_PATH",[Directory where architecture-independent configuration files live.])
-AC_SUBST(SHAREARCH_PATH)
+#
+# Subdirectory to place architecture-dependent configuration files.
+if test "x$SHAREARCH_BASEDIRNAME" = "x"; then
+   SHAREARCH_BASEDIRNAME="config"
+fi
+AC_DEFINE_UNQUOTED(SHAREARCH_BASEDIRNAME,"$SHAREARCH_BASEDIRNAME",[Sharearch directory name without ABI part.])
+AC_SUBST(SHAREARCH_BASEDIRNAME)
 
+if test "x$SHAREARCH_DIRNAME" = "x"; then
+  SHAREARCH_DIRNAME=${SHAREARCH_BASEDIRNAME}-${MAGICK_ABI_SUFFIX}
+else
+  AC_DEFINE_UNQUOTED(SHAREARCH_DIRNAME,"$SHAREARCH_DIRNAME",[Sharearch directory dirname])
+fi
+AC_SUBST(SHAREARCH_DIRNAME)
+
+SHAREARCH_RELATIVE_PATH="${SHAREARCH_DIRNAME}"
+AC_SUBST(SHAREARCH_RELATIVE_PATH)
+SHAREARCH_PATH="${LIBRARY_PATH}/${SHAREARCH_RELATIVE_PATH}"
+AC_SUBST(SHAREARCH_PATH)
 #
 # program_transform_name is formed for use in a Makefile, so create a
 # modified version for use in a shell script.
