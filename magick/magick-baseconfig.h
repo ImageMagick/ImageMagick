@@ -1253,16 +1253,13 @@
 #define MAGICKCORE_SELECT_TYPE_ARG5 (struct timeval *)
 #endif
 
-/* Directory where architecture-independent configuration files live. */
-#ifndef MAGICKCORE_SHAREARCH_PATH
-#define MAGICKCORE_SHAREARCH_PATH "/usr/local/lib/ImageMagick-6.8.0/config/"
+/* Sharearch directory name without ABI part. */
+#ifndef MAGICKCORE_SHAREARCH_BASEDIRNAME
+#define MAGICKCORE_SHAREARCH_BASEDIRNAME "config"
 #endif
 
-/* Subdirectory of lib where architecture-independent configuration files
-   live. */
-#ifndef MAGICKCORE_SHAREARCH_RELATIVE_PATH
-#define MAGICKCORE_SHAREARCH_RELATIVE_PATH "ImageMagick-6.8.0/config"
-#endif
+/* Sharearch directory dirname */
+/* #undef SHAREARCH_DIRNAME */
 
 /* Directory where architecture-independent configuration files live. */
 #ifndef MAGICKCORE_SHARE_PATH
