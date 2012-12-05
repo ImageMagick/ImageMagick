@@ -61,6 +61,29 @@
   Define declarations.
 */
 #define ConfigureFilename  "configure.xml"
+
+#ifdef _OPENMP
+#define MAGICKCORE_FEATURE_OPENMP_STR "OpenMP "
+#else
+#define MAGICKCORE_FEATURE_OPENMP_STR ""
+#endif
+#ifdef _OPENCL
+#define MAGICKCORE_FEATURE_OPENCL_STR "OpenCL "
+#else
+#define MAGICKCORE_FEATURE_OPENCL_STR ""
+#endif
+#ifdef MAGICKCORE_ZERO_CONFIGURATION_SUPPORT
+#define MAGICKCORE_FEATURE_ZERO_CONFIGURATION_STR "Zero-Configuration "
+#else 
+#define MAGICKCORE_FEATURE_ZERO_CONFIGURATION_STR ""
+#endif
+#ifdef HDRI_SUPPORT
+#define MAGICKCORE_FEATURE_HDRI_STR "HDRI"
+#else
+#define MAGICKCORE_FEATURE_HDRI_STR ""
+#endif
+
+#define MAGICKCORE_FEATURES_STR MAGICKCORE_FEATURE_OPENMP_STR MAGICKCORE_FEATURE_OPENCL_STR MAGICKCORE_FEATURE_ZERO_CONFIGURATION_STR MAGICKCORE_FEATURE_HDRI_STR
 
 /*
   Typedef declarations.
@@ -78,7 +101,13 @@ typedef struct _ConfigureMapInfo
 static const ConfigureMapInfo
   ConfigureMap[] =
   {
-    { "NAME", "ImageMagick" }
+    { "NAME", "ImageMagick" },
+    { "QuantumDepth", MAGICKCORE_STRING_XQUOTE(MAGICKCORE_QUANTUM_DEPTH) } ,
+    { "FEATURES", MAGICKCORE_FEATURES_STR },
+#ifdef MAGICKCORE_BUILD_MODULES 
+    { "CODER_PATH", MAGICKCORE_CODER_PATH },
+    { "FILTER_PATH", MAGICKCORE_FILTER_PATH },
+#endif
   };
 
 static LinkedListInfo
