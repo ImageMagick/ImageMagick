@@ -976,7 +976,7 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
         if (configure_info[i]->path != (char *) NULL)
           (void) FormatLocaleFile(file,"\nPath: %s\n\n",
             configure_info[i]->path);
-        (void) FormatLocaleFile(file,"Name          Value\n");
+        (void) FormatLocaleFile(file,"Name           Value\n");
         (void) FormatLocaleFile(file,
           "-------------------------------------------------"
           "------------------------------\n");
@@ -986,7 +986,7 @@ MagickExport MagickBooleanType ListConfigureInfo(FILE *file,
     if (configure_info[i]->name != (char *) NULL)
       name=configure_info[i]->name;
     (void) FormatLocaleFile(file,"%s",name);
-    for (j=(ssize_t) strlen(name); j <= 12; j++)
+    for (j=(ssize_t) strlen(name); j <= 13; j++)
       (void) FormatLocaleFile(file," ");
     (void) FormatLocaleFile(file," ");
     value="unknown";
