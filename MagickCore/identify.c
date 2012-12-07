@@ -633,6 +633,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   if (image->storage_class == PseudoClass)
     {
+      (void) FormatLocaleFile(file,"  Colormap entries: %.20g\n",(double)
+        image->colors);
       (void) FormatLocaleFile(file,"  Colormap:\n");
       if (image->colors <= 1024)
         {
