@@ -164,9 +164,7 @@ cp -p Magick++/demo/*.cpp Magick++/demo/*.miff Magick++/examples
            --with-rsvg \
            --with-xml \
            --with-perl-options="INSTALLDIRS=vendor %{?perl_prefix} CC='%__cc -L$PWD/magick/.libs' LDDLFLAGS='-shared -L$PWD/magick/.libs'" \
-           --without-dps \
-           --without-included-ltdl --with-ltdl-include=%{_includedir} \
-           --with-ltdl-lib=%{_libdir}
+           --without-dps 
 # Disable rpath
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
@@ -247,8 +245,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc QuickStart.txt ChangeLog Platforms.txt
 %doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt
-%{_libdir}/libMagickCore*
-%{_libdir}/libMagickWand*
+%{_libdir}/libMagickCore*so*
+%{_libdir}/libMagickWand*so*
 %{_bindir}/[a-z]*
 %{_libdir}/%{name}-%{VERSION}
 %{_datadir}/%{name}-%{VERSION}
@@ -262,8 +260,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_bindir}/MagickCore-config
 %{_bindir}/MagickWand-config
-%{_libdir}/libMagickCore*
-%{_libdir}/libMagickWand*
+%{_libdir}/libMagickCore*so*
+%{_libdir}/libMagickWand*so*
 %{_libdir}/pkgconfig/MagickCore.pc
 %{_libdir}/pkgconfig/ImageMagick.pc
 %{_libdir}/pkgconfig/MagickWand.pc
@@ -286,7 +284,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc Magick++/AUTHORS Magick++/ChangeLog Magick++/NEWS Magick++/README
 %doc www/Magick++/COPYING
-%{_libdir}/libMagick++*
+%{_libdir}/libMagick++*so*
 
 %files c++-devel
 %defattr(-,root,root,-)
@@ -294,7 +292,7 @@ rm -rf %{buildroot}
 %{_bindir}/Magick++-config
 %{_includedir}/%{name}/Magick++
 %{_includedir}/%{name}/Magick++.h
-%{_libdir}/libMagick++*
+%{_libdir}/libMagick++*so*
 %{_libdir}/pkgconfig/Magick++.pc
 %{_libdir}/pkgconfig/ImageMagick++.pc
 %{_mandir}/man1/Magick++-config.*
