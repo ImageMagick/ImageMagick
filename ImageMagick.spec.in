@@ -248,8 +248,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc QuickStart.txt ChangeLog Platforms.txt
 %doc README.txt LICENSE NOTICE AUTHORS.txt NEWS.txt
-%{_libdir}/libMagickCore-*
-%{_libdir}/libMagickWand-*
+%{_libdir}/libMagickCore*
+%{_libdir}/libMagickWand*
 %{_bindir}/[a-z]*
 %{_libdir}/%{name}-%{VERSION}
 %{_datadir}/%{name}-%{VERSION}
@@ -264,8 +264,8 @@ rm -rf %{buildroot}
 %{_bindir}/Magick-config
 %{_bindir}/MagickWand-config
 %{_bindir}/Wand-config
-%{_libdir}/libMagickCore-*
-%{_libdir}/libMagickWand-*
+%{_libdir}/libMagickCore*
+%{_libdir}/libMagickWand*
 %{_libdir}/pkgconfig/MagickCore.pc
 %{_libdir}/pkgconfig/ImageMagick.pc
 %{_libdir}/pkgconfig/MagickWand.pc
@@ -291,7 +291,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc Magick++/AUTHORS Magick++/ChangeLog Magick++/NEWS Magick++/README
 %doc www/Magick++/COPYING
-%{_libdir}/libMagick++-*
+%{_libdir}/libMagick++*
 
 %files c++-devel
 %defattr(-,root,root,-)
@@ -299,7 +299,7 @@ rm -rf %{buildroot}
 %{_bindir}/Magick++-config
 %{_includedir}/%{name}/Magick++
 %{_includedir}/%{name}/Magick++.h
-%{_libdir}/libMagick++-*
+%{_libdir}/libMagick++*
 %{_libdir}/pkgconfig/Magick++.pc
 %{_libdir}/pkgconfig/ImageMagick++.pc
 %{_mandir}/man1/Magick++-config.*
