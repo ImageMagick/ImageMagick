@@ -103,11 +103,7 @@ static const ConfigureMapInfo
   {
     { "NAME", "ImageMagick" },
     { "QuantumDepth", MAGICKCORE_STRING_XQUOTE(MAGICKCORE_QUANTUM_DEPTH) } ,
-    { "FEATURES", MAGICKCORE_FEATURES_STR },
-#ifdef MAGICKCORE_BUILD_MODULES 
-    { "CODER_PATH", MAGICKCORE_CODER_PATH },
-    { "FILTER_PATH", MAGICKCORE_FILTER_PATH },
-#endif
+    { "FEATURES", MAGICKCORE_FEATURES_STR }
   };
 
 static LinkedListInfo
