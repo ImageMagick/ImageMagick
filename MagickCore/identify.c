@@ -623,7 +623,8 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
           (void) FormatLocaleFile(file,"  Histogram:\n");
           (void) GetNumberColors(image,file,exception);
         }
-      else {
+      else
+        {
           artifact=GetImageArtifact(image,"identify:unique-colors");
           if (IfMagickTrue(IsStringTrue(artifact)))
             (void) FormatLocaleFile(file,"  Colors: %.20g\n",(double)
@@ -632,8 +633,7 @@ MagickExport MagickBooleanType IdentifyImage(Image *image,FILE *file,
     }
   if (image->storage_class == PseudoClass)
     {
-      (void) FormatLocaleFile(file,"  Colormap: %.20g\n",(double)
-        image->colors);
+      (void) FormatLocaleFile(file,"  Colormap:\n");
       if (image->colors <= 1024)
         {
           char
