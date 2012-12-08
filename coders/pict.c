@@ -855,7 +855,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AcquireImage(image_info,exception);
-  image->depth=8;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFalse)
     {
@@ -901,6 +900,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     Create black canvas.
   */
   flags=0;
+  image->depth=8;
   image->columns=1UL*(frame.right-frame.left);
   image->rows=1UL*(frame.bottom-frame.top);
   image->resolution.x=DefaultResolution;
