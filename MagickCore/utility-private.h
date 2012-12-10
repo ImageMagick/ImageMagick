@@ -105,7 +105,7 @@ static inline FILE *fopen_utf8(const char *path,const char *mode)
 #endif
 }
 
-#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__) && \!defined(__MINGW32__) && \!defined(__MINGW64__)
+#if defined(MAGICKCORE_WINDOWS_SUPPORT) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 typedef int
   mode_t;
 #endif
