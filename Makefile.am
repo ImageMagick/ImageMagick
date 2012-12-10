@@ -152,6 +152,10 @@ pkgconfig_DATA = \
 	$(MAGICKWAND_PKGCONFIG) \
 	$(MAGICKPP_PKGCONFIG)
 
+# create a copy for pc file (ideally the non abi should be symlinked)
+%-@MAGICK_ABI_SUFFIX@.pc: %.pc
+	cp -f $^ $@
+
 # Manual pages to install
 man_MANS = \
 	$(MAGICKCORE_MANS) \

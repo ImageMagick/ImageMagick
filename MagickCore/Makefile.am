@@ -26,36 +26,37 @@ MAGICKCORE_BIN_SCRPTS = \
 
 MAGICKCORE_PKGCONFIG = \
   MagickCore/ImageMagick.pc \
-  MagickCore/MagickCore.pc
+	MagickCore/MagickCore.pc \
+	MagickCore/ImageMagick-@MAGICK_ABI_SUFFIX@.pc \
+	MagickCore/MagickCore-@MAGICK_ABI_SUFFIX@.pc 
 
 OSX_GCOV_LDFLAG = @OSX_GCOV_LDFLAG@
 
 MAGICKCORE_MANS = \
   MagickCore/MagickCore-config.1
 
-MAGICKCORE_LIBS = MagickCore/libMagickCore.la
+MAGICKCORE_LIBS = MagickCore/libMagickCore-@MAGICK_ABI_SUFFIX@.la
 
 if WITH_MODULES
-MagickCore_libMagickCore_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS)
-MagickCore_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS)
+MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS)
+MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS)
 else
-MagickCore_libMagickCore_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS) $(MAGICKCORE_CODER_SRCS) $(MAGICKCORE_FILTER_SRCS)
-MagickCore_libMagickCore_la_LIBADD = $(MAGICK_DEP_LIBS)
+MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS) $(MAGICKCORE_CODER_SRCS) $(MAGICKCORE_FILTER_SRCS)
+MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS)
 endif # WITH_MODULES
-MagickCore_libMagickCore_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $(LIBRARY_EXTRA_CPPFLAGS)
+MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS = -I$(top_builddir)/ltdl -I$(top_srcdir)/ltdl $(LIBRARY_EXTRA_CPPFLAGS)
 
 if HAVE_LD_VERSION_SCRIPT
-MagickCore_libMagickCore_la_LDFLAGS_VERSION =  -Wl,--version-script=$(top_srcdir)/MagickCore/libMagickCore.map
+MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION =  -Wl,--version-script=$(top_srcdir)/MagickCore/libMagickCore.map
 else
-MagickCore_libMagickCore_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
+MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
 endif
 
-MagickCore_libMagickCore_la_LDFLAGS = -no-undefined \
+MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_LDFLAGS = -no-undefined \
   $(MagickCore_libMagickCore_la_LDFLAGS_VERSION) \
   $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) \
-  -release $(MAGICK_ABI_SUFFIX) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
-MagickCore_libMagickCore_la_DEPENDENCIES =
+MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_DEPENDENCIES =
 
 # Library base sources
 MAGICKCORE_BASE_SRCS = \
