@@ -19,198 +19,6 @@ You have another version of autoconf.  It may work, but is not guaranteed to.
 If you have problems, you may need to regenerate the build system entirely.
 To do so, use the procedure documented by the package, typically 'autoreconf'.])])
 
-# ===========================================================================
-#    http://www.gnu.org/software/autoconf-archive/ax_compiler_vendor.html
-# ===========================================================================
-#
-# SYNOPSIS
-#
-#   AX_COMPILER_VENDOR
-#
-# DESCRIPTION
-#
-#   Determine the vendor of the C/C++ compiler, e.g., gnu, intel, ibm, sun,
-#   hp, borland, comeau, dec, cray, kai, lcc, metrowerks, sgi, microsoft,
-#   watcom, etc. The vendor is returned in the cache variable
-#   $ax_cv_c_compiler_vendor for C and $ax_cv_cxx_compiler_vendor for C++.
-#
-# LICENSE
-#
-#   Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
-#   Copyright (c) 2008 Matteo Frigo
-#
-#   This program is free software: you can redistribute it and/or modify it
-#   under the terms of the GNU General Public License as published by the
-#   Free Software Foundation, either version 3 of the License, or (at your
-#   option) any later version.
-#
-#   This program is distributed in the hope that it will be useful, but
-#   WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-#   Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License along
-#   with this program. If not, see <http://www.gnu.org/licenses/>.
-#
-#   As a special exception, the respective Autoconf Macro's copyright owner
-#   gives unlimited permission to copy, distribute and modify the configure
-#   scripts that are the output of Autoconf when processing the Macro. You
-#   need not follow the terms of the GNU General Public License when using
-#   or distributing such scripts, even though portions of the text of the
-#   Macro appear in them. The GNU General Public License (GPL) does govern
-#   all other use of the material that constitutes the Autoconf Macro.
-#
-#   This special exception to the GPL applies to versions of the Autoconf
-#   Macro released by the Autoconf Archive. When you make and distribute a
-#   modified version of the Autoconf Macro, you may extend this special
-#   exception to the GPL to apply to your modified version as well.
-
-#serial 11
-
-AC_DEFUN([AX_COMPILER_VENDOR],
-[AC_CACHE_CHECK([for _AC_LANG compiler vendor], ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor,
-  [# note: don't check for gcc first since some other compilers define __GNUC__
-  vendors="intel:     __ICC,__ECC,__INTEL_COMPILER
-           ibm:       __xlc__,__xlC__,__IBMC__,__IBMCPP__
-           pathscale: __PATHCC__,__PATHSCALE__
-           clang:     __clang__
-           gnu:       __GNUC__
-           sun:       __SUNPRO_C,__SUNPRO_CC
-           hp:        __HP_cc,__HP_aCC
-           dec:       __DECC,__DECCXX,__DECC_VER,__DECCXX_VER
-           borland:   __BORLANDC__,__TURBOC__
-           comeau:    __COMO__
-           cray:      _CRAYC
-           kai:       __KCC
-           lcc:       __LCC__
-           sgi:       __sgi,sgi
-           microsoft: _MSC_VER
-           metrowerks: __MWERKS__
-           watcom:    __WATCOMC__
-           portland:  __PGI
-           unknown:   UNKNOWN"
-  for ventest in $vendors; do
-    case $ventest in
-      *:) vendor=$ventest; continue ;;
-      *)  vencpp="defined("`echo $ventest | sed 's/,/) || defined(/g'`")" ;;
-    esac
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM(,[
-      #if !($vencpp)
-        thisisanerror;
-      #endif
-    ])], [break])
-  done
-  ax_cv_[]_AC_LANG_ABBREV[]_compiler_vendor=`echo $vendor | cut -d: -f1`
- ])
-])
-
-# longlong.m4 serial 14
-dnl Copyright (C) 1999-2007, 2009-2010 Free Software Foundation, Inc.
-dnl This file is free software; the Free Software Foundation
-dnl gives unlimited permission to copy and/or distribute it,
-dnl with or without modifications, as long as this notice is preserved.
-
-dnl From Paul Eggert.
-
-# Define HAVE_LONG_LONG_INT if 'long long int' works.
-# This fixes a bug in Autoconf 2.61, but can be removed once we
-# assume 2.62 everywhere.
-
-# Note: If the type 'long long int' exists but is only 32 bits large
-# (as on some very old compilers), HAVE_LONG_LONG_INT will not be
-# defined. In this case you can treat 'long long int' like 'long int'.
-
-AC_DEFUN([AC_TYPE_LONG_LONG_INT],
-[
-  AC_CACHE_CHECK([for long long int], [ac_cv_type_long_long_int],
-    [AC_LINK_IFELSE(
-       [_AC_TYPE_LONG_LONG_SNIPPET],
-       [dnl This catches a bug in Tandem NonStop Kernel (OSS) cc -O circa 2004.
-        dnl If cross compiling, assume the bug isn't important, since
-        dnl nobody cross compiles for this platform as far as we know.
-        AC_RUN_IFELSE(
-          [AC_LANG_PROGRAM(
-             [[@%:@include <limits.h>
-               @%:@ifndef LLONG_MAX
-               @%:@ define HALF \
-                        (1LL << (sizeof (long long int) * CHAR_BIT - 2))
-               @%:@ define LLONG_MAX (HALF - 1 + HALF)
-               @%:@endif]],
-             [[long long int n = 1;
-               int i;
-               for (i = 0; ; i++)
-                 {
-                   long long int m = n << i;
-                   if (m >> i != n)
-                     return 1;
-                   if (LLONG_MAX / 2 < m)
-                     break;
-                 }
-               return 0;]])],
-          [ac_cv_type_long_long_int=yes],
-          [ac_cv_type_long_long_int=no],
-          [ac_cv_type_long_long_int=yes])],
-       [ac_cv_type_long_long_int=no])])
-  if test $ac_cv_type_long_long_int = yes; then
-    AC_DEFINE([HAVE_LONG_LONG_INT], [1],
-      [Define to 1 if the system has the type `long long int'.])
-  fi
-])
-
-# Define HAVE_UNSIGNED_LONG_LONG_INT if 'unsigned long long int' works.
-# This fixes a bug in Autoconf 2.61, but can be removed once we
-# assume 2.62 everywhere.
-
-# Note: If the type 'unsigned long long int' exists but is only 32 bits
-# large (as on some very old compilers), AC_TYPE_UNSIGNED_LONG_LONG_INT
-# will not be defined. In this case you can treat 'unsigned long long int'
-# like 'unsigned long int'.
-
-AC_DEFUN([AC_TYPE_UNSIGNED_LONG_LONG_INT],
-[
-  AC_CACHE_CHECK([for unsigned long long int],
-    [ac_cv_type_unsigned_long_long_int],
-    [AC_LINK_IFELSE(
-       [_AC_TYPE_LONG_LONG_SNIPPET],
-       [ac_cv_type_unsigned_long_long_int=yes],
-       [ac_cv_type_unsigned_long_long_int=no])])
-  if test $ac_cv_type_unsigned_long_long_int = yes; then
-    AC_DEFINE([HAVE_UNSIGNED_LONG_LONG_INT], [1],
-      [Define to 1 if the system has the type `unsigned long long int'.])
-  fi
-])
-
-# Expands to a C program that can be used to test for simultaneous support
-# of 'long long' and 'unsigned long long'. We don't want to say that
-# 'long long' is available if 'unsigned long long' is not, or vice versa,
-# because too many programs rely on the symmetry between signed and unsigned
-# integer types (excluding 'bool').
-AC_DEFUN([_AC_TYPE_LONG_LONG_SNIPPET],
-[
-  AC_LANG_PROGRAM(
-    [[/* For now, do not test the preprocessor; as of 2007 there are too many
-         implementations with broken preprocessors.  Perhaps this can
-         be revisited in 2012.  In the meantime, code should not expect
-         #if to work with literals wider than 32 bits.  */
-      /* Test literals.  */
-      long long int ll = 9223372036854775807ll;
-      long long int nll = -9223372036854775807LL;
-      unsigned long long int ull = 18446744073709551615ULL;
-      /* Test constant expressions.   */
-      typedef int a[((-9223372036854775807LL < 0 && 0 < 9223372036854775807ll)
-                     ? 1 : -1)];
-      typedef int b[(18446744073709551615ULL <= (unsigned long long int) -1
-                     ? 1 : -1)];
-      int i = 63;]],
-    [[/* Test availability of runtime routines for shift and division.  */
-      long long int llmax = 9223372036854775807ll;
-      unsigned long long int ullmax = 18446744073709551615ull;
-      return ((ll << 63) | (ll >> 63) | (ll < i) | (ll > i)
-              | (llmax / ll) | (llmax % ll)
-              | (ull << 63) | (ull >> 63) | (ull << i) | (ull >> i)
-              | (ullmax / ull) | (ullmax % ull));]])
-])
-
 # Copyright (C) 2002-2012 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
@@ -339,7 +147,7 @@ AC_CONFIG_COMMANDS_PRE(
 Usually this means the macro was only invoked conditionally.]])
 fi])])
 
-# Copyright (C) 1999-2013 Free Software Foundation, Inc.
+# Copyright (C) 1999-2012 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -531,7 +339,7 @@ _AM_SUBST_NOTMAKE([am__nodep])dnl
 
 # Generate code to set up dependency tracking.              -*- Autoconf -*-
 
-# Copyright (C) 1999-2013 Free Software Foundation, Inc.
+# Copyright (C) 1999-2012 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -924,7 +732,7 @@ AC_MSG_RESULT([$_am_result])
 rm -f confinc confmf
 ])
 
-# Copyright (C) 1999-2013 Free Software Foundation, Inc.
+# Copyright (C) 1999-2012 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
