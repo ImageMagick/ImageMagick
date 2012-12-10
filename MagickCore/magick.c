@@ -1243,7 +1243,7 @@ MagickExport void MagickCoreGenesis(const char *path,
       events=DestroyString(events);
     }
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
-#if defined(_DEBUG) && !defined(__BORLANDC__) && !defined(__MINGW32__)
+#if defined(_DEBUG) && !defined(__BORLANDC__) && \!defined(__MINGW32__) && \!defined(__MINGW64__)
   if (IsEventLogging() != MagickFalse)
     {
       int
