@@ -1144,7 +1144,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     Ellipse_Angle = atan2(B, A-C);
 
     (void) FormatLocaleFile(stderr, "# Angle=%lf   Area=%lf\n",
-         RadiansToDegrees(Ellipse_Angle), Ellipse_Area);
+         (double) RadiansToDegrees(Ellipse_Angle), Ellipse_Area);
   }
 #endif
 
