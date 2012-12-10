@@ -262,9 +262,9 @@ rm -rf %{buildroot}
 %{_bindir}/MagickWand-config
 %{_libdir}/libMagickCore*so*
 %{_libdir}/libMagickWand*so*
-%{_libdir}/pkgconfig/MagickCore.pc
-%{_libdir}/pkgconfig/ImageMagick.pc
-%{_libdir}/pkgconfig/MagickWand.pc
+%{_libdir}/pkgconfig/MagickCore*.pc
+%{_libdir}/pkgconfig/ImageMagick*.pc
+%{_libdir}/pkgconfig/MagickWand*.pc
 %dir %{_includedir}/%{name}
 %{_includedir}/%{name}/MagickCore
 %{_includedir}/%{name}/MagickWand
@@ -293,8 +293,8 @@ rm -rf %{buildroot}
 %{_includedir}/%{name}/Magick++
 %{_includedir}/%{name}/Magick++.h
 %{_libdir}/libMagick++*so*
-%{_libdir}/pkgconfig/Magick++.pc
-%{_libdir}/pkgconfig/ImageMagick++.pc
+%{_libdir}/pkgconfig/Magick++*.pc
+%{_libdir}/pkgconfig/ImageMagick++*.pc
 %{_mandir}/man1/Magick++-config.*
 
 %files perl -f perl-pkg-files
