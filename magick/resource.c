@@ -440,7 +440,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
     *datum;
 
   assert(path != (char *) NULL);
-  (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s",path);
+  (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"Acquire %s",path);
   if (random_info == (RandomInfo *) NULL)
     random_info=AcquireRandomInfo();
   file=(-1);
@@ -481,7 +481,7 @@ MagickExport int AcquireUniqueFileResource(char *path)
     if ((file >= 0) || (errno != EEXIST))
       break;
   }
-  (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s",path);
+  (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"Acquire %s",path);
   if (file == -1)
     return(file);
   if (resource_semaphore == (SemaphoreInfo *) NULL)
@@ -846,7 +846,7 @@ MagickExport MagickBooleanType RelinquishUniqueFileResource(const char *path)
     cache_path[MaxTextExtent];
 
   assert(path != (const char *) NULL);
-  (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"%s",path);
+  (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"Relinquish %s",path);
   if (temporary_resources != (SplayTreeInfo *) NULL)
     {
       register char
