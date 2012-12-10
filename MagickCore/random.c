@@ -44,7 +44,7 @@
 #if defined(__VMS)
 #include <time.h>
 #endif
-#if defined(__MINGW32__)
+#if defined(__MINGW32__) || defined(__MINGW64__)
 #include <sys/time.h>
 #endif
 #include "MagickCore/studio.h"
