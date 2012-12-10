@@ -89,7 +89,7 @@ static int AnimateMain(int argc,char **argv)
   return(status);
 }
 
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)
 int main(int argc,char **argv)
 {
   return(AnimateMain(argc,argv));

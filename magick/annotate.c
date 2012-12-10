@@ -76,7 +76,7 @@
 #include "magick/utility.h"
 #include "magick/xwindow-private.h"
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
-#if defined(__MINGW32__)
+#if defined(__MINGW32__) || defined(__MINGW64__)
 #  undef interface
 #endif
 #if defined(MAGICKCORE_HAVE_FT2BUILD_H)

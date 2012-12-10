@@ -68,7 +68,7 @@
 /*
   Define declarations.
 */
-#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__MINGW32__)
+#if !defined(MAGICKCORE_WINDOWS_SUPPORT) || defined(__MINGW32__) || defined(__MINGW64__)
 #define BI_RGB  0
 #define BI_RLE8  1
 #define BI_BITFIELDS  3
