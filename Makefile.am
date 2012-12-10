@@ -154,7 +154,7 @@ pkgconfig_DATA = \
 
 # create a copy for pc file (ideally the non abi should be symlinked)
 %-@MAGICK_ABI_SUFFIX@.pc: %.pc
-	cp -f $(notdir $^) $@
+	cp -f $^ $@
 
 # Manual pages to install
 man_MANS = \
