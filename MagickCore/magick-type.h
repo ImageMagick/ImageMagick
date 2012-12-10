@@ -95,9 +95,7 @@ typedef double_t Quantum;
 #define QuantumRange  18446744073709551615.0
 #define QuantumFormat  "%g"
 #else
-#if !defined(_CH_)
-# error "MAGICKCORE_QUANTUM_DEPTH must be one of 8, 16, 32, or 64"
-#endif
+#error "MAGICKCORE_QUANTUM_DEPTH must be one of 8, 16, 32, or 64"
 #endif
 #define MagickEpsilon  (1.0e-15)
 #define MagickHuge  3.4e+38F
