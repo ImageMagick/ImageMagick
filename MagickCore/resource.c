@@ -337,7 +337,7 @@ static void *DestroyTemporaryResources(void *temporary_resource)
   return((void *) NULL);
 }
 
-static MagickBooleanType GetPathTemplate(char *path)
+MagickExport MagickBooleanType GetPathTemplate(char *path)
 {
   char
     *directory,
