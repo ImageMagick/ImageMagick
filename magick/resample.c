@@ -904,8 +904,13 @@ static inline void ClampUpAxes(const double dux,
   const double frobenius_squared = n11+n22;
   const double discriminant =
     (frobenius_squared+twice_det)*(frobenius_squared-twice_det);
+  /*
+   * In exact arithmetic, discriminant can't be negative. In floating
+   * point, it can, because of the bad conditioning of SVD
+   * decompositions done through the associated normal matrix.
+   */
   const double sqrt_discriminant =
-    sqrt(discriminant < -0.0 ? 0.0 : discriminant);
+    sqrt(discriminant > 0.0 ? discriminant : 0.0);
   /*
    * s1 is the largest singular value of the inverse Jacobian
    * matrix. In other words, its reciprocal is the smallest singular
