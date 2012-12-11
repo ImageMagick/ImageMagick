@@ -47,6 +47,7 @@
 #include <math.h>
 #include "MagickWand/MagickWand.h"
 #include "MagickCore/colorspace-private.h"
+#include "MagickCore/resource_.h"
 #include "MagickCore/string-private.h"
 #include "validate.h"
 
@@ -449,11 +450,21 @@ static size_t ValidateIdentifyCommand(ImageInfo *image_info,
 %    o exception: return any errors or warnings in this structure.
 %
 */
+
+/* Enable this to count remaining $TMPDIR/magick-* files.
+ * Note that the count includes any files left over from other runs.
+ */
+#define MagickCountTempFiles
+
 static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
   const char *reference_filename,const char *output_filename,size_t *fail,
   ExceptionInfo *exception)
 {
   char
+#ifdef MagickCountTempFiles
+    SystemCommand[MaxTextExtent],
+    path[MaxTextExtent],
+#endif
     size[MaxTextExtent];
 
   const MagickInfo
@@ -485,6 +496,14 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
 
   test=0;
   (void) FormatLocaleFile(stdout,"validate image formats in memory:\n");
+
+#ifdef MagickCountTempFiles
+  (void)GetPathTemplate(path);
+  /* Remove file template except for the leading "magick-" */
+  path[strlen(path)-17]='\0';
+  (void) FormatLocaleFile(stdout," tmp path is '%s*'\n",path);
+#endif
+
   for (i=0; reference_formats[i].magick != (char *) NULL; i++)
   {
     magick_info=GetMagickInfo(reference_formats[i].magick,exception);
@@ -653,7 +672,19 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
           (*fail)++;
           continue;
         }
-      (void) FormatLocaleFile(stdout,"... pass.\n");
+
+#ifdef MagickCountTempFiles
+      (void) FormatLocaleFile(stdout,"... pass, ");
+      (void) fflush(stdout);
+      SystemCommand[0]='\0';
+      (void)strncat(SystemCommand,"echo `ls ",9);
+      (void)strncat(SystemCommand,path,MaxTextExtent-31);
+      (void)strncat(SystemCommand,"* | wc -w` tmp files.",20);
+      (void)system(SystemCommand);
+      (void) fflush(stdout);
+#else
+      (void) FormatLocaleFile(stdout,"... pass\n");
+#endif
     }
   }
   (void) FormatLocaleFile(stdout,
