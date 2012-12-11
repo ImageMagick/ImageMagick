@@ -304,6 +304,7 @@ static const struct ReferenceFormats
     { "PJPEG", UndefinedCompression, 0.003 },
     { "PLASMA", UndefinedCompression, 0.0 },
     { "PNG", UndefinedCompression, 0.0 },
+    { "PNG8", UndefinedCompression, 0.0 },
     { "PNG24", UndefinedCompression, 0.0 },
     { "PNG32", UndefinedCompression, 0.0 },
     { "PNM", UndefinedCompression, 0.0 },
