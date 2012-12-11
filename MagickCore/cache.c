@@ -1254,14 +1254,9 @@ MagickPrivate Cache DestroyPixelCache(Cache cache)
         cache_info->filename);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
     }
-  if ((cache_info->mode == ReadMode) || ((cache_info->type != MapCache) &&
-      (cache_info->type != DiskCache)))
-    RelinquishPixelCachePixels(cache_info);
-  else
-    {
-      RelinquishPixelCachePixels(cache_info);
-      (void) RelinquishUniqueFileResource(cache_info->cache_filename);
-    }
+  RelinquishPixelCachePixels(cache_info);
+  if ((cache_info->type == MapCache) || (cache_info->type == DiskCache))
+    (void) RelinquishUniqueFileResource(cache_info->cache_filename);
   *cache_info->cache_filename='\0';
   if (cache_info->nexus_info != (NexusInfo **) NULL)
     cache_info->nexus_info=DestroyPixelCacheNexus(cache_info->nexus_info,
@@ -3916,6 +3911,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     {
       status=ClonePixelCachePixels(cache_info,&source_info,exception);
       RelinquishPixelCachePixels(&source_info);
+      if ((source_info.type == MapCache) || (source_info.type == DiskCache))
+        (void) RelinquishUniqueFileResource(source_info.cache_filename);
     }
   if (image->debug != MagickFalse)
     {
