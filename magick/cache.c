@@ -1380,6 +1380,7 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
       cache_info->pixels=(PixelPacket *) UnmapBlob(cache_info->pixels,(size_t)
         cache_info->length);
       (void) RelinquishUniqueFileResource(cache_info->cache_filename);
+      *cache_info->cache_filename='\0';
       RelinquishMagickResource(MapResource,cache_info->length);
     }
     case DiskCache:
@@ -1387,6 +1388,7 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
       if (cache_info->file != -1)
         (void) ClosePixelCacheOnDisk(cache_info);
       (void) RelinquishUniqueFileResource(cache_info->cache_filename);
+      *cache_info->cache_filename='\0';
       RelinquishMagickResource(DiskResource,cache_info->length);
       break;
     }
@@ -1427,7 +1429,6 @@ MagickExport Cache DestroyPixelCache(Cache cache)
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
     }
   RelinquishPixelCachePixels(cache_info);
-  *cache_info->cache_filename='\0';
   if (cache_info->nexus_info != (NexusInfo **) NULL)
     cache_info->nexus_info=DestroyPixelCacheNexus(cache_info->nexus_info,
       cache_info->number_threads);
