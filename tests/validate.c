@@ -660,7 +660,14 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
           (*fail)++;
           continue;
         }
-      (void) FormatLocaleFile(stdout,"... pass.\n");
+#if 1 /* Enable this block to count remaining /tmp/magick-* files */
+      (void) FormatLocaleFile(stdout,"... pass, ");
+      (void) fflush(stdout);
+      system("echo `ls /tmp/magick* | wc -w` tmp files.");
+      (void) fflush(stdout);
+#else
+      (void) FormatLocaleFile(stdout,"... pass\n");
+#endif
     }
   }
   (void) FormatLocaleFile(stdout,
