@@ -894,7 +894,8 @@ static inline void ClampUpAxes(const double dux,const double dvx,
   const double frobenius_squared = n11+n22;
   const double discriminant =
     (frobenius_squared+twice_det)*(frobenius_squared-twice_det);
-  const double sqrt_discriminant = sqrt(discriminant);
+  const double sqrt_discriminant =
+    sqrt(discriminant < -0.0 ? 0.0 : discriminant);
   /*
    * s1 is the largest singular value of the inverse Jacobian
    * matrix. In other words, its reciprocal is the smallest singular
