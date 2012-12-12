@@ -270,6 +270,7 @@ static const struct ReferenceFormats
     { "INLINE", UndefinedCompression, 0.0 },
     { "JBG", UndefinedCompression, 0.0 },
     { "JNG", UndefinedCompression, 0.003 },
+    { "JNG", JPEGCompression, 0.003 },
     { "JP2", UndefinedCompression, 0.003 },
     { "JPC", UndefinedCompression, 0.003 },
     { "JPEG", UndefinedCompression, 0.003 },
