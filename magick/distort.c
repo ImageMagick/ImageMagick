@@ -2678,10 +2678,13 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
           }
           case ShepardsDistortion:
           { /* Shepards Method, or Inverse Weighted Distance for
-              displacement around the destination image control points
-              The input arguments are the coefficents to the function.
-              This is more of a 'displacement' function rather than an
-              absolute distortion function.
+               displacement around the destination image control points
+               The input arguments are the coefficents to the function.
+               This is more of a 'displacement' function rather than an
+               absolute distortion function.
+
+               Note: We can not determine derivatives using shepards method
+               so only a point sample interpolatation can be used.
             */
             size_t
               i;
@@ -2704,11 +2707,8 @@ if ( d.x == 0.5 && d.y == 0.5 ) {
             }
             s.x /= denominator;
             s.y /= denominator;
-            s.x += d.x;
+            s.x += d.x;   /* make it as relative displacement */
             s.y += d.y;
-
-            /* We can not determine derivatives using shepards method
-               only color interpolatation, not area-resampling */
             break;
           }
           default:
