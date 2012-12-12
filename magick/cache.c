@@ -1379,7 +1379,8 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
     {
       cache_info->pixels=(PixelPacket *) UnmapBlob(cache_info->pixels,(size_t)
         cache_info->length);
-      (void) RelinquishUniqueFileResource(cache_info->cache_filename);
+      if (cache_info->mode != ReadMode)
+        (void) RelinquishUniqueFileResource(cache_info->cache_filename);
       *cache_info->cache_filename='\0';
       RelinquishMagickResource(MapResource,cache_info->length);
     }
@@ -1387,7 +1388,8 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
     {
       if (cache_info->file != -1)
         (void) ClosePixelCacheOnDisk(cache_info);
-      (void) RelinquishUniqueFileResource(cache_info->cache_filename);
+      if (cache_info->mode != ReadMode)
+        (void) RelinquishUniqueFileResource(cache_info->cache_filename);
       *cache_info->cache_filename='\0';
       RelinquishMagickResource(DiskResource,cache_info->length);
       break;
