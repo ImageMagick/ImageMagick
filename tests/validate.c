@@ -45,6 +45,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
+#include <locale.h>
 #include "MagickWand/MagickWand.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/resource_.h"
