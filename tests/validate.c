@@ -1374,6 +1374,8 @@ int main(int argc,char **argv)
     Validate the ImageMagick image processing suite.
   */
   MagickCoreGenesis(*argv,MagickFalse);
+  (void) setlocale(LC_ALL,"");
+  (void) setlocale(LC_NUMERIC,"C");
   iterations=1;
   status=MagickFalse;
   type=AllValidate;
