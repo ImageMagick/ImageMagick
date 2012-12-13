@@ -3794,18 +3794,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                 Create memory pixel cache.
               */
               status=MagickTrue;
-              if (image->debug != MagickFalse)
-                {
-                  (void) FormatMagickSize(cache_info->length,MagickTrue,format);
-                  (void) FormatLocaleString(message,MaxTextExtent,
-                    "open %s (%s memory, %.20gx%.20gx%.20g %s)",
-                    cache_info->filename,cache_info->mapped != MagickFalse ?
-                    "anonymous" : "heap",(double) cache_info->columns,(double)
-                    cache_info->rows,(double) cache_info->number_channels,
-                    format);
-                  (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
-                    message);
-                }
               cache_info->type=MemoryCache;
               cache_info->metacontent=(void *) NULL;
               if (cache_info->metacontent_extent != 0)
@@ -3817,6 +3805,18 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   status=ClonePixelCachePixels(cache_info,&source_info,
                     exception);
                   RelinquishPixelCachePixels(&source_info);
+                }
+              if (image->debug != MagickFalse)
+                {
+                  (void) FormatMagickSize(cache_info->length,MagickTrue,format);
+                  (void) FormatLocaleString(message,MaxTextExtent,
+                    "open %s (%s memory, %.20gx%.20gx%.20g %s)",
+                    cache_info->filename,cache_info->mapped != MagickFalse ?
+                    "anonymous" : "heap",(double) cache_info->columns,(double)
+                    cache_info->rows,(double) cache_info->number_channels,
+                    format);
+                  (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
+                    message);
                 }
               return(status);
             }
