@@ -24,7 +24,7 @@ namespace Magick
 // Construct pixel view using specified image.
 Magick::Pixels::Pixels( Magick::Image &image_ )
   : _image(image_),
-    _view(AcquireVirtualCacheView(_image.image(),&_exception)),
+    _view(AcquireVirtualCacheView(_image.image())),
     _x(0),
     _y(0),
     _columns(0),

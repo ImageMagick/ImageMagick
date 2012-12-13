@@ -3734,7 +3734,7 @@ static MagickBooleanType XColorEditImage(Display *display,
         if ((x_offset >= (int) (*image)->columns) ||
             (y_offset >= (int) (*image)->rows))
           continue;
-        image_view=AcquireAuthenticCacheView(*image,exception);
+        image_view=AcquireAuthenticCacheView(*image);
         switch (method)
         {
           case PointMethod:
@@ -4336,7 +4336,7 @@ static MagickBooleanType XCompositeImage(Display *display,
       if( IfMagickFalse(SetImageStorageClass(image,DirectClass,exception)) )
         return(MagickFalse);
       image->alpha_trait=BlendPixelTrait;
-      image_view=AcquireAuthenticCacheView(image,exception);
+      image_view=AcquireAuthenticCacheView(image);
       for (y=0; y < (int) image->rows; y++)
       {
         q=GetCacheViewAuthenticPixels(image_view,0,(ssize_t) y,image->columns,1,
@@ -5357,7 +5357,7 @@ static MagickBooleanType XCropImage(Display *display,
   if( IfMagickFalse(SetImageStorageClass(image,DirectClass,exception)) )
     return(MagickFalse);
   image->alpha_trait=BlendPixelTrait;
-  image_view=AcquireAuthenticCacheView(image,exception);
+  image_view=AcquireAuthenticCacheView(image);
   for (y=0; y < (int) crop_info.height; y++)
   {
     q=GetCacheViewAuthenticPixels(image_view,crop_info.x,y+crop_info.y,
@@ -10095,7 +10095,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
           return(MagickFalse);
         if ((*image)->alpha_trait != BlendPixelTrait)
           (void) SetImageAlphaChannel(*image,OpaqueAlphaChannel,exception);
-        image_view=AcquireAuthenticCacheView(*image,exception);
+        image_view=AcquireAuthenticCacheView(*image);
         switch (method)
         {
           case PointMethod:
@@ -13267,7 +13267,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         */
         x_offset=(int) (width*(tile % (((int) image->columns-x)/width))+x);
         y_offset=(int) (height*(tile/(((int) image->columns-x)/width))+y);
-        image_view=AcquireAuthenticCacheView(image,exception);
+        image_view=AcquireAuthenticCacheView(image);
         (void) GetOneCacheViewVirtualPixelInfo(image_view,0,0,&pixel,exception);
         for (i=0; i < (int) height; i++)
         {

@@ -4909,7 +4909,7 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
   assert(cache_info->signature == MagickSignature);
   image->alpha_trait=BlendPixelTrait;
   status=MagickTrue;
-  image_view=AcquireVirtualCacheView(image,exception);  /* must be virtual */
+  image_view=AcquireVirtualCacheView(image);  /* must be virtual */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,image->columns,image->rows,1)

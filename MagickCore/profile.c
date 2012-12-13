@@ -857,7 +857,7 @@ MagickExport MagickBooleanType ProfileImage(Image *image,const char *name,
               (void) SetImageColorspace(image,target_colorspace,exception);
             status=MagickTrue;
             progress=0;
-            image_view=AcquireAuthenticCacheView(image,exception);
+            image_view=AcquireAuthenticCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
             #pragma omp parallel for schedule(static,4) shared(status) \
               dynamic_number_threads(image,image->columns,image->rows,1)

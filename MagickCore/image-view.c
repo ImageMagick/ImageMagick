@@ -730,7 +730,7 @@ MagickExport ImageView *NewImageView(Image *image,ExceptionInfo *exception)
   (void) ResetMagickMemory(image_view,0,sizeof(*image_view));
   image_view->description=ConstantString("ImageView");
   image_view->image=image;
-  image_view->view=AcquireVirtualCacheView(image_view->image,exception);
+  image_view->view=AcquireVirtualCacheView(image_view->image);
   image_view->extent.width=image->columns;
   image_view->extent.height=image->rows;
   image_view->extent.x=0;
@@ -785,7 +785,7 @@ MagickExport ImageView *NewImageViewRegion(Image *image,const ssize_t x,
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(image_view,0,sizeof(*image_view));
   image_view->description=ConstantString("ImageView");
-  image_view->view=AcquireVirtualCacheView(image_view->image,exception);
+  image_view->view=AcquireVirtualCacheView(image_view->image);
   image_view->image=image;
   image_view->extent.width=width;
   image_view->extent.height=height;
