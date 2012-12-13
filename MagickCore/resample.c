@@ -347,8 +347,13 @@ MagickExport MagickBooleanType ResamplePixelColor(
 #endif
 
   /*
-    Does resample area Miss the image?
-    And is that area a simple solid color - then return that color
+    Does resample area Miss the image Proper?
+    If and that area a simple solid color - then simply return that color!
+    This saves a lot of calculation when resampling outside the bounds of
+    the source image.
+
+    However it probably should be expanded to image bounds plus the filters
+    scaled support size.
   */
   hit = 0;
   switch ( resample_filter->virtual_pixel ) {
@@ -360,9 +365,9 @@ MagickExport MagickBooleanType ResamplePixelColor(
     case MaskVirtualPixelMethod:
       if ( resample_filter->limit_reached
            || u0 + resample_filter->Ulimit < 0.0
-           || u0 - resample_filter->Ulimit > (double) resample_filter->image->columns
+           || u0 - resample_filter->Ulimit > (double) resample_filter->image->columns-1.0
            || v0 + resample_filter->Vlimit < 0.0
-           || v0 - resample_filter->Vlimit > (double) resample_filter->image->rows
+           || v0 - resample_filter->Vlimit > (double) resample_filter->image->rows-1.0
            )
         hit++;
       break;
@@ -371,34 +376,34 @@ MagickExport MagickBooleanType ResamplePixelColor(
     case EdgeVirtualPixelMethod:
       if (    ( u0 + resample_filter->Ulimit < 0.0 && v0 + resample_filter->Vlimit < 0.0 )
            || ( u0 + resample_filter->Ulimit < 0.0
-                && v0 - resample_filter->Vlimit > (double) resample_filter->image->rows )
-           || ( u0 - resample_filter->Ulimit > (double) resample_filter->image->columns
+                && v0 - resample_filter->Vlimit > (double) resample_filter->image->rows-1.0 )
+           || ( u0 - resample_filter->Ulimit > (double) resample_filter->image->columns-1.0
                 && v0 + resample_filter->Vlimit < 0.0 )
-           || ( u0 - resample_filter->Ulimit > (double) resample_filter->image->columns
-                && v0 - resample_filter->Vlimit > (double) resample_filter->image->rows )
+           || ( u0 - resample_filter->Ulimit > (double) resample_filter->image->columns-1.0
+                && v0 - resample_filter->Vlimit > (double) resample_filter->image->rows-1.0 )
            )
         hit++;
       break;
     case HorizontalTileVirtualPixelMethod:
       if (    v0 + resample_filter->Vlimit < 0.0
-           || v0 - resample_filter->Vlimit > (double) resample_filter->image->rows
+           || v0 - resample_filter->Vlimit > (double) resample_filter->image->rows-1.0
            )
         hit++;  /* outside the horizontally tiled images. */
       break;
     case VerticalTileVirtualPixelMethod:
       if (    u0 + resample_filter->Ulimit < 0.0
-           || u0 - resample_filter->Ulimit > (double) resample_filter->image->columns
+           || u0 - resample_filter->Ulimit > (double) resample_filter->image->columns-1.0
            )
         hit++;  /* outside the vertically tiled images. */
       break;
     case DitherVirtualPixelMethod:
       if (    ( u0 + resample_filter->Ulimit < -32.0 && v0 + resample_filter->Vlimit < -32.0 )
            || ( u0 + resample_filter->Ulimit < -32.0
-                && v0 - resample_filter->Vlimit > (double) resample_filter->image->rows+32.0 )
-           || ( u0 - resample_filter->Ulimit > (double) resample_filter->image->columns+32.0
+                && v0 - resample_filter->Vlimit > (double) resample_filter->image->rows+31.0 )
+           || ( u0 - resample_filter->Ulimit > (double) resample_filter->image->columns+31.0
                 && v0 + resample_filter->Vlimit < -32.0 )
-           || ( u0 - resample_filter->Ulimit > (double) resample_filter->image->columns+32.0
-                && v0 - resample_filter->Vlimit > (double) resample_filter->image->rows+32.0 )
+           || ( u0 - resample_filter->Ulimit > (double) resample_filter->image->columns+31.0
+                && v0 - resample_filter->Vlimit > (double) resample_filter->image->rows+31.0 )
            )
         hit++;
       break;
@@ -412,7 +417,11 @@ MagickExport MagickBooleanType ResamplePixelColor(
       break;
   }
   if ( hit ) {
-    /* whole area is a solid color -- just return that color */
+    /* The area being resampled is simply a solid color
+     * just return a single lookup color.
+     *
+     * Should this return the users requested interpolated color?
+     */
     status=InterpolatePixelInfo(resample_filter->image,
       resample_filter->view,IntegerInterpolatePixel,u0,v0,pixel,
       resample_filter->exception);
@@ -420,7 +429,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
   }
 
   /*
-    Scaling limits reached, return an 'averaged' result.
+    When Scaling limits reached, return an 'averaged' result.
   */
   if ( resample_filter->limit_reached ) {
     switch ( resample_filter->virtual_pixel ) {
@@ -703,10 +712,16 @@ MagickExport MagickBooleanType ResamplePixelColor(
 %
 % Reference: http://en.wikipedia.org/wiki/Ellipse#Canonical_form
 */
-static inline void ClampUpAxes(const double dux,const double dvx,
-  const double duy,const double dvy,double *major_mag,double *minor_mag,
-  double *major_unit_x,double *major_unit_y,double *minor_unit_x,
-  double *minor_unit_y)
+static inline void ClampUpAxes(const double dux,
+			       const double dvx,
+			       const double duy,
+			       const double dvy,
+			       double *major_mag,
+			       double *minor_mag,
+			       double *major_unit_x,
+			       double *major_unit_y,
+			       double *minor_unit_x,
+			       double *minor_unit_y)
 {
   /*
    * ClampUpAxes takes an input 2x2 matrix
@@ -1140,7 +1155,7 @@ MagickExport void ScaleResampleFilter(ResampleFilter *resample_filter,
     Ellipse_Angle = atan2(B, A-C);
 
     (void) FormatLocaleFile(stderr, "# Angle=%lf   Area=%lf\n",
-         RadiansToDegrees(Ellipse_Angle), Ellipse_Area);
+         (double) RadiansToDegrees(Ellipse_Angle), Ellipse_Area);
   }
 #endif
 
