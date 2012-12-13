@@ -3684,6 +3684,8 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   spread_view=DestroyCacheView(spread_view);
   image_view=DestroyCacheView(image_view);
   random_info=DestroyRandomInfoThreadSet(random_info);
+  if (status == MagickFalse)
+    spread_image=DestroyImage(spread_image);
   return(spread_image);
 }
 

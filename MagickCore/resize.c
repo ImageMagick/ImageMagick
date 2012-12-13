@@ -2881,9 +2881,9 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   image_view=DestroyCacheView(image_view);
   sample_view=DestroyCacheView(sample_view);
   x_offset=(ssize_t *) RelinquishMagickMemory(x_offset);
-  if (status == MagickFalse)
-    return(DestroyImage(sample_image));
   sample_image->type=image->type;
+  if (status == MagickFalse)
+    sample_image=DestroyImage(sample_image);
   return(sample_image);
 }
 
