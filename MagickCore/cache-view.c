@@ -115,18 +115,9 @@ MagickExport CacheView *AcquireAuthenticCacheView(const Image *image)
   ExceptionInfo
     *exception;
 
-  MagickBooleanType
-    status;
-
   cache_view=AcquireVirtualCacheView(image);
   exception=AcquireExceptionInfo();
-  status=SyncImagePixelCache(cache_view->image,exception);
-  if (status == MagickFalse)
-    {
-      CatchException(exception);
-      MagickCoreTerminus();
-      _exit((int) (CacheFatalError-FatalErrorException)+1);
-    }
+  (void) SyncImagePixelCache(cache_view->image,exception);
   exception=DestroyExceptionInfo(exception);
   return(cache_view);
 }
