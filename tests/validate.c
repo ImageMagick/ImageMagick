@@ -452,10 +452,11 @@ static size_t ValidateIdentifyCommand(ImageInfo *image_info,
 %
 */
 
-/* Enable this to count remaining $TMPDIR/magick-* files.
- * Note that the count includes any files left over from other runs.
- */
-#define MagickCountTempFiles
+/*
+  Enable this to count remaining $TMPDIR/magick-* files.  Note that the count
+  includes any files left over from other runs.
+*/
+#undef MagickCountTempFiles
 
 static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
   const char *reference_filename,const char *output_filename,size_t *fail,
@@ -673,7 +674,6 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
           (*fail)++;
           continue;
         }
-
 #ifdef MagickCountTempFiles
       (void) FormatLocaleFile(stdout,"... pass, ");
       (void) fflush(stdout);
