@@ -43,6 +43,8 @@ TESTS_TESTS = \
 	tests/validate-stream.tap \
 	tests/validate-formats-in-memory.tap \
 	tests/validate-formats-on-disk.tap \
+	tests/cli-colorspace.tap \
+	tests/cli-pipe.tap \
 	tests/drawtest.tap \
 	tests/wandtest.tap
 
