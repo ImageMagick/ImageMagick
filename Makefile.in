@@ -4861,6 +4861,8 @@ tests_wandtest_LDFLAGS = $(LDFLAGS)
 tests_wandtest_LDADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 TESTS_XFAIL_TESTS = 
 TESTS_TESTS = \
+	tests/cli-colorspace.tap \
+	tests/cli-pipe.tap \
 	tests/validate-compare.tap \
 	tests/validate-composite.tap \
 	tests/validate-convert.tap \
