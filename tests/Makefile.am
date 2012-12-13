@@ -59,4 +59,3 @@ TESTS_EXTRA_DIST = \
 	$(TESTS_TESTS)
 
 TESTS_CLEANFILES = 
-	tests/*_out.*
