@@ -191,8 +191,7 @@ static double Cosine(const double x,
   return((double)cos((double) (MagickPI2*x)));
 }
 
-static double CubicBC(const double x,
-  const ResizeFilter *resize_filter)
+static double CubicBC(const double x,const ResizeFilter *resize_filter)
 {
   /*
     Cubic Filters using B,C determined values:
@@ -232,8 +231,7 @@ static double CubicBC(const double x,
   return(0.0);
 }
 
-static double Gaussian(const double x,
-  const ResizeFilter *resize_filter)
+static double Gaussian(const double x,const ResizeFilter *resize_filter)
 {
   /*
     Gaussian with a sigma = 1/2 (or as user specified)
@@ -306,8 +304,7 @@ static double Jinc(const double x,
   return(BesselOrderOne(MagickPI*x)/x);
 }
 
-static double Kaiser(const double x,
-  const ResizeFilter *resize_filter)
+static double Kaiser(const double x,const ResizeFilter *resize_filter)
 {
   /*
     Kaiser Windowing Function (bessel windowing)
@@ -321,12 +318,11 @@ static double Kaiser(const double x,
     but without it the filters has a large value at x=0 making it
     difficult to compare the function with other windowing functions.
   */
-  return(resize_filter->coefficient[1]*
-           I0(resize_filter->coefficient[0]*sqrt((double) (1.0-x*x))));
+  return(resize_filter->coefficient[1]*I0(resize_filter->coefficient[0]*
+    sqrt((double) (1.0-x*x))));
 }
 
-static double Lagrange(const double x,
-  const ResizeFilter *resize_filter)
+static double Lagrange(const double x,const ResizeFilter *resize_filter)
 {
   double
     value;
@@ -1644,7 +1640,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
     register ssize_t
       x;
 
-    if( IfMagickFalse(status) )
+    if (status == MagickFalse)
       continue;
     q=QueueCacheViewAuthenticPixels(resize_view,0,y,resize_image->columns,1,
       exception);
@@ -1700,7 +1696,7 @@ MagickExport Image *InterpolativeResizeImage(const Image *image,
   }
   resize_view=DestroyCacheView(resize_view);
   image_view=DestroyCacheView(image_view);
-  if( IfMagickFalse(status) )
+  if (status == MagickFalse)
     resize_image=DestroyImage(resize_image);
   return(resize_image);
 }
@@ -1828,7 +1824,7 @@ MagickExport Image *LiquidRescaleImage(const Image *image,const size_t columns,
     register ssize_t
       x;
 
-    if( IfMagickFalse(status) )
+    if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
     if (p == (const Quantum *) NULL)
@@ -2265,7 +2261,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
       start,
       stop;
 
-    if( IfMagickFalse(status) )
+    if (status == MagickFalse)
       continue;
     bisect=(double) (x+0.5)/x_factor+MagickEpsilon;
     start=(ssize_t) MagickMax(bisect-support+0.5,0.0);
@@ -2479,7 +2475,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
       start,
       stop;
 
-    if( IfMagickFalse(status) )
+    if (status == MagickFalse)
       continue;
     bisect=(double) (y+0.5)/y_factor+MagickEpsilon;
     start=(ssize_t) MagickMax(bisect-support+0.5,0.0);
@@ -2702,7 +2698,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
   */
   filter_image=DestroyImage(filter_image);
   resize_filter=DestroyResizeFilter(resize_filter);
-  if( IfMagickFalse(status) )
+  if (status == MagickFalse)
     {
       resize_image=DestroyImage(resize_image);
       return((Image *) NULL);
@@ -2821,7 +2817,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
     ssize_t
       y_offset;
 
-    if( IfMagickFalse(status) )
+    if (status == MagickFalse)
       continue;
     y_offset=(ssize_t) (((double) y+0.5)*image->rows/
       sample_image->rows);
@@ -2885,6 +2881,8 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   image_view=DestroyCacheView(image_view);
   sample_view=DestroyCacheView(sample_view);
   x_offset=(ssize_t *) RelinquishMagickMemory(x_offset);
+  if (status == MagickFalse)
+    return(DestroyImage(sample_image));
   sample_image->type=image->type;
   return(sample_image);
 }
