@@ -124,6 +124,7 @@ MagickExport CacheView *AcquireAuthenticCacheView(const Image *image)
   if (status == MagickFalse)
     {
       CatchException(exception);
+      MagickCoreTerminus();
       _exit(1);
     }
   exception=DestroyExceptionInfo(exception);
