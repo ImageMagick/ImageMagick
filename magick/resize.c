@@ -320,8 +320,8 @@ static MagickRealType Kaiser(const MagickRealType x,
     but without it the filters has a large value at x=0 making it
     difficult to compare the function with other windowing functions.
   */
-  return(resize_filter->coefficient[1]*
-           I0(resize_filter->coefficient[0]*sqrt((double) (1.0-x*x))));
+  return(resize_filter->coefficient[1]*I0(resize_filter->coefficient[0]*
+    sqrt((double) (1.0-x*x))));
 }
 
 static MagickRealType Lagrange(const MagickRealType x,
