@@ -58,4 +58,5 @@ TESTS_EXTRA_DIST = \
   tests/sequence.miff \
 	$(TESTS_TESTS)
 
-TESTS_CLEANFILES = 
+TESTS_CLEANFILES = \
+  tests/*_out.*
