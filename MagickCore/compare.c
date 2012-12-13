@@ -174,9 +174,9 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
     Generate difference image.
   */
   status=MagickTrue;
-  image_view=AcquireVirtualCacheView(image,exception);
-  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
-  highlight_view=AcquireAuthenticCacheView(highlight_image,exception);
+  image_view=AcquireVirtualCacheView(image);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image);
+  highlight_view=AcquireAuthenticCacheView(highlight_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -323,8 +323,8 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
     Compute the absolute difference in pixels between two images.
   */
   status=MagickTrue;
-  image_view=AcquireVirtualCacheView(image,exception);
-  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
+  image_view=AcquireVirtualCacheView(image);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -448,8 +448,8 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
     y;
 
   status=MagickTrue;
-  image_view=AcquireVirtualCacheView(image,exception);
-  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
+  image_view=AcquireVirtualCacheView(image);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -549,8 +549,8 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
     y;
 
   status=MagickTrue;
-  image_view=AcquireVirtualCacheView(image,exception);
-  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
+  image_view=AcquireVirtualCacheView(image);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -657,8 +657,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
   area=0.0;
   maximum_error=0.0;
   mean_error=0.0;
-  image_view=AcquireVirtualCacheView(image,exception);
-  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
+  image_view=AcquireVirtualCacheView(image);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -744,8 +744,8 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
     y;
 
   status=MagickTrue;
-  image_view=AcquireVirtualCacheView(image,exception);
-  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
+  image_view=AcquireVirtualCacheView(image);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -866,8 +866,8 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   for (i=0; i <= MaxPixelChannels; i++)
     distortion[i]=0.0;
   area=1.0/((double) image->columns*image->rows-1);
-  image_view=AcquireVirtualCacheView(image,exception);
-  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
+  image_view=AcquireVirtualCacheView(image);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -979,8 +979,8 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
     y;
 
   status=MagickTrue;
-  image_view=AcquireVirtualCacheView(image,exception);
-  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
+  image_view=AcquireVirtualCacheView(image);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1406,8 +1406,8 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
   maximum_error=0.0;
   mean_error_per_pixel=0.0;
   mean_error=0.0;
-  image_view=AcquireVirtualCacheView(image,exception);
-  reconstruct_view=AcquireVirtualCacheView(reconstruct_image,exception);
+  image_view=AcquireVirtualCacheView(image);
+  reconstruct_view=AcquireVirtualCacheView(reconstruct_image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -1590,7 +1590,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
   */
   status=MagickTrue;
   progress=0;
-  similarity_view=AcquireAuthenticCacheView(similarity_image,exception);
+  similarity_view=AcquireAuthenticCacheView(similarity_image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)

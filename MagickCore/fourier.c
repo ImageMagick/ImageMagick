@@ -290,7 +290,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
           i++;
         }
     }
-  magnitude_view=AcquireAuthenticCacheView(magnitude_image,exception);
+  magnitude_view=AcquireAuthenticCacheView(magnitude_image);
   i=0L;
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
@@ -343,7 +343,7 @@ static MagickBooleanType ForwardFourier(const FourierInfo *fourier_info,
   }
   magnitude_view=DestroyCacheView(magnitude_view);
   i=0L;
-  phase_view=AcquireAuthenticCacheView(phase_image,exception);
+  phase_view=AcquireAuthenticCacheView(phase_image);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     q=GetCacheViewAuthenticPixels(phase_view,0L,y,fourier_info->height,1UL,
@@ -439,7 +439,7 @@ static MagickBooleanType ForwardFourierTransform(FourierInfo *fourier_info,
   ResetMagickMemory(source,0,fourier_info->height*fourier_info->width*
     sizeof(*source));
   i=0L;
-  image_view=AcquireVirtualCacheView(image,exception);
+  image_view=AcquireVirtualCacheView(image);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0L,y,fourier_info->width,1UL,
@@ -855,7 +855,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
       return(MagickFalse);
     }
   i=0L;
-  magnitude_view=AcquireVirtualCacheView(magnitude_image,exception);
+  magnitude_view=AcquireVirtualCacheView(magnitude_image);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     p=GetCacheViewVirtualPixels(magnitude_view,0L,y,fourier_info->width,1UL,
@@ -898,7 +898,7 @@ static MagickBooleanType InverseFourier(FourierInfo *fourier_info,
     }
   }
   i=0L;
-  phase_view=AcquireVirtualCacheView(phase_image,exception);
+  phase_view=AcquireVirtualCacheView(phase_image);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     p=GetCacheViewVirtualPixels(phase_view,0,y,fourier_info->width,1,
@@ -1055,7 +1055,7 @@ static MagickBooleanType InverseFourierTransform(FourierInfo *fourier_info,
     fftw_destroy_plan(fftw_c2r_plan);
   }
   i=0L;
-  image_view=AcquireAuthenticCacheView(image,exception);
+  image_view=AcquireAuthenticCacheView(image);
   for (y=0L; y < (ssize_t) fourier_info->height; y++)
   {
     if (y >= (ssize_t) image->rows)

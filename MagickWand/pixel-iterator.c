@@ -314,7 +314,7 @@ WandExport PixelIterator *NewPixelIterator(MagickWand *wand)
   if (image == (Image *) NULL)
     return((PixelIterator *) NULL);
   exception=AcquireExceptionInfo();
-  view=AcquireVirtualCacheView(image,exception);
+  view=AcquireVirtualCacheView(image);
   if (view == (CacheView *) NULL)
     return((PixelIterator *) NULL);
   iterator=(PixelIterator *) AcquireMagickMemory(sizeof(*iterator));
@@ -433,7 +433,7 @@ WandExport PixelIterator *NewPixelRegionIterator(MagickWand *wand,
   if (image == (Image *) NULL)
     return((PixelIterator *) NULL);
   exception=AcquireExceptionInfo();
-  view=AcquireVirtualCacheView(image,exception);
+  view=AcquireVirtualCacheView(image);
   if (view == (CacheView *) NULL)
     return((PixelIterator *) NULL);
   iterator=(PixelIterator *) AcquireMagickMemory(sizeof(*iterator));

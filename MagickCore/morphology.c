@@ -2606,8 +2606,8 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
   changed=0;
   progress=0;
 
-  image_view=AcquireVirtualCacheView(image,exception);
-  morphology_view=AcquireAuthenticCacheView(morphology_image,exception);
+  image_view=AcquireVirtualCacheView(image);
+  morphology_view=AcquireAuthenticCacheView(morphology_image);
   virt_width=image->columns+kernel->width-1;
 
   /* Some methods (including convolve) needs use a reflected kernel.
@@ -3440,8 +3440,8 @@ static ssize_t MorphologyPrimitiveDirect(Image *image,
 
   /* DO NOT THREAD THIS CODE! */
   /* two views into same image (virtual, and actual) */
-  virt_view=AcquireVirtualCacheView(image,exception);
-  auth_view=AcquireAuthenticCacheView(image,exception);
+  virt_view=AcquireVirtualCacheView(image);
+  auth_view=AcquireAuthenticCacheView(image);
   virt_width=image->columns+kernel->width-1;
 
   for (y=0; y < (ssize_t) image->rows; y++)

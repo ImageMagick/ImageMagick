@@ -225,7 +225,7 @@ MagickExport ResampleFilter *AcquireResampleFilter(const Image *image,
 
   resample_filter->exception=exception;
   resample_filter->image=ReferenceImage((Image *) image);
-  resample_filter->view=AcquireVirtualCacheView(resample_filter->image,exception);
+  resample_filter->view=AcquireVirtualCacheView(resample_filter->image);
 
   resample_filter->debug=IsEventLogging();
   resample_filter->signature=MagickSignature;
@@ -488,7 +488,7 @@ MagickExport MagickBooleanType ResamplePixelColor(
               *pixel=resample_filter->average_pixel; /* FAILED */
               break;
             }
-          average_view=AcquireVirtualCacheView(average_image,exception);
+          average_view=AcquireVirtualCacheView(average_image);
           pixels=GetCacheViewVirtualPixels(average_view,0,0,1,1,
             resample_filter->exception);
           if (pixels == (const Quantum *) NULL) {

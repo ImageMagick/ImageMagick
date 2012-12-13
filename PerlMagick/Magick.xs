@@ -1586,7 +1586,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             y=0;
             items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
             (void) items;
-            image_view=AcquireAuthenticCacheView(image,exception);
+            image_view=AcquireAuthenticCacheView(image);
             q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
             if (q != (Quantum *) NULL)
               {
@@ -1810,7 +1810,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             y=0;
             items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
             (void) items;
-            image_view=AcquireVirtualCacheView(image,exception);
+            image_view=AcquireVirtualCacheView(image);
             q=GetCacheViewAuthenticPixels(image_view,x,y,1,1,exception);
             if (q != (Quantum *) NULL)
               {
@@ -5011,7 +5011,7 @@ Get(ref,...)
               y=0;
               items=sscanf(attribute,"%*[^[][%ld%*[,/]%ld",&x,&y);
               (void) items;
-              image_view=AcquireVirtualCacheView(image,exception);
+              image_view=AcquireVirtualCacheView(image);
               p=GetCacheViewVirtualPixels(image_view,x,y,1,1,exception);
               if (p != (const Quantum *) NULL)
                 {
@@ -8431,8 +8431,7 @@ Mogrify(ref,...)
                     1.0);
                   if (composite_image->alpha_trait == BlendPixelTrait)
                     (void) SetImageAlpha(composite_image,OpaqueAlpha,exception);
-                  composite_view=AcquireAuthenticCacheView(composite_image,
-                    exception);
+                  composite_view=AcquireAuthenticCacheView(composite_image);
                   for (y=0; y < (ssize_t) composite_image->rows ; y++)
                   {
                     q=GetCacheViewAuthenticPixels(composite_view,0,y,(ssize_t)

@@ -651,7 +651,7 @@ static MagickBooleanType RadonTransform(const Image *image,
     bits[i]=(unsigned short) count;
   }
   status=MagickTrue;
-  image_view=AcquireVirtualCacheView(image,exception);
+  image_view=AcquireVirtualCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -779,7 +779,7 @@ static void GetImageBackgroundColor(Image *image,const ssize_t offset,
     return;
   GetPixelInfo(image,&background);
   count=0.0;
-  image_view=AcquireVirtualCacheView(image,exception);
+  image_view=AcquireVirtualCacheView(image);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -1001,8 +1001,8 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image,exception);
-  rotate_view=AcquireAuthenticCacheView(rotate_image,exception);
+  image_view=AcquireVirtualCacheView(image);
+  rotate_view=AcquireAuthenticCacheView(rotate_image);
   switch (rotations)
   {
     case 0:
@@ -1444,7 +1444,7 @@ static MagickBooleanType XShearImage(Image *image,const double degrees,
   status=MagickTrue;
   background=image->background_color;
   progress=0;
-  image_view=AcquireAuthenticCacheView(image,exception);
+  image_view=AcquireAuthenticCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,width,height,1)
@@ -1660,7 +1660,7 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
   status=MagickTrue;
   progress=0;
   background=image->background_color;
-  image_view=AcquireAuthenticCacheView(image,exception);
+  image_view=AcquireAuthenticCacheView(image);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,width,height,1)

@@ -765,7 +765,7 @@ WandExport WandView *NewWandView(MagickWand *wand)
   wand_view->description=ConstantString("WandView");
   wand_view->wand=wand;
   exception=AcquireExceptionInfo();
-  wand_view->view=AcquireVirtualCacheView(wand_view->wand->images,exception);
+  wand_view->view=AcquireVirtualCacheView(wand_view->wand->images);
   wand_view->extent.width=wand->images->columns;
   wand_view->extent.height=wand->images->rows;
   wand_view->pixel_wands=AcquirePixelsThreadSet(wand_view->extent.width);
@@ -826,7 +826,7 @@ WandExport WandView *NewWandViewExtent(MagickWand *wand,const ssize_t x,
     WandViewId,(double) wand_view->id);
   wand_view->description=ConstantString("WandView");
   exception=AcquireExceptionInfo();
-  wand_view->view=AcquireVirtualCacheView(wand_view->wand->images,exception);
+  wand_view->view=AcquireVirtualCacheView(wand_view->wand->images);
   wand_view->wand=wand;
   wand_view->extent.width=width;
   wand_view->extent.height=height;

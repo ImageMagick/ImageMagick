@@ -98,8 +98,7 @@ struct _CacheView
 %
 %  The format of the AcquireAuthenticCacheView method is:
 %
-%      CacheView *AcquireAuthenticCacheView(const Image *image,
-%        ExceptionInfo *exception)
+%      CacheView *AcquireAuthenticCacheView(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -108,22 +107,26 @@ struct _CacheView
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport CacheView *AcquireAuthenticCacheView(const Image *image,
-  ExceptionInfo *exception)
+MagickExport CacheView *AcquireAuthenticCacheView(const Image *image)
 {
   CacheView
     *cache_view;
 
+  ExceptionInfo
+    *exception;
+
   MagickBooleanType
     status;
 
-  cache_view=AcquireVirtualCacheView(image,exception);
+  cache_view=AcquireVirtualCacheView(image);
+  exception=AcquireExceptionInfo();
   status=SyncImagePixelCache(cache_view->image,exception);
   if (status == MagickFalse)
     {
       CatchException(exception);
       _exit(1);
     }
+  exception=DestroyExceptionInfo(exception);
   return(cache_view);
 }
 
@@ -150,11 +153,8 @@ MagickExport CacheView *AcquireAuthenticCacheView(const Image *image,
 %
 %    o image: the image.
 %
-%    o exception: return any errors or warnings in this structure.
-%
 */
-MagickExport CacheView *AcquireVirtualCacheView(const Image *image,
-  ExceptionInfo *exception)
+MagickExport CacheView *AcquireVirtualCacheView(const Image *image)
 {
   CacheView
     *cache_view;
@@ -163,7 +163,6 @@ MagickExport CacheView *AcquireVirtualCacheView(const Image *image,
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
-  (void) exception;
   cache_view=(CacheView *) MagickAssumeAligned(AcquireAlignedMemory(1,
     sizeof(*cache_view)));
   if (cache_view == (CacheView *) NULL)
