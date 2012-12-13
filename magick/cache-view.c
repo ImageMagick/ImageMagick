@@ -50,6 +50,7 @@
 #include "magick/cache.h"
 #include "magick/cache-private.h"
 #include "magick/cache-view.h"
+#include "magick/magick.h"
 #include "magick/memory_.h"
 #include "magick/memory-private.h"
 #include "magick/exception.h"
@@ -121,6 +122,7 @@ MagickExport CacheView *AcquireAuthenticCacheView(const Image *image,
   if (status == MagickFalse)
     {
       CatchException(exception);
+      MagickCoreTerminus();
       _exit(1);
     }
   return(cache_view);

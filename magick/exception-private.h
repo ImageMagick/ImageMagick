@@ -23,6 +23,7 @@ extern "C" {
 #endif
 
 #include "magick/log.h"
+#include "magick/magick.h"
 #include "magick/string_.h"
 
 #define ThrowBinaryException(severity,tag,context) \
@@ -47,6 +48,7 @@ extern "C" {
   message=DestroyString(message); \
   CatchException(&exception); \
   (void) DestroyExceptionInfo(&exception); \
+  MagickCoreTerminus(); \
   _exit(1); \
 }
 #define ThrowFileException(exception,severity,tag,context) \
