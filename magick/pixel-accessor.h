@@ -107,14 +107,16 @@ static inline MagickRealType DecodesRGBGamma(const MagickRealType pixel)
 {
   if (pixel <= (0.0404482362771076*QuantumRange))
     return(pixel/12.92f);
-  return(QuantumRange*pow((double) (QuantumScale*pixel+0.055)/1.055,2.4));
+  return((MagickRealType) (QuantumRange*pow((double) (QuantumScale*pixel+
+    0.055)/1.055,2.4)));
 }
 
 static inline MagickRealType EncodesRGBGamma(const MagickRealType pixel)
 {
   if (pixel <= (0.0031306684425005883*QuantumRange))
     return(12.92f*pixel);
-  return(QuantumRange*(1.055*pow((double) QuantumScale*pixel,1.0/2.4)-0.055));
+  return((MagickRealType) QuantumRange*(1.055*pow((double) QuantumScale*pixel,
+    1.0/2.4)-0.055));
 }
 
 static inline MagickRealType GetPixelIntensity(const Image *image,
