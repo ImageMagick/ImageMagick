@@ -1,4 +1,7 @@
-2012-12-13  6.8.1-0 Anthony Thyssen <A.Thyssen@griffith...>
+2012-12-13  6.8.0-10 Cristy  <quetzlzacatenango@image...>
+  * Improve exception reporting when AcquireAuthenticCacheView() fails.
+
+2012-12-13  6.8.0-10 Anthony Thyssen <A.Thyssen@griffith...>
   * Minor tweeks and commenting of Virtual Pixel shortcuts in
     resampling filters.
   * Added define "shepards-power" to control the power setting (def=2)
