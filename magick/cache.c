@@ -4033,18 +4033,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               /*
                 Create memory pixel cache.
               */
-              if (image->debug != MagickFalse)
-                {
-                  (void) FormatMagickSize(cache_info->length,MagickTrue,format);
-                  (void) FormatLocaleString(message,MaxTextExtent,
-                    "open %s (%s memory, %.20gx%.20g %s)",cache_info->filename,
-                    cache_info->mapped != MagickFalse ? "anonymous" : "heap",
-                    (double) cache_info->columns,(double) cache_info->rows,
-                    format);
-                  (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
-                    message);
-                }
-              cache_info->storage_class=image->storage_class;
               cache_info->colorspace=image->colorspace;
               cache_info->type=MemoryCache;
               cache_info->indexes=(IndexPacket *) NULL;
@@ -4058,6 +4046,18 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                     exception);
                   RelinquishPixelCachePixels(&source_info);
                 }
+              if (image->debug != MagickFalse)
+                {
+                  (void) FormatMagickSize(cache_info->length,MagickTrue,format);
+                  (void) FormatLocaleString(message,MaxTextExtent,
+                    "open %s (%s memory, %.20gx%.20g %s)",cache_info->filename,
+                    cache_info->mapped != MagickFalse ? "anonymous" : "heap",
+                    (double) cache_info->columns,(double) cache_info->rows,
+                    format);
+                  (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
+                    message);
+                }
+              cache_info->storage_class=image->storage_class;
               return(MagickTrue);
             }
         }
