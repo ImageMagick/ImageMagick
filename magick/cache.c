@@ -4125,8 +4125,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if (cache_info->active_index_channel != MagickFalse)
                 cache_info->indexes=(IndexPacket *) (cache_info->pixels+
                   number_pixels);
-                if ((source_info.storage_class != UndefinedClass) &&
-                    (mode != ReadMode))
+              if ((source_info.storage_class != UndefinedClass) &&
+                  (mode != ReadMode))
                 {
                   status=ClonePixelCachePixels(cache_info,&source_info,
                     exception);
