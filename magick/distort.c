@@ -1416,12 +1416,12 @@ static double *GenerateCoefficients(const Image *image,
         return((double *) NULL);
       }
       /* User defined weighting power for Shepard's Method */
-      { const char *artifact=GetImageArtifact(image,"shepards-power");
+      { const char *artifact=GetImageArtifact(image,"shepards:power");
         if ( artifact != (const char *) NULL ) {
           coeff[0]=StringToDouble(artifact,(char **) NULL) / 2.0;
           if ( coeff[0] < MagickEpsilon ) {
             (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"InvalidArgument","%s", "-define shepards-power" );
+                OptionError,"InvalidArgument","%s", "-define shepards:power" );
             coeff=(double *) RelinquishMagickMemory(coeff);
             return((double *) NULL);
           }
@@ -2967,7 +2967,7 @@ MagickExport Image *SparseColorImage(const Image *image,
     if ( distort_method == ShepardsDistortion )
       sparse_method = method;   /* return non-distort methods to normal */
     if ( sparse_method == InverseColorInterpolate )
-      coeff[0]=0.5;            /* squared distance needs a sqrt() */
+      coeff[0]=0.5;            /* sqrt() the squared distance for inverse */
   }
 
   /* Verbose output */
