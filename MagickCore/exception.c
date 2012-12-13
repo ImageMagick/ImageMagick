@@ -325,14 +325,12 @@ static void DefaultErrorHandler(const ExceptionType magick_unused(severity),
 %
 %    o severity: Specifies the numeric error category.
 %
-%    o reason: Specifies the reason to display before terminating the
-%      program.
+%    o reason: Specifies the reason to display before terminating the program.
 %
 %    o description: Specifies any description to the reason.
 %
 */
-static void DefaultFatalErrorHandler(
-  const ExceptionType magick_unused(severity),
+static void DefaultFatalErrorHandler(const ExceptionType severity,
   const char *reason,const char *description)
 {
   if (reason == (char *) NULL)
@@ -343,7 +341,7 @@ static void DefaultFatalErrorHandler(
   (void) FormatLocaleFile(stderr,".\n");
   (void) fflush(stderr);
   MagickCoreTerminus();
-  exit(1);
+  exit(severity);
 }
 
 /*

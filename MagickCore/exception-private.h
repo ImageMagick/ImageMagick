@@ -49,7 +49,7 @@ extern "C" {
   CatchException(&exception); \
   (void) DestroyExceptionInfo(&exception); \
   MagickCoreTerminus(); \
-  _exit(1); \
+  _exit(severity); \
 }
 #define ThrowFileException(exception,severity,tag,context) \
 { \
