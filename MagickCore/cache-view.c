@@ -125,7 +125,7 @@ MagickExport CacheView *AcquireAuthenticCacheView(const Image *image)
     {
       CatchException(exception);
       MagickCoreTerminus();
-      _exit(CacheFatalError);
+      _exit((int) (CacheFatalError-FatalErrorException)+1);
     }
   exception=DestroyExceptionInfo(exception);
   return(cache_view);

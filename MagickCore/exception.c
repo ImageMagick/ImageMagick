@@ -341,7 +341,7 @@ static void DefaultFatalErrorHandler(const ExceptionType severity,
   (void) FormatLocaleFile(stderr,".\n");
   (void) fflush(stderr);
   MagickCoreTerminus();
-  exit(severity);
+  exit((int) (severity-FatalErrorException)+1);
 }
 
 /*
