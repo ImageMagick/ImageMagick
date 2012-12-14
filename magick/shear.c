@@ -1916,14 +1916,11 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     }
   status=CropToFitImage(&shear_image,shear.x,shear.y,(MagickRealType)
     image->columns,(MagickRealType) image->rows,MagickFalse,exception);
-  if (status == MagickFalse)
-    {
-      shear_image=DestroyImage(shear_image);
-      return((Image *) NULL);
-    }
   shear_image->compose=image->compose;
   shear_image->page.width=0;
   shear_image->page.height=0;
+  if (status == MagickFalse)
+    shear_image=DestroyImage(shear_image);
   return(shear_image);
 }
 
@@ -2080,13 +2077,10 @@ MagickExport Image *ShearRotateImage(const Image *image,const double degrees,
     }
   status=CropToFitImage(&rotate_image,shear.x,shear.y,(MagickRealType) width,
     (MagickRealType) height,MagickTrue,exception);
-  if (status == MagickFalse)
-    {
-      rotate_image=DestroyImage(rotate_image);
-      return((Image *) NULL);
-    }
   rotate_image->compose=image->compose;
   rotate_image->page.width=0;
   rotate_image->page.height=0;
+  if (status == MagickFalse)
+    rotate_image=DestroyImage(rotate_image);
   return(rotate_image);
 }

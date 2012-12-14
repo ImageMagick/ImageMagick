@@ -4821,7 +4821,9 @@ TESTS_EXTRA_DIST = \
   tests/sequence.miff \
 	$(TESTS_TESTS)
 
-TESTS_CLEANFILES = 
+TESTS_CLEANFILES = \
+  tests/*_out.*
+
 @WITH_PERL_TRUE@PERLMAGICK = PerlMagick
 @WITH_PERL_TRUE@PERLMAKEMAKER = $(PERLMAGICK)/Makefile.PL
 @WITH_PERL_TRUE@PERLMAKEFILE = $(PERLMAGICK)/Makefile
@@ -10397,7 +10399,6 @@ magick-install-data-local:
 	$(INSTALL_HEADER) magick/magick-baseconfig.h $(DESTDIR)$(magickincdir)/magick-baseconfig.h
 magick-uninstall-local:
 	rm -f $(DESTDIR)$(magickincdir)/magick-baseconfig.h
-	tests/*_out.*
 
 # If source files missing, see if they can be obtained via VPATH
 perl-sources:

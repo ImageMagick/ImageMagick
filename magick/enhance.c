@@ -1712,6 +1712,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   }
   enhance_view=DestroyCacheView(enhance_view);
   image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    enhance_image=DestroyImage(enhance_image);
   return(enhance_image);
 }
 

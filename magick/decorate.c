@@ -647,6 +647,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         frame_info->inner_bevel);
       (void) CompositeImage(frame_image,image->compose,image,x,y);
     }
+  if (status == MagickFalse)
+    frame_image=DestroyImage(frame_image);
   return(frame_image);
 }
 
