@@ -356,8 +356,8 @@ static MagickBooleanType CompositeOverImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  composite_view=AcquireVirtualCacheView(composite_image);
-  image_view=AcquireAuthenticCacheView(image);
+  composite_view=AcquireVirtualCacheView(composite_image,exception);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -635,8 +635,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       if ((y_offset+(ssize_t) composite_image->rows) >= (ssize_t) image->rows)
         break;
       status=MagickTrue;
-      composite_view=AcquireVirtualCacheView(composite_image);
-      image_view=AcquireAuthenticCacheView(image);
+      composite_view=AcquireVirtualCacheView(composite_image,exception);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -835,8 +835,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
 
       /* do the variable blurring of each pixel in image */
       GetPixelInfo(image,&pixel);
-      composite_view=AcquireVirtualCacheView(composite_image);
-      destination_view=AcquireAuthenticCacheView(destination_image);
+      composite_view=AcquireVirtualCacheView(composite_image,exception);
+      destination_view=AcquireAuthenticCacheView(destination_image,exception);
       for (y=0; y < (ssize_t) composite_image->rows; y++)
       {
         MagickBooleanType
@@ -1020,9 +1020,9 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
         displacement/distortion map.  -- Like a lens...
       */
       GetPixelInfo(image,&pixel);
-      image_view=AcquireVirtualCacheView(image);
-      composite_view=AcquireVirtualCacheView(composite_image);
-      destination_view=AcquireAuthenticCacheView(destination_image);
+      image_view=AcquireVirtualCacheView(image,exception);
+      composite_view=AcquireVirtualCacheView(composite_image,exception);
+      destination_view=AcquireAuthenticCacheView(destination_image,exception);
       for (y=0; y < (ssize_t) composite_image->rows; y++)
       {
         MagickBooleanType
@@ -1204,8 +1204,8 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
   status=MagickTrue;
   progress=0;
   midpoint=((MagickRealType) QuantumRange+1.0)/2;
-  composite_view=AcquireVirtualCacheView(composite_image);
-  image_view=AcquireAuthenticCacheView(image);
+  composite_view=AcquireVirtualCacheView(composite_image,exception);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2459,8 +2459,8 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
     Tile texture onto the image background (optimized).
   */
   status=MagickTrue;
-  texture_view=AcquireVirtualCacheView(texture_image);
-  image_view=AcquireAuthenticCacheView(image);
+  texture_view=AcquireVirtualCacheView(texture_image,exception);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
   #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,image->columns,image->rows,1)

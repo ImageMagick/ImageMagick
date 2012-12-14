@@ -439,7 +439,7 @@ static MagickBooleanType DecodeLabImage(Image *image,ExceptionInfo *exception)
     y;
 
   status=MagickTrue;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
@@ -2302,7 +2302,7 @@ static MagickBooleanType EncodeLabImage(Image *image,ExceptionInfo *exception)
     y;
 
   status=MagickTrue;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum

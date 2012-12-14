@@ -1659,8 +1659,8 @@ MagickExport MagickBooleanType IsEquivalentImage(const Image *image,
   status=MagickTrue;
   GetPixelInfo(image,&pixel);
   GetPixelInfo(image,&target);
-  image_view=AcquireVirtualCacheView(image);
-  target_view=AcquireVirtualCacheView(target_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  target_view=AcquireVirtualCacheView(target_image,exception);
   for (y=(*y_offset); y < (ssize_t) image->rows; y++)
   {
     for (x=y == 0 ? *x_offset : 0; x < (ssize_t) image->columns; x++)
