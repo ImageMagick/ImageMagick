@@ -4820,10 +4820,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   if (stegano_image->storage_class == PseudoClass)
     (void) SyncImage(stegano_image);
   if (status == MagickFalse)
-    {
-      stegano_image=DestroyImage(stegano_image);
-      return((Image *) NULL);
-    }
+    stegano_image=DestroyImage(stegano_image);
   return(stegano_image);
 }
 
@@ -4965,10 +4962,7 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
       }
   }
   if (status == MagickFalse)
-    {
-      stereo_image=DestroyImage(stereo_image);
-      return((Image *) NULL);
-    }
+    stereo_image=DestroyImage(stereo_image);
   return(stereo_image);
 }
 
