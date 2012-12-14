@@ -2956,7 +2956,8 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   MagickBooleanType
     next_column,
     next_row,
-    proceed;
+    proceed,
+    status;
 
   MagickPixelPacket
     pixel,
@@ -3035,6 +3036,7 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
   GetMagickPixelPacket(image,&pixel);
   (void) ResetMagickMemory(&zero,0,sizeof(zero));
   i=0;
+  status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);
   scale_view=AcquireAuthenticCacheView(scale_image,exception);
   for (y=0; y < (ssize_t) scale_image->rows; y++)
@@ -3058,10 +3060,15 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
     register ssize_t
       x;
 
+    if (status == MagickFalse)
+      break;
     q=QueueCacheViewAuthenticPixels(scale_view,0,y,scale_image->columns,1,
       exception);
     if (q == (PixelPacket *) NULL)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     alpha=1.0;
     scale_indexes=GetCacheViewAuthenticIndexQueue(scale_view);
     if (scale_image->rows == image->rows)
@@ -3072,7 +3079,10 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
         p=GetCacheViewVirtualPixels(image_view,0,i++,image->columns,1,
           exception);
         if (p == (const PixelPacket *) NULL)
-          break;
+          {
+            status=MagickFalse;
+            break;
+          }
         indexes=GetCacheViewVirtualIndexQueue(image_view);
         for (x=0; x < (ssize_t) image->columns; x++)
         {
@@ -3104,7 +3114,10 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
               p=GetCacheViewVirtualPixels(image_view,0,i++,image->columns,1,
                 exception);
               if (p == (const PixelPacket *) NULL)
-                break;
+                {
+                  status=MagickFalse;
+                  break;
+                }
               indexes=GetCacheViewVirtualIndexQueue(image_view);
               for (x=0; x < (ssize_t) image->columns; x++)
               {
@@ -3144,7 +3157,10 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
             p=GetCacheViewVirtualPixels(image_view,0,i++,image->columns,1,
               exception);
             if (p == (const PixelPacket *) NULL)
-              break;
+              {
+                status=MagickFalse;
+                break;
+              }
             indexes=GetCacheViewVirtualIndexQueue(image_view);
             for (x=0; x < (ssize_t) image->columns; x++)
             {
@@ -3313,11 +3329,17 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
       }
     }
     if (SyncCacheViewAuthenticPixels(scale_view,exception) == MagickFalse)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
     proceed=SetImageProgress(image,ScaleImageTag,(MagickOffsetType) y,
       image->rows);
     if (proceed == MagickFalse)
-      break;
+      {
+        status=MagickFalse;
+        break;
+      }
   }
   scale_view=DestroyCacheView(scale_view);
   image_view=DestroyCacheView(image_view);
@@ -3330,6 +3352,8 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
     scanline=(MagickPixelPacket *) RelinquishMagickMemory(scanline);
   x_vector=(MagickPixelPacket *) RelinquishMagickMemory(x_vector);
   scale_image->type=image->type;
+  if (status == MagickFalse)
+    scale_image=DestroyImage(scale_image);
   return(scale_image);
 }
 
