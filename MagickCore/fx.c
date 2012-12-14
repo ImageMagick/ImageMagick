@@ -3407,6 +3407,10 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
 {
 #define MorphImageTag  "Morph/Image"
 
+  double
+    alpha,
+    beta;
+
   Image
     *morph_image,
     *morph_images;
@@ -3416,10 +3420,6 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
 
   MagickOffsetType
     scene;
-
-  double
-    alpha,
-    beta;
 
   register const Image
     *next;
@@ -4864,10 +4864,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   stegano_view=DestroyCacheView(stegano_view);
   watermark_view=DestroyCacheView(watermark_view);
   if (status == MagickFalse)
-    {
-      stegano_image=DestroyImage(stegano_image);
-      return((Image *) NULL);
-    }
+    stegano_image=DestroyImage(stegano_image);
   return(stegano_image);
 }
 
@@ -5010,10 +5007,7 @@ MagickExport Image *StereoAnaglyphImage(const Image *left_image,
       }
   }
   if (status == MagickFalse)
-    {
-      stereo_image=DestroyImage(stereo_image);
-      return((Image *) NULL);
-    }
+    stereo_image=DestroyImage(stereo_image);
   return(stereo_image);
 }
 
