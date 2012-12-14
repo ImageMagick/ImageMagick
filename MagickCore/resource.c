@@ -184,8 +184,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       resource_info.memory+=size;
       limit=resource_info.memory_limit;
       status=(resource_info.memory_limit == MagickResourceInfinity) ||
-        ((MagickSizeType) resource_info.memory < limit) ?
-        MagickTrue : MagickFalse;
+        ((MagickSizeType) resource_info.memory < limit) ? MagickTrue :
+        MagickFalse;
       (void) FormatMagickSize((MagickSizeType) resource_info.memory,MagickTrue,
         resource_current);
       (void) FormatMagickSize(resource_info.memory_limit,MagickTrue,
@@ -197,8 +197,7 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       resource_info.map+=size;
       limit=resource_info.map_limit;
       status=(resource_info.map_limit == MagickResourceInfinity) ||
-        ((MagickSizeType) resource_info.map < limit) ?
-        MagickTrue : MagickFalse;
+        ((MagickSizeType) resource_info.map < limit) ? MagickTrue : MagickFalse;
       (void) FormatMagickSize((MagickSizeType) resource_info.map,MagickTrue,
         resource_current);
       (void) FormatMagickSize(resource_info.map_limit,MagickTrue,
@@ -210,8 +209,8 @@ MagickExport MagickBooleanType AcquireMagickResource(const ResourceType type,
       resource_info.disk+=size;
       limit=resource_info.disk_limit;
       status=(resource_info.disk_limit == MagickResourceInfinity) ||
-        ((MagickSizeType) resource_info.disk < limit) ?
-        MagickTrue : MagickFalse;
+        ((MagickSizeType) resource_info.disk < limit) ? MagickTrue :
+        MagickFalse;
       (void) FormatMagickSize((MagickSizeType) resource_info.disk,MagickTrue,
         resource_current);
       (void) FormatMagickSize(resource_info.disk_limit,MagickTrue,
