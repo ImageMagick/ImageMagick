@@ -1143,7 +1143,9 @@ MagickExport MagickBooleanType FileToImage(Image *image,const char *filename,
   assert(image->signature == MagickSignature);
   assert(filename != (const char *) NULL);
   (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",filename);
-  file=open_utf8(filename,O_RDONLY | O_BINARY,0);
+  file=fileno(stdin);
+  if (LocaleCompare(filename,"-") != 0)
+    file=open_utf8(filename,O_RDONLY | O_BINARY,0);
   if (file == -1)
     {
       ThrowFileException(exception,BlobError,"UnableToOpenBlob",filename);
