@@ -601,6 +601,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
       (void) CompositeImage(frame_image,image,compose,MagickTrue,x,y,
         exception);
     }
+  if (status == MagickFalse)
+    frame_image=DestroyImage(frame_image);
   return(frame_image);
 }
 

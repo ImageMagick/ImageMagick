@@ -1461,6 +1461,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   }
   enhance_view=DestroyCacheView(enhance_view);
   image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    enhance_image=DestroyImage(enhance_image);
   return(enhance_image);
 }
 
@@ -2620,12 +2622,12 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
   CacheView
     *image_view;
 
-  MagickBooleanType
-    status;
-
   double
     *histogram,
     intensity;
+
+  MagickBooleanType
+    status;
 
   ssize_t
     black,
@@ -2637,8 +2639,7 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,
-    sizeof(*histogram));
+  histogram=(double *) AcquireQuantumMemory(MaxMap+1UL,sizeof(*histogram));
   if (histogram == (double *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       image->filename);

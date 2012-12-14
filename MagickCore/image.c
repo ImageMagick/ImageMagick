@@ -1344,6 +1344,8 @@ MagickExport Image *GetImageMask(const Image *image,ExceptionInfo *exception)
   }
   mask_view=DestroyCacheView(mask_view);
   image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    mask_image=DestroyImage(mask_image);
   return(mask_image);
 }
 

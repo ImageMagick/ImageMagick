@@ -302,6 +302,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   chop_view=DestroyCacheView(chop_view);
   image_view=DestroyCacheView(image_view);
   chop_image->type=image->type;
+  if (status == MagickFalse)
+    chop_image=DestroyImage(chop_image);
   return(chop_image);
 }
 

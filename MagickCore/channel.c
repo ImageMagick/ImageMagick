@@ -576,9 +576,9 @@ MagickExport Image *CombineImages(const Image *image,
       }
   }
   combine_view=DestroyCacheView(combine_view);
+  (void) TransformImageColorspace(combine_image,colorspace,exception);
   if (status == MagickFalse)
     combine_image=DestroyImage(combine_image);
-  (void) TransformImageColorspace(combine_image,colorspace,exception);
   return(combine_image);
 }
 
@@ -738,6 +738,8 @@ MagickExport Image *SeparateImage(const Image *image,
   }
   separate_view=DestroyCacheView(separate_view);
   image_view=DestroyCacheView(image_view);
+  if (status == MagickFalse)
+    separate_image=DestroyImage(separate_image);
   return(separate_image);
 }
 

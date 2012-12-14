@@ -2653,5 +2653,7 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
   statistic_view=DestroyCacheView(statistic_view);
   image_view=DestroyCacheView(image_view);
   pixel_list=DestroyPixelListThreadSet(pixel_list);
+  if (status == MagickFalse)
+    statistic_image=DestroyImage(statistic_image);
   return(statistic_image);
 }
