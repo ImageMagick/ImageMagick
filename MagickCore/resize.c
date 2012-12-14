@@ -3335,6 +3335,8 @@ MagickExport Image *ScaleImage(const Image *image,const size_t columns,
     scanline=(double *) RelinquishMagickMemory(scanline);
   x_vector=(double *) RelinquishMagickMemory(x_vector);
   scale_image->type=image->type;
+  if (status == MagickFalse)
+    scale_image=DestroyImage(scale_image);
   return(scale_image);
 }
 
