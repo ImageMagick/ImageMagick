@@ -3402,8 +3402,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport Image *MorphImages(const Image *image,
-  const size_t number_frames,ExceptionInfo *exception)
+MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
+  ExceptionInfo *exception)
 {
 #define MorphImageTag  "Morph/Image"
 
