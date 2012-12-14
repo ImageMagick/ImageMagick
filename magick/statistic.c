@@ -1913,7 +1913,6 @@ MagickExport ChannelStatistics *GetImageChannelStatistics(const Image *image,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
 MagickExport Image *PolynomialImage(const Image *images,
   const size_t number_terms,const double *terms,ExceptionInfo *exception)
 {
@@ -2945,5 +2944,7 @@ MagickExport Image *StatisticImageChannel(const Image *image,
   statistic_view=DestroyCacheView(statistic_view);
   image_view=DestroyCacheView(image_view);
   pixel_list=DestroyPixelListThreadSet(pixel_list);
+  if (status == MagickFalse)
+    statistic_image=DestroyImage(statistic_image);
   return(statistic_image);
 }

@@ -274,10 +274,10 @@ MagickExport Image *CombineImages(const Image *image,const ChannelType channel,
       }
   }
   combine_view=DestroyCacheView(combine_view);
-  if (status == MagickFalse)
-    combine_image=DestroyImage(combine_image);
   if (IsGrayColorspace(combine_image->colorspace) != MagickFalse)
     (void) TransformImageColorspace(combine_image,RGBColorspace);
+  if (status == MagickFalse)
+    combine_image=DestroyImage(combine_image);
   return(combine_image);
 }
 
