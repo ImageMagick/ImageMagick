@@ -561,7 +561,7 @@ MagickPrivate MagickBooleanType XAnnotateImage(Display *display,
     (ssize_t) y,&annotate_image->background_color,exception);
   if (annotate_info->stencil == ForegroundStencil)
     annotate_image->alpha_trait=BlendPixelTrait;
-  annotate_view=AcquireAuthenticCacheView(annotate_image);
+  annotate_view=AcquireAuthenticCacheView(annotate_image,exception);
   for (y=0; y < (int) annotate_image->rows; y++)
   {
     register int
@@ -2484,7 +2484,7 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
   if (SetImageStorageClass(draw_image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
   draw_image->alpha_trait=BlendPixelTrait;
-  draw_view=AcquireAuthenticCacheView(draw_image);
+  draw_view=AcquireAuthenticCacheView(draw_image,exception);
   for (y=0; y < (int) draw_image->rows; y++)
   {
     register int
@@ -2610,7 +2610,7 @@ MagickPrivate MagickBooleanType XDrawImage(Display *display,
   /*
     Composite text onto the image.
   */
-  draw_view=AcquireAuthenticCacheView(draw_image);
+  draw_view=AcquireAuthenticCacheView(draw_image,exception);
   for (y=0; y < (int) draw_image->rows; y++)
   {
     register int

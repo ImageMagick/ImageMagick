@@ -3734,7 +3734,7 @@ static MagickBooleanType XColorEditImage(Display *display,
         if ((x_offset >= (int) (*image)->columns) ||
             (y_offset >= (int) (*image)->rows))
           continue;
-        image_view=AcquireAuthenticCacheView(*image);
+        image_view=AcquireAuthenticCacheView(*image,exception);
         switch (method)
         {
           case PointMethod:
@@ -10095,7 +10095,7 @@ static MagickBooleanType XMatteEditImage(Display *display,
           return(MagickFalse);
         if ((*image)->alpha_trait != BlendPixelTrait)
           (void) SetImageAlphaChannel(*image,OpaqueAlphaChannel,exception);
-        image_view=AcquireAuthenticCacheView(*image);
+        image_view=AcquireAuthenticCacheView(*image,exception);
         switch (method)
         {
           case PointMethod:
