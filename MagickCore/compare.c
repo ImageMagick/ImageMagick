@@ -1669,5 +1669,7 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
       }
   }
   similarity_view=DestroyCacheView(similarity_view);
+  if (status == MagickFalse)
+    similarity_image=DestroyImage(similarity_image);
   return(similarity_image);
 }
