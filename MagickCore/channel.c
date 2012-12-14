@@ -135,8 +135,8 @@ static MagickBooleanType ChannelImage(Image *destination_image,
     y;
 
   status=MagickTrue;
-  source_view=AcquireVirtualCacheView(source_image);
-  destination_view=AcquireAuthenticCacheView(destination_image);
+  source_view=AcquireVirtualCacheView(source_image,exception);
+  destination_view=AcquireAuthenticCacheView(destination_image,exception);
   height=MagickMin(source_image->rows,destination_image->rows);
   width=MagickMin(source_image->columns,destination_image->columns);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -497,7 +497,7 @@ MagickExport Image *CombineImages(const Image *image,
   */
   status=MagickTrue;
   progress=0;
-  combine_view=AcquireAuthenticCacheView(combine_image);
+  combine_view=AcquireAuthenticCacheView(combine_image,exception);
   for (y=0; y < (ssize_t) combine_image->rows; y++)
   {
     CacheView
@@ -545,7 +545,7 @@ MagickExport Image *CombineImages(const Image *image,
       traits=GetPixelChannelTraits(combine_image,channel);
       if (traits == UndefinedPixelTrait)
         continue;
-      image_view=AcquireVirtualCacheView(next);
+      image_view=AcquireVirtualCacheView(next,exception);
       p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
       if (p == (const Quantum *) NULL)
         continue;
@@ -657,8 +657,8 @@ MagickExport Image *SeparateImage(const Image *image,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  separate_view=AcquireAuthenticCacheView(separate_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  separate_view=AcquireAuthenticCacheView(separate_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)

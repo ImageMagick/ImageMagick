@@ -540,7 +540,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
         status;
 
       status=MagickTrue;
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -809,7 +809,7 @@ static MagickBooleanType ClassifyImageColors(CubeInfo *cube_info,
   midpoint.blue=(double) QuantumRange/2.0;
   midpoint.alpha=(double) QuantumRange/2.0;
   error.alpha=0.0;
-  image_view=AcquireVirtualCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -1496,7 +1496,7 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
   if (pixels == (RealPixelInfo **) NULL)
     return(MagickFalse);
   status=MagickTrue;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     const int
@@ -1959,7 +1959,7 @@ static MagickBooleanType DitherImage(Image *image,CubeInfo *cube_info,
     depth++;
   cube_info->offset=0;
   cube_info->span=(MagickSizeType) image->columns*image->rows;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
   if (depth > 1)
     Riemersma(image,image_view,cube_info,depth-1,NorthGravity,exception);
   status=RiemersmaDither(image,image_view,cube_info,ForgetGravity,exception);
@@ -2219,7 +2219,7 @@ MagickExport MagickBooleanType GetImageQuantizeError(Image *image,
   maximum_error=0.0;
   mean_error_per_pixel=0.0;
   mean_error=0.0;
-  image_view=AcquireVirtualCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -2402,7 +2402,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2678,7 +2678,7 @@ static MagickBooleanType DirectToColormapImage(Image *image,
   if (image->colors != number_colors)
     return(MagickFalse);
   i=0;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     MagickBooleanType
@@ -3301,7 +3301,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
           image->filename);
       image->colors=0;
       status=MagickTrue;
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -3378,7 +3378,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
   image->colormap=(PixelInfo *) RelinquishMagickMemory(image->colormap);
   image->colormap=colormap;
   status=MagickTrue;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,image->columns,image->rows,1)

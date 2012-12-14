@@ -95,10 +95,12 @@ struct _CacheView
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  AcquireAuthenticCacheView() acquires an authentic view into the pixel cache.
+%  It always succeeds but may return a warning or informational exception.
 %
 %  The format of the AcquireAuthenticCacheView method is:
 %
-%      CacheView *AcquireAuthenticCacheView(const Image *image)
+%      CacheView *AcquireAuthenticCacheView(const Image *image,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -107,18 +109,14 @@ struct _CacheView
 %    o exception: return any errors or warnings in this structure.
 %
 */
-MagickExport CacheView *AcquireAuthenticCacheView(const Image *image)
+MagickExport CacheView *AcquireAuthenticCacheView(const Image *image,
+  ExceptionInfo *exception)
 {
   CacheView
     *cache_view;
 
-  ExceptionInfo
-    *exception;
-
-  cache_view=AcquireVirtualCacheView(image);
-  exception=AcquireExceptionInfo();
+  cache_view=AcquireVirtualCacheView(image,exception);
   (void) SyncImagePixelCache(cache_view->image,exception);
-  exception=DestroyExceptionInfo(exception);
   return(cache_view);
 }
 
@@ -135,6 +133,7 @@ MagickExport CacheView *AcquireAuthenticCacheView(const Image *image)
 %
 %  AcquireVirtualCacheView() acquires a virtual view into the pixel cache,
 %  using the VirtualPixelMethod that is defined within the given image itself.
+%  It always succeeds but may return a warning or informational exception.
 %
 %  The format of the AcquireVirtualCacheView method is:
 %
@@ -145,8 +144,11 @@ MagickExport CacheView *AcquireAuthenticCacheView(const Image *image)
 %
 %    o image: the image.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport CacheView *AcquireVirtualCacheView(const Image *image)
+MagickExport CacheView *AcquireVirtualCacheView(const Image *image,
+  ExceptionInfo *exception)
 {
   CacheView
     *cache_view;
@@ -155,6 +157,7 @@ MagickExport CacheView *AcquireVirtualCacheView(const Image *image)
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
+  (void) exception;
   cache_view=(CacheView *) MagickAssumeAligned(AcquireAlignedMemory(1,
     sizeof(*cache_view)));
   if (cache_view == (CacheView *) NULL)

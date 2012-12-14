@@ -342,7 +342,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
   status=MagickTrue;
   progress=0;
   adjust=(ssize_t) (clut_image->interpolate == IntegerInterpolatePixel ? 0 : 1);
-  clut_view=AcquireVirtualCacheView(clut_image);
+  clut_view=AcquireVirtualCacheView(clut_image,exception);
   for (i=0; i <= (ssize_t) MaxMap; i++)
   {
     GetPixelInfo(clut_image,clut_map+i);
@@ -351,7 +351,7 @@ MagickExport MagickBooleanType ClutImage(Image *image,const Image *clut_image,
       (clut_image->rows-adjust),clut_map+i,exception);
   }
   clut_view=DestroyCacheView(clut_view);
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -737,7 +737,7 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -902,7 +902,7 @@ MagickExport MagickBooleanType ContrastImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1058,7 +1058,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   status=MagickTrue;
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*histogram));
-  image_view=AcquireVirtualCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -1198,7 +1198,7 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1348,8 +1348,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  enhance_view=AcquireAuthenticCacheView(enhance_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  enhance_view=AcquireAuthenticCacheView(enhance_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1552,7 +1552,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
   status=MagickTrue;
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*histogram));
-  image_view=AcquireVirtualCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -1668,7 +1668,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
     Equalize image.
   */
   progress=0;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1835,7 +1835,7 @@ MagickExport MagickBooleanType GammaImage(Image *image,const double gamma,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2004,8 +2004,8 @@ MagickExport MagickBooleanType HaldClutImage(Image *image,
   cube_size=level*level;
   width=(double) hald_image->columns;
   GetPixelInfo(hald_image,&zero);
-  hald_view=AcquireVirtualCacheView(hald_image);
-  image_view=AcquireAuthenticCacheView(image);
+  hald_view=AcquireVirtualCacheView(hald_image,exception);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2210,7 +2210,7 @@ MagickExport MagickBooleanType LevelImage(Image *image,const double black_point,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2375,7 +2375,7 @@ MagickExport MagickBooleanType LevelizeImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2647,7 +2647,7 @@ MagickExport MagickBooleanType LinearStretchImage(Image *image,
     Form histogram.
   */
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
-  image_view=AcquireVirtualCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register const Quantum
@@ -2925,7 +2925,7 @@ MagickExport MagickBooleanType ModulateImage(Image *image,const char *modulate,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -3082,7 +3082,7 @@ MagickExport MagickBooleanType NegateImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
   if (grayscale != MagickFalse)
     {
       for (y=0; y < (ssize_t) image->rows; y++)
@@ -3456,7 +3456,7 @@ MagickExport MagickBooleanType SigmoidalContrastImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)

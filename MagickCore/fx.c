@@ -189,7 +189,7 @@ MagickPrivate FxInfo *AcquireFxInfo(const Image *image,const char *expression,
   next=GetFirstImageInList(fx_info->images);
   for ( ; next != (Image *) NULL; next=next->next)
   {
-    fx_info->view[i]=AcquireVirtualCacheView(next);
+    fx_info->view[i]=AcquireVirtualCacheView(next,exception);
     i++;
   }
   fx_info->random_info=AcquireRandomInfo();
@@ -313,8 +313,8 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
   status=MagickTrue;
   progress=0;
   random_info=AcquireRandomInfoThreadSet();
-  image_view=AcquireVirtualCacheView(image);
-  noise_view=AcquireAuthenticCacheView(noise_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  noise_view=AcquireAuthenticCacheView(noise_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
@@ -476,8 +476,8 @@ MagickExport Image *BlueShiftImage(const Image *image,const double factor,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  shift_view=AcquireAuthenticCacheView(shift_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  shift_view=AcquireAuthenticCacheView(shift_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -739,8 +739,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *blend,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  colorize_view=AcquireAuthenticCacheView(colorize_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  colorize_view=AcquireAuthenticCacheView(colorize_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -957,8 +957,8 @@ MagickExport Image *ColorMatrixImage(const Image *image,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  color_view=AcquireAuthenticCacheView(color_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  color_view=AcquireAuthenticCacheView(color_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -3069,8 +3069,8 @@ MagickExport Image *FxImage(const Image *image,const char *expression,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  fx_view=AcquireAuthenticCacheView(fx_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  fx_view=AcquireAuthenticCacheView(fx_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -3263,8 +3263,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  implode_view=AcquireAuthenticCacheView(implode_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  implode_view=AcquireAuthenticCacheView(implode_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -3508,8 +3508,8 @@ MagickExport Image *MorphImages(const Image *image,const size_t number_frames,
           morph_images=DestroyImageList(morph_images);
           return((Image *) NULL);
         }
-      image_view=AcquireVirtualCacheView(morph_image);
-      morph_view=AcquireAuthenticCacheView(morph_images);
+      image_view=AcquireVirtualCacheView(morph_image,exception);
+      morph_view=AcquireAuthenticCacheView(morph_images,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -3886,9 +3886,9 @@ MagickExport MagickBooleanType PlasmaImage(Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
   if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
     return(MagickFalse);
-  image_view=AcquireAuthenticCacheView(image);
-  u_view=AcquireVirtualCacheView(image);
-  v_view=AcquireVirtualCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
+  u_view=AcquireVirtualCacheView(image,exception);
+  v_view=AcquireVirtualCacheView(image,exception);
   random_info=AcquireRandomInfo();
   status=PlasmaImageProxy(image,image_view,u_view,v_view,random_info,segment,
     attenuate,depth,exception);
@@ -4159,8 +4159,8 @@ MagickExport Image *SepiaToneImage(const Image *image,const double threshold,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  sepia_view=AcquireAuthenticCacheView(sepia_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  sepia_view=AcquireAuthenticCacheView(sepia_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -4324,7 +4324,7 @@ MagickExport Image *ShadowImage(const Image *image,const double alpha,
     Shadow image.
   */
   status=MagickTrue;
-  image_view=AcquireAuthenticCacheView(border_image);
+  image_view=AcquireAuthenticCacheView(border_image,exception);
   for (y=0; y < (ssize_t) border_image->rows; y++)
   {
     PixelInfo
@@ -4455,7 +4455,7 @@ MagickExport Image *SketchImage(const Image *image,const double radius,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
 #endif
-  random_view=AcquireAuthenticCacheView(random_image);
+  random_view=AcquireAuthenticCacheView(random_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,image->columns,image->rows,key == ~0UL)
@@ -4629,7 +4629,7 @@ MagickExport MagickBooleanType SolarizeImage(Image *image,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -4796,8 +4796,8 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   depth=stegano_image->depth;
   k=stegano_image->offset;
   status=MagickTrue;
-  watermark_view=AcquireVirtualCacheView(watermark);
-  stegano_view=AcquireAuthenticCacheView(stegano_image);
+  watermark_view=AcquireVirtualCacheView(watermark,exception);
+  stegano_view=AcquireAuthenticCacheView(stegano_image,exception);
   for (i=(ssize_t) depth-1; (i >= 0) && (j < (ssize_t) depth); i--)
   {
     for (y=0; (y < (ssize_t) watermark->rows) && (j < (ssize_t) depth); y++)
@@ -5108,8 +5108,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  swirl_view=AcquireAuthenticCacheView(swirl_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  swirl_view=AcquireAuthenticCacheView(swirl_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -5345,8 +5345,8 @@ MagickExport Image *TintImage(const Image *image,const char *blend,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  tint_view=AcquireAuthenticCacheView(tint_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  tint_view=AcquireAuthenticCacheView(tint_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -5644,8 +5644,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  wave_view=AcquireAuthenticCacheView(wave_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  wave_view=AcquireAuthenticCacheView(wave_image,exception);
   (void) SetCacheViewVirtualPixelMethod(image_view,
     BackgroundVirtualPixelMethod);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)

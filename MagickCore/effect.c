@@ -295,9 +295,9 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  edge_view=AcquireVirtualCacheView(edge_image);
-  blur_view=AcquireAuthenticCacheView(blur_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  edge_view=AcquireVirtualCacheView(edge_image,exception);
+  blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -620,9 +620,9 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  edge_view=AcquireVirtualCacheView(edge_image);
-  sharp_view=AcquireAuthenticCacheView(sharp_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  edge_view=AcquireVirtualCacheView(edge_image,exception);
+  sharp_view=AcquireAuthenticCacheView(sharp_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -949,8 +949,8 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   status=MagickTrue;
   progress=0;
   center=(ssize_t) GetPixelChannels(image)*(width/2L);
-  image_view=AcquireVirtualCacheView(image);
-  blur_view=AcquireAuthenticCacheView(blur_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1074,8 +1074,8 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     Blur columns.
   */
   center=(ssize_t) GetPixelChannels(blur_image)*(width/2L);
-  image_view=AcquireVirtualCacheView(blur_image);
-  blur_view=AcquireAuthenticCacheView(blur_image);
+  image_view=AcquireVirtualCacheView(blur_image,exception);
+  blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1421,8 +1421,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     Reduce speckle in the image.
   */
   status=MagickTrue;
-  image_view=AcquireVirtualCacheView(image);
-  despeckle_view=AcquireAuthenticCacheView(despeckle_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  despeckle_view=AcquireAuthenticCacheView(despeckle_image,exception);
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
     PixelChannel
@@ -1947,9 +1947,9 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  motion_view=AcquireVirtualCacheView(image);
-  blur_view=AcquireAuthenticCacheView(blur_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  motion_view=AcquireVirtualCacheView(image,exception);
+  blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2723,9 +2723,9 @@ MagickExport Image *RadialBlurImage(const Image *image,const double angle,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  radial_view=AcquireVirtualCacheView(image);
-  blur_view=AcquireAuthenticCacheView(blur_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  radial_view=AcquireVirtualCacheView(image,exception);
+  blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -3033,9 +3033,9 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
   progress=0;
   center=(ssize_t) (GetPixelChannels(image)*(image->columns+width)*(width/2L)+
     GetPixelChannels(image)*(width/2L));
-  image_view=AcquireVirtualCacheView(image);
-  luminance_view=AcquireVirtualCacheView(luminance_image);
-  blur_view=AcquireAuthenticCacheView(blur_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  luminance_view=AcquireVirtualCacheView(luminance_image,exception);
+  blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -3299,8 +3299,8 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  shade_view=AcquireAuthenticCacheView(shade_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  shade_view=AcquireAuthenticCacheView(shade_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -3625,8 +3625,8 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
 #endif
-  image_view=AcquireVirtualCacheView(image);
-  spread_view=AcquireAuthenticCacheView(spread_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  spread_view=AcquireAuthenticCacheView(spread_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,key == ~0UL)
@@ -3767,8 +3767,8 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  unsharp_view=AcquireAuthenticCacheView(unsharp_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  unsharp_view=AcquireAuthenticCacheView(unsharp_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)

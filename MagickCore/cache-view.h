@@ -49,8 +49,8 @@ typedef struct _CacheView
   CacheView;
 
 extern MagickExport CacheView
-  *AcquireAuthenticCacheView(const Image *),
-  *AcquireVirtualCacheView(const Image *),
+  *AcquireAuthenticCacheView(const Image *,ExceptionInfo *),
+  *AcquireVirtualCacheView(const Image *,ExceptionInfo *),
   *CloneCacheView(const CacheView *),
   *DestroyCacheView(CacheView *);
 

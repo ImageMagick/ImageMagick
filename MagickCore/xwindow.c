@@ -2227,7 +2227,7 @@ static void XDitherImage(Image *image,XImage *ximage,ExceptionInfo *exception)
   i=0;
   j=0;
   q=ximage->data;
-  image_view=AcquireVirtualCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0,(ssize_t) y,image->columns,1,
@@ -4366,7 +4366,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
           composite_image->storage_class=PseudoClass;
         composite_image->columns=(size_t) ximage->width;
         composite_image->rows=(size_t) ximage->height;
-        composite_view=AcquireAuthenticCacheView(composite_image);
+        composite_view=AcquireAuthenticCacheView(composite_image,exception);
         switch (composite_image->storage_class)
         {
           case DirectClass:
@@ -5954,7 +5954,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
   pixels=window->pixel_info->pixels;
   q=(unsigned char *) ximage->data;
   x=0;
-  canvas_view=AcquireVirtualCacheView(canvas);
+  canvas_view=AcquireVirtualCacheView(canvas,exception);
   if (ximage->format == XYBitmap)
     {
       register unsigned short
@@ -6580,7 +6580,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
   pixels=window->pixel_info->pixels;
   q=(unsigned char *) ximage->data;
   x=0;
-  canvas_view=AcquireVirtualCacheView(canvas);
+  canvas_view=AcquireVirtualCacheView(canvas,exception);
   if (ximage->format == XYBitmap)
     {
       register unsigned short
@@ -8001,7 +8001,7 @@ MagickPrivate void XMakeStandardColormap(Display *display,
             diversity[i].index=(unsigned short) i;
             diversity[i].count=0;
           }
-          image_view=AcquireAuthenticCacheView(image);
+          image_view=AcquireAuthenticCacheView(image,exception);
           for (y=0; y < (int) image->rows; y++)
           {
             register int

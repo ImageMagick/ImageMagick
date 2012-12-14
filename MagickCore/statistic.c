@@ -487,7 +487,7 @@ MagickExport Image *EvaluateImages(const Image *images,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
 #endif
-  evaluate_view=AcquireAuthenticCacheView(image);
+  evaluate_view=AcquireAuthenticCacheView(image,exception);
   if (op == MedianEvaluateOperator)
     {
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
@@ -542,7 +542,7 @@ MagickExport Image *EvaluateImages(const Image *images,
             register ssize_t
               i;
 
-            image_view=AcquireVirtualCacheView(next);
+            image_view=AcquireVirtualCacheView(next,exception);
             p=GetCacheViewVirtualPixels(image_view,x,y,1,1,exception);
             if (p == (const Quantum *) NULL)
               {
@@ -645,7 +645,7 @@ MagickExport Image *EvaluateImages(const Image *images,
           register const Quantum
             *p;
 
-          image_view=AcquireVirtualCacheView(next);
+          image_view=AcquireVirtualCacheView(next,exception);
           p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
           if (p == (const Quantum *) NULL)
             {
@@ -807,7 +807,7 @@ MagickExport MagickBooleanType EvaluateImage(Image *image,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   key=GetRandomSecretKey(random_info[0]);
 #endif
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,key == ~0UL)
@@ -1036,7 +1036,7 @@ MagickExport MagickBooleanType FunctionImage(Image *image,
     return(MagickFalse);
   status=MagickTrue;
   progress=0;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1300,7 +1300,7 @@ MagickExport MagickBooleanType GetImageKurtosis(const Image *image,
   sum_squares=0.0;
   sum_cubes=0.0;
   sum_fourth_power=0.0;
-  image_view=AcquireVirtualCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1427,7 +1427,7 @@ MagickExport MagickBooleanType GetImageRange(const Image *image,double *minima,
   initialize=MagickTrue;
   *maxima=0.0;
   *minima=0.0;
-  image_view=AcquireVirtualCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status,initialize) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1820,7 +1820,7 @@ MagickExport Image *PolynomialImage(const Image *images,
   */
   status=MagickTrue;
   progress=0;
-  polynomial_view=AcquireAuthenticCacheView(image);
+  polynomial_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1870,7 +1870,7 @@ MagickExport Image *PolynomialImage(const Image *images,
 
       if (j >= (ssize_t) number_terms)
         continue;
-      image_view=AcquireVirtualCacheView(next);
+      image_view=AcquireVirtualCacheView(next,exception);
       p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
       if (p == (const Quantum *) NULL)
         {
@@ -2497,8 +2497,8 @@ MagickExport Image *StatisticImage(const Image *image,const StatisticType type,
     (MagickMax(height,1)/2L)+GetPixelChannels(image)*(MagickMax(width,1)/2L);
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image);
-  statistic_view=AcquireAuthenticCacheView(statistic_image);
+  image_view=AcquireVirtualCacheView(image,exception);
+  statistic_view=AcquireAuthenticCacheView(statistic_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image->columns,image->rows,1)

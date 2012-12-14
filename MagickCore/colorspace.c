@@ -262,7 +262,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -331,7 +331,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       if (SetImageColorspace(image,colorspace,exception) == MagickFalse)
         return(MagickFalse);
       GetPixelInfo(image,&zero);
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -394,7 +394,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -456,7 +456,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -521,7 +521,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -586,7 +586,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -651,7 +651,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -716,7 +716,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -785,7 +785,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -860,7 +860,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -973,7 +973,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
         logmap[i]=ScaleMapToQuantum((double) (MaxMap*(reference_white+
           log10(black+(1.0*i/MaxMap)*(1.0-black))/((gamma/density)*0.002f/
           film_gamma))/1024.0));
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1038,7 +1038,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1107,7 +1107,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1169,7 +1169,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1230,7 +1230,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -1570,7 +1570,7 @@ static MagickBooleanType sRGBTransformImage(Image *image,
       /*
         Convert DirectClass image.
       */
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2227,7 +2227,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2295,7 +2295,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
             return(MagickFalse);
         }
       GetPixelInfo(image,&zero);
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2359,7 +2359,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
         }
       if (SetImageColorspace(image,sRGBColorspace,exception) == MagickFalse)
         return(MagickFalse);
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2416,7 +2416,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2481,7 +2481,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2546,7 +2546,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2611,7 +2611,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2676,7 +2676,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2745,7 +2745,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2818,7 +2818,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2933,7 +2933,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -2998,7 +2998,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -3067,7 +3067,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -3128,7 +3128,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
           if (SetImageStorageClass(image,DirectClass,exception) == MagickFalse)
             return(MagickFalse);
         }
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)
@@ -3457,7 +3457,7 @@ static MagickBooleanType TransformsRGBImage(Image *image,
       /*
         Convert DirectClass image.
       */
-      image_view=AcquireAuthenticCacheView(image);
+      image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
         dynamic_number_threads(image,image->columns,image->rows,1)

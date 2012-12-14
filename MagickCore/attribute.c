@@ -151,7 +151,7 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
   bounds.x=(ssize_t) image->columns;
   bounds.y=(ssize_t) image->rows;
   GetPixelInfo(image,&target[0]);
-  image_view=AcquireVirtualCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   p=GetCacheViewVirtualPixels(image_view,0,0,1,1,exception);
   if (p == (const Quantum *) NULL)
     {
@@ -352,7 +352,7 @@ MagickExport size_t GetImageDepth(const Image *image,ExceptionInfo *exception)
       current_depth=(size_t *) RelinquishMagickMemory(current_depth);
       return(depth);
     }
-  image_view=AcquireVirtualCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if (QuantumRange <= MaxMap)
     {
@@ -696,7 +696,7 @@ MagickExport MagickBooleanType IsImageGray(const Image *image,
       (IsRGBColorspace(image->colorspace) == MagickFalse))
     return(MagickFalse);
   type=BilevelType;
-  image_view=AcquireVirtualCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -781,7 +781,7 @@ MagickExport MagickBooleanType IsImageMonochrome(const Image *image,
       (IsRGBColorspace(image->colorspace) == MagickFalse))
     return(MagickFalse);
   type=BilevelType;
-  image_view=AcquireVirtualCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -858,7 +858,7 @@ MagickExport MagickBooleanType IsImageOpaque(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   if (image->alpha_trait != BlendPixelTrait)
     return(MagickTrue);
-  image_view=AcquireVirtualCacheView(image);
+  image_view=AcquireVirtualCacheView(image,exception);
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     p=GetCacheViewVirtualPixels(image_view,0,y,image->columns,1,exception);
@@ -957,7 +957,7 @@ MagickExport MagickBooleanType SetImageDepth(Image *image,
       }
     }
   status=MagickTrue;
-  image_view=AcquireAuthenticCacheView(image);
+  image_view=AcquireAuthenticCacheView(image,exception);
 #if !defined(MAGICKCORE_HDRI_SUPPORT)
   if (QuantumRange <= MaxMap)
     {
