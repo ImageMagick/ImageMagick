@@ -32,7 +32,7 @@
 
   The /repository file system is restricted to read only.  We use a glob
   expression to match all paths that start with /repository:
-  
+
     <policy domain="path" rights="read" pattern="/repository/*" />
 
   Any large image is cached to disk rather than memory:
