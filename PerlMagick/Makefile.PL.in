@@ -44,12 +44,14 @@ sub AutodetectWin32gcc {
       my (@l,@b,@i) = ( (),(),() );
 
       # try to detect 'lib' dir
+      push @l, catfile($dirpath,'lib');
       push @l, catfile($dirpath,'..','lib');
       push @l, catfile($dirpath,'..','..','lib');
       push @l, catfile($dirpath,'..','..','..','lib');
       foreach (@l) { push @libdir, $_ if (-d $_) };
 
       # try to detect 'bin' dir
+      push @b, $dirpath;
       push @b, catfile($dirpath,'..');
       push @b, catfile($dirpath,'..','bin');
       push @b, catfile($dirpath,'..','..');
@@ -59,6 +61,7 @@ sub AutodetectWin32gcc {
       foreach (@b) { push @bindir, $_ if (-e "$_/convert.exe" || -e "$_/identify.exe") };
 
       # try to detect 'include' dir
+      push @i, catfile($dirpath,'include');
       push @i, catfile($dirpath,'..','include');
       push @i, catfile($dirpath,'..','include','ImageMagick');
       push @i, catfile($dirpath,'..','..','include');
