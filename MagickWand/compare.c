@@ -1192,5 +1192,5 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
       difference_image=DestroyImageList(difference_image);
     }
   DestroyCompare();
-  return(status != 0 ? MagickTrue : MagickFalse);
+  return((status != 0) || (distortion != 0.0) ? MagickTrue : MagickFalse);
 }
