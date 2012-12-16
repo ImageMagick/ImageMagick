@@ -231,7 +231,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     Extract chop image.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static,256) shared(progress,status) \
     dynamic_number_threads(image,image,image->rows-(extent.y+extent.height),1)
 #endif
   for (y=0; y < (ssize_t) (image->rows-(extent.y+extent.height)); y++)
