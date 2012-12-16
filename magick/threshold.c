@@ -676,8 +676,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
             SetPixelOpacity(q,0);
           if (((channel & IndexChannel) != 0) &&
               (image->colorspace == CMYKColorspace) &&
-              ((MagickRealType) GetPixelIndex(indexes+x) <
-              threshold.index))
+              ((MagickRealType) GetPixelIndex(indexes+x) < threshold.index))
             SetPixelIndex(indexes+x,0);
         }
       q++;
