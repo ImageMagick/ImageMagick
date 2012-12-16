@@ -30,13 +30,12 @@ extern "C" {
   Single threaded unless workload justifies the threading overhead.
 */
 #define WorkloadThreshold()  (16*GetMagickResourceLimit(ThreadResource))
-#define dynamic_number_threads(image,columns,rows,expression) \
-  if (((((columns) > WorkloadThreshold()) || \
-      ((rows) > WorkloadThreshold()))) && ((MagickSizeType) \
-      ((columns)*(rows)) > (WorkloadThreshold()*WorkloadThreshold())) && \
-      (expression)) \
-    num_threads(GetMagickResourceLimit(ThreadResource) == 1 ? 1 : \
-      GetImagePixelCacheType(image) == DiskCache ? 2 : \
+#define dynamic_number_threads(source,destination,rows,expression) \
+  if (((rows) > WorkloadThreshold()) && (expression)) \
+    num_threads((source) != (destination) ? \
+      GetMagickResourceLimit(ThreadResource) : \
+      GetMagickResourceLimit(ThreadResource) == 1 ? 1 : \
+      GetImagePixelCacheType(source) == DiskCache ? 2 : \
       GetMagickResourceLimit(ThreadResource))
 
 #if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ > 10))
