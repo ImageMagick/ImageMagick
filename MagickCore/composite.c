@@ -2454,6 +2454,10 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
   status=MagickTrue;
   texture_view=AcquireVirtualCacheView(texture_image,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,256) shared(status) \
+    dynamic_number_threads(texture_image,image,image->rows,1)
+#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     MagickBooleanType
