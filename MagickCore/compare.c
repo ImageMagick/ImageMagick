@@ -286,7 +286,7 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
 %  GetImageDistortion() compares one or more pixel channels of an image to a
 %  reconstructed image and returns the specified distortion metric.
 %
-%  The format of the CompareImages method is:
+%  The format of the GetImageDistortion method is:
 %
 %      MagickBooleanType GetImageDistortion(const Image *image,
 %        const Image *reconstruct_image,const MetricType metric,
@@ -1201,11 +1201,11 @@ MagickExport MagickBooleanType GetImageDistortion(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageDistrortion() compares the pixel channels of an image to a
+%  GetImageDistortions() compares the pixel channels of an image to a
 %  reconstructed image and returns the specified distortion metric for each
 %  channel.
 %
-%  The format of the CompareImages method is:
+%  The format of the GetImageDistortions method is:
 %
 %      double *GetImageDistortions(const Image *image,
 %        const Image *reconstruct_image,const MetricType metric,
