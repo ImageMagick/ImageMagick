@@ -1159,7 +1159,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   image_view=AcquireVirtualCacheView(image,exception);
   flip_view=AcquireAuthenticCacheView(flip_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static,2048) shared(progress,status) \
     dynamic_number_threads(image,flip_image,flip_image->rows,1)
 #endif
   for (y=0; y < (ssize_t) flip_image->rows; y++)
@@ -1306,7 +1306,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   image_view=AcquireVirtualCacheView(image,exception);
   flop_view=AcquireAuthenticCacheView(flop_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+  #pragma omp parallel for schedule(static,2048) shared(progress,status) \
     dynamic_number_threads(image,flop_image,flop_image->rows,1)
 #endif
   for (y=0; y < (ssize_t) flop_image->rows; y++)
