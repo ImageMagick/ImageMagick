@@ -573,7 +573,7 @@ static void RadonProjection(const Image *image,RadonInfo *source_cells,
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) \
-    dynamic_number_threads(image,p->width,p->height,1)
+    dynamic_number_threads(image,image,p->width,1)
 #endif
   for (x=0; x < (ssize_t) p->width; x++)
   {
@@ -654,7 +654,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    dynamic_number_threads(image,image->columns,image->rows,1)
+    dynamic_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -704,7 +704,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   (void) ResetRadonCells(source_cells);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    dynamic_number_threads(image,image->columns,image->rows,1)
+    dynamic_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1026,9 +1026,9 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
       tile_width=image->columns;
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(progress,status) \
-        dynamic_number_threads(image,image->columns,image->rows,1)
+        dynamic_number_threads(image,image,image->rows/tile_height,1)
 #endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
@@ -1129,7 +1129,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             MagickBooleanType
               proceed;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
             #pragma omp critical (MagickCore_IntegralRotateImage)
 #endif
             proceed=SetImageProgress(image,RotateImageTag,progress+=tile_height,
@@ -1242,9 +1242,9 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       */
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
       tile_width=image->columns;
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(progress,status) \
-        dynamic_number_threads(image,image->columns,image->rows,1)
+        dynamic_number_threads(image,image,image->rows/tile_height,1)
 #endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
@@ -1334,7 +1334,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
               tile_pixels+=width*GetPixelChannels(image);
               q+=GetPixelChannels(rotate_image);
             }
-#if defined(MAGICKCORE_OPENMP_SUPPORT) && defined(NoBenefitFromParallelism)
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
             #pragma omp critical (MagickCore_IntegralRotateImage)
 #endif
             sync=SyncCacheViewAuthenticPixels(rotate_view,exception);
@@ -1447,7 +1447,7 @@ static MagickBooleanType XShearImage(Image *image,const double degrees,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image,width,height,1)
+    dynamic_number_threads(image,image,height,1)
 #endif
   for (y=0; y < (ssize_t) height; y++)
   {
@@ -1663,7 +1663,7 @@ static MagickBooleanType YShearImage(Image *image,const double degrees,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image,width,height,1)
+    dynamic_number_threads(image,image,width,1)
 #endif
   for (x=0; x < (ssize_t) width; x++)
   {
