@@ -1346,7 +1346,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
       if ((indexes != (const IndexPacket *) NULL) &&
           (flop_indexes != (IndexPacket *) NULL))
         SetPixelIndex(flop_indexes+flop_image->columns-x-1,
-         GetPixelIndex( indexes+x));
+          GetPixelIndex(indexes+x));
     }
     if (SyncCacheViewAuthenticPixels(flop_view,exception) == MagickFalse)
       status=MagickFalse;
@@ -1779,8 +1779,7 @@ MagickExport Image *SpliceImage(const Image *image,
       if (image->matte != MagickFalse)
         SetPixelOpacity(q,GetPixelOpacity(p));
       if (image->colorspace == CMYKColorspace)
-        SetPixelIndex(splice_indexes+x,
-          GetPixelIndex(indexes));
+        SetPixelIndex(splice_indexes+x,GetPixelIndex(indexes));
       indexes++;
       p++;
       q++;
@@ -1796,8 +1795,7 @@ MagickExport Image *SpliceImage(const Image *image,
       if (image->matte != MagickFalse)
         SetPixelOpacity(q,GetPixelOpacity(p));
       if (image->colorspace == CMYKColorspace)
-        SetPixelIndex(splice_indexes+x,
-          GetPixelIndex(indexes));
+        SetPixelIndex(splice_indexes+x,GetPixelIndex(indexes));
       indexes++;
       p++;
       q++;
@@ -1863,8 +1861,7 @@ MagickExport Image *SpliceImage(const Image *image,
       if (image->matte != MagickFalse)
         SetPixelOpacity(q,GetPixelOpacity(p));
       if (image->colorspace == CMYKColorspace)
-        SetPixelIndex(splice_indexes+x,
-           GetPixelIndex(indexes));
+        SetPixelIndex(splice_indexes+x,GetPixelIndex(indexes));
       indexes++;
       p++;
       q++;
@@ -1880,8 +1877,7 @@ MagickExport Image *SpliceImage(const Image *image,
       if (image->matte != MagickFalse)
         SetPixelOpacity(q,GetPixelOpacity(p));
       if (image->colorspace == CMYKColorspace)
-        SetPixelIndex(splice_indexes+x,
-          GetPixelIndex(indexes));
+        SetPixelIndex(splice_indexes+x,GetPixelIndex(indexes));
       indexes++;
       p++;
       q++;
