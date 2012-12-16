@@ -24,9 +24,7 @@
 static const char
   *compare_options[] =
   {
-    "",
-    "-compose Src",
-    "-highlight-color SeaGreen",
+    "-metric RMSE -fuzz 5%",
     "-metric AE -fuzz 5%",
     (const char *) NULL
   };

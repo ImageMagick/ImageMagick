@@ -321,7 +321,7 @@ MagickExport Image *CompareImageChannels(Image *image,
 %  GetImageChannelDistortion() compares one or more image channels of an image
 %  to a reconstructed image and returns the specified distortion metric.
 %
-%  The format of the CompareImageChannels method is:
+%  The format of the GetImageChannelDistortion method is:
 %
 %      MagickBooleanType GetImageChannelDistortion(const Image *image,
 %        const Image *reconstruct_image,const ChannelType channel,
@@ -1395,11 +1395,11 @@ MagickExport MagickBooleanType GetImageChannelDistortion(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageChannelDistrortion() compares the image channels of an image to a
+%  GetImageChannelDistortions() compares the image channels of an image to a
 %  reconstructed image and returns the specified distortion metric for each
 %  channel.
 %
-%  The format of the CompareImageChannels method is:
+%  The format of the GetImageChannelDistortions method is:
 %
 %      double *GetImageChannelDistortions(const Image *image,
 %        const Image *reconstruct_image,const MetricType metric,
@@ -1471,8 +1471,8 @@ MagickExport double *GetImageChannelDistortions(Image *image,
     }
     case MeanAbsoluteErrorMetric:
     {
-      status=GetMeanAbsoluteDistortion(image,reconstruct_image,CompositeChannels,
-        channel_distortion,exception);
+      status=GetMeanAbsoluteDistortion(image,reconstruct_image,
+        CompositeChannels,channel_distortion,exception);
       break;
     }
     case MeanErrorPerPixelMetric:
@@ -1496,20 +1496,20 @@ MagickExport double *GetImageChannelDistortions(Image *image,
     }
     case PeakAbsoluteErrorMetric:
     {
-      status=GetPeakAbsoluteDistortion(image,reconstruct_image,CompositeChannels,
-        channel_distortion,exception);
+      status=GetPeakAbsoluteDistortion(image,reconstruct_image,
+        CompositeChannels,channel_distortion,exception);
       break;
     }
     case PeakSignalToNoiseRatioMetric:
     {
-      status=GetPeakSignalToNoiseRatio(image,reconstruct_image,CompositeChannels,
-        channel_distortion,exception);
+      status=GetPeakSignalToNoiseRatio(image,reconstruct_image,
+        CompositeChannels,channel_distortion,exception);
       break;
     }
     case RootMeanSquaredErrorMetric:
     {
-      status=GetRootMeanSquaredDistortion(image,reconstruct_image,CompositeChannels,
-        channel_distortion,exception);
+      status=GetRootMeanSquaredDistortion(image,reconstruct_image,
+        CompositeChannels,channel_distortion,exception);
       break;
     }
   }
