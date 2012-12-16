@@ -427,7 +427,7 @@ MagickExport MagickBooleanType BilevelImageChannel(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(progress,status) \
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -624,7 +624,7 @@ MagickExport MagickBooleanType BlackThresholdImageChannel(Image *image,
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(progress,status) \
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -804,7 +804,7 @@ MagickExport MagickBooleanType ClampImageChannel(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(progress,status) \
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -1539,7 +1539,7 @@ printf("DEBUG levels  r=%u g=%u b=%u a=%u i=%u\n",
     progress=0;
     image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-    #pragma omp parallel for schedule(static,8) shared(progress,status) \
+    #pragma omp parallel for schedule(static,4) shared(progress,status) \
       dynamic_number_threads(image,image,image->rows,1)
 #endif
     for (y=0; y < (ssize_t) image->rows; y++)
@@ -1748,7 +1748,7 @@ MagickExport MagickBooleanType PerceptibleImageChannel(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(progress,status) \
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -1939,7 +1939,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
 #endif
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,8) shared(progress,status) \
+      #pragma omp parallel for schedule(static,4) shared(progress,status) \
         dynamic_number_threads(image,image,image->rows,key == ~0UL)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
@@ -2022,7 +2022,7 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
 #endif
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(progress,status) \
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image,image->rows,key == ~0UL)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -2261,7 +2261,7 @@ MagickExport MagickBooleanType WhiteThresholdImageChannel(Image *image,
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,8) shared(progress,status) \
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
     dynamic_number_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
