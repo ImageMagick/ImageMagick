@@ -1107,8 +1107,7 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   size_t
-    height,
-    width;
+    height;
 #endif
 
   ssize_t
@@ -1169,13 +1168,12 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
   stop=(ssize_t) floor(edge.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=(size_t) (floor(edge.y2+0.5)-ceil(edge.y1-0.5));
-  width=(size_t) (floor(edge.x2+0.5)-ceil(edge.x1-0.5));
 #endif
   source_view=AcquireVirtualCacheView(source,exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    dynamic_number_threads(image,width,height,1)
+    dynamic_number_threads(source,image,height,1)
 #endif
   for (y=start; y <= stop; y++)
   {
@@ -3239,8 +3237,7 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   size_t
-    height,
-    width;
+    height;
 #endif
 
   ssize_t
@@ -3264,12 +3261,11 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   GetPixelInfo(image,&zero);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=bounding_box.height-bounding_box.y;
-  width=bounding_box.width-bounding_box.x;
 #endif
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    dynamic_number_threads(image,width,height,1)
+    dynamic_number_threads(image,image,height,1)
 #endif
   for (y=bounding_box.y; y < (ssize_t) bounding_box.height; y++)
   {
@@ -3815,8 +3811,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   size_t
-    height,
-    width;
+    height;
 #endif
 
   ssize_t
@@ -3875,7 +3870,6 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=(size_t) (floor(bounds.y2+0.5)-ceil(bounds.y1-0.5));
-  width=(size_t) (floor(bounds.x2+0.5)-ceil(bounds.x1-0.5));
 #endif
   if (primitive_info->coordinates == 1)
     {
@@ -3886,7 +3880,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
       stop=(ssize_t) floor(bounds.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        dynamic_number_threads(image,width,height,1)
+        dynamic_number_threads(image,image,height,1)
 #endif
       for (y=start; y <= stop; y++)
       {
@@ -3949,7 +3943,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   stop=(ssize_t) floor(bounds.y2+0.5);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    dynamic_number_threads(image,width,height,1)
+    dynamic_number_threads(image,image,height,1)
 #endif
   for (y=start; y <= stop; y++)
   {
