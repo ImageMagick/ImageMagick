@@ -540,6 +540,7 @@ if test "$with_modules" != 'no' ; then
 fi
 if test "$build_modules" != 'no' ; then
     AC_DEFINE(BUILD_MODULES,1,Define if coders and filters are to be built as modules.)
+    MAGICK_FEATURES="$MAGICK_FEATURES Modules"
 fi
 AM_CONDITIONAL(WITH_MODULES, test "$build_modules" != 'no')
 
@@ -1641,7 +1642,7 @@ if test "$have_autotrace" = 'yes'; then
     failed=0
     AC_DEFINE(AUTOTRACE_DELEGATE,1,Define if you have AUTOTRACE library)
     if test "$build_modules" = 'no'; then
-    CPPFLAGS="$AUTOTRACE_CFLAGS $CPPFLAGS"
+      CPPFLAGS="$AUTOTRACE_CFLAGS $CPPFLAGS"
     fi
 fi
 
@@ -3823,10 +3824,6 @@ fi
 if test "$have_zlib"   = 'yes' ; then
    DELEGATES="$DELEGATES zlib"
    MAGICK_FEATURES="$MAGICK_FEATURES ZLIB"
-fi
-if test "$build_modules" != 'no' || \
-   test "${native_win32_build}" = 'yes' ; then
-   MAGICK_FEATURES="$MAGICK_FEATURES MODULES"
 fi
 # Remove extraneous spaces from output variables (asthetic)
 DELEGATES=`echo $DELEGATES | sed -e 's/  */ /g'`
