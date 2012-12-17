@@ -1,5 +1,6 @@
 2012-12-16  6.8.1-0 Cristy  <quetzlzacatenango@image...>
   * Return non-zero exit status if two images differ for the compare utility.
+  * Large image performance tuning.
 
 2012-12-15  6.8.0-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.0-10, SVN revision 10236.
