@@ -1601,8 +1601,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
                 {
                   alpha=(MagickRealType) (QuantumScale*(QuantumRange-
                     kernel_pixels[u].opacity));
-                  pixel.index+=(*k)*alpha*GetPixelIndex(
-                    kernel_indexes+u);
+                  pixel.index+=(*k)*alpha*GetPixelIndex(kernel_indexes+u);
                   k++;
                 }
                 kernel_pixels+=image->columns+width;
