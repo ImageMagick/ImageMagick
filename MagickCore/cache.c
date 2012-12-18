@@ -3659,7 +3659,7 @@ static inline void AllocatePixelCachePixels(CacheInfo *cache_info)
     }
 }
 
-static MagickBooleanType ExtendCache(Image *image,MagickSizeType length)
+static MagickBooleanType SetPixelCacheExtent(Image *image,MagickSizeType length)
 {
   CacheInfo
     *cache_info;
@@ -3828,7 +3828,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
         image->filename);
       return(MagickFalse);
     }
-  status=ExtendCache(image,(MagickSizeType) cache_info->offset+
+  status=SetPixelCacheExtent(image,(MagickSizeType) cache_info->offset+
     cache_info->length);
   if (status == MagickFalse)
     {
