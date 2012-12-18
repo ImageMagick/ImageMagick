@@ -3755,7 +3755,7 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
 
         offset=TellBlob(image);
         status=posix_fallocate(fileno(image->blob->file_info.file),offset,
-           extent-offset);
+          extent-offset);
         if (status != 0)
           return(MagickFalse);
       }
