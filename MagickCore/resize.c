@@ -2790,8 +2790,8 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
   for (x=0; x < (ssize_t) sample_image->columns; x++)
-    x_offset[x]=(ssize_t) (((double) x+0.5)*image->columns/
-      sample_image->columns);
+    x_offset[x]=(ssize_t) (((double) x*image->columns)/sample_image->columns+
+      0.5);
   /*
     Sample each row.
   */
@@ -2818,8 +2818,7 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
 
     if (status == MagickFalse)
       continue;
-    y_offset=(ssize_t) (((double) y+0.5)*image->rows/
-      sample_image->rows);
+    y_offset=(ssize_t) (((double) y*image->rows)/sample_image->rows+0.5);
     p=GetCacheViewVirtualPixels(image_view,0,y_offset,image->columns,1,
       exception);
     q=QueueCacheViewAuthenticPixels(sample_view,0,y,sample_image->columns,1,
