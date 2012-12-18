@@ -34,7 +34,6 @@ extern "C" {
   if (((rows) > WorkloadThreshold()) && (expression)) \
     num_threads((source) != (destination) ? \
       GetMagickResourceLimit(ThreadResource) : \
-      GetMagickResourceLimit(ThreadResource) == 1 ? 1 : \
       GetImagePixelCacheType(source) == DiskCache ? 2 : \
       GetMagickResourceLimit(ThreadResource))
 
