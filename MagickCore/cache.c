@@ -3665,6 +3665,7 @@ static MagickBooleanType ExtendCache(Image *image,MagickSizeType length)
     *cache_info;
 
   MagickOffsetType
+    count,
     extent,
     offset;
 
@@ -3689,26 +3690,8 @@ static MagickBooleanType ExtendCache(Image *image,MagickSizeType length)
   if ((MagickSizeType) offset >= length)
     return(MagickTrue);
   extent=(MagickOffsetType) length-1;
-#if !defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
-  {
-    MagickOffsetType
-      count;
-
-    count=WritePixelCacheRegion(cache_info,extent,1,(const unsigned char *) "");
-    if (count != (MagickOffsetType) 1)
-      return(MagickFalse);
-  }
-#else
-  {
-    int
-      status;
-
-    status=posix_fallocate(cache_info->file,offset+1,extent-offset);
-    if (status != 0)
-      return(MagickFalse);
-  }
-#endif
-  return(MagickTrue);
+  count=WritePixelCacheRegion(cache_info,extent,1,(const unsigned char *) "");
+  return(count != (MagickOffsetType) 1 ? MagickFalse : MagickTrue);
 }
 
 static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
