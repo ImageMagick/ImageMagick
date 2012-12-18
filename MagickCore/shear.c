@@ -1027,8 +1027,8 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
       tile_width=image->columns;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,2048) shared(progress,status) \
-        dynamic_number_threads(image,image,image->rows/tile_height,1)
+      #pragma omp parallel for schedule(static,image->rows/tile_height/2) \
+        shared(progress,status)
 #endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
@@ -1152,8 +1152,8 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 180 degrees.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,2048) shared(progress,status) \
-        dynamic_number_threads(image,image,image->rows,1)
+      #pragma omp parallel for schedule(static,image->rows/2) \
+        shared(progress,status)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1250,8 +1250,8 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
       tile_width=image->columns;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for schedule(static,2048) shared(progress,status) \
-        dynamic_number_threads(image,image,image->rows/tile_height,1)
+      #pragma omp parallel for schedule(static,image->rows/tile_height/2) \
+        shared(progress,status)
 #endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {

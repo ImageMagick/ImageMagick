@@ -2799,6 +2799,9 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
   progress=0;
   image_view=AcquireVirtualCacheView(image,exception);
   sample_view=AcquireAuthenticCacheView(sample_image,exception);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,sample_image->rows/2) shared(status)
+#endif
   for (y=0; y < (ssize_t) sample_image->rows; y++)
   {
     register const Quantum
@@ -2866,6 +2869,9 @@ MagickExport Image *SampleImage(const Image *image,const size_t columns,
         MagickBooleanType
           proceed;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+        #pragma omp critical (MagickCore_SampleImage)
+#endif
         proceed=SetImageProgress(image,SampleImageTag,progress++,image->rows);
         if( IfMagickFalse(proceed) )
           status=MagickFalse;
