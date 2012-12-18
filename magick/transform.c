@@ -115,6 +115,11 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   RectangleInfo
     extent;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  size_t
+    height;
+#endif
+
   ssize_t
     y;
 
@@ -160,8 +165,7 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
   image_view=AcquireVirtualCacheView(image,exception);
   chop_view=AcquireAuthenticCacheView(chop_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,2048) shared(progress,status) \
-    dynamic_number_threads(image,chop_image,extent.y,1)
+  #pragma omp parallel for schedule(static,extent.y/2) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) extent.y; y++)
   {
@@ -223,8 +227,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     Extract chop image.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,2048) shared(progress,status) \
-    dynamic_number_threads(image,image,image->rows-(extent.y+extent.height),1)
+  height=image->rows-(extent.y+extent.height);
+  #pragma omp parallel for schedule(static,height/2) shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) (image->rows-(extent.y+extent.height)); y++)
   {
@@ -651,8 +655,8 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
   image_view=AcquireVirtualCacheView(image,exception);
   crop_view=AcquireAuthenticCacheView(crop_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,2048) shared(progress,status) \
-    dynamic_number_threads(image,crop_image,crop_image->rows,1)
+  #pragma omp parallel for schedule(static,crop_image->rows/2) \
+    shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) crop_image->rows; y++)
   {
@@ -1179,8 +1183,8 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   image_view=AcquireVirtualCacheView(image,exception);
   flip_view=AcquireAuthenticCacheView(flip_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,2048) shared(progress,status) \
-    dynamic_number_threads(image,flip_image,flip_image->rows,1)
+  #pragma omp parallel for schedule(static,flip_image->rows/2) \
+    shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) flip_image->rows; y++)
   {
@@ -1307,8 +1311,8 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
   image_view=AcquireVirtualCacheView(image,exception);
   flop_view=AcquireAuthenticCacheView(flop_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,2048) shared(progress,status) \
-    dynamic_number_threads(image,flop_image,flop_image->rows,1)
+  #pragma omp parallel for schedule(static,flop_image->rows/2) \
+    shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) flop_image->rows; y++)
   {

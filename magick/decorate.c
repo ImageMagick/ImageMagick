@@ -410,8 +410,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     Draw sides of ornamental border.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,2048) shared(progress,status) \
-    dynamic_number_threads(image,image,image->rows,1)
+  #pragma omp parallel for schedule(static,image->rows/2) \
+    shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -708,6 +708,11 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     foreground,
     background;
 
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  size_t
+    height;
+#endif
+
   ssize_t
     y;
 
@@ -737,8 +742,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,2048) shared(progress,status) \
-    dynamic_number_threads(image,image,raise_info->height,1)
+  #pragma omp parallel for schedule(static,raise_info->height/2) \
+    shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) raise_info->height; y++)
   {
@@ -811,8 +816,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,2048) shared(progress,status) \
-    dynamic_number_threads(image,image,image->rows-2*raise_info->height,1)
+  height=image->rows-2*raise_info->height;
+  #pragma omp parallel for schedule(static,height/2) shared(progress,status)
 #endif
   for (y=(ssize_t) raise_info->height; y < (ssize_t) (image->rows-raise_info->height); y++)
   {
@@ -874,8 +879,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,2048) shared(progress,status) \
-    dynamic_number_threads(image,image,raise_info->height,1)
+  #pragma omp parallel for schedule(static,raise_info->height/2) \
+    shared(progress,status)
 #endif
   for (y=(ssize_t) (image->rows-raise_info->height); y < (ssize_t) image->rows; y++)
   {
