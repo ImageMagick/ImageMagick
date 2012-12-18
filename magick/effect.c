@@ -4506,8 +4506,8 @@ MagickExport Image *SpreadImage(const Image *image,const double radius,
   image_view=AcquireVirtualCacheView(image,exception);
   spread_view=AcquireAuthenticCacheView(spread_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,2048) shared(progress,status) \
-    dynamic_number_threads(image,spread_image,spread_image->rows,key == ~0UL)
+  #pragma omp parallel for schedule(static,spread_image->rows/2) \
+    shared(progress,status)
 #endif
   for (y=0; y < (ssize_t) spread_image->rows; y++)
   {

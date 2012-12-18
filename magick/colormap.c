@@ -209,8 +209,7 @@ MagickExport MagickBooleanType CycleColormapImage(Image *image,
   exception=(&image->exception);
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,2048) shared(status) \
-    dynamic_number_threads(image,image,image->rows,1)
+  #pragma omp parallel for schedule(static,image->rows/2) shared(status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
