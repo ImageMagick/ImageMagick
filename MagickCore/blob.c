@@ -3733,25 +3733,24 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
       return(MagickFalse);
     case FileStream:
     {
+      MagickOffsetType
+        offset;
+
+      ssize_t
+        count;
+
       if (extent != (MagickSizeType) ((off_t) extent))
         return(MagickFalse);
-#if !defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
+      offset=SeekBlob(image,0,SEEK_END);
+      if (offset < 0)
         return(MagickFalse);
-#else
-      {
-        int
-          status;
-
-        MagickOffsetType
-          offset;
-
-        offset=TellBlob(image);
-        status=posix_fallocate(fileno(image->blob->file_info.file),offset,
-          extent-offset);
-        if (status != 0)
-          return(MagickFalse);
-      }
-#endif
+      if ((MagickSizeType) offset >= extent)
+        break;
+      offset=SeekBlob(image,(MagickOffsetType) extent-1,SEEK_SET);
+      count=fwrite((const unsigned char *) "",1,1,image->blob->file_info.file);
+      offset=SeekBlob(image,offset,SEEK_SET);
+      if (count != (MagickOffsetType) 1)
+        return(MagickFalse);
       break;
     }
     case PipeStream:
@@ -3763,37 +3762,37 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
       return(MagickFalse);
     case BlobStream:
     {
+      if (extent != (MagickSizeType) ((size_t) extent))
+        return(MagickFalse);
       if (image->blob->mapped != MagickFalse)
         {
-          if (image->blob->file_info.file == (FILE *) NULL)
-            return(MagickFalse);
+          MagickOffsetType
+            offset;
+
+          ssize_t
+            count;
+
           (void) UnmapBlob(image->blob->data,image->blob->length);
-#if !defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
-          return(MagickFalse);
-#else
-          {
-            int
-              status;
-
-            MagickOffsetType
-              offset;
-
-            offset=TellBlob(image);
-            status=posix_fallocate(fileno(image->blob->file_info.file),offset,
-              extent-offset);
-            if (status != 0)
-              return(MagickFalse);
-          }
+          if (extent != (MagickSizeType) ((off_t) extent))
+            return(MagickFalse);
+          offset=SeekBlob(image,0,SEEK_END);
+          if (offset < 0)
+            return(MagickFalse);
+          if ((MagickSizeType) offset >= extent)
+            break;
+          offset=SeekBlob(image,(MagickOffsetType) extent-1,SEEK_SET);
+          count=fwrite((const unsigned char *) "",1,1,
+            image->blob->file_info.file);
+          offset=SeekBlob(image,offset,SEEK_SET);
+          if (count != (MagickOffsetType) 1)
+            return(MagickTrue);
           image->blob->data=(unsigned char*) MapBlob(fileno(
             image->blob->file_info.file),WriteMode,0,(size_t) extent);
           image->blob->extent=(size_t) extent;
           image->blob->length=(size_t) extent;
           (void) SyncBlob(image);
           break;
-#endif
         }
-      if (extent != (MagickSizeType) ((size_t) extent))
-        return(MagickFalse);
       image->blob->extent=(size_t) extent;
       image->blob->data=(unsigned char *) ResizeQuantumMemory(image->blob->data,
         image->blob->extent+1,sizeof(*image->blob->data));
