@@ -464,6 +464,7 @@ static MagickBooleanType ParseImageResourceBlocks(Image *image,
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
         p=PushShortPixel(MSBEndian,p,&short_sans);
+        image->units=PixelsPerInchResolution;
         break;
       }
       default:
