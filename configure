@@ -3645,7 +3645,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=10282M
+MAGICK_SVN_REVISION=10301:10322M
 
 
 
@@ -20686,6 +20686,7 @@ if test "$build_modules" != 'no' ; then
 
 $as_echo "#define BUILD_MODULES 1" >>confdefs.h
 
+    MAGICK_FEATURES="$MAGICK_FEATURES Modules"
 fi
  if test "$build_modules" != 'no'; then
   WITH_MODULES_TRUE=
@@ -34891,10 +34892,6 @@ if test "$have_zlib"   = 'yes' ; then
    DELEGATES="$DELEGATES zlib"
    MAGICK_FEATURES="$MAGICK_FEATURES ZLIB"
 fi
-if test "$build_modules" != 'no' || \
-   test "${native_win32_build}" = 'yes' ; then
-   MAGICK_FEATURES="$MAGICK_FEATURES MODULES"
-fi
 # Remove extraneous spaces from output variables (asthetic)
 DELEGATES=`echo $DELEGATES | sed -e 's/  */ /g'`
 MAGICK_FEATURES=`echo $MAGICK_FEATURES | sed -e 's/  */ /g'`
@@ -35049,7 +35046,6 @@ CC=`echo $CC | sed -e 's/  */ /g'`
 CFLAGS=`echo $CFLAGS | sed -e 's/  */ /g'`
 CPPFLAGS=`echo $CPPFLAGS | sed -e 's/  */ /g'`
 CXXFLAGS=`echo $CXXFLAGS | sed -e 's/  */ /g'`
-DELEGATES=`echo $DELEGATES | sed -e 's/^ //g'`
 DISTCHECK_CONFIG_FLAGS=`echo $DISTCHECK_CONFIG_FLAGS | sed -e 's/  */ /g'`
 LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
 TESTED_LIBS=`echo $LIBS | sed -e 's/  */ /g'`
