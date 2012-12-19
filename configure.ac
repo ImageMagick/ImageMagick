@@ -3829,6 +3829,7 @@ fi
 DELEGATES=`echo $DELEGATES | sed -e 's/  */ /g'`
 MAGICK_FEATURES=`echo $MAGICK_FEATURES | sed -e 's/  */ /g'`
 AC_SUBST(DELEGATES)
+AC_SUBST(MAGICK_FEATURES)
 
 #
 # Handle special compiler flags

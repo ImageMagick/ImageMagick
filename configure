@@ -644,6 +644,7 @@ MAGICK_CXXFLAGS
 MAGICK_CFLAGS
 MAGICK_DEP_LIBS
 OSX_GCOV_LDFLAG
+MAGICK_FEATURES
 DELEGATES
 MAGICKCORE_PATH
 PERL_SUPPORTS_DESTDIR
@@ -3648,7 +3649,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=10255:10277M
+MAGICK_SVN_REVISION=10302:10324M
 
 
 
@@ -20691,6 +20692,7 @@ if test "$build_modules" != 'no' ; then
 
 $as_echo "#define BUILD_MODULES 1" >>confdefs.h
 
+    MAGICK_FEATURES="$MAGICK_FEATURES Modules"
 fi
  if test "$build_modules" != 'no'; then
   WITH_MODULES_TRUE=
@@ -27944,7 +27946,7 @@ if test "$have_autotrace" = 'yes'; then
 $as_echo "#define AUTOTRACE_DELEGATE 1" >>confdefs.h
 
     if test "$build_modules" = 'no'; then
-    CPPFLAGS="$AUTOTRACE_CFLAGS $CPPFLAGS"
+      CPPFLAGS="$AUTOTRACE_CFLAGS $CPPFLAGS"
     fi
 fi
 
@@ -34912,13 +34914,10 @@ if test "$have_zlib"   = 'yes' ; then
    DELEGATES="$DELEGATES zlib"
    MAGICK_FEATURES="$MAGICK_FEATURES ZLIB"
 fi
-if test "$build_modules" != 'no' || \
-   test "${native_win32_build}" = 'yes' ; then
-   MAGICK_FEATURES="$MAGICK_FEATURES MODULES"
-fi
 # Remove extraneous spaces from output variables (asthetic)
 DELEGATES=`echo $DELEGATES | sed -e 's/  */ /g'`
 MAGICK_FEATURES=`echo $MAGICK_FEATURES | sed -e 's/  */ /g'`
+
 
 
 #
