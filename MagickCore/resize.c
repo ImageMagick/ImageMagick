@@ -2608,8 +2608,6 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
 MagickExport Image *ResizeImage(const Image *image,const size_t columns,
   const size_t rows,const FilterTypes filter,ExceptionInfo *exception)
 {
-#define WorkLoadFactor  0.265
-
   FilterTypes
     filter_type;
 
@@ -2655,7 +2653,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
   */
   x_factor=(double) columns/(double) image->columns;
   y_factor=(double) rows/(double) image->rows;
-  if ((x_factor*y_factor) < WorkLoadFactor)
+  if (x_factor > y_factor)
     filter_image=CloneImage(image,columns,image->rows,MagickTrue,exception);
   else
     filter_image=CloneImage(image,image->columns,rows,MagickTrue,exception);
@@ -2677,7 +2675,7 @@ MagickExport Image *ResizeImage(const Image *image,const size_t columns,
     Resize image.
   */
   offset=0;
-  if ((x_factor*y_factor) < WorkLoadFactor)
+  if (x_factor > y_factor)
     {
       span=(MagickSizeType) (filter_image->columns+rows);
       status=HorizontalFilter(resize_filter,image,filter_image,x_factor,span,
