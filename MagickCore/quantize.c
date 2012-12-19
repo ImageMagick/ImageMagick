@@ -543,7 +543,7 @@ static MagickBooleanType AssignImageColors(Image *image,CubeInfo *cube_info,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        dynamic_number_threads(image,image,image->rows,1)
+        magick_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -2377,7 +2377,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   if (image->storage_class == PseudoClass)
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static,4) shared(progress,status) \
-      dynamic_number_threads(image,image,image->colors,1)
+      magick_threads(image,image,image->colors,1)
 #endif
     for (i=0; i < (ssize_t) image->colors; i++)
     {
@@ -2405,7 +2405,7 @@ MagickExport MagickBooleanType PosterizeImage(Image *image,const size_t levels,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image,image,image->rows,1)
+    magick_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -3304,7 +3304,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
       image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) shared(status) \
-        dynamic_number_threads(image,image,image->rows,1)
+        magick_threads(image,image,image->rows,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -3381,7 +3381,7 @@ static MagickBooleanType SetGrayscaleImage(Image *image,
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    dynamic_number_threads(image,image,image->rows,1)
+    magick_threads(image,image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {

@@ -292,7 +292,7 @@ WandExport MagickBooleanType DuplexTransferWandViewIterator(WandView *source,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=source->extent.height-source->extent.y;
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    dynamic_number_threads(source_image,destination_image,height,1)
+    magick_threads(source_image,destination_image,height,1)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -545,7 +545,7 @@ WandExport MagickBooleanType GetWandViewIterator(WandView *source,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=source->extent.height-source->extent.y;
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    dynamic_number_threads(source_image,source_image,height,1)
+    magick_threads(source_image,source_image,height,1)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -948,7 +948,7 @@ WandExport MagickBooleanType SetWandViewIterator(WandView *destination,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=destination->extent.height-destination->extent.y;
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    dynamic_number_threads(destination_image,destination_image,height,1)
+    magick_threads(destination_image,destination_image,height,1)
 #endif
   for (y=destination->extent.y; y < (ssize_t) destination->extent.height; y++)
   {
@@ -1085,7 +1085,7 @@ WandExport MagickBooleanType TransferWandViewIterator(WandView *source,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=source->extent.height-source->extent.y;
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    dynamic_number_threads(source_image,destination_image,height,1)
+    magick_threads(source_image,destination_image,height,1)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
@@ -1239,7 +1239,7 @@ WandExport MagickBooleanType UpdateWandViewIterator(WandView *source,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   height=source->extent.height-source->extent.y;
   #pragma omp parallel for schedule(static) shared(progress,status) \
-    dynamic_number_threads(source_image,source_image,height,1)
+    magick_threads(source_image,source_image,height,1)
 #endif
   for (y=source->extent.y; y < (ssize_t) source->extent.height; y++)
   {
