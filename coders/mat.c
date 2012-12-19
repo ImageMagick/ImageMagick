@@ -856,17 +856,6 @@ NEXT_FRAME:
       }
 
 
-    /* ----- Create gray palette ----- */
-
-    if (CellType==miUINT8 && z!=3)
-    {
-      if(image->colors>256) image->colors = 256;
-
-      if (!AcquireImageColormap(image, image->colors))
-      {
- NoMemory:ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");}
-    }
-
     /*
       If ping is true, then only set image size and colors without
       reading any image data.
