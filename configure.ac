@@ -3891,7 +3891,6 @@ CC=`echo $CC | sed -e 's/  */ /g'`
 CFLAGS=`echo $CFLAGS | sed -e 's/  */ /g'`
 CPPFLAGS=`echo $CPPFLAGS | sed -e 's/  */ /g'`
 CXXFLAGS=`echo $CXXFLAGS | sed -e 's/  */ /g'`
-DELEGATES=`echo $DELEGATES | sed -e 's/^ //g'`
 DISTCHECK_CONFIG_FLAGS=`echo $DISTCHECK_CONFIG_FLAGS | sed -e 's/  */ /g'`
 LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
 TESTED_LIBS=`echo $LIBS | sed -e 's/  */ /g'`
