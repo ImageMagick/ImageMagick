@@ -2644,7 +2644,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
 
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
     #pragma omp parallel for schedule(static,4) shared(progress,status) \
-      dynamic_number_threads(image,result_image,image->columns,1)
+      magick_threads(image,result_image,image->columns,1)
 #endif
     for (x=0; x < (ssize_t) image->columns; x++)
     {
@@ -2831,7 +2831,7 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    dynamic_number_threads(image,result_image,image->rows,1)
+    magick_threads(image,result_image,image->rows,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
