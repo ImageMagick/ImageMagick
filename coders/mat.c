@@ -864,7 +864,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
   /* ----- Load raster data ----- */
     BImgBuff = (unsigned char *) AcquireQuantumMemory((size_t) (ldblk),sizeof(unsigned char *));    /* Ldblk was set in the check phase */
     if (BImgBuff == NULL)
-      goto NoMemory;
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
 
     MinVal = 0;
     MaxVal = 0;
