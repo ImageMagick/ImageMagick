@@ -4148,6 +4148,7 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
     *shade_view;
 
   Image
+    *linear_image,
     *shade_image;
 
   MagickBooleanType
@@ -4171,12 +4172,22 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  linear_image=CloneImage(image,0,0,MagickTrue,exception);
   shade_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
-  if (shade_image == (Image *) NULL)
-    return((Image *) NULL);
+  if ((linear_image == (Image *) NULL) || (shade_image == (Image *) NULL))
+    {
+      if (linear_image != (Image *) NULL)
+        linear_image=DestroyImage(linear_image);
+      if (shade_image != (Image *) NULL)
+        shade_image=DestroyImage(shade_image);
+      return((Image *) NULL);
+    }
+  if (image->colorspace == sRGBColorspace)
+    (void) TransformImageColorspace(linear_image,RGBColorspace);
   if (SetImageStorageClass(shade_image,DirectClass) == MagickFalse)
     {
       InheritException(exception,&shade_image->exception);
+      linear_image=DestroyImage(linear_image);
       shade_image=DestroyImage(shade_image);
       return((Image *) NULL);
     }
@@ -4193,13 +4204,13 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image,exception);
+  image_view=AcquireVirtualCacheView(linear_image,exception);
   shade_view=AcquireAuthenticCacheView(shade_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    magick_threads(image,shade_image,image->rows,1)
+    magick_threads(linear_image,shade_image,linear_image->rows,1)
 #endif
-  for (y=0; y < (ssize_t) image->rows; y++)
+  for (y=0; y < (ssize_t) linear_image->rows; y++)
   {
     MagickRealType
       distance,
@@ -4223,7 +4234,8 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view,-1,y-1,image->columns+2,3,exception);
+    p=GetCacheViewVirtualPixels(image_view,-1,y-1,linear_image->columns+2,3,
+      exception);
     q=QueueCacheViewAuthenticPixels(shade_view,0,y,shade_image->columns,1,
       exception);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -4238,19 +4250,23 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
     s0=p+1;
     s1=s0+image->columns+2;
     s2=s1+image->columns+2;
-    for (x=0; x < (ssize_t) image->columns; x++)
+    for (x=0; x < (ssize_t) linear_image->columns; x++)
     {
       /*
         Determine the surface normal and compute shading.
       */
-      normal.x=(double) (GetPixelIntensity(image,s0-1)+
-        GetPixelIntensity(image,s1-1)+GetPixelIntensity(image,s2-1)-
-        GetPixelIntensity(image,s0+1)-GetPixelIntensity(image,s1+1)-
-        GetPixelIntensity(image,s2+1));
-      normal.y=(double) (GetPixelIntensity(image,s2-1)+
-        GetPixelIntensity(image,s2)+GetPixelIntensity(image,s2+1)-
-        GetPixelIntensity(image,s0-1)-GetPixelIntensity(image,s0)-
-        GetPixelIntensity(image,s0+1));
+      normal.x=(double) (GetPixelIntensity(linear_image,s0-1)+
+        GetPixelIntensity(linear_image,s1-1)+
+        GetPixelIntensity(linear_image,s2-1)-
+        GetPixelIntensity(linear_image,s0+1)-
+        GetPixelIntensity(linear_image,s1+1)-
+        GetPixelIntensity(linear_image,s2+1));
+      normal.y=(double) (GetPixelIntensity(linear_image,s2-1)+
+        GetPixelIntensity(linear_image,s2)+
+        GetPixelIntensity(linear_image,s2+1)-
+        GetPixelIntensity(linear_image,s0-1)-
+        GetPixelIntensity(linear_image,s0)-
+        GetPixelIntensity(linear_image,s0+1));
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else
@@ -4259,8 +4275,8 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
           distance=normal.x*light.x+normal.y*light.y+normal.z*light.z;
           if (distance > MagickEpsilon)
             {
-              normal_distance=
-                normal.x*normal.x+normal.y*normal.y+normal.z*normal.z;
+              normal_distance=normal.x*normal.x+normal.y*normal.y+normal.z*
+                normal.z;
               if (normal_distance > (MagickEpsilon*MagickEpsilon))
                 shade=distance/sqrt((double) normal_distance);
             }
@@ -4300,6 +4316,9 @@ MagickExport Image *ShadeImage(const Image *image,const MagickBooleanType gray,
   }
   shade_view=DestroyCacheView(shade_view);
   image_view=DestroyCacheView(image_view);
+  linear_image=DestroyImage(linear_image);
+  if (image->colorspace == sRGBColorspace)
+    (void) TransformImageColorspace(shade_image,sRGBColorspace);
   if (status == MagickFalse)
     shade_image=DestroyImage(shade_image);
   return(shade_image);

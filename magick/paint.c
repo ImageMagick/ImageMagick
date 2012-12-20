@@ -707,7 +707,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     }
     if (SyncCacheViewAuthenticPixels(paint_view,exception) == MagickFalse)
       status=MagickFalse;
-    if (linear_image->progress_monitor != (MagickProgressMonitor) NULL)
+    if (image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
           proceed;
@@ -715,8 +715,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_OilPaintImage)
 #endif
-        proceed=SetImageProgress(linear_image,OilPaintImageTag,progress++,
-          linear_image->rows);
+        proceed=SetImageProgress(image,OilPaintImageTag,progress++,image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
