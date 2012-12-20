@@ -68,6 +68,9 @@
         <message name="UnableToReadPixelCache">
           unable to read pixel cache
         </message>
+        <message name="UnableToWritePixelCache">
+          unable to write pixel cache
+        </message>
       </error>
       <fatalerror>
         <message name="UnableToAcquireCacheView">
