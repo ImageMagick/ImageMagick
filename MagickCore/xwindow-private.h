@@ -603,9 +603,9 @@ static inline double XPixelIntensity(const XColor *pixel)
     green,
     red;
 
-  red=sRGBExpandGamma((MagickRealType) pixel->red);
-  green=sRGBExpandGamma((MagickRealType) pixel->green);
-  blue=sRGBExpandGamma((MagickRealType) pixel->blue);
+  red=ExpandPixelGamma((MagickRealType) pixel->red);
+  green=ExpandPixelGamma((MagickRealType) pixel->green);
+  blue=ExpandPixelGamma((MagickRealType) pixel->blue);
   return(0.298839f*red+0.586811f*green+0.114350f*blue);
 }
 
