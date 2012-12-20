@@ -96,9 +96,9 @@ static inline MagickRealType MagickPixelIntensity(
     return(pixel->red);
   if (pixel->colorspace != sRGBColorspace)
     return(0.298839f*pixel->red+0.586811f*pixel->green+0.114350f*pixel->blue);
-  red=DecodesRGBGamma(pixel->red);
-  green=DecodesRGBGamma(pixel->green);
-  blue=DecodesRGBGamma(pixel->blue);
+  red=sRGBExpandGamma(pixel->red);
+  green=sRGBExpandGamma(pixel->green);
+  blue=sRGBExpandGamma(pixel->blue);
   return(0.298839f*red+0.586811f*green+0.114350f*blue);
 }
 
@@ -115,9 +115,9 @@ static inline Quantum MagickPixelIntensityToQuantum(
   if (pixel->colorspace != sRGBColorspace)
     return(ClampToQuantum(0.298839f*pixel->red+0.586811f*pixel->green+
       0.114350f*pixel->blue));
-  red=DecodesRGBGamma(pixel->red);
-  green=DecodesRGBGamma(pixel->green);
-  blue=DecodesRGBGamma(pixel->blue);
+  red=sRGBExpandGamma(pixel->red);
+  green=sRGBExpandGamma(pixel->green);
+  blue=sRGBExpandGamma(pixel->blue);
   return(ClampToQuantum(0.298839f*red+0.586811f*green+0.114350f*blue));
 }
 
@@ -133,9 +133,9 @@ static inline MagickRealType MagickPixelLuminance(
     return(pixel->red);
   if (pixel->colorspace != sRGBColorspace)
     return(0.21267f*pixel->red+0.71516f*pixel->green+0.07217f*pixel->blue);
-  red=DecodesRGBGamma(pixel->red);
-  green=DecodesRGBGamma(pixel->green);
-  blue=DecodesRGBGamma(pixel->blue);
+  red=sRGBExpandGamma(pixel->red);
+  green=sRGBExpandGamma(pixel->green);
+  blue=sRGBExpandGamma(pixel->blue);
   return(0.21267f*red+0.71516f*green+0.07217f*blue);
 }
 

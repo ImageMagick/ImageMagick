@@ -688,8 +688,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       }
       *q=(*(p+j));
       if (image->colorspace == CMYKColorspace)
-        SetPixelIndex(paint_indexes+x,GetPixelIndex(
-          indexes+x+j));
+        SetPixelIndex(paint_indexes+x,GetPixelIndex(indexes+x+j));
       p++;
       q++;
     }
