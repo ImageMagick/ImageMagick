@@ -32,18 +32,18 @@ extern "C" {
 
 #undef index
 
-static inline MagickRealType DecodesRGBGamma(const MagickRealType pixel)
-{
-  if (pixel <= (0.0404482362771076*QuantumRange))
-    return(pixel/12.92f);
-  return(QuantumRange*pow((double) (QuantumScale*pixel+0.055)/1.055,2.4));
-}
-
-static inline MagickRealType EncodesRGBGamma(const MagickRealType pixel)
+static inline MagickRealType sRGBCompressGamma(const MagickRealType pixel)
 {
   if (pixel <= (0.0031306684425005883*QuantumRange))
     return(12.92f*pixel);
   return(QuantumRange*(1.055*pow((double) QuantumScale*pixel,1.0/2.4)-0.055));
+}
+
+static inline MagickRealType sRGBExpandGamma(const MagickRealType pixel)
+{
+  if (pixel <= (0.0404482362771076*QuantumRange))
+    return(pixel/12.92f);
+  return(QuantumRange*pow((double) (QuantumScale*pixel+0.055)/1.055,2.4));
 }
 
 static inline Quantum GetPixela(const Image *restrict image,
@@ -222,9 +222,9 @@ static inline MagickRealType GetPixelInfoIntensity(
   if (pixel_info->colorspace != sRGBColorspace)
     return(0.298839f*pixel_info->red+0.586811f*pixel_info->green+
       0.114350f*pixel_info->blue);
-  red=DecodesRGBGamma(pixel_info->red);
-  green=DecodesRGBGamma(pixel_info->green);
-  blue=DecodesRGBGamma(pixel_info->blue);
+  red=sRGBExpandGamma(pixel_info->red);
+  green=sRGBExpandGamma(pixel_info->green);
+  blue=sRGBExpandGamma(pixel_info->blue);
   return(0.298839f*red+0.586811f*green+0.114350f*blue);
 }
 
@@ -241,9 +241,9 @@ static inline MagickRealType GetPixelInfoLuminance(
   if (pixel_info->colorspace != sRGBColorspace)
     return(0.21267f*pixel_info->red+0.71516f*pixel_info->green+
       0.07217f*pixel_info->blue);
-  red=DecodesRGBGamma(pixel_info->red);
-  green=DecodesRGBGamma(pixel_info->green);
-  blue=DecodesRGBGamma(pixel_info->blue);
+  red=sRGBExpandGamma(pixel_info->red);
+  green=sRGBExpandGamma(pixel_info->green);
+  blue=sRGBExpandGamma(pixel_info->blue);
   return(0.21267f*red+0.71516f*green+0.07217f*blue);
 }
 
@@ -261,11 +261,11 @@ static inline MagickRealType GetPixelIntensity(const Image *restrict image,
     return(0.298839f*pixel[image->channel_map[RedPixelChannel].offset]+
       0.586811f*pixel[image->channel_map[GreenPixelChannel].offset]+
       0.114350f*pixel[image->channel_map[BluePixelChannel].offset]);
-  red=DecodesRGBGamma((MagickRealType)
+  red=sRGBExpandGamma((MagickRealType)
     pixel[image->channel_map[RedPixelChannel].offset]);
-  green=DecodesRGBGamma((MagickRealType)
+  green=sRGBExpandGamma((MagickRealType)
     pixel[image->channel_map[GreenPixelChannel].offset]);
-  blue=DecodesRGBGamma((MagickRealType)
+  blue=sRGBExpandGamma((MagickRealType)
     pixel[image->channel_map[BluePixelChannel].offset]);
   return(0.298839f*red+0.586811f*green+0.114350f*blue);
 }
@@ -290,11 +290,11 @@ static inline MagickRealType GetPixelLuminance(const Image *restrict image,
     return(0.298839f*pixel[image->channel_map[RedPixelChannel].offset]+
       0.586811f*pixel[image->channel_map[GreenPixelChannel].offset]+
       0.114350f*pixel[image->channel_map[BluePixelChannel].offset]);
-  red=DecodesRGBGamma((MagickRealType)
+  red=sRGBExpandGamma((MagickRealType)
     pixel[image->channel_map[RedPixelChannel].offset]);
-  green=DecodesRGBGamma((MagickRealType)
+  green=sRGBExpandGamma((MagickRealType)
     pixel[image->channel_map[GreenPixelChannel].offset]);
-  blue=DecodesRGBGamma((MagickRealType)
+  blue=sRGBExpandGamma((MagickRealType)
     pixel[image->channel_map[BluePixelChannel].offset]);
   return(0.21267f*red+0.71516f*green+0.07217f*blue);
 }

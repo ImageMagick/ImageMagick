@@ -46,9 +46,9 @@ static inline void ConvertRGBToCMYK(PixelInfo *pixel)
     }
   else
     {
-      red=DecodesRGBGamma(pixel->red);
-      green=DecodesRGBGamma(pixel->green);
-      blue=DecodesRGBGamma(pixel->blue);
+      red=sRGBExpandGamma(pixel->red);
+      green=sRGBExpandGamma(pixel->green);
+      blue=sRGBExpandGamma(pixel->blue);
     }
   if ((fabs(red) < MagickEpsilon) && (fabs(green) < MagickEpsilon) &&
       (fabs(blue) < MagickEpsilon))
