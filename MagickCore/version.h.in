@@ -37,27 +37,7 @@ extern "C" {
 #define MagickReleaseDate  "@PACKAGE_RELEASE_DATE@"
 #define MagickChangeDate   "@PACKAGE_CHANGE_DATE@"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-#define MagickOpenMPFeature  "OpenMP "
-#else
-#define MagickOpenMPFeature  " "
-#endif
-#if defined(MAGICKCORE_OPENCL_SUPPORT)
-#define MagickOpenCLFeature  "OpenCL "
-#else
-#define MagickOpenCLFeature  " "
-#endif
-#if defined(MAGICKCORE_HDRI_SUPPORT)
-#define MagickHDRIFeature  "HDRI "
-#else
-#define MagickHDRIFeature  " "
-#endif
-#if defined(MAGICKCORE_ZERO_CONFIGURATION_SUPPORT)
-#define MagickZeroConfigurationFeature  "Zero-Configuration "
-#else
-#define MagickZeroConfigurationFeature  " "
-#endif
-#define MagickFeatures MagickOpenMPFeature MagickOpenCLFeature MagickHDRIFeature MagickZeroConfigurationFeature
+#define MagickFeatures "@MAGICK_FEATURES@"
 #define MagickHomeURL  "file://@DOCUMENTATION_PATH@/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"
