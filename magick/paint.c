@@ -566,6 +566,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     *paint_view;
 
   Image
+    *linear_image,
     *paint_image;
 
   MagickBooleanType
@@ -591,18 +592,29 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,0.5);
+  linear_image=CloneImage(image,0,0,MagickTrue,exception);
   paint_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
-  if (paint_image == (Image *) NULL)
-    return((Image *) NULL);
+  if ((linear_image == (Image *) NULL) || (paint_image == (Image *) NULL))
+    {
+      if (linear_image != (Image *) NULL)
+        linear_image=DestroyImage(linear_image);
+      if (paint_image != (Image *) NULL)
+        linear_image=DestroyImage(paint_image);
+      return((Image *) NULL);
+    }
+  if (image->colorspace == sRGBColorspace)
+    (void) TransformImageColorspace(linear_image,RGBColorspace);
   if (SetImageStorageClass(paint_image,DirectClass) == MagickFalse)
     {
       InheritException(exception,&paint_image->exception);
+      linear_image=DestroyImage(linear_image);
       paint_image=DestroyImage(paint_image);
       return((Image *) NULL);
     }
   histograms=AcquireHistogramThreadSet(NumberPaintBins);
   if (histograms == (size_t **) NULL)
     {
+      linear_image=DestroyImage(linear_image);
       paint_image=DestroyImage(paint_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
@@ -611,13 +623,13 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   */
   status=MagickTrue;
   progress=0;
-  image_view=AcquireVirtualCacheView(image,exception);
+  image_view=AcquireVirtualCacheView(linear_image,exception);
   paint_view=AcquireAuthenticCacheView(paint_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    magick_threads(image,paint_image,image->rows,1)
+    magick_threads(linear_image,paint_image,linear_image->rows,1)
 #endif
-  for (y=0; y < (ssize_t) image->rows; y++)
+  for (y=0; y < (ssize_t) linear_image->rows; y++)
   {
     register const IndexPacket
       *restrict indexes;
@@ -640,7 +652,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     if (status == MagickFalse)
       continue;
     p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y-(ssize_t)
-      (width/2L),image->columns+width,width,exception);
+      (width/2L),linear_image->columns+width,width,exception);
     q=QueueCacheViewAuthenticPixels(paint_view,0,y,paint_image->columns,1,
       exception);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -651,7 +663,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     paint_indexes=GetCacheViewAuthenticIndexQueue(paint_view);
     histogram=histograms[GetOpenMPThreadId()];
-    for (x=0; x < (ssize_t) image->columns; x++)
+    for (x=0; x < (ssize_t) linear_image->columns; x++)
     {
       register ssize_t
         i,
@@ -676,7 +688,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       {
         for (u=0; u < (ssize_t) width; u++)
         {
-          k=(ssize_t) ScaleQuantumToChar(PixelIntensityToQuantum(image,p+u+i));
+          k=(ssize_t) ScaleQuantumToChar(PixelIntensityToQuantum(linear_image,
+            p+u+i));
           histogram[k]++;
           if (histogram[k] > count)
             {
@@ -684,17 +697,17 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
               count=histogram[k];
             }
         }
-        i+=(ssize_t) (image->columns+width);
+        i+=(ssize_t) (linear_image->columns+width);
       }
       *q=(*(p+j));
-      if (image->colorspace == CMYKColorspace)
+      if (linear_image->colorspace == CMYKColorspace)
         SetPixelIndex(paint_indexes+x,GetPixelIndex(indexes+x+j));
       p++;
       q++;
     }
     if (SyncCacheViewAuthenticPixels(paint_view,exception) == MagickFalse)
       status=MagickFalse;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
+    if (linear_image->progress_monitor != (MagickProgressMonitor) NULL)
       {
         MagickBooleanType
           proceed;
@@ -702,7 +715,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
         #pragma omp critical (MagickCore_OilPaintImage)
 #endif
-        proceed=SetImageProgress(image,OilPaintImageTag,progress++,image->rows);
+        proceed=SetImageProgress(linear_image,OilPaintImageTag,progress++,
+          linear_image->rows);
         if (proceed == MagickFalse)
           status=MagickFalse;
       }
@@ -710,6 +724,9 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   paint_view=DestroyCacheView(paint_view);
   image_view=DestroyCacheView(image_view);
   histograms=DestroyHistogramThreadSet(histograms);
+  linear_image=DestroyImage(linear_image);
+  if (image->colorspace == sRGBColorspace)
+    (void) TransformImageColorspace(paint_image,sRGBColorspace);
   if (status == MagickFalse)
     paint_image=DestroyImage(paint_image);
   return(paint_image);
