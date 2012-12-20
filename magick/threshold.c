@@ -2106,22 +2106,21 @@ MagickExport MagickBooleanType RandomThresholdImageChannel(Image *image,
                 GetPseudoRandomValue(random_info[id]));
         }
       if ((channel & RedChannel) != 0)
-        SetPixelRed(q,(MagickRealType) GetPixelRed(q) <=
-          threshold.red ? 0 : QuantumRange);
+        SetPixelRed(q,(MagickRealType) GetPixelRed(q) <= threshold.red ?
+          0 : QuantumRange);
       if ((channel & GreenChannel) != 0)
-        SetPixelGreen(q,(MagickRealType) GetPixelGreen(q) <=
-          threshold.green ? 0 : QuantumRange);
+        SetPixelGreen(q,(MagickRealType) GetPixelGreen(q) <= threshold.green ?
+          0 : QuantumRange);
       if ((channel & BlueChannel) != 0)
-        SetPixelBlue(q,(MagickRealType) GetPixelBlue(q) <=
-          threshold.blue ? 0 : QuantumRange);
+        SetPixelBlue(q,(MagickRealType) GetPixelBlue(q) <= threshold.blue ?
+          0 : QuantumRange);
       if ((channel & OpacityChannel) != 0)
-        SetPixelOpacity(q,(MagickRealType) GetPixelOpacity(q)
-          <= threshold.opacity ? 0 : QuantumRange);
+        SetPixelOpacity(q,(MagickRealType) GetPixelOpacity(q) <=
+          threshold.opacity ? 0 : QuantumRange);
       if (((channel & IndexChannel) != 0) &&
           (image->colorspace == CMYKColorspace))
-        SetPixelIndex(indexes+x,(MagickRealType)
-          GetPixelIndex(indexes+x) <= threshold.index ? 0 :
-          QuantumRange);
+        SetPixelIndex(indexes+x,(MagickRealType) GetPixelIndex(indexes+x) <=
+          threshold.index ? 0 : QuantumRange);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
