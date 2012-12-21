@@ -1265,7 +1265,7 @@ MagickExport void GetImageException(Image *image,ExceptionInfo *exception)
 */
 MagickExport void GetImageInfo(ImageInfo *image_info)
 {
-  const char
+  char
     *synchronize;
 
   ExceptionInfo
@@ -1285,7 +1285,10 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->dither=MagickTrue;
   synchronize=GetEnvironmentValue("MAGICK_SYNCHRONIZE");
   if (synchronize != (const char *) NULL)
-    image_info->synchronize=IsMagickTrue(synchronize);
+    {
+      image_info->synchronize=IsStringTrue(synchronize);
+      synchronize=DestroyString(synchronize);
+    }
   exception=AcquireExceptionInfo();
   (void) QueryColorDatabase(BackgroundColor,&image_info->background_color,
     exception);
