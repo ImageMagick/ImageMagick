@@ -184,8 +184,6 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((width % 2) == 0)
-    ThrowImageException(OptionError,"KernelWidthMustBeAnOddNumber");
   threshold_image=CloneImage(image,image->columns,image->rows,MagickTrue,
     exception);
   if (threshold_image == (Image *) NULL)

@@ -1949,8 +1949,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
             geometry_info.sigma=1.0;
           if ((flags & XiValue) == 0)
             geometry_info.xi=1.0;
-          new_image=CharcoalImage(_image,geometry_info.rho,
-            geometry_info.sigma,_exception);
+          new_image=CharcoalImage(_image,geometry_info.rho,geometry_info.sigma,
+            _exception);
           break;
         }
       if (LocaleCompare("chop",option+1) == 0)
