@@ -1533,8 +1533,7 @@ MagickExport MagickBooleanType EqualizeImage(Image *image,
     GetPixelChannels(image)*sizeof(*histogram));
   map=(double *) AcquireQuantumMemory(MaxMap+1UL,
     GetPixelChannels(image)*sizeof(*map));
-  if ((equalize_map == (double *) NULL) ||
-      (histogram == (double *) NULL) ||
+  if ((equalize_map == (double *) NULL) || (histogram == (double *) NULL) ||
       (map == (double *) NULL))
     {
       if (map != (double *) NULL)
