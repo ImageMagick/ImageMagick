@@ -192,6 +192,9 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
   CacheInfo
     *cache_info;
 
+  char
+    *synchronize;
+
   cache_info=(CacheInfo *) AcquireQuantumMemory(1,sizeof(*cache_info));
   if (cache_info == (CacheInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
@@ -211,6 +214,12 @@ MagickPrivate Cache AcquirePixelCache(const size_t number_threads)
   cache_info->nexus_info=AcquirePixelCacheNexus(cache_info->number_threads);
   if (cache_info->nexus_info == (NexusInfo **) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  synchronize=GetEnvironmentValue("MAGICK_SYNCHRONIZE");
+  if (synchronize != (const char *) NULL)
+    {
+      cache_info->synchronize=IsStringTrue(synchronize);
+      synchronize=DestroyString(synchronize);
+    }
   cache_info->semaphore=AllocateSemaphoreInfo();
   cache_info->reference_count=1;
   cache_info->file_semaphore=AllocateSemaphoreInfo();
@@ -3691,6 +3700,17 @@ static MagickBooleanType SetPixelCacheExtent(Image *image,MagickSizeType length)
     return(MagickTrue);
   extent=(MagickOffsetType) length-1;
   count=WritePixelCacheRegion(cache_info,extent,1,(const unsigned char *) "");
+#if defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
+  if (cache_info->synchronize != MagickFalse)
+    {
+      int
+        status;
+
+      status=posix_fallocate(cache_info->file,offset+1,extent-offset);
+      if (status != 0)
+        return(MagickFalse);
+    }
+#endif
   return(count != (MagickOffsetType) 1 ? MagickFalse : MagickTrue);
 }
 

@@ -175,6 +175,7 @@ typedef struct _CacheInfo
     *random_info;
 
   MagickBooleanType
+    synchronize,
     debug;
 
   MagickThreadType

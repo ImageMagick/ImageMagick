@@ -560,10 +560,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
     case FileStream:
     {
       if (image->blob->synchronize != MagickFalse)
-        {
-          status=fflush(image->blob->file_info.file);
-          status=fsync(fileno(image->blob->file_info.file));
-        }
+        status=fsync(fileno(image->blob->file_info.file));
       status=fclose(image->blob->file_info.file);
       break;
     }
@@ -3748,6 +3745,18 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
         break;
       offset=SeekBlob(image,(MagickOffsetType) extent-1,SEEK_SET);
       count=fwrite((const unsigned char *) "",1,1,image->blob->file_info.file);
+#if defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
+      if (image->blob->synchronize != MagickFalse)
+        {
+          int
+            status;
+
+          status=posix_fallocate(fileno(image->blob->file_info.file),offset,
+            extent-offset);
+          if (status != 0)
+            return(MagickFalse);
+        }
+#endif
       offset=SeekBlob(image,offset,SEEK_SET);
       if (count != (MagickOffsetType) 1)
         return(MagickFalse);
@@ -3783,6 +3792,18 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
           offset=SeekBlob(image,(MagickOffsetType) extent-1,SEEK_SET);
           count=fwrite((const unsigned char *) "",1,1,
             image->blob->file_info.file);
+#if defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
+          if (image->blob->synchronize != MagickFalse)
+            {
+              int
+                status;
+
+              status=posix_fallocate(fileno(image->blob->file_info.file),offset,
+                extent-offset);
+              if (status != 0)
+                return(MagickFalse);
+            }
+#endif
           offset=SeekBlob(image,offset,SEEK_SET);
           if (count != (MagickOffsetType) 1)
             return(MagickTrue);
