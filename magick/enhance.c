@@ -1761,6 +1761,7 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
     *exception;
 
   MagickBooleanType
+    linear,
     status;
 
   MagickOffsetType
@@ -1811,6 +1812,12 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   /*
     Form histogram.
   */
+  linear=MagickFalse;
+  if (image->colorspace == sRGBColorspace)
+    {
+      linear=MagickTrue;
+      (void) TransformImageColorspace(image,RGBColorspace);
+    }
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*sizeof(*histogram));
   exception=(&image->exception);
   image_view=AcquireVirtualCacheView(image,exception);
@@ -1829,28 +1836,29 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
     if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetCacheViewVirtualIndexQueue(image_view);
-    for (x=0; x < (ssize_t) image->columns; x++)
-    {
-      if ((channel & SyncChannels) != 0)
-        {
-          histogram[ScaleQuantumToMap(ClampToQuantum(
-            GetPixelIntensity(image,p)))].red++;
-          p++;
-          continue;
-        }
-      if ((channel & RedChannel) != 0)
-        histogram[ScaleQuantumToMap(GetPixelRed(p))].red++;
-      if ((channel & GreenChannel) != 0)
-        histogram[ScaleQuantumToMap(GetPixelGreen(p))].green++;
-      if ((channel & BlueChannel) != 0)
-        histogram[ScaleQuantumToMap(GetPixelBlue(p))].blue++;
-      if ((channel & OpacityChannel) != 0)
-        histogram[ScaleQuantumToMap(GetPixelOpacity(p))].opacity++;
-      if (((channel & IndexChannel) != 0) &&
-          (image->colorspace == CMYKColorspace))
-        histogram[ScaleQuantumToMap(GetPixelIndex(indexes+x))].index++;
-      p++;
-    }
+    if ((channel & SyncChannels) != 0)
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        MagickRealType intensity=GetPixelIntensity(image,p);
+        histogram[ScaleQuantumToMap(ClampToQuantum(intensity))].red++;
+        p++;
+      }
+   else
+      for (x=0; x < (ssize_t) image->columns; x++)
+      {
+        if ((channel & RedChannel) != 0)
+          histogram[ScaleQuantumToMap(GetPixelRed(p))].red++;
+        if ((channel & GreenChannel) != 0)
+          histogram[ScaleQuantumToMap(GetPixelGreen(p))].green++;
+        if ((channel & BlueChannel) != 0)
+          histogram[ScaleQuantumToMap(GetPixelBlue(p))].blue++;
+        if ((channel & OpacityChannel) != 0)
+          histogram[ScaleQuantumToMap(GetPixelOpacity(p))].opacity++;
+        if (((channel & IndexChannel) != 0) &&
+            (image->colorspace == CMYKColorspace))
+          histogram[ScaleQuantumToMap(GetPixelIndex(indexes+x))].index++;
+        p++;
+      }
   }
   image_view=DestroyCacheView(image_view);
   /*
@@ -2034,6 +2042,8 @@ MagickExport MagickBooleanType EqualizeImageChannel(Image *image,
   }
   image_view=DestroyCacheView(image_view);
   equalize_map=(QuantumPixelPacket *) RelinquishMagickMemory(equalize_map);
+  if (linear != MagickFalse)
+    (void) TransformImageColorspace(image,sRGBColorspace);
   return(status);
 }
 
