@@ -37,7 +37,7 @@ extern "C" {
 #define MagickReleaseDate  "@PACKAGE_RELEASE_DATE@"
 #define MagickChangeDate   "@PACKAGE_CHANGE_DATE@"
 #define MagickFeatures "@MAGICK_FEATURES@"
-#define MagickDelagates "@MAGICK_DELEGATES@"
+#define MagickDelegates "@MAGICK_DELEGATES@"
 #define MagickHomeURL  "file://@DOCUMENTATION_PATH@/index.html"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
