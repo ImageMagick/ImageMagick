@@ -187,6 +187,7 @@ static MagickBooleanType ImportUsage(void)
   (void) printf("Version: %s\n",GetMagickVersion((size_t *) NULL));
   (void) printf("Copyright: %s\n",GetMagickCopyright());
   (void) printf("Features: %s\n\n",GetMagickFeatures());
+  (void) printf("Delegates: %s\n\n",GetMagickDelegates());
   (void) printf("Usage: %s [options ...] [ file ]\n",
     GetClientName());
   (void) printf("\nImage Settings:\n");

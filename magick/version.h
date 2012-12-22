@@ -34,9 +34,10 @@ extern "C" {
 #define MagickLibAddendum  "-2"
 #define MagickLibInterface  7
 #define MagickLibMinInterface  7
-#define MagickReleaseDate  "2012-12-21"
+#define MagickReleaseDate  "2012-12-22"
 #define MagickChangeDate   "20121223"
-#define MagickFeatures "OpenMP BZLIB Freetype JP2 JPEG LCMS PS TIFF X ZLIB"
+#define MagickFeatures "OpenMP"
+#define MagickDelagates "bzlib freetype jp2 jpeg lcms ps tiff x zlib"
 #define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-6.8.1/index.html"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
@@ -64,6 +65,7 @@ extern MagickExport char
 
 extern MagickExport const char
   *GetMagickCopyright(void),
+  *GetMagickDelegates(void),
   *GetMagickFeatures(void),
   *GetMagickPackageName(void),
   *GetMagickQuantumDepth(size_t *),
