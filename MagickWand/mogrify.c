@@ -3664,7 +3664,9 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
             GetMagickVersion((size_t *) NULL));
           (void) FormatLocaleFile(stdout,"Copyright: %s\n",
             GetMagickCopyright());
-          (void) FormatLocaleFile(stdout,"Features: %s\n\n",
+          (void) FormatLocaleFile(stdout,"Features: %s\n",
+            GetMagickFeatures());
+          (void) FormatLocaleFile(stdout,"Delegates: %s\n\n",
             GetMagickFeatures());
           return(MagickFalse);
         }
