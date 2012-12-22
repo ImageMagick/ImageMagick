@@ -38,6 +38,7 @@ extern "C" {
 #define MagickChangeDate   "@PACKAGE_CHANGE_DATE@"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #define MagickFeatures "@MAGICK_FEATURES@"
+#define MagickDelegates "@MAGICK_DELEGATES@"
 #define MagickHomeURL  "file://@DOCUMENTATION_PATH@/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"
@@ -64,6 +65,7 @@ extern MagickExport char
 
 extern MagickExport const char
   *GetMagickCopyright(void),
+  *GetMagickDelegates(void),
   *GetMagickFeatures(void),
   *GetMagickPackageName(void),
   *GetMagickQuantumDepth(size_t *),

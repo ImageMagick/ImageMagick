@@ -16,7 +16,7 @@
   <configure name="CXXFLAGS" value="@CXXFLAGS@"/>
   <configure name="CXX" value="@CXX@"/>
   <configure name="DEFS" value="@DEFS@"/>
-  <configure name="DELEGATES" value="@DELEGATES@"/>
+  <configure name="DELEGATES" value="@MAGICK_DELEGATES@"/>
   <configure name="DISTCHECK_CONFIG_FLAGS" value="@DISTCHECK_CONFIG_FLAGS@"/>
   <configure name="DOCUMENTATION_PATH" value="@DOCUMENTATION_PATH@"/>
   <configure name="EXEC-PREFIX" value="@EXEC_PREFIX_DIR@"/>

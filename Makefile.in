@@ -375,8 +375,11 @@ am__installdirs = "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" \
 	"$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)"
 LTLIBRARIES = $(coders_LTLIBRARIES) $(filters_LTLIBRARIES) \
 	$(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
+am__DEPENDENCIES_1 =
+am__DEPENDENCIES_2 = MagickCore/libMagickCore-@MAGICK_ABI_SUFFIX@.la \
+	$(am__DEPENDENCIES_1)
 Magick___lib_libMagick___@MAGICK_ABI_SUFFIX@_la_DEPENDENCIES =  \
-	$(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+	$(am__DEPENDENCIES_2) $(MAGICKWAND_LIBS)
 am__dirstamp = $(am__leading_dot)dirstamp
 am_Magick___lib_libMagick___@MAGICK_ABI_SUFFIX@_la_OBJECTS =  \
 	Magick++/lib/Blob.lo Magick++/lib/BlobRef.lo \
@@ -400,7 +403,6 @@ Magick___lib_libMagick___@MAGICK_ABI_SUFFIX@_la_LINK = $(LIBTOOL) \
 	$(LDFLAGS) -o $@
 @WITH_MAGICK_PLUS_PLUS_TRUE@am_Magick___lib_libMagick___@MAGICK_ABI_SUFFIX@_la_rpath =  \
 @WITH_MAGICK_PLUS_PLUS_TRUE@	-rpath $(libdir)
-am__DEPENDENCIES_1 =
 am__MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_SOURCES_DIST =  \
 	MagickCore/MagickCore.h MagickCore/accelerate.c \
 	MagickCore/accelerate.h MagickCore/animate.c \
@@ -765,8 +767,8 @@ MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_LINK = $(LIBTOOL) \
 	$(MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 MagickWand_libMagickWand_@MAGICK_ABI_SUFFIX@_la_DEPENDENCIES =  \
-	$(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am__objects_18 = MagickWand/MagickWand_libMagickWand_@MAGICK_ABI_SUFFIX@_la-animate.lo \
 	MagickWand/MagickWand_libMagickWand_@MAGICK_ABI_SUFFIX@_la-compare.lo \
 	MagickWand/MagickWand_libMagickWand_@MAGICK_ABI_SUFFIX@_la-composite.lo \
@@ -800,42 +802,42 @@ MagickWand_libMagickWand_@MAGICK_ABI_SUFFIX@_la_LINK = $(LIBTOOL) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(MagickWand_libMagickWand_@MAGICK_ABI_SUFFIX@_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
-coders_aai_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_aai_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_aai_la_OBJECTS = coders/coders_aai_la-aai.lo
 coders_aai_la_OBJECTS = $(am_coders_aai_la_OBJECTS)
 coders_aai_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_aai_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_aai_la_rpath = -rpath $(codersdir)
-coders_art_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_art_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_art_la_OBJECTS = coders/coders_art_la-art.lo
 coders_art_la_OBJECTS = $(am_coders_art_la_OBJECTS)
 coders_art_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_art_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_art_la_rpath = -rpath $(codersdir)
-coders_avs_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_avs_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_avs_la_OBJECTS = coders/coders_avs_la-avs.lo
 coders_avs_la_OBJECTS = $(am_coders_avs_la_OBJECTS)
 coders_avs_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_avs_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_avs_la_rpath = -rpath $(codersdir)
-coders_bgr_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_bgr_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_bgr_la_OBJECTS = coders/coders_bgr_la-bgr.lo
 coders_bgr_la_OBJECTS = $(am_coders_bgr_la_OBJECTS)
 coders_bgr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_bgr_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_bgr_la_rpath = -rpath $(codersdir)
-coders_bmp_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_bmp_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_bmp_la_OBJECTS = coders/coders_bmp_la-bmp.lo
 coders_bmp_la_OBJECTS = $(am_coders_bmp_la_OBJECTS)
 coders_bmp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_bmp_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_bmp_la_rpath = -rpath $(codersdir)
-coders_braille_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_braille_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_braille_la_OBJECTS = coders/coders_braille_la-braille.lo
 coders_braille_la_OBJECTS = $(am_coders_braille_la_OBJECTS)
 coders_braille_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -843,7 +845,8 @@ coders_braille_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_braille_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_braille_la_rpath = -rpath $(codersdir)
-coders_cals_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_cals_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_cals_la_OBJECTS = coders/coders_cals_la-cals.lo
 coders_cals_la_OBJECTS = $(am_coders_cals_la_OBJECTS)
 coders_cals_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -851,7 +854,7 @@ coders_cals_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_cals_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_cals_la_rpath = -rpath $(codersdir)
-coders_caption_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+coders_caption_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 am_coders_caption_la_OBJECTS = coders/coders_caption_la-caption.lo
 coders_caption_la_OBJECTS = $(am_coders_caption_la_OBJECTS)
@@ -860,21 +863,21 @@ coders_caption_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_caption_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_caption_la_rpath = -rpath $(codersdir)
-coders_cin_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_cin_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_cin_la_OBJECTS = coders/coders_cin_la-cin.lo
 coders_cin_la_OBJECTS = $(am_coders_cin_la_OBJECTS)
 coders_cin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_cin_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_cin_la_rpath = -rpath $(codersdir)
-coders_cip_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_cip_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_cip_la_OBJECTS = coders/coders_cip_la-cip.lo
 coders_cip_la_OBJECTS = $(am_coders_cip_la_OBJECTS)
 coders_cip_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_cip_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_cip_la_rpath = -rpath $(codersdir)
-coders_clip_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_clip_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_clip_la_OBJECTS = coders/coders_clip_la-clip.lo
 coders_clip_la_OBJECTS = $(am_coders_clip_la_OBJECTS)
 coders_clip_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -882,7 +885,7 @@ coders_clip_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_clip_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_clip_la_rpath = -rpath $(codersdir)
-coders_clipboard_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+coders_clipboard_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 am_coders_clipboard_la_OBJECTS =  \
 	coders/coders_clipboard_la-clipboard.lo
@@ -893,7 +896,7 @@ coders_clipboard_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(LDFLAGS) -o $@
 @WINGDI32_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_clipboard_la_rpath =  \
 @WINGDI32_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
-coders_cmyk_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_cmyk_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_cmyk_la_OBJECTS = coders/coders_cmyk_la-cmyk.lo
 coders_cmyk_la_OBJECTS = $(am_coders_cmyk_la_OBJECTS)
 coders_cmyk_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -901,28 +904,29 @@ coders_cmyk_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_cmyk_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_cmyk_la_rpath = -rpath $(codersdir)
-coders_cut_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_cut_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_cut_la_OBJECTS = coders/coders_cut_la-cut.lo
 coders_cut_la_OBJECTS = $(am_coders_cut_la_OBJECTS)
 coders_cut_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_cut_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_cut_la_rpath = -rpath $(codersdir)
-coders_dcm_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_dcm_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_dcm_la_OBJECTS = coders/coders_dcm_la-dcm.lo
 coders_dcm_la_OBJECTS = $(am_coders_dcm_la_OBJECTS)
 coders_dcm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_dcm_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_dcm_la_rpath = -rpath $(codersdir)
-coders_dds_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_dds_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_dds_la_OBJECTS = coders/coders_dds_la-dds.lo
 coders_dds_la_OBJECTS = $(am_coders_dds_la_OBJECTS)
 coders_dds_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_dds_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_dds_la_rpath = -rpath $(codersdir)
-coders_debug_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_debug_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_debug_la_OBJECTS = coders/coders_debug_la-debug.lo
 coders_debug_la_OBJECTS = $(am_coders_debug_la_OBJECTS)
 coders_debug_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -930,16 +934,17 @@ coders_debug_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_debug_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_debug_la_rpath = -rpath $(codersdir)
-coders_dib_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_dib_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_dib_la_OBJECTS = coders/coders_dib_la-dib.lo
 coders_dib_la_OBJECTS = $(am_coders_dib_la_OBJECTS)
 coders_dib_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_dib_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_dib_la_rpath = -rpath $(codersdir)
-coders_djvu_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+coders_djvu_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_djvu_la_OBJECTS = coders/coders_djvu_la-djvu.lo
 coders_djvu_la_OBJECTS = $(am_coders_djvu_la_OBJECTS)
 coders_djvu_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -948,22 +953,24 @@ coders_djvu_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$@
 @DJVU_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_djvu_la_rpath =  \
 @DJVU_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
-coders_dng_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_dng_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_dng_la_OBJECTS = coders/coders_dng_la-dng.lo
 coders_dng_la_OBJECTS = $(am_coders_dng_la_OBJECTS)
 coders_dng_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_dng_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_dng_la_rpath = -rpath $(codersdir)
-coders_dot_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_dot_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_dot_la_OBJECTS = coders/coders_dot_la-dot.lo
 coders_dot_la_OBJECTS = $(am_coders_dot_la_OBJECTS)
 coders_dot_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_dot_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_dot_la_rpath = -rpath $(codersdir)
-coders_dps_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+coders_dps_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_dps_la_OBJECTS = coders/coders_dps_la-dps.lo
 coders_dps_la_OBJECTS = $(am_coders_dps_la_OBJECTS)
 coders_dps_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -971,14 +978,16 @@ coders_dps_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_dps_la_LDFLAGS) $(LDFLAGS) -o $@
 @DPS_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_dps_la_rpath = -rpath \
 @DPS_DELEGATE_TRUE@@WITH_MODULES_TRUE@	$(codersdir)
-coders_dpx_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_dpx_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_dpx_la_OBJECTS = coders/coders_dpx_la-dpx.lo
 coders_dpx_la_OBJECTS = $(am_coders_dpx_la_OBJECTS)
 coders_dpx_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_dpx_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_dpx_la_rpath = -rpath $(codersdir)
-coders_emf_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_emf_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_emf_la_OBJECTS = coders/coders_emf_la-emf.lo
 coders_emf_la_OBJECTS = $(am_coders_emf_la_OBJECTS)
 coders_emf_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -986,7 +995,8 @@ coders_emf_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_emf_la_LDFLAGS) $(LDFLAGS) -o $@
 @WINGDI32_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_emf_la_rpath =  \
 @WINGDI32_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
-coders_ept_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_ept_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_ept_la_OBJECTS = coders/coders_ept_la-ept.lo
 coders_ept_la_OBJECTS = $(am_coders_ept_la_OBJECTS)
 coders_ept_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -994,8 +1004,8 @@ coders_ept_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_ept_la_LDFLAGS) $(LDFLAGS) -o $@
 @TIFF_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_ept_la_rpath =  \
 @TIFF_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
-coders_exr_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+coders_exr_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_exr_la_OBJECTS = coders/coders_exr_la-exr.lo
 coders_exr_la_OBJECTS = $(am_coders_exr_la_OBJECTS)
 coders_exr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -1003,21 +1013,22 @@ coders_exr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_exr_la_LDFLAGS) $(LDFLAGS) -o $@
 @OPENEXR_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_exr_la_rpath =  \
 @OPENEXR_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
-coders_fax_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_fax_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_fax_la_OBJECTS = coders/coders_fax_la-fax.lo
 coders_fax_la_OBJECTS = $(am_coders_fax_la_OBJECTS)
 coders_fax_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_fax_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_fax_la_rpath = -rpath $(codersdir)
-coders_fd_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_fd_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_fd_la_OBJECTS = coders/coders_fd_la-fd.lo
 coders_fd_la_OBJECTS = $(am_coders_fd_la_OBJECTS)
 coders_fd_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_fd_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_fd_la_rpath = -rpath $(codersdir)
-coders_fits_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_fits_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_fits_la_OBJECTS = coders/coders_fits_la-fits.lo
 coders_fits_la_OBJECTS = $(am_coders_fits_la_OBJECTS)
 coders_fits_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1025,7 +1036,8 @@ coders_fits_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_fits_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_fits_la_rpath = -rpath $(codersdir)
-coders_fpx_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_fpx_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_fpx_la_OBJECTS = coders/coders_fpx_la-fpx.lo
 coders_fpx_la_OBJECTS = $(am_coders_fpx_la_OBJECTS)
 coders_fpx_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -1033,14 +1045,14 @@ coders_fpx_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_fpx_la_LDFLAGS) $(LDFLAGS) -o $@
 @FPX_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_fpx_la_rpath = -rpath \
 @FPX_DELEGATE_TRUE@@WITH_MODULES_TRUE@	$(codersdir)
-coders_gif_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_gif_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_gif_la_OBJECTS = coders/coders_gif_la-gif.lo
 coders_gif_la_OBJECTS = $(am_coders_gif_la_OBJECTS)
 coders_gif_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_gif_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_gif_la_rpath = -rpath $(codersdir)
-coders_gradient_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_gradient_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_gradient_la_OBJECTS = coders/coders_gradient_la-gradient.lo
 coders_gradient_la_OBJECTS = $(am_coders_gradient_la_OBJECTS)
 coders_gradient_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1048,7 +1060,7 @@ coders_gradient_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_gradient_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_gradient_la_rpath = -rpath $(codersdir)
-coders_gray_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_gray_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_gray_la_OBJECTS = coders/coders_gray_la-gray.lo
 coders_gray_la_OBJECTS = $(am_coders_gray_la_OBJECTS)
 coders_gray_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1056,7 +1068,8 @@ coders_gray_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_gray_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_gray_la_rpath = -rpath $(codersdir)
-coders_hald_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_hald_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_hald_la_OBJECTS = coders/coders_hald_la-hald.lo
 coders_hald_la_OBJECTS = $(am_coders_hald_la_OBJECTS)
 coders_hald_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1064,15 +1077,15 @@ coders_hald_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_hald_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_hald_la_rpath = -rpath $(codersdir)
-coders_hdr_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+coders_hdr_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_hdr_la_OBJECTS = coders/coders_hdr_la-hdr.lo
 coders_hdr_la_OBJECTS = $(am_coders_hdr_la_OBJECTS)
 coders_hdr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_hdr_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_hdr_la_rpath = -rpath $(codersdir)
-coders_histogram_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+coders_histogram_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 am_coders_histogram_la_OBJECTS =  \
 	coders/coders_histogram_la-histogram.lo
@@ -1082,14 +1095,14 @@ coders_histogram_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_histogram_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_histogram_la_rpath = -rpath $(codersdir)
-coders_hrz_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_hrz_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_hrz_la_OBJECTS = coders/coders_hrz_la-hrz.lo
 coders_hrz_la_OBJECTS = $(am_coders_hrz_la_OBJECTS)
 coders_hrz_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_hrz_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_hrz_la_rpath = -rpath $(codersdir)
-coders_html_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_html_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_html_la_OBJECTS = coders/coders_html_la-html.lo
 coders_html_la_OBJECTS = $(am_coders_html_la_OBJECTS)
 coders_html_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1097,7 +1110,7 @@ coders_html_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_html_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_html_la_rpath = -rpath $(codersdir)
-coders_icon_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_icon_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_icon_la_OBJECTS = coders/coders_icon_la-icon.lo
 coders_icon_la_OBJECTS = $(am_coders_icon_la_OBJECTS)
 coders_icon_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1105,7 +1118,7 @@ coders_icon_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_icon_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_icon_la_rpath = -rpath $(codersdir)
-coders_info_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_info_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_info_la_OBJECTS = coders/coders_info_la-info.lo
 coders_info_la_OBJECTS = $(am_coders_info_la_OBJECTS)
 coders_info_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1113,7 +1126,7 @@ coders_info_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_info_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_info_la_rpath = -rpath $(codersdir)
-coders_inline_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_inline_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_inline_la_OBJECTS = coders/coders_inline_la-inline.lo
 coders_inline_la_OBJECTS = $(am_coders_inline_la_OBJECTS)
 coders_inline_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1121,14 +1134,15 @@ coders_inline_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_inline_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_inline_la_rpath = -rpath $(codersdir)
-coders_ipl_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_ipl_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_ipl_la_OBJECTS = coders/coders_ipl_la-ipl.lo
 coders_ipl_la_OBJECTS = $(am_coders_ipl_la_OBJECTS)
 coders_ipl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_ipl_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_ipl_la_rpath = -rpath $(codersdir)
-coders_jbig_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_jbig_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_jbig_la_OBJECTS = coders/coders_jbig_la-jbig.lo
 coders_jbig_la_OBJECTS = $(am_coders_jbig_la_OBJECTS)
 coders_jbig_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1137,15 +1151,16 @@ coders_jbig_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$@
 @JBIG_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_jbig_la_rpath =  \
 @JBIG_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
-coders_jnx_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_jnx_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_jnx_la_OBJECTS = coders/coders_jnx_la-jnx.lo
 coders_jnx_la_OBJECTS = $(am_coders_jnx_la_OBJECTS)
 coders_jnx_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_jnx_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_jnx_la_rpath = -rpath $(codersdir)
-coders_jp2_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+coders_jp2_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_jp2_la_OBJECTS = coders/coders_jp2_la-jp2.lo
 coders_jp2_la_OBJECTS = $(am_coders_jp2_la_OBJECTS)
 coders_jp2_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -1153,8 +1168,8 @@ coders_jp2_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_jp2_la_LDFLAGS) $(LDFLAGS) -o $@
 @JP2_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_jp2_la_rpath = -rpath \
 @JP2_DELEGATE_TRUE@@WITH_MODULES_TRUE@	$(codersdir)
-coders_jpeg_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+coders_jpeg_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_jpeg_la_OBJECTS = coders/coders_jpeg_la-jpeg.lo
 coders_jpeg_la_OBJECTS = $(am_coders_jpeg_la_OBJECTS)
 coders_jpeg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1163,7 +1178,7 @@ coders_jpeg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$@
 @JPEG_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_jpeg_la_rpath =  \
 @JPEG_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
-coders_label_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+coders_label_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 am_coders_label_la_OBJECTS = coders/coders_label_la-label.lo
 coders_label_la_OBJECTS = $(am_coders_label_la_OBJECTS)
@@ -1172,14 +1187,14 @@ coders_label_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_label_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_label_la_rpath = -rpath $(codersdir)
-coders_mac_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_mac_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_mac_la_OBJECTS = coders/coders_mac_la-mac.lo
 coders_mac_la_OBJECTS = $(am_coders_mac_la_OBJECTS)
 coders_mac_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_mac_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_mac_la_rpath = -rpath $(codersdir)
-coders_magick_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_magick_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_magick_la_OBJECTS = coders/coders_magick_la-magick.lo
 coders_magick_la_OBJECTS = $(am_coders_magick_la_OBJECTS)
 coders_magick_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1187,22 +1202,23 @@ coders_magick_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_magick_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_magick_la_rpath = -rpath $(codersdir)
-coders_map_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_map_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_map_la_OBJECTS = coders/coders_map_la-map.lo
 coders_map_la_OBJECTS = $(am_coders_map_la_OBJECTS)
 coders_map_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_map_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_map_la_rpath = -rpath $(codersdir)
-coders_mat_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+coders_mat_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_mat_la_OBJECTS = coders/coders_mat_la-mat.lo
 coders_mat_la_OBJECTS = $(am_coders_mat_la_OBJECTS)
 coders_mat_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_mat_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_mat_la_rpath = -rpath $(codersdir)
-coders_matte_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_matte_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_matte_la_OBJECTS = coders/coders_matte_la-matte.lo
 coders_matte_la_OBJECTS = $(am_coders_matte_la_OBJECTS)
 coders_matte_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1210,7 +1226,7 @@ coders_matte_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_matte_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_matte_la_rpath = -rpath $(codersdir)
-coders_meta_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_meta_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_meta_la_OBJECTS = coders/coders_meta_la-meta.lo
 coders_meta_la_OBJECTS = $(am_coders_meta_la_OBJECTS)
 coders_meta_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1218,8 +1234,9 @@ coders_meta_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_meta_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_meta_la_rpath = -rpath $(codersdir)
-coders_miff_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+coders_miff_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_miff_la_OBJECTS = coders/coders_miff_la-miff.lo
 coders_miff_la_OBJECTS = $(am_coders_miff_la_OBJECTS)
 coders_miff_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1227,7 +1244,7 @@ coders_miff_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_miff_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_miff_la_rpath = -rpath $(codersdir)
-coders_mono_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_mono_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_mono_la_OBJECTS = coders/coders_mono_la-mono.lo
 coders_mono_la_OBJECTS = $(am_coders_mono_la_OBJECTS)
 coders_mono_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1235,14 +1252,14 @@ coders_mono_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_mono_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_mono_la_rpath = -rpath $(codersdir)
-coders_mpc_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_mpc_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_mpc_la_OBJECTS = coders/coders_mpc_la-mpc.lo
 coders_mpc_la_OBJECTS = $(am_coders_mpc_la_OBJECTS)
 coders_mpc_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_mpc_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_mpc_la_rpath = -rpath $(codersdir)
-coders_mpeg_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_mpeg_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_mpeg_la_OBJECTS = coders/coders_mpeg_la-mpeg.lo
 coders_mpeg_la_OBJECTS = $(am_coders_mpeg_la_OBJECTS)
 coders_mpeg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1250,37 +1267,38 @@ coders_mpeg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_mpeg_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_mpeg_la_rpath = -rpath $(codersdir)
-coders_mpr_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_mpr_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_mpr_la_OBJECTS = coders/coders_mpr_la-mpr.lo
 coders_mpr_la_OBJECTS = $(am_coders_mpr_la_OBJECTS)
 coders_mpr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_mpr_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_mpr_la_rpath = -rpath $(codersdir)
-coders_msl_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+coders_msl_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_msl_la_OBJECTS = coders/coders_msl_la-msl.lo
 coders_msl_la_OBJECTS = $(am_coders_msl_la_OBJECTS)
 coders_msl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_msl_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_msl_la_rpath = -rpath $(codersdir)
-coders_mtv_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_mtv_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_mtv_la_OBJECTS = coders/coders_mtv_la-mtv.lo
 coders_mtv_la_OBJECTS = $(am_coders_mtv_la_OBJECTS)
 coders_mtv_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_mtv_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_mtv_la_rpath = -rpath $(codersdir)
-coders_mvg_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_mvg_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_mvg_la_OBJECTS = coders/coders_mvg_la-mvg.lo
 coders_mvg_la_OBJECTS = $(am_coders_mvg_la_OBJECTS)
 coders_mvg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_mvg_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_mvg_la_rpath = -rpath $(codersdir)
-coders_null_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_null_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_null_la_OBJECTS = coders/coders_null_la-null.lo
 coders_null_la_OBJECTS = $(am_coders_null_la_OBJECTS)
 coders_null_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1288,14 +1306,14 @@ coders_null_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_null_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_null_la_rpath = -rpath $(codersdir)
-coders_otb_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_otb_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_otb_la_OBJECTS = coders/coders_otb_la-otb.lo
 coders_otb_la_OBJECTS = $(am_coders_otb_la_OBJECTS)
 coders_otb_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_otb_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_otb_la_rpath = -rpath $(codersdir)
-coders_palm_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_palm_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_palm_la_OBJECTS = coders/coders_palm_la-palm.lo
 coders_palm_la_OBJECTS = $(am_coders_palm_la_OBJECTS)
 coders_palm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1303,7 +1321,7 @@ coders_palm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_palm_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_palm_la_rpath = -rpath $(codersdir)
-coders_pango_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+coders_pango_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 am_coders_pango_la_OBJECTS = coders/coders_pango_la-pango.lo
 coders_pango_la_OBJECTS = $(am_coders_pango_la_OBJECTS)
@@ -1312,7 +1330,7 @@ coders_pango_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_pango_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_pango_la_rpath = -rpath $(codersdir)
-coders_pattern_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_pattern_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_pattern_la_OBJECTS = coders/coders_pattern_la-pattern.lo
 coders_pattern_la_OBJECTS = $(am_coders_pattern_la_OBJECTS)
 coders_pattern_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1320,52 +1338,53 @@ coders_pattern_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_pattern_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_pattern_la_rpath = -rpath $(codersdir)
-coders_pcd_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_pcd_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_pcd_la_OBJECTS = coders/coders_pcd_la-pcd.lo
 coders_pcd_la_OBJECTS = $(am_coders_pcd_la_OBJECTS)
 coders_pcd_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_pcd_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_pcd_la_rpath = -rpath $(codersdir)
-coders_pcl_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_pcl_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_pcl_la_OBJECTS = coders/coders_pcl_la-pcl.lo
 coders_pcl_la_OBJECTS = $(am_coders_pcl_la_OBJECTS)
 coders_pcl_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_pcl_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_pcl_la_rpath = -rpath $(codersdir)
-coders_pcx_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_pcx_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_pcx_la_OBJECTS = coders/coders_pcx_la-pcx.lo
 coders_pcx_la_OBJECTS = $(am_coders_pcx_la_OBJECTS)
 coders_pcx_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_pcx_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_pcx_la_rpath = -rpath $(codersdir)
-coders_pdb_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_pdb_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_pdb_la_OBJECTS = coders/coders_pdb_la-pdb.lo
 coders_pdb_la_OBJECTS = $(am_coders_pdb_la_OBJECTS)
 coders_pdb_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_pdb_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_pdb_la_rpath = -rpath $(codersdir)
-coders_pdf_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+coders_pdf_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_pdf_la_OBJECTS = coders/coders_pdf_la-pdf.lo
 coders_pdf_la_OBJECTS = $(am_coders_pdf_la_OBJECTS)
 coders_pdf_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_pdf_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_pdf_la_rpath = -rpath $(codersdir)
-coders_pes_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_pes_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_pes_la_OBJECTS = coders/coders_pes_la-pes.lo
 coders_pes_la_OBJECTS = $(am_coders_pes_la_OBJECTS)
 coders_pes_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_pes_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_pes_la_rpath = -rpath $(codersdir)
-coders_pict_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_pict_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_pict_la_OBJECTS = coders/coders_pict_la-pict.lo
 coders_pict_la_OBJECTS = $(am_coders_pict_la_OBJECTS)
 coders_pict_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1373,14 +1392,14 @@ coders_pict_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_pict_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_pict_la_rpath = -rpath $(codersdir)
-coders_pix_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_pix_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_pix_la_OBJECTS = coders/coders_pix_la-pix.lo
 coders_pix_la_OBJECTS = $(am_coders_pix_la_OBJECTS)
 coders_pix_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_pix_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_pix_la_rpath = -rpath $(codersdir)
-coders_plasma_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+coders_plasma_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 am_coders_plasma_la_OBJECTS = coders/coders_plasma_la-plasma.lo
 coders_plasma_la_OBJECTS = $(am_coders_plasma_la_OBJECTS)
@@ -1389,9 +1408,10 @@ coders_plasma_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_plasma_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_plasma_la_rpath = -rpath $(codersdir)
-coders_png_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+coders_png_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_png_la_OBJECTS = coders/coders_png_la-png.lo
 coders_png_la_OBJECTS = $(am_coders_png_la_OBJECTS)
 coders_png_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -1399,14 +1419,15 @@ coders_png_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_png_la_LDFLAGS) $(LDFLAGS) -o $@
 @PNG_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_png_la_rpath = -rpath \
 @PNG_DELEGATE_TRUE@@WITH_MODULES_TRUE@	$(codersdir)
-coders_pnm_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_pnm_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_pnm_la_OBJECTS = coders/coders_pnm_la-pnm.lo
 coders_pnm_la_OBJECTS = $(am_coders_pnm_la_OBJECTS)
 coders_pnm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_pnm_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_pnm_la_rpath = -rpath $(codersdir)
-coders_preview_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_preview_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_preview_la_OBJECTS = coders/coders_preview_la-preview.lo
 coders_preview_la_OBJECTS = $(am_coders_preview_la_OBJECTS)
 coders_preview_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1414,103 +1435,105 @@ coders_preview_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_preview_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_preview_la_rpath = -rpath $(codersdir)
-coders_ps_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+coders_ps_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_ps_la_OBJECTS = coders/coders_ps_la-ps.lo
 coders_ps_la_OBJECTS = $(am_coders_ps_la_OBJECTS)
 coders_ps_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_ps_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_ps_la_rpath = -rpath $(codersdir)
-coders_ps2_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+coders_ps2_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_ps2_la_OBJECTS = coders/coders_ps2_la-ps2.lo
 coders_ps2_la_OBJECTS = $(am_coders_ps2_la_OBJECTS)
 coders_ps2_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_ps2_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_ps2_la_rpath = -rpath $(codersdir)
-coders_ps3_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+coders_ps3_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_coders_ps3_la_OBJECTS = coders/coders_ps3_la-ps3.lo
 coders_ps3_la_OBJECTS = $(am_coders_ps3_la_OBJECTS)
 coders_ps3_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_ps3_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_ps3_la_rpath = -rpath $(codersdir)
-coders_psd_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_psd_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_psd_la_OBJECTS = coders/coders_psd_la-psd.lo
 coders_psd_la_OBJECTS = $(am_coders_psd_la_OBJECTS)
 coders_psd_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_psd_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_psd_la_rpath = -rpath $(codersdir)
-coders_pwp_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_pwp_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_pwp_la_OBJECTS = coders/coders_pwp_la-pwp.lo
 coders_pwp_la_OBJECTS = $(am_coders_pwp_la_OBJECTS)
 coders_pwp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_pwp_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_pwp_la_rpath = -rpath $(codersdir)
-coders_raw_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_raw_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_raw_la_OBJECTS = coders/coders_raw_la-raw.lo
 coders_raw_la_OBJECTS = $(am_coders_raw_la_OBJECTS)
 coders_raw_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_raw_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_raw_la_rpath = -rpath $(codersdir)
-coders_rgb_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_rgb_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_rgb_la_OBJECTS = coders/coders_rgb_la-rgb.lo
 coders_rgb_la_OBJECTS = $(am_coders_rgb_la_OBJECTS)
 coders_rgb_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_rgb_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_rgb_la_rpath = -rpath $(codersdir)
-coders_rla_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_rla_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_rla_la_OBJECTS = coders/coders_rla_la-rla.lo
 coders_rla_la_OBJECTS = $(am_coders_rla_la_OBJECTS)
 coders_rla_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_rla_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_rla_la_rpath = -rpath $(codersdir)
-coders_rle_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_rle_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_rle_la_OBJECTS = coders/coders_rle_la-rle.lo
 coders_rle_la_OBJECTS = $(am_coders_rle_la_OBJECTS)
 coders_rle_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_rle_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_rle_la_rpath = -rpath $(codersdir)
-coders_scr_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_scr_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_scr_la_OBJECTS = coders/coders_scr_la-scr.lo
 coders_scr_la_OBJECTS = $(am_coders_scr_la_OBJECTS)
 coders_scr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_scr_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_scr_la_rpath = -rpath $(codersdir)
-coders_sct_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_sct_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_sct_la_OBJECTS = coders/coders_sct_la-sct.lo
 coders_sct_la_OBJECTS = $(am_coders_sct_la_OBJECTS)
 coders_sct_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_sct_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_sct_la_rpath = -rpath $(codersdir)
-coders_sfw_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_sfw_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_sfw_la_OBJECTS = coders/coders_sfw_la-sfw.lo
 coders_sfw_la_OBJECTS = $(am_coders_sfw_la_OBJECTS)
 coders_sfw_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_sfw_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_sfw_la_rpath = -rpath $(codersdir)
-coders_sgi_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_sgi_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_sgi_la_OBJECTS = coders/coders_sgi_la-sgi.lo
 coders_sgi_la_OBJECTS = $(am_coders_sgi_la_OBJECTS)
 coders_sgi_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_sgi_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_sgi_la_rpath = -rpath $(codersdir)
-coders_stegano_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_stegano_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_stegano_la_OBJECTS = coders/coders_stegano_la-stegano.lo
 coders_stegano_la_OBJECTS = $(am_coders_stegano_la_OBJECTS)
 coders_stegano_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1518,14 +1541,14 @@ coders_stegano_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_stegano_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_stegano_la_rpath = -rpath $(codersdir)
-coders_sun_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_sun_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_sun_la_OBJECTS = coders/coders_sun_la-sun.lo
 coders_sun_la_OBJECTS = $(am_coders_sun_la_OBJECTS)
 coders_sun_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_sun_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_sun_la_rpath = -rpath $(codersdir)
-coders_svg_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) \
+coders_svg_la_DEPENDENCIES = $(am__DEPENDENCIES_2) $(MAGICKWAND_LIBS) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -1535,14 +1558,14 @@ coders_svg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_svg_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_svg_la_rpath = -rpath $(codersdir)
-coders_tga_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_tga_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_tga_la_OBJECTS = coders/coders_tga_la-tga.lo
 coders_tga_la_OBJECTS = $(am_coders_tga_la_OBJECTS)
 coders_tga_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_tga_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_tga_la_rpath = -rpath $(codersdir)
-coders_thumbnail_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_thumbnail_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_thumbnail_la_OBJECTS =  \
 	coders/coders_thumbnail_la-thumbnail.lo
 coders_thumbnail_la_OBJECTS = $(am_coders_thumbnail_la_OBJECTS)
@@ -1551,10 +1574,10 @@ coders_thumbnail_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_thumbnail_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_thumbnail_la_rpath = -rpath $(codersdir)
-coders_tiff_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+coders_tiff_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_tiff_la_OBJECTS = coders/coders_tiff_la-tiff.lo
 coders_tiff_la_OBJECTS = $(am_coders_tiff_la_OBJECTS)
 coders_tiff_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1563,7 +1586,7 @@ coders_tiff_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$@
 @TIFF_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_tiff_la_rpath =  \
 @TIFF_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
-coders_tile_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_tile_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_tile_la_OBJECTS = coders/coders_tile_la-tile.lo
 coders_tile_la_OBJECTS = $(am_coders_tile_la_OBJECTS)
 coders_tile_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1571,44 +1594,45 @@ coders_tile_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_tile_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_tile_la_rpath = -rpath $(codersdir)
-coders_tim_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_tim_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_tim_la_OBJECTS = coders/coders_tim_la-tim.lo
 coders_tim_la_OBJECTS = $(am_coders_tim_la_OBJECTS)
 coders_tim_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_tim_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_tim_la_rpath = -rpath $(codersdir)
-coders_ttf_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_ttf_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_ttf_la_OBJECTS = coders/coders_ttf_la-ttf.lo
 coders_ttf_la_OBJECTS = $(am_coders_ttf_la_OBJECTS)
 coders_ttf_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_ttf_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_ttf_la_rpath = -rpath $(codersdir)
-coders_txt_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_txt_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_txt_la_OBJECTS = coders/coders_txt_la-txt.lo
 coders_txt_la_OBJECTS = $(am_coders_txt_la_OBJECTS)
 coders_txt_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_txt_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_txt_la_rpath = -rpath $(codersdir)
-coders_uil_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_uil_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_uil_la_OBJECTS = coders/coders_uil_la-uil.lo
 coders_uil_la_OBJECTS = $(am_coders_uil_la_OBJECTS)
 coders_uil_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_uil_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_uil_la_rpath = -rpath $(codersdir)
-coders_url_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
+coders_url_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_url_la_OBJECTS = coders/coders_url_la-url.lo
 coders_url_la_OBJECTS = $(am_coders_url_la_OBJECTS)
 coders_url_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_url_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_url_la_rpath = -rpath $(codersdir)
-coders_uyvy_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_uyvy_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_uyvy_la_OBJECTS = coders/coders_uyvy_la-uyvy.lo
 coders_uyvy_la_OBJECTS = $(am_coders_uyvy_la_OBJECTS)
 coders_uyvy_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1616,7 +1640,7 @@ coders_uyvy_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_uyvy_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_uyvy_la_rpath = -rpath $(codersdir)
-coders_vicar_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_vicar_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_vicar_la_OBJECTS = coders/coders_vicar_la-vicar.lo
 coders_vicar_la_OBJECTS = $(am_coders_vicar_la_OBJECTS)
 coders_vicar_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1624,14 +1648,14 @@ coders_vicar_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_vicar_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_vicar_la_rpath = -rpath $(codersdir)
-coders_vid_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_vid_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_vid_la_OBJECTS = coders/coders_vid_la-vid.lo
 coders_vid_la_OBJECTS = $(am_coders_vid_la_OBJECTS)
 coders_vid_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_vid_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_vid_la_rpath = -rpath $(codersdir)
-coders_viff_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_viff_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_viff_la_OBJECTS = coders/coders_viff_la-viff.lo
 coders_viff_la_OBJECTS = $(am_coders_viff_la_OBJECTS)
 coders_viff_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1639,7 +1663,7 @@ coders_viff_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_viff_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_viff_la_rpath = -rpath $(codersdir)
-coders_wbmp_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_wbmp_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_wbmp_la_OBJECTS = coders/coders_wbmp_la-wbmp.lo
 coders_wbmp_la_OBJECTS = $(am_coders_wbmp_la_OBJECTS)
 coders_wbmp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1647,8 +1671,8 @@ coders_wbmp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_wbmp_la_LDFLAGS) $(LDFLAGS) -o \
 	$@
 @WITH_MODULES_TRUE@am_coders_wbmp_la_rpath = -rpath $(codersdir)
-coders_webp_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+coders_webp_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_coders_webp_la_OBJECTS = coders/coders_webp_la-webp.lo
 coders_webp_la_OBJECTS = $(am_coders_webp_la_OBJECTS)
 coders_webp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1657,7 +1681,7 @@ coders_webp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$@
 @WEBP_DELEGATE_TRUE@@WITH_MODULES_TRUE@am_coders_webp_la_rpath =  \
 @WEBP_DELEGATE_TRUE@@WITH_MODULES_TRUE@	-rpath $(codersdir)
-coders_wmf_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) \
+coders_wmf_la_DEPENDENCIES = $(am__DEPENDENCIES_2) $(MAGICKWAND_LIBS) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_coders_wmf_la_OBJECTS = coders/coders_wmf_la-wmf.lo
@@ -1667,14 +1691,14 @@ coders_wmf_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_wmf_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@@WMF_DELEGATE_TRUE@am_coders_wmf_la_rpath = -rpath \
 @WITH_MODULES_TRUE@@WMF_DELEGATE_TRUE@	$(codersdir)
-coders_wpg_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_wpg_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_wpg_la_OBJECTS = coders/coders_wpg_la-wpg.lo
 coders_wpg_la_OBJECTS = $(am_coders_wpg_la_OBJECTS)
 coders_wpg_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_wpg_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_wpg_la_rpath = -rpath $(codersdir)
-coders_x_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_x_la_DEPENDENCIES = $(am__DEPENDENCIES_2) $(am__DEPENDENCIES_1)
 am_coders_x_la_OBJECTS = coders/coders_x_la-x.lo
 coders_x_la_OBJECTS = $(am_coders_x_la_OBJECTS)
 coders_x_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -1682,42 +1706,44 @@ coders_x_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_x_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@@X11_DELEGATE_TRUE@am_coders_x_la_rpath = -rpath \
 @WITH_MODULES_TRUE@@X11_DELEGATE_TRUE@	$(codersdir)
-coders_xbm_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_xbm_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_xbm_la_OBJECTS = coders/coders_xbm_la-xbm.lo
 coders_xbm_la_OBJECTS = $(am_coders_xbm_la_OBJECTS)
 coders_xbm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_xbm_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_xbm_la_rpath = -rpath $(codersdir)
-coders_xc_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_xc_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_xc_la_OBJECTS = coders/coders_xc_la-xc.lo
 coders_xc_la_OBJECTS = $(am_coders_xc_la_OBJECTS)
 coders_xc_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_xc_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_xc_la_rpath = -rpath $(codersdir)
-coders_xcf_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_xcf_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_xcf_la_OBJECTS = coders/coders_xcf_la-xcf.lo
 coders_xcf_la_OBJECTS = $(am_coders_xcf_la_OBJECTS)
 coders_xcf_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_xcf_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_xcf_la_rpath = -rpath $(codersdir)
-coders_xpm_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_xpm_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_xpm_la_OBJECTS = coders/coders_xpm_la-xpm.lo
 coders_xpm_la_OBJECTS = $(am_coders_xpm_la_OBJECTS)
 coders_xpm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_xpm_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_xpm_la_rpath = -rpath $(codersdir)
-coders_xps_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_xps_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_xps_la_OBJECTS = coders/coders_xps_la-xps.lo
 coders_xps_la_OBJECTS = $(am_coders_xps_la_OBJECTS)
 coders_xps_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_xps_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_xps_la_rpath = -rpath $(codersdir)
-coders_xwd_la_DEPENDENCIES = $(MAGICKCORE_LIBS) $(am__DEPENDENCIES_1)
+coders_xwd_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_1)
 am_coders_xwd_la_OBJECTS = coders/coders_xwd_la-xwd.lo
 coders_xwd_la_OBJECTS = $(am_coders_xwd_la_OBJECTS)
 coders_xwd_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -1725,7 +1751,7 @@ coders_xwd_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(coders_xwd_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@@X11_DELEGATE_TRUE@am_coders_xwd_la_rpath = -rpath \
 @WITH_MODULES_TRUE@@X11_DELEGATE_TRUE@	$(codersdir)
-coders_ycbcr_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_ycbcr_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_ycbcr_la_OBJECTS = coders/coders_ycbcr_la-ycbcr.lo
 coders_ycbcr_la_OBJECTS = $(am_coders_ycbcr_la_OBJECTS)
 coders_ycbcr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -1733,14 +1759,14 @@ coders_ycbcr_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_CFLAGS) $(CFLAGS) $(coders_ycbcr_la_LDFLAGS) $(LDFLAGS) \
 	-o $@
 @WITH_MODULES_TRUE@am_coders_ycbcr_la_rpath = -rpath $(codersdir)
-coders_yuv_la_DEPENDENCIES = $(MAGICKCORE_LIBS)
+coders_yuv_la_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_coders_yuv_la_OBJECTS = coders/coders_yuv_la-yuv.lo
 coders_yuv_la_OBJECTS = $(am_coders_yuv_la_OBJECTS)
 coders_yuv_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(coders_yuv_la_LDFLAGS) $(LDFLAGS) -o $@
 @WITH_MODULES_TRUE@am_coders_yuv_la_rpath = -rpath $(codersdir)
-filters_analyze_la_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+filters_analyze_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 am_filters_analyze_la_OBJECTS = filters/filters_analyze_la-analyze.lo
 filters_analyze_la_OBJECTS = $(am_filters_analyze_la_OBJECTS)
@@ -1778,128 +1804,130 @@ am__EXEEXT_3 = Magick++/demo/analyze$(EXEEXT) \
 PROGRAMS = $(bin_PROGRAMS)
 am_Magick___demo_analyze_OBJECTS = Magick++/demo/analyze.$(OBJEXT)
 Magick___demo_analyze_OBJECTS = $(am_Magick___demo_analyze_OBJECTS)
-@WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_2 = Magick++/lib/libMagick++-@MAGICK_ABI_SUFFIX@.la
-@WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_3 =  \
-@WITH_MAGICK_PLUS_PLUS_TRUE@	$(am__DEPENDENCIES_2) \
+@WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_3 = Magick++/lib/libMagick++-@MAGICK_ABI_SUFFIX@.la
+@WITH_MAGICK_PLUS_PLUS_TRUE@am__DEPENDENCIES_4 =  \
+@WITH_MAGICK_PLUS_PLUS_TRUE@	$(am__DEPENDENCIES_3) \
 @WITH_MAGICK_PLUS_PLUS_TRUE@	$(top_builddir)/MagickCore/libMagickCore-@MAGICK_ABI_SUFFIX@.la
-Magick___demo_analyze_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_analyze_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_button_OBJECTS = Magick++/demo/button.$(OBJEXT)
 Magick___demo_button_OBJECTS = $(am_Magick___demo_button_OBJECTS)
-Magick___demo_button_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_button_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_demo_OBJECTS = Magick++/demo/demo.$(OBJEXT)
 Magick___demo_demo_OBJECTS = $(am_Magick___demo_demo_OBJECTS)
-Magick___demo_demo_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_demo_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_detrans_OBJECTS = Magick++/demo/detrans.$(OBJEXT)
 Magick___demo_detrans_OBJECTS = $(am_Magick___demo_detrans_OBJECTS)
-Magick___demo_detrans_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_detrans_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_flip_OBJECTS = Magick++/demo/flip.$(OBJEXT)
 Magick___demo_flip_OBJECTS = $(am_Magick___demo_flip_OBJECTS)
-Magick___demo_flip_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_flip_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_gravity_OBJECTS = Magick++/demo/gravity.$(OBJEXT)
 Magick___demo_gravity_OBJECTS = $(am_Magick___demo_gravity_OBJECTS)
-Magick___demo_gravity_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_gravity_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_piddle_OBJECTS = Magick++/demo/piddle.$(OBJEXT)
 Magick___demo_piddle_OBJECTS = $(am_Magick___demo_piddle_OBJECTS)
-Magick___demo_piddle_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_piddle_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_shapes_OBJECTS = Magick++/demo/shapes.$(OBJEXT)
 Magick___demo_shapes_OBJECTS = $(am_Magick___demo_shapes_OBJECTS)
-Magick___demo_shapes_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_shapes_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___demo_zoom_OBJECTS = Magick++/demo/zoom.$(OBJEXT)
 Magick___demo_zoom_OBJECTS = $(am_Magick___demo_zoom_OBJECTS)
-Magick___demo_zoom_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___demo_zoom_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_appendImages_OBJECTS =  \
 	Magick++/tests/appendImages.$(OBJEXT)
 Magick___tests_appendImages_OBJECTS =  \
 	$(am_Magick___tests_appendImages_OBJECTS)
-Magick___tests_appendImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_appendImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_attributes_OBJECTS =  \
 	Magick++/tests/attributes.$(OBJEXT)
 Magick___tests_attributes_OBJECTS =  \
 	$(am_Magick___tests_attributes_OBJECTS)
-Magick___tests_attributes_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_attributes_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_averageImages_OBJECTS =  \
 	Magick++/tests/averageImages.$(OBJEXT)
 Magick___tests_averageImages_OBJECTS =  \
 	$(am_Magick___tests_averageImages_OBJECTS)
-Magick___tests_averageImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_averageImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_coalesceImages_OBJECTS =  \
 	Magick++/tests/coalesceImages.$(OBJEXT)
 Magick___tests_coalesceImages_OBJECTS =  \
 	$(am_Magick___tests_coalesceImages_OBJECTS)
-Magick___tests_coalesceImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_coalesceImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_coderInfo_OBJECTS =  \
 	Magick++/tests/coderInfo.$(OBJEXT)
 Magick___tests_coderInfo_OBJECTS =  \
 	$(am_Magick___tests_coderInfo_OBJECTS)
-Magick___tests_coderInfo_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_coderInfo_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_color_OBJECTS = Magick++/tests/color.$(OBJEXT)
 Magick___tests_color_OBJECTS = $(am_Magick___tests_color_OBJECTS)
-Magick___tests_color_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_color_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_colorHistogram_OBJECTS =  \
 	Magick++/tests/colorHistogram.$(OBJEXT)
 Magick___tests_colorHistogram_OBJECTS =  \
 	$(am_Magick___tests_colorHistogram_OBJECTS)
-Magick___tests_colorHistogram_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_colorHistogram_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_exceptions_OBJECTS =  \
 	Magick++/tests/exceptions.$(OBJEXT)
 Magick___tests_exceptions_OBJECTS =  \
 	$(am_Magick___tests_exceptions_OBJECTS)
-Magick___tests_exceptions_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_exceptions_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_montageImages_OBJECTS =  \
 	Magick++/tests/montageImages.$(OBJEXT)
 Magick___tests_montageImages_OBJECTS =  \
 	$(am_Magick___tests_montageImages_OBJECTS)
-Magick___tests_montageImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_montageImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_morphImages_OBJECTS =  \
 	Magick++/tests/morphImages.$(OBJEXT)
 Magick___tests_morphImages_OBJECTS =  \
 	$(am_Magick___tests_morphImages_OBJECTS)
-Magick___tests_morphImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_morphImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_readWriteBlob_OBJECTS =  \
 	Magick++/tests/readWriteBlob.$(OBJEXT)
 Magick___tests_readWriteBlob_OBJECTS =  \
 	$(am_Magick___tests_readWriteBlob_OBJECTS)
-Magick___tests_readWriteBlob_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_readWriteBlob_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_Magick___tests_readWriteImages_OBJECTS =  \
 	Magick++/tests/readWriteImages.$(OBJEXT)
 Magick___tests_readWriteImages_OBJECTS =  \
 	$(am_Magick___tests_readWriteImages_OBJECTS)
-Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_3)
+Magick___tests_readWriteImages_DEPENDENCIES = $(am__DEPENDENCIES_4)
 am_tests_drawtest_OBJECTS = tests/drawtest.$(OBJEXT)
 tests_drawtest_OBJECTS = $(am_tests_drawtest_OBJECTS)
-tests_drawtest_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+tests_drawtest_DEPENDENCIES = $(am__DEPENDENCIES_2) $(MAGICKWAND_LIBS)
 tests_drawtest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(tests_drawtest_LDFLAGS) $(LDFLAGS) -o \
 	$@
 am_tests_validate_OBJECTS = tests/tests_validate-validate.$(OBJEXT)
 tests_validate_OBJECTS = $(am_tests_validate_OBJECTS)
-tests_validate_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS) \
+tests_validate_DEPENDENCIES = $(am__DEPENDENCIES_2) $(MAGICKWAND_LIBS) \
 	$(am__DEPENDENCIES_1)
 am_tests_wandtest_OBJECTS = tests/wandtest.$(OBJEXT)
 tests_wandtest_OBJECTS = $(am_tests_wandtest_OBJECTS)
-tests_wandtest_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+tests_wandtest_DEPENDENCIES = $(am__DEPENDENCIES_2) $(MAGICKWAND_LIBS)
 tests_wandtest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(tests_wandtest_LDFLAGS) $(LDFLAGS) -o \
 	$@
 am_utilities_animate_OBJECTS = utilities/animate.$(OBJEXT)
 utilities_animate_OBJECTS = $(am_utilities_animate_OBJECTS)
-utilities_animate_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+utilities_animate_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(MAGICKWAND_LIBS)
 utilities_animate_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(utilities_animate_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am_utilities_compare_OBJECTS = utilities/compare.$(OBJEXT)
 utilities_compare_OBJECTS = $(am_utilities_compare_OBJECTS)
-utilities_compare_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+utilities_compare_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(MAGICKWAND_LIBS)
 utilities_compare_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(utilities_compare_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am_utilities_composite_OBJECTS = utilities/composite.$(OBJEXT)
 utilities_composite_OBJECTS = $(am_utilities_composite_OBJECTS)
-utilities_composite_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+utilities_composite_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(MAGICKWAND_LIBS)
 utilities_composite_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -1907,21 +1935,23 @@ utilities_composite_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(LDFLAGS) -o $@
 am_utilities_conjure_OBJECTS = utilities/conjure.$(OBJEXT)
 utilities_conjure_OBJECTS = $(am_utilities_conjure_OBJECTS)
-utilities_conjure_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+utilities_conjure_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(MAGICKWAND_LIBS)
 utilities_conjure_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(utilities_conjure_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am_utilities_display_OBJECTS = utilities/display.$(OBJEXT)
 utilities_display_OBJECTS = $(am_utilities_display_OBJECTS)
-utilities_display_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+utilities_display_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(MAGICKWAND_LIBS)
 utilities_display_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(utilities_display_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am_utilities_identify_OBJECTS = utilities/identify.$(OBJEXT)
 utilities_identify_OBJECTS = $(am_utilities_identify_OBJECTS)
-utilities_identify_DEPENDENCIES = $(MAGICKCORE_LIBS) \
+utilities_identify_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(MAGICKWAND_LIBS)
 utilities_identify_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -1929,35 +1959,40 @@ utilities_identify_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(LDFLAGS) -o $@
 am_utilities_import_OBJECTS = utilities/import.$(OBJEXT)
 utilities_import_OBJECTS = $(am_utilities_import_OBJECTS)
-utilities_import_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+utilities_import_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(MAGICKWAND_LIBS)
 utilities_import_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(utilities_import_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am_utilities_magick_OBJECTS = utilities/magick.$(OBJEXT)
 utilities_magick_OBJECTS = $(am_utilities_magick_OBJECTS)
-utilities_magick_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+utilities_magick_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(MAGICKWAND_LIBS)
 utilities_magick_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(utilities_magick_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am_utilities_mogrify_OBJECTS = utilities/mogrify.$(OBJEXT)
 utilities_mogrify_OBJECTS = $(am_utilities_mogrify_OBJECTS)
-utilities_mogrify_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+utilities_mogrify_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(MAGICKWAND_LIBS)
 utilities_mogrify_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(utilities_mogrify_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am_utilities_montage_OBJECTS = utilities/montage.$(OBJEXT)
 utilities_montage_OBJECTS = $(am_utilities_montage_OBJECTS)
-utilities_montage_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+utilities_montage_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(MAGICKWAND_LIBS)
 utilities_montage_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(utilities_montage_LDFLAGS) $(LDFLAGS) \
 	-o $@
 am_utilities_stream_OBJECTS = utilities/stream.$(OBJEXT)
 utilities_stream_OBJECTS = $(am_utilities_stream_OBJECTS)
-utilities_stream_DEPENDENCIES = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+utilities_stream_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+	$(MAGICKWAND_LIBS)
 utilities_stream_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(utilities_stream_LDFLAGS) $(LDFLAGS) \
@@ -2493,7 +2528,6 @@ CatDelegate = @CatDelegate@
 ConvertDelegate = @ConvertDelegate@
 DATA_DIR = @DATA_DIR@
 DEFS = @DEFS@
-DELEGATES = @DELEGATES@
 DEPDIR = @DEPDIR@
 DIRSEP = @DIRSEP@
 DISTCHECK_CONFIG_FLAGS = @DISTCHECK_CONFIG_FLAGS@
@@ -2598,6 +2632,7 @@ MAGICK_CONFIGURE_BUILD_PATH = @MAGICK_CONFIGURE_BUILD_PATH@
 MAGICK_CONFIGURE_SRC_PATH = @MAGICK_CONFIGURE_SRC_PATH@
 MAGICK_CPPFLAGS = @MAGICK_CPPFLAGS@
 MAGICK_CXXFLAGS = @MAGICK_CXXFLAGS@
+MAGICK_DELEGATES = @MAGICK_DELEGATES@
 MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
 MAGICK_FEATURES = @MAGICK_FEATURES@
 MAGICK_FILTER_MODULE_PATH = @MAGICK_FILTER_MODULE_PATH@
@@ -3991,7 +4026,7 @@ MAGICKCORE_PKGCONFIG = \
 MAGICKCORE_MANS = \
   MagickCore/MagickCore-config.1
 
-MAGICKCORE_LIBS = MagickCore/libMagickCore-@MAGICK_ABI_SUFFIX@.la
+MAGICKCORE_LIBS = MagickCore/libMagickCore-@MAGICK_ABI_SUFFIX@.la ${MATH_LIBS}
 @WITH_MODULES_FALSE@MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS) $(MAGICKCORE_CODER_SRCS) $(MAGICKCORE_FILTER_SRCS)
 @WITH_MODULES_TRUE@MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICKCORE_BASE_SRCS) $(MAGICKCORE_PLATFORM_SRCS)
 @WITH_MODULES_FALSE@MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICK_DEP_LIBS)

@@ -4696,20 +4696,21 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
         break;
       }
     /*
-       Informational Operations
+       Informational Operations.
 
        Note that these do not require either a cli-wand or images!
        Though currently a cli-wand much be provided regardless.
     */
-    if (LocaleCompare("version",option+1) == 0) {
-      (void) FormatLocaleFile(stdout,"Version: %s\n",
-        GetMagickVersion((size_t *) NULL));
-      (void) FormatLocaleFile(stdout,"Copyright: %s\n",
-        GetMagickCopyright());
-      (void) FormatLocaleFile(stdout,"Features: %s\n\n",
-        GetMagickFeatures());
-      break;
-    }
+    if (LocaleCompare("version",option+1) == 0)
+      {
+        (void) FormatLocaleFile(stdout,"Version: %s\n",
+          GetMagickVersion((size_t *) NULL));
+        (void) FormatLocaleFile(stdout,"Copyright: %s\n",GetMagickCopyright());
+        (void) FormatLocaleFile(stdout,"Features: %s\n",GetMagickFeatures());
+        (void) FormatLocaleFile(stdout,"Delegates: %s\n\n",
+           GetMagickDelegates());
+        break;
+      }
     if (LocaleCompare("list",option+1) == 0) {
       /*
          FUTURE: This 'switch' should really be part of MagickCore
