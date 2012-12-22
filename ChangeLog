@@ -1,5 +1,5 @@
 2012-12-24  6.8.1-2 Cristy  <quetzlzacatenango@image...>
-  * New version 6.8.1-2, SVN revision 10358.
+  * New version 6.8.1-2, SVN revision 10362.
 
 2012-12-23  6.8.1-2 Cristy  <quetzlzacatenango@image...>
   * Magickcore headers recently used pow() in the inline functions inside
