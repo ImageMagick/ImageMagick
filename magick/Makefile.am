@@ -37,7 +37,7 @@ MAGICK_MANS = \
   magick/Magick-config.1 \
   magick/MagickCore-config.1
 
-MAGICKCORE_LIBS = magick/libMagickCore-@MAGICK_ABI_SUFFIX@.la
+MAGICKCORE_LIBS = ${MATH_LIBS} magick/libMagickCore-@MAGICK_ABI_SUFFIX@.la
 
 if WITH_MODULES
 magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
