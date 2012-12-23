@@ -73,6 +73,9 @@ extern MagickExport const char
   *GetMagickReleaseDate(void),
   *GetMagickVersion(size_t *);
 
+extern MagickExport void
+  ListMagickVersion(FILE *);
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
