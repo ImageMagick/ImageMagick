@@ -826,10 +826,10 @@
 /* Define to the type of arg 5 for `select'. */
 #undef SELECT_TYPE_ARG5
 
-/* Configure directory name without ABI part. */
+/* Sharearch directory name without ABI part. */
 #undef SHAREARCH_BASEDIRNAME
 
-/* Configure directory dirname */
+/* Sharearch directory dirname */
 #undef SHAREARCH_DIRNAME
 
 /* Directory where architecture-independent configuration files live. */
