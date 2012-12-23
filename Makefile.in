@@ -190,7 +190,6 @@
 
 
 
-
 VPATH = @srcdir@
 am__make_dryrun = \
   { \
@@ -369,8 +368,8 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" \
 	"$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
-	"$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" \
-	"$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" \
+	"$(DESTDIR)$(man1dir)" "$(DESTDIR)$(configlibdir)" \
+	"$(DESTDIR)$(configsharedir)" \
 	"$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" \
 	"$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(includedir)" \
 	"$(DESTDIR)$(magickincdir)" "$(DESTDIR)$(magickppincdir)" \
@@ -1969,7 +1968,6 @@ utilities_stream_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(utilities_stream_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SCRIPTS = $(bin_SCRIPTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -2395,7 +2393,7 @@ am__set_TESTS_bases = \
   bases=`echo $$bases`
 RECHECK_LOGS = $(TEST_LOGS)
 @WITH_MAGICK_PLUS_PLUS_TRUE@am__EXEEXT_5 =  \
-@WITH_MAGICK_PLUS_PLUS_TRUE@	$(MAGICKPP_TEST_SCRIPTS_OPT)
+@WITH_MAGICK_PLUS_PLUS_TRUE@	$(MAGICKPP_TEST_SCRPTS_OPT)
 am__EXEEXT_6 =
 TEST_SUITE_LOG = test-suite.log
 am__test_logs1 = $(TESTS:=.log)
@@ -2845,7 +2843,7 @@ CLEANFILES = \
 
 
 # Binary scripts
-bin_SCRIPTS = \
+bin_SCRPTS = \
 	$(MAGICK_BIN_SCRPTS) \
 	$(WAND_BIN_SCRPTS) \
 	$(MAGICKPP_SCRPTS)
@@ -4412,9 +4410,7 @@ MAGICK_FILTER_SRCS = \
 	filters/analyze.c
 
 @WITH_MODULES_FALSE@filters_LTLIBRARIES = 
-@WITH_MODULES_TRUE@filters_LTLIBRARIES = \
-@WITH_MODULES_TRUE@	filters/analyze.la
-
+@WITH_MODULES_TRUE@filters_LTLIBRARIES = filters/analyze.la ${MATH_LIBS}
 
 # analyze filter module
 filters_analyze_la_SOURCES = filters/analyze.c
@@ -4552,14 +4548,14 @@ WAND_CLEANFILES =
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_PKGCONFIG = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_PKGCONFIG = $(MAGICKPP_PKGCONFIG_OPT)
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_SCRPTS = 
-@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_SCRPTS = $(MAGICKPP_SCRIPTS_OPT)
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_SCRPTS = $(MAGICKPP_SCRPTS_OPT)
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_TESTS = 
-@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_TESTS = $(MAGICKPP_TEST_SCRIPTS_OPT)
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_TESTS = $(MAGICKPP_TEST_SCRPTS_OPT)
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_TOP_INCHEADERS = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_TOP_INCHEADERS = $(MAGICKPP_TOP_INCHEADERS_OPT)
 @WITH_MAGICK_PLUS_PLUS_FALSE@MAGICKPP_INCHEADERS = 
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICKPP_INCHEADERS = $(MAGICKPP_INCHEADERS_OPT)
-MAGICKPP_SCRIPTS_OPT = \
+MAGICKPP_SCRPTS_OPT = \
 	Magick++/bin/Magick++-config
 
 MAGICKPP_MANS_OPT = \
@@ -4571,7 +4567,7 @@ MAGICKPP_PKGCONFIG_OPT = \
 	Magick++/lib/Magick++-@MAGICK_ABI_SUFFIX@.pc \
 	Magick++/lib/ImageMagick++-@MAGICK_ABI_SUFFIX@.pc
 
-MAGICKPP_TEST_SCRIPTS_OPT = \
+MAGICKPP_TEST_SCRPTS_OPT = \
 	Magick++/tests/tests.tap \
 	Magick++/demo/demos.tap
 
@@ -4591,7 +4587,7 @@ MAGICKPP_EXTRA_DIST = \
 	Magick++/demo/smile.miff \
 	Magick++/demo/smile_anim.miff \
 	Magick++/demo/tile.miff \
-	$(MAGICKPP_TEST_SCRIPTS_OPT) \
+	$(MAGICKPP_TEST_SCRPTS_OPT) \
 	Magick++/tests/test_image.miff \
 	Magick++/tests/test_image_anim.miff
 
@@ -4870,8 +4866,8 @@ TESTS_CLEANFILES = \
 @WITH_PERL_TRUE@PERLMAGICK_DISTCLEAN_LOCAL_TARGETS = clean-perl
 @WITH_PERL_TRUE@PERLMAGICK_MAINTAINER_CLEAN_LOCAL_TARGETS = distclean-local
 @WITH_PERL_TRUE@PERLMAGICK_TESTS = PerlMagick/check.sh
-@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@PERLMAGICK_CHECKSCRIPTS = perl-build
-@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@PERLMAGICK_CHECKSCRIPTS = 
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@PERLMAGICK_CHECKSCRPTS = perl-build
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@PERLMAGICK_CHECKSCRPTS = 
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@PERLSTATICNAME = PerlMagick
 
 # Pkgconfig directory
@@ -6463,41 +6459,6 @@ utilities/stream.$(OBJEXT): utilities/$(am__dirstamp) \
 utilities/stream$(EXEEXT): $(utilities_stream_OBJECTS) $(utilities_stream_DEPENDENCIES) $(EXTRA_utilities_stream_DEPENDENCIES) utilities/$(am__dirstamp)
 	@rm -f utilities/stream$(EXEEXT)
 	$(AM_V_CCLD)$(utilities_stream_LINK) $(utilities_stream_OBJECTS) $(utilities_stream_LDADD) $(LIBS)
-install-binSCRIPTS: $(bin_SCRIPTS)
-	@$(NORMAL_INSTALL)
-	@list='$(bin_SCRIPTS)'; test -n "$(bindir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(bindir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(bindir)" || exit 1; \
-	fi; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  if test -f "$$d$$p"; then echo "$$d$$p"; echo "$$p"; else :; fi; \
-	done | \
-	sed -e 'p;s,.*/,,;n' \
-	    -e 'h;s|.*|.|' \
-	    -e 'p;x;s,.*/,,;$(transform)' | sed 'N;N;N;s,\n, ,g' | \
-	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1; } \
-	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
-	    if ($$2 == $$4) { files[d] = files[d] " " $$1; \
-	      if (++n[d] == $(am__install_max)) { \
-		print "f", d, files[d]; n[d] = 0; files[d] = "" } } \
-	    else { print "f", d "/" $$4, $$1 } } \
-	  END { for (d in files) print "f", d, files[d] }' | \
-	while read type dir files; do \
-	     if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
-	     test -z "$$files" || { \
-	       echo " $(INSTALL_SCRIPT) $$files '$(DESTDIR)$(bindir)$$dir'"; \
-	       $(INSTALL_SCRIPT) $$files "$(DESTDIR)$(bindir)$$dir" || exit $$?; \
-	     } \
-	; done
-
-uninstall-binSCRIPTS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(bin_SCRIPTS)'; test -n "$(bindir)" || exit 0; \
-	files=`for p in $$list; do echo "$$p"; done | \
-	       sed -e 's,.*/,,;$(transform)'`; \
-	dir='$(DESTDIR)$(bindir)'; $(am__uninstall_files_from_dir)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -10232,13 +10193,13 @@ check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS check-local
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-recursive
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA) \
-		$(HEADERS) all-local
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(MANS) $(DATA) $(HEADERS) \
+		all-local
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" "$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(magickincdir)" "$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)" "$(DESTDIR)$(wandincdir)"; do \
+	for dir in "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" "$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(magickincdir)" "$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)" "$(DESTDIR)$(wandincdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -10332,8 +10293,8 @@ install-dvi: install-dvi-recursive
 
 install-dvi-am:
 
-install-exec-am: install-binPROGRAMS install-binSCRIPTS \
-	install-exec-local install-libLTLIBRARIES
+install-exec-am: install-binPROGRAMS install-exec-local \
+	install-libLTLIBRARIES
 
 install-html: install-html-recursive
 
@@ -10376,14 +10337,14 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS uninstall-binSCRIPTS \
-	uninstall-codersLTLIBRARIES uninstall-configlibDATA \
-	uninstall-configshareDATA uninstall-configsharearchDATA \
-	uninstall-docDATA uninstall-filtersLTLIBRARIES \
-	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
-	uninstall-local uninstall-magickincHEADERS \
-	uninstall-magickppincHEADERS uninstall-magickpptopincHEADERS \
-	uninstall-man uninstall-pkgconfigDATA uninstall-wandincHEADERS
+uninstall-am: uninstall-binPROGRAMS uninstall-codersLTLIBRARIES \
+	uninstall-configlibDATA uninstall-configshareDATA \
+	uninstall-configsharearchDATA uninstall-docDATA \
+	uninstall-filtersLTLIBRARIES uninstall-includeHEADERS \
+	uninstall-libLTLIBRARIES uninstall-local \
+	uninstall-magickincHEADERS uninstall-magickppincHEADERS \
+	uninstall-magickpptopincHEADERS uninstall-man \
+	uninstall-pkgconfigDATA uninstall-wandincHEADERS
 
 uninstall-man: uninstall-man1
 
@@ -10403,31 +10364,30 @@ uninstall-man: uninstall-man1
 	distclean-hdr distclean-libtool distclean-local distclean-tags \
 	distcleancheck distdir distuninstallcheck dvi dvi-am html \
 	html-am info info-am install install-am install-binPROGRAMS \
-	install-binSCRIPTS install-codersLTLIBRARIES \
-	install-configlibDATA install-configshareDATA \
-	install-configsharearchDATA install-data install-data-am \
-	install-data-local install-docDATA install-dvi install-dvi-am \
-	install-exec install-exec-am install-exec-local \
-	install-filtersLTLIBRARIES install-html install-html-am \
-	install-includeHEADERS install-info install-info-am \
-	install-libLTLIBRARIES install-magickincHEADERS \
-	install-magickppincHEADERS install-magickpptopincHEADERS \
-	install-man install-man1 install-pdf install-pdf-am \
-	install-pkgconfigDATA install-ps install-ps-am install-strip \
-	install-wandincHEADERS installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic maintainer-clean-local mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am recheck tags tags-recursive uninstall \
-	uninstall-am uninstall-binPROGRAMS uninstall-binSCRIPTS \
-	uninstall-codersLTLIBRARIES uninstall-configlibDATA \
-	uninstall-configshareDATA uninstall-configsharearchDATA \
-	uninstall-docDATA uninstall-filtersLTLIBRARIES \
-	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
-	uninstall-local uninstall-magickincHEADERS \
-	uninstall-magickppincHEADERS uninstall-magickpptopincHEADERS \
-	uninstall-man uninstall-man1 uninstall-pkgconfigDATA \
-	uninstall-wandincHEADERS
+	install-codersLTLIBRARIES install-configlibDATA \
+	install-configshareDATA install-configsharearchDATA \
+	install-data install-data-am install-data-local \
+	install-docDATA install-dvi install-dvi-am install-exec \
+	install-exec-am install-exec-local install-filtersLTLIBRARIES \
+	install-html install-html-am install-includeHEADERS \
+	install-info install-info-am install-libLTLIBRARIES \
+	install-magickincHEADERS install-magickppincHEADERS \
+	install-magickpptopincHEADERS install-man install-man1 \
+	install-pdf install-pdf-am install-pkgconfigDATA install-ps \
+	install-ps-am install-strip install-wandincHEADERS \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic \
+	maintainer-clean-local mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	recheck tags tags-recursive uninstall uninstall-am \
+	uninstall-binPROGRAMS uninstall-codersLTLIBRARIES \
+	uninstall-configlibDATA uninstall-configshareDATA \
+	uninstall-configsharearchDATA uninstall-docDATA \
+	uninstall-filtersLTLIBRARIES uninstall-includeHEADERS \
+	uninstall-libLTLIBRARIES uninstall-local \
+	uninstall-magickincHEADERS uninstall-magickppincHEADERS \
+	uninstall-magickpptopincHEADERS uninstall-man uninstall-man1 \
+	uninstall-pkgconfigDATA uninstall-wandincHEADERS
 
 magick-install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(magickincdir)

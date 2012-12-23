@@ -23,7 +23,7 @@ AC_PREREQ(2.69)
 m4_define([magick_major_version], [6])
 m4_define([magick_minor_version], [8])
 m4_define([magick_micro_version], [1])
-m4_define([magick_patchlevel_version], [3])
+m4_define([magick_patchlevel_version], [2])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
 m4_define([magick_svn_revision], esyscmd([sh -c "(svnversion .) | awk '{ print \$1 }' | tr -d '\n'"]))
@@ -686,7 +686,7 @@ AC_ARG_WITH([method-prefix],
 
 if test "$with_method_prefix" != 'no'; then
     AC_DEFINE_UNQUOTED(NAMESPACE_PREFIX,$with_method_prefix,[Magick API method prefix])
-  DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-method-prefix "
+    DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-method-prefix "
 fi
 
 # Number of bits in a Quantum
@@ -2441,9 +2441,9 @@ fi
 
 LZMA_PKG=""
 if test "x$with_lzma" = "xyes"; then
-    AC_MSG_NOTICE([-------------------------------------------------------------])
+    AC_MSG_RESULT([-------------------------------------------------------------])
     PKG_CHECK_MODULES(LZMA,[liblzma >= 2.9.0], have_lzma=yes, have_lzma=no)
-    AC_MSG_NOTICE([])
+    AC_MSG_RESULT([])
 fi
 
 if test "$have_lzma" = 'yes'; then
@@ -3960,8 +3960,8 @@ LTDL              --with-ltdl=$with_ltdl		$have_ltdl
 LZMA              --with-lzma=$with_lzma		$have_lzma
 Magick++          --with-magick-plus-plus=$with_magick_plus_plus	$have_magick_plus_plus
 OpenEXR           --with-openexr=$with_openexr		$have_openexr
-PERL              --with-perl=$with_perl		$have_perl
 PANGO             --with-pango=$with_pango		$have_pango
+PERL              --with-perl=$with_perl		$have_perl
 PNG               --with-png=$with_png		$have_png
 RSVG              --with-rsvg=$with_rsvg		$have_rsvg
 TIFF              --with-tiff=$with_tiff		$have_tiff

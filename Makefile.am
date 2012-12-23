@@ -44,7 +44,7 @@ bin_PROGRAMS = \
 	$(UTILITIES_PGMS)
 
 # Binary scripts
-bin_SCRIPTS = \
+bin_SCRPTS = \
 	$(MAGICK_BIN_SCRPTS) \
 	$(WAND_BIN_SCRPTS) \
 	$(MAGICKPP_SCRPTS)
