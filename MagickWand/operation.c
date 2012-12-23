@@ -4703,12 +4703,7 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
     */
     if (LocaleCompare("version",option+1) == 0)
       {
-        (void) FormatLocaleFile(stdout,"Version: %s\n",
-          GetMagickVersion((size_t *) NULL));
-        (void) FormatLocaleFile(stdout,"Copyright: %s\n",GetMagickCopyright());
-        (void) FormatLocaleFile(stdout,"Features: %s\n",GetMagickFeatures());
-        (void) FormatLocaleFile(stdout,"Delegates: %s\n\n",
-           GetMagickDelegates());
+        ListMagickVersion(stdout);
         break;
       }
     if (LocaleCompare("list",option+1) == 0) {
