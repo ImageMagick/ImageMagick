@@ -81,6 +81,31 @@ MagickExport const char *GetMagickCopyright(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t M a g i c k D e l e g a t e s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetMagickDelegates() returns the ImageMagick delegate libraries.
+%
+%  The format of the GetMagickDelegates method is:
+%
+%      const char *GetMagickDelegates(void)
+%
+%  No parameters are required.
+%
+*/
+MagickExport const char *GetMagickDelegates(void)
+{
+  return(MagickDelegates);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t M a g i c k F e a t u r e s                                         %
 %                                                                             %
 %                                                                             %
