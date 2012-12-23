@@ -1239,12 +1239,12 @@
 #define MAGICKCORE_SELECT_TYPE_ARG5 (struct timeval *)
 #endif
 
-/* Configure directory name without ABI part. */
+/* Sharearch directory name without ABI part. */
 #ifndef MAGICKCORE_SHAREARCH_BASEDIRNAME
 #define MAGICKCORE_SHAREARCH_BASEDIRNAME "config"
 #endif
 
-/* Configure directory dirname */
+/* Sharearch directory dirname */
 /* #undef SHAREARCH_DIRNAME */
 
 /* Directory where architecture-independent configuration files live. */

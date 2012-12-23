@@ -22,7 +22,7 @@ MAGICKCORE_FILTER_SRCS = \
 
 if WITH_MODULES
 filters_LTLIBRARIES = \
-	filters/analyze.la
+	filters/analyze.la  ${MATH_LIBS}
 else
 filters_LTLIBRARIES =
 endif # WITH_MODULES
