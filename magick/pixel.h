@@ -153,8 +153,8 @@ extern MagickExport MagickPixelPacket
   *CloneMagickPixelPacket(const MagickPixelPacket *);
 
 extern MagickExport MagickRealType
-  DecodePixelGamma(const MagickRealType),
-  EncodePixelGamma(const MagickRealType);
+  DecodePixelGamma(const MagickRealType) magick_hot_spot,
+  EncodePixelGamma(const MagickRealType) magick_hot_spot;
 
 extern MagickExport void
   GetMagickPixelPacket(const Image *,MagickPixelPacket *);
