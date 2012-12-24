@@ -202,6 +202,10 @@ extern MagickExport PixelChannelMap
 extern MagickExport PixelInfo
   *ClonePixelInfo(const PixelInfo *);
 
+extern MagickExport MagickRealType
+  DecodePixelGamma(const MagickRealType),
+  EncodePixelGamma(const MagickRealType);
+
 extern MagickExport void
   InitializePixelChannelMap(Image *),
   GetPixelInfo(const Image *,PixelInfo *),

@@ -271,6 +271,36 @@ MagickExport PixelInfo *ClonePixelInfo(const PixelInfo *pixel)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e c o d e P i x e l G a m m a                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DecodePixelGamma() applies the expansive power-law nonlinearity to the pixel.
+%
+%  The format of the DecodePixelGammaImage method is:
+%
+%      double DecodePixelGamma(const MagickRealType pixel)
+%
+%  A description of each parameter follows:
+%
+%    o pixel: the pixel.
+%
+*/
+MagickExport MagickRealType DecodePixelGamma(const MagickRealType pixel)
+{
+  if (pixel <= (0.0404482362771076*QuantumRange))
+    return(pixel/12.92f);
+  return((MagickRealType) (QuantumRange*pow((double) (QuantumScale*pixel+
+    0.055)/1.055,2.4)));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D e s t r o y P i x e l C h a n n e l M a p                               %
 %                                                                             %
 %                                                                             %
@@ -295,6 +325,36 @@ MagickExport PixelChannelMap *DestroyPixelChannelMap(
   assert(channel_map != (PixelChannelMap *) NULL);
   channel_map=(PixelChannelMap *) RelinquishMagickMemory(channel_map);
   return((PixelChannelMap *) RelinquishMagickMemory(channel_map));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   E n c o d e P i x e l G a m m a                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  EncodePixelGamma() cancels any nonlinearity in the pixel.
+%
+%  The format of the EncodePixelGammaImage method is:
+%
+%      MagickRealType EncodePixelGamma(const double MagickRealType)
+%
+%  A description of each parameter follows:
+%
+%    o pixel: the pixel.
+%
+*/
+MagickExport MagickRealType EncodePixelGamma(const MagickRealType pixel)
+{
+  if (pixel <= (0.0031306684425005883*QuantumRange))
+    return(12.92f*pixel);
+  return((MagickRealType) QuantumRange*(1.055*pow((double) QuantumScale*pixel,
+    1.0/2.4)-0.055));
 }
 
 /*
