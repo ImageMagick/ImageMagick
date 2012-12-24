@@ -152,6 +152,10 @@ extern MagickExport MagickBooleanType
 extern MagickExport MagickPixelPacket
   *CloneMagickPixelPacket(const MagickPixelPacket *);
 
+extern MagickExport MagickRealType
+  DecodePixelGamma(const MagickRealType),
+  EncodePixelGamma(const MagickRealType);
+
 extern MagickExport void
   GetMagickPixelPacket(const Image *,MagickPixelPacket *);
 

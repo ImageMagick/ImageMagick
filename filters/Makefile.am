@@ -21,7 +21,7 @@ MAGICK_FILTER_SRCS = \
 	filters/analyze.c
 
 if WITH_MODULES
-filters_LTLIBRARIES = filters/analyze.la ${MATH_LIBS}
+filters_LTLIBRARIES = filters/analyze.la
 else
 filters_LTLIBRARIES =
 endif # WITH_MODULES

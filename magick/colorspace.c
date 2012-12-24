@@ -287,9 +287,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             magenta,
             yellow;
 
-          cyan=ExpandPixelGamma((MagickRealType) GetPixelCyan(q));
-          magenta=ExpandPixelGamma((MagickRealType) GetPixelMagenta(q));
-          yellow=ExpandPixelGamma((MagickRealType) GetPixelYellow(q));
+          cyan=DecodePixelGamma((MagickRealType) GetPixelCyan(q));
+          magenta=DecodePixelGamma((MagickRealType) GetPixelMagenta(q));
+          yellow=DecodePixelGamma((MagickRealType) GetPixelYellow(q));
           SetPixelCyan(q,ClampToQuantum((MagickRealType) (QuantumRange-
             cyan)));
           SetPixelMagenta(q,ClampToQuantum((MagickRealType) (QuantumRange-
@@ -363,9 +363,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           SetMagickPixelPacket(image,q,indexes+x,&pixel);
-          pixel.red=ExpandPixelGamma((MagickRealType) pixel.red);
-          pixel.green=ExpandPixelGamma((MagickRealType) pixel.green);
-          pixel.blue=ExpandPixelGamma((MagickRealType) pixel.blue);
+          pixel.red=DecodePixelGamma((MagickRealType) pixel.red);
+          pixel.green=DecodePixelGamma((MagickRealType) pixel.green);
+          pixel.blue=DecodePixelGamma((MagickRealType) pixel.blue);
           ConvertRGBToCMYK(&pixel);
           SetPixelPacket(image,&pixel,q,indexes+x);
           q++;
@@ -427,9 +427,9 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             green,
             red;
 
-          red=ExpandPixelGamma((MagickRealType) GetPixelRed(q));
-          green=ExpandPixelGamma((MagickRealType) GetPixelGreen(q));
-          blue=ExpandPixelGamma((MagickRealType) GetPixelBlue(q));
+          red=DecodePixelGamma((MagickRealType) GetPixelRed(q));
+          green=DecodePixelGamma((MagickRealType) GetPixelGreen(q));
+          blue=DecodePixelGamma((MagickRealType) GetPixelBlue(q));
           gray=0.298839f*red+0.586811f*green+0.114350f*blue;
           SetPixelGray(q,ClampToQuantum(gray));
           q++;
@@ -493,11 +493,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          red=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelRed(q)));
-          green=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          green=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelGreen(q)));
-          blue=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          blue=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelBlue(q)));
           ConvertRGBToHCL(red,green,blue,&hue,&chroma,&luma);
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*hue));
@@ -563,11 +563,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          red=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelRed(q)));
-          green=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          green=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelGreen(q)));
-          blue=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          blue=ClampToQuantum(DecodePixelGamma((MagickRealType)
              GetPixelBlue(q)));
           ConvertRGBToHSB(red,green,blue,&hue,&saturation,&brightness);
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*
@@ -636,11 +636,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          red=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelRed(q)));
-          green=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          green=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelGreen(q)));
-          blue=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          blue=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelBlue(q)));
           ConvertRGBToHSL(red,green,blue,&hue,&saturation,&lightness);
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*
@@ -709,11 +709,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          red=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelRed(q)));
-          green=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          green=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelGreen(q)));
-          blue=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          blue=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelBlue(q)));
           ConvertRGBToHWB(red,green,blue,&hue,&whiteness,&blackness);
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*
@@ -785,11 +785,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          red=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelRed(q)));
-          green=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          green=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelGreen(q)));
-          blue=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          blue=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelBlue(q)));
           ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
           ConvertXYZToLab(X,Y,Z,&L,&a,&b);
@@ -861,11 +861,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          red=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelRed(q)));
-          green=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          green=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelGreen(q)));
-          blue=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          blue=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelBlue(q)));
           ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
           ConvertXYZToLab(X,Y,Z,&L,&a,&b);
@@ -939,11 +939,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          red=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelRed(q)));
-          green=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          green=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelGreen(q)));
-          blue=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          blue=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelBlue(q)));
           ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
           ConvertXYZToLMS(X,Y,Z,&L,&M,&S);
@@ -1049,11 +1049,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          red=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelRed(q)));
-          green=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          green=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelGreen(q)));
-          blue=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          blue=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelBlue(q)));
           SetPixelRed(q,logmap[ScaleQuantumToMap(red)]);
           SetPixelGreen(q,logmap[ScaleQuantumToMap(green)]);
@@ -1122,11 +1122,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          red=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelRed(q)));
-          green=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          green=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelGreen(q)));
-          blue=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          blue=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelBlue(q)));
           ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
           ConvertXYZToLuv(X,Y,Z,&L,&u,&v);
@@ -1191,11 +1191,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          red=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelRed(q)));
-          green=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          green=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelGreen(q)));
-          blue=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          blue=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelBlue(q)));
           gray=0.212600f*red+0.715200f*green+0.072200f*blue;
           SetPixelGray(q,ClampToQuantum(gray));
@@ -1255,11 +1255,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          red=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelRed(q)));
-          green=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          green=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelGreen(q)));
-          blue=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          blue=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelBlue(q)));
           SetPixelRed(q,red);
           SetPixelGreen(q,green);
@@ -1324,11 +1324,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          red=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelRed(q)));
-          green=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          green=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelGreen(q)));
-          blue=ClampToQuantum(ExpandPixelGamma((MagickRealType)
+          blue=ClampToQuantum(DecodePixelGamma((MagickRealType)
             GetPixelBlue(q)));
           ConvertRGBToXYZ(red,green,blue,&X,&Y,&Z);
           SetPixelRed(q,ClampToQuantum((MagickRealType) QuantumRange*X));
@@ -1691,11 +1691,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          red=ScaleQuantumToMap(ClampToQuantum(ExpandPixelGamma(
+          red=ScaleQuantumToMap(ClampToQuantum(DecodePixelGamma(
             (MagickRealType) GetPixelRed(q))));
-          green=ScaleQuantumToMap(ClampToQuantum(ExpandPixelGamma(
+          green=ScaleQuantumToMap(ClampToQuantum(DecodePixelGamma(
            (MagickRealType) GetPixelGreen(q))));
-          blue=ScaleQuantumToMap(ClampToQuantum(ExpandPixelGamma(
+          blue=ScaleQuantumToMap(ClampToQuantum(DecodePixelGamma(
             (MagickRealType) GetPixelBlue(q))));
           pixel.red=(x_map[red].x+y_map[green].x+z_map[blue].x)+
             (MagickRealType) primary_info.x;
@@ -1743,11 +1743,11 @@ MagickExport MagickBooleanType RGBTransformImage(Image *image,
         MagickPixelPacket
           pixel;
 
-        red=ScaleQuantumToMap(ClampToQuantum(ExpandPixelGamma((MagickRealType)
+        red=ScaleQuantumToMap(ClampToQuantum(DecodePixelGamma((MagickRealType)
           image->colormap[i].red)));
-        green=ScaleQuantumToMap(ClampToQuantum(ExpandPixelGamma((MagickRealType)
+        green=ScaleQuantumToMap(ClampToQuantum(DecodePixelGamma((MagickRealType)
           image->colormap[i].green)));
-        blue=ScaleQuantumToMap(ClampToQuantum(ExpandPixelGamma((MagickRealType)
+        blue=ScaleQuantumToMap(ClampToQuantum(DecodePixelGamma((MagickRealType)
           image->colormap[i].blue)));
         pixel.red=x_map[red].x+y_map[green].x+z_map[blue].x+primary_info.x;
         pixel.green=x_map[red].y+y_map[green].y+z_map[blue].y+primary_info.y;
@@ -2342,11 +2342,11 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             magenta,
             yellow;
 
-          cyan=ClampToQuantum(CompressPixelGamma((MagickRealType)
+          cyan=ClampToQuantum(EncodePixelGamma((MagickRealType)
             (QuantumRange-GetPixelCyan(q))));
-          magenta=ClampToQuantum(CompressPixelGamma((MagickRealType)
+          magenta=ClampToQuantum(EncodePixelGamma((MagickRealType)
             (QuantumRange-GetPixelMagenta(q))));
-          yellow=ClampToQuantum(CompressPixelGamma((MagickRealType)
+          yellow=ClampToQuantum(EncodePixelGamma((MagickRealType)
             (QuantumRange-GetPixelYellow(q))));
           SetPixelCyan(q,cyan);
           SetPixelMagenta(q,magenta);
@@ -2415,9 +2415,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
         {
           SetMagickPixelPacket(image,q,indexes+x,&pixel);
           ConvertCMYKToRGB(&pixel);
-          pixel.red=CompressPixelGamma(pixel.red);
-          pixel.green=CompressPixelGamma(pixel.green);
-          pixel.blue=CompressPixelGamma(pixel.blue);
+          pixel.red=EncodePixelGamma(pixel.red);
+          pixel.green=EncodePixelGamma(pixel.green);
+          pixel.blue=EncodePixelGamma(pixel.blue);
           SetPixelPacket(image,&pixel,q,indexes+x);
           q++;
         }
@@ -2476,7 +2476,7 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           double
             gray;
 
-          gray=CompressPixelGamma((MagickRealType) GetPixelGray(q));
+          gray=EncodePixelGamma((MagickRealType) GetPixelGray(q));
           SetPixelRed(q,ClampToQuantum(gray));
           SetPixelGreen(q,ClampToQuantum(gray));
           SetPixelBlue(q,ClampToQuantum(gray));
@@ -2544,9 +2544,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           chroma=(double) (QuantumScale*GetPixelGreen(q));
           luma=(double) (QuantumScale*GetPixelBlue(q));
           ConvertHCLToRGB(hue,chroma,luma,&red,&green,&blue);
-          red=ClampToQuantum(CompressPixelGamma((MagickRealType) red));
-          green=ClampToQuantum(CompressPixelGamma((MagickRealType) green));
-          blue=ClampToQuantum(CompressPixelGamma((MagickRealType) blue));
+          red=ClampToQuantum(EncodePixelGamma((MagickRealType) red));
+          green=ClampToQuantum(EncodePixelGamma((MagickRealType) green));
+          blue=ClampToQuantum(EncodePixelGamma((MagickRealType) blue));
           SetPixelRed(q,red);
           SetPixelGreen(q,green);
           SetPixelBlue(q,blue);
@@ -2614,9 +2614,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           saturation=(double) (QuantumScale*GetPixelGreen(q));
           brightness=(double) (QuantumScale*GetPixelBlue(q));
           ConvertHSBToRGB(hue,saturation,brightness,&red,&green,&blue);
-          red=ClampToQuantum(CompressPixelGamma((MagickRealType) red));
-          green=ClampToQuantum(CompressPixelGamma((MagickRealType) green));
-          blue=ClampToQuantum(CompressPixelGamma((MagickRealType) blue));
+          red=ClampToQuantum(EncodePixelGamma((MagickRealType) red));
+          green=ClampToQuantum(EncodePixelGamma((MagickRealType) green));
+          blue=ClampToQuantum(EncodePixelGamma((MagickRealType) blue));
           SetPixelRed(q,red);
           SetPixelGreen(q,green);
           SetPixelBlue(q,blue);
@@ -2684,9 +2684,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           saturation=(double) (QuantumScale*GetPixelGreen(q));
           lightness=(double) (QuantumScale*GetPixelBlue(q));
           ConvertHSLToRGB(hue,saturation,lightness,&red,&green,&blue);
-          red=ClampToQuantum(CompressPixelGamma((MagickRealType) red));
-          green=ClampToQuantum(CompressPixelGamma((MagickRealType) green));
-          blue=ClampToQuantum(CompressPixelGamma((MagickRealType) blue));
+          red=ClampToQuantum(EncodePixelGamma((MagickRealType) red));
+          green=ClampToQuantum(EncodePixelGamma((MagickRealType) green));
+          blue=ClampToQuantum(EncodePixelGamma((MagickRealType) blue));
           SetPixelRed(q,red);
           SetPixelGreen(q,green);
           SetPixelBlue(q,blue);
@@ -2754,9 +2754,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           whiteness=(double) (QuantumScale*GetPixelGreen(q));
           blackness=(double) (QuantumScale*GetPixelBlue(q));
           ConvertHWBToRGB(hue,whiteness,blackness,&red,&green,&blue);
-          red=ClampToQuantum(CompressPixelGamma((MagickRealType) red));
-          green=ClampToQuantum(CompressPixelGamma((MagickRealType) green));
-          blue=ClampToQuantum(CompressPixelGamma((MagickRealType) blue));
+          red=ClampToQuantum(EncodePixelGamma((MagickRealType) red));
+          green=ClampToQuantum(EncodePixelGamma((MagickRealType) green));
+          blue=ClampToQuantum(EncodePixelGamma((MagickRealType) blue));
           SetPixelRed(q,red);
           SetPixelGreen(q,green);
           SetPixelBlue(q,blue);
@@ -2828,9 +2828,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           b=QuantumScale*GetPixelBlue(q);
           ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
-          red=ClampToQuantum(CompressPixelGamma((MagickRealType) red));
-          green=ClampToQuantum(CompressPixelGamma((MagickRealType) green));
-          blue=ClampToQuantum(CompressPixelGamma((MagickRealType) blue));
+          red=ClampToQuantum(EncodePixelGamma((MagickRealType) red));
+          green=ClampToQuantum(EncodePixelGamma((MagickRealType) green));
+          blue=ClampToQuantum(EncodePixelGamma((MagickRealType) blue));
           SetPixelRed(q,red);
           SetPixelGreen(q,green);
           SetPixelBlue(q,blue);
@@ -2906,9 +2906,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           b=C*sin(H*(MagickPI/180.0f));
           ConvertLabToXYZ(L,a,b,&X,&Y,&Z);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
-          red=ClampToQuantum(CompressPixelGamma((MagickRealType) red));
-          green=ClampToQuantum(CompressPixelGamma((MagickRealType) green));
-          blue=ClampToQuantum(CompressPixelGamma((MagickRealType) blue));
+          red=ClampToQuantum(EncodePixelGamma((MagickRealType) red));
+          green=ClampToQuantum(EncodePixelGamma((MagickRealType) green));
+          blue=ClampToQuantum(EncodePixelGamma((MagickRealType) blue));
           SetPixelRed(q,red);
           SetPixelGreen(q,green);
           SetPixelBlue(q,blue);
@@ -2980,9 +2980,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           S=QuantumScale*GetPixelBlue(q);
           ConvertLMSToXYZ(L,M,S,&X,&Y,&Z);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
-          red=ClampToQuantum(CompressPixelGamma((MagickRealType) red));
-          green=ClampToQuantum(CompressPixelGamma((MagickRealType) green));
-          blue=ClampToQuantum(CompressPixelGamma((MagickRealType) blue));
+          red=ClampToQuantum(EncodePixelGamma((MagickRealType) red));
+          green=ClampToQuantum(EncodePixelGamma((MagickRealType) green));
+          blue=ClampToQuantum(EncodePixelGamma((MagickRealType) blue));
           SetPixelRed(q,red);
           SetPixelGreen(q,green);
           SetPixelBlue(q,blue);
@@ -3087,11 +3087,11 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(CompressPixelGamma((MagickRealType)
+          red=ClampToQuantum(EncodePixelGamma((MagickRealType)
             logmap[ScaleQuantumToMap(GetPixelRed(q))]));
-          green=ClampToQuantum(CompressPixelGamma((MagickRealType)
+          green=ClampToQuantum(EncodePixelGamma((MagickRealType)
             logmap[ScaleQuantumToMap(GetPixelGreen(q))]));
-          blue=ClampToQuantum(CompressPixelGamma((MagickRealType)
+          blue=ClampToQuantum(EncodePixelGamma((MagickRealType)
             logmap[ScaleQuantumToMap(GetPixelBlue(q))]));
           SetPixelRed(q,red);
           SetPixelGreen(q,green);
@@ -3165,9 +3165,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           v=QuantumScale*GetPixelBlue(q);
           ConvertLuvToXYZ(L,u,v,&X,&Y,&Z);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
-          red=ClampToQuantum(CompressPixelGamma((MagickRealType) red));
-          green=ClampToQuantum(CompressPixelGamma((MagickRealType) green));
-          blue=ClampToQuantum(CompressPixelGamma((MagickRealType) blue));
+          red=ClampToQuantum(EncodePixelGamma((MagickRealType) red));
+          green=ClampToQuantum(EncodePixelGamma((MagickRealType) green));
+          blue=ClampToQuantum(EncodePixelGamma((MagickRealType) blue));
           SetPixelRed(q,red);
           SetPixelGreen(q,green);
           SetPixelBlue(q,blue);
@@ -3226,11 +3226,11 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             green,
             red;
 
-          red=ClampToQuantum(CompressPixelGamma((MagickRealType)
+          red=ClampToQuantum(EncodePixelGamma((MagickRealType)
             GetPixelRed(q)));
-          green=ClampToQuantum(CompressPixelGamma((MagickRealType)
+          green=ClampToQuantum(EncodePixelGamma((MagickRealType)
             GetPixelGreen(q)));
-          blue=ClampToQuantum(CompressPixelGamma((MagickRealType)
+          blue=ClampToQuantum(EncodePixelGamma((MagickRealType)
             GetPixelBlue(q)));
           SetPixelRed(q,red);
           SetPixelGreen(q,green);
@@ -3299,9 +3299,9 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           Y=QuantumScale*GetPixelGreen(q);
           Z=QuantumScale*GetPixelBlue(q);
           ConvertXYZToRGB(X,Y,Z,&red,&green,&blue);
-          red=ClampToQuantum(CompressPixelGamma((MagickRealType) red));
-          green=ClampToQuantum(CompressPixelGamma((MagickRealType) green));
-          blue=ClampToQuantum(CompressPixelGamma((MagickRealType) blue));
+          red=ClampToQuantum(EncodePixelGamma((MagickRealType) red));
+          green=ClampToQuantum(EncodePixelGamma((MagickRealType) green));
+          blue=ClampToQuantum(EncodePixelGamma((MagickRealType) blue));
           SetPixelRed(q,red);
           SetPixelGreen(q,green);
           SetPixelBlue(q,blue);
@@ -3644,11 +3644,11 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
             }
           else
             {
-              pixel.red=CompressPixelGamma((MagickRealType)
+              pixel.red=EncodePixelGamma((MagickRealType)
                 ScaleMapToQuantum(pixel.red));
-              pixel.green=CompressPixelGamma((MagickRealType)
+              pixel.green=EncodePixelGamma((MagickRealType)
                 ScaleMapToQuantum(pixel.green));
-              pixel.blue=CompressPixelGamma((MagickRealType)
+              pixel.blue=EncodePixelGamma((MagickRealType)
                 ScaleMapToQuantum(pixel.blue));
             }
           SetPixelRed(q,ClampToQuantum(pixel.red));
@@ -3712,11 +3712,11 @@ MagickExport MagickBooleanType TransformRGBImage(Image *image,
           }
         else
           {
-            pixel.red=CompressPixelGamma((MagickRealType) ScaleMapToQuantum(
+            pixel.red=EncodePixelGamma((MagickRealType) ScaleMapToQuantum(
               pixel.red));
-            pixel.green=CompressPixelGamma((MagickRealType) ScaleMapToQuantum(
+            pixel.green=EncodePixelGamma((MagickRealType) ScaleMapToQuantum(
               pixel.green));
-            pixel.blue=CompressPixelGamma((MagickRealType) ScaleMapToQuantum(
+            pixel.blue=EncodePixelGamma((MagickRealType) ScaleMapToQuantum(
               pixel.blue));
           }
         image->colormap[i].red=ClampToQuantum(pixel.red);

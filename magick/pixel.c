@@ -108,6 +108,66 @@ MagickExport MagickPixelPacket *CloneMagickPixelPacket(
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e c o d e P i x e l G a m m a                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DecodePixelGamma() applies the expansive power-law nonlinearity to the pixel.
+%
+%  The format of the DecodePixelGammaImage method is:
+%
+%      MagickRealType DecodePixelGamma(const MagickRealType pixel)
+%
+%  A description of each parameter follows:
+%
+%    o pixel: the pixel.
+%
+*/
+MagickExport MagickRealType DecodePixelGamma(const MagickRealType pixel)
+{
+  if (pixel <= (0.0404482362771076*QuantumRange))
+    return(pixel/12.92f);
+  return((MagickRealType) (QuantumRange*pow((double) (QuantumScale*pixel+
+    0.055)/1.055,2.4)));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   E n c o d e P i x e l G a m m a                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  EncodePixelGamma() cancels any nonlinearity in the pixel.
+%
+%  The format of the EncodePixelGammaImage method is:
+%
+%      MagickRealType EncodePixelGamma(const MagickRealType pixel)
+%
+%  A description of each parameter follows:
+%
+%    o pixel: the pixel.
+%
+*/
+MagickExport MagickRealType EncodePixelGamma(const MagickRealType pixel)
+{
+  if (pixel <= (0.0031306684425005883*QuantumRange))
+    return(12.92f*pixel);
+  return((MagickRealType) QuantumRange*(1.055*pow((double) QuantumScale*pixel,
+    1.0/2.4)-0.055));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   E x p o r t I m a g e P i x e l s                                         %
 %                                                                             %
 %                                                                             %
