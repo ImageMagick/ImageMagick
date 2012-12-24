@@ -1,3 +1,9 @@
+2012-12-25  6.8.1-3 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.1-3, SVN revision 10388.
+
+2012-12-25  6.8.1-3 Cristy  <quetzlzacatenango@image...>
+  * Remove pow() dependency from public header.
+
 2012-12-24  6.8.1-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.1-2, SVN revision 10385.
 

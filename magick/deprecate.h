@@ -46,8 +46,10 @@ extern "C" {
 
 #define Downscale(quantum)  ScaleQuantumToChar(quantum)
 #define LABColorspace LabColorspace
-#define DecodesRGBGamma(pixel)  ExpandPixelGamma(pixel)
-#define EncodesRGBGamma(pixel)  CompressPixelGamma(pixel)
+#define CompressPixelGamma(pixel)  DecodePixelGamma(pixel)
+#define DecodesRGBGamma(pixel)  DecodePixelGamma(pixel)
+#define EncodesRGBGamma(pixel)  EncodePixelGamma(pixel)
+#define ExpandPixelGamma(pixel)  EncodePixelGamma(pixel)
 #define Intensity(color)  PixelIntensityToQuantum(color)
 #define LiberateUniqueFileResource(resource) \
   RelinquishUniqueFileResource(resource)
