@@ -477,13 +477,17 @@ static inline void AssociateAlphaPixelInfo(const Image *image,
   alpha_pixel->alpha=(double) pixel->alpha;
 }
 
-static inline Quantum ClampToUnsignedQuantum(const double value)
+static inline Quantum ClampPixel(const MagickRealType value)
 {
-  if (value <= 0.0)
-    return((Quantum) 0);
-  if (value >= QuantumRange)
-    return(QuantumRange);
-  return((Quantum) (value+0.5));
+  if (value < 0.0f)
+    return(0.0f);
+  if (value >= (MagickRealType) QuantumRange)
+    return((Quantum) QuantumRange);
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((Quantum) (value+0.5f));
+#else
+  return(value);
+#endif
 }
 
 static inline size_t ColorToNodeId(const CubeInfo *cube_info,
@@ -492,11 +496,11 @@ static inline size_t ColorToNodeId(const CubeInfo *cube_info,
   size_t
     id;
 
-  id=(size_t) (((ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->red)) >> index) & 0x01) |
-    ((ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->green)) >> index) & 0x01) << 1 |
-    ((ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->blue)) >> index) & 0x01) << 2);
+  id=(size_t) (((ScaleQuantumToChar(ClampPixel(pixel->red)) >> index) & 0x01) |
+    ((ScaleQuantumToChar(ClampPixel(pixel->green)) >> index) & 0x01) << 1 |
+    ((ScaleQuantumToChar(ClampPixel(pixel->blue)) >> index) & 0x01) << 2);
   if (cube_info->associate_alpha != MagickFalse)
-    id|=((ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->alpha)) >> index) & 0x1) << 3;
+    id|=((ScaleQuantumToChar(ClampPixel(pixel->alpha)) >> index) & 0x1) << 3;
   return(id);
 }
 
@@ -1462,13 +1466,11 @@ static inline ssize_t CacheOffset(CubeInfo *cube_info,
   ssize_t
     offset;
 
-  offset=(ssize_t)
-    (RedShift(ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->red))) |
-    GreenShift(ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->green))) |
-    BlueShift(ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->blue))));
+  offset=(ssize_t) (RedShift(ScaleQuantumToChar(ClampPixel(pixel->red))) |
+    GreenShift(ScaleQuantumToChar(ClampPixel(pixel->green))) |
+    BlueShift(ScaleQuantumToChar(ClampPixel(pixel->blue))));
   if (cube_info->associate_alpha != MagickFalse)
-    offset|=AlphaShift(ScaleQuantumToChar(ClampToUnsignedQuantum(
-      pixel->alpha)));
+    offset|=AlphaShift(ScaleQuantumToChar(ClampPixel(pixel->alpha)));
   return(offset);
 }
 
@@ -1581,11 +1583,11 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
                 pixel.alpha+=3*previous[u-v].alpha/16;
             }
         }
-      pixel.red=(double) ClampToUnsignedQuantum(pixel.red);
-      pixel.green=(double) ClampToUnsignedQuantum(pixel.green);
-      pixel.blue=(double) ClampToUnsignedQuantum(pixel.blue);
+      pixel.red=(double) ClampPixel(pixel.red);
+      pixel.green=(double) ClampPixel(pixel.green);
+      pixel.blue=(double) ClampPixel(pixel.blue);
       if (cube.associate_alpha != MagickFalse)
-        pixel.alpha=(double) ClampToUnsignedQuantum(pixel.alpha);
+        pixel.alpha=(double) ClampPixel(pixel.alpha);
       i=CacheOffset(&cube,&pixel);
       if (cube.cache[i] < 0)
         {
@@ -1837,11 +1839,11 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
         if (cube_info->associate_alpha != MagickFalse)
           pixel.alpha+=p->weights[i]*p->error[i].alpha;
       }
-      pixel.red=(double) ClampToUnsignedQuantum(pixel.red);
-      pixel.green=(double) ClampToUnsignedQuantum(pixel.green);
-      pixel.blue=(double) ClampToUnsignedQuantum(pixel.blue);
+      pixel.red=(double) ClampPixel(pixel.red);
+      pixel.green=(double) ClampPixel(pixel.green);
+      pixel.blue=(double) ClampPixel(pixel.blue);
       if (cube_info->associate_alpha != MagickFalse)
-        pixel.alpha=(double) ClampToUnsignedQuantum(pixel.alpha);
+        pixel.alpha=(double) ClampPixel(pixel.alpha);
       i=CacheOffset(cube_info,&pixel);
       if (p->cache[i] < 0)
         {
