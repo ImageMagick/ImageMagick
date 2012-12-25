@@ -2517,7 +2517,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 #endif
             (void) ResetMagickMemory(magick,0,sizeof(magick));
             count=fread(magick,1,sizeof(magick),image->blob->file_info.file);
-            (void) rewind(image->blob->file_info.file);
+            (void) fseek(image->blob->file_info.file,(off_t) -count,SEEK_CUR);
+            (void) fflush(image->blob->file_info.file);
             (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                "  read %.20g magic header bytes",(double) count);
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
