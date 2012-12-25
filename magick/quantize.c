@@ -450,13 +450,17 @@ static inline void AssociateAlphaPixel(const CubeInfo *cube_info,
   alpha_pixel->opacity=(MagickRealType) GetPixelOpacity(pixel);
 }
 
-static inline Quantum ClampToUnsignedQuantum(const MagickRealType value)
+static inline Quantum ClampPixel(const MagickRealType value)
 {
-  if (value <= 0.0)
-    return((Quantum) 0);
-  if (value >= QuantumRange)
-    return(QuantumRange);
-  return((Quantum) (value+0.5));
+  if (value < 0.0f)
+    return(0.0f);
+  if (value >= (MagickRealType) QuantumRange)
+    return((Quantum) QuantumRange);
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+  return((Quantum) (value+0.5f));
+#else
+  return(value);
+#endif
 }
 
 static inline size_t ColorToNodeId(const CubeInfo *cube_info,
@@ -465,14 +469,13 @@ static inline size_t ColorToNodeId(const CubeInfo *cube_info,
   size_t
     id;
 
-  id=(size_t) (((ScaleQuantumToChar(ClampToUnsignedQuantum(
-    GetPixelRed(pixel))) >> index) & 0x01) | ((ScaleQuantumToChar(
-    ClampToUnsignedQuantum(GetPixelGreen(pixel))) >> index) & 0x01) << 1 |
-    ((ScaleQuantumToChar(ClampToUnsignedQuantum(GetPixelBlue(pixel))) >>
+  id=(size_t) (((ScaleQuantumToChar(ClampPixel(GetPixelRed(pixel))) >> index) &
+    0x01) | ((ScaleQuantumToChar(ClampPixel(GetPixelGreen(pixel))) >> index) &
+    0x01) << 1 | ((ScaleQuantumToChar(ClampPixel(GetPixelBlue(pixel))) >>
     index) & 0x01) << 2);
   if (cube_info->associate_alpha != MagickFalse)
-    id|=((ScaleQuantumToChar(ClampToUnsignedQuantum(GetPixelOpacity(pixel))) >>
-      index) & 0x1) << 3;
+    id|=((ScaleQuantumToChar(ClampPixel(GetPixelOpacity(pixel))) >> index) &
+      0x1) << 3;
   return(id);
 }
 
@@ -1428,13 +1431,11 @@ static inline ssize_t CacheOffset(CubeInfo *cube_info,
   ssize_t
     offset;
 
-  offset=(ssize_t)
-    (RedShift(ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->red))) |
-    GreenShift(ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->green))) |
-    BlueShift(ScaleQuantumToChar(ClampToUnsignedQuantum(pixel->blue))));
+  offset=(ssize_t) (RedShift(ScaleQuantumToChar(ClampPixel(pixel->red))) |
+    GreenShift(ScaleQuantumToChar(ClampPixel(pixel->green))) |
+    BlueShift(ScaleQuantumToChar(ClampPixel(pixel->blue))));
   if (cube_info->associate_alpha != MagickFalse)
-    offset|=AlphaShift(ScaleQuantumToChar(ClampToUnsignedQuantum(
-      pixel->opacity)));
+    offset|=AlphaShift(ScaleQuantumToChar(ClampPixel(pixel->opacity)));
   return(offset);
 }
 
@@ -1552,11 +1553,11 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info)
                 pixel.opacity+=3*previous[u-v].opacity/16;
             }
         }
-      pixel.red=(MagickRealType) ClampToUnsignedQuantum(pixel.red);
-      pixel.green=(MagickRealType) ClampToUnsignedQuantum(pixel.green);
-      pixel.blue=(MagickRealType) ClampToUnsignedQuantum(pixel.blue);
+      pixel.red=(MagickRealType) ClampPixel(pixel.red);
+      pixel.green=(MagickRealType) ClampPixel(pixel.green);
+      pixel.blue=(MagickRealType) ClampPixel(pixel.blue);
       if (cube.associate_alpha != MagickFalse)
-        pixel.opacity=(MagickRealType) ClampToUnsignedQuantum(pixel.opacity);
+        pixel.opacity=(MagickRealType) ClampPixel(pixel.opacity);
       i=CacheOffset(&cube,&pixel);
       if (cube.cache[i] < 0)
         {
@@ -1772,11 +1773,11 @@ static MagickBooleanType RiemersmaDither(Image *image,CacheView *image_view,
         if (cube_info->associate_alpha != MagickFalse)
           pixel.opacity+=p->weights[i]*p->error[i].opacity;
       }
-      pixel.red=(MagickRealType) ClampToUnsignedQuantum(pixel.red);
-      pixel.green=(MagickRealType) ClampToUnsignedQuantum(pixel.green);
-      pixel.blue=(MagickRealType) ClampToUnsignedQuantum(pixel.blue);
+      pixel.red=(MagickRealType) ClampPixel(pixel.red);
+      pixel.green=(MagickRealType) ClampPixel(pixel.green);
+      pixel.blue=(MagickRealType) ClampPixel(pixel.blue);
       if (cube_info->associate_alpha != MagickFalse)
-        pixel.opacity=(MagickRealType) ClampToUnsignedQuantum(pixel.opacity);
+        pixel.opacity=(MagickRealType) ClampPixel(pixel.opacity);
       i=CacheOffset(cube_info,&pixel);
       if (p->cache[i] < 0)
         {
