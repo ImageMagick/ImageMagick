@@ -516,11 +516,6 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
   image->blob->size=GetBlobSize(image);
   image->extent=image->blob->size;
   image->blob->eof=MagickFalse;
-  if (image->blob->exempt != MagickFalse)
-    {
-      image->blob->type=UndefinedStream;
-      return(MagickTrue);
-    }
   status=0;
   switch (image->blob->type)
   {
@@ -552,6 +547,11 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
       break;
   }
   image->blob->status=status < 0 ? MagickTrue : MagickFalse;
+  if (image->blob->exempt != MagickFalse)
+    {
+      image->blob->type=UndefinedStream;
+      return(image->blob->status);
+    }
   switch (image->blob->type)
   {
     case UndefinedStream:
