@@ -522,6 +522,8 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
     case FileStream:
     case PipeStream:
     {
+      if (image->blob->synchronize != MagickFalse)
+        status=fsync(fileno(image->blob->file_info.file));
       status=ferror(image->blob->file_info.file);
       break;
     }
@@ -540,8 +542,14 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
       break;
     }
     case FifoStream:
-    case BlobStream:
       break;
+    case BlobStream:
+    {
+      if ((image->blob->file_info.file != (FILE *) NULL) &&
+          (image->blob->synchronize != MagickFalse))
+        (void) fsync(fileno(image->blob->file_info.file));
+      break;
+    }
   }
   image->blob->status=status < 0 ? MagickTrue : MagickFalse;
   image->blob->size=GetBlobSize(image);
@@ -559,8 +567,6 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
       break;
     case FileStream:
     {
-      if (image->blob->synchronize != MagickFalse)
-        status=fsync(fileno(image->blob->file_info.file));
       status=fclose(image->blob->file_info.file);
       break;
     }
@@ -590,11 +596,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
     case BlobStream:
     {
       if (image->blob->file_info.file != (FILE *) NULL)
-        {
-          if (image->blob->synchronize != MagickFalse)
-            (void) fsync(fileno(image->blob->file_info.file));
-          status=fclose(image->blob->file_info.file);
-        }
+        status=fclose(image->blob->file_info.file);
       break;
     }
   }
