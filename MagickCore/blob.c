@@ -513,9 +513,6 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
     return(MagickTrue);
   if (image->blob->synchronize != MagickFalse)
     SyncBlob(image);
-  image->blob->size=GetBlobSize(image);
-  image->extent=image->blob->size;
-  image->blob->eof=MagickFalse;
   status=0;
   switch (image->blob->type)
   {
@@ -547,6 +544,9 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
       break;
   }
   image->blob->status=status < 0 ? MagickTrue : MagickFalse;
+  image->blob->size=GetBlobSize(image);
+  image->extent=image->blob->size;
+  image->blob->eof=MagickFalse;
   if (image->blob->exempt != MagickFalse)
     {
       image->blob->type=UndefinedStream;
