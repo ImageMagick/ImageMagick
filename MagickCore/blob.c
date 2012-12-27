@@ -511,9 +511,7 @@ MagickExport MagickBooleanType CloseBlob(Image *image)
   assert(image->blob != (BlobInfo *) NULL);
   if (image->blob->type == UndefinedStream)
     return(MagickTrue);
-  if (image->blob->synchronize != MagickFalse)
-    SyncBlob(image);
-  status=0;
+  status=SyncBlob(image);
   switch (image->blob->type)
   {
     case UndefinedStream:
