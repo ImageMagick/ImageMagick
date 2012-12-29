@@ -15,8 +15,8 @@ VALIDATE="@abs_top_builddir@/tests/validate"
 DRAWTEST="@abs_top_builddir@/tests/drawtest"
 WANDTEST="@abs_top_builddir@/tests/wandtest"
 LD_LIBRARY_PATH="@abs_top_builddir@/magick/.libs:${LD_LIBRARY_PATH}"
-MAGICK_CODER_MODULE_PATH='@MAGICK_CODER_MODULE_PATH@'
-MAGICK_CONFIGURE_PATH='@MAGICK_CONFIGURE_BUILD_PATH@@DIRSEP@@MAGICK_CONFIGURE_SRC_PATH@'
-MAGICK_FILTER_MODULE_PATH='@MAGICK_FILTER_MODULE_PATH@'
+MAGICK_CODER_MODULE_PATH="@abs_top_builddir@/coders"
+MAGICK_CONFIGURE_PATH="@abs_top_builddir@/config"
+MAGICK_FILTER_MODULE_PATH="@abs_top_builddir@/filters"
 PATH="@abs_top_builddir@/utilities:${PATH}"
 set +a
