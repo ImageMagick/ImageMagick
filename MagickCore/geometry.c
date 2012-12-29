@@ -180,7 +180,6 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       case '-':
       case '.':
       case ',':
-      case 'e':
       case '+':
       case '0':
       case '1':
@@ -193,6 +192,8 @@ MagickExport MagickStatusType GetGeometry(const char *geometry,ssize_t *x,
       case '8':
       case '9':
       case 215:
+      case 'e':
+      case 'E':
       {
         p++;
         break;
