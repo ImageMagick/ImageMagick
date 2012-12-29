@@ -6,14 +6,14 @@
 # ImageMagick.  Please see the file "COPYING" included with Magick++
 # for usage and copying restrictions.
 #
-SRCDIR=`dirname $0`
-SRCDIR=`cd $SRCDIR && pwd`/
-TOPSRCDIR=`cd $srcdir && pwd`
-export SRCDIR
+SRCDIR=Magick++/demo
 . ./common.shi
 echo "1..24"
 
-cd Magick++/demo || exit 1
+SRCDIR=${top_srcdir}/${subdir}/
+export SRCDIR
+
+cd ${subdir} || exit 1
 
 ./analyze "$SRCDIR/model.miff" && echo "ok" || echo "not ok"
 
