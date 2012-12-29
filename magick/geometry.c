@@ -911,6 +911,8 @@ MagickExport MagickStatusType ParseGeometry(const char *geometry,
       case '/':
       case ':':
       case 215:
+      case 'e':
+      case 'E':
       {
         p++;
         break;
