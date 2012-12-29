@@ -7,8 +7,7 @@
 #
 #  Test for '${CONVERT}' utility.
 #
-
-set -e # Exit on any error
+. ./common.shi
 . ${srcdir}/tests/common.shi
 echo "1..1"
 
