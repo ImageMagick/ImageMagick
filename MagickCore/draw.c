@@ -3220,14 +3220,14 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   const SegmentInfo
     *gradient_vector;
 
+  double
+    length;
+
   MagickBooleanType
     status;
 
   PixelInfo
     zero;
-
-  double
-    length;
 
   PointInfo
     point;
