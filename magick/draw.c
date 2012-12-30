@@ -99,7 +99,7 @@ typedef struct _EdgeInfo
   SegmentInfo
     bounds;
 
-  MagickRealType
+  double
     scanline;
 
   PointInfo
@@ -120,7 +120,7 @@ typedef struct _EdgeInfo
 
 typedef struct _ElementInfo
 {
-  MagickRealType
+  double
     cx,
     cy,
     major,
@@ -170,7 +170,7 @@ static size_t
 static void
   TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
   TraceArcPath(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
-    const MagickRealType,const MagickBooleanType,const MagickBooleanType),
+    const double,const MagickBooleanType,const MagickBooleanType),
   TraceBezier(PrimitiveInfo *,const size_t),
   TraceCircle(PrimitiveInfo *,const PointInfo,const PointInfo),
   TraceEllipse(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
@@ -178,7 +178,7 @@ static void
   TraceRectangle(PrimitiveInfo *,const PointInfo,const PointInfo),
   TraceRoundRectangle(PrimitiveInfo *,const PointInfo,const PointInfo,
     PointInfo),
-  TraceSquareLinecap(PrimitiveInfo *,const size_t,const MagickRealType);
+  TraceSquareLinecap(PrimitiveInfo *,const size_t,const double);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1281,11 +1281,11 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
 static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
   const PolygonInfo *polygon_info)
 {
+  double
+    mid;
+
   DrawInfo
     *clone_info;
-
-  MagickRealType
-    mid;
 
   PointInfo
     end,
@@ -1502,15 +1502,15 @@ MagickExport MagickBooleanType DrawClipPath(Image *image,
 static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info,Image *image)
 {
-  DrawInfo
-    *clone_info;
-
-  MagickRealType
+  double
     length,
     maximum_length,
     offset,
     scale,
     total_length;
+
+  DrawInfo
+    *clone_info;
 
   MagickStatusType
     status;
@@ -1518,12 +1518,12 @@ static MagickBooleanType DrawDashPolygon(const DrawInfo *draw_info,
   PrimitiveInfo
     *dash_polygon;
 
-  register ssize_t
-    i;
-
-  register MagickRealType
+  register double
     dx,
     dy;
+
+  register ssize_t
+    i;
 
   size_t
     number_vertices;
@@ -1709,17 +1709,17 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
   const char
     *q;
 
+  double
+    angle,
+    factor,
+    primitive_extent;
+
   DrawInfo
     **graphic_context;
 
   MagickBooleanType
     proceed,
     status;
-
-  MagickRealType
-    angle,
-    factor,
-    primitive_extent;
 
   PointInfo
     point;
@@ -1774,7 +1774,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
     primitive=FileToString(draw_info->primitive+1,~0,&image->exception);
   if (primitive == (char *) NULL)
     return(MagickFalse);
-  primitive_extent=(MagickRealType) strlen(primitive);
+  primitive_extent=(double) strlen(primitive);
   (void) SetImageArtifact(image,"MVG",primitive);
   n=0;
   /*
@@ -2908,7 +2908,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
       case ArcPrimitive:
       case EllipsePrimitive:
       {
-        MagickRealType
+        double
           alpha,
           beta,
           radius;
@@ -3189,7 +3189,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info)
 %
 */
 
-static inline MagickRealType GetStopColorOffset(const GradientInfo *gradient,
+static inline double GetStopColorOffset(const GradientInfo *gradient,
   const ssize_t x,const ssize_t y)
 {
   switch (gradient->type)
@@ -3199,9 +3199,7 @@ static inline MagickRealType GetStopColorOffset(const GradientInfo *gradient,
     {
       double
         gamma,
-        length;
-
-      MagickRealType
+        length,
         offset,
         scale;
 
@@ -3221,15 +3219,13 @@ static inline MagickRealType GetStopColorOffset(const GradientInfo *gradient,
       gamma=sqrt(p.x*p.x+p.y*p.y)*length;
       gamma=PerceptibleReciprocal(gamma);
       scale=p.x*q.x+p.y*q.y;
-      offset=(MagickRealType) (gamma*scale*length);
+      offset=gamma*scale*length;
       return(offset);
     }
     case RadialGradient:
     {
       double
-        length;
-
-      MagickRealType
+        length,
         offset;
 
       PointInfo
@@ -3240,7 +3236,7 @@ static inline MagickRealType GetStopColorOffset(const GradientInfo *gradient,
       length=sqrt(v.x*v.x+v.y*v.y);
       if (gradient->spread == RepeatSpread)
         return(length);
-      offset=(MagickRealType) (length/gradient->radius);
+      offset=length/gradient->radius;
       return(offset);
     }
   }
@@ -3259,6 +3255,9 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
   const SegmentInfo
     *gradient_vector;
 
+  double
+    length;
+
   ExceptionInfo
     *exception;
 
@@ -3267,9 +3266,6 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
 
   MagickPixelPacket
     zero;
-
-  MagickRealType
-    length;
 
   PointInfo
     point;
@@ -3310,13 +3306,13 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
 #endif
   for (y=bounding_box.y; y < (ssize_t) bounding_box.height; y++)
   {
+    double
+      alpha,
+      offset;
+
     MagickPixelPacket
       composite,
       pixel;
-
-    MagickRealType
-      alpha,
-      offset;
 
     register IndexPacket
       *restrict indexes;
@@ -3415,11 +3411,11 @@ MagickExport MagickBooleanType DrawGradientImage(Image *image,
         }
         case RepeatSpread:
         {
+          double
+            repeat;
+
           MagickBooleanType
             antialias;
-
-          MagickRealType
-            repeat;
 
           antialias=MagickFalse;
           repeat=0.0;
@@ -3652,12 +3648,11 @@ static PolygonInfo **AcquirePolygonThreadSet(const DrawInfo *draw_info,
   return(polygon_info);
 }
 
-static MagickRealType GetOpacityPixel(PolygonInfo *polygon_info,
-  const MagickRealType mid,const MagickBooleanType fill,
-  const FillRule fill_rule,const ssize_t x,const ssize_t y,
-  MagickRealType *stroke_opacity)
+static double GetOpacityPixel(PolygonInfo *polygon_info,const double mid,
+  const MagickBooleanType fill,const FillRule fill_rule,const ssize_t x,
+  const ssize_t y,double *stroke_opacity)
 {
-  MagickRealType
+  double
     alpha,
     beta,
     distance,
@@ -3830,15 +3825,15 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
   CacheView
     *image_view;
 
+  double
+    mid;
+
   ExceptionInfo
     *exception;
 
   MagickBooleanType
     fill,
     status;
-
-  MagickRealType
-    mid;
 
   PolygonInfo
     **restrict polygon_info;
@@ -3987,7 +3982,7 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
     const int
       id = GetOpenMPThreadId();
 
-    MagickRealType
+    double
       fill_opacity,
       stroke_opacity;
 
@@ -4029,15 +4024,15 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
           stroke_opacity=stroke_opacity > 0.25 ? 1.0 : 0.0;
         }
       (void) GetFillColor(draw_info,x,y,&fill_color);
-      fill_opacity=(MagickRealType) (QuantumRange-fill_opacity*(QuantumRange-
+      fill_opacity=(double) (QuantumRange-fill_opacity*(QuantumRange-
         fill_color.opacity));
-      MagickCompositeOver(&fill_color,fill_opacity,q,(MagickRealType)
-        q->opacity,q);
+      MagickCompositeOver(&fill_color,(MagickRealType) fill_opacity,q,
+        (MagickRealType) q->opacity,q);
       (void) GetStrokeColor(draw_info,x,y,&stroke_color);
-      stroke_opacity=(MagickRealType) (QuantumRange-stroke_opacity*
-        (QuantumRange-stroke_color.opacity));
-      MagickCompositeOver(&stroke_color,stroke_opacity,q,(MagickRealType)
-        q->opacity,q);
+      stroke_opacity=(double) (QuantumRange-stroke_opacity*(QuantumRange-
+        stroke_color.opacity));
+      MagickCompositeOver(&stroke_color,(MagickRealType) stroke_opacity,q,
+        (MagickRealType) q->opacity,q);
       q++;
     }
     if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -4555,7 +4550,7 @@ MagickExport MagickBooleanType DrawPrimitive(Image *image,
     }
     default:
     {
-      MagickRealType
+      double
         mid,
         scale;
 
@@ -4892,9 +4887,9 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %
 %
 */
-static inline MagickRealType Permutate(const ssize_t n,const ssize_t k)
+static inline double Permutate(const ssize_t n,const ssize_t k)
 {
-  MagickRealType
+  double
     r;
 
   register ssize_t
@@ -4939,10 +4934,10 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
 }
 
 static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
-  const PointInfo end,const PointInfo arc,const MagickRealType angle,
+  const PointInfo end,const PointInfo arc,const double angle,
   const MagickBooleanType large_arc,const MagickBooleanType sweep)
 {
-  MagickRealType
+  double
     alpha,
     beta,
     delta,
@@ -4955,7 +4950,7 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
     points[3],
     radii;
 
-  register MagickRealType
+  register double
     cosine,
     sine;
 
@@ -5016,10 +5011,10 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
   alpha=atan2(points[0].y-center.y,points[0].x-center.x);
   theta=atan2(points[1].y-center.y,points[1].x-center.x)-alpha;
   if ((theta < 0.0) && (sweep != MagickFalse))
-    theta+=(MagickRealType) (2.0*MagickPI);
+    theta+=2.0*MagickPI;
   else
     if ((theta > 0.0) && (sweep == MagickFalse))
-      theta-=(MagickRealType) (2.0*MagickPI);
+      theta-=2.0*MagickPI;
   arc_segments=(size_t) ceil(fabs((double) (theta/(0.5*MagickPI+
     MagickEpsilon))));
   p=primitive_info;
@@ -5073,7 +5068,7 @@ static void TraceArcPath(PrimitiveInfo *primitive_info,const PointInfo start,
 static void TraceBezier(PrimitiveInfo *primitive_info,
   const size_t number_coordinates)
 {
-  MagickRealType
+  double
     alpha,
     *coefficients,
     weight;
@@ -5103,22 +5098,21 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
     for (j=i+1; j < (ssize_t) number_coordinates; j++)
     {
       alpha=fabs(primitive_info[j].point.x-primitive_info[i].point.x);
-      if (alpha > (MagickRealType) quantum)
+      if (alpha > (double) quantum)
         quantum=(size_t) alpha;
       alpha=fabs(primitive_info[j].point.y-primitive_info[i].point.y);
-      if (alpha > (MagickRealType) quantum)
+      if (alpha > (double) quantum)
         quantum=(size_t) alpha;
     }
   }
   quantum=(size_t) MagickMin((double) quantum/number_coordinates,
     (double) BezierQuantum);
   control_points=quantum*number_coordinates;
-  coefficients=(MagickRealType *) AcquireQuantumMemory((size_t)
+  coefficients=(double *) AcquireQuantumMemory((size_t)
     number_coordinates,sizeof(*coefficients));
   points=(PointInfo *) AcquireQuantumMemory((size_t) control_points,
     sizeof(*points));
-  if ((coefficients == (MagickRealType *) NULL) ||
-      (points == (PointInfo *) NULL))
+  if ((coefficients == (double *) NULL) || (points == (PointInfo *) NULL))
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   /*
     Compute bezier points.
@@ -5161,13 +5155,13 @@ static void TraceBezier(PrimitiveInfo *primitive_info,
     p--;
   }
   points=(PointInfo *) RelinquishMagickMemory(points);
-  coefficients=(MagickRealType *) RelinquishMagickMemory(coefficients);
+  coefficients=(double *) RelinquishMagickMemory(coefficients);
 }
 
 static void TraceCircle(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo end)
 {
-  MagickRealType
+  double
     alpha,
     beta,
     radius;
@@ -5189,7 +5183,7 @@ static void TraceCircle(PrimitiveInfo *primitive_info,const PointInfo start,
 static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo stop,const PointInfo degrees)
 {
-  MagickRealType
+  double
     delta,
     step,
     y;
@@ -5213,9 +5207,9 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
       return;
     }
   delta=2.0/MagickMax(stop.x,stop.y);
-  step=(MagickRealType) (MagickPI/8.0);
-  if ((delta >= 0.0) && (delta < (MagickRealType) (MagickPI/8.0)))
-    step=(MagickRealType) (MagickPI/(4*(MagickPI/delta/2+0.5)));
+  step=MagickPI/8.0;
+  if ((delta >= 0.0) && (delta < (MagickPI/8.0)))
+    step=MagickPI/(4*(MagickPI/delta/2+0.5));
   angle.x=DegreesToRadians(degrees.x);
   y=degrees.y;
   while (y < degrees.x)
@@ -5264,13 +5258,13 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path)
   const char
     *p;
 
+  double
+    x,
+    y;
+
   int
     attribute,
     last_attribute;
-
-  MagickRealType
-    x,
-    y;
 
   PointInfo
     end,
@@ -5313,12 +5307,12 @@ static size_t TracePath(PrimitiveInfo *primitive_info,const char *path)
       case 'a':
       case 'A':
       {
+        double
+          angle;
+
         MagickBooleanType
           large_arc,
           sweep;
-
-        MagickRealType
-          angle;
 
         PointInfo
           arc;
@@ -5720,12 +5714,12 @@ static void TraceRoundRectangle(PrimitiveInfo *primitive_info,
 }
 
 static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
-  const size_t number_vertices,const MagickRealType offset)
+  const size_t number_vertices,const double offset)
 {
-  MagickRealType
+  double
     distance;
 
-  register MagickRealType
+  register double
     dx,
     dy;
 
@@ -5767,14 +5761,12 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
     dy*(distance+offset)/distance);
 }
 
-static inline MagickRealType DrawEpsilonReciprocal(const MagickRealType x)
+static inline double DrawEpsilonReciprocal(const double x)
 {
-#define DrawEpsilon  ((MagickRealType) 1.0e-10)
+#define DrawEpsilon  (1.0e-10)
 
-  MagickRealType sign = x < (MagickRealType) 0.0 ? (MagickRealType) -1.0 :
-    (MagickRealType) 1.0;
-  return((sign*x) >= DrawEpsilon ? (MagickRealType) 1.0/x : sign*(
-    (MagickRealType) 1.0/DrawEpsilon));
+  double sign = x < 0.0 ? -1.0 : 1.0;
+  return((sign*x) >= DrawEpsilon ? 1.0/x : sign*(1.0/DrawEpsilon));
 }
 
 static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
@@ -5787,6 +5779,12 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
       q;
   } LineSegment;
 
+  double
+    delta_theta,
+    dot_product,
+    mid,
+    miterlimit;
+
   LineSegment
     dx,
     dy,
@@ -5796,12 +5794,6 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
 
   MagickBooleanType
     closed_path;
-
-  MagickRealType
-    delta_theta,
-    dot_product,
-    mid,
-    miterlimit;
 
   PointInfo
     box_p[5],
@@ -5873,8 +5865,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   slope.p=DrawEpsilonReciprocal(dx.p)*dy.p;
   inverse_slope.p=(-1.0*DrawEpsilonReciprocal(slope.p));
   mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
-  miterlimit=(MagickRealType) (draw_info->miterlimit*draw_info->miterlimit*
-    mid*mid);
+  miterlimit=(double) (draw_info->miterlimit*draw_info->miterlimit*mid*mid);
   if ((draw_info->linecap == SquareCap) && (closed_path == MagickFalse))
     TraceSquareLinecap(polygon_primitive,number_vertices,mid);
   offset.x=sqrt((double) (mid*mid/(inverse_slope.p*inverse_slope.p+1.0)));
@@ -6025,7 +6016,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           theta.p=atan2(box_q[1].y-center.y,box_q[1].x-center.x);
           theta.q=atan2(box_q[2].y-center.y,box_q[2].x-center.x);
           if (theta.q < theta.p)
-            theta.q+=(MagickRealType) (2.0*MagickPI);
+            theta.q+=2.0*MagickPI;
           arc_segments=(size_t) ceil((double) ((theta.q-theta.p)/
             (2.0*sqrt((double) (1.0/mid)))));
           path_q[q].x=box_q[1].x;
@@ -6033,7 +6024,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           q++;
           for (j=1; j < (ssize_t) arc_segments; j++)
           {
-            delta_theta=(MagickRealType) (j*(theta.q-theta.p)/arc_segments);
+            delta_theta=(j*(theta.q-theta.p)/arc_segments);
             path_q[q].x=(double) (center.x+mid*cos(fmod((double)
               (theta.p+delta_theta),DegreesToRadians(360.0))));
             path_q[q].y=(double) (center.y+mid*sin(fmod((double)
@@ -6097,13 +6088,13 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           theta.p=atan2(box_p[1].y-center.y,box_p[1].x-center.x);
           theta.q=atan2(box_p[2].y-center.y,box_p[2].x-center.x);
           if (theta.p < theta.q)
-            theta.p+=(MagickRealType) (2.0*MagickPI);
+            theta.p+=2.0*MagickPI;
           arc_segments=(size_t) ceil((double) ((theta.p-theta.q)/
             (2.0*sqrt((double) (1.0/mid)))));
           path_p[p++]=box_p[1];
           for (j=1; j < (ssize_t) arc_segments; j++)
           {
-            delta_theta=(MagickRealType) (j*(theta.q-theta.p)/arc_segments);
+            delta_theta=(j*(theta.q-theta.p)/arc_segments);
             path_p[p].x=(double) (center.x+mid*cos(fmod((double)
               (theta.p+delta_theta),DegreesToRadians(360.0))));
             path_p[p].y=(double) (center.y+mid*sin(fmod((double)
