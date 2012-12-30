@@ -6,7 +6,7 @@
 # ImageMagick.  Please see the file "COPYING" included with Magick++
 # for usage and copying restrictions.
 #
-SRCDIR=Magick++/demo
+subdir=Magick++/demo
 . ./common.shi
 echo "1..24"
 
