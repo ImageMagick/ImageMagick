@@ -939,16 +939,12 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
   (void) SetMagickResourceLimit(MemoryResource,memory);
   (void) SetMagickResourceLimit(MapResource,2*memory);
   limit=GetEnvironmentValue("MAGICK_AREA_LIMIT");
-  if (limit == (char *) NULL)
-    limit=GetPolicyValue("area");
   if (limit != (char *) NULL)
     {
       (void) SetMagickResourceLimit(AreaResource,StringToSizeType(limit,100.0));
       limit=DestroyString(limit);
     }
   limit=GetEnvironmentValue("MAGICK_MEMORY_LIMIT");
-  if (limit == (char *) NULL)
-    limit=GetPolicyValue("memory");
   if (limit != (char *) NULL)
     {
       (void) SetMagickResourceLimit(MemoryResource,
@@ -956,16 +952,12 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
       limit=DestroyString(limit);
     }
   limit=GetEnvironmentValue("MAGICK_MAP_LIMIT");
-  if (limit == (char *) NULL)
-    limit=GetPolicyValue("map");
   if (limit != (char *) NULL)
     {
       (void) SetMagickResourceLimit(MapResource,StringToSizeType(limit,100.0));
       limit=DestroyString(limit);
     }
   limit=GetEnvironmentValue("MAGICK_DISK_LIMIT");
-  if (limit == (char *) NULL)
-    limit=GetPolicyValue("disk");
   if (limit != (char *) NULL)
     {
       (void) SetMagickResourceLimit(DiskResource,StringToSizeType(limit,100.0));
@@ -994,8 +986,6 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
   (void) SetMagickResourceLimit(FileResource,MagickMax((size_t)
     (3*files/4),64));
   limit=GetEnvironmentValue("MAGICK_FILE_LIMIT");
-  if (limit == (char *) NULL)
-    limit=GetPolicyValue("file");
   if (limit != (char *) NULL)
     {
       (void) SetMagickResourceLimit(FileResource,StringToSizeType(limit,
@@ -1004,26 +994,13 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
     }
   (void) SetMagickResourceLimit(ThreadResource,GetOpenMPMaximumThreads());
   limit=GetEnvironmentValue("MAGICK_THREAD_LIMIT");
-  if (limit == (char *) NULL)
-    limit=GetPolicyValue("thread");
   if (limit != (char *) NULL)
     {
       (void) SetMagickResourceLimit(ThreadResource,StringToSizeType(limit,
         100.0));
       limit=DestroyString(limit);
     }
-  limit=GetEnvironmentValue("OMP_NUM_THREADS");
-  if (limit != (char *) NULL)
-    {
-      if ((MagickSizeType) StringToLong(limit) < 
-          GetMagickResourceLimit(ThreadResource))
-        (void) SetMagickResourceLimit(ThreadResource,StringToSizeType(limit,
-          100.0));
-      limit=DestroyString(limit);
-    }
   limit=GetEnvironmentValue("MAGICK_TIME_LIMIT");
-  if (limit == (char *) NULL)
-    limit=GetPolicyValue("time");
   if (limit != (char *) NULL)
     {
       (void) SetMagickResourceLimit(TimeResource,StringToSizeType(limit,100.0));
