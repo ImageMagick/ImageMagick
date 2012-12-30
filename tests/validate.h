@@ -355,6 +355,7 @@ static const struct ReferenceFormats
 #endif
     { "YUV", UndefinedCompression, 0.0 },
     { "YCbCr", UndefinedCompression, 0.0 },
+    { "YCbCrA", UndefinedCompression, 0.0 },
 #if defined(MAGICKCORE_GS_DELEGATE)
     { "AI", UndefinedCompression, 0.0 },
     { "EPDF", UndefinedCompression, 0.0 },
