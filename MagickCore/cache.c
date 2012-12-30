@@ -1923,7 +1923,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
                 status=ClonePixelCachePixels(clone_info,cache_info,exception);
               if (status != MagickFalse)
                 {
-                  if (cache_info->reference_count == 1) 
+                  if (cache_info->reference_count == 1)
                     cache_info->nexus_info=(NexusInfo **) NULL;
                   destroy=MagickTrue;
                   image->cache=clone_image.cache;
@@ -4913,10 +4913,6 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
   image->alpha_trait=BlendPixelTrait;
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);  /* must be virtual */
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_threads(image,image,image->rows,1)
-#endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
     register Quantum
