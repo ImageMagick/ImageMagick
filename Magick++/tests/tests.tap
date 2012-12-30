@@ -6,9 +6,9 @@
 # ImageMagick.  Please see the file "COPYING" included with Magick++
 # for usage and copying restrictions.
 #
-subdir=Magick++/demo
+subdir=Magick++/tests
 . ./common.shi
-echo "1..24"
+echo "1..12"
 
 SRCDIR=${top_srcdir}/${subdir}/
 export SRCDIR
