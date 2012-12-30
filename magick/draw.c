@@ -3197,9 +3197,11 @@ static inline MagickRealType GetStopColorOffset(const GradientInfo *gradient,
     case UndefinedGradient:
     case LinearGradient:
     {
-      MagickRealType
+      double
         gamma,
-        length,
+        length;
+
+      MagickRealType
         offset,
         scale;
 
@@ -3219,13 +3221,15 @@ static inline MagickRealType GetStopColorOffset(const GradientInfo *gradient,
       gamma=sqrt(p.x*p.x+p.y*p.y)*length;
       gamma=PerceptibleReciprocal(gamma);
       scale=p.x*q.x+p.y*q.y;
-      offset=gamma*scale*length;
+      offset=(MagickRealType) (gamma*scale*length);
       return(offset);
     }
     case RadialGradient:
     {
+      double
+        length;
+
       MagickRealType
-        length,
         offset;
 
       PointInfo
@@ -3236,7 +3240,7 @@ static inline MagickRealType GetStopColorOffset(const GradientInfo *gradient,
       length=sqrt(v.x*v.x+v.y*v.y);
       if (gradient->spread == RepeatSpread)
         return(length);
-      offset=length/gradient->radius;
+      offset=(MagickRealType) (length/gradient->radius);
       return(offset);
     }
   }
