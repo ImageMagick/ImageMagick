@@ -1003,15 +1003,22 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
       limit=DestroyString(limit);
     }
   (void) SetMagickResourceLimit(ThreadResource,GetOpenMPMaximumThreads());
-  limit=GetEnvironmentValue("OMP_NUM_THREADS");
-  if (limit == (char *) NULL)
-    limit=GetEnvironmentValue("MAGICK_THREAD_LIMIT");
+  limit=GetEnvironmentValue("MAGICK_THREAD_LIMIT");
   if (limit == (char *) NULL)
     limit=GetPolicyValue("thread");
   if (limit != (char *) NULL)
     {
       (void) SetMagickResourceLimit(ThreadResource,StringToSizeType(limit,
         100.0));
+      limit=DestroyString(limit);
+    }
+  limit=GetEnvironmentValue("OMP_NUM_THREADS");
+  if (limit != (char *) NULL)
+    {
+      if ((MagickSizeType) StringToLong(limit) < 
+          GetMagickResourceLimit(ThreadResource))
+        (void) SetMagickResourceLimit(ThreadResource,StringToSizeType(limit,
+          100.0));
       limit=DestroyString(limit);
     }
   limit=GetEnvironmentValue("MAGICK_TIME_LIMIT");
