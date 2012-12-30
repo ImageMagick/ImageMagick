@@ -34,8 +34,9 @@ extern "C" {
   if (((rows) > WorkloadThreshold()) && (expression)) \
     num_threads((source) != (destination) ? \
       GetMagickResourceLimit(ThreadResource) : \
-      GetImagePixelCacheType(source) == DiskCache ? 2 : \
-      GetMagickResourceLimit(ThreadResource))
+      GetImagePixelCacheType(source) != DiskCache ? \
+      GetMagickResourceLimit(ThreadResource) : \
+      GetMagickResourceLimit(ThreadResource) < 2 ? 1 : 2)
 #define magick_schedule(type,chunk) \
   schedule(type,(chunk) < 1 ? 1 : (chunk))
 
