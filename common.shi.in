@@ -16,7 +16,7 @@ DRAWTEST="@abs_top_builddir@/tests/drawtest"
 WANDTEST="@abs_top_builddir@/tests/wandtest"
 LD_LIBRARY_PATH="@abs_top_builddir@/magick/.libs:${LD_LIBRARY_PATH}"
 MAGICK_CODER_MODULE_PATH="@abs_top_builddir@/coders"
-MAGICK_CONFIGURE_PATH="@abs_top_builddir@/config"
+MAGICK_CONFIGURE_PATH="@abs_top_builddir@/config:@abs_top_srcdir@/config"
 MAGICK_FILTER_MODULE_PATH="@abs_top_builddir@/filters"
 PATH="@abs_top_builddir@/utilities:@abs_top_builddir@/tests:${PATH}"
 set +a
