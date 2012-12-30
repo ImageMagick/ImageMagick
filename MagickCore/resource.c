@@ -1003,7 +1003,9 @@ MagickPrivate MagickBooleanType ResourceComponentGenesis(void)
       limit=DestroyString(limit);
     }
   (void) SetMagickResourceLimit(ThreadResource,GetOpenMPMaximumThreads());
-  limit=GetEnvironmentValue("MAGICK_THREAD_LIMIT");
+  limit=GetEnvironmentValue("OMP_NUM_THREADS");
+  if (limit == (char *) NULL)
+    limit=GetEnvironmentValue("MAGICK_THREAD_LIMIT");
   if (limit == (char *) NULL)
     limit=GetPolicyValue("thread");
   if (limit != (char *) NULL)
