@@ -4900,11 +4900,6 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
   MagickBooleanType
     status;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  size_t
-    chunk;
-#endif
-
   ssize_t
     y;
 
@@ -4919,8 +4914,7 @@ static MagickBooleanType SetCacheAlphaChannel(Image *image,const Quantum alpha,
   status=MagickTrue;
   image_view=AcquireVirtualCacheView(image,exception);  /* must be virtual */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  chunk=image->rows/2;
-  #pragma omp parallel for magick_schedule(static,chunk) shared(progress,status)
+  #pragma omp parallel for magick_schedule(static,image->rows/2) shared(status)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
