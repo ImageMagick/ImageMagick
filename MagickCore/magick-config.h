@@ -24,6 +24,84 @@ extern "C" {
 
 #include "MagickCore/magick-baseconfig.h"
 
+/* Compatibility block */
+#if !defined(MAGICKCORE_QUANTUM_DEPTH) && defined(MAGICKCORE_QUANTUM_DEPTH_OBSOLETE_IN_H)
+# warning "you should set MAGICKCORE_QUANTUM_DEPTH to sensible default set it to configure time default"
+# warning "this is an obsolete behavior please fix your makefile"
+# define MAGICKCORE_QUANTUM_DEPTH MAGICKCORE_QUANTUM_DEPTH_OBSOLETE_IN_H
+#endif
+
+/* Number of bits in a pixel Quantum (8/16/32/64) */
+#ifndef MAGICKCORE_QUANTUM_DEPTH
+# error "you should set MAGICKCORE_QUANTUM_DEPTH"
+#endif
+
+/* check values */
+#if MAGICKCORE_QUANTUM_DEPTH != 8
+# if MAGICKCORE_QUANTUM_DEPTH != 16
+#  if MAGICKCORE_QUANTUM_DEPTH != 32
+#   if MAGICKCORE_QUANTUM_DEPTH != 64
+#    error "MAGICKCORE_QUANTUM_DEPTH is not 8/16/32/64 bits"
+#   endif
+#  endif
+# endif
+#endif
+
+
+#if !defined(MAGICKCORE_HDRI_ENABLE) && defined(MAGICKCORE_HDRI_ENABLE_OBSOLETE_IN_H)
+# warning "you should set MAGICKCORE_HDRI_ENABLE to sensible default set it to configure time default"
+# warning "this is an obsolete behavior please fix yours makefile"
+# define MAGICKCORE_HDRI_ENABLE MAGICKCORE_HDRI_ENABLE_OBSOLETE_IN_H
+#endif
+
+/* whether HDRI is enable */
+#if !defined(MAGICKCORE_HDRI_ENABLE)
+# error "you should set MAGICKCORE_HDRI_ENABLE"
+#endif
+
+#if MAGICKCORE_HDRI_ENABLE
+# define MAGICKCORE_HDRI_SUPPORT 1
+#endif
+
+/* Compatibility block */
+#if !defined(MAGICKCORE_QUANTUM_DEPTH) && defined(MAGICKCORE_QUANTUM_DEPTH_OBSOLETE_IN_H)
+# warning "you should set MAGICKCORE_QUANTUM_DEPTH to sensible default set it to configure time default"
+# warning "this is an obsolete behavior please fix yours makefile"
+# define MAGICKCORE_QUANTUM_DEPTH MAGICKCORE_QUANTUM_DEPTH_OBSOLETE_IN_H
+#endif
+
+/* Number of bits in a pixel Quantum (8/16/32/64) */
+#ifndef MAGICKCORE_QUANTUM_DEPTH
+# error "you should set MAGICKCORE_QUANTUM_DEPTH"
+#endif
+
+/* check values */
+#if MAGICKCORE_QUANTUM_DEPTH != 8
+# if MAGICKCORE_QUANTUM_DEPTH != 16
+#  if MAGICKCORE_QUANTUM_DEPTH != 32
+#   if MAGICKCORE_QUANTUM_DEPTH != 64
+#    error "MAGICKCORE_QUANTUM_DEPTH is not 8/16/32/64 bits"
+#   endif
+#  endif
+# endif
+#endif
+
+
+#if !defined(MAGICKCORE_HDRI_ENABLE) && defined(MAGICKCORE_HDRI_ENABLE_OBSOLETE_IN_H)
+# warning "you should set MAGICKCORE_HDRI_ENABLE to sensible default set it to configure time default"
+# warning "this is an obsolete behavior please fix yours makefile"
+# define MAGICKCORE_HDRI_ENABLE MAGICKCORE_HDRI_ENABLE_OBSOLETE_IN_H
+#endif
+
+/* whether HDRI is enable */
+#if !defined(MAGICKCORE_HDRI_ENABLE)
+# error "you should set MAGICKCORE_HDRI_ENABLE"
+#endif
+
+#if MAGICKCORE_HDRI_ENABLE
+# define MAGICKCORE_HDRI_SUPPORT 1
+#endif
+
 #if defined __CYGWIN32__ && !defined __CYGWIN__
    /* For backwards compatibility with Cygwin b19 and
       earlier, we define __CYGWIN__ here, so that

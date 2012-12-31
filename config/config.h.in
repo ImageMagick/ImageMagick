@@ -697,11 +697,14 @@
 /* define if your compiler has __attribute__ */
 #undef HAVE___ATTRIBUTE__
 
-/* accurately represent the wide range of intensity levels in real scenes */
-#undef HDRI_SUPPORT
+/* Whether hdri is enabled or not */
+#undef HDRI_ENABLE_OBSOLETE_IN_H
 
 /* Define if you have umem memory allocation library */
 #undef HasUMEM
+
+/* Directory where ImageMagick architecture headers live. */
+#undef INCLUDEARCH_PATH
 
 /* Directory where ImageMagick headers live. */
 #undef INCLUDE_PATH
@@ -809,7 +812,7 @@
 #undef PixelCacheThreshold
 
 /* Number of bits in a pixel Quantum (8/16/32/64) */
-#undef QUANTUM_DEPTH
+#undef QUANTUM_DEPTH_OBSOLETE_IN_H
 
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE

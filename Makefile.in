@@ -232,8 +232,9 @@ bin_PROGRAMS = $(am__EXEEXT_1)
 TESTS = $(TESTS_TESTS) $(am__EXEEXT_5)
 XFAIL_TESTS = $(am__EXEEXT_6) $(am__EXEEXT_6)
 check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4)
-DIST_COMMON = $(MagickCoreinc_HEADERS) $(MagickWandinc_HEADERS) \
-	$(am__configure_deps) $(am__magickppinc_HEADERS_DIST) \
+DIST_COMMON = $(MagickCoreinc_HEADERS) $(MagickCoreincarch_HEADERS) \
+	$(MagickWandinc_HEADERS) $(am__configure_deps) \
+	$(am__magickppinc_HEADERS_DIST) \
 	$(am__magickpptopinc_HEADERS_DIST) $(include_HEADERS) \
 	$(noinst_HEADERS) $(srcdir)/ImageMagick.spec.in \
 	$(srcdir)/Magick++/Makefile.am \
@@ -372,6 +373,7 @@ am__installdirs = "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" \
 	"$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" \
 	"$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" \
 	"$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(MagickCoreincdir)" \
+	"$(DESTDIR)$(MagickCoreincarchdir)" \
 	"$(DESTDIR)$(MagickWandincdir)" "$(DESTDIR)$(includedir)" \
 	"$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)"
 LTLIBRARIES = $(coders_LTLIBRARIES) $(filters_LTLIBRARIES) \
@@ -448,9 +450,9 @@ am__MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_SOURCES_DIST =  \
 	MagickCore/list.c MagickCore/list.h MagickCore/locale.c \
 	MagickCore/locale_.h MagickCore/log.c MagickCore/log.h \
 	MagickCore/mac.h MagickCore/magic.c MagickCore/magic.h \
-	MagickCore/magick.c MagickCore/magick-config.h \
-	MagickCore/magick-type.h MagickCore/magick.h \
-	MagickCore/matrix.c MagickCore/matrix.h \
+	MagickCore/magick.c MagickCore/magick-baseconfig.h \
+	MagickCore/magick-config.h MagickCore/magick-type.h \
+	MagickCore/magick.h MagickCore/matrix.c MagickCore/matrix.h \
 	MagickCore/matrix-private.h MagickCore/memory.c \
 	MagickCore/memory_.h MagickCore/memory-private.h \
 	MagickCore/method-attribute.h MagickCore/methods.h \
@@ -2219,9 +2221,10 @@ am__magickppinc_HEADERS_DIST = Magick++/lib/Magick++/Blob.h \
 	Magick++/lib/Magick++/Montage.h Magick++/lib/Magick++/Pixels.h \
 	Magick++/lib/Magick++/STL.h Magick++/lib/Magick++/TypeMetric.h
 am__magickpptopinc_HEADERS_DIST = Magick++/lib/Magick++.h
-HEADERS = $(MagickCoreinc_HEADERS) $(MagickWandinc_HEADERS) \
-	$(include_HEADERS) $(magickppinc_HEADERS) \
-	$(magickpptopinc_HEADERS) $(noinst_HEADERS)
+HEADERS = $(MagickCoreinc_HEADERS) $(MagickCoreincarch_HEADERS) \
+	$(MagickWandinc_HEADERS) $(include_HEADERS) \
+	$(magickppinc_HEADERS) $(magickpptopinc_HEADERS) \
+	$(noinst_HEADERS)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
@@ -2546,6 +2549,7 @@ HTMLDecodeDelegate = @HTMLDecodeDelegate@
 ILBMDecodeDelegate = @ILBMDecodeDelegate@
 ILBMEncodeDelegate = @ILBMEncodeDelegate@
 INCLUDEARCH_DIR = @INCLUDEARCH_DIR@
+INCLUDEARCH_PATH = @INCLUDEARCH_PATH@
 INCLUDE_DIR = @INCLUDE_DIR@
 INCLUDE_PATH = @INCLUDE_PATH@
 INFO_DIR = @INFO_DIR@
@@ -3975,10 +3979,14 @@ coders_yuv_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_yuv_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_yuv_la_LIBADD = $(MAGICKCORE_LIBS)
 MagickCoreincdir = $(INCLUDE_PATH)/MagickCore
+MagickCoreincarchdir = $(INCLUDEARCH_PATH)/MagickCore
 
 # Headers which are installed
 MagickCoreinc_HEADERS = \
 	$(MAGICKCORE_INCLUDE_HDRS)
+
+MagickCoreincarch_HEADERS = \
+	$(MAGICKCORE_INCLUDEARCH_HDRS)
 
 MAGICKCORE_BIN_SCRPTS = \
   MagickCore/MagickCore-config
@@ -4002,7 +4010,7 @@ MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS = -I$(top_builddir)/ltd
 @HAVE_LD_VERSION_SCRIPT_TRUE@MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION = -Wl,--version-script=$(top_srcdir)/MagickCore/libMagickCore.map
 MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_LDFLAGS = -no-undefined \
   $(MagickCore_libMagickCore_la_LDFLAGS_VERSION) \
-  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) \
+  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 
 MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_DEPENDENCIES = 
@@ -4114,6 +4122,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/magic.c \
 	MagickCore/magic.h \
 	MagickCore/magick.c \
+	MagickCore/magick-baseconfig.h \
 	MagickCore/magick-config.h \
 	MagickCore/magick-type.h \
 	MagickCore/magick.h \
@@ -4294,7 +4303,6 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/magic-private.h \
 	MagickCore/magick.h \
 	MagickCore/magick-config.h \
-	MagickCore/magick-baseconfig.h \
 	MagickCore/magick-type.h \
 	MagickCore/matrix.h \
 	MagickCore/memory_.h \
@@ -4404,6 +4412,9 @@ MAGICKCORE_NOINST_HDRS = \
  	MagickCore/widget-private.h \
 	MagickCore/xml-tree-private.h \
 	MagickCore/xwindow-private.h
+
+MAGICKCORE_INCLUDEARCH_HDRS = \
+	MagickCore/magick-baseconfig.h
 
 MAGICKCORE_EXTRA_DIST = \
 	MagickCore/MagickCore-config.in \
@@ -9822,6 +9833,27 @@ uninstall-MagickCoreincHEADERS:
 	@list='$(MagickCoreinc_HEADERS)'; test -n "$(MagickCoreincdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(MagickCoreincdir)'; $(am__uninstall_files_from_dir)
+install-MagickCoreincarchHEADERS: $(MagickCoreincarch_HEADERS)
+	@$(NORMAL_INSTALL)
+	@list='$(MagickCoreincarch_HEADERS)'; test -n "$(MagickCoreincarchdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(MagickCoreincarchdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(MagickCoreincarchdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(MagickCoreincarchdir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(MagickCoreincarchdir)" || exit $$?; \
+	done
+
+uninstall-MagickCoreincarchHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(MagickCoreincarch_HEADERS)'; test -n "$(MagickCoreincarchdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(MagickCoreincarchdir)'; $(am__uninstall_files_from_dir)
 install-MagickWandincHEADERS: $(MagickWandinc_HEADERS)
 	@$(NORMAL_INSTALL)
 	@list='$(MagickWandinc_HEADERS)'; test -n "$(MagickWandincdir)" || list=; \
@@ -10417,7 +10449,7 @@ install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" "$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(MagickCoreincdir)" "$(DESTDIR)$(MagickWandincdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)"; do \
+	for dir in "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" "$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(MagickCoreincdir)" "$(DESTDIR)$(MagickCoreincarchdir)" "$(DESTDIR)$(MagickWandincdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -10501,12 +10533,13 @@ info: info-recursive
 info-am:
 
 install-data-am: install-MagickCoreincHEADERS \
-	install-MagickWandincHEADERS install-codersLTLIBRARIES \
-	install-configlibDATA install-configshareDATA \
-	install-configsharearchDATA install-data-local install-docDATA \
-	install-filtersLTLIBRARIES install-includeHEADERS \
-	install-magickppincHEADERS install-magickpptopincHEADERS \
-	install-man install-pkgconfigDATA
+	install-MagickCoreincarchHEADERS install-MagickWandincHEADERS \
+	install-codersLTLIBRARIES install-configlibDATA \
+	install-configshareDATA install-configsharearchDATA \
+	install-data-local install-docDATA install-filtersLTLIBRARIES \
+	install-includeHEADERS install-magickppincHEADERS \
+	install-magickpptopincHEADERS install-man \
+	install-pkgconfigDATA
 
 install-dvi: install-dvi-recursive
 
@@ -10557,6 +10590,7 @@ ps: ps-recursive
 ps-am:
 
 uninstall-am: uninstall-MagickCoreincHEADERS \
+	uninstall-MagickCoreincarchHEADERS \
 	uninstall-MagickWandincHEADERS uninstall-binPROGRAMS \
 	uninstall-binSCRIPTS uninstall-codersLTLIBRARIES \
 	uninstall-configlibDATA uninstall-configshareDATA \
@@ -10584,24 +10618,27 @@ uninstall-man: uninstall-man1
 	distclean-hdr distclean-libtool distclean-local distclean-tags \
 	distcleancheck distdir distuninstallcheck dvi dvi-am html \
 	html-am info info-am install install-MagickCoreincHEADERS \
-	install-MagickWandincHEADERS install-am install-binPROGRAMS \
-	install-binSCRIPTS install-codersLTLIBRARIES \
-	install-configlibDATA install-configshareDATA \
-	install-configsharearchDATA install-data install-data-am \
-	install-data-local install-docDATA install-dvi install-dvi-am \
-	install-exec install-exec-am install-exec-local \
-	install-filtersLTLIBRARIES install-html install-html-am \
-	install-includeHEADERS install-info install-info-am \
-	install-libLTLIBRARIES install-magickppincHEADERS \
-	install-magickpptopincHEADERS install-man install-man1 \
-	install-pdf install-pdf-am install-pkgconfigDATA install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic maintainer-clean-local mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am recheck tags tags-recursive uninstall \
-	uninstall-MagickCoreincHEADERS uninstall-MagickWandincHEADERS \
-	uninstall-am uninstall-binPROGRAMS uninstall-binSCRIPTS \
+	install-MagickCoreincarchHEADERS install-MagickWandincHEADERS \
+	install-am install-binPROGRAMS install-binSCRIPTS \
+	install-codersLTLIBRARIES install-configlibDATA \
+	install-configshareDATA install-configsharearchDATA \
+	install-data install-data-am install-data-local \
+	install-docDATA install-dvi install-dvi-am install-exec \
+	install-exec-am install-exec-local install-filtersLTLIBRARIES \
+	install-html install-html-am install-includeHEADERS \
+	install-info install-info-am install-libLTLIBRARIES \
+	install-magickppincHEADERS install-magickpptopincHEADERS \
+	install-man install-man1 install-pdf install-pdf-am \
+	install-pkgconfigDATA install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic \
+	maintainer-clean-local mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	recheck tags tags-recursive uninstall \
+	uninstall-MagickCoreincHEADERS \
+	uninstall-MagickCoreincarchHEADERS \
+	uninstall-MagickWandincHEADERS uninstall-am \
+	uninstall-binPROGRAMS uninstall-binSCRIPTS \
 	uninstall-codersLTLIBRARIES uninstall-configlibDATA \
 	uninstall-configshareDATA uninstall-configsharearchDATA \
 	uninstall-docDATA uninstall-filtersLTLIBRARIES \
