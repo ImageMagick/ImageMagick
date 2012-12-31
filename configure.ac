@@ -617,7 +617,7 @@ if test "$enable_hdri" = 'yes'; then
 else
     magick_hdri_enable='0'
 fi
-AC_DEFINE_UNQUOTED(HDRI_ENABLE_OBSOLETE_IN_H,$magick_hdri_enable,[Whether hdri is enable or not])
+AC_DEFINE_UNQUOTED(HDRI_ENABLE_OBSOLETE_IN_H,$magick_hdri_enable,[Whether hdri is enabled or not])
 AC_SUBST(MAGICK_HDRI)dnl
 MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 CFLAGS="$CFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"

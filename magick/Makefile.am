@@ -59,10 +59,8 @@ endif
 
 magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la_LDFLAGS = -no-undefined \
   $(magick_libMagickCore_la_LDFLAGS_VERSION) \
-  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) \
-  -version-info \
+  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
-
 magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la_DEPENDENCIES =
 
 # Library base sources
@@ -173,8 +171,8 @@ MAGICK_BASE_SRCS = \
 	magick/magic.c \
 	magick/magic.h \
 	magick/magick.c \
-	magick/magick-config.h \
 	magick/magick-baseconfig.h \
+	magick/magick-config.h \
 	magick/magick-type.h \
 	magick/magick.h \
 	magick/matrix.c \
