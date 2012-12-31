@@ -1060,11 +1060,18 @@
 #define MAGICKCORE_HAVE___ATTRIBUTE__ 1
 #endif
 
-/* accurately represent the wide range of intensity levels in real scenes */
-/* #undef HDRI_SUPPORT */
+/* Whether hdri is enable or not */
+#ifndef MAGICKCORE_HDRI_ENABLE_OBSOLETE_IN_H
+#define MAGICKCORE_HDRI_ENABLE_OBSOLETE_IN_H 0
+#endif
 
 /* Define if you have umem memory allocation library */
 /* #undef HasUMEM */
+
+/* Directory where ImageMagick architecture headers live. */
+#ifndef MAGICKCORE_INCLUDEARCH_PATH
+#define MAGICKCORE_INCLUDEARCH_PATH "/usr/local/include/ImageMagick/"
+#endif
 
 /* Directory where ImageMagick headers live. */
 #ifndef MAGICKCORE_INCLUDE_PATH
@@ -1210,8 +1217,8 @@
 /* #undef PixelCacheThreshold */
 
 /* Number of bits in a pixel Quantum (8/16/32/64) */
-#ifndef MAGICKCORE_QUANTUM_DEPTH
-#define MAGICKCORE_QUANTUM_DEPTH 16
+#ifndef MAGICKCORE_QUANTUM_DEPTH_OBSOLETE_IN_H
+#define MAGICKCORE_QUANTUM_DEPTH_OBSOLETE_IN_H 16
 #endif
 
 /* Define as the return type of signal handlers (`int' or `void'). */

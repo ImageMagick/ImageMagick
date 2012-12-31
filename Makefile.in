@@ -234,15 +234,15 @@ XFAIL_TESTS = $(am__EXEEXT_6) $(am__EXEEXT_6)
 check_PROGRAMS = $(am__EXEEXT_2) $(am__EXEEXT_4)
 DIST_COMMON = $(am__configure_deps) $(am__magickppinc_HEADERS_DIST) \
 	$(am__magickpptopinc_HEADERS_DIST) $(include_HEADERS) \
-	$(magickinc_HEADERS) $(noinst_HEADERS) \
-	$(srcdir)/ImageMagick.spec.in $(srcdir)/Magick++/Makefile.am \
-	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/PerlMagick/Makefile.am $(srcdir)/coders/Makefile.am \
-	$(srcdir)/common.shi.in $(srcdir)/config/Makefile.am \
-	$(srcdir)/filters/Makefile.am $(srcdir)/m4/Makefile.am \
-	$(srcdir)/magick.sh.in $(srcdir)/magick/Makefile.am \
-	$(srcdir)/tests/Makefile.am $(srcdir)/utilities/Makefile.am \
-	$(srcdir)/wand/Makefile.am \
+	$(magickinc_HEADERS) $(magickincarch_HEADERS) \
+	$(noinst_HEADERS) $(srcdir)/ImageMagick.spec.in \
+	$(srcdir)/Magick++/Makefile.am $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(srcdir)/PerlMagick/Makefile.am \
+	$(srcdir)/coders/Makefile.am $(srcdir)/common.shi.in \
+	$(srcdir)/config/Makefile.am $(srcdir)/filters/Makefile.am \
+	$(srcdir)/m4/Makefile.am $(srcdir)/magick.sh.in \
+	$(srcdir)/magick/Makefile.am $(srcdir)/tests/Makefile.am \
+	$(srcdir)/utilities/Makefile.am $(srcdir)/wand/Makefile.am \
 	$(top_srcdir)/Magick++/bin/Magick++-config.in \
 	$(top_srcdir)/Magick++/lib/ImageMagick++.pc.in \
 	$(top_srcdir)/Magick++/lib/Magick++.pc.in \
@@ -374,8 +374,9 @@ am__installdirs = "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" \
 	"$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" \
 	"$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" \
 	"$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(includedir)" \
-	"$(DESTDIR)$(magickincdir)" "$(DESTDIR)$(magickppincdir)" \
-	"$(DESTDIR)$(magickpptopincdir)" "$(DESTDIR)$(wandincdir)"
+	"$(DESTDIR)$(magickincdir)" "$(DESTDIR)$(magickincarchdir)" \
+	"$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)" \
+	"$(DESTDIR)$(wandincdir)"
 LTLIBRARIES = $(coders_LTLIBRARIES) $(filters_LTLIBRARIES) \
 	$(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
 Magick___lib_libMagick___@MAGICK_ABI_SUFFIX@_la_DEPENDENCIES =  \
@@ -2194,8 +2195,8 @@ am__magickppinc_HEADERS_DIST = Magick++/lib/Magick++/Blob.h \
 	Magick++/lib/Magick++/STL.h Magick++/lib/Magick++/TypeMetric.h
 am__magickpptopinc_HEADERS_DIST = Magick++/lib/Magick++.h
 HEADERS = $(include_HEADERS) $(magickinc_HEADERS) \
-	$(magickppinc_HEADERS) $(magickpptopinc_HEADERS) \
-	$(noinst_HEADERS) $(wandinc_HEADERS)
+	$(magickincarch_HEADERS) $(magickppinc_HEADERS) \
+	$(magickpptopinc_HEADERS) $(noinst_HEADERS) $(wandinc_HEADERS)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
@@ -2520,6 +2521,7 @@ HTMLDecodeDelegate = @HTMLDecodeDelegate@
 ILBMDecodeDelegate = @ILBMDecodeDelegate@
 ILBMEncodeDelegate = @ILBMEncodeDelegate@
 INCLUDEARCH_DIR = @INCLUDEARCH_DIR@
+INCLUDEARCH_PATH = @INCLUDEARCH_PATH@
 INCLUDE_DIR = @INCLUDE_DIR@
 INCLUDE_PATH = @INCLUDE_PATH@
 INFO_DIR = @INFO_DIR@
@@ -3949,10 +3951,14 @@ coders_yuv_la_CPPFLAGS = $(MODULE_EXTRA_CPPFLAGS)
 coders_yuv_la_LDFLAGS = $(MODULECOMMONFLAGS)
 coders_yuv_la_LIBADD = $(MAGICKCORE_LIBS)
 magickincdir = $(INCLUDE_PATH)/magick
+magickincarchdir = $(INCLUDEARCH_PATH)/magick
 
 # Headers which are installed
 magickinc_HEADERS = \
 	$(MAGICK_INCLUDE_HDRS)
+
+magickincarch_HEADERS = \
+	$(MAGICK_INCLUDEARCH_HDRS)
 
 MAGICK_BIN_SCRPTS = \
   magick/Magick-config \
@@ -4267,7 +4273,6 @@ MAGICK_INCLUDE_HDRS = \
 	magick/magic.h \
 	magick/magick.h \
 	magick/magick-config.h \
-	magick/magick-baseconfig.h \
 	magick/magick-type.h \
 	magick/matrix.h \
 	magick/memory_.h \
@@ -4350,6 +4355,9 @@ MAGICK_NOINST_HDRS = \
 	magick/utility-private.h \
 	magick/xwindow-private.h \
 	magick/vms.h
+
+MAGICK_INCLUDEARCH_HDRS = \
+	magick/magick-baseconfig.h
 
 MAGICK_EXTRA_DIST = \
 	magick/Magick-config.in \
@@ -9628,6 +9636,27 @@ uninstall-magickincHEADERS:
 	@list='$(magickinc_HEADERS)'; test -n "$(magickincdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(magickincdir)'; $(am__uninstall_files_from_dir)
+install-magickincarchHEADERS: $(magickincarch_HEADERS)
+	@$(NORMAL_INSTALL)
+	@list='$(magickincarch_HEADERS)'; test -n "$(magickincarchdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(magickincarchdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(magickincarchdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(magickincarchdir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(magickincarchdir)" || exit $$?; \
+	done
+
+uninstall-magickincarchHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(magickincarch_HEADERS)'; test -n "$(magickincarchdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(magickincarchdir)'; $(am__uninstall_files_from_dir)
 install-magickppincHEADERS: $(magickppinc_HEADERS)
 	@$(NORMAL_INSTALL)
 	@list='$(magickppinc_HEADERS)'; test -n "$(magickppincdir)" || list=; \
@@ -10202,7 +10231,7 @@ install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" "$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(magickincdir)" "$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)" "$(DESTDIR)$(wandincdir)"; do \
+	for dir in "$(DESTDIR)$(codersdir)" "$(DESTDIR)$(filtersdir)" "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(configlibdir)" "$(DESTDIR)$(configsharedir)" "$(DESTDIR)$(configsharearchdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(magickincdir)" "$(DESTDIR)$(magickincarchdir)" "$(DESTDIR)$(magickppincdir)" "$(DESTDIR)$(magickpptopincdir)" "$(DESTDIR)$(wandincdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -10289,8 +10318,9 @@ install-data-am: install-codersLTLIBRARIES install-configlibDATA \
 	install-configshareDATA install-configsharearchDATA \
 	install-data-local install-docDATA install-filtersLTLIBRARIES \
 	install-includeHEADERS install-magickincHEADERS \
-	install-magickppincHEADERS install-magickpptopincHEADERS \
-	install-man install-pkgconfigDATA install-wandincHEADERS
+	install-magickincarchHEADERS install-magickppincHEADERS \
+	install-magickpptopincHEADERS install-man \
+	install-pkgconfigDATA install-wandincHEADERS
 
 install-dvi: install-dvi-recursive
 
@@ -10346,8 +10376,9 @@ uninstall-am: uninstall-binPROGRAMS uninstall-binSCRIPTS \
 	uninstall-docDATA uninstall-filtersLTLIBRARIES \
 	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
 	uninstall-local uninstall-magickincHEADERS \
-	uninstall-magickppincHEADERS uninstall-magickpptopincHEADERS \
-	uninstall-man uninstall-pkgconfigDATA uninstall-wandincHEADERS
+	uninstall-magickincarchHEADERS uninstall-magickppincHEADERS \
+	uninstall-magickpptopincHEADERS uninstall-man \
+	uninstall-pkgconfigDATA uninstall-wandincHEADERS
 
 uninstall-man: uninstall-man1
 
@@ -10375,29 +10406,30 @@ uninstall-man: uninstall-man1
 	install-filtersLTLIBRARIES install-html install-html-am \
 	install-includeHEADERS install-info install-info-am \
 	install-libLTLIBRARIES install-magickincHEADERS \
-	install-magickppincHEADERS install-magickpptopincHEADERS \
-	install-man install-man1 install-pdf install-pdf-am \
-	install-pkgconfigDATA install-ps install-ps-am install-strip \
-	install-wandincHEADERS installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic maintainer-clean-local mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am recheck tags tags-recursive uninstall \
-	uninstall-am uninstall-binPROGRAMS uninstall-binSCRIPTS \
+	install-magickincarchHEADERS install-magickppincHEADERS \
+	install-magickpptopincHEADERS install-man install-man1 \
+	install-pdf install-pdf-am install-pkgconfigDATA install-ps \
+	install-ps-am install-strip install-wandincHEADERS \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic \
+	maintainer-clean-local mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	recheck tags tags-recursive uninstall uninstall-am \
+	uninstall-binPROGRAMS uninstall-binSCRIPTS \
 	uninstall-codersLTLIBRARIES uninstall-configlibDATA \
 	uninstall-configshareDATA uninstall-configsharearchDATA \
 	uninstall-docDATA uninstall-filtersLTLIBRARIES \
 	uninstall-includeHEADERS uninstall-libLTLIBRARIES \
 	uninstall-local uninstall-magickincHEADERS \
-	uninstall-magickppincHEADERS uninstall-magickpptopincHEADERS \
-	uninstall-man uninstall-man1 uninstall-pkgconfigDATA \
-	uninstall-wandincHEADERS
+	uninstall-magickincarchHEADERS uninstall-magickppincHEADERS \
+	uninstall-magickpptopincHEADERS uninstall-man uninstall-man1 \
+	uninstall-pkgconfigDATA uninstall-wandincHEADERS
 
 magick-install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(magickincdir)
-	$(INSTALL_HEADER) magick/magick-baseconfig.h $(DESTDIR)$(magickincdir)/magick-baseconfig.h
+	$(mkinstalldirs) $(DESTDIR)$(magickincarchdir)
+	$(INSTALL_HEADER) magick/magick-baseconfig.h $(DESTDIR)$(magickincarchdir)/magick-baseconfig.h
 magick-uninstall-local:
-	rm -f $(DESTDIR)$(magickincdir)/magick-baseconfig.h
+	rm -f $(DESTDIR)$(magickincarchdir)/magick-baseconfig.h
 
 # If source files missing, see if they can be obtained via VPATH
 perl-sources:

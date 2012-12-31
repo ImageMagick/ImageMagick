@@ -16,10 +16,13 @@
 # 
 
 magickincdir = $(INCLUDE_PATH)/magick
+magickincarchdir = $(INCLUDEARCH_PATH)/magick
 
 # Headers which are installed
 magickinc_HEADERS = \
 	$(MAGICK_INCLUDE_HDRS)
+magickincarch_HEADERS = \
+	$(MAGICK_INCLUDEARCH_HDRS)
 
 MAGICK_BIN_SCRPTS = \
   magick/Magick-config \
@@ -350,7 +353,6 @@ MAGICK_INCLUDE_HDRS = \
 	magick/magic.h \
 	magick/magick.h \
 	magick/magick-config.h \
-	magick/magick-baseconfig.h \
 	magick/magick-type.h \
 	magick/matrix.h \
 	magick/memory_.h \
@@ -434,6 +436,9 @@ MAGICK_NOINST_HDRS = \
 	magick/xwindow-private.h \
 	magick/vms.h
 
+MAGICK_INCLUDEARCH_HDRS = \
+	magick/magick-baseconfig.h
+
 MAGICK_EXTRA_DIST = \
 	magick/Magick-config.in \
 	magick/MagickCore-config.in \
@@ -451,11 +456,11 @@ MAGICK_EXTRA_DIST = \
 # Install magick-baseconfig.h
 MAGICK_INSTALL_DATA_LOCAL_TARGETS = magick-install-data-local
 magick-install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(magickincdir)
-	$(INSTALL_HEADER) magick/magick-baseconfig.h $(DESTDIR)$(magickincdir)/magick-baseconfig.h
+	$(mkinstalldirs) $(DESTDIR)$(magickincarchdir)
+	$(INSTALL_HEADER) magick/magick-baseconfig.h $(DESTDIR)$(magickincarchdir)/magick-baseconfig.h
 
 # Uninstall magick-config.h
 MAGICK_UNINSTALL_LOCAL_TARGETS = magick-uninstall-local
 magick-uninstall-local:
-	rm -f $(DESTDIR)$(magickincdir)/magick-baseconfig.h
+	rm -f $(DESTDIR)$(magickincarchdir)/magick-baseconfig.h
 
