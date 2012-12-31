@@ -1,4 +1,7 @@
 2013-01-01  6.8.1-7 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.1-7, SVN revision 10468.
+
+2013-01-01  6.8.1-7 Cristy  <quetzlzacatenango@image...>
   * magick-baseconfig.h is architecture dependant;
     make headers quantum depth neutral ( reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=22509).
