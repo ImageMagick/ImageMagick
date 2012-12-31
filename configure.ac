@@ -610,10 +610,15 @@ AC_ARG_ENABLE([hdri],
 MAGICK_HDRI=""
 if test "$enable_hdri" = 'yes'; then
     MAGICK_HDRI="HDRI"
-    AC_DEFINE(HDRI_SUPPORT,1,[accurately represent the wide range of intensity levels in real scenes])
+    magick_hdri_enable='1';
     MAGICK_FEATURES="HDRI $MAGICK_FEATURES"
+else
+    magick_hdri_enable='0'
 fi
+AC_DEFINE_UNQUOTED(HDRI_ENABLE_OBSOLETE_IN_H,$magick_hdri_enable,[Whether hdri is enabled or not])
 AC_SUBST(MAGICK_HDRI)dnl
+MAGICK_PCFLAGS="$MAGICK_PCFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
+CFLAGS="$CFLAGS -DMAGICKCORE_HDRI_ENABLE=$magick_hdri_enable"
 
 # Build a version of ImageMagick with assert statements.
 AC_ARG_ENABLE([assert],
@@ -710,8 +715,10 @@ case "${with_quantum_depth}" in
     * ) AC_MSG_ERROR("Pixel quantum depth must have value of 8, 16, 32, or 64") ;;
 esac
 QUANTUM_DEPTH="$with_quantum_depth"
-AC_DEFINE_UNQUOTED(QUANTUM_DEPTH,$QUANTUM_DEPTH,[Number of bits in a pixel Quantum (8/16/32/64)])
+AC_DEFINE_UNQUOTED(QUANTUM_DEPTH_OBSOLETE_IN_H,$QUANTUM_DEPTH,[Number of bits in a pixel Quantum (8/16/32/64)])
 AC_SUBST(QUANTUM_DEPTH)dnl
+MAGICKCORE_PCFLAGS="$MAGICKCORE_PCFLAGS -DMAGICKCORE_QUANTUM_DEPTH=$QUANTUM_DEPTH"
+CFLAGS="$CFLAGS -DMAGICKCORE_QUANTUM_DEPTH=$QUANTUM_DEPTH"
 
 # define a lib suffix for abi purpose
 MAGICK_ABI_SUFFIX="Q${QUANTUM_DEPTH}"
@@ -2963,8 +2970,8 @@ AC_SUBST(PERLMAINCC)
 
 # Path to ImageMagick header files
 INCLUDE_RELATIVE_PATH="ImageMagick"
-INCLUDE_PATH="${INCLUDEARCH_DIR}/${INCLUDE_RELATIVE_PATH}"
-DEFINE_INCLUDE_PATH="${INCLUDEARCH_DIR}/${INCLUDE_RELATIVE_PATH}/"
+INCLUDE_PATH="${INCLUDE_DIR}/${INCLUDE_RELATIVE_PATH}"
+DEFINE_INCLUDE_PATH="${INCLUDE_DIR}/${INCLUDE_RELATIVE_PATH}/"
 case "${build_os}" in
   mingw* )
     DEFINE_INCLUDE_PATH=`$WinPathScript "$DEFINE_INCLUDE_PATH" 1`
@@ -2972,6 +2979,17 @@ case "${build_os}" in
 esac
 AC_DEFINE_UNQUOTED(INCLUDE_PATH,"$DEFINE_INCLUDE_PATH",[Directory where ImageMagick headers live.])
 AC_SUBST(INCLUDE_PATH)
+
+# Path to ImageMagick header files (arch part)
+INCLUDEARCH_PATH="${INCLUDEARCH_DIR}/${INCLUDE_RELATIVE_PATH}"
+DEFINE_INCLUDEARCH_PATH="${INCLUDEARCH_DIR}/${INCLUDE_RELATIVE_PATH}/"
+case "${build_os}" in
+  mingw* )
+    DEFINE_INCLUDEARCH_PATH=`$WinPathScript "$DEFINE_INCLUDEARCH_PATH" 1`
+    ;;
+esac
+AC_DEFINE_UNQUOTED(INCLUDEARCH_PATH,"$DEFINE_INCLUDE_PATH",[Directory where ImageMagick architecture headers live.])
+AC_SUBST(INCLUDEARCH_PATH)
 
 # Subdirectory under lib to place ImageMagick lib files
 LIBRARY_RELATIVE_PATH="${PACKAGE_NAME}-${PACKAGE_VERSION}"

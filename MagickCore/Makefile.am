@@ -16,10 +16,13 @@
 # 
 
 MagickCoreincdir = $(INCLUDE_PATH)/MagickCore
+MagickCoreincarchdir = $(INCLUDEARCH_PATH)/MagickCore
 
 # Headers which are installed
 MagickCoreinc_HEADERS = \
 	$(MAGICKCORE_INCLUDE_HDRS)
+MagickCoreincarch_HEADERS = \
+	$(MAGICKCORE_INCLUDEARCH_HDRS)
 
 MAGICKCORE_BIN_SCRPTS = \
   MagickCore/MagickCore-config
@@ -54,7 +57,7 @@ endif
 
 MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_LDFLAGS = -no-undefined \
   $(MagickCore_libMagickCore_la_LDFLAGS_VERSION) \
-  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) \
+  $(OSX_GCOV_LDFLAG) $(MAGICK_LT_RELEASE_OPTS) -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
 MagickCore_libMagickCore_@MAGICK_ABI_SUFFIX@_la_DEPENDENCIES =
 
@@ -165,6 +168,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/magic.c \
 	MagickCore/magic.h \
 	MagickCore/magick.c \
+	MagickCore/magick-baseconfig.h \
 	MagickCore/magick-config.h \
 	MagickCore/magick-type.h \
 	MagickCore/magick.h \
@@ -350,7 +354,6 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/magic-private.h \
 	MagickCore/magick.h \
 	MagickCore/magick-config.h \
-	MagickCore/magick-baseconfig.h \
 	MagickCore/magick-type.h \
 	MagickCore/matrix.h \
 	MagickCore/memory_.h \
@@ -460,6 +463,9 @@ MAGICKCORE_NOINST_HDRS = \
  	MagickCore/widget-private.h \
 	MagickCore/xml-tree-private.h \
 	MagickCore/xwindow-private.h
+
+MAGICKCORE_INCLUDEARCH_HDRS = \
+	MagickCore/magick-baseconfig.h
 
 MAGICKCORE_EXTRA_DIST = \
 	MagickCore/MagickCore-config.in \
