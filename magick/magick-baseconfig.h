@@ -1060,7 +1060,7 @@
 #define MAGICKCORE_HAVE___ATTRIBUTE__ 1
 #endif
 
-/* Whether hdri is enable or not */
+/* Whether hdri is enabled or not */
 #ifndef MAGICKCORE_HDRI_ENABLE_OBSOLETE_IN_H
 #define MAGICKCORE_HDRI_ENABLE_OBSOLETE_IN_H 0
 #endif
