@@ -736,7 +736,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset+=ReadBlob(image,sizeof(dpx.image.image_element[i].description),
       (unsigned char *) dpx.image.image_element[i].description);
   }
-  SetImageColorspace(image,RGBColorspace);
+  (void) SetImageColorspace(image,RGBColorspace);
   offset+=ReadBlob(image,sizeof(dpx.image.reserve),(unsigned char *)
     dpx.image.reserve);
   if (dpx.file.image_offset >= 1664U)
@@ -1071,21 +1071,21 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case CbYACrYA4224ComponentType:
       case CbYCr444ComponentType:
       {
-        SetImageColorspace(image,Rec709YCbCrColorspace);
+        (void) SetImageColorspace(image,Rec709YCbCrColorspace);
         break;
       }
       case LumaComponentType:
       {
-        SetImageColorspace(image,GRAYColorspace);
+        (void) SetImageColorspace(image,GRAYColorspace);
         break;
       }
       default:
       {
-        SetImageColorspace(image,RGBColorspace);
+        (void) SetImageColorspace(image,RGBColorspace);
         if (dpx.image.image_element[n].transfer == LogarithmicColorimetric)
-          SetImageColorspace(image,LogColorspace);
+          (void) SetImageColorspace(image,LogColorspace);
         if (dpx.image.image_element[n].transfer == PrintingDensityColorimetric)
-          SetImageColorspace(image,LogColorspace);
+          (void) SetImageColorspace(image,LogColorspace);
         break;
       }
     }
@@ -1458,7 +1458,18 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image)
   /*
     Write image header.
   */
-  dpx.image.orientation=0x00;  /* left-to-right; top-to-bottom */
+  switch (image->orientation)
+  {
+    default:
+    case TopLeftOrientation: dpx.image.orientation=0; break;
+    case TopRightOrientation: dpx.image.orientation=1; break;
+    case BottomLeftOrientation: dpx.image.orientation=2; break;
+    case BottomRightOrientation: dpx.image.orientation=3; break;
+    case LeftTopOrientation: dpx.image.orientation=4; break;
+    case RightTopOrientation: dpx.image.orientation=5; break;
+    case LeftBottomOrientation: dpx.image.orientation=6; break;
+    case RightBottomOrientation: dpx.image.orientation=7; break;
+  }
   offset+=WriteBlobShort(image,dpx.image.orientation);
   dpx.image.number_elements=1;
   offset+=WriteBlobShort(image,dpx.image.number_elements);
