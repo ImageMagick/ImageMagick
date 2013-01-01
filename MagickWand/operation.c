@@ -1800,49 +1800,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
         }
       if (LocaleCompare("auto-orient",option+1) == 0)
         {
-          /* This should probably be a MagickCore function */
-          switch (_image->orientation)
-          {
-            case TopRightOrientation:
-            {
-              new_image=FlopImage(_image,_exception);
-              break;
-            }
-            case BottomRightOrientation:
-            {
-              new_image=RotateImage(_image,180.0,_exception);
-              break;
-            }
-            case BottomLeftOrientation:
-            {
-              new_image=FlipImage(_image,_exception);
-              break;
-            }
-            case LeftTopOrientation:
-            {
-              new_image=TransposeImage(_image,_exception);
-              break;
-            }
-            case RightTopOrientation:
-            {
-              new_image=RotateImage(_image,90.0,_exception);
-              break;
-            }
-            case RightBottomOrientation:
-            {
-              new_image=TransverseImage(_image,_exception);
-              break;
-            }
-            case LeftBottomOrientation:
-            {
-              new_image=RotateImage(_image,270.0,_exception);
-              break;
-            }
-            default:
-              break;
-          }
-          if (new_image != (Image *) NULL)
-            new_image->orientation=TopLeftOrientation;
+          new_image=AutoOrientImage(_image,_image->orientation,_exception);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);

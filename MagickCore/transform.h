@@ -23,6 +23,7 @@ extern "C" {
 #endif
 
 extern MagickExport Image
+  *AutoOrientImage(const Image *,const OrientationType,ExceptionInfo *),
   *ChopImage(const Image *,const RectangleInfo *,ExceptionInfo *),
   *ConsolidateCMYKImages(const Image *,ExceptionInfo *),
   *CropImage(const Image *,const RectangleInfo *,ExceptionInfo *),
