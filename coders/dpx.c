@@ -1472,7 +1472,18 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
   /*
     Write image header.
   */
-  dpx.image.orientation=0x00;  /* left-to-right; top-to-bottom */
+  switch (image->orientation)
+  {
+    default:
+    case TopLeftOrientation: dpx.image.orientation=0; break;
+    case TopRightOrientation: dpx.image.orientation=1; break;
+    case BottomLeftOrientation: dpx.image.orientation=2; break;
+    case BottomRightOrientation: dpx.image.orientation=3; break;
+    case LeftTopOrientation: dpx.image.orientation=4; break;
+    case RightTopOrientation: dpx.image.orientation=5; break;
+    case LeftBottomOrientation: dpx.image.orientation=6; break;
+    case RightBottomOrientation: dpx.image.orientation=7; break;
+  }
   offset+=WriteBlobShort(image,dpx.image.orientation);
   dpx.image.number_elements=1;
   offset+=WriteBlobShort(image,dpx.image.number_elements);
