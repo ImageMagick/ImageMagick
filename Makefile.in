@@ -4944,7 +4944,7 @@ doc_DATA = \
 
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = images scenes scripts www PerlMagick
+DISTDIRS = images scripts www PerlMagick
 
 #
 # Additional install rules
@@ -10798,7 +10798,7 @@ dist-hook:
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)|(/\.svn)' \
+	      find $$dir -depth -print | egrep -v '(~$$)|(/.svn)|(/\.#)|(/\.deps)|(/\.svn)' \
 	        | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \
