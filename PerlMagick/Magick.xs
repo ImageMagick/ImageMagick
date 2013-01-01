@@ -7275,10 +7275,10 @@ Mogrify(ref,...)
     ModeImage          = 272
     Statistic          = 273
     StatisticImage     = 274
-    Perceptible        = 275 
-    PerceptibleImage   = 276 
-    Poly               = 277 
-    PolyImage          = 278 
+    Perceptible        = 275
+    PerceptibleImage   = 276
+    Poly               = 277
+    PolyImage          = 278
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -9936,46 +9936,7 @@ Mogrify(ref,...)
         }
         case 101:  /* AutoOrient */
         {
-          switch (image->orientation)
-          {
-            case TopRightOrientation:
-            {
-              image=FlopImage(image,exception);
-              break;
-            }
-            case BottomRightOrientation:
-            {
-              image=RotateImage(image,180.0,exception);
-              break;
-            }
-            case BottomLeftOrientation:
-            {
-              image=FlipImage(image,exception);
-              break;
-            }
-            case LeftTopOrientation:
-            {
-              image=TransposeImage(image,exception);
-              break;
-            }
-            case RightTopOrientation:
-            {
-              image=RotateImage(image,90.0,exception);
-              break;
-            }
-            case RightBottomOrientation:
-            {
-              image=TransverseImage(image,exception);
-              break;
-            }
-            case LeftBottomOrientation:
-            {
-              image=RotateImage(image,270.0,exception);
-              break;
-            }
-            default:
-              break;
-          }
+          image=AutoOrientImage(image,image->orientation,exception);
           break;
         }
         case 102:  /* AdaptiveBlur */
