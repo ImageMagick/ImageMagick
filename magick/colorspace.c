@@ -148,9 +148,9 @@ static inline void ConvertRGBToXYZ(const Quantum red,const Quantum green,
 static inline void ConvertXYZToLab(const double X,const double Y,const double Z,
   double *L,double *a,double *b)
 {
-#define D65X  (0.950470f)
+#define D65X  (0.950456f)
 #define D65Y  (1.0f)
-#define D65Z  (1.088830f)
+#define D65Z  (1.08874f)
 #define CIEEpsilon  (216.0f/24389.0f)
 #define CIEK  (24389.0f/27.0f)
 
