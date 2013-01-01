@@ -874,48 +874,8 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
         if (LocaleCompare("auto-orient",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image,exception);
-            switch ((*image)->orientation)
-            {
-              case TopRightOrientation:
-              {
-                mogrify_image=FlopImage(*image,exception);
-                break;
-              }
-              case BottomRightOrientation:
-              {
-                mogrify_image=RotateImage(*image,180.0,exception);
-                break;
-              }
-              case BottomLeftOrientation:
-              {
-                mogrify_image=FlipImage(*image,exception);
-                break;
-              }
-              case LeftTopOrientation:
-              {
-                mogrify_image=TransposeImage(*image,exception);
-                break;
-              }
-              case RightTopOrientation:
-              {
-                mogrify_image=RotateImage(*image,90.0,exception);
-                break;
-              }
-              case RightBottomOrientation:
-              {
-                mogrify_image=TransverseImage(*image,exception);
-                break;
-              }
-              case LeftBottomOrientation:
-              {
-                mogrify_image=RotateImage(*image,270.0,exception);
-                break;
-              }
-              default:
-                break;
-            }
-            if (mogrify_image != (Image *) NULL)
-              mogrify_image->orientation=TopLeftOrientation;
+            mogrify_image=AutoOrientImage(*image,(*image)->orientation,
+              exception);
             break;
           }
         break;
