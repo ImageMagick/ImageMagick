@@ -1125,7 +1125,9 @@
 #endif
 
 /* Define if you have LZMA library */
-/* #undef LZMA_DELEGATE */
+#ifndef MAGICKCORE_LZMA_DELEGATE
+#define MAGICKCORE_LZMA_DELEGATE 1
+#endif
 
 /* Define to prepend to default font search path. */
 /* #undef MAGICK_FONT_PATH */
@@ -1444,7 +1446,9 @@
 #endif
 
 /* Define if you have XML library */
-/* #undef XML_DELEGATE */
+#ifndef MAGICKCORE_XML_DELEGATE
+#define MAGICKCORE_XML_DELEGATE 1
+#endif
 
 /* Define to 1 if the X Window System is missing or not being used. */
 /* #undef X_DISPLAY_MISSING */

@@ -161,7 +161,7 @@ foreach my $delegate (@tested_delegates) {
 }
 
 # defaults for LIBS & INC & CCFLAGS params that we later pass to Writemakefile
-my $INC_magick = '-I../ -I.. -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16 -I/usr/include/freetype2 -I"' . $Config{'usrinc'} . '/ImageMagick"';
+my $INC_magick = '-I../ -I.. -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16 -I/usr/include/freetype2 -I/usr/include/libxml2 -I"' . $Config{'usrinc'} . '/ImageMagick"';
 my $LIBS_magick = '-L../MagickCore/.libs -lMagickCore-Q16HDRI -lperl -lm';
 my $CCFLAGS_magick = "$Config{'ccflags'} -fopenmp -g -O2 -Wall -pthread -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16";
 my $LDFLAGS_magick   = "-L../MagickCore/.libs -lMagickCore-Q16HDRI $Config{'ldflags'} -L/usr/lib";
@@ -206,7 +206,7 @@ WriteMakefile
    #'CC' => 'gcc -std=gnu99 -std=gnu99',
 
    # C pre-processor flags (e.g. -I & -D options)
-   # 'CPPFLAGS' => "$Config{'cppflags'} -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16 -I/usr/include/freetype2",
+   # 'CPPFLAGS' => "$Config{'cppflags'} -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16 -I/usr/include/freetype2 -I/usr/include/libxml2",
 
    # C compiler flags (e.g. -O -g)
    'CCFLAGS' => $CCFLAGS_magick,
