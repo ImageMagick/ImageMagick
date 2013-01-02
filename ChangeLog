@@ -1,3 +1,10 @@
+2013-01-02  6.8.1-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.1-7, SVN revision 10480.
+
+2013-01-02  6.8.1-8 Cristy  <quetzlzacatenango@image...>
+  * Check for a density of zero when rendering with Pango (reference
+    http://www.imagemagick.org/discourse-server/viewforum.php?f=3).
+
 2013-01-01  6.8.1-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.1-7, SVN revision 10468.
 

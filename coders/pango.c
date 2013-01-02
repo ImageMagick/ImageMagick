@@ -192,7 +192,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   */
   fontmap=pango_cairo_font_map_new();
   pango_cairo_font_map_set_resolution(PANGO_CAIRO_FONT_MAP(fontmap),
-    image->x_resolution);
+    image->x_resolution == 0.0 ? 72.0 : image->x_resolution);
   font_options=cairo_font_options_create();
   option=GetImageOption(image_info,"pango:hinting");
   if (option != (const char *) NULL)
@@ -292,7 +292,8 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   option=GetImageOption(image_info,"pango:indent");
   if (option != (const char *) NULL)
     pango_layout_set_indent(layout,(int) ((StringToLong(option)*
-      image->x_resolution*PANGO_SCALE+36)/72.0+0.5));
+      (image->x_resolution == 0.0 ? 72.0 : image->x_resolution)*PANGO_SCALE+36)/
+      72.0+0.5));
   switch (draw_info->align)
   {
     case CenterAlign: align=PANGO_ALIGN_CENTER; break;
@@ -348,25 +349,27 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     (void) ParseAbsoluteGeometry(image_info->page,&page);
   if (image->columns == 0)
     {
-      pango_layout_get_pixel_extents(layout,NULL,&extent);
-      image->columns=extent.x+extent.width+2*page.x;
+      pango_layout_get_extents(layout,NULL,&extent);
+      image->columns=(extent.x+extent.width)/PANGO_SCALE+2*page.x;
     }
   else
     {
       image->columns-=2*page.x;
-      pango_layout_set_width(layout,(int) ((PANGO_SCALE*image->columns*
-        image->x_resolution+36.0)/72.0+0.5));
+      pango_layout_set_width(layout,(int) ((image->columns*
+        (image->x_resolution == 0.0 ? 72.0 : image->x_resolution)+36.0)/72.0+
+        0.5));
     }
   if (image->rows == 0)
     {
-      pango_layout_get_pixel_extents(layout,NULL,&extent);
-      image->rows=extent.y+extent.height+2*page.y;
+      pango_layout_get_extents(layout,NULL,&extent);
+      image->rows=(extent.y+extent.height)/PANGO_SCALE+2*page.y;
     }
   else
     {
       image->rows-=2*page.y;
       pango_layout_set_height(layout,(int) ((PANGO_SCALE*image->rows*
-        image->y_resolution+36.0)/72.0+0.5));
+        (image->y_resolution == 0.0 ? 72.0 : image->y_resolution)+36.0)/72.0+
+        0.5));
     }
   /*
     Render markup.
