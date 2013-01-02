@@ -357,7 +357,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     {
       image->columns-=2*page.x;
       pango_layout_set_width(layout,(int) ((PANGO_SCALE*image->columns*
-        (image->resolution.x == 0.0 : 90.0 : image->resolution.x)+36.0)/90.0+
+        (image->resolution.x == 0.0 : 90.0 : image->resolution.x)+45.0)/90.0+
         0.5));
     }
   if (image->rows == 0)
@@ -369,7 +369,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
     {
       image->rows-=2*page.y;
       pango_layout_set_height(layout,(int) ((PANGO_SCALE*image->rows*
-        (image->resolution.y == 0.0 : 90.0 : image->resolution.y)+36.0)/90.0+
+        (image->resolution.y == 0.0 : 90.0 : image->resolution.y)+45.0)/90.0+
         0.5));
     }
   /*
