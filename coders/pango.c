@@ -355,7 +355,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   else
     {
       image->columns-=2*page.x;
-      pango_layout_set_width(layout,(int) ((image->columns*
+      pango_layout_set_width(layout,(int) ((PANGO_SCALE*image->columns*
         (image->x_resolution == 0.0 ? 90.0 : image->x_resolution)+45.0)/90.0+
         0.5));
     }
