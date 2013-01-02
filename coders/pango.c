@@ -351,7 +351,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   if (image->columns == 0)
     {
       pango_layout_get_pixel_extents(layout,NULL,&extent);
-      image->columns=(extent.x+extent.width)/PANGO_SCALE+2*page.x;
+      image->columns=(extent.x+extent.width+PANGO_SCALE/2)/PANGO_SCALE+2*page.x;
     }
   else
     {
@@ -363,7 +363,7 @@ static Image *ReadPANGOImage(const ImageInfo *image_info,
   if (image->rows == 0)
     {
       pango_layout_get_pixel_extents(layout,NULL,&extent);
-      image->rows=(extent.y+extent.height)/PANGO_SCALE+2*page.y;
+      image->rows=(extent.y+extent.height+PANGO_SCALE/2)/PANGO_SCALE+2*page.y;
     }
   else
     {
