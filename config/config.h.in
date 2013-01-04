@@ -254,9 +254,6 @@
 /* Define to 1 if you have the `gcov' library (-lgcov). */
 #undef HAVE_LIBGCOV
 
-/* Define to 1 if you have the `socket' library (-lsocket). */
-#undef HAVE_LIBSOCKET
-
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
 
@@ -422,6 +419,9 @@
 
 /* Define to 1 if you have the `sigemptyset' function. */
 #undef HAVE_SIGEMPTYSET
+
+/* Define to 1 if you have the `socket' function. */
+#undef HAVE_SOCKET
 
 /* Define to 1 if you have the `spawnvp' function. */
 #undef HAVE_SPAWNVP

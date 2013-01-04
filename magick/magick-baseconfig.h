@@ -377,9 +377,6 @@
 /* Define to 1 if you have the `gcov' library (-lgcov). */
 /* #undef HAVE_LIBGCOV */
 
-/* Define to 1 if you have the `socket' library (-lsocket). */
-/* #undef HAVE_LIBSOCKET */
-
 /* Define to 1 if you have the <limits.h> header file. */
 #ifndef MAGICKCORE_HAVE_LIMITS_H
 #define MAGICKCORE_HAVE_LIMITS_H 1
@@ -640,6 +637,11 @@
 /* Define to 1 if you have the `sigemptyset' function. */
 #ifndef MAGICKCORE_HAVE_SIGEMPTYSET
 #define MAGICKCORE_HAVE_SIGEMPTYSET 1
+#endif
+
+/* Define to 1 if you have the `socket' function. */
+#ifndef MAGICKCORE_HAVE_SOCKET
+#define MAGICKCORE_HAVE_SOCKET 1
 #endif
 
 /* Define to 1 if you have the `spawnvp' function. */
