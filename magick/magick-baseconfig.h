@@ -377,6 +377,9 @@
 /* Define to 1 if you have the `gcov' library (-lgcov). */
 /* #undef HAVE_LIBGCOV */
 
+/* Define to 1 if you have the `socket' library (-lsocket). */
+/* #undef HAVE_LIBSOCKET */
+
 /* Define to 1 if you have the <limits.h> header file. */
 #ifndef MAGICKCORE_HAVE_LIMITS_H
 #define MAGICKCORE_HAVE_LIMITS_H 1
@@ -484,6 +487,11 @@
 
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 /* #undef HAVE_NDIR_H */
+
+/* Define to 1 if you have the <netinet/in.h> header file. */
+#ifndef MAGICKCORE_HAVE_NETINET_IN_H
+#define MAGICKCORE_HAVE_NETINET_IN_H 1
+#endif
 
 /* Define to 1 if you have the `newlocale' function. */
 #ifndef MAGICKCORE_HAVE_NEWLOCALE
