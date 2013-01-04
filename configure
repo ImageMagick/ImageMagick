@@ -3650,7 +3650,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=10470:10476M
+MAGICK_SVN_REVISION=10470:10492M
 
 
 
@@ -21508,7 +21508,7 @@ fi
 
 
 # Check additional headers
-for ac_header in arm/limits.h complex.h errno.h fcntl.h limits.h linux/unistd.h locale.h machine/param.h mach-o/dyld.h OS.h process.h sun_prefetch.h stdarg.h sys/ipc.h sys/mman.h sys/resource.h sys/syslimits.h sys/time.h sys/timeb.h sys/times.h sys/wait.h wchar.h xlocale.h
+for ac_header in arm/limits.h complex.h errno.h fcntl.h limits.h linux/unistd.h locale.h machine/param.h mach-o/dyld.h netinet/in.h OS.h process.h sun_prefetch.h stdarg.h sys/ipc.h sys/mman.h sys/resource.h sys/socket.h sys/syslimits.h sys/time.h sys/timeb.h sys/times.h sys/wait.h wchar.h xlocale.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -24788,6 +24788,57 @@ _ACEOF
 
 fi
 done
+
+ac_fn_c_check_func "$LINENO" "connect" "ac_cv_func_connect"
+if test "x$ac_cv_func_connect" = xyes; then :
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for connect in -lsocket" >&5
+$as_echo_n "checking for connect in -lsocket... " >&6; }
+if ${ac_cv_lib_socket_connect+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lsocket  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char connect ();
+int
+main ()
+{
+return connect ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_socket_connect=yes
+else
+  ac_cv_lib_socket_connect=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_socket_connect" >&5
+$as_echo "$ac_cv_lib_socket_connect" >&6; }
+if test "x$ac_cv_lib_socket_connect" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSOCKET 1
+_ACEOF
+
+  LIBS="-lsocket $LIBS"
+
+fi
+
+fi
 
 
 #
