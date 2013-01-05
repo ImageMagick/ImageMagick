@@ -1219,11 +1219,11 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
                   (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
                 (void) ThrowMagickException(&image->exception,GetMagickModule(),
                   MissingDelegateError,"NoEncodeDelegateForThisImageFormat",
-                  "'%s'",image->filename);
+                  "`%s'",image->filename);
               else
                 (void) ThrowMagickException(&image->exception,GetMagickModule(),
                   MissingDelegateWarning,"NoEncodeDelegateForThisImageFormat",
-                  "'%s'",image->filename);
+                  "`%s'",image->filename);
             }
           if ((magick_info != (const MagickInfo *) NULL) &&
               (GetImageEncoder(magick_info) != (EncodeImageHandler *) NULL))
