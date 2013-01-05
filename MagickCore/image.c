@@ -2907,7 +2907,7 @@ MagickExport MagickBooleanType SetImageInfo(ImageInfo *image_info,
         }
       (void) ResetMagickMemory(magick,0,sizeof(magick));
       count=ReadBlob(image,2*MaxTextExtent,magick);
-      (void) SeekBlob(image,(MagickOffsetType) -count,SEEK_CUR);
+      (void) SeekBlob(image,-((MagickOffsetType) count),SEEK_CUR);
       (void) CloseBlob(image);
       image=DestroyImage(image);
       /*
