@@ -1282,7 +1282,7 @@ static inline const char *FxSubexpression(const char *expression,
   }
   if (*subexpression == '\0')
     (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-      "UnbalancedParenthesis","'%s'",expression);
+      "UnbalancedParenthesis","`%s'",expression);
   return(subexpression);
 }
 
@@ -1430,7 +1430,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
   if (image == (Image *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "NoSuchImage","'%s'",expression);
+        "NoSuchImage","`%s'",expression);
       return(0.0);
     }
   GetPixelInfo(image,&pixel);
@@ -1497,7 +1497,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           if (image->colorspace != CMYKColorspace)
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
-                ImageError,"ColorSeparatedImageRequired","'%s'",
+                ImageError,"ColorSeparatedImageRequired","`%s'",
                 image->filename);
               return(0.0);
             }
@@ -1523,7 +1523,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           break;
       }
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "UnableToParseExpression","'%s'",p);
+        "UnableToParseExpression","`%s'",p);
       return(0.0);
     }
   switch (*symbol)
@@ -1655,7 +1655,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
           if (image->colorspace != CMYKColorspace)
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"ColorSeparatedImageRequired","'%s'",
+                OptionError,"ColorSeparatedImageRequired","`%s'",
                 image->filename);
               return(0.0);
             }
@@ -1845,7 +1845,7 @@ static double FxGetSymbol(FxInfo *fx_info,const PixelChannel channel,
   if (value != (const char *) NULL)
     return((double) StringToDouble(value,(char **) NULL));
   (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-    "UnableToParseExpression","'%s'",symbol);
+    "UnableToParseExpression","`%s'",symbol);
   return(0.0);
 }
 
@@ -2128,7 +2128,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
   if (*expression == '\0')
     {
       (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-        "MissingExpression","'%s'",expression);
+        "MissingExpression","`%s'",expression);
       return(0.0);
     }
   *subexpression='\0';
@@ -2171,7 +2171,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
             {
               if (exception->severity == UndefinedException)
                 (void) ThrowMagickException(exception,GetMagickModule(),
-                  OptionError,"DivideByZero","'%s'",expression);
+                  OptionError,"DivideByZero","`%s'",expression);
               return(0.0);
             }
           return(alpha/(*beta));
@@ -2183,7 +2183,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           if (*beta == 0.0)
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"DivideByZero","'%s'",expression);
+                OptionError,"DivideByZero","`%s'",expression);
               return(0.0);
             }
           return(fmod((double) alpha,(double) *beta));
@@ -2275,7 +2275,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           if (q == (char *) NULL)
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnableToParseExpression","'%s'",subexpression);
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
               return(0.0);
             }
           if (fabs((double) alpha) >= MagickEpsilon)
@@ -2295,7 +2295,7 @@ static double FxEvaluateSubexpression(FxInfo *fx_info,
           if (*q != '\0')
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionError,"UnableToParseExpression","'%s'",subexpression);
+                OptionError,"UnableToParseExpression","`%s'",subexpression);
               return(0.0);
             }
           ClearMagickException(exception);

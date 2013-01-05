@@ -188,7 +188,7 @@ WandExport MagickBooleanType CompareImagesCommand(ImageInfo *image_info,
 { \
   if (exception->severity < (asperity)) \
     (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag, \
-      "'%s'",option); \
+      "`%s'",option); \
   DestroyCompare(); \
   return(MagickFalse); \
 }

@@ -347,7 +347,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   if ((blob == (const void *) NULL) || (length == 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),BlobError,
-        "ZeroLengthBlobNotPermitted","'%s'",image_info->filename);
+        "ZeroLengthBlobNotPermitted","`%s'",image_info->filename);
       return((Image *) NULL);
     }
   blob_info=CloneImageInfo(image_info);
@@ -360,7 +360,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
     {
       blob_info=DestroyImageInfo(blob_info);
       (void) ThrowMagickException(exception,GetMagickModule(),
-        MissingDelegateError,"NoDecodeDelegateForThisImageFormat","'%s'",
+        MissingDelegateError,"NoDecodeDelegateForThisImageFormat","`%s'",
         image_info->filename);
       return((Image *) NULL);
     }
@@ -1001,7 +1001,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
       if (blob == (unsigned char *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","'%s'",filename);
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
           return((unsigned char *) NULL);
         }
       if (file == -1)
@@ -1023,7 +1023,7 @@ MagickExport unsigned char *FileToBlob(const char *filename,const size_t extent,
     {
       file=close(file);
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","'%s'",filename);
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",filename);
       return((unsigned char *) NULL);
     }
   map=MapBlob(file,ReadMode,0,*length);
@@ -1520,7 +1520,7 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
   if (magick_info == (const MagickInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        MissingDelegateError,"NoDecodeDelegateForThisImageFormat","'%s'",
+        MissingDelegateError,"NoDecodeDelegateForThisImageFormat","`%s'",
         image->filename);
       return(blob);
     }
@@ -1535,7 +1535,7 @@ MagickExport unsigned char *ImageToBlob(const ImageInfo *image_info,
         sizeof(unsigned char));
       if (blob_info->blob == (void *) NULL)
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       else
         {
           (void) CloseBlob(image);
@@ -1668,7 +1668,7 @@ MagickExport MagickBooleanType ImageToFile(Image *image,char *filename,
     {
       file=close(file)-1;
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationError","'%s'",filename);
+        ResourceLimitError,"MemoryAllocationError","`%s'",filename);
       return(MagickFalse);
     }
   length=0;
@@ -1775,7 +1775,7 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
   if (magick_info == (const MagickInfo *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        MissingDelegateError,"NoDecodeDelegateForThisImageFormat","'%s'",
+        MissingDelegateError,"NoDecodeDelegateForThisImageFormat","`%s'",
         images->filename);
       return(blob);
     }
@@ -1790,7 +1790,7 @@ MagickExport unsigned char *ImagesToBlob(const ImageInfo *image_info,
         sizeof(unsigned char));
       if (blob_info->blob == (void *) NULL)
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","'%s'",images->filename);
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
       else
         {
           images->blob->exempt=MagickTrue;
@@ -2390,7 +2390,7 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","'%s'",filename);
+        "NotAuthorized","`%s'",filename);
       return(MagickFalse);
     }
   if ((LocaleCompare(filename,"-") == 0) ||
@@ -2515,8 +2515,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 
             image->blob->type=FileStream;
 #if defined(MAGICKCORE_HAVE_SETVBUF)
-            (void) setvbuf(image->blob->file_info.file,(char *) NULL,
-              (int) _IOFBF,16384);
+            (void) setvbuf(image->blob->file_info.file,(char *) NULL,(int)
+              _IOFBF,16384);
 #endif
             (void) ResetMagickMemory(magick,0,sizeof(magick));
             count=fread(magick,1,sizeof(magick),image->blob->file_info.file);
@@ -2620,8 +2620,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                 {
                   image->blob->type=FileStream;
 #if defined(MAGICKCORE_HAVE_SETVBUF)
-                  (void) setvbuf(image->blob->file_info.file,(char *) NULL,(int) _IOFBF,
-                    16384);
+                  (void) setvbuf(image->blob->file_info.file,(char *) NULL,(int)
+                    _IOFBF,16384);
 #endif
                 }
        }
@@ -2702,7 +2702,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   if ((blob == (const void *) NULL) || (length == 0))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),BlobError,
-        "UnrecognizedImageFormat","'%s'",image_info->magick);
+        "UnrecognizedImageFormat","`%s'",image_info->magick);
       return((Image *) NULL);
     }
   ping_info=CloneImageInfo(image_info);
@@ -2710,7 +2710,7 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   if (ping_info->blob == (const void *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitFatalError,"MemoryAllocationFailed","'%s'","");
+        ResourceLimitFatalError,"MemoryAllocationFailed","`%s'","");
       return((Image *) NULL);
     }
   (void) memcpy(ping_info->blob,blob,length);
@@ -3811,7 +3811,7 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
 #endif
           offset=SeekBlob(image,offset,SEEK_SET);
           if (count != 1)
-            return(MagickTrue);
+            return(MagickFalse);
           image->blob->data=(unsigned char*) MapBlob(fileno(
             image->blob->file_info.file),WriteMode,0,(size_t) extent);
           image->blob->extent=(size_t) extent;

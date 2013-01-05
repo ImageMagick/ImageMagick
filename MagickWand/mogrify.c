@@ -3561,7 +3561,7 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
 }
 #define ThrowMogrifyException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"'%s'", \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
     option); \
   DestroyMogrify(); \
   return(MagickFalse); \
@@ -7693,7 +7693,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             if (p == (Image *) NULL)
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
-                  OptionError,"NoSuchImage","'%s'",argv[i+1]);
+                  OptionError,"NoSuchImage","`%s'",argv[i+1]);
                 status=MagickFalse;
                 break;
               }
@@ -7709,7 +7709,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                    if (q == (Image *) NULL)
                      {
                        (void) ThrowMagickException(exception,GetMagickModule(),
-                         OptionError,"NoSuchImage","'%s'",argv[i+1]);
+                         OptionError,"NoSuchImage","`%s'",argv[i+1]);
                        status=MagickFalse;
                        break;
                      }
@@ -8195,7 +8195,7 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
             if ((p == (Image *) NULL) || (q == (Image *) NULL))
               {
                 (void) ThrowMagickException(exception,GetMagickModule(),
-                  OptionError,"NoSuchImage","'%s'",(*images)->filename);
+                  OptionError,"NoSuchImage","`%s'",(*images)->filename);
                 status=MagickFalse;
                 break;
               }

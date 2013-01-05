@@ -105,7 +105,7 @@ MagickExport double GetImageTotalInkDensity(Image *image,
   if (image->colorspace != CMYKColorspace)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ImageError,
-        "ColorSeparatedImageRequired","'%s'",image->filename);
+        "ColorSeparatedImageRequired","`%s'",image->filename);
       return(0.0);
     }
   status=MagickTrue;

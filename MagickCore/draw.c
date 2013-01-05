@@ -2252,7 +2252,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 if (n <= 0)
                   {
                     (void) ThrowMagickException(exception,GetMagickModule(),
-                      DrawError,"UnbalancedGraphicContextPushPop","'%s'",token);
+                      DrawError,"UnbalancedGraphicContextPushPop","`%s'",token);
                     n=0;
                     break;
                   }
@@ -2417,7 +2417,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 if (graphic_context == (DrawInfo **) NULL)
                   {
                     (void) ThrowMagickException(exception,GetMagickModule(),
-                      ResourceLimitError,"MemoryAllocationFailed","'%s'",
+                      ResourceLimitError,"MemoryAllocationFailed","`%s'",
                       image->filename);
                     break;
                   }
@@ -2560,7 +2560,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
                 if (graphic_context[n]->dash_pattern == (double *) NULL)
                   {
                     (void) ThrowMagickException(exception,GetMagickModule(),
-                      ResourceLimitError,"MemoryAllocationFailed","'%s'",
+                      ResourceLimitError,"MemoryAllocationFailed","`%s'",
                       image->filename);
                     break;
                   }
@@ -2792,7 +2792,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       if (primitive_info == (PrimitiveInfo *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
           break;
         }
     }
@@ -2839,7 +2839,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
       {
         if (primitive_info[j].coordinates > 107)
           (void) ThrowMagickException(exception,GetMagickModule(),DrawError,
-            "TooManyBezierCoordinates","'%s'",token);
+            "TooManyBezierCoordinates","`%s'",token);
         length=BezierQuantum*primitive_info[j].coordinates;
         break;
       }
@@ -2898,7 +2898,7 @@ MagickExport MagickBooleanType DrawImage(Image *image,const DrawInfo *draw_info,
         if (primitive_info == (PrimitiveInfo *) NULL)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),
-              ResourceLimitError,"MemoryAllocationFailed","'%s'",
+              ResourceLimitError,"MemoryAllocationFailed","`%s'",
               image->filename);
             break;
           }

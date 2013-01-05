@@ -948,7 +948,7 @@ MagickExport const ColorInfo *GetColorCompliance(const char *name,
   }
   if (p == (ColorInfo *) NULL)
     (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-      "UnrecognizedColor","'%s'",name);
+      "UnrecognizedColor","`%s'",name);
   else
     (void) InsertValueInLinkedList(color_list,0,
       RemoveElementByValueFromLinkedList(color_list,p));
@@ -1899,7 +1899,7 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
             {
               if (depth > 200)
                 (void) ThrowMagickException(exception,GetMagickModule(),
-                  ConfigureError,"IncludeElementNestedTooDeeply","'%s'",token);
+                  ConfigureError,"IncludeElementNestedTooDeeply","`%s'",token);
               else
                 {
                   char
@@ -1946,7 +1946,7 @@ static MagickBooleanType LoadColorList(const char *xml,const char *filename,
         status=AppendValueToLinkedList(color_list,color_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","'%s'",
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",
             color_info->name);
         color_info=(ColorInfo *) NULL;
       }
@@ -2079,7 +2079,7 @@ static MagickBooleanType LoadColorLists(const char *filename,
     if (color_info == (ColorInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","'%s'",color_info->name);
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",color_info->name);
         continue;
       }
     (void) ResetMagickMemory(color_info,0,sizeof(*color_info));
@@ -2096,7 +2096,7 @@ static MagickBooleanType LoadColorLists(const char *filename,
     status=AppendValueToLinkedList(color_list,color_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","'%s'",color_info->name);
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",color_info->name);
   }
   /*
     Load external color map.
@@ -2231,7 +2231,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
           if ((n % 4) != 0)
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
-                OptionWarning,"UnrecognizedColor","'%s'",name);
+                OptionWarning,"UnrecognizedColor","`%s'",name);
               return(MagickFalse);
             }
           do
@@ -2322,7 +2322,7 @@ MagickExport MagickBooleanType QueryColorCompliance(const char *name,
       if (type < 0)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
-            OptionWarning,"UnrecognizedColor","'%s'",name);
+            OptionWarning,"UnrecognizedColor","`%s'",name);
           return(MagickFalse);
         }
       color->colorspace=(ColorspaceType) type;

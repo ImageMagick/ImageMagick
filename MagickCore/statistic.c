@@ -475,7 +475,7 @@ MagickExport Image *EvaluateImages(const Image *images,
     {
       image=DestroyImage(image);
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","'%s'",images->filename);
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
       return((Image *) NULL);
     }
   /*
@@ -1812,7 +1812,7 @@ MagickExport Image *PolynomialImage(const Image *images,
     {
       image=DestroyImage(image);
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","'%s'",images->filename);
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",images->filename);
       return((Image *) NULL);
     }
   /*

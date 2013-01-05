@@ -1681,7 +1681,7 @@ MagickExport MagickBooleanType DisplayImages(const ImageInfo *image_info,
   if (display == (Display *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),XServerError,
-        "UnableToOpenXServer","'%s'",XDisplayName(image_info->server_name));
+        "UnableToOpenXServer","`%s'",XDisplayName(image_info->server_name));
       return(MagickFalse);
     }
   if (exception->severity != UndefinedException)
@@ -1759,7 +1759,7 @@ MagickExport MagickBooleanType RemoteDisplayCommand(const ImageInfo *image_info,
   if (display == (Display *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),XServerError,
-        "UnableToOpenXServer","'%s'",XDisplayName(image_info->server_name));
+        "UnableToOpenXServer","`%s'",XDisplayName(image_info->server_name));
       return(MagickFalse);
     }
   (void) XSetErrorHandler(XError);
@@ -5513,7 +5513,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
   if (coordinate_info == (XPoint *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","'%s'","...");
+        ResourceLimitError,"MemoryAllocationFailed","`%s'","...");
       return(MagickFalse);
     }
   /*
@@ -6138,7 +6138,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
             max_coordinates,sizeof(*coordinate_info));
           if (coordinate_info == (XPoint *) NULL)
             (void) ThrowMagickException(exception,GetMagickModule(),
-              ResourceLimitError,"MemoryAllocationFailed","'%s'","...");
+              ResourceLimitError,"MemoryAllocationFailed","`%s'","...");
           break;
         }
         case Expose:
@@ -6165,7 +6165,7 @@ static MagickBooleanType XDrawEditImage(Display *display,
             max_coordinates,sizeof(*coordinate_info));
           if (coordinate_info == (XPoint *) NULL)
             (void) ThrowMagickException(exception,GetMagickModule(),
-              ResourceLimitError,"MemoryAllocationFailed","'%s'","...");
+              ResourceLimitError,"MemoryAllocationFailed","`%s'","...");
           break;
         }
         default:

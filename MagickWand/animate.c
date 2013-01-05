@@ -245,7 +245,7 @@ WandExport MagickBooleanType AnimateImageCommand(ImageInfo *image_info,
 }
 #define ThrowAnimateException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"'%s'", \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
     option); \
   DestroyAnimate(); \
   return(MagickFalse); \

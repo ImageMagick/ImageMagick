@@ -2227,7 +2227,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   if (contributions == (ContributionInfo **) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
   status=MagickTrue;
@@ -2440,7 +2440,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   if (contributions == (ContributionInfo **) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
       return(MagickFalse);
     }
   status=MagickTrue;

@@ -303,7 +303,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
     if (i < 0)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "UnrecognizedChannelType","'%s'",token);
+          "UnrecognizedChannelType","`%s'",token);
         destination_image=DestroyImageList(destination_image);
         return(destination_image);
       }
@@ -342,7 +342,7 @@ MagickExport Image *ChannelFxImage(const Image *image,const char *expression,
         if (i < 0)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-              "UnrecognizedChannelType","'%s'",token);
+              "UnrecognizedChannelType","`%s'",token);
             destination_image=DestroyImageList(destination_image);
             return(destination_image);
           }

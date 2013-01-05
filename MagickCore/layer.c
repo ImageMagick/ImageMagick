@@ -1681,7 +1681,7 @@ MagickExport void RemoveZeroDelayLayers(Image **images,
     if ( i->delay != 0L ) break;
   if ( i == (Image *) NULL ) {
     (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
-       "ZeroTimeAnimation","'%s'",GetFirstImageInList(*images)->filename);
+       "ZeroTimeAnimation","`%s'",GetFirstImageInList(*images)->filename);
     return;
   }
   i=GetFirstImageInList(*images);

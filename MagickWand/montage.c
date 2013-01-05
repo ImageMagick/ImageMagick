@@ -271,7 +271,7 @@ WandExport MagickBooleanType MontageImageCommand(ImageInfo *image_info,
 }
 #define ThrowMontageException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"'%s'", \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
     option); \
   DestroyMontage(); \
   return(MagickFalse); \

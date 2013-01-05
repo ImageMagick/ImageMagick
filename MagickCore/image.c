@@ -3652,7 +3652,7 @@ MagickExport MagickBooleanType SyncImage(Image *image,ExceptionInfo *exception)
   image_view=DestroyCacheView(image_view);
   if ((image->ping == MagickFalse) && (range_exception != MagickFalse))
     (void) ThrowMagickException(exception,GetMagickModule(),CorruptImageError,
-      "InvalidColormapIndex","'%s'",image->filename);
+      "InvalidColormapIndex","`%s'",image->filename);
   return(status);
 }
 

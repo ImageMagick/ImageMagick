@@ -58,7 +58,7 @@
 #define ThrowWandException(severity,tag,context) \
 { \
   (void) ThrowMagickException(wand->exception,GetMagickModule(),severity, \
-    tag,"'%s'",context); \
+    tag,"`%s'",context); \
   return(MagickFalse); \
 }
 #define MagickWandId  "MagickWand"
@@ -149,7 +149,7 @@ WandExport Image *GetImageFromMagickWand(const MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((Image *) NULL);
     }
   return(wand->images);
@@ -1778,7 +1778,7 @@ WandExport MagickWand *MagickCompareImages(MagickWand *wand,
   if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((MagickWand *) NULL);
     }
   compare_image=CompareImages(wand->images,reference->images,metric,distortion,
@@ -3560,7 +3560,7 @@ WandExport MagickWand *MagickGetImage(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((MagickWand *) NULL);
     }
   image=CloneImage(wand->images,0,0,MagickTrue,wand->exception);
@@ -3638,7 +3638,7 @@ WandExport MagickWand *MagickGetImageMask(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((MagickWand *) NULL);
     }
   image=GetImageMask(wand->images,wand->exception);
@@ -3726,7 +3726,7 @@ WandExport unsigned char *MagickGetImageBlob(MagickWand *wand,size_t *length)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((unsigned char *) NULL);
     }
   return(ImageToBlob(wand->image_info,wand->images,length,wand->exception));
@@ -3775,7 +3775,7 @@ WandExport unsigned char *MagickGetImagesBlob(MagickWand *wand,size_t *length)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((unsigned char *) NULL);
     }
   blob=ImagesToBlob(wand->image_info,GetFirstImageInList(wand->images),length,
@@ -3911,7 +3911,7 @@ WandExport ChannelFeatures *MagickGetImageFeatures(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((ChannelFeatures *) NULL);
     }
   return(GetImageFeatures(wand->images,distance,wand->exception));
@@ -4089,7 +4089,7 @@ WandExport ChannelStatistics *MagickGetImageStatistics(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((ChannelStatistics *) NULL);
     }
   return(GetImageStatistics(wand->images,wand->exception));
@@ -4136,7 +4136,7 @@ WandExport MagickBooleanType MagickGetImageColormapColor(MagickWand *wand,
       (index >= wand->images->colors))
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "InvalidColormapIndex","'%s'",wand->name);
+        "InvalidColormapIndex","`%s'",wand->name);
       return(MagickFalse);
     }
   PixelSetPixelColor(color,wand->images->colormap+index);
@@ -4174,7 +4174,7 @@ WandExport size_t MagickGetImageColors(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(0);
     }
   return(GetNumberColors(wand->images,(FILE *) NULL,wand->exception));
@@ -4211,7 +4211,7 @@ WandExport ColorspaceType MagickGetImageColorspace(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(UndefinedColorspace);
     }
   return(wand->images->colorspace);
@@ -4249,7 +4249,7 @@ WandExport CompositeOperator MagickGetImageCompose(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(UndefinedCompositeOp);
     }
   return(wand->images->compose);
@@ -4286,7 +4286,7 @@ WandExport CompressionType MagickGetImageCompression(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(UndefinedCompression);
     }
   return(wand->images->compression);
@@ -4323,7 +4323,7 @@ WandExport size_t MagickGetImageCompressionQuality(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(0UL);
     }
   return(wand->images->quality);
@@ -4426,7 +4426,7 @@ WandExport DisposeType MagickGetImageDispose(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(UndefinedDispose);
     }
   return((DisposeType) wand->images->dispose);
@@ -4525,7 +4525,7 @@ WandExport double *MagickGetImageDistortions(MagickWand *wand,
   if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((double *) NULL);
     }
   channel_distortion=GetImageDistortions(wand->images,reference->images,
@@ -4564,7 +4564,7 @@ WandExport EndianType MagickGetImageEndian(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(UndefinedEndian);
     }
   return(wand->images->endian);
@@ -4602,7 +4602,7 @@ WandExport char *MagickGetImageFilename(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((char *) NULL);
     }
   return(AcquireString(wand->images->filename));
@@ -4640,7 +4640,7 @@ WandExport char *MagickGetImageFormat(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((char *) NULL);
     }
   return(AcquireString(wand->images->magick));
@@ -4677,7 +4677,7 @@ WandExport double MagickGetImageFuzz(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(0.0);
     }
   return(wand->images->fuzz);
@@ -4714,7 +4714,7 @@ WandExport double MagickGetImageGamma(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(0.0);
     }
   return(wand->images->gamma);
@@ -4751,7 +4751,7 @@ WandExport GravityType MagickGetImageGravity(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(UndefinedGravity);
     }
   return(wand->images->gravity);
@@ -4877,7 +4877,7 @@ WandExport PixelWand **MagickGetImageHistogram(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((PixelWand **) NULL);
     }
   histogram=GetImageHistogram(wand->images,number_colors,wand->exception);
@@ -4924,7 +4924,7 @@ WandExport InterlaceType MagickGetImageInterlaceScheme(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(UndefinedInterlace);
     }
   return(wand->images->interlace);
@@ -4964,7 +4964,7 @@ WandExport PixelInterpolateMethod MagickGetImageInterpolateMethod(
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(UndefinedInterpolatePixel);
     }
   return(wand->images->interpolate);
@@ -5110,7 +5110,7 @@ WandExport OrientationType MagickGetImageOrientation(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(UndefinedOrientation);
     }
   return(wand->images->orientation);
@@ -5348,7 +5348,7 @@ WandExport RenderingIntent MagickGetImageRenderingIntent(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(UndefinedIntent);
     }
   return((RenderingIntent) wand->images->rendering_intent);
@@ -5466,7 +5466,7 @@ WandExport char *MagickGetImageSignature(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((char *) NULL);
     }
   status=SignatureImage(wand->images,wand->exception);
@@ -5550,7 +5550,7 @@ WandExport ImageType MagickGetImageType(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(UndefinedType);
     }
   return(GetImageType(wand->images,wand->exception));
@@ -5587,7 +5587,7 @@ WandExport ResolutionType MagickGetImageUnits(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(UndefinedResolution);
     }
   return(wand->images->units);
@@ -5625,7 +5625,7 @@ WandExport VirtualPixelMethod MagickGetImageVirtualPixelMethod(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(UndefinedVirtualPixelMethod);
     }
   return(GetImageVirtualPixelMethod(wand->images));
@@ -5768,7 +5768,7 @@ WandExport double MagickGetImageTotalInkDensity(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return(0.0);
     }
   return(GetImageTotalInkDensity(wand->images,wand->exception));
@@ -5933,7 +5933,7 @@ WandExport char *MagickIdentifyImage(MagickWand *wand)
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((char *) NULL);
     }
   description=(char *) NULL;
@@ -5944,7 +5944,7 @@ WandExport char *MagickIdentifyImage(MagickWand *wand)
   if ((unique_file == -1) || (file == (FILE *) NULL))
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "UnableToCreateTemporaryFile","'%s'",wand->name);
+        "UnableToCreateTemporaryFile","`%s'",wand->name);
       return((char *) NULL);
     }
   (void) IdentifyImage(wand->images,file,MagickTrue,wand->exception);
@@ -10039,7 +10039,7 @@ WandExport MagickProgressMonitor MagickSetImageProgressMonitor(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((MagickProgressMonitor) NULL);
     }
   previous_monitor=SetImageProgressMonitor(wand->images,
@@ -10768,7 +10768,7 @@ WandExport MagickWand *MagickSimilarityImage(MagickWand *wand,
   if ((wand->images == (Image *) NULL) || (reference->images == (Image *) NULL))
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((MagickWand *) NULL);
     }
   similarity_image=SimilarityImage(wand->images,reference->images,metric,offset,
@@ -11195,7 +11195,7 @@ WandExport MagickWand *MagickSteganoImage(MagickWand *wand,
       (watermark_wand->images == (Image *) NULL))
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((MagickWand *) NULL);
     }
   wand->images->offset=offset;
@@ -11246,7 +11246,7 @@ WandExport MagickWand *MagickStereoImage(MagickWand *wand,
       (offset_wand->images == (Image *) NULL))
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((MagickWand *) NULL);
     }
   stereo_image=StereoImage(wand->images,offset_wand->images,wand->exception);
@@ -11379,7 +11379,7 @@ WandExport MagickWand *MagickTextureImage(MagickWand *wand,
       (texture_wand->images == (Image *) NULL))
     {
       (void) ThrowMagickException(wand->exception,GetMagickModule(),WandError,
-        "ContainsNoImages","'%s'",wand->name);
+        "ContainsNoImages","`%s'",wand->name);
       return((MagickWand *) NULL);
     }
   texture_image=CloneImage(wand->images,0,0,MagickTrue,wand->exception);

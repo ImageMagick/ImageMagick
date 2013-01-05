@@ -24,7 +24,7 @@ extern "C" {
 
 #define CLIWandException(severity,tag,option) \
   (void) CLIThrowException(cli_wand,GetMagickModule(),severity,tag, \
-       "'%s'",option)
+       "`%s'",option)
 
 #define CLIWandExceptionArg(severity,tag,option,arg) \
   (void) CLIThrowException(cli_wand,GetMagickModule(),severity,tag, \
