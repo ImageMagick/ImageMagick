@@ -2523,8 +2523,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
 
             image->blob->type=FileStream;
 #if defined(MAGICKCORE_HAVE_SETVBUF)
-            (void) setvbuf(image->blob->file_info.file,(char *) NULL,
-              (int) _IOFBF,16384);
+            (void) setvbuf(image->blob->file_info.file,(char *) NULL,(int)
+              _IOFBF,16384);
 #endif
             (void) ResetMagickMemory(magick,0,sizeof(magick));
             count=fread(magick,1,sizeof(magick),image->blob->file_info.file);
@@ -2628,8 +2628,8 @@ MagickExport MagickBooleanType OpenBlob(const ImageInfo *image_info,
                 {
                   image->blob->type=FileStream;
 #if defined(MAGICKCORE_HAVE_SETVBUF)
-                  (void) setvbuf(image->blob->file_info.file,(char *) NULL,
-                    (int) _IOFBF,16384);
+                  (void) setvbuf(image->blob->file_info.file,(char *) NULL,(int)
+                    _IOFBF,16384);
 #endif
                 }
        }
@@ -3772,7 +3772,7 @@ MagickExport MagickBooleanType SetBlobExtent(Image *image,
 #endif
       offset=SeekBlob(image,offset,SEEK_SET);
       if (count != 1)
-        return(MagickTrue);
+        return(MagickFalse);
       break;
     }
     case PipeStream:
@@ -3953,7 +3953,6 @@ MagickExport MagickOffsetType TellBlob(const Image *image)
   switch (image->blob->type)
   {
     case UndefinedStream:
-      break;
     case StandardStream:
       break;
     case FileStream:
