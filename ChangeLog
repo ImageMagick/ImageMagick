@@ -1,5 +1,5 @@
-2013-01-02  6.8.1-8 Cristy  <quetzlzacatenango@image...>
-  * New version 6.8.1-8, SVN revision 10493.
+2013-01-06  6.8.1-9 Cristy  <quetzlzacatenango@image...>
+  * Type correction in blob code.
 
 2013-01-02  6.8.1-8 Cristy  <quetzlzacatenango@image...>
   * Check for a density of zero when rendering with Pango (reference
