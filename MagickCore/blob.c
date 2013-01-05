@@ -2734,7 +2734,9 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  ReadBlob() reads data from the blob or image file and returns it.  It
-%  returns the number of bytes read.
+%  returns the number of bytes read. If length is zero, ReadBlob() returns
+%  zero and has no other results. If length is greater than SSIZE_MAX, the
+%  result is unspecified.
 %
 %  The format of the ReadBlob method is:
 %
@@ -2778,22 +2780,7 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
       break;
     case StandardStream:
     {
-      register ssize_t
-        i;
-
-      count=0;
-      for (i=0; i < (ssize_t) length; i+=count)
-      {
-        count=read(fileno(image->blob->file_info.file),q+i,(size_t) MagickMin(
-          length-i,SSIZE_MAX));
-        if (count <= 0)
-          {
-            count=0;
-            if (errno != EINTR)
-              break;
-          }
-      }
-      count=i;
+      count=read(fileno(image->blob->file_info.file),q,length);
       break;
     }
     case FileStream:
@@ -2863,8 +2850,7 @@ MagickExport ssize_t ReadBlob(Image *image,const size_t length,
     case BZipStream:
     {
 #if defined(MAGICKCORE_BZLIB_DELEGATE)
-      count=(ssize_t) BZ2_bzread(image->blob->file_info.bzfile,q,
-        (int) length);
+      count=(ssize_t) BZ2_bzread(image->blob->file_info.bzfile,q,(int) length);
 #endif
       break;
     }
@@ -4070,8 +4056,7 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
       break;
     case StandardStream:
     {
-      count=write(fileno(image->blob->file_info.file),data,(size_t)
-        MagickMin(length,(MagickSizeType) SSIZE_MAX));
+      count=write(fileno(image->blob->file_info.file),data,length);
       break;
     }
     case FileStream:
