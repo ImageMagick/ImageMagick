@@ -1006,7 +1006,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
           histogram[i]=(ssize_t *) RelinquishMagickMemory(histogram[i]);
         }
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
         return(MagickFalse);
       }
   }
@@ -1053,7 +1053,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
         if (cluster == (Cluster *) NULL)
           {
             (void) ThrowMagickException(exception,GetMagickModule(),
-              ResourceLimitError,"MemoryAllocationFailed","'%s'",
+              ResourceLimitError,"MemoryAllocationFailed","`%s'",
               image->filename);
             return(MagickFalse);
           }
@@ -1077,7 +1077,7 @@ MagickExport MagickBooleanType GetImageDynamicThreshold(const Image *image,
       if (cluster == (Cluster *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","'%s'",image->filename);
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",image->filename);
           return(MagickFalse);
         }
       /*

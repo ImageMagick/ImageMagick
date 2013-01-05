@@ -305,7 +305,7 @@ MagickExport MagickBooleanType AnimateImages(const ImageInfo *image_info,
   if (display == (Display *) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),XServerError,
-        "UnableToOpenXServer","'%s'",XDisplayName(image_info->server_name));
+        "UnableToOpenXServer","`%s'",XDisplayName(image_info->server_name));
       return(MagickFalse);
     }
   if (exception->severity != UndefinedException)

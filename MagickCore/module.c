@@ -510,7 +510,7 @@ MagickExport char **GetModuleList(const char *pattern,
   if (modules == (char **) NULL)
     {
       (void) ThrowMagickException(exception,GetMagickModule(),ConfigureError,
-        "MemoryAllocationFailed","'%s'",pattern);
+        "MemoryAllocationFailed","`%s'",pattern);
       return((char **) NULL);
     }
   qsort((void *) modules,(size_t) i,sizeof(*modules),ModuleCompare);
@@ -676,7 +676,7 @@ static MagickBooleanType GetMagickModulePath(const char *filename,
       if (key_value == (unsigned char *) NULL)
         {
           ThrowMagickException(exception,GetMagickModule(),ConfigureError,
-            "RegistryKeyLookupFailed","'%s'",registery_key);
+            "RegistryKeyLookupFailed","`%s'",registery_key);
           return(MagickFalse);
         }
       (void) FormatLocaleString(path,MaxTextExtent,"%s%s%s",(char *) key_value,
@@ -977,7 +977,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","'%s'",tag);
+        "NotAuthorized","`%s'",tag);
       return(MagickFalse);
     }
   TagToFilterModuleName(tag,name);
@@ -1423,7 +1423,7 @@ static const ModuleInfo *RegisterModule(const ModuleInfo *module_info,
   status=AddValueToSplayTree(module_list,module_info->tag,module_info);
   if (status == MagickFalse)
     (void) ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-      "MemoryAllocationFailed","'%s'",module_info->tag);
+      "MemoryAllocationFailed","`%s'",module_info->tag);
   return(module_info);
 }
 
@@ -1634,7 +1634,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","'%s'",tag);
+        "NotAuthorized","`%s'",tag);
       return(MagickFalse);
     }
 #if defined(MAGICKCORE_BUILD_MODULES)
@@ -1655,7 +1655,7 @@ MagickExport MagickBooleanType InvokeDynamicImageFilter(const char *tag,
       image_filter=(ImageFilterHandler *) analyzeImage;
     if (image_filter == (ImageFilterHandler *) NULL)
       (void) ThrowMagickException(exception,GetMagickModule(),ModuleError,
-        "UnableToLoadModule","'%s'",tag);
+        "UnableToLoadModule","`%s'",tag);
     else
       {
         size_t

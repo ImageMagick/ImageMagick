@@ -171,7 +171,7 @@ WandExport MagickBooleanType StreamImageCommand(ImageInfo *image_info,
 }
 #define ThrowStreamException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"'%s'", \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
     option); \
   DestroyStream(); \
   return(MagickFalse); \

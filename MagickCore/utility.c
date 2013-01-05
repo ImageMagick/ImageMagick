@@ -1816,7 +1816,7 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","'%s'",arguments[1]);
+        "NotAuthorized","`%s'",arguments[1]);
       for (i=0; i < (ssize_t) number_arguments; i++)
         arguments[i]=DestroyString(arguments[i]);
       arguments=(char **) RelinquishMagickMemory(arguments);

@@ -1809,7 +1809,7 @@ MagickExport XMLTreeInfo *NewXMLTree(const char *xml,ExceptionInfo *exception)
           if (attributes == (char **) NULL)
             {
               (void) ThrowMagickException(exception,GetMagickModule(),
-                ResourceLimitError,"MemoryAllocationFailed","'%s'","");
+                ResourceLimitError,"MemoryAllocationFailed","`%s'","");
               utf8=DestroyString(utf8);
               return(&root->root);
             }

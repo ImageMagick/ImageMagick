@@ -189,7 +189,7 @@ WandExport MagickBooleanType IdentifyImageCommand(ImageInfo *image_info,
 }
 #define ThrowIdentifyException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"'%s'", \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
     option); \
   DestroyIdentify(); \
   return(MagickFalse); \

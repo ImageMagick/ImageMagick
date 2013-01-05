@@ -617,7 +617,7 @@ MagickExport LinkedListInfo *GetConfigureOptions(const char *filename,
 #endif
   if (GetNumberOfElementsInLinkedList(options) == 0)
     (void) ThrowMagickException(exception,GetMagickModule(),ConfigureWarning,
-      "UnableToOpenConfigureFile","'%s'",filename);
+      "UnableToOpenConfigureFile","`%s'",filename);
   ResetLinkedListIterator(options);
   return(options);
 }
@@ -1104,7 +1104,7 @@ static MagickBooleanType LoadConfigureList(const char *xml,const char *filename,
             {
               if (depth > 200)
                 (void) ThrowMagickException(exception,GetMagickModule(),
-                  ConfigureError,"IncludeElementNestedTooDeeply","'%s'",token);
+                  ConfigureError,"IncludeElementNestedTooDeeply","`%s'",token);
               else
                 {
                   char
@@ -1152,7 +1152,7 @@ static MagickBooleanType LoadConfigureList(const char *xml,const char *filename,
         status=AppendValueToLinkedList(configure_list,configure_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","'%s'",
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",
             configure_info->name);
         configure_info=(ConfigureInfo *) NULL;
       }
@@ -1273,7 +1273,7 @@ static MagickBooleanType LoadConfigureLists(const char *filename,
     if (configure_info == (ConfigureInfo *) NULL)
       {
         (void) ThrowMagickException(exception,GetMagickModule(),
-          ResourceLimitError,"MemoryAllocationFailed","'%s'",
+          ResourceLimitError,"MemoryAllocationFailed","`%s'",
           configure_info->name);
         continue;
       }
@@ -1286,7 +1286,7 @@ static MagickBooleanType LoadConfigureLists(const char *filename,
     status=AppendValueToLinkedList(configure_list,configure_info);
     if (status == MagickFalse)
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","'%s'",
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",
         configure_info->name);
   }
   /*

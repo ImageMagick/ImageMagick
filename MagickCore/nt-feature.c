@@ -543,7 +543,7 @@ MagickExport MagickBooleanType NTLoadTypeLists(SplayTreeInfo *type_list,
           type_info);
         if (status == MagickFalse)
           (void) ThrowMagickException(exception,GetMagickModule(),
-            ResourceLimitError,"MemoryAllocationFailed","'%s'",type_info->name);
+            ResourceLimitError,"MemoryAllocationFailed","`%s'",type_info->name);
       }
   }
   RegCloseKey ( reg_key );
@@ -618,7 +618,7 @@ MagickExport void *ImageToHBITMAP(Image *image,ExceptionInfo *exception)
 
       message=GetExceptionMessage(errno);
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","'%s'",message);
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",message);
       message=DestroyString(message);
       return(NULL);
     }
@@ -651,7 +651,7 @@ MagickExport void *ImageToHBITMAP(Image *image,ExceptionInfo *exception)
 
       message=GetExceptionMessage(errno);
       (void) ThrowMagickException(exception,GetMagickModule(),
-        ResourceLimitError,"MemoryAllocationFailed","'%s'",message);
+        ResourceLimitError,"MemoryAllocationFailed","`%s'",message);
       message=DestroyString(message);
     }
   GlobalUnlock((HGLOBAL) bitmap_bitsH);

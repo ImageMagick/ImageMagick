@@ -777,7 +777,7 @@ Magick_Command_Cleanup:
          exception);
     if (text == (char *) NULL)
       ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-           "MemoryAllocationFailed","'%s'", GetExceptionMessage(errno));
+           "MemoryAllocationFailed","`%s'", GetExceptionMessage(errno));
     else {
       (void) ConcatenateString(&(*metadata),text);
       text=DestroyString(text);

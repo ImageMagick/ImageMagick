@@ -139,7 +139,7 @@ WandExport MagickBooleanType ConjureImageCommand(ImageInfo *image_info,
 }
 #define ThrowConjureException(asperity,tag,option) \
 { \
-  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"'%s'", \
+  (void) ThrowMagickException(exception,GetMagickModule(),asperity,tag,"`%s'", \
      option); \
   DestroyConjure(); \
   return(MagickFalse); \

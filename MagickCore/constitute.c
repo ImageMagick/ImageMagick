@@ -463,7 +463,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     {
       errno=EPERM;
       (void) ThrowMagickException(exception,GetMagickModule(),PolicyError,
-        "NotAuthorized","'%s'",read_info->filename);
+        "NotAuthorized","`%s'",read_info->filename);
       read_info=DestroyImageInfo(read_info);
       return((Image *) NULL);
     }
@@ -554,7 +554,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       if (delegate_info == (const DelegateInfo *) NULL)
         {
           (void) ThrowMagickException(exception,GetMagickModule(),
-            MissingDelegateError,"NoDecodeDelegateForThisImageFormat","'%s'",
+            MissingDelegateError,"NoDecodeDelegateForThisImageFormat","`%s'",
             read_info->filename);
           if (read_info->temporary != MagickFalse)
             (void) RelinquishUniqueFileResource(read_info->filename);
@@ -588,7 +588,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         {
           if (IsPathAccessible(read_info->filename) != MagickFalse)
             (void) ThrowMagickException(exception,GetMagickModule(),
-              MissingDelegateError,"NoDecodeDelegateForThisImageFormat","'%s'",
+              MissingDelegateError,"NoDecodeDelegateForThisImageFormat","`%s'",
               read_info->filename);
           else
             ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
@@ -630,7 +630,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       clones=CloneImages(image,read_info->scenes,exception);
       if (clones == (Image *) NULL)
         (void) ThrowMagickException(exception,GetMagickModule(),OptionError,
-          "SubimageSpecificationReturnsNoImages","'%s'",read_info->filename);
+          "SubimageSpecificationReturnsNoImages","`%s'",read_info->filename);
       else
         {
           image=DestroyImageList(image);
@@ -1209,11 +1209,11 @@ MagickExport MagickBooleanType WriteImage(const ImageInfo *image_info,
                   (GetImageEncoder(magick_info) == (EncodeImageHandler *) NULL))
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   MissingDelegateError,"NoEncodeDelegateForThisImageFormat",
-                  "'%s'",image->filename);
+                  "`%s'",image->filename);
               else
                 (void) ThrowMagickException(exception,GetMagickModule(),
                   MissingDelegateWarning,"NoEncodeDelegateForThisImageFormat",
-                  "'%s'",image->filename);
+                  "`%s'",image->filename);
             }
           if ((magick_info != (const MagickInfo *) NULL) &&
               (GetImageEncoder(magick_info) != (EncodeImageHandler *) NULL))
