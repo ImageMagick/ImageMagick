@@ -2993,7 +2993,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
 
-  if ((embed_text == (const char *) NULL))
+  if (embed_text == (const char *) NULL)
     return((char *) NULL);
   p=embed_text;
 
