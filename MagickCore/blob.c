@@ -3748,7 +3748,8 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
       if ((MagickSizeType) offset >= extent)
         break;
       offset=SeekBlob(image,(MagickOffsetType) extent-1,SEEK_SET);
-      count=fwrite((const unsigned char *) "",1,1,image->blob->file_info.file);
+      count=(ssize_t) fwrite((const unsigned char *) "",1,1,
+        image->blob->file_info.file);
 #if defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
       if (image->blob->synchronize != MagickFalse)
         {
@@ -3762,7 +3763,7 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
         }
 #endif
       offset=SeekBlob(image,offset,SEEK_SET);
-      if (count != (MagickOffsetType) 1)
+      if (count != 1)
         return(MagickFalse);
       break;
     }
@@ -3794,7 +3795,7 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
           if ((MagickSizeType) offset >= extent)
             break;
           offset=SeekBlob(image,(MagickOffsetType) extent-1,SEEK_SET);
-          count=fwrite((const unsigned char *) "",1,1,
+          count=(ssize_t) fwrite((const unsigned char *) "",1,1,
             image->blob->file_info.file);
 #if defined(MAGICKCORE_HAVE_POSIX_FALLOCATE)
           if (image->blob->synchronize != MagickFalse)
@@ -3809,7 +3810,7 @@ MagickPrivate MagickBooleanType SetBlobExtent(Image *image,
             }
 #endif
           offset=SeekBlob(image,offset,SEEK_SET);
-          if (count != (MagickOffsetType) 1)
+          if (count != 1)
             return(MagickTrue);
           image->blob->data=(unsigned char*) MapBlob(fileno(
             image->blob->file_info.file),WriteMode,0,(size_t) extent);
@@ -4069,22 +4070,8 @@ MagickExport ssize_t WriteBlob(Image *image,const size_t length,
       break;
     case StandardStream:
     {
-      register ssize_t
-        i;
-
-      count=0;
-      for (i=0; i < (MagickOffsetType) length; i+=count)
-      {
-        count=write(fileno(image->blob->file_info.file),data+i,(size_t)
-          MagickMin(length-i,SSIZE_MAX));
-        if (count <= 0)
-          {
-            count=0;
-            if (errno != EINTR)
-              break;
-          }
-      }
-      count=i;
+      count=write(fileno(image->blob->file_info.file),data,(size_t)
+        MagickMin(length,(MagickSizeType) SSIZE_MAX));
       break;
     }
     case FileStream:
