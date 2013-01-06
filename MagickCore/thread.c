@@ -106,7 +106,6 @@ MagickExport MagickBooleanType MagickDeleteThreadKey(MagickThreadKey key)
   key=(MagickThreadKey) RelinquishMagickMemory(key);
   return(MagickTrue);
 #endif
-
 }
 
 /*

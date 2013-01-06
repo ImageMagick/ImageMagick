@@ -384,8 +384,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     Draw sides of ornamental border.
   */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for magick_schedule(static,image->rows/2) \
-    shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    magick_threads(image,frame_image,1,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -663,11 +663,6 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
     foreground,
     background;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  size_t
-    height;
-#endif
-
   ssize_t
     y;
 
@@ -696,8 +691,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   progress=0;
   image_view=AcquireAuthenticCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,raise_info->height/2) \
-    shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    magick_threads(image,image,1,1)
 #endif
   for (y=0; y < (ssize_t) raise_info->height; y++)
   {
@@ -804,8 +799,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=image->rows-2*raise_info->height;
-  #pragma omp parallel for schedule(static,height/2) shared(progress,status) 
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    magick_threads(image,image,image->rows-2*raise_info->height,1)
 #endif
   for (y=(ssize_t) raise_info->height; y < (ssize_t) (image->rows-raise_info->height); y++)
   {
@@ -890,8 +885,8 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
       }
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-  height=image->rows-2*raise_info->height;
-  #pragma omp parallel for schedule(static,height/2) shared(progress,status)
+  #pragma omp parallel for schedule(static,4) shared(progress,status) \
+    magick_threads(image,image,image->rows-2*raise_info->height,1)
 #endif
   for (y=(ssize_t) (image->rows-raise_info->height); y < (ssize_t) image->rows; y++)
   {
