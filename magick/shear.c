@@ -1029,7 +1029,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       tile_width=image->columns;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) \
-        magick_threads(image,image,image->rows/tile_height,1)
+        magick_threads(image,image,1,1)
 #endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
@@ -1230,7 +1230,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       tile_width=image->columns;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) \
-        magick_threads(image,image,image->rows/tile_height,1)
+        magick_threads(image,image,1,1)
 #endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
