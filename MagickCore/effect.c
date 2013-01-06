@@ -1284,7 +1284,7 @@ static void Hull(const Image *image,const ssize_t x_offset,
   r=p+(y_offset*(columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) \
-    magick_threads(image,image,rows,1)
+    magick_threads(image,image,1,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
@@ -1321,7 +1321,7 @@ static void Hull(const Image *image,const ssize_t x_offset,
   s=q-(y_offset*(columns+2)+x_offset);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) \
-    magick_threads(image,image,rows,1)
+    magick_threads(image,image,1,1)
 #endif
   for (y=0; y < (ssize_t) rows; y++)
   {
