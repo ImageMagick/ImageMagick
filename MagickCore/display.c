@@ -12563,8 +12563,6 @@ static MagickBooleanType XSaveImage(Display *display,
       GetPathComponent(image->filename,TailPath,filename);
       if (*path != '\0')
         {
-          if (*path == '\0')
-            (void) CopyMagickString(path,".",MaxTextExtent);
           status=chdir(path);
           if (status == -1)
             (void) ThrowMagickException(exception,GetMagickModule(),
