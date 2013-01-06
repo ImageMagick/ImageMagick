@@ -46,7 +46,6 @@
 */
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
-#include "MagickCore/cache-private.h"
 #include "MagickCore/image-private.h"
 #include "MagickWand/mogrify-private.h"
 #include "MagickCore/monitor-private.h"
