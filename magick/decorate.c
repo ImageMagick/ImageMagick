@@ -812,7 +812,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_threads(image,image,image->rows-2*raise_info->height,1)
+    magick_threads(image,image,1,1)
 #endif
   for (y=(ssize_t) raise_info->height; y < (ssize_t) (image->rows-raise_info->height); y++)
   {
@@ -875,7 +875,7 @@ MagickExport MagickBooleanType RaiseImage(Image *image,
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_threads(image,image,image->rows-2*raise_info->height,1)
+    magick_threads(image,image,1,1)
 #endif
   for (y=(ssize_t) (image->rows-raise_info->height); y < (ssize_t) image->rows; y++)
   {
