@@ -1,3 +1,6 @@
+2013-01-06  6.8.1-10 Glenn Randers-Pehrson <glennrp@image...>
+  * Fixed LBR (left-bit-replication) macro; problem reported by clang compiler
+
 2013-01-06  6.8.1-9 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.1-9, SVN revision 10518.
 
