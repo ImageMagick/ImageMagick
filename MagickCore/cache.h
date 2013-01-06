@@ -27,9 +27,10 @@ extern "C" {
 typedef enum
 {
   UndefinedCache,
-  MemoryCache,
-  MapCache,
   DiskCache,
+  DistributedCache,
+  MapCache,
+  MemoryCache,
   PingCache
 } CacheType;
 

@@ -1262,6 +1262,11 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
       RelinquishMagickResource(DiskResource,cache_info->length);
       break;
     }
+    case DistributedCache:
+    {
+      abort();
+      break;
+    }
     default:
       break;
   }
@@ -3861,6 +3866,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   status=AcquireMagickResource(DiskResource,cache_info->length);
   if (status == MagickFalse)
     {
+      if (0)
+        abort();  /* create distributed cache */
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
       return(MagickFalse);
@@ -4455,6 +4462,11 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
         }
       break;
     }
+    case DistributedCache:
+    {
+      abort();
+      break;
+    }
     default:
       break;
   }
@@ -4587,6 +4599,11 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
             cache_info->cache_filename);
           return(MagickFalse);
         }
+      break;
+    }
+    case DistributedCache:
+    {
+      abort();
       break;
     }
     default:
@@ -5348,6 +5365,11 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
         }
       break;
     }
+    case DistributedCache:
+    {
+      abort();
+      break;
+    }
     default:
       break;
   }
@@ -5481,6 +5503,11 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
             cache_info->cache_filename);
           return(MagickFalse);
         }
+      break;
+    }
+    case DistributedCache:
+    {
+      abort();
       break;
     }
     default:
