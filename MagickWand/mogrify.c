@@ -150,7 +150,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       concurrent=MagickTrue;
     if (LocaleCompare("-debug",option) == 0)
       (void) SetLogEventMask(argv[++i]);
-    if (LocaleCompare("-distributed-cache",option) == 0)
+    if (LocaleCompare("-distribute-cache",option) == 0)
       DistributedPixelCache(StringToUnsignedLong(argv[++i]));
     if (LocaleCompare("-duration",option) == 0)
       duration=StringToDouble(argv[++i],(char **) NULL);
@@ -3214,7 +3214,7 @@ static MagickBooleanType MogrifyUsage(void)
     *miscellaneous[]=
     {
       "-debug events        display copious debugging information",
-      "-distributed-cache port",
+      "-distribute-cache port",
       "                     distributed pixel cache spanning one or more servers",
       "-help                print program options",
       "-list type           print a list of supported option arguments",
