@@ -1420,6 +1420,8 @@ MagickExport Image *XAnimateImages(Display *display,
       int
         status;
 
+      if (*working_directory == '\0')
+        (void) CopyMagickString(working_directory,".",MaxTextExtent);
       status=chdir(working_directory);
       if (status == -1)
         (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
@@ -2847,6 +2849,8 @@ MagickExport Image *XAnimateImages(Display *display,
   */
   directory=getcwd(working_directory,MaxTextExtent);
   (void) directory;
+  if (*resource_info->home_directory == '\0')
+    (void) CopyMagickString(resource_info->home_directory,".",MaxTextExtent);
   status=chdir(resource_info->home_directory);
   if (status == -1)
     (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,
@@ -2918,6 +2922,8 @@ static MagickBooleanType XSaveImage(Display *display,
 
       GetPathComponent(image->filename,HeadPath,path);
       GetPathComponent(image->filename,TailPath,filename);
+      if (*path == '\0')
+        (void) CopyMagickString(path,".",MaxTextExtent);
       status=chdir(path);
       if (status == -1)
         (void) ThrowMagickException(exception,GetMagickModule(),FileOpenError,

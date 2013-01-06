@@ -27,17 +27,17 @@ extern "C" {
 */
 #define MagickPackageName "ImageMagick"
 #define MagickCopyright  "Copyright (C) 1999-2013 ImageMagick Studio LLC"
-#define MagickSVNRevision  "10470:10501M"
+#define MagickSVNRevision  "10505:10525M"
 #define MagickLibVersion  0x700
 #define MagickLibVersionText  "7.0.0"
 #define MagickLibVersionNumber  8,0,0
 #define MagickLibAddendum  "-0"
 #define MagickLibInterface  8
 #define MagickLibMinInterface  8
-#define MagickReleaseDate  "2013-01-04"
+#define MagickReleaseDate  "2013-01-06"
 #define MagickChangeDate   "20121005"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
-#define MagickFeatures "HDRI OpenMP"
+#define MagickFeatures "DistributedPixelCache HDRI OpenMP"
 #define MagickDelegates "bzlib freetype jp2 jpeg lcms lzma ps tiff x xml zlib"
 #define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-7.0.0/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
