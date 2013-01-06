@@ -1106,6 +1106,35 @@ MagickPrivate void ClonePixelCacheMethods(Cache clone,const Cache cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   D i s t r i b u t e d P i x e l C a c h e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DistributedPixelCache() waits on the specified port for commands to
+%  create, read, update, or destroy a pixel cache.
+%
+%  The format of the DistributedPixelCache() method is:
+%
+%      void DistributedPixelCache(const size_t port)
+%
+%  A description of each parameter follows:
+%
+%    o port: connect the distributed pixel cache at this port.
+%
+*/
+MagickExport void DistributedPixelCache(const size_t port)
+{
+  (void) port;
+  for ( ; ; ) sleep(1);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D e s t r o y I m a g e P i x e l C a c h e                               %
 %                                                                             %
 %                                                                             %
