@@ -167,20 +167,24 @@
         }
 
 #define LBR01PixelRed(pixel) \
-        (ScaleQuantumToChar(GetPixelRed(image,(pixel))) < 0x10 ? \
-        0 : QuantumRange);
+        (SetPixelRed(image, \
+        ScaleQuantumToChar(GetPixelRed(image,(pixel))) < 0x10 ? \
+        0 : QuantumRange));
 
 #define LBR01PixelGreen(pixel) \
-        (ScaleQuantumToChar(GetPixelGreen(image,(pixel))) < 0x10 ? \
-        0 : QuantumRange);
+        (SetPixelGreen(image, \
+        ScaleQuantumToChar(GetPixelGreen(image,(pixel))) < 0x10 ? \
+        0 : QuantumRange));
 
 #define LBR01PixelBlue(pixel) \
-        (ScaleQuantumToChar(GetPixelBlue(image,(pixel))) < 0x10 ? \
-        0 : QuantumRange);
+        (SetPixelBlue(image, \
+        ScaleQuantumToChar(GetPixelBlue(image,(pixel))) < 0x10 ? \
+        0 : QuantumRange));
 
 #define LBR01PixelAlpha(pixel) \
-        (ScaleQuantumToChar(GetPixelAlpha(image,(pixel))) < 0x10 ? \
-        0 : QuantumRange);
+        (SetPixelAlpha(image, \
+        ScaleQuantumToChar(GetPixelAlpha(image,(pixel))) < 0x10 ? \
+        0 : QuantumRange));
 
 #define LBR01PixelRGB(pixel) \
         { \
