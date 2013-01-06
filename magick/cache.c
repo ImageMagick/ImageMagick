@@ -1403,6 +1403,11 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
       RelinquishMagickResource(DiskResource,cache_info->length);
       break;
     }
+    case DistributedCache:
+    {
+      abort();
+      break;
+    }
     default:
       break;
   }
@@ -1535,7 +1540,7 @@ MagickExport NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
 %    o port: connect the distributed pixel cache at this port.
 %
 */
-MagickPrivate void DistributedPixelCache(const size_t port)
+MagickExport void DistributedPixelCache(const size_t port)
 {
   (void) port;
   for ( ; ; ) sleep(1);
@@ -4101,6 +4106,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   status=AcquireMagickResource(DiskResource,cache_info->length);
   if (status == MagickFalse)
     {
+      if (0)
+        abort();  /* create distributed pixel cache */
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
       return(MagickFalse);
@@ -4687,6 +4694,11 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
         }
       break;
     }
+    case DistributedCache:
+    {
+      abort();
+      break;
+    }
     default:
       break;
   }
@@ -4818,6 +4830,11 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
             cache_info->cache_filename);
           return(MagickFalse);
         }
+      break;
+    }
+    case DistributedCache:
+    {
+      abort();
       break;
     }
     default:
@@ -5569,6 +5586,11 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
         }
       break;
     }
+    case DistributedCache:
+    {
+      abort();
+      break;
+    }
     default:
       break;
   }
@@ -5700,6 +5722,11 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
             cache_info->cache_filename);
           return(MagickFalse);
         }
+      break;
+    }
+    case DistributedCache:
+    {
+      abort();
       break;
     }
     default:
