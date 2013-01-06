@@ -46,10 +46,9 @@
 */
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
-#include "MagickWand/mogrify-private.h"
-#undef DegreesToRadians
-#undef RadiansToDegrees
+#include "MagickCore/cache-private.h"
 #include "MagickCore/image-private.h"
+#include "MagickWand/mogrify-private.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
@@ -152,6 +151,8 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       concurrent=MagickTrue;
     if (LocaleCompare("-debug",option) == 0)
       (void) SetLogEventMask(argv[++i]);
+    if (LocaleCompare("-distributed-cache",option) == 0)
+      DistributedPixelCache(StringToUnsignedLong(argv[++i]));
     if (LocaleCompare("-duration",option) == 0)
       duration=StringToDouble(argv[++i],(char **) NULL);
     if (LocaleCompare("-regard-warnings",option) == 0)
@@ -3214,6 +3215,8 @@ static MagickBooleanType MogrifyUsage(void)
     *miscellaneous[]=
     {
       "-debug events        display copious debugging information",
+      "-distributed-cache port",
+      "                     distributed pixel cache spanning one or more servers",
       "-help                print program options",
       "-list type           print a list of supported option arguments",
       "-log format          format of debugging information",
