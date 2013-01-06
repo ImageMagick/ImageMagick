@@ -29,13 +29,13 @@ extern "C" {
 /*
   Single threaded unless workload justifies the threading overhead.
 */
-#define WorkloadThreshold()  (16*GetMagickResourceLimit(ThreadResource))
 #define magick_threads(source,destination,chunk,expression) \
-  num_threads((expression) == 0 ? 1 : ((chunk) > WorkloadThreshold()) && \
-    (GetImagePixelCacheType(source) != DiskCache) && \
+  num_threads((expression) == 0 ? 1 : \
+    ((chunk) > (16*GetMagickResourceLimit(ThreadResource))) && \
+     (GetImagePixelCacheType(source) != DiskCache) && \
     (GetImagePixelCacheType(destination) != DiskCache) ? \
-    GetMagickResourceLimit(ThreadResource) : \
-    GetMagickResourceLimit(ThreadResource) < 2 ? 1 : 2)
+      GetMagickResourceLimit(ThreadResource) : \
+      GetMagickResourceLimit(ThreadResource) < 2 ? 1 : 2)
 
 #if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ > 10))
 #define MagickCachePrefetch(address,mode,locality) \
