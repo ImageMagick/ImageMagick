@@ -30,7 +30,8 @@ typedef enum
   MemoryCache,
   MapCache,
   DiskCache,
-  PingCache
+  PingCache,
+  DistributedCache,
 } CacheType;
 
 extern MagickExport CacheType
