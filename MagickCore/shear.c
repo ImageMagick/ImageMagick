@@ -977,11 +977,6 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
   RectangleInfo
     page;
 
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  size_t
-    chunk;
-#endif
-
   ssize_t
     y;
 
@@ -1032,9 +1027,8 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
       tile_width=image->columns;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      chunk=image->rows/tile_height/2;
-      #pragma omp parallel for magick_schedule(static,chunk) \
-        shared(progress,status)
+      #pragma omp parallel for schedule(static,4) \
+        magick_threads(image,image,image->rows/tile_height,1)
 #endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
@@ -1158,8 +1152,8 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
         Rotate 180 degrees.
       */
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      #pragma omp parallel for magick_schedule(static,image->rows/2) \
-        shared(progress,status)
+      #pragma omp parallel for schedule(static,4) \
+        magick_threads(image,image,1,1)
 #endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
@@ -1256,9 +1250,8 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       GetPixelCacheTileSize(image,&tile_width,&tile_height);
       tile_width=image->columns;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
-      chunk=image->rows/tile_height/2;
-      #pragma omp parallel for magick_schedule(static,chunk) \
-        shared(progress,status)
+      #pragma omp parallel for schedule(static,4) \
+        magick_threads(image,image,image->rows/tile_height,1)
 #endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {

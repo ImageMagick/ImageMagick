@@ -30,16 +30,12 @@ extern "C" {
   Single threaded unless workload justifies the threading overhead.
 */
 #define WorkloadThreshold()  (16*GetMagickResourceLimit(ThreadResource))
-#define magick_threads(source,destination,rows,expression) \
-  if (((rows) > WorkloadThreshold()) && (expression)) \
-    num_threads((source) != (destination) ? \
-      GetMagickResourceLimit(ThreadResource) : \
-      GetImagePixelCacheType(source) != DiskCache ? \
-      GetMagickResourceLimit(ThreadResource) : \
-      GetMagickResourceLimit(ThreadResource) < 2 ? \
-      GetMagickResourceLimit(ThreadResource) : 2)
-#define magick_schedule(type,chunk) \
-  schedule(type,(chunk) < 1 ? 1 : (chunk))
+#define magick_threads(source,destination,chunk,expression) \
+  num_threads((expression) == 0 ? 1 : ((chunk) > WorkloadThreshold()) && \
+    (GetImagePixelCacheType(source) != DiskCache) && \
+    (GetImagePixelCacheType(destination) != DiskCache) ? \
+    GetMagickResourceLimit(ThreadResource) : \
+    GetMagickResourceLimit(ThreadResource) < 2 ? 1 : 2)
 
 #if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ > 10))
 #define MagickCachePrefetch(address,mode,locality) \
