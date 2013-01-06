@@ -36,7 +36,8 @@ extern "C" {
       GetMagickResourceLimit(ThreadResource) : \
       GetImagePixelCacheType(source) != DiskCache ? \
       GetMagickResourceLimit(ThreadResource) : \
-      GetMagickResourceLimit(ThreadResource) < 2 ? 1 : 2)
+      GetMagickResourceLimit(ThreadResource) < 2 ? \
+      GetMagickResourceLimit(ThreadResource) : 2)
 #define magick_schedule(type,chunk) \
   schedule(type,(chunk) < 1 ? 1 : (chunk))
 
