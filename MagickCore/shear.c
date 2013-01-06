@@ -573,7 +573,7 @@ static void RadonProjection(const Image *image,RadonInfo *source_cells,
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) \
-    magick_threads(image,image,p->width,1)
+    magick_threads(image,image,1,1)
 #endif
   for (x=0; x < (ssize_t) p->width; x++)
   {
@@ -704,7 +704,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   (void) ResetRadonCells(source_cells);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_threads(image,image,image->rows,1)
+    magick_threads(image,image,1,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
@@ -1155,26 +1155,6 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       #pragma omp parallel for schedule(static,4) \
         magick_threads(image,image,1,1)
 #endif
-      for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
-      {
-        register ssize_t
-          tile_x;
-
-        if (status == MagickFalse)
-          continue;
-        tile_x=0;
-        for ( ; tile_x < (ssize_t) image->columns; tile_x+=(ssize_t) tile_width)
-        {
-          MagickBooleanType
-            sync;
-
-          register const Quantum
-            *restrict p;
-
-          register Quantum
-            *restrict q;
-
-#endif
       for (y=0; y < (ssize_t) image->rows; y++)
       {
         MagickBooleanType
@@ -1271,7 +1251,7 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
       tile_width=image->columns;
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
       #pragma omp parallel for schedule(static,4) \
-        magick_threads(image,image,image->rows/tile_height,1)
+        magick_threads(image,image,1,1)
 #endif
       for (tile_y=0; tile_y < (ssize_t) image->rows; tile_y+=(ssize_t) tile_height)
       {
