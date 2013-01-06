@@ -1517,6 +1517,35 @@ MagickExport NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   D i s t r i b u t e d P i x e l C a c h e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DistributedPixelCache() waits on the specified port for commands to
+%  create, read, update, or destroy a pixel cache.
+%
+%  The format of the DistributedPixelCache() method is:
+%
+%      void DistributedPixelCache(const size_t port)
+%
+%  A description of each parameter follows:
+%
+%    o port: connect the distributed pixel cache at this port.
+%
+*/
+MagickPrivate void DistributedPixelCache(const size_t port)
+{
+  (void) port;
+  for ( ; ; ) sleep(1);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t A u t h e n t i c I n d e x e s F r o m C a c h e                   %
 %                                                                             %
 %                                                                             %
