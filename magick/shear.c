@@ -573,7 +573,7 @@ static void RadonProjection(const Image *image,RadonInfo *source_cells,
   }
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) \
-    magick_threads(image,image,p->width,1)
+    magick_threads(image,image,1,1)
 #endif
   for (x=0; x < (ssize_t) p->width; x++)
   {
@@ -654,7 +654,7 @@ static MagickBooleanType RadonTransform(const Image *image,
   image_view=AcquireVirtualCacheView(image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(status) \
-    magick_threads(image,image,image->rows,1)
+    magick_threads(image,image,1,1)
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
