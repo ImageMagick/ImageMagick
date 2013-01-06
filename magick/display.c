@@ -7152,6 +7152,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Select image.
       */
+      if (*resource_info->home_directory == '\0')
+        (void) CopyMagickString(resource_info->home_directory,".",
+          MaxTextExtent);
       status=chdir(resource_info->home_directory);
       if (status == -1)
         (void) ThrowMagickException(&(*image)->exception,GetMagickModule(),
@@ -14400,6 +14403,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       int
         status;
 
+      if (*working_directory == '\0')
+        (void) CopyMagickString(working_directory,".",MaxTextExtent);
       status=chdir(working_directory);
       if (status == -1)
         (void) ThrowMagickException(&(*image)->exception,GetMagickModule(),
@@ -16012,6 +16017,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     int
       status;
 
+    if (*resource_info->home_directory == '\0')
+      (void) CopyMagickString(resource_info->home_directory,".",MaxTextExtent);
     status=chdir(resource_info->home_directory);
     if (status == -1)
       (void) ThrowMagickException(&display_image->exception,GetMagickModule(),
