@@ -63,6 +63,7 @@
 #include "magick/policy.h"
 #include "magick/quantum.h"
 #include "magick/random_.h"
+#include "magick/registry.h"
 #include "magick/resource_.h"
 #include "magick/semaphore.h"
 #include "magick/splay-tree.h"
@@ -71,6 +72,11 @@
 #include "magick/thread-private.h"
 #include "magick/utility.h"
 #include "magick/utility-private.h"
+#if defined(MAGICKCORE_HAVE_SOCKET)
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#endif
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
 #include "zlib.h"
 #endif
@@ -4106,7 +4112,11 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   status=AcquireMagickResource(DiskResource,cache_info->length);
   if (status == MagickFalse)
     {
-      if (0)
+      const char
+        *hosts;
+
+      hosts=GetImageRegistry(StringRegistryType,"cache-hosts",exception);
+      if (hosts != (const char *) NULL)
         abort();  /* create distributed pixel cache */
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
