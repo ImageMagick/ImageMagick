@@ -1548,8 +1548,14 @@ MagickExport NexusInfo **DestroyPixelCacheNexus(NexusInfo **nexus_info,
 */
 MagickExport void DistributedPixelCache(const size_t port)
 {
+#if defined(MAGICKCORE_HAVE_SOCKET)
   (void) port;
   for ( ; ; ) sleep(1);
+#else
+  (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
+    "DelegateLibrarySupportNotBuiltIn","'%s' (socket)",image_info->filename);
+  abort();
+#endif
 }
 
 /*
