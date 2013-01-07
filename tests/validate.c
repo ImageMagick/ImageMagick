@@ -501,7 +501,7 @@ static size_t ValidateImageFormatsInMemory(ImageInfo *image_info,
 
 #ifdef MagickCountTempFiles
   (void)GetPathTemplate(path);
-  /* Remove file template except for the leading "magick-" */
+  /* Remove file template except for the leading "/path/to/magick-" */
   path[strlen(path)-17]='\0';
   (void) FormatLocaleFile(stdout," tmp path is '%s*'\n",path);
 #endif
