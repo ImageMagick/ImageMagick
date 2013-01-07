@@ -1133,8 +1133,78 @@ MagickPrivate void ClonePixelCacheMethods(Cache clone,const Cache cache)
 MagickExport void DistributedPixelCache(const size_t port)
 {
 #if defined(MAGICKCORE_HAVE_SOCKET)
-  (void) port;
-  for ( ; ; ) sleep(1);
+  char
+    buffer[MaxTextExtent];
+
+  int
+    cache_socket,
+    cache_client,
+    status;
+
+  socklen_t
+    length,
+    one;
+
+  ssize_t
+    count;
+
+  struct sockaddr_in
+    address;
+
+  cache_socket=socket(AF_INET,SOCK_STREAM,0);
+  if (cache_socket == -1)
+    {
+      perror("Distributed pixel cache: server socket");
+      exit(1);
+    }
+  one=1;
+  status=setsockopt(cache_socket,SOL_SOCKET,SO_REUSEADDR,&one,(socklen_t)
+    sizeof(one));
+  if (status == -1)
+    {
+      perror("Distributed pixel cache: server setsockopt");
+      exit(1);
+    }
+  (void) ResetMagickMemory(&address,0,sizeof(address));
+  address.sin_family=AF_INET;
+  address.sin_port=htons(port);
+  address.sin_addr.s_addr=INADDR_ANY;
+  status=bind(cache_socket,(struct sockaddr *) &address,(socklen_t)
+    sizeof(address));
+  if (status == -1)
+    {
+      perror("Distributed pixel cache: server bind");
+      exit(1);
+    }
+  status=listen(cache_socket,5);
+  if (status == -1)
+    {
+      perror("Distributed pixel cache: server listen");
+      exit(1);
+    }
+  (void) fprintf(stdout,
+    "Distributed pixel cache server:  waiting for client on port %d\n",(int)
+    port);
+  (void) fflush(stdout);
+  for ( ; ; )
+  {
+    length=(socklen_t) sizeof(address);
+    cache_client=accept(cache_socket,(struct sockaddr *) &address,&length);
+    (void) fprintf(stdout,"Connection from (%s, %d)\n",
+      inet_ntoa(address.sin_addr),(int) ntohs(address.sin_port));
+    count=recv(cache_client,buffer,1,0);
+    buffer[count]='\0';
+    switch (*buffer)
+    {
+      case 'q':
+      case 'Q':
+      {
+        (void) close(cache_client);
+        (void) close(cache_socket);
+        return;
+      }
+    }
+  }
 #else
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
     "DelegateLibrarySupportNotBuiltIn","'%s' (socket)",image_info->filename);
