@@ -501,6 +501,7 @@
         }
 
 
+#if MAGICKCORE_QUANTUM_DEPTH > 16
 /* LBR16: Replicate top 16 bits */
 
 #define LBR16PacketRed(pixelpacket) \
@@ -578,6 +579,7 @@
         LBR16PixelRGB((pixel)); \
         LBR16PixelAlpha((pixel)); \
         }
+#endif /* MAGICKCORE_QUANTUM_DEPTH > 16 */
 
 /*
   Establish thread safety.
