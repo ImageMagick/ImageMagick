@@ -1640,13 +1640,6 @@ MagickExport void DistributedPixelCache(const size_t port)
         */
         break;
       }
-      case 's':
-      {
-        /*
-          Create a session id.
-        */
-        break;
-      }
     }
   }
 #else
