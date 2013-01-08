@@ -1196,12 +1196,33 @@ MagickExport void DistributedPixelCache(const size_t port)
     buffer[count]='\0';
     switch (*buffer)
     {
-      case 'q':
-      case 'Q':
+      case 'c':
       {
-        (void) close(cache_client);
-        (void) close(cache_socket);
-        return;
+        /*
+          Create cache.
+        */
+        break;
+      }
+      case 'r':
+      {
+        /*
+          Rad cache.
+        */
+        break;
+      }
+      case 'u':
+      {
+        /*
+          Update cache.
+        */
+        break;
+      }
+      case 'd':
+      {
+        /*
+          Delete cache.
+        */
+        break;
       }
     }
   }
