@@ -3438,7 +3438,7 @@ MagickExport MagickBooleanType SetImageProperty(Image *image,
       RelinquishMagickMemory,RelinquishMagickMemory);
 
   /* Delete property if NULL --  empty string values are valid! */
-  if ((value == (const char *) NULL))
+  if (value == (const char *) NULL)
     return(DeleteImageProperty(image,property));
   status=MagickTrue;
 
