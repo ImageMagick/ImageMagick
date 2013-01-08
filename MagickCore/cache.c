@@ -1229,7 +1229,6 @@ MagickExport void DistributedPixelCache(const size_t port)
 #else
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
     "DelegateLibrarySupportNotBuiltIn","'%s' (socket)",image_info->filename);
-  abort();
 #endif
 }
 
