@@ -1196,13 +1196,6 @@ MagickExport void DistributedPixelCache(const size_t port)
     buffer[count]='\0';
     switch (*buffer)
     {
-      case 'a':
-      {
-        /*
-          Authenticate cache.
-        */
-        break;
-      }
       case 'c':
       {
         /*
@@ -1228,6 +1221,13 @@ MagickExport void DistributedPixelCache(const size_t port)
       {
         /*
           Delete cache.
+        */
+        break;
+      }
+      case 's':
+      {
+        /*
+          Create a session ID.
         */
         break;
       }
