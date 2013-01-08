@@ -28,6 +28,8 @@ extern "C" {
 #include "magick/thread-private.h"
 #include "magick/semaphore.h"
 
+#define MaxNumberDistributedCacheClients  32
+
 typedef void
   *Cache;
 
@@ -99,6 +101,17 @@ typedef struct _CacheMethods
     destroy_pixel_handler;
 } CacheMethods;
 
+typedef struct _DistributedCacheInfo
+{
+#if defined(MAGICKCORE_HAVE_SOCKET)
+  int
+    server;
+#endif
+
+  size_t
+    session;
+} DistributedCacheInfo;
+
 typedef struct _NexusInfo
    NexusInfo;
 
@@ -165,6 +178,12 @@ typedef struct _CacheInfo
 
   RandomInfo
     *random_info;
+
+  size_t
+    number_connections;
+
+  DistributedCacheInfo
+    connection[MaxNumberDistributedCacheClients];
 
   MagickBooleanType
     synchronize,
