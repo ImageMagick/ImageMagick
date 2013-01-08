@@ -45,7 +45,6 @@
   exceeds policy maximum so memory limit is 1GB).
 -->
 <policymap>
-  <!-- <policy domain="system" name="precision" value="6"/> -->
   <!-- <policy domain="resource" name="temporary-path" value="/tmp"/> -->
   <!-- <policy domain="resource" name="memory" value="2GiB"/> -->
   <!-- <policy domain="resource" name="map" value="4GiB"/> -->
@@ -55,4 +54,6 @@
   <!-- <policy domain="resource" name="thread" value="4"/> -->
   <!-- <policy domain="resource" name="throttle" value="0"/> -->
   <!-- <policy domain="resource" name="time" value="3600"/> -->
+  <!-- <policy domain="system" name="precision" value="6"/> -->
+  <!-- <policy domain="cache" name="shared-secret" value="magick"/> -->
 </policymap>
