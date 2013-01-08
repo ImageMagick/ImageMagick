@@ -416,6 +416,7 @@
         }
 
 
+#if MAGICKCORE_QUANTUM_DEPTH > 8
 /* LBR08: Replicate top 8 bits */
 
 #define LBR08PacketRed(pixelpacket) \
@@ -493,6 +494,7 @@
         LBR08PixelRGB((pixel)); \
         LBR08PixelOpacity((pixel)); \
         }
+#endif /* MAGICKCORE_QUANTUM_DEPTH > 8 */
 
 
 #if MAGICKCORE_QUANTUM_DEPTH > 16
