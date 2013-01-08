@@ -868,15 +868,14 @@ AC_STRUCT_TM
 AC_STRUCT_TIMEZONE
 AC_SYS_INTERPRETER
 
-# If the C compiler supports the keyword inline, do nothing. Otherwise
-# define inline to __inline__ or __inline if it accepts one of those,
-# otherwise define inline to be empty.
+#
+# Checks for language qualifiers and semantics.
+#
+AC_C_CHAR_UNSIGNED
+AC_C_CONST
 AC_C_INLINE
-
-# If the C compiler supports the keyword restrict, do nothing. Otherwise
-# define restrict to __restrict__ or __restrict if it accepts one of those,
-# otherwise define restrict to be empty.
 AC_C_RESTRICT
+AC_C_VOLATILE
 
 # If words are stored with the most significant byte first (like
 # Motorola and SPARC CPUs), define `WORDS_BIGENDIAN'.
@@ -906,10 +905,6 @@ AC_TYPE_UINT64_T
 AC_TYPE_UINTMAX_T
 AC_TYPE_UINTPTR_T
 AC_TYPE_UNSIGNED_LONG_LONG_INT
-
-# If the C type char is unsigned, define __CHAR_UNSIGNED__, unless the
-# C compiler predefines it.
-AC_C_CHAR_UNSIGNED
 
 # Float_t and double_t are intended to be the the most efficient type.
 AC_CHECK_TYPES([float_t], [], [], [[#include <math.h>]])
