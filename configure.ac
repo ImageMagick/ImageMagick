@@ -866,15 +866,14 @@ AC_STRUCT_TM
 AC_STRUCT_TIMEZONE
 AC_SYS_INTERPRETER
 
-# If the C compiler supports the keyword inline, do nothing. Otherwise
-# define inline to __inline__ or __inline if it accepts one of those,
-# otherwise define inline to be empty.
+#
+# Checks for language qualifiers and semantics.
+#
+AC_C_CHAR_UNSIGNED
+AC_C_CONST
 AC_C_INLINE
-
-# If the C compiler supports the keyword restrict, do nothing. Otherwise
-# define restrict to __restrict__ or __restrict if it accepts one of those,
-# otherwise define restrict to be empty.
 AC_C_RESTRICT
+AC_C_VOLATILE
 
 # If words are stored with the most significant byte first (like
 # Motorola and SPARC CPUs), define `WORDS_BIGENDIAN'.
