@@ -172,7 +172,7 @@ typedef struct _CacheInfo
     number_connections;
 
   DistributeCacheInfo
-    connection[MaxNumberDistributedCacheClients];
+    *distribute_cache_info;
 
   MagickBooleanType
     synchronize,
