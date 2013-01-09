@@ -176,11 +176,8 @@ typedef struct _CacheInfo
   RandomInfo
     *random_info;
 
-  ssize_t
-    number_connections;
-
   DistributeCacheInfo
-    connection[MaxNumberDistributedCacheClients];
+    *distribute_cache_info;
 
   MagickBooleanType
     synchronize,

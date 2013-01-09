@@ -52,12 +52,84 @@
   Include declarations.
 */
 #include "MagickCore/studio.h"
+#include "MagickCore/distribute-cache.h"
+#include "MagickCore/distribute-cache-private.h"
+#include "MagickCore/exception.h"
+#include "MagickCore/exception-private.h"
 #include "MagickCore/memory_.h"
 #if defined(MAGICKCORE_HAVE_SOCKET)
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A c q u i r e D i s t r i b u t e C a c h e I n f o                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AcquireDistributeCacheInfo() allocates the DistributeCacheInfo structure.
+%
+%  The format of the AcquireDistributeCacheInfo method is:
+%
+%      DistributeCacheInfo *AcquireDistributeCacheInfo(void)
+%
+*/
+MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(void)
+{
+  DistributeCacheInfo
+    *distribute_cache_info;
+
+  distribute_cache_info=(DistributeCacheInfo *) AcquireMagickMemory(
+    sizeof(*distribute_cache_info));
+  if (distribute_cache_info == (DistributeCacheInfo *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(distribute_cache_info,0,
+    sizeof(*distribute_cache_info));
+  distribute_cache_info->signature=MagickSignature;
+  return(distribute_cache_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e s t r o y D i s t r i b u t e C a c h e I n f o                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyDistributeCacheInfo() deallocates memory associated with an
+%  DistributeCacheInfo structure.
+%
+%  The format of the DestroyDistributeCacheInfo method is:
+%
+%      DistributeCacheInfo *DestroyDistributeCacheInfo(
+%        DistributeCacheInfo *distribute_cache_info)
+%
+%  A description of each parameter follows:
+%
+%    o distribute_cache_info: the distributed cache info.
+%
+*/
+MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
+  DistributeCacheInfo *distribute_cache_info)
+{
+  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
+  assert(distribute_cache_info->signature == MagickSignature);
+  distribute_cache_info->signature=(~MagickSignature);
+  distribute_cache_info=(DistributeCacheInfo *)
+    RelinquishMagickMemory(distribute_cache_info);
+  return(distribute_cache_info);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
