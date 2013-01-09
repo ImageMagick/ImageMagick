@@ -62,7 +62,7 @@
 %  and outputs it as an image file. You can capture a single window, the
 %  entire screen, or any rectangular portion of the screen.  You can use the
 %  display utility for redisplay, printing, editing, formatting, archiving,
-%  image processing, etc. of the captured image.</dd>
+%  image processing, etc. of the captured image.
 %
 %  The target window can be specified by id, name, or may be selected by
 %  clicking the mouse in the desired window. If you press a button and then
