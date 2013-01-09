@@ -26,13 +26,21 @@ extern "C" {
 
 typedef struct _DistributeCacheInfo
 {
+  size_t
+    number_connections,
+    session[MaxNumberDistributedCacheClients];
+
 #if defined(MAGICKCORE_HAVE_SOCKET)
   int
-    server;
+    server[MaxNumberDistributedCacheClients];
 #endif
 
   size_t
-    session;
+    signature;
 } DistributeCacheInfo;
+
+extern MagickPrivate DistributeCacheInfo
+  *AcquireDistributeCacheInfo(void),
+  *DestroyDistributeCacheInfo(DistributeCacheInfo *);
 
 #endif
