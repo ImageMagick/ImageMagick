@@ -7584,14 +7584,6 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),
     "  Enter WriteOnePNGImage()");
 
-#if 0
-  if (image_info->type == PaletteMatteType)
-    {
-      (void) SetImageType(image,TrueColorMatteType);
-      (void) SyncImage(image);
-    }
-#endif
-
   /* Initialize some stuff */
   ping_bit_depth=0,
   ping_color_type=0,
