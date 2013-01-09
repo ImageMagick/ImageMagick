@@ -46,8 +46,8 @@
 */
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
-#include "MagickCore/image-private.h"
 #include "MagickWand/mogrify-private.h"
+#include "MagickCore/image-private.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/thread-private.h"
@@ -152,7 +152,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       (void) SetLogEventMask(argv[++i]);
     if (LocaleCompare("-distribute-cache",option) == 0)
       {
-        DistributedPixelCache(StringToUnsignedLong(argv[++i]));
+        PixelCacheServer(StringToUnsignedLong(argv[++i]));
         exit(0);
       }
     if (LocaleCompare("-duration",option) == 0)

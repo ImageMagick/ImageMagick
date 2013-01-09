@@ -24,12 +24,12 @@ extern "C" {
 
 #include <time.h>
 #include "MagickCore/cache.h"
+#include "MagickCore/distribute-cache.h"
+#include "MagickCore/distribute-cache-private.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/random_.h"
 #include "MagickCore/thread-private.h"
 #include "MagickCore/semaphore.h"
-
-#define MaxNumberDistributedCacheClients  32
 
 typedef void
   *Cache;
@@ -101,17 +101,6 @@ typedef struct _CacheMethods
   DestroyPixelHandler
     destroy_pixel_handler;
 } CacheMethods;
-
-typedef struct _DistributedCacheInfo
-{
-#if defined(MAGICKCORE_HAVE_SOCKET)
-  int
-    server;
-#endif
-
-  size_t
-    session;
-} DistributedCacheInfo;
 
 typedef struct _NexusInfo
    NexusInfo;
@@ -190,7 +179,7 @@ typedef struct _CacheInfo
   ssize_t
     number_connections;
 
-  DistributedCacheInfo
+  DistributeCacheInfo
     connection[MaxNumberDistributedCacheClients];
 
   MagickBooleanType
