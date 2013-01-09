@@ -1524,6 +1524,9 @@
 /* Define to appropriate substitue if compiler does not have __func__ */
 /* #undef __func__ */
 
+/* Define to empty if `const' does not conform to ANSI C. */
+/* #undef const */
+
 /* Define to `int' if <sys/types.h> doesn't define. */
 /* #undef gid_t */
 

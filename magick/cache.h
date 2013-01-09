@@ -81,7 +81,6 @@ extern MagickExport VirtualPixelMethod
 
 extern MagickExport void
   CacheComponentTerminus(void),
-  DistributedPixelCache(const size_t),
   *GetPixelCachePixels(Image *,MagickSizeType *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
