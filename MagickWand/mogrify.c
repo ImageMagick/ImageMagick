@@ -47,6 +47,8 @@
 #include "MagickWand/studio.h"
 #include "MagickWand/MagickWand.h"
 #include "MagickWand/mogrify-private.h"
+#undef DegreesToRadians
+#undef RadiansToDegrees
 #include "MagickCore/image-private.h"
 #include "MagickCore/monitor-private.h"
 #include "MagickCore/string-private.h"
@@ -54,7 +56,7 @@
 #include "MagickCore/utility-private.h"
 
 /*
- Constant declaration.
+  Constant declaration.
 */
 static const char
   MogrifyBackgroundColor[] = "#ffffff",  /* white */
