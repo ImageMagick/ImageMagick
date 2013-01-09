@@ -3650,7 +3650,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=10535:10562
+MAGICK_SVN_REVISION=10572:10583M
 
 
 
@@ -21884,9 +21884,123 @@ $as_echo "$ac_cv_sys_interpreter" >&6; }
 interpval=$ac_cv_sys_interpreter
 
 
-# If the C compiler supports the keyword inline, do nothing. Otherwise
-# define inline to __inline__ or __inline if it accepts one of those,
-# otherwise define inline to be empty.
+#
+# Checks for language qualifiers and semantics.
+#
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether char is unsigned" >&5
+$as_echo_n "checking whether char is unsigned... " >&6; }
+if ${ac_cv_c_char_unsigned+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+static int test_array [1 - 2 * !(((char) -1) < 0)];
+test_array [0] = 0;
+return test_array [0];
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_c_char_unsigned=no
+else
+  ac_cv_c_char_unsigned=yes
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_c_char_unsigned" >&5
+$as_echo "$ac_cv_c_char_unsigned" >&6; }
+if test $ac_cv_c_char_unsigned = yes && test "$GCC" != yes; then
+  $as_echo "#define __CHAR_UNSIGNED__ 1" >>confdefs.h
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for an ANSI C-conforming const" >&5
+$as_echo_n "checking for an ANSI C-conforming const... " >&6; }
+if ${ac_cv_c_const+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+#ifndef __cplusplus
+  /* Ultrix mips cc rejects this sort of thing.  */
+  typedef int charset[2];
+  const charset cs = { 0, 0 };
+  /* SunOS 4.1.1 cc rejects this.  */
+  char const *const *pcpcc;
+  char **ppc;
+  /* NEC SVR4.0.2 mips cc rejects this.  */
+  struct point {int x, y;};
+  static struct point const zero = {0,0};
+  /* AIX XL C 1.02.0.0 rejects this.
+     It does not let you subtract one const X* pointer from another in
+     an arm of an if-expression whose if-part is not a constant
+     expression */
+  const char *g = "string";
+  pcpcc = &g + (g ? g-g : 0);
+  /* HPUX 7.0 cc rejects these. */
+  ++pcpcc;
+  ppc = (char**) pcpcc;
+  pcpcc = (char const *const *) ppc;
+  { /* SCO 3.2v4 cc rejects this sort of thing.  */
+    char tx;
+    char *t = &tx;
+    char const *s = 0 ? (char *) 0 : (char const *) 0;
+
+    *t++ = 0;
+    if (s) return 0;
+  }
+  { /* Someone thinks the Sun supposedly-ANSI compiler will reject this.  */
+    int x[] = {25, 17};
+    const int *foo = &x[0];
+    ++foo;
+  }
+  { /* Sun SC1.0 ANSI compiler rejects this -- but not the above. */
+    typedef const int *iptr;
+    iptr p = 0;
+    ++p;
+  }
+  { /* AIX XL C 1.02.0.0 rejects this sort of thing, saying
+       "k.c", line 2.27: 1506-025 (S) Operand must be a modifiable lvalue. */
+    struct s { int j; const int *ap[3]; } bx;
+    struct s *b = &bx; b->j = 5;
+  }
+  { /* ULTRIX-32 V3.1 (Rev 9) vcc rejects this */
+    const int foo = 10;
+    if (!foo) return 0;
+  }
+  return !cs[0] && !zero.x;
+#endif
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_c_const=yes
+else
+  ac_cv_c_const=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_c_const" >&5
+$as_echo "$ac_cv_c_const" >&6; }
+if test $ac_cv_c_const = no; then
+
+$as_echo "#define const /**/" >>confdefs.h
+
+fi
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for inline" >&5
 $as_echo_n "checking for inline... " >&6; }
 if ${ac_cv_c_inline+:} false; then :
@@ -21929,10 +22043,6 @@ _ACEOF
     ;;
 esac
 
-
-# If the C compiler supports the keyword restrict, do nothing. Otherwise
-# define restrict to __restrict__ or __restrict if it accepts one of those,
-# otherwise define restrict to be empty.
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for C/C++ restrict keyword" >&5
 $as_echo_n "checking for C/C++ restrict keyword... " >&6; }
 if ${ac_cv_c_restrict+:} false; then :
@@ -21978,6 +22088,40 @@ $as_echo "$ac_cv_c_restrict" >&6; }
 _ACEOF
  ;;
  esac
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for working volatile" >&5
+$as_echo_n "checking for working volatile... " >&6; }
+if ${ac_cv_c_volatile+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+volatile int x;
+int * volatile y = (int *) 0;
+return !x && !y;
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_c_volatile=yes
+else
+  ac_cv_c_volatile=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_c_volatile" >&5
+$as_echo "$ac_cv_c_volatile" >&6; }
+if test $ac_cv_c_volatile = no; then
+
+$as_echo "#define volatile /**/" >>confdefs.h
+
+fi
 
 
 # If words are stored with the most significant byte first (like
@@ -22864,42 +23008,6 @@ $as_echo "$ac_cv_type_unsigned_long_long_int" >&6; }
 $as_echo "#define HAVE_UNSIGNED_LONG_LONG_INT 1" >>confdefs.h
 
   fi
-
-
-# If the C type char is unsigned, define __CHAR_UNSIGNED__, unless the
-# C compiler predefines it.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether char is unsigned" >&5
-$as_echo_n "checking whether char is unsigned... " >&6; }
-if ${ac_cv_c_char_unsigned+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$ac_includes_default
-int
-main ()
-{
-static int test_array [1 - 2 * !(((char) -1) < 0)];
-test_array [0] = 0;
-return test_array [0];
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ac_cv_c_char_unsigned=no
-else
-  ac_cv_c_char_unsigned=yes
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_c_char_unsigned" >&5
-$as_echo "$ac_cv_c_char_unsigned" >&6; }
-if test $ac_cv_c_char_unsigned = yes && test "$GCC" != yes; then
-  $as_echo "#define __CHAR_UNSIGNED__ 1" >>confdefs.h
-
-fi
 
 
 # Float_t and double_t are intended to be the the most efficient type.

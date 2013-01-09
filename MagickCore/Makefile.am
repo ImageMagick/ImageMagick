@@ -123,6 +123,9 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/display-private.h \
 	MagickCore/distort.c \
 	MagickCore/distort.h \
+	MagickCore/distribute-cache.c \
+	MagickCore/distribute-cache.h \
+	MagickCore/distribute-cache-private.h \
 	MagickCore/draw.c \
 	MagickCore/draw.h \
 	MagickCore/draw-private.h \
@@ -332,6 +335,7 @@ MAGICKCORE_INCLUDE_HDRS = \
 	MagickCore/deprecate.h \
 	MagickCore/display.h \
 	MagickCore/distort.h \
+	MagickCore/distribute-cache.h \
 	MagickCore/draw.h \
 	MagickCore/effect.h \
 	MagickCore/enhance.h \
@@ -416,6 +420,7 @@ MAGICKCORE_NOINST_HDRS = \
  	MagickCore/delegate-private.h \
 	MagickCore/delegate-private.h \
 	MagickCore/display-private.h \
+	MagickCore/distribute-cache-private.h \
 	MagickCore/draw-private.h \
 	MagickCore/exception-private.h \
 	MagickCore/fx-private.h \
