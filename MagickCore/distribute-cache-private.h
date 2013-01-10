@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include "MagickCore/exception.h"
+
 #define MaxNumberDistributedCacheClients  32
 
 typedef struct _DistributeCacheInfo
@@ -40,7 +42,7 @@ typedef struct _DistributeCacheInfo
 } DistributeCacheInfo;
 
 extern MagickPrivate DistributeCacheInfo
-  *AcquireDistributeCacheInfo(void),
+  *AcquireDistributeCacheInfo(ExceptionInfo *),
   *DestroyDistributeCacheInfo(DistributeCacheInfo *);
 
 #endif

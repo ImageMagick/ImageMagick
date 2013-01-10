@@ -57,6 +57,7 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/registry.h"
 #if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -78,16 +79,24 @@
 %
 %  The format of the AcquireDistributeCacheInfo method is:
 %
-%      DistributeCacheInfo *AcquireDistributeCacheInfo(void)
+%      DistributeCacheInfo *AcquireDistributeCacheInfo(ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o exception: return any errors or warnings in this structure.
 %
 */
-MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(void)
+MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
+  ExceptionInfo *exception)
 {
+#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
+  const char
+    *hosts;
+
   DistributeCacheInfo
     *distribute_cache_info;
 
   distribute_cache_info=(DistributeCacheInfo *) NULL;
-#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
   distribute_cache_info=(DistributeCacheInfo *) AcquireMagickMemory(
     sizeof(*distribute_cache_info));
   if (distribute_cache_info == (DistributeCacheInfo *) NULL)
@@ -95,8 +104,12 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(void)
   (void) ResetMagickMemory(distribute_cache_info,0,
     sizeof(*distribute_cache_info));
   distribute_cache_info->signature=MagickSignature;
-#endif
+  hosts=GetImageRegistry(StringRegistryType,"cache:hosts",exception);
+  (void) hosts;
   return(distribute_cache_info);
+#else
+  return((DistributeCacheInfo *) NULL);
+#endif
 }
 
 /*
