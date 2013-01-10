@@ -24,17 +24,14 @@ extern "C" {
 
 #include "MagickCore/exception.h"
 
-#define MaxNumberDistributedCacheClients  32
-
 typedef struct _DistributeCacheInfo
 {
   size_t
-    number_connections,
-    session[MaxNumberDistributedCacheClients];
+    session;
 
 #if defined(MAGICKCORE_HAVE_SOCKET)
   int
-    server[MaxNumberDistributedCacheClients];
+    server;
 #endif
 
   size_t
