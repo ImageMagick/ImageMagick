@@ -381,12 +381,20 @@ MagickExport Image *AddNoiseImageChannel(const Image *image,
       if ((channel & RedChannel) != 0)
         SetPixelRed(q,ClampToQuantum(GenerateDifferentialNoise(
           random_info[id],GetPixelRed(p),noise_type,attenuate)));
-      if ((channel & GreenChannel) != 0)
-        SetPixelGreen(q,ClampToQuantum(GenerateDifferentialNoise(
-          random_info[id],GetPixelGreen(p),noise_type,attenuate)));
-      if ((channel & BlueChannel) != 0)
-        SetPixelBlue(q,ClampToQuantum(GenerateDifferentialNoise(
-          random_info[id],GetPixelBlue(p),noise_type,attenuate)));
+      if (IsGrayColorspace(image->colorspace) != MagickFalse)
+        {
+          SetPixelGreen(q,GetPixelRed(p));
+          SetPixelBlue(q,GetPixelRed(p));
+        }
+      else
+        {
+          if ((channel & GreenChannel) != 0)
+            SetPixelGreen(q,ClampToQuantum(GenerateDifferentialNoise(
+              random_info[id],GetPixelGreen(p),noise_type,attenuate)));
+          if ((channel & BlueChannel) != 0)
+            SetPixelBlue(q,ClampToQuantum(GenerateDifferentialNoise(
+              random_info[id],GetPixelBlue(p),noise_type,attenuate)));
+         }
       if ((channel & OpacityChannel) != 0)
         SetPixelOpacity(q,ClampToQuantum(GenerateDifferentialNoise(
           random_info[id],GetPixelOpacity(p),noise_type,attenuate)));
