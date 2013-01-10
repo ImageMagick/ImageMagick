@@ -72,11 +72,6 @@
 #include "magick/thread-private.h"
 #include "magick/utility.h"
 #include "magick/utility-private.h"
-#if defined(MAGICKCORE_HAVE_SOCKET)
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#endif
 #if defined(MAGICKCORE_ZLIB_DELEGATE)
 #include "zlib.h"
 #endif
