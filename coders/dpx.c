@@ -112,6 +112,23 @@ typedef enum
   UserDef8ElementComponentType = 156
 } DPXComponentType;
 
+typedef enum
+{
+  TransferCharacteristicUserDefined = 0,
+  TransferCharacteristicPrintingDensity = 1,
+  TransferCharacteristicLinear = 2,
+  TransferCharacteristicLogarithmic = 3,
+  TransferCharacteristicUnspecifiedVideo = 4,
+  TransferCharacteristicSMTPE274M = 5,     /* 1920x1080 TV */
+  TransferCharacteristicITU_R709 = 6,      /* ITU R709 */
+  TransferCharacteristicITU_R601_625L = 7, /* 625 Line */
+  TransferCharacteristicITU_R601_525L = 8, /* 525 Line */
+  TransferCharacteristicNTSCCompositeVideo = 9,
+  TransferCharacteristicPALCompositeVideo = 10,
+  TransferCharacteristicZDepthLinear = 11,
+  TransferCharacteristicZDepthHomogeneous = 12
+} DPXTransferCharacteristic;
+
 typedef struct _DPXFileInfo
 {
   unsigned int
@@ -184,7 +201,7 @@ typedef struct _DPXImageElement
 
   unsigned char
     descriptor,
-    transfer,
+    transfer_characteristic,
     colorimetric,
     bit_size;
 
@@ -436,6 +453,88 @@ static size_t GetBytesPerRow(const size_t columns,
     }
   }
   return(bytes_per_row);
+}
+
+static const char *GetImageTransferCharacteristic(
+  const DPXTransferCharacteristic characteristic)
+{
+  const char
+    *transfer;
+
+  /*
+    Get the element transfer characteristic.
+  */
+  switch(characteristic)
+  {
+    case TransferCharacteristicUserDefined:
+    {
+      transfer="UserDefined";
+      break;
+    }
+    case TransferCharacteristicPrintingDensity:
+    {
+      transfer="PrintingDensity";
+      break;
+    }
+    case TransferCharacteristicLinear:
+    {
+      transfer="Linear";
+      break;
+    }
+    case TransferCharacteristicLogarithmic:
+    {
+      transfer="Logarithmic";
+      break;
+    }
+    case TransferCharacteristicUnspecifiedVideo:
+    {
+      transfer="UnspecifiedVideo";
+      break;
+    }
+    case TransferCharacteristicSMTPE274M:
+    {
+      transfer="SMTPE274M";
+      break;
+    }
+    case TransferCharacteristicITU_R709:
+    {
+      transfer="ITU-R709";
+      break;
+    }
+    case TransferCharacteristicITU_R601_625L:
+    {
+      transfer="ITU-R601-625L";
+      break;
+    }
+    case TransferCharacteristicITU_R601_525L:
+    {
+      transfer="ITU-R601-525L";
+      break;
+    }
+    case TransferCharacteristicNTSCCompositeVideo:
+    {
+      transfer="NTSCCompositeVideo";
+      break;
+    }
+    case TransferCharacteristicPALCompositeVideo:
+    {
+      transfer="PALCompositeVideo";
+      break;
+    }
+    case TransferCharacteristicZDepthLinear:
+    {
+      transfer="ZDepthLinear";
+      break;
+    }
+    case TransferCharacteristicZDepthHomogeneous:
+    {
+      transfer="ZDepthHomogeneous";
+      break;
+    }
+    default:
+      transfer="Reserved";
+  }
+  return(transfer);
 }
 
 static inline MagickBooleanType IsFloatDefined(const float value)
@@ -699,6 +798,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->rows=dpx.image.lines_per_element;
   for (i=0; i < 8; i++)
   {
+    char
+      property[MaxTextExtent];
+
     dpx.image.image_element[i].data_sign=ReadBlobLong(image);
     offset+=4;
     dpx.image.image_element[i].low_data=ReadBlobLong(image);
@@ -711,7 +813,13 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset+=4;
     dpx.image.image_element[i].descriptor=(unsigned char) ReadBlobByte(image);
     offset++;
-    dpx.image.image_element[i].transfer=(unsigned char) ReadBlobByte(image);
+    dpx.image.image_element[i].transfer_characteristic=(unsigned char)
+      ReadBlobByte(image);
+    (void) FormatLocaleString(property,MaxTextExtent,
+      "dpx:image.element[%lu].transfer-characteristic",(long) i);
+    (void) FormatImageProperty(image,property,"%s",
+      GetImageTransferCharacteristic((DPXTransferCharacteristic)
+      dpx.image.image_element[i].transfer_characteristic));
     offset++;
     dpx.image.image_element[i].colorimetric=(unsigned char) ReadBlobByte(image);
     offset++;
@@ -1073,9 +1181,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       default:
       {
         SetImageColorspace(image,sRGBColorspace,exception);
-        if (dpx.image.image_element[n].transfer == LogarithmicColorimetric)
+        if (dpx.image.image_element[n].transfer_characteristic == LogarithmicColorimetric)
           SetImageColorspace(image,LogColorspace,exception);
-        if (dpx.image.image_element[n].transfer == PrintingDensityColorimetric)
+        if (dpx.image.image_element[n].transfer_characteristic == PrintingDensityColorimetric)
           SetImageColorspace(image,LogColorspace,exception);
         break;
       }
@@ -1530,10 +1638,12 @@ static MagickBooleanType WriteDPXImage(const ImageInfo *image_info,Image *image,
         }
       }
     offset+=WriteBlobByte(image,dpx.image.image_element[i].descriptor);
-    dpx.image.image_element[i].transfer=0;
+    dpx.image.image_element[i].transfer_characteristic=0;
     if (image->colorspace == LogColorspace)
-      dpx.image.image_element[0].transfer=PrintingDensityColorimetric;
-    offset+=WriteBlobByte(image,dpx.image.image_element[i].transfer);
+      dpx.image.image_element[0].transfer_characteristic=
+        PrintingDensityColorimetric;
+    offset+=WriteBlobByte(image,
+      dpx.image.image_element[i].transfer_characteristic);
     dpx.image.image_element[i].colorimetric=0;
     offset+=WriteBlobByte(image,dpx.image.image_element[i].colorimetric);
     dpx.image.image_element[i].bit_size=0;
