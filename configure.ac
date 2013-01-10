@@ -2586,7 +2586,7 @@ if test "$with_png" != 'no' -a  "$have_zlib" != 'no' ; then
      failed=`expr $failed + 1`,)
 
   if test $passed -gt 0; then
-    for var in 5 4 2 '' ; do
+    for var in 7 6 5 4 2 '' ; do
       if test "$have_png" = 'no' ; then
         if test "x${var}" = 'x' ; then
           pnglib='png'
