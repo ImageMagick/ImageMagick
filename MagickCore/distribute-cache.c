@@ -57,7 +57,7 @@
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/memory_.h"
-#if defined(MAGICKCORE_HAVE_SOCKET)
+#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -156,7 +156,7 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 */
 MagickExport void PixelCacheServer(const size_t port)
 {
-#if defined(MAGICKCORE_HAVE_SOCKET)
+#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
   char
     buffer[MaxTextExtent];
 
