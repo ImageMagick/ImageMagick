@@ -3841,7 +3841,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   status=AcquireMagickResource(DiskResource,cache_info->length);
   if (status == MagickFalse)
     {
-      cache_info->distribute_cache_info=AcquireDistributeCacheInfo();
+      cache_info->distribute_cache_info=AcquireDistributeCacheInfo(exception);
       if (cache_info->distribute_cache_info != (DistributeCacheInfo *) NULL)
         return(MagickTrue);
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
