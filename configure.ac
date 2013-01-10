@@ -2628,6 +2628,18 @@ return 0;
         fi
 
         if test $passed -gt 0 -a $failed -le 0; then
+          if test "1${var}" = '17' ; then
+            AC_CHECK_LIB(png17,png_get_io_ptr,passed=`expr $passed + 1`,
+               failed=`expr $failed + 1`,)
+            AC_CHECK_LIB(png17,png_longjmp,passed=`expr $passed + 1`,
+               failed=`expr $failed + 1`,)
+          fi
+          if test "1${var}" = '16' ; then
+            AC_CHECK_LIB(png16,png_get_io_ptr,passed=`expr $passed + 1`,
+               failed=`expr $failed + 1`,)
+            AC_CHECK_LIB(png16,png_longjmp,passed=`expr $passed + 1`,
+               failed=`expr $failed + 1`,)
+          fi
           if test "1${var}" = '15' ; then
             AC_CHECK_LIB(png15,png_get_io_ptr,passed=`expr $passed + 1`,
                failed=`expr $failed + 1`,)
