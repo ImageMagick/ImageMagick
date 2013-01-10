@@ -2511,8 +2511,8 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
          (image->rendering_intent));
       png_set_gAMA(ping,ping_info,1.000f/2.200f);
       png_set_cHRM(ping,ping_info,
-                  0.6400f, 0.3300f, 0.3000f, 0.6000f,
-                  0.1500f, 0.0600f, 0.3127f, 0.3290f);
+                  0.3127f, 0.3290f, 0.6400f, 0.3300f,
+                  0.3000f, 0.6000f, 0.1500f, 0.0600f);
     }
 #if defined(PNG_oFFs_SUPPORTED)
   if (png_get_valid(ping,ping_info,PNG_INFO_oFFs))
