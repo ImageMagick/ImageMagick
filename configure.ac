@@ -1139,7 +1139,7 @@ AC_SEARCH_LIBS(clock_gettime, rt,
        [[clockid_t clockType = CLOCK_REALTIME;]])],
       [
         AC_MSG_RESULT(yes)
-      	AC_DEFINE([HAVE_CLOCK_REALTIME],[1],
+        AC_DEFINE([HAVE_CLOCK_REALTIME],[1],
           [Define to 1 if clock_gettime supports CLOCK_REALTIME.])
       ],
       AC_MSG_RESULT(no)
@@ -2448,9 +2448,9 @@ dnl ===========================================================================
 
 # Disable LZMA (lzma library)
 AC_ARG_WITH(lzma,
-	      [  --without-lzma          disable LZMA support],
-	      [with_lzma=$withval],
-	      [with_lzma='yes'])
+            [  --without-lzma          disable LZMA support],
+            [with_lzma=$withval],
+            [with_lzma='yes'])
 if test "$with_lzma" != 'yes' ; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-lzma=$with_lzma "
 fi
@@ -2584,7 +2584,7 @@ if test "$with_png" != 'no' -a  "$have_zlib" != 'no' ; then
      failed=`expr $failed + 1`,)
 
   if test $passed -gt 0; then
-    for var in 5 4 2 '' ; do
+    for var in 7 6 5 4 2 '' ; do
       if test "$have_png" = 'no' ; then
         if test "x${var}" = 'x' ; then
           pnglib='png'
