@@ -58,7 +58,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/registry.h"
-#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
+#if defined(MAGICKCORE_HAVE_SOCKET)
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -90,8 +90,12 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
   ExceptionInfo *exception)
 {
 #if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
+  char
+    *host,
+    **hosts;
+
   const char
-    *hosts;
+    *value;
 
   DistributeCacheInfo
     *distribute_cache_info;
@@ -104,8 +108,17 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
   (void) ResetMagickMemory(distribute_cache_info,0,
     sizeof(*distribute_cache_info));
   distribute_cache_info->signature=MagickSignature;
-  hosts=GetImageRegistry(StringRegistryType,"cache:hosts",exception);
-  (void) hosts;
+  value=GetImageRegistry(StringRegistryType,"cache:hosts",exception);
+  if (value == (const char *) NULL)
+    value=(const char *) "127.0.0.1";
+  host=AcquireString(value);
+  if (host == (char *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  SubstituteString(&host,",","\n");
+  hosts=StringToList(host);
+  if (hosts == (char **) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
+  hosts=DestroyStringList(hosts);
   return(distribute_cache_info);
 #else
   return((DistributeCacheInfo *) NULL);
@@ -141,7 +154,7 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 {
   assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
   assert(distribute_cache_info->signature == MagickSignature);
-#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
+#if defined(MAGICKCORE_HAVE_SOCKET)
 #endif
   distribute_cache_info->signature=(~MagickSignature);
   distribute_cache_info=(DistributeCacheInfo *)

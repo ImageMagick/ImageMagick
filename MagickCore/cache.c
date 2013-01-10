@@ -3843,7 +3843,10 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     {
       cache_info->distribute_cache_info=AcquireDistributeCacheInfo(exception);
       if (cache_info->distribute_cache_info != (DistributeCacheInfo *) NULL)
-        return(MagickTrue);
+        {
+          cache_info->type=DistributedCache;
+          return(MagickTrue);
+        }
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
       return(MagickFalse);
