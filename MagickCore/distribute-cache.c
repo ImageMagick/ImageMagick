@@ -86,6 +86,8 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(void)
   DistributeCacheInfo
     *distribute_cache_info;
 
+  distribute_cache_info=(DistributeCacheInfo *) NULL;
+#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
   distribute_cache_info=(DistributeCacheInfo *) AcquireMagickMemory(
     sizeof(*distribute_cache_info));
   if (distribute_cache_info == (DistributeCacheInfo *) NULL)
@@ -93,6 +95,7 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(void)
   (void) ResetMagickMemory(distribute_cache_info,0,
     sizeof(*distribute_cache_info));
   distribute_cache_info->signature=MagickSignature;
+#endif
   return(distribute_cache_info);
 }
 
@@ -125,6 +128,8 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 {
   assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
   assert(distribute_cache_info->signature == MagickSignature);
+#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
+#endif
   distribute_cache_info->signature=(~MagickSignature);
   distribute_cache_info=(DistributeCacheInfo *)
     RelinquishMagickMemory(distribute_cache_info);
