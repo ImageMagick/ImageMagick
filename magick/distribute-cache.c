@@ -87,27 +87,7 @@
 MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
   ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
-  const char
-    *hosts;
-
-  DistributeCacheInfo
-    *distribute_cache_info;
-
-  distribute_cache_info=(DistributeCacheInfo *) NULL;
-  distribute_cache_info=(DistributeCacheInfo *) AcquireMagickMemory(
-    sizeof(*distribute_cache_info));
-  if (distribute_cache_info == (DistributeCacheInfo *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(distribute_cache_info,0,
-    sizeof(*distribute_cache_info));
-  distribute_cache_info->signature=MagickSignature;
-  hosts=GetImageRegistry(StringRegistryType,"cache:hosts",exception);
-  (void) hosts;
-  return(distribute_cache_info);
-#else
   return((DistributeCacheInfo *) NULL);
-#endif
 }
 
 /*
@@ -139,8 +119,6 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 {
   assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
   assert(distribute_cache_info->signature == MagickSignature);
-#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
-#endif
   distribute_cache_info->signature=(~MagickSignature);
   distribute_cache_info=(DistributeCacheInfo *)
     RelinquishMagickMemory(distribute_cache_info);
@@ -163,111 +141,18 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 %
 %  The format of the PixelCacheServer() method is:
 %
-%      void PixelCacheServer(const size_t port)
+%      void PixelCacheServer(const size_t port,exception)
 %
 %  A description of each parameter follows:
 %
 %    o port: connect the distributed pixel cache at this port.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport void PixelCacheServer(const size_t port)
+MagickExport void PixelCacheServer(const size_t port,ExceptionInfo *exception)
 {
-#if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
-  char
-    buffer[MaxTextExtent];
-
-  int
-    cache_socket,
-    cache_client,
-    status;
-
-  socklen_t
-    length,
-    one;
-
-  ssize_t
-    count;
-
-  struct sockaddr_in
-    address;
-
-  cache_socket=socket(AF_INET,SOCK_STREAM,0);
-  if (cache_socket == -1)
-    {
-      perror("Distributed pixel cache: server socket");
-      exit(1);
-    }
-  one=1;
-  status=setsockopt(cache_socket,SOL_SOCKET,SO_REUSEADDR,&one,(socklen_t)
-    sizeof(one));
-  if (status == -1)
-    {
-      perror("Distributed pixel cache: server setsockopt");
-      exit(1);
-    }
-  (void) ResetMagickMemory(&address,0,sizeof(address));
-  address.sin_family=AF_INET;
-  address.sin_port=htons(port);
-  address.sin_addr.s_addr=INADDR_ANY;
-  status=bind(cache_socket,(struct sockaddr *) &address,(socklen_t)
-    sizeof(address));
-  if (status == -1)
-    {
-      perror("Distributed pixel cache: server bind");
-      exit(1);
-    }
-  status=listen(cache_socket,5);
-  if (status == -1)
-    {
-      perror("Distributed pixel cache: server listen");
-      exit(1);
-    }
-  (void) fprintf(stdout,
-    "Distributed pixel cache server:  waiting for client on port %d\n",(int)
-    port);
-  (void) fflush(stdout);
-  for ( ; ; )
-  {
-    length=(socklen_t) sizeof(address);
-    cache_client=accept(cache_socket,(struct sockaddr *) &address,&length);
-    (void) fprintf(stdout,"Connection from (%s, %d)\n",
-      inet_ntoa(address.sin_addr),(int) ntohs(address.sin_port));
-    count=recv(cache_client,buffer,1,0);
-    buffer[count]='\0';
-    switch (*buffer)
-    {
-      case 'c':
-      {
-        /*
-          Create cache.
-        */
-        break;
-      }
-      case 'r':
-      {
-        /*
-          Read cache.
-        */
-        break;
-      }
-      case 'u':
-      {
-        /*
-          Update cache.
-        */
-        break;
-      }
-      case 'd':
-      {
-        /*
-          Delete cache.
-        */
-        break;
-      }
-    }
-  }
-#else
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
-    "DelegateLibrarySupportNotBuiltIn","'%s' (socket)",image_info->filename);
-#endif
+    "DelegateLibrarySupportNotBuiltIn","'%s' (socket)",
+    "distributed pixel cache");
 }
