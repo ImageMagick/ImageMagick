@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include <magick/exception.h>
+#include "magick/exception.h"
 
 #define MaxNumberDistributedCacheClients  32
 

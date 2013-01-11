@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include <magick/image.h>
+#include "magick/image.h"
 
 static inline MagickBooleanType SetImageProgress(const Image *image,
   const char *tag,const MagickOffsetType offset,const MagickSizeType extent)

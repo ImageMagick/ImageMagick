@@ -26,7 +26,7 @@ extern "C" {
 }
 #endif
 
-#include <magick/morphology.h>
+#include "magick/morphology.h"
 
 extern MagickExport Image
   *MorphologyApply(const Image *,const ChannelType,const MorphologyMethod,

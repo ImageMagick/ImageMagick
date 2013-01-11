@@ -22,10 +22,10 @@
 extern "C" {
 #endif
 
-#include <magick/image.h>
-#include <magick/color.h>
-#include <magick/exception-private.h>
-#include <magick/pixel-accessor.h>
+#include "magick/image.h"
+#include "magick/color.h"
+#include "magick/exception-private.h"
+#include "magick/pixel-accessor.h"
 
 static inline MagickBooleanType IsColorEqual(const PixelPacket *p,
   const PixelPacket *q)

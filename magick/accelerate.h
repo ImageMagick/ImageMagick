@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include <magick/morphology.h>
+#include "magick/morphology.h"
 
 extern MagickExport MagickBooleanType
   AccelerateConvolveImage(const Image *,const KernelInfo *,Image *,

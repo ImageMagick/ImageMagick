@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include <magick/color.h>
+#include "magick/color.h"
 
 #define OpaqueOpacity  ((Quantum) 0UL)
 #define TransparentOpacity  (QuantumRange)
