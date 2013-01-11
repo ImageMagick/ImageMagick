@@ -56,12 +56,13 @@
 #include "MagickCore/distribute-cache-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
+#include "MagickCore/locale_.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/registry.h"
+#include "MagickCore/string_.h"
 #if defined(MAGICKCORE_HAVE_SOCKET)
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#include <netdb.h>
 #endif
 
 /*
@@ -90,13 +91,6 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
   ExceptionInfo *exception)
 {
 #if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
-  char
-    *host,
-    **hosts;
-
-  const char
-    *value;
-
   DistributeCacheInfo
     *distribute_cache_info;
 
@@ -108,17 +102,6 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
   (void) ResetMagickMemory(distribute_cache_info,0,
     sizeof(*distribute_cache_info));
   distribute_cache_info->signature=MagickSignature;
-  value=GetImageRegistry(StringRegistryType,"cache:hosts",exception);
-  if (value == (const char *) NULL)
-    value=(const char *) "127.0.0.1";
-  host=AcquireString(value);
-  if (host == (char *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  SubstituteString(&host,",","\n");
-  hosts=StringToList(host);
-  if (hosts == (char **) NULL)
-    ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  hosts=DestroyStringList(hosts);
   return(distribute_cache_info);
 #else
   return((DistributeCacheInfo *) NULL);
@@ -189,97 +172,81 @@ MagickExport void PixelCacheServer(const size_t port)
 {
 #if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
   char
-    buffer[MaxTextExtent];
+    message[MaxTextExtent],
+    service[MaxTextExtent];
 
   int
-    cache_socket,
-    cache_client,
+    file,
     status;
 
-  socklen_t
-    length,
-    one;
+  register struct addrinfo
+    *p;
 
   ssize_t
     count;
 
-  struct sockaddr_in
+  socklen_t
+    length;
+
+  struct addrinfo
+    hints,
+    *result;
+
+  struct sockaddr_storage
     address;
 
-  cache_socket=socket(AF_INET,SOCK_STREAM,0);
-  if (cache_socket == -1)
+  (void) ResetMagickMemory(&hints,0,sizeof(hints));
+  hints.ai_family=AF_UNSPEC;    /* allow IPv4 or IPv6 */
+  hints.ai_socktype=SOCK_DGRAM; /* datagram socket */
+  hints.ai_flags=AI_PASSIVE;    /* for wildcard IP address */
+  hints.ai_protocol=0;          /* any protocol */
+  (void) FormatLocaleString(service,MaxTextExtent,"%.20g",(double) port);
+  status=getaddrinfo((const char *) NULL,service,&hints,&result);
+  if (status != 0)
     {
-      perror("Distributed pixel cache: server socket");
-      exit(1);
+      (void) fprintf(stderr,"getaddrinfo: %s\n", gai_strerror(status));
+      exit(EXIT_FAILURE);
     }
-  one=1;
-  status=setsockopt(cache_socket,SOL_SOCKET,SO_REUSEADDR,&one,(socklen_t)
-    sizeof(one));
-  if (status == -1)
+  for (p=result; p != (struct addrinfo *) NULL; p=p->ai_next)
+  {
+    file=socket(p->ai_family, p->ai_socktype,p->ai_protocol);
+    if (file == -1)
+      continue;
+    if (bind(file,p->ai_addr,p->ai_addrlen) == 0)
+      break;
+    (void) close(file);
+  }
+  if (p == NULL)
     {
-      perror("Distributed pixel cache: server setsockopt");
-      exit(1);
+      (void) fprintf(stderr,"Could not bind\n");
+      exit(EXIT_FAILURE);
     }
-  (void) ResetMagickMemory(&address,0,sizeof(address));
-  address.sin_family=AF_INET;
-  address.sin_port=htons(port);
-  address.sin_addr.s_addr=INADDR_ANY;
-  status=bind(cache_socket,(struct sockaddr *) &address,(socklen_t)
-    sizeof(address));
-  if (status == -1)
-    {
-      perror("Distributed pixel cache: server bind");
-      exit(1);
-    }
-  status=listen(cache_socket,5);
-  if (status == -1)
-    {
-      perror("Distributed pixel cache: server listen");
-      exit(1);
-    }
-  (void) fprintf(stdout,
-    "Distributed pixel cache server:  waiting for client on port %d\n",(int)
-    port);
-  (void) fflush(stdout);
+  freeaddrinfo(result);
   for ( ; ; )
   {
-    length=(socklen_t) sizeof(address);
-    cache_client=accept(cache_socket,(struct sockaddr *) &address,&length);
-    (void) fprintf(stdout,"Connection from (%s, %d)\n",
-      inet_ntoa(address.sin_addr),(int) ntohs(address.sin_port));
-    count=recv(cache_client,buffer,1,0);
-    buffer[count]='\0';
-    switch (*buffer)
-    {
-      case 'c':
-      {
-        /*
-          Create cache.
-        */
-        break;
-      }
-      case 'r':
-      {
-        /*
-          Read cache.
-        */
-        break;
-      }
-      case 'u':
-      {
-        /*
-          Update cache.
-        */
-        break;
-      }
-      case 'd':
-      {
-        /*
-          Delete cache.
-        */
-        break;
-      }
-    }
+    char
+      host[NI_MAXHOST],
+      service[NI_MAXSERV];
+
+    ssize_t
+      bytes;
+
+    length=(socklen_t) sizeof(struct sockaddr_storage);
+    count=recvfrom(file,message,MaxTextExtent,0,(struct sockaddr *) &address,
+      &length);
+    if (count == -1)
+      continue;
+    status=getnameinfo((struct sockaddr *) &address,length,host,NI_MAXHOST,
+      service,NI_MAXSERV,NI_NUMERICSERV);
+    if (status == 0)
+      (void) printf("received %ld bytes from %s:%s\n",(long) count,host,
+        service);
+    else
+      (void) fprintf(stderr,"getnameinfo: %s\n", gai_strerror(status));
+    bytes=sendto(file,message,(size_t) count,0,(struct sockaddr *) &address,
+      length);
+    if (bytes != count)
+      (void) fprintf(stderr,"error sending response\n");
   }
 #else
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
