@@ -24,7 +24,7 @@ extern "C" {
 
 #define MagickSignatureSize  64
 
-#include <magick/string_.h>
+#include "magick/string_.h"
 
 typedef struct _SignatureInfo
   SignatureInfo;

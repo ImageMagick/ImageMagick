@@ -22,8 +22,8 @@
 extern "C" {
 #endif
 
-#include <magick/exception.h>
-#include <magick/splay-tree.h>
+#include "magick/exception.h"
+#include "magick/splay-tree.h"
 
 typedef struct _XMLTreeInfo
   XMLTreeInfo;

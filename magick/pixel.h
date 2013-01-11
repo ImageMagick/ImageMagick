@@ -22,8 +22,8 @@
 extern "C" {
 #endif
 
-#include <magick/colorspace.h>
-#include <magick/constitute.h>
+#include "magick/colorspace.h"
+#include "magick/constitute.h"
 
 typedef enum
 {

@@ -23,8 +23,8 @@ extern "C" {
 #endif
 
 #include <math.h>
-#include <magick/gem.h>
-#include <magick/pixel.h>
+#include "magick/gem.h"
+#include "magick/pixel.h"
 
 #define ClampPixelRed(pixel) ClampToQuantum((pixel)->red)
 #define ClampPixelGreen(pixel) ClampToQuantum((pixel)->green)
