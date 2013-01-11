@@ -376,7 +376,7 @@ WandExport MagickBooleanType ImportImageCommand(ImageInfo *image_info,
   image_info->density=XGetResourceInstance(resource_database,GetClientName(),
     "density",(char *) NULL);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
-    "descend","True");
+    "descend","False");
   ximage_info.descend=IsStringTrue(resource_value);
   resource_value=XGetResourceInstance(resource_database,GetClientName(),
     "frame","False");

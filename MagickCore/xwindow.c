@@ -4155,10 +4155,10 @@ static Image *XGetWindowImage(Display *display,const Window window,
             (window_info[i].visual == window_info[id].visual) &&
             (window_info[i].colormap == window_info[id].colormap))
           {
-            if ((window_info[id].bounds.x1 <= window_info[i].bounds.x1) ||
-                (window_info[id].bounds.x1 >= window_info[i].bounds.x2) ||
-                (window_info[id].bounds.y1 <= window_info[i].bounds.y1) ||
-                (window_info[id].bounds.y1 >= window_info[i].bounds.y2))
+            if ((window_info[id].bounds.x1 < window_info[i].bounds.x1) ||
+                (window_info[id].bounds.x2 > window_info[i].bounds.x2) ||
+                (window_info[id].bounds.y1 < window_info[i].bounds.y1) ||
+                (window_info[id].bounds.y2 > window_info[i].bounds.y2))
               {
                 /*
                   Eliminate windows not circumscribed by their parent.
@@ -4234,22 +4234,12 @@ static Image *XGetWindowImage(Display *display,const Window window,
           if ((window_info[id].visual == window_info[j].visual) &&
               (window_info[id].colormap == window_info[j].colormap))
             {
-              if ((window_info[id].bounds.x1 <= window_info[j].bounds.x1) ||
-                  (window_info[id].bounds.x1 >= window_info[j].bounds.x2) ||
-                  (window_info[id].bounds.y1 <= window_info[j].bounds.y1) ||
-                  (window_info[id].bounds.y1 >= window_info[j].bounds.y2))
+              if ((window_info[id].bounds.x1 >= window_info[j].bounds.x1) &&
+                  (window_info[id].bounds.x2 <= window_info[j].bounds.x2) &&
+                  (window_info[id].bounds.y1 >= window_info[j].bounds.y1) &&
+                  (window_info[id].bounds.y2 <= window_info[j].bounds.y2))
                   import=MagickFalse;
             }
-          else
-            if ((window_info[id].visual != window_info[j].visual) ||
-                (window_info[id].colormap != window_info[j].colormap))
-              {
-                if ((window_info[id].bounds.x2 > window_info[j].bounds.x1) &&
-                    (window_info[id].bounds.x1 < window_info[j].bounds.x2) &&
-                    (window_info[id].bounds.y2 > window_info[j].bounds.y1) &&
-                    (window_info[id].bounds.y1 < window_info[j].bounds.y2))
-                  import=MagickTrue;
-              }
         if (import == MagickFalse)
           continue;
         /*
