@@ -22,10 +22,10 @@
 extern "C" {
 #endif
 
-#include <MagickCore/image.h>
-#include <MagickCore/image-private.h>
-#include <MagickCore/pixel.h>
-#include <MagickCore/pixel-accessor.h>
+#include "MagickCore/image.h"
+#include "MagickCore/image-private.h"
+#include "MagickCore/pixel.h"
+#include "MagickCore/pixel-accessor.h"
 
 static inline void ConvertRGBToCMYK(PixelInfo *pixel)
 {

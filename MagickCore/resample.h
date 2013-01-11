@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include <MagickCore/cache-view.h>
+#include "MagickCore/cache-view.h"
 
 /*
   WARNING:  The order of this table must also match the order of a table

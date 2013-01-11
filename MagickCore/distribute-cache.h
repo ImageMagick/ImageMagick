@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include <MagickCore/exception.h>
+#include "MagickCore/exception.h"
 
 extern MagickExport void
   PixelCacheServer(const size_t,ExceptionInfo *);

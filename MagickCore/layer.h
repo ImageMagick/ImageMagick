@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include <MagickCore/composite.h>
+#include "MagickCore/composite.h"
 
 typedef enum
 {

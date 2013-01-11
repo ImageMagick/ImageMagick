@@ -22,9 +22,9 @@
 extern "C" {
 #endif
 
-#include <MagickCore/cache.h>
-#include <MagickCore/resource_.h>
-#include <MagickCore/thread_.h>
+#include "MagickCore/cache.h"
+#include "MagickCore/resource_.h"
+#include "MagickCore/thread_.h"
 
 /*
   Single threaded unless workload justifies the threading overhead.

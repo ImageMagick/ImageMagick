@@ -22,8 +22,8 @@
 extern "C" {
 #endif
 
-#include <MagickCore/pixel.h>
-#include <MagickCore/exception.h>
+#include "MagickCore/pixel.h"
+#include "MagickCore/exception.h"
 
 typedef enum
 {

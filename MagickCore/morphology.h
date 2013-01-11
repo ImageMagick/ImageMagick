@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include <MagickCore/geometry.h>
+#include "MagickCore/geometry.h"
 
 typedef enum
 {

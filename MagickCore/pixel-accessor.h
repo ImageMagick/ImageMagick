@@ -23,12 +23,12 @@ extern "C" {
 #endif
 
 #include <math.h>
-#include <MagickCore/cache.h>
-#include <MagickCore/cache-view.h>
-#include <MagickCore/color.h>
-#include <MagickCore/colorspace.h>
-#include <MagickCore/gem.h>
-#include <MagickCore/image.h>
+#include "MagickCore/cache.h"
+#include "MagickCore/cache-view.h"
+#include "MagickCore/color.h"
+#include "MagickCore/colorspace.h"
+#include "MagickCore/gem.h"
+#include "MagickCore/image.h"
 
 #undef index
 

@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include <MagickCore/image.h>
+#include "MagickCore/image.h"
 
 typedef struct _FrameInfo
 {

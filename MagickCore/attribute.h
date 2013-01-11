@@ -22,8 +22,8 @@
 extern "C" {
 #endif
 
-#include <MagickCore/image.h>
-#include <MagickCore/exception.h>
+#include "MagickCore/image.h"
+#include "MagickCore/exception.h"
 
 extern MagickExport ImageType
   GetImageType(const Image *,ExceptionInfo *);
