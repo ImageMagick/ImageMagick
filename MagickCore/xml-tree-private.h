@@ -22,8 +22,8 @@
 extern "C" {
 #endif
 
-#include <MagickCore/exception.h>
-#include <MagickCore/splay-tree.h>
+#include "MagickCore/exception.h"
+#include "MagickCore/splay-tree.h"
 
 extern MagickPrivate char
   *CanonicalXMLContent(const char *,const MagickBooleanType);

@@ -26,7 +26,7 @@ extern "C" {
 }
 #endif
 
-#include <MagickCore/morphology.h>
+#include "MagickCore/morphology.h"
 
 extern MagickPrivate Image
   *MorphologyApply(const Image *,const MorphologyMethod,const ssize_t,

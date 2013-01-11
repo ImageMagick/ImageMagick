@@ -22,8 +22,8 @@
 extern "C" {
 #endif
 
-#include <MagickCore/color.h>
-#include <MagickCore/pixel.h>
+#include "MagickCore/color.h"
+#include "MagickCore/pixel.h"
 
 #define OpaqueAlpha  ((Quantum) QuantumRange)
 #define TransparentAlpha  ((Quantum) 0)

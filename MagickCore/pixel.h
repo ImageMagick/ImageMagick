@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include <MagickCore/colorspace.h>
+#include "MagickCore/colorspace.h"
 
 #define MaxPixelChannels  32
 #undef index

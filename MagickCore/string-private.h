@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include <MagickCore/locale_.h>
+#include "MagickCore/locale_.h"
 
 static inline double SiPrefixToDoubleInterval(const char *string,
   const double interval)
