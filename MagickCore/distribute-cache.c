@@ -167,8 +167,10 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 %
 %    o port: connect the distributed pixel cache at this port.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 */
-MagickExport void PixelCacheServer(const size_t port)
+MagickExport void PixelCacheServer(const size_t port,ExceptionInfo *exception)
 {
 #if defined(MAGICKCORE_HAVE_SOCKET) && defined(MAGICKCORE_HAVE_PTHREAD)
   char
@@ -250,6 +252,7 @@ MagickExport void PixelCacheServer(const size_t port)
   }
 #else
   (void) ThrowMagickException(exception,GetMagickModule(),MissingDelegateError,
-    "DelegateLibrarySupportNotBuiltIn","'%s' (socket)",image_info->filename);
+    "DelegateLibrarySupportNotBuiltIn","'%s' (socket)",
+    "distributed pixel cache");
 #endif
 }
