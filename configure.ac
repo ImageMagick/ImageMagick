@@ -2633,13 +2633,13 @@ return 0;
           if test "1${var}" = '17' ; then
             AC_CHECK_LIB(png17,png_get_io_ptr,passed=`expr $passed + 1`,
                failed=`expr $failed + 1`,)
-            AC_CHECK_LIB(png17,png_longjmp,passed=`expr $passed + 1`,
+            AC_CHECK_LIB(png17,png_image_free,passed=`expr $passed + 1`,
                failed=`expr $failed + 1`,)
           fi
           if test "1${var}" = '16' ; then
             AC_CHECK_LIB(png16,png_get_io_ptr,passed=`expr $passed + 1`,
                failed=`expr $failed + 1`,)
-            AC_CHECK_LIB(png16,png_longjmp,passed=`expr $passed + 1`,
+            AC_CHECK_LIB(png16,png_image_free,passed=`expr $passed + 1`,
                failed=`expr $failed + 1`,)
           fi
           if test "1${var}" = '15' ; then
