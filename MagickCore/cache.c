@@ -48,6 +48,7 @@
 #include "MagickCore/color-private.h"
 #include "MagickCore/colorspace-private.h"
 #include "MagickCore/composite-private.h"
+#include "MagickCore/distribute-cache-private.h"
 #include "MagickCore/exception.h"
 #include "MagickCore/exception-private.h"
 #include "MagickCore/geometry.h"
@@ -139,11 +140,11 @@ static MagickBooleanType
   GetOneVirtualPixelFromCache(const Image *,const VirtualPixelMethod,
     const ssize_t,const ssize_t,Quantum *,ExceptionInfo *),
   OpenPixelCache(Image *,const MapMode,ExceptionInfo *),
-  ReadPixelCacheMetacontent(CacheInfo *,NexusInfo *,ExceptionInfo *),
   ReadPixelCachePixels(CacheInfo *,NexusInfo *,ExceptionInfo *),
+  ReadPixelCacheMetacontent(CacheInfo *,NexusInfo *,ExceptionInfo *),
   SyncAuthenticPixelsCache(Image *,ExceptionInfo *),
-  WritePixelCacheMetacontent(CacheInfo *,NexusInfo *,ExceptionInfo *),
-  WritePixelCachePixels(CacheInfo *,NexusInfo *,ExceptionInfo *);
+  WritePixelCachePixels(CacheInfo *,NexusInfo *,ExceptionInfo *),
+  WritePixelCacheMetacontent(CacheInfo *,NexusInfo *,ExceptionInfo *);
 
 static Quantum
   *GetAuthenticPixelsCache(Image *,const ssize_t,const ssize_t,const size_t,
@@ -1236,7 +1237,7 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
     }
     case DistributedCache:
     {
-      abort();
+      RelinquishDistributePixelCache(cache_info->distribute_cache_info);
       break;
     }
     default:
@@ -3844,8 +3845,36 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
       cache_info->distribute_cache_info=AcquireDistributeCacheInfo(exception);
       if (cache_info->distribute_cache_info != (DistributeCacheInfo *) NULL)
         {
-          cache_info->type=DistributedCache;
-          return(MagickTrue);
+          status=OpenDistributePixelCache(cache_info->distribute_cache_info,
+            image);
+          if (status != MagickFalse)
+            {
+              cache_info->type=DistributedCache;
+              if ((source_info.storage_class != UndefinedClass) &&
+                  (mode != ReadMode))
+                {
+                  status=ClonePixelCachePixels(cache_info,&source_info,
+                    exception);
+                  RelinquishPixelCachePixels(&source_info);
+                }
+              if (image->debug != MagickFalse)
+                {
+                  (void) FormatMagickSize(cache_info->length,MagickFalse,
+                    format);
+/*
+                  (void) FormatLocaleString(message,MaxTextExtent,
+                    "open %s (%d[%d], distribute, %.20gx%.20gx%.20g %s)",
+                    cache_info->distribute_cache_info->hostname,
+                    cache_info->distribute_cache_info->port,
+                    cache_info->distribute_cache_info->file,(double)
+                    cache_info->columns,(double) cache_info->rows,(double)
+                    cache_info->number_channels,format);
+*/
+                  (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
+                    message);
+                }
+              return(MagickTrue);
+            }
         }
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
@@ -4443,6 +4472,7 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
     }
     case DistributedCache:
     {
+      puts("b");
       abort();
       break;
     }
@@ -4582,7 +4612,25 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
     }
     case DistributedCache:
     {
-      abort();
+      MagickBooleanType
+        status;
+
+      /*
+        Read pixels to distributed cache.
+      */
+      LockSemaphoreInfo(cache_info->file_semaphore);
+      status=ReadDistributePixelCache(cache_info->distribute_cache_info,
+        &nexus_info->region,nexus_info->pixels);
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
+      if (status == MagickFalse)
+        {
+/*
+          ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
+            cache_info->distribute_cache_info->hostname);
+*/
+          return(MagickFalse);
+        }
+      break;
       break;
     }
     default:
@@ -4812,7 +4860,8 @@ static Quantum *SetPixelCacheNexusPixels(const Image *image,const MapMode mode,
   if (cache_info->type == UndefinedCache)
     return((Quantum *) NULL);
   nexus_info->region=(*region);
-  if ((cache_info->type != DiskCache) && (cache_info->type != PingCache))
+  if ((cache_info->type != DiskCache) &&
+      (cache_info->type != DistributedCache) && (cache_info->type != PingCache))
     {
       ssize_t
         x,
@@ -5346,6 +5395,7 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
     }
     case DistributedCache:
     {
+      puts("e");
       abort();
       break;
     }
@@ -5486,7 +5536,24 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
     }
     case DistributedCache:
     {
-      abort();
+      MagickBooleanType
+        status;
+
+      /*
+        Write pixels to distributed cache.
+      */
+      LockSemaphoreInfo(cache_info->file_semaphore);
+      status=WriteDistributePixelCache(cache_info->distribute_cache_info,
+        &nexus_info->region,nexus_info->pixels);
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
+      if (status == MagickFalse)
+        {
+/*
+          ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
+            cache_info->distribute_cache_info->hostname);
+*/
+          return(MagickFalse);
+        }
       break;
     }
     default:

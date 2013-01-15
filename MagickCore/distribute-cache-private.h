@@ -22,17 +22,22 @@
 extern "C" {
 #endif
 
+#include "MagickCore/geometry.h"
 #include "MagickCore/exception.h"
 
 typedef struct _DistributeCacheInfo
 {
-  size_t
-    session;
-
-#if defined(MAGICKCORE_HAVE_SOCKET)
   int
-    server;
-#endif
+    file;
+
+  MagickSizeType
+    session_key;
+
+  char
+    hostname[MaxTextExtent];
+
+  int
+    port;
 
   size_t
     signature;
@@ -41,5 +46,15 @@ typedef struct _DistributeCacheInfo
 extern MagickPrivate DistributeCacheInfo
   *AcquireDistributeCacheInfo(ExceptionInfo *),
   *DestroyDistributeCacheInfo(DistributeCacheInfo *);
+
+extern MagickPrivate MagickBooleanType
+  OpenDistributePixelCache(DistributeCacheInfo *,Image *),
+  ReadDistributePixelCache(DistributeCacheInfo *,const RectangleInfo *,
+    Quantum *),
+  WriteDistributePixelCache(DistributeCacheInfo *,const RectangleInfo *,
+    const Quantum *);
+
+extern MagickPrivate void
+  RelinquishDistributePixelCache(DistributeCacheInfo *);
 
 #endif
