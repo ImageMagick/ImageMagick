@@ -33,7 +33,7 @@ extern "C" {
   num_threads((expression) == 0 ? 1 : \
     ((chunk) > (16*GetMagickResourceLimit(ThreadResource))) && \
      (GetImagePixelCacheType(source) != DiskCache) && \
-    (GetImagePixelCacheType(destination) != DiskCache) ? \
+     (GetImagePixelCacheType(destination) != DiskCache) ? \
       GetMagickResourceLimit(ThreadResource) : \
       GetMagickResourceLimit(ThreadResource) < 2 ? 1 : 2)
 

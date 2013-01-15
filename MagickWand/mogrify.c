@@ -154,7 +154,7 @@ WandExport MagickBooleanType MagickCommandGenesis(ImageInfo *image_info,
       (void) SetLogEventMask(argv[++i]);
     if (LocaleCompare("-distribute-cache",option) == 0)
       {
-        PixelCacheServer(StringToUnsignedLong(argv[++i]),exception);
+        DistributePixelCacheServer(StringToUnsignedLong(argv[++i]),exception);
         exit(0);
       }
     if (LocaleCompare("-duration",option) == 0)

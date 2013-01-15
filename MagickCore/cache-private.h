@@ -25,7 +25,6 @@ extern "C" {
 #include <time.h>
 #include "MagickCore/cache.h"
 #include "MagickCore/distribute-cache.h"
-#include "MagickCore/distribute-cache-private.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/random_.h"
 #include "MagickCore/thread-private.h"
@@ -103,7 +102,7 @@ typedef struct _CacheMethods
 } CacheMethods;
 
 typedef struct _NexusInfo
-   NexusInfo;
+  NexusInfo;
 
 typedef struct _CacheInfo
 {
@@ -176,7 +175,7 @@ typedef struct _CacheInfo
   RandomInfo
     *random_info;
 
-  DistributeCacheInfo
+  void
     *distribute_cache_info;
 
   MagickBooleanType
