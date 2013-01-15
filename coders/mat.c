@@ -880,7 +880,7 @@ MATLAB_KO: ThrowReaderException(CorruptImageError,"ImproperImageHeader");
     {
       for (i = 0; i < (ssize_t) MATLAB_HDR.SizeY; i++)
       {
-        q=QueueAuthenticPixels(image,0,MATLAB_HDR.SizeY-i-1,image->columns,1,exception);
+        q=GetAuthenticPixels(image,0,MATLAB_HDR.SizeY-i-1,image->columns,1,exception);
         if (q == (Quantum *)NULL)
   {
     if (logging) (void)LogMagickEvent(CoderEvent,GetMagickModule(),
