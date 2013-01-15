@@ -1032,62 +1032,86 @@ static void ImportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
 
   switch (quantum_info->depth)
   {
-    case 10:
+    case 8:
     {
-      Quantum
-        cbcr[4];
+      unsigned char
+        pixel;
 
-      pixel=0;
-      if (quantum_info->pack == MagickFalse)
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        p=PushCharPixel(p,&pixel);
+        SetPixelBlue(q,ScaleCharToQuantum(pixel));
+        p+=quantum_info->pad;
+        q++;
+      }
+      break;
+    }
+    case 16:
+    {
+      unsigned short
+        pixel;
+
+      if (quantum_info->format == FloatingPointQuantumFormat)
         {
-          register ssize_t
-            i;
-
-          size_t
-            quantum;
-
-          ssize_t
-            n;
-
-          n=0;
-          quantum=0;
-          for (x=0; x < (ssize_t) number_pixels; x+=2)
+          for (x=0; x < (ssize_t) number_pixels; x++)
           {
-            for (i=0; i < 4; i++)
-            {
-              switch (n % 3)
-              {
-                case 0:
-                {
-                  p=PushLongPixel(quantum_info->endian,p,&pixel);
-                  quantum=(size_t) (ScaleShortToQuantum((unsigned short)
-                    (((pixel >> 22) & 0x3ff) << 6)));
-                  break;
-                }
-                case 1:
-                {
-                  quantum=(size_t) (ScaleShortToQuantum((unsigned short)
-                    (((pixel >> 12) & 0x3ff) << 6)));
-                  break;
-                }
-                case 2:
-                {
-                  quantum=(size_t) (ScaleShortToQuantum((unsigned short)
-                    (((pixel >> 2) & 0x3ff) << 6)));
-                  break;
-                }
-              }
-              cbcr[i]=(Quantum) (quantum);
-              n++;
-            }
+            p=PushShortPixel(quantum_info->endian,p,&pixel);
+            SetPixelBlue(q,ClampToQuantum((MagickRealType)
+              QuantumRange*HalfToSinglePrecision(pixel)));
             p+=quantum_info->pad;
-            SetPixelRed(q,cbcr[1]);
-            SetPixelGreen(q,cbcr[0]);
-            SetPixelBlue(q,cbcr[2]);
             q++;
-            SetPixelRed(q,cbcr[3]);
-            SetPixelGreen(q,cbcr[0]);
-            SetPixelBlue(q,cbcr[2]);
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        p=PushShortPixel(quantum_info->endian,p,&pixel);
+        SetPixelBlue(q,ScaleShortToQuantum(pixel));
+        p+=quantum_info->pad;
+        q++;
+      }
+      break;
+    }
+    case 32:
+    {
+      unsigned int
+        pixel;
+
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          float
+            pixel;
+
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            p=PushFloatPixel(quantum_info,p,&pixel);
+            SetPixelBlue(q,ClampToQuantum(pixel));
+            p+=quantum_info->pad;
+            q++;
+          }
+          break;
+        }
+      for (x=0; x < (ssize_t) number_pixels; x++)
+      {
+        p=PushLongPixel(quantum_info->endian,p,&pixel);
+        SetPixelBlue(q,ScaleLongToQuantum(pixel));
+        p+=quantum_info->pad;
+        q++;
+      }
+      break;
+    }
+    case 64:
+    {
+      if (quantum_info->format == FloatingPointQuantumFormat)
+        {
+          double
+            pixel;
+
+          for (x=0; x < (ssize_t) number_pixels; x++)
+          {
+            p=PushDoublePixel(quantum_info,p,&pixel);
+            SetPixelBlue(q,ClampToQuantum(pixel));
+            p+=quantum_info->pad;
             q++;
           }
           break;
@@ -1102,9 +1126,8 @@ static void ImportBlueQuantum(const Image *image,QuantumInfo *quantum_info,
       for (x=0; x < (ssize_t) number_pixels; x++)
       {
         p=PushQuantumPixel(quantum_info,p,&pixel);
-        SetPixelRed(q,ScaleAnyToQuantum(pixel,range));
-        p=PushQuantumPixel(quantum_info,p,&pixel);
-        SetPixelGreen(q,ScaleAnyToQuantum(pixel,range));
+        SetPixelBlue(q,ScaleAnyToQuantum(pixel,range));
+        p+=quantum_info->pad;
         q++;
       }
       break;
