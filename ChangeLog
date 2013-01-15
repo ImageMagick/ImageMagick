@@ -9,7 +9,8 @@
   * Fixed LBR (left-bit-replication) macro in coders/png.c; problem reported
     by the clang compiler.
   * Chromaticity values were written in the wrong order in the cHRM chunk
-    when it accompanied the sRGB chunk.
+    when it accompanied the sRGB chunk. Libpng applications built with
+    libpng16 and later will detect this and issue a warning.
   * Look for libpng17 and libpng16 while configuring PNG support.
 
 2013-01-06  6.8.1-9 Cristy  <quetzlzacatenango@image...>
