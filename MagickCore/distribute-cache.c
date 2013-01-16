@@ -65,6 +65,7 @@
 #include "MagickCore/policy.h"
 #include "MagickCore/random_.h"
 #include "MagickCore/registry.h"
+#include "MagickCore/splay-tree.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #if defined(MAGICKCORE_HAVE_SOCKET)
@@ -378,12 +379,9 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 %
 */
 
-static MagickBooleanType CreateDistributeCache(int file,
-  const MagickSizeType session_key)
+static MagickBooleanType CreateDistributeCache(SplayTreeInfo *image_registry,
+  int file,const MagickSizeType session_key)
 {
-  char
-    key[MaxTextExtent];
-
   ExceptionInfo
     *exception;
 
@@ -398,6 +396,7 @@ static MagickBooleanType CreateDistributeCache(int file,
 
   exception=AcquireExceptionInfo();
   image=AcquireImage((ImageInfo *) NULL,exception);
+  exception=DestroyExceptionInfo(exception);
   count=read(file,&image->columns,sizeof(image->columns));
   if (count != (ssize_t) sizeof(image->columns))
     return(MagickFalse);
@@ -407,15 +406,12 @@ static MagickBooleanType CreateDistributeCache(int file,
   count=read(file,&image->number_channels,sizeof(image->number_channels));
   if (count != (ssize_t) sizeof(image->number_channels))
     return(MagickFalse);
-  (void) FormatLocaleString(key,MaxTextExtent,"%.20g",(double) session_key);
-  status=SetImageRegistry(ImageRegistryType,key,image,exception);
-  exception=DestroyExceptionInfo(exception);
-  image=DestroyImage(image);
+  status=AddValueToSplayTree(image_registry,(const void *) session_key,image);
   return(status);
 }
 
-static MagickBooleanType DestroyDistributeCache(int file,
-  const MagickSizeType session_key)
+static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *image_registry,
+  int file,const MagickSizeType session_key)
 {
   char
     key[MaxTextExtent];
@@ -424,15 +420,9 @@ static MagickBooleanType DestroyDistributeCache(int file,
   return(DeleteImageRegistry(key));
 }
 
-static MagickBooleanType ReadDistributeCache(int file,
-  const MagickSizeType session_key)
+static MagickBooleanType ReadDistributeCache(SplayTreeInfo *image_registry,
+  int file,const MagickSizeType session_key)
 {
-  char
-    key[MaxTextExtent];
-
-  CacheInfo
-    *cache_info;
-
   ExceptionInfo
     *exception;
 
@@ -451,13 +441,10 @@ static MagickBooleanType ReadDistributeCache(int file,
   ssize_t
     count;
 
-  exception=AcquireExceptionInfo();
-  (void) FormatLocaleString(key,MaxTextExtent,"%.20g",(double) session_key);
-  image=(Image *) GetImageRegistry(ImageRegistryType,key,exception);
-  exception=DestroyExceptionInfo(exception);
+  image=(Image *) GetValueFromSplayTree(image_registry,(const void *)
+    session_key);
   if (image == (Image *) NULL)
     return(MagickFalse);
-  cache_info=(CacheInfo *) image->cache;
   count=read(file,&region.width,sizeof(region.width));
   if (count != (ssize_t) sizeof(region.width))
     return(MagickFalse);
@@ -465,17 +452,19 @@ static MagickBooleanType ReadDistributeCache(int file,
   if (count != (ssize_t) sizeof(region.height))
     return(MagickFalse);
   count=read(file,&region.x,sizeof(region.x));
-  if (count != (ssize_t) sizeof(region.width))
+  if (count != (ssize_t) sizeof(region.x))
     return(MagickFalse);
   count=read(file,&region.y,sizeof(region.y));
   if (count != (ssize_t) sizeof(region.y))
     return(MagickFalse);
-  length=(size_t) (region.width*cache_info->number_channels*sizeof(Quantum));
+  count=read(file,&length,sizeof(length));
+  if (count != (ssize_t) sizeof(length))
+    return(MagickFalse);
   exception=AcquireExceptionInfo();
   p=GetVirtualPixels(image,region.x,region.y,region.width,region.height,
     exception);
   exception=DestroyExceptionInfo(exception);
-  if (p != (const Quantum *) NULL)
+  if (p == (const Quantum *) NULL)
     return(MagickFalse);
   count=write(file,p,length);
   if (count != (ssize_t) length)
@@ -483,15 +472,9 @@ static MagickBooleanType ReadDistributeCache(int file,
   return(MagickTrue);
 }
 
-static MagickBooleanType WriteDistributeCache(int file,
-  const MagickSizeType session_key)
+static MagickBooleanType WriteDistributeCache(SplayTreeInfo *image_registry,
+  int file,const MagickSizeType session_key)
 {
-  char
-    key[MaxTextExtent];
-
-  CacheInfo
-    *cache_info;
-
   ExceptionInfo
     *exception;
 
@@ -513,13 +496,10 @@ static MagickBooleanType WriteDistributeCache(int file,
   ssize_t
     count;
 
-  exception=AcquireExceptionInfo();
-  (void) FormatLocaleString(key,MaxTextExtent,"%.20g",(double) session_key);
-  image=(Image *) GetImageRegistry(ImageRegistryType,key,exception);
-  exception=DestroyExceptionInfo(exception);
+  image=(Image *) GetValueFromSplayTree(image_registry,(const void *)
+    session_key);
   if (image == (Image *) NULL)
     return(MagickFalse);
-  cache_info=(CacheInfo *) image->cache;
   count=read(file,&region.width,sizeof(region.width));
   if (count != (ssize_t) sizeof(region.width))
     return(MagickFalse);
@@ -527,16 +507,19 @@ static MagickBooleanType WriteDistributeCache(int file,
   if (count != (ssize_t) sizeof(region.height))
     return(MagickFalse);
   count=read(file,&region.x,sizeof(region.x));
-  if (count != (ssize_t) sizeof(region.width))
+  if (count != (ssize_t) sizeof(region.x))
     return(MagickFalse);
   count=read(file,&region.y,sizeof(region.y));
   if (count != (ssize_t) sizeof(region.y))
     return(MagickFalse);
-  length=(size_t) (region.width*cache_info->number_channels*sizeof(Quantum));
+  count=read(file,&length,sizeof(length));
+  if (count != (ssize_t) sizeof(length))
+    return(MagickFalse);
+  exception=AcquireExceptionInfo();
   p=GetAuthenticPixels(image,region.x,region.y,region.width,region.height,
     exception);
   exception=DestroyExceptionInfo(exception);
-  if (p != (Quantum *) NULL)
+  if (p == (Quantum *) NULL)
     return(MagickFalse);
   count=read(file,p,length);
   if (count != (ssize_t) length)
@@ -551,7 +534,9 @@ static void *DistributePixelCacheClient(void *socket)
     *shared_secret;
 
   int
-    client_socket,
+    client_socket;
+
+  MagickBooleanType
     status;
 
   MagickSizeType
@@ -560,6 +545,9 @@ static void *DistributePixelCacheClient(void *socket)
 
   RandomInfo
     *random_info;
+
+  SplayTreeInfo
+    *image_registry;
 
   ssize_t
     count;
@@ -585,6 +573,8 @@ static void *DistributePixelCacheClient(void *socket)
     DPCSessionKeyLength);
   session_key=CRC64(session,strlen(shared_secret)+DPCSessionKeyLength);
   random_info=DestroyRandomInfo(random_info);
+  image_registry=NewSplayTree((int (*)(const void *,const void *)) NULL,
+    (void *(*)(void *)) NULL,(void *(*)(void *)) NULL);
   client_socket=(*(int *) socket);
   count=write(client_socket,GetStringInfoDatum(secret),DPCSessionKeyLength);
   secret=DestroyStringInfo(secret);
@@ -601,22 +591,22 @@ static void *DistributePixelCacheClient(void *socket)
     {
       case 'c':
       {
-        status=CreateDistributeCache(client_socket,session_key);
-        break;
-      }
-      case 'd':
-      {
-        status=DestroyDistributeCache(client_socket,session_key);
+        status=CreateDistributeCache(image_registry,client_socket,session_key);
         break;
       }
       case 'r':
       {
-        status=ReadDistributeCache(client_socket,session_key);
+        status=ReadDistributeCache(image_registry,client_socket,session_key);
         break;
       }
-      case 'w':
+      case 'u':
       {
-        status=WriteDistributeCache(client_socket,session_key);
+        status=WriteDistributeCache(image_registry,client_socket,session_key);
+        break;
+      }
+      case 'd':
+      {
+        status=DestroyDistributeCache(image_registry,client_socket,session_key);
         break;
       }
       default:
@@ -769,7 +759,7 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
 %
 %      MagickBooleanType *ReadDistributePixelCache(
 %        DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
-%        Quantum *pixels)
+%        const MagickSizeType length,Quantum *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -779,36 +769,23 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
 %
 %    o region: read the pixels from this region of the image.
 %
+%    o length: write the pixels to this region of the image.
+%
 %    o pixels: read these pixels from the pixel cache.
 %
 */
 MagickPrivate MagickBooleanType ReadDistributePixelCache(
   DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
-  Quantum *pixels)
+  const MagickSizeType length,Quantum *pixels)
 {
-  CacheInfo
-    *cache_info;
-
-  char
-    key[MaxTextExtent];
-
-  ExceptionInfo
-    *exception;
-
   int
     file;
-
-  Image
-    *image;
 
   MagickBooleanType
     status;
 
   MagickSizeType
     session_key;
-
-  size_t
-    length;
 
   ssize_t
     count;
@@ -817,13 +794,6 @@ MagickPrivate MagickBooleanType ReadDistributePixelCache(
   assert(distribute_cache_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (Quantum *) NULL);
-  exception=AcquireExceptionInfo();
-  (void) FormatLocaleString(key,MaxTextExtent,"%.20g",(double) session_key);
-  image=(Image *) GetImageRegistry(ImageRegistryType,key,exception);
-  exception=DestroyExceptionInfo(exception);
-  if (image == (Image *) NULL)
-    return(MagickFalse);
-  cache_info=(CacheInfo *) image->cache;
   file=distribute_cache_info->file;
   session_key=distribute_cache_info->session_key;
   count=write(file,"r",1);
@@ -841,17 +811,21 @@ MagickPrivate MagickBooleanType ReadDistributePixelCache(
   count=write(file,&region->x,sizeof(region->x));
   if (count != (ssize_t) sizeof(region->x))
     return(MagickFalse);
-  count=write(file,&region->y,sizeof(region->x));
+  count=write(file,&region->y,sizeof(region->y));
   if (count != (ssize_t) sizeof(region->y))
     return(MagickFalse);
-  length=(size_t) (region->width*cache_info->number_channels*sizeof(Quantum));
-  count=read(file,(unsigned char *) pixels,length);
+  if (length != ((size_t) length))
+    return(MagickFalse);
+  count=write(file,&length,sizeof(length));
+  if (count != (ssize_t) sizeof(length))
+    return(MagickFalse);
+  count=read(file,(unsigned char *) pixels,(size_t) length);
   if (count != (ssize_t) length)
     return(MagickFalse);
   count=read(file,&status,sizeof(status));
   if (count != (ssize_t) sizeof(status))
     return(MagickFalse);
-  return(MagickTrue);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }
 
 /*
@@ -908,13 +882,13 @@ MagickPrivate void RelinquishDistributePixelCache(
 %
 %  WriteDistributePixelCache() writes image pixels to the specified region of
 %  the distributed pixel cache.
-
+%
 %
 %  The format of the WriteDistributePixelCache method is:
 %
 %      MagickBooleanType *WriteDistributePixelCache(
 %        DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
-%        const Quantum *pixels)
+%        const MagickSizeType length,const Quantum *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -924,36 +898,23 @@ MagickPrivate void RelinquishDistributePixelCache(
 %
 %    o region: write the pixels to this region of the image.
 %
+%    o length: write the pixels to this region of the image.
+%
 %    o pixels: write these pixels to the pixel cache.
 %
 */
 MagickPrivate MagickBooleanType WriteDistributePixelCache(
   DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
-  const Quantum *pixels)
+  const MagickSizeType length,const Quantum *pixels)
 {
-  CacheInfo
-    *cache_info;
-
-  char
-    key[MaxTextExtent];
-
-  ExceptionInfo
-    *exception;
-
   int
     file;
-
-  Image
-    *image;
 
   MagickBooleanType
     status;
 
   MagickSizeType
     session_key;
-
-  size_t
-    length;
 
   ssize_t
     count;
@@ -962,13 +923,6 @@ MagickPrivate MagickBooleanType WriteDistributePixelCache(
   assert(distribute_cache_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (Quantum *) NULL);
-  exception=AcquireExceptionInfo();
-  (void) FormatLocaleString(key,MaxTextExtent,"%.20g",(double) session_key);
-  image=(Image *) GetImageRegistry(ImageRegistryType,key,exception);
-  exception=DestroyExceptionInfo(exception);
-  if (image == (Image *) NULL)
-    return(MagickFalse);
-  cache_info=(CacheInfo *) image->cache;
   file=distribute_cache_info->file;
   session_key=distribute_cache_info->session_key;
   count=write(file,"u",1);
@@ -986,15 +940,19 @@ MagickPrivate MagickBooleanType WriteDistributePixelCache(
   count=write(file,&region->x,sizeof(region->x));
   if (count != (ssize_t) sizeof(region->x))
     return(MagickFalse);
-  count=write(file,&region->y,sizeof(region->x));
+  count=write(file,&region->y,sizeof(region->y));
   if (count != (ssize_t) sizeof(region->y))
     return(MagickFalse);
-  length=(size_t) (region->width*cache_info->number_channels*sizeof(Quantum));
-  count=write(file,(unsigned char *) pixels,length);
+  if (length != ((size_t) length))
+    return(MagickFalse);
+  count=write(file,&length,sizeof(length));
+  if (count != (ssize_t) sizeof(length))
+    return(MagickFalse);
+  count=write(file,(unsigned char *) pixels,(size_t) length);
   if (count != (ssize_t) length)
     return(MagickFalse);
   count=read(file,&status,sizeof(status));
   if (count != (ssize_t) sizeof(status))
     return(MagickFalse);
-  return(MagickTrue);
+  return(status != 0 ? MagickTrue : MagickFalse);
 }

@@ -50,9 +50,9 @@ extern MagickPrivate DistributeCacheInfo
 extern MagickPrivate MagickBooleanType
   OpenDistributePixelCache(DistributeCacheInfo *,Image *),
   ReadDistributePixelCache(DistributeCacheInfo *,const RectangleInfo *,
-    Quantum *),
+    const MagickSizeType,Quantum *),
   WriteDistributePixelCache(DistributeCacheInfo *,const RectangleInfo *,
-    const Quantum *);
+    const MagickSizeType,const Quantum *);
 
 extern MagickPrivate void
   RelinquishDistributePixelCache(DistributeCacheInfo *);
