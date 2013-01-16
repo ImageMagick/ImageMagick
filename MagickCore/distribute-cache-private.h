@@ -43,18 +43,27 @@ typedef struct _DistributeCacheInfo
     signature;
 } DistributeCacheInfo;
 
+extern MagickPrivate const char
+  *GetDistributeCacheHostname(const DistributeCacheInfo *);
+
 extern MagickPrivate DistributeCacheInfo
   *AcquireDistributeCacheInfo(ExceptionInfo *),
   *DestroyDistributeCacheInfo(DistributeCacheInfo *);
 
+extern MagickPrivate int
+  GetDistributeCacheFile(const DistributeCacheInfo *),
+  GetDistributeCachePort(const DistributeCacheInfo *);
+
 extern MagickPrivate MagickBooleanType
   OpenDistributePixelCache(DistributeCacheInfo *,Image *),
-  ReadDistributePixelCache(DistributeCacheInfo *,const RectangleInfo *,
-    const MagickSizeType,Quantum *),
-  WriteDistributePixelCache(DistributeCacheInfo *,const RectangleInfo *,
-    const MagickSizeType,const Quantum *);
-
-extern MagickPrivate void
-  RelinquishDistributePixelCache(DistributeCacheInfo *);
+  ReadDistributePixelCacheMetacontent(DistributeCacheInfo *,
+    const RectangleInfo *,const MagickSizeType,unsigned char *),
+  ReadDistributePixelCachePixels(DistributeCacheInfo *,const RectangleInfo *,
+    const MagickSizeType,unsigned char *),
+  RelinquishDistributePixelCache(DistributeCacheInfo *),
+  WriteDistributePixelCacheMetacontent(DistributeCacheInfo *,
+    const RectangleInfo *,const MagickSizeType,const unsigned char *),
+  WriteDistributePixelCachePixels(DistributeCacheInfo *,const RectangleInfo *,
+    const MagickSizeType,const unsigned char *);
 
 #endif
