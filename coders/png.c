@@ -2502,18 +2502,23 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         &image->chromaticity.blue_primary.x,
         &image->chromaticity.blue_primary.y);
 
+      ping_found_cHRM=MagickTrue;
     }
 
   if (image->rendering_intent != UndefinedIntent)
     {
-      png_set_sRGB(ping,ping_info,
-         Magick_RenderingIntent_to_PNG_RenderingIntent
-         (image->rendering_intent));
-      png_set_gAMA(ping,ping_info,1.000f/2.200f);
-      png_set_cHRM(ping,ping_info,
-                  0.3127f, 0.3290f, 0.6400f, 0.3300f,
-                  0.3000f, 0.6000f, 0.1500f, 0.0600f);
+      if (ping_found_sRGB != MagickTrue)
+      {
+         png_set_sRGB(ping,ping_info,
+            Magick_RenderingIntent_to_PNG_RenderingIntent
+            (image->rendering_intent));
+         png_set_gAMA(ping,ping_info,1.000f/2.200f);
+         file_gamma=1.000f/2.200f;
+         ping_found_sRGB=MagickTrue;
+         ping_found_cHRM=MagickTrue;
+      }
     }
+
 #if defined(PNG_oFFs_SUPPORTED)
   if (png_get_valid(ping,ping_info,PNG_INFO_oFFs))
     {
@@ -2804,8 +2809,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
     {
       if ((!png_get_valid(ping,ping_info,PNG_INFO_gAMA) ||
           image->gamma == 1.0) &&
-          !png_get_valid(ping,ping_info,PNG_INFO_cHRM) &&
-          !png_get_valid(ping,ping_info,PNG_INFO_sRGB))
+          ping_found_cHRM != MagickTrue && ping_found_sRGB != MagickTrue)
         {
           /* Set image->gamma to 1.0, image->rendering_intent to Undefined,
            * image->colorspace to GRAY, and reset image->chromaticity.
