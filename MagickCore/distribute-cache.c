@@ -391,21 +391,33 @@ static MagickBooleanType CreateDistributeCache(SplayTreeInfo *image_registry,
   MagickBooleanType
     status;
 
+  register unsigned char
+    *p;
+
+  size_t
+    length;
+
   ssize_t
     count;
+
+  unsigned char
+    buffer[MaxTextExtent];
 
   exception=AcquireExceptionInfo();
   image=AcquireImage((ImageInfo *) NULL,exception);
   exception=DestroyExceptionInfo(exception);
-  count=read(file,&image->columns,sizeof(image->columns));
-  if (count != (ssize_t) sizeof(image->columns))
+  length=sizeof(image->columns)+sizeof(image->rows)+
+    sizeof(image->number_channels);
+  count=read(file,buffer,length);
+  if (count != (ssize_t) length)
     return(MagickFalse);
-  count=read(file,&image->rows,sizeof(image->rows));
-  if (count != (ssize_t) sizeof(image->rows))
-    return(MagickFalse);
-  count=read(file,&image->number_channels,sizeof(image->number_channels));
-  if (count != (ssize_t) sizeof(image->number_channels))
-    return(MagickFalse);
+  p=buffer;
+  (void) memcpy(&image->columns,p,sizeof(image->columns));
+  p+=sizeof(image->columns);
+  (void) memcpy(&image->rows,p,sizeof(image->rows));
+  p+=sizeof(image->rows);
+  (void) memcpy(&image->number_channels,p,sizeof(image->number_channels));
+  p+=sizeof(image->number_channels);
   status=AddValueToSplayTree(image_registry,(const void *) session_key,image);
   return(status);
 }
@@ -413,15 +425,11 @@ static MagickBooleanType CreateDistributeCache(SplayTreeInfo *image_registry,
 static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *image_registry,
   int file,const MagickSizeType session_key)
 {
-  char
-    key[MaxTextExtent];
-
-  (void) FormatLocaleString(key,MaxTextExtent,"%.20g",(double) session_key);
-  return(DeleteImageRegistry(key));
+  return(DeleteNodeFromSplayTree(image_registry,(const void *) session_key));
 }
 
-static MagickBooleanType ReadDistributeCache(SplayTreeInfo *image_registry,
-  int file,const MagickSizeType session_key)
+static MagickBooleanType ReadDistributeCacheMetacontent(
+  SplayTreeInfo *image_registry,int file,const MagickSizeType session_key)
 {
   ExceptionInfo
     *exception;
@@ -435,31 +443,38 @@ static MagickBooleanType ReadDistributeCache(SplayTreeInfo *image_registry,
   register const Quantum
     *p;
 
+  register unsigned char
+    *q;
+
   size_t
     length;
 
   ssize_t
     count;
 
+  unsigned char
+    buffer[MaxTextExtent];
+
   image=(Image *) GetValueFromSplayTree(image_registry,(const void *)
     session_key);
   if (image == (Image *) NULL)
     return(MagickFalse);
-  count=read(file,&region.width,sizeof(region.width));
-  if (count != (ssize_t) sizeof(region.width))
+  length=sizeof(region.width)+sizeof(region.height)+sizeof(region.x)+
+    sizeof(region.y)+sizeof(length);
+  count=read(file,buffer,length);
+  if (count != (ssize_t) length)
     return(MagickFalse);
-  count=read(file,&region.height,sizeof(region.height));
-  if (count != (ssize_t) sizeof(region.height))
-    return(MagickFalse);
-  count=read(file,&region.x,sizeof(region.x));
-  if (count != (ssize_t) sizeof(region.x))
-    return(MagickFalse);
-  count=read(file,&region.y,sizeof(region.y));
-  if (count != (ssize_t) sizeof(region.y))
-    return(MagickFalse);
-  count=read(file,&length,sizeof(length));
-  if (count != (ssize_t) sizeof(length))
-    return(MagickFalse);
+  q=buffer;
+  (void) memcpy(&region.width,q,sizeof(region.width));
+  q+=sizeof(region.width);
+  (void) memcpy(&region.height,q,sizeof(region.height));
+  q+=sizeof(region.width);
+  (void) memcpy(&region.x,q,sizeof(region.x));
+  q+=sizeof(region.width);
+  (void) memcpy(&region.y,q,sizeof(region.y));
+  q+=sizeof(region.width);
+  (void) memcpy(&length,q,sizeof(length));
+  q+=sizeof(length);
   exception=AcquireExceptionInfo();
   p=GetVirtualPixels(image,region.x,region.y,region.width,region.height,
     exception);
@@ -472,8 +487,67 @@ static MagickBooleanType ReadDistributeCache(SplayTreeInfo *image_registry,
   return(MagickTrue);
 }
 
-static MagickBooleanType WriteDistributeCache(SplayTreeInfo *image_registry,
-  int file,const MagickSizeType session_key)
+static MagickBooleanType ReadDistributeCachePixels(
+  SplayTreeInfo *image_registry,int file,const MagickSizeType session_key)
+{
+  ExceptionInfo
+    *exception;
+
+  Image
+    *image;
+
+  RectangleInfo
+    region;
+
+  register const Quantum
+    *p;
+
+  register unsigned char
+    *q;
+
+  size_t
+    length;
+
+  ssize_t
+    count;
+
+  unsigned char
+    buffer[MaxTextExtent];
+
+  image=(Image *) GetValueFromSplayTree(image_registry,(const void *)
+    session_key);
+  if (image == (Image *) NULL)
+    return(MagickFalse);
+  length=sizeof(region.width)+sizeof(region.height)+sizeof(region.x)+
+    sizeof(region.y)+sizeof(length);
+  count=read(file,buffer,length);
+  if (count != (ssize_t) length)
+    return(MagickFalse);
+  q=buffer;
+  (void) memcpy(&region.width,q,sizeof(region.width));
+  q+=sizeof(region.width);
+  (void) memcpy(&region.height,q,sizeof(region.height));
+  q+=sizeof(region.width);
+  (void) memcpy(&region.x,q,sizeof(region.x));
+  q+=sizeof(region.width);
+  (void) memcpy(&region.y,q,sizeof(region.y));
+  q+=sizeof(region.width);
+  (void) memcpy(&length,q,sizeof(length));
+  q+=sizeof(length);
+  exception=AcquireExceptionInfo();
+  p=GetVirtualPixels(image,region.x,region.y,region.width,region.height,
+    exception);
+  exception=DestroyExceptionInfo(exception);
+  if (p == (const Quantum *) NULL)
+    return(MagickFalse);
+  count=write(file,p,length);
+  if (count != (ssize_t) length)
+    return(MagickFalse);
+  return(MagickTrue);
+}
+
+static MagickBooleanType WriteDistributeCacheMetacontent(
+  SplayTreeInfo *image_registry,int file,const MagickSizeType session_key)
 {
   ExceptionInfo
     *exception;
@@ -488,6 +562,9 @@ static MagickBooleanType WriteDistributeCache(SplayTreeInfo *image_registry,
     region;
 
   register Quantum
+    *q;
+
+  register unsigned char
     *p;
 
   size_t
@@ -496,32 +573,99 @@ static MagickBooleanType WriteDistributeCache(SplayTreeInfo *image_registry,
   ssize_t
     count;
 
+  unsigned char
+    buffer[MaxTextExtent];
+
   image=(Image *) GetValueFromSplayTree(image_registry,(const void *)
     session_key);
   if (image == (Image *) NULL)
     return(MagickFalse);
-  count=read(file,&region.width,sizeof(region.width));
-  if (count != (ssize_t) sizeof(region.width))
+  length=sizeof(region.width)+sizeof(region.height)+sizeof(region.x)+
+    sizeof(region.y)+sizeof(length);
+  count=read(file,buffer,length);
+  if (count != (ssize_t) length)
     return(MagickFalse);
-  count=read(file,&region.height,sizeof(region.height));
-  if (count != (ssize_t) sizeof(region.height))
-    return(MagickFalse);
-  count=read(file,&region.x,sizeof(region.x));
-  if (count != (ssize_t) sizeof(region.x))
-    return(MagickFalse);
-  count=read(file,&region.y,sizeof(region.y));
-  if (count != (ssize_t) sizeof(region.y))
-    return(MagickFalse);
-  count=read(file,&length,sizeof(length));
-  if (count != (ssize_t) sizeof(length))
-    return(MagickFalse);
+  p=buffer;
+  (void) memcpy(&region.width,p,sizeof(region.width));
+  p+=sizeof(region.width);
+  (void) memcpy(&region.height,p,sizeof(region.height));
+  p+=sizeof(region.width);
+  (void) memcpy(&region.x,p,sizeof(region.x));
+  p+=sizeof(region.width);
+  (void) memcpy(&region.y,p,sizeof(region.y));
+  p+=sizeof(region.width);
+  (void) memcpy(&length,p,sizeof(length));
+  p+=sizeof(length);
   exception=AcquireExceptionInfo();
-  p=GetAuthenticPixels(image,region.x,region.y,region.width,region.height,
+  q=GetAuthenticPixels(image,region.x,region.y,region.width,region.height,
     exception);
   exception=DestroyExceptionInfo(exception);
-  if (p == (Quantum *) NULL)
+  if (q == (Quantum *) NULL)
     return(MagickFalse);
-  count=read(file,p,length);
+  count=read(file,q,length);
+  if (count != (ssize_t) length)
+    return(MagickFalse);
+  status=SyncAuthenticPixels(image,exception);
+  return(status);
+}
+
+static MagickBooleanType WriteDistributeCachePixels(
+  SplayTreeInfo *image_registry,int file,const MagickSizeType session_key)
+{
+  ExceptionInfo
+    *exception;
+
+  Image
+    *image;
+
+  MagickBooleanType
+    status;
+
+  RectangleInfo
+    region;
+
+  register Quantum
+    *q;
+
+  register unsigned char
+    *p;
+
+  size_t
+    length;
+
+  ssize_t
+    count;
+
+  unsigned char
+    buffer[MaxTextExtent];
+
+  image=(Image *) GetValueFromSplayTree(image_registry,(const void *)
+    session_key);
+  if (image == (Image *) NULL)
+    return(MagickFalse);
+  length=sizeof(region.width)+sizeof(region.height)+sizeof(region.x)+
+    sizeof(region.y)+sizeof(length);
+  count=read(file,buffer,length);
+  if (count != (ssize_t) length)
+    return(MagickFalse);
+  p=buffer;
+  (void) memcpy(&region.width,p,sizeof(region.width));
+  p+=sizeof(region.width);
+  (void) memcpy(&region.height,p,sizeof(region.height));
+  p+=sizeof(region.width);
+  (void) memcpy(&region.x,p,sizeof(region.x));
+  p+=sizeof(region.width);
+  (void) memcpy(&region.y,p,sizeof(region.y));
+  p+=sizeof(region.width);
+  (void) memcpy(&length,p,sizeof(length));
+  p+=sizeof(length);
+  exception=AcquireExceptionInfo();
+  q=GetAuthenticPixels(image,region.x,region.y,region.width,region.height,
+    exception);
+  exception=DestroyExceptionInfo(exception);
+  if (q == (Quantum *) NULL)
+    return(MagickFalse);
+  count=read(file,q,length);
   if (count != (ssize_t) length)
     return(MagickFalse);
   status=SyncAuthenticPixels(image,exception);
@@ -596,17 +740,31 @@ static void *DistributePixelCacheClient(void *socket)
       }
       case 'r':
       {
-        status=ReadDistributeCache(image_registry,client_socket,session_key);
+        status=ReadDistributeCachePixels(image_registry,client_socket,
+          session_key);
         break;
       }
       case 'u':
       {
-        status=WriteDistributeCache(image_registry,client_socket,session_key);
+        status=WriteDistributeCachePixels(image_registry,client_socket,
+          session_key);
         break;
       }
       case 'd':
       {
         status=DestroyDistributeCache(image_registry,client_socket,session_key);
+        break;
+      }
+      case 'm':
+      {
+        status=ReadDistributeCacheMetacontent(image_registry,client_socket,
+          session_key);
+        break;
+      }
+      case 'M':
+      {
+        status=WriteDistributeCacheMetacontent(image_registry,client_socket,
+          session_key);
         break;
       }
       default:
@@ -679,6 +837,102 @@ MagickExport void DistributePixelCacheServer(const size_t port,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t D i s t r i b u t e C a c h e F i l e                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetDistributeCacheFile() returns the file associated with this
+%  DistributeCacheInfo structure.
+%
+%  The format of the GetDistributeCacheFile method is:
+%
+%      int GetDistributeCacheFile(
+%        const DistributeCacheInfo *distribute_cache_info)
+%
+%  A description of each parameter follows:
+%
+%    o distribute_cache_info: the distributed cache info.
+%
+*/
+MagickPrivate int GetDistributeCacheFile(
+  const DistributeCacheInfo *distribute_cache_info)
+{
+  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
+  assert(distribute_cache_info->signature == MagickSignature);
+  return(distribute_cache_info->file);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t D i s t r i b u t e C a c h e H o s t n a m e                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetDistributeCacheHostname() returns the hostname associated with this
+%  DistributeCacheInfo structure.
+%
+%  The format of the GetDistributeCacheHostname method is:
+%
+%      const char *GetDistributeCacheHostname(
+%        const DistributeCacheInfo *distribute_cache_info)
+%
+%  A description of each parameter follows:
+%
+%    o distribute_cache_info: the distributed cache info.
+%
+*/
+MagickPrivate const char *GetDistributeCacheHostname(
+  const DistributeCacheInfo *distribute_cache_info)
+{
+  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
+  assert(distribute_cache_info->signature == MagickSignature);
+  return(distribute_cache_info->hostname);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t D i s t r i b u t e C a c h e P o r t                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetDistributeCachePort() returns the port associated with this
+%  DistributeCacheInfo structure.
+%
+%  The format of the GetDistributeCachePort method is:
+%
+%      int GetDistributeCachePort(
+%        const DistributeCacheInfo *distribute_cache_info)
+%
+%  A description of each parameter follows:
+%
+%    o distribute_cache_info: the distributed cache info.
+%
+*/
+MagickPrivate int GetDistributeCachePort(
+  const DistributeCacheInfo *distribute_cache_info)
+{
+  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
+  assert(distribute_cache_info->signature == MagickSignature);
+  return(distribute_cache_info->port);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   O p e n D i s t r i b u t e P i x e l C a c h e                           %
 %                                                                             %
 %                                                                             %
@@ -702,40 +956,37 @@ MagickExport void DistributePixelCacheServer(const size_t port,
 MagickPrivate MagickBooleanType OpenDistributePixelCache(
   DistributeCacheInfo *distribute_cache_info,Image *image)
 {
-  int
-    file;
-
   MagickBooleanType
     status;
 
-  MagickSizeType
-    session_key;
+  register unsigned char
+    *p;
 
   ssize_t
     count;
+
+  unsigned char
+    buffer[MaxTextExtent];
 
   assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
   assert(distribute_cache_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  file=distribute_cache_info->file;
-  session_key=distribute_cache_info->session_key;
-  count=write(file,"c",1);
-  if (count != 1)
+  p=buffer;
+  *p++='c';  /* create */
+  (void) memcpy(p,&distribute_cache_info->session_key,
+    sizeof(distribute_cache_info->session_key));
+  p+=sizeof(distribute_cache_info->session_key);
+  (void) memcpy(p,&image->columns,sizeof(image->columns));
+  p+=sizeof(image->columns);
+  (void) memcpy(p,&image->rows,sizeof(image->rows));
+  p+=sizeof(image->rows);
+  (void) memcpy(p,&image->number_channels,sizeof(image->number_channels));
+  p+=sizeof(image->number_channels);
+  count=write(distribute_cache_info->file,buffer,p-buffer);
+  if (count != (ssize_t) (p-buffer))
     return(MagickFalse);
-  count=write(file,&session_key,sizeof(session_key));
-  if (count != (ssize_t) sizeof(session_key))
-    return(MagickFalse);
-  count=write(file,&image->columns,sizeof(image->columns));
-  if (count != (ssize_t) sizeof(image->columns))
-    return(MagickFalse);
-  count=write(file,&image->rows,sizeof(image->rows));
-  if (count != (ssize_t) sizeof(image->rows))
-    return(MagickFalse);
-  count=write(file,&image->number_channels,sizeof(image->number_channels));
-  if (count != (ssize_t) sizeof(image->number_channels))
-    return(MagickFalse);
-  count=read(file,&status,sizeof(status));
+  count=read(distribute_cache_info->file,&status,sizeof(status));
   if (count != (ssize_t) sizeof(status))
     return(MagickFalse);
   return(MagickTrue);
@@ -746,20 +997,102 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d D i s t r i b u t e P i x e l C a c h e                           %
+%   R e a d D i s t r i b u t e P i x e l C a c h e M e t a c o n t e n t     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadDistributePixelCache() reads pixels from the specified region of the
-%  distributed pixel cache.
+%  ReadDistributePixelCacheMetacontents() reads metacontent from the specified
+%  region of the distributed pixel cache.
 %
-%  The format of the ReadDistributePixelCache method is:
+%  The format of the ReadDistributePixelCacheMetacontents method is:
 %
-%      MagickBooleanType *ReadDistributePixelCache(
+%      MagickBooleanType *ReadDistributePixelCacheMetacontents(
 %        DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
-%        const MagickSizeType length,Quantum *pixels)
+%        const MagickSizeType length,unsigned char *metacontent)
+%
+%  A description of each parameter follows:
+%
+%    o distribute_cache_info: the distributed cache info.
+%
+%    o image: the image.
+%
+%    o region: read the metacontent from this region of the image.
+%
+%    o length: write the metacontent to this region of the image.
+%
+%    o metacontent: read these metacontent from the pixel cache.
+%
+*/
+MagickPrivate MagickBooleanType ReadDistributePixelCacheMetacontent(
+  DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
+  const MagickSizeType length,unsigned char *metacontent)
+{
+  MagickBooleanType
+    status;
+
+  register unsigned char
+    *p;
+
+  ssize_t
+    count;
+
+  unsigned char
+    buffer[MaxTextExtent];
+
+  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
+  assert(distribute_cache_info->signature == MagickSignature);
+  assert(region != (RectangleInfo *) NULL);
+  assert(metacontent != (unsigned char *) NULL);
+  assert(length == ((size_t) length));
+  p=buffer;
+  *p++='m';  /* read */
+  (void) memcpy(p,&distribute_cache_info->session_key,
+    sizeof(distribute_cache_info->session_key));
+  p+=sizeof(distribute_cache_info->session_key);
+  (void) memcpy(p,&region->width,sizeof(region->width));
+  p+=sizeof(region->width);
+  (void) memcpy(p,&region->height,sizeof(region->height));
+  p+=sizeof(region->height);
+  (void) memcpy(p,&region->x,sizeof(region->x));
+  p+=sizeof(region->x);
+  (void) memcpy(p,&region->y,sizeof(region->y));
+  p+=sizeof(region->y);
+  (void) memcpy(p,&length,sizeof(length));
+  p+=sizeof(length);
+  count=write(distribute_cache_info->file,buffer,p-buffer);
+  if (count != (ssize_t) (p-buffer))
+    return(MagickFalse);
+  count=read(distribute_cache_info->file,(unsigned char *) metacontent,(size_t)
+    length);
+  if (count != (ssize_t) length)
+    return(MagickFalse);
+  count=read(distribute_cache_info->file,&status,sizeof(status));
+  if (count != (ssize_t) sizeof(status))
+    return(MagickFalse);
+  return(status != 0 ? MagickTrue : MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d D i s t r i b u t e P i x e l C a c h e P i x e l s               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadDistributePixelCachePixels() reads pixels from the specified region of
+%  the distributed pixel cache.
+%
+%  The format of the ReadDistributePixelCachePixels method is:
+%
+%      MagickBooleanType *ReadDistributePixelCachePixels(
+%        DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
+%        const MagickSizeType length,unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -774,55 +1107,50 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
 %    o pixels: read these pixels from the pixel cache.
 %
 */
-MagickPrivate MagickBooleanType ReadDistributePixelCache(
+MagickPrivate MagickBooleanType ReadDistributePixelCachePixels(
   DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
-  const MagickSizeType length,Quantum *pixels)
+  const MagickSizeType length,unsigned char *pixels)
 {
-  int
-    file;
-
   MagickBooleanType
     status;
 
-  MagickSizeType
-    session_key;
+  register unsigned char
+    *p;
 
   ssize_t
     count;
 
+  unsigned char
+    buffer[MaxTextExtent];
+
   assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
   assert(distribute_cache_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
-  assert(pixels != (Quantum *) NULL);
-  file=distribute_cache_info->file;
-  session_key=distribute_cache_info->session_key;
-  count=write(file,"r",1);
-  if (count != 1)
+  assert(pixels != (unsigned char *) NULL);
+  assert(length == ((size_t) length));
+  p=buffer;
+  *p++='r';  /* read */
+  (void) memcpy(p,&distribute_cache_info->session_key,
+    sizeof(distribute_cache_info->session_key));
+  p+=sizeof(distribute_cache_info->session_key);
+  (void) memcpy(p,&region->width,sizeof(region->width));
+  p+=sizeof(region->width);
+  (void) memcpy(p,&region->height,sizeof(region->height));
+  p+=sizeof(region->height);
+  (void) memcpy(p,&region->x,sizeof(region->x));
+  p+=sizeof(region->x);
+  (void) memcpy(p,&region->y,sizeof(region->y));
+  p+=sizeof(region->y);
+  (void) memcpy(p,&length,sizeof(length));
+  p+=sizeof(length);
+  count=write(distribute_cache_info->file,buffer,p-buffer);
+  if (count != (ssize_t) (p-buffer))
     return(MagickFalse);
-  count=write(file,&session_key,sizeof(session_key));
-  if (count != (ssize_t) sizeof(session_key))
-    return(MagickFalse);
-  count=write(file,&region->width,sizeof(region->width));
-  if (count != (ssize_t) sizeof(region->width))
-    return(MagickFalse);
-  count=write(file,&region->height,sizeof(region->height));
-  if (count != (ssize_t) sizeof(region->height))
-    return(MagickFalse);
-  count=write(file,&region->x,sizeof(region->x));
-  if (count != (ssize_t) sizeof(region->x))
-    return(MagickFalse);
-  count=write(file,&region->y,sizeof(region->y));
-  if (count != (ssize_t) sizeof(region->y))
-    return(MagickFalse);
-  if (length != ((size_t) length))
-    return(MagickFalse);
-  count=write(file,&length,sizeof(length));
-  if (count != (ssize_t) sizeof(length))
-    return(MagickFalse);
-  count=read(file,(unsigned char *) pixels,(size_t) length);
+  count=read(distribute_cache_info->file,(unsigned char *) pixels,(size_t)
+    length);
   if (count != (ssize_t) length)
     return(MagickFalse);
-  count=read(file,&status,sizeof(status));
+  count=read(distribute_cache_info->file,&status,sizeof(status));
   if (count != (ssize_t) sizeof(status))
     return(MagickFalse);
   return(status != 0 ? MagickTrue : MagickFalse);
@@ -844,7 +1172,7 @@ MagickPrivate MagickBooleanType ReadDistributePixelCache(
 %
 %  The format of the RelinquishDistributePixelCache method is:
 %
-%      void RelinquishDistributePixelCache(
+%      MagickBooleanType RelinquishDistributePixelCache(
 %        DistributeCacheInfo *distribute_cache_info)
 %
 %  A description of each parameter follows:
@@ -852,21 +1180,29 @@ MagickPrivate MagickBooleanType ReadDistributePixelCache(
 %    o distribute_cache_info: the distributed cache info.
 %
 */
-MagickPrivate void RelinquishDistributePixelCache(
+MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
   DistributeCacheInfo *distribute_cache_info)
 {
-  int
-    file;
+  register unsigned char
+    *p;
 
-  MagickSizeType
-    session_key;
+  ssize_t
+    count;
+
+  unsigned char
+    buffer[MaxTextExtent];
 
   assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
   assert(distribute_cache_info->signature == MagickSignature);
-  file=distribute_cache_info->file;
-  session_key=distribute_cache_info->session_key;
-  (void) write(file,"c",1);
-  (void) write(file,&session_key,sizeof(session_key));
+  p=buffer;
+  *p++='d';  /* delete */
+  (void) memcpy(p,&distribute_cache_info->session_key,
+    sizeof(distribute_cache_info->session_key));
+  p+=sizeof(distribute_cache_info->session_key);
+  count=write(distribute_cache_info->file,buffer,p-buffer);
+  if (count != (ssize_t) (p-buffer))
+    return(MagickFalse);
+  return(MagickTrue);
 }
 
 /*
@@ -874,21 +1210,104 @@ MagickPrivate void RelinquishDistributePixelCache(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e D i s t r i b u t e P i x e l C a c h e                         %
+%   W r i t e D i s t r i b u t e P i x e l C a c h e M e t a c o n t e n t   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteDistributePixelCache() writes image pixels to the specified region of
-%  the distributed pixel cache.
+%  WriteDistributePixelCacheMetacontents() writes image metacontent to the
+%  specified region of the distributed pixel cache.
 %
 %
-%  The format of the WriteDistributePixelCache method is:
+%  The format of the WriteDistributePixelCacheMetacontents method is:
 %
-%      MagickBooleanType *WriteDistributePixelCache(
+%      MagickBooleanType *WriteDistributePixelCacheMetacontents(
 %        DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
-%        const MagickSizeType length,const Quantum *pixels)
+%        const MagickSizeType length,const unsigned char *metacontent)
+%
+%  A description of each parameter follows:
+%
+%    o distribute_cache_info: the distributed cache info.
+%
+%    o image: the image.
+%
+%    o region: write the metacontent to this region of the image.
+%
+%    o length: write the metacontent to this region of the image.
+%
+%    o metacontent: write these metacontent to the pixel cache.
+%
+*/
+MagickPrivate MagickBooleanType WriteDistributePixelCacheMetacontent(
+  DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
+  const MagickSizeType length,const unsigned char *metacontent)
+{
+  MagickBooleanType
+    status;
+
+  register unsigned char
+    *p;
+
+  ssize_t
+    count;
+
+  unsigned char
+    buffer[MaxTextExtent];
+
+  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
+  assert(distribute_cache_info->signature == MagickSignature);
+  assert(region != (RectangleInfo *) NULL);
+  assert(metacontent != (unsigned char *) NULL);
+  assert(length == ((size_t) length));
+  p=buffer;
+  *p++='M';  /* update */
+  (void) memcpy(p,&distribute_cache_info->session_key,
+    sizeof(distribute_cache_info->session_key));
+  p+=sizeof(distribute_cache_info->session_key);
+  (void) memcpy(p,&region->width,sizeof(region->width));
+  p+=sizeof(region->width);
+  (void) memcpy(p,&region->height,sizeof(region->height));
+  p+=sizeof(region->height);
+  (void) memcpy(p,&region->x,sizeof(region->x));
+  p+=sizeof(region->x);
+  (void) memcpy(p,&region->y,sizeof(region->y));
+  p+=sizeof(region->y);
+  (void) memcpy(p,&length,sizeof(length));
+  p+=sizeof(length);
+  count=write(distribute_cache_info->file,buffer,p-buffer);
+  if (count != (ssize_t) (p-buffer))
+    return(MagickFalse);
+  count=write(distribute_cache_info->file,(unsigned char *) metacontent,(size_t)
+    length);
+  if (count != (ssize_t) length)
+    return(MagickFalse);
+  count=read(distribute_cache_info->file,&status,sizeof(status));
+  if (count != (ssize_t) sizeof(status))
+    return(MagickFalse);
+  return(status != 0 ? MagickTrue : MagickFalse);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e D i s t r i b u t e P i x e l C a c h e P i x e l s             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteDistributePixelCachePixels() writes image pixels to the specified
+%  region of the distributed pixel cache.
+%
+%
+%  The format of the WriteDistributePixelCachePixels method is:
+%
+%      MagickBooleanType *WriteDistributePixelCachePixels(
+%        DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
+%        const MagickSizeType length,const unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -903,55 +1322,50 @@ MagickPrivate void RelinquishDistributePixelCache(
 %    o pixels: write these pixels to the pixel cache.
 %
 */
-MagickPrivate MagickBooleanType WriteDistributePixelCache(
+MagickPrivate MagickBooleanType WriteDistributePixelCachePixels(
   DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
-  const MagickSizeType length,const Quantum *pixels)
+  const MagickSizeType length,const unsigned char *pixels)
 {
-  int
-    file;
-
   MagickBooleanType
     status;
 
-  MagickSizeType
-    session_key;
+  register unsigned char
+    *p;
 
   ssize_t
     count;
 
+  unsigned char
+    buffer[MaxTextExtent];
+
   assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
   assert(distribute_cache_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
-  assert(pixels != (Quantum *) NULL);
-  file=distribute_cache_info->file;
-  session_key=distribute_cache_info->session_key;
-  count=write(file,"u",1);
-  if (count != 1)
+  assert(pixels != (const unsigned char *) NULL);
+  assert(length == ((size_t) length));
+  p=buffer;
+  *p++='u';  /* update */
+  (void) memcpy(p,&distribute_cache_info->session_key,
+    sizeof(distribute_cache_info->session_key));
+  p+=sizeof(distribute_cache_info->session_key);
+  (void) memcpy(p,&region->width,sizeof(region->width));
+  p+=sizeof(region->width);
+  (void) memcpy(p,&region->height,sizeof(region->height));
+  p+=sizeof(region->height);
+  (void) memcpy(p,&region->x,sizeof(region->x));
+  p+=sizeof(region->x);
+  (void) memcpy(p,&region->y,sizeof(region->y));
+  p+=sizeof(region->y);
+  (void) memcpy(p,&length,sizeof(length));
+  p+=sizeof(length);
+  count=write(distribute_cache_info->file,buffer,p-buffer);
+  if (count != (ssize_t) (p-buffer))
     return(MagickFalse);
-  count=write(file,&session_key,sizeof(session_key));
-  if (count != (ssize_t) sizeof(session_key))
-    return(MagickFalse);
-  count=write(file,&region->width,sizeof(region->width));
-  if (count != (ssize_t) sizeof(region->width))
-    return(MagickFalse);
-  count=write(file,&region->height,sizeof(region->height));
-  if (count != (ssize_t) sizeof(region->height))
-    return(MagickFalse);
-  count=write(file,&region->x,sizeof(region->x));
-  if (count != (ssize_t) sizeof(region->x))
-    return(MagickFalse);
-  count=write(file,&region->y,sizeof(region->y));
-  if (count != (ssize_t) sizeof(region->y))
-    return(MagickFalse);
-  if (length != ((size_t) length))
-    return(MagickFalse);
-  count=write(file,&length,sizeof(length));
-  if (count != (ssize_t) sizeof(length))
-    return(MagickFalse);
-  count=write(file,(unsigned char *) pixels,(size_t) length);
+  count=write(distribute_cache_info->file,(unsigned char *) pixels,(size_t)
+    length);
   if (count != (ssize_t) length)
     return(MagickFalse);
-  count=read(file,&status,sizeof(status));
+  count=read(distribute_cache_info->file,&status,sizeof(status));
   if (count != (ssize_t) sizeof(status))
     return(MagickFalse);
   return(status != 0 ? MagickTrue : MagickFalse);

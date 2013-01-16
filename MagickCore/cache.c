@@ -1049,6 +1049,8 @@ static MagickBooleanType ClonePixelCachePixels(CacheInfo *clone_info,
 
   if (cache_info->type == PingCache)
     return(MagickTrue);
+  if (cache_info->type == DistributedCache)
+    return(PixelCacheCloneUnoptimized(clone_info,cache_info,exception));
   p=cache_info->channel_map;
   q=clone_info->channel_map;
   if ((cache_info->columns == clone_info->columns) &&
@@ -1237,7 +1239,7 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
     }
     case DistributedCache:
     {
-      RelinquishDistributePixelCache(cache_info->distribute_cache_info);
+      (void) RelinquishDistributePixelCache(cache_info->distribute_cache_info);
       break;
     }
     default:
@@ -3861,15 +3863,13 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                 {
                   (void) FormatMagickSize(cache_info->length,MagickFalse,
                     format);
-/*
                   (void) FormatLocaleString(message,MaxTextExtent,
                     "open %s (%d[%d], distribute, %.20gx%.20gx%.20g %s)",
-                    cache_info->distribute_cache_info->hostname,
-                    cache_info->distribute_cache_info->port,
-                    cache_info->distribute_cache_info->file,(double)
-                    cache_info->columns,(double) cache_info->rows,(double)
-                    cache_info->number_channels,format);
-*/
+                    GetDistributeCacheHostname(cache_info->distribute_cache_info),
+                    GetDistributeCachePort(cache_info->distribute_cache_info),
+                    GetDistributeCacheFile(cache_info->distribute_cache_info),
+                    (double) cache_info->columns,(double) cache_info->rows,
+                    (double) cache_info->number_channels,format);
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
@@ -4472,8 +4472,23 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
     }
     case DistributedCache:
     {
-      puts("b");
-      abort();
+      MagickBooleanType
+        status;
+
+      /*
+        Read metacontent from distributed cache.
+      */
+      LockSemaphoreInfo(cache_info->file_semaphore);
+      status=ReadDistributePixelCacheMetacontent(
+        cache_info->distribute_cache_info,&nexus_info->region,length,
+        (unsigned char *) nexus_info->pixels);
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
+      if (status == MagickFalse)
+        {
+          ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
+            GetDistributeCacheHostname(cache_info->distribute_cache_info));
+          return(MagickFalse);
+        }
       break;
     }
     default:
@@ -4616,18 +4631,16 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
         status;
 
       /*
-        Read pixels to distributed cache.
+        Read pixels from distributed cache.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      status=ReadDistributePixelCache(cache_info->distribute_cache_info,
-        &nexus_info->region,length,nexus_info->pixels);
+      status=ReadDistributePixelCachePixels(cache_info->distribute_cache_info,
+        &nexus_info->region,length,(unsigned char *) nexus_info->pixels);
       UnlockSemaphoreInfo(cache_info->file_semaphore);
       if (status == MagickFalse)
         {
-/*
-          ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
-            cache_info->distribute_cache_info->hostname);
-*/
+          ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
+            GetDistributeCacheHostname(cache_info->distribute_cache_info));
           return(MagickFalse);
         }
       break;
@@ -5394,8 +5407,23 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
     }
     case DistributedCache:
     {
-      puts("e");
-      abort();
+      MagickBooleanType
+        status;
+
+      /*
+        Write metacontent to distributed cache.
+      */
+      LockSemaphoreInfo(cache_info->file_semaphore);
+      status=WriteDistributePixelCacheMetacontent(
+        cache_info->distribute_cache_info,&nexus_info->region,length,
+        (const unsigned char *) nexus_info->metacontent);
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
+      if (status == MagickFalse)
+        {
+          ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
+            GetDistributeCacheHostname(cache_info->distribute_cache_info));
+          return(MagickFalse);
+        }
       break;
     }
     default:
@@ -5542,15 +5570,13 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
         Write pixels to distributed cache.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      status=WriteDistributePixelCache(cache_info->distribute_cache_info,
-        &nexus_info->region,length,nexus_info->pixels);
+      status=WriteDistributePixelCachePixels(cache_info->distribute_cache_info,
+        &nexus_info->region,length,(const unsigned char *) nexus_info->pixels);
       UnlockSemaphoreInfo(cache_info->file_semaphore);
       if (status == MagickFalse)
         {
-/*
           ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
-            cache_info->distribute_cache_info->hostname);
-*/
+            GetDistributeCacheHostname(cache_info->distribute_cache_info));
           return(MagickFalse);
         }
       break;
