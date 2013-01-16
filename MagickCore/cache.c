@@ -4620,7 +4620,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
       status=ReadDistributePixelCache(cache_info->distribute_cache_info,
-        &nexus_info->region,nexus_info->pixels);
+        &nexus_info->region,length,nexus_info->pixels);
       UnlockSemaphoreInfo(cache_info->file_semaphore);
       if (status == MagickFalse)
         {
@@ -4630,7 +4630,6 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
 */
           return(MagickFalse);
         }
-      break;
       break;
     }
     default:
@@ -5544,7 +5543,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
       status=WriteDistributePixelCache(cache_info->distribute_cache_info,
-        &nexus_info->region,nexus_info->pixels);
+        &nexus_info->region,length,nexus_info->pixels);
       UnlockSemaphoreInfo(cache_info->file_semaphore);
       if (status == MagickFalse)
         {
