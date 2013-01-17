@@ -412,6 +412,8 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *image_registry,
   exception=AcquireExceptionInfo();
   image=AcquireImage((ImageInfo *) NULL,exception);
   exception=DestroyExceptionInfo(exception);
+  if (image == (Image *) NULL)
+    return(MagickFalse);
   length=sizeof(image->columns)+sizeof(image->rows)+
     sizeof(image->number_channels);
   count=read(file,buffer,length);
