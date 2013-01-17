@@ -28,6 +28,7 @@ typedef enum
   MagickAlignOptions = 0,
   MagickAlphaOptions,
   MagickBooleanOptions,
+  MagickCacheOptions,
   MagickChannelOptions,
   MagickClassOptions,
   MagickClipPathOptions,

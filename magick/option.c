@@ -117,6 +117,14 @@ static const OptionInfo
     { "1", 1L, UndefinedOptionFlag, MagickFalse },
     { (char *) NULL, 0L, UndefinedOptionFlag, MagickFalse }
   },
+  CacheOptions[] =
+  {
+    { "Disk", DiskCache, UndefinedOptionFlag, MagickFalse },
+    { "Map", MapCache, UndefinedOptionFlag, MagickFalse },
+    { "Memory", MemoryCache, UndefinedOptionFlag, MagickFalse },
+    { "Ping", PingCache, UndefinedOptionFlag, MagickFalse },
+    { (char *) NULL, MagickFalse, UndefinedOptionFlag, MagickFalse }
+  },
   ChannelOptions[] =
   {
     { "Undefined", UndefinedChannel, UndefinedOptionFlag, MagickTrue },
@@ -1191,6 +1199,7 @@ static const OptionInfo
     { "Align", MagickAlignOptions, UndefinedOptionFlag, MagickFalse },
     { "Alpha", MagickAlphaOptions, UndefinedOptionFlag, MagickFalse },
     { "Boolean", MagickBooleanOptions, UndefinedOptionFlag, MagickFalse },
+    { "Cache", MagickCacheOptions, UndefinedOptionFlag, MagickFalse },
     { "Channel", MagickChannelOptions, UndefinedOptionFlag, MagickFalse },
     { "Class", MagickClassOptions, UndefinedOptionFlag, MagickFalse },
     { "ClipPath", MagickClipPathOptions, UndefinedOptionFlag, MagickFalse },
@@ -1832,6 +1841,7 @@ static const OptionInfo *GetOptionInfo(const CommandOption option)
     case MagickAlignOptions: return(AlignOptions);
     case MagickAlphaOptions: return(AlphaOptions);
     case MagickBooleanOptions: return(BooleanOptions);
+    case MagickCacheOptions: return(CacheOptions);
     case MagickChannelOptions: return(ChannelOptions);
     case MagickClassOptions: return(ClassOptions);
     case MagickClipPathOptions: return(ClipPathOptions);

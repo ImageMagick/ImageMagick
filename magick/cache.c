@@ -57,6 +57,7 @@
 #include "magick/magick.h"
 #include "magick/memory_.h"
 #include "magick/memory-private.h"
+#include "magick/option.h"
 #include "magick/pixel.h"
 #include "magick/pixel-accessor.h"
 #include "magick/pixel-private.h"
@@ -887,8 +888,6 @@ static MagickBooleanType CloneDiskToMemoryPixelCache(CacheInfo *clone_info,
     columns,
     rows;
 
-  if (cache_info->debug != MagickFalse)
-    (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => memory");
   if (OpenPixelCacheOnDisk(cache_info,IOMode) == MagickFalse)
     {
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
@@ -999,8 +998,6 @@ static MagickBooleanType CloneMemoryToDiskPixelCache(CacheInfo *clone_info,
     columns,
     rows;
 
-  if (cache_info->debug != MagickFalse)
-    (void) LogMagickEvent(CacheEvent,GetMagickModule(),"memory => disk");
   if (OpenPixelCacheOnDisk(clone_info,IOMode) == MagickFalse)
     {
       ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
@@ -1146,8 +1143,6 @@ static MagickBooleanType CloneMemoryToMemoryPixelCache(CacheInfo *clone_info,
     length,
     rows;
 
-  if (cache_info->debug != MagickFalse)
-    (void) LogMagickEvent(CacheEvent,GetMagickModule(),"memory => memory");
   columns=(size_t) MagickMin(clone_info->columns,cache_info->columns);
   rows=(size_t) MagickMin(clone_info->rows,cache_info->rows);
   if ((clone_info->active_index_channel != MagickFalse) &&
@@ -1218,6 +1213,16 @@ static MagickBooleanType CloneMemoryToMemoryPixelCache(CacheInfo *clone_info,
 static MagickBooleanType ClonePixelCachePixels(CacheInfo *clone_info,
   CacheInfo *cache_info,ExceptionInfo *exception)
 {
+  if (cache_info->debug != MagickFalse)
+    {
+      char
+        message[MaxTextExtent];
+
+      (void) FormatLocaleString(message,MaxTextExtent,"%s => %s",
+        CommandOptionToMnemonic(MagickCacheOptions,(ssize_t) cache_info->type),
+        CommandOptionToMnemonic(MagickCacheOptions,(ssize_t) clone_info->type));
+      (void) LogMagickEvent(CacheEvent,GetMagickModule(),message);
+    }
   if (cache_info->type == PingCache)
     return(MagickTrue);
   if ((clone_info->type != DiskCache) && (cache_info->type != DiskCache))
