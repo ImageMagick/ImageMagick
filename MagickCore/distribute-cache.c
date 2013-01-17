@@ -379,7 +379,13 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 %
 */
 
-static MagickBooleanType CreateDistributeCache(SplayTreeInfo *image_registry,
+static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *image_registry,
+  int file,const MagickSizeType session_key)
+{
+  return(DeleteNodeFromSplayTree(image_registry,(const void *) session_key));
+}
+
+static MagickBooleanType OpenDistributeCache(SplayTreeInfo *image_registry,
   int file,const MagickSizeType session_key)
 {
   ExceptionInfo
@@ -420,12 +426,6 @@ static MagickBooleanType CreateDistributeCache(SplayTreeInfo *image_registry,
   p+=sizeof(image->number_channels);
   status=AddValueToSplayTree(image_registry,(const void *) session_key,image);
   return(status);
-}
-
-static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *image_registry,
-  int file,const MagickSizeType session_key)
-{
-  return(DeleteNodeFromSplayTree(image_registry,(const void *) session_key));
 }
 
 static MagickBooleanType ReadDistributeCacheMetacontent(
@@ -739,9 +739,9 @@ static void *DistributePixelCacheClient(void *socket)
     status=MagickFalse;
     switch (command)
     {
-      case 'c':
+      case 'o':
       {
-        status=CreateDistributeCache(image_registry,client_socket,session_key);
+        status=OpenDistributeCache(image_registry,client_socket,session_key);
         break;
       }
       case 'r':
@@ -750,27 +750,27 @@ static void *DistributePixelCacheClient(void *socket)
           session_key);
         break;
       }
-      case 'u':
+      case 'R':
+      {
+        status=ReadDistributeCacheMetacontent(image_registry,client_socket,
+          session_key);
+        break;
+      }
+      case 'w':
       {
         status=WriteDistributeCachePixels(image_registry,client_socket,
+          session_key);
+        break;
+      }
+      case 'W':
+      {
+        status=WriteDistributeCacheMetacontent(image_registry,client_socket,
           session_key);
         break;
       }
       case 'd':
       {
         status=DestroyDistributeCache(image_registry,client_socket,session_key);
-        break;
-      }
-      case 'm':
-      {
-        status=ReadDistributeCacheMetacontent(image_registry,client_socket,
-          session_key);
-        break;
-      }
-      case 'M':
-      {
-        status=WriteDistributeCacheMetacontent(image_registry,client_socket,
-          session_key);
         break;
       }
       default:
@@ -981,7 +981,7 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   p=buffer;
-  *p++='c';  /* create */
+  *p++='o';  /* open */
   (void) memcpy(p,&distribute_cache_info->session_key,
     sizeof(distribute_cache_info->session_key));
   p+=sizeof(distribute_cache_info->session_key);
@@ -1055,7 +1055,7 @@ MagickPrivate MagickBooleanType ReadDistributePixelCacheMetacontent(
   assert(metacontent != (unsigned char *) NULL);
   assert(length == ((size_t) length));
   p=buffer;
-  *p++='m';  /* read */
+  *p++='R';  /* read */
   (void) memcpy(p,&distribute_cache_info->session_key,
     sizeof(distribute_cache_info->session_key));
   p+=sizeof(distribute_cache_info->session_key);
@@ -1269,7 +1269,7 @@ MagickPrivate MagickBooleanType WriteDistributePixelCacheMetacontent(
   assert(metacontent != (unsigned char *) NULL);
   assert(length == ((size_t) length));
   p=buffer;
-  *p++='M';  /* update */
+  *p++='W';  /* write */
   (void) memcpy(p,&distribute_cache_info->session_key,
     sizeof(distribute_cache_info->session_key));
   p+=sizeof(distribute_cache_info->session_key);
@@ -1352,7 +1352,7 @@ MagickPrivate MagickBooleanType WriteDistributePixelCachePixels(
   assert(pixels != (const unsigned char *) NULL);
   assert(length == ((size_t) length));
   p=buffer;
-  *p++='u';  /* update */
+  *p++='w';  /* write */
   (void) memcpy(p,&distribute_cache_info->session_key,
     sizeof(distribute_cache_info->session_key));
   p+=sizeof(distribute_cache_info->session_key);
