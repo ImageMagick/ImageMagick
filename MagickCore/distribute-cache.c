@@ -811,7 +811,7 @@ MagickExport void DistributePixelCacheServer(const size_t port,
     sizeof(address));
   if (status != 0)
     ThrowFatalException(CacheFatalError,"UnableToBind");
-  status=listen(server_socket,32);
+  status=listen(server_socket,1024);
   if (status != 0)
     ThrowFatalException(CacheFatalError,"UnableToListen");
   pthread_attr_init(&attributes);
