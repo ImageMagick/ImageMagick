@@ -1020,7 +1020,7 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
 %
 %    o region: read the metacontent from this region of the image.
 %
-%    o length: write the metacontent to this region of the image.
+%    o length: the length in bytes of the metacontent.
 %
 %    o metacontent: read these metacontent from the pixel cache.
 %
@@ -1102,7 +1102,7 @@ MagickPrivate MagickBooleanType ReadDistributePixelCacheMetacontent(
 %
 %    o region: read the pixels from this region of the image.
 %
-%    o length: write the pixels to this region of the image.
+%    o length: the length in bytes of the pixels.
 %
 %    o pixels: read these pixels from the pixel cache.
 %
@@ -1234,7 +1234,7 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
 %
 %    o region: write the metacontent to this region of the image.
 %
-%    o length: write the metacontent to this region of the image.
+%    o length: the length in bytes of the metacontent.
 %
 %    o metacontent: write these metacontent to the pixel cache.
 %
@@ -1317,7 +1317,7 @@ MagickPrivate MagickBooleanType WriteDistributePixelCacheMetacontent(
 %
 %    o region: write the pixels to this region of the image.
 %
-%    o length: write the pixels to this region of the image.
+%    o length: the length in bytes of the pixels.
 %
 %    o pixels: write these pixels to the pixel cache.
 %
