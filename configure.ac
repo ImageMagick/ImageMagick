@@ -22,8 +22,8 @@ AC_PREREQ(2.69)
 
 m4_define([magick_major_version], [6])
 m4_define([magick_minor_version], [8])
-m4_define([magick_micro_version], [1])
-m4_define([magick_patchlevel_version], [10])
+m4_define([magick_micro_version], [2])
+m4_define([magick_patchlevel_version], [0])
 m4_define([magick_version],
           [magick_major_version.magick_minor_version.magick_micro_version-magick_patchlevel_version])
 m4_define([magick_svn_revision], esyscmd([sh -c "(svnversion .) | awk '{ print \$1 }' | tr -d '\n'"]))
@@ -1115,16 +1115,6 @@ MATH_LIBS=''
 AC_CHECK_LIB(m,sqrt,MATH_LIBS="-lm",,)
 LIBS="$MATH_LIBS $LIBS"
 AC_SUBST(MATH_LIBS)
-
-#
-# Find socket library
-#
-AC_SEARCH_LIBS(gethostbyname, resolv nsl)
-AC_SEARCH_LIBS(socket, socket,
-[
-  AC_DEFINE([HAVE_SOCKET],[1],[Define to 1 if you have socket support.])
-  MAGICK_FEATURES="DPC $MAGICK_FEATURES"
-])
 
 AC_CHECK_FUNCS([acosh _aligned_malloc asinh atanh atoll atexit cabs carg cimag creal clock ctime_r directio _exit execvp fchmod floor fork ftime ftruncate getc_unlocked getcwd getpid getexecname getdtablesize getpagesize getrlimit getrusage gettimeofday gmtime_r isnan j0 j1 lltostr localtime_r lstat memmove memset mkstemp munmap nanosleep newlocale _NSGetExecutablePath pclose _pclose poll popen _popen posix_fadvise posix_fallocate posix_madvise posix_memalign posix_spawnp pow pread pwrite qsort_r raise rand_r readlink readdir_r realpath select seekdir setlocale socket sqrt setvbuf stat strchr strerror_r strrchr strcspn strdup strpbrk strspn strstr strtod strtod_l strtol strtoul symlink sysconf sigemptyset sigaction spawnvp strerror strlcat strlcpy strcasecmp strncasecmp telldir tempnam times ulltostr uselocale usleep utime vfprintf vfprintf_l vsprintf vsnprintf vsnprintf_l waitpid _wfopen _wstat])
 
