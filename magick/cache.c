@@ -1404,11 +1404,6 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
       RelinquishMagickResource(DiskResource,cache_info->length);
       break;
     }
-    case DistributedCache:
-    {
-      abort();
-      break;
-    }
     default:
       break;
   }
@@ -1446,9 +1441,6 @@ MagickExport Cache DestroyPixelCache(Cache cache)
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
     }
   RelinquishPixelCachePixels(cache_info);
-  if (cache_info->distribute_cache_info != (DistributeCacheInfo *) NULL)
-    cache_info->distribute_cache_info=
-      DestroyDistributeCacheInfo(cache_info->distribute_cache_info);
   if (cache_info->nexus_info != (NexusInfo **) NULL)
     cache_info->nexus_info=DestroyPixelCacheNexus(cache_info->nexus_info,
       cache_info->number_threads);
@@ -4081,12 +4073,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   status=AcquireMagickResource(DiskResource,cache_info->length);
   if (status == MagickFalse)
     {
-      cache_info->distribute_cache_info=AcquireDistributeCacheInfo(exception);
-      if (cache_info->distribute_cache_info != (DistributeCacheInfo *) NULL)
-        {
-          cache_info->type=DistributedCache;
-          return(MagickTrue);
-        }
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
       return(MagickFalse);
@@ -4673,11 +4659,6 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
         }
       break;
     }
-    case DistributedCache:
-    {
-      abort();
-      break;
-    }
     default:
       break;
   }
@@ -4809,11 +4790,6 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
             cache_info->cache_filename);
           return(MagickFalse);
         }
-      break;
-    }
-    case DistributedCache:
-    {
-      abort();
       break;
     }
     default:
@@ -5565,11 +5541,6 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
         }
       break;
     }
-    case DistributedCache:
-    {
-      abort();
-      break;
-    }
     default:
       break;
   }
@@ -5701,11 +5672,6 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
             cache_info->cache_filename);
           return(MagickFalse);
         }
-      break;
-    }
-    case DistributedCache:
-    {
-      abort();
       break;
     }
     default:

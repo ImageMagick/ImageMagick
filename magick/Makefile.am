@@ -127,9 +127,6 @@ MAGICK_BASE_SRCS = \
 	magick/display-private.h \
 	magick/distort.c \
 	magick/distort.h \
-	magick/distribute-cache.c \
-	magick/distribute-cache.h \
-	magick/distribute-cache-private.h \
 	magick/draw.c \
 	magick/draw.h \
 	magick/draw-private.h \
@@ -333,7 +330,6 @@ MAGICK_INCLUDE_HDRS = \
 	magick/deprecate.h \
 	magick/display.h \
 	magick/distort.h \
-	magick/distribute-cache.h \
 	magick/draw.h \
 	magick/effect.h \
 	magick/enhance.h \
@@ -409,7 +405,6 @@ MAGICK_NOINST_HDRS = \
 	magick/composite-private.h \
 	magick/delegate-private.h \
 	magick/display-private.h \
-	magick/distribute-cache-private.h \
 	magick/draw-private.h \
 	magick/exception-private.h \
 	magick/fx-private.h \

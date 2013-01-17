@@ -3646,7 +3646,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=10551:10584M
+MAGICK_SVN_REVISION=10632:10642M
 
 
 
@@ -21489,7 +21489,7 @@ fi
 
 
 # Check additional headers
-for ac_header in arm/limits.h complex.h errno.h fcntl.h limits.h linux/unistd.h locale.h machine/param.h mach-o/dyld.h netinet/in.h OS.h process.h sun_prefetch.h stdarg.h sys/ipc.h sys/mman.h sys/resource.h sys/socket.h sys/syslimits.h sys/time.h sys/timeb.h sys/times.h sys/wait.h wchar.h xlocale.h
+for ac_header in arm/limits.h arpa/inet.h complex.h errno.h fcntl.h limits.h linux/unistd.h locale.h machine/param.h mach-o/dyld.h netinet/in.h OS.h process.h sun_prefetch.h stdarg.h sys/ipc.h sys/mman.h sys/resource.h sys/socket.h sys/syslimits.h sys/time.h sys/timeb.h sys/times.h sys/wait.h wchar.h xlocale.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -25018,7 +25018,7 @@ if test "$ac_res" != no; then :
 
 $as_echo "#define HAVE_SOCKET 1" >>confdefs.h
 
-  MAGICK_FEATURES="DistributedPixelCache $MAGICK_FEATURES"
+  MAGICK_FEATURES="DPC $MAGICK_FEATURES"
 
 fi
 
@@ -30779,6 +30779,178 @@ $as_echo "yes" >&6; }
         fi
 
         if test $passed -gt 0 -a $failed -le 0; then
+          if test "1${var}" = '17' ; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng17" >&5
+$as_echo_n "checking for png_get_io_ptr in -lpng17... " >&6; }
+if ${ac_cv_lib_png17_png_get_io_ptr+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpng17  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char png_get_io_ptr ();
+int
+main ()
+{
+return png_get_io_ptr ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_png17_png_get_io_ptr=yes
+else
+  ac_cv_lib_png17_png_get_io_ptr=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png17_png_get_io_ptr" >&5
+$as_echo "$ac_cv_lib_png17_png_get_io_ptr" >&6; }
+if test "x$ac_cv_lib_png17_png_get_io_ptr" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_image_free in -lpng17" >&5
+$as_echo_n "checking for png_image_free in -lpng17... " >&6; }
+if ${ac_cv_lib_png17_png_image_free+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpng17  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char png_image_free ();
+int
+main ()
+{
+return png_image_free ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_png17_png_image_free=yes
+else
+  ac_cv_lib_png17_png_image_free=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png17_png_image_free" >&5
+$as_echo "$ac_cv_lib_png17_png_image_free" >&6; }
+if test "x$ac_cv_lib_png17_png_image_free" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+          fi
+          if test "1${var}" = '16' ; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng16" >&5
+$as_echo_n "checking for png_get_io_ptr in -lpng16... " >&6; }
+if ${ac_cv_lib_png16_png_get_io_ptr+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpng16  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char png_get_io_ptr ();
+int
+main ()
+{
+return png_get_io_ptr ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_png16_png_get_io_ptr=yes
+else
+  ac_cv_lib_png16_png_get_io_ptr=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png16_png_get_io_ptr" >&5
+$as_echo "$ac_cv_lib_png16_png_get_io_ptr" >&6; }
+if test "x$ac_cv_lib_png16_png_get_io_ptr" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_image_free in -lpng16" >&5
+$as_echo_n "checking for png_image_free in -lpng16... " >&6; }
+if ${ac_cv_lib_png16_png_image_free+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpng16  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char png_image_free ();
+int
+main ()
+{
+return png_image_free ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_png16_png_image_free=yes
+else
+  ac_cv_lib_png16_png_image_free=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png16_png_image_free" >&5
+$as_echo "$ac_cv_lib_png16_png_image_free" >&6; }
+if test "x$ac_cv_lib_png16_png_image_free" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+          fi
           if test "1${var}" = '15' ; then
             { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng15" >&5
 $as_echo_n "checking for png_get_io_ptr in -lpng15... " >&6; }

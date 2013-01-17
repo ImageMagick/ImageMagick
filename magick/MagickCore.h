@@ -86,7 +86,6 @@ extern "C" {
 #include "magick/deprecate.h"
 #include "magick/display.h"
 #include "magick/distort.h"
-#include "magick/distribute-cache.h"
 #include "magick/draw.h"
 #include "magick/effect.h"
 #include "magick/enhance.h"
