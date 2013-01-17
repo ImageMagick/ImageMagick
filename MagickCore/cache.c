@@ -3733,6 +3733,9 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     format[MaxTextExtent],
     message[MaxTextExtent];
 
+  const char
+    *type;
+
   MagickBooleanType
     status;
 
@@ -3820,12 +3823,14 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if (image->debug != MagickFalse)
                 {
                   (void) FormatMagickSize(cache_info->length,MagickTrue,format);
+                  type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
+                    cache_info->type);
                   (void) FormatLocaleString(message,MaxTextExtent,
-                    "open %s (%s memory, %.20gx%.20gx%.20g %s)",
+                    "open %s (%s %s, %.20gx%.20gx%.20g %s)",
                     cache_info->filename,cache_info->mapped != MagickFalse ?
-                    "anonymous" : "heap",(double) cache_info->columns,(double)
-                    cache_info->rows,(double) cache_info->number_channels,
-                    format);
+                    "Anonymous" : "Heap",type,(double) cache_info->columns,
+                    (double) cache_info->rows,(double)
+                    cache_info->number_channels,format);
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
@@ -3859,12 +3864,14 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                 {
                   (void) FormatMagickSize(cache_info->length,MagickFalse,
                     format);
+                  type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
+                    cache_info->type);
                   (void) FormatLocaleString(message,MaxTextExtent,
-                    "open %s (%d[%d], distribute, %.20gx%.20gx%.20g %s)",
+                    "open %s (%d[%d], %s, %.20gx%.20gx%.20g %s)",
                     GetDistributeCacheHostname(cache_info->distribute_cache_info),
                     GetDistributeCachePort(cache_info->distribute_cache_info),
                     GetDistributeCacheFile(cache_info->distribute_cache_info),
-                    (double) cache_info->columns,(double) cache_info->rows,
+                    type,(double) cache_info->columns,(double) cache_info->rows,
                     (double) cache_info->number_channels,format);
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
@@ -3938,10 +3945,12 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if (image->debug != MagickFalse)
                 {
                   (void) FormatMagickSize(cache_info->length,MagickTrue,format);
+                  type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
+                    cache_info->type);
                   (void) FormatLocaleString(message,MaxTextExtent,
-                    "open %s (%s[%d], memory-mapped, %.20gx%.20gx%.20g %s)",
+                    "open %s (%s[%d], %s, %.20gx%.20gx%.20g %s)",
                     cache_info->filename,cache_info->cache_filename,
-                    cache_info->file,(double) cache_info->columns,(double)
+                    cache_info->file,type,(double) cache_info->columns,(double)
                     cache_info->rows,(double) cache_info->number_channels,
                     format);
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
@@ -3961,9 +3970,11 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   if (image->debug != MagickFalse)
     {
       (void) FormatMagickSize(cache_info->length,MagickFalse,format);
+      type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
+        cache_info->type);
       (void) FormatLocaleString(message,MaxTextExtent,
-        "open %s (%s[%d], disk, %.20gx%.20gx%.20g %s)",cache_info->filename,
-        cache_info->cache_filename,cache_info->file,(double)
+        "open %s (%s[%d], %s, %.20gx%.20gx%.20g %s)",cache_info->filename,
+        cache_info->cache_filename,cache_info->file,type,(double)
         cache_info->columns,(double) cache_info->rows,(double)
         cache_info->number_channels,format);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
