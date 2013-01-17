@@ -87,7 +87,7 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A c q u i r e D i s t r i b u t e C a c h e I n f o                       %
++   A c q u i r e D i s t r i b u t e C a c h e I n f o                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -323,7 +323,7 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y D i s t r i b u t e C a c h e I n f o                       %
++   D e s t r o y D i s t r i b u t e C a c h e I n f o                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -933,7 +933,7 @@ MagickPrivate int GetDistributeCachePort(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   O p e n D i s t r i b u t e P i x e l C a c h e                           %
++   O p e n D i s t r i b u t e P i x e l C a c h e                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -997,7 +997,7 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d D i s t r i b u t e P i x e l C a c h e M e t a c o n t e n t     %
++   R e a d D i s t r i b u t e P i x e l C a c h e M e t a c o n t e n t     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1079,7 +1079,7 @@ MagickPrivate MagickBooleanType ReadDistributePixelCacheMetacontent(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d D i s t r i b u t e P i x e l C a c h e P i x e l s               %
++   R e a d D i s t r i b u t e P i x e l C a c h e P i x e l s               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1161,7 +1161,7 @@ MagickPrivate MagickBooleanType ReadDistributePixelCachePixels(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e l i n q u i s h D i s t r i b u t e P i x e l C a c h e               %
++   R e l i n q u i s h D i s t r i b u t e P i x e l C a c h e               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1210,7 +1210,7 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e D i s t r i b u t e P i x e l C a c h e M e t a c o n t e n t   %
++   W r i t e D i s t r i b u t e P i x e l C a c h e M e t a c o n t e n t   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1293,7 +1293,7 @@ MagickPrivate MagickBooleanType WriteDistributePixelCacheMetacontent(
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e D i s t r i b u t e P i x e l C a c h e P i x e l s             %
++   W r i t e D i s t r i b u t e P i x e l C a c h e P i x e l s             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
