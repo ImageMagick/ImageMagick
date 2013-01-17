@@ -780,6 +780,8 @@ static void *DistributePixelCacheClient(void *socket)
     if (count != (ssize_t) sizeof(status))
       break;
   }
+  (void) close(client_socket);
+  image_registry=DestroySplayTree(image_registry);
   return((void *) NULL);
 }
 
