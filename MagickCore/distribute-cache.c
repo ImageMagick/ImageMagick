@@ -431,6 +431,9 @@ static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *image_registry,
 static MagickBooleanType ReadDistributeCacheMetacontent(
   SplayTreeInfo *image_registry,int file,const MagickSizeType session_key)
 {
+  const unsigned char
+    *metacontent;
+
   ExceptionInfo
     *exception;
 
@@ -481,7 +484,8 @@ static MagickBooleanType ReadDistributeCacheMetacontent(
   exception=DestroyExceptionInfo(exception);
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
-  count=write(file,p,length);
+  metacontent=GetVirtualMetacontent(image);
+  count=write(file,metacontent,length);
   if (count != (ssize_t) length)
     return(MagickFalse);
   return(MagickTrue);
@@ -574,7 +578,8 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
     count;
 
   unsigned char
-    buffer[MaxTextExtent];
+    buffer[MaxTextExtent],
+    *metacontent;
 
   image=(Image *) GetValueFromSplayTree(image_registry,(const void *)
     session_key);
@@ -602,7 +607,8 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
   exception=DestroyExceptionInfo(exception);
   if (q == (Quantum *) NULL)
     return(MagickFalse);
-  count=read(file,q,length);
+  metacontent=GetAuthenticMetacontent(image);
+  count=read(file,metacontent,length);
   if (count != (ssize_t) length)
     return(MagickFalse);
   status=SyncAuthenticPixels(image,exception);
