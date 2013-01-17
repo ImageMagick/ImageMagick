@@ -848,8 +848,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
               continue;
             }
           offset=cache_info->channel_map[channel].offset;
-          if ((clone_info->type != DiskCache) &&
-              (clone_info->type != DistributedCache))
+          if ((clone_info->type == MemoryCache) ||
+              (clone_info->type == MapCache))
             (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,p+
               offset*sizeof(Quantum),sizeof(Quantum));
           else
@@ -874,8 +874,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
         (void) ResetMagickMemory(blob,0,length*sizeof(*blob));
         for ( ; x < (ssize_t) clone_info->columns; x++)
         {
-          if ((clone_info->type != DiskCache) &&
-              (clone_info->type != DistributedCache))
+          if ((clone_info->type == MemoryCache) ||
+              (clone_info->type == MapCache))
             (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,
               blob,length);
           else
@@ -948,8 +948,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
                 Write a set of metacontent.
               */
               length=clone_info->metacontent_extent;
-              if ((clone_info->type != DiskCache) &&
-                  (clone_info->type != DistributedCache))
+              if ((clone_info->type == MemoryCache) ||
+                  (clone_info->type == MapCache))
                 (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,
                   p,length);
               else
@@ -971,8 +971,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
           /*
             Set remaining columns as undefined.
           */
-          if ((clone_info->type != DiskCache) &&
-              (clone_info->type != DistributedCache))
+          if ((clone_info->type == MemoryCache) ||
+              (clone_info->type == MapCache))
             (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,
               blob,length);
           else
@@ -998,8 +998,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
           {
             for (x=0; x < (ssize_t) clone_info->columns; x++)
             {
-              if ((clone_info->type != DiskCache) &&
-                  (clone_info->type != DistributedCache))
+              if ((clone_info->type == MemoryCache) ||
+                  (clone_info->type == MapCache))
                 (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,
                   blob,length);
               else
@@ -1275,8 +1275,8 @@ MagickPrivate Cache DestroyPixelCache(Cache cache)
     }
   RelinquishPixelCachePixels(cache_info);
   if (cache_info->distribute_cache_info != (DistributeCacheInfo *) NULL)
-    cache_info->distribute_cache_info=
-      DestroyDistributeCacheInfo(cache_info->distribute_cache_info);
+    cache_info->distribute_cache_info=DestroyDistributeCacheInfo(
+      cache_info->distribute_cache_info);
   if (cache_info->nexus_info != (NexusInfo **) NULL)
     cache_info->nexus_info=DestroyPixelCacheNexus(cache_info->nexus_info,
       cache_info->number_threads);
@@ -4867,8 +4867,7 @@ static Quantum *SetPixelCacheNexusPixels(const Image *image,const MapMode mode,
   if (cache_info->type == UndefinedCache)
     return((Quantum *) NULL);
   nexus_info->region=(*region);
-  if ((cache_info->type != DiskCache) &&
-      (cache_info->type != DistributedCache) && (cache_info->type != PingCache))
+  if ((cache_info->type == MemoryCache) || (cache_info->type == MapCache))
     {
       ssize_t
         x,
