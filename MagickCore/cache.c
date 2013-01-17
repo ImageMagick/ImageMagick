@@ -58,6 +58,7 @@
 #include "MagickCore/memory_.h"
 #include "MagickCore/memory-private.h"
 #include "MagickCore/nt-base-private.h"
+#include "MagickCore/option.h"
 #include "MagickCore/pixel.h"
 #include "MagickCore/pixel-accessor.h"
 #include "MagickCore/policy.h"
@@ -612,8 +613,6 @@ static MagickBooleanType DiskToDiskPixelCacheClone(CacheInfo *clone_info,
   /*
     Clone pixel cache (both caches on disk).
   */
-  if (cache_info->debug != MagickFalse)
-    (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => disk");
   blob=(unsigned char *) AcquireQuantumMemory(MagickMaxBufferExtent,
     sizeof(*blob));
   if (blob == (unsigned char *) NULL)
@@ -678,8 +677,6 @@ static MagickBooleanType PixelCacheCloneOptimized(CacheInfo *clone_info,
       /*
         Clone pixel cache (both caches in memory).
       */
-      if (cache_info->debug != MagickFalse)
-        (void) LogMagickEvent(CacheEvent,GetMagickModule(),"memory => memory");
       (void) memcpy(clone_info->pixels,cache_info->pixels,(size_t)
         cache_info->length);
       return(MagickTrue);
@@ -689,8 +686,6 @@ static MagickBooleanType PixelCacheCloneOptimized(CacheInfo *clone_info,
       /*
         Clone pixel cache (one cache on disk, one in memory).
       */
-      if (cache_info->debug != MagickFalse)
-        (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => memory");
       if (OpenPixelCacheOnDisk(cache_info,ReadMode) == MagickFalse)
         {
           ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
@@ -713,8 +708,6 @@ static MagickBooleanType PixelCacheCloneOptimized(CacheInfo *clone_info,
       /*
         Clone pixel cache (one cache on disk, one in memory).
       */
-      if (clone_info->debug != MagickFalse)
-        (void) LogMagickEvent(CacheEvent,GetMagickModule(),"memory => disk");
       if (OpenPixelCacheOnDisk(clone_info,WriteMode) == MagickFalse)
         {
           ThrowFileException(exception,FileOpenError,"UnableToOpenFile",
@@ -767,19 +760,6 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
   /*
     Clone pixel cache (unoptimized).
   */
-  if (cache_info->debug != MagickFalse)
-    {
-      if ((cache_info->type != DiskCache) && (clone_info->type != DiskCache))
-        (void) LogMagickEvent(CacheEvent,GetMagickModule(),"memory => memory");
-      else
-       if ((clone_info->type != DiskCache) && (cache_info->type == DiskCache))
-         (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => memory");
-       else
-         if ((clone_info->type == DiskCache) && (cache_info->type != DiskCache))
-           (void) LogMagickEvent(CacheEvent,GetMagickModule(),"memory => disk");
-         else
-           (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => disk");
-    }
   length=(size_t) MagickMax(MagickMax(cache_info->number_channels,
     clone_info->number_channels)*sizeof(Quantum),MagickMax(
     cache_info->metacontent_extent,clone_info->metacontent_extent));
@@ -868,7 +848,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
               continue;
             }
           offset=cache_info->channel_map[channel].offset;
-          if (clone_info->type != DiskCache)
+          if ((clone_info->type != DiskCache) &&
+              (clone_info->type != DistributedCache))
             (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,p+
               offset*sizeof(Quantum),sizeof(Quantum));
           else
@@ -893,7 +874,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
         (void) ResetMagickMemory(blob,0,length*sizeof(*blob));
         for ( ; x < (ssize_t) clone_info->columns; x++)
         {
-          if (clone_info->type != DiskCache)
+          if ((clone_info->type != DiskCache) &&
+              (clone_info->type != DistributedCache))
             (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,
               blob,length);
           else
@@ -966,7 +948,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
                 Write a set of metacontent.
               */
               length=clone_info->metacontent_extent;
-              if (clone_info->type != DiskCache)
+              if ((clone_info->type != DiskCache) &&
+                  (clone_info->type != DistributedCache))
                 (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,
                   p,length);
               else
@@ -988,7 +971,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
           /*
             Set remaining columns as undefined.
           */
-          if (clone_info->type != DiskCache)
+          if ((clone_info->type != DiskCache) &&
+              (clone_info->type != DistributedCache))
             (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,
               blob,length);
           else
@@ -1014,7 +998,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
           {
             for (x=0; x < (ssize_t) clone_info->columns; x++)
             {
-              if (clone_info->type != DiskCache)
+              if ((clone_info->type != DiskCache) &&
+                  (clone_info->type != DistributedCache))
                 (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,
                   blob,length);
               else
@@ -1047,6 +1032,16 @@ static MagickBooleanType ClonePixelCachePixels(CacheInfo *clone_info,
     *p,
     *q;
 
+  if (cache_info->debug != MagickFalse)
+    {
+      char
+        message[MaxTextExtent];
+
+      (void) FormatLocaleString(message,MaxTextExtent,"%s => %s",
+        CommandOptionToMnemonic(MagickCacheOptions,(ssize_t) cache_info->type),
+        CommandOptionToMnemonic(MagickCacheOptions,(ssize_t) clone_info->type));
+      (void) LogMagickEvent(CacheEvent,GetMagickModule(),message);
+    }
   if (cache_info->type == PingCache)
     return(MagickTrue);
   if (cache_info->type == DistributedCache)

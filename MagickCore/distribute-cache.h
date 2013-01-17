@@ -25,7 +25,7 @@ extern "C" {
 #include "MagickCore/exception.h"
 
 extern MagickExport void
-  PixelCacheServer(const size_t,ExceptionInfo *);
+  DistributePixelCacheServer(const size_t,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
