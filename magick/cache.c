@@ -5025,7 +5025,7 @@ static PixelPacket *SetPixelCacheNexusPixels(const Image *image,
   if (cache_info->type == UndefinedCache)
     return((PixelPacket *) NULL);
   nexus_info->region=(*region);
-  if ((cache_info->type != DiskCache) && (cache_info->type != PingCache) &&
+  if (((cache_info->type == MemoryCache) || (cache_info->type == MapCache)) &&
       (image->clip_mask == (Image *) NULL) && (image->mask == (Image *) NULL))
     {
       ssize_t
