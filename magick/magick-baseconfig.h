@@ -98,6 +98,11 @@
 /* Define to 1 if you have the <arm/limits.h> header file. */
 /* #undef HAVE_ARM_LIMITS_H */
 
+/* Define to 1 if you have the <arpa/inet.h> header file. */
+#ifndef MAGICKCORE_HAVE_ARPA_INET_H
+#define MAGICKCORE_HAVE_ARPA_INET_H 1
+#endif
+
 /* Define to 1 if you have the `asinh' function. */
 #ifndef MAGICKCORE_HAVE_ASINH
 #define MAGICKCORE_HAVE_ASINH 1
