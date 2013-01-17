@@ -6,11 +6,12 @@
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22586).
 
 2013-01-06  6.8.1-10 Glenn Randers-Pehrson <glennrp@image...>
-  * Fixed LBR (left-bit-replication) macro in coders/png.c; problem reported
+  * Fixed LBR01 (left-bit-replication) macro in coders/png.c; problem reported
     by the clang compiler.
-  * Chromaticity values were written in the wrong order in the cHRM chunk
+  * Chromaticity values were read in the wrong order in the cHRM chunk
     when it accompanied the sRGB chunk. Libpng applications built with
-    libpng16 and later will detect this and issue a warning.  Removed the
+    libpng16 and later will detect this and issue a warning (PNG files
+    previously written with the cHRM chunk are OK).  Removed the
     troublesome redundant png_set_cHRM() and png_set_sRGB() calls.
   * Look for libpng17 and libpng16 while configuring PNG support.
 
