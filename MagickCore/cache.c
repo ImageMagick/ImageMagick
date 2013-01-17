@@ -812,7 +812,7 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
         Read a set of pixel channels.
       */
       length=cache_info->number_channels*sizeof(Quantum);
-      if (cache_info->type != DiskCache)
+      if ((cache_info->type == MemoryCache) || (cache_info->type == MapCache))
         p=(unsigned char *) cache_info->pixels+cache_offset;
       else
         {
@@ -900,7 +900,7 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
     */
     for (x=0; x < (ssize_t) clone_info->columns; x++)
     {
-      if (clone_info->type != DiskCache)
+      if ((clone_info->type == MemoryCache) || (clone_info->type == MapCache))
         (void) memcpy((unsigned char *) clone_info->pixels+clone_offset,blob,
           length);
       else
@@ -929,7 +929,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
             Read a set of metacontent.
           */
           length=cache_info->metacontent_extent;
-          if (cache_info->type != DiskCache)
+          if ((cache_info->type == MemoryCache) ||
+              (cache_info->type == MapCache))
             p=(unsigned char *) cache_info->pixels+cache_offset;
           else
             {
