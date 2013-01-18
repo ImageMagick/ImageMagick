@@ -3858,8 +3858,6 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                     exception);
                   RelinquishPixelCachePixels(&source_info);
                 }
-              (void) FormatLocaleString(cache_info->filename,MaxTextExtent,"%s",
-                GetDistributeCacheHostname(cache_info->server_info));
               (void) FormatLocaleString(cache_info->cache_filename,
                 MaxTextExtent,"%s:%d",
                 GetDistributeCacheHostname(cache_info->server_info),
