@@ -1107,8 +1107,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         }
       if (LocaleCompare(attribute,"alpha") == 0)
         {
-          sp=SvPOK(sval) ? ParseCommandOption(MagickAlphaChannelOptions,MagickFalse,
-            SvPV(sval,na)) : SvIV(sval);
+          sp=SvPOK(sval) ? ParseCommandOption(MagickAlphaChannelOptions,
+            MagickFalse,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
               ThrowPerlException(exception,OptionError,"UnrecognizedType",
@@ -1116,7 +1116,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               break;
             }
           for ( ; image; image=image->next)
-            (void) SetImageAlphaChannel(image,(AlphaChannelOption) sp,exception);
+            (void) SetImageAlphaChannel(image,(AlphaChannelOption) sp,
+              exception);
           break;
         }
       if (LocaleCompare(attribute,"antialias") == 0)
