@@ -176,7 +176,7 @@ typedef struct _CacheInfo
     *random_info;
 
   void
-    *distribute_cache_info;
+    *server_info;
 
   MagickBooleanType
     synchronize,
