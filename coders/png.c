@@ -498,7 +498,6 @@
 
 
 #if MAGICKCORE_QUANTUM_DEPTH > 16
-  ResetMagickMemory(&image->chromaticity,0,sizeof(image->chromaticity));
 /* LBR16: Replicate top 16 bits */
 
 #define LBR16PacketRed(pixelpacket) \
