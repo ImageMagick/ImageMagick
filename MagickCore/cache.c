@@ -4484,12 +4484,25 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
       MagickBooleanType
         status;
 
+      RectangleInfo
+        region;
+
       /*
         Read metacontent from distributed cache.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      status=ReadDistributePixelCacheMetacontent(cache_info->server_info,
-        &nexus_info->region,length,(unsigned char *) nexus_info->pixels);
+      region=nexus_info->region;
+      region.height=1;
+      status=MagickTrue;
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        status=ReadDistributePixelCachePixels(cache_info->server_info,
+          &region,length,(unsigned char *) q);
+        if (status == MagickFalse)
+          break;
+        q+=cache_info->number_channels*nexus_info->region.width;
+        region.y++;
+      }
       UnlockSemaphoreInfo(cache_info->file_semaphore);
       if (status == MagickFalse)
         {
@@ -4563,7 +4576,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
     return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
     nexus_info->region.x;
-  length=(MagickSizeType) nexus_info->region.width*cache_info->number_channels*
+  length=(MagickSizeType) cache_info->number_channels*nexus_info->region.width*
     sizeof(Quantum);
   rows=nexus_info->region.height;
   extent=length*rows;
@@ -4638,12 +4651,25 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
       MagickBooleanType
         status;
 
+      RectangleInfo
+        region;
+
       /*
         Read pixels from distributed cache.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      status=ReadDistributePixelCachePixels(cache_info->server_info,
-        &nexus_info->region,length,(unsigned char *) nexus_info->pixels);
+      region=nexus_info->region;
+      region.height=1;
+      status=MagickTrue;
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        status=ReadDistributePixelCachePixels(cache_info->server_info,
+          &region,length,(unsigned char *) q);
+        if (status == MagickFalse)
+          break;
+        q+=cache_info->number_channels*nexus_info->region.width;
+        region.y++;
+      }
       UnlockSemaphoreInfo(cache_info->file_semaphore);
       if (status == MagickFalse)
         {
@@ -5417,13 +5443,25 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
       MagickBooleanType
         status;
 
+      RectangleInfo
+        region;
+
       /*
         Write metacontent to distributed cache.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      status=WriteDistributePixelCacheMetacontent(cache_info->server_info,
-        &nexus_info->region,length,(const unsigned char *)
-        nexus_info->metacontent);
+      region=nexus_info->region;
+      region.height=1;
+      status=MagickTrue;
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        status=WriteDistributePixelCachePixels(cache_info->server_info,
+          &region,length,(const unsigned char *) p);
+        if (status == MagickFalse)
+          break;
+        p+=nexus_info->region.width*cache_info->metacontent_extent;
+        region.y++;
+      }
       UnlockSemaphoreInfo(cache_info->file_semaphore);
       if (status == MagickFalse)
         {
@@ -5497,7 +5535,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
     return(MagickTrue);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
     nexus_info->region.x;
-  length=(MagickSizeType) nexus_info->region.width*cache_info->number_channels*
+  length=(MagickSizeType) cache_info->number_channels*nexus_info->region.width*
     sizeof(Quantum);
   rows=nexus_info->region.height;
   extent=length*rows;
@@ -5523,7 +5561,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
       for (y=0; y < (ssize_t) rows; y++)
       {
         (void) memcpy(q,p,(size_t) length);
-        p+=nexus_info->region.width*cache_info->number_channels;
+        p+=cache_info->number_channels*nexus_info->region.width;
         q+=cache_info->columns*cache_info->number_channels;
       }
       break;
@@ -5554,7 +5592,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
           p);
         if ((MagickSizeType) count != length)
           break;
-        p+=nexus_info->region.width*cache_info->number_channels;
+        p+=cache_info->number_channels*nexus_info->region.width;
         offset+=cache_info->columns;
       }
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
@@ -5573,12 +5611,25 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
       MagickBooleanType
         status;
 
+      RectangleInfo
+        region;
+
       /*
         Write pixels to distributed cache.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      status=WriteDistributePixelCachePixels(cache_info->server_info,
-        &nexus_info->region,length,(const unsigned char *) nexus_info->pixels);
+      region=nexus_info->region;
+      region.height=1;
+      status=MagickTrue;
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        status=WriteDistributePixelCachePixels(cache_info->server_info,
+          &region,length,(const unsigned char *) p);
+        if (status == MagickFalse)
+          break;
+        p+=cache_info->number_channels*nexus_info->region.width;
+        region.y++;
+      }
       UnlockSemaphoreInfo(cache_info->file_semaphore);
       if (status == MagickFalse)
         {
