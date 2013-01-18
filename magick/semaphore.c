@@ -299,8 +299,8 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
     status=pthread_mutex_destroy(&(*semaphore_info)->mutex);
     if (status != 0)
       {
-        errno=status;
-        ThrowFatalException(ResourceLimitFatalError,"UnableToDestroySemaphore");
+        perror("unable to destroy semaphore");
+        _exit(1);
       }
   }
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
