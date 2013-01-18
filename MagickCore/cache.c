@@ -3858,6 +3858,12 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                     exception);
                   RelinquishPixelCachePixels(&source_info);
                 }
+              (void) FormatLocaleString(cache_info->filename,MaxTextExtent,"%s",
+                GetDistributeCacheHostname(cache_info->server_info));
+              (void) FormatLocaleString(cache_info->cache_filename,
+                MaxTextExtent,"%s:%d",
+                GetDistributeCacheHostname(cache_info->server_info),
+                GetDistributeCachePort(cache_info->server_info));
               if (image->debug != MagickFalse)
                 {
                   (void) FormatMagickSize(cache_info->length,MagickFalse,
@@ -3865,9 +3871,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
                     cache_info->type);
                   (void) FormatLocaleString(message,MaxTextExtent,
-                    "open %s (%d[%d], %s, %.20gx%.20gx%.20g %s)",
-                    GetDistributeCacheHostname(cache_info->server_info),
-                    GetDistributeCachePort(cache_info->server_info),
+                    "open %s (%s[%d], %s, %.20gx%.20gx%.20g %s)",
+                    cache_info->filename,cache_info->cache_filename,
                     GetDistributeCacheFile(cache_info->server_info),type,
                     (double) cache_info->columns,(double) cache_info->rows,
                     (double) cache_info->number_channels,format);
@@ -4490,7 +4495,7 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
       if (status == MagickFalse)
         {
           ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
-            GetDistributeCacheHostname(cache_info->server_info));
+            cache_info->cache_filename);
           return(MagickFalse);
         }
       break;
@@ -4644,7 +4649,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
       if (status == MagickFalse)
         {
           ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
-            GetDistributeCacheHostname(cache_info->server_info));
+            cache_info->cache_filename);
           return(MagickFalse);
         }
       break;
@@ -5424,7 +5429,7 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
       if (status == MagickFalse)
         {
           ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
-            GetDistributeCacheHostname(cache_info->server_info));
+            cache_info->cache_filename);
           return(MagickFalse);
         }
       break;
@@ -5579,7 +5584,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
       if (status == MagickFalse)
         {
           ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
-            GetDistributeCacheHostname(cache_info->server_info));
+            cache_info->cache_filename);
           return(MagickFalse);
         }
       break;

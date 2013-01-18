@@ -800,6 +800,8 @@ static void *DistributePixelCacheClient(void *client_info)
     count=send(client_socket,&status,sizeof(status),0);
     if (count != (ssize_t) sizeof(status))
       break;
+    if (command == 'd')
+      break;
   }
   (void) close(client_socket);
   image_registry=DestroySplayTree(image_registry);
