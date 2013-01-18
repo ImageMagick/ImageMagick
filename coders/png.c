@@ -7991,8 +7991,8 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
      /* Avoid the expensive BUILD_PALETTE operation if we're sure that we
       * are not going to need the result.
       */
-     image_colors=image->colors;
-     number_opaque = image->colors;
+     image_colors = (int) image->colors;
+     number_opaque = (int) image->colors;
      if (mng_info->write_png_colortype == 1 ||
         mng_info->write_png_colortype == 5)
        ping_have_color=MagickFalse;
