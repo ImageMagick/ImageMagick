@@ -5293,7 +5293,6 @@ MagickPrivate MagickBooleanType SyncImagePixelCache(Image *image,
 
   assert(image != (Image *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  cache_info=(CacheInfo *) image->cache;
   cache_info=(CacheInfo *) GetImagePixelCache(image,MagickTrue,exception);
   return(cache_info == (CacheInfo *) NULL ? MagickFalse : MagickTrue);
 }
