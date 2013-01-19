@@ -3846,14 +3846,23 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   status=AcquireMagickResource(DiskResource,cache_info->length);
   if ((status == MagickFalse) || (cache_info->type == DistributedCache))
     {
+      DistributeCacheInfo
+        *server_info;
+
       if (cache_info->type == DistributedCache)
         RelinquishMagickResource(DiskResource,cache_info->length);
-      cache_info->server_info=AcquireDistributeCacheInfo(exception);
-      if (cache_info->server_info != (DistributeCacheInfo *) NULL)
+      server_info=AcquireDistributeCacheInfo(exception);
+      if (server_info != (DistributeCacheInfo *) NULL)
         {
-          status=OpenDistributePixelCache(cache_info->server_info,image);
-          if (status != MagickFalse)
+          status=OpenDistributePixelCache(server_info,image);
+          if (status == MagickFalse)
+            server_info=DestroyDistributeCacheInfo(server_info);
+          else
             {
+              /*
+                Create a distributed pixel cache.
+              */
+              cache_info->server_info=server_info;
               cache_info->type=DistributedCache;
               (void) FormatLocaleString(cache_info->cache_filename,
                 MaxTextExtent,"%s:%d",
