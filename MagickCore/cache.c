@@ -4403,14 +4403,14 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
     extent,
     length;
 
+  RectangleInfo
+    region;
+
   register ssize_t
     y;
 
   register unsigned char
     *restrict q;
-
-  size_t
-    rows;
 
   if (cache_info->metacontent_extent == 0)
     return(MagickFalse);
@@ -4420,8 +4420,9 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
     nexus_info->region.x;
   length=(MagickSizeType) nexus_info->region.width*
     cache_info->metacontent_extent;
-  rows=nexus_info->region.height;
-  extent=length*rows;
+  extent=length*nexus_info->region.height;
+  region=nexus_info->region;
+  y=0;
   q=(unsigned char *) nexus_info->metacontent;
   switch (cache_info->type)
   {
@@ -4438,11 +4439,11 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
           (extent == (MagickSizeType) ((size_t) extent)))
         {
           length=extent;
-          rows=1UL;
+          region.height=1UL;
         }
       p=(unsigned char *) cache_info->metacontent+offset*
         cache_info->metacontent_extent;
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) region.height; y++)
       {
         (void) memcpy(q,p,(size_t) length);
         p+=cache_info->metacontent_extent*cache_info->columns;
@@ -4467,15 +4468,15 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
           (extent <= MagickMaxBufferExtent))
         {
           length=extent;
-          rows=1UL;
+          region.height=1UL;
         }
       extent=(MagickSizeType) cache_info->columns*cache_info->rows;
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) region.height; y++)
       {
         count=ReadPixelCacheRegion(cache_info,cache_info->offset+extent*
           cache_info->number_channels*sizeof(Quantum)+offset*
           cache_info->metacontent_extent,length,(unsigned char *) q);
-        if ((MagickSizeType) count != length)
+        if (count != (MagickOffsetType) length)
           break;
         offset+=cache_info->columns;
         q+=cache_info->metacontent_extent*nexus_info->region.width;
@@ -4483,50 +4484,36 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
         (void) ClosePixelCacheOnDisk(cache_info);
       UnlockSemaphoreInfo(cache_info->file_semaphore);
-      if (y < (ssize_t) rows)
-        {
-          ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
-            cache_info->cache_filename);
-          return(MagickFalse);
-        }
       break;
     }
     case DistributedCache:
     {
-      MagickBooleanType
-        status;
-
-      RectangleInfo
-        region;
-
       /*
         Read metacontent from distributed cache.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      region=nexus_info->region;
-      region.height=1;
-      status=MagickTrue;
-      for (y=0; y < (ssize_t) rows; y++)
+      region.height=1UL;
+      for (y=0; y < (ssize_t) region.height; y++)
       {
-        status=ReadDistributePixelCachePixels(cache_info->server_info,&region,
+        count=ReadDistributePixelCachePixels(cache_info->server_info,&region,
           length,(unsigned char *) q);
-        if (status == MagickFalse)
+        if (count != (MagickOffsetType) length)
           break;
         q+=cache_info->metacontent_extent*nexus_info->region.width;
         region.y++;
       }
       UnlockSemaphoreInfo(cache_info->file_semaphore);
-      if (status == MagickFalse)
-        {
-          ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
-            cache_info->cache_filename);
-          return(MagickFalse);
-        }
       break;
     }
     default:
       break;
   }
+  if (y < (ssize_t) region.height)
+    {
+      ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
+        cache_info->cache_filename);
+      return(MagickFalse);
+    }
   if ((cache_info->debug != MagickFalse) &&
       (CacheTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
@@ -4575,14 +4562,14 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
     extent,
     length;
 
+  RectangleInfo
+    region;
+
   register Quantum
     *restrict q;
 
   register ssize_t
     y;
-
-  size_t
-    rows;
 
   if (IsPixelAuthentic(cache_info,nexus_info) != MagickFalse)
     return(MagickTrue);
@@ -4590,8 +4577,9 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
     nexus_info->region.x;
   length=(MagickSizeType) cache_info->number_channels*nexus_info->region.width*
     sizeof(Quantum);
-  rows=nexus_info->region.height;
-  extent=length*rows;
+  extent=length*nexus_info->region.height;
+  region=nexus_info->region;
+  y=0;
   q=nexus_info->pixels;
   switch (cache_info->type)
   {
@@ -4608,10 +4596,10 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
           (extent == (MagickSizeType) ((size_t) extent)))
         {
           length=extent;
-          rows=1UL;
+          region.height=1UL;
         }
       p=cache_info->pixels+offset*cache_info->number_channels;
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) region.height; y++)
       {
         (void) memcpy(q,p,(size_t) length);
         p+=cache_info->number_channels*cache_info->columns;
@@ -4636,13 +4624,13 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
           (extent <= MagickMaxBufferExtent))
         {
           length=extent;
-          rows=1UL;
+          region.height=1UL;
         }
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) region.height; y++)
       {
         count=ReadPixelCacheRegion(cache_info,cache_info->offset+offset*
           cache_info->number_channels*sizeof(*q),length,(unsigned char *) q);
-        if ((MagickSizeType) count != length)
+        if (count != (MagickOffsetType) length)
           break;
         offset+=cache_info->columns;
         q+=cache_info->number_channels*nexus_info->region.width;
@@ -4650,50 +4638,36 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
         (void) ClosePixelCacheOnDisk(cache_info);
       UnlockSemaphoreInfo(cache_info->file_semaphore);
-      if (y < (ssize_t) rows)
-        {
-          ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
-            cache_info->cache_filename);
-          return(MagickFalse);
-        }
       break;
     }
     case DistributedCache:
     {
-      MagickBooleanType
-        status;
-
-      RectangleInfo
-        region;
-
       /*
         Read pixels from distributed cache.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      region=nexus_info->region;
-      region.height=1;
-      status=MagickTrue;
-      for (y=0; y < (ssize_t) rows; y++)
+      region.height=1UL;
+      for (y=0; y < (ssize_t) region.height; y++)
       {
-        status=ReadDistributePixelCachePixels(cache_info->server_info,&region,
+        count=ReadDistributePixelCachePixels(cache_info->server_info,&region,
           length,(unsigned char *) q);
-        if (status == MagickFalse)
+        if (count != (MagickOffsetType) length)
           break;
         q+=cache_info->number_channels*nexus_info->region.width;
         region.y++;
       }
       UnlockSemaphoreInfo(cache_info->file_semaphore);
-      if (status == MagickFalse)
-        {
-          ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
-            cache_info->cache_filename);
-          return(MagickFalse);
-        }
       break;
     }
     default:
       break;
   }
+  if (y < (ssize_t) region.height)
+    {
+      ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
+        cache_info->cache_filename);
+      return(MagickFalse);
+    }
   if ((cache_info->debug != MagickFalse) &&
       (CacheTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
@@ -5319,6 +5293,7 @@ MagickPrivate MagickBooleanType SyncImagePixelCache(Image *image,
 
   assert(image != (Image *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
+  cache_info=(CacheInfo *) image->cache;
   cache_info=(CacheInfo *) GetImagePixelCache(image,MagickTrue,exception);
   return(cache_info == (CacheInfo *) NULL ? MagickFalse : MagickTrue);
 }
@@ -5362,14 +5337,14 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
     extent,
     length;
 
+  RectangleInfo
+    region;
+
   register const unsigned char
     *restrict p;
 
   register ssize_t
     y;
-
-  size_t
-    rows;
 
   if (cache_info->metacontent_extent == 0)
     return(MagickFalse);
@@ -5379,8 +5354,9 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
     nexus_info->region.x;
   length=(MagickSizeType) nexus_info->region.width*
     cache_info->metacontent_extent;
-  rows=nexus_info->region.height;
-  extent=(MagickSizeType) length*rows;
+  extent=(MagickSizeType) length*nexus_info->region.height;
+  region=nexus_info->region;
+  y=0;
   p=(unsigned char *) nexus_info->metacontent;
   switch (cache_info->type)
   {
@@ -5397,11 +5373,11 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
           (extent == (MagickSizeType) ((size_t) extent)))
         {
           length=extent;
-          rows=1UL;
+          region.height=1UL;
         }
       q=(unsigned char *) cache_info->metacontent+offset*
         cache_info->metacontent_extent;
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) region.height; y++)
       {
         (void) memcpy(q,p,(size_t) length);
         p+=nexus_info->region.width*cache_info->metacontent_extent;
@@ -5426,15 +5402,15 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
           (extent <= MagickMaxBufferExtent))
         {
           length=extent;
-          rows=1UL;
+          region.height=1UL;
         }
       extent=(MagickSizeType) cache_info->columns*cache_info->rows;
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) region.height; y++)
       {
         count=WritePixelCacheRegion(cache_info,cache_info->offset+extent*
           cache_info->number_channels*sizeof(Quantum)+offset*
           cache_info->metacontent_extent,length,(const unsigned char *) p);
-        if ((MagickSizeType) count != length)
+        if (count != (MagickOffsetType) length)
           break;
         p+=cache_info->metacontent_extent*nexus_info->region.width;
         offset+=cache_info->columns;
@@ -5442,50 +5418,36 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
         (void) ClosePixelCacheOnDisk(cache_info);
       UnlockSemaphoreInfo(cache_info->file_semaphore);
-      if (y < (ssize_t) rows)
-        {
-          ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
-            cache_info->cache_filename);
-          return(MagickFalse);
-        }
       break;
     }
     case DistributedCache:
     {
-      MagickBooleanType
-        status;
-
-      RectangleInfo
-        region;
-
       /*
         Write metacontent to distributed cache.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      region=nexus_info->region;
-      region.height=1;
-      status=MagickTrue;
-      for (y=0; y < (ssize_t) rows; y++)
+      region.height=1UL;
+      for (y=0; y < (ssize_t) region.height; y++)
       {
-        status=WriteDistributePixelCachePixels(cache_info->server_info,&region,
+        count=WriteDistributePixelCachePixels(cache_info->server_info,&region,
           length,(const unsigned char *) p);
-        if (status == MagickFalse)
+        if (count != (MagickOffsetType) length)
           break;
         p+=cache_info->metacontent_extent*nexus_info->region.width;
         region.y++;
       }
       UnlockSemaphoreInfo(cache_info->file_semaphore);
-      if (status == MagickFalse)
-        {
-          ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
-            cache_info->cache_filename);
-          return(MagickFalse);
-        }
       break;
     }
     default:
       break;
   }
+  if (y < (ssize_t) region.height)
+    {
+      ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
+        cache_info->cache_filename);
+      return(MagickFalse);
+    }
   if ((cache_info->debug != MagickFalse) &&
       (CacheTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
@@ -5534,14 +5496,14 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
     extent,
     length;
 
+  RectangleInfo
+    region;
+
   register const Quantum
     *restrict p;
 
   register ssize_t
     y;
-
-  size_t
-    rows;
 
   if (IsPixelAuthentic(cache_info,nexus_info) != MagickFalse)
     return(MagickTrue);
@@ -5549,8 +5511,9 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
     nexus_info->region.x;
   length=(MagickSizeType) cache_info->number_channels*nexus_info->region.width*
     sizeof(Quantum);
-  rows=nexus_info->region.height;
-  extent=length*rows;
+  extent=length*nexus_info->region.height;
+  region=nexus_info->region;
+  y=0;
   p=nexus_info->pixels;
   switch (cache_info->type)
   {
@@ -5567,10 +5530,10 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
           (extent == (MagickSizeType) ((size_t) extent)))
         {
           length=extent;
-          rows=1UL;
+          region.height=1UL;
         }
       q=cache_info->pixels+offset*cache_info->number_channels;
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) region.height; y++)
       {
         (void) memcpy(q,p,(size_t) length);
         p+=cache_info->number_channels*nexus_info->region.width;
@@ -5595,14 +5558,14 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
           (extent <= MagickMaxBufferExtent))
         {
           length=extent;
-          rows=1UL;
+          region.height=1UL;
         }
-      for (y=0; y < (ssize_t) rows; y++)
+      for (y=0; y < (ssize_t) region.height; y++)
       {
         count=WritePixelCacheRegion(cache_info,cache_info->offset+offset*
           cache_info->number_channels*sizeof(*p),length,(const unsigned char *)
           p);
-        if ((MagickSizeType) count != length)
+        if (count != (MagickOffsetType) length)
           break;
         p+=cache_info->number_channels*nexus_info->region.width;
         offset+=cache_info->columns;
@@ -5610,50 +5573,36 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
         (void) ClosePixelCacheOnDisk(cache_info);
       UnlockSemaphoreInfo(cache_info->file_semaphore);
-      if (y < (ssize_t) rows)
-        {
-          ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
-            cache_info->cache_filename);
-          return(MagickFalse);
-        }
       break;
     }
     case DistributedCache:
     {
-      MagickBooleanType
-        status;
-
-      RectangleInfo
-        region;
-
       /*
         Write pixels to distributed cache.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      region=nexus_info->region;
-      region.height=1;
-      status=MagickTrue;
-      for (y=0; y < (ssize_t) rows; y++)
+      region.height=1UL;
+      for (y=0; y < (ssize_t) region.height; y++)
       {
-        status=WriteDistributePixelCachePixels(cache_info->server_info,&region,
+        count=WriteDistributePixelCachePixels(cache_info->server_info,&region,
           length,(const unsigned char *) p);
-        if (status == MagickFalse)
+        if (count != (MagickOffsetType) length)
           break;
         p+=cache_info->number_channels*nexus_info->region.width;
         region.y++;
       }
       UnlockSemaphoreInfo(cache_info->file_semaphore);
-      if (status == MagickFalse)
-        {
-          ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
-            cache_info->cache_filename);
-          return(MagickFalse);
-        }
       break;
     }
     default:
       break;
   }
+  if (y < (ssize_t) region.height)
+    {
+      ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
+        cache_info->cache_filename);
+      return(MagickFalse);
+    }
   if ((cache_info->debug != MagickFalse) &&
       (CacheTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),

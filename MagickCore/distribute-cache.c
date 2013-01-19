@@ -991,7 +991,7 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
 %
 %  The format of the ReadDistributePixelCacheMetacontents method is:
 %
-%      MagickBooleanType *ReadDistributePixelCacheMetacontents(
+%      MagickOffsetType ReadDistributePixelCacheMetacontents(
 %        DistributeCacheInfo *server_info,const RectangleInfo *region,
 %        const MagickSizeType length,unsigned char *metacontent)
 %
@@ -1008,18 +1008,18 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
 %    o metacontent: read these metacontent from the pixel cache.
 %
 */
-MagickPrivate MagickBooleanType ReadDistributePixelCacheMetacontent(
+MagickPrivate MagickOffsetType ReadDistributePixelCacheMetacontent(
   DistributeCacheInfo *server_info,const RectangleInfo *region,
   const MagickSizeType length,unsigned char *metacontent)
 {
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    count;
+
   register unsigned char
     *p;
-
-  ssize_t
-    count;
 
   unsigned char
     buffer[MaxTextExtent];
@@ -1028,7 +1028,8 @@ MagickPrivate MagickBooleanType ReadDistributePixelCacheMetacontent(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(metacontent != (unsigned char *) NULL);
-  assert(length == ((size_t) length));
+  if (length != (size_t) length)
+    return(-1);
   p=buffer;
   *p++='R';  /* read */
   (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
@@ -1043,16 +1044,17 @@ MagickPrivate MagickBooleanType ReadDistributePixelCacheMetacontent(
   p+=sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
   p+=sizeof(length);
-  count=send(server_info->file,buffer,p-buffer,0);
-  if (count != (ssize_t) (p-buffer))
-    return(MagickFalse);
-  count=recv(server_info->file,(unsigned char *) metacontent,(size_t) length,0);
-  if (count != (ssize_t) length)
-    return(MagickFalse);
-  count=recv(server_info->file,&status,sizeof(status),0);
-  if (count != (ssize_t) sizeof(status))
-    return(MagickFalse);
-  return(status != 0 ? MagickTrue : MagickFalse);
+  count=(MagickOffsetType) send(server_info->file,buffer,p-buffer,0);
+  if (count != (MagickOffsetType) (p-buffer))
+    return(-1);
+  count=(MagickOffsetType) recv(server_info->file,(unsigned char *) metacontent,
+    (size_t) length,0);
+  if (count != (MagickOffsetType) length)
+    return(count);
+  count=(MagickOffsetType) recv(server_info->file,&status,sizeof(status),0);
+  if (count != (MagickOffsetType) sizeof(status))
+    return(-1);
+  return((MagickOffsetType) length);
 }
 
 /*
@@ -1071,7 +1073,7 @@ MagickPrivate MagickBooleanType ReadDistributePixelCacheMetacontent(
 %
 %  The format of the ReadDistributePixelCachePixels method is:
 %
-%      MagickBooleanType *ReadDistributePixelCachePixels(
+%      MagickOffsetType ReadDistributePixelCachePixels(
 %        DistributeCacheInfo *server_info,const RectangleInfo *region,
 %        const MagickSizeType length,unsigned char *pixels)
 %
@@ -1088,18 +1090,18 @@ MagickPrivate MagickBooleanType ReadDistributePixelCacheMetacontent(
 %    o pixels: read these pixels from the pixel cache.
 %
 */
-MagickPrivate MagickBooleanType ReadDistributePixelCachePixels(
+MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
   DistributeCacheInfo *server_info,const RectangleInfo *region,
   const MagickSizeType length,unsigned char *pixels)
 {
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    count;
+
   register unsigned char
     *p;
-
-  ssize_t
-    count;
 
   unsigned char
     buffer[MaxTextExtent];
@@ -1108,7 +1110,8 @@ MagickPrivate MagickBooleanType ReadDistributePixelCachePixels(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  assert(length == ((size_t) length));
+  if (length != (size_t) length)
+    return(-1);
   p=buffer;
   *p++='r';  /* read */
   (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
@@ -1123,16 +1126,17 @@ MagickPrivate MagickBooleanType ReadDistributePixelCachePixels(
   p+=sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
   p+=sizeof(length);
-  count=send(server_info->file,buffer,p-buffer,0);
-  if (count != (ssize_t) (p-buffer))
-    return(MagickFalse);
-  count=recv(server_info->file,(unsigned char *) pixels,(size_t) length,0);
-  if (count != (ssize_t) length)
-    return(MagickFalse);
+  count=(MagickOffsetType) send(server_info->file,buffer,p-buffer,0);
+  if (count != (MagickOffsetType) (p-buffer))
+    return(-1);
+  count=(MagickOffsetType) recv(server_info->file,(unsigned char *) pixels,
+    (size_t) length,0);
+  if (count != (MagickOffsetType) length)
+    return(count);
   count=recv(server_info->file,&status,sizeof(status),0);
-  if (count != (ssize_t) sizeof(status))
-    return(MagickFalse);
-  return(status != 0 ? MagickTrue : MagickFalse);
+  if (count != (MagickOffsetType) sizeof(status))
+    return(-1);
+  return((MagickOffsetType) length);
 }
 
 /*
@@ -1197,10 +1201,9 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
 %  WriteDistributePixelCacheMetacontents() writes image metacontent to the
 %  specified region of the distributed pixel cache.
 %
-%
 %  The format of the WriteDistributePixelCacheMetacontents method is:
 %
-%      MagickBooleanType *WriteDistributePixelCacheMetacontents(
+%      MagickOffsetType WriteDistributePixelCacheMetacontents(
 %        DistributeCacheInfo *server_info,const RectangleInfo *region,
 %        const MagickSizeType length,const unsigned char *metacontent)
 %
@@ -1217,18 +1220,18 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
 %    o metacontent: write these metacontent to the pixel cache.
 %
 */
-MagickPrivate MagickBooleanType WriteDistributePixelCacheMetacontent(
+MagickPrivate MagickOffsetType WriteDistributePixelCacheMetacontent(
   DistributeCacheInfo *server_info,const RectangleInfo *region,
   const MagickSizeType length,const unsigned char *metacontent)
 {
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    count;
+
   register unsigned char
     *p;
-
-  ssize_t
-    count;
 
   unsigned char
     buffer[MaxTextExtent];
@@ -1237,7 +1240,8 @@ MagickPrivate MagickBooleanType WriteDistributePixelCacheMetacontent(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(metacontent != (unsigned char *) NULL);
-  assert(length == ((size_t) length));
+  if (length != (size_t) length)
+    return(-1);
   p=buffer;
   *p++='W';  /* write */
   (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
@@ -1252,17 +1256,17 @@ MagickPrivate MagickBooleanType WriteDistributePixelCacheMetacontent(
   p+=sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
   p+=sizeof(length);
-  count=send(server_info->file,buffer,p-buffer,0);
-  if (count != (ssize_t) (p-buffer))
-    return(MagickFalse);
-  count=send(server_info->file,(unsigned char *) metacontent,(size_t)
-    length,0);
+  count=(MagickOffsetType) send(server_info->file,buffer,p-buffer,0);
+  if (count != (MagickOffsetType) (p-buffer))
+    return(-1);
+  count=(MagickOffsetType) send(server_info->file,(unsigned char *) metacontent,
+    (size_t) length,0);
   if (count != (ssize_t) length)
-    return(MagickFalse);
+    return(count);
   count=recv(server_info->file,&status,sizeof(status),0);
   if (count != (ssize_t) sizeof(status))
-    return(MagickFalse);
-  return(status != 0 ? MagickTrue : MagickFalse);
+    return(-1);
+  return((MagickOffsetType) length);
 }
 
 /*
@@ -1279,10 +1283,9 @@ MagickPrivate MagickBooleanType WriteDistributePixelCacheMetacontent(
 %  WriteDistributePixelCachePixels() writes image pixels to the specified
 %  region of the distributed pixel cache.
 %
-%
 %  The format of the WriteDistributePixelCachePixels method is:
 %
-%      MagickBooleanType *WriteDistributePixelCachePixels(
+%      MagickBooleanType WriteDistributePixelCachePixels(
 %        DistributeCacheInfo *server_info,const RectangleInfo *region,
 %        const MagickSizeType length,const unsigned char *pixels)
 %
@@ -1299,18 +1302,18 @@ MagickPrivate MagickBooleanType WriteDistributePixelCacheMetacontent(
 %    o pixels: write these pixels to the pixel cache.
 %
 */
-MagickPrivate MagickBooleanType WriteDistributePixelCachePixels(
+MagickPrivate MagickOffsetType WriteDistributePixelCachePixels(
   DistributeCacheInfo *server_info,const RectangleInfo *region,
   const MagickSizeType length,const unsigned char *pixels)
 {
   MagickBooleanType
     status;
 
+  MagickOffsetType
+    count;
+
   register unsigned char
     *p;
-
-  ssize_t
-    count;
 
   unsigned char
     buffer[MaxTextExtent];
@@ -1319,7 +1322,8 @@ MagickPrivate MagickBooleanType WriteDistributePixelCachePixels(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (const unsigned char *) NULL);
-  assert(length == ((size_t) length));
+  if (length != (size_t) length)
+    return(-1);
   p=buffer;
   *p++='w';  /* write */
   (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
@@ -1334,14 +1338,15 @@ MagickPrivate MagickBooleanType WriteDistributePixelCachePixels(
   p+=sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
   p+=sizeof(length);
-  count=send(server_info->file,buffer,p-buffer,0);
-  if (count != (ssize_t) (p-buffer))
-    return(MagickFalse);
-  count=send(server_info->file,(unsigned char *) pixels,(size_t) length,0);
-  if (count != (ssize_t) length)
-    return(MagickFalse);
+  count=(MagickOffsetType) send(server_info->file,buffer,p-buffer,0);
+  if (count != (MagickOffsetType) (p-buffer))
+    return(-1);
+  count=(MagickOffsetType) send(server_info->file,(unsigned char *) pixels,
+    (size_t) length,0);
+  if (count != (MagickOffsetType) length)
+    return(count);
   count=recv(server_info->file,&status,sizeof(status),0);
   if (count != (ssize_t) sizeof(status))
-    return(MagickFalse);
-  return(status != 0 ? MagickTrue : MagickFalse);
+    return(-1);
+  return((MagickOffsetType) length);
 }

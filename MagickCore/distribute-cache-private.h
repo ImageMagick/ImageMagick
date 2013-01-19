@@ -56,11 +56,13 @@ extern MagickPrivate int
 
 extern MagickPrivate MagickBooleanType
   OpenDistributePixelCache(DistributeCacheInfo *,Image *),
+  RelinquishDistributePixelCache(DistributeCacheInfo *);
+
+extern MagickPrivate MagickOffsetType
   ReadDistributePixelCacheMetacontent(DistributeCacheInfo *,
     const RectangleInfo *,const MagickSizeType,unsigned char *),
   ReadDistributePixelCachePixels(DistributeCacheInfo *,const RectangleInfo *,
     const MagickSizeType,unsigned char *),
-  RelinquishDistributePixelCache(DistributeCacheInfo *),
   WriteDistributePixelCacheMetacontent(DistributeCacheInfo *,
     const RectangleInfo *,const MagickSizeType,const unsigned char *),
   WriteDistributePixelCachePixels(DistributeCacheInfo *,const RectangleInfo *,
