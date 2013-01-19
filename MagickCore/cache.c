@@ -3862,8 +3862,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               /*
                 Create a distributed pixel cache.
               */
-              cache_info->server_info=server_info;
               cache_info->type=DistributedCache;
+              cache_info->server_info=server_info;
               (void) FormatLocaleString(cache_info->cache_filename,
                 MaxTextExtent,"%s:%d",
                 GetDistributeCacheHostname(cache_info->server_info),
@@ -4077,11 +4077,13 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
       *offset+=cache_info->length+page_size-(cache_info->length % page_size);
       return(MagickTrue);
     }
-  if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
+  if ((cache_info->mode != ReadMode) &&
+      ((cache_info->type == DiskCache) || (cache_info->type == MapCache)) &&
       (cache_info->reference_count == 1))
     {
       LockSemaphoreInfo(cache_info->semaphore);
-      if ((cache_info->mode != ReadMode) && (cache_info->type != MemoryCache) &&
+      if ((cache_info->mode != ReadMode) &&
+          ((cache_info->type == DiskCache) || (cache_info->type == MapCache)) &&
           (cache_info->reference_count == 1))
         {
           int
