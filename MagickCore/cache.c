@@ -820,6 +820,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
           if ((MagickSizeType) count != length)
             {
               status=MagickFalse;
+              ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
+                cache_info->cache_filename);
               break;
             }
         }
@@ -859,6 +861,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
               if ((MagickSizeType) count != sizeof(Quantum))
                 {
                   status=MagickFalse;
+                  ThrowFileException(exception,CacheError,
+                    "UnableToWritePixelCache",cache_info->cache_filename);
                   break;
                 }
             }
@@ -884,6 +888,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
               if ((MagickSizeType) count != length)
                 {
                   status=MagickFalse;
+                  ThrowFileException(exception,CacheError,
+                    "UnableToWritePixelCache",cache_info->cache_filename);
                   break;
               }
             }
@@ -909,6 +915,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
           if ((MagickSizeType) count != length)
             {
               status=MagickFalse;
+              ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
+                cache_info->cache_filename);
               break;
             }
         }
@@ -938,6 +946,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
               if ((MagickSizeType) count != length)
                 {
                   status=MagickFalse;
+                  ThrowFileException(exception,CacheError,
+                    "UnableToWritePixelCache",cache_info->cache_filename);
                   break;
                 }
             }
@@ -959,6 +969,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
                   if ((MagickSizeType) count != length)
                     {
                       status=MagickFalse;
+                      ThrowFileException(exception,CacheError,
+                        "UnableToWritePixelCache",cache_info->cache_filename);
                       break;
                     }
                 }
@@ -982,6 +994,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
               if ((MagickSizeType) count != length)
                 {
                   status=MagickFalse;
+                  ThrowFileException(exception,CacheError,
+                    "UnableToWritePixelCache",cache_info->cache_filename);
                   break;
                 }
             }
@@ -1010,6 +1024,8 @@ static MagickBooleanType PixelCacheCloneUnoptimized(CacheInfo *clone_info,
                   if ((MagickSizeType) count != length)
                     {
                       status=MagickFalse;
+                      ThrowFileException(exception,CacheError,
+                        "UnableToWritePixelCache",cache_info->cache_filename);
                       break;
                     }
                 }
@@ -3890,7 +3906,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
-              return(MagickTrue);
+              return(status);
             }
         }
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
