@@ -289,33 +289,30 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
     *hostname;
 
   DistributeCacheInfo
-    *distribute_cache_info;
+    *server_info;
 
   MagickSizeType
     session_key;
 
-  distribute_cache_info=(DistributeCacheInfo *) AcquireMagickMemory(
-    sizeof(*distribute_cache_info));
-  if (distribute_cache_info == (DistributeCacheInfo *) NULL)
+  server_info=(DistributeCacheInfo *) AcquireMagickMemory(sizeof(*server_info));
+  if (server_info == (DistributeCacheInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  (void) ResetMagickMemory(distribute_cache_info,0,
-    sizeof(*distribute_cache_info));
-  distribute_cache_info->signature=MagickSignature;
+  (void) ResetMagickMemory(server_info,0,sizeof(*server_info));
+  server_info->signature=MagickSignature;
   /*
     Contact pixel cache server.
   */
-  distribute_cache_info->port=0;
-  hostname=GetHostname(&distribute_cache_info->port,exception);
+  server_info->port=0;
+  hostname=GetHostname(&server_info->port,exception);
   session_key=0;
-  distribute_cache_info->file=ConnectPixelCacheServer(hostname,
-    distribute_cache_info->port,&session_key,exception);
-  distribute_cache_info->session_key=session_key;
-  (void) CopyMagickString(distribute_cache_info->hostname,hostname,
-    MaxTextExtent);
+  server_info->file=ConnectPixelCacheServer(hostname,server_info->port,
+    &session_key,exception);
+  server_info->session_key=session_key;
+  (void) CopyMagickString(server_info->hostname,hostname,MaxTextExtent);
   hostname=DestroyString(hostname);
-  if (distribute_cache_info->file == -1)
-    distribute_cache_info=DestroyDistributeCacheInfo(distribute_cache_info);
-  return(distribute_cache_info);
+  if (server_info->file == -1)
+    server_info=DestroyDistributeCacheInfo(server_info);
+  return(server_info);
 }
 
 /*
@@ -335,22 +332,21 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
 %  The format of the DestroyDistributeCacheInfo method is:
 %
 %      DistributeCacheInfo *DestroyDistributeCacheInfo(
-%        DistributeCacheInfo *distribute_cache_info)
+%        DistributeCacheInfo *server_info)
 %
 %  A description of each parameter follows:
 %
-%    o distribute_cache_info: the distributed cache info.
+%    o server_info: the distributed cache info.
 %
 */
 MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
-  DistributeCacheInfo *distribute_cache_info)
+  DistributeCacheInfo *server_info)
 {
-  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
-  assert(distribute_cache_info->signature == MagickSignature);
-  distribute_cache_info->signature=(~MagickSignature);
-  distribute_cache_info=(DistributeCacheInfo *) RelinquishMagickMemory(
-    distribute_cache_info);
-  return(distribute_cache_info);
+  assert(server_info != (DistributeCacheInfo *) NULL);
+  assert(server_info->signature == MagickSignature);
+  server_info->signature=(~MagickSignature);
+  server_info=(DistributeCacheInfo *) RelinquishMagickMemory(server_info);
+  return(server_info);
 }
 
 /*
@@ -845,20 +841,18 @@ MagickExport void DistributePixelCacheServer(const size_t port,
 %
 %  The format of the GetDistributeCacheFile method is:
 %
-%      int GetDistributeCacheFile(
-%        const DistributeCacheInfo *distribute_cache_info)
+%      int GetDistributeCacheFile(const DistributeCacheInfo *server_info)
 %
 %  A description of each parameter follows:
 %
-%    o distribute_cache_info: the distributed cache info.
+%    o server_info: the distributed cache info.
 %
 */
-MagickPrivate int GetDistributeCacheFile(
-  const DistributeCacheInfo *distribute_cache_info)
+MagickPrivate int GetDistributeCacheFile(const DistributeCacheInfo *server_info)
 {
-  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
-  assert(distribute_cache_info->signature == MagickSignature);
-  return(distribute_cache_info->file);
+  assert(server_info != (DistributeCacheInfo *) NULL);
+  assert(server_info->signature == MagickSignature);
+  return(server_info->file);
 }
 
 /*
@@ -878,19 +872,19 @@ MagickPrivate int GetDistributeCacheFile(
 %  The format of the GetDistributeCacheHostname method is:
 %
 %      const char *GetDistributeCacheHostname(
-%        const DistributeCacheInfo *distribute_cache_info)
+%        const DistributeCacheInfo *server_info)
 %
 %  A description of each parameter follows:
 %
-%    o distribute_cache_info: the distributed cache info.
+%    o server_info: the distributed cache info.
 %
 */
 MagickPrivate const char *GetDistributeCacheHostname(
-  const DistributeCacheInfo *distribute_cache_info)
+  const DistributeCacheInfo *server_info)
 {
-  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
-  assert(distribute_cache_info->signature == MagickSignature);
-  return(distribute_cache_info->hostname);
+  assert(server_info != (DistributeCacheInfo *) NULL);
+  assert(server_info->signature == MagickSignature);
+  return(server_info->hostname);
 }
 
 /*
@@ -910,19 +904,18 @@ MagickPrivate const char *GetDistributeCacheHostname(
 %  The format of the GetDistributeCachePort method is:
 %
 %      int GetDistributeCachePort(
-%        const DistributeCacheInfo *distribute_cache_info)
+%        const DistributeCacheInfo *server_info)
 %
 %  A description of each parameter follows:
 %
-%    o distribute_cache_info: the distributed cache info.
+%    o server_info: the distributed cache info.
 %
 */
-MagickPrivate int GetDistributeCachePort(
-  const DistributeCacheInfo *distribute_cache_info)
+MagickPrivate int GetDistributeCachePort(const DistributeCacheInfo *server_info)
 {
-  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
-  assert(distribute_cache_info->signature == MagickSignature);
-  return(distribute_cache_info->port);
+  assert(server_info != (DistributeCacheInfo *) NULL);
+  assert(server_info->signature == MagickSignature);
+  return(server_info->port);
 }
 
 /*
@@ -941,17 +934,17 @@ MagickPrivate int GetDistributeCachePort(
 %  The format of the OpenDistributePixelCache method is:
 %
 %      MagickBooleanType *OpenDistributePixelCache(
-%        DistributeCacheInfo *distribute_cache_info,Image *image)
+%        DistributeCacheInfo *server_info,Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o distribute_cache_info: the distributed cache info.
+%    o server_info: the distributed cache info.
 %
 %    o image: the image.
 %
 */
 MagickPrivate MagickBooleanType OpenDistributePixelCache(
-  DistributeCacheInfo *distribute_cache_info,Image *image)
+  DistributeCacheInfo *server_info,Image *image)
 {
   MagickBooleanType
     status;
@@ -965,25 +958,24 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
   unsigned char
     buffer[MaxTextExtent];
 
-  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
-  assert(distribute_cache_info->signature == MagickSignature);
+  assert(server_info != (DistributeCacheInfo *) NULL);
+  assert(server_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   p=buffer;
   *p++='o';  /* open */
-  (void) memcpy(p,&distribute_cache_info->session_key,
-    sizeof(distribute_cache_info->session_key));
-  p+=sizeof(distribute_cache_info->session_key);
+  (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
+  p+=sizeof(server_info->session_key);
   (void) memcpy(p,&image->columns,sizeof(image->columns));
   p+=sizeof(image->columns);
   (void) memcpy(p,&image->rows,sizeof(image->rows));
   p+=sizeof(image->rows);
   (void) memcpy(p,&image->number_channels,sizeof(image->number_channels));
   p+=sizeof(image->number_channels);
-  count=send(distribute_cache_info->file,buffer,p-buffer,0);
+  count=send(server_info->file,buffer,p-buffer,0);
   if (count != (ssize_t) (p-buffer))
     return(MagickFalse);
-  count=recv(distribute_cache_info->file,&status,sizeof(status),0);
+  count=recv(server_info->file,&status,sizeof(status),0);
   if (count != (ssize_t) sizeof(status))
     return(MagickFalse);
   return(MagickTrue);
@@ -1006,12 +998,12 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
 %  The format of the ReadDistributePixelCacheMetacontents method is:
 %
 %      MagickBooleanType *ReadDistributePixelCacheMetacontents(
-%        DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
+%        DistributeCacheInfo *server_info,const RectangleInfo *region,
 %        const MagickSizeType length,unsigned char *metacontent)
 %
 %  A description of each parameter follows:
 %
-%    o distribute_cache_info: the distributed cache info.
+%    o server_info: the distributed cache info.
 %
 %    o image: the image.
 %
@@ -1023,7 +1015,7 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
 %
 */
 MagickPrivate MagickBooleanType ReadDistributePixelCacheMetacontent(
-  DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
+  DistributeCacheInfo *server_info,const RectangleInfo *region,
   const MagickSizeType length,unsigned char *metacontent)
 {
   MagickBooleanType
@@ -1038,16 +1030,15 @@ MagickPrivate MagickBooleanType ReadDistributePixelCacheMetacontent(
   unsigned char
     buffer[MaxTextExtent];
 
-  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
-  assert(distribute_cache_info->signature == MagickSignature);
+  assert(server_info != (DistributeCacheInfo *) NULL);
+  assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(metacontent != (unsigned char *) NULL);
   assert(length == ((size_t) length));
   p=buffer;
   *p++='R';  /* read */
-  (void) memcpy(p,&distribute_cache_info->session_key,
-    sizeof(distribute_cache_info->session_key));
-  p+=sizeof(distribute_cache_info->session_key);
+  (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
+  p+=sizeof(server_info->session_key);
   (void) memcpy(p,&region->width,sizeof(region->width));
   p+=sizeof(region->width);
   (void) memcpy(p,&region->height,sizeof(region->height));
@@ -1058,14 +1049,14 @@ MagickPrivate MagickBooleanType ReadDistributePixelCacheMetacontent(
   p+=sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
   p+=sizeof(length);
-  count=send(distribute_cache_info->file,buffer,p-buffer,0);
+  count=send(server_info->file,buffer,p-buffer,0);
   if (count != (ssize_t) (p-buffer))
     return(MagickFalse);
-  count=recv(distribute_cache_info->file,(unsigned char *) metacontent,(size_t)
+  count=recv(server_info->file,(unsigned char *) metacontent,(size_t)
     length,0);
   if (count != (ssize_t) length)
     return(MagickFalse);
-  count=recv(distribute_cache_info->file,&status,sizeof(status),0);
+  count=recv(server_info->file,&status,sizeof(status),0);
   if (count != (ssize_t) sizeof(status))
     return(MagickFalse);
   return(status != 0 ? MagickTrue : MagickFalse);
@@ -1088,12 +1079,12 @@ MagickPrivate MagickBooleanType ReadDistributePixelCacheMetacontent(
 %  The format of the ReadDistributePixelCachePixels method is:
 %
 %      MagickBooleanType *ReadDistributePixelCachePixels(
-%        DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
+%        DistributeCacheInfo *server_info,const RectangleInfo *region,
 %        const MagickSizeType length,unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
-%    o distribute_cache_info: the distributed cache info.
+%    o server_info: the distributed cache info.
 %
 %    o image: the image.
 %
@@ -1105,7 +1096,7 @@ MagickPrivate MagickBooleanType ReadDistributePixelCacheMetacontent(
 %
 */
 MagickPrivate MagickBooleanType ReadDistributePixelCachePixels(
-  DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
+  DistributeCacheInfo *server_info,const RectangleInfo *region,
   const MagickSizeType length,unsigned char *pixels)
 {
   MagickBooleanType
@@ -1120,16 +1111,15 @@ MagickPrivate MagickBooleanType ReadDistributePixelCachePixels(
   unsigned char
     buffer[MaxTextExtent];
 
-  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
-  assert(distribute_cache_info->signature == MagickSignature);
+  assert(server_info != (DistributeCacheInfo *) NULL);
+  assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (unsigned char *) NULL);
   assert(length == ((size_t) length));
   p=buffer;
   *p++='r';  /* read */
-  (void) memcpy(p,&distribute_cache_info->session_key,
-    sizeof(distribute_cache_info->session_key));
-  p+=sizeof(distribute_cache_info->session_key);
+  (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
+  p+=sizeof(server_info->session_key);
   (void) memcpy(p,&region->width,sizeof(region->width));
   p+=sizeof(region->width);
   (void) memcpy(p,&region->height,sizeof(region->height));
@@ -1140,14 +1130,13 @@ MagickPrivate MagickBooleanType ReadDistributePixelCachePixels(
   p+=sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
   p+=sizeof(length);
-  count=send(distribute_cache_info->file,buffer,p-buffer,0);
+  count=send(server_info->file,buffer,p-buffer,0);
   if (count != (ssize_t) (p-buffer))
     return(MagickFalse);
-  count=recv(distribute_cache_info->file,(unsigned char *) pixels,(size_t)
-    length,0);
+  count=recv(server_info->file,(unsigned char *) pixels,(size_t) length,0);
   if (count != (ssize_t) length)
     return(MagickFalse);
-  count=recv(distribute_cache_info->file,&status,sizeof(status),0);
+  count=recv(server_info->file,&status,sizeof(status),0);
   if (count != (ssize_t) sizeof(status))
     return(MagickFalse);
   return(status != 0 ? MagickTrue : MagickFalse);
@@ -1170,15 +1159,15 @@ MagickPrivate MagickBooleanType ReadDistributePixelCachePixels(
 %  The format of the RelinquishDistributePixelCache method is:
 %
 %      MagickBooleanType RelinquishDistributePixelCache(
-%        DistributeCacheInfo *distribute_cache_info)
+%        DistributeCacheInfo *server_info)
 %
 %  A description of each parameter follows:
 %
-%    o distribute_cache_info: the distributed cache info.
+%    o server_info: the distributed cache info.
 %
 */
 MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
-  DistributeCacheInfo *distribute_cache_info)
+  DistributeCacheInfo *server_info)
 {
   register unsigned char
     *p;
@@ -1189,14 +1178,13 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
   unsigned char
     buffer[MaxTextExtent];
 
-  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
-  assert(distribute_cache_info->signature == MagickSignature);
+  assert(server_info != (DistributeCacheInfo *) NULL);
+  assert(server_info->signature == MagickSignature);
   p=buffer;
   *p++='d';  /* delete */
-  (void) memcpy(p,&distribute_cache_info->session_key,
-    sizeof(distribute_cache_info->session_key));
-  p+=sizeof(distribute_cache_info->session_key);
-  count=send(distribute_cache_info->file,buffer,p-buffer,0);
+  (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
+  p+=sizeof(server_info->session_key);
+  count=send(server_info->file,buffer,p-buffer,0);
   if (count != (ssize_t) (p-buffer))
     return(MagickFalse);
   return(MagickTrue);
@@ -1220,12 +1208,12 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
 %  The format of the WriteDistributePixelCacheMetacontents method is:
 %
 %      MagickBooleanType *WriteDistributePixelCacheMetacontents(
-%        DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
+%        DistributeCacheInfo *server_info,const RectangleInfo *region,
 %        const MagickSizeType length,const unsigned char *metacontent)
 %
 %  A description of each parameter follows:
 %
-%    o distribute_cache_info: the distributed cache info.
+%    o server_info: the distributed cache info.
 %
 %    o image: the image.
 %
@@ -1237,7 +1225,7 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
 %
 */
 MagickPrivate MagickBooleanType WriteDistributePixelCacheMetacontent(
-  DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
+  DistributeCacheInfo *server_info,const RectangleInfo *region,
   const MagickSizeType length,const unsigned char *metacontent)
 {
   MagickBooleanType
@@ -1252,16 +1240,15 @@ MagickPrivate MagickBooleanType WriteDistributePixelCacheMetacontent(
   unsigned char
     buffer[MaxTextExtent];
 
-  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
-  assert(distribute_cache_info->signature == MagickSignature);
+  assert(server_info != (DistributeCacheInfo *) NULL);
+  assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(metacontent != (unsigned char *) NULL);
   assert(length == ((size_t) length));
   p=buffer;
   *p++='W';  /* write */
-  (void) memcpy(p,&distribute_cache_info->session_key,
-    sizeof(distribute_cache_info->session_key));
-  p+=sizeof(distribute_cache_info->session_key);
+  (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
+  p+=sizeof(server_info->session_key);
   (void) memcpy(p,&region->width,sizeof(region->width));
   p+=sizeof(region->width);
   (void) memcpy(p,&region->height,sizeof(region->height));
@@ -1272,14 +1259,14 @@ MagickPrivate MagickBooleanType WriteDistributePixelCacheMetacontent(
   p+=sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
   p+=sizeof(length);
-  count=send(distribute_cache_info->file,buffer,p-buffer,0);
+  count=send(server_info->file,buffer,p-buffer,0);
   if (count != (ssize_t) (p-buffer))
     return(MagickFalse);
-  count=send(distribute_cache_info->file,(unsigned char *) metacontent,(size_t)
+  count=send(server_info->file,(unsigned char *) metacontent,(size_t)
     length,0);
   if (count != (ssize_t) length)
     return(MagickFalse);
-  count=recv(distribute_cache_info->file,&status,sizeof(status),0);
+  count=recv(server_info->file,&status,sizeof(status),0);
   if (count != (ssize_t) sizeof(status))
     return(MagickFalse);
   return(status != 0 ? MagickTrue : MagickFalse);
@@ -1303,12 +1290,12 @@ MagickPrivate MagickBooleanType WriteDistributePixelCacheMetacontent(
 %  The format of the WriteDistributePixelCachePixels method is:
 %
 %      MagickBooleanType *WriteDistributePixelCachePixels(
-%        DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
+%        DistributeCacheInfo *server_info,const RectangleInfo *region,
 %        const MagickSizeType length,const unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
-%    o distribute_cache_info: the distributed cache info.
+%    o server_info: the distributed cache info.
 %
 %    o image: the image.
 %
@@ -1320,7 +1307,7 @@ MagickPrivate MagickBooleanType WriteDistributePixelCacheMetacontent(
 %
 */
 MagickPrivate MagickBooleanType WriteDistributePixelCachePixels(
-  DistributeCacheInfo *distribute_cache_info,const RectangleInfo *region,
+  DistributeCacheInfo *server_info,const RectangleInfo *region,
   const MagickSizeType length,const unsigned char *pixels)
 {
   MagickBooleanType
@@ -1335,16 +1322,15 @@ MagickPrivate MagickBooleanType WriteDistributePixelCachePixels(
   unsigned char
     buffer[MaxTextExtent];
 
-  assert(distribute_cache_info != (DistributeCacheInfo *) NULL);
-  assert(distribute_cache_info->signature == MagickSignature);
+  assert(server_info != (DistributeCacheInfo *) NULL);
+  assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (const unsigned char *) NULL);
   assert(length == ((size_t) length));
   p=buffer;
   *p++='w';  /* write */
-  (void) memcpy(p,&distribute_cache_info->session_key,
-    sizeof(distribute_cache_info->session_key));
-  p+=sizeof(distribute_cache_info->session_key);
+  (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
+  p+=sizeof(server_info->session_key);
   (void) memcpy(p,&region->width,sizeof(region->width));
   p+=sizeof(region->width);
   (void) memcpy(p,&region->height,sizeof(region->height));
@@ -1355,14 +1341,14 @@ MagickPrivate MagickBooleanType WriteDistributePixelCachePixels(
   p+=sizeof(region->y);
   (void) memcpy(p,&length,sizeof(length));
   p+=sizeof(length);
-  count=send(distribute_cache_info->file,buffer,p-buffer,0);
+  count=send(server_info->file,buffer,p-buffer,0);
   if (count != (ssize_t) (p-buffer))
     return(MagickFalse);
-  count=send(distribute_cache_info->file,(unsigned char *) pixels,(size_t)
+  count=send(server_info->file,(unsigned char *) pixels,(size_t)
     length,0);
   if (count != (ssize_t) length)
     return(MagickFalse);
-  count=recv(distribute_cache_info->file,&status,sizeof(status),0);
+  count=recv(server_info->file,&status,sizeof(status),0);
   if (count != (ssize_t) sizeof(status))
     return(MagickFalse);
   return(status != 0 ? MagickTrue : MagickFalse);

@@ -2214,8 +2214,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       {
         degrees+=5.0;
         preview_image=ShearImage(thumbnail,degrees,degrees,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"shear %gx%g",
-          degrees,2.0*degrees);
+        (void) FormatLocaleString(label,MaxTextExtent,"shear %gx%g",degrees,
+          2.0*degrees);
         break;
       }
       case RollPreview:
@@ -2232,8 +2232,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         preview_image=CloneImage(thumbnail,0,0,MagickTrue,exception);
         if (preview_image == (Image *) NULL)
           break;
-        (void) FormatLocaleString(factor,MaxTextExtent,"100,100,%g",
-          2.0*percentage);
+        (void) FormatLocaleString(factor,MaxTextExtent,"100,100,%g",2.0*
+          percentage);
         (void) ModulateImage(preview_image,factor,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"modulate %s",factor);
         break;
@@ -2243,8 +2243,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         preview_image=CloneImage(thumbnail,0,0,MagickTrue,exception);
         if (preview_image == (Image *) NULL)
           break;
-        (void) FormatLocaleString(factor,MaxTextExtent,"100,%g",
-          2.0*percentage);
+        (void) FormatLocaleString(factor,MaxTextExtent,"100,%g",2.0*percentage);
         (void) ModulateImage(preview_image,factor,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"modulate %s",factor);
         break;
@@ -2388,8 +2387,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       case SharpenPreview:
       {
         preview_image=SharpenImage(thumbnail,radius,sigma,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"sharpen %gx%g",
-          radius,sigma);
+        (void) FormatLocaleString(label,MaxTextExtent,"sharpen %gx%g",radius,
+          sigma);
         break;
       }
       case BlurPreview:
@@ -2406,8 +2405,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
           break;
         (void) BilevelImage(thumbnail,(double) (percentage*((double)
           QuantumRange+1.0))/100.0,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"threshold %g",
-          (double) (percentage*((double) QuantumRange+1.0))/100.0);
+        (void) FormatLocaleString(label,MaxTextExtent,"threshold %g",(double)
+          (percentage*((double) QuantumRange+1.0))/100.0);
         break;
       }
       case EdgeDetectPreview:
@@ -2420,8 +2419,7 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
       {
         preview_image=SpreadImage(thumbnail,radius,thumbnail->interpolate,
           exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"spread %g",
-          radius+0.5);
+        (void) FormatLocaleString(label,MaxTextExtent,"spread %g",radius+0.5);
         break;
       }
       case SolarizePreview:
@@ -2429,8 +2427,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         preview_image=CloneImage(thumbnail,0,0,MagickTrue,exception);
         if (preview_image == (Image *) NULL)
           break;
-        (void) SolarizeImage(preview_image,(double) QuantumRange*
-          percentage/100.0,exception);
+        (void) SolarizeImage(preview_image,(double) QuantumRange*percentage/
+          100.0,exception);
         (void) FormatLocaleString(label,MaxTextExtent,"solarize %g",
           (QuantumRange*percentage)/100.0);
         break;
@@ -2440,8 +2438,8 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         degrees+=10.0;
         preview_image=ShadeImage(thumbnail,MagickTrue,degrees,degrees,
           exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"shade %gx%g",
-          degrees,degrees);
+        (void) FormatLocaleString(label,MaxTextExtent,"shade %gx%g",degrees,
+          degrees);
         break;
       }
       case RaisePreview:
@@ -2492,24 +2490,24 @@ MagickExport Image *PreviewImage(const Image *image,const PreviewType preview,
         degrees+=5.0f;
         preview_image=WaveImage(thumbnail,0.5*degrees,2.0*degrees,
           image->interpolate,exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"wave %gx%g",
-          0.5*degrees,2.0*degrees);
+        (void) FormatLocaleString(label,MaxTextExtent,"wave %gx%g",0.5*degrees,
+          2.0*degrees);
         break;
       }
       case OilPaintPreview:
       {
         preview_image=OilPaintImage(thumbnail,(double) radius,(double) sigma,
           exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"charcoal %gx%g",
-          radius,sigma);
+        (void) FormatLocaleString(label,MaxTextExtent,"charcoal %gx%g",radius,
+          sigma);
         break;
       }
       case CharcoalDrawingPreview:
       {
         preview_image=CharcoalImage(thumbnail,(double) radius,(double) sigma,
           exception);
-        (void) FormatLocaleString(label,MaxTextExtent,"charcoal %gx%g",
-          radius,sigma);
+        (void) FormatLocaleString(label,MaxTextExtent,"charcoal %gx%g",radius,
+          sigma);
         break;
       }
       case JPEGPreview:
