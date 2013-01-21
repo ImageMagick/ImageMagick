@@ -570,6 +570,8 @@ static MagickBooleanType ClonePixelCachePixels(CacheInfo *clone_info,
       length=(size_t) MagickMin(cache_info->columns*
         cache_info->metacontent_extent,clone_info->columns*
         clone_info->metacontent_extent);
+      cache_nexus[0]->region.y=0;
+      clone_nexus[0]->region.y=0;
       for (y=0; y < (ssize_t) cache_info->rows; y++)
       {
         register const unsigned char
