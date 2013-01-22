@@ -1488,8 +1488,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       register Quantum
         *restrict q;
 
-      q=QueueCacheViewAuthenticPixels(despeckle_view,0,y,
-        despeckle_image->columns,1,exception);
+      q=GetCacheViewAuthenticPixels(despeckle_view,0,y,despeckle_image->columns,
+        1,exception);
       if (q == (Quantum *) NULL)
         {
           status=MagickFalse;
