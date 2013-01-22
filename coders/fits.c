@@ -408,6 +408,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   if ((fits_info.simple == MagickFalse) || (fits_info.number_axes < 1) ||
       (fits_info.number_axes > 4) || (number_pixels == 0))
     ThrowReaderException(CorruptImageError,"ImageTypeNotSupported");
+  half_interval=pow(2.0,(double) image->depth-1);
   for (scene=0; scene < (ssize_t) fits_info.number_planes; scene++)
   {
     image->columns=(size_t) fits_info.columns;
@@ -447,7 +448,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         pixel=GetFITSPixel(image,fits_info.bits_per_pixel);
         if ((image->depth == 16) || (image->depth == 32) ||
             (image->depth == 64))
-          pixel-=pow(2.0,(double) image->depth-1);
+          pixel-=half_interval;
         SetPixelGray(image,ClampToQuantum(scale*(fits_info.scale*(pixel-
           fits_info.min_data)+fits_info.zero)),q);
         q+=GetPixelChannels(image);
