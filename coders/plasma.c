@@ -214,7 +214,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   }
-  (void) SetImageAlphaChannel(image,DeactivateAlphaChannel,exception);
+  (void) SetImageAlphaChannel(image,SetAlphaChannel,exception);
   return(GetFirstImageInList(image));
 }
 
