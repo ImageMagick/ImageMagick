@@ -610,16 +610,18 @@ static inline MagickSizeType MagickMin(const MagickSizeType x,
 static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
   CacheInfo *cache_info,ExceptionInfo *exception)
 {
+#define MaxCacheThreads  2
+#define cache_threads(source,destination,chunk) \
+  num_threads((chunk) < (16*GetMagickResourceLimit(ThreadResource)) ? 1 : \
+    GetMagickResourceLimit(ThreadResource) < MaxCacheThreads ? 1 : \
+    MaxCacheThreads)
+
   MagickBooleanType
     status;
 
   NexusInfo
     **cache_nexus,
     **clone_nexus;
-
-  RectangleInfo
-    cache_region,
-    clone_region;
 
   size_t
     length;
@@ -649,24 +651,29 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
       return(MagickTrue);
     }
   /*
-    Irregular pixel cache morphology.
+    Mismatched pixel cache morphology.
   */
-  cache_nexus=AcquirePixelCacheNexus(1);
-  clone_nexus=AcquirePixelCacheNexus(1);
+  cache_nexus=AcquirePixelCacheNexus(MaxCacheThreads);
+  clone_nexus=AcquirePixelCacheNexus(MaxCacheThreads);
   if ((cache_nexus == (NexusInfo **) NULL) ||
       (clone_nexus == (NexusInfo **) NULL))
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
-  cache_region.width=cache_info->columns;
-  cache_region.height=1;
-  cache_region.x=0;
-  cache_region.y=0;
-  clone_region=cache_region;
-  clone_region.width=clone_info->columns;
   length=(size_t) MagickMin(cache_info->columns,clone_info->columns)*
     sizeof(*cache_info->pixels);
   status=MagickTrue;
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+  #pragma omp parallel for schedule(static,4) shared(status) \
+    cache_threads(cache_info,clone_info,cache_info->rows)
+#endif
   for (y=0; y < (ssize_t) cache_info->rows; y++)
   {
+    const int
+      id = GetOpenMPThreadId();
+
+    RectangleInfo
+      cache_region,
+      clone_region;
+
     register const PixelPacket
       *restrict p;
 
@@ -677,19 +684,25 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
       continue;
     if (y >= (ssize_t) clone_info->rows)
       continue;
+    cache_region.width=cache_info->columns;
+    cache_region.height=1;
+    cache_region.x=0;
     cache_region.y=y;
     (void) SetPixelCacheNexusPixels(cache_info,ReadMode,&cache_region,
-      cache_nexus[0],exception);
-    status=ReadPixelCachePixels(cache_info,cache_nexus[0],exception);
+      cache_nexus[id],exception);
+    status=ReadPixelCachePixels(cache_info,cache_nexus[id],exception);
     if (status == MagickFalse)
       continue;
-    p=cache_nexus[0]->pixels;
+    p=cache_nexus[id]->pixels;
+    clone_region.width=clone_info->columns;
+    clone_region.height=1;
+    clone_region.x=0;
     clone_region.y=y;
     (void) SetPixelCacheNexusPixels(clone_info,WriteMode,&clone_region,
-      clone_nexus[0],exception);
-    q=clone_nexus[0]->pixels;
+      clone_nexus[id],exception);
+    q=clone_nexus[id]->pixels;
     (void) memcpy(q,p,length);
-    status=WritePixelCachePixels(clone_info,clone_nexus[0],exception);
+    status=WritePixelCachePixels(clone_info,clone_nexus[id],exception);
   }
   if ((cache_info->active_index_channel != MagickFalse) &&
       (clone_info->active_index_channel != MagickFalse))
@@ -701,6 +714,13 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
         sizeof(*cache_info->indexes);
       for (y=0; y < (ssize_t) cache_info->rows; y++)
       {
+        const int
+          id = GetOpenMPThreadId();
+
+        RectangleInfo
+          cache_region,
+          clone_region;
+
         register const IndexPacket
           *restrict p;
 
@@ -711,23 +731,29 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
           continue;
         if (y >= (ssize_t) clone_info->rows)
           continue;
+        cache_region.width=cache_info->columns;
+        cache_region.height=1;
+        cache_region.x=0;
         cache_region.y=y;
         (void) SetPixelCacheNexusPixels(cache_info,ReadMode,&cache_region,
-          cache_nexus[0],exception);
-        status=ReadPixelCacheIndexes(cache_info,cache_nexus[0],exception);
+          cache_nexus[id],exception);
+        status=ReadPixelCacheIndexes(cache_info,cache_nexus[id],exception);
         if (status == MagickFalse)
           continue;
-        p=cache_nexus[0]->indexes;
+        p=cache_nexus[id]->indexes;
+        clone_region.width=clone_info->columns;
+        clone_region.height=1;
+        clone_region.x=0;
         clone_region.y=y;
         (void) SetPixelCacheNexusPixels(clone_info,WriteMode,&clone_region,
-          clone_nexus[0],exception);
-        q=clone_nexus[0]->indexes;
+          clone_nexus[id],exception);
+        q=clone_nexus[id]->indexes;
         (void) memcpy(q,p,length);
-        status=WritePixelCacheIndexes(clone_info,clone_nexus[0],exception);
+        status=WritePixelCacheIndexes(clone_info,clone_nexus[id],exception);
       }
     }
-  cache_nexus=DestroyPixelCacheNexus(cache_nexus,1);
-  clone_nexus=DestroyPixelCacheNexus(clone_nexus,1);
+  cache_nexus=DestroyPixelCacheNexus(cache_nexus,MaxCacheThreads);
+  clone_nexus=DestroyPixelCacheNexus(clone_nexus,MaxCacheThreads);
   if (cache_info->debug != MagickFalse)
     {
       char
