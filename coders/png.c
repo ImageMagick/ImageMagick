@@ -2250,6 +2250,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   png_set_read_user_chunk_fn(ping, image, read_vpag_chunk_callback);
 #endif
 
+#ifdef PNG_SET_USER_LIMITS_SUPPORTED
+    /* Limit the size of the chunk storage cache used for sPLT, text,
+     * and unknown chunks, and for expansion of iTXt, zTXt, and iCCP chunks.
+     */
+    png_set_chunk_cache_max(ping, 65536);
+#endif
+
 #ifdef PNG_READ_CHECK_FOR_INVALID_INDEX_SUPPORTED
     /* Disable new libpng-1.5.10 feature */
     png_set_check_for_invalid_index (ping, 0);
