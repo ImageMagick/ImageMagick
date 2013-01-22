@@ -100,9 +100,6 @@ static inline size_t MagickMax(const size_t x,const size_t y)
 static inline void PlasmaPixel(Image *image,RandomInfo *random_info,double x,
   double y,ExceptionInfo *exception)
 {
-  QuantumAny
-    range;
-
   register Quantum
     *q;
 
@@ -110,13 +107,12 @@ static inline void PlasmaPixel(Image *image,RandomInfo *random_info,double x,
     exception);
   if (q == (Quantum *) NULL)
     return;
-  range=GetQuantumRange(16UL);
-  SetPixelRed(image,ScaleAnyToQuantum((size_t) (65535.0*
-    GetPseudoRandomValue(random_info)+0.5),range),q);
-  SetPixelGreen(image,ScaleAnyToQuantum((size_t) (65535.0*
-    GetPseudoRandomValue(random_info)+0.5),range),q);
-  SetPixelBlue(image,ScaleAnyToQuantum((size_t) (65535.0*
-    GetPseudoRandomValue(random_info)+0.5),range),q);
+  SetPixelRed(image,ScaleShortToQuantum((unsigned short) (65535.0*
+    GetPseudoRandomValue(random_info)+0.5)),q);
+  SetPixelGreen(image,ScaleShortToQuantum((unsigned short) (65535.0*
+    GetPseudoRandomValue(random_info)+0.5)),q);
+  SetPixelBlue(image,ScaleShortToQuantum((unsigned short) (65535.0*
+    GetPseudoRandomValue(random_info)+0.5)),q);
   (void) SyncAuthenticPixels(image,exception);
 }
 
