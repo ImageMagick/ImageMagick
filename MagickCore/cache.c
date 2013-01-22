@@ -4222,7 +4222,6 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
         Read metacontent from distributed cache.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      region.height=1UL;
       for (y=0; y < (ssize_t) region.height; y++)
       {
         count=ReadDistributePixelCachePixels(cache_info->server_info,&region,
@@ -4376,7 +4375,6 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
         Read pixels from distributed cache.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      region.height=1UL;
       for (y=0; y < (ssize_t) region.height; y++)
       {
         count=ReadDistributePixelCachePixels(cache_info->server_info,&region,
@@ -5153,7 +5151,6 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
         Write metacontent to distributed cache.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      region.height=1UL;
       for (y=0; y < (ssize_t) region.height; y++)
       {
         count=WriteDistributePixelCachePixels(cache_info->server_info,&region,
@@ -5308,7 +5305,6 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
         Write pixels to distributed cache.
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
-      region.height=1UL;
       for (y=0; y < (ssize_t) region.height; y++)
       {
         count=WriteDistributePixelCachePixels(cache_info->server_info,&region,
