@@ -60,6 +60,7 @@
 #include "MagickCore/exception-private.h"
 #include "MagickCore/geometry.h"
 #include "MagickCore/image.h"
+#include "MagickCore/list.h"
 #include "MagickCore/locale_.h"
 #include "MagickCore/memory_.h"
 #include "MagickCore/policy.h"
@@ -584,6 +585,11 @@ static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
   return(MagickTrue);
 }
 
+static void *RelinquishImageRegistry(void *image)
+{
+  return((void *) DestroyImageList((Image *) image));
+}
+
 static MagickBooleanType WriteDistributeCacheMetacontent(
   SplayTreeInfo *registry,int file,const MagickSizeType session_key,
   ExceptionInfo *exception)
@@ -751,7 +757,7 @@ static void *DistributePixelCacheClient(void *socket)
   random_info=DestroyRandomInfo(random_info);
   exception=AcquireExceptionInfo();
   registry=NewSplayTree((int (*)(const void *,const void *)) NULL,
-    (void *(*)(void *)) NULL,(void *(*)(void *)) NULL);
+    (void *(*)(void *)) NULL,RelinquishImageRegistry);
   client_socket=(*(int *) socket);
   count=dpc_send(client_socket,DPCSessionKeyLength,GetStringInfoDatum(secret));
   secret=DestroyStringInfo(secret);
