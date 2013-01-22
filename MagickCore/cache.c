@@ -426,17 +426,60 @@ MagickPrivate Cache ClonePixelCache(const Cache cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   C l o n e P i x e l C a c h e P i x e l s                                 %
++   C l o n e P i x e l C a c h e M e t h o d s                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ClonePixelCacheMethods() clones the pixel cache methods from one cache to
+%  another.
+%
+%  The format of the ClonePixelCacheMethods() method is:
+%
+%      void ClonePixelCacheMethods(Cache clone,const Cache cache)
+%
+%  A description of each parameter follows:
+%
+%    o clone: Specifies a pointer to a Cache structure.
+%
+%    o cache: the pixel cache.
+%
+*/
+MagickPrivate void ClonePixelCacheMethods(Cache clone,const Cache cache)
+{
+  CacheInfo
+    *cache_info,
+    *source_info;
+
+  assert(clone != (Cache) NULL);
+  source_info=(CacheInfo *) clone;
+  assert(source_info->signature == MagickSignature);
+  if (source_info->debug != MagickFalse)
+    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
+      source_info->filename);
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
+  source_info->methods=cache_info->methods;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C l o n e P i x e l C a c h e R e p o s i t o r y                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %
-%  ClonePixelCachePixels() clones the source pixel cache to the destination
+%  ClonePixelCacheRepository() clones the source pixel cache to the destination
 %  cache.
 %
-%  The format of the ClonePixelCachePixels() method is:
+%  The format of the ClonePixelCacheRepository() method is:
 %
-%      MagickBooleanType ClonePixelCachePixels(CacheInfo *cache_info,
+%      MagickBooleanType ClonePixelCacheRepository(CacheInfo *cache_info,
 %        CacheInfo *source_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -457,7 +500,7 @@ static inline MagickSizeType MagickMin(const MagickSizeType x,
   return(y);
 }
 
-static MagickBooleanType ClonePixelCachePixels(CacheInfo *clone_info,
+static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
   CacheInfo *cache_info,ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -610,49 +653,6 @@ static MagickBooleanType ClonePixelCachePixels(CacheInfo *clone_info,
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),message);
     }
   return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   C l o n e P i x e l C a c h e M e t h o d s                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ClonePixelCacheMethods() clones the pixel cache methods from one cache to
-%  another.
-%
-%  The format of the ClonePixelCacheMethods() method is:
-%
-%      void ClonePixelCacheMethods(Cache clone,const Cache cache)
-%
-%  A description of each parameter follows:
-%
-%    o clone: Specifies a pointer to a Cache structure.
-%
-%    o cache: the pixel cache.
-%
-*/
-MagickPrivate void ClonePixelCacheMethods(Cache clone,const Cache cache)
-{
-  CacheInfo
-    *cache_info,
-    *source_info;
-
-  assert(clone != (Cache) NULL);
-  source_info=(CacheInfo *) clone;
-  assert(source_info->signature == MagickSignature);
-  if (source_info->debug != MagickFalse)
-    (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",
-      source_info->filename);
-  assert(cache != (Cache) NULL);
-  cache_info=(CacheInfo *) cache;
-  assert(cache_info->signature == MagickSignature);
-  source_info->methods=cache_info->methods;
 }
 
 /*
@@ -1497,7 +1497,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
           if (status != MagickFalse)
             {
               if (clone != MagickFalse)
-                status=ClonePixelCachePixels(clone_info,cache_info,exception);
+                status=ClonePixelCacheRepository(clone_info,cache_info,exception);
               if (status != MagickFalse)
                 {
                   if (cache_info->reference_count == 1)
@@ -3467,7 +3467,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if ((source_info.storage_class != UndefinedClass) &&
                   (mode != ReadMode))
                 {
-                  status=ClonePixelCachePixels(cache_info,&source_info,
+                  status=ClonePixelCacheRepository(cache_info,&source_info,
                     exception);
                   RelinquishPixelCachePixels(&source_info);
                 }
@@ -3521,7 +3521,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if ((source_info.storage_class != UndefinedClass) &&
                   (mode != ReadMode))
                 {
-                  status=ClonePixelCachePixels(cache_info,&source_info,
+                  status=ClonePixelCacheRepository(cache_info,&source_info,
                     exception);
                   RelinquishPixelCachePixels(&source_info);
                 }
@@ -3602,7 +3602,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               if ((source_info.storage_class != UndefinedClass) &&
                   (mode != ReadMode))
                 {
-                  status=ClonePixelCachePixels(cache_info,&source_info,
+                  status=ClonePixelCacheRepository(cache_info,&source_info,
                     exception);
                   RelinquishPixelCachePixels(&source_info);
                 }
@@ -3628,7 +3628,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
   status=MagickTrue;
   if ((source_info.storage_class != UndefinedClass) && (mode != ReadMode))
     {
-      status=ClonePixelCachePixels(cache_info,&source_info,exception);
+      status=ClonePixelCacheRepository(cache_info,&source_info,exception);
       RelinquishPixelCachePixels(&source_info);
     }
   if (image->debug != MagickFalse)
@@ -3772,7 +3772,7 @@ MagickExport MagickBooleanType PersistPixelCache(Image *image,
   cache_info=(CacheInfo *) image->cache;
   status=OpenPixelCache(image,IOMode,exception);
   if (status != MagickFalse)
-    status=ClonePixelCachePixels(cache_info,clone_info,exception);
+    status=ClonePixelCacheRepository(cache_info,clone_info,exception);
   *offset+=cache_info->length+page_size-(cache_info->length % page_size);
   clone_info=(CacheInfo *) DestroyPixelCache(clone_info);
   return(status);
