@@ -104,9 +104,6 @@ static inline void PlasmaPixel(Image *image,RandomInfo *random_info,double x,
   ExceptionInfo
     *exception;
 
-  QuantumAny
-    range;
-
   register PixelPacket
     *q;
 
@@ -115,13 +112,12 @@ static inline void PlasmaPixel(Image *image,RandomInfo *random_info,double x,
     exception);
   if (q == (PixelPacket *) NULL)
     return;
-  range=GetQuantumRange(16UL);
-  SetPixelRed(q,ScaleAnyToQuantum((size_t) (65535.0*
-    GetPseudoRandomValue(random_info)+0.5),range));
-  SetPixelGreen(q,ScaleAnyToQuantum((size_t) (65535.0*
-    GetPseudoRandomValue(random_info)+0.5),range));
-  SetPixelBlue(q,ScaleAnyToQuantum((size_t) (65535.0*
-    GetPseudoRandomValue(random_info)+0.5),range));
+  SetPixelRed(q,ScaleShortToQuantum((unsigned short) (65535.0*
+    GetPseudoRandomValue(random_info)+0.5)));
+  SetPixelGreen(q,ScaleShortToQuantum((unsigned short) (65535.0*
+    GetPseudoRandomValue(random_info)+0.5)));
+  SetPixelBlue(q,ScaleShortToQuantum((unsigned short) (65535.0*
+    GetPseudoRandomValue(random_info)+0.5)));
   (void) SyncAuthenticPixels(image,exception);
 }
 
