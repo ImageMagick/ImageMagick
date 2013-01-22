@@ -412,7 +412,7 @@ static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *registry,
 }
 
 static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
-  const unsigned char *restrict buffer)
+  const unsigned char *restrict message)
 {
   MagickOffsetType
     count;
@@ -423,7 +423,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   count=0;
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
-    count=(MagickOffsetType) send(file,buffer+i,(size_t) MagickMin(length-i,
+    count=(MagickOffsetType) send(file,message+i,(size_t) MagickMin(length-i,
       (MagickSizeType) SSIZE_MAX),0);
     if (count <= 0)
       {
