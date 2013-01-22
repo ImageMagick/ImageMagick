@@ -577,12 +577,6 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
     RectangleInfo
       region;
 
-    register const Quantum
-      *restrict p;
-
-    register Quantum
-      *restrict q;
-
     register ssize_t
       x;
 
@@ -599,41 +593,50 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
     status=ReadPixelCachePixels(cache_info,cache_nexus[id],exception);
     if (status == MagickFalse)
       continue;
-    p=cache_nexus[id]->pixels;
     region.width=clone_info->columns;
     region.y=y;
     (void) SetPixelCacheNexusPixels(clone_info,WriteMode,&region,
       clone_nexus[id],exception);
-    q=clone_nexus[id]->pixels;
     if (optimize != MagickFalse)
-      (void) memcpy(q,p,length*sizeof(Quantum));
+      (void) memcpy(clone_nexus[id]->pixels,cache_nexus[id]->pixels,length*
+        sizeof(Quantum));
     else
-      for (x=0; x < (ssize_t) cache_info->columns; x++)
       {
-        register ssize_t
-          i;
+        register const Quantum
+          *restrict p;
+
+        register Quantum
+          *restrict q;
 
         /*
-          Respect pixel channel map.
+          Mismatched pixel channel map.
         */
-        if (x == (ssize_t) clone_info->columns)
-          break;
-        for (i=0; i < (ssize_t) clone_info->number_channels; i++)
+        p=cache_nexus[id]->pixels;
+        q=clone_nexus[id]->pixels;
+        for (x=0; x < (ssize_t) cache_info->columns; x++)
         {
-          PixelChannel
-            channel;
+          register ssize_t
+            i;
 
-          PixelTrait
-            traits;
+          if (x == (ssize_t) clone_info->columns)
+            break;
+          for (i=0; i < (ssize_t) clone_info->number_channels; i++)
+          {
+            PixelChannel
+              channel;
 
-          channel=clone_info->channel_map[i].channel;
-          traits=cache_info->channel_map[channel].traits;
-          if (traits != UndefinedPixelTrait)
-            (void) memcpy(q,p+cache_info->channel_map[channel].offset,
-              sizeof(Quantum));
-          q++;
+            PixelTrait
+              traits;
+
+            channel=clone_info->channel_map[i].channel;
+            traits=cache_info->channel_map[channel].traits;
+            if (traits != UndefinedPixelTrait)
+              (void) memcpy(q,p+cache_info->channel_map[channel].offset,
+                sizeof(Quantum));
+            q++;
+          }
+          p+=cache_info->number_channels;
         }
-        p+=cache_info->number_channels;
       }
     status=WritePixelCachePixels(clone_info,clone_nexus[id],exception);
   }
@@ -653,12 +656,6 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
         RectangleInfo
           region;
 
-        register const unsigned char
-          *restrict p;
-
-        register unsigned char
-          *restrict q;
-
         if (status == MagickFalse)
           continue;
         if (y >= (ssize_t) clone_info->rows)
@@ -672,13 +669,12 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
         status=ReadPixelCacheMetacontent(cache_info,cache_nexus[id],exception);
         if (status == MagickFalse)
           continue;
-        p=cache_nexus[id]->metacontent;
         region.width=clone_info->columns;
         region.y=y;
         (void) SetPixelCacheNexusPixels(clone_info,WriteMode,&region,
           clone_nexus[id],exception);
-        q=clone_nexus[id]->metacontent;
-        (void) memcpy(q,p,length*sizeof(*cache_nexus[0]->metacontent));
+        (void) memcpy(clone_nexus[id]->metacontent,cache_nexus[id]->metacontent,
+           length*sizeof(*cache_nexus[0]->metacontent));
         status=WritePixelCacheMetacontent(clone_info,clone_nexus[id],exception);
       }
     }
