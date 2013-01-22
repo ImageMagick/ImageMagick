@@ -153,7 +153,8 @@ static PixelPacket
   *QueueAuthenticPixelsCache(Image *,const ssize_t,const ssize_t,const size_t,
     const size_t,ExceptionInfo *),
   *SetPixelCacheNexusPixels(const CacheInfo *,const MapMode,
-    const RectangleInfo *,NexusInfo *,ExceptionInfo *) magick_hot_spot;
+    const RectangleInfo *,const MagickBooleanType,NexusInfo *,ExceptionInfo *)
+    magick_hot_spot;
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
@@ -684,7 +685,7 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
     region.height=1;
     region.x=0;
     region.y=y;
-    pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,
+    pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,MagickTrue,
       cache_nexus[id],exception);
     if (pixels == (PixelPacket *) NULL)
       continue;
@@ -692,7 +693,7 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
     if (status == MagickFalse)
       continue;
     region.width=clone_info->columns;
-    pixels=SetPixelCacheNexusPixels(clone_info,WriteMode,&region,
+    pixels=SetPixelCacheNexusPixels(clone_info,WriteMode,&region,MagickTrue,
       clone_nexus[id],exception);
     if (pixels == (PixelPacket *) NULL)
       continue;
@@ -730,7 +731,7 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
         region.height=1;
         region.x=0;
         region.y=y;
-        pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,
+        pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,MagickTrue,
           cache_nexus[id],exception);
         if (pixels == (PixelPacket *) NULL)
           continue;
@@ -738,7 +739,7 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
         if (status == MagickFalse)
           continue;
         region.width=clone_info->columns;
-        pixels=SetPixelCacheNexusPixels(clone_info,WriteMode,&region,
+        pixels=SetPixelCacheNexusPixels(clone_info,WriteMode,&region,MagickTrue,
           clone_nexus[id],exception);
         if (pixels == (PixelPacket *) NULL)
           continue;
@@ -2712,8 +2713,9 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
   region.y=y;
   region.width=columns;
   region.height=rows;
-  pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,nexus_info,
-    exception);
+  pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,
+    (image->clip_mask != (Image *) NULL) || (image->mask != (Image *) NULL) ?
+    MagickTrue : MagickFalse,nexus_info,exception);
   if (pixels == (PixelPacket *) NULL)
     return((const PixelPacket *) NULL);
   offset=(MagickOffsetType) nexus_info->region.y*cache_info->columns+
@@ -3998,8 +4000,9 @@ MagickExport PixelPacket *QueueAuthenticPixelCacheNexus(Image *image,
   region.y=y;
   region.width=columns;
   region.height=rows;
-  pixels=SetPixelCacheNexusPixels(cache_info,WriteMode,&region,nexus_info,
-    exception);
+  pixels=SetPixelCacheNexusPixels(cache_info,WriteMode,&region,
+    (image->clip_mask != (Image *) NULL) || (image->mask != (Image *) NULL) ?
+    MagickTrue : MagickFalse,nexus_info,exception);
   return(pixels);
 }
 
@@ -4583,7 +4586,8 @@ MagickExport void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
 %  The format of the SetPixelCacheNexusPixels() method is:
 %
 %      PixelPacket SetPixelCacheNexusPixels(const CacheInfo *cache_info,
-%        const MapMode mode,const RectangleInfo *region,NexusInfo *nexus_info,
+%        const MapMode mode,const RectangleInfo *region,
+%        const MagickBooleanType buffered,NexusInfo *nexus_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -4594,6 +4598,8 @@ MagickExport void SetPixelCacheMethods(Cache cache,CacheMethods *cache_methods)
 %
 %    o region: A pointer to the RectangleInfo structure that defines the
 %      region of this particular cache nexus.
+%
+%    o buffered: pixels are buffered.
 %
 %    o nexus_info: the cache nexus to set.
 %
@@ -4638,7 +4644,8 @@ static inline void PrefetchPixelCacheNexusPixels(const NexusInfo *nexus_info,
 }
 
 static PixelPacket *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
-  const MapMode mode,const RectangleInfo *region,NexusInfo *nexus_info,
+  const MapMode mode,const RectangleInfo *region,
+  const MagickBooleanType buffered,NexusInfo *nexus_info,
   ExceptionInfo *exception)
 {
   MagickBooleanType
@@ -4653,11 +4660,8 @@ static PixelPacket *SetPixelCacheNexusPixels(const CacheInfo *cache_info,
   if (cache_info->type == UndefinedCache)
     return((PixelPacket *) NULL);
   nexus_info->region=(*region);
-/*
   if (((cache_info->type == MemoryCache) || (cache_info->type == MapCache)) &&
-      (image->clip_mask == (Image *) NULL) && (image->mask == (Image *) NULL))
-*/
-  if ((cache_info->type == MemoryCache) || (cache_info->type == MapCache))
+      (buffered == MagickFalse))
     {
       ssize_t
         x,
