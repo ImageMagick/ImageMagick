@@ -574,6 +574,9 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
     const int
       id = GetOpenMPThreadId();
 
+    Quantum
+      *pixels;
+
     RectangleInfo
       region;
 
@@ -588,15 +591,19 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
     region.height=1;
     region.x=0;
     region.y=y;
-    (void) SetPixelCacheNexusPixels(cache_info,ReadMode,&region,cache_nexus[id],
+    pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,cache_nexus[id],
       exception);
+    if (pixels == (Quantum *) NULL)
+      continue;
     status=ReadPixelCachePixels(cache_info,cache_nexus[id],exception);
     if (status == MagickFalse)
       continue;
     region.width=clone_info->columns;
     region.y=y;
-    (void) SetPixelCacheNexusPixels(clone_info,WriteMode,&region,
+    pixels=SetPixelCacheNexusPixels(clone_info,WriteMode,&region,
       clone_nexus[id],exception);
+    if (pixels == (Quantum *) NULL)
+      continue;
     if (optimize != MagickFalse)
       (void) memcpy(clone_nexus[id]->pixels,cache_nexus[id]->pixels,length*
         sizeof(Quantum));
@@ -653,6 +660,9 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
         const int
           id = GetOpenMPThreadId();
 
+        Quantum
+          *pixels;
+
         RectangleInfo
           region;
 
@@ -664,15 +674,19 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
         region.height=1;
         region.x=0;
         region.y=y;
-        (void) SetPixelCacheNexusPixels(cache_info,ReadMode,&region,
+        pixels=SetPixelCacheNexusPixels(cache_info,ReadMode,&region,
           cache_nexus[id],exception);
+        if (pixels == (Quantum *) NULL)
+          continue;
         status=ReadPixelCacheMetacontent(cache_info,cache_nexus[id],exception);
         if (status == MagickFalse)
           continue;
         region.width=clone_info->columns;
         region.y=y;
-        (void) SetPixelCacheNexusPixels(clone_info,WriteMode,&region,
+        pixels=SetPixelCacheNexusPixels(clone_info,WriteMode,&region,
           clone_nexus[id],exception);
+        if (pixels == (Quantum *) NULL)
+          continue;
         (void) memcpy(clone_nexus[id]->metacontent,cache_nexus[id]->metacontent,
           length*sizeof(*cache_nexus[id]->metacontent));
         status=WritePixelCacheMetacontent(clone_info,clone_nexus[id],exception);
