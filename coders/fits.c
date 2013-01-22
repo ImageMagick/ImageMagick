@@ -248,6 +248,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     value[73];
 
   double
+    half_interval,
     pixel,
     scale;
 
