@@ -445,6 +445,9 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         pixel=GetFITSPixel(image,fits_info.bits_per_pixel);
+        if ((image->depth == 16) || (image->depth == 32) ||
+            (image->depth == 64))
+          pixel-=pow(2.0,(double) image->depth-1);
         SetPixelRed(q,ClampToQuantum(scale*(fits_info.scale*(pixel-
           fits_info.min_data)+fits_info.zero)));
         SetPixelGreen(q,GetPixelRed(q));

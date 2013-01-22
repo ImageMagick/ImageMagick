@@ -3,6 +3,7 @@
 
 2013-01-21  6.8.2-0 Cristy  <quetzlzacatenango@image...>
   * Avoid a rare thread lock for timeout event (e.g. MAGICK_TIME_LIMIT=30).
+  * Account for signed values for the FITS image format.
 
 2013-01-18  6.8.1-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.1-10, SVN revision 10667.
