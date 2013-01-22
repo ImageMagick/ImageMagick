@@ -674,7 +674,7 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
         (void) SetPixelCacheNexusPixels(clone_info,WriteMode,&region,
           clone_nexus[id],exception);
         (void) memcpy(clone_nexus[id]->metacontent,cache_nexus[id]->metacontent,
-           length*sizeof(*cache_nexus[0]->metacontent));
+          length*sizeof(*cache_nexus[id]->metacontent));
         status=WritePixelCacheMetacontent(clone_info,clone_nexus[id],exception);
       }
     }
