@@ -594,7 +594,6 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
     if (status == MagickFalse)
       continue;
     region.width=clone_info->columns;
-    region.y=y;
     (void) SetPixelCacheNexusPixels(clone_info,WriteMode,&region,
       clone_nexus[id],exception);
     if (optimize != MagickFalse)
@@ -670,7 +669,6 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
         if (status == MagickFalse)
           continue;
         region.width=clone_info->columns;
-        region.y=y;
         (void) SetPixelCacheNexusPixels(clone_info,WriteMode,&region,
           clone_nexus[id],exception);
         (void) memcpy(clone_nexus[id]->metacontent,cache_nexus[id]->metacontent,
