@@ -655,6 +655,10 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
       */
       length=(size_t) MagickMin(cache_info->metacontent_extent,
         clone_info->metacontent_extent);
+#if defined(MAGICKCORE_OPENMP_SUPPORT)
+      #pragma omp parallel for schedule(static,4) shared(status) \
+        cache_threads(cache_info,clone_info,cache_info->rows)
+#endif
       for (y=0; y < (ssize_t) cache_info->rows; y++)
       {
         const int
