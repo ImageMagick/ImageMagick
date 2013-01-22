@@ -214,8 +214,8 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
     if (status != 0)
       {
         errno=status;
-        ThrowFatalException(ResourceLimitFatalError,
-          "UnableToInitializeSemaphore");
+        perror("unable to initialize mutex attributes");
+        _exit(1);
       }
 #if defined(MAGICKCORE_DEBUG)
 #if defined(PTHREAD_MUTEX_ERRORCHECK)
@@ -223,8 +223,8 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
     if (status != 0)
       {
         errno=status;
-        ThrowFatalException(ResourceLimitFatalError,
-          "UnableToInitializeSemaphore");
+        perror("unable to set mutex type");
+        _exit(1);
       }
 #endif
 #endif
@@ -232,15 +232,15 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
     if (status != 0)
       {
         errno=status;
-        ThrowFatalException(ResourceLimitFatalError,
-          "UnableToInitializeSemaphore");
+        perror("unable to initialzie mutex");
+        _exit(1);
       }
     status=pthread_mutexattr_destroy(&mutex_info);
     if (status != 0)
       {
         errno=status;
-        ThrowFatalException(ResourceLimitFatalError,
-          "UnableToInitializeSemaphore");
+        perror("unable to destroy mutex attributes");
+        _exit(1);
       }
   }
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
@@ -252,9 +252,9 @@ MagickExport SemaphoreInfo *AllocateSemaphoreInfo(void)
     if (status == 0)
       {
         errno=status;
-        ThrowFatalException(ResourceLimitFatalError,
-          "UnableToInitializeSemaphore");
-       }
+        perror("unable to initialize critical section");
+        _exit(1);
+      }
   }
 #endif
   semaphore_info->id=GetMagickThreadId();
@@ -300,7 +300,7 @@ MagickExport void DestroySemaphoreInfo(SemaphoreInfo **semaphore_info)
     if (status != 0)
       {
         errno=status;
-        perror("unable to destroy semaphore");
+        perror("unable to destroy mutex");
         _exit(1);
       }
   }
@@ -347,7 +347,8 @@ MagickExport void LockSemaphoreInfo(SemaphoreInfo *semaphore_info)
     if (status != 0)
       {
         errno=status;
-        ThrowFatalException(ResourceLimitFatalError,"UnableToLockSemaphore");
+        perror("unable to lock mutex");
+        _exit(1);
       }
   }
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
@@ -487,7 +488,8 @@ MagickExport void UnlockSemaphoreInfo(SemaphoreInfo *semaphore_info)
     if (status != 0)
       {
         errno=status;
-        ThrowFatalException(ResourceLimitFatalError,"UnableToUnlockSemaphore");
+        perror("unable to unlock mutex");
+        _exit(1);
       }
   }
 #elif defined(MAGICKCORE_HAVE_WINTHREADS)
