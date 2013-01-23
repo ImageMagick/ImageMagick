@@ -1373,15 +1373,17 @@ am__magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la_SOURCES_DIST =  \
 	magick/composite-private.h magick/compress.c magick/compress.h \
 	magick/configure.c magick/configure.h magick/constitute.c \
 	magick/constitute.h magick/decorate.c magick/decorate.h \
-	magick/delegate.c magick/delegate.h magick/delegate-private.h \
-	magick/deprecate.c magick/deprecate.h magick/display.c \
-	magick/display.h magick/display-private.h magick/distort.c \
-	magick/distort.h magick/draw.c magick/draw.h \
-	magick/draw-private.h magick/effect.c magick/effect.h \
-	magick/enhance.c magick/enhance.h magick/exception.c \
-	magick/exception.h magick/exception-private.h magick/feature.c \
-	magick/feature.h magick/fourier.c magick/fourier.h magick/fx.c \
-	magick/fx.h magick/fx-private.h magick/gem.c magick/gem.h \
+	magick/distribute-cache.c magick/distribute-cache.h \
+	magick/distribute-cache-private.h magick/delegate.c \
+	magick/delegate.h magick/delegate-private.h magick/deprecate.c \
+	magick/deprecate.h magick/display.c magick/display.h \
+	magick/display-private.h magick/distort.c magick/distort.h \
+	magick/draw.c magick/draw.h magick/draw-private.h \
+	magick/effect.c magick/effect.h magick/enhance.c \
+	magick/enhance.h magick/exception.c magick/exception.h \
+	magick/exception-private.h magick/feature.c magick/feature.h \
+	magick/fourier.c magick/fourier.h magick/fx.c magick/fx.h \
+	magick/fx-private.h magick/gem.c magick/gem.h \
 	magick/geometry.c magick/geometry.h magick/hashmap.c \
 	magick/hashmap.h magick/histogram.c magick/histogram.h \
 	magick/identify.c magick/identify.h magick/image.c \
@@ -1480,6 +1482,7 @@ am__objects_1 = magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-accelerate.lo
 	magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-configure.lo \
 	magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-constitute.lo \
 	magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-decorate.lo \
+	magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-distribute-cache.lo \
 	magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-delegate.lo \
 	magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-deprecate.lo \
 	magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-display.lo \
@@ -4043,6 +4046,9 @@ MAGICK_BASE_SRCS = \
 	magick/constitute.h \
 	magick/decorate.c \
 	magick/decorate.h \
+	magick/distribute-cache.c \
+	magick/distribute-cache.h \
+	magick/distribute-cache-private.h \
 	magick/delegate.c \
 	magick/delegate.h \
 	magick/delegate-private.h \
@@ -4250,6 +4256,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/delegate.h \
 	magick/deprecate.h \
 	magick/display.h \
+	magick/distribute-cache.h \
 	magick/distort.h \
 	magick/draw.h \
 	magick/effect.h \
@@ -4326,6 +4333,7 @@ MAGICK_NOINST_HDRS = \
 	magick/composite-private.h \
 	magick/delegate-private.h \
 	magick/display-private.h \
+	magick/distribute-cache-private.h \
 	magick/draw-private.h \
 	magick/exception-private.h \
 	magick/fx-private.h \
@@ -5742,6 +5750,8 @@ magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-constitute.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-decorate.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-distribute-cache.lo:  \
+	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-delegate.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-deprecate.lo:  \
@@ -6795,6 +6805,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-deprecate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-display.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-distort.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-distribute-cache.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-draw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-effect.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-enhance.Plo@am__quote@
@@ -7912,6 +7923,13 @@ magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-decorate.lo: magick/decorate.
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='magick/decorate.c' object='magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-decorate.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-decorate.lo `test -f 'magick/decorate.c' || echo '$(srcdir)/'`magick/decorate.c
+
+magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-distribute-cache.lo: magick/distribute-cache.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-distribute-cache.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-distribute-cache.Tpo -c -o magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-distribute-cache.lo `test -f 'magick/distribute-cache.c' || echo '$(srcdir)/'`magick/distribute-cache.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-distribute-cache.Tpo magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-distribute-cache.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='magick/distribute-cache.c' object='magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-distribute-cache.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-distribute-cache.lo `test -f 'magick/distribute-cache.c' || echo '$(srcdir)/'`magick/distribute-cache.c
 
 magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-delegate.lo: magick/delegate.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-delegate.lo -MD -MP -MF magick/$(DEPDIR)/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-delegate.Tpo -c -o magick/magick_libMagickCore_@MAGICK_ABI_SUFFIX@_la-delegate.lo `test -f 'magick/delegate.c' || echo '$(srcdir)/'`magick/delegate.c

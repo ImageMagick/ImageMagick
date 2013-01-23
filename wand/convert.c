@@ -138,6 +138,8 @@ static MagickBooleanType ConvertUsage(void)
     *miscellaneous[]=
     {
       "-debug events        display copious debugging information",
+      "-distribute-cache port",
+      "                     distributed pixel cache spanning one or more servers",
       "-help                print program options",
       "-list type           print a list of supported option arguments",
       "-log format          format of debugging information",

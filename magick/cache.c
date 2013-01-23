@@ -49,6 +49,7 @@
 #include "magick/colorspace.h"
 #include "magick/colorspace-private.h"
 #include "magick/composite-private.h"
+#include "magick/distribute-cache-private.h"
 #include "magick/exception.h"
 #include "magick/exception-private.h"
 #include "magick/geometry.h"
@@ -757,7 +758,7 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
       (void) FormatLocaleString(message,MaxTextExtent,"%s => %s",
         CommandOptionToMnemonic(MagickCacheOptions,(ssize_t) cache_info->type),
         CommandOptionToMnemonic(MagickCacheOptions,(ssize_t) clone_info->type));
-      (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
+      (void) LogMagickEvent(CacheEvent,GetMagickModule(),message);
     }
   return(status);
 }
@@ -3665,8 +3666,54 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
     Create pixel cache on disk.
   */
   status=AcquireMagickResource(DiskResource,cache_info->length);
-  if (status == MagickFalse)
+  if ((status == MagickFalse) || (cache_info->type == DistributedCache))
     {
+      DistributeCacheInfo
+        *server_info;
+
+      if (cache_info->type == DistributedCache)
+        RelinquishMagickResource(DiskResource,cache_info->length);
+      server_info=AcquireDistributeCacheInfo(exception);
+      if (server_info != (DistributeCacheInfo *) NULL)
+        {
+          status=OpenDistributePixelCache(server_info,image);
+          if (status == MagickFalse)
+            server_info=DestroyDistributeCacheInfo(server_info);
+          else
+            {
+              /*
+                Create a distributed pixel cache.
+              */
+              cache_info->type=DistributedCache;
+              cache_info->server_info=server_info;
+              (void) FormatLocaleString(cache_info->cache_filename,
+                MaxTextExtent,"%s:%d",
+                GetDistributeCacheHostname(cache_info->server_info),
+                GetDistributeCachePort(cache_info->server_info));
+              if ((source_info.storage_class != UndefinedClass) &&
+                  (mode != ReadMode))
+                {
+                  status=ClonePixelCacheRepository(cache_info,&source_info,
+                    exception);
+                  RelinquishPixelCachePixels(&source_info);
+                }
+              if (image->debug != MagickFalse)
+                {
+                  (void) FormatMagickSize(cache_info->length,MagickFalse,
+                    format);
+                  type=CommandOptionToMnemonic(MagickCacheOptions,(ssize_t)
+                    cache_info->type);
+                  (void) FormatLocaleString(message,MaxTextExtent,
+                    "open %s (%s[%d], %s, %.20gx%.20g %s)",cache_info->filename,
+                    cache_info->cache_filename,GetDistributeCacheFile(
+                    cache_info->server_info),type,(double) cache_info->columns,
+                    (double) cache_info->rows,format);
+                  (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
+                    message);
+                }
+              return(status);
+            }
+        }
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
         "CacheResourcesExhausted","`%s'",image->filename);
       return(MagickFalse);
@@ -4298,6 +4345,29 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
         }
       break;
     }
+    case DistributedCache:
+    {
+      RectangleInfo
+        region;
+
+      /*
+        Read indexes from distributed cache.
+      */
+      LockSemaphoreInfo(cache_info->file_semaphore);
+      region=nexus_info->region;
+      region.height=1UL;
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        count=ReadDistributePixelCachePixels(cache_info->server_info,&region,
+          length,(unsigned char *) q);
+        if (count != (MagickOffsetType) length)
+          break;
+        q+=nexus_info->region.width;
+        region.y++;
+      }
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
+      break;
+    }
     default:
       break;
   }
@@ -4429,6 +4499,29 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
             cache_info->cache_filename);
           return(MagickFalse);
         }
+      break;
+    }
+    case DistributedCache:
+    {
+      RectangleInfo
+        region;
+
+      /*
+        Read pixels from distributed cache.
+      */
+      LockSemaphoreInfo(cache_info->file_semaphore);
+      region=nexus_info->region;
+      region.height=1UL;
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        count=ReadDistributePixelCachePixels(cache_info->server_info,&region,
+          length,(unsigned char *) q);
+        if (count != (MagickOffsetType) length)
+          break;
+        q+=nexus_info->region.width;
+        region.y++;
+      }
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
       break;
     }
     default:
@@ -5181,6 +5274,29 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
         }
       break;
     }
+    case DistributedCache:
+    {
+      RectangleInfo
+        region;
+
+      /*
+        Write indexes to distributed cache.
+      */
+      LockSemaphoreInfo(cache_info->file_semaphore);
+      region=nexus_info->region;
+      region.height=1UL;
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        count=WriteDistributePixelCachePixels(cache_info->server_info,&region,
+          length,(const unsigned char *) p);
+        if (count != (MagickOffsetType) length)
+          break;
+        p+=nexus_info->region.width;
+        region.y++;
+      }
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
+      break;
+    }
     default:
       break;
   }
@@ -5312,6 +5428,29 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
             cache_info->cache_filename);
           return(MagickFalse);
         }
+      break;
+    }
+    case DistributedCache:
+    {
+      RectangleInfo
+        region;
+
+      /*
+        Write pixels to distributed cache.
+      */
+      LockSemaphoreInfo(cache_info->file_semaphore);
+      region=nexus_info->region;
+      region.height=1UL;
+      for (y=0; y < (ssize_t) rows; y++)
+      {
+        count=WriteDistributePixelCachePixels(cache_info->server_info,&region,
+          length,(const unsigned char *) p);
+        if (count != (MagickOffsetType) length)
+          break;
+        p+=nexus_info->region.width;
+        region.y++;
+      }
+      UnlockSemaphoreInfo(cache_info->file_semaphore);
       break;
     }
     default:
