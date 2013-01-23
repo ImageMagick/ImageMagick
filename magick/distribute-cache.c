@@ -1166,7 +1166,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheIndexes(
   assert(server_info != (DistributeCacheInfo *) NULL);
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
-  assert(indexes != (IndexPacket *) NULL);
+  assert(indexes != (unsigned char *) NULL);
   if (length != (size_t) length)
     return(-1);
   p=message;
@@ -1367,7 +1367,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheIndexes(
   assert(server_info != (DistributeCacheInfo *) NULL);
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
-  assert(indexes != (IndexPacket *) NULL);
+  assert(indexes != (unsigned char *) NULL);
   if (length != (size_t) length)
     return(-1);
   p=message;
