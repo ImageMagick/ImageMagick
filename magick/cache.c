@@ -910,6 +910,12 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
       RelinquishMagickResource(DiskResource,cache_info->length);
       break;
     }
+    case DistributedCache:
+    {
+      *cache_info->cache_filename='\0';
+      (void) RelinquishDistributePixelCache(cache_info->server_info);
+      break;
+    }
     default:
       break;
   }
