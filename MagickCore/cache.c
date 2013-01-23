@@ -706,7 +706,7 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
       (void) FormatLocaleString(message,MaxTextExtent,"%s => %s",
         CommandOptionToMnemonic(MagickCacheOptions,(ssize_t) cache_info->type),
         CommandOptionToMnemonic(MagickCacheOptions,(ssize_t) clone_info->type));
-      (void) LogMagickEvent(CacheEvent,GetMagickModule(),message);
+      (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
     }
   return(status);
 }
