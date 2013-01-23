@@ -408,7 +408,7 @@ MagickPrivate Cache ClonePixelCache(const Cache cache)
   const CacheInfo
     *cache_info;
 
-  assert(cache != NULL);
+  assert(cache != (const Cache) NULL);
   cache_info=(const CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->debug != MagickFalse)
@@ -599,7 +599,6 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
     if (status == MagickFalse)
       continue;
     region.width=clone_info->columns;
-    region.y=y;
     pixels=SetPixelCacheNexusPixels(clone_info,WriteMode,&region,
       clone_nexus[id],exception);
     if (pixels == (Quantum *) NULL)
@@ -686,7 +685,6 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
         if (status == MagickFalse)
           continue;
         region.width=clone_info->columns;
-        region.y=y;
         pixels=SetPixelCacheNexusPixels(clone_info,WriteMode,&region,
           clone_nexus[id],exception);
         if (pixels == (Quantum *) NULL)
@@ -3562,7 +3560,11 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
         {
           status=OpenDistributePixelCache(server_info,image);
           if (status == MagickFalse)
-            server_info=DestroyDistributeCacheInfo(server_info);
+            {
+              ThrowFileException(exception,CacheError,"UnableToOpenPixelCache",
+                GetDistributeCacheHostname(server_info));
+              server_info=DestroyDistributeCacheInfo(server_info);
+            }
           else
             {
               /*
