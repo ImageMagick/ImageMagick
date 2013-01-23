@@ -190,13 +190,16 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   MagickOffsetType
     count;
 
+  register unsigned char
+    *p;
+
   struct addrinfo
     hint,
     *result;
 
   unsigned char
     secret[MaxTextExtent],
-    session[MaxTextExtent];
+    session[2*MaxTextExtent];
 
   /*
     Connect to distributed pixel cache and get session key.
@@ -209,8 +212,9 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
         "DistributedPixelCache","'%s'","shared secret expected");
       return(-1);
     }
-  (void) CopyMagickString((char *) session,shared_secret,MaxTextExtent-
-    DPCSessionKeyLength);
+  p=session;
+  (void) CopyMagickString((char *) p,shared_secret,MaxTextExtent);
+  p+=strlen(shared_secret);
   (void) ResetMagickMemory(&hint,0,sizeof(hint));
   hint.ai_family=AF_INET;
   hint.ai_socktype=SOCK_STREAM;
@@ -241,8 +245,19 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   count=dpc_read(client_socket,MaxTextExtent,secret);
   if (count != -1)
     {
-      (void) memcpy(session+strlen(shared_secret),secret,(size_t) count);
-      *session_key=CRC64(session,(MagickSizeType) strlen(shared_secret)+count);
+      MagickSizeType
+        hdri,
+        quantum_depth;
+
+      (void) memcpy(p,secret,(size_t) count);
+      p+=count;
+      quantum_depth=MAGICKCORE_QUANTUM_DEPTH;
+      (void) memcpy(p,&quantum_depth,sizeof(quantum_depth));
+      p+=sizeof(quantum_depth);
+      hdri=MAGICKCORE_HDRI_ENABLE;
+      (void) memcpy(p,&hdri,sizeof(hdri));
+      p+=sizeof(hdri);
+      *session_key=CRC64(session,p-session);
     }
   if (*session_key == 0)
     {
@@ -640,7 +655,6 @@ static MagickBooleanType WriteDistributeCacheIndexes(
     Write distributed pixel cache indexes.
   */
   image=(Image *) GetValueFromSplayTree(registry,(const void *) session_key);
-  image=(Image *) GetValueFromSplayTree(registry,(const void *) session_key);
   if (image == (Image *) NULL)
     return(MagickFalse);
   length=sizeof(region.width)+sizeof(region.height)+sizeof(region.x)+
@@ -749,11 +763,16 @@ static void *DistributePixelCacheClient(void *socket)
     count;
 
   MagickSizeType
+    hdri,
+    quantum_depth,
     key,
     session_key;
 
   RandomInfo
     *random_info;
+
+  register unsigned char
+    *p;
 
   SplayTreeInfo
     *registry;
@@ -775,9 +794,20 @@ static void *DistributePixelCacheClient(void *socket)
     DPCSessionKeyLength);
   random_info=AcquireRandomInfo();
   secret=GetRandomKey(random_info,DPCSessionKeyLength);
-  (void) memcpy(session+strlen(shared_secret),GetStringInfoDatum(secret),
-    DPCSessionKeyLength);
-  session_key=CRC64(session,strlen(shared_secret)+DPCSessionKeyLength);
+  p=session;
+  (void) CopyMagickString((char *) p,shared_secret,MaxTextExtent);
+  p+=strlen(shared_secret);
+  random_info=AcquireRandomInfo();
+  secret=GetRandomKey(random_info,DPCSessionKeyLength);
+  (void) memcpy(p,GetStringInfoDatum(secret),DPCSessionKeyLength);
+  p+=DPCSessionKeyLength;
+  quantum_depth=MAGICKCORE_QUANTUM_DEPTH;
+  (void) memcpy(p,&quantum_depth,sizeof(quantum_depth));
+  p+=sizeof(quantum_depth);
+  hdri=MAGICKCORE_HDRI_ENABLE;
+  (void) memcpy(p,&hdri,sizeof(hdri));
+  p+=sizeof(hdri);
+  session_key=CRC64(session,p-session);
   random_info=DestroyRandomInfo(random_info);
   exception=AcquireExceptionInfo();
   registry=NewSplayTree((int (*)(const void *,const void *)) NULL,
@@ -791,7 +821,7 @@ static void *DistributePixelCacheClient(void *socket)
     if (count <= 0)
       break;
     count=dpc_read(client_socket,sizeof(key),(unsigned char *) &key);
-    if ((count != (MagickOffsetType) sizeof(key)) && (key != session_key))
+    if ((count != (MagickOffsetType) sizeof(key)) || (key != session_key))
       break;
     status=MagickFalse;
     switch (command)
@@ -1136,7 +1166,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheIndexes(
   assert(server_info != (DistributeCacheInfo *) NULL);
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
-  assert(indexes != (unsigned char *) NULL);
+  assert(indexes != (IndexPacket *) NULL);
   if (length != (size_t) length)
     return(-1);
   p=message;
@@ -1337,7 +1367,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheIndexes(
   assert(server_info != (DistributeCacheInfo *) NULL);
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
-  assert(indexes != (unsigned char *) NULL);
+  assert(indexes != (IndexPacket *) NULL);
   if (length != (size_t) length)
     return(-1);
   p=message;
