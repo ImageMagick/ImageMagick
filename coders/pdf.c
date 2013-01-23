@@ -2334,13 +2334,13 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
     (void) FormatLocaleString(buffer,MaxTextExtent,"%.20g 0 obj\n",(double)
       object);
     (void) WriteBlobString(image,buffer);
+    (void) WriteBlobString(image,"<<\n");
     if ((image->storage_class != DirectClass) && (image->colors <= 256) &&
         (compression != FaxCompression) && (compression != Group4Compression))
       {
         /*
           Write Colormap object.
         */
-        (void) WriteBlobString(image,"<<\n");
         if (compression == NoCompression)
           (void) WriteBlobString(image,"/Filter [ /ASCII85Decode ]\n");
         (void) FormatLocaleString(buffer,MaxTextExtent,"/Length %.20g 0 R\n",
@@ -2372,6 +2372,7 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
        offset=TellBlob(image)-offset;
        (void) WriteBlobString(image,"\nendstream\n");
       }
+    (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"endobj\n");
     /*
       Write Length object.
