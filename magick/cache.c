@@ -3684,7 +3684,11 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
         {
           status=OpenDistributePixelCache(server_info,image);
           if (status == MagickFalse)
-            server_info=DestroyDistributeCacheInfo(server_info);
+            {
+              server_info=DestroyDistributeCacheInfo(server_info);
+              ThrowFileException(exception,CacheError,"UnableToOpenPixelCache",
+                image->filename);
+            }
           else
             {
               /*
