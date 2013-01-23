@@ -120,6 +120,7 @@ static const OptionInfo
   CacheOptions[] =
   {
     { "Disk", DiskCache, UndefinedOptionFlag, MagickFalse },
+    { "Distributed", DistributedCache, UndefinedOptionFlag, MagickFalse },
     { "Map", MapCache, UndefinedOptionFlag, MagickFalse },
     { "Memory", MemoryCache, UndefinedOptionFlag, MagickFalse },
     { "Ping", PingCache, UndefinedOptionFlag, MagickFalse },

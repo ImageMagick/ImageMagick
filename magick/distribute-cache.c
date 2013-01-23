@@ -623,9 +623,8 @@ static void *RelinquishImageRegistry(void *image)
   return((void *) DestroyImageList((Image *) image));
 }
 
-static MagickBooleanType WriteDistributeCacheIndexes(
-  SplayTreeInfo *registry,int file,const MagickSizeType session_key,
-  ExceptionInfo *exception)
+static MagickBooleanType WriteDistributeCacheIndexes(SplayTreeInfo *registry,
+  int file,const MagickSizeType session_key,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -792,10 +791,6 @@ static void *DistributePixelCacheClient(void *socket)
   shared_secret=GetPolicyValue("shared-secret");
   if (shared_secret == (const char *) NULL)
     ThrowFatalException(CacheFatalError,"shared secret expected");
-  (void) CopyMagickString((char *) session,shared_secret,MaxTextExtent-
-    DPCSessionKeyLength);
-  random_info=AcquireRandomInfo();
-  secret=GetRandomKey(random_info,DPCSessionKeyLength);
   p=session;
   (void) CopyMagickString((char *) p,shared_secret,MaxTextExtent);
   p+=strlen(shared_secret);
@@ -846,8 +841,8 @@ static void *DistributePixelCacheClient(void *socket)
       }
       case 'R':
       {
-        status=ReadDistributeCacheIndexes(registry,client_socket,
-          session_key,exception);
+        status=ReadDistributeCacheIndexes(registry,client_socket,session_key,
+          exception);
         break;
       }
       case 'w':
@@ -858,8 +853,8 @@ static void *DistributePixelCacheClient(void *socket)
       }
       case 'W':
       {
-        status=WriteDistributeCacheIndexes(registry,client_socket,
-          session_key,exception);
+        status=WriteDistributeCacheIndexes(registry,client_socket,session_key,
+          exception);
         break;
       }
       case 'd':
@@ -1139,12 +1134,12 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadDistributePixelCacheIndexess() reads indexes from the specified
-%  region of the distributed pixel cache.
+%  ReadDistributePixelCacheIndexes() reads indexes from the specified region
+%  of the distributed pixel cache.
 %
-%  The format of the ReadDistributePixelCacheIndexess method is:
+%  The format of the ReadDistributePixelCacheIndexes method is:
 %
-%      MagickOffsetType ReadDistributePixelCacheIndexess(
+%      MagickOffsetType ReadDistributePixelCacheIndexes(
 %        DistributeCacheInfo *server_info,const RectangleInfo *region,
 %        const MagickSizeType length,unsigned char *indexes)
 %
@@ -1340,12 +1335,12 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  WriteDistributePixelCacheIndexess() writes image indexes to the
-%  specified region of the distributed pixel cache.
+%  WriteDistributePixelCacheIndexes() writes image indexes to the specified
+%  region of the distributed pixel cache.
 %
-%  The format of the WriteDistributePixelCacheIndexess method is:
+%  The format of the WriteDistributePixelCacheIndexes method is:
 %
-%      MagickOffsetType WriteDistributePixelCacheIndexess(
+%      MagickOffsetType WriteDistributePixelCacheIndexes(
 %        DistributeCacheInfo *server_info,const RectangleInfo *region,
 %        const MagickSizeType length,const unsigned char *indexes)
 %
