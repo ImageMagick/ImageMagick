@@ -1590,6 +1590,8 @@ MagickExport Image *EdgeImage(const Image *image,const double radius,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   kernel_info->width=width;
   kernel_info->height=width;
+  kernel_info->x=(ssize_t) width/2;
+  kernel_info->y=(ssize_t) width/2;
   kernel_info->values=(MagickRealType *) MagickAssumeAligned(
     AcquireAlignedMemory(kernel_info->width,kernel_info->width*
     sizeof(*kernel_info->values)));
@@ -1680,6 +1682,8 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
   kernel_info->width=width;
   kernel_info->height=width;
+  kernel_info->x=(ssize_t) width/2;
+  kernel_info->y=(ssize_t) width/2;
   kernel_info->values=(MagickRealType *) MagickAssumeAligned(
     AcquireAlignedMemory(kernel_info->width,kernel_info->width*
     sizeof(*kernel_info->values)));
@@ -1777,6 +1781,8 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
   kernel_info->width=width;
   kernel_info->height=width;
+  kernel_info->x=(ssize_t) width/2;
+  kernel_info->y=(ssize_t) width/2;
   kernel_info->signature=MagickSignature;
   kernel_info->values=(MagickRealType *) MagickAssumeAligned(
     AcquireAlignedMemory(kernel_info->width,kernel_info->width*
@@ -3523,6 +3529,8 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
   kernel_info->width=width;
   kernel_info->height=width;
+  kernel_info->x=(ssize_t) width/2;
+  kernel_info->y=(ssize_t) width/2;
   kernel_info->signature=MagickSignature;
   kernel_info->values=(MagickRealType *) MagickAssumeAligned(
     AcquireAlignedMemory(kernel_info->width,kernel_info->width*

@@ -69,6 +69,7 @@
 #include "MagickCore/splay-tree.h"
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
+#include "MagickCore/version.h"
 #if defined(MAGICKCORE_HAVE_SOCKET)
 #include <netinet/in.h>
 #include <netdb.h>
@@ -246,17 +247,19 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   if (count != -1)
     {
       MagickSizeType
-        hdri,
-        quantum_depth;
+        signature;
 
       (void) memcpy(p,secret,(size_t) count);
       p+=count;
-      quantum_depth=MAGICKCORE_QUANTUM_DEPTH;
-      (void) memcpy(p,&quantum_depth,sizeof(quantum_depth));
-      p+=sizeof(quantum_depth);
-      hdri=MAGICKCORE_HDRI_ENABLE;
-      (void) memcpy(p,&hdri,sizeof(hdri));
-      p+=sizeof(hdri);
+      signature=MagickLibVersion;
+      (void) memcpy(p,&signature,sizeof(signature));
+      p+=sizeof(signature);
+      signature=MAGICKCORE_QUANTUM_DEPTH;
+      (void) memcpy(p,&signature,sizeof(signature));
+      p+=sizeof(signature);
+      signature=MAGICKCORE_HDRI_ENABLE;
+      (void) memcpy(p,&signature,sizeof(signature));
+      p+=sizeof(signature);
       *session_key=CRC64(session,p-session);
     }
   if (*session_key == 0)
@@ -764,10 +767,9 @@ static void *DistributePixelCacheClient(void *socket)
     count;
 
   MagickSizeType
-    hdri,
-    quantum_depth,
     key,
-    session_key;
+    session_key,
+    signature;
 
   register unsigned char
     *p;
@@ -798,12 +800,15 @@ static void *DistributePixelCacheClient(void *socket)
   secret=GetRandomKey(random_info,DPCSessionKeyLength);
   (void) memcpy(p,GetStringInfoDatum(secret),DPCSessionKeyLength);
   p+=DPCSessionKeyLength;
-  quantum_depth=MAGICKCORE_QUANTUM_DEPTH;
-  (void) memcpy(p,&quantum_depth,sizeof(quantum_depth));
-  p+=sizeof(quantum_depth);
-  hdri=MAGICKCORE_HDRI_ENABLE;
-  (void) memcpy(p,&hdri,sizeof(hdri));
-  p+=sizeof(hdri);
+  signature=MagickLibVersion;
+  (void) memcpy(p,&signature,sizeof(signature));
+  p+=sizeof(signature);
+  signature=MAGICKCORE_QUANTUM_DEPTH;
+  (void) memcpy(p,&signature,sizeof(signature));
+  p+=sizeof(signature);
+  signature=MAGICKCORE_HDRI_ENABLE;
+  (void) memcpy(p,&signature,sizeof(signature));
+  p+=sizeof(signature);
   session_key=CRC64(session,p-session);
   random_info=DestroyRandomInfo(random_info);
   exception=AcquireExceptionInfo();
@@ -827,6 +832,7 @@ static void *DistributePixelCacheClient(void *socket)
       {
         status=OpenDistributeCache(registry,client_socket,session_key,
           exception);
+        count=dpc_send(client_socket,sizeof(status),(unsigned char *) &status);
         break;
       }
       case 'r':
@@ -866,6 +872,7 @@ static void *DistributePixelCacheClient(void *socket)
     if (command == 'd')
       break;
   }
+  count=dpc_send(client_socket,sizeof(status),(unsigned char *) &status);
   (void) close(client_socket);
   exception=DestroyExceptionInfo(exception);
   registry=DestroySplayTree(registry);
@@ -1081,6 +1088,9 @@ MagickPrivate int GetDistributeCachePort(const DistributeCacheInfo *server_info)
 MagickPrivate MagickBooleanType OpenDistributePixelCache(
   DistributeCacheInfo *server_info,Image *image)
 {
+  MagickBooleanType
+    status;
+
   MagickOffsetType
     count;
 
@@ -1110,7 +1120,11 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
   count=dpc_send(server_info->file,p-message,message);
   if (count != (MagickOffsetType) (p-message))
     return(MagickFalse);
-  return(MagickTrue);
+  status=MagickFalse;
+  count=dpc_read(server_info->file,sizeof(status),(unsigned char *) &status);
+  if (count != (MagickOffsetType) sizeof(status))
+    return(MagickFalse);
+  return(status);
 }
 
 /*
@@ -1166,7 +1180,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheMetacontent(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(metacontent != (unsigned char *) NULL);
-  if (length != (size_t) length)
+  if (length > SSIZE_MAX)
     return(-1);
   p=message;
   *p++='R';
@@ -1241,7 +1255,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  if (length != (size_t) length)
+  if (length > SSIZE_MAX)
     return(-1);
   p=message;
   *p++='r';
@@ -1367,7 +1381,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheMetacontent(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(metacontent != (unsigned char *) NULL);
-  if (length != (size_t) length)
+  if (length > SSIZE_MAX)
     return(-1);
   p=message;
   *p++='W';
@@ -1442,7 +1456,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCachePixels(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (const unsigned char *) NULL);
-  if (length != (size_t) length)
+  if (length > SSIZE_MAX)
     return(-1);
   p=message;
   *p++='w';
