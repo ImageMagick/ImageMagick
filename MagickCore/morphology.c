@@ -2848,10 +2848,10 @@ static ssize_t MorphologyPrimitive(const Image *image,Image *morphology_image,
 
     if (status == MagickFalse)
       continue;
-    p=GetCacheViewVirtualPixels(image_view, -offx, y-offy, virt_width,
-      kernel->height,  exception);
-    q=GetCacheViewAuthenticPixels(morphology_view,0,y,
-      morphology_image->columns,1,exception);
+    p=GetCacheViewVirtualPixels(image_view,-offx,y-offy,virt_width,
+      kernel->height,exception);
+    q=GetCacheViewAuthenticPixels(morphology_view,0,y,morphology_image->columns,
+      1,exception);
     if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
       {
         status=MagickFalse;
