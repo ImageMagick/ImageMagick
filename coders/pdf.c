@@ -2335,8 +2335,10 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
       object);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"<<\n");
-    if ((image->storage_class != DirectClass) && (image->colors <= 256) &&
-        (compression != FaxCompression) && (compression != Group4Compression))
+    if ((image->storage_class == DirectClass) || (image->colors > 256) ||
+        (compression == FaxCompression) || (compression == Group4Compression))
+      (void) WriteBlobString(image,">>\n");
+    else
       {
         /*
           Write Colormap object.
@@ -2372,7 +2374,6 @@ static MagickBooleanType WritePDFImage(const ImageInfo *image_info,Image *image,
        offset=TellBlob(image)-offset;
        (void) WriteBlobString(image,"\nendstream\n");
       }
-    (void) WriteBlobString(image,">>\n");
     (void) WriteBlobString(image,"endobj\n");
     /*
       Write Length object.
