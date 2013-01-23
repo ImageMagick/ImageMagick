@@ -200,7 +200,7 @@ MagickExport Cache AcquirePixelCache(const size_t number_threads)
   char
     *synchronize;
 
-  cache_info=(CacheInfo *) AcquireMagickMemory(sizeof(*cache_info));
+  cache_info=(CacheInfo *) AcquireQuantumMemory(1,sizeof(*cache_info));
   if (cache_info == (CacheInfo *) NULL)
     ThrowFatalException(ResourceLimitFatalError,"MemoryAllocationFailed");
   (void) ResetMagickMemory(cache_info,0,sizeof(*cache_info));
@@ -953,6 +953,8 @@ MagickExport Cache DestroyPixelCache(Cache cache)
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",message);
     }
   RelinquishPixelCachePixels(cache_info);
+  if (cache_info->server_info != (DistributeCacheInfo *) NULL)
+    cache_info->server_info=DestroyDistributeCacheInfo(cache_info->server_info);
   if (cache_info->nexus_info != (NexusInfo **) NULL)
     cache_info->nexus_info=DestroyPixelCacheNexus(cache_info->nexus_info,
       cache_info->number_threads);
@@ -1503,7 +1505,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
     time_limit = 0;
 
   static time_t
-    cache_genesis = 0;
+    cache_timestamp = 0;
 
   status=MagickTrue;
   LockSemaphoreInfo(image->semaphore);
@@ -1533,10 +1535,10 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
         Set the expire time in seconds.
       */
       time_limit=GetMagickResourceLimit(TimeResource);
-      cache_genesis=time((time_t *) NULL);
+      cache_timestamp=time((time_t *) NULL);
     }
   if ((time_limit != MagickResourceInfinity) &&
-      ((MagickSizeType) (time((time_t *) NULL)-cache_genesis) >= time_limit))
+      ((MagickSizeType) (time((time_t *) NULL)-cache_timestamp) >= time_limit))
     ThrowFatalException(ResourceLimitFatalError,"TimeLimitExceeded");
   assert(image->cache != (Cache) NULL);
   cache_info=(CacheInfo *) image->cache;
@@ -3685,9 +3687,9 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
           status=OpenDistributePixelCache(server_info,image);
           if (status == MagickFalse)
             {
-              server_info=DestroyDistributeCacheInfo(server_info);
               ThrowFileException(exception,CacheError,"UnableToOpenPixelCache",
-                image->filename);
+                GetDistributeCacheHostname(server_info));
+              server_info=DestroyDistributeCacheInfo(server_info);
             }
           else
             {
@@ -3695,6 +3697,8 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                 Create a distributed pixel cache.
               */
               cache_info->type=DistributedCache;
+              cache_info->storage_class=image->storage_class;
+              cache_info->colorspace=image->colorspace;
               cache_info->server_info=server_info;
               (void) FormatLocaleString(cache_info->cache_filename,
                 MaxTextExtent,"%s:%d",
@@ -4289,6 +4293,7 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
   rows=nexus_info->region.height;
   extent=length*rows;
   q=nexus_info->indexes;
+  y=0;
   switch (cache_info->type)
   {
     case MemoryCache:
@@ -4347,12 +4352,6 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
         (void) ClosePixelCacheOnDisk(cache_info);
       UnlockSemaphoreInfo(cache_info->file_semaphore);
-      if (y < (ssize_t) rows)
-        {
-          ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
-            cache_info->cache_filename);
-          return(MagickFalse);
-        }
       break;
     }
     case DistributedCache:
@@ -4381,6 +4380,12 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
     default:
       break;
   }
+  if (y < (ssize_t) rows)
+    {
+      ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
+        cache_info->cache_filename);
+      return(MagickFalse);
+    }
   if ((cache_info->debug != MagickFalse) &&
       (CacheTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
@@ -4446,6 +4451,7 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
   rows=nexus_info->region.height;
   extent=length*rows;
   q=nexus_info->pixels;
+  y=0;
   switch (cache_info->type)
   {
     case MemoryCache:
@@ -4503,12 +4509,6 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
         (void) ClosePixelCacheOnDisk(cache_info);
       UnlockSemaphoreInfo(cache_info->file_semaphore);
-      if (y < (ssize_t) rows)
-        {
-          ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
-            cache_info->cache_filename);
-          return(MagickFalse);
-        }
       break;
     }
     case DistributedCache:
@@ -4537,6 +4537,12 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
     default:
       break;
   }
+  if (y < (ssize_t) rows)
+    {
+      ThrowFileException(exception,CacheError,"UnableToReadPixelCache",
+        cache_info->cache_filename);
+      return(MagickFalse);
+    }
   if ((cache_info->debug != MagickFalse) &&
       (CacheTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
@@ -5217,6 +5223,7 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
   rows=nexus_info->region.height;
   extent=(MagickSizeType) length*rows;
   p=nexus_info->indexes;
+  y=0;
   switch (cache_info->type)
   {
     case MemoryCache:
@@ -5276,12 +5283,6 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
         (void) ClosePixelCacheOnDisk(cache_info);
       UnlockSemaphoreInfo(cache_info->file_semaphore);
-      if (y < (ssize_t) rows)
-        {
-          ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
-            cache_info->cache_filename);
-          return(MagickFalse);
-        }
       break;
     }
     case DistributedCache:
@@ -5310,6 +5311,12 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
     default:
       break;
   }
+  if (y < (ssize_t) rows)
+    {
+      ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
+        cache_info->cache_filename);
+      return(MagickFalse);
+    }
   if ((cache_info->debug != MagickFalse) &&
       (CacheTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
@@ -5375,6 +5382,7 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
   rows=nexus_info->region.height;
   extent=length*rows;
   p=nexus_info->pixels;
+  y=0;
   switch (cache_info->type)
   {
     case MemoryCache:
@@ -5432,12 +5440,6 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
       if (IsFileDescriptorLimitExceeded() != MagickFalse)
         (void) ClosePixelCacheOnDisk(cache_info);
       UnlockSemaphoreInfo(cache_info->file_semaphore);
-      if (y < (ssize_t) rows)
-        {
-          ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
-            cache_info->cache_filename);
-          return(MagickFalse);
-        }
       break;
     }
     case DistributedCache:
@@ -5466,6 +5468,12 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
     default:
       break;
   }
+   if (y < (ssize_t) rows)
+     {
+       ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
+         cache_info->cache_filename);
+       return(MagickFalse);
+     }
   if ((cache_info->debug != MagickFalse) &&
       (CacheTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
