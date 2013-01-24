@@ -48,7 +48,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Channel.miff', 'Channel'
 testFilterCompare('input.miff',  q//, 'reference/filter/Chop.miff', 'Chop', q/geometry=>'80x80+5+10'/, 0.0, 0.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Charcoal.miff', 'Charcoal', q/'0x1'/, 0.2, 1.0);
+testFilterCompare('input.miff',  q//, 'reference/filter/Charcoal.miff', 'Charcoal', q/'0x1'/, 0.3, 1.01);
 ++$test;
 
 testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/ColorFloodfill.miff', 'ColorFloodfill', q/geometry=>"+25+45"/, 0.15, 1.0);
@@ -75,7 +75,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Despeckle.miff', 'Despec
 testFilterCompare('input.miff',  q//, 'reference/filter/Draw.miff', 'Draw', q/fill=>'none',stroke=>'gold',primitive=>'circle',points=>'60,90 60,120',strokewidth=>2/, 0.0, 0.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Edge.miff', 'Edge', q//, 0.3, 0.0);
+testFilterCompare('input.miff',  q//, 'reference/filter/Edge.miff', 'Edge', q//, 0.3, 1.01);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Emboss.miff', 'Emboss', q/'0x1'/, 0.2, 1.0);
@@ -99,7 +99,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Frame.miff', 'Frame', q/
 testFilterCompare('input.miff',  q//, 'reference/filter/Gamma.miff', 'Gamma', q/1.6/, 0.0, 0.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/GaussianBlur.miff', 'GaussianBlur', q/'0.0x1.5'/, 0.02, 0.6);
+testFilterCompare('input.miff',  q//, 'reference/filter/GaussianBlur.miff', 'GaussianBlur', q/'0.0x1.5'/, 0.05, 0.8);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Implode.miff', 'Implode', q/0.0/, 0.0, 0.0);
@@ -174,7 +174,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Segment.miff', 'Segment'
 testFilterCompare('input.miff',  q//, 'reference/filter/Shade.miff', 'Shade', q/geometry=>'30x30',gray=>'true'/, 0.09, 0.9);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Sharpen.miff', 'Sharpen', q/'5x2'/, 0.0, 0.0);
+testFilterCompare('input.miff',  q//, 'reference/filter/Sharpen.miff', 'Sharpen', q/'5x2'/, 0.1, 1.001);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Shave.miff', 'Shave', q/'10x10'/, 0.0, 0.0);
