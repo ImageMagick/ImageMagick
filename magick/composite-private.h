@@ -47,7 +47,7 @@ static inline void MagickCompositeOver(const PixelPacket *p,
   const MagickRealType alpha,const PixelPacket *q,const MagickRealType beta,
   PixelPacket *composite)
 {
-  MagickRealType
+  double
     gamma;
 
   /*
@@ -85,7 +85,7 @@ static inline void MagickPixelCompositeOver(const MagickPixelPacket *p,
   const MagickRealType alpha,const MagickPixelPacket *q,
   const MagickRealType beta,MagickPixelPacket *composite)
 {
-  MagickRealType
+  double
     gamma;
 
   /*
@@ -110,9 +110,11 @@ static inline void MagickPixelCompositePlus(const MagickPixelPacket *p,
   const MagickRealType alpha,const MagickPixelPacket *q,
   const MagickRealType beta,MagickPixelPacket *composite)
 {
+  double
+    gamma;
+
   MagickRealType
     Da,
-    gamma,
     Sa;
 
   /*

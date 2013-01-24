@@ -722,9 +722,9 @@ static void HCLComposite(const double hue,const double chroma,const double luma,
         z=(1.0-luma)/(m+c-luma);
         m=1.0-z*c;
       }
-  *red=ClampToQuantum(QuantumRange*(z*r+m));
-  *green=ClampToQuantum(QuantumRange*(z*g+m));
-  *blue=ClampToQuantum(QuantumRange*(z*b+m));
+  *red=(MagickRealType) ClampToQuantum(QuantumRange*(z*r+m));
+  *green=(MagickRealType) ClampToQuantum(QuantumRange*(z*g+m));
+  *blue=(MagickRealType) ClampToQuantum(QuantumRange*(z*b+m));
 }
 
 static void CompositeHCL(const MagickRealType red,const MagickRealType green,
@@ -753,13 +753,13 @@ static void CompositeHCL(const MagickRealType red,const MagickRealType green,
   if (c == 0)
     h=0.0;
   else
-    if (red == (Quantum) max)
+    if (red == (MagickRealType) max)
       h=fmod(6.0+(g-b)/c,6.0);
     else
-      if (green == (Quantum) max)
+      if (green == (MagickRealType) max)
         h=((b-r)/c)+2.0;
       else
-        if (blue == (Quantum) max)
+        if (blue == (MagickRealType) max)
           h=((r-g)/c)+4.0;
   *hue=(h/6.0);
   *chroma=QuantumScale*c;
@@ -2075,23 +2075,23 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
         {
           if ((flags & XValue) == 0)
             if ((flags & AspectValue) == 0)
-              center.x=(MagickRealType) x_offset+(composite_image->columns-1)/
-                2.0;
+              center.x=(MagickRealType) (x_offset+(composite_image->columns-1)/
+                2.0);
             else
               center.x=((MagickRealType) image->columns-1)/2.0;
           else
             if ((flags & AspectValue) == 0)
-              center.x=(MagickRealType) x_offset+geometry_info.xi;
+              center.x=(MagickRealType) (x_offset+geometry_info.xi);
             else
               center.x=geometry_info.xi;
           if ((flags & YValue) == 0)
             if ((flags & AspectValue) == 0)
-              center.y=(MagickRealType) y_offset+(composite_image->rows-1)/2.0;
+              center.y=(MagickRealType) (y_offset+(composite_image->rows-1)/2.0);
             else
               center.y=((MagickRealType) image->rows-1)/2.0;
           else
             if ((flags & AspectValue) == 0)
-              center.y=(MagickRealType) y_offset+geometry_info.psi;
+              center.y=(MagickRealType) (y_offset+geometry_info.psi);
             else
               center.y=geometry_info.psi;
         }
@@ -2133,14 +2133,14 @@ MagickExport MagickBooleanType CompositeImageChannel(Image *image,
           /*
             Displace the offset.
           */
-          offset.x=(horizontal_scale*(GetPixelRed(p)-
+          offset.x=(double) ((horizontal_scale*(GetPixelRed(p)-
             (((MagickRealType) QuantumRange+1.0)/2.0)))/(((MagickRealType)
             QuantumRange+1.0)/2.0)+center.x+((compose == DisplaceCompositeOp) ?
-            x : 0);
-          offset.y=(vertical_scale*(GetPixelGreen(p)-
+            x : 0));
+          offset.y=(double) ((vertical_scale*(GetPixelGreen(p)-
             (((MagickRealType) QuantumRange+1.0)/2.0)))/(((MagickRealType)
             QuantumRange+1.0)/2.0)+center.y+((compose == DisplaceCompositeOp) ?
-            y : 0);
+            y : 0));
           (void) InterpolateMagickPixelPacket(image,image_view,
             UndefinedInterpolatePixel,(double) offset.x,(double) offset.y,
             &pixel,exception);
