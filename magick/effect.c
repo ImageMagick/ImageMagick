@@ -308,7 +308,7 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
     blur_indexes=GetCacheViewAuthenticIndexQueue(blur_view);
     for (x=0; x < (ssize_t) blur_image->columns; x++)
     {
-      MagickPixelPacket
+      DoublePixelPacket
         pixel;
 
       MagickRealType
@@ -338,7 +338,11 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
       if (p == (const PixelPacket *) NULL)
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
-      pixel=bias;
+      pixel.red=bias.red;
+      pixel.green=bias.green;
+      pixel.blue=bias.blue;
+      pixel.opacity=bias.opacity;
+      pixel.index=bias.index;
       k=kernel[i];
       for (v=0; v < (ssize_t) (width-i); v++)
       {
@@ -628,7 +632,7 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
     sharp_indexes=GetCacheViewAuthenticIndexQueue(sharp_view);
     for (x=0; x < (ssize_t) sharp_image->columns; x++)
     {
-      MagickPixelPacket
+      DoublePixelPacket
         pixel;
 
       MagickRealType
@@ -659,7 +663,11 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
         break;
       indexes=GetCacheViewVirtualIndexQueue(image_view);
       k=kernel[i];
-      pixel=bias;
+      pixel.red=bias.red;
+      pixel.green=bias.green;
+      pixel.blue=bias.blue;
+      pixel.opacity=bias.opacity;
+      pixel.index=bias.index;
       for (v=0; v < (ssize_t) (width-i); v++)
       {
         for (u=0; u < (ssize_t) (width-i); u++)
@@ -949,7 +957,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
     blur_indexes=GetCacheViewAuthenticIndexQueue(blur_view);
     for (x=0; x < (ssize_t) blur_image->columns; x++)
     {
-      MagickPixelPacket
+      DoublePixelPacket
         pixel;
 
       register const MagickRealType
@@ -961,7 +969,11 @@ MagickExport Image *BlurImageChannel(const Image *image,
       register ssize_t
         i;
 
-      pixel=bias;
+      pixel.red=bias.red;
+      pixel.green=bias.green;
+      pixel.blue=bias.blue;
+      pixel.opacity=bias.opacity;
+      pixel.index=bias.index;
       k=kernel;
       kernel_pixels=p;
       if (((channel & OpacityChannel) == 0) || (image->matte == MagickFalse))
@@ -1128,7 +1140,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
     blur_indexes=GetCacheViewAuthenticIndexQueue(blur_view);
     for (y=0; y < (ssize_t) blur_image->rows; y++)
     {
-      MagickPixelPacket
+      DoublePixelPacket
         pixel;
 
       register const MagickRealType
@@ -1140,7 +1152,11 @@ MagickExport Image *BlurImageChannel(const Image *image,
       register ssize_t
         i;
 
-      pixel=bias;
+      pixel.red=bias.red;
+      pixel.green=bias.green;
+      pixel.blue=bias.blue;
+      pixel.opacity=bias.opacity;
+      pixel.index=bias.index;
       k=kernel;
       kernel_pixels=p;
       if (((channel & OpacityChannel) == 0) || (image->matte == MagickFalse))
@@ -1471,7 +1487,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
     convolve_indexes=GetCacheViewAuthenticIndexQueue(convolve_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      MagickPixelPacket
+      DoublePixelPacket
         pixel;
 
       register const MagickRealType
@@ -1486,7 +1502,11 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
       ssize_t
         v;
 
-      pixel=bias;
+      pixel.red=bias.red;
+      pixel.green=bias.green;
+      pixel.blue=bias.blue;
+      pixel.opacity=bias.opacity;
+      pixel.index=bias.index;
       k=normal_kernel;
       kernel_pixels=p;
       if (((channel & OpacityChannel) == 0) || (image->matte == MagickFalse))
@@ -2284,7 +2304,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
     filter_indexes=GetCacheViewAuthenticIndexQueue(filter_view);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      MagickPixelPacket
+      DoublePixelPacket
         pixel;
 
       register const MagickRealType
@@ -2299,7 +2319,11 @@ MagickExport Image *FilterImageChannel(const Image *image,
       ssize_t
         v;
 
-      pixel=bias;
+      pixel.red=bias.red;
+      pixel.green=bias.green;
+      pixel.blue=bias.blue;
+      pixel.opacity=bias.opacity;
+      pixel.index=bias.index;
       k=filter_kernel;
       kernel_pixels=p;
       if (((channel & OpacityChannel) == 0) || (image->matte == MagickFalse))
@@ -3902,7 +3926,7 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
       double
         contrast;
 
-      MagickPixelPacket
+      DoublePixelPacket
         pixel;
 
       MagickRealType
@@ -3918,7 +3942,11 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
         j,
         v;
 
-      pixel=bias;
+      pixel.red=bias.red;
+      pixel.green=bias.green;
+      pixel.blue=bias.blue;
+      pixel.opacity=bias.opacity;
+      pixel.index=bias.index;
       k=kernel;
       intensity=GetPixelIntensity(image,p+center);
       gamma=0.0;
@@ -4694,7 +4722,7 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
-    MagickPixelPacket
+    DoublePixelPacket
       pixel;
 
     register const IndexPacket
@@ -4724,7 +4752,11 @@ MagickExport Image *UnsharpMaskImageChannel(const Image *image,
       }
     indexes=GetCacheViewVirtualIndexQueue(image_view);
     unsharp_indexes=GetCacheViewAuthenticIndexQueue(unsharp_view);
-    pixel=bias;
+    pixel.red=bias.red;
+    pixel.green=bias.green;
+    pixel.blue=bias.blue;
+    pixel.opacity=bias.opacity;
+    pixel.index=bias.index;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
       if ((channel & RedChannel) != 0)
