@@ -3541,12 +3541,14 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
   {
     case AverageInterpolatePixel:
     {
+      double
+        gamma;
+
       MagickPixelPacket
         pixels[16];
 
       MagickRealType
-        alpha[16],
-        gamma;
+        alpha[16];
 
       p=GetCacheViewVirtualPixels(image_view,(ssize_t) floor(x)-1,(ssize_t)
         floor(y)-1,4,4,exception);
@@ -3622,12 +3624,14 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
     case BilinearInterpolatePixel:
     default:
     {
+      double
+        gamma;
+
       MagickPixelPacket
         pixels[16];
 
       MagickRealType
-        alpha[16],
-        gamma;
+        alpha[16];
 
       PointInfo
         delta;
@@ -3728,12 +3732,14 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
     }
     case MeshInterpolatePixel:
     {
+      double
+        gamma;
+
       MagickPixelPacket
         pixels[4];
 
       MagickRealType
-        alpha[4],
-        gamma;
+        alpha[4];
 
       PointInfo
         delta,
@@ -3874,14 +3880,16 @@ MagickExport MagickPixelPacket InterpolatePixelColor(const Image *image,
     }
     case SplineInterpolatePixel:
     {
+      double
+        gamma;
+
       MagickPixelPacket
         pixels[16];
 
       MagickRealType
         alpha[16],
         dx,
-        dy,
-        gamma;
+        dy;
 
       PointInfo
         delta;

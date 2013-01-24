@@ -3286,7 +3286,7 @@ static inline void MagickPixelCompositeMask(const MagickPixelPacket *p,
   const MagickRealType alpha,const MagickPixelPacket *q,
   const MagickRealType beta,MagickPixelPacket *composite)
 {
-  MagickRealType
+  double
     gamma;
 
   if (alpha == TransparentOpacity)

@@ -1073,7 +1073,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
   */
   for (i=0; i < (ssize_t) CompositeChannels; i++)
   {
-    MagickRealType
+    double
       gamma;
 
     gamma=image_statistics[i].standard_deviation*
