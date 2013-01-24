@@ -414,11 +414,13 @@ static MagickBooleanType CompositeOverImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      double
+        gamma;
+
       MagickRealType
         alpha,
         Da,
         Dc,
-        gamma,
         Sa,
         Sc;
 
@@ -1276,12 +1278,14 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
     GetPixelInfo(composite_image,&source_pixel);
     for (x=0; x < (ssize_t) image->columns; x++)
     {
+      double
+        gamma;
+
       MagickRealType
         alpha,
         Da,
         Dc,
         Dca,
-        gamma,
         Sa,
         Sc,
         Sca;
