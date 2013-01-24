@@ -1747,7 +1747,7 @@ static void ScaleSpace(const ssize_t *histogram,const MagickRealType tau,
       sum+=(double) histogram[u]*gamma[MagickAbsoluteValue(x-u)];
     scale_histogram[x]=(MagickRealType) (alpha*sum);
   }
-  gamma=(MagickRealType *) RelinquishMagickMemory(gamma);
+  gamma=(double *) RelinquishMagickMemory(gamma);
 }
 
 /*
