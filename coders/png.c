@@ -2290,9 +2290,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 #ifdef PNG_SET_USER_LIMITS_SUPPORTED
 #  if (PNG_LIBPNG_VER >= 10400)
     /* Limit the size of the chunk storage cache used for sPLT, text,
-     * and unknown chunks, and for expansion of iTXt, zTXt, and iCCP chunks.
+     * and unknown chunks.
      */
-    png_set_chunk_cache_max(ping, 65536);
+    png_set_chunk_cache_max(ping, 32767);
 #  endif
 #endif
 
