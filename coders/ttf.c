@@ -57,9 +57,7 @@
 #include "MagickCore/type.h"
 #include "MagickWand/MagickWand.h"
 #if defined(MAGICKCORE_FREETYPE_DELEGATE)
-#if defined(MAGICKCORE_HAVE_FT2BUILD_H)
-#  include <ft2build.h>
-#endif
+#include <ft2build.h>
 #if defined(FT_FREETYPE_H)
 #  include FT_FREETYPE_H
 #else
