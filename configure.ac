@@ -1920,7 +1920,7 @@ AC_SUBST(FONTCONFIG_LIBS)
 dnl ===========================================================================
 
 #
-# Check for freetype delegate library.
+# Check for the Freetype delegate library.
 #
 AC_ARG_WITH([freetype],
     [AC_HELP_STRING([--without-freetype],
@@ -1928,81 +1928,27 @@ AC_ARG_WITH([freetype],
     [with_freetype=$withval],
     [with_freetype='yes'])
 
-
 if test "$with_freetype" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-freetype=$with_freetype "
 fi
 
 have_freetype='no'
-FREETYPE_LIBS=''
-if test "$with_freetype" != 'no'; then
+FREETYPE_CFLAGS=""
+FREETYPE_LIBS=""
+FREETYPE_PKG=""
+if test "x$with_freetype" = "xyes"; then
     AC_MSG_RESULT([-------------------------------------------------------------])
-    AC_MSG_CHECKING(for FreeType 2.0 )
-    AC_MSG_RESULT()
-    failed=0
-    passed=0
-    PERSIST_LDFLAGS="$LDFLAGS"
-    PERSIST_CPPFLAGS="$CPPFLAGS"
-    freetype_config=''
-    # Allow the user to specify the location of freetype.
-    if test "$with_freetype" != 'yes'; then
-      if test -x "${with_freetype}/bin/freetype-config"; then
-        freetype_config="${with_freetype}/bin/freetype-config"
-      elif test -x "${with_freetype}"; then
-        freetype_config=${with_freetype}
-      fi
-    fi
-    if test -z "$freetype_config"; then
-      AC_PATH_PROG(freetype_config,freetype-config,)dnl
-    fi
-    if test -n "$freetype_config"; then
-      freetype_prefix=`${freetype_config} --prefix`
-      freetype_exec_prefix=`${freetype_config} --exec-prefix`
-      LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
-      CPPFLAGS="$CPPFLAGS -I${freetype_prefix}/include/freetype2"
-    fi
-
-dnl First see if there is a library
-    if test "$FREETYPE_LIBS" = ''; then
-      AC_CHECK_LIB(freetype,FT_Init_FreeType,FREETYPE_LIBS='-lfreetype',,)
-      if test "$FREETYPE_LIBS" != ''; then
-        passed=`expr $passed + 1`
-      else
-        failed=`expr $failed + 1`
-        LDFLAGS="$PERSIST_LDFLAGS"
-      fi
-    fi
-
-dnl Now test for the headers
-    AC_CHECK_HEADER([ft2build.h],[FT2BUILD_H='#include <ft2build.h>'],[ft2build=''],[])
-    AC_CHECK_HEADER(freetype/freetype.h,[have_freetype_h='yes'],[have_freetype_h='no'],[$FT2BUILD_H])
-    if test "$have_freetype_h" = 'yes'; then
-      passed=`expr $passed + 1`
-    else
-      failed=`expr $failed + 1`
-      CPPFLAGS="$PERSIST_CPPFLAGS"
-    fi
-
-    AC_MSG_CHECKING(if FreeType package is complete)
-    if test $passed -gt 0; then
-      if test $failed -gt 0; then
-        FREETYPE_LIBS=''
-        AC_MSG_RESULT(no -- some components failed test)
-        have_freetype='no (failed tests)'
-      else
-        LIBS="$FREETYPE_LIBS $LIBS"
-        AC_DEFINE(FREETYPE_DELEGATE,1,Define if you have FreeType (TrueType font) library)
-        if test "$ac_cv_header_ft2build_h" = 'yes'; then
-          AC_DEFINE([HAVE_FT2BUILD_H],[1],[Define to 1 if you have the <ft2build.h> header file.])
-        fi
-        AC_MSG_RESULT(yes)
-        have_freetype='yes'
-      fi
-    else
-      AC_MSG_RESULT(no)
-    fi
+    PKG_CHECK_MODULES(FREETYPE,[freetype2], have_freetype=yes, have_freetype=no)
+    AC_MSG_RESULT([])
 fi
+
+if test "$have_freetype" = 'yes'; then
+    AC_DEFINE(FREETYPE_DELEGATE,1,Define if you have FREETYPE library)
+    CFLAGS="$FREETYPE_CFLAGS $CFLAGS"
+fi
+
 AM_CONDITIONAL(FREETYPE_DELEGATE, test "$have_freetype" = 'yes')
+AC_SUBST(FREETYPE_CFLAGS)
 AC_SUBST(FREETYPE_LIBS)
 
 dnl ===========================================================================

@@ -813,10 +813,10 @@ GVC_CFLAGS
 GS_LIBS
 GS_DELEGATE_FALSE
 GS_DELEGATE_TRUE
-FREETYPE_LIBS
 FREETYPE_DELEGATE_FALSE
 FREETYPE_DELEGATE_TRUE
-freetype_config
+FREETYPE_LIBS
+FREETYPE_CFLAGS
 FONTCONFIG_DELEGATE_FALSE
 FONTCONFIG_DELEGATE_TRUE
 FONTCONFIG_LIBS
@@ -1190,6 +1190,8 @@ AUTOTRACE_CFLAGS
 AUTOTRACE_LIBS
 FONTCONFIG_CFLAGS
 FONTCONFIG_LIBS
+FREETYPE_CFLAGS
+FREETYPE_LIBS
 GVC_CFLAGS
 GVC_LIBS
 LQR_CFLAGS
@@ -1958,6 +1960,10 @@ Some influential environment variables:
               C compiler flags for FONTCONFIG, overriding pkg-config
   FONTCONFIG_LIBS
               linker flags for FONTCONFIG, overriding pkg-config
+  FREETYPE_CFLAGS
+              C compiler flags for FREETYPE, overriding pkg-config
+  FREETYPE_LIBS
+              linker flags for FREETYPE, overriding pkg-config
   GVC_CFLAGS  C compiler flags for GVC, overriding pkg-config
   GVC_LIBS    linker flags for GVC, overriding pkg-config
   LQR_CFLAGS  C compiler flags for LQR, overriding pkg-config
@@ -3650,7 +3656,7 @@ MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=10572:10583M
+MAGICK_SVN_REVISION=10737:10755M
 
 
 
@@ -21508,7 +21514,7 @@ fi
 
 
 # Check additional headers
-for ac_header in arm/limits.h complex.h errno.h fcntl.h limits.h linux/unistd.h locale.h machine/param.h mach-o/dyld.h netinet/in.h OS.h process.h sun_prefetch.h stdarg.h sys/ipc.h sys/mman.h sys/resource.h sys/socket.h sys/syslimits.h sys/time.h sys/timeb.h sys/times.h sys/wait.h wchar.h xlocale.h
+for ac_header in arm/limits.h arpa/inet.h complex.h errno.h fcntl.h limits.h linux/unistd.h locale.h machine/param.h mach-o/dyld.h netinet/in.h OS.h process.h sun_prefetch.h stdarg.h sys/ipc.h sys/mman.h sys/resource.h sys/socket.h sys/syslimits.h sys/time.h sys/timeb.h sys/times.h sys/wait.h wchar.h xlocale.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -25001,7 +25007,7 @@ if test "$ac_res" != no; then :
 
 $as_echo "#define HAVE_SOCKET 1" >>confdefs.h
 
-  MAGICK_FEATURES="DistributedPixelCache $MAGICK_FEATURES"
+  MAGICK_FEATURES="DPC $MAGICK_FEATURES"
 
 fi
 
@@ -28950,7 +28956,7 @@ fi
 
 
 #
-# Check for freetype delegate library.
+# Check for the Freetype delegate library.
 #
 
 # Check whether --with-freetype was given.
@@ -28961,181 +28967,95 @@ else
 fi
 
 
-
 if test "$with_freetype" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-freetype=$with_freetype "
 fi
 
 have_freetype='no'
-FREETYPE_LIBS=''
-if test "$with_freetype" != 'no'; then
+FREETYPE_CFLAGS=""
+FREETYPE_LIBS=""
+FREETYPE_PKG=""
+if test "x$with_freetype" = "xyes"; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: -------------------------------------------------------------" >&5
 $as_echo "-------------------------------------------------------------" >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FreeType 2.0 " >&5
-$as_echo_n "checking for FreeType 2.0 ... " >&6; }
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for FREETYPE" >&5
+$as_echo_n "checking for FREETYPE... " >&6; }
+
+if test -n "$FREETYPE_CFLAGS"; then
+    pkg_cv_FREETYPE_CFLAGS="$FREETYPE_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"freetype2\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "freetype2") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_FREETYPE_CFLAGS=`$PKG_CONFIG --cflags "freetype2" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$FREETYPE_LIBS"; then
+    pkg_cv_FREETYPE_LIBS="$FREETYPE_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"freetype2\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "freetype2") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_FREETYPE_LIBS=`$PKG_CONFIG --libs "freetype2" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        FREETYPE_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "freetype2" 2>&1`
+        else
+	        FREETYPE_PKG_ERRORS=`$PKG_CONFIG --print-errors "freetype2" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$FREETYPE_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                have_freetype=no
+elif test $pkg_failed = untried; then
+	have_freetype=no
+else
+	FREETYPE_CFLAGS=$pkg_cv_FREETYPE_CFLAGS
+	FREETYPE_LIBS=$pkg_cv_FREETYPE_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_freetype=yes
+fi
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
-    failed=0
-    passed=0
-    PERSIST_LDFLAGS="$LDFLAGS"
-    PERSIST_CPPFLAGS="$CPPFLAGS"
-    freetype_config=''
-    # Allow the user to specify the location of freetype.
-    if test "$with_freetype" != 'yes'; then
-      if test -x "${with_freetype}/bin/freetype-config"; then
-        freetype_config="${with_freetype}/bin/freetype-config"
-      elif test -x "${with_freetype}"; then
-        freetype_config=${with_freetype}
-      fi
-    fi
-    if test -z "$freetype_config"; then
-      # Extract the first word of "freetype-config", so it can be a program name with args.
-set dummy freetype-config; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_freetype_config+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $freetype_config in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_freetype_config="$freetype_config" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_freetype_config="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-freetype_config=$ac_cv_path_freetype_config
-if test -n "$freetype_config"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $freetype_config" >&5
-$as_echo "$freetype_config" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
 fi
 
-    fi
-    if test -n "$freetype_config"; then
-      freetype_prefix=`${freetype_config} --prefix`
-      freetype_exec_prefix=`${freetype_config} --exec-prefix`
-      LDFLAGS="$LDFLAGS -L${freetype_exec_prefix}/lib"
-      CPPFLAGS="$CPPFLAGS -I${freetype_prefix}/include/freetype2"
-    fi
-
-    if test "$FREETYPE_LIBS" = ''; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for FT_Init_FreeType in -lfreetype" >&5
-$as_echo_n "checking for FT_Init_FreeType in -lfreetype... " >&6; }
-if ${ac_cv_lib_freetype_FT_Init_FreeType+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lfreetype  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char FT_Init_FreeType ();
-int
-main ()
-{
-return FT_Init_FreeType ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_freetype_FT_Init_FreeType=yes
-else
-  ac_cv_lib_freetype_FT_Init_FreeType=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_freetype_FT_Init_FreeType" >&5
-$as_echo "$ac_cv_lib_freetype_FT_Init_FreeType" >&6; }
-if test "x$ac_cv_lib_freetype_FT_Init_FreeType" = xyes; then :
-  FREETYPE_LIBS='-lfreetype'
-fi
-
-      if test "$FREETYPE_LIBS" != ''; then
-        passed=`expr $passed + 1`
-      else
-        failed=`expr $failed + 1`
-        LDFLAGS="$PERSIST_LDFLAGS"
-      fi
-    fi
-
-    ac_fn_c_check_header_mongrel "$LINENO" "ft2build.h" "ac_cv_header_ft2build_h" "$ac_includes_default"
-if test "x$ac_cv_header_ft2build_h" = xyes; then :
-  FT2BUILD_H='#include <ft2build.h>'
-else
-  ft2build=''
-fi
-
-
-    ac_fn_c_check_header_compile "$LINENO" "freetype/freetype.h" "ac_cv_header_freetype_freetype_h" "$FT2BUILD_H
-"
-if test "x$ac_cv_header_freetype_freetype_h" = xyes; then :
-  have_freetype_h='yes'
-else
-  have_freetype_h='no'
-fi
-
-
-    if test "$have_freetype_h" = 'yes'; then
-      passed=`expr $passed + 1`
-    else
-      failed=`expr $failed + 1`
-      CPPFLAGS="$PERSIST_CPPFLAGS"
-    fi
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking if FreeType package is complete" >&5
-$as_echo_n "checking if FreeType package is complete... " >&6; }
-    if test $passed -gt 0; then
-      if test $failed -gt 0; then
-        FREETYPE_LIBS=''
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no -- some components failed test" >&5
-$as_echo "no -- some components failed test" >&6; }
-        have_freetype='no (failed tests)'
-      else
-        LIBS="$FREETYPE_LIBS $LIBS"
+if test "$have_freetype" = 'yes'; then
 
 $as_echo "#define FREETYPE_DELEGATE 1" >>confdefs.h
 
-        if test "$ac_cv_header_ft2build_h" = 'yes'; then
-
-$as_echo "#define HAVE_FT2BUILD_H 1" >>confdefs.h
-
-        fi
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-        have_freetype='yes'
-      fi
-    else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    fi
+    CFLAGS="$FREETYPE_CFLAGS $CFLAGS"
 fi
+
  if test "$have_freetype" = 'yes'; then
   FREETYPE_DELEGATE_TRUE=
   FREETYPE_DELEGATE_FALSE='#'
@@ -29143,6 +29063,7 @@ else
   FREETYPE_DELEGATE_TRUE='#'
   FREETYPE_DELEGATE_FALSE=
 fi
+
 
 
 
@@ -30763,6 +30684,178 @@ $as_echo "yes" >&6; }
         fi
 
         if test $passed -gt 0 -a $failed -le 0; then
+          if test "1${var}" = '17' ; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng17" >&5
+$as_echo_n "checking for png_get_io_ptr in -lpng17... " >&6; }
+if ${ac_cv_lib_png17_png_get_io_ptr+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpng17  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char png_get_io_ptr ();
+int
+main ()
+{
+return png_get_io_ptr ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_png17_png_get_io_ptr=yes
+else
+  ac_cv_lib_png17_png_get_io_ptr=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png17_png_get_io_ptr" >&5
+$as_echo "$ac_cv_lib_png17_png_get_io_ptr" >&6; }
+if test "x$ac_cv_lib_png17_png_get_io_ptr" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_longjmp in -lpng17" >&5
+$as_echo_n "checking for png_longjmp in -lpng17... " >&6; }
+if ${ac_cv_lib_png17_png_longjmp+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpng17  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char png_longjmp ();
+int
+main ()
+{
+return png_longjmp ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_png17_png_longjmp=yes
+else
+  ac_cv_lib_png17_png_longjmp=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png17_png_longjmp" >&5
+$as_echo "$ac_cv_lib_png17_png_longjmp" >&6; }
+if test "x$ac_cv_lib_png17_png_longjmp" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+          fi
+          if test "1${var}" = '16' ; then
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng16" >&5
+$as_echo_n "checking for png_get_io_ptr in -lpng16... " >&6; }
+if ${ac_cv_lib_png16_png_get_io_ptr+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpng16  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char png_get_io_ptr ();
+int
+main ()
+{
+return png_get_io_ptr ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_png16_png_get_io_ptr=yes
+else
+  ac_cv_lib_png16_png_get_io_ptr=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png16_png_get_io_ptr" >&5
+$as_echo "$ac_cv_lib_png16_png_get_io_ptr" >&6; }
+if test "x$ac_cv_lib_png16_png_get_io_ptr" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_longjmp in -lpng16" >&5
+$as_echo_n "checking for png_longjmp in -lpng16... " >&6; }
+if ${ac_cv_lib_png16_png_longjmp+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpng16  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char png_longjmp ();
+int
+main ()
+{
+return png_longjmp ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_png16_png_longjmp=yes
+else
+  ac_cv_lib_png16_png_longjmp=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png16_png_longjmp" >&5
+$as_echo "$ac_cv_lib_png16_png_longjmp" >&6; }
+if test "x$ac_cv_lib_png16_png_longjmp" = xyes; then :
+  passed=`expr $passed + 1`
+else
+  failed=`expr $failed + 1`
+fi
+
+          fi
           if test "1${var}" = '15' ; then
             { $as_echo "$as_me:${as_lineno-$LINENO}: checking for png_get_io_ptr in -lpng15" >&5
 $as_echo_n "checking for png_get_io_ptr in -lpng15... " >&6; }
