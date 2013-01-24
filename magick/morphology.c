@@ -2759,9 +2759,12 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
             ** Weight the color channels with Alpha Channel so that
             ** transparent pixels are not part of the results.
             */
-            MagickRealType
-              alpha,  /* alpha weighting for colors : alpha  */
+            double
               gamma;  /* divisor, sum of color alpha weighting */
+
+            MagickRealType
+              alpha;  /* alpha weighting for colors : alpha  */
+
             size_t
               count;  /* alpha valus collected, number kernel values */
 
@@ -2997,9 +3000,12 @@ static ssize_t MorphologyPrimitive(const Image *image, Image *result_image,
                 ** Weight the color channels with Alpha Channel so that
                 ** transparent pixels are not part of the results.
                 */
-                MagickRealType
-                  alpha,  /* alpha weighting for colors : alpha  */
+                double
                   gamma;  /* divisor, sum of color alpha weighting */
+
+                MagickRealType
+                  alpha;  /* alpha weighting for colors : alpha  */
+
                 size_t
                   count;  /* alpha valus collected, number kernel values */
 

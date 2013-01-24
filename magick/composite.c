@@ -379,7 +379,7 @@ static inline void CompositeDarken(const MagickPixelPacket *p,
     OR a greyscale version of a binary 'Or'
     OR the 'Intersection' of pixel sets.
   */
-  MagickRealType
+  double
     gamma;
 
   if ( (channel & SyncChannels) != 0 ) {
@@ -451,9 +451,11 @@ static inline void CompositeDifference(const MagickPixelPacket *p,
   const MagickPixelPacket *q,const ChannelType channel,
   MagickPixelPacket *composite)
 {
+  double
+    gamma;
+
   MagickRealType
     Da,
-    gamma,
     Sa;
 
   Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
@@ -773,8 +775,10 @@ static inline MagickRealType In(const MagickRealType p,const MagickRealType Sa,
 static inline void CompositeIn(const MagickPixelPacket *p,
   const MagickPixelPacket *q,MagickPixelPacket *composite)
 {
+  double
+    gamma;
+
   MagickRealType
-    gamma,
     Sa,
     Da;
 
@@ -807,7 +811,7 @@ static inline void CompositeLighten(const MagickPixelPacket *p,
     OR a greyscale version of a binary 'And'
     OR the 'Union' of pixel sets.
   */
-  MagickRealType
+  double
     gamma;
 
   if ( (channel & SyncChannels) != 0 ) {
@@ -884,9 +888,11 @@ static inline MagickRealType LinearDodge(const MagickRealType Sca,
 static inline void CompositeLinearDodge(const MagickPixelPacket *p,
   const MagickPixelPacket *q,MagickPixelPacket *composite)
 {
+  double
+    gamma;
+
   MagickRealType
     Da,
-    gamma,
     Sa;
 
   Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
@@ -1012,10 +1018,12 @@ static inline void CompositeMathematics(const MagickPixelPacket *p,
   const MagickPixelPacket *q,const ChannelType channel, const GeometryInfo
   *args, MagickPixelPacket *composite)
 {
-  MagickRealType
-    Sa,
-    Da,
+  double
     gamma;
+
+  MagickRealType
+    Da,
+    Sa;
 
   Sa=1.0-QuantumScale*p->opacity; /* ??? - AT */
   Da=1.0-QuantumScale*q->opacity;
@@ -1105,10 +1113,12 @@ static inline void CompositeMinus(const MagickPixelPacket *p,
   const MagickPixelPacket *q,const ChannelType channel,
   MagickPixelPacket *composite)
 {
-  MagickRealType
-    Sa,
-    Da,
+  double
     gamma;
+
+  MagickRealType
+    Da,
+    Sa;
 
   Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
@@ -1153,10 +1163,12 @@ static inline void CompositeModulusAdd(const MagickPixelPacket *p,
   MagickPixelPacket *composite)
 {
   if ( (channel & SyncChannels) != 0 ) {
+    double
+      gamma;
+
     MagickRealType
       Sa,
-      Da,
-      gamma;
+      Da;
 
     Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
     Da=1.0-QuantumScale*q->opacity;
@@ -1201,10 +1213,12 @@ static inline void CompositeModulusSubtract(const MagickPixelPacket *p,
   MagickPixelPacket *composite)
 {
   if ( (channel & SyncChannels) != 0 ) {
-    MagickRealType
-      Sa,
-      Da,
+    double
       gamma;
+
+    MagickRealType
+      Da,
+      Sa;
 
     Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
     Da=1.0-QuantumScale*q->opacity;
@@ -1287,10 +1301,12 @@ static inline MagickRealType Out(const MagickRealType p,
 static inline void CompositeOut(const MagickPixelPacket *p,
   const MagickPixelPacket *q,MagickPixelPacket *composite)
 {
-  MagickRealType
-    Sa,
-    Da,
+  double
     gamma;
+
+  MagickRealType
+    Da,
+    Sa;
 
   Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;
@@ -1397,10 +1413,12 @@ static inline void CompositeScreen(const MagickPixelPacket *p,
   const MagickPixelPacket *q,const ChannelType channel,
   MagickPixelPacket *composite)
 {
-  MagickRealType
-    Sa,
-    Da,
+  double
     gamma;
+
+  MagickRealType
+    Da,
+    Sa;
 
   Sa=1.0-QuantumScale*p->opacity;  /* simplify and speed up equations */
   Da=1.0-QuantumScale*q->opacity;

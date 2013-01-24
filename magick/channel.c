@@ -817,12 +817,12 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          MagickRealType
+          double
             gamma,
             opacity;
 
           gamma=1.0-QuantumScale*QuantumScale*q->opacity*pixel.opacity;
-          opacity=(MagickRealType) QuantumRange*(1.0-gamma);
+          opacity=(double) QuantumRange*(1.0-gamma);
           gamma=PerceptibleReciprocal(gamma);
           q->red=ClampToQuantum(gamma*MagickOver_((MagickRealType) q->red,
             (MagickRealType) q->opacity,(MagickRealType) pixel.red,

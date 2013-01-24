@@ -1250,11 +1250,10 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
             }
           else
             {
-              MagickRealType
+              double
                 gamma;
 
-              gamma=(MagickRealType) (QuantumScale*(QuantumRange-
-                (MagickRealType) q->opacity));
+              gamma=(double) (QuantumScale*(QuantumRange-(double) q->opacity));
               gamma=PerceptibleReciprocal(gamma);
               SetPixelRed(q,ClampToQuantum((MagickRealType) (alpha*
                 gamma*QuantumRange*node_info->total_color.red)));

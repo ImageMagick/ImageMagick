@@ -308,12 +308,12 @@ MagickExport Image *AdaptiveBlurImageChannel(const Image *image,
     blur_indexes=GetCacheViewAuthenticIndexQueue(blur_view);
     for (x=0; x < (ssize_t) blur_image->columns; x++)
     {
-      DoublePixelPacket
-        pixel;
-
-      MagickRealType
+      double
         alpha,
         gamma;
+
+      DoublePixelPacket
+        pixel;
 
       register const double
         *restrict k;
@@ -632,12 +632,12 @@ MagickExport Image *AdaptiveSharpenImageChannel(const Image *image,
     sharp_indexes=GetCacheViewAuthenticIndexQueue(sharp_view);
     for (x=0; x < (ssize_t) sharp_image->columns; x++)
     {
-      DoublePixelPacket
-        pixel;
-
-      MagickRealType
+      double
         alpha,
         gamma;
+
+      DoublePixelPacket
+        pixel;
 
       register const double
         *restrict k;
@@ -1023,7 +1023,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
         }
       else
         {
-          MagickRealType
+          double
             alpha,
             gamma;
 
@@ -1206,7 +1206,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
         }
       else
         {
-          MagickRealType
+          double
             alpha,
             gamma;
 
@@ -1345,6 +1345,9 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
     *convolve_view,
     *image_view;
 
+  double
+    gamma;
+
   Image
     *convolve_image;
 
@@ -1358,7 +1361,6 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
     bias;
 
   MagickRealType
-    gamma,
     *normal_kernel;
 
   register ssize_t
@@ -1565,7 +1567,7 @@ MagickExport Image *ConvolveImageChannel(const Image *image,
         }
       else
         {
-          MagickRealType
+          double
             alpha,
             gamma;
 
@@ -2382,7 +2384,7 @@ MagickExport Image *FilterImageChannel(const Image *image,
         }
       else
         {
-          MagickRealType
+          double
             alpha,
             gamma;
 
@@ -2813,7 +2815,7 @@ MagickExport Image *MotionBlurImageChannel(const Image *image,
         }
       else
         {
-          MagickRealType
+          double
             alpha,
             gamma;
 
@@ -3625,7 +3627,7 @@ MagickExport Image *RadialBlurImageChannel(const Image *image,
         }
       else
         {
-          MagickRealType
+          double
             alpha,
             gamma;
 
@@ -3883,11 +3885,11 @@ MagickExport Image *SelectiveBlurImageChannel(const Image *image,
 #endif
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    double
+      gamma;
+
     MagickBooleanType
       sync;
-
-    MagickRealType
-      gamma;
 
     register const IndexPacket
       *restrict indexes;

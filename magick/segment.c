@@ -1717,7 +1717,7 @@ static MagickRealType OptimalTau(const ssize_t *histogram,const double max_tau,
 static void ScaleSpace(const ssize_t *histogram,const MagickRealType tau,
   MagickRealType *scale_histogram)
 {
-  MagickRealType
+  double
     alpha,
     beta,
     *gamma,
@@ -1727,10 +1727,9 @@ static void ScaleSpace(const ssize_t *histogram,const MagickRealType tau,
     u,
     x;
 
-  gamma=(MagickRealType *) AcquireQuantumMemory(256,sizeof(*gamma));
-  if (gamma == (MagickRealType *) NULL)
-    ThrowFatalException(ResourceLimitFatalError,
-      "UnableToAllocateGammaMap");
+  gamma=(double *) AcquireQuantumMemory(256,sizeof(*gamma));
+  if (gamma == (double *) NULL)
+    ThrowFatalException(ResourceLimitFatalError,"UnableToAllocateGammaMap");
   alpha=1.0/(tau*sqrt(2.0*MagickPI));
   beta=(-1.0/(2.0*tau*tau));
   for (x=0; x <= 255; x++)
@@ -1745,8 +1744,8 @@ static void ScaleSpace(const ssize_t *histogram,const MagickRealType tau,
   {
     sum=0.0;
     for (u=0; u <= 255; u++)
-      sum+=(MagickRealType) histogram[u]*gamma[MagickAbsoluteValue(x-u)];
-    scale_histogram[x]=alpha*sum;
+      sum+=(double) histogram[u]*gamma[MagickAbsoluteValue(x-u)];
+    scale_histogram[x]=(MagickRealType) (alpha*sum);
   }
   gamma=(MagickRealType *) RelinquishMagickMemory(gamma);
 }

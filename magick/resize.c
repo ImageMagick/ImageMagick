@@ -2339,7 +2339,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
         }
       else
         {
-          MagickRealType
+          double
             gamma;
 
           gamma=0.0;
@@ -2580,7 +2580,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
         }
       else
         {
-          MagickRealType
+          double
             gamma;
 
           gamma=0.0;

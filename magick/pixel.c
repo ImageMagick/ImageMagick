@@ -3979,6 +3979,9 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
   const double x,const double y,MagickPixelPacket *pixel,
   ExceptionInfo *exception)
 {
+  double
+    gamma;
+
   MagickBooleanType
     status;
 
@@ -3986,8 +3989,7 @@ MagickExport MagickBooleanType InterpolateMagickPixelPacket(const Image *image,
     pixels[16];
 
   MagickRealType
-    alpha[16],
-    gamma;
+    alpha[16];
 
   register const IndexPacket
     *indexes;
