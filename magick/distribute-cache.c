@@ -1319,6 +1319,9 @@ MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
 MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
   DistributeCacheInfo *server_info)
 {
+  MagickBooleaNType
+    status;
+
   MagickOffsetType
     count;
 
@@ -1340,7 +1343,10 @@ MagickPrivate MagickBooleanType RelinquishDistributePixelCache(
   count=dpc_send(server_info->file,p-message,message);
   if (count != (MagickOffsetType) (p-message))
     return(MagickFalse);
-  return(MagickTrue);
+  count=dpc_read(server_info->file,sizeof(status),(unsigned char *) &status);
+  if (count != (MagickOffsetType) sizeof(status))
+    return(MagickFalse);
+  return(status);
 }
 
 /*
