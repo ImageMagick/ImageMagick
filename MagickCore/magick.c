@@ -1183,10 +1183,6 @@ static void MagickSignalHandler(int signal_number)
   if (signal_number == SIGHUP)
     exit(signal_number);
 #endif
-#if defined(SIGPIPE)
-  if (signal_number == SIGPIPE)
-    exit(signal_number);
-#endif
 #if defined(SIGINT) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
   if (signal_number == SIGINT)
     exit(signal_number);
@@ -1296,10 +1292,6 @@ MagickExport void MagickCoreGenesis(const char *path,
       if (signal_handlers[SIGHUP] == (SignalHandler *) NULL)
         signal_handlers[SIGHUP]=RegisterMagickSignalHandler(SIGHUP);
 #endif
-#if defined(SIGPIPE)
-      if (signal_handlers[SIGPIPE] == (SignalHandler *) NULL)
-        signal_handlers[SIGPIPE]=RegisterMagickSignalHandler(SIGPIPE);
-#endif
 #if defined(SIGINT) && !defined(MAGICKCORE_WINDOWS_SUPPORT)
       if (signal_handlers[SIGINT] == (SignalHandler *) NULL)
         signal_handlers[SIGINT]=RegisterMagickSignalHandler(SIGINT);
@@ -1319,6 +1311,9 @@ MagickExport void MagickCoreGenesis(const char *path,
 #if defined(SIGXFSZ)
       if (signal_handlers[SIGXFSZ] == (SignalHandler *) NULL)
         signal_handlers[SIGXFSZ]=RegisterMagickSignalHandler(SIGXFSZ);
+#endif
+#if defined(SIGPIPE)
+      (void) signal(SIGPIPE,SIG_IGN);
 #endif
     }
   /*
