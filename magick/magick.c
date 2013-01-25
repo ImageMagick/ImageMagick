@@ -1305,9 +1305,6 @@ MagickExport void MagickCoreGenesis(const char *path,
       if (signal_handlers[SIGXFSZ] == (SignalHandler *) NULL)
         signal_handlers[SIGXFSZ]=RegisterMagickSignalHandler(SIGXFSZ);
 #endif
-#if defined(SIGPIPE)
-      (void) signal(SIGPIPE,SIG_IGN);
-#endif
     }
   /*
     Instantiate magick resources.
