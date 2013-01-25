@@ -489,11 +489,21 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,
   image=AcquireImage((ImageInfo *) NULL);
   if (image == (Image *) NULL)
     return(MagickFalse);
-  length=sizeof(image->columns)+sizeof(image->rows);
+  length=sizeof(image->storage_class)+sizeof(image->colorspace)+
+    sizeof(image->channels)+sizeof(image->columns)+sizeof(image->rows);
   count=dpc_read(file,length,message);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
+  /*
+    Deserialize the image attributes.
+  */
   p=message;
+  (void) memcpy(&image->storage_class,p,sizeof(image->storage_class));
+  p+=sizeof(image->storage_class);
+  (void) memcpy(&image->colorspace,p,sizeof(image->colorspace));
+  p+=sizeof(image->colorspace);
+  (void) memcpy(&image->channels,p,sizeof(image->channels));
+  p+=sizeof(image->columns);
   (void) memcpy(&image->columns,p,sizeof(image->columns));
   p+=sizeof(image->columns);
   (void) memcpy(&image->rows,p,sizeof(image->rows));
@@ -1107,8 +1117,17 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
   assert(image->signature == MagickSignature);
   p=message;
   *p++='o';  /* open */
+  /*
+    Serialize image attributes (see ValidatePixelCacheMorphology()).
+  */
   (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
   p+=sizeof(server_info->session_key);
+  (void) memcpy(p,&image->storage_class,sizeof(image->storage_class));
+  p+=sizeof(image->storage_class);
+  (void) memcpy(p,&image->colorspace,sizeof(image->colorspace));
+  p+=sizeof(image->colorspace);
+  (void) memcpy(p,&image->channels,sizeof(image->channels));
+  p+=sizeof(image->channels);
   (void) memcpy(p,&image->columns,sizeof(image->columns));
   p+=sizeof(image->columns);
   (void) memcpy(p,&image->rows,sizeof(image->rows));
@@ -1176,7 +1195,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheIndexes(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(indexes != (unsigned char *) NULL);
-  if (length > SSIZE_MAX)
+  if (length > (MagickSizeType) SSIZE_MAX)
     return(-1);
   p=message;
   *p++='R';
@@ -1251,7 +1270,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  if (length > SSIZE_MAX)
+  if (length > (MagickSizeType) SSIZE_MAX)
     return(-1);
   p=message;
   *p++='r';
@@ -1377,7 +1396,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheIndexes(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(indexes != (unsigned char *) NULL);
-  if (length > SSIZE_MAX)
+  if (length > (MagickSizeType) SSIZE_MAX)
     return(-1);
   p=message;
   *p++='W';
@@ -1452,7 +1471,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCachePixels(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (const unsigned char *) NULL);
-  if (length > SSIZE_MAX)
+  if (length > (MagickSizeType) SSIZE_MAX)
     return(-1);
   p=message;
   *p++='w';
