@@ -452,7 +452,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
   for (i=0; i < (MagickOffsetType) length; i+=count)
   {
     count=(MagickOffsetType) send(file,message+i,(size_t) MagickMin(length-i,
-      (MagickSizeType) SSIZE_MAX),0);
+      (MagickSizeType) SSIZE_MAX),MSG_NOSIGNAL);
     if (count <= 0)
       {
         count=0;
