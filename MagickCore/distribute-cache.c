@@ -63,6 +63,7 @@
 #include "MagickCore/list.h"
 #include "MagickCore/locale_.h"
 #include "MagickCore/memory_.h"
+#include "MagickCore/pixel.h"
 #include "MagickCore/policy.h"
 #include "MagickCore/random_.h"
 #include "MagickCore/registry.h"
@@ -489,18 +490,36 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,
   image=AcquireImage((ImageInfo *) NULL,exception);
   if (image == (Image *) NULL)
     return(MagickFalse);
-  length=sizeof(image->columns)+sizeof(image->rows)+
-    sizeof(image->number_channels);
+  length=sizeof(image->storage_class)+sizeof(image->colorspace)+
+    sizeof(image->alpha_trait)+sizeof(image->mask)+sizeof(image->columns)+
+    sizeof(image->rows)+sizeof(image->number_channels)+MaxPixelChannels*
+    sizeof(*image->channel_map)+sizeof(image->metacontent_extent);
   count=dpc_read(file,length,message);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
+  /*
+    Deserialize image attributes.
+  */
   p=message;
+  (void) memcpy(&image->storage_class,p,sizeof(image->storage_class));
+  p+=sizeof(image->storage_class);
+  (void) memcpy(&image->colorspace,p,sizeof(image->colorspace));
+  p+=sizeof(image->colorspace);
+  (void) memcpy(&image->alpha_trait,p,sizeof(image->alpha_trait));
+  p+=sizeof(image->alpha_trait);
+  (void) memcpy(&image->mask,p,sizeof(image->mask));
+  p+=sizeof(image->mask);
   (void) memcpy(&image->columns,p,sizeof(image->columns));
   p+=sizeof(image->columns);
   (void) memcpy(&image->rows,p,sizeof(image->rows));
   p+=sizeof(image->rows);
   (void) memcpy(&image->number_channels,p,sizeof(image->number_channels));
   p+=sizeof(image->number_channels);
+  (void) memcpy(image->channel_map,p,MaxPixelChannels*
+    sizeof(*image->channel_map));
+  p+=MaxPixelChannels*sizeof(*image->channel_map);
+  (void) memcpy(&image->metacontent_extent,p,sizeof(image->metacontent_extent));
+  p+=sizeof(image->metacontent_extent);
   status=AddValueToSplayTree(registry,(const void *) session_key,image);
   return(status);
 }
@@ -1109,14 +1128,30 @@ MagickPrivate MagickBooleanType OpenDistributePixelCache(
   assert(image->signature == MagickSignature);
   p=message;
   *p++='o';  /* open */
+  /*
+    Serialize image attributes (see ValidatePixelCacheMorphology()).
+  */
   (void) memcpy(p,&server_info->session_key,sizeof(server_info->session_key));
   p+=sizeof(server_info->session_key);
+  (void) memcpy(p,&image->storage_class,sizeof(image->storage_class));
+  p+=sizeof(image->storage_class);
+  (void) memcpy(p,&image->colorspace,sizeof(image->colorspace));
+  p+=sizeof(image->colorspace);
+  (void) memcpy(p,&image->alpha_trait,sizeof(image->alpha_trait));
+  p+=sizeof(image->alpha_trait);
+  (void) memcpy(p,&image->mask,sizeof(image->mask));
+  p+=sizeof(image->mask);
   (void) memcpy(p,&image->columns,sizeof(image->columns));
   p+=sizeof(image->columns);
   (void) memcpy(p,&image->rows,sizeof(image->rows));
   p+=sizeof(image->rows);
   (void) memcpy(p,&image->number_channels,sizeof(image->number_channels));
   p+=sizeof(image->number_channels);
+  (void) memcpy(p,image->channel_map,MaxPixelChannels*
+    sizeof(*image->channel_map));
+  p+=MaxPixelChannels*sizeof(*image->channel_map);
+  (void) memcpy(p,&image->metacontent_extent,sizeof(image->metacontent_extent));
+  p+=sizeof(image->metacontent_extent);
   count=dpc_send(server_info->file,p-message,message);
   if (count != (MagickOffsetType) (p-message))
     return(MagickFalse);
@@ -1180,7 +1215,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCacheMetacontent(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(metacontent != (unsigned char *) NULL);
-  if (length > SSIZE_MAX)
+  if (length > (MagickSizeType) SSIZE_MAX)
     return(-1);
   p=message;
   *p++='R';
@@ -1255,7 +1290,7 @@ MagickPrivate MagickOffsetType ReadDistributePixelCachePixels(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  if (length > SSIZE_MAX)
+  if (length > (MagickSizeType) SSIZE_MAX)
     return(-1);
   p=message;
   *p++='r';
@@ -1381,7 +1416,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCacheMetacontent(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(metacontent != (unsigned char *) NULL);
-  if (length > SSIZE_MAX)
+  if (length > (MagickSizeType) SSIZE_MAX)
     return(-1);
   p=message;
   *p++='W';
@@ -1456,7 +1491,7 @@ MagickPrivate MagickOffsetType WriteDistributePixelCachePixels(
   assert(server_info->signature == MagickSignature);
   assert(region != (RectangleInfo *) NULL);
   assert(pixels != (const unsigned char *) NULL);
-  if (length > SSIZE_MAX)
+  if (length > (MagickSizeType) SSIZE_MAX)
     return(-1);
   p=message;
   *p++='w';
