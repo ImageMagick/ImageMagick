@@ -5209,8 +5209,8 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
         }
       for (y=0; y < (ssize_t) rows; y++)
       {
-        count=WriteDistributePixelCachePixels(cache_info->server_info,&region,
-          length,(const unsigned char *) p);
+        count=WriteDistributePixelCacheMetacontent(cache_info->server_info,
+          &region,length,(const unsigned char *) p);
         if (count != (MagickOffsetType) length)
           break;
         p+=cache_info->metacontent_extent*nexus_info->region.width;
