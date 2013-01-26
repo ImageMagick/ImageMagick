@@ -11267,13 +11267,13 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       mng_info->write_png_depth = 16;
       image->depth = 16;
 
-      if (image->matte == MagickTrue)
-        (void) SetImageType(image,TrueColorMatteType);
+      if (image->alpha_trait == BlendPixelTrait)
+        (void) SetImageType(image,TrueColorMatteType,exception);
 
       else
-        (void) SetImageType(image,TrueColorType);
+        (void) SetImageType(image,TrueColorType,exception);
 
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
     }
 
   if (mng_info->write_png64)
@@ -11282,13 +11282,13 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
       mng_info->write_png_depth = 16;
       image->depth = 16;
 
-      if (image->matte == MagickTrue)
-        (void) SetImageType(image,TrueColorMatteType);
+      if (image->alpha_trait == BlendPixelTrait)
+        (void) SetImageType(image,TrueColorMatteType,exception);
 
       else
-        (void) SetImageType(image,TrueColorType);
+        (void) SetImageType(image,TrueColorType,exception);
 
-      (void) SyncImage(image);
+      (void) SyncImage(image,exception);
     }
 
   value=GetImageOption(image_info,"png:bit-depth");
