@@ -434,7 +434,7 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity,
     register Quantum
       *restrict q;
 
-    q=GetAuthenticPixels(image,0,offset,image->columns,1,exception);
+    q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
     if (q == (Quantum *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; )
