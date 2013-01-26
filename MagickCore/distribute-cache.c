@@ -665,9 +665,6 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
   Image
     *image;
 
-  MagickBooleanType
-    status;
-
   MagickOffsetType
     count;
 
@@ -715,10 +712,9 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
     return(MagickFalse);
   metacontent=GetAuthenticMetacontent(image);
   count=dpc_read(file,length,metacontent);
-  status=SyncAuthenticPixels(image,exception);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
-  return(status);
+  return(SyncAuthenticPixels(image,exception));
 }
 
 static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
@@ -726,9 +722,6 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
 {
   Image
     *image;
-
-  MagickBooleanType
-    status;
 
   MagickOffsetType
     count;
@@ -775,10 +768,9 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
   if (q == (Quantum *) NULL)
     return(MagickFalse);
   count=dpc_read(file,length,(unsigned char *) q);
-  status=SyncAuthenticPixels(image,exception);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
-  return(status);
+  return(SyncAuthenticPixels(image,exception));
 }
 
 static void *DistributePixelCacheClient(void *socket)
