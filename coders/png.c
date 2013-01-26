@@ -3163,6 +3163,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       for (y=0; y < (ssize_t) image->rows; y++)
       {
+        Quantum
+           alpha;
+
         if (num_passes > 1)
           row_offset=ping_rowbytes*y;
 
@@ -3174,7 +3177,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         if (pass < num_passes-1)
           continue;
 
-        q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+        q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
 
         if (q == (Quantum *) NULL)
           break;
@@ -3186,13 +3189,19 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         {
           case 8:
           {
+
             if (ping_color_type == 4)
               for (x=(ssize_t) image->columns-1; x >= 0; x--)
               {
                 *r++=*p++;
-                SetPixelAlpha(image,ScaleCharToQuantum((unsigned char) *p++),q);
-                if (GetPixelAlpha(image,q) != OpaqueAlpha)
+
+                alpha=ScaleCharToQuantum((unsigned char)*p++);
+
+                SetPixelAlpha(image,alpha,q);
+
+                if (alpha != OpaqueAlpha)
                   found_transparent_pixel = MagickTrue;
+
                 q+=GetPixelChannels(image);
               }
 
@@ -3229,9 +3238,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                     quantum=0;
 
                   quantum|=(*p++);
-                  SetPixelAlpha(image,ScaleShortToQuantum(quantum),q);
-                  if (GetPixelAlpha(image,q) != OpaqueAlpha)
+
+                  alpha=ScaleShortToQuantum(quantum);
+                  SetPixelAlpha(image,alpha,q);
+
+                  if (alpha != OpaqueAlpha)
                     found_transparent_pixel = MagickTrue;
+
                   q+=GetPixelChannels(image);
                 }
 
@@ -3242,8 +3255,10 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
               if (ping_color_type == 4)
                 {
                   SetPixelAlpha(image,*p++,q);
+
                   if (GetPixelAlpha(image,q) != OpaqueAlpha)
                     found_transparent_pixel = MagickTrue;
+
                   p++;
                   q+=GetPixelChannels(image);
                 }
