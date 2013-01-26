@@ -1173,6 +1173,7 @@ static void MagickSignalHandler(int signal_number)
 #if !defined(MAGICKCORE_HAVE__EXIT)
   exit(signal_number);
 #else
+#if defined(SIGHUP)
   if (signal_number == SIGHUP)
     exit(signal_number);
 #endif
