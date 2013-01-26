@@ -704,9 +704,9 @@ static MagickBooleanType WriteDistributeCacheIndexes(SplayTreeInfo *registry,
     return(MagickFalse);
   indexes=GetAuthenticIndexQueue(image);
   count=dpc_read(file,length,(unsigned char *) indexes);
+  status=SyncAuthenticPixels(image,exception);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
-  status=SyncAuthenticPixels(image,exception);
   return(status);
 }
 
@@ -764,9 +764,9 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
   if (q == (PixelPacket *) NULL)
     return(MagickFalse);
   count=dpc_read(file,length,(unsigned char *) q);
+  status=SyncAuthenticPixels(image,exception);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
-  status=SyncAuthenticPixels(image,exception);
   return(status);
 }
 
