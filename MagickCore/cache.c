@@ -4256,8 +4256,8 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
         }
       for (y=0; y < (ssize_t) rows; y++)
       {
-        count=ReadDistributePixelCachePixels(cache_info->server_info,&region,
-          length,(unsigned char *) q);
+        count=ReadDistributePixelCacheMetacontent(cache_info->server_info,
+          &region,length,(unsigned char *) q);
         if (count != (MagickOffsetType) length)
           break;
         q+=cache_info->metacontent_extent*nexus_info->region.width;
