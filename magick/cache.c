@@ -4364,7 +4364,14 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
       region=nexus_info->region;
-      region.height=1UL;
+      if ((cache_info->columns != nexus_info->region.width) ||
+          (extent > MagickMaxBufferExtent))
+        region.height=1UL;
+      else
+        {
+          length=extent;
+          rows=1UL;
+        }
       for (y=0; y < (ssize_t) rows; y++)
       {
         count=ReadDistributePixelCachePixels(cache_info->server_info,&region,
@@ -4521,7 +4528,14 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
       region=nexus_info->region;
-      region.height=1UL;
+      if ((cache_info->columns != nexus_info->region.width) ||
+          (extent > MagickMaxBufferExtent))
+        region.height=1UL;
+      else
+        {
+          length=extent;
+          rows=1UL;
+        }
       for (y=0; y < (ssize_t) rows; y++)
       {
         count=ReadDistributePixelCachePixels(cache_info->server_info,&region,
@@ -5295,7 +5309,14 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
       region=nexus_info->region;
-      region.height=1UL;
+      if ((cache_info->columns != nexus_info->region.width) ||
+          (extent > MagickMaxBufferExtent))
+        region.height=1UL;
+      else
+        {
+          length=extent;
+          rows=1UL;
+        }
       for (y=0; y < (ssize_t) rows; y++)
       {
         count=WriteDistributePixelCachePixels(cache_info->server_info,&region,
@@ -5452,7 +5473,14 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
       */
       LockSemaphoreInfo(cache_info->file_semaphore);
       region=nexus_info->region;
-      region.height=1UL;
+      if ((cache_info->columns != nexus_info->region.width) ||
+          (extent > MagickMaxBufferExtent))
+        region.height=1UL;
+      else
+        {
+          length=extent;
+          rows=1UL;
+        }
       for (y=0; y < (ssize_t) rows; y++)
       {
         count=WriteDistributePixelCachePixels(cache_info->server_info,&region,
