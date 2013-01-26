@@ -7,6 +7,7 @@
   * Account for signed values for the FITS image format.
   * Support a distributed pixel cache.
   * Fix numerical stability problem for convolution.
+  * Increase segment stack size for -draw option.
 
 2013-01-18  6.8.1-10 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.1-10, SVN revision 10667.
