@@ -880,7 +880,9 @@ typedef struct _MngInfo
     write_png_compression_filter,
     write_png8,
     write_png24,
-    write_png32;
+    write_png32,
+    write_png48,
+    write_png64;
 
 #ifdef MNG_BASI_SUPPORTED
   size_t
@@ -3815,13 +3817,15 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ((image->gamma < .45) || (image->gamma > .46)))
     SetImageColorspace(image,RGBColorspace,exception);
 
-  if (LocaleCompare(image_info->magick,"PNG24") == 0)
+  if ((LocaleCompare(image_info->magick,"PNG24") == 0) ||
+      (LocaleCompare(image_info->magick,"PNG48") == 0))
     {
       (void) SetImageType(image,TrueColorType,exception);
       image->alpha_trait=UndefinedPixelTrait;
     }
 
-  if (LocaleCompare(image_info->magick,"PNG32") == 0)
+  if ((LocaleCompare(image_info->magick,"PNG32") == 0) ||
+      (LocaleCompare(image_info->magick,"PNG64") == 0))
     (void) SetImageType(image,TrueColorMatteType,exception);
 
   if (logging != MagickFalse)
@@ -7258,7 +7262,7 @@ ModuleExport size_t RegisterPNGImage(void)
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
   entry->adjoin=MagickFalse;
-  entry->description=ConstantString("opaque 24-bit RGB");
+  entry->description=ConstantString("opaque or binary transparent 24-bit RGB");
   entry->module=ConstantString("PNG");
   (void) RegisterMagickInfo(entry);
 
@@ -7272,6 +7276,32 @@ ModuleExport size_t RegisterPNGImage(void)
   entry->magick=(IsImageFormatHandler *) IsPNG;
   entry->adjoin=MagickFalse;
   entry->description=ConstantString("opaque or transparent 32-bit RGBA");
+  entry->module=ConstantString("PNG");
+  (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("PNG48");
+
+#if defined(MAGICKCORE_PNG_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadPNGImage;
+  entry->encoder=(EncodeImageHandler *) WritePNGImage;
+#endif
+
+  entry->magick=(IsImageFormatHandler *) IsPNG;
+  entry->adjoin=MagickFalse;
+  entry->description=ConstantString("opaque or binary transparent 48-bit RGB");
+  entry->module=ConstantString("PNG");
+  (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("PNG64");
+
+#if defined(MAGICKCORE_PNG_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadPNGImage;
+  entry->encoder=(EncodeImageHandler *) WritePNGImage;
+#endif
+
+  entry->magick=(IsImageFormatHandler *) IsPNG;
+  entry->adjoin=MagickFalse;
+  entry->description=ConstantString("opaque or transparent 64-bit RGBA");
   entry->module=ConstantString("PNG");
   (void) RegisterMagickInfo(entry);
 
@@ -7324,6 +7354,8 @@ ModuleExport void UnregisterPNGImage(void)
   (void) UnregisterMagickInfo("PNG8");
   (void) UnregisterMagickInfo("PNG24");
   (void) UnregisterMagickInfo("PNG32");
+  (void) UnregisterMagickInfo("PNG48");
+  (void) UnregisterMagickInfo("PNG64");
   (void) UnregisterMagickInfo("JNG");
 
 #ifdef PNG_SETJMP_NOT_THREAD_SAFE
@@ -7834,8 +7866,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
   if (image->storage_class == PseudoClass &&
      (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32 ||
-     (mng_info->write_png_colortype != 0 &&
-     mng_info->write_png_colortype != 4)))
+     mng_info->write_png48 || mng_info->write_png64 ||
+     (mng_info->write_png_colortype != 1 &&
+     mng_info->write_png_colortype != 5)))
     {
       (void) SyncImage(image,exception);
       image->storage_class = DirectClass;
@@ -9106,6 +9139,9 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   if (mng_info->write_png8 || mng_info->write_png24 || mng_info->write_png32)
      image_depth=8;
 
+  if (mng_info->write_png48 || mng_info->write_png64)
+     image_depth=16;
+
   if (mng_info->write_png_depth != 0)
      image_depth=mng_info->write_png_depth;
 
@@ -9316,13 +9352,21 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
       }
     } /* end of write_png8 */
 
-  else if (mng_info->write_png24 || mng_info->write_png_colortype == 3)
+  else if (mng_info->write_png_colortype == 1)
+    {
+      image_matte=MagickFalse;
+      ping_color_type=(png_byte) PNG_COLOR_TYPE_GRAY;
+    }
+
+  else if (mng_info->write_png24 || mng_info->write_png48 ||
+      mng_info->write_png_colortype == 3)
     {
       image_matte=MagickFalse;
       ping_color_type=(png_byte) PNG_COLOR_TYPE_RGB;
     }
 
-  else if (mng_info->write_png32 || mng_info->write_png_colortype == 7)
+  else if (mng_info->write_png32 || mng_info->write_png64 ||
+      mng_info->write_png_colortype == 7)
     {
       image_matte=MagickTrue;
       ping_color_type=(png_byte) PNG_COLOR_TYPE_RGB_ALPHA;
@@ -10483,6 +10527,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   num_passes=png_set_interlace_handling(ping);
 
   if ((!mng_info->write_png8 && !mng_info->write_png24 &&
+       !mng_info->write_png48 && !mng_info->write_png64 &&
        !mng_info->write_png32) &&
        (mng_info->IsPalette ||
        (image_info->type == BilevelType)) &&
@@ -10554,10 +10599,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
   else   /* Not Palette, Bilevel, or Opaque Monochrome */
     {
       if ((!mng_info->write_png8 && !mng_info->write_png24 &&
-         !mng_info->write_png32) &&
-         (image_matte != MagickFalse ||
-         (ping_bit_depth >= MAGICKCORE_QUANTUM_DEPTH)) &&
-         (mng_info->IsPalette) && ping_have_color == MagickFalse)
+          !mng_info->write_png48 && !mng_info->write_png64 &&
+          !mng_info->write_png32) && (image_matte != MagickFalse ||
+          (ping_bit_depth >= MAGICKCORE_QUANTUM_DEPTH)) &&
+          (mng_info->IsPalette) && ping_have_color == MagickFalse)
         {
           register const Quantum
             *p;
@@ -10620,9 +10665,12 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 
           for (pass=0; pass < num_passes; pass++)
           {
-            if ((image_depth > 8) || (mng_info->write_png24 ||
+            if ((image_depth > 8) ||
+                mng_info->write_png24 ||
                 mng_info->write_png32 ||
-                (!mng_info->write_png8 && !mng_info->IsPalette)))
+                mng_info->write_png48 ||
+                mng_info->write_png64 ||
+                (!mng_info->write_png8 && !mng_info->IsPalette))
             {
               for (y=0; y < (ssize_t) image->rows; y++)
               {
@@ -10670,9 +10718,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
             }
 
           else
-            /* not ((image_depth > 8) || (mng_info->write_png24 ||
-                mng_info->write_png32 ||
-                (!mng_info->write_png8 && !mng_info->IsPalette))) */
+            /* not ((image_depth > 8) ||
+                mng_info->write_png24 || mng_info->write_png32 ||
+                mng_info->write_png48 || mng_info->write_png64 ||
+                (!mng_info->write_png8 && !mng_info->IsPalette))
+             */
             {
               if ((ping_color_type != PNG_COLOR_TYPE_GRAY) &&
                   (ping_color_type != PNG_COLOR_TYPE_GRAY_ALPHA))
@@ -11009,6 +11059,18 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %               The only loss in data is the reduction of the sample depth
 %               to 8.
 %
+%    o PNG48:   A 16-bit per sample RGB PNG datastream is written.  The tRNS
+%               chunk can be present to convey binary transparency by naming
+%               one of the colors as transparent.  If the image has more
+%               than one transparent color, has semitransparent pixels, or
+%               has an opaque pixel with the same RGB components as the
+%               transparent color, an image is not written.
+%
+%    o PNG64:   A 16-bit per sample RGBA PNG is written.  Partial
+%               transparency is permitted, i.e., the alpha sample for
+%               each pixel can have any value from 0 to 65535. The alpha
+%               channel is present even if the image is fully opaque.
+%
 %    o -define: For more precise control of the PNG output, you can use the
 %               Image options "png:bit-depth" and "png:color-type".  These
 %               can be set from the commandline with "-define" and also
@@ -11032,9 +11094,10 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %               When png:color-type is 4 (Gray-Matte) or 6 (RGB-Matte),
 %               png:bit-depth can be 8 or 16.
 %
-%  If the image cannot be written without loss with the requested bit-depth
-%  and color-type, a PNG file will not be written, and the encoder will
-%  return MagickFalse.
+%               If the image cannot be written without loss with the
+%               requested bit-depth and color-type, a PNG file will not
+%               be written, a warning will be issued, and the encoder will
+%               return MagickFalse.
 %
 %  Since image encoders should not be responsible for the "heavy lifting",
 %  the user should make sure that ImageMagick has already reduced the
@@ -11133,31 +11196,33 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
   mng_info->write_png8=LocaleCompare(image_info->magick,"PNG8") == 0;
   mng_info->write_png24=LocaleCompare(image_info->magick,"PNG24") == 0;
   mng_info->write_png32=LocaleCompare(image_info->magick,"PNG32") == 0;
+  mng_info->write_png48=LocaleCompare(image_info->magick,"PNG48") == 0;
+  mng_info->write_png64=LocaleCompare(image_info->magick,"PNG64") == 0;
 
   value=GetImageOption(image_info,"png:format");
 
   if (value != (char *) NULL)
     {
+      mng_info->write_png8 = MagickFalse;
+      mng_info->write_png24 = MagickFalse;
+      mng_info->write_png32 = MagickFalse;
+      mng_info->write_png48 = MagickFalse;
+      mng_info->write_png64 = MagickFalse;
+
       if (LocaleCompare(value,"png8") == 0)
-        {
         mng_info->write_png8 = MagickTrue;
-        mng_info->write_png24 = MagickFalse;
-        mng_info->write_png32 = MagickFalse;
-        }
 
       else if (LocaleCompare(value,"png24") == 0)
-        {
-        mng_info->write_png8 = MagickFalse;
         mng_info->write_png24 = MagickTrue;
-        mng_info->write_png32 = MagickFalse;
-        }
 
       else if (LocaleCompare(value,"png32") == 0)
-        {
-        mng_info->write_png8 = MagickFalse;
-        mng_info->write_png24 = MagickFalse;
         mng_info->write_png32 = MagickTrue;
-        }
+
+      else if (LocaleCompare(value,"png48") == 0)
+        mng_info->write_png48 = MagickTrue;
+
+      else if (LocaleCompare(value,"png64") == 0)
+        mng_info->write_png64 = MagickTrue;
     }
   if (mng_info->write_png8)
     {
@@ -11194,6 +11259,36 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,
         (void) SetImageType(image,TrueColorType,exception);
 
       (void) SyncImage(image,exception);
+    }
+
+  if (mng_info->write_png48)
+    {
+      mng_info->write_png_colortype = /* 2 */ 3;
+      mng_info->write_png_depth = 16;
+      image->depth = 16;
+
+      if (image->matte == MagickTrue)
+        (void) SetImageType(image,TrueColorMatteType);
+
+      else
+        (void) SetImageType(image,TrueColorType);
+
+      (void) SyncImage(image);
+    }
+
+  if (mng_info->write_png64)
+    {
+      mng_info->write_png_colortype = /* 6 */  7;
+      mng_info->write_png_depth = 16;
+      image->depth = 16;
+
+      if (image->matte == MagickTrue)
+        (void) SetImageType(image,TrueColorMatteType);
+
+      else
+        (void) SetImageType(image,TrueColorType);
+
+      (void) SyncImage(image);
     }
 
   value=GetImageOption(image_info,"png:bit-depth");
