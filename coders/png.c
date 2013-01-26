@@ -3119,6 +3119,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
       for (y=0; y < (ssize_t) image->rows; y++)
       {
+        Quantum
+           alpha;
+
         if (num_passes > 1)
           row_offset=ping_rowbytes*y;
 
@@ -3130,7 +3133,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         if (pass < num_passes-1)
           continue;
 
-        q=GetAuthenticPixels(image,0,y,image->columns,1,exception);
+        q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
 
         if (q == (PixelPacket *) NULL)
           break;
@@ -3143,6 +3146,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         {
           case 8:
           {
+
             if (ping_color_type == 4)
               for (x=(ssize_t) image->columns-1; x >= 0; x--)
               {
@@ -3152,10 +3156,13 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                  * In a PNG datastream, Opaque is QuantumRange
                  * and Transparent is 0.
                  */
-                SetPixelAlpha(q,ScaleCharToQuantum((unsigned char)
-                  *p++));
-                if (GetPixelOpacity(q) != OpaqueOpacity)
+                alpha=ScaleCharToQuantum((unsigned char)*p++);
+
+                SetPixelAlpha(q,alpha);
+
+                if (alpha != OpaqueOpacity)
                   found_transparent_pixel = MagickTrue;
+
                 q++;
               }
 
@@ -3193,8 +3200,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                     quantum=0;
 
                   quantum|=(*p++);
-                  SetPixelAlpha(q,ScaleShortToQuantum(quantum));
-                  if (GetPixelOpacity(q) != OpaqueOpacity)
+                  alpha=ScaleShortToQuantum(quantum);
+                  SetPixelAlpha(q,alpha);
+                  if (alpha != OpaqueOpacity)
                     found_transparent_pixel = MagickTrue;
                   q++;
                 }
@@ -3205,8 +3213,9 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
               if (ping_color_type == 4)
                 {
-                  SetPixelAlpha(q,*p++);
-                  if (GetPixelOpacity(q) != OpaqueOpacity)
+                  alpha=*p++;
+                  SetPixelAlpha(q,alpha);
+                  if (alpha != OpaqueOpacity)
                     found_transparent_pixel = MagickTrue;
                   p++;
                   q++;
