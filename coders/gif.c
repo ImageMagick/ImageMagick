@@ -439,7 +439,7 @@ static MagickBooleanType DecodeImage(Image *image,const ssize_t opacity)
     register PixelPacket
       *restrict q;
 
-    q=GetAuthenticPixels(image,0,offset,image->columns,1,exception);
+    q=QueueAuthenticPixels(image,0,offset,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetAuthenticIndexQueue(image);
