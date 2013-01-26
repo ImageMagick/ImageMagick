@@ -579,11 +579,11 @@ static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
   (void) memcpy(&region.width,q,sizeof(region.width));
   q+=sizeof(region.width);
   (void) memcpy(&region.height,q,sizeof(region.height));
-  q+=sizeof(region.width);
+  q+=sizeof(region.height);
   (void) memcpy(&region.x,q,sizeof(region.x));
-  q+=sizeof(region.width);
+  q+=sizeof(region.x);
   (void) memcpy(&region.y,q,sizeof(region.y));
-  q+=sizeof(region.width);
+  q+=sizeof(region.y);
   (void) memcpy(&length,q,sizeof(length));
   q+=sizeof(length);
   p=GetVirtualPixels(image,region.x,region.y,region.width,region.height,
@@ -636,11 +636,11 @@ static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
   (void) memcpy(&region.width,q,sizeof(region.width));
   q+=sizeof(region.width);
   (void) memcpy(&region.height,q,sizeof(region.height));
-  q+=sizeof(region.width);
+  q+=sizeof(region.height);
   (void) memcpy(&region.x,q,sizeof(region.x));
-  q+=sizeof(region.width);
+  q+=sizeof(region.x);
   (void) memcpy(&region.y,q,sizeof(region.y));
-  q+=sizeof(region.width);
+  q+=sizeof(region.y);
   (void) memcpy(&length,q,sizeof(length));
   q+=sizeof(length);
   p=GetVirtualPixels(image,region.x,region.y,region.width,region.height,
@@ -702,11 +702,11 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
   (void) memcpy(&region.width,p,sizeof(region.width));
   p+=sizeof(region.width);
   (void) memcpy(&region.height,p,sizeof(region.height));
-  p+=sizeof(region.width);
+  p+=sizeof(region.height);
   (void) memcpy(&region.x,p,sizeof(region.x));
-  p+=sizeof(region.width);
+  p+=sizeof(region.x);
   (void) memcpy(&region.y,p,sizeof(region.y));
-  p+=sizeof(region.width);
+  p+=sizeof(region.y);
   (void) memcpy(&length,p,sizeof(length));
   p+=sizeof(length);
   q=GetAuthenticPixels(image,region.x,region.y,region.width,region.height,
@@ -763,11 +763,11 @@ static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
   (void) memcpy(&region.width,p,sizeof(region.width));
   p+=sizeof(region.width);
   (void) memcpy(&region.height,p,sizeof(region.height));
-  p+=sizeof(region.width);
+  p+=sizeof(region.height);
   (void) memcpy(&region.x,p,sizeof(region.x));
-  p+=sizeof(region.width);
+  p+=sizeof(region.x);
   (void) memcpy(&region.y,p,sizeof(region.y));
-  p+=sizeof(region.width);
+  p+=sizeof(region.y);
   (void) memcpy(&length,p,sizeof(length));
   p+=sizeof(length);
   q=GetAuthenticPixels(image,region.x,region.y,region.width,region.height,
