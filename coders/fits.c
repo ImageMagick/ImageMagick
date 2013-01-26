@@ -447,9 +447,12 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       for (x=0; x < (ssize_t) image->columns; x++)
       {
         pixel=GetFITSPixel(image,fits_info.bits_per_pixel);
-        if ((image->depth == 16) || (image->depth == 32) ||
-            (image->depth == 64))
+        if (image->depth == 16)
           pixel-=half_interval;
+#if !defined(MAGICKCORE_HDRI_SUPPORT)
+        if ((image->depth == 32) || (image->depth == 64))
+          pixel-=half_interval;
+#endif
         SetPixelGray(image,ClampToQuantum(scale*(fits_info.scale*(pixel-
           fits_info.min_data)+fits_info.zero)),q);
         q+=GetPixelChannels(image);
