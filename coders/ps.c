@@ -171,6 +171,8 @@ static MagickBooleanType InvokePostscriptDelegate(
     }
   code=0;
   argv=StringToArgv(command,&argc);
+  if (argv == (char **) NULL)
+    return(MagickFalse);
   status=(ghost_info->init_with_args)(interpreter,argc-1,argv+1);
   if (status == 0)
     status=(ghost_info->run_string)(interpreter,"systemdict /start get exec\n",
