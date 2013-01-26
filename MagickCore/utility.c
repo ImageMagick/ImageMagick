@@ -1807,6 +1807,13 @@ MagickExport int SystemCommand(const MagickBooleanType asynchronous,
   arguments=StringToArgv(command,&number_arguments);
   if (arguments == (char **) NULL)
     return(status);
+  if (*arguments[1] == '\0')
+    {
+      for (i=0; i < (ssize_t) number_arguments; i++)
+        arguments[i]=DestroyString(arguments[i]);
+      arguments=(char **) RelinquishMagickMemory(arguments);
+      return(-1);
+    }
   rights=ExecutePolicyRights;
   domain=DelegatePolicyDomain;
   if (IsRightsAuthorized(domain,rights,arguments[1]) == MagickFalse)
