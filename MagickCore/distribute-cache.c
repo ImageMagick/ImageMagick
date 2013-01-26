@@ -533,6 +533,8 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,
   p+=MaxPixelChannels*sizeof(*image->channel_map);
   (void) memcpy(&image->metacontent_extent,p,sizeof(image->metacontent_extent));
   p+=sizeof(image->metacontent_extent);
+  if (SyncImagePixelCache(image,exception) == MagickFalse)
+    return(MagickFalse);
   status=AddValueToSplayTree(registry,(const void *) session_key,image);
   return(status);
 }
