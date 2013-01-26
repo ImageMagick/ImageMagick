@@ -1,5 +1,6 @@
 2013-01-21  6.8.2-0 Glenn Randers-Pehrson <glennrp@image...>
   * Impose a 32k limit on the number of text chunks that will be read.
+  * Implemented PNG48 and PNG64 PNG subformats.
 
 2013-01-21  6.8.2-0 Cristy  <quetzlzacatenango@image...>
   * Avoid a rare thread lock for timeout event (e.g. MAGICK_TIME_LIMIT=30).
