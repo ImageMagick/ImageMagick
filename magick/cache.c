@@ -5496,12 +5496,12 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
     default:
       break;
   }
-   if (y < (ssize_t) rows)
-     {
-       ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
-         cache_info->cache_filename);
-       return(MagickFalse);
-     }
+  if (y < (ssize_t) rows)
+    {
+      ThrowFileException(exception,CacheError,"UnableToWritePixelCache",
+        cache_info->cache_filename);
+      return(MagickFalse);
+    }
   if ((cache_info->debug != MagickFalse) &&
       (CacheTick(nexus_info->region.y,cache_info->rows) != MagickFalse))
     (void) LogMagickEvent(CacheEvent,GetMagickModule(),
