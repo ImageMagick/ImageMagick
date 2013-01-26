@@ -306,6 +306,8 @@ static const struct ReferenceFormats
     { "PNG8", UndefinedCompression, 0.0 },
     { "PNG24", UndefinedCompression, 0.0 },
     { "PNG32", UndefinedCompression, 0.0 },
+    { "PNG48", UndefinedCompression, 0.0 },
+    { "PNG64", UndefinedCompression, 0.0 },
     { "PNM", UndefinedCompression, 0.0 },
     { "PPM", UndefinedCompression, 0.0 },
     { "PREVIEW", UndefinedCompression, 0.0 },
