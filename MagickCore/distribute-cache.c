@@ -167,12 +167,25 @@ static inline MagickSizeType MagickMin(const MagickSizeType x,
 static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
   unsigned char *restrict message)
 {
-  MagickOffsetType
+  register MagickOffsetType
+    i;
+
+  ssize_t
     count;
 
-  count=(MagickOffsetType) recv(file,message,(size_t) MagickMin(length,
-    (MagickSizeType) SSIZE_MAX),0);
-  return(count);
+  count=0;
+  for (i=0; i < (MagickOffsetType) length; i+=count)
+  {
+    count=recv(file,message+i,(size_t) MagickMin(length-i,(MagickSizeType)
+      SSIZE_MAX),0);
+    if (count <= 0)
+      {
+        count=0;
+        if (errno != EINTR)
+          break;
+      }
+  }
+  return(i);
 }
 
 static int ConnectPixelCacheServer(const char *hostname,const int port,
@@ -244,7 +257,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
         "DistributedPixelCache","'%s'",hostname);
       return(-1);
     }
-  count=dpc_read(client_socket,MaxTextExtent,secret);
+  count=recv(client_socket,secret,MaxTextExtent,0);
   if (count != -1)
     {
       MagickSizeType
