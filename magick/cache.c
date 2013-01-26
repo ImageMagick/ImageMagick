@@ -4374,7 +4374,7 @@ static MagickBooleanType ReadPixelCacheIndexes(CacheInfo *cache_info,
         }
       for (y=0; y < (ssize_t) rows; y++)
       {
-        count=ReadDistributePixelCachePixels(cache_info->server_info,&region,
+        count=ReadDistributePixelCacheIndexes(cache_info->server_info,&region,
           length,(unsigned char *) q);
         if (count != (MagickOffsetType) length)
           break;
@@ -5319,7 +5319,7 @@ static MagickBooleanType WritePixelCacheIndexes(CacheInfo *cache_info,
         }
       for (y=0; y < (ssize_t) rows; y++)
       {
-        count=WriteDistributePixelCachePixels(cache_info->server_info,&region,
+        count=WriteDistributePixelCacheIndexes(cache_info->server_info,&region,
           length,(const unsigned char *) p);
         if (count != (MagickOffsetType) length)
           break;
