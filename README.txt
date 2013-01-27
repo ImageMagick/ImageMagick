@@ -65,6 +65,8 @@ Features and Capabilities
       * Threads of execution support: ImageMagick is thread safe and most
         internal algorithms are OpenMP-enabled to take advantage of speed-ups
         offered by multicore processor chips.
+      * Distributed pixel cache: offload intermediate pixel storage to one or
+        more remote servers.
       * Heterogeneous distributed processing: certain algorithms are
         OpenCL-enabled to take advantage of speed-ups offered by executing in
         concert across heterogeneous platforms consisting of CPUs, GPUs, and
