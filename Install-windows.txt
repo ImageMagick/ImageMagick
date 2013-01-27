@@ -345,7 +345,7 @@ Create a Self-Installing Binary Distribution
   
   Install the Binary Distribution
   
-     1. Double-click on VisualMagick/bin/ImageMagick-6.8.1-0-Q16-x86-dll.exe
+     1. Double-click on VisualMagick/bin/ImageMagick-6.8.2-0-Q16-x86-dll.exe
         to launch the ImageMagick binary distribution.
      2. Complete the installer screens to install ImageMagick on your system.
   
@@ -389,7 +389,7 @@ Building Your Custom Project
   The Windows binary distribution includes a number of demo projects that
   you can use as a template for your own custom project. For example,
   start with the Button project, generally located in the c:/Program
-  Files/ImageMagick-6.8.1-0/Magick++_demos folder. If not, be sure to select
+  Files/ImageMagick-6.8.2-0/Magick++_demos folder. If not, be sure to select
   Configuration Properties->C/C++->Preprocessor and set these definitions:
   
     NDEBUG
