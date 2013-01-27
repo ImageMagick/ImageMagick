@@ -437,8 +437,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     */
     scale=(double) QuantumRange/(fits_info.scale*(fits_info.max_data-
       fits_info.min_data)+fits_info.zero);
-    if ((image->depth == 16) || (image->depth == 32) ||
-        (image->depth == 64))
+    if ((image->depth == 16) || (image->depth == 32) || (image->depth == 64))
       scale=1.0;
     for (y=(ssize_t) image->rows-1; y >= 0; y--)
     {
