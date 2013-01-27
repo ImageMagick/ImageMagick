@@ -3099,7 +3099,7 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         continue;
       }
       (void) ThrowMagickException(&image->exception,GetMagickModule(),
-          OptionWarning,"UnknownImageProperty","\"%%%c\"",*p);
+        OptionWarning,"UnknownImageProperty","\"%%%c\"",*p);
       continue;
     }
 
