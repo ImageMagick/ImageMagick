@@ -1,6 +1,6 @@
 2013-01-21  6.8.2-0 Glenn Randers-Pehrson <glennrp@image...>
   * Impose a 32k limit on the number of text chunks that will be read.
-  * Implemented PNG48 and PNG64 PNG subformats.
+  * Implemented PNG00, PNG48 and PNG64 PNG subformats.
   * Avoid reading back PNG pixel rows while reading a transparent PNG (
     by using a local "alpha" value instead of GetPixelOpacity()).
 

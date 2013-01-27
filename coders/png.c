@@ -2294,6 +2294,18 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
   ping_file_depth = ping_bit_depth;
 
+  /* Save bit-depth and color-type in case we later want to write a PNG00 */
+  {
+      char
+        msg[MaxTextExtent];
+
+      (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_color_type);
+      (void) SetImageProperty(image,"png:IHDR.color-type-orig ",msg);
+
+      (void) FormatLocaleString(msg,MaxTextExtent,"%d",(int) ping_bit_depth);
+      (void) SetImageProperty(image,"png:IHDR.bit-depth-orig  ",msg);
+  }
+
   (void) png_get_tRNS(ping, ping_info, &ping_trans_alpha, &ping_num_trans,
                       &ping_trans_color);
 
@@ -3566,6 +3578,30 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
         MagickTrue : MagickFalse;
 
+    if (image->matte == MagickTrue)
+    {
+      if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+        (void) SetImageType(image,GrayscaleMatteType);
+
+      else if (ping_color_type == PNG_COLOR_TYPE_PALETTE)
+        (void) SetImageType(image,PaletteMatteType);
+
+      else
+        (void) SetImageType(image,TrueColorMatteType);
+    }
+
+    else
+    {
+      if (ping_color_type == PNG_COLOR_TYPE_GRAY)
+        (void) SetImageType(image,GrayscaleType);
+
+      else if (ping_color_type == PNG_COLOR_TYPE_PALETTE)
+        (void) SetImageType(image,PaletteType);
+
+      else
+        (void) SetImageType(image,TrueColorType);
+    }
+
    /* Set more properties for identify to retrieve */
    {
      char
@@ -3780,17 +3816,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((IssRGBColorspace(image->colorspace) != MagickFalse) &&
       ((image->gamma < .45) || (image->gamma > .46)))
     SetImageColorspace(image,RGBColorspace);
-
-  if ((LocaleCompare(image_info->magick,"PNG24") == 0) ||
-      (LocaleCompare(image_info->magick,"PNG48") == 0))
-    {
-      (void) SetImageType(image,TrueColorType);
-      image->matte=MagickFalse;
-    }
-
-  if ((LocaleCompare(image_info->magick,"PNG32") == 0) ||
-      (LocaleCompare(image_info->magick,"PNG64") == 0))
-    (void) SetImageType(image,TrueColorMatteType);
 
   if (logging != MagickFalse)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -7238,6 +7263,19 @@ ModuleExport size_t RegisterPNGImage(void)
   entry->module=ConstantString("PNG");
   (void) RegisterMagickInfo(entry);
 
+  entry=SetMagickInfo("PNG00");
+
+#if defined(MAGICKCORE_PNG_DELEGATE)
+  entry->decoder=(DecodeImageHandler *) ReadPNGImage;
+  entry->encoder=(EncodeImageHandler *) WritePNGImage;
+#endif
+
+  entry->magick=(IsImageFormatHandler *) IsPNG;
+  entry->adjoin=MagickFalse;
+  entry->description=ConstantString("PNG inheriting subformat from original");
+  entry->module=ConstantString("PNG");
+  (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("JNG");
 
 #if defined(JNG_SUPPORTED)
@@ -7289,6 +7327,7 @@ ModuleExport void UnregisterPNGImage(void)
   (void) UnregisterMagickInfo("PNG32");
   (void) UnregisterMagickInfo("PNG48");
   (void) UnregisterMagickInfo("PNG64");
+  (void) UnregisterMagickInfo("PNG00");
   (void) UnregisterMagickInfo("JNG");
 
 #ifdef PNG_SETJMP_NOT_THREAD_SAFE
@@ -11028,6 +11067,11 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
 %               each pixel can have any value from 0 to 65535. The alpha
 %               channel is present even if the image is fully opaque.
 %
+%    o PNG00:   A PNG that inherits its colortype and bit-depth from the input
+%               image, if the input was a PNG, is written.  If these values
+%               cannot be found, then "PNG00" falls back to the regular "PNG"
+%               format.
+%
 %    o -define: For more precise control of the PNG output, you can use the
 %               Image options "png:bit-depth" and "png:color-type".  These
 %               can be set from the commandline with "-define" and also
@@ -11181,6 +11225,60 @@ static MagickBooleanType WritePNGImage(const ImageInfo *image_info,Image *image)
 
       else if (LocaleCompare(value,"png64") == 0)
         mng_info->write_png64 = MagickTrue;
+
+  if (LocaleCompare(value,"png00") == 0)
+    {
+      /* Retrieve png:IHDR.bit-depth-orig and png:IHDR.color-type-orig
+         Note that whitespace at the end of the property names must match
+         that in the corresponding SetImageProperty() calls.
+       */
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+         "  Format=%s",value);
+
+      value=GetImageProperty(image,"png:IHDR.bit-depth-orig  ");
+
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+         "  png00 inherited bit depth=%s",value);
+      if (value != (char *) NULL)
+      {
+
+        if (LocaleCompare(value,"1") == 0)
+          mng_info->write_png_depth = 1;
+
+        else if (LocaleCompare(value,"1") == 0)
+          mng_info->write_png_depth = 2;
+
+        else if (LocaleCompare(value,"2") == 0)
+          mng_info->write_png_depth = 4;
+
+        else if (LocaleCompare(value,"8") == 0)
+          mng_info->write_png_depth = 8;
+
+        else if (LocaleCompare(value,"16") == 0)
+          mng_info->write_png_depth = 16;
+      }
+
+      value=GetImageProperty(image,"png:IHDR.color-type-orig ");
+     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+         "  png00 inherited color type=%s",value);
+      if (value != (char *) NULL)
+      {
+        if (LocaleCompare(value,"0") == 0)
+          mng_info->write_png_colortype = 1;
+
+        else if (LocaleCompare(value,"2") == 0)
+          mng_info->write_png_colortype = 3;
+
+        else if (LocaleCompare(value,"3") == 0)
+          mng_info->write_png_colortype = 4;
+
+        else if (LocaleCompare(value,"4") == 0)
+          mng_info->write_png_colortype = 5;
+
+        else if (LocaleCompare(value,"6") == 0)
+          mng_info->write_png_colortype = 7;
+      }
+    }
     }
 
   if (mng_info->write_png8)
