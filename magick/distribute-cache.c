@@ -204,11 +204,11 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     client_socket,
     status;
 
-  MagickOffsetType
-    count;
-
   register unsigned char
     *p;
+
+  ssize_t
+    count;
 
   struct addrinfo
     hint,
