@@ -85,6 +85,9 @@
 #define DPCPendingConnections  10
 #define DPCPort  6668
 #define DPCSessionKeyLength  8
+#ifndef MSG_NOSIGNAL
+#  define MSG_NOSIGNAL 0
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
