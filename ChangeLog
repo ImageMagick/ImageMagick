@@ -1,3 +1,6 @@
+2013-01-28  6.8.2-0 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.2-0, SVN revision 10831.
+
 2013-01-21  6.8.2-0 Glenn Randers-Pehrson <glennrp@image...>
   * Impose a 32k limit on the number of text chunks that will be read.
   * Implemented PNG00, PNG48 and PNG64 PNG subformats.
