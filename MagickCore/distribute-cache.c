@@ -112,10 +112,9 @@
 %
 */
 
-static MagickSizeType CRC64(const unsigned char *message,
-  const MagickSizeType length)
+static size_t CRC64(const unsigned char *message,const MagickSizeType length)
 {
-  MagickSizeType
+  size_t
     crc;
 
   register MagickOffsetType
@@ -124,7 +123,7 @@ static MagickSizeType CRC64(const unsigned char *message,
   static MagickBooleanType
     crc_initial = MagickFalse;
 
-  static MagickSizeType
+  static size_t
     crc_xor[256];
 
   /*
@@ -132,7 +131,7 @@ static MagickSizeType CRC64(const unsigned char *message,
   */
   if (crc_initial == MagickFalse)
     {
-      MagickSizeType
+      size_t
         alpha;
 
       for (i=0; i < 256; i++)
@@ -146,7 +145,7 @@ static MagickSizeType CRC64(const unsigned char *message,
           if ((alpha & 0x01) == 0)
             alpha>>=1;
           else
-            alpha=(MagickSizeType) ((alpha >> 1) ^
+            alpha=(size_t) ((alpha >> 1) ^
               MagickULLConstant(0xd800000000000000));
         }
         crc_xor[i]=alpha;
@@ -192,7 +191,7 @@ static inline MagickOffsetType dpc_read(int file,const MagickSizeType length,
 }
 
 static int ConnectPixelCacheServer(const char *hostname,const int port,
-  MagickSizeType *session_key,ExceptionInfo *exception)
+  size_t *session_key,ExceptionInfo *exception)
 {
 #if defined(MAGICKCORE_HAVE_SOCKET)
   char
@@ -263,7 +262,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   count=recv(client_socket,secret,MaxTextExtent,0);
   if (count != -1)
     {
-      MagickSizeType
+      size_t
         signature;
 
       (void) memcpy(p,secret,(size_t) count);
@@ -357,7 +356,7 @@ MagickPrivate DistributeCacheInfo *AcquireDistributeCacheInfo(
   DistributeCacheInfo
     *server_info;
 
-  MagickSizeType
+  size_t
     session_key;
 
   /*
@@ -444,7 +443,7 @@ MagickPrivate DistributeCacheInfo *DestroyDistributeCacheInfo(
 */
 
 static MagickBooleanType DestroyDistributeCache(SplayTreeInfo *registry,
-  int file,const MagickSizeType session_key)
+  int file,const size_t session_key)
 {
   /*
     Destroy distributed pixel cache.
@@ -480,7 +479,7 @@ static inline MagickOffsetType dpc_send(int file,const MagickSizeType length,
 }
 
 static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,
-  int file,const MagickSizeType session_key,ExceptionInfo *exception)
+  int file,const size_t session_key,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -543,7 +542,7 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,
 }
 
 static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
-  int file,const MagickSizeType session_key,ExceptionInfo *exception)
+  int file,const size_t session_key,ExceptionInfo *exception)
 {
   const unsigned char
     *metacontent;
@@ -603,7 +602,7 @@ static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
 }
 
 static MagickBooleanType ReadDistributeCachePixels(SplayTreeInfo *registry,
-  int file,const MagickSizeType session_key,ExceptionInfo *exception)
+  int file,const size_t session_key,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -664,7 +663,7 @@ static void *RelinquishImageRegistry(void *image)
 }
 
 static MagickBooleanType WriteDistributeCacheMetacontent(
-  SplayTreeInfo *registry,int file,const MagickSizeType session_key,
+  SplayTreeInfo *registry,int file,const size_t session_key,
   ExceptionInfo *exception)
 {
   Image
@@ -723,7 +722,7 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
 }
 
 static MagickBooleanType WriteDistributeCachePixels(SplayTreeInfo *registry,
-  int file,const MagickSizeType session_key,ExceptionInfo *exception)
+  int file,const size_t session_key,ExceptionInfo *exception)
 {
   Image
     *image;
@@ -795,16 +794,16 @@ static void *DistributePixelCacheClient(void *socket)
   MagickOffsetType
     count;
 
-  MagickSizeType
-    key,
-    session_key,
-    signature;
-
   register unsigned char
     *p;
 
   RandomInfo
     *random_info;
+
+  size_t
+    key,
+    session_key;
+    signature;
 
   SplayTreeInfo
     *registry;
