@@ -114,11 +114,11 @@
 
 static size_t CRC64(const unsigned char *message,const MagickSizeType length)
 {
-  size_t
-    crc;
-
   register MagickOffsetType
     i;
+
+  size_t
+    crc;
 
   static MagickBooleanType
     crc_initial = MagickFalse;
@@ -139,7 +139,7 @@ static size_t CRC64(const unsigned char *message,const MagickSizeType length)
         register MagickOffsetType
           j;
 
-        alpha=(MagickSizeType) i;
+        alpha=(size_t) i;
         for (j=0; j < 8; j++)
         {
           if ((alpha & 0x01) == 0)
@@ -207,7 +207,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   register unsigned char
     *p;
 
-  size_t
+  ssize_t
     count;
 
   struct addrinfo
@@ -513,7 +513,7 @@ static MagickBooleanType OpenDistributeCache(SplayTreeInfo *registry,
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
   /*
-    Deserialize image attributes.
+    Deserialize the image attributes.
   */
   p=message;
   (void) memcpy(&image->storage_class,p,sizeof(image->storage_class));
