@@ -802,7 +802,7 @@ static void *DistributePixelCacheClient(void *socket)
 
   size_t
     key,
-    session_key;
+    session_key,
     signature;
 
   SplayTreeInfo
