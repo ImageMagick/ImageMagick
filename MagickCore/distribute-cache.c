@@ -270,6 +270,9 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
       signature=MAGICKCORE_HDRI_ENABLE;
       (void) memcpy(p,&signature,sizeof(signature));
       p+=sizeof(signature);
+      signature=sizeof(size_t);
+      (void) memcpy(p,&signature,sizeof(signature));
+      p+=sizeof(signature);
       *session_key=CRC32(session,p-session);
     }
   if (*session_key == 0)
@@ -829,6 +832,9 @@ static void *DistributePixelCacheClient(void *socket)
   (void) memcpy(p,&signature,sizeof(signature));
   p+=sizeof(signature);
   signature=MAGICKCORE_HDRI_ENABLE;
+  (void) memcpy(p,&signature,sizeof(signature));
+  p+=sizeof(signature);
+  signature=sizeof(size_t);
   (void) memcpy(p,&signature,sizeof(signature));
   p+=sizeof(signature);
   session_key=CRC32(session,p-session);
