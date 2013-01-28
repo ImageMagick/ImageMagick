@@ -30,7 +30,7 @@ typedef struct _DistributeCacheInfo
   int
     file;
 
-  MagickSizeType
+  size_t
     session_key;
 
   char
