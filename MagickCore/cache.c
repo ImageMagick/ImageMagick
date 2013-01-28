@@ -506,8 +506,8 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
 #define MaxCacheThreads  2
 #define cache_threads(source,destination,chunk) \
   num_threads((chunk) < (16*GetMagickResourceLimit(ThreadResource)) ? 1 : \
-    GetMagickResourceLimit(ThreadResource) < MaxCacheThreads ? 1 : \
-    MaxCacheThreads)
+    GetMagickResourceLimit(ThreadResource) < MaxCacheThreads ? \
+    GetMagickResourceLimit(ThreadResource) : MaxCacheThreads)
 
   MagickBooleanType
     optimize,
