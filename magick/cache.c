@@ -638,8 +638,8 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
     return(MagickTrue);
   if (((cache_info->type == MemoryCache) || (cache_info->type == MapCache)) &&
       ((clone_info->type == MemoryCache) || (clone_info->type == MapCache)) &&
-       (cache_info->columns == clone_info->columns) &&
-       (cache_info->rows == clone_info->rows))
+      (cache_info->columns == clone_info->columns) &&
+      (cache_info->rows == clone_info->rows))
     {
       /*
         Identical pixel cache morphology.
