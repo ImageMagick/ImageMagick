@@ -1550,7 +1550,8 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
           if (status != MagickFalse)
             {
               if (clone != MagickFalse)
-                status=ClonePixelCacheRepository(clone_info,cache_info,exception);
+                status=ClonePixelCacheRepository(clone_info,cache_info,
+                   exception);
               if (status != MagickFalse)
                 {
                   if (cache_info->reference_count == 1)
