@@ -530,11 +530,11 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
     return(MagickTrue);
   length=cache_info->number_channels*sizeof(*cache_info->channel_map);
   if (((cache_info->type == MemoryCache) || (cache_info->type == MapCache)) &&
-      ((cache_info->type == clone_info->type) &&
-       (cache_info->columns == clone_info->columns) &&
-       (cache_info->rows == clone_info->rows) &&
-       (cache_info->number_channels == clone_info->number_channels) &&
-       (memcmp(cache_info->channel_map,clone_info->channel_map,length) == 0))
+      (cache_info->type == clone_info->type) &&
+      (cache_info->columns == clone_info->columns) &&
+      (cache_info->rows == clone_info->rows) &&
+      (cache_info->number_channels == clone_info->number_channels) &&
+      (memcmp(cache_info->channel_map,clone_info->channel_map,length) == 0))
     {
       /*
         Identical pixel cache morphology.
