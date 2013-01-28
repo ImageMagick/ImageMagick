@@ -639,15 +639,15 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
   if (((cache_info->type == MemoryCache) || (cache_info->type == MapCache)) &&
       ((clone_info->type == MemoryCache) || (clone_info->type == MapCache)) &&
       (cache_info->columns == clone_info->columns) &&
-      (cache_info->rows == clone_info->rows))
+      (cache_info->rows == clone_info->rows) &&
+      (cache_info->active_index_channel == clone_info->active_index_channel))
     {
       /*
         Identical pixel cache morphology.
       */
       (void) memcpy(clone_info->pixels,cache_info->pixels,cache_info->columns*
         cache_info->rows*sizeof(*cache_info->pixels));
-      if ((cache_info->active_index_channel != MagickFalse) &&
-          (clone_info->active_index_channel != MagickFalse))
+      if (cache_info->active_index_channel != MagickFalse)
         (void) memcpy(clone_info->indexes,cache_info->indexes,
           cache_info->columns*cache_info->rows*sizeof(*cache_info->indexes));
       return(MagickTrue);
@@ -1570,7 +1570,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
                   exception);
               if (status != MagickFalse)
                 {
-                  if (cache_info->reference_count == 1) 
+                  if (cache_info->reference_count == 1)
                     cache_info->nexus_info=(NexusInfo **) NULL;
                   destroy=MagickTrue;
                   image->cache=clone_image.cache;
