@@ -945,6 +945,7 @@ MagickExport void DistributePixelCacheServer(const int port,
   status=getaddrinfo((const char *) NULL,service,&hint,&result);
   if (status != 0)
     ThrowFatalException(CacheFatalError,"UnableToListen");
+  server_socket=0;
   for (p=result; p != (struct addrinfo *) NULL; p=p->ai_next)
   {
     int
