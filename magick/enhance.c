@@ -2122,8 +2122,8 @@ MagickExport MagickBooleanType GammaImage(Image *image,const char *level)
   if ((gamma.red == 1.0) && (gamma.green == 1.0) && (gamma.blue == 1.0))
     return(MagickTrue);
   if ((gamma.red == gamma.green) && (gamma.green == gamma.blue))
-    status=GammaImageChannel(image,(const ChannelType) (RedChannel |
-      GreenChannel | BlueChannel),(double) gamma.red);
+    status=GammaImageChannel(image,(ChannelType) (RedChannel | GreenChannel |
+      BlueChannel),(double) gamma.red);
   else
     {
       status=GammaImageChannel(image,RedChannel,(double) gamma.red);
