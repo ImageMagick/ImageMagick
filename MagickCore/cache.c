@@ -408,7 +408,7 @@ MagickPrivate Cache ClonePixelCache(const Cache cache)
   const CacheInfo
     *cache_info;
 
-  assert(cache != (const Cache) NULL);
+  assert(cache != NULL);
   cache_info=(const CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->debug != MagickFalse)
@@ -3598,7 +3598,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
-              return(status);
+              return(MagickTrue);
             }
         }
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
