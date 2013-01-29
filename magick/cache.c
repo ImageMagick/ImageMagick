@@ -517,7 +517,7 @@ MagickExport Cache ClonePixelCache(const Cache cache)
   const CacheInfo
     *cache_info;
 
-  assert(cache != (const Cache) NULL);
+  assert(cache != NULL);
   cache_info=(const CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->debug != MagickFalse)
@@ -2163,7 +2163,7 @@ MagickExport MagickSizeType GetPixelCacheNexusExtent(const Cache cache,
   MagickSizeType
     extent;
 
-  assert(cache != (const Cache) NULL);
+  assert(cache != NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   extent=(MagickSizeType) nexus_info->region.width*nexus_info->region.height;
@@ -2204,7 +2204,7 @@ MagickExport IndexPacket *GetPixelCacheNexusIndexes(const Cache cache,
   CacheInfo
     *cache_info;
 
-  assert(cache != (const Cache) NULL);
+  assert(cache != NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class == UndefinedClass)
@@ -2244,7 +2244,7 @@ MagickExport PixelPacket *GetPixelCacheNexusPixels(const Cache cache,
   CacheInfo
     *cache_info;
 
-  assert(cache != (const Cache) NULL);
+  assert(cache != NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class == UndefinedClass)
@@ -3725,7 +3725,7 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
-              return(status);
+              return(MagickTrue);
             }
         }
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
