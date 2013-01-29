@@ -31,7 +31,7 @@ extern "C" {
 */
 #define magick_threads(source,destination,chunk,expression) \
   num_threads((expression) == 0 ? 1 : \
-    ((chunk) > (32*GetMagickResourceLimit(ThreadResource))) && \
+    ((chunk) > (16*GetMagickResourceLimit(ThreadResource))) && \
      ((GetImagePixelCacheType(source) == MemoryCache) || \
       (GetImagePixelCacheType(source) == MapCache)) && \
      ((GetImagePixelCacheType(destination) == MemoryCache) || \
