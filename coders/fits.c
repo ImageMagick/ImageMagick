@@ -435,8 +435,13 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     /*
       Convert FITS pixels to pixel packets.
     */
-    scale=(double) QuantumRange/(fits_info.scale*(fits_info.max_data-
-      fits_info.min_data)+fits_info.zero);
+    if ((image->depth == 16) || (image->depth == 32) ||
+        (image->depth == 64))
+      scale=(double) QuantumRange/(fits_info.scale*(fits_info.max_data-
+        fits_info.min_data));
+    else
+      scale=(double) QuantumRange/(fits_info.scale*(fits_info.max_data-
+        fits_info.min_data)+fits_info.zero);
     for (y=(ssize_t) image->rows-1; y >= 0; y--)
     {
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
