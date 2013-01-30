@@ -951,10 +951,12 @@ void Magick::Image::erase ( void )
 //
 void Magick::Image::extent ( const Geometry &geometry_ )
 {
-  RectangleInfo extentInfo = geometry_;
   modifyImage();
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
+  RectangleInfo extentInfo = geometry_;
+  extentInfo.x = geometry_.xOff();
+  extentInfo.y = geometry_.yOff();
   MagickCore::Image* newImage =
     ExtentImage ( image(), &extentInfo, &exceptionInfo );
   replaceImage( newImage );
@@ -971,14 +973,15 @@ void Magick::Image::extent ( const Geometry &geometry_, const GravityType gravit
   RectangleInfo geometry;
 
   SetGeometry(image(), &geometry);
+  geometry.width = geometry_.width();
+  geometry.height = geometry_.height();
   GravityAdjustGeometry(image()->columns, image()->rows, gravity_, &geometry);
-  extent ( geometry_ );
+  extent ( geometry );
 }
 void Magick::Image::extent ( const Geometry &geometry_, const Color &backgroundColor_, const GravityType gravity_ )
 {
-  image()->gravity  = gravity_;
   backgroundColor ( backgroundColor_ );
-  extent ( geometry_ );
+  extent ( geometry_, gravity_ );
 }
 
 // Flip image (reflect each scanline in the vertical direction)
