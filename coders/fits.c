@@ -437,8 +437,6 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     */
     scale=(double) QuantumRange/(fits_info.scale*(fits_info.max_data-
       fits_info.min_data)+fits_info.zero);
-    if ((image->depth == 16) || (image->depth == 32) || (image->depth == 64))
-      scale=1.0;
     for (y=(ssize_t) image->rows-1; y >= 0; y--)
     {
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
@@ -690,7 +688,7 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   (void) FormatLocaleString(header,FITSBlocksize,"BZERO   =         %E",
-    image->depth > 8 ? GetFITSPixelRange(image->depth) : 0.0);
+    image->depth > 8 ? GetFITSPixelRange(image->depth)/2.0 : 0.0);
   (void) strncpy(fits_info+offset,header,strlen(header));
   offset+=80;
   (void) FormatLocaleString(header,FITSBlocksize,"DATAMAX =         %E",
