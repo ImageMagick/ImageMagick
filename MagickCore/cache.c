@@ -1494,23 +1494,7 @@ static Cache GetImagePixelCache(Image *image,const MagickBooleanType clone,
   status=MagickTrue;
   LockSemaphoreInfo(image->semaphore);
   if (cpu_throttle == 0)
-    {
-      char
-        *limit;
-
-      /*
-        Set CPU throttle in milleseconds.
-      */
-      cpu_throttle=MagickResourceInfinity;
-      limit=GetEnvironmentValue("MAGICK_THROTTLE");
-      if (limit == (char *) NULL)
-        limit=GetPolicyValue("throttle");
-      if (limit != (char *) NULL)
-        {
-          cpu_throttle=(MagickSizeType) StringToInteger(limit);
-          limit=DestroyString(limit);
-        }
-    }
+    cpu_throttle=GetMagickResourceLimit(ThrottleResource);
   if ((cpu_throttle != MagickResourceInfinity) && ((cycles++ % 32) == 0))
     MagickDelay(cpu_throttle);
   if (time_limit == 0)
