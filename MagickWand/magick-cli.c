@@ -530,20 +530,20 @@ WandExport int ProcessCommandOptions(MagickCLI *cli_wand, int argc,
 %
 %  The format of the MagickImageCommand method is:
 %
-%      MagickBooleanType MagickImageCommand(ImageInfo *image_info,
-%           int argc, char **argv, char **metadata, ExceptionInfo *exception)
+%      MagickBooleanType MagickImageCommand(ImageInfo *image_info,int argc,
+%        char **argv,char **metadata,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: the starting image_info structure
-%         (for compatibilty with MagickCommandGenisis())
+%      (for compatibilty with MagickCommandGenisis())
 %
 %    o argc: the number of elements in the argument vector.
 %
 %    o argv: A text array containing the command line arguments.
 %
 %    o metadata: any metadata (for VBS) is returned here.
-%         (for compatibilty with MagickCommandGenisis())
+%      (for compatibilty with MagickCommandGenisis())
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -563,26 +563,26 @@ static void MagickUsage(MagickBooleanType verbose)
   if (len>=7 && LocaleCompare("convert",name+len-7) == 0) {
     /* convert usage */
     (void) FormatLocaleFile(stdout,
-       "Usage: %s [{option}|{image}...] {output_image}\n",name);
+       "Usage: %s [ {option} | {image} ... ] {output_image}\n",name);
     (void) FormatLocaleFile(stdout,
-       "       %s -help|-version|-usage|-list {option}\n\n",name);
+       "       %s -help | -version | -usage | -list {option}\n\n",name);
     return;
   }
   else if (len>=6 && LocaleCompare("script",name+len-6) == 0) {
     /* magick-script usage */
     (void) FormatLocaleFile(stdout,
-       "Usage: %s {filename} [{script_args}...]\n",name);
+      "Usage: %s {filename} [ {script_args} ... ]\n",name);
   }
   else {
     /* magick usage */
     (void) FormatLocaleFile(stdout,
-       "Usage: %s [{option}|{image}...] {output_image}\n",name);
+       "Usage: %s [ {option} | {image} ... ] {output_image}\n",name);
     (void) FormatLocaleFile(stdout,
-       "       %s [{option}|{image}...] -script {filename} [{script_args}...]\n",
+       "       %s [ {option} | {image} ... ] -script {filename} [ {script_args} ...]\n",
        name);
   }
   (void) FormatLocaleFile(stdout,
-       "       %s -help|-version|-usage|-list {option}\n\n",name);
+    "       %s -help | -version | -usage | -list {option}\n\n",name);
 
   if (IfMagickFalse(verbose))
     return;
@@ -774,10 +774,10 @@ Magick_Command_Cleanup:
     format="%w,%h,%m";   // Get this from image_info Option splaytree
 
     text=InterpretImageProperties(image_info,cli_wand->wand.images,format,
-         exception);
+      exception);
     if (text == (char *) NULL)
       ThrowMagickException(exception,GetMagickModule(),ResourceLimitError,
-           "MemoryAllocationFailed","`%s'", GetExceptionMessage(errno));
+        "MemoryAllocationFailed","`%s'", GetExceptionMessage(errno));
     else {
       (void) ConcatenateString(&(*metadata),text);
       text=DestroyString(text);
