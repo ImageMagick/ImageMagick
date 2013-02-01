@@ -1,6 +1,7 @@
 2013-01-21  6.8.2-3 Glenn Randers-Pehrson <glennrp@image...>
   * Deleted some code added to the PNG decoder in SVN revision 10825; it
-    was failing to handle transparency in paletted images.
+    was failing to handle transparency in paletted images (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22720).
   * Compare alpha to "QuantumRange-OpaqueOpacity" not just "OpaqueOpacity"
     when detecting transparency in the PNG encoder.
 
