@@ -783,6 +783,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ConcatenateMagickString(options,"-dEPSCrop ",MaxTextExtent);
   (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
   (void) AcquireUniqueFilename(filename);
+  (void) ConcatenateMagickString(filename,"%d",MaxTextExtent);
   (void) FormatLocaleString(command,MaxTextExtent,
     GetDelegateCommands(delegate_info),
     read_info->antialias != MagickFalse ? 4 : 1,

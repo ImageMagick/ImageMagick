@@ -608,7 +608,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->resolution.y);
   if (image_info->page != (char *) NULL)
     (void) FormatLocaleString(options,MaxTextExtent,"-g%.20gx%.20g ",(double)
-       page.width,(double) page.height);
+      page.width,(double) page.height);
   if (cmyk != MagickFalse)
     (void) ConcatenateMagickString(options,"-dUseCIEColor ",MaxTextExtent);
   if (cropbox != MagickFalse)
@@ -636,6 +636,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       " -sPCLPassword=%s",option);
   (void) CopyMagickString(filename,read_info->filename,MaxTextExtent);
   (void) AcquireUniqueFilename(filename);
+  (void) ConcatenateMagickString(filename,"%d",MaxTextExtent);
   (void) FormatLocaleString(command,MaxTextExtent,
     GetDelegateCommands(delegate_info),
     read_info->antialias != MagickFalse ? 4 : 1,
