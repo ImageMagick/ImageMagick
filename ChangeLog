@@ -1,3 +1,9 @@
+2013-01-21  6.8.2-3 Glenn Randers-Pehrson <glennrp@image...>
+  * Deleted some code added to the PNG decoder in SVN revision 10825; it
+    was failing to handle transparency in paletted images.
+  * Compare alpha to "QuantumRange-OpaqueOpacity" not just "OpaqueOpacity"
+    when detecting transparency in the PNG encoder.
+
 2013-02-01  6.8.2-2 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.2-2, SVN revision 10883.
 
