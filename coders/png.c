@@ -3172,7 +3172,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
 
                 SetPixelAlpha(q,alpha);
 
-                if (alpha != OpaqueOpacity)
+                if (alpha != QuantumRange-OpaqueOpacity)
                   found_transparent_pixel = MagickTrue;
 
                 q++;
@@ -3214,7 +3214,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                   quantum|=(*p++);
                   alpha=ScaleShortToQuantum(quantum);
                   SetPixelAlpha(q,alpha);
-                  if (alpha != OpaqueOpacity)
+                  if (alpha != QuantumRange-OpaqueOpacity)
                     found_transparent_pixel = MagickTrue;
                   q++;
                 }
@@ -3227,7 +3227,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
                 {
                   alpha=*p++;
                   SetPixelAlpha(q,alpha);
-                  if (alpha != OpaqueOpacity)
+                  if (alpha != QuantumRange-OpaqueOpacity)
                     found_transparent_pixel = MagickTrue;
                   p++;
                   q++;
@@ -3578,6 +3578,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         (png_get_valid(ping,ping_info,PNG_INFO_tRNS))) ?
         MagickTrue : MagickFalse;
 
+#if 0  /* I'm not sure what's wrong here but it does not work. */
     if (image->matte == MagickTrue)
     {
       if (ping_color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
@@ -3601,6 +3602,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       else
         (void) SetImageType(image,TrueColorType);
     }
+#endif
 
    /* Set more properties for identify to retrieve */
    {
