@@ -1,4 +1,7 @@
-2013-01-21  6.8.2-3 Glenn Randers-Pehrson <glennrp@image...>
+2013-02-01  6.8.2-3 Cristy  <quetzlzacatenango@image...>
+  * Respect endian for FITS image format.
+
+2013-02-01  6.8.2-3 Glenn Randers-Pehrson <glennrp@image...>
   * Deleted some code added to the PNG decoder in SVN revision 10825; it
     was failing to handle transparency in paletted images (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22720).
@@ -29,7 +32,6 @@
 
 2013-01-21  6.8.2-0 Cristy  <quetzlzacatenango@image...>
   * Avoid a rare thread lock for timeout event (e.g. MAGICK_TIME_LIMIT=30).
-  * Account for signed values for the FITS image format.
   * Support a distributed pixel cache.
   * Fix numerical stability problem for convolution.
   * Increase segment stack size for -draw option.
