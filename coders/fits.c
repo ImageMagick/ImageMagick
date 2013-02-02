@@ -203,11 +203,13 @@ static inline double GetFITSPixelRange(const size_t depth)
 }
 
 static void SetFITSUnsignedPixels(const size_t length,
-  const size_t bits_per_pixel,unsigned char *pixels)
+  const size_t bits_per_pixel,const EndianType endian,unsigned char *pixels)
 {
   register ssize_t
     i;
 
+  if (endian != MSBEndian)
+    pixels+=(bits_per_pixel >> 3)-1;
   for (i=0; i < (ssize_t) length; i++)
   {
     *pixels^=0x80;
@@ -448,7 +450,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         pixel=GetFITSPixel(image,fits_info.bits_per_pixel);
         if ((image->depth == 16) || (image->depth == 32) ||
             (image->depth == 64))
-          SetFITSUnsignedPixels(1,image->depth,(unsigned char *) &pixel);
+          SetFITSUnsignedPixels(1,image->depth,image->endian,
+            (unsigned char *) &pixel);
         SetPixelGray(image,ClampToQuantum(scale*(fits_info.scale*(pixel-
           fits_info.min_data)+fits_info.zero)),q);
         q+=GetPixelChannels(image);
@@ -728,10 +731,12 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
         length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           GrayQuantum,pixels,exception);
         if (image->depth == 16)
-          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+            pixels);
         if (((image->depth == 32) || (image->depth == 64)) &&
             (quantum_info->format != FloatingPointQuantumFormat))
-          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+            pixels);
         count=WriteBlob(image,length,pixels);
         if (count != (ssize_t) length)
           break;
@@ -752,10 +757,12 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
         length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           RedQuantum,pixels,exception);
         if (image->depth == 16)
-          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+            pixels);
         if (((image->depth == 32) || (image->depth == 64)) &&
             (quantum_info->format != FloatingPointQuantumFormat))
-          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+            pixels);
         count=WriteBlob(image,length,pixels);
         if (count != (ssize_t) length)
           break;
@@ -773,10 +780,12 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
         length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           GreenQuantum,pixels,exception);
         if (image->depth == 16)
-          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+            pixels);
         if (((image->depth == 32) || (image->depth == 64)) &&
             (quantum_info->format != FloatingPointQuantumFormat))
-          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+            pixels);
         count=WriteBlob(image,length,pixels);
         if (count != (ssize_t) length)
           break;
@@ -794,10 +803,12 @@ static MagickBooleanType WriteFITSImage(const ImageInfo *image_info,
         length=ExportQuantumPixels(image,(CacheView *) NULL,quantum_info,
           BlueQuantum,pixels,exception);
         if (image->depth == 16)
-          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+            pixels);
         if (((image->depth == 32) || (image->depth == 64)) &&
             (quantum_info->format != FloatingPointQuantumFormat))
-          SetFITSUnsignedPixels(image->columns,image->depth,pixels);
+          SetFITSUnsignedPixels(image->columns,image->depth,image->endian,
+            pixels);
         count=WriteBlob(image,length,pixels);
         if (count != (ssize_t) length)
           break;
