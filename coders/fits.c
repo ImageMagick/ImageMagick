@@ -422,26 +422,22 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     /*
       Initialize image structure.
     */
-    SetImageColorspace(image,GRAYColorspace,exception);
-    if ((fits_info.min_data != 0.0) || (fits_info.max_data != 0.0))
+    (void) SetImageColorspace(image,GRAYColorspace,exception);
+    if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
       {
-        if ((fits_info.bits_per_pixel != 0) && (fits_info.max_data == 0.0))
+        if ((fits_info.bits_per_pixel == -32) || (fits_info.max_data == -64))
+          GetFITSPixelExtrema(image,fits_info.bits_per_pixel,
+            &fits_info.min_data,&fits_info.max_data);
+        else
           fits_info.max_data=GetFITSPixelRange((size_t)
             fits_info.bits_per_pixel);
       }
     else
-      GetFITSPixelExtrema(image,fits_info.bits_per_pixel,&fits_info.min_data,
-        &fits_info.max_data);
+      fits_info.max_data=GetFITSPixelRange((size_t) fits_info.bits_per_pixel);
     /*
       Convert FITS pixels to pixel packets.
     */
-    if ((image->depth == 16) || (image->depth == 32) ||
-        (image->depth == 64))
-      scale=(double) QuantumRange/(fits_info.scale*(fits_info.max_data-
-        fits_info.min_data));
-    else
-      scale=(double) QuantumRange/(fits_info.scale*(fits_info.max_data-
-        fits_info.min_data)+fits_info.zero);
+    scale=QuantumRange/(fits_info.max_data-fits_info.min_data);
     for (y=(ssize_t) image->rows-1; y >= 0; y--)
     {
       q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
