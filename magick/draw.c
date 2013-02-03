@@ -1211,8 +1211,8 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     if (inverse_edge.x2 < inverse_edge.x1)
       continue;
     q=GetCacheViewAuthenticPixels(image_view,(ssize_t) ceil(inverse_edge.x1-
-      0.5),y,(size_t) (floor(inverse_edge.x2+0.5)-ceil(inverse_edge.x1-0.5)),1,
-      exception);
+      0.5),y,(size_t) (floor(inverse_edge.x2+0.5)-ceil(inverse_edge.x1-0.5)+1),
+      1,exception);
     if (q == (PixelPacket *) NULL)
       continue;
     indexes=GetCacheViewAuthenticIndexQueue(image_view);
@@ -3714,7 +3714,7 @@ static double GetOpacityPixel(PolygonInfo *polygon_info,const double mid,
             }
           else
             {
-              alpha=PerceptibleReciprocal(alpha);
+              alpha=1.0/alpha;
               beta=delta.x*(y-q->y)-delta.y*(x-q->x);
               distance=alpha*beta*beta;
             }
@@ -3982,8 +3982,8 @@ static MagickBooleanType DrawPolygonPrimitive(Image *image,
       continue;
     start=(ssize_t) ceil(bounds.x1-0.5);
     stop=(ssize_t) floor(bounds.x2+0.5);
-    q=GetCacheViewAuthenticPixels(image_view,start,y,(size_t) (stop-
-      start+1),1,exception);
+    q=GetCacheViewAuthenticPixels(image_view,start,y,(size_t) (stop-start+1),1,
+      exception);
     if (q == (PixelPacket *) NULL)
       {
         status=MagickFalse;
