@@ -1,5 +1,10 @@
+2013-02-02  6.8.2-3 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.2-3, SVN revision 10894.
+
 2013-02-01  6.8.2-3 Cristy  <quetzlzacatenango@image...>
   * Respect endian for FITS image format.
+  * Remove artifact when drawing a circle (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22724).
 
 2013-02-01  6.8.2-3 Glenn Randers-Pehrson <glennrp@image...>
   * Deleted some code added to the PNG decoder in SVN revision 10825; it
