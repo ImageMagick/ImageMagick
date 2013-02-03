@@ -1192,8 +1192,8 @@ MagickExport MagickBooleanType DrawAffineImage(Image *image,
     if (inverse_edge.x2 < inverse_edge.x1)
       continue;
     q=GetCacheViewAuthenticPixels(image_view,(ssize_t) ceil(inverse_edge.x1-
-      0.5),y,(size_t) ((ssize_t) floor(inverse_edge.x2+0.5)-(ssize_t) ceil(
-      inverse_edge.x1-0.5)),1,exception);
+      0.5),y,(size_t) (floor(inverse_edge.x2+0.5)-ceil(inverse_edge.x1-0.5)+1),
+      1,exception);
     if (q == (Quantum *) NULL)
       continue;
     pixel=zero;
@@ -3676,7 +3676,7 @@ static double GetFillAlpha(PolygonInfo *polygon_info,const double mid,
             }
           else
             {
-              alpha=PerceptibleReciprocal(alpha);
+              alpha=1.0/alpha;
               beta=delta.x*(y-q->y)-delta.y*(x-q->x);
               distance=alpha*beta*beta;
             }
