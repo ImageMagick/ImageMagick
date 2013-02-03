@@ -342,6 +342,9 @@ struct _Image
 
   size_t
     channels;
+
+  time_t
+    timestamp;
 };
 
 struct _ImageInfo
