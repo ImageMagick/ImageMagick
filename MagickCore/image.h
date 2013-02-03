@@ -304,6 +304,10 @@ struct _Image
   ProfileInfo
     *generic_profile;
 
+  void
+    *properties,       /* general settings, to save with image */
+    *artifacts;        /* general operational/coder settings, not saved */
+
   char
     filename[MaxTextExtent],        /* images input filename */
     magick_filename[MaxTextExtent], /* given image filename (with read mods) */
@@ -316,6 +320,9 @@ struct _Image
   BlobInfo
     *blob;             /* image file as in-memory string of 'extent' */
 
+  time_t
+    timestamp;
+
   MagickBooleanType
     debug;             /* debug output attribute */
 
@@ -324,10 +331,6 @@ struct _Image
 
   SemaphoreInfo
     *semaphore;
-
-  void
-    *properties,       /* general settings, to save with iamge */
-    *artifacts;        /* general operational/coder settings, not saved */
 
   const struct _ImageInfo
     *image_info;       /* (Optional) Image belongs to this ImageInfo 'list'
