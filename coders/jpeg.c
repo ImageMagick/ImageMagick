@@ -2092,6 +2092,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       jpeg_info.in_color_space=JCS_GRAYSCALE;
     }
   jpeg_set_defaults(&jpeg_info);
+  if (jpeg_info.in_color_space == JCS_CMYK) 
+    jpeg_set_colorspace(&jpeg_info,JCS_YCCK);
   if ((jpeg_info.data_precision != 12) && (image->depth <= 8))
     jpeg_info.data_precision=8;
   else
@@ -2584,7 +2586,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
             q=jpeg_pixels;
             for (x=0; x < (ssize_t) image->columns; x++)
             {
-              *q++=(JSAMPLE) ScaleQuantumToChar(PixelIntensityToQuantum(image,p));
+              *q++=(JSAMPLE) ScaleQuantumToChar(
+                PixelIntensityToQuantum(image,p));
               p++;
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -2616,13 +2619,13 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
                 Convert DirectClass packets to contiguous CMYK scanlines.
               */
               *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-                GetPixelRed(p))));
+                GetPixelCyan(p))));
               *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-                GetPixelGreen(p))));
+                GetPixelMagenta(p))));
               *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-                GetPixelBlue(p))));
+                GetPixelYellow(p))));
               *q++=(JSAMPLE) (ScaleQuantumToChar((Quantum) (QuantumRange-
-                GetPixelIndex(indexes+x))));
+                GetPixelBlack(indexes+x))));
               p++;
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
