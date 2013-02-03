@@ -2128,6 +2128,8 @@ static MagickBooleanType WriteJPEGImage(const ImageInfo *image_info,
       jpeg_info.in_color_space=JCS_GRAYSCALE;
     }
   jpeg_set_defaults(&jpeg_info);
+  if (jpeg_info.in_color_space == JCS_CMYK)
+    jpeg_set_colorspace(&jpeg_info,JCS_YCCK);
   if ((jpeg_info.data_precision != 12) && (image->depth <= 8))
     jpeg_info.data_precision=8;
   else
