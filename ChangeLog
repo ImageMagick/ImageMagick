@@ -1,3 +1,7 @@
+2013-02-02  6.8.2-4 Cristy  <quetzlzacatenango@image...>
+  * Do not subsample raw CMYK JPEG images (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22731).
+
 2013-02-02  6.8.2-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.2-3, SVN revision 10894.
 
