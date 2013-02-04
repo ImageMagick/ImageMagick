@@ -806,6 +806,7 @@ namespace Magick
   using MagickCore::ImageRegistryType;
   using MagickCore::ImageToBlob;
   using MagickCore::ImageWarning;
+  using MagickCore::ImagesToBlob;
   using MagickCore::ImplodeImage;
   using MagickCore::ImportQuantumPixels;
   using MagickCore::InverseFourierTransformImage;
