@@ -2224,7 +2224,7 @@ void Magick::Image::write ( Blob *blob_ )
   size_t length = 2048; // Efficient size for small images
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  void* data = ImageToBlob( imageInfo(),
+  void* data = ImagesToBlob( imageInfo(),
 			    image(),
 			    &length,
 			    &exceptionInfo);
@@ -2241,7 +2241,7 @@ void Magick::Image::write ( Blob *blob_,
   size_t length = 2048; // Efficient size for small images
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  void* data = ImageToBlob( imageInfo(),
+  void* data = ImagesToBlob( imageInfo(),
 			    image(),
 			    &length,
 			    &exceptionInfo);
@@ -2260,7 +2260,7 @@ void Magick::Image::write ( Blob *blob_,
   size_t length = 2048; // Efficient size for small images
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
-  void* data = ImageToBlob( imageInfo(),
+  void* data = ImagesToBlob( imageInfo(),
 			    image(),
 			    &length,
 			    &exceptionInfo);
