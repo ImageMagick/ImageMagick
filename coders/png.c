@@ -10944,7 +10944,7 @@ static MagickBooleanType WriteOnePNGImage(MngInfo *mng_info,
                   "  Setting up text chunk");
 
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "    keyword: %s",text[0].key);
+                  "    keyword: '%s'",text[0].key);
               }
 
             png_set_text(ping,ping_info,text,1);
