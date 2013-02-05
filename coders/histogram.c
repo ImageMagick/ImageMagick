@@ -186,6 +186,9 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   char
     filename[MaxTextExtent];
 
+  const char
+    *option;
+
   Image
     *histogram_image;
 
@@ -301,31 +304,31 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
     if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
       {
         y=(ssize_t) ceil(histogram_image->rows-scale*histogram[x].red-0.5);
-        r=q+y;
+        r=q+y*GetPixelChannels(histogram_image);
         for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
           SetPixelRed(histogram_image,QuantumRange,r);
-          r++;
+          r+=GetPixelChannels(histogram_image);
         }
       }
     if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
       {
         y=(ssize_t) ceil(histogram_image->rows-scale*histogram[x].green-0.5);
-        r=q+y;
+        r=q+y*GetPixelChannels(histogram_image);
         for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
           SetPixelGreen(histogram_image,QuantumRange,r);
-          r++;
+          r+=GetPixelChannels(histogram_image);
         }
       }
     if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
       {
         y=(ssize_t) ceil(histogram_image->rows-scale*histogram[x].blue-0.5);
-        r=q+y;
+        r=q+y*GetPixelChannels(histogram_image);
         for ( ; y < (ssize_t) histogram_image->rows; y++)
         {
           SetPixelBlue(histogram_image,QuantumRange,r);
-          r++;
+          r+=GetPixelChannels(histogram_image);
         }
       }
     if (SyncAuthenticPixels(histogram_image,exception) == MagickFalse)
@@ -335,9 +338,8 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
       break;
   }
   histogram=(PixelInfo *) RelinquishMagickMemory(histogram);
-
-  /* output unique colors?  True by default (when not defined) */
-  if (IfStringNotFalse(GetImageOption(image_info, "histogram:unique-colors")))
+  option=GetImageOption(image_info,"histogram:unique-colors");
+  if ((option == (const char *) NULL) || (IsMagickTrue(option) != MagickFalse))
     {
       FILE
         *file;
@@ -377,8 +379,8 @@ static MagickBooleanType WriteHISTOGRAMImage(const ImageInfo *image_info,
   write_info=CloneImageInfo(image_info);
   (void) SetImageInfo(write_info,1,exception);
   if (LocaleCompare(write_info->magick,"HISTOGRAM") == 0)
-    (void) FormatLocaleString(histogram_image->filename,MaxTextExtent,
-      "miff:%s",write_info->filename);
+    (void) FormatLocaleString(histogram_image->filename,MaxTextExtent,"miff:%s",
+      write_info->filename);
   status=WriteImage(write_info,histogram_image,exception);
   histogram_image=DestroyImage(histogram_image);
   write_info=DestroyImageInfo(write_info);
