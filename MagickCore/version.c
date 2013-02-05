@@ -350,7 +350,35 @@ static unsigned int CRC32(const unsigned char *message,const size_t length)
 
 MagickExport unsigned int GetMagickSignature(const StringInfo *nonce)
 {
-  return(0);
+  register unsigned char
+    *p;
+
+  StringInfo
+    *version;
+
+  unsigned int
+    signature;
+
+  version=AcquireStringInfo(MaxTextExtent);
+  p=GetStringInfoDatum(version);
+  signature=MagickLibVersion;
+  (void) memcpy(p,&signature,sizeof(signature));
+  p+=sizeof(signature);
+  signature=MAGICKCORE_QUANTUM_DEPTH;
+  (void) memcpy(p,&signature,sizeof(signature));
+  p+=sizeof(signature);
+  signature=MAGICKCORE_HDRI_ENABLE;
+  (void) memcpy(p,&signature,sizeof(signature));
+  p+=sizeof(signature);
+  signature=1;  /* endianess */
+  (void) memcpy(p,&signature,sizeof(signature));
+  p+=sizeof(signature);
+  SetStringInfoLength(version,p-GetStringInfoDatum(version));
+  if (nonce != (const StringInfo *) NULL)
+    ConcatenateStringInfo(version,nonce);
+  signature=CRC32(GetStringInfoDatum(version),GetStringInfoLength(version));
+  version=DestroyStringInfo(version);
+  return(signature);
 }
 
 /*
