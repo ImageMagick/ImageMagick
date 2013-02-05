@@ -24,10 +24,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
-
-#if defined(MAGICKCORE_HAVE_SYS_TYPES_H)
-# include <sys/types.h>
-#endif
+#include <sys/types.h>
 
 #if defined(__BORLANDC__)
 # include <vcl.h> /* Borland C++ Builder 4.0 requirement */
