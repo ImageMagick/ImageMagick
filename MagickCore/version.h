@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include <MagickCore/string_.h>
+
 /*
   Define declarations.
 */
@@ -34,11 +36,11 @@ extern "C" {
 #define MagickLibAddendum  "-0"
 #define MagickLibInterface  8
 #define MagickLibMinInterface  8
-#define MagickReleaseDate  "2013-01-24"
+#define MagickReleaseDate  "2013-02-05"
 #define MagickChangeDate   "20121005"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #define MagickFeatures "DPC HDRI OpenMP"
-#define MagickDelegates "bzlib freetype jp2 jpeg lcms lzma ps tiff x xml zlib"
+#define MagickDelegates "bzlib freetype jng jp2 jpeg lcms lzma png ps tiff x xml zlib"
 #define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-7.0.0/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"
@@ -72,6 +74,9 @@ extern MagickExport const char
   *GetMagickQuantumRange(size_t *),
   *GetMagickReleaseDate(void),
   *GetMagickVersion(size_t *);
+
+extern MagickExport unsigned int
+  GetMagickSignature(const StringInfo *);
 
 extern MagickExport void
   ListMagickVersion(FILE *);
