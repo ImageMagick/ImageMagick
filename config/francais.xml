@@ -38,8 +38,8 @@
         <message name="CacheResourcesExhausted">
           Ressources du cache épuisées
         </message>
-        <message name="InconsistentPersistentCacheDepth">
-          profondeur du cache persistant inconsistante
+        <message name="IncompatibleAPI">
+          incompatible API
         </message>
         <message name="NoPixelsDefinedInCache">
           pas de pixels définis dans le cache
