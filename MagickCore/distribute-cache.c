@@ -112,46 +112,6 @@
 %
 */
 
-static size_t CRC32(const unsigned char *message,const MagickSizeType length)
-{
-  register MagickOffsetType
-    i;
-
-  size_t
-    crc;
-
-  static MagickBooleanType
-    crc_initial = MagickFalse;
-
-  static size_t
-    crc_xor[256];
-
-  /*
-    Generate a 64-bit cyclic redundancy check for the message.
-  */
-  if (crc_initial == MagickFalse)
-    {
-      size_t
-        alpha;
-
-      for (i=0; i < 256; i++)
-      {
-        register MagickOffsetType
-          j;
-
-        alpha=(size_t) i;
-        for (j=0; j < 8; j++)
-          alpha=(alpha & 1) ? (0xEDB88320 ^ (alpha >> 1)) : (alpha >> 1);
-        crc_xor[i]=alpha;
-      }
-      crc_initial=MagickTrue;
-    }
-  crc=0xFFFFFFFF;
-  for (i=0; i < (MagickOffsetType) length; i++)
-    crc=crc_xor[(crc ^ message[i]) & 0xff] ^ (crc >> 8);
-  return(crc ^ 0xFFFFFFFF);
-}
-
 static inline MagickSizeType MagickMin(const MagickSizeType x,
   const MagickSizeType y)
 {
@@ -198,9 +158,6 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     client_socket,
     status;
 
-  register unsigned char
-    *p;
-
   ssize_t
     count;
 
@@ -209,8 +166,7 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
     *result;
 
   unsigned char
-    secret[MaxTextExtent],
-    session[2*MaxTextExtent];
+    secret[MaxTextExtent];
 
   /*
     Connect to distributed pixel cache and get session key.
@@ -223,9 +179,6 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
         "DistributedPixelCache","'%s'","shared secret expected");
       return(-1);
     }
-  p=session;
-  (void) CopyMagickString((char *) p,shared_secret,MaxTextExtent);
-  p+=strlen(shared_secret);
   (void) ResetMagickMemory(&hint,0,sizeof(hint));
   hint.ai_family=AF_INET;
   hint.ai_socktype=SOCK_STREAM;
@@ -256,24 +209,13 @@ static int ConnectPixelCacheServer(const char *hostname,const int port,
   count=recv(client_socket,secret,MaxTextExtent,0);
   if (count != -1)
     {
-      size_t
-        signature;
+      StringInfo
+        *nonce;
 
-      (void) memcpy(p,secret,(size_t) count);
-      p+=count;
-      signature=MagickLibVersion;
-      (void) memcpy(p,&signature,sizeof(signature));
-      p+=sizeof(signature);
-      signature=MAGICKCORE_QUANTUM_DEPTH;
-      (void) memcpy(p,&signature,sizeof(signature));
-      p+=sizeof(signature);
-      signature=MAGICKCORE_HDRI_ENABLE;
-      (void) memcpy(p,&signature,sizeof(signature));
-      p+=sizeof(signature);
-      signature=sizeof(size_t);
-      (void) memcpy(p,&signature,sizeof(signature));
-      p+=sizeof(signature);
-      *session_key=CRC32(session,p-session);
+      nonce=AcquireStringInfo(count);
+      (void) memcpy(GetStringInfoDatum(nonce),secret,(size_t) count);
+      *session_key=GetMagickSignature(nonce);
+      nonce=DestroyStringInfo(nonce);
     }
   if (*session_key == 0)
     {
@@ -799,8 +741,7 @@ static void *DistributePixelCacheClient(void *socket)
 
   size_t
     key,
-    session_key,
-    signature;
+    session_key;
 
   SplayTreeInfo
     *registry;
@@ -824,20 +765,7 @@ static void *DistributePixelCacheClient(void *socket)
   random_info=AcquireRandomInfo();
   secret=GetRandomKey(random_info,DPCSessionKeyLength);
   (void) memcpy(p,GetStringInfoDatum(secret),DPCSessionKeyLength);
-  p+=DPCSessionKeyLength;
-  signature=MagickLibVersion;
-  (void) memcpy(p,&signature,sizeof(signature));
-  p+=sizeof(signature);
-  signature=MAGICKCORE_QUANTUM_DEPTH;
-  (void) memcpy(p,&signature,sizeof(signature));
-  p+=sizeof(signature);
-  signature=MAGICKCORE_HDRI_ENABLE;
-  (void) memcpy(p,&signature,sizeof(signature));
-  p+=sizeof(signature);
-  signature=sizeof(size_t);
-  (void) memcpy(p,&signature,sizeof(signature));
-  p+=sizeof(signature);
-  session_key=CRC32(session,p-session);
+  session_key=GetMagickSignature(secret);
   random_info=DestroyRandomInfo(random_info);
   exception=AcquireExceptionInfo();
   registry=NewSplayTree((int (*)(const void *,const void *)) NULL,
