@@ -361,7 +361,7 @@ MagickExport unsigned int GetMagickSignature(const StringInfo *nonce)
 
   version=AcquireStringInfo(MaxTextExtent);
   p=GetStringInfoDatum(version);
-  signature=MagickLibVersion;
+  signature=MagickLibInterface;
   (void) memcpy(p,&signature,sizeof(signature));
   p+=sizeof(signature);
   signature=MAGICKCORE_QUANTUM_DEPTH;
