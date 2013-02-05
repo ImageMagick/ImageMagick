@@ -22,6 +22,8 @@
 extern "C" {
 #endif
 
+#include <MagickCore/string_.h>
+
 /*
   Define declarations.
 */
@@ -34,7 +36,7 @@ extern "C" {
 #define MagickLibAddendum  "-5"
 #define MagickLibInterface  7
 #define MagickLibMinInterface  7
-#define MagickReleaseDate  "2013-02-04"
+#define MagickReleaseDate  "2013-02-05"
 #define MagickChangeDate   "20130204"
 #define MagickFeatures "DPC OpenMP"
 #define MagickDelegates "bzlib freetype jng jp2 jpeg lcms lzma png ps tiff x xml zlib"
@@ -72,6 +74,9 @@ extern MagickExport const char
   *GetMagickQuantumRange(size_t *),
   *GetMagickReleaseDate(void),
   *GetMagickVersion(size_t *);
+
+extern MagickExport unsigned int
+  GetMagickSignature(const StringInfo *);
 
 extern MagickExport void
   ListMagickVersion(FILE *);
