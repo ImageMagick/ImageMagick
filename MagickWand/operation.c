@@ -4609,6 +4609,9 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
         MagickResetIterator(&cli_wand->wand);
         while ( IfMagickTrue(MagickNextImage(&cli_wand->wand)) )
           {
+            Image
+              *next;
+
             if (IfPlusOp) {
               if (LocaleNCompare(arg1,"artifact:",9) == 0)
                 (void) DeleteImageArtifact(_images,arg1+9);
@@ -4618,17 +4621,22 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
                 (void) DeleteImageProperty(_images,arg1);
               break;
             }
-            value=InterpretImageProperties(_image_info,_images,arg2,_exception);
-            if (value == (char *) NULL)
-              CLIWandExceptionBreak(OptionWarning,"InterpretPropertyFailure",
-                    option);
-            if (LocaleNCompare(arg1,"artifact:",9) == 0)
-              (void) SetImageArtifact(_images,arg1+9,value);
-            else if (LocaleNCompare(arg1,"property:",9) == 0)
-              (void) SetImageProperty(_images,arg1+9,value,_exception);
-            else
-              (void) SetImageProperty(_images,arg1,value,_exception);
-            value=DestroyString(value);
+            next=_images;
+            for ( ; next != (Image *) NULL; next=GetNextImageInList(next))
+            {
+              value=InterpretImageProperties(_image_info,next,arg2,_exception);
+              if (value == (char *) NULL)
+                CLIWandExceptionBreak(OptionWarning,"InterpretPropertyFailure",
+                  option);
+              if (LocaleNCompare(arg1,"artifact:",9) == 0)
+                (void) SetImageArtifact(next,arg1+9,value);
+              else
+                if (LocaleNCompare(arg1,"property:",9) == 0)
+                  (void) SetImageProperty(next,arg1+9,value,_exception);
+                else
+                  (void) SetImageProperty(next,arg1,value,_exception);
+              value=DestroyString(value);
+            }
             break;
           }
         MagickResetIterator(&cli_wand->wand);
