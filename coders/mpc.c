@@ -71,6 +71,7 @@
 #include "MagickCore/string_.h"
 #include "MagickCore/string-private.h"
 #include "MagickCore/utility.h"
+#include "MagickCore/version-private.h"
 
 /*
   Forward declarations.
