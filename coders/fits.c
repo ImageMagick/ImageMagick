@@ -427,7 +427,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     (void) SetImageColorspace(image,GRAYColorspace,exception);
     if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
       {
-        if ((fits_info.bits_per_pixel == -32) || (fits_info.max_data == -64))
+        if (fits_info.zero == 0.0)
           GetFITSPixelExtrema(image,fits_info.bits_per_pixel,
             &fits_info.min_data,&fits_info.max_data);
         else
