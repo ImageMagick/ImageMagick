@@ -1142,9 +1142,6 @@ MagickExport MagickBooleanType InvokePostscriptDelegate(
   register ssize_t
     i;
 
-  if (delegate_semaphore == (SemaphoreInfo *) NULL)
-    AcquireSemaphoreInfo(&delegate_semaphore);
-  LockSemaphoreInfo(delegate_semaphore);
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   ghost_info=NTGhostscriptDLLVectors();
 #else
@@ -1165,7 +1162,6 @@ MagickExport MagickBooleanType InvokePostscriptDelegate(
 #endif
   if (ghost_info == (GhostInfo *) NULL)
     {
-      UnlockSemaphoreInfo(delegate_semaphore);
       status=SystemCommand(MagickFalse,verbose,command,exception);
       return(status == 0 ? MagickTrue : MagickFalse);
     }
@@ -1177,17 +1173,13 @@ MagickExport MagickBooleanType InvokePostscriptDelegate(
   status=(ghost_info->new_instance)(&interpreter,(void *) NULL);
   if (status < 0)
     {
-      UnlockSemaphoreInfo(delegate_semaphore);
       status=SystemCommand(MagickFalse,verbose,command,exception);
       return(status == 0 ? MagickTrue : MagickFalse);
     }
   code=0;
   argv=StringToArgv(command,&argc);
   if (argv == (char **) NULL)
-    {
-      UnlockSemaphoreInfo(delegate_semaphore);
-      return(MagickFalse);
-    }
+    return(MagickFalse);
   status=(ghost_info->init_with_args)(interpreter,argc-1,argv+1);
   if (status == 0)
     status=(ghost_info->run_string)(interpreter,"systemdict /start get exec\n",
@@ -1197,7 +1189,6 @@ MagickExport MagickBooleanType InvokePostscriptDelegate(
 #if defined(MAGICKCORE_WINDOWS_SUPPORT)
   NTGhostscriptUnLoadDLL();
 #endif
-  UnlockSemaphoreInfo(delegate_semaphore);
   for (i=0; i < (ssize_t) argc; i++)
     argv[i]=DestroyString(argv[i]);
   argv=(char **) RelinquishMagickMemory(argv);
