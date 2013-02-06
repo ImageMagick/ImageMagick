@@ -13,10 +13,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  MagickCore private version methods.
+  MagickCore version private methods.
 */
-#ifndef _MAGICKCORE_PRIVATE_VERSION_H
-#define _MAGICKCORE_PRIVATE_VERSION_H
+#ifndef _MAGICKCORE_VERSION_PRIVATE_H
+#define _MAGICKCORE_VERSION_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
