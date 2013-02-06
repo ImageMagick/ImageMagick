@@ -361,13 +361,13 @@ MagickExport unsigned int GetMagickSignature(const StringInfo *nonce)
 
   version=AcquireStringInfo(MaxTextExtent);
   p=GetStringInfoDatum(version);
-  signature=MagickLibInterface;
-  (void) memcpy(p,&signature,sizeof(signature));
-  p+=sizeof(signature);
   signature=MAGICKCORE_QUANTUM_DEPTH;
   (void) memcpy(p,&signature,sizeof(signature));
   p+=sizeof(signature);
   signature=MAGICKCORE_HDRI_ENABLE;
+  (void) memcpy(p,&signature,sizeof(signature));
+  p+=sizeof(signature);
+  signature=MagickLibInterface;
   (void) memcpy(p,&signature,sizeof(signature));
   p+=sizeof(signature);
   signature=1;  /* endianess */
