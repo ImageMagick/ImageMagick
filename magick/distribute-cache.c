@@ -70,6 +70,7 @@
 #include "magick/string_.h"
 #include "magick/string-private.h"
 #include "magick/version.h"
+#include "magick/version-private.h"
 #if defined(MAGICKCORE_HAVE_SOCKET)
 #include <netinet/in.h>
 #include <netdb.h>

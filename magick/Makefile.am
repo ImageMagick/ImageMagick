@@ -279,6 +279,7 @@ MAGICK_BASE_SRCS = \
 	magick/utility-private.h \
 	magick/version.c \
 	magick/version.h \
+	magick/version-private.h \
 	magick/vms.h \
 	magick/widget.c \
 	magick/widget.h \
@@ -436,6 +437,7 @@ MAGICK_NOINST_HDRS = \
 	magick/thread-private.h \
 	magick/token-private.h \
 	magick/utility-private.h \
+	magick/version-private.h \
 	magick/xwindow-private.h \
 	magick/vms.h
 
