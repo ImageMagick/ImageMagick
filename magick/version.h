@@ -22,8 +22,6 @@
 extern "C" {
 #endif
 
-#include "magick/string_.h"
-
 /*
   Define declarations.
 */
