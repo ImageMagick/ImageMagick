@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include <MagickCore/string_.h>
+#include "MagickCore/string_.h"
 
 /*
   Define declarations.
