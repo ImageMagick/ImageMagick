@@ -188,7 +188,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *profile;
 
   unsigned int
-    signature;
+    version;
 
   /*
     Open image file.
@@ -226,7 +226,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     profiles=(LinkedListInfo *) NULL;
     length=MaxTextExtent;
     options=AcquireString((char *) NULL);
-    signature=GetMagickSignature((const StringInfo *) NULL);
+    version=GetMagickSignature((const StringInfo *) NULL);
     image->depth=8;
     image->compression=NoCompression;
     while ((isgraph(c) != MagickFalse) && (c != (int) ':'))
@@ -667,11 +667,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->scene=StringToUnsignedLong(options);
                     break;
                   }
-                if (LocaleCompare(keyword,"signature") == 0)
-                  {
-                    signature=(unsigned int) StringToUnsignedLong(options);
-                    break;
-                  }
                 (void) SetImageProperty(image,keyword,options);
                 break;
               }
@@ -725,6 +720,16 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 (void) SetImageProperty(image,keyword,options);
                 break;
               }
+              case 'v':
+              case 'V':
+              {
+                if (LocaleCompare(keyword,"version") == 0)
+                  {
+                    version=(unsigned int) StringToUnsignedLong(options);
+                    break;
+                  }
+                break;
+              }
               case 'w':
               case 'W':
               {
@@ -763,7 +768,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    if (signature != GetMagickSignature((const StringInfo *) NULL))
+    if (version != GetMagickSignature((const StringInfo *) NULL))
       ThrowReaderException(CacheError,"IncompatibleAPI");
     if (image->montage != (char *) NULL)
       {
