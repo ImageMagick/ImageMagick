@@ -65,6 +65,8 @@ extern MagickExport MagickBooleanType
   DelegateComponentGenesis(void),
   GetDelegateThreadSupport(const DelegateInfo *),
   InvokeDelegate(ImageInfo *,Image *,const char *,const char *,ExceptionInfo *),
+  InvokePostscriptDelegate(const MagickBooleanType,const char *,
+    ExceptionInfo *),
   ListDelegateInfo(FILE *,ExceptionInfo *);
 
 extern MagickExport void
