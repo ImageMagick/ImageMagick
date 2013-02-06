@@ -75,9 +75,6 @@ extern MagickExport const char
   *GetMagickReleaseDate(void),
   *GetMagickVersion(size_t *);
 
-extern MagickExport unsigned int
-  GetMagickSignature(const StringInfo *);
-
 extern MagickExport void
   ListMagickVersion(FILE *);
 
