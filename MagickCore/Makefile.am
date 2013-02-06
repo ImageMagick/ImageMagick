@@ -280,6 +280,7 @@ MAGICKCORE_BASE_SRCS = \
 	MagickCore/utility-private.h \
 	MagickCore/version.c \
 	MagickCore/version.h \
+	MagickCore/version-private.h \
 	MagickCore/vms.h \
 	MagickCore/widget.c \
 	MagickCore/widget.h \
@@ -464,6 +465,7 @@ MAGICKCORE_NOINST_HDRS = \
 	MagickCore/token-private.h \
  	MagickCore/type-private.h \
 	MagickCore/utility-private.h \
+	MagickCore/version-private.h \
 	MagickCore/vms.h \
  	MagickCore/widget-private.h \
 	MagickCore/xml-tree-private.h \
