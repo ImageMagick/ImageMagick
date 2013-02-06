@@ -313,21 +313,21 @@ static unsigned int CRC32(const unsigned char *message,const size_t length)
   register ssize_t
     i;
 
-  size_t
-    crc;
-
   static MagickBooleanType
     crc_initial = MagickFalse;
 
   static unsigned int
     crc_xor[256];
 
+  unsigned int
+    crc;
+
   /*
     Generate a 32-bit cyclic redundancy check for the message.
   */
   if (crc_initial == MagickFalse)
     {
-      size_t
+      unsigned int
         alpha;
 
       for (i=0; i < 256; i++)

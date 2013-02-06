@@ -546,7 +546,7 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
       if (cache_info->metacontent_extent != 0)
         (void) memcpy(clone_info->metacontent,cache_info->metacontent,
           cache_info->columns*cache_info->rows*clone_info->metacontent_extent*
-          sizeof(*cache_info->metacontent));
+          sizeof(cache_info->metacontent));
       return(MagickTrue);
     }
   /*
@@ -689,7 +689,7 @@ static MagickBooleanType ClonePixelCacheRepository(CacheInfo *clone_info,
         if (pixels == (Quantum *) NULL)
           continue;
         (void) memcpy(clone_nexus[id]->metacontent,cache_nexus[id]->metacontent,
-          length*sizeof(*cache_nexus[id]->metacontent));
+          length*sizeof(cache_nexus[id]->metacontent));
         status=WritePixelCacheMetacontent(clone_info,clone_nexus[id],exception);
       }
     }
