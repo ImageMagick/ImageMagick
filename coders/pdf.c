@@ -99,128 +99,6 @@ static MagickBooleanType
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I n v o k e P D F D e l e g a t e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  InvokePDFDelegate() executes the PDF interpreter with the specified command.
-%
-%  The format of the InvokePDFDelegate method is:
-%
-%      MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
-%        const char *command,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o verbose: A value other than zero displays the command prior to
-%      executing it.
-%
-%    o command: the address of a character string containing the command to
-%      execute.
-%
-%    o exception: return any errors or warnings in this structure.
-%
-*/
-static MagickBooleanType InvokePDFDelegate(const MagickBooleanType verbose,
-  const char *command,ExceptionInfo *exception)
-{
-  int
-    status;
-
-#if defined(MAGICKCORE_GS_DELEGATE) || defined(MAGICKCORE_WINDOWS_SUPPORT)
-  char
-    **argv;
-
-  const GhostInfo
-    *ghost_info;
-
-  gs_main_instance
-    *interpreter;
-
-  int
-    argc,
-    code;
-
-  register ssize_t
-    i;
-
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  ghost_info=NTGhostscriptDLLVectors();
-#else
-  GhostInfo
-    ghost_info_struct;
-
-  ghost_info=(&ghost_info_struct);
-  (void) ResetMagickMemory(&ghost_info,0,sizeof(ghost_info));
-  ghost_info_struct.new_instance=(int (*)(gs_main_instance **,void *))
-    gsapi_new_instance;
-  ghost_info_struct.init_with_args=(int (*)(gs_main_instance *,int,char **))
-    gsapi_init_with_args;
-  ghost_info_struct.run_string=(int (*)(gs_main_instance *,const char *,int,
-    int *)) gsapi_run_string;
-  ghost_info_struct.delete_instance=(void (*)(gs_main_instance *))
-    gsapi_delete_instance;
-  ghost_info_struct.exit=(int (*)(gs_main_instance *)) gsapi_exit;
-#endif
-  if (ghost_info == (GhostInfo *) NULL)
-    {
-      status=SystemCommand(MagickFalse,verbose,command,exception);
-      return(status == 0 ? MagickTrue : MagickFalse);
-    }
-  if (verbose != MagickFalse)
-    {
-      (void) fputs("[ghostscript library]",stdout);
-      (void) fputs(strchr(command,' '),stdout);
-    }
-  status=(ghost_info->new_instance)(&interpreter,(void *) NULL);
-  if (status < 0)
-    {
-      status=SystemCommand(MagickFalse,verbose,command,exception);
-      return(status == 0 ? MagickTrue : MagickFalse);
-    }
-  code=0;
-  argv=StringToArgv(command,&argc);
-  if (argv == (char **) NULL)
-    return(MagickFalse);
-  status=(ghost_info->init_with_args)(interpreter,argc-1,argv+1);
-  if (status == 0)
-    status=(ghost_info->run_string)(interpreter,"systemdict /start get exec\n",
-      0,&code);
-  (ghost_info->exit)(interpreter);
-  (ghost_info->delete_instance)(interpreter);
-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
-  NTGhostscriptUnLoadDLL();
-#endif
-  for (i=0; i < (ssize_t) argc; i++)
-    argv[i]=DestroyString(argv[i]);
-  argv=(char **) RelinquishMagickMemory(argv);
-  if ((status != 0) && (status != -101))
-    {
-      char
-        *message;
-
-      message=GetExceptionMessage(errno);
-      (void) ThrowMagickException(exception,GetMagickModule(),DelegateError,
-        "`%s': %s",command,message);
-      message=DestroyString(message);
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Ghostscript returns status %d, exit code %d",status,code);
-      return(MagickFalse);
-    }
-  return(MagickTrue);
-#else
-  status=SystemCommand(MagickFalse,verbose,command,exception);
-  return(status == 0 ? MagickTrue : MagickFalse);
-#endif
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   I s P D F                                                                 %
 %                                                                             %
 %                                                                             %
@@ -642,7 +520,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     read_info->antialias != MagickFalse ? 4 : 1,
     read_info->antialias != MagickFalse ? 4 : 1,density,options,filename,
     postscript_filename,input_filename);
-  status=InvokePDFDelegate(read_info->verbose,command,exception);
+  status=InvokePostscriptDelegate(read_info->verbose,command,exception);
   (void) RelinquishUniqueFileResource(postscript_filename);
   (void) RelinquishUniqueFileResource(input_filename);
   pdf_image=(Image *) NULL;
@@ -762,7 +640,6 @@ ModuleExport size_t RegisterPDFImage(void)
   entry->adjoin=MagickFalse;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
-  entry->thread_support=EncoderThreadSupport;
   entry->description=ConstantString("Adobe Illustrator CS2");
   entry->module=ConstantString("PDF");
   (void) RegisterMagickInfo(entry);
@@ -772,7 +649,6 @@ ModuleExport size_t RegisterPDFImage(void)
   entry->adjoin=MagickFalse;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
-  entry->thread_support=EncoderThreadSupport;
   entry->description=ConstantString("Encapsulated Portable Document Format");
   entry->module=ConstantString("PDF");
   (void) RegisterMagickInfo(entry);
@@ -782,7 +658,6 @@ ModuleExport size_t RegisterPDFImage(void)
   entry->magick=(IsImageFormatHandler *) IsPDF;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
-  entry->thread_support=EncoderThreadSupport;
   entry->description=ConstantString("Portable Document Format");
   entry->module=ConstantString("PDF");
   (void) RegisterMagickInfo(entry);
@@ -792,7 +667,6 @@ ModuleExport size_t RegisterPDFImage(void)
   entry->magick=(IsImageFormatHandler *) IsPDF;
   entry->blob_support=MagickFalse;
   entry->seekable_stream=MagickTrue;
-  entry->thread_support=EncoderThreadSupport;
   entry->description=ConstantString("Portable Document Archive Format");
   entry->module=ConstantString("PDF");
   (void) RegisterMagickInfo(entry);
