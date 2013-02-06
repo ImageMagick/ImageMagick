@@ -60,8 +60,6 @@ extern MagickExport ssize_t
 extern MagickExport MagickBooleanType
   GetDelegateThreadSupport(const DelegateInfo *),
   InvokeDelegate(ImageInfo *,Image *,const char *,const char *,ExceptionInfo *),
-  InvokePostscriptDelegate(const MagickBooleanType,const char *,
-    ExceptionInfo *),
   ListDelegateInfo(FILE *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
