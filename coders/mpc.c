@@ -1096,7 +1096,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
         (image->colors > (one << depth)))
       image->storage_class=DirectClass;
     (void) WriteBlobString(image,"id=MagickCache\n");
-    (void) FormatLocaleString(buffer,MaxTextExtent,"signature=%d\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"signature=%u\n",
       GetMagickSignature((const StringInfo *) NULL));
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MaxTextExtent,
