@@ -524,6 +524,11 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               case 'm':
               case 'M':
               {
+                if (LocaleCompare(keyword,"magick-signature") == 0)
+                  {
+                    signature=(unsigned int) StringToUnsignedLong(options);
+                    break;
+                  }
                 if (LocaleCompare(keyword,"matte-color") == 0)
                   {
                     (void) QueryColorCompliance(options,AllCompliance,
@@ -657,11 +662,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (LocaleCompare(keyword,"scene") == 0)
                   {
                     image->scene=StringToUnsignedLong(options);
-                    break;
-                  }
-                if (LocaleCompare(keyword,"signature") == 0)
-                  {
-                    signature=(unsigned int) StringToUnsignedLong(options);
                     break;
                   }
                 (void) SetImageProperty(image,keyword,options,exception);
@@ -1094,7 +1094,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image,
         (image->colors > (one << depth)))
       image->storage_class=DirectClass;
     (void) WriteBlobString(image,"id=MagickCache\n");
-    (void) FormatLocaleString(buffer,MaxTextExtent,"signature=%u\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"magick-signature=%u\n",
       GetMagickSignature((const StringInfo *) NULL));
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MaxTextExtent,
