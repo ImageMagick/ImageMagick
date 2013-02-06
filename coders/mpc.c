@@ -188,7 +188,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *profile;
 
   unsigned int
-    version;
+    signature;
 
   /*
     Open image file.
@@ -226,7 +226,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     profiles=(LinkedListInfo *) NULL;
     length=MaxTextExtent;
     options=AcquireString((char *) NULL);
-    version=GetMagickSignature((const StringInfo *) NULL);
+    signature=GetMagickSignature((const StringInfo *) NULL);
     image->depth=8;
     image->compression=NoCompression;
     while ((isgraph(c) != MagickFalse) && (c != (int) ':'))
@@ -508,6 +508,11 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               case 'm':
               case 'M':
               {
+                if (LocaleCompare(keyword,"magick-signature") == 0)
+                  {
+                    signature=(unsigned int) StringToUnsignedLong(options);
+                    break;
+                  }
                 if (LocaleCompare(keyword,"matte") == 0)
                   {
                     ssize_t
@@ -720,16 +725,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 (void) SetImageProperty(image,keyword,options);
                 break;
               }
-              case 'v':
-              case 'V':
-              {
-                if (LocaleCompare(keyword,"version") == 0)
-                  {
-                    version=(unsigned int) StringToUnsignedLong(options);
-                    break;
-                  }
-                break;
-              }
               case 'w':
               case 'W':
               {
@@ -768,7 +763,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader");
-    if (version != GetMagickSignature((const StringInfo *) NULL))
+    if (signature != GetMagickSignature((const StringInfo *) NULL))
       ThrowReaderException(CacheError,"IncompatibleAPI");
     if (image->montage != (char *) NULL)
       {
@@ -1101,7 +1096,7 @@ static MagickBooleanType WriteMPCImage(const ImageInfo *image_info,Image *image)
         (image->colors > (one << depth)))
       image->storage_class=DirectClass;
     (void) WriteBlobString(image,"id=MagickCache\n");
-    (void) FormatLocaleString(buffer,MaxTextExtent,"signature=%u\n",
+    (void) FormatLocaleString(buffer,MaxTextExtent,"magick-signature=%u\n",
       GetMagickSignature((const StringInfo *) NULL));
     (void) WriteBlobString(image,buffer);
     (void) FormatLocaleString(buffer,MaxTextExtent,
