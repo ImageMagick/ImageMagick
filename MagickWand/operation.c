@@ -1768,7 +1768,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
 
           SetGeometryInfo(&geometry_info);
           flags=ParseGeometry(arg1,&geometry_info);
-          if ((flags & RhoValue) == 0)
+          if (flags == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           if ((flags & SigmaValue) == 0)
             geometry_info.sigma=geometry_info.rho;
