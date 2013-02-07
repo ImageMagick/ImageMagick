@@ -74,7 +74,9 @@
 #endif
 
 /* Define if you have FONTCONFIG library */
-/* #undef FONTCONFIG_DELEGATE */
+#ifndef MAGICKCORE_FONTCONFIG_DELEGATE
+#define MAGICKCORE_FONTCONFIG_DELEGATE 1
+#endif
 
 /* Define if you have FlashPIX library */
 /* #undef FPX_DELEGATE */
@@ -1194,7 +1196,7 @@
 
 /* Define to the full name and version of this package. */
 #ifndef MAGICKCORE_PACKAGE_STRING
-#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.8.2-6"
+#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.8.2-7"
 #endif
 
 /* Define to the one symbol short name of this package. */
@@ -1209,14 +1211,18 @@
 
 /* Define to the version of this package. */
 #ifndef MAGICKCORE_PACKAGE_VERSION
-#define MAGICKCORE_PACKAGE_VERSION "6.8.2-6"
+#define MAGICKCORE_PACKAGE_VERSION "6.8.2-7"
 #endif
 
 /* Define if you have PANGOCAIRO library */
-/* #undef PANGOCAIRO_DELEGATE */
+#ifndef MAGICKCORE_PANGOCAIRO_DELEGATE
+#define MAGICKCORE_PANGOCAIRO_DELEGATE 1
+#endif
 
 /* Define if you have PANGO library */
-/* #undef PANGO_DELEGATE */
+#ifndef MAGICKCORE_PANGO_DELEGATE
+#define MAGICKCORE_PANGO_DELEGATE 1
+#endif
 
 /* Define if you have PNG library */
 #ifndef MAGICKCORE_PNG_DELEGATE
@@ -1417,7 +1423,7 @@
 
 /* Version number of package */
 #ifndef MAGICKCORE_VERSION
-#define MAGICKCORE_VERSION "6.8.2-6"
+#define MAGICKCORE_VERSION "6.8.2-7"
 #endif
 
 /* Define if you have WEBP library */
