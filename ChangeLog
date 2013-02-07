@@ -1,4 +1,7 @@
 2013-02-07  6.8.2-6 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.2-6, SVN revision 10961.
+
+2013-02-07  6.8.2-6 Cristy  <quetzlzacatenango@image...>
   * Don't destroy an image that's already destroyed (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22747).
   * Montage is now invarient to the font when no label image label exists.
