@@ -608,24 +608,21 @@ WandExport MagickBooleanType DisplayImageCommand(ImageInfo *image_info,
           if ((state & FormerImageState) != 0)
             for (l=0; l < (ssize_t) resource_info.quantum; l++)
             {
-              display_image=GetPreviousImageInList(display_image);
-              if (display_image == (Image *) NULL)
+              if (GetPreviousImageInList(display_image) == (Image *) NULL)
                 break;
+              display_image=GetPreviousImageInList(display_image);
             }
           else
             for (l=0; l < (ssize_t) resource_info.quantum; l++)
             {
-              display_image=GetNextImageInList(display_image);
-              if (display_image == (Image *) NULL)
+              if (GetNextImageInList(display_image) == (Image *) NULL)
                 break;
+              display_image=GetNextImageInList(display_image);
             }
         } while ((display_image != (Image *) NULL) && ((state & ExitState) == 0));
         /*
           Free image resources.
         */
-        display_image=GetFirstImageInList(display_image);
-        if (image_list != display_image)
-          image_list=DestroyImageList(image_list);
         display_image=DestroyImageList(display_image);
         if ((state & FormerImageState) == 0)
           {
