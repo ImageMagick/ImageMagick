@@ -858,7 +858,8 @@ static inline void RelinquishPixelCachePixels(CacheInfo *cache_info)
     case DistributedCache:
     {
       *cache_info->cache_filename='\0';
-      (void) RelinquishDistributePixelCache(cache_info->server_info);
+      (void) RelinquishDistributePixelCache((DistributeCacheInfo *)
+        cache_info->server_info);
       break;
     }
     default:
@@ -899,7 +900,8 @@ MagickPrivate Cache DestroyPixelCache(Cache cache)
     }
   RelinquishPixelCachePixels(cache_info);
   if (cache_info->server_info != (DistributeCacheInfo *) NULL)
-    cache_info->server_info=DestroyDistributeCacheInfo(cache_info->server_info);
+    cache_info->server_info=DestroyDistributeCacheInfo((DistributeCacheInfo *)
+      cache_info->server_info);
   if (cache_info->nexus_info != (NexusInfo **) NULL)
     cache_info->nexus_info=DestroyPixelCacheNexus(cache_info->nexus_info,
       cache_info->number_threads);
@@ -3557,9 +3559,10 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
               cache_info->type=DistributedCache;
               cache_info->server_info=server_info;
               (void) FormatLocaleString(cache_info->cache_filename,
-                MaxTextExtent,"%s:%d",
-                GetDistributeCacheHostname(cache_info->server_info),
-                GetDistributeCachePort(cache_info->server_info));
+                MaxTextExtent,"%s:%d",GetDistributeCacheHostname(
+                (DistributeCacheInfo *) cache_info->server_info),
+                GetDistributeCachePort((DistributeCacheInfo *)
+                cache_info->server_info));
               if ((source_info.storage_class != UndefinedClass) &&
                   (mode != ReadMode))
                 {
@@ -3576,9 +3579,10 @@ static MagickBooleanType OpenPixelCache(Image *image,const MapMode mode,
                   (void) FormatLocaleString(message,MaxTextExtent,
                     "open %s (%s[%d], %s, %.20gx%.20gx%.20g %s)",
                     cache_info->filename,cache_info->cache_filename,
-                    GetDistributeCacheFile(cache_info->server_info),type,
-                    (double) cache_info->columns,(double) cache_info->rows,
-                    (double) cache_info->number_channels,format);
+                    GetDistributeCacheFile((DistributeCacheInfo *)
+                    cache_info->server_info),type,(double) cache_info->columns,
+                    (double) cache_info->rows,(double)
+                    cache_info->number_channels,format);
                   (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%s",
                     message);
                 }
@@ -4240,8 +4244,8 @@ static MagickBooleanType ReadPixelCacheMetacontent(CacheInfo *cache_info,
         }
       for (y=0; y < (ssize_t) rows; y++)
       {
-        count=ReadDistributePixelCacheMetacontent(cache_info->server_info,
-          &region,length,(unsigned char *) q);
+        count=ReadDistributePixelCacheMetacontent((DistributeCacheInfo *)
+          cache_info->server_info,&region,length,(unsigned char *) q);
         if (count != (MagickOffsetType) length)
           break;
         q+=cache_info->metacontent_extent*nexus_info->region.width;
@@ -4405,8 +4409,8 @@ static MagickBooleanType ReadPixelCachePixels(CacheInfo *cache_info,
         }
       for (y=0; y < (ssize_t) rows; y++)
       {
-        count=ReadDistributePixelCachePixels(cache_info->server_info,&region,
-          length,(unsigned char *) q);
+        count=ReadDistributePixelCachePixels((DistributeCacheInfo *)
+          cache_info->server_info,&region,length,(unsigned char *) q);
         if (count != (MagickOffsetType) length)
           break;
         q+=cache_info->number_channels*nexus_info->region.width;
@@ -5193,8 +5197,8 @@ static MagickBooleanType WritePixelCacheMetacontent(CacheInfo *cache_info,
         }
       for (y=0; y < (ssize_t) rows; y++)
       {
-        count=WriteDistributePixelCacheMetacontent(cache_info->server_info,
-          &region,length,(const unsigned char *) p);
+        count=WriteDistributePixelCacheMetacontent((DistributeCacheInfo *)
+          cache_info->server_info,&region,length,(const unsigned char *) p);
         if (count != (MagickOffsetType) length)
           break;
         p+=cache_info->metacontent_extent*nexus_info->region.width;
@@ -5359,8 +5363,8 @@ static MagickBooleanType WritePixelCachePixels(CacheInfo *cache_info,
         }
       for (y=0; y < (ssize_t) rows; y++)
       {
-        count=WriteDistributePixelCachePixels(cache_info->server_info,&region,
-          length,(const unsigned char *) p);
+        count=WriteDistributePixelCachePixels((DistributeCacheInfo *)
+          cache_info->server_info,&region,length,(const unsigned char *) p);
         if (count != (MagickOffsetType) length)
           break;
         p+=cache_info->number_channels*nexus_info->region.width;
