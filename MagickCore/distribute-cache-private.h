@@ -68,4 +68,8 @@ extern MagickPrivate MagickOffsetType
   WriteDistributePixelCachePixels(DistributeCacheInfo *,const RectangleInfo *,
     const MagickSizeType,const unsigned char *);
 
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
 #endif

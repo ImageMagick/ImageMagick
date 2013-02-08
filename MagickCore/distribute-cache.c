@@ -535,7 +535,7 @@ static MagickBooleanType ReadDistributeCacheMetacontent(SplayTreeInfo *registry,
     exception);
   if (p == (const Quantum *) NULL)
     return(MagickFalse);
-  metacontent=GetVirtualMetacontent(image);
+  metacontent=(const unsigned char *) GetVirtualMetacontent(image);
   count=dpc_send(file,length,metacontent);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
@@ -655,7 +655,7 @@ static MagickBooleanType WriteDistributeCacheMetacontent(
     exception);
   if (q == (Quantum *) NULL)
     return(MagickFalse);
-  metacontent=GetAuthenticMetacontent(image);
+  metacontent=(unsigned char *) GetAuthenticMetacontent(image);
   count=dpc_read(file,length,metacontent);
   if (count != (MagickOffsetType) length)
     return(MagickFalse);
