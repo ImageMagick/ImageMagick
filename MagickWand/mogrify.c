@@ -2035,6 +2035,38 @@ WandExport MagickBooleanType MogrifyImage(ImageInfo *image_info,const int argc,
             mask=DestroyImage(mask);
             break;
           }
+        if (LocaleCompare("matte",option+1) == 0)
+          {
+            (void) SetImageAlphaChannel(*image,(*option == '-') ?
+              SetAlphaChannel : DeactivateAlphaChannel,exception);
+            break;
+          }
+        if (LocaleCompare("median",option+1) == 0)
+          {
+            /*
+              Median filter image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=geometry_info.rho;
+            mogrify_image=StatisticImage(*image,MedianStatistic,(size_t)
+              geometry_info.rho,(size_t) geometry_info.sigma,exception);
+            break;
+          }
+        if (LocaleCompare("mode",option+1) == 0)
+          {
+            /*
+              Mode image.
+            */
+            (void) SyncImageSettings(mogrify_info,*image,exception);
+            flags=ParseGeometry(argv[i+1],&geometry_info);
+            if ((flags & SigmaValue) == 0)
+              geometry_info.sigma=geometry_info.rho;
+            mogrify_image=StatisticImage(*image,ModeStatistic,(size_t)
+              geometry_info.rho,(size_t) geometry_info.sigma,exception);
+            break;
+          }
         if (LocaleCompare("modulate",option+1) == 0)
           {
             (void) SyncImageSettings(mogrify_info,*image,exception);
@@ -3275,6 +3307,7 @@ static MagickBooleanType MogrifyUsage(void)
       "                     improve contrast by 'stretching with saturation'",
       "-liquid-rescale geometry",
       "                     rescale image with seam-carving",
+      "-median geometry     apply a median filter to the image",
       "-mode geometry       make each pixel the 'predominant color' of the",
       "                     neighborhood",
       "-modulate value      vary the brightness, saturation, and hue",
@@ -3810,6 +3843,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
         if (LocaleCompare("auto-level",option+1) == 0)
           break;
         if (LocaleCompare("auto-orient",option+1) == 0)
+          break;
+        if (LocaleCompare("average",option+1) == 0)
           break;
         ThrowMogrifyException(OptionError,"UnrecognizedOption",option)
       }
@@ -4984,6 +5019,8 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
+        if (LocaleCompare("matte",option+1) == 0)
+          break;
         if (LocaleCompare("mattecolor",option+1) == 0)
           {
             if (*option == '+')
@@ -4993,7 +5030,33 @@ WandExport MagickBooleanType MogrifyImageCommand(ImageInfo *image_info,
               ThrowMogrifyException(OptionError,"MissingArgument",option);
             break;
           }
+        if (LocaleCompare("maximum",option+1) == 0)
+          break;
+        if (LocaleCompare("minimum",option+1) == 0)
+          break;
         if (LocaleCompare("modulate",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("median",option+1) == 0)
+          {
+            if (*option == '+')
+              break;
+            i++;
+            if (i == (ssize_t) argc)
+              ThrowMogrifyException(OptionError,"MissingArgument",option);
+            if (IsGeometry(argv[i]) == MagickFalse)
+              ThrowMogrifyInvalidArgumentException(option,argv[i]);
+            break;
+          }
+        if (LocaleCompare("mode",option+1) == 0)
           {
             if (*option == '+')
               break;
@@ -6728,6 +6791,16 @@ WandExport MagickBooleanType MogrifyImageInfo(ImageInfo *image_info,
       }
       case 'm':
       {
+        if (LocaleCompare("matte",option+1) == 0)
+          {
+            if (*option == '+')
+              {
+                (void) SetImageOption(image_info,option+1,"false");
+                break;
+              }
+            (void) SetImageOption(image_info,option+1,"true");
+            break;
+          }
         if (LocaleCompare("mattecolor",option+1) == 0)
           {
             if (*option == '+')
@@ -7246,6 +7319,26 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               }
             *images=DestroyImageList(*images);
             *images=append_image;
+            break;
+          }
+        if (LocaleCompare("average",option+1) == 0)
+          {
+            Image
+              *average_image;
+
+            /*
+              Average an image sequence (deprecated).
+            */
+            (void) SyncImagesSettings(mogrify_info,*images,exception);
+            average_image=EvaluateImages(*images,MeanEvaluateOperator,
+              exception);
+            if (average_image == (Image *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            *images=DestroyImageList(*images);
+            *images=average_image;
             break;
           }
         break;
@@ -7821,6 +7914,44 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
                 break;
               }
             i++;
+            break;
+          }
+        if (LocaleCompare("maximum",option+1) == 0)
+          {
+            Image
+              *maximum_image;
+
+            /*
+              Maximum image sequence (deprecated).
+            */
+            (void) SyncImagesSettings(mogrify_info,*images,exception);
+            maximum_image=EvaluateImages(*images,MaxEvaluateOperator,exception);
+            if (maximum_image == (Image *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            *images=DestroyImageList(*images);
+            *images=maximum_image;
+            break;
+          }
+        if (LocaleCompare("minimum",option+1) == 0)
+          {
+            Image
+              *minimum_image;
+
+            /*
+              Minimum image sequence (deprecated).
+            */
+            (void) SyncImagesSettings(mogrify_info,*images,exception);
+            minimum_image=EvaluateImages(*images,MinEvaluateOperator,exception);
+            if (minimum_image == (Image *) NULL)
+              {
+                status=MagickFalse;
+                break;
+              }
+            *images=DestroyImageList(*images);
+            *images=minimum_image;
             break;
           }
         if (LocaleCompare("morph",option+1) == 0)
