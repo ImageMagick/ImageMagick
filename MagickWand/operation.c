@@ -2643,6 +2643,26 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
           mask=DestroyImage(mask);
           break;
         }
+      if (LocaleCompare("matte",option+1) == 0)
+        {
+          CLIWandWarnReplaced(IfNormalOp?"-alpha Set":"-alpha Off");
+          (void) SetImageAlphaChannel(_image,IfNormalOp ? SetAlphaChannel :
+                         DeactivateAlphaChannel, _exception);
+          break;
+        }
+      if (LocaleCompare("median",option+1) == 0)
+        {
+          CLIWandWarnReplaced("-statistic Median");
+          CLISimpleOperatorImage(cli_wand,"-statistic","Median",arg1);
+          break;
+        }
+      if (LocaleCompare("mode",option+1) == 0)
+        {
+          /* FUTURE: note this is also a special "montage" option */
+          CLIWandWarnReplaced("-statistic Mode");
+          CLISimpleOperatorImage(cli_wand,"-statistic","Mode",arg1);
+          break;
+        }
       if (LocaleCompare("modulate",option+1) == 0)
         {
           if (IfMagickFalse(IsGeometry(arg1)))
@@ -3534,6 +3554,12 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
       if (LocaleCompare("append",option+1) == 0)
         {
           new_images=AppendImages(_images,normal_op,_exception);
+          break;
+        }
+      if (LocaleCompare("average",option+1) == 0)
+        {
+          CLIWandWarnReplaced("-evaluate-sequence Mean");
+          CLIListOperatorImages(cli_wand,"-evaluate-sequence","Mean",NULL);
           break;
         }
       CLIWandExceptionBreak(OptionError,"UnrecognizedOption",option);
