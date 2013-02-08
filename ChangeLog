@@ -1,4 +1,7 @@
 2013-02-08  6.8.2-7 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.2-7, SVN revision 10965.
+
+2013-02-08  6.8.2-7 Cristy  <quetzlzacatenango@image...>
   * Ensure MagickCore compiles with a C++ compiler.
 
 2013-02-07  6.8.2-6 Cristy  <quetzlzacatenango@image...>
