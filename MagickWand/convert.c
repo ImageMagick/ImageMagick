@@ -233,9 +233,6 @@ static MagickBooleanType ConvertUsage(void)
       "                     improve contrast by 'stretching with saturation'",
       "-liquid-rescale geometry",
       "                     rescale image with seam-carving",
-      "-median geometry     apply a median filter to the image",
-      "-mode geometry       make each pixel the 'predominant color' of the",
-      "                     neighborhood",
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
       "-morphology method kernel",
@@ -720,8 +717,6 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
         if (LocaleCompare("auto-level",option+1) == 0)
           break;
         if (LocaleCompare("auto-orient",option+1) == 0)
-          break;
-        if (LocaleCompare("average",option+1) == 0)
           break;
         ThrowConvertException(OptionError,"UnrecognizedOption",option)
       }
@@ -1972,32 +1967,6 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
               ThrowConvertException(OptionError,"MissingArgument",option);
             break;
           }
-        if (LocaleCompare("maximum",option+1) == 0)
-          break;
-        if (LocaleCompare("median",option+1) == 0)
-          {
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) (argc-1))
-              ThrowConvertException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowConvertInvalidArgumentException(option,argv[i]);
-            break;
-          }
-        if (LocaleCompare("minimum",option+1) == 0)
-          break;
-        if (LocaleCompare("mode",option+1) == 0)
-          {
-            if (*option == '+')
-              break;
-            i++;
-            if (i == (ssize_t) (argc-1))
-              ThrowConvertException(OptionError,"MissingArgument",option);
-            if (IsGeometry(argv[i]) == MagickFalse)
-              ThrowConvertInvalidArgumentException(option,argv[i]);
-            break;
-          }
         if (LocaleCompare("modulate",option+1) == 0)
           {
             if (*option == '+')
@@ -2744,11 +2713,6 @@ WandExport MagickBooleanType ConvertImageCommand(ImageInfo *image_info,
             if (style < 0)
               ThrowConvertException(OptionError,"UnrecognizedStyleType",
                 argv[i]);
-            break;
-          }
-        if (LocaleCompare("support",option+1) == 0)
-          {
-            i++;  /* deprecated */
             break;
           }
         if (LocaleCompare("swap",option+1) == 0)
