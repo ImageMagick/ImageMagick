@@ -1,5 +1,5 @@
 2013-02-09  6.8.2-8 Cristy  <quetzlzacatenango@image...>
-  * MagickStatisticImage() method missing from MagickWand.
+  * MagickStatisticImage() method signature was corrected, SO bump required.
 
 2013-02-08  6.8.2-7 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.2-7, SVN revision 10965.
