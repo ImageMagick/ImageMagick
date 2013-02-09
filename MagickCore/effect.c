@@ -3165,8 +3165,7 @@ MagickExport Image *SelectiveBlurImage(const Image *image,const double radius,
             contrast=GetPixelIntensity(image,pixels)-intensity;
             if (fabs(contrast) < threshold)
               {
-                alpha=(double) (QuantumScale*
-                  GetPixelAlpha(image,pixels));
+                alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
                 pixel+=(*k)*alpha*pixels[i];
                 gamma+=(*k)*alpha;
               }
