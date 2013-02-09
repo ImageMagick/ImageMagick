@@ -2802,6 +2802,9 @@ MagickExport const PixelPacket *GetVirtualPixelsFromNexus(const Image *image,
       y_offset;
 
     y_offset=y+v;
+    if ((virtual_pixel_method == EdgeVirtualPixelMethod) ||
+        (virtual_pixel_method == UndefinedVirtualPixelMethod))
+      y_offset=EdgeY(y_offset,cache_info->rows);
     for (u=0; u < (ssize_t) columns; u+=length)
     {
       ssize_t
