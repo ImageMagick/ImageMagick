@@ -30,15 +30,15 @@ extern "C" {
 #define MagickSVNRevision  "10921:10939M"
 #define MagickLibVersion  0x700
 #define MagickLibVersionText  "7.0.0"
-#define MagickLibVersionNumber  8,0,0
+#define MagickLibVersionNumber  10,0,0
 #define MagickLibAddendum  "-0"
-#define MagickLibInterface  8
-#define MagickLibMinInterface  8
-#define MagickReleaseDate  "2013-02-06"
+#define MagickLibInterface  10
+#define MagickLibMinInterface  10
+#define MagickReleaseDate  "2013-02-09"
 #define MagickChangeDate   "20121005"
 #define MagickAuthoritativeURL  "http://www.imagemagick.org"
 #define MagickFeatures "DPC HDRI OpenMP"
-#define MagickDelegates "bzlib freetype jng jp2 jpeg lcms lzma png ps tiff x xml zlib"
+#define MagickDelegates "bzlib fontconfig freetype jng jp2 jpeg lcms lzma pango png ps tiff x xml zlib"
 #define MagickHomeURL  "file:///usr/local/share/doc/ImageMagick-7.0.0/index.html"
 #if (MAGICKCORE_QUANTUM_DEPTH == 8)
 #define MagickQuantumDepth  "Q8"
