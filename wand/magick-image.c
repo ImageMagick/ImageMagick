@@ -11946,7 +11946,18 @@ WandExport MagickBooleanType MagickSpreadImage(MagickWand *wand,
 %    o height: the height of the pixel neighborhood.
 %
 */
+
 WandExport MagickBooleanType MagickStatisticImage(MagickWand *wand,
+  const StatisticType type,const size_t width,const size_t height)
+{
+  MagickBooleanType
+    status;
+
+  status=MagickStatisticImageChannel(wand,DefaultChannels,type,width,height);
+  return(status);
+}
+
+WandExport MagickBooleanType MagickStatisticImageChannel(MagickWand *wand,
   const ChannelType channel,const StatisticType type,const size_t width,
   const size_t height)
 {
