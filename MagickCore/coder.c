@@ -128,6 +128,7 @@ static const CoderMapInfo
     { "G", "RAW" },
     { "GRANITE", "MAGICK" },
     { "GROUP4", "TIFF" },
+    { "GV", "DOT" },
     { "K25", "DNG" },
     { "KDC", "DNG" },
     { "H", "MAGICK" },
