@@ -30,11 +30,11 @@ extern "C" {
 #define MagickSVNRevision  "10070"
 #define MagickLibVersion  0x682
 #define MagickLibVersionText  "6.8.2"
-#define MagickLibVersionNumber  8,0,0
+#define MagickLibVersionNumber  1,0,0
 #define MagickLibAddendum  "-9"
-#define MagickLibInterface  8
-#define MagickLibMinInterface  8
-#define MagickReleaseDate  "2013-02-09"
+#define MagickLibInterface  1
+#define MagickLibMinInterface  1
+#define MagickReleaseDate  "2013-02-10"
 #define MagickChangeDate   "20130209"
 #define MagickFeatures "DPC OpenMP"
 #define MagickDelegates "bzlib fontconfig freetype jng jp2 jpeg lcms lzma pango png ps tiff x xml zlib"

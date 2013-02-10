@@ -1,4 +1,4 @@
- VERS_7.0 {
+ VERS_1.0 {
      	 global:
      		 *;
      };
