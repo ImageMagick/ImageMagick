@@ -448,16 +448,29 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           }
         for (x=0; x < (ssize_t) image->columns; x++)
         {
-          if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelRed(frame_image,GetPixelRed(image,p),q);
-          if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelGreen(frame_image,GetPixelGreen(image,p),q);
-          if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelBlue(frame_image,GetPixelBlue(image,p),q);
-          if ((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelBlack(frame_image,GetPixelBlack(image,p),q);
-          if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
-            SetPixelAlpha(frame_image,GetPixelAlpha(image,p),q);
+          register ssize_t
+            i;
+
+          if (GetPixelMask(image,q) != 0)
+            {
+              p+=GetPixelChannels(image);
+              q+=GetPixelChannels(frame_image);
+              continue;
+            }
+          for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
+          {
+            PixelChannel
+              channel;
+
+            PixelTrait
+              traits;
+
+            channel=GetPixelChannelChannel(image,i);
+            traits=GetPixelChannelTraits(image,channel);
+            if ((traits & (CopyPixelTrait | UpdatePixelTrait)) == 0)
+              continue;
+            q[i]=p[i];
+          }
           p+=GetPixelChannels(image);
           q+=GetPixelChannels(frame_image);
         }
