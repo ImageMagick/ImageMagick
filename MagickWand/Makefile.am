@@ -116,7 +116,7 @@ MAGICKWAND_BIN_SCRPTS = \
 
 MAGICKWAND_PKGCONFIG = \
 	MagickWand/MagickWand.pc \
-	MagickWand/MagickWand-@MAGICK_ABI_SUFFIX@.pc
+	MagickWand/MagickWand@MAGICK_MAJOR_VERSION@-@MAGICK_ABI_SUFFIX@.pc
 
 MAGICKWAND_MANS = \
 	MagickWand/MagickWand-config.1
