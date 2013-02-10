@@ -1636,7 +1636,7 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
             Set a blending mask for the composition.
           */
           (void) NegateImage(mask_image,MagickFalse,exception);
-          (void) SetImageMask(image,mask_image,exception);
+          (void) SetImageMask(images,mask_image,exception);
         }
     }
   status&=CompositeImageList(image_info,&images,composite_image,
