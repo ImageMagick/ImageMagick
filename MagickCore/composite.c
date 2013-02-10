@@ -778,13 +778,13 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
       */
       SetGeometryInfo(&geometry_info);
       flags=NoValue;
-      value=GetImageArtifact(composite_image,"compose:args");
-      if (value != (char *) NULL)
+      value=GetImageArtifact(image,"compose:args");
+      if (value != (const char *) NULL)
         flags=ParseGeometry(value,&geometry_info);
-      if ((flags & WidthValue) == 0 ) {
-          (void) ThrowMagickException(exception,GetMagickModule(),
-               OptionWarning,"InvalidSetting","'%s' '%s'",
-               "compose:args",value);
+      if ((flags & WidthValue) == 0)
+        {
+          (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+            "InvalidSetting","'%s' '%s'","compose:args",value);
           composite_image=DestroyImage(composite_image);
           destination_image=DestroyImage(destination_image);
           return(MagickFalse);

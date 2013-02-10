@@ -281,13 +281,14 @@ MagickExport Image *AcquireImage(const ImageInfo *image_info,
   image->client_data=image_info->client_data;
   if (image_info->cache != (void *) NULL)
     ClonePixelCacheMethods(image->cache,image_info->cache);
-
-  /* Set all global options that map to per-image settings */
+  /*
+    Set all global options that map to per-image settings.
+  */
   (void) SyncImageSettings(image_info,image,exception);
-  /* At this point the image is not yet part of this image_info structure */
-  image->image_info = (ImageInfo *) NULL;
-
-  /* global options that are only set for new images */
+  /*
+    Global options that are only set for new images.
+  */
+  image->image_info=(ImageInfo *) NULL;
   option=GetImageOption(image_info,"delay");
   if (option != (const char *) NULL)
     {
@@ -1572,8 +1573,7 @@ MagickExport size_t InterpretImageFilename(const ImageInfo *image_info,
 #endif
         if (image != (Image *) NULL)
           value=GetImageProperty(image,pattern,exception);
-        if ((value == (const char *) NULL) &&
-            (image != (Image *) NULL))
+        if ((value == (const char *) NULL) && (image != (Image *) NULL))
           value=GetImageArtifact(image,pattern);
         if ((value == (const char *) NULL) &&
             (image_info != (ImageInfo *) NULL))
@@ -3973,7 +3973,7 @@ MagickExport MagickBooleanType SyncImageSettings(const ImageInfo *image_info,
      being removed from a image_info image list (or yet to be added to such),
      should have this pointer reset to NULL.
   */
-  image->image_info = image_info;
+  image->image_info=image_info;
 #endif
   return(MagickTrue);
 }

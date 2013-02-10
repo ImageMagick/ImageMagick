@@ -4599,7 +4599,7 @@ WandExport void CLINoImageOperator(MagickCLI *cli_wand,
             value=InterpretImageProperties(_image_info,_images,arg2,_exception);
             if (value == (char *) NULL)
               CLIWandExceptionBreak(OptionWarning,"InterpretPropertyFailure",
-                    option);
+                option);
             (void) SetImageOption(_image_info,arg1+7,value);
             value=DestroyString(value);
             break;
