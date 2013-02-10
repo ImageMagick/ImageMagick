@@ -1,3 +1,7 @@
+2013-02-09  6.8.2-9 Cristy  <quetzlzacatenango@image...>
+  * The DOT coders now compiles with GraphViz 2.30 (reference
+    http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22767).
+
 2013-02-09  6.8.2-8 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.2-8, SVN revision 10986.
 
