@@ -4564,7 +4564,7 @@ MAGICKWAND_BIN_SCRPTS = \
 
 MAGICKWAND_PKGCONFIG = \
 	MagickWand/MagickWand.pc \
-	MagickWand/MagickWand-@MAGICK_ABI_SUFFIX@.pc
+	MagickWand/MagickWand@MAGICK_MAJOR_VERSION@-@MAGICK_ABI_SUFFIX@.pc
 
 MAGICKWAND_MANS = \
 	MagickWand/MagickWand-config.1
@@ -4613,9 +4613,7 @@ MAGICKPP_MANS_OPT = \
 
 MAGICKPP_PKGCONFIG_OPT = \
 	Magick++/lib/Magick++.pc \
-	Magick++/lib/ImageMagick++.pc \
-	Magick++/lib/Magick++@MAGICK_MAJOR_VERSION@-@MAGICK_ABI_SUFFIX@.pc \
-	Magick++/lib/ImageMagick++@MAGICK_MAJOR_VERSION@-@MAGICK_ABI_SUFFIX@.pc
+	Magick++/lib/Magick++@MAGICK_MAJOR_VERSION@-@MAGICK_ABI_SUFFIX@.pc
 
 MAGICKPP_TEST_SCRPTS_OPT = \
 	Magick++/tests/tests.tap \
@@ -4630,7 +4628,6 @@ MAGICKPP_EXTRA_DIST = \
 	Magick++/README \
 	Magick++/bin/Magick++-config.1 \
 	Magick++/bin/Magick++-config.in \
-	Magick++/lib/ImageMagick++.pc.in \
 	Magick++/lib/libMagick++.map \
 	Magick++/lib/Magick++.pc.in \
 	Magick++/demo/model.miff \
