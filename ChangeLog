@@ -1,3 +1,6 @@
+2013-02-09  6.8.2-9 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.2-9, SVN revision 10995.
+
 2013-02-09  6.8.2-9 Bastien Roucaries  <roucaries.basti...>
   * Export versioning to automake in order to use it for library prefix.
   * So bump was incomplete due to no changing map file.
