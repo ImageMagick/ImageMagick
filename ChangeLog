@@ -1,3 +1,10 @@
+2013-02-09  6.8.2-9 Bastien Roucaries  <roucaries.basti...>
+  * Export versioning to automake in order to use it for library prefix.
+  * So bump was incomplete due to no changing map file.
+  * Change abi name by adding major version to lib name (will simplify
+    next imagemagick major version release work) and reset release version
+    to 1 (due to changing abi name).
+
 2013-02-09  6.8.2-9 Cristy  <quetzlzacatenango@image...>
   * The DOT coders now compiles with GraphViz 2.30 (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22767).
