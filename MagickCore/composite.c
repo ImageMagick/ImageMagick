@@ -1494,7 +1494,7 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           break;
         }
       }
-      if (GetPixelMask(image,p) != 0)
+      if (GetPixelMask(image,q) != 0)
         {
           p+=GetPixelChannels(composite_image);
           q+=GetPixelChannels(image);
@@ -2508,7 +2508,7 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
         register ssize_t
           i;
 
-        if (GetPixelMask(image,p) != 0)
+        if (GetPixelMask(image,q) != 0)
           {
             p+=GetPixelChannels(texture_image);
             q+=GetPixelChannels(image);
