@@ -35,6 +35,10 @@ PACKAGE_VERSION_ADDENDUM="-${PACKAGE_RELEASE}"
 # source and binary compatibility with older minor versions, and changes
 # in the PATCH level are perfectly compatible, forwards and backwards.
 # See http://apr.apache.org/versioning.html.
-MAGICK_LIBRARY_CURRENT=10
+#
+# PLEASE NOTE that doing a SO BUMP aka raising the CURRENT REVISION
+# could be avoided using libversioning aka map files.  You MUST change .map
+# files if you raise these versions.
+MAGICK_LIBRARY_CURRENT=1
 MAGICK_LIBRARY_REVISION=0
 MAGICK_LIBRARY_AGE=0
