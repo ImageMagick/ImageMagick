@@ -1030,12 +1030,17 @@ PACKAGE_LIB_VERSION
 PACKAGE_CHANGE_DATE
 PACKAGE_RELEASE
 PACKAGE_PERL_VERSION
-MAGICK_SVN_REVISION
 MAGICK_LIBRARY_VERSION_INFO
 MAGICK_LIBRARY_CURRENT_MIN
 MAGICK_LIBRARY_AGE
 MAGICK_LIBRARY_REVISION
 MAGICK_LIBRARY_CURRENT
+MAGICK_SVN_REVISION
+MAGICK_VERSION
+MAGICK_PATCHLEVEL_VERSION
+MAGICK_MICRO_VERSION
+MAGICK_MINOR_VERSION
+MAGICK_MAJOR_VERSION
 MAGICK_TARGET_OS
 MAGICK_TARGET_VENDOR
 MAGICK_TARGET_CPU
@@ -3489,7 +3494,7 @@ ac_config_headers="$ac_config_headers config/config.h"
 
 ac_config_commands="$ac_config_commands MagickCore/magick-baseconfig.h"
 
-ac_config_files="$ac_config_files common.shi config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/Magick++.dox config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config MagickCore/ImageMagick.pc Magick++/lib/ImageMagick++.pc Magick++/lib/Magick++.pc MagickCore/MagickCore-config MagickCore/MagickCore.pc MagickCore/version.h Makefile magick.sh PerlMagick/Magick.pm PerlMagick/Makefile.PL PerlMagick/check.sh utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 MagickWand/MagickWand-config MagickWand/MagickWand.pc"
+ac_config_files="$ac_config_files common.shi config/configure.xml config/delegates.xml config/ImageMagick.rdf config/MagickCore.dox config/MagickWand.dox config/Magick++.dox config/type-dejavu.xml config/type-ghostscript.xml config/type-windows.xml config/type.xml ImageMagick.spec Magick++/bin/Magick++-config MagickCore/ImageMagick.pc Magick++/lib/Magick++.pc MagickCore/MagickCore-config MagickCore/MagickCore.pc MagickCore/version.h Makefile magick.sh PerlMagick/Magick.pm PerlMagick/Makefile.PL PerlMagick/check.sh utilities/animate.1 utilities/compare.1 utilities/composite.1 utilities/conjure.1 utilities/convert.1 utilities/display.1 utilities/identify.1 utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 utilities/montage.1 utilities/stream.1 MagickWand/MagickWand-config MagickWand/MagickWand.pc"
 
 
 #
@@ -3651,12 +3656,27 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
+
+# Substitute versioning
+MAGICK_MAJOR_VERSION=7
+
+MAGICK_MINOR_VERSION=0
+
+MAGICK_MICRO_VERSION=0
+
+MAGICK_PATCHLEVEL_VERSION=0
+
+MAGICK_VERSION=7.0.0-0
+
+MAGICK_SVN_REVISION=10994M
+
+
 # Substitute library versioning
 MAGICK_LIBRARY_CURRENT_MIN=`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`
 
 MAGICK_LIBRARY_VERSION_INFO=$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE
 
-MAGICK_SVN_REVISION=10921:10939M
+
 
 
 
@@ -36804,7 +36824,6 @@ do
     "ImageMagick.spec") CONFIG_FILES="$CONFIG_FILES ImageMagick.spec" ;;
     "Magick++/bin/Magick++-config") CONFIG_FILES="$CONFIG_FILES Magick++/bin/Magick++-config" ;;
     "MagickCore/ImageMagick.pc") CONFIG_FILES="$CONFIG_FILES MagickCore/ImageMagick.pc" ;;
-    "Magick++/lib/ImageMagick++.pc") CONFIG_FILES="$CONFIG_FILES Magick++/lib/ImageMagick++.pc" ;;
     "Magick++/lib/Magick++.pc") CONFIG_FILES="$CONFIG_FILES Magick++/lib/Magick++.pc" ;;
     "MagickCore/MagickCore-config") CONFIG_FILES="$CONFIG_FILES MagickCore/MagickCore-config" ;;
     "MagickCore/MagickCore.pc") CONFIG_FILES="$CONFIG_FILES MagickCore/MagickCore.pc" ;;

@@ -50,7 +50,6 @@ AC_CONFIG_FILES([\
     ImageMagick.spec \
     Magick++/bin/Magick++-config \
     MagickCore/ImageMagick.pc \
-    Magick++/lib/ImageMagick++.pc \
     Magick++/lib/Magick++.pc \
     MagickCore/MagickCore-config \
     MagickCore/MagickCore.pc \
@@ -112,6 +111,15 @@ MAGICK_TARGET_OS=$host_os
 AC_SUBST(MAGICK_TARGET_OS)
 AC_DEFINE_UNQUOTED(MAGICK_TARGET_OS,$MAGICK_TARGET_OS,[Target Host OS])
 
+
+# Substitute versioning
+AC_SUBST([MAGICK_MAJOR_VERSION],[magick_major_version])
+AC_SUBST([MAGICK_MINOR_VERSION],[magick_minor_version])
+AC_SUBST([MAGICK_MICRO_VERSION],[magick_micro_version])
+AC_SUBST([MAGICK_PATCHLEVEL_VERSION],[magick_patchlevel_version])
+AC_SUBST([MAGICK_VERSION],[magick_version])
+AC_SUBST([MAGICK_SVN_REVISION],[magick_svn_revision])
+
 # Substitute library versioning
 AC_SUBST(MAGICK_LIBRARY_CURRENT)dnl
 AC_SUBST(MAGICK_LIBRARY_REVISION)dnl
@@ -120,7 +128,8 @@ AC_SUBST([MAGICK_LIBRARY_CURRENT_MIN],
          [`expr $MAGICK_LIBRARY_CURRENT - $MAGICK_LIBRARY_AGE`])
 AC_SUBST([MAGICK_LIBRARY_VERSION_INFO],
          [$MAGICK_LIBRARY_CURRENT:$MAGICK_LIBRARY_REVISION:$MAGICK_LIBRARY_AGE])
-AC_SUBST([MAGICK_SVN_REVISION],[magick_svn_revision])
+
+
 
 AC_SUBST(PACKAGE_NAME)dnl
 AC_SUBST(PACKAGE_VERSION)dnl

@@ -7,8 +7,8 @@
 AM_CPPFLAGS += -I$(top_srcdir)/Magick++/lib
 
 if WITH_MAGICK_PLUS_PLUS
-MAGICKPP_LIBS = Magick++/lib/libMagick++-@MAGICK_ABI_SUFFIX@.la
-MAGICKPP_LDADD = $(MAGICKPP_LIBS) $(top_builddir)/MagickCore/libMagickCore-@MAGICK_ABI_SUFFIX@.la
+MAGICKPP_LIBS = Magick++/lib/libMagick++@MAGICK_MAJOR_VERSION@-@MAGICK_ABI_SUFFIX@.la
+MAGICKPP_LDADD = $(MAGICKPP_LIBS) $(top_builddir)/MagickCore/libMagickCore@MAGICK_MAJOR_VERSION@-@MAGICK_ABI_SUFFIX@.la
 MAGICKPP_CHECK_PGRMS = $(MAGICKPP_CHECK_PGRMS_OPT)
 MAGICKPP_MANS = $(MAGICKPP_MANS_OPT)
 MAGICKPP_PKGCONFIG = $(MAGICKPP_PKGCONFIG_OPT)
@@ -37,8 +37,8 @@ MAGICKPP_MANS_OPT = \
 MAGICKPP_PKGCONFIG_OPT = \
 	Magick++/lib/Magick++.pc \
 	Magick++/lib/ImageMagick++.pc \
-	Magick++/lib/Magick++-@MAGICK_ABI_SUFFIX@.pc \
-	Magick++/lib/ImageMagick++-@MAGICK_ABI_SUFFIX@.pc
+	Magick++/lib/Magick++@MAGICK_MAJOR_VERSION@-@MAGICK_ABI_SUFFIX@.pc \
+	Magick++/lib/ImageMagick++@MAGICK_MAJOR_VERSION@-@MAGICK_ABI_SUFFIX@.pc
 
 MAGICKPP_TEST_SCRPTS_OPT = \
 	Magick++/tests/tests.tap \
@@ -71,7 +71,7 @@ MAGICKPP_CLEANFILES = \
 	Magick++/tests/testmagick_anim_out.miff \
 	Magick++/tests/ir.out
 
-Magick___lib_libMagick___@MAGICK_ABI_SUFFIX@_la_SOURCES = \
+Magick___lib_libMagick__@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES = \
 	Magick++/lib/Blob.cpp \
 	Magick++/lib/BlobRef.cpp \
 	Magick++/lib/CoderInfo.cpp \
@@ -132,16 +132,16 @@ MAGICKPP_INCHEADERS_OPT = \
 	Magick++/lib/Magick++/TypeMetric.h
 
 if HAVE_LD_VERSION_SCRIPT
-Magick___lib_libMagick___@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION =  -Wl,--version-script=$(top_srcdir)/Magick++/lib/libMagick++.map
+Magick___lib_libMagick__@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION =  -Wl,--version-script=$(top_srcdir)/Magick++/lib/libMagick++.map
 else
-Magick___lib_libMagick___@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
+Magick___lib_libMagick__@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
 endif
 
-Magick___lib_libMagick___@MAGICK_ABI_SUFFIX@_la_LDFLAGS = -no-undefined \
+Magick___lib_libMagick__@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS = -no-undefined \
   $(Magick___lib_libMagick___la_LDFLAGS_VERSION) $(MAGICK_LT_RELEASE_OPTS) \
   -version-info \
   $(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
-Magick___lib_libMagick___@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+Magick___lib_libMagick__@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
 
 MAGICKPP_CHECK_PGRMS_OPT = \
 	Magick++/demo/analyze \

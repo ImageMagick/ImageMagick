@@ -123,21 +123,21 @@ MAGICKWAND_MANS = \
 
 MAGICKWAND_BUILT_SRCS = 
 
-MAGICKWAND_LIBS = MagickWand/libMagickWand-@MAGICK_ABI_SUFFIX@.la
+MAGICKWAND_LIBS = MagickWand/libMagickWand@MAGICK_MAJOR_VERSION@-@MAGICK_ABI_SUFFIX@.la
 
-MagickWand_libMagickWand_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICKWAND_SOURCES)
-MagickWand_libMagickWand_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
+MagickWand_libMagickWand@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_SOURCES = $(MAGICKWAND_SOURCES)
+MagickWand_libMagickWand@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_CPPFLAGS = $(LIBRARY_EXTRA_CPPFLAGS)
 
 if HAVE_LD_VERSION_SCRIPT
-MagickWand_libMagickWand_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION =  -Wl,--version-script=$(top_srcdir)/MagickWand/libMagickWand.map
+MagickWand_libMagickWand@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION =  -Wl,--version-script=$(top_srcdir)/MagickWand/libMagickWand.map
 else
-MagickWand_libMagickWand_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
+MagickWand_libMagickWand@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION = -export-symbols-regex ".*"
 endif
 
-MagickWand_libMagickWand_@MAGICK_ABI_SUFFIX@_la_LDFLAGS = -no-undefined \
-  $(MagickWand_libMagickWand_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION) $(MAGICK_LT_RELEASE_OPTS) \
+MagickWand_libMagickWand@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS = -no-undefined \
+  $(MagickWand_libMagickWand@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LDFLAGS_VERSION) $(MAGICK_LT_RELEASE_OPTS) \
 	$(MAGICK_LIBRARY_CURRENT):$(MAGICK_LIBRARY_REVISION):$(MAGICK_LIBRARY_AGE)
-MagickWand_libMagickWand_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
+MagickWand_libMagickWand@MAGICK_MAJOR_VERSION@_@MAGICK_ABI_SUFFIX@_la_LIBADD = $(MAGICKCORE_LIBS) $(X11_LIBS) $(GOMP_LIBS) $(MATH_LIBS)
 
 MAGICKWAND_EXTRA_DIST = \
 	MagickWand/ChangeLog \
