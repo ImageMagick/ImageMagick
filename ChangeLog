@@ -1,4 +1,7 @@
 2013-02-09  6.8.2-8 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.2-8, SVN revision 10986.
+
+2013-02-09  6.8.2-8 Cristy  <quetzlzacatenango@image...>
   * MagickStatisticImage() method signature was corrected, SO bump required.
 
 2013-02-08  6.8.2-7 Cristy  <quetzlzacatenango@image...>
