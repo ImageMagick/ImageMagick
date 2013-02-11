@@ -350,7 +350,7 @@ static const struct ReferenceFormats
     { "X3F", UndefinedCompression, 0.0 },
     { "XBM", UndefinedCompression, 0.0 },
     { "XCF", UndefinedCompression, 0.0 },
-    { "XPM", UndefinedCompression, 0.0 },
+    { "XPM", UndefinedCompression, 0.003 },
     { "XPS", UndefinedCompression, 0.0 },
     { "XV", UndefinedCompression, 0.0 },
 #if !defined(MAGICKCORE_WINDOWS_SUPPORT)
