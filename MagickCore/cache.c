@@ -1126,35 +1126,35 @@ static inline MagickBooleanType IsPixelAuthentic(
   return(status);
 }
 
-MagickPrivate Quantum *GetAuthenticPixelCacheNexus(Image *image,
-  const ssize_t x,const ssize_t y,const size_t columns,const size_t rows,
-  NexusInfo *nexus_info,ExceptionInfo *exception)
+MagickPrivate Quantum *GetAuthenticPixelCacheNexus(Image *image,const ssize_t x,
+  const ssize_t y,const size_t columns,const size_t rows,NexusInfo *nexus_info,
+  ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
 
   Quantum
-    *q;
+    *pixels;
 
   /*
     Transfer pixels from the cache.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  q=QueueAuthenticPixelCacheNexus(image,x,y,columns,rows,MagickTrue,nexus_info,
-    exception);
-  if (q == (Quantum *) NULL)
+  pixels=QueueAuthenticPixelCacheNexus(image,x,y,columns,rows,MagickTrue,
+    nexus_info,exception);
+  if (pixels == (Quantum *) NULL)
     return((Quantum *) NULL);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   if (IsPixelAuthentic(cache_info,nexus_info) != MagickFalse)
-    return(q);
+    return(pixels);
   if (ReadPixelCachePixels(cache_info,nexus_info,exception) == MagickFalse)
     return((Quantum *) NULL);
   if (cache_info->metacontent_extent != 0)
     if (ReadPixelCacheMetacontent(cache_info,nexus_info,exception) == MagickFalse)
       return((Quantum *) NULL);
-  return(q);
+  return(pixels);
 }
 
 /*
@@ -1296,7 +1296,7 @@ MagickExport Quantum *GetAuthenticPixels(Image *image,const ssize_t x,
     id = GetOpenMPThreadId();
 
   Quantum
-    *q;
+    *pixels;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1306,14 +1306,14 @@ MagickExport Quantum *GetAuthenticPixels(Image *image,const ssize_t x,
   if (cache_info->methods.get_authentic_pixels_handler !=
       (GetAuthenticPixelsHandler) NULL)
     {
-      q=cache_info->methods.get_authentic_pixels_handler(image,x,y,columns,rows,
-        exception);
-      return(q);
+      pixels=cache_info->methods.get_authentic_pixels_handler(image,x,y,columns,
+        rows,exception);
+      return(pixels);
     }
   assert(id < (int) cache_info->number_threads);
-  q=GetAuthenticPixelCacheNexus(image,x,y,columns,rows,
+  pixels=GetAuthenticPixelCacheNexus(image,x,y,columns,rows,
     cache_info->nexus_info[id],exception);
-  return(q);
+  return(pixels);
 }
 
 /*
@@ -1358,7 +1358,7 @@ static Quantum *GetAuthenticPixelsCache(Image *image,const ssize_t x,
     id = GetOpenMPThreadId();
 
   Quantum
-    *q;
+    *pixels;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1368,9 +1368,9 @@ static Quantum *GetAuthenticPixelsCache(Image *image,const ssize_t x,
     return((Quantum *) NULL);
   assert(cache_info->signature == MagickSignature);
   assert(id < (int) cache_info->number_threads);
-  q=GetAuthenticPixelCacheNexus(image,x,y,columns,rows,
+  pixels=GetAuthenticPixelCacheNexus(image,x,y,columns,rows,
     cache_info->nexus_info[id],exception);
-  return(q);
+  return(pixels);
 }
 
 /*
@@ -3904,13 +3904,8 @@ MagickPrivate Quantum *QueueAuthenticPixelCacheNexus(Image *image,
   if (cache_info == (Cache) NULL)
     return((Quantum *) NULL);
   assert(cache_info->signature == MagickSignature);
-  if ((cache_info->columns == 0) && (cache_info->rows == 0))
-    {
-      (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
-        "NoPixelsDefinedInCache","`%s'",image->filename);
-      return((Quantum *) NULL);
-    }
-  if ((x < 0) || (y < 0) || (x >= (ssize_t) cache_info->columns) ||
+  if ((cache_info->columns == 0) || (cache_info->rows == 0) ||
+      (x < 0) || (y < 0) || (x >= (ssize_t) cache_info->columns) ||
       (y >= (ssize_t) cache_info->rows))
     {
       (void) ThrowMagickException(exception,GetMagickModule(),CacheError,
@@ -3980,7 +3975,7 @@ static Quantum *QueueAuthenticPixelsCache(Image *image,const ssize_t x,
     id = GetOpenMPThreadId();
 
   Quantum
-    *q;
+    *pixels;
 
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -3988,9 +3983,9 @@ static Quantum *QueueAuthenticPixelsCache(Image *image,const ssize_t x,
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   assert(id < (int) cache_info->number_threads);
-  q=QueueAuthenticPixelCacheNexus(image,x,y,columns,rows,MagickFalse,
+  pixels=QueueAuthenticPixelCacheNexus(image,x,y,columns,rows,MagickFalse,
     cache_info->nexus_info[id],exception);
-  return(q);
+  return(pixels);
 }
 
 /*
@@ -4060,7 +4055,7 @@ MagickExport Quantum *QueueAuthenticPixels(Image *image,const ssize_t x,
     id = GetOpenMPThreadId();
 
   Quantum
-    *q;
+    *pixels;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -4070,14 +4065,14 @@ MagickExport Quantum *QueueAuthenticPixels(Image *image,const ssize_t x,
   if (cache_info->methods.queue_authentic_pixels_handler !=
       (QueueAuthenticPixelsHandler) NULL)
     {
-      q=cache_info->methods.queue_authentic_pixels_handler(image,x,y,columns,
-        rows,exception);
-      return(q);
+      pixels=cache_info->methods.queue_authentic_pixels_handler(image,x,y,
+        columns,rows,exception);
+      return(pixels);
     }
   assert(id < (int) cache_info->number_threads);
-  q=QueueAuthenticPixelCacheNexus(image,x,y,columns,rows,MagickFalse,
+  pixels=QueueAuthenticPixelCacheNexus(image,x,y,columns,rows,MagickFalse,
     cache_info->nexus_info[id],exception);
-  return(q);
+  return(pixels);
 }
 
 /*
