@@ -782,8 +782,10 @@ static MagickBooleanType WriteSUNImage(const ImageInfo *image_info,Image *image,
         /*
           Full color SUN raster.
         */
-        sun_info.depth=(unsigned int) image->alpha_trait ? 32U : 24U;
-        sun_info.length=(unsigned int) ((image->alpha_trait ? 4 : 3)*number_pixels);
+        sun_info.depth=(unsigned int) image->alpha_trait == BlendPixelTrait ?
+          32U : 24U;
+        sun_info.length=(unsigned int) ((image->alpha_trait == BlendPixelTrait ?
+          4 : 3)*number_pixels);
         sun_info.length+=sun_info.length & 0x01 ? (unsigned int) image->rows :
           0;
       }

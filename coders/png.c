@@ -12746,7 +12746,7 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "      Image depth: %.20g",(double) p->depth);
 
-        if (p->alpha_trait)
+        if (p->alpha_trait == BlendPixelTrait)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "      Matte: True");
 
@@ -12840,11 +12840,12 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
         if (next_image->page.x || next_image->page.y)
           need_defi=MagickTrue;
 
-        if (next_image->alpha_trait)
+        if (next_image->alpha_trait == BlendPixelTrait)
           need_matte=MagickTrue;
 
         if ((int) next_image->dispose >= BackgroundDispose)
-          if (next_image->alpha_trait || next_image->page.x || next_image->page.y ||
+          if ((next_image->alpha_trait == BlendPixelTrait) ||
+               next_image->page.x || next_image->page.y ||
               ((next_image->columns < mng_info->page.width) &&
                (next_image->rows < mng_info->page.height)))
             mng_info->need_fram=MagickTrue;
@@ -13216,8 +13217,8 @@ static MagickBooleanType WriteMNGImage(const ImageInfo *image_info,Image *image,
        Write MNG BACK chunk and global bKGD chunk, if the image is transparent
        or does not cover the entire frame.
      */
-     if (write_mng && (image->alpha_trait || image->page.x > 0 ||
-         image->page.y > 0 || (image->page.width &&
+     if (write_mng && ((image->alpha_trait == BlendPixelTrait) ||
+         image->page.x > 0 || image->page.y > 0 || (image->page.width &&
          (image->page.width+image->page.x < mng_info->page.width))
          || (image->page.height && (image->page.height+image->page.y
          < mng_info->page.height))))
