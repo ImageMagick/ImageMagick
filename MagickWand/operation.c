@@ -1971,7 +1971,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
               break;
             for (x=0; x < (ssize_t) mask_image->columns; x++)
             {
-              if (IfMagickFalse(mask_image->alpha_trait))
+              if (mask_image->alpha_trait != BlendPixelTrait)
                 SetPixelAlpha(mask_image,GetPixelIntensity(mask_image,q),q);
               SetPixelRed(mask_image,GetPixelAlpha(mask_image,q),q);
               SetPixelGreen(mask_image,GetPixelAlpha(mask_image,q),q);
