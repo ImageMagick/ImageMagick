@@ -4652,7 +4652,6 @@ static void RotateKernelInfo(KernelInfo *kernel, double angle)
 MagickExport void ScaleGeometryKernelInfo (KernelInfo *kernel,
      const char *geometry)
 {
-  //GeometryFlags
   MagickStatusType
     flags;
 
