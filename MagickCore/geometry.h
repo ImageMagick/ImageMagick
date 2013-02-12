@@ -85,7 +85,7 @@ typedef enum
   EastGravity = 6,
   SouthWestGravity = 7,
   SouthGravity = 8,
-  SouthEastGravity = 9,
+  SouthEastGravity = 9
 } GravityType;
 
 typedef struct _AffineMatrix
