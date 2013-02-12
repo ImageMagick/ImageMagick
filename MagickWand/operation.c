@@ -399,7 +399,7 @@ static Image *SparseColorOption(const Image *image,
 %        arg2 is currently only used by "-limit"
 %
 */
-WandExport void CLISettingOptionInfo(MagickCLI *cli_wand,
+WandPrivate void CLISettingOptionInfo(MagickCLI *cli_wand,
      const char *option,const char *arg1, const char *arg2)
 {
   ssize_t
@@ -1641,7 +1641,7 @@ interpret Percent Escapes in Arguments, At least not yet */
   also change.  GetFirstImageInList() should be used by caller if they wish
   return the Image pointer to the first image in list.
 */
-static void CLISimpleOperatorImage(MagickCLI *cli_wand,
+static MagickBooleanType CLISimpleOperatorImage(MagickCLI *cli_wand,
   const char *option, const char *arg1n, const char *arg2n)
 {
   Image *
@@ -3401,7 +3401,7 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
   if (new_image != (Image *) NULL)
     ReplaceImageInListReturnLast(&_image,new_image);
 
-  return;
+  return(MagickTrue);
 #undef _image_info
 #undef _draw_info
 #undef _quantize_info
@@ -3413,8 +3413,8 @@ static void CLISimpleOperatorImage(MagickCLI *cli_wand,
 #undef plus_alt_op
 }
 
-WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
-  const char *option, const char *arg1, const char *arg2)
+WandPrivate MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,
+  const char *option,const char *arg1,const char *arg2)
 {
 #if !USE_WAND_METHODS
   size_t
@@ -3449,7 +3449,7 @@ WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
     CLISimpleOperatorImage(cli_wand, option, arg1, arg2);
   MagickResetIterator(&cli_wand->wand);
 #endif
-  return;
+  return(MagickTrue);
 }
 
 /*
@@ -3470,8 +3470,8 @@ WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
 %
 %  The format of the MogrifyImage method is:
 %
-%    void CLIListOperatorImages(MagickCLI *cli_wand,
-%        const char *option, const char *arg1, const char *arg2)
+%    MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
+%      const char *option,const char *arg1,const char *arg2)
 %
 %  A description of each parameter follows:
 %
@@ -3483,9 +3483,12 @@ WandExport void CLISimpleOperatorImages(MagickCLI *cli_wand,
 %        arg2 is currently not used
 %
 */
-WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
-     const char *option,const char *arg1n, const char *arg2n)
+WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
+  const char *option,const char *arg1n,const char *arg2n)
 {
+  MagickBooleanType
+    status;
+
   ssize_t
     parse;
 
@@ -3544,7 +3547,7 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
     "CLIListOperatorImages: \"%s\" \"%s\" \"%s\"\n",option,arg1,arg2);
 #endif
 
-
+  status=MagickTrue;
   new_images=NewImageList();
 
   switch (*(option+1))
@@ -3648,32 +3651,24 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
           /* FUTURE - this should not be here! - should be part of -geometry */
           (void) TransformImage(&source_image,(char *) NULL,
             source_image->geometry,_exception);
-
           SetGeometry(source_image,&geometry);
           (void) ParseAbsoluteGeometry(source_image->geometry,&geometry);
           GravityAdjustGeometry(new_images->columns,new_images->rows,
-               new_images->gravity, &geometry);
-
+            new_images->gravity, &geometry);
           mask_image=RemoveFirstImageFromList(&_images);
           if (mask_image != (Image *) NULL)
-            { /* handle a third write mask image */
+            {
               if ((compose == DisplaceCompositeOp) ||
-                  (compose == DistortCompositeOp)) {
-                /* Merge Y displacement into X displace/distort map. */
-                (void) CompositeImage(source_image,mask_image,
+                  (compose == DistortCompositeOp))
+                status&=CompositeImage(source_image,mask_image,
                   CopyGreenCompositeOp,MagickTrue,0,0,_exception);
-                mask_image=DestroyImage(mask_image);
-              }
-              else {
-                /* Set a blending mask for the composition.  */
-                (void) NegateImage(mask_image,MagickFalse,_exception);
-                (void) SetImageMask(source_image,mask_image,_exception);
-                mask_image=DestroyImage(mask_image);
-              }
+              else
+                status&=CompositeImage(source_image,mask_image,
+                  IntensityCompositeOp,MagickTrue,0,0,_exception);
+              mask_image=DestroyImage(mask_image);
             }
-          (void) CompositeImage(new_images,source_image,compose,clip_to_self,
+          status&=CompositeImage(new_images,source_image,compose,clip_to_self,
             geometry.x,geometry.y,_exception);
-          (void) SetImageMask(new_images,(Image *) NULL,_exception);
           source_image=DestroyImage(source_image);
           break;
         }
@@ -4241,10 +4236,10 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 
   /* if new image list generated, replace existing image list */
   if (new_images == (Image *) NULL)
-    return;
+    return(status);
   _images=DestroyImageList(_images);
   _images=GetFirstImageInList(new_images);
-  return;
+  return(status);
 
 #undef _image_info
 #undef _images
@@ -4292,8 +4287,8 @@ WandExport void CLIListOperatorImages(MagickCLI *cli_wand,
 %                   Currently arg2 is not used.
 %
 */
-WandExport void CLINoImageOperator(MagickCLI *cli_wand,
-  const char *option, const char *arg1, const char *arg2)
+WandPrivate void CLINoImageOperator(MagickCLI *cli_wand,
+  const char *option,const char *arg1,const char *arg2)
 {
 #if 0
   const char    /* For percent escape interpretImageProperties() */

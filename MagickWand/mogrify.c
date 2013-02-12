@@ -7462,27 +7462,15 @@ WandExport MagickBooleanType MogrifyImageList(ImageInfo *image_info,
               {
                 if ((image->compose == DisplaceCompositeOp) ||
                     (image->compose == DistortCompositeOp))
-                  {
-                    /*
-                      Merge Y displacement into X displacement image.
-                    */
-                    (void) CompositeImage(composite_image,mask_image,
-                      CopyGreenCompositeOp,MagickTrue,0,0,exception);
-                    mask_image=DestroyImage(mask_image);
-                  }
+                  status&=CompositeImage(composite_image,mask_image,
+                    CopyGreenCompositeOp,MagickTrue,0,0,exception);
                 else
-                  {
-                    /*
-                      Set a blending mask for the composition.
-                    */
-                    (void) NegateImage(mask_image,MagickFalse,exception);
-                    (void) SetImageMask(composite_image,mask_image,exception);
-                    mask_image=DestroyImage(mask_image);
-                  }
+                  status&=CompositeImage(composite_image,mask_image,
+                    IntensityCompositeOp,MagickTrue,0,0,exception);
+                mask_image=DestroyImage(mask_image);
               }
             (void) CompositeImage(image,composite_image,image->compose,
               clip_to_self,geometry.x,geometry.y,exception);
-            (void) SetImageMask(image,(Image *) NULL,exception);
             composite_image=DestroyImage(composite_image);
             *images=DestroyImageList(*images);
             *images=image;

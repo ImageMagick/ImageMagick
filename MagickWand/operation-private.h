@@ -13,17 +13,23 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  MagickWand command-line option process.
+  MagickWand private command-line option process.
 */
-#ifndef _MAGICKWAND_OPERATION_H
-#define _MAGICKWAND_OPERATION_H
+#ifndef _MAGICKWAND_OPERATION_PRIVATE_H
+#define _MAGICKWAND_OPERATION_PRIVATE_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
 
-extern WandExport void
-  CLIOption(MagickCLI *,const char *,...);
+/* These actually private */
+extern WandPrivate MagickBooleanType
+  CLIListOperatorImages(MagickCLI *, const char *,const char *,const char *);
+
+extern WandPrivate void
+  CLISettingOptionInfo(MagickCLI *,const char *,const char *, const char *),
+  CLISimpleOperatorImages(MagickCLI *,const char *,const char *,const char *),
+  CLINoImageOperator(MagickCLI *, const char *,const char *,const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

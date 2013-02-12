@@ -1622,22 +1622,12 @@ WandExport MagickBooleanType CompositeImageCommand(ImageInfo *image_info,
     {
       if ((composite_options.compose == DisplaceCompositeOp) ||
           (composite_options.compose == DistortCompositeOp))
-        {
-          /*
-            Merge Y displacement into X displacement image.
-          */
-          (void) CompositeImage(composite_image,mask_image,CopyGreenCompositeOp,
-            MagickTrue,0,0,exception);
-          mask_image=DestroyImage(mask_image);
-        }
+        status&=CompositeImage(composite_image,mask_image,
+          CopyGreenCompositeOp,MagickTrue,0,0,exception);
       else
-        {
-          /*
-            Set a blending mask for the composition.
-          */
-          (void) NegateImage(mask_image,MagickFalse,exception);
-          (void) SetImageMask(images,mask_image,exception);
-        }
+        status&=CompositeImage(composite_image,mask_image,IntensityCompositeOp,
+          MagickTrue,0,0,exception);
+      mask_image=DestroyImage(mask_image);
     }
   status&=CompositeImageList(image_info,&images,composite_image,
     &composite_options,exception);
