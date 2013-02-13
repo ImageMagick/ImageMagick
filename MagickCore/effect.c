@@ -1405,8 +1405,6 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       j,
       y;
 
-    if (status == MagickFalse)
-      continue;
     PixelChannel channel=GetPixelChannelChannel(image,i);
     PixelTrait traits=GetPixelChannelTraits(image,channel);
     PixelTrait despeckle_traits=GetPixelChannelTraits(despeckle_image,channel);
@@ -1414,6 +1412,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
         (despeckle_traits == UndefinedPixelTrait))
       continue;
     if ((despeckle_traits & CopyPixelTrait) != 0)
+      continue;
+    if (status == MagickFalse)
       continue;
     (void) ResetMagickMemory(pixels,0,length*sizeof(*pixels));
     j=(ssize_t) image->columns+2;
