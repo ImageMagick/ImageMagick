@@ -260,10 +260,12 @@ DIST_COMMON = $(srcdir)/m4/Makefile.am $(srcdir)/config/Makefile.am \
 	$(top_srcdir)/MagickCore/MagickCore.pc.in \
 	$(top_srcdir)/MagickCore/version.h.in $(srcdir)/magick.sh.in \
 	$(top_srcdir)/PerlMagick/check.sh.in \
-	$(top_srcdir)/PerlMagick/Magick.pm.in \
-	$(top_srcdir)/PerlMagick/Magick.xs.in \
 	$(top_srcdir)/PerlMagick/Makefile.PL.in \
-	$(top_srcdir)/PerlMagick/typemap.in \
+	$(top_srcdir)/PerlMagick/quantum/Makefile.PL.in \
+	$(top_srcdir)/PerlMagick/quantum/quantum.pm.in \
+	$(top_srcdir)/PerlMagick/quantum/quantum.xs.in \
+	$(top_srcdir)/PerlMagick/quantum/typemap.in \
+	$(top_srcdir)/PerlMagick/Magick.pm.in \
 	$(top_srcdir)/utilities/animate.1.in \
 	$(top_srcdir)/utilities/compare.1.in \
 	$(top_srcdir)/utilities/composite.1.in \
@@ -333,13 +335,15 @@ CONFIG_CLEAN_FILES = common.shi config/configure.xml \
 	MagickCore/ImageMagick.pc Magick++/lib/Magick++.pc \
 	MagickCore/MagickCore-config MagickCore/MagickCore.pc \
 	MagickCore/version.h magick.sh PerlMagick/check.sh \
-	PerlMagick/Magick.pm PerlMagick/Magick.xs \
-	PerlMagick/Makefile.PL PerlMagick/typemap utilities/animate.1 \
-	utilities/compare.1 utilities/composite.1 utilities/conjure.1 \
-	utilities/convert.1 utilities/display.1 utilities/identify.1 \
-	utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 \
-	utilities/montage.1 utilities/stream.1 \
-	MagickWand/MagickWand-config MagickWand/MagickWand.pc
+	PerlMagick/Makefile.PL PerlMagick/quantum/Makefile.PL \
+	PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs \
+	PerlMagick/quantum/typemap PerlMagick/Magick.pm \
+	utilities/animate.1 utilities/compare.1 utilities/composite.1 \
+	utilities/conjure.1 utilities/convert.1 utilities/display.1 \
+	utilities/identify.1 utilities/ImageMagick.1 \
+	utilities/import.1 utilities/mogrify.1 utilities/montage.1 \
+	utilities/stream.1 MagickWand/MagickWand-config \
+	MagickWand/MagickWand.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -5107,13 +5111,17 @@ magick.sh: $(top_builddir)/config.status $(srcdir)/magick.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/check.sh: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/check.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-PerlMagick/Magick.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Magick.pm.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-PerlMagick/Magick.xs: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Magick.xs.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Makefile.PL.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-PerlMagick/typemap: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/typemap.in
+PerlMagick/quantum/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/quantum/Makefile.PL.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+PerlMagick/quantum/quantum.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/quantum/quantum.pm.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+PerlMagick/quantum/quantum.xs: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/quantum/quantum.xs.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+PerlMagick/quantum/typemap: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/quantum/typemap.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+PerlMagick/Magick.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Magick.pm.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 utilities/animate.1: $(top_builddir)/config.status $(top_srcdir)/utilities/animate.1.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
@@ -10765,7 +10773,7 @@ perl-sources: perl-quantum-sources
 @WITH_PERL_FALSE@distclean-perl:
 
 # create a copy for pc file (ideally the non abi should be symlinked)
-%-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc: %.pc
+%@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc: %.pc
 	cp -f $^ $@
 
 all-local: $(MAGICKPP_LOCAL_TARGETS) $(PERLMAGICK_ALL_LOCAL_TARGETS) $(MAINTAINER_TARGETS)
