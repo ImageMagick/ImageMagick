@@ -1673,10 +1673,7 @@ MagickExport MagickBooleanType GetOneAuthenticPixel(Image *image,
     }
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
-    PixelChannel
-      channel;
-
-    channel=GetPixelChannelChannel(image,i);
+    PixelChannel channel=GetPixelChannelChannel(image,i);
     pixel[channel]=q[i];
   }
   return(MagickTrue);
@@ -1748,10 +1745,7 @@ static MagickBooleanType GetOneAuthenticPixelFromCache(Image *image,
     }
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
-    PixelChannel
-      channel;
-
-    channel=GetPixelChannelChannel(image,i);
+    PixelChannel channel=GetPixelChannelChannel(image,i);
     pixel[channel]=q[i];
   }
   return(MagickTrue);
@@ -1827,10 +1821,7 @@ MagickExport MagickBooleanType GetOneVirtualPixel(const Image *image,
     }
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
-    PixelChannel
-      channel;
-
-    channel=GetPixelChannelChannel(image,i);
+    PixelChannel channel=GetPixelChannelChannel(image,i);
     pixel[channel]=p[i];
   }
   return(MagickTrue);
@@ -1906,10 +1897,7 @@ static MagickBooleanType GetOneVirtualPixelFromCache(const Image *image,
     }
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
-    PixelChannel
-      channel;
-
-    channel=GetPixelChannelChannel(image,i);
+    PixelChannel channel=GetPixelChannelChannel(image,i);
     pixel[channel]=p[i];
   }
   return(MagickTrue);

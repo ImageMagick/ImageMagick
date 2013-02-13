@@ -1101,16 +1101,10 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
                 }
               for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
               {
-                PixelChannel
-                  channel;
-
-                PixelTrait
-                  rotate_traits,
-                  traits;
-
-                channel=GetPixelChannelChannel(image,i);
-                traits=GetPixelChannelTraits(image,channel);
-                rotate_traits=GetPixelChannelTraits(rotate_image,channel);
+                PixelChannel channel=GetPixelChannelChannel(image,i);
+                PixelTrait traits=GetPixelChannelTraits(image,channel);
+                PixelTrait rotate_traits=GetPixelChannelTraits(rotate_image,
+                  channel);
                 if ((traits == UndefinedPixelTrait) ||
                     (rotate_traits == UndefinedPixelTrait))
                   continue;
@@ -1193,16 +1187,10 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
             }
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            PixelChannel
-              channel;
-
-            PixelTrait
-              rotate_traits,
-              traits;
-
-            channel=GetPixelChannelChannel(image,i);
-            traits=GetPixelChannelTraits(image,channel);
-            rotate_traits=GetPixelChannelTraits(rotate_image,channel);
+            PixelChannel channel=GetPixelChannelChannel(image,i);
+            PixelTrait traits=GetPixelChannelTraits(image,channel);
+            PixelTrait rotate_traits=GetPixelChannelTraits(rotate_image,
+              channel);
             if ((traits == UndefinedPixelTrait) ||
                 (rotate_traits == UndefinedPixelTrait))
               continue;
@@ -1323,16 +1311,10 @@ MagickExport Image *IntegralRotateImage(const Image *image,size_t rotations,
                 }
               for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
               {
-                PixelChannel
-                  channel;
-
-                PixelTrait
-                  rotate_traits,
-                  traits;
-
-                channel=GetPixelChannelChannel(image,i);
-                traits=GetPixelChannelTraits(image,channel);
-                rotate_traits=GetPixelChannelTraits(rotate_image,channel);
+                PixelChannel channel=GetPixelChannelChannel(image,i);
+                PixelTrait traits=GetPixelChannelTraits(image,channel);
+                PixelTrait rotate_traits=GetPixelChannelTraits(rotate_image,
+                  channel);
                 if ((traits == UndefinedPixelTrait) ||
                     (rotate_traits == UndefinedPixelTrait))
                   continue;
