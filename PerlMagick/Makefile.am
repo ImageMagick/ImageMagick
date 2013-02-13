@@ -17,12 +17,21 @@
 #  Makefile for building PerlMagick.
 
 # If source files missing, see if they can be obtained via VPATH
-perl-sources:
+
+$(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.xs: $(PERLMAGICK)/Magick.xs
+	$(AM_V_GEN) $(LN_S) $(notdir $^) $@
+
+$(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.pm: $(PERLMAGICK)/Magick.pm
+	$(AM_V_GEN) $(LN_S) $(notdir $^) $@
+
+perl-quantum-sources: $(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.xs $(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.pm
+
+perl-sources: perl-quantum-sources
 	@if test -n "$(VPATH)" ; then \
 	  echo "Linking PerlMagick Sources ..." ; \
 	  imagemagick=`(cd $(VPATH) ; pwd)` && \
 	  ( cd $(PERLMAGICK) && \
-	    sh $$imagemagick/config/lndir.sh $$imagemagick/$(PERLMAGICK) ) \
+	    sh $$imagemagick/config/lndir.sh $$imagemagick/$(PERLMAGICK) ; ) \
 	fi ; \
 	touch perl-sources
 
@@ -110,7 +119,10 @@ clean-perl:
 	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) ; \
 	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) ; \
 	rm -f Makefile.old PerlMagick ; \
-	rm -f t/output* t/jng/*_tmp.jng t/*/output* )
+	rm -f t/output* t/jng/*_tmp.jng t/*/output* ; \
+	rm -f @MAGICK_ABI_SUFFIX@.xs;\
+	rm -f @MAGICK_ABI_SUFFIX@.pm;\
+	rm -f Magick.pm;)
 	rm -f perl-sources
 
 distclean-perl: clean-perl

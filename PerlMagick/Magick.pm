@@ -1,4 +1,4 @@
-package Image::Magick;
+package Image::Magick::Q16HDRI;
 
 #  Copyright 1999-2013 ImageMagick Studio LLC, a non-profit organization
 #  dedicated to making software imaging solutions freely available.
@@ -15,7 +15,6 @@ package Image::Magick;
 #  limitations under the License.
 #
 #  Initial version, written by Kyle Shorter.
-
 
 use strict;
 use Carp;
@@ -69,14 +68,14 @@ sub AUTOLOAD {
     goto &$AUTOLOAD;
 }
 
-bootstrap Image::Magick $VERSION;
+bootstrap Image::Magick::Q16HDRI $VERSION;
 
 # Preloaded methods go here.
 
 sub new
 {
     my $this = shift;
-    my $class = ref($this) || $this || "Image::Magick";
+    my $class = ref($this) || $this || "Image::Magick::Q16HDRI";
     my $self = [ ];
     bless $self, $class;
     $self->set(@_) if @_;
@@ -86,7 +85,7 @@ sub new
 sub New
 {
     my $this = shift;
-    my $class = ref($this) || $this || "Image::Magick";
+    my $class = ref($this) || $this || "Image::Magick::Q16HDRI";
     my $self = [ ];
     bless $self, $class;
     $self->set(@_) if @_;
@@ -102,12 +101,12 @@ __END__
 
 =head1 NAME
 
-Image::Magick - objected-oriented Perl interface to ImageMagick. Use it to read, manipulate, or write an image or image sequence from within a Perl script.
+Image::Magick::Q16HDRI - objected-oriented Perl interface to ImageMagick (Q16HDRI). Use it to read, manipulate, or write an image or image sequence from within a Perl script.
 
 =head1 SYNOPSIS
 
-  use Image::Magick;
-  $p = new Image::Magick;
+  use Image::Magick::Q16HDRI;
+  $p = new Image::Magick::Q16HDRI;
   $p->Read("imagefile");
   $p->Set(attribute => value, ...)
   ($a, ...) = $p->Get("attribute", ...)

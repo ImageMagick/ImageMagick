@@ -187,6 +187,8 @@
 #
 #  Makefile for building PerlMagick.
 
+# If source files missing, see if they can be obtained via VPATH
+
 
 
 
@@ -257,9 +259,11 @@ DIST_COMMON = $(srcdir)/m4/Makefile.am $(srcdir)/config/Makefile.am \
 	$(top_srcdir)/MagickCore/MagickCore-config.in \
 	$(top_srcdir)/MagickCore/MagickCore.pc.in \
 	$(top_srcdir)/MagickCore/version.h.in $(srcdir)/magick.sh.in \
-	$(top_srcdir)/PerlMagick/Magick.pm.in \
-	$(top_srcdir)/PerlMagick/Makefile.PL.in \
 	$(top_srcdir)/PerlMagick/check.sh.in \
+	$(top_srcdir)/PerlMagick/Magick.pm.in \
+	$(top_srcdir)/PerlMagick/Magick.xs.in \
+	$(top_srcdir)/PerlMagick/Makefile.PL.in \
+	$(top_srcdir)/PerlMagick/typemap.in \
 	$(top_srcdir)/utilities/animate.1.in \
 	$(top_srcdir)/utilities/compare.1.in \
 	$(top_srcdir)/utilities/composite.1.in \
@@ -328,8 +332,9 @@ CONFIG_CLEAN_FILES = common.shi config/configure.xml \
 	config/type.xml ImageMagick.spec Magick++/bin/Magick++-config \
 	MagickCore/ImageMagick.pc Magick++/lib/Magick++.pc \
 	MagickCore/MagickCore-config MagickCore/MagickCore.pc \
-	MagickCore/version.h magick.sh PerlMagick/Magick.pm \
-	PerlMagick/Makefile.PL PerlMagick/check.sh utilities/animate.1 \
+	MagickCore/version.h magick.sh PerlMagick/check.sh \
+	PerlMagick/Magick.pm PerlMagick/Magick.xs \
+	PerlMagick/Makefile.PL PerlMagick/typemap utilities/animate.1 \
 	utilities/compare.1 utilities/composite.1 utilities/conjure.1 \
 	utilities/convert.1 utilities/display.1 utilities/identify.1 \
 	utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 \
@@ -5100,11 +5105,15 @@ MagickCore/version.h: $(top_builddir)/config.status $(top_srcdir)/MagickCore/ver
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 magick.sh: $(top_builddir)/config.status $(srcdir)/magick.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
+PerlMagick/check.sh: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/check.sh.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/Magick.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Magick.pm.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+PerlMagick/Magick.xs: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Magick.xs.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Makefile.PL.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-PerlMagick/check.sh: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/check.sh.in
+PerlMagick/typemap: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/typemap.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 utilities/animate.1: $(top_builddir)/config.status $(top_srcdir)/utilities/animate.1.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
@@ -10668,13 +10677,20 @@ uninstall-local-utilities:
 	  rm -f $$target ; \
 	done
 
-# If source files missing, see if they can be obtained via VPATH
-perl-sources:
+$(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.xs: $(PERLMAGICK)/Magick.xs
+	$(AM_V_GEN) $(LN_S) $(notdir $^) $@
+
+$(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.pm: $(PERLMAGICK)/Magick.pm
+	$(AM_V_GEN) $(LN_S) $(notdir $^) $@
+
+perl-quantum-sources: $(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.xs $(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.pm
+
+perl-sources: perl-quantum-sources
 	@if test -n "$(VPATH)" ; then \
 	  echo "Linking PerlMagick Sources ..." ; \
 	  imagemagick=`(cd $(VPATH) ; pwd)` && \
 	  ( cd $(PERLMAGICK) && \
-	    sh $$imagemagick/config/lndir.sh $$imagemagick/$(PERLMAGICK) ) \
+	    sh $$imagemagick/config/lndir.sh $$imagemagick/$(PERLMAGICK) ; ) \
 	fi ; \
 	touch perl-sources
 
@@ -10732,7 +10748,10 @@ perl-sources:
 @WITH_PERL_TRUE@	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) ; \
 @WITH_PERL_TRUE@	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) ; \
 @WITH_PERL_TRUE@	rm -f Makefile.old PerlMagick ; \
-@WITH_PERL_TRUE@	rm -f t/output* t/jng/*_tmp.jng t/*/output* )
+@WITH_PERL_TRUE@	rm -f t/output* t/jng/*_tmp.jng t/*/output* ; \
+@WITH_PERL_TRUE@	rm -f @MAGICK_ABI_SUFFIX@.xs;\
+@WITH_PERL_TRUE@	rm -f @MAGICK_ABI_SUFFIX@.pm;\
+@WITH_PERL_TRUE@	rm -f Magick.pm;)
 @WITH_PERL_TRUE@	rm -f perl-sources
 
 @WITH_PERL_TRUE@distclean-perl: clean-perl
@@ -10839,6 +10858,7 @@ libtool: $(LIBTOOL_DEPS)
 html:
 	doxygen config/MagickCore.dox
 	doxygen config/MagickWand.dox
+	doxygen config/Magick++.dox
 $(DIST_WINDOWS_SRC_ZIP) $(DIST_WINDOWS_SRC_7ZIP) windows-dist:
 	if test -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; then \
 	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
