@@ -18,13 +18,13 @@
 
 # If source files missing, see if they can be obtained via VPATH
 
-$(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.xs: $(PERLMAGICK)/Magick.xs
+$(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.xs: $(PERLMAGICK)/quantum/quantum.xs
 	$(AM_V_GEN) $(LN_S) $(notdir $^) $@
 
-$(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.pm: $(PERLMAGICK)/Magick.pm
+$(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.pm: $(PERLMAGICK)/quantum/quantum.pm
 	$(AM_V_GEN) $(LN_S) $(notdir $^) $@
 
-perl-quantum-sources: $(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.xs $(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.pm
+perl-quantum-sources: $(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.xs $(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.pm
 
 perl-sources: perl-quantum-sources
 	@if test -n "$(VPATH)" ; then \
@@ -120,8 +120,8 @@ clean-perl:
 	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) ; \
 	rm -f Makefile.old PerlMagick ; \
 	rm -f t/output* t/jng/*_tmp.jng t/*/output* ; \
-	rm -f @MAGICK_ABI_SUFFIX@.xs;\
-	rm -f @MAGICK_ABI_SUFFIX@.pm;\
+	rm -f quantum/@MAGICK_ABI_SUFFIX@.xs;\
+	rm -f quantum/@MAGICK_ABI_SUFFIX@.pm;\
 	rm -f Magick.pm;)
 	rm -f perl-sources
 
