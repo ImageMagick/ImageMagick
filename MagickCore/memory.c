@@ -835,11 +835,11 @@ MagickExport void *RelinquishMagickMemory(void *memory)
 %
 %  A description of each parameter follows:
 %
-%    o memory: A pointer to a memory allocation.
+%    o memory: a pointer to a memory allocation.
 %
-%    o byte: Set the memory to this value.
+%    o byte: set the memory to this value.
 %
-%    o size: Size of the memory to reset.
+%    o size: size of the memory to reset.
 %
 */
 MagickExport void *ResetMagickMemory(void *memory,int byte,const size_t size)
@@ -983,7 +983,8 @@ MagickExport void *ResizeQuantumMemory(void *memory,const size_t count,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SetMagickMemoryMethods() sets the methods to acquire, resize, and destroy
-%  memory.
+%  memory. Your custom memory methods must be set prior to the
+%  MagickCoreGenesis() method.
 %
 %  The format of the SetMagickMemoryMethods() method is:
 %
