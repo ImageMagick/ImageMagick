@@ -153,7 +153,7 @@ pkgconfig_DATA = \
 	$(MAGICKPP_PKGCONFIG)
 
 # create a copy for pc file (ideally the non abi should be symlinked)
-%-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc: %.pc
+%@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc: %.pc
 	cp -f $^ $@
 
 # Manual pages to install

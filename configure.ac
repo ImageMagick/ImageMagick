@@ -57,10 +57,12 @@ AC_CONFIG_FILES([\
     Makefile \
     magick.sh \
     PerlMagick/check.sh \
-    PerlMagick/Magick.pm \
-    PerlMagick/Magick.xs \
     PerlMagick/Makefile.PL \
-    PerlMagick/typemap \
+    PerlMagick/quantum/Makefile.PL \
+    PerlMagick/quantum/quantum.pm \
+    PerlMagick/quantum/quantum.xs \
+    PerlMagick/quantum/typemap \
+    PerlMagick/Magick.pm \
     utilities/animate.1 \
     utilities/compare.1 \
     utilities/composite.1 \
