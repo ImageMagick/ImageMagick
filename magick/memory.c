@@ -983,7 +983,8 @@ MagickExport void *ResizeQuantumMemory(void *memory,const size_t count,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SetMagickMemoryMethods() sets the methods to acquire, resize, and destroy
-%  memory.
+%  memory. Your custom memory methods must be set prior to the
+%  MagickCoreGenesis() method.
 %
 %  The format of the SetMagickMemoryMethods() method is:
 %
