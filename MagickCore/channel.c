@@ -530,20 +530,14 @@ MagickExport Image *CombineImages(const Image *image,
     next=image;
     for (i=0; i < (ssize_t) GetPixelChannels(combine_image); i++)
     {
-      PixelChannel
-        channel;
-
-      PixelTrait
-        traits;
-
       register ssize_t
         x;
 
-      if (next == (Image *) NULL)
-        continue;
-      channel=GetPixelChannelChannel(combine_image,i);
-      traits=GetPixelChannelTraits(combine_image,channel);
+      PixelChannel channel=GetPixelChannelChannel(combine_image,i);
+      PixelTrait traits=GetPixelChannelTraits(combine_image,channel);
       if (traits == UndefinedPixelTrait)
+        continue;
+      if (next == (Image *) NULL)
         continue;
       image_view=AcquireVirtualCacheView(next,exception);
       p=GetCacheViewVirtualPixels(image_view,0,y,next->columns,1,exception);
@@ -701,14 +695,8 @@ MagickExport Image *SeparateImage(const Image *image,
         double
           pixel;
 
-        PixelChannel
-          channel;
-
-        PixelTrait
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (GetChannelBit(channel_type,channel) == 0))
           continue;
@@ -784,14 +772,8 @@ MagickExport Image *SeparateImages(const Image *image,ExceptionInfo *exception)
   images=NewImageList();
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
-    PixelChannel
-      channel;
-
-    PixelTrait
-      traits;
-
-    channel=GetPixelChannelChannel(image,i);
-    traits=GetPixelChannelTraits(image,channel);
+    PixelChannel channel=GetPixelChannelChannel(image,i);
+    PixelTrait traits=GetPixelChannelTraits(image,channel);
     if ((traits == UndefinedPixelTrait) ||
         ((traits & UpdatePixelTrait) == 0))
       continue;

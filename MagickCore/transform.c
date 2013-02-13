@@ -283,16 +283,9 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            PixelChannel
-              channel;
-
-            PixelTrait
-              chop_traits,
-              traits;
-
-            channel=GetPixelChannelChannel(image,i);
-            traits=GetPixelChannelTraits(image,channel);
-            chop_traits=GetPixelChannelTraits(chop_image,channel);
+            PixelChannel channel=GetPixelChannelChannel(image,i);
+            PixelTrait traits=GetPixelChannelTraits(image,channel);
+            PixelTrait chop_traits=GetPixelChannelTraits(chop_image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (chop_traits == UndefinedPixelTrait))
               continue;
@@ -355,16 +348,9 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            PixelChannel
-              channel;
-
-            PixelTrait
-              chop_traits,
-              traits;
-
-            channel=GetPixelChannelChannel(image,i);
-            traits=GetPixelChannelTraits(image,channel);
-            chop_traits=GetPixelChannelTraits(chop_image,channel);
+            PixelChannel channel=GetPixelChannelChannel(image,i);
+            PixelTrait traits=GetPixelChannelTraits(image,channel);
+            PixelTrait chop_traits=GetPixelChannelTraits(chop_image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (chop_traits == UndefinedPixelTrait))
               continue;
@@ -717,16 +703,9 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          crop_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        crop_traits=GetPixelChannelTraits(crop_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait crop_traits=GetPixelChannelTraits(crop_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (crop_traits == UndefinedPixelTrait))
           continue;
@@ -1079,16 +1058,9 @@ MagickExport Image *ExcerptImage(const Image *image,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          excerpt_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        excerpt_traits=GetPixelChannelTraits(excerpt_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait excerpt_traits=GetPixelChannelTraits(excerpt_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (excerpt_traits == UndefinedPixelTrait))
           continue;
@@ -1286,16 +1258,9 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          flip_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        flip_traits=GetPixelChannelTraits(flip_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait flip_traits=GetPixelChannelTraits(flip_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (flip_traits == UndefinedPixelTrait))
           continue;
@@ -1434,16 +1399,9 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          flop_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        flop_traits=GetPixelChannelTraits(flop_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait flop_traits=GetPixelChannelTraits(flop_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (flop_traits == UndefinedPixelTrait))
           continue;
@@ -1568,16 +1526,10 @@ static inline MagickBooleanType CopyImageRegion(Image *destination,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(source); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          destination_traits,
-          source_traits;
-
-        channel=GetPixelChannelChannel(source,i);
-        source_traits=GetPixelChannelTraits(source,channel);
-        destination_traits=GetPixelChannelTraits(destination,channel);
+        PixelChannel channel=GetPixelChannelChannel(source,i);
+        PixelTrait source_traits=GetPixelChannelTraits(source,channel);
+        PixelTrait destination_traits=GetPixelChannelTraits(destination,
+          channel);
         if ((source_traits == UndefinedPixelTrait) ||
             (destination_traits == UndefinedPixelTrait))
           continue;
@@ -1892,16 +1844,9 @@ MagickExport Image *SpliceImage(const Image *image,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          splice_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        splice_traits=GetPixelChannelTraits(splice_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait splice_traits=GetPixelChannelTraits(splice_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (splice_traits == UndefinedPixelTrait))
           continue;
@@ -1925,16 +1870,9 @@ MagickExport Image *SpliceImage(const Image *image,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          traits,
-          splice_traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        splice_traits=GetPixelChannelTraits(splice_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait splice_traits=GetPixelChannelTraits(splice_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (splice_traits == UndefinedPixelTrait))
           continue;
@@ -2001,16 +1939,9 @@ MagickExport Image *SpliceImage(const Image *image,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          traits,
-          splice_traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        splice_traits=GetPixelChannelTraits(splice_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait splice_traits=GetPixelChannelTraits(splice_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (splice_traits == UndefinedPixelTrait))
           continue;
@@ -2034,16 +1965,9 @@ MagickExport Image *SpliceImage(const Image *image,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          traits,
-          splice_traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        splice_traits=GetPixelChannelTraits(splice_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait splice_traits=GetPixelChannelTraits(splice_image,channel);
         if ((traits == UndefinedPixelTrait) ||
             (splice_traits == UndefinedPixelTrait))
           continue;
@@ -2350,16 +2274,10 @@ MagickExport Image *TransposeImage(const Image *image,ExceptionInfo *exception)
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          traits,
-          transpose_traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        transpose_traits=GetPixelChannelTraits(transpose_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait transpose_traits=GetPixelChannelTraits(transpose_image,
+          channel);
         if ((traits == UndefinedPixelTrait) ||
             (transpose_traits == UndefinedPixelTrait))
           continue;
@@ -2503,16 +2421,10 @@ MagickExport Image *TransverseImage(const Image *image,ExceptionInfo *exception)
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          traits,
-          transverse_traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        transverse_traits=GetPixelChannelTraits(transverse_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait transverse_traits=GetPixelChannelTraits(transverse_image,
+          channel);
         if ((traits == UndefinedPixelTrait) ||
             (transverse_traits == UndefinedPixelTrait))
           continue;

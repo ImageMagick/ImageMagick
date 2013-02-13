@@ -440,16 +440,10 @@ static MagickBooleanType CompositeOverImage(Image *image,
             source,exception);
           for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
           {
-            PixelChannel
-              channel;
-
-            PixelTrait
-              composite_traits,
-              traits;
-
-            channel=GetPixelChannelChannel(image,i);
-            traits=GetPixelChannelTraits(image,channel);
-            composite_traits=GetPixelChannelTraits(composite_image,channel);
+            PixelChannel channel=GetPixelChannelChannel(image,i);
+            PixelTrait traits=GetPixelChannelTraits(image,channel);
+            PixelTrait composite_traits=GetPixelChannelTraits(composite_image,
+              channel);
             if ((traits == UndefinedPixelTrait) ||
                 (composite_traits == UndefinedPixelTrait))
               continue;
@@ -477,16 +471,10 @@ static MagickBooleanType CompositeOverImage(Image *image,
       alpha=Sa*(-Da)+Sa+Da;
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          composite_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        composite_traits=GetPixelChannelTraits(composite_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait composite_traits=GetPixelChannelTraits(composite_image,
+          channel);
         if ((traits == UndefinedPixelTrait) ||
             (composite_traits == UndefinedPixelTrait))
           continue;
@@ -667,16 +655,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             }
           for (i=0; i < (ssize_t) GetPixelChannels(composite_image); i++)
           {
-            PixelChannel
-              channel;
-
-            PixelTrait
-              composite_traits,
-              traits;
-
-            channel=GetPixelChannelChannel(composite_image,i);
-            composite_traits=GetPixelChannelTraits(composite_image,channel);
-            traits=GetPixelChannelTraits(image,channel);
+            PixelChannel channel=GetPixelChannelChannel(composite_image,i);
+            PixelTrait composite_traits=GetPixelChannelTraits(composite_image,
+              channel);
+            PixelTrait traits=GetPixelChannelTraits(image,channel);
             if ((traits == UndefinedPixelTrait) ||
                 (composite_traits == UndefinedPixelTrait))
               continue;
@@ -1315,16 +1297,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
             MagickRealType
               pixel;
 
-            PixelChannel
-              channel;
-
-            PixelTrait
-              composite_traits,
-              traits;
-
-            channel=GetPixelChannelChannel(image,i);
-            traits=GetPixelChannelTraits(image,channel);
-            composite_traits=GetPixelChannelTraits(composite_image,channel);
+            PixelChannel channel=GetPixelChannelChannel(image,i);
+            PixelTrait traits=GetPixelChannelTraits(image,channel);
+            PixelTrait composite_traits=GetPixelChannelTraits(composite_image,
+              channel);
             if ((traits == UndefinedPixelTrait) ||
                 (composite_traits == UndefinedPixelTrait))
               continue;
@@ -1504,16 +1480,10 @@ MagickExport MagickBooleanType CompositeImage(Image *image,
           pixel,
           sans;
 
-        PixelChannel
-          channel;
-
-        PixelTrait
-          composite_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        composite_traits=GetPixelChannelTraits(composite_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait composite_traits=GetPixelChannelTraits(composite_image,
+          channel);
         if (traits == UndefinedPixelTrait)
           continue;
         if ((compose != IntensityCompositeOp) &&
@@ -2499,16 +2469,10 @@ MagickExport MagickBooleanType TextureImage(Image *image,const Image *texture,
           }
         for (i=0; i < (ssize_t) GetPixelChannels(texture_image); i++)
         {
-          PixelChannel
-            channel;
-
-          PixelTrait
-            texture_traits,
-            traits;
-
-          channel=GetPixelChannelChannel(texture_image,i);
-          texture_traits=GetPixelChannelTraits(texture_image,channel);
-          traits=GetPixelChannelTraits(image,channel);
+          PixelChannel channel=GetPixelChannelChannel(texture_image,i);
+          PixelTrait traits=GetPixelChannelTraits(image,channel);
+          PixelTrait texture_traits=GetPixelChannelTraits(texture_image,
+            channel);
           if ((traits == UndefinedPixelTrait) ||
               (texture_traits == UndefinedPixelTrait))
             continue;

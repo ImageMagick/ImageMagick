@@ -231,16 +231,10 @@ MagickExport Image *CompareImages(Image *image,const Image *reconstruct_image,
         double
           distance;
 
-        PixelChannel
-          channel;
-
-        PixelTrait
-          reconstruct_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        reconstruct_traits=GetPixelChannelTraits(reconstruct_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait reconstruct_traits=GetPixelChannelTraits(reconstruct_image,
+          channel);
         if ((traits == UndefinedPixelTrait) ||
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
@@ -370,16 +364,10 @@ static MagickBooleanType GetAbsoluteDistortion(const Image *image,
       difference=MagickFalse;
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          reconstruct_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        reconstruct_traits=GetPixelChannelTraits(reconstruct_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait reconstruct_traits=GetPixelChannelTraits(reconstruct_image,
+          channel);
         if ((traits == UndefinedPixelTrait) ||
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
@@ -417,14 +405,8 @@ static size_t GetImageChannels(const Image *image)
   channels=0;
   for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
   {
-    PixelChannel
-      channel;
-
-    PixelTrait
-      traits;
-
-    channel=GetPixelChannelChannel(image,i);
-    traits=GetPixelChannelTraits(image,channel);
+    PixelChannel channel=GetPixelChannelChannel(image,i);
+    PixelTrait traits=GetPixelChannelTraits(image,channel);
     if ((traits & UpdatePixelTrait) != 0)
       channels++;
   }
@@ -494,16 +476,10 @@ static MagickBooleanType GetFuzzDistortion(const Image *image,
         double
           distance;
 
-        PixelChannel
-          channel;
-
-        PixelTrait
-          reconstruct_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        reconstruct_traits=GetPixelChannelTraits(reconstruct_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait reconstruct_traits=GetPixelChannelTraits(reconstruct_image,
+          channel);
         if ((traits == UndefinedPixelTrait) ||
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
@@ -595,16 +571,10 @@ static MagickBooleanType GetMeanAbsoluteDistortion(const Image *image,
         double
           distance;
 
-        PixelChannel
-          channel;
-
-        PixelTrait
-          reconstruct_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        reconstruct_traits=GetPixelChannelTraits(reconstruct_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait reconstruct_traits=GetPixelChannelTraits(reconstruct_image,
+          channel);
         if ((traits == UndefinedPixelTrait) ||
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
@@ -692,16 +662,10 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
         double
           distance;
 
-        PixelChannel
-          channel;
-
-        PixelTrait
-          reconstruct_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        reconstruct_traits=GetPixelChannelTraits(reconstruct_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait reconstruct_traits=GetPixelChannelTraits(reconstruct_image,
+          channel);
         if ((traits == UndefinedPixelTrait) ||
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
@@ -790,16 +754,10 @@ static MagickBooleanType GetMeanSquaredDistortion(const Image *image,
         double
           distance;
 
-        PixelChannel
-          channel;
-
-        PixelTrait
-          reconstruct_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        reconstruct_traits=GetPixelChannelTraits(reconstruct_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait reconstruct_traits=GetPixelChannelTraits(reconstruct_image,
+          channel);
         if ((traits == UndefinedPixelTrait) ||
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
@@ -900,16 +858,10 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
         }
       for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          reconstruct_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        reconstruct_traits=GetPixelChannelTraits(reconstruct_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait reconstruct_traits=GetPixelChannelTraits(reconstruct_image,
+          channel);
         if ((traits == UndefinedPixelTrait) ||
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
@@ -943,10 +895,7 @@ static MagickBooleanType GetNormalizedCrossCorrelationDistortion(
     double
       gamma;
 
-    PixelChannel
-      channel;
-
-    channel=GetPixelChannelChannel(image,i);
+    PixelChannel channel=GetPixelChannelChannel(image,i);
     gamma=image_statistics[i].standard_deviation*
       reconstruct_statistics[channel].standard_deviation;
     gamma=PerceptibleReciprocal(gamma);
@@ -1025,16 +974,10 @@ static MagickBooleanType GetPeakAbsoluteDistortion(const Image *image,
         double
           distance;
 
-        PixelChannel
-          channel;
-
-        PixelTrait
-          reconstruct_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        reconstruct_traits=GetPixelChannelTraits(reconstruct_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait reconstruct_traits=GetPixelChannelTraits(reconstruct_image,
+          channel);
         if ((traits == UndefinedPixelTrait) ||
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
@@ -1438,16 +1381,10 @@ MagickExport MagickBooleanType IsImagesEqual(Image *image,
         double
           distance;
 
-        PixelChannel
-          channel;
-
-        PixelTrait
-          reconstruct_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        reconstruct_traits=GetPixelChannelTraits(reconstruct_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait reconstruct_traits=GetPixelChannelTraits(reconstruct_image,
+          channel);
         if ((traits == UndefinedPixelTrait) ||
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
@@ -1637,16 +1574,10 @@ MagickExport Image *SimilarityImage(Image *image,const Image *reference,
         }
       for (i=0; i < (ssize_t) GetPixelChannels(similarity_image); i++)
       {
-        PixelChannel
-          channel;
-
-        PixelTrait
-          similarity_traits,
-          traits;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        similarity_traits=GetPixelChannelTraits(similarity_image,channel);
+        PixelChannel channel=GetPixelChannelChannel(image,i);
+        PixelTrait traits=GetPixelChannelTraits(image,channel);
+        PixelTrait similarity_traits=GetPixelChannelTraits(similarity_image,
+          channel);
         if ((traits == UndefinedPixelTrait) ||
             (similarity_traits == UndefinedPixelTrait) ||
             ((similarity_traits & UpdatePixelTrait) == 0))

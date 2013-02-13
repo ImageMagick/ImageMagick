@@ -740,10 +740,7 @@ MagickExport MagickBooleanType GetOneCacheViewAuthenticPixel(
     }
   for (i=0; i < (ssize_t) GetPixelChannels(cache_view->image); i++)
   {
-    PixelChannel
-      channel;
-
-    channel=GetPixelChannelChannel(cache_view->image,i);
+    PixelChannel channel=GetPixelChannelChannel(cache_view->image,i);
     pixel[channel]=p[i];
   }
   return(MagickTrue);
@@ -816,10 +813,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualPixel(
     }
   for (i=0; i < (ssize_t) GetPixelChannels(cache_view->image); i++)
   {
-    PixelChannel
-      channel;
-
-    channel=GetPixelChannelChannel(cache_view->image,i);
+    PixelChannel channel=GetPixelChannelChannel(cache_view->image,i);
     pixel[channel]=p[i];
   }
   return(MagickTrue);
@@ -950,10 +944,7 @@ MagickExport MagickBooleanType GetOneCacheViewVirtualMethodPixel(
     }
   for (i=0; i < (ssize_t) GetPixelChannels(cache_view->image); i++)
   {
-    PixelChannel
-      channel;
-
-    channel=GetPixelChannelChannel(cache_view->image,i);
+    PixelChannel channel=GetPixelChannelChannel(cache_view->image,i);
     pixel[channel]=p[i];
   }
   return(MagickTrue);
