@@ -58,9 +58,11 @@ AC_CONFIG_FILES([\
     magick/version.h \
     Makefile \
     magick.sh \
-    PerlMagick/Magick.pm \
-    PerlMagick/Makefile.PL \
     PerlMagick/check.sh \
+    PerlMagick/Magick.pm \
+    PerlMagick/Magick.xs \
+    PerlMagick/Makefile.PL \
+    PerlMagick/typemap \
     utilities/animate.1 \
     utilities/compare.1 \
     utilities/composite.1 \
