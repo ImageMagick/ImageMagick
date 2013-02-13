@@ -263,9 +263,11 @@ DIST_COMMON = $(srcdir)/m4/Makefile.am $(srcdir)/config/Makefile.am \
 	$(top_srcdir)/magick/version.h.in $(srcdir)/magick.sh.in \
 	$(top_srcdir)/PerlMagick/check.sh.in \
 	$(top_srcdir)/PerlMagick/Magick.pm.in \
-	$(top_srcdir)/PerlMagick/Magick.xs.in \
 	$(top_srcdir)/PerlMagick/Makefile.PL.in \
-	$(top_srcdir)/PerlMagick/typemap.in \
+	$(top_srcdir)/PerlMagick/quantum/Makefile.PL.in \
+	$(top_srcdir)/PerlMagick/quantum/quantum.pm.in \
+	$(top_srcdir)/PerlMagick/quantum/quantum.xs.in \
+	$(top_srcdir)/PerlMagick/quantum/typemap.in \
 	$(top_srcdir)/utilities/animate.1.in \
 	$(top_srcdir)/utilities/compare.1.in \
 	$(top_srcdir)/utilities/composite.1.in \
@@ -337,13 +339,14 @@ CONFIG_CLEAN_FILES = common.shi config/configure.xml \
 	Magick++/lib/Magick++.pc magick/Magick-config \
 	magick/MagickCore-config magick/MagickCore.pc magick/version.h \
 	magick.sh PerlMagick/check.sh PerlMagick/Magick.pm \
-	PerlMagick/Magick.xs PerlMagick/Makefile.PL PerlMagick/typemap \
-	utilities/animate.1 utilities/compare.1 utilities/composite.1 \
-	utilities/conjure.1 utilities/convert.1 utilities/display.1 \
-	utilities/identify.1 utilities/ImageMagick.1 \
-	utilities/import.1 utilities/mogrify.1 utilities/montage.1 \
-	utilities/stream.1 wand/MagickWand-config wand/MagickWand.pc \
-	wand/Wand-config wand/Wand.pc
+	PerlMagick/Makefile.PL PerlMagick/quantum/Makefile.PL \
+	PerlMagick/quantum/quantum.pm PerlMagick/quantum/quantum.xs \
+	PerlMagick/quantum/typemap utilities/animate.1 \
+	utilities/compare.1 utilities/composite.1 utilities/conjure.1 \
+	utilities/convert.1 utilities/display.1 utilities/identify.1 \
+	utilities/ImageMagick.1 utilities/import.1 utilities/mogrify.1 \
+	utilities/montage.1 utilities/stream.1 wand/MagickWand-config \
+	wand/MagickWand.pc wand/Wand-config wand/Wand.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -5047,11 +5050,15 @@ PerlMagick/check.sh: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/chec
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/Magick.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Magick.pm.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-PerlMagick/Magick.xs: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Magick.xs.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 PerlMagick/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Makefile.PL.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-PerlMagick/typemap: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/typemap.in
+PerlMagick/quantum/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/quantum/Makefile.PL.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+PerlMagick/quantum/quantum.pm: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/quantum/quantum.pm.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+PerlMagick/quantum/quantum.xs: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/quantum/quantum.xs.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+PerlMagick/quantum/typemap: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/quantum/typemap.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 utilities/animate.1: $(top_builddir)/config.status $(top_srcdir)/utilities/animate.1.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
@@ -10443,13 +10450,13 @@ magick-install-data-local:
 magick-uninstall-local:
 	rm -f $(DESTDIR)$(magickincarchdir)/magick-baseconfig.h
 
-$(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.xs: $(PERLMAGICK)/Magick.xs
+$(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.xs: $(PERLMAGICK)/quantum/quantum.xs
 	$(AM_V_GEN) $(LN_S) $(notdir $^) $@
 
-$(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.pm: $(PERLMAGICK)/Magick.pm
+$(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.pm: $(PERLMAGICK)/quantum/quantum.pm
 	$(AM_V_GEN) $(LN_S) $(notdir $^) $@
 
-perl-quantum-sources: $(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.xs $(PERLMAGICK)/@MAGICK_ABI_SUFFIX@.pm
+perl-quantum-sources: $(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.xs $(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.pm
 
 perl-sources: perl-quantum-sources
 	@if test -n "$(VPATH)" ; then \
@@ -10515,8 +10522,8 @@ perl-sources: perl-quantum-sources
 @WITH_PERL_TRUE@	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) ; \
 @WITH_PERL_TRUE@	rm -f Makefile.old PerlMagick ; \
 @WITH_PERL_TRUE@	rm -f t/output* t/jng/*_tmp.jng t/*/output* ; \
-@WITH_PERL_TRUE@	rm -f @MAGICK_ABI_SUFFIX@.xs;\
-@WITH_PERL_TRUE@	rm -f @MAGICK_ABI_SUFFIX@.pm;\
+@WITH_PERL_TRUE@	rm -f quantum/@MAGICK_ABI_SUFFIX@.xs;\
+@WITH_PERL_TRUE@	rm -f quantum/@MAGICK_ABI_SUFFIX@.pm;\
 @WITH_PERL_TRUE@	rm -f Magick.pm;)
 @WITH_PERL_TRUE@	rm -f perl-sources
 
@@ -10531,7 +10538,7 @@ perl-sources: perl-quantum-sources
 @WITH_PERL_FALSE@distclean-perl:
 
 # create a copy for pc file (ideally the non abi should be symlinked)
-%-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc: %.pc
+%@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc: %.pc
 	cp -f $^ $@
 
 all-local: $(MAGICKPP_LOCAL_TARGETS) $(PERLMAGICK_ALL_LOCAL_TARGETS) $(MAINTAINER_TARGETS)
