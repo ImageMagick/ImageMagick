@@ -185,10 +185,10 @@ if (($^O eq 'MSWin32') && ($Config{cc} =~ /gcc/)) {
 WriteMakefile
   (
    # Module description
-   'ABSTRACT'	=> 'ImageMagick PERL Extension',
+   'ABSTRACT'	=> 'ImageMagick PERL Extension (@MAGICK_ABI_SUFFIX@)',
 
    # Perl module name is Image::Magick
-   'NAME'	=> 'Image::Magick',
+   'NAME'	=> 'Image::Magick::@MAGICK_ABI_SUFFIX@',
 
    # Module author
    'AUTHOR' => 'ImageMagick Studio LLC',
@@ -234,6 +234,8 @@ WriteMakefile
 
    # Use same compiler as ImageMagick
    'PERLMAINCC'	=> '@PERLMAINCC@ @OPENMP_CFLAGS@',
+   'PM' => { '@MAGICK_ABI_SUFFIX@.pm' => '$(INST_LIBDIR)/@MAGICK_ABI_SUFFIX@.pm' },
+   'XS' => { '@MAGICK_ABI_SUFFIX@.xs' => '@MAGICK_ABI_SUFFIX@.xs' },
    'AR' => '@AR@',
    'LD' => '@PERLMAINCC@',
 
@@ -244,6 +246,9 @@ WriteMakefile
    test	=> { TESTS	=>	$delegate_tests},
 
    ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
+
+# sane vesion
+   depend => { '$(FIRST_MAKEFILE)' => '$(VERSION_FROM)' }
 );
 
 

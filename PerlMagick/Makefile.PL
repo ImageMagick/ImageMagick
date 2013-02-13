@@ -185,10 +185,10 @@ if (($^O eq 'MSWin32') && ($Config{cc} =~ /gcc/)) {
 WriteMakefile
   (
    # Module description
-   'ABSTRACT'	=> 'ImageMagick PERL Extension',
+   'ABSTRACT'	=> 'ImageMagick PERL Extension (Q16HDRI)',
 
    # Perl module name is Image::Magick
-   'NAME'	=> 'Image::Magick',
+   'NAME'	=> 'Image::Magick::Q16HDRI',
 
    # Module author
    'AUTHOR' => 'ImageMagick Studio LLC',
@@ -234,6 +234,8 @@ WriteMakefile
 
    # Use same compiler as ImageMagick
    'PERLMAINCC'	=> ' -fopenmp',
+   'PM' => { 'Q16HDRI.pm' => '$(INST_LIBDIR)/Q16HDRI.pm' },
+   'XS' => { 'Q16HDRI.xs' => 'Q16HDRI.xs' },
    'AR' => 'ar',
    'LD' => '',
 
@@ -244,6 +246,9 @@ WriteMakefile
    test	=> { TESTS	=>	$delegate_tests},
 
    ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
+
+# sane vesion
+   depend => { '$(FIRST_MAKEFILE)' => '$(VERSION_FROM)' }
 );
 
 

@@ -182,11 +182,11 @@ sub testRead {
       $ref_32 = $ref_16;
     }
 
-  if (QuantumDepth == 32)
+  if (Image::Magick->new()->QuantumDepth == 32)
     {
       $ref_signature=$ref_32;
     }
-  elsif (QuantumDepth == 16)
+  elsif (Image::Magick->new()->QuantumDepth == 16)
     {
       $ref_signature=$ref_16;
     }
@@ -223,7 +223,7 @@ sub testRead {
        	print "Image: $infile, signatures do not match.\n";
       	print "     Expected: $ref_signature\n";
       	print "     Computed: $signature\n";
-        print "     Depth:    ", QuantumDepth, "\n";
+        print "     Depth:    ", Image::Magick->new()->QuantumDepth, "\n";
         ++$failure;
         $image->Display();
       }
@@ -261,7 +261,7 @@ sub testRead {
               print "Image: $infile, signatures do not match.\n";
               print "     Expected: $ref_signature\n";
               print "     Computed: $signature\n";
-              print "     Depth:    ", QuantumDepth, "\n";
+              print "     Depth:    ", Image::Magick->new()->QuantumDepth, "\n";
               #$image->Display();
               ++$failure;
             }
@@ -420,11 +420,11 @@ sub testReadSized {
       $ref_32 = $ref_16;
     }
 
-  if (QuantumDepth == 32)
+  if (Image::Magick->new()->QuantumDepth == 32)
     {
       $ref_signature=$ref_32;
     }
-  elsif (QuantumDepth == 16)
+  elsif (Image::Magick->new()->QuantumDepth == 16)
     {
       $ref_signature=$ref_16;
     }
@@ -440,8 +440,8 @@ sub testReadSized {
   warn "$status" if "$status";
 
   # If depth is not zero, then set it
-  if ( QuantumDepth != 0 ) {
-    $status=$image->SetAttribute(depth=>QuantumDepth);
+  if ( Image::Magick->new()->QuantumDepth != 0 ) {
+    $status=$image->SetAttribute(depth=>Image::Magick->new()->QuantumDepth);
     warn "$status" if "$status";
   }
 
@@ -456,7 +456,7 @@ sub testReadSized {
       	print "Image: $infile, signatures do not match.\n";
       	print "     Expected: $ref_signature\n";
       	print "     Computed: $signature\n";
-        print "     Depth:    ", QuantumDepth, "\n";
+        print "     Depth:    ", Image::Magick->new()->QuantumDepth, "\n";
         print "not ok $test\n";
         #$image->Display();
       } else {
@@ -494,11 +494,11 @@ sub testReadWrite {
       $ref_32 = $ref_16;
     }
 
-  if (QuantumDepth == 32)
+  if (Image::Magick->new()->QuantumDepth == 32)
     {
       $ref_signature=$ref_32;
     }
-  elsif (QuantumDepth == 16)
+  elsif (Image::Magick->new()->QuantumDepth == 16)
     {
       $ref_signature=$ref_16;
     }
@@ -543,7 +543,7 @@ sub testReadWrite {
           print "Image: $infile, signatures do not match.\n";
           print "     Expected: $ref_signature\n";
           print "     Computed: $signature\n";
-          print "     Depth:    ", QuantumDepth, "\n";
+          print "     Depth:    ", Image::Magick->new()->QuantumDepth, "\n";
           print "not ok $test\n";
           $image->Display();
         } else {
@@ -785,11 +785,11 @@ sub testReadWriteSized {
       $ref_32 = $ref_16;
     }
 
-  if (QuantumDepth == 32)
+  if (Image::Magick->new()->QuantumDepth == 32)
     {
       $ref_signature=$ref_32;
     }
-  elsif (QuantumDepth == 16)
+  elsif (Image::Magick->new()->QuantumDepth == 16)
     {
       $ref_signature=$ref_16;
     }
@@ -856,7 +856,7 @@ sub testReadWriteSized {
           print "Image: $infile, signatures do not match.\n";
           print "     Expected: $ref_signature\n";
           print "     Computed: $signature\n";
-          print "     Depth:    ", QuantumDepth, "\n";
+          print "     Depth:    ", Image::Magick->new()->QuantumDepth, "\n";
           print "not ok $test\n";
           #$image->Display();
         } else {
@@ -969,11 +969,11 @@ sub testMontage {
       $ref_32 = $ref_16;
     }
 
-  if (QuantumDepth == 32)
+  if (Image::Magick->new()->QuantumDepth == 32)
     {
       $ref_signature=$ref_32;
     }
-  elsif (QuantumDepth == 16)
+  elsif (Image::Magick->new()->QuantumDepth == 16)
     {
       $ref_signature=$ref_16;
     }
@@ -1042,7 +1042,7 @@ sub testMontage {
         print "Test $test, signatures do not match.\n";
       	print "     Expected: $ref_signature\n";
       	print "     Computed: $signature\n";
-        print "     Depth:    ", QuantumDepth, "\n";
+        print "     Depth:    ", Image::Magick->new()->QuantumDepth, "\n";
         $status = $montage->Write("test_${test}_out.miff");
         warn "Write: $status" if "$status";
           
@@ -1100,11 +1100,11 @@ sub testFilterSignature {
       $ref_32 = $ref_16;
     }
 
-  if (QuantumDepth == 32)
+  if (Image::Magick->new()->QuantumDepth == 32)
     {
       $ref_signature=$ref_32;
     }
-  elsif (QuantumDepth == 16)
+  elsif (Image::Magick->new()->QuantumDepth == 16)
     {
       $ref_signature=$ref_16;
     }
@@ -1129,7 +1129,7 @@ sub testFilterSignature {
       print "Test $test, signatures do not match.\n";
       print "     Expected: $ref_signature\n";
       print "     Computed: $signature\n";
-      print "     Depth:    ", QuantumDepth, "\n";
+      print "     Depth:    ", Image::Magick->new()->QuantumDepth, "\n";
       #$image->Display();
       print "not ok $test\n";
     } else {
