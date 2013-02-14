@@ -10684,12 +10684,21 @@ uninstall-local-utilities:
 	done
 
 # If source files missing, see if they can be obtained via VPATH
-perl-sources:
+#
+$(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.xs: $(PERLMAGICK)/quantum/quantum.xs
+	$(AM_V_GEN) $(LN_S) $(notdir $^) $@
+
+$(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.pm: $(PERLMAGICK)/quantum/quantum.pm
+	$(AM_V_GEN) $(LN_S) $(notdir $^) $@
+
+perl-quantum-sources: $(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.xs $(PERLMAGICK)/quantum/@MAGICK_ABI_SUFFIX@.pm
+
+perl-sources: perl-quantum-sources
 	@if test -n "$(VPATH)" ; then \
 	  echo "Linking PerlMagick Sources ..." ; \
 	  imagemagick=`(cd $(VPATH) ; pwd)` && \
 	  ( cd $(PERLMAGICK) && \
-	    sh $$imagemagick/config/lndir.sh $$imagemagick/$(PERLMAGICK) ) \
+	    sh $$imagemagick/config/lndir.sh $$imagemagick/$(PERLMAGICK) ; ) \
 	fi ; \
 	touch perl-sources
 
@@ -10748,8 +10757,8 @@ perl-sources:
 @WITH_PERL_TRUE@	( if test -f Makefile ; then $(MAKE) CC='@CC@' clean ; fi ) ; \
 @WITH_PERL_TRUE@	rm -f Makefile.old PerlMagick ; \
 @WITH_PERL_TRUE@	rm -f t/output* t/jng/*_tmp.jng t/*/output* ; \
-@WITH_PERL_TRUE@	rm -f QUANTUM/@MAGICK_ABI_SUFFIX@.xs;\
-@WITH_PERL_TRUE@	rm -f QUANTUM/@MAGICK_ABI_SUFFIX@.pm;\
+@WITH_PERL_TRUE@	rm -f quantum/@MAGICK_ABI_SUFFIX@.xs;\
+@WITH_PERL_TRUE@	rm -f quantum/@MAGICK_ABI_SUFFIX@.pm;\
 @WITH_PERL_TRUE@	rm -f Magick.pm;)
 @WITH_PERL_TRUE@	rm -f perl-sources
 
