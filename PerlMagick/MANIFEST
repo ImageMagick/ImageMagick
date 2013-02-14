@@ -30,6 +30,7 @@ Magick.pm.in
 Magick.xs
 Makefile.am
 Makefile.nt
+Makefile.PL
 Makefile.PL.in
 MANIFEST
 MANIFEST.SKIP
