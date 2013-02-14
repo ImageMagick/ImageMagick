@@ -1,4 +1,8 @@
-2013-02-09  6.8.3-0 Bastien Roucaries  <roucaries.basti...>
+2013-02-14  6.8.3-0 Cristy  <quetzlzacatenango@image...>
+   * Webp requires alpha, not opacity (reference
+     http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=22793).
+
+2013-02-12  6.8.3-0 Bastien Roucaries  <roucaries.basti...>
   * Allow PerlMagick to be multi-quantum (e.g. Image::Magick::Q16).
 
 2013-02-11  6.8.2-10 Cristy  <quetzlzacatenango@image...>
