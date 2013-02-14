@@ -28,7 +28,7 @@ use FileHandle;
 autoflush STDOUT 1;
 autoflush STDERR 1;
 
-$fuzz=int(0.0*QuantumRange);
+$fuzz=int(0.05*(Image::Magick->new()->QuantumRange));
 
 testFilterCompare('input.miff',  q//, 'reference/filter/AdaptiveThreshold.miff', 'AdaptiveThreshold', q/'5x5+5%'/, 0.0, 0.0);
 ++$test;
