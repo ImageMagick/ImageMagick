@@ -10773,7 +10773,7 @@ perl-sources: perl-quantum-sources
 @WITH_PERL_FALSE@distclean-perl:
 
 # create a copy for pc file (ideally the non abi should be symlinked)
-%@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc: %.pc
+%-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@.pc: %.pc
 	cp -f $^ $@
 
 all-local: $(MAGICKPP_LOCAL_TARGETS) $(PERLMAGICK_ALL_LOCAL_TARGETS) $(MAINTAINER_TARGETS)
