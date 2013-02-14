@@ -196,6 +196,9 @@ WriteMakefile
    # Module version
    'VERSION' => '@PACKAGE_PERL_VERSION@',
 
+   # Prerequisite version
+   'PREREQ_PM' => {'parent' => '0'},
+
    # Preprocessor defines
    'DEFINE'	=> '@LFS_CPPFLAGS@ @DEFS@',     # e.g., '-DHAVE_SOMETHING'
 
