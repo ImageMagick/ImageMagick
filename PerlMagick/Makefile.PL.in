@@ -162,10 +162,10 @@ foreach my $delegate (@tested_delegates) {
 
 # defaults for LIBS & INC & CCFLAGS params that we later pass to Writemakefile
 my $INC_magick = '-I../ -I@top_srcdir@ @CPPFLAGS@ -I"' . $Config{'usrinc'} . '/ImageMagick"';
-my $LIBS_magick = '-L../MagickCore/.libs -lMagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@ -lperl @MATH_LIBS@';
+my $LIBS_magick = '-L../MagickCore/.libs -lMagickCore-@MAGICK_ABI_SUFFIX@ -lperl @MATH_LIBS@';
 my $CCFLAGS_magick = "$Config{'ccflags'} @CFLAGS@";
-my $LDFLAGS_magick   = "-L../MagickCore/.libs -lMagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@ $Config{'ldflags'} @LDFLAGS@";
-my $LDDLFLAGS_magick = "-L../MagickCore/.libs -lMagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@ $Config{'lddlflags'} @LDFLAGS@";
+my $LDFLAGS_magick   = "-L../MagickCore/.libs -lMagickCore-@MAGICK_ABI_SUFFIX@ $Config{'ldflags'} @LDFLAGS@";
+my $LDDLFLAGS_magick = "-L../MagickCore/.libs -lMagickCore-@MAGICK_ABI_SUFFIX@ $Config{'lddlflags'} @LDFLAGS@";
 
 if (($^O eq 'MSWin32') && ($Config{cc} =~ /gcc/)) {
   my($Ipaths, $Lpaths) = AutodetectWin32gcc();
@@ -174,7 +174,7 @@ if (($^O eq 'MSWin32') && ($Config{cc} =~ /gcc/)) {
   # Setup for strawberry perl.
   #
   $INC_magick       = "$Ipaths";
-  $LIBS_magick      = "-lMagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@";
+  $LIBS_magick      = "-lMagickCore-@MAGICK_ABI_SUFFIX@";
   $CCFLAGS_magick   = "$Config{'ccflags'}";
   $LDFLAGS_magick   = "$Config{'ldflags'} $Lpaths ";
   $LDDLFLAGS_magick = "$Config{'lddlflags'} $Lpaths ";
@@ -185,10 +185,10 @@ if (($^O eq 'MSWin32') && ($Config{cc} =~ /gcc/)) {
 WriteMakefile
   (
    # Module description
-   'ABSTRACT'	=> 'ImageMagick PERL Extension (@MAGICK_ABI_SUFFIX@)',
+   'ABSTRACT'	=> 'ImageMagick PERL Extension',
 
    # Perl module name is Image::Magick
-   'NAME'	=> 'Image::Magick::@MAGICK_ABI_SUFFIX@',
+   'NAME'	=> 'Image::Magick',
 
    # Module author
    'AUTHOR' => 'ImageMagick Studio LLC',
@@ -234,8 +234,6 @@ WriteMakefile
 
    # Use same compiler as ImageMagick
    'PERLMAINCC'	=> '@PERLMAINCC@ @OPENMP_CFLAGS@',
-   'PM' => { '@MAGICK_ABI_SUFFIX@.pm' => '$(INST_LIBDIR)/@MAGICK_ABI_SUFFIX@.pm' },
-   'XS' => { '@MAGICK_ABI_SUFFIX@.xs' => '@MAGICK_ABI_SUFFIX@.xs' },
    'AR' => '@AR@',
    'LD' => '@PERLMAINCC@',
 
@@ -247,7 +245,7 @@ WriteMakefile
 
    ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
 
-# sane vesion
+   # sane version
    depend => { '$(FIRST_MAKEFILE)' => '$(VERSION_FROM)' }
 );
 
