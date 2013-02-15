@@ -3601,6 +3601,9 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
         {
           /* FUTURE - this may be replaced by a 'channel' method */
           parse = ParseCommandOption(MagickColorspaceOptions,MagickFalse,arg1);
+          if (parse < 0)
+            CLIWandExceptArgBreak(OptionError,"UnrecognizedColorspace",option,
+              arg1);
           new_images=CombineImages(_images,(ColorspaceType) parse,_exception);
           break;
         }
