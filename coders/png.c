@@ -7356,7 +7356,8 @@ ModuleExport size_t RegisterPNGImage(void)
 
   entry->magick=(IsImageFormatHandler *) IsPNG;
   entry->adjoin=MagickFalse;
-  entry->description=ConstantString("PNG inheriting subformat from original");
+  entry->description=ConstantString(
+    "PNG inheriting bit-depth and color-type from original");
   entry->module=ConstantString("PNG");
   (void) RegisterMagickInfo(entry);
 
