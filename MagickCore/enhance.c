@@ -757,8 +757,8 @@ MagickExport MagickBooleanType ColorDecisionListImage(Image *image,
       }
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      luma=0.21267f*GetPixelRed(image,q)+0.71526*GetPixelGreen(image,q)+0.07217f*
-        GetPixelBlue(image,q);
+      luma=0.21267f*GetPixelRed(image,q)+0.71526*GetPixelGreen(image,q)+
+        0.07217f*GetPixelBlue(image,q);
       SetPixelRed(image,ClampToQuantum(luma+color_correction.saturation*
         (cdl_map[ScaleQuantumToMap(GetPixelRed(image,q))].red-luma)),q);
       SetPixelGreen(image,ClampToQuantum(luma+color_correction.saturation*
@@ -998,6 +998,9 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   CacheView
     *image_view;
 
+  ColorspaceType
+    colorspace;
+
   MagickBooleanType
     status;
 
@@ -1049,6 +1052,9 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
   /*
     Form histogram.
   */
+  colorspace=image->colorspace;
+  if (colorspace == sRGBColorspace)
+    (void) SetImageColorspace(image,RGBColorspace,exception);
   status=MagickTrue;
   (void) ResetMagickMemory(histogram,0,(MaxMap+1)*GetPixelChannels(image)*
     sizeof(*histogram));
@@ -1138,13 +1144,11 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
         stretch_map[GetPixelChannels(image)*j+i]=0.0;
       else
         if (j > (ssize_t) white[i])
-          stretch_map[GetPixelChannels(image)*j+i]=(double)
-            QuantumRange;
+          stretch_map[GetPixelChannels(image)*j+i]=(double) QuantumRange;
         else
           if (black[i] != white[i])
-            stretch_map[GetPixelChannels(image)*j+i]=(double)
-              ScaleMapToQuantum((double) (MaxMap*(j-black[i])/
-              (white[i]-black[i])));
+            stretch_map[GetPixelChannels(image)*j+i]=(double) ScaleMapToQuantum(
+              (double) (MaxMap*(j-black[i])/(white[i]-black[i])));
     }
   }
   if (image->storage_class == PseudoClass)
@@ -1250,6 +1254,8 @@ MagickExport MagickBooleanType ContrastStretchImage(Image *image,
           status=MagickFalse;
       }
   }
+  if (colorspace == sRGBColorspace)
+    (void) SetImageColorspace(image,sRGBColorspace,exception);
   image_view=DestroyCacheView(image_view);
   stretch_map=(double *) RelinquishMagickMemory(stretch_map);
   white=(double *) RelinquishMagickMemory(white);
