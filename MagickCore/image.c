@@ -2204,7 +2204,10 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
         for (x=0; x < (ssize_t) image->columns; x++)
         {
           if (GetPixelAlpha(image,q) == TransparentAlpha)
-            SetPixelInfoPixel(image,&image->background_color,q);
+            {
+              SetPixelInfoPixel(image,&image->background_color,q);
+              SetPixelChannel(image,AlphaPixelChannel,TransparentAlpha,q);
+            }
           q+=GetPixelChannels(image);
         }
         if (SyncCacheViewAuthenticPixels(image_view,exception) == MagickFalse)
@@ -2235,7 +2238,7 @@ MagickExport MagickBooleanType SetImageAlphaChannel(Image *image,
     {
       status=CompositeImage(image,image,AlphaCompositeOp,MagickTrue,0,0,
         exception);
-      image->alpha_trait=UndefinedPixelTrait;
+      image->alpha_trait=CopyPixelTrait;
       break;
     }
     case OpaqueAlphaChannel:
