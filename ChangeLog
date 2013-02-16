@@ -1,3 +1,6 @@
+2013-02-16  6.8.3-1 Cristy  <quetzlzacatenango@image...>
+   * Disable FORTIFY_SOURCE to fix a bug in LVVM / OpenMP support.
+
 2013-02-15  6.8.3-0 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.3-0, SVN revision 11045.
 
