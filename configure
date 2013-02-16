@@ -3664,7 +3664,7 @@ MAGICK_PATCHLEVEL_VERSION=1
 
 MAGICK_VERSION=6.8.3-1
 
-MAGICK_SVN_REVISION=11045:11056M
+MAGICK_SVN_REVISION=11045:11058M
 
 
 # Substitute library versioning
@@ -8928,7 +8928,7 @@ fi
 
 case "$host" in
   *darwin* | *-macos10*)
-        CFLAGS="${CFLAGS} -DFORTIFY_SOURCE=0"
+        CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=0"
         # Check whether --enable-osx-universal-binary was given.
 if test "${enable_osx_universal_binary+set}" = set; then :
   enableval=$enable_osx_universal_binary; build_osxuniversal="${enableval}"
