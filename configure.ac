@@ -383,23 +383,25 @@ fi
 
 dnl Platform-specific stuff
 case "$host" in
-*darwin* | *-macos10*)
-  dnl OS X universal binary support, requires --disable-dependency-tracking
-  AC_ARG_ENABLE([osx-universal-binary],
+  *darwin* | *-macos10*)
+    dnl Disable FORTIFY_SOURCE to fix a bug in LVVM / OpenMP support
+    CFLAGS="${CFLAGS} -DFORTIFY_SOURCE=0"
+    dnl OS X universal binary support, requires --disable-dependency-tracking
+    AC_ARG_ENABLE([osx-universal-binary],
         AC_HELP_STRING([--enable-osx-universal-binary],
            [build universal binary on OS X [[default=no]]]),
         [build_osxuniversal="${enableval}"], [build_osxuniversal=no])
 
-  if test "${build_osxuniversal}" != no ; then
-    if test "$enable_dependency_tracking" != no ; then
-      AC_MSG_ERROR([--enable-osx-universal-binary requires --disable-dependency-tracking.
+    if test "${build_osxuniversal}" != no ; then
+      if test "$enable_dependency_tracking" != no ; then
+        AC_MSG_ERROR([--enable-osx-universal-binary requires --disable-dependency-tracking.
 Please re-run configure with these options:
   --disable-dependency-tracking --enable-osx-universal-binary
         ])
-    fi
-    CFLAGS="$CFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
-    CXXFLAGS="$CXXFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
-    LDFLAGS="$LDFLAGS -Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
+      fi
+      CFLAGS="$CFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
+      CXXFLAGS="$CXXFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
+      LDFLAGS="$LDFLAGS -Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
   fi
   ;;
 esac
