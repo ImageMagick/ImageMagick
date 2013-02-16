@@ -3668,7 +3668,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=11008:11035M
+MAGICK_SVN_REVISION=11008:11053M
 
 
 # Substitute library versioning
@@ -8931,8 +8931,9 @@ if test "${im_cv_ld_lazyload}" != 'none' ; then
 fi
 
 case "$host" in
-*darwin* | *-macos10*)
-    # Check whether --enable-osx-universal-binary was given.
+  *darwin* | *-macos10*)
+        CFLAGS="${CFLAGS} -DFORTIFY_SOURCE=0"
+        # Check whether --enable-osx-universal-binary was given.
 if test "${enable_osx_universal_binary+set}" = set; then :
   enableval=$enable_osx_universal_binary; build_osxuniversal="${enableval}"
 else
@@ -8940,16 +8941,16 @@ else
 fi
 
 
-  if test "${build_osxuniversal}" != no ; then
-    if test "$enable_dependency_tracking" != no ; then
-      as_fn_error $? "--enable-osx-universal-binary requires --disable-dependency-tracking.
+    if test "${build_osxuniversal}" != no ; then
+      if test "$enable_dependency_tracking" != no ; then
+        as_fn_error $? "--enable-osx-universal-binary requires --disable-dependency-tracking.
 Please re-run configure with these options:
   --disable-dependency-tracking --enable-osx-universal-binary
         " "$LINENO" 5
-    fi
-    CFLAGS="$CFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
-    CXXFLAGS="$CXXFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
-    LDFLAGS="$LDFLAGS -Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
+      fi
+      CFLAGS="$CFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
+      CXXFLAGS="$CXXFLAGS -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
+      LDFLAGS="$LDFLAGS -Wl,-syslibroot,/Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386"
   fi
   ;;
 esac
