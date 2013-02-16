@@ -43,7 +43,7 @@ AC_ARG_ENABLE([opencl],
     [AC_HELP_STRING([--enable-opencl],
                     [enable OpenCL support])],
     [enable_opencl=$enableval],
-    [enable_opencl='yes'])
+    [enable_opencl='no'])
 
 if test "$enable_opencl" = 'yes'; then
   AC_LANG_PUSH([$1])

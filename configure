@@ -3664,7 +3664,7 @@ MAGICK_PATCHLEVEL_VERSION=1
 
 MAGICK_VERSION=6.8.3-1
 
-MAGICK_SVN_REVISION=11045:11054
+MAGICK_SVN_REVISION=11045:11056M
 
 
 # Substitute library versioning
@@ -9872,7 +9872,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 if test "${enable_opencl+set}" = set; then :
   enableval=$enable_opencl; enable_opencl=$enableval
 else
-  enable_opencl='yes'
+  enable_opencl='no'
 fi
 
 
