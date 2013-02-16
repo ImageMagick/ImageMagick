@@ -385,7 +385,7 @@ dnl Platform-specific stuff
 case "$host" in
   *darwin* | *-macos10*)
     dnl Disable FORTIFY_SOURCE to fix a bug in LVVM / OpenMP support
-    CFLAGS="${CFLAGS} -DFORTIFY_SOURCE=0"
+    CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=0"
     dnl OS X universal binary support, requires --disable-dependency-tracking
     AC_ARG_ENABLE([osx-universal-binary],
         AC_HELP_STRING([--enable-osx-universal-binary],
