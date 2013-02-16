@@ -196,6 +196,9 @@ WriteMakefile
    # Module version
    'VERSION' => '6.83',
 
+   # Prerequisite version
+   'PREREQ_PM' => {'parent' => '0'},
+
    # Preprocessor defines
    'DEFINE'	=> ' -D_LARGE_FILES=1 -DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING'
 
