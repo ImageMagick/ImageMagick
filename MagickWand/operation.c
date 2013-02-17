@@ -4203,7 +4203,7 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
 
           swap_index=(-1);
           flags=ParseGeometry(arg1,&geometry_info);
-          if ((flags & RhoValue) != 0)
+          if ((flags & RhoValue) == 0)
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           index=(ssize_t) geometry_info.rho;
           if ((flags & SigmaValue) != 0)
