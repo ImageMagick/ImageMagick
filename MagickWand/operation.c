@@ -4192,8 +4192,8 @@ WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
           index,
           swap_index;
 
-        index=-1;
-        swap_index=-2;
+        index=(-1);
+        swap_index=(-2);
         if (IfNormalOp) {
           GeometryInfo
             geometry_info;
