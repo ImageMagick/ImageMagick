@@ -2242,6 +2242,7 @@ static const char *GetMagickPropertyLetter(const ImageInfo *image_info,
     case 'f': /* Filename without directory component */
     {
       GetPathComponent(image->magick_filename,TailPath,value);
+      string=value;
       break;
     }
     case 'g': /* Image geometry, canvas and offset  %Wx%H+%X+%Y */
@@ -3110,12 +3111,13 @@ MagickExport char *InterpretImageProperties(const ImageInfo *image_info,
         continue;
       }
       value=GetMagickPropertyLetter(image_info,image,*p, exception);
-      if (value != (char *) NULL) {
-        AppendString2Text(value);
-        continue;
-      }
-      (void) ThrowMagickException(exception,GetMagickModule(),
-          OptionWarning,"UnknownImageProperty","\"%%%c\"",*p);
+      if (value != (char *) NULL)
+        {
+          AppendString2Text(value);
+          continue;
+        }
+      (void) ThrowMagickException(exception,GetMagickModule(),OptionWarning,
+        "UnknownImageProperty","\"%%%c\"",*p);
       continue;
     }
 
