@@ -1918,6 +1918,7 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
       display=XOpenDisplay(draw_info->server_name);
       if (display == (Display *) NULL)
         {
+          UnlockSemaphoreInfo(annotate_semaphore);
           ThrowXWindowException(XServerError,"UnableToOpenXServer",
             draw_info->server_name);
           return(MagickFalse);
@@ -1938,6 +1939,7 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
       map_info=XAllocStandardColormap();
       if (map_info == (XStandardColormap *) NULL)
         {
+          UnlockSemaphoreInfo(annotate_semaphore);
           ThrowXWindowException(ResourceLimitError,"MemoryAllocationFailed",
             image->filename);
           return(MagickFalse);
@@ -1948,6 +1950,7 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
       visual_info=XBestVisualInfo(display,map_info,&resource_info);
       if (visual_info == (XVisualInfo *) NULL)
         {
+          UnlockSemaphoreInfo(annotate_semaphore);
           ThrowXWindowException(XServerError,"UnableToGetVisual",
             image->filename);
           return(MagickFalse);
@@ -1968,6 +1971,7 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
       font_info=XBestFont(display,&resource_info,MagickFalse);
       if (font_info == (XFontStruct *) NULL)
         {
+          UnlockSemaphoreInfo(annotate_semaphore);
           ThrowXWindowException(XServerError,"UnableToLoadFont",
             draw_info->font);
           return(MagickFalse);
@@ -1976,6 +1980,7 @@ static MagickBooleanType RenderX11(Image *image,const DrawInfo *draw_info,
           (visual_info == (XVisualInfo *) NULL) ||
           (font_info == (XFontStruct *) NULL))
         {
+          UnlockSemaphoreInfo(annotate_semaphore);
           XFreeResources(display,visual_info,map_info,&pixel,font_info,
             &resource_info,(XWindowInfo *) NULL);
           ThrowXWindowException(XServerError,"UnableToLoadFont",
