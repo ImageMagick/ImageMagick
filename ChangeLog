@@ -1,5 +1,7 @@
 2013-02-17  6.8.3-2 Cristy  <quetzlzacatenango@image...>
   * Semaphore is now unlocked when an X11 annotation exception is thrown.
+  * WEBP coder enhancement and memory leak patch (reference
+   http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=22809).
 
 2013-02-16  6.8.3-1 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.3-1, SVN revision 11060.
