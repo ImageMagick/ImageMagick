@@ -386,11 +386,11 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   value=GetImageOption(image_info,"webp:image-hint");
   if (value != (char *) NULL)
     {
-      if (LocaleCompare(value,"graph"):
+      if (LocaleCompare(value,"graph") == 0)
         configure.image_hint=WEBP_HINT_GRAPH;
-      if (LocaleCompare(value,"photo"):
+      if (LocaleCompare(value,"photo") == 0)
         configure.image_hint=WEBP_HINT_PHOTO;
-      if (LocaleCompare(value,"picture"):
+      if (LocaleCompare(value,"picture") == 0)
         configure.image_hint=WEBP_HINT_PICTURE;
     }
   value=GetImageOption(image_info,"webp:target-size");
