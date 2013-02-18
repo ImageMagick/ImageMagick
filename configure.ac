@@ -430,6 +430,12 @@ AC_ARG_WITH([sharearch-dir],
 eval "eval SHAREARCH_DIR=$sharearch_dir"
 AC_SUBST(SHAREARCH_DIR)
 
+# Path to the pkgconfig folder 
+AC_ARG_WITH([pkgconfigdir], AS_HELP_STRING([--with-pkgconfigdir=DIR],
+            [Path to the pkgconfig directory @<:@LIBDIR/pkgconfig@:>@]),
+            [pkgconfigdir="$withval"], [pkgconfigdir='${libdir}/pkgconfig'])
+AC_SUBST([pkgconfigdir])
+
 #
 # Enable support for threads
 AC_ARG_WITH([threads],
