@@ -377,13 +377,21 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
       configure.lossless=1;
   value=GetImageOption(image_info,"webp:lossless");
   if (value != (char *) NULL)
-   configure.lossless=StringToInteger(value);
+    configure.lossess=ParseCommandOption(MagickBooleanOptions,MagickFalse,
+      value);
   value=GetImageOption(image_info,"webp:method");
   if (value != (char *) NULL)
     configure.method=StringToInteger(value);
   value=GetImageOption(image_info,"webp:image-hint");
   if (value != (char *) NULL)
-    configure.image_hint=(WebPImageHint) StringToInteger(value);
+    {
+      if (LocaleCompare(value,"graph"):
+        configure.image_hint=WEBP_HINT_GRAPH;
+      if (LocaleCompare(value,"photo"):
+        configure.image_hint=WEBP_HINT_PHOTO;
+      if (LocaleCompare(value,"picture"):
+        configure.image_hint=WEBP_HINT_PICTURE;
+    }
   value=GetImageOption(image_info,"webp:target-size");
   if (value != (char *) NULL)
     configure.target_size=StringToInteger(value);
@@ -405,9 +413,10 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   value=GetImageOption(image_info,"webp:filter-type");
   if (value != (char *) NULL)
     configure.filter_type=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:autofilter");
+  value=GetImageOption(image_info,"webp:auto-filter");
   if (value != (char *) NULL)
-    configure.autofilter=StringToInteger(value);
+    configure.autofilter=ParseCommandOption(MagickBooleanOptions,MagickFalse,
+      value);
   value=GetImageOption(image_info,"webp:alpha-compression");
   if (value != (char *) NULL)
     configure.alpha_compression=StringToInteger(value);
