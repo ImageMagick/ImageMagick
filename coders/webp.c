@@ -105,21 +105,11 @@ static MagickBooleanType
 static Image *ReadWEBPImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  int
-    height,
-    width;
-
   Image
     *image;
 
   MagickBooleanType
     status;
-
-  register PixelPacket
-    *q;
-
-  register ssize_t
-    x;
 
   register unsigned char
     *p;
@@ -132,8 +122,16 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
     y;
 
   unsigned char
-    *stream,
-    *pixels;
+    *stream;
+
+  WebPDecoderConfig
+    configure;
+
+  WebPDecBuffer
+    *const webp_image = &configure.output;
+
+  WebPBitstreamFeatures
+    *const features = &configure.input;
 
   /*
     Open image file.
@@ -152,6 +150,8 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
       image=DestroyImageList(image);
       return((Image *) NULL);
     }
+  if (WebPInitDecoderConfig(&configure) == 0)
+    ThrowReaderException(ResourceLimitError,"UnableToDecodeImageFile");
   length=(size_t) GetBlobSize(image);
   stream=(unsigned char *) AcquireQuantumMemory(length,sizeof(*stream));
   if (stream == (unsigned char *) NULL)
@@ -159,27 +159,40 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   count=ReadBlob(image,length,stream);
   if (count != (ssize_t) length)
     ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile");
-  pixels=(unsigned char *) WebPDecodeARGB(stream,length,&width,&height);
-  if (pixels == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
-  image->columns=(size_t) width;
-  image->rows=(size_t) height;
+  if (WebPGetFeatures(stream,length,features) != 0)
+    {
+      stream=(unsigned char*) RelinquishMagickMemory(stream);
+      ThrowReaderException(ResourceLimitError,"UnableToDecodeImageFile");
+    }
+  webp_image->colorspace=MODE_RGBA;
+  if (WebPDecode(stream,length,&configure) != 0)
+    {
+      stream=(unsigned char*) RelinquishMagickMemory(stream);
+      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed");
+    }
+  image->columns=(size_t) webp_image->width;
+  image->rows=(size_t) webp_image->height;
+  image->matte=features->has_alpha != 0 ? MagickTrue : MagickFalse;
   if ((stream[15] == 'L') || (stream[15] == ' '))
     image->quality=100;
-  p=pixels;
+  p=webp_image->u.RGBA.rgba;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    register PixelPacket
+      *q;
+
+    register ssize_t
+      x;
+
     q=QueueAuthenticPixels(image,0,y,image->columns,1,exception);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-      SetPixelAlpha(q,ScaleCharToQuantum(*p++));
       SetPixelRed(q,ScaleCharToQuantum(*p++));
       SetPixelGreen(q,ScaleCharToQuantum(*p++));
       SetPixelBlue(q,ScaleCharToQuantum(*p++));
-      if (q->opacity != OpaqueOpacity)
-        image->matte=MagickTrue;
+      SetPixelAlpha(q,ScaleCharToQuantum(*p++));
       q++;
     }
     if (SyncAuthenticPixels(image,exception) == MagickFalse)
@@ -189,8 +202,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
     if (status == MagickFalse)
       break;
   }
-  free(pixels);
-  pixels=(unsigned char *) NULL;
+  WebPFreeDecBuffer(webp_image);
   stream=(unsigned char*) RelinquishMagickMemory(stream);
   return(image);
 }
@@ -221,17 +233,27 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
 */
 ModuleExport size_t RegisterWEBPImage(void)
 {
+  char
+    version[MaxTextExtent];
+
   MagickInfo
     *entry;
 
+  *version='\0';
   entry=SetMagickInfo("WEBP");
 #if defined(MAGICKCORE_WEBP_DELEGATE)
   entry->decoder=(DecodeImageHandler *) ReadWEBPImage;
   entry->encoder=(EncodeImageHandler *) WriteWEBPImage;
+  (void) FormatLocaleString(version,MaxTextExtent,"libwebp %d.%d.%d",
+    (WebPGetDecoderVersion() >> 16) & 0xff,
+    (WebPGetDecoderVersion() >> 8) & 0xff,
+    (WebPGetDecoderVersion() >> 0) & 0xff);
 #endif
   entry->description=ConstantString("WebP Image Format");
   entry->adjoin=MagickFalse;
   entry->module=ConstantString("WEBP");
+  if (*version != '\0')
+    entry->version=ConstantString(version);
   (void) RegisterMagickInfo(entry);
   return(MagickImageCoderSignature);
 }
@@ -309,12 +331,6 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   MagickBooleanType
     status;
 
-  register const PixelPacket
-    *restrict p;
-
-  register ssize_t
-    x;
-
   register uint32_t
     *restrict q;
 
@@ -347,8 +363,8 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFalse)
     return(status);
-  if (WebPPictureInit(&picture) == 0)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
+  if ((WebPPictureInit(&picture) == 0) || (WebPConfigInit(&configure) == 0))
+    ThrowWriterException(ResourceLimitError,"UnableToEncodeImageFile");
   picture.writer=WebPWriter;
   picture.custom_ptr=(void *) image;
   picture.stats=(&statistics);
@@ -356,8 +372,6 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   picture.height=(int) image->rows;
   picture.argb_stride=(int) image->columns;
   picture.use_argb=1;
-  if (WebPConfigInit(&configure) == 0)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed");
   if (image->quality != UndefinedCompressionQuality)
     configure.quality=(float) image->quality;
   if (image->quality >= 100)
@@ -434,16 +448,22 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   q=pixels;
   for (y=0; y < (ssize_t) image->rows; y++)
   {
+    register const PixelPacket
+      *restrict p;
+
+    register ssize_t
+      x;
+
     p=GetVirtualPixels(image,0,y,image->columns,1,&image->exception);
     if (p == (PixelPacket *) NULL)
       break;
     for (x=0; x < (ssize_t) image->columns; x++)
     {
-     *q++=(uint32_t) (image->matte != MagickFalse ?
-       ScaleQuantumToChar(GetPixelAlpha(p)) << 24 : 0xff000000u) |
-       (ScaleQuantumToChar(GetPixelRed(p)) << 16) |
-       (ScaleQuantumToChar(GetPixelGreen(p)) << 8) |
-       (ScaleQuantumToChar(GetPixelBlue(p)));
+      *q++=(uint32_t) (image->matte != MagickFalse ?
+        ScaleQuantumToChar(GetPixelAlpha(p)) << 24 : 0xff000000u) |
+        (ScaleQuantumToChar(GetPixelRed(p)) << 16) |
+        (ScaleQuantumToChar(GetPixelGreen(p)) << 8) |
+        (ScaleQuantumToChar(GetPixelBlue(p)));
       p++;
     }
     status=SetImageProgress(image,SaveImageTag,(MagickOffsetType) y,
