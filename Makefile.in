@@ -2831,6 +2831,9 @@ mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+
+# Pkgconfig directory
+pkgconfigdir = $(libdir)/pkgconfig
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
@@ -4948,9 +4951,6 @@ TESTS_CLEANFILES = \
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@PERLMAGICK_CHECKSCRPTS = perl-build
 @WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@PERLMAGICK_CHECKSCRPTS = 
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@PERLSTATICNAME = PerlMagick
-
-# Pkgconfig directory
-pkgconfigdir = $(libdir)/pkgconfig
 
 # Files to install in Pkgconfig directory
 pkgconfig_DATA = \
