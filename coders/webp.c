@@ -387,7 +387,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   if (value != (char *) NULL)
     configure.filter_strength=StringToInteger(value);
   value=GetImageOption(image_info,"webp:filter_sharpness");
-  if (value != (char *) NULL-
+  if (value != (char *) NULL)
     configure.filter_sharpness=StringToInteger(value);
   value=GetImageOption(image_info,"webp:filter-type");
   if (value != (char *) NULL)
