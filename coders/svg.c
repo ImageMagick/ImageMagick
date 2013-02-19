@@ -1662,12 +1662,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
                           "fill '%s'\n",color);
                              break;
                            }
-                        if (LocaleCompare(value,"#00000000") == 0)
+                        if (LocaleCompare(value,"#000000ff") == 0)
                           (void) FormatLocaleFile(svg_info->file,
-                          "fill '#000000'\n");
+                            "fill '#000000'\n");
                         else
                           (void) FormatLocaleFile(svg_info->file,"fill '%s'\n",
-                          value);
+                            value);
                         break;
                       }
                     if (LocaleCompare(keyword,"fillcolor") == 0)
@@ -1755,12 +1755,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
                           "stroke '%s'\n",color);
                              break;
                            }
-                        if (LocaleCompare(value,"#00000000") == 0)
+                        if (LocaleCompare(value,"#000000ff") == 0)
                           (void) FormatLocaleFile(svg_info->file,
-                          "fill '#000000'\n");
+                            "fill '#000000'\n");
                         else
                           (void) FormatLocaleFile(svg_info->file,
-                          "stroke '%s'\n",value);
+                            "stroke '%s'\n",value);
                         break;
                       }
                     if (LocaleCompare(keyword,"stroke-antialiasing") == 0)
