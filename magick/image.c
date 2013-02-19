@@ -435,7 +435,6 @@ MagickExport Image *AppendImages(const Image *images,
 
   MagickBooleanType
     matte,
-    proceed,
     status;
 
   MagickOffsetType
@@ -513,6 +512,9 @@ MagickExport Image *AppendImages(const Image *images,
 
     Image
       *image;
+
+    MagickBooleanType
+      proceed;
 
     image=CloneImage(next,0,0,MagickTrue,exception);
     if (image == (Image *) NULL)
