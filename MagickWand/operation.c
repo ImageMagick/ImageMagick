@@ -1310,8 +1310,8 @@ interpret Percent Escapes in Arguments, At least not yet */
           if (IfMagickFalse(IsGeometry(arg1)))
             CLIWandExceptArgBreak(OptionError,"InvalidArgument",option,arg1);
           SetRandomSecretKey(
-               IfSetOption ? (const unsigned long) StringToUnsignedLong(arg1)
-                           : (const unsigned long) time((time_t *) NULL) );
+               IfSetOption ? (unsigned long) StringToUnsignedLong(arg1)
+                           : (unsigned long) time((time_t *) NULL) );
           break;
         }
       if (LocaleCompare("size",option+1) == 0)
@@ -3486,18 +3486,18 @@ WandPrivate MagickBooleanType CLISimpleOperatorImages(MagickCLI *cli_wand,
 WandPrivate MagickBooleanType CLIListOperatorImages(MagickCLI *cli_wand,
   const char *option,const char *arg1n,const char *arg2n)
 {
-  MagickBooleanType
-    status;
-
-  ssize_t
-    parse;
+  const char    /* For percent escape interpretImageProperties() */
+    *arg1,
+    *arg2;
 
   Image
     *new_images;
 
-  const char    /* For percent escape interpretImageProperties() */
-    *arg1,
-    *arg2;
+  MagickStatusType
+    status;
+
+  ssize_t
+    parse;
 
 #define _image_info     (cli_wand->wand.image_info)
 #define _images         (cli_wand->wand.images)
