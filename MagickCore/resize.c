@@ -2183,12 +2183,12 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   ContributionInfo
     **restrict contributions;
 
-  MagickBooleanType
-    status;
-
   double
     scale,
     support;
+
+  MagickBooleanType
+    status;
 
   ssize_t
     x;
@@ -2199,7 +2199,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
   scale=MagickMax(1.0/x_factor+MagickEpsilon,1.0);
   support=scale*GetResizeFilterSupport(resize_filter);
   storage_class=support > 0.5 ? DirectClass : image->storage_class;
-  if( IfMagickFalse(SetImageStorageClass(resize_image,storage_class,exception)) )
+  if (IfMagickFalse(SetImageStorageClass(resize_image,storage_class,exception)))
     return(MagickFalse);
   if (support < 0.5)
     {
@@ -2386,15 +2386,15 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   ContributionInfo
     **restrict contributions;
 
+  double
+    scale,
+    support;
+
   MagickBooleanType
     status;
 
   PixelInfo
     zero;
-
-  double
-    scale,
-    support;
 
   ssize_t
     y;
@@ -2405,7 +2405,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
   scale=MagickMax(1.0/y_factor+MagickEpsilon,1.0);
   support=scale*GetResizeFilterSupport(resize_filter);
   storage_class=support > 0.5 ? DirectClass : image->storage_class;
-  if( IfMagickFalse(SetImageStorageClass(resize_image,storage_class,exception)) )
+  if (IfMagickFalse(SetImageStorageClass(resize_image,storage_class,exception)))
     return(MagickFalse);
   if (support < 0.5)
     {
