@@ -2765,7 +2765,7 @@ AC_ARG_WITH(webp,
     [AC_HELP_STRING([--without-webp],
                     [disable WEBP support])],
     [with_webp=$withval],
-    [with_webp='yes'])
+    [with_webp='no'])
 
 if test "$with_webp" != 'yes'; then
     DISTCHECK_CONFIG_FLAGS="${DISTCHECK_CONFIG_FLAGS} --with-webp=$with_webp "
