@@ -1107,7 +1107,7 @@ MagickExport Image *BlurImageChannel(const Image *image,
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    magick_threads(image,blur_image,blur_image->columns,1)
+    magick_threads(blur_image,blur_image,blur_image->columns,1)
 #endif
   for (x=0; x < (ssize_t) blur_image->columns; x++)
   {
