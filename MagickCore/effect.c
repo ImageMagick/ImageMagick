@@ -888,7 +888,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  blur_image=CloneImage(image,0,0,MagickTrue,exception);
+  blur_image=CloneImage(image,image->columns,image->rows,MagickTrue,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
   if (fabs(sigma) < MagickEpsilon)
@@ -1057,7 +1057,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
   blur_view=AcquireAuthenticCacheView(blur_image,exception);
 #if defined(MAGICKCORE_OPENMP_SUPPORT)
   #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    magick_threads(image,blur_image,image->columns,1)
+    magick_threads(blur_image,blur_image,blur_image->columns,1)
 #endif
   for (x=0; x < (ssize_t) blur_image->columns; x++)
   {
@@ -1108,7 +1108,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
             (blur_traits == UndefinedPixelTrait))
           continue;
         if (((blur_traits & CopyPixelTrait) != 0) ||
-            (GetPixelMask(image,p) != 0))
+            (GetPixelMask(blur_image,p) != 0))
           {
             SetPixelChannel(blur_image,channel,p[center+i],q);
             continue;
@@ -1136,8 +1136,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
         gamma=0.0;
         for (u=0; u < (ssize_t) width; u++)
         {
-          alpha=(double) (QuantumScale*GetPixelAlpha(blur_image,
-            pixels));
+          alpha=(double) (QuantumScale*GetPixelAlpha(blur_image,pixels));
           pixel+=(*k)*alpha*pixels[i];
           gamma+=(*k)*alpha;
           k++;
