@@ -2318,7 +2318,7 @@ static MagickBooleanType HorizontalFilter(const ResizeFilter *resize_filter,
             continue;
           }
         pixel=0.0;
-        if ((resize_traits & BlendPixelTrait) == 0)
+        if ((GetPixelAlphaTraits(resize_image) & BlendPixelTrait) == 0)
           {
             /*
               No alpha blending.
@@ -2526,7 +2526,7 @@ static MagickBooleanType VerticalFilter(const ResizeFilter *resize_filter,
             continue;
           }
         pixel=0.0;
-        if ((resize_traits & BlendPixelTrait) == 0)
+        if ((GetPixelAlphaTraits(resize_image) & BlendPixelTrait) == 0)
           {
             /*
               No alpha blending.
