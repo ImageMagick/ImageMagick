@@ -173,7 +173,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   image->columns=(size_t) webp_image->width;
   image->rows=(size_t) webp_image->height;
   image->matte=features->has_alpha != 0 ? MagickTrue : MagickFalse;
-  if ((stream[15] == 'L') || (stream[15] == ' '))
+  if (stream[15] == 'L')
     image->quality=100;
   p=webp_image->u.RGBA.rgba;
   for (y=0; y < (ssize_t) image->rows; y++)
@@ -408,7 +408,7 @@ static MagickBooleanType WriteWEBPImage(const ImageInfo *image_info,
   value=GetImageOption(image_info,"webp:filter-strength");
   if (value != (char *) NULL)
     configure.filter_strength=StringToInteger(value);
-  value=GetImageOption(image_info,"webp:filter_sharpness");
+  value=GetImageOption(image_info,"webp:filter-sharpness");
   if (value != (char *) NULL)
     configure.filter_sharpness=StringToInteger(value);
   value=GetImageOption(image_info,"webp:filter-type");
