@@ -385,7 +385,7 @@ MagickExport Image *AdaptiveBlurImage(const Image *image,const double radius,
         pixels=p;
         pixel=0.0;
         gamma=0.0;
-        if ((blur_traits & BlendPixelTrait) == 0)
+        if ((GetPixelAlphaTraits(blur_image) & BlendPixelTrait) == 0)
           {
             /*
               No alpha blending.
@@ -703,7 +703,7 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
         pixels=p;
         pixel=0.0;
         gamma=0.0;
-        if ((sharp_traits & BlendPixelTrait) == 0)
+        if ((GetPixelAlphaTraits(sharp_image) & BlendPixelTrait) == 0)
           {
             /*
               No alpha blending.
@@ -999,7 +999,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
         k=kernel;
         pixels=p;
         pixel=0.0;
-        if ((blur_traits & BlendPixelTrait) == 0)
+        if ((GetPixelAlphaTraits(blur_image) & BlendPixelTrait) == 0)
           {
             /*
               No alpha blending.
@@ -1116,7 +1116,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
         k=kernel;
         pixels=p;
         pixel=0.0;
-        if ((blur_traits & BlendPixelTrait) == 0)
+        if ((GetPixelAlphaTraits(blur_image) & BlendPixelTrait) == 0)
           {
             /*
               No alpha blending.
