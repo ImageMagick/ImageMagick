@@ -76,6 +76,40 @@ static MagickBooleanType
   WriteWEBPImage(const ImageInfo *,Image *,ExceptionInfo *);
 #endif
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s W E B P                                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsWEBP() returns MagickTrue if the image format type, identified by the
+%  magick string, is WebP.
+%
+%  The format of the IsWEBP method is:
+%
+%      MagickBooleanType IsWEBP(const unsigned char *magick,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o magick: compare image format pattern against these bytes.
+%
+%    o length: Specifies the length of the magick string.
+%
+*/
+static MagickBooleanType IsWEBP(const unsigned char *magick,const size_t length)
+{
+  if (length < 12)
+    return(MagickFalse);
+  if (LocaleNCompare((const char *) magick+8,"WEBP",4) == 0)
+    return(MagickTrue);
+  return(MagickFalse);
+}
+
 #if defined(MAGICKCORE_WEBP_DELEGATE)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -253,6 +287,7 @@ ModuleExport size_t RegisterWEBPImage(void)
   entry->description=ConstantString("WebP Image Format");
   entry->adjoin=MagickFalse;
   entry->module=ConstantString("WEBP");
+  entry->magick=(IsImageFormatHandler *) IsWEBP;
   if (*version != '\0')
     entry->version=ConstantString(version);
   (void) RegisterMagickInfo(entry);
