@@ -1,4 +1,7 @@
 2013-02-19  6.8.3-3 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.3-3, SVN revision 11105.
+
+2013-02-19  6.8.3-3 Cristy  <quetzlzacatenango@image...>
   * Set WEBP lossless / lossy property properly (reference
     http://www.imagemagick.org/discourse-server/viewtopic.php?f=2&t=22809).
 
