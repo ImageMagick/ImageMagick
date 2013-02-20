@@ -174,7 +174,7 @@ static Image *ReadWEBPImage(const ImageInfo *image_info,
   image->rows=(size_t) webp_image->height;
   image->alpha_trait=features->has_alpha != 0 ? BlendPixelTrait :
     UndefinedPixelTrait;
-  if ((stream[15] == 'L') || (stream[15] == ' '))
+  if (stream[15] == 'L')
     image->quality=100;
   p=webp_image->u.RGBA.rgba;
   for (y=0; y < (ssize_t) image->rows; y++)
