@@ -1256,12 +1256,12 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
       alpha=PerceptibleReciprocal(alpha);
       if (cube_info->associate_alpha == MagickFalse)
         {
-          q->red=(double) ClampToQuantum(alpha*QuantumRange*
-            node_info->total_color.red);
-          q->green=(double) ClampToQuantum(alpha*QuantumRange*
-            node_info->total_color.green);
-          q->blue=(double) ClampToQuantum(alpha*(double) QuantumRange*
-            node_info->total_color.blue);
+          q->red=(double) ClampToQuantum(ClampPixel(alpha*QuantumRange*
+            node_info->total_color.red));
+          q->green=(double) ClampToQuantum(ClampPixel(alpha*QuantumRange*
+            node_info->total_color.green));
+          q->blue=(double) ClampToQuantum(ClampPixel(alpha*QuantumRange*
+            node_info->total_color.blue));
           q->alpha=OpaqueAlpha;
         }
       else
@@ -1271,15 +1271,15 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
 
           opacity=(double) (alpha*QuantumRange*
             node_info->total_color.alpha);
-          q->alpha=(double) ClampToQuantum(opacity);
+          q->alpha=(double) ClampToQuantum(ClampPixel(opacity));
           if (q->alpha == OpaqueAlpha)
             {
-              q->red=(double) ClampToQuantum(alpha*QuantumRange*
-                node_info->total_color.red);
-              q->green=(double) ClampToQuantum(alpha*QuantumRange*
-                node_info->total_color.green);
-              q->blue=(double) ClampToQuantum(alpha*QuantumRange*
-                node_info->total_color.blue);
+              q->red=(double) ClampToQuantum(ClampPixel(alpha*QuantumRange*
+                node_info->total_color.red));
+              q->green=(double) ClampToQuantum(ClampPixel(alpha*QuantumRange*
+                node_info->total_color.green));
+              q->blue=(double) ClampToQuantum(ClampPixel(alpha*QuantumRange*
+                node_info->total_color.blue));
             }
           else
             {
@@ -1288,12 +1288,12 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
 
               gamma=(double) (QuantumScale*q->alpha);
               gamma=PerceptibleReciprocal(gamma);
-              q->red=(double) ClampToQuantum(alpha*gamma*QuantumRange*
-                node_info->total_color.red);
-              q->green=(double) ClampToQuantum(alpha*gamma*QuantumRange*
-                node_info->total_color.green);
-              q->blue=(double) ClampToQuantum(alpha*gamma*QuantumRange*
-                node_info->total_color.blue);
+              q->red=(double) ClampToQuantum(ClampPixel(alpha*gamma*
+                QuantumRange*node_info->total_color.red));
+              q->green=(double) ClampToQuantum(ClampPixel(alpha*gamma*
+                QuantumRange*node_info->total_color.green));
+              q->blue=(double) ClampToQuantum(ClampPixel(alpha*gamma*
+                QuantumRange*node_info->total_color.blue));
               if (node_info->number_unique > cube_info->transparent_pixels)
                 {
                   cube_info->transparent_pixels=node_info->number_unique;
@@ -1447,8 +1447,7 @@ static RealPixelInfo **AcquirePixelThreadSet(const size_t count)
   (void) ResetMagickMemory(pixels,0,number_threads*sizeof(*pixels));
   for (i=0; i < (ssize_t) number_threads; i++)
   {
-    pixels[i]=(RealPixelInfo *) AcquireQuantumMemory(count,
-      2*sizeof(**pixels));
+    pixels[i]=(RealPixelInfo *) AcquireQuantumMemory(count,2*sizeof(**pixels));
     if (pixels[i] == (RealPixelInfo *) NULL)
       return(DestroyPixelThreadSet(pixels));
   }
@@ -1612,8 +1611,8 @@ static MagickBooleanType FloydSteinbergDither(Image *image,CubeInfo *cube_info,
             Find closest color among siblings and their children.
           */
           cube.target=pixel;
-          cube.distance=(double) (4.0*(QuantumRange+1.0)*(QuantumRange+
-            1.0)+1.0);
+          cube.distance=(double) (4.0*(QuantumRange+1.0)*(QuantumRange+1.0)+
+            1.0);
           ClosestColor(image,&cube,node_info->parent);
           cube.cache[i]=(ssize_t) cube.color_number;
         }
