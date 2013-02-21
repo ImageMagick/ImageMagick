@@ -36,7 +36,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/AdaptiveThreshold.miff',
 testFilterCompare('input.miff',  q//, 'reference/filter/Annotate.miff', 'Annotate', q/text=>'Magick',geometry=>'+0+20',font=>'Generic.ttf',fill=>'gold',gravity=>'North',pointsize=>14/, 0.005, 0.70);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/Blur.miff', 'Blur', q/'5x2'/, 0.00001, 0.004);
+testFilterCompare('input.miff',  q//, 'reference/filter/Blur.miff', 'Blur', q/'5x2'/, 0.0003, 0.03);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Border.miff', 'Border', q/geometry=>'6x6',color=>'gold'/, 0.0, 0.0);
@@ -198,7 +198,7 @@ testFilterCompare('input.miff',  q//, 'reference/filter/Threshold.miff', 'Thresh
 testFilterCompare('input.miff',  q//, 'reference/filter/Trim.miff', 'Trim', q//, 0.0, 0.0);
 ++$test;
 
-testFilterCompare('input.miff',  q//, 'reference/filter/UnsharpMask.miff', 'UnsharpMask', q/'5x2+1'/, 0.00001, 0.2);
+testFilterCompare('input.miff',  q//, 'reference/filter/UnsharpMask.miff', 'UnsharpMask', q/'5x2+1'/, 0.0003, 0.3);
 ++$test;
 
 testFilterCompare('input.miff',  q//, 'reference/filter/Wave.miff', 'Wave', q/'25x150'/, 0.0, 0.0);
