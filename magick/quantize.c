@@ -1223,11 +1223,11 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
       alpha=PerceptibleReciprocal(alpha);
       if (cube_info->associate_alpha == MagickFalse)
         {
-          SetPixelRed(q,ClampToQuantum((MagickRealType) (alpha*
+          SetPixelRed(q,ClampToQuantum((MagickRealType) ClampPixel(alpha*
             QuantumRange*node_info->total_color.red)));
-          SetPixelGreen(q,ClampToQuantum((MagickRealType) (alpha*
+          SetPixelGreen(q,ClampToQuantum((MagickRealType) ClampPixel(alpha*
             QuantumRange*node_info->total_color.green)));
-          SetPixelBlue(q,ClampToQuantum((MagickRealType) (alpha*
+          SetPixelBlue(q,ClampToQuantum((MagickRealType) ClampPixel(alpha*
             QuantumRange*node_info->total_color.blue)));
           SetPixelOpacity(q,OpaqueOpacity);
         }
@@ -1241,11 +1241,11 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
           SetPixelOpacity(q,ClampToQuantum(opacity));
           if (q->opacity == OpaqueOpacity)
             {
-              SetPixelRed(q,ClampToQuantum((MagickRealType) (alpha*
+              SetPixelRed(q,ClampToQuantum((MagickRealType) ClampPixel(alpha*
                 QuantumRange*node_info->total_color.red)));
-              SetPixelGreen(q,ClampToQuantum((MagickRealType) (alpha*
+              SetPixelGreen(q,ClampToQuantum((MagickRealType) ClampPixel(alpha*
                 QuantumRange*node_info->total_color.green)));
-              SetPixelBlue(q,ClampToQuantum((MagickRealType) (alpha*
+              SetPixelBlue(q,ClampToQuantum((MagickRealType) ClampPixel(alpha*
                 QuantumRange*node_info->total_color.blue)));
             }
           else
@@ -1255,12 +1255,12 @@ static size_t DefineImageColormap(Image *image,CubeInfo *cube_info,
 
               gamma=(double) (QuantumScale*(QuantumRange-(double) q->opacity));
               gamma=PerceptibleReciprocal(gamma);
-              SetPixelRed(q,ClampToQuantum((MagickRealType) (alpha*
+              SetPixelRed(q,ClampToQuantum((MagickRealType) ClampPixel(alpha*
                 gamma*QuantumRange*node_info->total_color.red)));
-              SetPixelGreen(q,ClampToQuantum((MagickRealType) (alpha*
+              SetPixelGreen(q,ClampToQuantum((MagickRealType) ClampPixel(alpha*
                 gamma*QuantumRange*node_info->total_color.green)));
-              SetPixelBlue(q,ClampToQuantum((MagickRealType) (
-                alpha*gamma*QuantumRange*node_info->total_color.blue)));
+              SetPixelBlue(q,ClampToQuantum((MagickRealType) ClampPixel(alpha*
+                gamma*QuantumRange*node_info->total_color.blue)));
               if (node_info->number_unique > cube_info->transparent_pixels)
                 {
                   cube_info->transparent_pixels=node_info->number_unique;
