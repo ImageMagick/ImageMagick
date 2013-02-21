@@ -801,10 +801,6 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
 %  the radius should be larger than sigma.  Use a radius of 0 and BlurImage()
 %  selects a suitable radius for you.
 %
-%  BlurImage() differs from GaussianBlurImage() in that it uses a separable
-%  kernel which is faster but mathematically equivalent to the non-separable
-%  kernel.
-%
 %  The format of the BlurImage method is:
 %
 %      Image *BlurImage(const Image *image,const double radius,
@@ -822,65 +818,14 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
 %    o exception: return any errors or warnings in this structure.
 %
 */
-
-static MagickRealType *GetBlurKernel(const size_t width,const double sigma)
-{
-  double
-    normalize;
-
-  MagickRealType
-    *kernel;
-
-  register ssize_t
-    i;
-
-  ssize_t
-    j,
-    k;
-
-  /*
-    Generate a 1-D convolution kernel.
-  */
-  (void) LogMagickEvent(TraceEvent,GetMagickModule(),"...");
-  kernel=(MagickRealType *) MagickAssumeAligned(AcquireAlignedMemory((size_t)
-    width,sizeof(*kernel)));
-  if (kernel == (MagickRealType *) NULL)
-    return(0);
-  normalize=0.0;
-  j=(ssize_t) width/2;
-  i=0;
-  for (k=(-j); k <= j; k++)
-  {
-    kernel[i]=(MagickRealType) (exp(-((double) k*k)/(2.0*MagickSigma*
-      MagickSigma))/(MagickSQ2PI*MagickSigma));
-    normalize+=kernel[i];
-    i++;
-  }
-  for (i=0; i < (ssize_t) width; i++)
-    kernel[i]/=normalize;
-  return(kernel);
-}
-
 MagickExport Image *BlurImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
-#define BlurImageTag  "Blur/Image"
-
-  CacheView
-    *blur_view,
-    *image_view;
-
   Image
     *blur_image;
 
-  MagickBooleanType
-    status;
-
-  MagickOffsetType
-    progress;
-
-  MagickRealType
-    *kernel;
+  KernelInfo
+    *kernel_info;
 
   register ssize_t
     i;
@@ -889,316 +834,47 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     width;
 
   ssize_t
-    center,
-    x,
-    y;
+    j,
+    u,
+    v;
 
-  /*
-    Initialize blur image attributes.
-  */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->debug != MagickFalse)
     (void) LogMagickEvent(TraceEvent,GetMagickModule(),"%s",image->filename);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  blur_image=CloneImage(image,0,0,MagickTrue,exception);
-  if (blur_image == (Image *) NULL)
-    return((Image *) NULL);
-  if (fabs(sigma) < MagickEpsilon)
-    return(blur_image);
-  if (SetImageStorageClass(blur_image,DirectClass,exception) == MagickFalse)
+  width=GetOptimalKernelWidth2D(radius,sigma);
+  kernel_info=AcquireKernelInfo((const char *) NULL);
+  if (kernel_info == (KernelInfo *) NULL)
+    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  (void) ResetMagickMemory(kernel_info,0,sizeof(*kernel_info));
+  kernel_info->width=width;
+  kernel_info->height=width;
+  kernel_info->x=(ssize_t) width/2;
+  kernel_info->y=(ssize_t) width/2;
+  kernel_info->signature=MagickSignature;
+  kernel_info->values=(MagickRealType *) MagickAssumeAligned(
+    AcquireAlignedMemory(kernel_info->width,kernel_info->width*
+    sizeof(*kernel_info->values)));
+  if (kernel_info->values == (MagickRealType *) NULL)
     {
-      blur_image=DestroyImage(blur_image);
-      return((Image *) NULL);
-    }
-  width=GetOptimalKernelWidth1D(radius,sigma);
-  kernel=GetBlurKernel(width,sigma);
-  if (kernel == (MagickRealType *) NULL)
-    {
-      blur_image=DestroyImage(blur_image);
+      kernel_info=DestroyKernelInfo(kernel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
-  if (image->debug != MagickFalse)
-    {
-      char
-        format[MaxTextExtent],
-        *message;
-
-      register const MagickRealType
-        *k;
-
-      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  blur image with kernel width %.20g:",(double) width);
-      message=AcquireString("");
-      k=kernel;
-      for (i=0; i < (ssize_t) width; i++)
-      {
-        *message='\0';
-        (void) FormatLocaleString(format,MaxTextExtent,"%.20g: ",(double) i);
-        (void) ConcatenateString(&message,format);
-        (void) FormatLocaleString(format,MaxTextExtent,"%g ",(double) *k++);
-        (void) ConcatenateString(&message,format);
-        (void) LogMagickEvent(TransformEvent,GetMagickModule(),"%s",message);
-      }
-      message=DestroyString(message);
-    }
-  /*
-    Blur rows.
-  */
-  status=MagickTrue;
-  progress=0;
-  center=(ssize_t) GetPixelChannels(image)*(width/2L);
-  image_view=AcquireVirtualCacheView(image,exception);
-  blur_view=AcquireAuthenticCacheView(blur_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    magick_threads(image,blur_image,image->rows,1)
-#endif
-  for (y=0; y < (ssize_t) image->rows; y++)
+  j=(ssize_t) kernel_info->width/2;
+  i=0;
+  for (v=(-j); v <= j; v++)
   {
-    register const Quantum
-      *restrict p;
-
-    register Quantum
-      *restrict q;
-
-    register ssize_t
-      x;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,-((ssize_t) width/2L),y,
-      image->columns+width,1,exception);
-    q=QueueCacheViewAuthenticPixels(blur_view,0,y,blur_image->columns,1,
-      exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    for (x=0; x < (ssize_t) image->columns; x++)
+    for (u=(-j); u <= j; u++)
     {
-      register ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) GetPixelChannels(image); i++)
-      {
-        double
-          alpha,
-          gamma,
-          pixel;
-
-        PixelChannel
-          channel;
-
-        PixelTrait
-          blur_traits,
-          traits;
-
-        register const MagickRealType
-          *restrict k;
-
-        register const Quantum
-          *restrict pixels;
-
-        register ssize_t
-          u;
-
-        channel=GetPixelChannelChannel(image,i);
-        traits=GetPixelChannelTraits(image,channel);
-        blur_traits=GetPixelChannelTraits(blur_image,channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (blur_traits == UndefinedPixelTrait))
-          continue;
-        if (((blur_traits & CopyPixelTrait) != 0) ||
-            (GetPixelMask(image,p) != 0))
-          {
-            SetPixelChannel(blur_image,channel,p[center+i],q);
-            continue;
-          }
-        k=kernel;
-        pixels=p;
-        pixel=0.0;
-        if ((blur_traits & BlendPixelTrait) == 0)
-          {
-            /*
-              No alpha blending.
-            */
-            for (u=0; u < (ssize_t) width; u++)
-            {
-              pixel+=(*k)*pixels[i];
-              k++;
-              pixels+=GetPixelChannels(image);
-            }
-            SetPixelChannel(blur_image,channel,ClampToQuantum(pixel),q);
-            continue;
-          }
-        /*
-          Alpha blending.
-        */
-        gamma=0.0;
-        for (u=0; u < (ssize_t) width; u++)
-        {
-          alpha=(double) (QuantumScale*GetPixelAlpha(image,pixels));
-          pixel+=(*k)*alpha*pixels[i];
-          gamma+=(*k)*alpha;
-          k++;
-          pixels+=GetPixelChannels(image);
-        }
-        gamma=PerceptibleReciprocal(gamma);
-        SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
-      }
-      p+=GetPixelChannels(image);
-      q+=GetPixelChannels(blur_image);
+      kernel_info->values[i]=(MagickRealType) (exp(-((double) u*u+v*v)/(2.0*
+        MagickSigma*MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
+      i++;
     }
-    if (SyncCacheViewAuthenticPixels(blur_view,exception) == MagickFalse)
-      status=MagickFalse;
-    if (image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_BlurImage)
-#endif
-        proceed=SetImageProgress(image,BlurImageTag,progress++,blur_image->rows+
-          blur_image->columns);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
   }
-  blur_view=DestroyCacheView(blur_view);
-  image_view=DestroyCacheView(image_view);
-  /*
-    Blur columns.
-  */
-  center=(ssize_t) GetPixelChannels(blur_image)*(width/2L);
-  image_view=AcquireVirtualCacheView(blur_image,exception);
-  blur_view=AcquireAuthenticCacheView(blur_image,exception);
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-  #pragma omp parallel for schedule(static,4) shared(progress,status) \
-    magick_threads(blur_image,blur_image,image->columns,1)
-#endif
-  for (x=0; x < (ssize_t) blur_image->columns; x++)
-  {
-    register const Quantum
-      *restrict p;
-
-    register Quantum
-      *restrict q;
-
-    register ssize_t
-      y;
-
-    if (status == MagickFalse)
-      continue;
-    p=GetCacheViewVirtualPixels(image_view,x,-((ssize_t) width/2L),1,
-      blur_image->rows+width,exception);
-    q=GetCacheViewAuthenticPixels(blur_view,x,0,1,blur_image->rows,exception);
-    if ((p == (const Quantum *) NULL) || (q == (Quantum *) NULL))
-      {
-        status=MagickFalse;
-        continue;
-      }
-    for (y=0; y < (ssize_t) blur_image->rows; y++)
-    {
-      register ssize_t
-        i;
-
-      for (i=0; i < (ssize_t) GetPixelChannels(blur_image); i++)
-      {
-        double
-          alpha,
-          gamma,
-          pixel;
-
-        PixelChannel
-          channel;
-
-        PixelTrait
-          blur_traits,
-          traits;
-
-        register const MagickRealType
-          *restrict k;
-
-        register const Quantum
-          *restrict pixels;
-
-        register ssize_t
-          u;
-
-        channel=GetPixelChannelChannel(blur_image,i);
-        traits=GetPixelChannelTraits(blur_image,channel);
-        blur_traits=GetPixelChannelTraits(blur_image,channel);
-        if ((traits == UndefinedPixelTrait) ||
-            (blur_traits == UndefinedPixelTrait))
-          continue;
-        if (((blur_traits & CopyPixelTrait) != 0) ||
-            (GetPixelMask(blur_image,p) != 0))
-          {
-            SetPixelChannel(blur_image,channel,p[center+i],q);
-            continue;
-          }
-        k=kernel;
-        pixels=p;
-        pixel=0.0;
-        if ((blur_traits & BlendPixelTrait) == 0)
-          {
-            /*
-              No alpha blending.
-            */
-            for (u=0; u < (ssize_t) width; u++)
-            {
-              pixel+=(*k)*pixels[i];
-              k++;
-              pixels+=GetPixelChannels(blur_image);
-            }
-            SetPixelChannel(blur_image,channel,ClampToQuantum(pixel),q);
-            continue;
-          }
-        /*
-          Alpha blending.
-        */
-        gamma=0.0;
-        for (u=0; u < (ssize_t) width; u++)
-        {
-          alpha=(double) (QuantumScale*GetPixelAlpha(blur_image,
-            pixels));
-          pixel+=(*k)*alpha*pixels[i];
-          gamma+=(*k)*alpha;
-          k++;
-          pixels+=GetPixelChannels(blur_image);
-        }
-        gamma=PerceptibleReciprocal(gamma);
-        SetPixelChannel(blur_image,channel,ClampToQuantum(gamma*pixel),q);
-      }
-      p+=GetPixelChannels(blur_image);
-      q+=GetPixelChannels(blur_image);
-    }
-    if (SyncCacheViewAuthenticPixels(blur_view,exception) == MagickFalse)
-      status=MagickFalse;
-    if (blur_image->progress_monitor != (MagickProgressMonitor) NULL)
-      {
-        MagickBooleanType
-          proceed;
-
-#if defined(MAGICKCORE_OPENMP_SUPPORT)
-        #pragma omp critical (MagickCore_BlurImage)
-#endif
-        proceed=SetImageProgress(blur_image,BlurImageTag,progress++,
-          blur_image->rows+blur_image->columns);
-        if (proceed == MagickFalse)
-          status=MagickFalse;
-      }
-  }
-  blur_view=DestroyCacheView(blur_view);
-  image_view=DestroyCacheView(image_view);
-  kernel=(MagickRealType *) RelinquishAlignedMemory(kernel);
-  blur_image->type=image->type;
-  if (status == MagickFalse)
-    blur_image=DestroyImage(blur_image);
+  blur_image=ConvolveImage(image,kernel_info,exception);
+  kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
 }
 
@@ -1880,6 +1556,8 @@ static MagickRealType *GetMotionBlurKernel(const size_t width,
 MagickExport Image *MotionBlurImage(const Image *image,const double radius,
   const double sigma,const double angle,ExceptionInfo *exception)
 {
+#define BlurImageTag  "Blur/Image"
+
   CacheView
     *blur_view,
     *image_view,
