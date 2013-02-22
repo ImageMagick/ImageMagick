@@ -662,9 +662,7 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
     status;
 
   double
-    alpha,
     area,
-    beta,
     maximum_error,
     mean_error;
 
@@ -672,8 +670,6 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
     y;
 
   status=MagickTrue;
-  alpha=1.0;
-  beta=1.0;
   area=0.0;
   maximum_error=0.0;
   mean_error=0.0;
@@ -726,8 +722,8 @@ static MagickBooleanType GetMeanErrorPerPixel(Image *image,
             (reconstruct_traits == UndefinedPixelTrait) ||
             ((reconstruct_traits & UpdatePixelTrait) == 0))
           continue;
-        distance=fabs((double) (alpha*Sa*p[i]-beta*Da*GetPixelChannel(
-          reconstruct_image,channel,q)));
+        distance=fabs((double) (Sa*p[i]-Da*GetPixelChannel(reconstruct_image,
+          channel,q)));
         distortion[i]+=distance;
         distortion[CompositePixelChannel]+=distance;
         mean_error+=distance*distance;
