@@ -1,3 +1,9 @@
+2013-02-22  6.8.3-4 Cristy  <quetzlzacatenango@image...>
+  * New version 6.8.3-4, SVN revision 11127.
+
+2013-02-22  6.8.3-4 Cristy  <quetzlzacatenango@image...>
+  * Reduce default memory resource limit under Windows.
+
 2013-02-19  6.8.3-3 Cristy  <quetzlzacatenango@image...>
   * New version 6.8.3-3, SVN revision 11105.
 
