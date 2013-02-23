@@ -821,6 +821,9 @@ MagickExport Image *AdaptiveSharpenImage(const Image *image,const double radius,
 MagickExport Image *BlurImage(const Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
+  double
+    normalize;
+
   Image
     *blur_image;
 
@@ -862,6 +865,7 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
       kernel_info=DestroyKernelInfo(kernel_info);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
     }
+  normalize=0.0;
   j=(ssize_t) kernel_info->width/2;
   i=0;
   for (v=(-j); v <= j; v++)
@@ -870,9 +874,11 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     {
       kernel_info->values[i]=(MagickRealType) (exp(-((double) u*u+v*v)/(2.0*
         MagickSigma*MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
+      normalize+=kernel_info->values[i];
       i++;
     }
   }
+  kernel_info->values[i/2]+=(1.0-normalize);
   blur_image=ConvolveImage(image,kernel_info,exception);
   kernel_info=DestroyKernelInfo(kernel_info);
   return(blur_image);
