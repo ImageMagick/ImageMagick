@@ -789,7 +789,8 @@ MagickExport Image *BlurImageChannel(const Image *image,
   ExceptionInfo *exception)
 {
   double
-    *kernel;
+    *kernel,
+    normalize;
 
   Image
     *blur_image;
@@ -816,14 +817,20 @@ MagickExport Image *BlurImageChannel(const Image *image,
     width*sizeof(*kernel)));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitError,"MemoryAllocationFailed");
+  normalize=0.0;
   j=(ssize_t) width/2;
   i=0;
   for (v=(-j); v <= j; v++)
   {
     for (u=(-j); u <= j; u++)
-      kernel[i++]=(double) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
+    {
+      kernel[i]=(double) (exp(-((double) u*u+v*v)/(2.0*MagickSigma*
         MagickSigma))/(2.0*MagickPI*MagickSigma*MagickSigma));
+      normalize+=kernel[i];
+      i++;
+    }
   }
+  kernel[i/2]+=(1.0-normalize);
   blur_image=ConvolveImageChannel(image,channel,width,kernel,exception);
   kernel=(double *) RelinquishAlignedMemory(kernel);
   return(blur_image);
