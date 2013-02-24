@@ -3671,7 +3671,7 @@ MAGICK_PATCHLEVEL_VERSION=0
 
 MAGICK_VERSION=7.0.0-0
 
-MAGICK_SVN_REVISION=11008:11080M
+MAGICK_SVN_REVISION=11115:11140M
 
 
 # Substitute library versioning
@@ -25986,7 +25986,7 @@ fi
 
 # Assume that delegate headers reside under same directory as ImageMagick
 # installation prefix.
-MAGICK_CPPFLAGS="-I$INCLUDE_DIR/ImageMagick $MAGICK_CPPFLAGS"
+MAGICK_CPPFLAGS="-I$INCLUDE_DIR/ImageMagick-$MAGICK_MAJOR_VERSION $MAGICK_CPPFLAGS"
 
 #
 # Find the X11 RGB database

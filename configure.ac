@@ -1268,7 +1268,7 @@ fi
 
 # Assume that delegate headers reside under same directory as ImageMagick
 # installation prefix.
-MAGICK_CPPFLAGS="-I$INCLUDE_DIR/ImageMagick $MAGICK_CPPFLAGS"
+MAGICK_CPPFLAGS="-I$INCLUDE_DIR/ImageMagick-$MAGICK_MAJOR_VERSION $MAGICK_CPPFLAGS"
 
 #
 # Find the X11 RGB database
