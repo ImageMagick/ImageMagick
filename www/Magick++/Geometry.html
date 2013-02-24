@@ -1,36 +1,23 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-	<TITLE>Magick::Geometry</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
-	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
-	<META NAME="CREATED" CONTENT="20020805;15172876">
-	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20050103;22481700">
-	<META NAME="DESCRIPTION" CONTENT="Documentation for Magick::Geometry class">
-	<STYLE>
-	<!--
-		TD P { color: #000000 }
-		H1 { color: #000000 }
-		P { color: #000000 }
-		H3 { color: #000000 }
-		A:link { color: #0000ee }
-		A:visited { color: #551a8b }
-	-->
-	</STYLE>
-</HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0000ee" VLINK="#551a8b" BGCOLOR="#ffffff" DIR="LTR">
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Magick++ API: Geometry</title>
+<link rel="stylesheet" href="magick.css" type="text/css" />
+</head>
+<body>
+<div class="doc-section">
 <H1 ALIGN=CENTER>Magick::Geometry</H1>
 <P>Geometry provides a convenient means to specify a geometry
 argument. The object may be initialized from a C string or C++ string
 containing a geometry specification. It may also be initialized by
 more efficient parameterized constructors. 
 </P>
-<H3><A NAME="X11GeometrySpecifications"></A>X11 Geometry
+<H3><A NAME="GeometrySpecifications"></A>Geometry
 Specifications</H3>
-<P>X11 geometry specifications are in the form
-<TT>&quot;&lt;width&gt;x&lt;height&gt;{+-}&lt;xoffset&gt;{+-}&lt;yoffset&gt;&quot;</TT>
+<P>Geometry specifications are in the form
+<kbd>&quot;&lt;width&gt;x&lt;height&gt;{+-}&lt;xoffset&gt;{+-}&lt;yoffset&gt;&quot;</kbd>
 (where <I>width</I>, <I>height</I>, <I>xoffset</I>, and <I>yoffset</I>
 are numbers) for specifying the size and placement location for an
 object. 
@@ -44,8 +31,7 @@ offsets are measured from the indicated edge of the object to the
 corresponding edge of the image. The X offset may be specified in the
 following ways: 
 </P>
-<CENTER>
-	<TABLE WIDTH=90% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+<ul>	<TABLE WIDTH=90% BORDER=1 CELLPADDING=2 CELLSPACING=3>
 		<COL WIDTH=21*>
 		<COL WIDTH=235*>
 		<TR>
@@ -54,7 +40,7 @@ following ways:
 			</TD>
 			<TD WIDTH=92%>
 				<P>The left edge of the object is to be placed <I>xoffset</I>
-				pixels in from the <B>left edge </B>of the image.</P>
+				pixels in from the <em>left edge </em>of the image.</P>
 			</TD>
 		</TR>
 		<TR>
@@ -63,15 +49,13 @@ following ways:
 			</TD>
 			<TD WIDTH=92%>
 				<P>The left edge of the object is to be placed outside the image,
-				<I>xoffset</I> pixels out from the <B>left edge </B>of the image.</P>
+				<I>xoffset</I> pixels out from the <em>left edge </em>of the image.</P>
 			</TD>
 		</TR>
-	</TABLE>
-</CENTER>
+	</TABLE></ul>
 <P STYLE="margin-bottom: 0in">The Y offset has similar meanings: 
 </P>
-<CENTER>
-	<TABLE WIDTH=90% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+	<ul><TABLE WIDTH=90% BORDER=1 CELLPADDING=2 CELLSPACING=3>
 		<COL WIDTH=27*>
 		<COL WIDTH=229*>
 		<TR>
@@ -80,7 +64,7 @@ following ways:
 			</TD>
 			<TD WIDTH=89%>
 				<P>The top edge of the object is to be <I>yoffset</I> pixels
-				<B>below</B> the <B>top edge </B>of the image.</P>
+				<em>below</em> the <em>top edge </em>of the image.</P>
 			</TD>
 		</TR>
 		<TR>
@@ -89,77 +73,74 @@ following ways:
 			</TD>
 			<TD WIDTH=89%>
 				<P>The top edge of the object is to be <I>yoffset</I> pixels
-				<B>above</B> the <B>top edge</B> of the image.</P>
+				<em>above</em> the <em>top edge</em> of the image.</P>
 			</TD>
 		</TR>
-	</TABLE>
-</CENTER>
+	</TABLE></ul>
 <P>Offsets must be given as pairs; in other words, in order to
 specify either <I>xoffset</I> or <I>yoffset</I> both must be present.
 </P>
-<H3><A NAME="ExtendedX11GeometrySpecifications"></A>ImageMagick
-Extensions To X11 Geometry Specifications</H3>
+<H3><A NAME="ExtendedGeometrySpecifications"></A>ImageMagick
+Extensions To Geometry Specifications</H3>
 <P STYLE="margin-bottom: 0in">ImageMagick has added a number of
 qualifiers to the standard geometry string for use when resizing
 images. The form of an extended geometry string is
-&quot;<TT>&lt;width&gt;x&lt;height&gt;{+-}&lt;xoffset&gt;{+-}&lt;yoffset&gt;{%}{!}{&lt;}{&gt;}&quot;.
-Extended geometry strings should <B>only</B> be used <B>when resizing
-an image</B>. Using an extended geometry string for other
-applications may cause the API call to fail. </TT>The available
+&quot;<kbd>&lt;width&gt;x&lt;height&gt;{+-}&lt;xoffset&gt;{+-}&lt;yoffset&gt;{%}{!}{&lt;}{&gt;}&quot;</kbd>.
+Extended geometry strings should <em>only</em> be used <em>when resizing
+an image</em>. Using an extended geometry string for other
+applications may cause the API call to fail. </kbd>The available
 qualifiers are shown in the following table: 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>ImageMagick Geometry
-Qualifiers</B></P>
-<CENTER>
-	<TABLE WIDTH=90% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><b>ImageMagick Geometry
+Qualifiers</b></P>
+	<ul><TABLE WIDTH=90% BORDER=1 CELLPADDING=2 CELLSPACING=3>
 		<COL WIDTH=36*>
 		<COL WIDTH=220*>
 		<TR>
 			<TD WIDTH=14%>
-				<P ALIGN=CENTER><B>Qualifier</B></P>
+				<P ALIGN=CENTER><b>Qualifier</b></P>
 			</TD>
 			<TD WIDTH=86%>
-				<P ALIGN=CENTER><B>Description</B></P>
+				<P ALIGN=CENTER><b>Description</b></P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=14%>
-				<P ALIGN=CENTER><B>%</B></P>
+				<P ALIGN=CENTER><b>%</b></P>
 			</TD>
 			<TD WIDTH=86%>
-				<P>Interpret width and height as a <B>percentage</B> of the
+				<P>Interpret width and height as a <b>percentage</b> of the
 				current size.</P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=14%>
-				<P ALIGN=CENTER><B>!</B></P>
+				<P ALIGN=CENTER><b>!</b></P>
 			</TD>
 			<TD WIDTH=86%>
-				<P>Resize to width and height <B>exactly</B>, loosing original
+				<P>Resize to width and height <b>exactly</b>, loosing original
 				aspect ratio.</P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=14%>
-				<P ALIGN=CENTER><B>&lt;</B></P>
+				<P ALIGN=CENTER><b>&lt;</b></P>
 			</TD>
 			<TD WIDTH=86%>
-				<P>Resize only if the image is <B>smaller</B> than the geometry
+				<P>Resize only if the image is <b>smaller</b> than the geometry
 				specification.</P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=14%>
-				<P ALIGN=CENTER><B>&gt;</B></P>
+				<P ALIGN=CENTER><b>&gt;</b></P>
 			</TD>
 			<TD WIDTH=86%>
-				<P>Resize only if the image is <B>greater</B> than the geometry
+				<P>Resize only if the image is <b>greater</b> than the geometry
 				specification.</P>
 			</TD>
 		</TR>
-	</TABLE>
-</CENTER>
+	</TABLE></ul>
 <H3><A NAME="PostscriptPageSize"></A>Postscript Page Size Extension
 To Geometry Specifications</H3>
 <P>Any geometry string specification supplied to the Geometry
@@ -171,24 +152,23 @@ conversion to the internal object format. Postscript page size
 specifications are short-hand for the pixel geometry required to fill
 a page of that size. Since the 11x17 inch page size used in the US
 starts with a digit, it is not supported as a Postscript page size
-nickname. Instead, substitute the geometry specification &quot;<TT>792x1224&gt;&quot;</TT>
+nickname. Instead, substitute the geometry specification &quot;<kbd>792x1224&gt;&quot;</kbd>
 when 11x17 output is desired. 
 </P>
 <P STYLE="margin-bottom: 0in">An example of a Postscript page size
-specification is <TT>&quot;letter+43+43&gt;&quot;</TT>. 
+specification is <kbd>&quot;letter+43+43&gt;&quot;</kbd>. 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Postscript Page Size
-Nicknames</B></P>
-<CENTER>
-	<TABLE WIDTH=70% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><b>Postscript Page Size
+Nicknames</b></P>
+	<ul><TABLE WIDTH=70% BORDER=1 CELLPADDING=2 CELLSPACING=3>
 		<COL WIDTH=105*>
 		<COL WIDTH=151*>
 		<TR>
 			<TD WIDTH=41%>
-				<P ALIGN=CENTER><B>Postscript Page Size Nickname</B></P>
+				<P ALIGN=CENTER><b>Postscript Page Size Nickname</b></P>
 			</TD>
 			<TD WIDTH=59%>
-				<P ALIGN=CENTER><B>Equivalent Extended Geometry Specification</B></P>
+				<P ALIGN=CENTER><b>Equivalent Extended Geometry Specification</b></P>
 			</TD>
 		</TR>
 		<TR>
@@ -487,32 +467,31 @@ Nicknames</B></P>
 				<P ALIGN=CENTER><FONT SIZE=2>396x612&gt;</FONT></P>
 			</TD>
 		</TR>
-	</TABLE>
-</CENTER>
+	</TABLE></ul>
 <H3 ALIGN=CENTER>Geometry Methods</H3>
 <P STYLE="margin-bottom: 0in">Geometry provides methods to initialize
 its value from strings, from a set of parameters, or via attributes.
 The methods available for use in Geometry are shown in the following
 table: 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Geometry Methods</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><b>Geometry Methods</b></P>
+<ul><TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
 	<COL WIDTH=25*>
 	<COL WIDTH=26*>
 	<COL WIDTH=111*>
 	<COL WIDTH=94*>
 	<TR>
 		<TD WIDTH=10%>
-			<P ALIGN=CENTER><B>Method</B></P>
+			<P ALIGN=CENTER><b>Method</b></P>
 		</TD>
 		<TD WIDTH=10%>
-			<P ALIGN=CENTER><B>Return Type</B></P>
+			<P ALIGN=CENTER><b>Return Type</b></P>
 		</TD>
 		<TD WIDTH=44%>
-			<P ALIGN=CENTER><B>Signature(s)</B></P>
+			<P ALIGN=CENTER><b>Signature(s)</b></P>
 		</TD>
 		<TD WIDTH=37%>
-			<P ALIGN=CENTER><B>Description</B></P>
+			<P ALIGN=CENTER><b>Description</b></P>
 		</TD>
 	</TR>
 	<TR>
@@ -523,12 +502,12 @@ table:
 			<P>&nbsp;</P>
 		</TD>
 		<TD WIDTH=44%>
-			<P>unsigned int width_, unsigned int height_, unsigned int xOff_ =
-			0, unsigned int yOff_ = 0, bool xNegative_ = false, bool
+			<P>size_t width_, size_t height_, ssize_t xOff_ =
+			0, ssize_t yOff_ = 0, bool xNegative_ = false, bool
 			yNegative_ = false</P>
 		</TD>
 		<TD WIDTH=37%>
-			<P>Construct X11 geometry via explicit parameters.</P>
+			<P>Construct geometry via explicit parameters.</P>
 		</TD>
 	</TR>
 	<TR>
@@ -555,7 +534,7 @@ table:
 			<P>void</P>
 		</TD>
 		<TD WIDTH=44%>
-			<P>unsigned int width_</P>
+			<P>size_t width_</P>
 		</TD>
 		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Width</P>
@@ -563,7 +542,7 @@ table:
 	</TR>
 	<TR>
 		<TD WIDTH=10%>
-			<P>unsigned int</P>
+			<P>size_t</P>
 		</TD>
 		<TD WIDTH=44%>
 			<P>void</P>
@@ -577,7 +556,7 @@ table:
 			<P>void</P>
 		</TD>
 		<TD WIDTH=44%>
-			<P>unsigned int height_</P>
+			<P>size_t height_</P>
 		</TD>
 		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Height</P>
@@ -585,7 +564,7 @@ table:
 	</TR>
 	<TR>
 		<TD WIDTH=10%>
-			<P>unsigned int</P>
+			<P>size_t</P>
 		</TD>
 		<TD WIDTH=44%>
 			<P>void</P>
@@ -599,7 +578,7 @@ table:
 			<P>void</P>
 		</TD>
 		<TD WIDTH=44%>
-			<P>unsigned int xOff_</P>
+			<P>ssize_t xOff_</P>
 		</TD>
 		<TD ROWSPAN=2 WIDTH=37%>
 			<P>X offset from origin</P>
@@ -607,7 +586,7 @@ table:
 	</TR>
 	<TR>
 		<TD WIDTH=10%>
-			<P>int</P>
+			<P>ssize_t</P>
 		</TD>
 		<TD WIDTH=44%>
 			<P>void</P>
@@ -621,7 +600,7 @@ table:
 			<P>void</P>
 		</TD>
 		<TD WIDTH=44%>
-			<P>unsigned int yOff_</P>
+			<P>ssize_t yOff_</P>
 		</TD>
 		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Y offset from origin</P>
@@ -629,7 +608,7 @@ table:
 	</TR>
 	<TR>
 		<TD WIDTH=10%>
-			<P>int</P>
+			<P>size_t</P>
 		</TD>
 		<TD WIDTH=44%>
 			<P>void</P>
@@ -832,8 +811,9 @@ table:
 			<P>Obtain C++ string representation of geometry</P>
 		</TD>
 	</TR>
-</TABLE>
+</TABLE></ul>
 <P><BR><BR>
 </P>
+</div>
 </BODY>
 </HTML>

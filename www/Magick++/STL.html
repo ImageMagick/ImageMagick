@@ -1,22 +1,14 @@
-<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
-<html>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <meta http-equiv="Content-Type"
- content="text/html; charset=iso-8859-1">
-  <meta name="GENERATOR"
- content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
-  <meta name="Author" content="Bob Friesenhahn">
-  <meta name="Description"
- content="Documentation on Magick++'s STL support templates.">
-  <meta name="Keywords" content="STL,Magick++,ImageMagick">
-  <title>Magick++ STL Support</title>
-<link rel=stylesheet type=text/css href="magick.css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Magick++ API: STL Templates</title>
+<link rel="stylesheet" href="magick.css" type="text/css" />
 </head>
-<body text="#000000" bgcolor="#ffffff" link="#0000ff" vlink="#ff0000"
- alink="#000088">
-<center>
+<body>
+<div class="doc-section">
 <h1> Magick++ STL Support</h1>
-</center>
 Magick++ provides a set of <a href="http://www.sgi.com/tech/stl/">Standard
 Template Libary</a> (<a href="http://www.sgi.com/tech/stl/">STL</a> )
 algorithms for operating across ranges of image frames in a container.
@@ -29,8 +21,8 @@ algorithm which invokes a unary function object on a range of container
 elements.
 <p>Magick++ uses a limited set of template argument types. The current
 template argument types are: </p>
-<blockquote><a href="http://www.sgi.com/tech/stl/Container.html">Container</a>
-  <blockquote>A container having the properties of a <a
+<a href="http://www.sgi.com/tech/stl/Container.html">Container</a>
+<blockquote>A container having the properties of a <a
  href="http://www.sgi.com/tech/stl/BackInsertionSequence.html"> Back
 Insertion Sequence</a> . Sequences support forward iterators and Back
 Insertion Sequences support the additional abilty to append an element
@@ -55,30 +47,30 @@ processing the entire contents of a container, it is handy to know that
 STL containers usually provide the begin() and end() methods to return
 input interators which correspond  with the first and last elements,
 respectively.</blockquote>
-</blockquote>
-The following is an example of how frames from a GIF animation <font
+<p>The following is an example of how frames from a GIF animation <font
  color="#000000"> "test_image_anim.gif" may be appended horizontally
-with the resulting image written to the file "appended_image.miff":</font>
-<p><tt><font color="#000066">#include &lt;list&gt;</font></tt> <br>
-<tt><font color="#000066">#include &lt;Magick++.h&gt;</font></tt> <br>
-<tt><font color="#000066">using namespace std;</font></tt> <br>
-<tt><font color="#000066">using namespace Magick;</font></tt> </p>
-<p><tt><font color="#000066">int main(int /*argc*/,char **/*argv*/)</font></tt> <br>
-<tt><font color="#000066">{</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp; list&lt;Image&gt; imageList;</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp; readImages( &amp;imageList,
-"test_image_anim.gif" );</font></tt> </p>
-<p><tt><font color="#000066">&nbsp;&nbsp; Image appended;</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp; appendImages( &amp;appended,
-imageList.begin(), imageList.end() );</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp; appended.write(
-"appended_image.miff" );</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp; return 0;</font></tt> <br>
-<tt><font color="#000066">}</font></tt> </p>
+with the resulting image written to the file <kbd>appended_image.miff</kbd>:</font></p>
+<pre class="code">
+#include &lt;list> 
+#include &lt;Magick++.h> 
+using namespace std; 
+using namespace Magick;
+
+int main(int /*argc*/,char **/*argv*/) 
+{ 
+   list&lt;Image> imageList; 
+   readImages( &imageList, "test_image_anim.gif" );
+
+   Image appended; 
+   appendImages( &appended, imageList.begin(), imageList.end() ); 
+   appended.write( "appended_image.miff" ); 
+   return 0; 
+}
+</pre>
 <p>The available Magick++ specific STL algorithms for operating on
 sequences of image frames are shown in the following table: <br>
 &nbsp;
-<table border="1" width="100%">
+<ul><table border="1" width="100%">
   <caption><b>Magick++ STL Algorithms For Image Sequences</b></caption> <tbody>
     <tr>
       <td>
@@ -166,7 +158,7 @@ last_</font></td>
       <td><font size="-1">Break down an image sequence into constituent
 parts.&nbsp; This is useful for creating GIF or MNG animation sequences.
 The input sequence  is specified by <i>first_</i> and <i>last_</i>, and
-the deconstruted images  are returned via <i>deconstructedImages_</i>.</font></td>
+the deconstructed images  are returned via <i>deconstructedImages_</i>.</font></td>
     </tr>
     <tr>
       <td>
@@ -199,6 +191,24 @@ represent image  layers into a single composited representation. The <i>flattend
 parameter points to an existing Image to update with the flattened
 image. This function is useful for combining Photoshop layers into a
 single image.</font></td>
+    </tr>
+    <tr>
+      <td>
+      <center><a name="forwardFourierTransformImage"></a> <font size="-1">forwardFourierTransformImage</font></center>
+      </td>
+      <td><font size="-1"><a
+ href="http://www.sgi.com/tech/stl/Container.html"> Container</a>
+*fourierImages_, const Image &amp;image_ </font></td>
+      <td><font size="-1"> Implements the discrete Fourier transform (DFT) of the image as a magnitude / phase image pair via <i>fourierImages_</i>.</font></td>
+    </tr>
+    <tr>
+      <td>
+      <center><a name="forwardFourierTransformImage"></a> <font size="-1">forwardFourierTransformImage</font></center>
+      </td>
+      <td><font size="-1"><a
+ href="http://www.sgi.com/tech/stl/Container.html"> Container</a>
+*fourierImages_, const Image &amp;image_, const bool magnitude_ </font></td>
+      <td><font size="-1"> Implements the discrete Fourier transform (DFT) of the image either as a magnitude / phase or real / imaginary image pair via <i>fourierImages_</i>.</font></td>
     </tr>
     <tr>
       <td>
@@ -274,7 +284,7 @@ through <i>last_</i> .</font></td>
 *sequence_, const std::string &amp;imageSpec_</font></td>
       <td><font size="-1">Read a sequence of image frames into existing
 container (appending to container <i>sequence_</i>) with image names
-specified in the string <i>imageSpec_</i>.</font></td>
+specified in the UTF-8 string <i>imageSpec_</i>.</font></td>
     </tr>
     <tr>
       <td><font size="-1"><a
@@ -329,7 +339,7 @@ quantization settings. Set <i>measureError_</i> to <i>true</i> in order
 to measure quantization  error.</font></td>
     </tr>
   </tbody>
-</table>
+</table></ul>
 <br>
 &nbsp; </p>
 <center>
@@ -337,22 +347,19 @@ to measure quantization  error.</font></td>
 </center>
 Magick++ unary function objects inherit from the STL unary_function
 template class . The STL unary_function template class is of the form
-<blockquote><tt><font color="#000099">unary_function&lt;Arg, Result&gt;</font></tt></blockquote>
+<pre class="text"><tt><font color="#000099">unary_function&lt;Arg, Result&gt;</font></tt></pre>
 and expects that derived classes implement a method of the form:
-<blockquote><tt><font color="#000099">Result operator()( Arg argument_
-);</font></tt></blockquote>
+<pre class="text"><tt><font color="#000099">Result operator()( Arg argument_);</font></tt></pre>
 which is invoked by algorithms using the function object. In the case
 of unary function objects defined by Magick++, the invoked function
 looks like:
-<blockquote><tt><font color="#000099">void operator()( Image
-&amp;image_);</font></tt></blockquote>
+<pre class="text"><tt><font color="#000099">void operator()( Image &amp;image_);</font></tt></pre>
 with a typical implementation looking similar to:
-<blockquote><tt><font color="#000099">void operator()( Image
-&amp;image_ )</font></tt> <br>
+<pre class="text"><tt><font color="#000099">void operator()( Image &amp;image_ )</font></tt> <br>
   <tt><font color="#000099">&nbsp; {</font></tt> <br>
   <tt><font color="#000099">&nbsp;&nbsp;&nbsp; image_.contrast(
 _sharpen );</font></tt> <br>
-  <tt><font color="#000099">&nbsp; }</font></tt></blockquote>
+  <tt><font color="#000099">&nbsp; }</font></tt></pre>
 where <i>contrast</i> is an Image method and <i>_sharpen </i>is an
 argument stored within the function object by its contructor. Since
 constructors may be polymorphic, a given function object may have
@@ -367,7 +374,7 @@ available compatable with each synonymous  method in the Image class. </p>
 <p>The unary function objects that Magick++ provides to support
 manipulating images are shown in the following table: <br>
 &nbsp;
-<table border="1">
+<ul><table border="1">
   <caption><b>Magick++ Unary Function Objects For Image Manipulation</b></caption> <tbody>
     <tr align="center">
       <td><b>Function Object</b></td>
@@ -380,8 +387,8 @@ manipulating images are shown in the following table: <br>
  size="-1">adaptiveThresholdImage</font><br>
       </div>
       </td>
-      <td valign="middle"><font size="-1">size_t width, unsigned
-int height, unsigned offset = 0</font><br>
+      <td valign="middle"><font size="-1">size_t width, size_t
+height, unsigned offset = 0</font><br>
       </td>
       <td valign="top"><font size="-1">Apply adaptive thresholding to
 the image. Adaptive thresholding is useful if the ideal threshold level
@@ -633,7 +640,7 @@ vertical direction)</font></td>
       <center><a name="floodFillColorImage"></a> <font size="-1">floodFill-</font> <br>
       <font size="-1">ColorImage</font></center>
       </td>
-      <td><font size="-1">size_t x_, size_t y_, const <a
+      <td><font size="-1">ssize_t x_, ssize_t y_, const <a
  href="Color.html"> Color</a> &amp;fillColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill color across pixels
 that match  the color of the target pixel and are neighbors of the
@@ -644,7 +651,7 @@ target pixel. Uses  current fuzz setting when determining color match.</font></t
 &amp;point_, const <a href="Color.html">Color</a> &amp;fillColor_</font></td>
     </tr>
     <tr>
-      <td><font size="-1">size_t x_, size_t y_, const <a
+      <td><font size="-1">ssize_t x_, ssize_t y_, const <a
  href="Color.html"> Color</a> &amp;fillColor_, const <a href="Color.html">Color</a>
 &amp;borderColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill color across pixels
@@ -661,7 +668,7 @@ border color. Uses  current fuzz setting when determining color match.</font></t
       <center><a name="floodFillTextureImage"></a> <font size="-1">floodFill-</font> <br>
       <font size="-1">TextureImage</font></center>
       </td>
-      <td><font size="-1">size_t x_, size_t y_,&nbsp; const <a
+      <td><font size="-1">ssize_t x_, ssize_t y_,&nbsp; const <a
  href="Image.html"> Image</a> &amp;texture_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill texture across pixels
 that match  the color of the target pixel and are neighbors of the
@@ -672,7 +679,7 @@ target pixel. Uses  current fuzz setting when determining color match.</font></t
 &amp;point_, const Image &amp;texture_</font></td>
     </tr>
     <tr>
-      <td><font size="-1">size_t x_, size_t y_, const Image
+      <td><font size="-1">ssize_t x_, ssize_t y_, const Image
 &amp;texture_, const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill texture across pixels
 starting at target-pixel and stopping at pixels matching specified
@@ -701,7 +708,7 @@ horizontal direction)</font></td>
     </tr>
     <tr>
       <td><font size="-1">size_t width_, size_t height_,
-int x_, ssize_t  y_, ssize_t innerBevel_ = 0, ssize_t outerBevel_ = 0</font></td>
+ssize_t x_, ssize_t  y_, ssize_t innerBevel_ = 0, ssize_t outerBevel_ = 0</font></td>
     </tr>
     <tr>
       <td rowspan="2">
@@ -834,7 +841,7 @@ with this option.</font></td>
       <font size="-1">Image</font></center>
       </td>
       <td><font size="-1">const <a href="Color.html">Color</a>
-&amp;target_, size_t matte_, ssize_t x_, ssize_t y_, <a
+&amp;target_, unsigned int matte_, ssize_t x_, ssize_t y_, <a
  href="Enumerations.html#PaintMethod"> PaintMethod</a> method_</font></td>
       <td><font size="-1">Floodfill designated area with a matte value</font></td>
     </tr>
@@ -1141,7 +1148,7 @@ the image.</font></td>
       <td><font size="-1">Zoom image to specified size.</font></td>
     </tr>
   </tbody>
-</table>
+</table></ul>
 </p>
 <p>Function objects are available to set attributes on image frames
 which are equivalent to methods in the Image object. These function
@@ -1149,15 +1156,15 @@ objects allow setting an option across a range of image frames using f<tt>
 or_each()</tt>. </p>
 <p>The following code is an example of how the color 'red' may be set
 to transparent in a GIF animation: </p>
-<p><tt><font color="#000066">list&lt;image&gt; images;</font></tt> <br>
-<tt><font color="#000066">readImages( &amp;images, "animation.gif"  );</font></tt> <br>
-<tt><font color="#000066">for_each ( images.begin(), images.end(),
-transparentImage( "red" )&nbsp; );</font></tt> <br>
-<tt><font color="#000066">writeImages( images.begin(), images.end(),
-"animation.gif" );</font></tt> </p>
+<pre class="code">
+list<image> images; 
+readImages( &images, "animation.gif" ); 
+for_each ( images.begin(), images.end(), transparentImage( "red" )  ); 
+writeImages( images.begin(), images.end(), "animation.gif" );
+</pre>
 <p>The available function objects for setting image attributes are <br>
 &nbsp;
-<table border="1">
+<ul><table border="1">
   <caption style="font-weight: bold;">Image Attributes</caption> <tbody>
     <tr>
       <td>
@@ -1530,7 +1537,7 @@ canvas.</font>
       <p><font size="-1">Use this option to specify the dimensions and
 position of the Postscript page in dots per inch or a TEXT page in
 pixels. This option is typically used in concert with <i><a
- href="#density">density</a> </i>.</font> </p>
+ href="STL.html#density">density</a> </i>.</font> </p>
       <p><font size="-1">Page may also be used to position a GIF image
 (such as for a scene in an animation)</font></p>
       </td>
@@ -1678,6 +1685,13 @@ format (e.g. Photo CD, JBIG, or JPEG.</font></td>
     </tr>
     <tr>
       <td>
+      <center><a name="stripImage"></a> <font size="-1">stripImage</font></center>
+      </td>
+      <td><font size="-1">void</font></td>
+      <td><font size="-1">strips an image of all profiles and comments.</font></td>
+    </tr>
+    <tr>
+      <td>
       <center><a name="strokeColorImage"></a> <font size="-1">strokeColorImage</font></center>
       </td>
       <td><font size="-1"><a href="Color.html">Color</a> </font></td>
@@ -1744,13 +1758,13 @@ type_</font></td>
 or to capture image from</font></td>
     </tr>
   </tbody>
-</table>
+</table></ul>
 <br>
 &nbsp; </p>
 <center>
 <h3> Query Image Format Support</h3>
 </center>
-Magick++ provides the&nbsp;<a name="coderInfoList"></a> <i>coderInfoList()</i>
+<p>Magick++ provides the&nbsp;<a name="coderInfoList"></a> <i>coderInfoList()</i>
 function to support obtaining information about the image formats
 supported by ImageMagick. Support for image formats in ImageMagick
 is provided by modules known as "coders". A user-provided container is
@@ -1760,87 +1774,67 @@ format, or supports multiple frames for the format. A wildcard specifier
 is supported for any "don't care" field. The data obtained via
 coderInfoList() may be useful for preparing GUI dialog boxes or for
 deciding which output format to write based on support within the
-ImageMagick build.
+ImageMagick build.</p>
 <p>The definition of coderInfoList is: </p>
-<p><tt><font color="#000066">&nbsp; class CoderInfo</font></tt> <br>
-<tt><font color="#000066">&nbsp; {</font></tt> <br>
-<tt><font color="#000066">&nbsp; public:</font></tt> </p>
-<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; enum MatchType {</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-AnyMatch,&nbsp; // match any coder</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TrueMatch,  //
-match coder if true</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FalseMatch  //
-match coder if false</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; };</font></tt> </p>
-<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; [ remaining CoderInfo
-methods ]</font></tt> </p>
-<p><tt><font color="#000066">&nbsp;&nbsp; }</font></tt> </p>
-<p><tt><font color="#000066">&nbsp; template &lt;class Container &gt;</font></tt> <br>
-<tt><font color="#000066">&nbsp; void coderInfoList( Container
-*container_,</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-CoderInfo::MatchType isReadable_&nbsp;&nbsp; = CoderInfo::AnyMatch,</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-CoderInfo::MatchType isWritable_&nbsp;&nbsp; = CoderInfo::AnyMatch,</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-CoderInfo::MatchType isMultiFrame_ = CoderInfo::AnyMatch</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-);</font></tt> </p>
+<pre class="code">
+class CoderInfo 
+  { 
+  public:
+
+    enum MatchType { 
+      AnyMatch,  // match any coder 
+      TrueMatch, // match coder if true 
+      FalseMatch // match coder if false 
+    };
+
+    [ remaining CoderInfo methods ]
+
+   }
+
+  template &lt;class Container > 
+  void coderInfoList( Container *container_, 
+                      CoderInfo::MatchType isReadable_   = CoderInfo::AnyMatch, 
+                      CoderInfo::MatchType isWritable_   = CoderInfo::AnyMatch, 
+                      CoderInfo::MatchType isMultiFrame_ = CoderInfo::AnyMatch 
+                      );
+</pre>
 <p>The following example shows how to retrieve a list of all of the
 coders which support reading images and print the coder attributes (all
 listed formats will be readable): </p>
-<p><tt><font color="#000066">&nbsp; list&lt;CoderInfo&gt; coderList;</font></tt> <br>
-<tt><font color="#000066">&nbsp; coderInfoList(
-&amp;coderList,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-// Reference to output list</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-CoderInfo::TrueMatch, // Match readable formats</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-CoderInfo::AnyMatch,&nbsp; // Don't care about writable formats</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-CoderInfo::AnyMatch); // Don't care about multi-frame support</font></tt> <br>
-<tt><font color="#000066">&nbsp; list&lt;CoderInfo&gt;::iterator entry
-= coderList.begin();</font></tt> <br>
-<tt><font color="#000066">&nbsp; while( entry != coderList.end() )</font></tt> <br>
-<tt><font color="#000066">&nbsp; {</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt;
-entry-&gt;name() &lt;&lt; ": (" &lt;&lt; entry-&gt;description()
-&lt;&lt; ") : ";</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Readable =
-";</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; if (
-entry-&gt;isReadable() )</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
-"true";</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
-"false";</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; ", ";</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Writable =
-";</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; if (
-entry-&gt;isWritable() )</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
-"true";</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
-"false";</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; ", ";</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; "Multiframe
-= ";</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; if (
-entry-&gt;isMultiframe() )</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
-"true";</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; else</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt;
-"false";</font></tt> <br>
-<tt><font color="#000066">&nbsp;&nbsp;&nbsp; cout &lt;&lt; endl;<br>
-&nbsp; &nbsp; entry ++;</font></tt><br>
+<pre class="code">
+  list&lt;CoderInfo> coderList; 
+  coderInfoList( &coderList,           // Reference to output list 
+                 CoderInfo::TrueMatch, // Match readable formats 
+                 CoderInfo::AnyMatch,  // Don't care about writable formats 
+                 CoderInfo::AnyMatch); // Don't care about multi-frame support 
+  list&lt;CoderInfo>::iterator entry = coderList.begin(); 
+  while( entry != coderList.end() ) 
+  { 
+    cout &lt;&lt; entry->name() &lt;&lt; ": (" &lt;&lt; entry->description() &lt;&lt; ") : "; 
+    cout &lt;&lt; "Readable = "; 
+    if ( entry->isReadable() ) 
+      cout &lt;&lt; "true"; 
+    else 
+      cout &lt;&lt; "false"; 
+    cout &lt;&lt; ", "; 
+    cout &lt;&lt; "Writable = "; 
+    if ( entry->isWritable() ) 
+      cout &lt;&lt; "true"; 
+    else 
+      cout &lt;&lt; "false"; 
+    cout &lt;&lt; ", "; 
+    cout &lt;&lt; "Multiframe = "; 
+    if ( entry->isMultiframe() ) 
+      cout &lt;&lt; "true"; 
+    else 
+      cout &lt;&lt; "false"; 
+    cout &lt;&lt; endl;
+    entry ++;
+   } 
+</pre>
 <tt><font color="#000066">&nbsp;&nbsp; }</font></tt>&nbsp;</p>
 <h3 style="text-align: center;">Obtaining A Color Histogram&nbsp; </h3>
-<p> &nbsp;Magick++ provides the <a name="colorHistogram"></a><span
+<p>Magick++ provides the <a name="colorHistogram"></a><span
  style="font-weight: bold;">colorHistogram</span> template function to
 retrieve a color histogram from an image. A color histogram provides a
 count of how many times each color occurs in the image. The histogram is
@@ -1864,110 +1858,50 @@ and the "<span style="font-style: italic;">second</span>" member to
 access&nbsp;the number of times the color occurs in the image.</p>
 <p>The template function declaration is as follows:<br>
 </p>
-<p><span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-template &lt;class Container &gt;</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-void colorHistogram( Container *histogram_, const Image image)</span><br>
-</p>
+<pre class="code">
+template &lt;class Container >
+void colorHistogram( Container *histogram_, const Image image)
+</pre>
 <p>The following examples illustrate using both a &lt;map&gt; and a
 &lt;vector&gt; to retrieve the color histogram, and print out a
 formatted summary.<br>
 <br>
 Using &lt;map&gt;:<br>
 &nbsp; &nbsp; <br>
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-Image image("image.miff");</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-map&lt;Color,unsigned long&gt; histogram;</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-colorHistogram( &amp;histogram, image );</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-std::map&lt;Color,unsigned long&gt;::const_iterator p=histogram.begin();</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-while (p != histogram.end())</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp; {</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;cout &lt;&lt; setw(10) &lt;&lt; (int)p-&gt;second
-&lt;&lt; ": ("</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; setw(quantum_width)
-&lt;&lt; (int)p-&gt;first.redQuantum() &lt;&lt; ","</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; setw(quant</span><span
- style="color: rgb(51, 51, 153); font-family: monospace;">um_width)
-&lt;&lt; (int)p-&gt;first.greenQuantum() &lt;&lt; ","</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; setw(quantum_width)
-&lt;&lt; (int)p-&gt;first.blueQuantum() &lt;&lt; ")"</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; endl;</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp; p++;</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp; }</span><br>
+<pre class="code">
+  Image image("image.miff");
+  map&lt;Color,unsigned long> histogram;
+  colorHistogram( &histogram, image );
+  std::map&lt;Color,unsigned long>::const_iterator p=histogram.begin();
+  while (p != histogram.end())
+    {
+      cout &lt;&lt; setw(10) &lt;&lt; (int)p->second &lt;&lt; ": ("
+           &lt;&lt; setw(quantum_width) &lt;&lt; (int)p->first.redQuantum() &lt;&lt; ","
+           &lt;&lt; setw(quantum_width) &lt;&lt; (int)p->first.greenQuantum() &lt;&lt; ","
+           &lt;&lt; setw(quantum_width) &lt;&lt; (int)p->first.blueQuantum() &lt;&lt; ")"
+           &lt;&lt; endl;
+       p++;
+    }
+</pre>
 <br>
 Using &lt;vector&gt;:<br>
 &nbsp; &nbsp; <br>
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-Image image("image.miff");</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-std::vector&lt;std::pair&lt;Color,unsigned long&gt; &gt; histogram;</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-colorHistogram( &amp;histogram, image );</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-std::vector&lt;std::pair&lt;Color,unsigned long&gt; &gt;::const_iterator
-p=histogram.begin();</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-while (p != histogram.end())</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp; {</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;cout &lt;&lt; setw(10) &lt;&lt; (int)p-&gt;second
-&lt;&lt; ": ("</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; setw(quantum_width)
-&lt;&lt; (int)p-&gt;first.redQuantum() &lt;&lt; ","</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; setw(quantum_width)
-&lt;&lt; (int)p-&gt;first.greenQuantum() &lt;&lt; ","</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; setw(quantum_width)
-&lt;&lt; (int)p-&gt;first.blueQuantum() &lt;&lt; ")"</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt; endl;</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp;&nbsp; &nbsp;p++;</span><br
- style="color: rgb(51, 51, 153); font-family: monospace;">
-<span style="color: rgb(51, 51, 153); font-family: monospace;">&nbsp;
-&nbsp; }</span><br>
+<pre class="code">
+  Image image("image.miff");
+  std::vector&lt;std::pair&lt;Color,unsigned long> > histogram;
+  colorHistogram( &histogram, image );
+  std::vector&lt;std::pair&lt;Color,unsigned long> >::const_iterator p=histogram.begin();
+  while (p != histogram.end())
+    {
+      cout &lt;&lt; setw(10) &lt;&lt; (int)p->second &lt;&lt; ": ("
+           &lt;&lt; setw(quantum_width) &lt;&lt; (int)p->first.redQuantum() &lt;&lt; ","
+           &lt;&lt; setw(quantum_width) &lt;&lt; (int)p->first.greenQuantum() &lt;&lt; ","
+           &lt;&lt; setw(quantum_width) &lt;&lt; (int)p->first.blueQuantum() &lt;&lt; ")"
+           &lt;&lt; endl;
+      p++;
+    }
+</pre>
 </p>
-<p><br>
-<br>
-</p>
+</div>
 </body>
 </html>

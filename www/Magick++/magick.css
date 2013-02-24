@@ -1,10 +1,10 @@
 body {
   background: white;
   color: black;
+  font-family: Candara, Sans-Serif;
   margin: 0px;
   padding: 0px;
-  font-size: 0.9em;
-  line-height: 135%;
+  font-size: 10pt;
 }
 
 a {
@@ -14,7 +14,7 @@ a {
   font-weight: bold;
 }
 
-a:hover {
+a[href]:hover {
   background: transparent;
   color: #991e1e;
   text-decoration: underline;
@@ -25,6 +25,7 @@ div.cmd {
   color: black;
   background: #d2ddf6;
   font-family: monospace;
+  font-size: 90%;
   margin: 1.33em 40px;
   padding: 1.33em 1.33em 1.33em 2.66em;
   text-indent:-1.33em;
@@ -37,6 +38,7 @@ div.crt {
   color: white;
   background: #000044;
   font-family: monospace;
+  font-size: 90%;
   margin: 1.33em 0em; 
   padding: .66em 1.33em .66em 1.33em;
 }
@@ -54,19 +56,13 @@ div.doc-section > p {
 }
 
 div.doc-section {
-margin: 1.33em 40px;
+  margin: 1.33em 40px;
 }
 
 div.eastbar {
-  width: 13.5%; 
-  left: 0em; 
   position: absolute; 
-  /* height: 100%; */
-  font-size: 12px;
-  border-right-style: solid;
-  border-right-color: #d0d0d0; 
-  border-right-width: 1px;
-
+  right: 0.2em; 
+  margin: 9pt 9pt;
 }
 
 div.eqn {
@@ -74,7 +70,7 @@ div.eqn {
   }
 
 div.footer {
-  margin-left: 13.5%; 
+  margin-left: 160px; 
   background: white;
 }
 
@@ -102,7 +98,8 @@ div.main {
   padding-bottom: .75em;
   padding-top: 0px;
   padding-right: .75em;
-  margin-left:13.5%;
+  margin-left: 160px;
+  margin-right: 0px;
 }
 
 div.menu {
@@ -116,7 +113,6 @@ div.menu {
   left: 0px;
 }
 
-
 div.sep {
   background: #f5f5f5;
   color: black;
@@ -127,7 +123,6 @@ div.sep {
   left: 0px;
   font-size: 66%;
 }
-
 
 div.sponsor {
   padding-left: .5em;
@@ -140,17 +135,11 @@ div.sponsbox {
   border-style: solid;
   border-color: #d0d0d0;
   border-width: 1px;
-/* 
-  border-spacing: 0px;
-  font-size: 90%;
-  padding-top: .5em;
-*/
   padding-left: .66em;
   font-weight: bold;
   vertical-align: top;
   left: 0px;
 }
-
 
 div.sub {
   background: #f5f5f5; 
@@ -167,18 +156,30 @@ div.text {
   color: black;
   background: #d2ddf6;
   font-family: monospace;
+  font-size: 90%;
   margin: 1.33em 40px;
   padding: 1.33em;
 }
 
 div.titlebar {
-  background-image: url("../../images/background.jpg");
+  background-image: url("../image/background.jpg");
   background-repeat: repeat-x;
   height: 118px;
   width: 100%;
   background-color: white; /* #f5f5f5;  */
   border:0px;
   padding-bottom:0px;
+}
+
+div.westbar {
+  width: 160px; 
+  left: 0em; 
+  position: absolute; 
+  /* height: 100%; */
+  font-size: 9pt;
+  border-right-style: solid;
+  border-right-color: #d0d0d0; 
+  border-right-width: 1px;
 }
 
 acronym, .help {
@@ -196,18 +197,24 @@ dl.doc {
   border-spacing: 0px;
   width: 85%;
   text-align: left;
+  font-size: 90%;
   margin: 1.33em 40px; 
   border-style: solid;
   border-color: #d0d0d0;
   border-width: 1px;
 }
 
-dt.doc {
-  font-weight: bolder;
-  font-size: 110%;
-  padding-top: .5em;
-  }
+dt {
+  font-weight: bold;
+  margin-left: 3em;
+  margin-top: 2em;
+  margin-bottom: .5em;
+}
   
+dd {
+  margin: .5em .5em .5em 5em;
+}
+
 em.arg {
   color: #8b0000; /* darkred; */
   font-weight: normal;
@@ -264,16 +271,18 @@ form {
 }
 
 h1 {
-  background: #f5f5f5;
   color: black;
+  padding: 5px;
+  background: #f5f5f5;
   border-style: solid;
   border-color: #d0d0d0;
   border-width: 1px;
-  padding: 5px;
   margin-bottom: 30px;
+  margin-top: 5px;
   font-weight: bold;
   font-size: 110%;
   text-align: center;
+  text-transform: capitalize;
   clear: left;
 }
 
@@ -304,9 +313,8 @@ h5 {
   font-size: 100%;
 }
 
-iframe
-{
-  margin:1%;
+iframe {
+  margin: 1%;
 }
 
 img {
@@ -315,7 +323,7 @@ img {
 
 img.icon {
   float: left;
-  margin: 7px;
+  margin: 5px;
 }
 
 img.map {
@@ -332,6 +340,11 @@ li {
   margin-right: 40px;
 }
 
+li table {
+  margin: 1em 0px;
+  width: 100%;
+}
+
 .list li {
   padding-bottom: 1.2em;
 }
@@ -341,26 +354,24 @@ li {
 }
 
 p {
-  /*
-  margin: 1.33em 0px;
-  margin-left: 40px;
-  margin-right: 40px;
-  */
-  margin: 1.33em 40px;
+  margin: 0.75em 0px;
+  text-align: left;
 }
 
+p+h3, pre+h3, ul+h3, ol+h3, dl+h3 {
+  margin-top: 2em;
+}
 
 p.code {
   color: black;
   background: #f5f5f5;
   border: 1pt dashed #2f6fab;
   font-family: monospace;
-  font-size: 8pt;
+  font-size: 90%;
   white-space: pre;
   margin: 1.33em 40px; 
   padding: .66em 1.33em;
 }
-
 
 p.crt {
   white-space: nowrap;
@@ -370,6 +381,7 @@ p.crt {
   color: white;
   background: #000044;
   font-family: monospace;
+  font-size: 90%;
   margin: 1.33em 40px; 
   padding: .66em 1.33em;
 }
@@ -391,6 +403,7 @@ p.crtsnip {
   font-weight: bolder;
   background: #000044;
   font-family: monospace;
+  font-size: 90%;
   padding: .66em 1.33em;
 }
 
@@ -424,7 +437,6 @@ p.image-slices img {
   margin-right: auto;
 }
 
-
 p.navigation-index {
   padding: 10px;
   margin-top: 1px;
@@ -439,7 +451,6 @@ p.navigation-index {
 
 p.options {
   padding: 0 3em;
-/*  text-align:justify; */
 }
 
 p.pre {
@@ -447,6 +458,7 @@ p.pre {
   color: black;
   background: #d2ddf6;
   font-family: monospace;
+  font-size: 90%;
   padding: 0em;
   margin: 0em;
 }
@@ -455,38 +467,35 @@ p.text {
   color: black;
   background: #d2ddf6;
   font-family: monospace;
+  font-size: 90%;
   margin: 1.33em 40px;
   padding: 1.33em;
 }
-
 
 p.warn {
   padding: .66em 3em; 
   background: #ffeedd;
 }
 
-
 pre {
   padding-top: 0pt;
   padding-bottom: 0pt;
   margin: 0pt;
+  font-size: 90%;
 }
 
 pre.code {
   color: black;
   background: #f5f5f5;
-  border: 1pt dashed #2f6fab;
+  border: solid 2px black;
   font-family: monospace;
-  font-size: 8pt;
+  font-size: 90%;
   white-space: pre;
-  /*
   margin: 1.33em 0px;
   margin-left: 40px;
   margin-right: 40px;
-  */
-  margin: 1.33em 40px;
-  padding: .66em 1.33em;
-  
+  padding: 1.33em;
+  font-size: 90%;
 }
 
 pre.crt {
@@ -499,6 +508,7 @@ pre.debug {
   background: #d2ddf6;
   border: solid 2px black;
   font-family: monospace;
+  font-size: 90%;
   white-space: pre;
   margin: 1.33em 0px;
   margin-left: 40px;
@@ -508,19 +518,17 @@ pre.debug {
 
 pre.text {
   color: black;
-  background: #d2ddf6;
+  background: #ddddff;
   font-family: monospace;
+  font-size: 90%;
   white-space: pre;
-  margin: 1.33em 40px;
-/*
+  margin: 1.33em 0px;
   margin-left: 40px;
   margin-right: 40px;
-*/
   padding: 1.33em;
 }
 
 span.bull {
-/*   padding: 0 .25em 0 0; */
   color: #d0d0d0;
 }
 
@@ -532,8 +540,6 @@ span.crtin {
 
 span.crtout, .crtprompt {
   color: #ffff77;
-/*   font-family: Times, serif; */
-/*  margin: 1.33em 40px; */
   padding-top: .67em;
   padding-bottom: .67em;
 }
@@ -545,11 +551,9 @@ span.crtout {
 }
 
 span.crtprompt {
-/*  padding-left: .66em; */
   padding-right: 0;
   text-indent:-1.33em; 
 }
-
 
 span.different {
   font-weight: bold;
@@ -584,6 +588,7 @@ table.doc {
   border-spacing: 0px;
   width: 91%;
   text-align: left;
+  font-size: 90%;
   margin: 1.33em 40px; 
   border-style: solid;
   border-color: #d0d0d0;
@@ -594,6 +599,11 @@ table.doc td,th {
   padding: .3em .5em;
 }
 
+td {
+  text-align: left;
+  padding: .5em;
+}
+
 td.map {
   margin: 0px;
   padding: 0px;
@@ -601,7 +611,9 @@ td.map {
 
 th {
   background-color: #d2ddf6;
-  color: black
+  color: black;
+  text-align: left;
+  padding: .5em;
 }
 
 th.size-alt, tr.size-alt, td.size-alt {
@@ -637,19 +649,17 @@ th.size-norm, tr.size-norm, td.size-norm {
   z-index: 10;
 } 
 
-
 #linkbar, #navigation-bar {
   clear: both;
   background: #f5f5f5;
   color: black;
   border: solid #d0d0d0;
   border-width: 1px 0px 1px 0px;
-  padding: 5px 5px 5px 13.5%;
+  padding: 5px 5px 5px 0px;
   font-weight: bold;
   text-align: center;
-  margin-left:0px; 
+  margin-left: 5px; 
 }
-
 
 #linkbar-east {
   float: right;
@@ -662,8 +672,6 @@ th.size-norm, tr.size-norm, td.size-norm {
 #linkbar-west {
   float: left;
 }
-
-
 
 #margin {
   padding: 10px;
@@ -731,7 +739,7 @@ th.size-norm, tr.size-norm, td.size-norm {
 }
 
 #titlebar {
-  background-image: url("../../images/background.jpg");
+  background-image: url("../image/background.jpg");
   background-repeat: repeat-x;
   height: 118px;
 }
@@ -746,8 +754,6 @@ th.size-norm, tr.size-norm, td.size-norm {
   border-width: 1px;
 }
 
-/* These were being used per id but there were two duplicate id's each.
-   These individual properties have been moved to the images to which they were applied in titlebar.php.
 #titlebar-east {
   float: right;
 }
@@ -755,12 +761,10 @@ th.size-norm, tr.size-norm, td.size-norm {
 #titlebar-west {
   float: left;
 }
-*/
 
 #www-imagemagick-org {
   background: #f5f5f5;
 }
-
 
 @media print {
   #titlebar, #navigation-bar, #linkbar, #menu, #margin { display: none }
@@ -796,6 +800,7 @@ th.size-norm, tr.size-norm, td.size-norm {
   background: #f5f5f5;
   border: solid 2px black;
   font-family: monospace;
+  font-size: 90%;
   white-space: pre;
   margin: 1.33em 40px;
   padding: 1.33em;

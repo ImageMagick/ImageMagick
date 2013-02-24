@@ -1,27 +1,13 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-	<TITLE>Magick::Exception</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
-	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
-	<META NAME="CREATED" CONTENT="20020805;15113101">
-	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20040819;11571100">
-	<META NAME="DESCRIPTION" CONTENT="Documentation for Magick::Exception class">
-	<STYLE>
-	<!--
-		@page { size: 8.5in 11in }
-		TD P { color: #000000 }
-		H1 { color: #000000 }
-		P { color: #000000 }
-		PRE { color: #000000 }
-		A:link { color: #0000ee }
-		A:visited { color: #551a8b }
-	-->
-	</STYLE>
-</HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0000ee" VLINK="#551a8b" BGCOLOR="#ffffff" DIR="LTR">
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Magick++ API: Exceptions </title>
+<link rel="stylesheet" href="magick.css" type="text/css" />
+</head>
+<body>
+<div class="doc-section">
 <H1 ALIGN=CENTER>Magick::Exception Classes</H1>
 <P><I>Exception</I> represents the base class of objects thrown when
 Magick++reports an error. Magick++ throws C++ exceptions synchronous
@@ -41,60 +27,63 @@ until the enclosing try block, destroying any created objects).
 </P>
 <P>The pseudo code for the main loop of your program may look like: 
 </P>
-<PRE><FONT COLOR="#000066"><FONT SIZE=2>for infile in list</FONT></FONT>
-<FONT COLOR="#000066"><FONT SIZE=2>{</FONT></FONT>
-<FONT COLOR="#000066">  <FONT SIZE=2>try {</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>// Construct an image instance first so that we don't have to worry</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>// about object construction failure due to a minor warning exception</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>// being thrown.</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>Magick::Image image; </FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>try {</FONT></FONT>
-<FONT COLOR="#000066">      <FONT SIZE=2>// Try reading image file</FONT></FONT>
-<FONT COLOR="#000066">      <FONT SIZE=2>image.read(infile);</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>}</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>catch( Magick::WarningCoder &amp;warning )</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>{</FONT></FONT>
-<FONT COLOR="#000066">      <FONT SIZE=2>// Process coder warning while loading file (e.g. TIFF warning)</FONT></FONT>
-<FONT COLOR="#000066">      <FONT SIZE=2>// Maybe the user will be interested in these warnings (or not).</FONT></FONT>
-<FONT COLOR="#000066">      <FONT SIZE=2>// If a warning is produced while loading an image, the image</FONT></FONT>
-<FONT COLOR="#000066">      <FONT SIZE=2>// can normally still be used (but not if the warning was about</FONT></FONT>
-<FONT COLOR="#000066">      <FONT SIZE=2>// something important!)</FONT></FONT>
-<FONT COLOR="#000066">      <FONT SIZE=2>cerr &lt;&lt; &ldquo;Coder Warning: &ldquo; &lt;&lt; warning.what() &lt;&lt; endl;</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>}</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>catch( Magick::Warning &amp;warning )</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>{</FONT></FONT>
-<FONT COLOR="#000066">      <FONT SIZE=2>// Handle any other Magick++ warning.</FONT></FONT>
-<FONT COLOR="#000066">      <FONT SIZE=2>cerr &lt;&lt; &ldquo;Warning: &ldquo; &lt;&lt; warning.what() &lt;&lt; endl;</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>}</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>catch( Magick::BlobError &amp;error ) </FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>{ </FONT></FONT>
-<FONT COLOR="#000066">      <FONT SIZE=2>// Process Magick++ file open error</FONT></FONT>
-<FONT COLOR="#000066">      <FONT SIZE=2>cerr &lt;&lt; &ldquo;Error: &ldquo; &lt;&lt; error.what() &lt;&lt; endl;</FONT></FONT>
-<FONT COLOR="#000066">      <FONT SIZE=2>continue; // Try next image.</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>}</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>try {</FONT></FONT>
-      <FONT SIZE=2><FONT COLOR="#000066">image.rotate(90);</FONT></FONT>
-      <FONT SIZE=2><FONT COLOR="#000066">image.write(&ldquo;outfile&rdquo;);</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>}</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>catch ( Magick::Exception &amp; error)</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>{</FONT></FONT>
-<FONT COLOR="#000066">       <FONT SIZE=2>// Handle problem while rotating or writing outfile.</FONT></FONT>
-<FONT COLOR="#000066">       <FONT SIZE=2>cerr &lt;&lt; &ldquo;Caught Magick++ exception: &ldquo; &lt;&lt; error.what() &lt;&lt; endl;</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>}</FONT></FONT>
-<FONT COLOR="#000066">  <FONT SIZE=2>}</FONT></FONT>
-<FONT COLOR="#000066">  <FONT SIZE=2>catch( std::exception &amp;error )</FONT> </FONT>
-  <FONT SIZE=2><FONT COLOR="#000066">{</FONT> </FONT>
-     <FONT SIZE=2>// P<FONT COLOR="#000066">rocess any other exceptions derived from standard C++ exception</FONT></FONT>
-<FONT COLOR="#000066">     <FONT SIZE=2>err &lt;&lt; &ldquo;Caught C++ STD exception: &ldquo; &lt;&lt; error.what() &lt;&lt; endl;</FONT></FONT>
-<FONT COLOR="#000066">  <FONT SIZE=2>}</FONT> </FONT>
-  <FONT SIZE=2><FONT COLOR="#000066">catch( ... )</FONT> </FONT>
-  <FONT SIZE=2><FONT COLOR="#000066">{</FONT> </FONT>
-    <FONT SIZE=2>// P<FONT COLOR="#000066">rocess *any* exception (last-ditch effort). There is not a lot</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>// you can do here other to retry the operation that failed, or exit</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>// the program. </FONT></FONT>
-  <FONT SIZE=2><FONT COLOR="#000066">}</FONT></FONT>
-<FONT COLOR="#000066"><FONT SIZE=2>}</FONT></FONT></PRE><P>
-The desired location and number of try/catch blocks in your program
+<div class="viewport">
+using namespace std;
+for infile in list
+{
+  try {
+    // Construct an image instance first so that we don't have to worry
+    // about object construction failure due to a minor warning exception
+    // being thrown.
+    Magick::Image image; 
+    try {
+      // Try reading image file
+      image.read(infile);
+    }
+    catch( Magick::WarningCoder &warning )
+    {
+      // Process coder warning while loading file (e.g. TIFF warning)
+      // Maybe the user will be interested in these warnings (or not).
+      // If a warning is produced while loading an image, the image
+      // can normally still be used (but not if the warning was about
+      // something important!)
+      cerr &lt;&lt; "Coder Warning: " &lt;&lt; warning.what() &lt;&lt; endl;
+    }
+    catch( Magick::Warning &warning )
+    {
+      // Handle any other Magick++ warning.
+      cerr &lt;&lt; "Warning: " &lt;&lt; warning.what() &lt;&lt; endl;
+    }
+    catch( Magick::ErrorFileOpen &error ) 
+    { 
+      // Process Magick++ file open error
+      cerr &lt;&lt; "Error: " &lt;&lt; error.what() &lt;&lt; endl;
+      continue; // Try next image.
+    }
+    try {
+      image.rotate(90);
+      image.write("outfile");
+    }
+    catch ( MagickExeption & error)
+    {
+       // Handle problem while rotating or writing outfile.
+       cerr &lt;&lt; "Caught Magick++ exception: " &lt;&lt; error.what() &lt;&lt; endl;
+    }
+  }
+  catch( std::exception &error ) 
+  { 
+     // Process any other exceptions derived from standard C++ exception
+     cerr &lt;&lt; "Caught C++ STD exception: " &lt;&lt; error.what() &lt;&lt; endl;
+  } 
+  catch( ... ) 
+  { 
+    // Process *any* exception (last-ditch effort). There is not a lot
+    // you can do here other to retry the operation that failed, or exit
+    // the program. 
+  }
+}
+</div>
+<p>The desired location and number of try/catch blocks in your program
 depends how sophisticated its error handling must be. Very simple
 programs may use just one try/catch block.</P>
 <P>The <I>Exception</I> class is derived from the C++ standard
@@ -103,12 +92,12 @@ additional information about the error (e.g to display to the user).
 Obtain access to this string via the what() method.&nbsp; For
 example: 
 </P>
-<P><TT><FONT COLOR="#000066">&nbsp;catch( Exception &amp;error_ )</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; {</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-cout &lt;&lt; &quot;Caught exception: &quot; &lt;&lt; error_.what()
-&lt;&lt; endl;</FONT></TT> <BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp;
-}</FONT></TT> 
-</P>
+<pre class="code">
+catch( Exception &error_ ) 
+    { 
+      cout &lt;&lt; "Caught exception: " &lt;&lt; error_.what() &lt;&lt; endl; 
+    }
+</pre>
 <P>The classes <I>Warning</I> and <I>Error</I> derive from the
 <I>Exception</I> class. Exceptions derived from <I>Warning</I> are
 thrown to represent non-fatal errors which may effect the
@@ -124,7 +113,7 @@ exist).
 are shown in the following tables: 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Warning Sub-Classes</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+<ul><TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
 	<COL WIDTH=70*>
 	<COL WIDTH=186*>
 	<TR>
@@ -295,11 +284,11 @@ are shown in the following tables:
 			<P><FONT SIZE=2>Warnings reported by the X11 subsystem.</FONT></P>
 		</TD>
 	</TR>
-</TABLE>
+</TABLE></ul>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Error Sub-Classes</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+<ul><TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
 	<COL WIDTH=71*>
 	<COL WIDTH=185*>
 	<TR>
@@ -469,8 +458,9 @@ are shown in the following tables:
 			<P><FONT SIZE=2>Errors reported by the X11 subsystem.</FONT></P>
 		</TD>
 	</TR>
-</TABLE>
+</TABLE></ul>
 <P><BR><BR>
 </P>
+</div>
 </BODY>
 </HTML>

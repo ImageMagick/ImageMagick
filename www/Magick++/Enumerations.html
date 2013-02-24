@@ -1,19 +1,15 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>Enumerations</title>
-<meta name="GENERATOR" content="StarOffice 6.0 (Solaris Sparc)">
-<meta name="AUTHOR" content="Bob Friesenhahn">
-<meta name="CREATED" content="20020805;17491620">
-<meta name="CHANGEDBY" content="Bob Friesenhahn">
-<meta name="CHANGED" content="20021125;10502900">
-<meta name="DESCRIPTION" content="Documentation for ImageMagick enumerations">
-<link rel=stylesheet type=text/css href=../../www/magick.css>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Magick++ API: Enumerations</title>
+<link rel="stylesheet" href="magick.css" type="text/css" />
 </head>
-<body lang="en-US" text="#ffffff" link="#1F00FF" vlink="#9900DD" bgcolor="#fbc713">
+<body>
+<div class="doc-section">
 <H1 ALIGN=CENTER>Enumerations</H1>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="right_triangle.png" NAME="Graphic1" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Contents</FONT></FONT></FONT></B></P>
@@ -21,53 +17,55 @@
 	</TR>
 </TABLE>
 <UL>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#ChannelType">ChannelType</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#ChannelType">ChannelType</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#ClassType">ClassType</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#ClassType">ClassType</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#ColorspaceType">ColorspaceType</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#ColorspaceType">ColorspaceType</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#CompositeOperator">CompositeOperator</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#CompositeOperator">CompositeOperator</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#CompressionType">CompressionType</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#CompressionType">CompressionType</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#DecorationType">DecorationType</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#DecorationType">DecorationType</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#FillRule">FillRule</A> 
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#FillRule">FillRule</A> 
 	</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#FilterTypes">FilterTypes</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#FilterTypes">FilterTypes</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#GravityType">GravityType</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#GravityType">GravityType</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#ImageType">ImageType</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#ImageType">ImageType</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#InterlaceType">InterlaceType</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#InterlaceType">InterlaceType</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#ChannelType">ChannelType</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#ChannelType">ChannelType</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#LineCap">LineCap</A> 
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#LineCap">LineCap</A> 
 	</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#LineJoin">LineJoin</A> 
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#LineJoin">LineJoin</A> 
 	</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#NoiseType">NoiseType</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#NoiseType">NoiseType</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#OrientationType">OrientationType</A></P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#PaintMethod">PaintMethod</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#OrientationType">OrientationType</A></P>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#PaintMethod">PaintMethod</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#QuantumTypes">QuantumTypes</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#QuantumTypes">QuantumTypes</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#RenderingIntent">RenderingIntent</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#RenderingIntent">RenderingIntent</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#ResolutionType">ResolutionType</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#ResolutionType">ResolutionType</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#StorageType">StorageType</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#StorageType">StorageType</A>
 		</P>
-	<LI><P STYLE="margin-bottom: 0in"><A HREF="#StretchType">StretchType</A>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#StretchType">StretchType</A>
 		</P>
-	<LI><P><A HREF="#StyleType">StyleType</A> 
+	<LI><P><A HREF="Enumerations.html#StyleType">StyleType</A> 
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="Enumerations.html#VirtualPixelMethod">VirtualPixelMethod</A>
+		</P>
 	</P>
 </UL>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="ChannelType"></A><IMG SRC="right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ChannelType</FONT></FONT></FONT></B></P>
@@ -82,7 +80,7 @@ be represented in RGB, RGBA, CMYK, or CMYKA, pixel formats and a
 channel may only be extracted if it is valid for the current pixel
 format.</P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>ChannelType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=3 BGCOLOR="#cccccc">
 	<COL WIDTH=86*>
 	<COL WIDTH=170*>
 	<TR>
@@ -176,7 +174,7 @@ format.</P>
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="ClassType"></A><IMG SRC="right_triangle.png" NAME="Graphic3" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ClassType</FONT></FONT></FONT></B></P>
@@ -187,7 +185,7 @@ format.</P>
 storage class. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>ClassType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -225,7 +223,7 @@ storage class.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="ColorspaceType"></A><IMG SRC="right_triangle.png" NAME="Graphic4" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ColorspaceType</FONT></FONT></FONT></B></P>
@@ -251,7 +249,7 @@ option is only applicable when writing TIFF, JPEG, and Adobe
 Photoshop bitmap (PSD) files. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>ColorspaceType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -371,7 +369,7 @@ Photoshop bitmap (PSD) files.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="CompositeOperator"></A><IMG SRC="right_triangle.png" NAME="Graphic5" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">CompositeOperator</FONT></FONT></FONT></B></P>
@@ -385,7 +383,7 @@ image pixels are replaced by the corresponding image tile pixel.
 Specify <I>CompositeOperator</I> to select a different algorithm. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>CompositeOperator</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -407,7 +405,7 @@ Specify <I>CompositeOperator</I> to select a different algorithm.
 			<P>OverCompositeOp</P>
 		</TD>
 		<TD>
-			<P>The result is the union of the two image shapes with the
+			<P>The result is the union of the the two image shapes with the
 			<I>composite image</I> obscuring <I>image</I> in the region of
 			overlap.</P>
 		</TD>
@@ -619,7 +617,7 @@ Specify <I>CompositeOperator</I> to select a different algorithm.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="CompressionType"></A><IMG SRC="right_triangle.png" NAME="Graphic6" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">CompressionType</FONT></FONT></FONT></B></P>
@@ -634,7 +632,7 @@ with the image, ImageMagick selects a compression type compatable
 with the image type. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>CompressionType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -720,7 +718,7 @@ with the image type.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="DecorationType"></A><IMG SRC="right_triangle.png" NAME="Graphic7" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">DecorationType</FONT></FONT></FONT></B></P>
@@ -731,7 +729,7 @@ with the image type.
 are used to specify line decorations of rendered text. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>DecorationType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -775,7 +773,7 @@ are used to specify line decorations of rendered text.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="EndianType"></A><IMG SRC="right_triangle.png" NAME="Graphic8" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">EndianType</FONT></FONT></FONT></B></P>
@@ -789,7 +787,7 @@ TIFF).
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>EndianType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -825,7 +823,7 @@ TIFF).
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="FillRule"></A><IMG SRC="right_triangle.png" NAME="Graphic9" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT COLOR="#ffffff">FillRule</FONT></FONT></B></P>
@@ -838,7 +836,7 @@ included inside the shape. See the documentation on SVG's <A HREF="http://www.w3
 property for usage details. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>FillRule</B></P>
-<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P>UndefinedRule</P>
@@ -866,7 +864,7 @@ property for usage details.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="FilterTypes"></A><IMG SRC="right_triangle.png" NAME="Graphic10" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">FilterTypes</FONT></FONT></FONT></B></P>
@@ -885,7 +883,7 @@ re-sized or around diagonal lines. The only way to be sure is to test
 the filter with sample images. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>FilterTypes</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -1025,7 +1023,7 @@ the filter with sample images.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="GravityType"></A><IMG SRC="right_triangle.png" NAME="Graphic11" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">GravityType</FONT></FONT></FONT></B></P>
@@ -1040,7 +1038,7 @@ don't need to provide absolute coordinates in order to position an
 object. A common default for gravity is <I>NorthWestGravity</I>. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>GravityType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -1132,7 +1130,7 @@ object. A common default for gravity is <I>NorthWestGravity</I>.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="ImageType"></A><IMG SRC="right_triangle.png" NAME="Graphic12" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ImageType</FONT></FONT></FONT></B></P>
@@ -1143,7 +1141,7 @@ object. A common default for gravity is <I>NorthWestGravity</I>.
 classification of the image. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>ImageType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -1227,7 +1225,7 @@ classification of the image.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="InterlaceType"></A><IMG SRC="right_triangle.png" NAME="Graphic13" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">InterlaceType</FONT></FONT></FONT></B></P>
@@ -1247,7 +1245,7 @@ time.
 image. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>InterlaceType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -1300,7 +1298,7 @@ image.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="ChannelType1"></A><IMG SRC="right_triangle.png" NAME="Graphic14" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ChannelType</FONT></FONT></FONT></B></P>
@@ -1313,7 +1311,7 @@ extracting a layer from an image. <I>MatteLayer</I> is useful for
 extracting the opacity values from an image. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>ChannelType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -1365,7 +1363,7 @@ extracting the opacity values from an image.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="LineCap"></A><IMG SRC="right_triangle.png" NAME="Graphic15" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">LineCap</FONT></FONT></FONT></B></P>
@@ -1378,7 +1376,7 @@ See SVG's '<A HREF="http://www.w3.org/TR/SVG/painting.html#StrokeLinecapProperty
 for examples. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>LineCap</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -1423,7 +1421,7 @@ for examples.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="LineJoin"></A><IMG SRC="right_triangle.png" NAME="Graphic16" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">LineJoin</FONT></FONT></FONT></B></P>
@@ -1436,7 +1434,7 @@ when they are stroked. See SVG's '<A HREF="http://www.w3.org/TR/SVG/painting.htm
 for examples. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>ChannelType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -1480,7 +1478,7 @@ for examples.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="NoiseType"></A><IMG SRC="right_triangle.png" NAME="Graphic17" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">NoiseType</FONT></FONT></FONT></B></P>
@@ -1491,7 +1489,7 @@ for examples.
 to select the type of noise to be added to the image. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>NoiseType</B></P>
-<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -1551,7 +1549,7 @@ to select the type of noise to be added to the image.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=0>
 	<COL WIDTH=256*>
 	<TR>
 		<TD WIDTH=100% BGCOLOR="#52799e">
@@ -1565,7 +1563,7 @@ specifies the orientation of the image. Useful for when the image is
 produced via a different ordinate system, the camera was turned on
 its side, or the page was scanned sideways.</P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>OrientationType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=3 BGCOLOR="#cccccc">
 	<COL WIDTH=65*>
 	<COL WIDTH=75*>
 	<COL WIDTH=115*>
@@ -1682,7 +1680,7 @@ its side, or the page was scanned sideways.</P>
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="PaintMethod"></A><IMG SRC="right_triangle.png" NAME="Graphic18" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">PaintMethod</FONT></FONT></FONT></B></P>
@@ -1694,7 +1692,7 @@ colors are to be replaced in the image. It is used to select the
 pixel-filling algorithm employed. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>PaintMethod</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -1748,7 +1746,7 @@ pixel-filling algorithm employed.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="QuantumTypes"></A><IMG SRC="right_triangle.png" NAME="Graphic19" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">QuantumTypes</FONT></FONT></FONT></B></P>
@@ -1764,7 +1762,7 @@ or CMYK format. The pixel Quantum size is determined by the Image
 depth (eight or sixteen bits). 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>RGB(A) Image Quantums</B></P>
-<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -1808,17 +1806,17 @@ depth (eight or sixteen bits).
 	</TR>
 	<TR>
 		<TD>
-			<P>OpacityQuantum</P>
+			<P>AlphaQuantum</P>
 		</TD>
 		<TD>
-			<P>Opacity (Alpha) Quantum</P>
+			<P>Alpha Quantum</P>
 		</TD>
 	</TR>
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>CMY(K) Image Quantum</B></P>
-<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>CMY(K)(A) Image Quantum</B></P>
+<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -1859,12 +1857,20 @@ depth (eight or sixteen bits).
 			<P>Black pixel Quantum</P>
 		</TD>
 	</TR>
+	<TR>
+		<TD>
+			<P>AlphaQuantum</P>
+		</TD>
+		<TD>
+			<P>Alpha Quantum</P>
+		</TD>
+	</TR>
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Grayscale Image
 Quantums</B></P>
-<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -1889,12 +1895,20 @@ Quantums</B></P>
 			<P>Pixel opacity</P>
 		</TD>
 	</TR>
+	<TR>
+		<TD>
+			<P>AlphaQuantum</P>
+		</TD>
+		<TD>
+			<P>Alpha Quantum</P>
+		</TD>
+	</TR>
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Entire Pixels
 (Expressed in Byte Order)</B></P>
-<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -1927,10 +1941,18 @@ Quantums</B></P>
 			<P>CMYK pixel (32 or 64 bits)</P>
 		</TD>
 	</TR>
+	<TR>
+		<TD>
+			<P>CMYKAQuantum</P>
+		</TD>
+		<TD>
+			<P>CMYKA pixel (40 or 80 bits)</P>
+		</TD>
+	</TR>
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>&nbsp; 
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="RenderingIntent"></A><IMG SRC="right_triangle.png" NAME="Graphic20" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">RenderingIntent</FONT></FONT></FONT></B></P>
@@ -1950,7 +1972,7 @@ sequence. Typically, the user or application will set the rendering
 intent dynamically at runtime or embedding time.&quot; 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>RenderingIntent</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -2007,7 +2029,7 @@ intent dynamically at runtime or embedding time.&quot;
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="ResolutionType"></A><IMG SRC="right_triangle.png" NAME="Graphic21" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ResolutionType</FONT></FONT></FONT></B></P>
@@ -2019,7 +2041,7 @@ resolutions in pixels per inch. <I>ResolutionType</I> provides a
 means to adjust this. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>ResolutionType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -2057,7 +2079,7 @@ means to adjust this.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="StorageType"></A><IMG SRC="right_triangle.png" NAME="Graphic22" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">StorageType</FONT></FONT></FONT></B></P>
@@ -2069,7 +2091,7 @@ used to specify the storage format of pixels in the source or
 destination pixel array. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>StorageType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -2121,7 +2143,7 @@ destination pixel array.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="StretchType"></A><IMG SRC="right_triangle.png" NAME="Graphic23" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">StretchType</FONT></FONT></FONT></B></P>
@@ -2134,7 +2156,7 @@ the font family. If the width is not important, the <I>AnyStretch</I>
 enumeration may be specified for a wildcard match. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>StretchType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -2226,7 +2248,7 @@ enumeration may be specified for a wildcard match.
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><A NAME="StyleType"></A><IMG SRC="right_triangle.png" NAME="Graphic24" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">StyleType</FONT></FONT></FONT></B></P>
@@ -2239,7 +2261,7 @@ not important, the <I>AnyStyle</I> enumeration may be specified for a
 wildcard match. 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>StyleType</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
 	<TR>
 		<TD>
 			<P ALIGN=CENTER><B>Enumeration</B></P>
@@ -2281,7 +2303,171 @@ wildcard match.
 		</TD>
 	</TR>
 </TABLE>
-<P><BR><BR>
+<P STYLE="margin-bottom: 0in"><BR>
 </P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=1 CELLSPACING=1>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><A NAME="VirtualPixelMethod"></A><IMG SRC="right_triangle.png" NAME="Graphic8" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">VirtualPixelMethod</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0in">The <I>VirtualPixelMethod </I>enumerations are
+used to specify the virtual pixel method.
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>VirtualPixelMethod</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=1 CELLSPACING=1 BGCOLOR="#cccccc">
+	<TR>
+		<TD>
+			<P ALIGN=CENTER><B>Enumeration</B></P>
+		</TD>
+		<TD>
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>UndefinedVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>Not defined</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>BackgroundVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>the area surrounding the image is the background color
+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>BlackVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>the area surrounding the image is black</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>CheckerTileVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>alternate squares with image and background color
+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>DitherVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>non-random 32x32 dithered pattern
+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>EdgeVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>extend the edge pixel toward infinity
+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>GrayVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>the area surrounding the image is gray
+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>HorizontalTileVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>horizontally tile the image, background color above/below</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>HorizontalTileEdgeVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>horizontally tile the image and replicate the side edge pixels</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>MirrorVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>mirror tile the image
+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>RandomVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>choose a random pixel from the image
+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>TileVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>tile the image (default)
+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>TransparentVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>the area surrounding the image is transparent blackness
+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>VerticalTileVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>vertically tile the image, sides are background color
+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>VerticalTileEdgeVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>vertically tile the image and replicate the side edge pixels
+</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD>
+			<P>WhiteVirtualPixelMethod</P>
+		</TD>
+		<TD>
+			<P>the area surrounding the image is white
+</P>
+		</TD>
+	</TR>
+</TABLE>
+</div>
 </BODY>
 </HTML>
