@@ -30,7 +30,7 @@
   <link rel="canonical" href="http://www.imagemagick.org" />
   <link rel="meta" type="application/rdf+xml" title="ICI" href="http://imagemagick.org/ici.rdf"/>
   <!-- Add jQuery library -->
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script type="text/javascript" src="http://localhost/ajax/libs/jquery/1.7/jquery.min.js"></script>
   
   <!-- Optionaly include easing and/or mousewheel plugins -->
   <script type="text/javascript" src="http://www.imagemagick.org/fancybox/jquery.easing-1.3.pack.js"></script>
@@ -70,7 +70,7 @@
   //-->
   </script>
   <script type="text/javascript"
-    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+    src="http://localhost/pagead/show_ads.js">
   </script>
 </div>
 <a href="../discourse-server">
@@ -222,10 +222,10 @@
     };
 
     (function() {
-      var po = document.createElement('script');
+      var po = document.createElement('offline-script');
       po.type = 'text/javascript'; po.async = true;
       po.src = 'https://apis.google.com/js/plusone.js';
-      var script = document.getElementsByTagName('script')[0];
+      var script = document.getElementsByTagName('offline-script')[0];
       script.parentNode.insertBefore(po, script);
     })();
     var gplusone = document.getElementById("gplusone");
@@ -1153,9 +1153,9 @@ command line, from an MVG file, from an <a href="http://www.w3.org/TR/SVG/" >SVG
     _gaq.push(['_trackPageview']);
 
     (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      var ga = document.createElement('offline-script'); ga.type = 'text/javascript'; ga.async = true;
       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      var s = document.getElementsByTagName('offline-script')[0]; s.parentNode.insertBefore(ga, s);
     })();
   </script>
 </body>
