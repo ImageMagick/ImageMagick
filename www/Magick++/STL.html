@@ -166,7 +166,7 @@ last_</font></td>
       <td><font size="-1">Break down an image sequence into constituent
 parts.&nbsp; This is useful for creating GIF or MNG animation sequences.
 The input sequence  is specified by <i>first_</i> and <i>last_</i>, and
-the deconstruted images  are returned via <i>deconstructedImages_</i>.</font></td>
+the deconstructed images  are returned via <i>deconstructedImages_</i>.</font></td>
     </tr>
     <tr>
       <td>
@@ -199,6 +199,24 @@ represent image  layers into a single composited representation. The <i>flattend
 parameter points to an existing Image to update with the flattened
 image. This function is useful for combining Photoshop layers into a
 single image.</font></td>
+    </tr>
+    <tr>
+      <td>
+      <center><a name="forwardFourierTransformImage"></a> <font size="-1">forwardFourierTransformImage</font></center>
+      </td>
+      <td><font size="-1"><a
+ href="http://www.sgi.com/tech/stl/Container.html"> Container</a>
+*fourierImages_, const Image &amp;image_ </font></td>
+      <td><font size="-1"> Implements the discrete Fourier transform (DFT) of the image as a magnitude / phase image pair via <i>fourierImages_</i>.</font></td>
+    </tr>
+    <tr>
+      <td>
+      <center><a name="forwardFourierTransformImage"></a> <font size="-1">forwardFourierTransformImage</font></center>
+      </td>
+      <td><font size="-1"><a
+ href="http://www.sgi.com/tech/stl/Container.html"> Container</a>
+*fourierImages_, const Image &amp;image_, const bool magnitude_ </font></td>
+      <td><font size="-1"> Implements the discrete Fourier transform (DFT) of the image either as a magnitude / phase or real / imaginary image pair via <i>fourierImages_</i>.</font></td>
     </tr>
     <tr>
       <td>
@@ -380,8 +398,8 @@ manipulating images are shown in the following table: <br>
  size="-1">adaptiveThresholdImage</font><br>
       </div>
       </td>
-      <td valign="middle"><font size="-1">size_t width, unsigned
-int height, unsigned offset = 0</font><br>
+      <td valign="middle"><font size="-1">size_t width, size_t
+height, unsigned offset = 0</font><br>
       </td>
       <td valign="top"><font size="-1">Apply adaptive thresholding to
 the image. Adaptive thresholding is useful if the ideal threshold level
@@ -633,7 +651,7 @@ vertical direction)</font></td>
       <center><a name="floodFillColorImage"></a> <font size="-1">floodFill-</font> <br>
       <font size="-1">ColorImage</font></center>
       </td>
-      <td><font size="-1">size_t x_, size_t y_, const <a
+      <td><font size="-1">ssize_t x_, ssize_t y_, const <a
  href="Color.html"> Color</a> &amp;fillColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill color across pixels
 that match  the color of the target pixel and are neighbors of the
@@ -644,7 +662,7 @@ target pixel. Uses  current fuzz setting when determining color match.</font></t
 &amp;point_, const <a href="Color.html">Color</a> &amp;fillColor_</font></td>
     </tr>
     <tr>
-      <td><font size="-1">size_t x_, size_t y_, const <a
+      <td><font size="-1">ssize_t x_, ssize_t y_, const <a
  href="Color.html"> Color</a> &amp;fillColor_, const <a href="Color.html">Color</a>
 &amp;borderColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill color across pixels
@@ -661,7 +679,7 @@ border color. Uses  current fuzz setting when determining color match.</font></t
       <center><a name="floodFillTextureImage"></a> <font size="-1">floodFill-</font> <br>
       <font size="-1">TextureImage</font></center>
       </td>
-      <td><font size="-1">size_t x_, size_t y_,&nbsp; const <a
+      <td><font size="-1">ssize_t x_, ssize_t y_,&nbsp; const <a
  href="Image.html"> Image</a> &amp;texture_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill texture across pixels
 that match  the color of the target pixel and are neighbors of the
@@ -672,7 +690,7 @@ target pixel. Uses  current fuzz setting when determining color match.</font></t
 &amp;point_, const Image &amp;texture_</font></td>
     </tr>
     <tr>
-      <td><font size="-1">size_t x_, size_t y_, const Image
+      <td><font size="-1">ssize_t x_, ssize_t y_, const Image
 &amp;texture_, const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
       <td rowspan="2"><font size="-1">Flood-fill texture across pixels
 starting at target-pixel and stopping at pixels matching specified
@@ -701,7 +719,7 @@ horizontal direction)</font></td>
     </tr>
     <tr>
       <td><font size="-1">size_t width_, size_t height_,
-int x_, ssize_t  y_, ssize_t innerBevel_ = 0, ssize_t outerBevel_ = 0</font></td>
+ssize_t x_, ssize_t  y_, ssize_t innerBevel_ = 0, ssize_t outerBevel_ = 0</font></td>
     </tr>
     <tr>
       <td rowspan="2">
@@ -834,7 +852,7 @@ with this option.</font></td>
       <font size="-1">Image</font></center>
       </td>
       <td><font size="-1">const <a href="Color.html">Color</a>
-&amp;target_, size_t matte_, ssize_t x_, ssize_t y_, <a
+&amp;target_, unsigned int matte_, ssize_t x_, ssize_t y_, <a
  href="Enumerations.html#PaintMethod"> PaintMethod</a> method_</font></td>
       <td><font size="-1">Floodfill designated area with a matte value</font></td>
     </tr>
@@ -1530,7 +1548,7 @@ canvas.</font>
       <p><font size="-1">Use this option to specify the dimensions and
 position of the Postscript page in dots per inch or a TEXT page in
 pixels. This option is typically used in concert with <i><a
- href="#density">density</a> </i>.</font> </p>
+ href="STL.html#density">density</a> </i>.</font> </p>
       <p><font size="-1">Page may also be used to position a GIF image
 (such as for a scene in an animation)</font></p>
       </td>
@@ -1675,6 +1693,13 @@ units_</font></td>
 which does  not support width and height information).&nbsp; Size may
 also be used to affect the image size read from a multi-resolution
 format (e.g. Photo CD, JBIG, or JPEG.</font></td>
+    </tr>
+    <tr>
+      <td>
+      <center><a name="stripImage"></a> <font size="-1">stripImage</font></center>
+      </td>
+      <td><font size="-1">void</font></td>
+      <td><font size="-1">strips an image of all profiles and comments.</font></td>
     </tr>
     <tr>
       <td>

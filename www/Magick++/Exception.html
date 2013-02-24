@@ -9,17 +9,7 @@
 	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
 	<META NAME="CHANGED" CONTENT="20040819;11571100">
 	<META NAME="DESCRIPTION" CONTENT="Documentation for Magick::Exception class">
-	<STYLE>
-	<!--
-		@page { size: 8.5in 11in }
-		TD P { color: #000000 }
-		H1 { color: #000000 }
-		P { color: #000000 }
-		PRE { color: #000000 }
-		A:link { color: #0000ee }
-		A:visited { color: #551a8b }
-	-->
-	</STYLE>
+<link rel=stylesheet type=text/css href="magick.css">
 </HEAD>
 <BODY LANG="en-US" TEXT="#000000" LINK="#0000ee" VLINK="#551a8b" BGCOLOR="#ffffff" DIR="LTR">
 <H1 ALIGN=CENTER>Magick::Exception Classes</H1>
@@ -66,7 +56,7 @@ until the enclosing try block, destroying any created objects).
 <FONT COLOR="#000066">      <FONT SIZE=2>// Handle any other Magick++ warning.</FONT></FONT>
 <FONT COLOR="#000066">      <FONT SIZE=2>cerr &lt;&lt; &ldquo;Warning: &ldquo; &lt;&lt; warning.what() &lt;&lt; endl;</FONT></FONT>
 <FONT COLOR="#000066">    <FONT SIZE=2>}</FONT></FONT>
-<FONT COLOR="#000066">    <FONT SIZE=2>catch( Magick::BlobError &amp;error ) </FONT></FONT>
+<FONT COLOR="#000066">    <FONT SIZE=2>catch( Magick::ErrorBlob &amp;error ) </FONT></FONT>
 <FONT COLOR="#000066">    <FONT SIZE=2>{ </FONT></FONT>
 <FONT COLOR="#000066">      <FONT SIZE=2>// Process Magick++ file open error</FONT></FONT>
 <FONT COLOR="#000066">      <FONT SIZE=2>cerr &lt;&lt; &ldquo;Error: &ldquo; &lt;&lt; error.what() &lt;&lt; endl;</FONT></FONT>
@@ -85,7 +75,7 @@ until the enclosing try block, destroying any created objects).
 <FONT COLOR="#000066">  <FONT SIZE=2>catch( std::exception &amp;error )</FONT> </FONT>
   <FONT SIZE=2><FONT COLOR="#000066">{</FONT> </FONT>
      <FONT SIZE=2>// P<FONT COLOR="#000066">rocess any other exceptions derived from standard C++ exception</FONT></FONT>
-<FONT COLOR="#000066">     <FONT SIZE=2>err &lt;&lt; &ldquo;Caught C++ STD exception: &ldquo; &lt;&lt; error.what() &lt;&lt; endl;</FONT></FONT>
+<FONT COLOR="#000066">     <FONT SIZE=2>cerr &lt;&lt; &ldquo;Caught C++ STD exception: &ldquo; &lt;&lt; error.what() &lt;&lt; endl;</FONT></FONT>
 <FONT COLOR="#000066">  <FONT SIZE=2>}</FONT> </FONT>
   <FONT SIZE=2><FONT COLOR="#000066">catch( ... )</FONT> </FONT>
   <FONT SIZE=2><FONT COLOR="#000066">{</FONT> </FONT>

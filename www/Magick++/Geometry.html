@@ -9,16 +9,7 @@
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
 	<META NAME="CHANGED" CONTENT="20050103;22481700">
 	<META NAME="DESCRIPTION" CONTENT="Documentation for Magick::Geometry class">
-	<STYLE>
-	<!--
-		TD P { color: #000000 }
-		H1 { color: #000000 }
-		P { color: #000000 }
-		H3 { color: #000000 }
-		A:link { color: #0000ee }
-		A:visited { color: #551a8b }
-	-->
-	</STYLE>
+<link rel=stylesheet type=text/css href="magick.css">
 </HEAD>
 <BODY LANG="en-US" TEXT="#000000" LINK="#0000ee" VLINK="#551a8b" BGCOLOR="#ffffff" DIR="LTR">
 <H1 ALIGN=CENTER>Magick::Geometry</H1>
@@ -523,8 +514,8 @@ table:
 			<P>&nbsp;</P>
 		</TD>
 		<TD WIDTH=44%>
-			<P>unsigned int width_, unsigned int height_, unsigned int xOff_ =
-			0, unsigned int yOff_ = 0, bool xNegative_ = false, bool
+			<P>size_t width_, size_t height_, ssize_t xOff_ =
+			0, ssize_t yOff_ = 0, bool xNegative_ = false, bool
 			yNegative_ = false</P>
 		</TD>
 		<TD WIDTH=37%>
@@ -555,7 +546,7 @@ table:
 			<P>void</P>
 		</TD>
 		<TD WIDTH=44%>
-			<P>unsigned int width_</P>
+			<P>size_t width_</P>
 		</TD>
 		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Width</P>
@@ -563,7 +554,7 @@ table:
 	</TR>
 	<TR>
 		<TD WIDTH=10%>
-			<P>unsigned int</P>
+			<P>size_t</P>
 		</TD>
 		<TD WIDTH=44%>
 			<P>void</P>
@@ -577,7 +568,7 @@ table:
 			<P>void</P>
 		</TD>
 		<TD WIDTH=44%>
-			<P>unsigned int height_</P>
+			<P>size_t height_</P>
 		</TD>
 		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Height</P>
@@ -585,7 +576,7 @@ table:
 	</TR>
 	<TR>
 		<TD WIDTH=10%>
-			<P>unsigned int</P>
+			<P>size_t</P>
 		</TD>
 		<TD WIDTH=44%>
 			<P>void</P>
@@ -599,7 +590,7 @@ table:
 			<P>void</P>
 		</TD>
 		<TD WIDTH=44%>
-			<P>unsigned int xOff_</P>
+			<P>ssize_t xOff_</P>
 		</TD>
 		<TD ROWSPAN=2 WIDTH=37%>
 			<P>X offset from origin</P>
@@ -607,7 +598,7 @@ table:
 	</TR>
 	<TR>
 		<TD WIDTH=10%>
-			<P>int</P>
+			<P>ssize_t</P>
 		</TD>
 		<TD WIDTH=44%>
 			<P>void</P>
@@ -621,7 +612,7 @@ table:
 			<P>void</P>
 		</TD>
 		<TD WIDTH=44%>
-			<P>unsigned int yOff_</P>
+			<P>ssize_t yOff_</P>
 		</TD>
 		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Y offset from origin</P>
@@ -629,7 +620,7 @@ table:
 	</TR>
 	<TR>
 		<TD WIDTH=10%>
-			<P>int</P>
+			<P>size_t</P>
 		</TD>
 		<TD WIDTH=44%>
 			<P>void</P>
