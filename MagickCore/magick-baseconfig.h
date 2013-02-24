@@ -1082,12 +1082,12 @@
 
 /* Directory where ImageMagick architecture headers live. */
 #ifndef MAGICKCORE_INCLUDEARCH_PATH
-#define MAGICKCORE_INCLUDEARCH_PATH "/usr/local/include/ImageMagick/"
+#define MAGICKCORE_INCLUDEARCH_PATH "/usr/local/include/ImageMagick-7/"
 #endif
 
 /* Directory where ImageMagick headers live. */
 #ifndef MAGICKCORE_INCLUDE_PATH
-#define MAGICKCORE_INCLUDE_PATH "/usr/local/include/ImageMagick/"
+#define MAGICKCORE_INCLUDE_PATH "/usr/local/include/ImageMagick-7/"
 #endif
 
 /* ImageMagick is formally installed under prefix */
