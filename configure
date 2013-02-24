@@ -3667,7 +3667,7 @@ MAGICK_PATCHLEVEL_VERSION=5
 
 MAGICK_VERSION=6.8.3-5
 
-MAGICK_SVN_REVISION=11127:11146M
+MAGICK_SVN_REVISION=11148M
 
 
 # Substitute library versioning
@@ -8966,7 +8966,7 @@ else
 fi
 
 
-eval "eval INCLUDEARCH_DIR=$includearch_dir-$MAGICK_MAJOR_VERSION"
+eval "eval INCLUDEARCH_DIR=$includearch_dir"
 
 
 #
