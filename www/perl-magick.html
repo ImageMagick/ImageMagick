@@ -52,7 +52,7 @@
   	});
   </script>
   <!-- ImageMagick style -->
-  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+  <link rel="stylesheet" href="http://www.localhost/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
@@ -224,7 +224,7 @@
     (function() {
       var po = document.createElement('offline-script');
       po.type = 'text/javascript'; po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
+      po.src = 'https://apis.localhost/js/plusone.js';
       var script = document.getElementsByTagName('offline-script')[0];
       script.parentNode.insertBefore(po, script);
     })();
@@ -259,7 +259,7 @@
 <p>ImageMagick must already be installed on your system. Next, get
 the <a href="download.html">PerlMagick</a> distribution corresponding to the installed ImageMagick distribution
 (e.g., PerlMagick 6.77 for
-ImageMagick 6.7.7) and unpack it as shown below:</p>
+ImageMagick 6.7.8) and unpack it as shown below:</p>
 
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvfz PerlMagick-6.77.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd PerlMagick</span></p>
 <p>Next, edit <kbd>Makefile.PL</kbd> and change LIBS and INC to include the appropriate path information to the required <kbd>MagickCore</kbd> library. You may need paths to JPEG, PNG, TIFF, etc.  delegates if they were included with your installed version of ImageMagick. Build and install it like this:</p>
@@ -2682,7 +2682,7 @@ blobs in any of these image <a href="formats.html">formats</a> and provides meth
 
     (function() {
       var ga = document.createElement('offline-script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.localhost/ga.js';
       var s = document.getElementsByTagName('offline-script')[0]; s.parentNode.insertBefore(ga, s);
     })();
   </script>

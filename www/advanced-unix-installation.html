@@ -52,7 +52,7 @@
   	});
   </script>
   <!-- ImageMagick style -->
-  <link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+  <link rel="stylesheet" href="http://www.localhost/cse/style/look/default.css" type="text/css" />
   <style type="text/css" media="all">
     @import url("../www/magick.css");
   </style>
@@ -224,7 +224,7 @@
     (function() {
       var po = document.createElement('offline-script');
       po.type = 'text/javascript'; po.async = true;
-      po.src = 'https://apis.google.com/js/plusone.js';
+      po.src = 'https://apis.localhost/js/plusone.js';
       var script = document.getElementsByTagName('offline-script')[0];
       script.parentNode.insertBefore(po, script);
     })();
@@ -261,7 +261,7 @@
 
 <p>The configure script looks at your environment and decides what it can cobble together to get ImageMagick compiled and installed on your system.  This includes finding a compiler, where your compiler header files are located (e.g. stdlib.h), and if any delegate libraries are available for ImageMagick to use (e.g. JPEG, PNG, TIFF, etc.).  If you are willing to accept configure's default options, and build from within the source directory, you can simply type:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.7-5</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.8-0</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure</span></p>
 <p>Watch the configure script output to verify that it finds everything that
  you think it should.  Pay particular attention to the last lines of the script output.  For example, here is a recent report from our system:</p>
 
@@ -518,7 +518,7 @@ Options used to compile and link:
 <p>While <kbd>configure</kbd> is designed to ease installation of ImageMagick, it often discovers problems that would otherwise be encountered later when compiling ImageMagick. The configure script tests for headers and libraries by executing the compiler (CC) with the specified compilation flags (CFLAGS), pre-processor flags (CPPFLAGS), and linker flags (LDFLAGS). Any errors are logged to the file <kbd>config.log</kbd>. If configure fails to discover a header or library please review this log file to determine why, however, please be aware that *errors in the <kbd>config.log</kbd> are normal* because configure works by trying something and seeing if it fails. An error in <kbd>config.log</kbd> is only a problem if the test should have passed on your system.</p>
 
 <p>Common causes of configure failures are: 1) a delegate header is not in the header include path (CPPFLAGS -I option); 2) a delegate library is not in the linker search/run path (LDFLAGS -L/-R option); 3) a delegate library is missing a function (old version?); or 4) compilation environment is faulty.</p>
-<p>If all reasonable corrective actions have been tried and the problem appears be due to a flaw in the configure script, please send a bug report to the <a href="http://www.imagemagick.org/discourse-server/viewforum.php?f=3">ImageMagick Defect Support Forum</a>. All bug reports should contain the operating system type (as reported by <kbd>uname -a</kbd>) and the compiler/compiler-version. A copy of the configure script output and/or the relevant portion of  <kbd>config.log</kbd> file may be valuable in order to find the problem.  If you post portions of <kbd>config.log</kbd>, please also send a script of the configure output and a description of what you expected to see (and why) so the failure you are observing can be identified and resolved.</p>
+<p>If all reasonable corrective actions have been tried and the problem appears be due to a flaw in the configure script, please send a bug report to the <a href="http://www.imagemagick.org/discourse-server/viewforum.html?f=3">ImageMagick Defect Support Forum</a>. All bug reports should contain the operating system type (as reported by <kbd>uname -a</kbd>) and the compiler/compiler-version. A copy of the configure script output and/or the relevant portion of  <kbd>config.log</kbd> file may be valuable in order to find the problem.  If you post portions of <kbd>config.log</kbd>, please also send a script of the configure output and a description of what you expected to see (and why) so the failure you are observing can be identified and resolved.</p>
 
 <p>ImageMagick is now configured and ready to build</p>
 
@@ -589,7 +589,7 @@ Options used to compile and link:
 <p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>rpmbuild --rebuild ImageMagick.src.rpm</span></p>
 <p>After the build you, locate the RPMS folder and install the ImageMagick binary RPM distribution:</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>rpm -ivh ImageMagick-6.7.7-?.*.rpm</span></p>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>rpm -ivh ImageMagick-6.7.8-?.*.rpm</span></p>
 </div>
 
 <h2><a id="macosx"></a>Mac OS X-specific Build instructions</h2>
@@ -613,7 +613,7 @@ Options used to compile and link:
 	<div class="doc-section">
 	  <p><a href="download.html">Download</a> the ImageMagick source distribution and verify the distribution against its <a href="http://www.imagemagick.org/download/digest.rdf">message digest</a>.</p>
 	  <p>Unpack and change into the top-level ImageMagick directory:</p>
-		<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvfz ImageMagick-6.7.7-5.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.7-5</span></p>	  <p>Configure ImageMagick:</p>
+		<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar xvfz ImageMagick-6.7.8-0.tar.gz</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.8-0</span></p>	  <p>Configure ImageMagick:</p>
 	<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>./configure --prefix=/opt --with-quantum-depth=16 \ <br/>
 		--disable-dependency-tracking --with-x=yes \ <br/>
 		--x-includes=/usr/X11R6/include --x-libraries=/usr/X11R6/lib/ \ <br/>
@@ -633,7 +633,7 @@ Options used to compile and link:
 
 <p>Although you can download and install delegate libraries yourself, many are already available in the <a href="http://gnuwin32.sourceforge.net/">GnuWin32</a> distribution.  Download and install whichever delegate libraries you require such as JPEG, PNG, TIFF, etc.  Make sure you specify the development headers when you install a package.  Next type,</p>
 
-<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar jxvf ImageMagick-6.7.7-?.tar.bz2</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.7-5</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>sudo make install</span></p></div>
+<p class='crt'><span class="crtprompt"> $ </span><span class='crtin'>tar jxvf ImageMagick-6.7.8-?.tar.bz2</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>cd ImageMagick-6.7.8-0</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export CPPFLAGS="-Ic:/Progra~1/GnuWin32/include"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>export LDFLAGS="-Lc:/Progra~1/GnuWin32/lib"</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>./configure --without-perl</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>make</span><span class='crtout'></span><span class="crtprompt"> $ </span><span class='crtin'>sudo make install</span></p></div>
 
 <h2><a id="problems"></a>Dealing with Unexpected Problems</h2>
 <div class="doc-section">
@@ -694,7 +694,7 @@ Options used to compile and link:
 
     (function() {
       var ga = document.createElement('offline-script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.localhost/ga.js';
       var s = document.getElementsByTagName('offline-script')[0]; s.parentNode.insertBefore(ga, s);
     })();
   </script>
